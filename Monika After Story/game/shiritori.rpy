@@ -28,16 +28,24 @@ label monika_shiritori_rules:
 label player_loss(reason=""):
     if reason == "letter":
         m "That's the wrong letter, you know."
+
     elif reason == "invalid":
-        m "I don't think that's a real word."
+        if game_variant == "cities":
+            $ word = "city"
+        else:
+            $ word = "word"
+        m "I don't think that's a real [word]."
+
     elif reason == "used":
         m "Wait a second, [last_word_p_raw]?"
         if last_word_p in recent_words:
             m "That one was played just a second ago!"
         else:
             m "I'm pretty sure one of us already used that one."
+
     elif reason == "timeout":
         m "...And you're out of time."
+
     else:
         m "This isn't supposed to happen."
 
@@ -55,10 +63,13 @@ label player_loss(reason=""):
 label monika_loss(reason = ""):
     # Monika can only lose via word repetition or turn exhaustion (ie time limit rule), the other two are silly
     if reason == "used":
-        m "Wait, that one already got used, didn't it?"
+        m "Wait, [last_word_m]? That one already got used, didn't it?"
+        m "Silly me, ahaha~"
+
     elif reason == "timeout":
         m "I...can't think of anything."
         m "This is embarrassing, ahaha~"
+
     else:
         m "This isn't supposed to happen either."
 
@@ -92,7 +103,7 @@ screen shiritori_input(prompt, timeout, use_return_button=False, return_button_p
             text prompt style "input_prompt"
             input id "input"
 
-    timer timeout action Return("timeout")
+    timer timeout action Return("_timeout")
 
 # entry point
 label game_shiritori:
@@ -133,17 +144,18 @@ label game_shiritori:
     python:
         # build dictionaries - do we want this here or on init?
         if game_variant == "full":
-            with open("shiritori_dictionary_full.json") as dff:
+            with open("game/shiritori_dictionary_full.json") as dff:
                 dictionary_full = json.load(dff)
-            with open("shiritori_dictionary_monika.json") as dmf:
+            with open("game/shiritori_dictionary_monika.json") as dmf:
                 dictionary_monika = json.load(dmf)
 
         elif game_variant == "cities":
-            with open("shiritori_dictionary_cities.json") as dff:
+            with open("game/shiritori_dictionary_cities_decap.json") as dff:
                 dictionary_full = json.load(dff)
-                dictionary_monika = json.load(dff)
+            with open("game/shiritori_dictionary_cities.json") as dmf:
+                dictionary_monika = json.load(dmf)
 
-        timelimit = 10
+        timelimit = 20
         shiritori_loop = True
         # all the words used in current game
         used_words = set()
@@ -157,30 +169,37 @@ label game_shiritori:
             first_letter = renpy.random.choice("abcdefghijklmnopqrstuvwxyz")
             last_word_m = renpy.random.choice(dictionary_monika[first_letter])
             # add first word to used and recent
-            used_words.add(last_word_m)
-            recent_words.add(last_word_m)
+            used_words.add(last_word_m.lower())
+            recent_words.add(last_word_m.lower())
         m "[last_word_m]"
+    else:
+        $ last_word_m = "_none"
 
     # main loop
     while shiritori_loop:
         python:
         # get player input
+            if last_word_m == "_none":
+                input_prompt = "Choose your first word"
+            else:
+                input_prompt = last_word_m
+
             last_word_p_raw = mas_input(
-                "Input your next word",
+                input_prompt,
                 allow = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .'-",
                 length=20,
                 screen = "shiritori_input",
-                screen_kwargs = {timeout:timelimit}
+                screen_kwargs = {"timeout":timelimit}
                 ).strip(' \t\n\r').lower()
             last_word_p = last_word_p_raw.lower()
 
         # check for timeout
-        if _return == "timeout":
+        if last_word_p == "_timeout":
             call player_loss(reason = "timeout")
             $ shiritori_loop = False
 
-        # check if starting with correct letter
-        if last_word_p[0] != last_word_m[-1]:
+        # check if starting with correct letter - ignore on first turn if player starts
+        elif not last_word_m == "_none" and last_word_p[0] != last_word_m[-1]:
             call player_loss(reason = "letter")
             $ shiritori_loop = False
 
@@ -203,7 +222,7 @@ label game_shiritori:
                     recent_words.pop()
 
             # Monika's turn
-            m "Hmm..."
+            m "Hmm...{w=1}{nw}"
             $ last_word_m_invalid = True
 
             # TODO Monika's loss via turn exhaustion here
@@ -214,8 +233,9 @@ label game_shiritori:
 
             # getting Monika's next word
             while last_word_m_invalid:
-                if renpy.random.randint(1,10) == 1:
+                if renpy.random.randint(1,10) == 1 and game_variant != "cities":
                     # small chance to have Monika pull from the full vocab
+                    # not in cities mode - the dicts are the same, just decapitalized
                     $ last_word_m = renpy.random.choice(dictionary_full[last_word_p[-1]])
                 else:
                     $ last_word_m = renpy.random.choice(dictionary_monika[last_word_p[-1]])
@@ -224,17 +244,17 @@ label game_shiritori:
                 if last_word_m not in recent_words:
                     $ last_word_m_invalid = False
 
-            m "[last_word_m]"
+            extend " [last_word_m]{w=1}{nw}"
             # checking if used
-            if last_word_m in used_words:
+            if last_word_m.lower() in used_words:
                 call monika_loss(reason = "used")
                 $ shiritori_loop = False
 
             else:
                 # update used word sets
                 python:
-                    used_words.add(last_word_m)
-                    recent_words.add(last_word_m)
+                    used_words.add(last_word_m.lower())
+                    recent_words.add(last_word_m.lower())
                     if len(recent_words) > 10:
                         recent_words.pop()
 
