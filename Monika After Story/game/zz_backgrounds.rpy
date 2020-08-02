@@ -2548,6 +2548,7 @@ init 800 python:
     #Just set us to the normal room here
     mas_setBackground(mas_background_def)
 
+#NOTE: This is at init 0 so it can be used for conditionals in events/etc
 init python:
     def mas_getBackground(background_id, default=None):
         """
