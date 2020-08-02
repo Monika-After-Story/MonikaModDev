@@ -1085,25 +1085,27 @@ label mas_random_limit_reached:
 label mas_random_ask:
     m 1lksdla "...{w=0.5}[player]?"
 
-    m "Is it okay with you if I repeat stuff that I've said?{nw}"
+    m "Is it okay with you if I repeat stuff that I've said again?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?{fast}"
+        m "Is it okay with you if I repeat stuff that I've said again?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            m 3eua "If you get tired of listening to me talk about the same things, you can just open up the settings menu and uncheck 'Repeat Topics' again."
+
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
                 m 1eka "That tells me when you just want to quietly spend time with me."
+
             $ persistent._mas_enable_random_repeats = True
             return True
 
         "No.":
-            m 1eka "I see."
+            m 1eka "Alright."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
-            return
+            return False
 
 # TODO: think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
