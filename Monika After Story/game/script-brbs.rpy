@@ -671,6 +671,83 @@ label monika_idle_working_callback:
         m 6ckc "..."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_screen_break",
+            prompt="I need a break from the screen.",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_screen_break:
+    if mas_isMoniNormal(higher=True):
+
+        if mas_getEV('monika_idle_screen_break').timePassedSinceLastSeen_dt(mas_getSessionLength()):
+
+            if mas_getSessionLength() < datetime.timedelta(minutes=40):
+                m 1esc "Oh,{w=0.3} okay."
+                m 1dsu "You've not been here for that long but if you say you need a break, then you need a break."
+            elif mas_getSessionLength() < datetime.timedelta(minutes=150):
+                m 1eua "Going to rest your eyes for a bit?"
+            else:
+                m 1lksdla "Yeah, you probably need that, don't you?"
+
+            m 1hub "I'm glad you're taking care of your health, [player]."
+
+            if not persistent._mas_pm_works_out:
+                m 3eua "Why not take the opportunity to do a few stretches as well, hmm?"
+                m 1eub "Anyway, come back soon!~"
+            else:
+                m 1eub "Come back soon!~"
+
+        else:
+            m 1eua "Taking another break, [player]?"
+            m 1hua "Come back soon!~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh...{w=0.5} {nw}"
+        extend 2rsc "Okay."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_screen_break_callback")
+    $ persistent._mas_idle_data["monika_idle_screen_break"] = True
+    return "idle"
+
+label monika_idle_screen_break_callback:
+    $ wb_quip = mas_brbs.get_wb_quip()
+    if mas_isMoniNormal(higher=True):
+        
+        m 1eub "Welcome back, [player]."
+        
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_screen_break"):
+            m 1hksdlb "You must've really needed that break, considering how long you were gone."
+            m 1eka "I hope you're feeling a little more rested now."
+        else:
+            m 1hua "I hope you're feeling a little more rested now~"
+        
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m 2esc "Welcome back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5} You're back."
+
+    else:
+        m 6ckc "..."
+
+    return
+    
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
