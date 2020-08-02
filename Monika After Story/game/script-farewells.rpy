@@ -1576,5 +1576,4 @@ label bye_prompt_hangout:
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
-    label .bye_prompt_hangout_local:
         return "quit"
