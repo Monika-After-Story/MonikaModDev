@@ -5,6 +5,11 @@ default persistent._mas_background_MBGdata = {}
 #Defaults to def (spaceroom)
 default persistent._mas_current_background = "spaceroom"
 
+init -5 python in mas_background:
+    #marks this background as an outdoor type (disables opendoor for it)
+    #value: ignored
+    EXP_TYPE_OUTDOOR = "outdoor"
+
 #START: Class definition
 init -10 python:
 
@@ -1848,6 +1853,7 @@ init -10 python:
             unlocked=False,
             entry_pp=None,
             exit_pp=None,
+            ex_props=None
         ):
             """
             Constructor for background objects
@@ -1892,6 +1898,10 @@ init -10 python:
 
                 exit_pp:
                     Exit programming point for this background
+                    (Default: None)
+
+                ex_props:
+                    Extra properties for backgrounds. If None, an empty dict is assigned
                     (Default: None)
             """
             # sanity checks
@@ -1942,6 +1952,12 @@ init -10 python:
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
+
+            #Add ex_props
+            if ex_props is None:
+                ex_props = dict()
+
+            self.ex_props = ex_props
 
             # add to background map
             self.mas_background.BACKGROUND_MAP[background_id] = self
@@ -2532,6 +2548,19 @@ init 800 python:
     #Just set us to the normal room here
     mas_setBackground(mas_background_def)
 
+init python:
+    def mas_getBackground(background_id, default=None):
+        """
+        Gets a MASFilterableBackground by id
+
+        IN:
+            background_id - id of the background to get
+            default - default to return if not found
+
+        OUT:
+            MASFilterableBackground if found, None otherwise
+        """
+        return store.mas_background.BACKGROUND_MAP.get(background_id, default)
 
 #START: Programming points
 init -2 python in mas_background:
