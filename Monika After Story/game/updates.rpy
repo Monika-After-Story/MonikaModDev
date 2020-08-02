@@ -393,6 +393,8 @@ label v0_11_4(version="v0_11_4"):
             if bad_evl in persistent._mas_player_derandomed:
                 mas_loseAffection(5)
 
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
     return
 
 #0.11.3
