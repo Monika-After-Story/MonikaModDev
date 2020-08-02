@@ -3964,6 +3964,27 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
+            eventlabel="greeting_love_is_in_the_air",
+            unlocked=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_love_is_in_the_air:
+    m 1hub "{i}~Love is in the air~{/i}"
+    m 1rub "{i}~Everywhere I look around~{/i}"
+    m 3ekbsa "Oh hello, [player]..."
+    m 3rksdla "Don't mind me. {w=0.2}I'm just singing a bit, thinking about...{w=0.3}{nw}"
+    extend 1hksdlb "well, you can probably guess what, ahaha~"
+    m 1eubsu "It really does feel like love is all around me whenever you're here."
+    m 3hua "Anyway, what would you like to do today?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
             eventlabel="greeting_back_from_workout",
             category=[store.mas_greetings.TYPE_WORKOUT],
             unlocked=True
