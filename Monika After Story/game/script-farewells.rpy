@@ -356,7 +356,7 @@ init 5 python:
 label bye_leaving_already_2:
     m 1ekc "Aww, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
-    m 3hubsa "I love you so much [player]!"
+    m 3hubsa "I love you so much, [player]!"
     show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsb "Never forget that!"
     return 'quit'
