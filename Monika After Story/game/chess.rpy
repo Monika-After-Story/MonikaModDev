@@ -1661,8 +1661,12 @@ init python:
         BUTTON_Y_SPACING = 10
 
         # calculate positions
-        DRAWN_BOARD_X = int((1280 - BOARD_WIDTH) / 1.5)
-        DRAWN_BOARD_Y = int((720 - BOARD_HEIGHT) / 3)
+
+        DRAWN_X_ADJUST = 1.5
+        DRAWN_Y_ADJUST = 3
+
+        DRAWN_BOARD_X = int((1280 - BOARD_WIDTH) / DRAWN_X_ADJUST)
+        DRAWN_BOARD_Y = int((720 - BOARD_HEIGHT) / DRAWN_Y_ADJUST)
         DRAWN_BUTTON_X = DRAWN_BOARD_X + BUTTON_X_SPACING
 
         DRAWN_BUTTON_Y_MID = (BUTTON_HEIGHT + DRAWN_BOARD_Y)
@@ -2081,12 +2085,14 @@ init python:
                         ix = 7 - ix
 
                     x = int(
-                        (width - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * 2)) / 1.5
+                        (width - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * MASChessDisplayableBase.DRAWN_X_ADJUST))
+                        / MASChessDisplayableBase.DRAWN_X_ADJUST
                         + ix * MASChessDisplayableBase.PIECE_WIDTH
                     )
 
                     y = int(
-                        (height - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * 2)) / 3
+                        (height - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * MASChessDisplayableBase.DRAWN_Y_ADJUST))
+                        / MASChessDisplayableBase.DRAWN_Y_ADJUST
                         + iy * MASChessDisplayableBase.PIECE_HEIGHT
                     )
 
@@ -2259,8 +2265,14 @@ init python:
                 Tuple of coordinates (x, y) marking where the piece is
             """
             mx, my = get_mouse_pos()
-            mx -= (1280 - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * 2)) / 2
-            my -= (720 - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * 2)) / 2
+            mx -= int(
+                (1280 - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * MASChessDisplayableBase.DRAWN_X_ADJUST))
+                / MASChessDisplayableBase.DRAWN_X_ADJUST
+            )
+            my -= int(
+                (720 - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * MASChessDisplayableBase.DRAWN_Y_ADJUST))
+                / MASChessDisplayableBase.DRAWN_Y_ADJUST
+            )
             px = mx / MASChessDisplayableBase.PIECE_WIDTH
             py = my / MASChessDisplayableBase.PIECE_HEIGHT
 
