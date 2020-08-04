@@ -1951,7 +1951,7 @@ label monika_kiss:
                 # these use ILY
                 kiss_quips_after = [
                     _("I love you, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
-                    _("I love you so much, [mas_get_player_nickname()]~"),
+                    _("I love you so much, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
                     _("I love you more than you'll ever know, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
                     _("I love you so much, [player]. You mean everything to me~"),
                     _("No words can describe how deeply I'm in love with you, [player]~"),
