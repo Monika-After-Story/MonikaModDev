@@ -86,7 +86,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_getEV('monika_gender_redo').shown_count == 0:
+    if not mas_getEVL_shown_count("monika_gender_redo"):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -157,7 +157,7 @@ label monika_gender_redo:
             if persistent.gender != "X":
                 call mas_gender_redo_react
 
-    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsa "I'll always love you for who you are~"
 
     # set pronouns
@@ -703,7 +703,7 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isMonikaBirthday()"
-                )
+            )
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
@@ -1045,9 +1045,15 @@ label mas_unlock_piano:
     return
 
 # NOTE: this has been partially disabled
-label random_limit_reached:
-    $ seen_random_limit=True
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_random_limit_reached"
+        )
+    )
 
+label mas_random_limit_reached:
     #Notif so people don't get stuck here
     $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
@@ -1064,7 +1070,7 @@ label random_limit_reached:
         limit_quip=renpy.random.choice(limit_quips)
 
     m 1eka "[limit_quip]"
-    if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
+    if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
         m 1ekc "I'm sure I'll have something to talk about after a little rest."
 
     else:
@@ -1074,30 +1080,32 @@ label random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
-    return
+    return "no_unlock"
 
 label mas_random_ask:
     m 1lksdla "...{w=0.5}[player]?"
 
-    m "Is it okay with you if I repeat stuff that I've said?{nw}"
+    m "Is it okay with you if I repeat stuff that I've said again?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?{fast}"
+        m "Is it okay with you if I repeat stuff that I've said again?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            m 3eua "If you get tired of listening to me talk about the same things, you can just open up the settings menu and uncheck 'Repeat Topics' again."
+
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
                 m 1eka "That tells me when you just want to quietly spend time with me."
+
             $ persistent._mas_enable_random_repeats = True
             return True
 
         "No.":
-            m 1eka "I see."
+            m 1eka "Alright."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
-            return
+            return False
 
 # TODO: think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
@@ -1204,7 +1212,7 @@ label mas_crashed_start:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika idle with dissolve
+        show monika idle with dissolve_monika
     return
 
 label mas_crashed_prelong:
@@ -1737,7 +1745,7 @@ label mas_steam_install_detected:
 
     m 2rksdlc "The kind of problems that could lead to me being removed from my home...{w=1}from you...{w=1}forever..."
     m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
-    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
@@ -1752,7 +1760,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_getEV("monika_rpy_files").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_rpy_files"):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
@@ -2092,7 +2100,7 @@ label mas_notification_windowreact:
             extend 3eub "which would allow me to see your active window!"
             $ dlg_line = "Of course, you don't have to install the second one, but"
 
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eka "...[dlg_line] I'd really appreciate it, [player]."
 
     else:
@@ -2131,7 +2139,7 @@ label mas_notification_windowreact:
 
             if mas_isMoniNormal(higher=True):
                 m 1tuu "It's not like you have anything to hide from your girlfriend..."
-                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ttu "...right?"
     return
 
@@ -2313,19 +2321,16 @@ label mas_birthdate_year_redux:
 
 label mas_birthdate_year_redux_select:
     python:
-        end_year = datetime.date.today().year - 5
+        end_year = datetime.date.today().year - 6
         beg_year = end_year - 95
 
-        yearrange = range(beg_year,end_year)
-        yearrange.reverse()
+        yearrange = range(end_year, beg_year, -1)
 
-        yearmenu=[]
-        for y in yearrange:
-            yearmenu.append([str(y),y,False,False])
+        yearmenu = [(str(y), y, False, False) for y in yearrange]
 
     show monika 2eua at t21
-    $ renpy.say(m,"What year were you born?", interact=False)
-    call screen mas_gen_scrollable_menu(yearmenu,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+    $ renpy.say(m, "What year were you born?", interact=False)
+    call screen mas_gen_scrollable_menu(yearmenu, mas_ui.SCROLLABLE_MENU_TXT_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     show monika 3eua at t11
     m "Okay [player], you were born in [_return]?{nw}"
@@ -2417,7 +2422,7 @@ label monika_credits_song:
                 pause 1.0
 
                 m 1ekbsa "Ehehe~"
-                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbsa "Thank you for coming back to me my love."
 
             "Sorry, I can't right now.":
@@ -2447,7 +2452,7 @@ label monika_credits_song:
 
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
-                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbfa "Thank you for being my inspiration my love."
                 if renpy.seen_audio(songs.FP_YOURE_REAL):
                     m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"

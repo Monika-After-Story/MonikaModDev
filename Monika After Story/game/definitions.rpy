@@ -119,14 +119,67 @@ python early:
                         obj = getattr(obj, i)
 
                     else:
-                        if not isinstance(i, long):
+                        # convert the accessor only if obj isn't a dict
+                        # so the accessor is always a long for other iterables
+                        if not isinstance(obj, dict):
                             i = long(i)
+
                         obj = obj[i]
 
             return obj, first
 
     # allows us to use a more advanced string formatting
     renpy.substitutions.formatter = MASFormatter()
+
+    def mas_with_statement(trans, always=False, paired=None, clear=True):
+        """
+        Causes a transition to occur. This is the Python equivalent of the
+        with statement
+
+        IN:
+            trans - the transition to use
+            always - if True, the transition will always occur, even if the user has
+                disabled transitions
+            paired - Tom knows
+            clear - if True cleans out transient stuff at the end of an interaction
+
+        OUT:
+            True if the user chose to interrupt the transition,
+            and False otherwise
+        """
+        if renpy.game.context().init_phase:
+            raise Exception("With statements may not run while in init phase.")
+
+        if renpy.config.skipping:
+            trans = None
+
+        if not (renpy.game.preferences.transitions or always):
+            trans = None
+
+        renpy.exports.mode('with')
+
+        if isinstance(paired, dict):
+            paired = paired.get(None, None)
+
+            if (trans is None) and (paired is None):
+                return
+
+        if isinstance(trans, dict):
+
+            for k, v in trans.items():
+                if k is None:
+                    continue
+
+                renpy.exports.transition(v, layer=k)
+
+            if None not in trans:
+                return
+
+            trans = trans[None]
+
+        return renpy.game.interface.do_with(trans, paired, clear=clear)
+
+    renpy.exports.with_statement = mas_with_statement
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -3465,10 +3518,12 @@ init -991 python in mas_utils:
     import platform
     import time
     import traceback
+    import sys
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
     from bisect import bisect
+    from contextlib import contextmanager
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -3638,6 +3693,23 @@ init -991 python in mas_utils:
         except Exception as e:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
+
+
+    @contextmanager
+    def stdout_as(outstream):
+        """
+        Context manager that can replace stdout temporarily. Use with the
+        with statement (python).
+
+        IN:
+            outstream - the stream to temporarily replace sys.stdout with
+        """
+        oldout = sys.stdout
+        sys.stdout = outstream
+        try:
+            yield
+        finally:
+            sys.stdout = oldout
 
 
     def writelog(msg):
@@ -7134,8 +7206,7 @@ default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
-default seen_random_limit = False
-default persistent._mas_enable_random_repeats = False
+default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
 
@@ -7225,47 +7296,56 @@ default him = "him"
 default himself = "himself"
 
 
-# default is OFTEN
-default persistent._mas_randchat_freq = 0
+#Default is NORMAL
+default persistent._mas_randchat_freq = mas_randchat.NORMAL
 define mas_randchat_prev = persistent._mas_randchat_freq
-init 1 python in mas_randchat:
+init -1 python in mas_randchat:
+    import store
     ### random chatter frequencies
 
-    # these numbers are the lower end of how many seconds to wait between
-    # random topics
-    OFTEN         = 5 # end 15
-    NORMAL        = 15 # end 45
-    LESS_OFTEN    = 40 # end 120 (2 min)
-    OCCASIONALLY  = 2*60 # end 360 (6 min)
-    RARELY        = 390 # end 1170 (19.5 min)
-    VERY_RARELY   = 20*60 # end 3600 (60 mins)
-    NEVER         = 0
+    #Name - value constants
+    VERY_OFTEN = 6
+    OFTEN = 5
+    NORMAL = 4
+    LESS_OFTEN = 3
+    OCCASIONALLY = 2
+    RARELY = 1
+    NEVER = 0
+
+    # these numbers are the lower end of how many seconds to wait between random topics
+    VERY_OFTEN_WAIT = 5 # end 15
+    OFTEN_WAIT = 15 # end 45
+    NORMAL_WAIT = 40 # end 120 (2 min)
+    LESS_OFTEN_WAIT = 2*60 # end 360 (6 min)
+    OCCASIONALLY_WAIT = 390 # end 1170 (19.5 min)
+    RARELY_WAIT = 20*60 # end 3600 (60 mins)
+    NEVER_WAIT = 0
 
     # this is multiplied to the low end to get the upper end of seconds
     SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 5
+    ## to better work with the sliders, we will create a range from 0 to 6
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
-        0: OFTEN,
-        1: NORMAL,
-        2: LESS_OFTEN,
-        3: OCCASIONALLY,
-        4: RARELY,
-        5: VERY_RARELY,
-        6: NEVER
+        NEVER: NEVER_WAIT,
+        RARELY: RARELY_WAIT,
+        OCCASIONALLY: OCCASIONALLY_WAIT,
+        LESS_OFTEN: LESS_OFTEN_WAIT,
+        NORMAL: NORMAL_WAIT,
+        OFTEN: OFTEN_WAIT,
+        VERY_OFTEN: VERY_OFTEN_WAIT
     }
 
     ## slider map for displaying
     SLIDER_MAP_DISP = {
-        0: "Often",
-        1: "Normal",
-        2: "Less Often",
-        3: "Occasionally",
-        4: "Rarely",
-        5: "Very Rarely",
-        6: "Never"
+        NEVER: "Never",
+        RARELY: "Rarely",
+        OCCASIONALLY: "Occasionally",
+        LESS_OFTEN: "Less Often",
+        NORMAL: "Normal",
+        OFTEN: "Often",
+        VERY_OFTEN: "Very Often"
     }
 
     # current frequency times
@@ -7274,15 +7354,24 @@ init 1 python in mas_randchat:
     rand_high = NORMAL * SPAN_MULTIPLIER
     rand_chat_waittime_left = 0
 
+    def reduceRandchatForAff(aff_level):
+        """
+        Reduces the randchat setting if we're too high for the current affection level
+        """
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+
+        if store.persistent._mas_randchat_freq > max_setting_for_level:
+            adjustRandFreq(max_setting_for_level)
+
     def adjustRandFreq(slider_value):
         """
         Properly adjusts the random limits given the slider value
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 5
+                Should be between 0 - 6
         """
-        slider_setting = SLIDER_MAP.get(slider_value, 1)
+        slider_setting = SLIDER_MAP.get(slider_value, 4)
 
         # otherwise set up the times
         # globalize
@@ -7291,7 +7380,7 @@ init 1 python in mas_randchat:
 
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
-        renpy.game.persistent._mas_randchat_freq = slider_value
+        store.persistent._mas_randchat_freq = slider_value
 
         setWaitingTime()
 
