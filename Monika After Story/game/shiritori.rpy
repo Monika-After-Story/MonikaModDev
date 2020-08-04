@@ -266,9 +266,9 @@ label game_shiritori:
             call player_loss(reason = "letter")
 
         # check against dictionary
-        elif (last_word_p not in dictionary_full[last_word_p[0]])
+        elif ((last_word_p not in dictionary_full[last_word_p[0]])
             and
-            (last_word_p not in persistent._mas_shiritori_extra_words):
+            (last_word_p not in persistent._mas_shiritori_extra_words)):
 
             $ shiritori_loop = False
             call player_loss(reason = "invalid")
