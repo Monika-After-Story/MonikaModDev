@@ -17,7 +17,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -51,9 +51,7 @@ label bye_dev:
 init 5 python:
     if persistent._mas_fastbye:
         rules = dict()
-        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-        rules.update({"monika wants this first":""})
-        rules.update(MASPriorityRule.create_rule(-1))
+        rules.update(MASPriorityRule.create_rule(-100))
         addEvent(
             Event(
                 persistent.farewell_database,
@@ -61,7 +59,7 @@ init 5 python:
                 unlocked=True,
                 rules=rules
             ),
-            eventdb=evhand.farewell_database
+            code="BYE"
         )
         del rules
 
@@ -78,7 +76,7 @@ init 5 python:
             eventlabel="bye_dev_temp",
             unlocked=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_dev_temp:
@@ -94,18 +92,16 @@ label bye_dev_temp:
     return 'quit'
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=None,max=-20))
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_dev_no_hate",
             unlocked=True,
-            rules=rules
+            aff_range=(None, mas_aff.UPSET)
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
-    del rules
+
 
 label bye_dev_no_hate:
     m 1c "Leaving already, huh?"
