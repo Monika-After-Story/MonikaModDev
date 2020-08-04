@@ -1,6 +1,7 @@
 #TODO: Fix label names. It's difficult to follow
 
 # we now will keep track of player wins / losses/ draws/ whatever
+#TODO: Update script the practice stats
 default persistent._mas_chess_stats = {
     "wins": 0,
     "losses": 0,
@@ -43,6 +44,7 @@ init python in mas_chess:
     import os
     import chess.pgn
     import store.mas_ui as mas_ui
+    import store
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -542,6 +544,7 @@ label game_chess:
         pass
 
     window hide None
+    show monika 1eua at t21
     python:
         chess_displayable_obj = MASChessDisplayable(player_color, pgn_game=loaded_game, practice_mode=practice_mode)
         ui.add(chess_displayable_obj)
@@ -556,6 +559,7 @@ label game_chess:
     label .chess_end:
         pass
 
+    show monika at t11
     $ mas_gainAffection(modifier=0.5)
     # monika wins
     if is_monika_winner:
@@ -587,8 +591,9 @@ label game_chess:
 
             m 1eua "Anyway..."
 
-        #Monika plays a little easier
-        $ mas_chess._decrement_chess_difficulty()
+        if not is_surrender:
+            #Monika plays a little easier if you didn't just surrender
+            $ mas_chess._decrement_chess_difficulty()
 
     #Always save in progress games unless they're over
     elif game_result == mas_chess.IS_ONGOING:
@@ -778,9 +783,11 @@ label mas_chess_savegame(silent=False):
     return
 
 label mas_chess_cannot_work_embarrassing:
+    show monika at t11
     m 1rksdla "..."
     m 3hksdlb "Well that's embarrassing, it seems I can't actually get chess to work on your system..."
     m 1ekc "Sorry about that, [player]."
+    m 1eka "Maybe we can do something else instead?"
     return
 
 label mas_chess_dlg_game_monika_wins_often:
@@ -1646,34 +1653,117 @@ init python:
             'P': 5
         }
 
-        # The sizes of some of the images.
+        #The sizes of the images.
         BOARD_BORDER_WIDTH = 15
         BOARD_BORDER_HEIGHT = 15
         PIECE_WIDTH = 57
         PIECE_HEIGHT = 57
         BOARD_WIDTH = BOARD_BORDER_WIDTH * 2 + PIECE_WIDTH * 8
         BOARD_HEIGHT = BOARD_BORDER_HEIGHT * 2 + PIECE_HEIGHT * 8
-        INDICATOR_WIDTH = 60
+
         INDICATOR_HEIGHT = 96
         BUTTON_WIDTH = 120
         BUTTON_HEIGHT = 35
-        BUTTON_X_SPACING = 10
+        BUTTON_INDICATOR_X_SPACING = 10
         BUTTON_Y_SPACING = 10
 
-        # calculate positions
+        #Vertical and horizontal offsets to modify the position of the entire board and game
+        #NOTE: These are from the left/bottom of the screen respectively
+        DISP_X_OFFSET = 200
+        DISP_Y_OFFSET = 200
 
-        DRAWN_X_ADJUST = 1.5
-        DRAWN_Y_ADJUST = 3
+        ##Calculate positions
+        #X and Y positions of the TOP LEFT corner of the board
+        BOARD_X_POS = int(1280 - BOARD_WIDTH - DISP_X_OFFSET)
+        BOARD_Y_POS = int(720 - BOARD_HEIGHT - DISP_Y_OFFSET)
 
-        DRAWN_BOARD_X = int((1280 - BOARD_WIDTH) / DRAWN_X_ADJUST)
-        DRAWN_BOARD_Y = int((720 - BOARD_HEIGHT) / DRAWN_Y_ADJUST)
-        DRAWN_BUTTON_X = DRAWN_BOARD_X + BUTTON_X_SPACING
+        #Base piece positions
+        BASE_PIECE_Y = BOARD_Y_POS + BOARD_BORDER_HEIGHT
+        BASE_PIECE_X = BOARD_X_POS + BOARD_BORDER_WIDTH
 
-        DRAWN_BUTTON_Y_MID = (BUTTON_HEIGHT + DRAWN_BOARD_Y)
-        DRAWN_BUTTON_Y_BOT = 720 - (BUTTON_HEIGHT + DRAWN_BUTTON_Y_MID)
-        DRAWN_BUTTON_Y_TOP = DRAWN_BUTTON_Y_MID - BUTTON_Y_SPACING - BUTTON_HEIGHT
+        #X position of buttons/indicator
+        BUTTON_INDICATOR_X = int(BOARD_X_POS + BOARD_WIDTH + BUTTON_INDICATOR_X_SPACING)
+
+        #Indicator Y position
+        INDICATOR_Y = int(BOARD_Y_POS + ((BOARD_HEIGHT - INDICATOR_HEIGHT)/ 2))
+
+        #Absolute indicator position
+        INDICATOR_POS = (BUTTON_INDICATOR_X, INDICATOR_Y)
+
+        #Button Positions
+        DRAWN_BUTTON_Y_TOP = BOARD_Y_POS
+        DRAWN_BUTTON_Y_MID = DRAWN_BUTTON_Y_TOP + BUTTON_HEIGHT + BUTTON_Y_SPACING
+        DRAWN_BUTTON_Y_BOT = BOARD_Y_POS + BOARD_HEIGHT - BUTTON_HEIGHT
+
 
         PROMOLIST = ["q","r","n","b","r","k"]
+
+        PIECE_MAP_TO_BOARD_COORD_LOOKUP = {
+            0: (0, 0),
+            1: (1, 0),
+            2: (2, 0),
+            3: (3, 0),
+            4: (4, 0),
+            5: (5, 0),
+            6: (6, 0),
+            7: (7, 0),
+            8: (0, 1),
+            9: (1, 1),
+            10: (2, 1),
+            11: (3, 1),
+            12: (4, 1),
+            13: (5, 1),
+            14: (6, 1),
+            15: (7, 1),
+            16: (0, 2),
+            17: (1, 2),
+            18: (2, 2),
+            19: (3, 2),
+            20: (4, 2),
+            21: (5, 2),
+            22: (6, 2),
+            23: (7, 2),
+            24: (0, 3),
+            25: (1, 3),
+            26: (2, 3),
+            27: (3, 3),
+            28: (4, 3),
+            29: (5, 3),
+            30: (6, 3),
+            31: (7, 3),
+            32: (0, 4),
+            33: (1, 4),
+            34: (2, 4),
+            35: (3, 4),
+            36: (4, 4),
+            37: (5, 4),
+            38: (6, 4),
+            39: (7, 4),
+            40: (0, 5),
+            41: (1, 5),
+            42: (2, 5),
+            43: (3, 5),
+            44: (4, 5),
+            45: (5, 5),
+            46: (6, 5),
+            47: (7, 5),
+            48: (0, 6),
+            49: (1, 6),
+            50: (2, 6),
+            51: (3, 6),
+            52: (4, 6),
+            53: (5, 6),
+            54: (6, 6),
+            55: (7, 6),
+            56: (0, 7),
+            57: (1, 7),
+            58: (2, 7),
+            59: (3, 7),
+            60: (4, 7),
+            61: (5, 7),
+            62: (6, 7),
+            63: (7, 7)
+        }
 
         #Button handling bits
         def __init__(
@@ -1793,6 +1883,11 @@ init python:
             #Set buttons
             self.set_button_states()
 
+            #Now run a conversion to turn all `chess.Piece`s into `MASPiece`s
+            self.piece_map = dict()
+            for position, Piece in self.board.piece_map().iteritems():
+                self.piece_map[MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position)] = Piece
+
         def __del__(self):
             self.stockfish.stdin.close()
             self.stockfish.wait()
@@ -1840,6 +1935,19 @@ init python:
             NOTE: REQUIRED for displayables with buttons added, otherwise their actions will never execute
             """
             raise NotImplementedError("Function 'check_buttons' was not implemented.")
+
+        def get_piece_at(self, px, py):
+            """
+            Gets the piece at the given coordinates
+
+            OUT:
+                chess.Piece if exists at that location
+                None otherwise
+            """
+            return self.piece_map.get((px, py), None)
+
+        def move_piece(self, px, py):
+            pass
 
         #END: Non-implemented functions
         def handle_monika_move(self):
@@ -1972,6 +2080,8 @@ init python:
 
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
+            self.width = width
+            self.height = height
             #SETUP
             def get_piece_render_for_letter(letter):
                 """
@@ -2047,22 +2157,17 @@ init python:
                 ]
 
             #(Re)draw the board.
-            renderer.blit(board, (MASChessDisplayableBase.DRAWN_BOARD_X, MASChessDisplayableBase.DRAWN_BOARD_Y))
-            indicator_position = (
-                int((width - MASChessDisplayableBase.INDICATOR_WIDTH) / 2 + MASChessDisplayableBase.BOARD_WIDTH / 2 + 50),
-                int((height - MASChessDisplayableBase.INDICATOR_HEIGHT) / 2)
-            )
+            renderer.blit(board, (MASChessDisplayableBase.BOARD_X_POS, MASChessDisplayableBase.BOARD_Y_POS))
 
             # Draw the move indicator
             renderer.blit(
-                renpy.render(
-                    (
+                renpy.render((
                         MASChessDisplayableBase.MOVE_INDICATOR_PLAYER
                         if self.is_player_turn() else
                         MASChessDisplayableBase.MOVE_INDICATOR_MONIKA
                     ),
                     1280, 720, st, at),
-                indicator_position
+                MASChessDisplayableBase.INDICATOR_POS
             )
 
             #Draw the buttons
@@ -2070,6 +2175,7 @@ init python:
                 renderer.blit(b[0], (b[1], b[2]))
 
             #Draw the pieces on the Board renderer.
+            #TODO: Replace this with piece map
             for ix in range(8):
                 for iy in range(8):
                     iy_orig = iy
@@ -2084,17 +2190,8 @@ init python:
                         #Black player should be reversed X
                         ix = 7 - ix
 
-                    x = int(
-                        (width - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * MASChessDisplayableBase.DRAWN_X_ADJUST))
-                        / MASChessDisplayableBase.DRAWN_X_ADJUST
-                        + ix * MASChessDisplayableBase.PIECE_WIDTH
-                    )
-
-                    y = int(
-                        (height - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * MASChessDisplayableBase.DRAWN_Y_ADJUST))
-                        / MASChessDisplayableBase.DRAWN_Y_ADJUST
-                        + iy * MASChessDisplayableBase.PIECE_HEIGHT
-                    )
+                    x = int(MASChessDisplayableBase.BASE_PIECE_X + ix * MASChessDisplayableBase.PIECE_WIDTH)
+                    y = int(MASChessDisplayableBase.BASE_PIECE_Y + iy * MASChessDisplayableBase.PIECE_HEIGHT)
 
                     render_move(self.last_move_src)
                     render_move(self.last_move_dst)
@@ -2265,14 +2362,8 @@ init python:
                 Tuple of coordinates (x, y) marking where the piece is
             """
             mx, my = get_mouse_pos()
-            mx -= int(
-                (1280 - (MASChessDisplayableBase.BOARD_WIDTH - MASChessDisplayableBase.BOARD_BORDER_WIDTH * MASChessDisplayableBase.DRAWN_X_ADJUST))
-                / MASChessDisplayableBase.DRAWN_X_ADJUST
-            )
-            my -= int(
-                (720 - (MASChessDisplayableBase.BOARD_HEIGHT - MASChessDisplayableBase.BOARD_BORDER_HEIGHT * MASChessDisplayableBase.DRAWN_Y_ADJUST))
-                / MASChessDisplayableBase.DRAWN_Y_ADJUST
-            )
+            mx -= MASChessDisplayableBase.BASE_PIECE_X
+            my -= MASChessDisplayableBase.BASE_PIECE_Y
             px = mx / MASChessDisplayableBase.PIECE_WIDTH
             py = my / MASChessDisplayableBase.PIECE_HEIGHT
 
@@ -2374,6 +2465,16 @@ init python:
             """
             return MASPiece(piece.color, piece.symbol, posX, posY)
 
+        def is_white(self):
+            """
+            Checks if the piece is white or not
+
+            OUT:
+                True if piece is white
+                False otherwise
+            """
+            return self.color
+
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
             self,
@@ -2393,7 +2494,7 @@ init python:
             self._button_save = MASButtonDisplayable.create_stb(
                 _("Save"),
                 True,
-                MASChessDisplayableBase.DRAWN_BUTTON_X,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
                 MASChessDisplayableBase.DRAWN_BUTTON_Y_TOP,
                 MASChessDisplayableBase.BUTTON_WIDTH,
                 MASChessDisplayableBase.BUTTON_HEIGHT,
@@ -2404,7 +2505,7 @@ init python:
             self._button_giveup = MASButtonDisplayable.create_stb(
                 _("Surrender"),
                 True,
-                MASChessDisplayableBase.DRAWN_BUTTON_X,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
                 MASChessDisplayableBase.DRAWN_BUTTON_Y_MID,
                 MASChessDisplayableBase.BUTTON_WIDTH,
                 MASChessDisplayableBase.BUTTON_HEIGHT,
@@ -2415,7 +2516,7 @@ init python:
             self._button_done = MASButtonDisplayable.create_stb(
                 _("Done"),
                 False,
-                MASChessDisplayableBase.DRAWN_BUTTON_X,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
                 MASChessDisplayableBase.DRAWN_BUTTON_Y_MID,
                 MASChessDisplayableBase.BUTTON_WIDTH,
                 MASChessDisplayableBase.BUTTON_HEIGHT,
@@ -2426,7 +2527,7 @@ init python:
             self._button_undo = MASButtonDisplayable.create_stb(
                 _("Undo"),
                 True,
-                MASChessDisplayableBase.DRAWN_BUTTON_X,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
                 MASChessDisplayableBase.DRAWN_BUTTON_Y_BOT,
                 MASChessDisplayableBase.BUTTON_WIDTH,
                 MASChessDisplayableBase.BUTTON_HEIGHT,
@@ -2519,12 +2620,18 @@ init python:
                     path - filepath to the stockfish application
                     startupinfo - startup flags
                 """
-                return subprocess.Popen(
-                    os.path.join(renpy.config.gamedir, path).replace('\\', '/'),
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    startupinfo=startupinfo
-                )
+                try:
+                    return subprocess.Popen(
+                        os.path.join(renpy.config.gamedir, path).replace('\\', '/'),
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE,
+                        startupinfo=startupinfo
+                    )
+
+                #Basically a last resort jump. If this happens it pretty much means you launched MAS from commandline
+                except Exception as ex:
+                    store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(ex))
+                    renpy.jump("mas_chess_cannot_work_embarrassing")
 
             # Launch the appropriate version based on the architecture and OS.
             if not mas_games.is_platform_good_for_chess():
