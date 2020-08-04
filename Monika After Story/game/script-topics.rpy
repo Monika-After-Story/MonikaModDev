@@ -9482,7 +9482,7 @@ label monika_timeconcern_graveyard_night:
     return
 
 label monika_timeconcern_graveyard_day:
-    m 1eua "Hey [mas_get_player_nickname()]... didn't you tell me you work during the night?"
+    m 1eua "Hey [mas_get_player_nickname(exclude_names=['my love'])]...didn't you tell me you work during the night?"
     m 1eka "Not that I'm complaining, of course!"
     m 2ekc "But I thought you'd be tired by now, especially since you're up all night working..."
     m "You're not working yourself too hard just to see me, are you?"
