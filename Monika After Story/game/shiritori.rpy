@@ -53,7 +53,7 @@ label player_loss(reason=""):
                     m "It's not like you'd lie to me just to win a silly little game, would you?"
                     m "Anyway...{w=0.3}{nw}"
                     extend "[last_word_p_raw], was it?"
-                    persistent._mas_shiritori_extra_words.add(last_word_p)
+                    $ persistent._mas_shiritori_extra_words.add(last_word_p)
                     $ shiritori_loop = True
 
                 "Yeah, you're right.":
