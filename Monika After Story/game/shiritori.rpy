@@ -1,4 +1,7 @@
 
+# holds words the player has told Monika are real despite no being in the dictionary
+default persistent._mas_shiritori_extra_words = set()
+
 init 5 python:
     addEvent(
         Event(
@@ -36,6 +39,28 @@ label player_loss(reason=""):
             $ word = "word"
         m "I don't think that's a real [word]."
 
+        # add the invalid word to persistent dictionary if the player insists it's real
+        # not for cities
+        if game_variant != "cities":
+            $ _history_list.pop()
+            menu:
+                m "I don't think that's a real [word].{fast}"
+
+                "Actually, it is.":
+                    m "Wait, really?"
+                    m "I never heard that one before."
+                    m "But I guess I'll believe you."
+                    m "It's not like you'd lie to me just to win a silly little game, would you?"
+                    m "Anyway...{w=0.3}{nw}"
+                    extend "[last_word_p_raw], was it?"
+                    persistent._mas_shiritori_extra_words.add(last_word_p)
+                    $ shiritori_loop = True
+
+                "Yeah, you're right.":
+                    pass
+
+
+
     elif reason == "used":
         m "Wait a second, [last_word_p_raw]?"
         if last_word_p in recent_words:
@@ -67,7 +92,7 @@ label monika_loss(reason = ""):
         m "Silly me, ahaha~"
 
     elif reason == "timeout":
-        m "I...can't think of anything."
+        m "I...{w=1}can't think of anything."
         m "This is embarrassing, ahaha~"
 
     else:
@@ -121,6 +146,30 @@ label game_shiritori:
             m "The whole vocabulary then."
             $ game_variant = "full"
 
+    # difficulty choice
+    #   time limit in seconds
+    #   maximal number of turns Monika can play across all letters
+    #   chance Monika will use the full vocabulary
+    m "What difficulty would you like?"
+    $ _history_list.pop()
+    menu:
+        m "What difficulty would you like?{fast}"
+
+        "Easy":
+            $ timelimit = 20
+            $ turnmax_monika = 250
+            $ full_dict_chance = 2
+
+        "Normal":
+            $ timelimit = 10
+            $ turnmax_monika = 500
+            $ full_dict_chance = 5
+
+        "Hard":
+            $ timelimit = 5
+            $ turnmax_monika = 1000
+            $ full_dict_chance = 10
+
     # 1st turn decision
     m "Do you want to start or should I?"
     $ _history_list.pop()
@@ -142,7 +191,6 @@ label game_shiritori:
                 $ monika_first = True
 
     python:
-        # build dictionaries - do we want this here or on init?
         if game_variant == "full":
             with open("game/shiritori_dictionary_full.json") as dff:
                 dictionary_full = json.load(dff)
@@ -155,7 +203,21 @@ label game_shiritori:
             with open("game/shiritori_dictionary_cities.json") as dmf:
                 dictionary_monika = json.load(dmf)
 
-        timelimit = 20
+        # counting dictionary cardinality
+        dict_cardinality = {}
+        dict_cardinality_total = 0
+        for letter in dictionary_full:
+            dict_cardinality[letter] = len(dictionary_full[letter])
+            dict_cardinality_total += dict_cardinality[letter]
+
+        # getting Monika's turn count
+        # TODO: maybe add some additional transform to decrease spread instead of direct proportionality
+        shiritori_turn_scaling_factor = turnmax_monika / dict_cardinality_total
+        shiritori_monika_turnsleft = {}
+        for letter in dict_cardinality:
+            shiritori_monika_turnsleft[letter] = int(shiritori_turn_scaling_factor * dict_cardinality[letter])
+
+
         shiritori_loop = True
         # all the words used in current game
         used_words = set()
@@ -195,23 +257,26 @@ label game_shiritori:
 
         # check for timeout
         if last_word_p == "_timeout":
-            call player_loss(reason = "timeout")
             $ shiritori_loop = False
+            call player_loss(reason = "timeout")
 
         # check if starting with correct letter - ignore on first turn if player starts
         elif not last_word_m == "_none" and last_word_p[0] != last_word_m[-1]:
-            call player_loss(reason = "letter")
             $ shiritori_loop = False
+            call player_loss(reason = "letter")
 
         # check against dictionary
-        elif last_word_p not in dictionary_full[last_word_p[0]]:
-            call player_loss(reason = "invalid")
+        elif (last_word_p not in dictionary_full[last_word_p[0]])
+            and
+            (last_word_p not in persistent._mas_shiritori_extra_words):
+
             $ shiritori_loop = False
+            call player_loss(reason = "invalid")
 
         # check against used words
         elif last_word_p in used_words:
-            call player_loss(reason = "used")
             $ shiritori_loop = False
+            call player_loss(reason = "used")
 
         else:
             # update used word sets
@@ -225,21 +290,22 @@ label game_shiritori:
             m "Hmm...{w=1}{nw}"
             $ last_word_m_invalid = True
 
-            # TODO Monika's loss via turn exhaustion here
-            # if [exhaustion]:
-            #   pause timelimit
-            #   call monika_loss(reason = "timeout")
-            #   $ shiritori_loop = False
+            # turn exhaustion
+            if shiritori_monika_turnsleft[last_word_p[-1]] <= 0:
+                pause (timelimit/4)
+                call monika_loss(reason = "timeout")
+                $ shiritori_loop = False
 
             # getting Monika's next word
             while last_word_m_invalid:
-                if renpy.random.randint(1,10) == 1 and game_variant != "cities":
+                if renpy.random.randint(1,100) <= full_dict_chance  and game_variant != "cities":
                     # small chance to have Monika pull from the full vocab
                     # not in cities mode - the dicts are the same, just decapitalized
                     $ last_word_m = renpy.random.choice(dictionary_full[last_word_p[-1]])
                 else:
                     $ last_word_m = renpy.random.choice(dictionary_monika[last_word_p[-1]])
 
+                # TODO: Add bad word filter here - Monika should be able to recognize them, but not use them herself
                 # checking if recently played
                 if last_word_m not in recent_words:
                     $ last_word_m_invalid = False
@@ -251,8 +317,9 @@ label game_shiritori:
                 $ shiritori_loop = False
 
             else:
-                # update used word sets
+                # update used word sets and remaining turns
                 python:
+                    shiritori_monika_turnsleft[last_word_p[-1]] -= 1
                     used_words.add(last_word_m.lower())
                     recent_words.add(last_word_m.lower())
                     if len(recent_words) > 10:
