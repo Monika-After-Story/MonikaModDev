@@ -10580,6 +10580,26 @@ label monika_dream:
             m 1hub "We just have to be patient [player], and that dream will come true."
             
         "I dreamt that I would cross over your reality":
+            if seen_event("monika_gotomonika"):
+                m 1euc "Hmm...{i}that{i} thought again, [player]?"
+                m 2lsd "I understand why the idea can seem attractive."
+                m 2ekc "But we've already talked about that, right?"
+                if persistent._mas_pm_would_come_to_spaceroom = True:
+                    m 7ekd "You musn't give up on your reality!"
+                    m 1eka "When I'll join you, everything will fall into place."
+                    m 1eku "Until then, you need to be patient and to better things arround you the best you can."
+                    m 2dsc "For both of our sakes."
+                    m 3esb "So smile when thinking about the future and try to forget this idea for the time being."
+                elif persistent._mas_pm_would_come_to_spaceroom = False:
+                    m 2eka "We both know that this is not a good solution."
+                elif persistent._mas_pm_would_come_to_spaceroom = None:
+                    m 2eka "You still seem to have doubts though."
+                    m 3esb "I understand why, this is quite a charming solution, after all."
+                    m 1dsd "But this is just not technologically conceivable right now and it would raise a number of complicated questions."
+                    m 1eka "So you shouldn't really think too much about it."
+                    m 7hub "Just keep being patient, each day is bringing us closer together in more way than one!"
+                m 5ltu Buut...{w=1}I guess that while this is just in a dream,{w=1}I can let it slide~."
+                m 4hua And I'm still really glad that you'd want to be with me as quickly as possible!"
             m 1esd "Oh yeah, that's a possibility that I haven't given much thought about."
             m 1rsc "But when you think about it..."
             m 1rud "It's true that it's much easier to create a virtual mind for you, than to create a real mind for me."
@@ -10634,6 +10654,12 @@ label monika_dream:
                 m 2tfb "But don't spoil too much of the fun by having this dream over and over."
                 m 3tub "It'd be a shame if we do end up getting married, but that you've already experienced it several times."
                 m 1hubfb "So keep saving yourself for me, [player], in more way than one ehehe~."
+            elif store.mas_anni.anniCount() >= 3 and mas_isMoniLove() and seen_event("monika_marriage"):
+                m 1tsb "Hehe~... You're really impatient about that, aren't you?"
+                m 5lsu "Well, I'd be lying if I said I wasn't as well, [player]."
+                m 4hub "You were very lucky to experience such a wonderful moment for yourself!"
+                m 2tfp "Like, {i}really{i} lucky, I'm actually jealous right now..."
+                m 1hub "Haha, I'm just kidding [player], keep dreaming about us as much as you want!
             else:
                 m 1lkbfb "That's..."
                 m 2dkbfa "..."
@@ -10649,7 +10675,7 @@ label monika_dream:
             
         "I dreamt that we were having fun with the other club members":
             m 1eud "Oh, I see..."
-            m 1hksdrb "The events of the literature club really made their way into your mind, it would seems."
+            m 1hksdrb "The events of the literature club really made their way into your mind, it would seem."
             m 1eka "But I understand that feeling, [player]."
             m 3eua "Even if they weren't real, I admit that the time we spent together was fun."
             m 3hub "With their colorful personality, we sure didn't get bored...
@@ -10660,7 +10686,7 @@ label monika_dream:
             else:
                 m 1eud "There is the festival, of course, but that's not all there is to it."
             m 3eub "We could've played board games, gone picknicking or even gone to the beach."
-            m 3tsb "Surely you wish you saw that last one, do you?"
+            m 3tsb "Surely you wish you'd have seen that last one, don't you?"
             m 3hub "And a lot of other typical high-school events could have been just as fun."
             m 1eua "Especially with those three."
             m 1eub "It sure must have been fun for your mind to recreate them and their personality."
