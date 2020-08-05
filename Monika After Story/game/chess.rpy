@@ -546,9 +546,16 @@ label game_chess:
     window hide None
     show monika 1eua at t21
     python:
+        #Disable quick menu
+        quick_menu = False
+
+        #Add the displayable
         chess_displayable_obj = MASChessDisplayable(player_color, pgn_game=loaded_game, practice_mode=practice_mode)
         ui.add(chess_displayable_obj)
         results = ui.interact(suppress_underlay=True)
+
+        #Enable quick menu
+        quick_menu = True
 
         # unpack results
         new_pgn_game, is_monika_winner, is_surrender, num_turns = results
@@ -1541,9 +1548,7 @@ init python:
     import pygame
     import threading
     import StringIO
-
     import os
-    import time
 
     #For the buttons
     import store.mas_ui as mas_ui
@@ -1772,7 +1777,8 @@ init python:
             pgn_game=None,
             starting_fen=None,
             buttons=None,
-            player_move_prompt=None
+            player_move_prompts=None,
+            monika_move_quips=None
         ):
             """
             MASChessDisplayableBase constructor
@@ -1793,8 +1799,11 @@ init python:
                         conditional for the button to be active
                         NOTE: Not verified for validity
                     (Default: None)
-                player_move_prompt - prompt to use to indicate player move
+                player_move_prompts - prompts to use to indicate player move
                     If not provided, no player prompt will be used
+                    (Default: None)
+                monika_move_quips - quips to use when Monika's having her turn
+                    If not provided, no quips will be used
                     (Default: None)
 
             NOTE: Requires the following to be implemented for buttons to show:
@@ -1814,8 +1823,17 @@ init python:
             #Store the buttons as we'll need to use this later
             self.buttons = dict() if buttons is None else buttons
 
-            self.player_move_prompt = player_move_prompt
-            #Now handle setup for potential engine
+            self.player_move_prompts = player_move_prompts
+            self.monika_move_quips = monika_move_quips
+
+            #Check if these exist, if not we add them in and default them to empty lists
+            if "_visible_buttons" not in self.__dict__:
+                self._visible_buttons = list()
+
+            if "_visible_buttons_winner" not in self.__dict__:
+                self._visible_buttons_winner = list()
+
+            #Now handle setup for a potential engine
             self.additional_setup()
 
             #Separate handling of music menu open because the songs store is for main renpy interaction
@@ -1886,11 +1904,13 @@ init python:
             #Now run a conversion to turn all `chess.Piece`s into `MASPiece`s
             self.piece_map = dict()
             for position, Piece in self.board.piece_map().iteritems():
-                self.piece_map[MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position)] = Piece
+                MASPiece.fromPiece(
+                    Piece,
+                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
+                )
 
-        def __del__(self):
-            self.stockfish.stdin.close()
-            self.stockfish.wait()
+            #And finally, our dlg flag
+            self.update_textbox = True
 
         #START: NON-IMPLEMENTED FUNCTIONS
         def additional_setup():
@@ -1933,6 +1953,9 @@ init python:
             Should be implemnted as necessary for provided buttons
 
             NOTE: REQUIRED for displayables with buttons added, otherwise their actions will never execute
+
+            THROWS:
+                NotImplementedError - Provided the displayable has buttons and is run
             """
             raise NotImplementedError("Function 'check_buttons' was not implemented.")
 
@@ -1977,7 +2000,17 @@ init python:
                         if self.board.is_legal(monika_move_check):
                             self.last_move_src = (ord(monika_move[0]) - ord('a'), ord(monika_move[1]) - ord('1'))
                             self.last_move_dst = (ord(monika_move[2]) - ord('a'), ord(monika_move[3]) - ord('1'))
-                            time.sleep(1.5)
+
+                            #TODO: Make this work
+                            if self.update_textbox and self.monika_move_quips:
+                                renpy.show("monika 1dsc")
+                                renpy.say(m, renpy.substitute(random.choice(self.monika_move_quips)), False)
+                                _history_list.pop()
+
+                                self.update_textbox = False
+                                renpy.restart_interaction()
+
+                            renpy.time.sleep(1.5)
                             self.board.push_uci(monika_move)
 
                             #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
@@ -1987,6 +2020,9 @@ init python:
                             #It's player's turn
                             self.current_turn = self.player_color
                             self.is_game_over = self.board.is_game_over()
+
+                            #No longer Monika's turn, so set the textbox to update
+                            self.update_textbox = True
 
                             #Set the buttons
                             self.set_button_states()
@@ -2030,6 +2066,9 @@ init python:
                     self.num_turns += 1
 
                 self.current_turn = not self.current_turn
+
+                #Flag to update textbox
+                self.update_textbox = True
 
                 if not self.is_game_over:
                     self.set_button_states()
@@ -2267,13 +2306,14 @@ init python:
             if self.is_player_turn() and not self.is_game_over:
                 # Display the indication that it's the player's turn
                 #prompt = renpy.render(MASChessDisplayableBase.PLAYER_MOVE_PROMPT, 1280, 720, st, at)
-                if self.player_move_prompt and not renpy.get_screen("say"):
-                    renpy.say(m, self.player_move_prompt, interact=False)
+                if self.update_textbox and self.player_move_prompts:
+                    renpy.show("monika 1eua")
+                    renpy.say(m, renpy.substitute(random.choice(self.player_move_prompts)), False)
                     _history_list.pop()
 
-                #pw, ph = prompt.get_size()
-                #bh = (height - MASChessDisplayableBase.BOARD_HEIGHT) / 2
-                #renderer.blit(prompt, (int((width - pw) / 2), int(MASChessDisplayableBase.BOARD_HEIGHT + bh + (bh - ph) / 2)))
+                    #Flag to no longer update
+                    self.update_textbox = False
+                    renpy.restart_interaction()
 
             if self.selected_piece is not None:
                 # Draw the selected piece.
@@ -2294,8 +2334,9 @@ init python:
         def event(self, ev, x, y, st):
             #Are we in mouse button things
             if ev.type in self.MOUSE_EVENTS:
-                #Run button checks in a function which needs to be implemented
-                ret_value = self.check_buttons(ev, x, y, st)
+                #Run button checks if there are any in a function which requires implementation
+                if self._visible_buttons or self._visible_buttons_winner:
+                    ret_value = self.check_buttons(ev, x, y, st)
 
                 if ret_value is not None:
                     return ret_value
@@ -2425,8 +2466,6 @@ init python:
                 True - white
                 False - black
             symbol - letter symbol representing the piece. If capital, the piece is white
-            posX - x position for this piece on the board
-            posY - y position for this piece on the board
         """
         def __init__(
             self,
@@ -2434,36 +2473,46 @@ init python:
             symbol,
             posX,
             posY,
+            piece_map
         ):
             """
-            MAS Chess piece constructor
+            MASPiece constructor
 
             IN:
                 color - Color of the piece:
                     True - white
                     False - black
                 symbol - letter symbol representing the piece. If capital, the piece is white
-                posX - x position for this piece on the board
-                posY - y position for this piece on the board
+                posX - x position of the piece
+                posY - y position of the piece
+                piece_map - Map to store this piece in
             """
             super(MASPiece, self).__init__(color, symbol)
-            self.posX = posX
-            self.posY = posY
+            #Store an internal reference to the piece map so we can execute moves from the piece
+            self.piece_map = piece_map
+            piece_map[(posX, posY)] = self
+
+        def __eq__(self, other):
+            """
+            Checks if this piece is the same as another piece
+            """
+            if not isinstance(other, MASPiece):
+                return False
+            return self.symbol == other.symbol
 
         @staticmethod
-        def fromPiece(piece, posX, posY):
+        def fromPiece(piece, posX, posY, piece_map):
             """
             Initializes a MASPiece from a chess.Piece object
 
             IN:
                 piece - piece to base the MASPiece off of
-                posX - x position of this piece
-                posY - y position of this piece
+                SEE: __init__ for the rest of the parameters
 
             OUT:
                 MASPiece
             """
-            return MASPiece(piece.color, piece.symbol, posX, posY)
+            return MASPiece(piece.color, piece.symbol, posX, posY, piece_map)
 
         def is_white(self):
             """
@@ -2474,6 +2523,24 @@ init python:
                 False otherwise
             """
             return self.color
+
+        def get_piece_type(self):
+            """
+            Gets the type of piece as the lowercase letter that is its symbol
+
+            OUT:
+                The lower only symbol, representing the type of piece this is
+            """
+            return self.symbol.lower()
+
+        def get_location(self):
+            """
+            Gets the location of this piece
+
+            OUT:
+                Tuple, (x, y) coords representing the location of the piece on the board
+            """
+            return self.piece_map.keys()[self.piece_map.values().index(self)]
 
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
@@ -2579,8 +2646,21 @@ init python:
                         )
                     }
                 },
-                player_move_prompt="It's your turn, [player]!"
+                player_move_prompts=[
+                    "It's your turn, [player].",
+                    "Your move, [player]~",
+                    "What will you do, I wonder..."
+                ],
+                monika_move_quips=[
+                    "Alright, let's see...",
+                    "Okay, my turn...",
+                    "Let's see what I can do."
+                ]
             )
+
+        def __del__(self):
+            self.stockfish.stdin.close()
+            self.stockfish.wait()
 
         def poll_monika_move(self):
             """
