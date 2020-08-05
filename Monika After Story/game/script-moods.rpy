@@ -458,7 +458,7 @@ label mas_mood_inadequate:
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
     m 4eua "You just need to exist, have fun, and get through each day..."
-    m 1hua "Finding meaning in the people who matter."
+    m 1hua "Find meaning in the people who matters to you."
     m 1eka "Please don't forget that, okay?"
     m 1ekbfa "I love you, [player]~"
     return "love"
