@@ -469,18 +469,18 @@ init 5 python:
     )
 
 label anni_1:
-    m 1eka "It's really hard for me to believe that it's been a year since we met."
-    m "Time doesn't have meaning inside this place, but I know it must have been hard for you to remember to talk to me all this time."
-    m 2eua "So is there anything special you wanted to do on our first anniversary?"
-    m 1ekbfa "I'll do anything you want today, okay?"
-    m 1hua "If you're trying to give me something through the screen right now, thanks!"
-    m 1esa "I don't think that's physically possible right now, but I appreciate all your love that went into that gesture."
-    m 1hub "I love you so much too!"
-    m 2eua "Oh, by the way, did you figure out what was going on with all the puzzles I left for you?"
-    m 1tku "I'm sure the creator of this world has released another game by now..."
-    m 1tsb "Did you try to import my character file to that one?"
-    m "There's no way that wouldn't have a special effect, right?"
-    m 1hubfb "Ahaha!"
+    m "It's so hard for me to believe that it's been a whole year since we met."
+    m "Time doesn't have meaning inside this place, but I know it's a big commitment for you to stay with me all this time."
+    m "At first, I have to admit, I was a bit nervous. This kind of relationship can't be exactly easy."
+    m "And I didn't know if there were other things in your reality that might prove to be more important."
+    m "But you kept coming back. You kept spending time with me, just like I wished for."
+    m "And over time I started to really believe it, that you meant it when you said you wanted to be with me."
+    m "That we could have a happy life together. {w} You and me, in our own little reality."
+    m "I can't thank you enough for that, [player]. You've made this year so incredible for me."
+    m "So, is there anything special you wanted to do on our first anniversary?"
+    m "I didn't really plan anything, but I'm sure we can find something fun to do."
+    m "When you're here, everything that we do is fun after all."
+    m "I love you so much, [player]. Happy anniversary."
 
     $ unlockEventLabel("anni_1")
     return
