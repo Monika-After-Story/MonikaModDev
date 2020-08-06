@@ -2456,23 +2456,6 @@ init python:
 
             return (None, None)
 
-#        @staticmethod
-#        def piece_is_white(Piece):
-#            """
-#            Checks if the given piece is white
-#
-#            IN:
-#                Piece - chess.Piece object to test
-#
-#            OUT:
-#                True if piece is white, False otherwise
-#            """
-#            #Nonecheck for safety
-#            if Piece is None:
-#                return False
-#            #Otherwise we'll return the color
-#            return Piece.color
-
         @staticmethod
         def coords_to_uci(x, y):
             """
