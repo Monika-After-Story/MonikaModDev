@@ -1510,7 +1510,7 @@ screen mas_chess_promote(player_color):
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     # get the correct image pieces for our color
-    $ imagedict = store.getPieceImages(player_color)
+    $ imagedict = store.getPromotionImages(player_color)
 
     frame:
         vbox:
@@ -1518,7 +1518,7 @@ screen mas_chess_promote(player_color):
             yalign .5
             spacing 30
 
-            label _("Choose one"):
+            label _("Promote to:"):
                 style "confirm_prompt"
                 text_color mas_globals.button_text_idle_color
                 xalign 0.5
@@ -1555,43 +1555,8 @@ init python:
 
     ON_POSIX = 'posix' in sys.builtin_module_names
 
-    def enqueue_output(out, queue, lock):
-        for line in iter(out.readline, b''):
-            lock.acquire()
-            queue.appendleft(line)
-            lock.release()
-        out.close()
-
-    def get_mouse_pos():
-        vw = config.screen_width * 10000
-        vh = config.screen_height * 10000
-        pw, ph = renpy.get_physical_size()
-        dw, dh = pygame.display.get_surface().get_size()
-        mx, my = pygame.mouse.get_pos()
-
-        # converts the mouse coordinates from pygame to physical size
-        # NEEDED FOR UI SCALING OTHER THAN 100%
-        mx = (mx * pw) / dw
-        my = (my * ph) / dh
-
-        r = None
-        # this part calculates the "true" position
-        # it can handle weirdly sized screens
-        if vw / (vh / 10000) > pw * 10000 / ph:
-            r = vw / pw
-            my -= (ph - vh / r) / 2
-        else:
-            r = vh / ph
-            mx -= (pw - vw / r) / 2
-
-        newx = (mx * r) / 10000
-        newy = (my * r) / 10000
-
-        return (newx, newy)
-
-    # only add chess folder if we can even do chess
+    #Only add the chess_games folder if we can even do chess
     if mas_games.is_platform_good_for_chess():
-        # first create the folder for this
         try:
             file_path = os.path.normcase(config.basedir + mas_chess.CHESS_SAVE_PATH)
 
@@ -1602,22 +1567,68 @@ init python:
         except:
             store.mas_utils.writelog("Chess game folder could not be created '{0}'\n".format(file_path))
 
-    def getPieceImages(player_color):
+    def enqueue_output(out, queue, lock):
+        for line in iter(out.readline, b''):
+            lock.acquire()
+            queue.appendleft(line)
+            lock.release()
+        out.close()
 
+    def get_mouse_pos():
+        """
+        Gets the mouse position in terms of physical screen size
+
+        OUT:
+            tuple, (x, y) coordinates representing the mouse position
+        """
+        virtual_width = config.screen_width * 10000
+        virtual_height = config.screen_height * 10000
+        physical_width, physical_height = renpy.get_physical_size()
+        dw, dh = pygame.display.get_surface().get_size()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        #Converts the mouse coordinates from pygame's relative screen size coords (based on config vars) to physical size
+        #NOTE: THIS IS NEEDED FOR UI SCALING OTHER THAN 100%
+        mouse_x = (mouse_x * physical_width) / dw
+        mouse_y = (mouse_y * physical_height) / dh
+
+        r = None
+        #This part calculates the "true" position, it can handle weirdly sized screens
+        if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
+            r = virtual_width / physical_width
+            mouse_x -= (physical_height - virtual_height / r) / 2
+        else:
+            r = virtual_height / physical_height
+            mouse_y -= (physical_width - virtual_width / r) / 2
+
+        newx = (mouse_x * r) / 10000
+        newy = (mouse_y * r) / 10000
+
+        return (newx, newy)
+
+    def getPromotionImages(player_color):
+        """
+        Gets the promotion images to show in the chess promotion screen
+
+        IN:
+            player color - bool: True for white, False for black
+
+        OUT:
+            dict of images
+        """
         imagedict = {}
         piecelist = ["q","r","n","b"]
 
         jy = 1 if player_color else 0
 
         for piece in piecelist:
-
             jx = MASChessDisplayableBase.VECTOR_PIECE_POS[piece.upper()]
 
             pieceimage = LiveCrop((
-                jx * MASChessDisplayableBase.PIECE_WIDTH,
-                jy * MASChessDisplayableBase.PIECE_HEIGHT,
-                MASChessDisplayableBase.PIECE_WIDTH,
-                MASChessDisplayableBase.PIECE_HEIGHT
+                    jx * MASChessDisplayableBase.PIECE_WIDTH,
+                    jy * MASChessDisplayableBase.PIECE_HEIGHT,
+                    MASChessDisplayableBase.PIECE_WIDTH,
+                    MASChessDisplayableBase.PIECE_HEIGHT
                 ),
                 MASChessDisplayableBase.PIECES_IMAGE
             )
@@ -1700,9 +1711,13 @@ init python:
         DRAWN_BUTTON_Y_MID = DRAWN_BUTTON_Y_TOP + BUTTON_HEIGHT + BUTTON_Y_SPACING
         DRAWN_BUTTON_Y_BOT = BOARD_Y_POS + BOARD_HEIGHT - BUTTON_HEIGHT
 
+        #Win states
+        STATE_BLACK_WIN = "0-1"
+        STATE_WHITE_WIN = "1-0"
 
         PROMOLIST = ["q","r","n","b","r","k"]
 
+        #Converson map to change chess.board positions to ones for our displayable
         PIECE_MAP_TO_BOARD_COORD_LOOKUP = {
             0: (0, 0),
             1: (1, 0),
@@ -1768,6 +1783,17 @@ init python:
             61: (5, 7),
             62: (6, 7),
             63: (7, 7)
+        }
+
+        UCI_ALPHA_TO_X_COORD = {
+            'a': 0,
+            'b': 1,
+            'c': 2,
+            'd': 3,
+            'e': 4,
+            'f': 5,
+            'g': 6,
+            'h': 7
         }
 
         #Button handling bits
@@ -1903,11 +1929,7 @@ init python:
 
             #Now run a conversion to turn all `chess.Piece`s into `MASPiece`s
             self.piece_map = dict()
-            for position, Piece in self.board.piece_map().iteritems():
-                MASPiece.fromPiece(
-                    Piece,
-                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
-                )
+            self.update_pieces()
 
             #And finally, our dlg flag
             self.update_textbox = True
@@ -2011,6 +2033,12 @@ init python:
                                 renpy.restart_interaction()
 
                             renpy.time.sleep(1.5)
+
+                            #Now let's get the piece wich was moved so we can adjust it
+                            from_coords, to_coords = MASChessDisplayableBase.uci_to_coords(monika_move)
+                            self.get_piece_at(*from_coords).move(*(from_coords + to_coords))
+
+                            #Now push to the chess lib so we can have proper saves
                             self.board.push_uci(monika_move)
 
                             #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
@@ -2042,22 +2070,33 @@ init python:
 
             elif px is not None and py is not None and self.selected_piece is not None:
                 move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
-                piece_str = self.board.piece_at(self.selected_piece[1] * 8 + self.selected_piece[0]).symbol()
+                piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
+                #piece = self.board.piece_at(self.selected_piece[1] * 8 + self.selected_piece[0]).symbol()
 
                 #Promote if needed
-                if piece_str.lower() == 'p' and (py == 0 or py == 7):
+                if piece.get_type == 'p' and (py == 0 or py == 7):
                     renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
                     move_str += store.mas_chess.promote
+
+                    piece.promote_to(
+                        store.mas_chess.promote,
+                        MASChessDisplayableBase.PIECES_IMAGE,
+                        width,
+                        height
+                    )
 
             if move_str is None:
                 return
 
             if chess.Move.from_uci(move_str) in self.possible_moves:
+                #Move the piece
+                piece.move(self.selected_piece[0], self.selected_piece[1], px, py)
                 #Add this undo
                 self.move_history.append(self.board.fen())
                 self.last_move_src = self.selected_piece
                 self.last_move_dst = (px, py)
-                self.queue_monika_move(move_str)
+                self.queue_player_move(move_str)
+                #We push the move here because we need to update fens and game history
                 self.board.push_uci(move_str)
                 self.is_game_over = self.board.is_game_over()
 
@@ -2117,31 +2156,26 @@ init python:
             """
             return self.player_color == self.current_turn
 
+        def update_pieces(self):
+            """
+            Updates the position of all MASPieces
+            """
+            #Prepare the pieces vector as a renderer so we can preprocess the render images
+            pieces_renderer = renpy.render(MASChessDisplayableBase.PIECES_IMAGE, 1280, 720, 0.0, 0.0)
+
+            #Empty the piece map
+            self.piece_map = dict()
+
+            #And refill it
+            for position, Piece in self.board.piece_map().iteritems():
+                MASPiece.fromPiece(
+                    Piece,
+                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map, pieces_renderer))
+                )
+
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
-            self.width = width
-            self.height = height
             #SETUP
-            def get_piece_render_for_letter(letter):
-                """
-                Gets the piece render for the given letter
-
-                IN:
-                    letter - representing the piece to get
-
-                OUT:
-                    subsurface representing the piece images
-                """
-                jy = 0 if letter.islower() else 1
-                jx = MASChessDisplayableBase.VECTOR_PIECE_POS[letter.upper()]
-
-                return pieces.subsurface((
-                    jx * MASChessDisplayableBase.PIECE_WIDTH,
-                    jy * MASChessDisplayableBase.PIECE_HEIGHT,
-                    MASChessDisplayableBase.PIECE_WIDTH,
-                    MASChessDisplayableBase.PIECE_HEIGHT
-                ))
-
             def render_move(move):
                 """
                 Renders the move
@@ -2161,9 +2195,6 @@ init python:
 
             # Prepare the board as a renderer.
             board = renpy.render(MASChessDisplayableBase.BOARD_IMAGE, 1280, 720, st, at)
-
-            # Prepare the pieces vector as a renderer.
-            pieces = renpy.render(MASChessDisplayableBase.PIECES_IMAGE, 1280, 720, st, at)
 
             # Prepare the highlights as a renderers.
             highlight_red = renpy.render(MASChessDisplayableBase.PIECE_HIGHLIGHT_RED_IMAGE, 1280, 720, st, at)
@@ -2214,98 +2245,101 @@ init python:
                 renderer.blit(b[0], (b[1], b[2]))
 
             #Draw the pieces on the Board renderer.
-            #TODO: Replace this with piece map
-            for ix in range(8):
-                for iy in range(8):
-                    iy_orig = iy
-                    ix_orig = ix
+            for piece_location, Piece in self.piece_map.iteritems():
+                #Unpack the location
+                ix, iy = piece_location
 
-                    #White
-                    if self.player_color:
-                        iy = 7 - iy
+                #Copy this for future use
+                iy_orig = iy
+                ix_orig = ix
 
-                    #Black
-                    else:
-                        #Black player should be reversed X
-                        ix = 7 - ix
+                #White
+                if self.player_color:
+                    iy = 7 - iy
 
-                    x = int(MASChessDisplayableBase.BASE_PIECE_X + ix * MASChessDisplayableBase.PIECE_WIDTH)
-                    y = int(MASChessDisplayableBase.BASE_PIECE_Y + iy * MASChessDisplayableBase.PIECE_HEIGHT)
+                #Black
+                else:
+                    #Black player should be reversed X
+                    ix = 7 - ix
 
-                    render_move(self.last_move_src)
-                    render_move(self.last_move_dst)
+                x = int(MASChessDisplayableBase.BASE_PIECE_X + ix * MASChessDisplayableBase.PIECE_WIDTH)
+                y = int(MASChessDisplayableBase.BASE_PIECE_Y + iy * MASChessDisplayableBase.PIECE_HEIGHT)
 
-                    # Take care not to render the selected piece twice.
-                    if (
-                        self.selected_piece is not None
-                        and ix_orig == self.selected_piece[0]
-                        and iy_orig == self.selected_piece[1]
-                    ):
-                        renderer.blit(highlight_green, (x, y))
-                        continue
+                render_move(self.last_move_src)
+                render_move(self.last_move_dst)
 
-                    piece = self.board.piece_at(iy_orig * 8 + ix_orig)
+                #Don't render the currently held piece again
+                if (
+                    self.selected_piece is not None
+                    and ix_orig == self.selected_piece[0]
+                    and iy_orig == self.selected_piece[1]
+                ):
+                    renderer.blit(highlight_green, (x, y))
+                    continue
 
-                    possible_move_str = None
-                    blit_rendered = False
+                piece = self.get_piece_at(ix_orig, iy_orig)
 
-                    if self.possible_moves:
-                        possible_move_str = "{0}{1}".format(
-                            MASChessDisplayableBase.coords_to_uci(self.selected_piece[0], self.selected_piece[1]),
-                            MASChessDisplayableBase.coords_to_uci(ix_orig, iy_orig)
-                        )
+                possible_move_str = None
+                blit_rendered = False
 
-                        if chess.Move.from_uci(possible_move_str) in self.possible_moves:
-                            renderer.blit(highlight_yellow, (x, y))
-                            blit_rendered = True
+                if self.possible_moves:
+                    possible_move_str = "{0}{1}".format(
+                        MASChessDisplayableBase.coords_to_uci(self.selected_piece[0], self.selected_piece[1]),
+                        MASChessDisplayableBase.coords_to_uci(ix_orig, iy_orig)
+                    )
 
-                        # force checking for promotion
-                        if not blit_rendered and (iy == 0 or iy == 7):
-                            index = 0
-                            while (not blit_rendered and index < len(MASChessDisplayableBase.PROMOLIST)):
-                                if (
-                                    chess.Move.from_uci(possible_move_str + MASChessDisplayableBase.PROMOLIST[index])
-                                    in self.possible_moves
-                                ):
-                                    renderer.blit(highlight_yellow, (x, y))
-                                    blit_rendered = True
+                    if chess.Move.from_uci(possible_move_str) in self.possible_moves:
+                        renderer.blit(highlight_yellow, (x, y))
+                        blit_rendered = True
 
-                                index += 1
+                    # force checking for promotion
+                    if not blit_rendered and (iy == 0 or iy == 7):
+                        index = 0
+                        while (not blit_rendered and index < len(MASChessDisplayableBase.PROMOLIST)):
+                            if (
+                                chess.Move.from_uci(possible_move_str + MASChessDisplayableBase.PROMOLIST[index])
+                                in self.possible_moves
+                            ):
+                                renderer.blit(highlight_yellow, (x, y))
+                                blit_rendered = True
 
-                    if piece is None:
-                        continue
+                            index += 1
 
-                    if (
-                        self.is_player_turn()
-                        and mx >= x and mx < x + MASChessDisplayableBase.PIECE_WIDTH
-                        and my >= y and my < y + MASChessDisplayableBase.PIECE_HEIGHT
-                        and (
-                            (MASChessDisplayableBase.piece_is_white(piece) and self.player_color)
-                            or (not MASChessDisplayableBase.piece_is_white(piece) and not self.player_color)
-                        )
-                        and self.selected_piece is None
-                        and not self.is_game_over
-                    ):
-                        renderer.blit(highlight_green, (x, y))
+                if piece is None:
+                    continue
 
-                    #Winner check
-                    if self.is_game_over:
-                        result = self.board.result()
+                if (
+                    self.selected_piece is None
+                    and not self.is_game_over
+                    and self.is_player_turn()
+                    and mx >= x and mx < x + MASChessDisplayableBase.PIECE_WIDTH
+                    and my >= y and my < y + MASChessDisplayableBase.PIECE_HEIGHT
+                    and (
+                        (piece.is_white() and self.player_color)
+                        or (not piece.is_white() and not self.player_color)
+                    )
+                ):
+                    renderer.blit(highlight_green, (x, y))
 
-                        # black won
-                        if str(piece) == "K" and result == "0-1":
-                            renderer.blit(highlight_red, (x, y))
+                #Winner check
+                if self.is_game_over:
+                    result = self.board.result()
 
-                        # white won
-                        elif str(piece) == "k" and result == "1-0":
-                            renderer.blit(highlight_red, (x, y))
+                    #Black won
+                    if piece.symbol == "K" and result == MASChessDisplayableBase.STATE_BLACK_WIN:
+                        renderer.blit(highlight_red, (x, y))
 
-                    renderer.blit(get_piece_render_for_letter(str(piece)), (x, y))
+                    #White won
+                    elif piece.symbol == "k" and result == MASChessDisplayableBase.STATE_WHITE_WIN:
+                        renderer.blit(highlight_red, (x, y))
 
+                renderer.blit(
+                    piece.render,
+                    (x, y)
+                )
 
             if self.is_player_turn() and not self.is_game_over:
                 # Display the indication that it's the player's turn
-                #prompt = renpy.render(MASChessDisplayableBase.PLAYER_MOVE_PROMPT, 1280, 720, st, at)
                 if self.update_textbox and self.player_move_prompts:
                     renpy.show("monika 1eua")
                     renpy.say(m, renpy.substitute(random.choice(self.player_move_prompts)), False)
@@ -2316,21 +2350,24 @@ init python:
                     renpy.restart_interaction()
 
             if self.selected_piece is not None:
-                # Draw the selected piece.
-                piece = self.board.piece_at(self.selected_piece[1] * 8 + self.selected_piece[0])
-                #assert piece is not None
+                #Draw the selected piece.
+                piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
+
                 px, py = get_mouse_pos()
                 px -= MASChessDisplayableBase.PIECE_WIDTH / 2
                 py -= MASChessDisplayableBase.PIECE_HEIGHT / 2
-                renderer.blit(get_piece_render_for_letter(str(piece)), (px, py))
+                renderer.blit(
+                    piece.render,
+                    (px, py)
+                )
 
-            # Ask that we be re-rendered ASAP, so we can show the next frame.
+            #Ask that we be re-rendered ASAP, so we can show the next frame.
             renpy.redraw(self, 0)
 
-            # Return the Render object.
+            #Return the Render object.
             return renderer
 
-        # Handles events.
+        #Handles events.
         def event(self, ev, x, y, st):
             #Are we in mouse button things
             if ev.type in self.MOUSE_EVENTS:
@@ -2345,20 +2382,17 @@ init python:
             if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 # continue
                 px, py = self.get_piece_pos()
+                test_piece = self.get_piece_at(px, py)
                 if (
                     self.is_player_turn()
-                    and px is not None
-                    and py is not None
-                    and self.board.piece_at(py * 8 + px) is not None
+                    and test_piece is not None
                     and (
-                        (MASChessDisplayableBase.piece_is_white(self.board.piece_at(py * 8 + px))
-                        and self.player_color)
-                        or (not MASChessDisplayableBase.piece_is_white(self.board.piece_at(py * 8 + px))
-                        and not self.player_color)
+                        (test_piece.is_white() and self.player_color)
+                        or (not test_piece.is_white() and not self.player_color)
                     )
                 ):
 
-                    piece = str(self.board.piece_at(py * 8 + px))
+                    piece = test_piece
 
                     self.possible_moves = self.board.legal_moves
                     self.selected_piece = (px, py)
@@ -2422,22 +2456,22 @@ init python:
 
             return (None, None)
 
-        @staticmethod
-        def piece_is_white(Piece):
-            """
-            Checks if the given piece is white
-
-            IN:
-                Piece - chess.Piece object to test
-
-            OUT:
-                True if piece is white, False otherwise
-            """
-            #Nonecheck for safety
-            if Piece is None:
-                return False
-            #Otherwise we'll return the color
-            return Piece.color
+#        @staticmethod
+#        def piece_is_white(Piece):
+#            """
+#            Checks if the given piece is white
+#
+#            IN:
+#                Piece - chess.Piece object to test
+#
+#            OUT:
+#                True if piece is white, False otherwise
+#            """
+#            #Nonecheck for safety
+#            if Piece is None:
+#                return False
+#            #Otherwise we'll return the color
+#            return Piece.color
 
         @staticmethod
         def coords_to_uci(x, y):
@@ -2455,17 +2489,36 @@ init python:
             y += 1
             return "{0}{1}".format(x, y)
 
-    class MASPiece(chess.Piece):
+        @staticmethod
+        def uci_to_coords(uci):
+            """
+            Converts uci to board-coordinates
+
+            IN:
+                uci - uci move to convert to coords
+
+            OUT:
+                list of tuples, [(x1, y1), (x2, y2)] representing from coords -> to coords
+            """
+            x1 = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[uci[0]]
+            x2 = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[uci[2]]
+            y1 = int(uci[1]) - 1
+            y2 = int(uci[3]) - 1
+
+            return [(x1, y1), (x2, y2)]
+
+    class MASPiece:
         """
         MASChessPiece
 
-        An extension class of chess.Piece which also holds piece location in addition to color and symbol
+        A better implementation of chess.Piece which also manages piece location in addition to color and symbol
 
         PROPERTIES:
             color - Color of the piece:
                 True - white
                 False - black
             symbol - letter symbol representing the piece. If capital, the piece is white
+            piece_map - the map containing all the pieces (the MASPiece object will be stored in it)
         """
         def __init__(
             self,
@@ -2473,7 +2526,8 @@ init python:
             symbol,
             posX,
             posY,
-            piece_map
+            piece_map,
+            pieces_renderer
         ):
             """
             MASPiece constructor
@@ -2485,11 +2539,18 @@ init python:
                 symbol - letter symbol representing the piece. If capital, the piece is white
                 posX - x position of the piece
                 posY - y position of the piece
+                render - the renpy.render for this object
                 piece_map - Map to store this piece in
+                pieces_renderer - the renpy.render obj representing the collective pieces
             """
-            super(MASPiece, self).__init__(color, symbol)
+            self.color = color
+            self.symbol = symbol
             #Store an internal reference to the piece map so we can execute moves from the piece
             self.piece_map = piece_map
+
+            #TODO: storing the renderer here isn't ideal. Switch this to individual piece images
+            self.render = MASPiece._get_render(color, symbol, pieces_renderer)
+
             piece_map[(posX, posY)] = self
 
         def __eq__(self, other):
@@ -2500,8 +2561,14 @@ init python:
                 return False
             return self.symbol == other.symbol
 
+        def __repr__(self):
+            """
+            Handles a representation of this piece
+            """
+            return "MASPiece with color: {0} and symbol: {1}".format(self.color, self.symbol)
+
         @staticmethod
-        def fromPiece(piece, posX, posY, piece_map):
+        def fromPiece(piece, posX, posY, piece_map, pieces_renderer):
             """
             Initializes a MASPiece from a chess.Piece object
 
@@ -2512,7 +2579,14 @@ init python:
             OUT:
                 MASPiece
             """
-            return MASPiece(piece.color, piece.symbol, posX, posY, piece_map)
+            return MASPiece(
+                piece.color,
+                piece.symbol(),
+                posX,
+                posY,
+                piece_map,
+                pieces_renderer
+            )
 
         def is_white(self):
             """
@@ -2524,7 +2598,7 @@ init python:
             """
             return self.color
 
-        def get_piece_type(self):
+        def get_type(self):
             """
             Gets the type of piece as the lowercase letter that is its symbol
 
@@ -2541,6 +2615,49 @@ init python:
                 Tuple, (x, y) coords representing the location of the piece on the board
             """
             return self.piece_map.keys()[self.piece_map.values().index(self)]
+
+        def promote_to(self, promoted_piece_symbol, piece_image, width, height):
+            """
+            Promotes this piece and builds a new render for it
+
+            IN:
+                promoted_piece_symbol - Symbol representing the piece we're promoting to
+                pieces_image - Image containing the pieces which the new render will be built on
+                width - width of the screen
+                height - height of the screen
+            """
+            renderer = renpy.render(piece_image, width, height, 0.0, 0.0)
+            self.symbol = promoted_piece_symbol.upper() if self.is_white() else promoted_piece_symbol
+            self.render = MASPiece._get_render(self.color, self.symbol, renderer)
+
+        def move(self, curr_x, curr_y, new_x, new_y):
+            """
+            Moves the piece from the given position, to the given position
+            """
+            self.piece_map.pop((curr_x, curr_y))
+            self.piece_map[(new_x, new_y)] = self
+
+        @staticmethod
+        def _get_render(color, symbol, pieces_renderer):
+            """
+            Gets the piece render for the given letter
+
+            IN:
+                color - Color of the piece
+                symbol - symbol of the piece
+                pieces_renderer - renpy.render object for the given piece
+
+            OUT:
+                subsurface representing the piece images
+            """
+            jx = MASChessDisplayableBase.VECTOR_PIECE_POS[symbol.upper()]
+
+            return pieces_renderer.subsurface((
+                jx * MASChessDisplayableBase.PIECE_WIDTH,
+                color * MASChessDisplayableBase.PIECE_HEIGHT,
+                MASChessDisplayableBase.PIECE_WIDTH,
+                MASChessDisplayableBase.PIECE_HEIGHT
+            ))
 
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
@@ -2782,6 +2899,11 @@ init python:
                     self.board.stack = old_board.stack
                     self.board.fullmove_number = old_board.fullmove_number - 1
 
+                    #Adjust MASPieces
+                    #TODO: There's likely a better way to do this which doesn't involve completely wiping and redrawing all
+                    #the pieces
+                    self.update_pieces()
+
                     #Redraw the board and increment the undo counter
                     renpy.redraw(self, 0)
                     self.undo_count += 1
@@ -2844,8 +2966,14 @@ init python:
             return (
                 new_pgn,
                 (
-                    (new_pgn.headers["Result"] == "1-0" and new_pgn.headers["White"] == mas_monika_twitter_handle)
-                    or (new_pgn.headers["Result"] == "0-1" and new_pgn.headers["Black"] == mas_monika_twitter_handle)
+                    (
+                        new_pgn.headers["Result"] == MASChessDisplayableBase.STATE_WHITE_WIN
+                        and new_pgn.headers["White"] == mas_monika_twitter_handle
+                    )
+                    or (
+                        new_pgn.headers["Result"] == MASChessDisplayableBase.STATE_BLACK_WIN
+                        and new_pgn.headers["Black"] == mas_monika_twitter_handle
+                    )
                 ),
                 giveup,
                 self.board.fullmove_number
