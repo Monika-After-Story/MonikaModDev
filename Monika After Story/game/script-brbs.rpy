@@ -676,7 +676,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_screen_break",
-            prompt="I need a break from my screen",
+            prompt="My eyes need a break from the screen",
             category=['be right back'],
             pool=True,
             unlocked=True
