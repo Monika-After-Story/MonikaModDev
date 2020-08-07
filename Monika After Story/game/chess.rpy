@@ -2487,28 +2487,6 @@ init python:
                 (x, y)
             )
 
-        @staticmethod
-        def _get_render(color, symbol, pieces_renderer):
-            """DEPRECIATED
-            Gets the piece render for the given letter
-
-            IN:
-                color - Color of the piece
-                symbol - symbol of the piece
-                pieces_renderer - renpy.render object for the given piece
-
-            OUT:
-                subsurface representing the piece images
-            """
-            jx = MASChessDisplayableBase.VECTOR_PIECE_POS[symbol.upper()]
-
-            return pieces_renderer.subsurface((
-                jx * MASChessDisplayableBase.PIECE_WIDTH,
-                color * MASChessDisplayableBase.PIECE_HEIGHT,
-                MASChessDisplayableBase.PIECE_WIDTH,
-                MASChessDisplayableBase.PIECE_HEIGHT
-            ))
-
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
             self,
