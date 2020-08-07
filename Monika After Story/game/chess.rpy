@@ -2007,7 +2007,7 @@ init python:
             Updates the position of all MASPieces
             """
             #Prepare the pieces vector as a renderer so we can preprocess the render images
-            pieces_renderer = renpy.render(MASChessDisplayableBase.PIECES_IMAGE, 1280, 720, 0.0, 0.0)
+            #pieces_renderer = renpy.render(MASChessDisplayableBase.PIECES_IMAGE, 1280, 720, 0.0, 0.0)
 
             #Empty the piece map
             self.piece_map = dict()
@@ -2016,7 +2016,7 @@ init python:
             for position, Piece in self.board.piece_map().iteritems():
                 MASPiece.fromPiece(
                     Piece,
-                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map, pieces_renderer))
+                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
                 )
 
         # Renders the board, pieces, etc.
@@ -2179,10 +2179,8 @@ init python:
                     elif piece.symbol == "k" and result == MASChessDisplayableBase.STATE_WHITE_WIN:
                         renderer.blit(highlight_red, (x, y))
 
-                renderer.blit(
-                    piece.render,
-                    (x, y)
-                )
+                #Render the piece
+                piece.render(width, height, st, at, x, y, renderer)
 
             if self.is_player_turn() and not self.is_game_over:
                 # Display the indication that it's the player's turn
@@ -2202,10 +2200,7 @@ init python:
                 px, py = get_mouse_pos()
                 px -= MASChessDisplayableBase.PIECE_WIDTH / 2
                 py -= MASChessDisplayableBase.PIECE_HEIGHT / 2
-                renderer.blit(
-                    piece.render,
-                    (px, py)
-                )
+                piece.render(width, height, st, at, px, py, renderer)
 
             #Ask that we be re-rendered ASAP, so we can show the next frame.
             renpy.redraw(self, 0)
@@ -2336,7 +2331,7 @@ init python:
 
             return [(x1, y1), (x2, y2)]
 
-    class MASPiece:
+    class MASPiece(object):
         """
         MASChessPiece
 
@@ -2349,14 +2344,23 @@ init python:
             symbol - letter symbol representing the piece. If capital, the piece is white
             piece_map - the map containing all the pieces (the MASPiece object will be stored in it)
         """
+
+        #Default base piece filepath
+        DEF_PIECE_FP_BASE = "mod_assets/games/chess/pieces/{0}{1}.png"
+
+        #Color map
+        FP_COLOR_LOOKUP = {
+            True: "w",
+            False: "b"
+        }
+
         def __init__(
             self,
             color,
             symbol,
             posX,
             posY,
-            piece_map,
-            pieces_renderer
+            piece_map
         ):
             """
             MASPiece constructor
@@ -2368,18 +2372,18 @@ init python:
                 symbol - letter symbol representing the piece. If capital, the piece is white
                 posX - x position of the piece
                 posY - y position of the piece
-                render - the renpy.render for this object
                 piece_map - Map to store this piece in
-                pieces_renderer - the renpy.render obj representing the collective pieces
             """
             self.color = color
             self.symbol = symbol
+
             #Store an internal reference to the piece map so we can execute moves from the piece
             self.piece_map = piece_map
 
-            #TODO: storing the renderer here isn't ideal. Switch this to individual piece images
-            self.render = MASPiece._get_render(color, symbol, pieces_renderer)
+            #Store the internal reference to this piece's image fp for use in rendering
+            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[color], symbol))
 
+            #And add it to the piece map
             piece_map[(posX, posY)] = self
 
         def __eq__(self, other):
@@ -2397,7 +2401,7 @@ init python:
             return "MASPiece with color: {0} and symbol: {1}".format(self.color, self.symbol)
 
         @staticmethod
-        def fromPiece(piece, posX, posY, piece_map, pieces_renderer):
+        def fromPiece(piece, posX, posY, piece_map):
             """
             Initializes a MASPiece from a chess.Piece object
 
@@ -2413,8 +2417,7 @@ init python:
                 piece.symbol(),
                 posX,
                 posY,
-                piece_map,
-                pieces_renderer
+                piece_map
             )
 
         def is_white(self):
@@ -2455,9 +2458,9 @@ init python:
                 width - width of the screen
                 height - height of the screen
             """
-            renderer = renpy.render(piece_image, width, height, 0.0, 0.0)
             self.symbol = promoted_piece_symbol.upper() if self.is_white() else promoted_piece_symbol
-            self.render = MASPiece._get_render(self.color, self.symbol, renderer)
+            #Update the piece image
+            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[self.color], self.symbol))
 
         def move(self, curr_x, curr_y, new_x, new_y):
             """
@@ -2466,9 +2469,27 @@ init python:
             self.piece_map.pop((curr_x, curr_y))
             self.piece_map[(new_x, new_y)] = self
 
+        def render(self, width, height, st, at, x, y, renderer):
+            """
+            Internal render call to render the pieces. To be called by the board
+
+            IN:
+                width - screen width
+                height - screen height
+                st - start time
+                at - animation time
+                x - x position on the board to render the piece
+                y - y position on the board to render the piece
+                renderer to draw this piece on
+            """
+            renderer.blit(
+                renpy.render(self.__piece_image, width, height, st, at),
+                (x, y)
+            )
+
         @staticmethod
         def _get_render(color, symbol, pieces_renderer):
-            """
+            """DEPRECIATED
             Gets the piece render for the given letter
 
             IN:
