@@ -1317,7 +1317,6 @@ label mas_chess_go_ham_and_delete_everything:
 
 # confirmation screen for chess
 screen mas_chess_confirm():
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
@@ -1355,9 +1354,6 @@ screen mas_chess_promote(player_color):
     style_prefix "confirm"
     add mas_getTimeFile("gui/overlay/confirm.png")
 
-    # get the correct image pieces for our color
-    $ imagedict = store.getPromotionImages(player_color)
-
     frame:
         vbox:
             xalign .5
@@ -1373,12 +1369,21 @@ screen mas_chess_promote(player_color):
                 xalign 0.5
                 spacing 10
 
-                imagebutton idle imagedict['q'] action Return('q')
-                imagebutton idle imagedict['r'] action Return('r')
-                imagebutton idle imagedict['n'] action Return('n')
-                imagebutton idle imagedict['b'] action Return('b')
+                imagebutton idle PROMO_QUEEN action Return('q')
+                imagebutton idle PROMO_ROOK action Return('r')
+                imagebutton idle PROMO_KNIGHT action Return('n')
+                imagebutton idle PROMO_BISHOP action Return('b')
 
 label mas_chess_promote_context(player_color):
+    python:
+        #Define some images here
+        clr_str = MASPiece.FP_COLOR_LOOKUP[player_color]
+        PROMO_QUEEN = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "Q" if player_color else "q"))
+        PROMO_ROOK = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "R" if player_color else "r"))
+        PROMO_KNIGHT = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "N" if player_color else "n"))
+        PROMO_BISHOP = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "B" if player_color else "b"))
+
+
     call screen mas_chess_promote(player_color)
     $ store.mas_chess.promote = _return
     return
@@ -1452,38 +1457,14 @@ init python:
 
         return (newx, newy)
 
-    def getPromotionImages(player_color):
-        """
-        Gets the promotion images to show in the chess promotion screen
-
-        IN:
-            player color - bool: True for white, False for black
-
-        OUT:
-            dict of images
-        """
-        imagedict = {}
-        piecelist = ["q","r","n","b"]
-
-        jy = 1 if player_color else 0
-
-        for piece in piecelist:
-            jx = MASChessDisplayableBase.VECTOR_PIECE_POS[piece.upper()]
-
-            pieceimage = LiveCrop((
-                    jx * MASChessDisplayableBase.PIECE_WIDTH,
-                    jy * MASChessDisplayableBase.PIECE_HEIGHT,
-                    MASChessDisplayableBase.PIECE_WIDTH,
-                    MASChessDisplayableBase.PIECE_HEIGHT
-                ),
-                MASChessDisplayableBase.PIECES_IMAGE
-            )
-            imagedict[piece] = pieceimage
-
-        return imagedict
 
     #START: DISPLAYABLES AND RELATED CLASSES
     class MASChessDisplayableBase(renpy.Displayable):
+        """
+        Base chess displayable for chess things
+
+        Inherit this for custom implementations like proper games or for teaching use
+        """
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
             pygame.MOUSEBUTTONUP,
@@ -1882,7 +1863,14 @@ init python:
 
                             #Now let's get the piece wich was moved so we can adjust it
                             from_coords, to_coords = MASChessDisplayableBase.uci_to_coords(monika_move)
-                            self.get_piece_at(*from_coords).move(*(from_coords + to_coords))
+                            piece = self.get_piece_at(*from_coords)
+
+                            #Now move
+                            piece.move(*(from_coords + to_coords))
+
+                            #Check if we've promoted
+                            if len(monika_move) == 5:
+                                piece.promote_to(monika_move[4])
 
                             #Now push to the chess lib so we can have proper saves
                             self.board.push_uci(monika_move)
@@ -1924,12 +1912,7 @@ init python:
                     renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
                     move_str += store.mas_chess.promote
 
-                    piece.promote_to(
-                        store.mas_chess.promote,
-                        MASChessDisplayableBase.PIECES_IMAGE,
-                        width,
-                        height
-                    )
+                    piece.promote_to(store.mas_chess.promote)
 
             if move_str is None:
                 return
@@ -2448,15 +2431,12 @@ init python:
             """
             return self.piece_map.keys()[self.piece_map.values().index(self)]
 
-        def promote_to(self, promoted_piece_symbol, piece_image, width, height):
+        def promote_to(self, promoted_piece_symbol):
             """
             Promotes this piece and builds a new render for it
 
             IN:
                 promoted_piece_symbol - Symbol representing the piece we're promoting to
-                pieces_image - Image containing the pieces which the new render will be built on
-                width - width of the screen
-                height - height of the screen
             """
             self.symbol = promoted_piece_symbol.upper() if self.is_white() else promoted_piece_symbol
             #Update the piece image
