@@ -676,7 +676,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_screen_break",
-            prompt="I need a break from the screen.",
+            prompt="I need a break from the screen",
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -691,7 +691,7 @@ label monika_idle_screen_break:
 
             if mas_getSessionLength() < datetime.timedelta(minutes=40):
                 m 1esc "Oh,{w=0.3} okay."
-                m 1dsu "You've not been here for that long but if you say you need a break, then you need a break."
+                m 3eka "You've not been here for that long but if you say you need a break, then you need a break."
             elif mas_getSessionLength() < datetime.timedelta(hours=2, minutes=30):
                 m 1eua "Going to rest your eyes for a bit?"
             else:
@@ -699,7 +699,7 @@ label monika_idle_screen_break:
 
             m 1hub "I'm glad you're taking care of your health, [player]."
 
-            if not persistent._mas_pm_works_out:
+            if not persistent._mas_pm_works_out and random.randint(1,3) == 1:
                 m 3eua "Why not take the opportunity to do a few stretches as well, hmm?"
                 m 1eub "Anyway, come back soon!~"
             else:
@@ -724,16 +724,16 @@ label monika_idle_screen_break:
     return "idle"
 
 label monika_idle_screen_break_callback:
-    if mas_isMoniNormal(higher=True):     
+    if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
         m 1eub "Welcome back, [player]."
-        
+
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_screen_break"):
             m 1hksdlb "You must've really needed that break, considering how long you were gone."
             m 1eka "I hope you're feeling a little better now."
         else:
             m 1hua "I hope you're feeling a little better now~"
-        
+
         m 1eua "[wb_quip]"
 
     elif mas_isMoniUpset():
@@ -746,7 +746,7 @@ label monika_idle_screen_break_callback:
         m 6ckc "..."
 
     return
-    
+
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
