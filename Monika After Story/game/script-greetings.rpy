@@ -3298,7 +3298,7 @@ label greeting_ourreality:
     m 1hua "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
-    m 4eub "Would you kindly look out the window, [player]"
+    m 4eub "Would you kindly look out the window, [player]?"
     $ mas_OVLHide()
     $ disable_esc()
     if mas_current_background.isFltDay():
