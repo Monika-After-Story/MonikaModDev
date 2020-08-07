@@ -676,7 +676,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_screen_break",
-            prompt="I need a break from the screen",
+            prompt="I need a break from my screen",
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -686,14 +686,15 @@ init 5 python:
 
 label monika_idle_screen_break:
     if mas_isMoniNormal(higher=True):
-
-        if mas_getEV('monika_idle_screen_break').timePassedSinceLastSeen_dt(mas_getSessionLength()):
+        if mas_timePastSince(mas_getEVL_last_seen("monika_idle_screen_break"), mas_getSessionLength()):
 
             if mas_getSessionLength() < datetime.timedelta(minutes=40):
                 m 1esc "Oh,{w=0.3} okay."
-                m 3eka "You've not been here for that long but if you say you need a break, then you need a break."
+                m 3eka "You haven't been here for that long but if you say you need a break, then you need a break."
+
             elif mas_getSessionLength() < datetime.timedelta(hours=2, minutes=30):
                 m 1eua "Going to rest your eyes for a bit?"
+
             else:
                 m 1lksdla "Yeah, you probably need that, don't you?"
 
@@ -702,6 +703,7 @@ label monika_idle_screen_break:
             if not persistent._mas_pm_works_out and random.randint(1,3) == 1:
                 m 3eua "Why not take the opportunity to do a few stretches as well, hmm?"
                 m 1eub "Anyway, come back soon!~"
+
             else:
                 m 1eub "Come back soon!~"
 
