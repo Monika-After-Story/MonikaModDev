@@ -1624,6 +1624,19 @@ init python:
             'h': 7
         }
 
+        #Lookup for inverting y coords
+        #NOTE: Yes, this is just 7 - old_y, but this is slightly more efficient since we always know y is between 0 and 7
+        Y_INVERT_LOOKUP = {
+            0: 7,
+            1: 6,
+            2: 5,
+            3: 4,
+            4: 3,
+            5: 2,
+            6: 1,
+            7: 0
+        }
+
         #Button handling bits
         def __init__(
             self,
@@ -1711,14 +1724,7 @@ init python:
 
                 # last move
                 last_move = self.board.peek().uci()
-                self.last_move_src = (
-                    ord(last_move[0]) - ord('a'),
-                    ord(last_move[1]) - ord('1')
-                )
-                self.last_move_dst = (
-                    ord(last_move[2]) - ord('a'),
-                    ord(last_move[3]) - ord('1')
-                )
+                self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move)
 
                 # and finally the fullmove number
                 self.num_turns = self.board.fullmove_number
@@ -1850,15 +1856,12 @@ init python:
                             # Monika is thonking
                             renpy.pause(1.5)
 
-                            self.last_move_src = (ord(monika_move[0]) - ord('a'), ord(monika_move[1]) - ord('1'))
-                            self.last_move_dst = (ord(monika_move[2]) - ord('a'), ord(monika_move[3]) - ord('1'))
+                            self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(monika_move)
 
-                            #Now let's get the piece wich was moved so we can adjust it
-                            from_coords, to_coords = MASChessDisplayableBase.uci_to_coords(monika_move)
-                            piece = self.get_piece_at(*from_coords)
+                            piece = self.get_piece_at(*self.last_move_src)
 
                             #Now move
-                            piece.move(*(from_coords + to_coords))
+                            piece.move(*(self.last_move_src + self.last_move_dst))
 
                             #Check if we've promoted
                             if len(monika_move) == 5:
@@ -1901,7 +1904,6 @@ init python:
             elif px is not None and py is not None and self.selected_piece is not None:
                 move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
                 piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
-                #piece = self.board.piece_at(self.selected_piece[1] * 8 + self.selected_piece[0]).symbol()
 
                 #Promote if needed
                 if (
@@ -2068,20 +2070,6 @@ init python:
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
             #SETUP
-            #TODO: Make this its own method outside of the render method
-            def render_move(move):
-                """
-                Renders the move
-
-                IN:
-                    move - two length string representing the move
-                """
-                if move is not None and ix_orig == move[0] and iy_orig == move[1]:
-                    renderer.blit(
-                        highlight_magenta if self.is_player_turn() else highlight_green,
-                        (x, y)
-                    )
-
             #The Render object we'll be drawing into.
             renderer = renpy.Render(width, height)
 
@@ -2131,6 +2119,16 @@ init python:
             for b in visible_buttons:
                 renderer.blit(b[0], (b[1], b[2]))
 
+            #If we have a last move, we should render that now
+            if self.last_move_src and self.last_move_dst:
+                #Get our highlight color
+                highlight = highlight_magenta if self.is_player_turn() else highlight_green
+
+                #Render the from highlight
+                renderer.blit(highlight, MASChessDisplayableBase.board_coords_to_screen_coords(*(self.last_move_src + (True,))))
+                #And the to highlight
+                renderer.blit(highlight, MASChessDisplayableBase.board_coords_to_screen_coords(*(self.last_move_dst + (True,))))
+
             #Draw the pieces on the Board renderer.
             for piece_location, Piece in self.piece_map.iteritems():
                 #Unpack the location
@@ -2149,11 +2147,7 @@ init python:
                     #Black player should be reversed X
                     ix = 7 - ix
 
-                x = int(MASChessDisplayableBase.BASE_PIECE_X + ix * MASChessDisplayableBase.PIECE_WIDTH)
-                y = int(MASChessDisplayableBase.BASE_PIECE_Y + iy * MASChessDisplayableBase.PIECE_HEIGHT)
-
-                render_move(self.last_move_src)
-                render_move(self.last_move_dst)
+                x, y = MASChessDisplayableBase.board_coords_to_screen_coords(ix, iy)
 
                 #Don't render the currently held piece again
                 if (
@@ -2170,6 +2164,7 @@ init python:
                 blit_rendered = False
 
                 # FIXME: I think this part doesn't work
+                #TODO: Filter possible moves by selected piece
                 if self.possible_moves:
                     possible_move_str = "{0}{1}".format(
                         MASChessDisplayableBase.coords_to_uci(self.selected_piece[0], self.selected_piece[1]),
@@ -2367,6 +2362,28 @@ init python:
             y2 = int(uci[3]) - 1
 
             return [(x1, y1), (x2, y2)]
+
+        @staticmethod
+        def board_coords_to_screen_coords(x, y, invert_y=False):
+            """
+            Converts board coordinates to (x, y) coordinates to use to position things on screen
+
+            IN:
+                x - x board coordinate to convert
+                y - y board coordinate to convert
+                invert_y - Whether or not we should invert the y coordinate
+                    (Default: False)
+
+            OUT:
+                Tuple - (x, y) coordinates for the screen to use
+            """
+            if invert_y:
+                y = MASChessDisplayableBase.Y_INVERT_LOOKUP[y]
+
+            return (
+                int(MASChessDisplayableBase.BASE_PIECE_X + (x * MASChessDisplayableBase.PIECE_WIDTH)),
+                int(MASChessDisplayableBase.BASE_PIECE_Y + (y * MASChessDisplayableBase.PIECE_HEIGHT))
+            )
 
     class MASPiece(object):
         """
