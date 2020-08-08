@@ -1911,7 +1911,11 @@ init python:
                 #piece = self.board.piece_at(self.selected_piece[1] * 8 + self.selected_piece[0]).symbol()
 
                 #Promote if needed
-                if piece.get_type() == 'p' and (py == 0 or py == 7):
+                if (
+                    chess.Move.from_uci(move_str + 'q') in self.possible_moves
+                    and piece.get_type() == 'p'
+                    and (py == 0 or py == 7)
+                ):
                     renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
                     move_str += store.mas_chess.promote
 
