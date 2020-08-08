@@ -1198,6 +1198,9 @@ class Board(BaseBoard):
         self.move_stack = []
         self.stack = []
 
+        #Flag for needing to request a redraw for the board
+        self.request_redraw = False
+
         if fen is None:
             self.clear()
         elif fen == type(self).starting_fen:
@@ -1886,6 +1889,10 @@ class Board(BaseBoard):
                 capture_square = ep_square + down
                 captured_piece_type = self._remove_piece_at(capture_square)
 
+                #MASPiece needs to redraw, ASAP
+                self.request_redraw = True
+
+
         # Promotion.
         if move.promotion:
             promoted = True
@@ -1902,9 +1909,13 @@ class Board(BaseBoard):
             if a_side:
                 self._set_piece_at(C1 if self.turn == WHITE else C8, KING, self.turn)
                 self._set_piece_at(D1 if self.turn == WHITE else D8, ROOK, self.turn)
+
             else:
                 self._set_piece_at(G1 if self.turn == WHITE else G8, KING, self.turn)
                 self._set_piece_at(F1 if self.turn == WHITE else F8, ROOK, self.turn)
+
+            #MASPiece needs to redraw, ASAP
+            self.request_redraw = True
 
         # Put the piece on the target square.
         if not castling and piece_type:

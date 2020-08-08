@@ -1875,6 +1875,9 @@ init python:
                             #Now push to the chess lib so we can have proper saves
                             self.board.push_uci(monika_move)
 
+                            #Check if we need to redraw MASPieces
+                            self.check_redraw()
+
                             #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
                             if not self.current_turn:
                                 self.num_turns += 1
@@ -1927,6 +1930,10 @@ init python:
                 self.queue_player_move(move_str)
                 #We push the move here because we need to update fens and game history
                 self.board.push_uci(move_str)
+
+                #Check if we need to redraw MASPieces
+                self.check_redraw()
+
                 self.is_game_over = self.board.is_game_over()
 
                 #'not self.current_turn' is the equivalent of current_turn == chess.BLACK, as chess.BLACK is False
@@ -1985,13 +1992,19 @@ init python:
             """
             return self.player_color == self.current_turn
 
+        def check_redraw(self):
+            """
+            Checks if we need to redraw the MASPieces on the board and redraws if necessary
+            """
+            if self.board.request_redraw:
+                self.update_pieces()
+
+            self.board.request_redraw = False
+
         def update_pieces(self):
             """
             Updates the position of all MASPieces
             """
-            #Prepare the pieces vector as a renderer so we can preprocess the render images
-            #pieces_renderer = renpy.render(MASChessDisplayableBase.PIECES_IMAGE, 1280, 720, 0.0, 0.0)
-
             #Empty the piece map
             self.piece_map = dict()
 
@@ -2005,6 +2018,7 @@ init python:
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
             #SETUP
+            #TODO: Make this its own method outside of the render method
             def render_move(move):
                 """
                 Renders the move
@@ -2031,7 +2045,7 @@ init python:
             highlight_yellow = renpy.render(MASChessDisplayableBase.PIECE_HIGHLIGHT_YELLOW_IMAGE, 1280, 720, st, at)
             highlight_magenta = renpy.render(MASChessDisplayableBase.PIECE_HIGHLIGHT_MAGENTA_IMAGE, 1280, 720, st, at)
 
-            # get the mouse pos
+            #Get our mouse pos
             mx, my = get_mouse_pos()
 
             #START: Turn/move handling
