@@ -556,8 +556,9 @@ label game_chess:
 
         #Add the displayable
         chess_displayable_obj = MASChessDisplayable(player_color, pgn_game=loaded_game, practice_mode=practice_mode)
-        ui.add(chess_displayable_obj)
-        results = ui.interact(suppress_underlay=True)
+        chess_displayable_obj.show()
+        results = chess_displayable_obj.game_loop()
+        chess_displayable_obj.hide()
 
         #Enable quick menu
         quick_menu = True
@@ -1743,6 +1744,8 @@ init python:
             self.possible_moves = set([])
             self.winner = None
             self.is_game_over = False
+            # if this's true, we interrupt the game loop and hide the displayable
+            self.quit_game = False
 
             # setup a pgn (could be None, in which case we are playing a fresh game)
             self.pgn_game = pgn_game
@@ -1757,9 +1760,6 @@ init python:
             #Now run a conversion to turn all `chess.Piece`s into `MASPiece`s
             self.piece_map = dict()
             self.update_pieces()
-
-            #And finally, our dlg flag
-            self.update_textbox = True
 
         #START: NON-IMPLEMENTED FUNCTIONS
         def additional_setup():
@@ -1847,19 +1847,11 @@ init python:
                         monika_move_check = chess.Move.from_uci(monika_move)
 
                         if self.board.is_legal(monika_move_check):
+                            # Monika is thonking
+                            renpy.pause(1.5)
+
                             self.last_move_src = (ord(monika_move[0]) - ord('a'), ord(monika_move[1]) - ord('1'))
                             self.last_move_dst = (ord(monika_move[2]) - ord('a'), ord(monika_move[3]) - ord('1'))
-
-                            #TODO: Make this work
-                            if self.update_textbox and self.monika_move_quips:
-                                renpy.show("monika 1dsc")
-                                renpy.say(m, renpy.substitute(random.choice(self.monika_move_quips)), False)
-                                _history_list.pop()
-
-                                self.update_textbox = False
-                                renpy.restart_interaction()
-
-                            renpy.time.sleep(1.5)
 
                             #Now let's get the piece wich was moved so we can adjust it
                             from_coords, to_coords = MASChessDisplayableBase.uci_to_coords(monika_move)
@@ -1883,11 +1875,8 @@ init python:
                                 self.num_turns += 1
 
                             #It's player's turn
-                            self.current_turn = self.player_color
+                            self.current_turn = not self.current_turn
                             self.is_game_over = self.board.is_game_over()
-
-                            #No longer Monika's turn, so set the textbox to update
-                            self.update_textbox = True
 
                             #Set the buttons
                             self.set_button_states()
@@ -1898,6 +1887,10 @@ init python:
 
             Re-implement as necessary to modify for differing contexts
             """
+            # sanity check
+            if self.is_game_over:
+                return
+
             px, py = self.get_piece_pos()
 
             move_str = None
@@ -1945,9 +1938,6 @@ init python:
                     self.num_turns += 1
 
                 self.current_turn = not self.current_turn
-
-                #Flag to update textbox
-                self.update_textbox = True
 
                 if not self.is_game_over:
                     self.set_button_states()
@@ -2019,6 +2009,62 @@ init python:
                     *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
                 )
 
+        def game_loop(self):
+            """
+            Runs the game loop
+            """
+            while not self.quit_game:
+                # Monika turn actions
+                if not self.is_player_turn():
+                    if not self.is_game_over:
+                        renpy.show("monika 1dsc")
+                        renpy.say(m, renpy.random.choice(self.monika_move_quips), False)
+                        store._history_list.pop()
+                    self.handle_monika_move()
+
+                # prepare a quip before the player turn loop
+                should_update_quip = False
+                quip = renpy.random.choice(self.player_move_prompts)
+
+                # player turn actions
+                # 'is_game_over' is to allow interaction at the end of the game
+                while self.is_player_turn() or self.is_game_over:
+                    # we always reshow Monika here
+                    renpy.show("monika 1eua")
+                    if not self.is_game_over:
+                        if (
+                            should_update_quip
+                            and "{fast}" not in quip
+                        ):
+                            quip = quip + "{fast}"
+
+                        should_update_quip = True
+                        renpy.say(m, quip, False)
+                        store._history_list.pop()
+
+                    # interactions are handled in the event method
+                    interaction = ui.interact(type="minigame")
+                    # Check if the palyer wants to quit the game
+                    if self.quit_game:
+                        return interaction
+            return None
+
+        def show(self):
+            """
+            Shows this displayable
+            """
+            ui.layer("minigames")
+            ui.implicit_add(self)
+            ui.close()
+
+        def hide(self):
+            """
+            Hides this displayable
+            """
+            ui.layer("minigames")
+            ui.remove(self)
+            ui.close()
+
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
             #SETUP
@@ -2036,7 +2082,6 @@ init python:
                         (x, y)
                     )
 
-
             #The Render object we'll be drawing into.
             renderer = renpy.Render(width, height)
 
@@ -2051,11 +2096,6 @@ init python:
 
             #Get our mouse pos
             mx, my = get_mouse_pos()
-
-            #START: Turn/move handling
-            #Firstly, handle Monika's move
-            #We functionalize this such that it can be overridden under normal game circumstances
-            self.handle_monika_move()
 
             #Since different buttons show during the game vs post game, we'll sort out what's shown here
             visible_buttons = list()
@@ -2129,6 +2169,7 @@ init python:
                 possible_move_str = None
                 blit_rendered = False
 
+                # FIXME: I think this part doesn't work
                 if self.possible_moves:
                     possible_move_str = "{0}{1}".format(
                         MASChessDisplayableBase.coords_to_uci(self.selected_piece[0], self.selected_piece[1]),
@@ -2183,17 +2224,6 @@ init python:
                 #Render the piece
                 piece.render(width, height, st, at, x, y, renderer)
 
-            if self.is_player_turn() and not self.is_game_over:
-                # Display the indication that it's the player's turn
-                if self.update_textbox and self.player_move_prompts:
-                    renpy.show("monika 1eua")
-                    renpy.say(m, renpy.substitute(random.choice(self.player_move_prompts)), False)
-                    _history_list.pop()
-
-                    #Flag to no longer update
-                    self.update_textbox = False
-                    renpy.restart_interaction()
-
             if self.selected_piece is not None:
                 #Draw the selected piece.
                 piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
@@ -2221,7 +2251,11 @@ init python:
                     return ret_value
 
             # Mousebutton down == possibly select the piece to move
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+            if (
+                ev.type == pygame.MOUSEBUTTONDOWN
+                and ev.button == 1
+                and not self.is_game_over# don't allow to move pieces if the game is over
+            ):
                 # continue
                 px, py = self.get_piece_pos()
                 test_piece = self.get_piece_at(px, py)
@@ -2238,6 +2272,7 @@ init python:
 
                     self.possible_moves = self.board.legal_moves
                     self.selected_piece = (px, py)
+                    return "mouse_button_down"
 
             # Mousebutton up == possibly release the selected piece
             if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
@@ -2245,6 +2280,7 @@ init python:
 
                 self.selected_piece = None
                 self.possible_moves = set([])
+                return "mouse_button_up"
 
             # KEYMAP workarounds:
             if ev.type == pygame.KEYUP:
@@ -2269,7 +2305,7 @@ init python:
                 if ev.key in [pygame.K_MINUS, pygame.K_UNDERSCORE, pygame.K_KP_MINUS]:
                     dec_musicvol()
 
-            raise renpy.IgnoreEvent()
+            return None
 
         def get_piece_pos(self):
             """
@@ -2698,12 +2734,14 @@ init python:
             if self.is_game_over:
                 if self._button_done.event(ev, x, y, st):
                     # user clicks Done
+                    self.quit_game = True
                     return self._quitPGN(False)
 
             # inital check for buttons
             elif self.is_player_turn():
                 if self._button_save.event(ev, x, y, st):
                     # user wants to save this game
+                    self.quit_game = True
                     return self._quitPGN(False)
 
                 elif self._button_undo.event(ev, x, y, st):
@@ -2730,8 +2768,7 @@ init python:
                     #the pieces
                     self.update_pieces()
 
-                    #Redraw the board and increment the undo counter
-                    renpy.redraw(self, 0)
+                    # Increment the undo counter
                     self.undo_count += 1
 
                     self.set_button_states()
@@ -2742,6 +2779,7 @@ init python:
                     renpy.call_in_new_context("mas_chess_confirm_context")
                     if mas_chess.quit_game:
                         #user wishes to surrender
+                        self.quit_game = True
                         return self._quitPGN(True)
 
         def _quitPGN(self, giveup):
