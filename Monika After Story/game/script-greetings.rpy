@@ -1094,7 +1094,7 @@ init 5 python:
             or mas_isplayer_bday()
             or mas_isF14()
         )
-        and persistent._mas_current_background == "spaceroom"
+        and store.mas_background.EXP_TYPE_OUTDOOR not in mas_getBackground(persistent._mas_current_background, mas_background_def).ex_props
     ):
 
         ev_rules = dict()
