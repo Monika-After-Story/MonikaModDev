@@ -1726,6 +1726,12 @@ init python:
                 last_move = self.board.peek().uci()
                 self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move)
 
+                # undo count
+                self.undo_count = int(pgn_game.headers.get("UndoCount", 0))
+
+                # move history
+                self.move_history = eval(pgn_game.headers.get("MoveHist", "[]"))
+
                 # and finally the fullmove number
                 self.num_turns = self.board.fullmove_number
 
