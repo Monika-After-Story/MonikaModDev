@@ -1274,8 +1274,8 @@ label mas_chess_dlg_pre_go_ham:
     #TODO: actaully, we should change some of this dialogue to make it more
     #obvious that the player violated trust
     #TODO: also we should like do something here where if the player
-    # qutis during this time, we delete or jump into some other flow
-    m6ektsc "I can't trust you anymore."
+    #quits during this time, we delete or jump into some other flow
+    m 6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"
 
     # do some permanent stuff
