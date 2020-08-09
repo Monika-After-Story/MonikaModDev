@@ -4101,7 +4101,7 @@ label greeting_back_from_hangout:
                     else:
                         m 1hub "Oh, okay!"
                         m 3eua "...We haven't really talked about your other friends before, so I wasn't sure if this was a new friend or not."
-                        m 3eub "I'm glad you have friends in your reality to hang out with!"
+                        m 3eub "But either way, I'm just glad you have friends in your reality to hang out with!"
 
                     m 3eua "I hope you're able to spend time with them often."
                     $ persistent._mas_pm_has_friends = True
