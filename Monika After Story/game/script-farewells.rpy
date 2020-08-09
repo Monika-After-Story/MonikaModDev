@@ -1584,7 +1584,7 @@ label bye_prompt_hangout:
         m 2euc "I hope you treat them well..."
         m 2euc "Bye."
 
-    elif mas_isMoniBroken():
+    else:
         m 6ckc "..."
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
