@@ -1548,6 +1548,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
+            eventlabel="bye_going_shopping",
+            prompt="I'm going shopping.",
+            unlocked=True,
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_going_shopping:
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Oh, going to do some shopping, [player]?"
+
+        if mas_getEVL_shown_count("bye_going_shopping") == 0 or renpy.random.randint(1,10) == 1:
+            m 1eua "I'd love if we could go to the mall together sometime."
+            m 3rua "You could help me try out all kinds of different outfits...{w=0.2}{nw}"
+            extend 3tuu "but I might need help with the zippers."
+            m 1hublb "Ahaha! See you soon~"
+
+        else:
+            m 3eua "See you soon."
+
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+
+    else:
+        m 2eud "Okay [player], see you soon."
+
+    #TODO: Moni comes shopping with you(?)
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SHOPPING
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
             eventlabel="bye_prompt_hangout",
             prompt="I'm going to hang out with friends.",
             unlocked=True,
