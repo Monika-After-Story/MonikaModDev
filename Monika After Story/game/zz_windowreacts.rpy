@@ -127,7 +127,10 @@ init python:
         """
         Checks if we can check the active window (simplifies conditionals)
         """
-        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+        return (
+            store.mas_windowreacts.can_do_windowreacts
+            and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+        )
 
     def mas_getActiveWindow(friendly=False):
         """
@@ -153,7 +156,14 @@ init python:
             and mas_windowreacts.can_show_notifs
             and mas_canCheckActiveWindow()
         ):
-            window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            #Try except this in the case of a non-zero exit code
+            try:
+                window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
+            except:
+                store.mas_utils.writelog("[ERROR]: xdotool exited with a non-zero exit code.\n")
+                return ""
+
+            #If we have a window handle, let's just process it as friendly/unfriendly and return it
             if friendly:
                 return window_handle.replace("\n", "")
             else:

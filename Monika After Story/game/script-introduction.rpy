@@ -202,7 +202,7 @@ label intro_end:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika 1esa with dissolve
+        show monika 1esa with dissolve_monika
 
     # This is at the beginning and end of intro to cover an intro
     # that spans 2 days

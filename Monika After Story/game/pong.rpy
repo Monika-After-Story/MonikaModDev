@@ -625,7 +625,7 @@ label mas_pong_dlg_winner:
     #Player lets Monika win after being asked to go easy on her without hitting the ball too much
     elif monika_asks_to_go_easy and ball_paddle_bounces <= 9:
         m 1hub "Yay, I won!"
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "Thanks, [player]!"
         m 5hubfb "You're so sweet...{w=0.5}letting me win~"
         $ monika_asks_to_go_easy = False
@@ -659,7 +659,7 @@ label mas_pong_dlg_winner:
                 "Yes...":
                     m 1hua "Ehehe!"
                     m 1eka "Thanks for letting me win, [player]~"
-                    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eka "But you know, I wouldn't mind losing to you sometimes."
 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
@@ -879,7 +879,7 @@ label mas_pong_dlg_sorry_assuming:
             $ mas_pong_taking_break = True
 
             #Dissolve into idle poses
-            show monika idle with dissolve
+            show monika idle with dissolve_monika
             jump ch30_loop
 
         "No.":
