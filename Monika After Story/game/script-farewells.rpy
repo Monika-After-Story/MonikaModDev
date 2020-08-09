@@ -1580,7 +1580,7 @@ label bye_prompt_hangout:
 
         m 1eub "Anyway, see you later~"
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis(higher=True):
         m 2euc "I hope you treat them well..."
         m 2euc "Bye."
 
