@@ -53,6 +53,7 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_SHOPPING = "shopping"
     TYPE_WORKOUT = "workout"
 
     ### NOTE: all Return Home greetings must have this
@@ -4011,6 +4012,44 @@ label greeting_back_from_workout:
         m 6ekd "...But don't you want to take care of me too?"
         m 7dkc "At least once in a while, please..."
         m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_shopping",
+            category=[store.mas_greetings.TYPE_SHOPPING],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_shopping:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 3eua "I hope you got what you needed from the store."
+        m 1hua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "I hope you got everything you needed."
+        if renpy.random.randint(1,5) == 1:
+            m 2rud "{cps=*2}Hopefully you're in a better mood now too.{/cps}{nw}"
+            $ _history_list.pop()
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...{w=0.5}you're back."
+        m 6ekc "I hope you had a good time shopping. {w=0.2}Did you buy any food?"
+        m 6dkd "Have you considered that your eating habits may be affecting your mood lately?"
+        m 6lkc "I'd hate if that was the reason you--{nw}"
+        $ _history_list.pop()
+        m 6ekc "You know what? Nevermind. {w=0.2}{nw}"
+        extend 6dkc "I'm just tired."
 
     else:
         m 6ckc "..."
