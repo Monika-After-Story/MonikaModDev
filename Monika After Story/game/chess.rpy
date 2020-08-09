@@ -1448,10 +1448,10 @@ init python:
         #This part calculates the "true" position, it can handle weirdly sized screens
         if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
             r = virtual_width / physical_width
-            mouse_x -= (physical_height - virtual_height / r) / 2
+            mouse_y -= (physical_height - virtual_height / r) / 2
         else:
             r = virtual_height / physical_height
-            mouse_y -= (physical_width - virtual_width / r) / 2
+            mouse_x -= (physical_width - virtual_width / r) / 2
 
         newx = (mouse_x * r) / 10000
         newy = (mouse_y * r) / 10000
