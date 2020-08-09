@@ -1308,8 +1308,8 @@ label mas_chess_go_ham_and_delete_everything:
         except:
             pass
 
-        # delete persistent values
-        # TODO: SUPER DANGEROUS, make backups before testing
+        #Delete persistent values
+        #NOTE: SUPER DANGEROUS, make backups before testing
         mas_root.resetPlayerData()
 
     jump _quit
@@ -1404,8 +1404,6 @@ init python:
 
     #For the buttons
     import store.mas_ui as mas_ui
-
-    ON_POSIX = 'posix' in sys.builtin_module_names
 
     #Only add the chess_games folder if we can even do chess
     if mas_games.is_platform_good_for_chess():
@@ -1545,6 +1543,12 @@ init python:
 
         PROMOLIST = ["q","r","n","b","r","k"]
 
+        #Reflect over x, reflect over y tuples
+        COORD_REFLECT_MAP = {
+            True: (False, True), #White reflects over y
+            False: (True, False) #Black reflects over x
+        }
+
         #Converson map to change chess.board positions to ones for our displayable
         SQUARE_TO_BOARD_COORD_LOOKUP = {
             0: (0, 0),
@@ -1627,7 +1631,7 @@ init python:
 
         #Lookup for inverting y coords
         #NOTE: Yes, this is just 7 - old_y, but this is slightly more efficient since we always know y is between 0 and 7
-        Y_INVERT_LOOKUP = {
+        BOARD_COORD_INVERT_LOOKUP = {
             0: 7,
             1: 6,
             2: 5,
@@ -2131,9 +2135,19 @@ init python:
                 highlight = highlight_magenta if self.is_player_turn() else highlight_green
 
                 #Render the from highlight
-                renderer.blit(highlight, MASChessDisplayableBase.board_coords_to_screen_coords(*(self.last_move_src + (True,))))
+                renderer.blit(
+                    highlight,
+                    MASChessDisplayableBase.board_coords_to_screen_coords(
+                        *(self.last_move_src + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
+                    )
+                )
                 #And the to highlight
-                renderer.blit(highlight, MASChessDisplayableBase.board_coords_to_screen_coords(*(self.last_move_dst + (True,))))
+                renderer.blit(
+                    highlight,
+                    MASChessDisplayableBase.board_coords_to_screen_coords(
+                        *(self.last_move_dst + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
+                    )
+                )
 
             #Do possible move highlighting here
             if self.possible_moves:
@@ -2147,7 +2161,7 @@ init python:
                     renderer.blit(
                         highlight_green,
                         MASChessDisplayableBase.board_coords_to_screen_coords(
-                            *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[move.to_square] + (True,))
+                            *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[move.to_square] + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
                         )
                     )
 
@@ -2338,21 +2352,25 @@ init python:
             return [(x1, y1), (x2, y2)]
 
         @staticmethod
-        def board_coords_to_screen_coords(x, y, invert_y=False):
+        def board_coords_to_screen_coords(x, y, invert_x=False, invert_y=False):
             """
             Converts board coordinates to (x, y) coordinates to use to position things on screen
 
             IN:
                 x - x board coordinate to convert
                 y - y board coordinate to convert
+                invery_x - Whether or not we should invert the x coordinate
+                    (Default: False)
                 invert_y - Whether or not we should invert the y coordinate
                     (Default: False)
 
             OUT:
                 Tuple - (x, y) coordinates for the screen to use
             """
+            if invert_x:
+                x = MASChessDisplayableBase.BOARD_COORD_INVERT_LOOKUP[x]
             if invert_y:
-                y = MASChessDisplayableBase.Y_INVERT_LOOKUP[y]
+                y = MASChessDisplayableBase.BOARD_COORD_INVERT_LOOKUP[y]
 
             return (
                 int(MASChessDisplayableBase.BASE_PIECE_X + (x * MASChessDisplayableBase.PIECE_WIDTH)),
