@@ -1597,14 +1597,14 @@ label bye_prompt_hangout:
         if mas_getEVL_shown_count("bye_prompt_hangout") == 0:
             if persistent._mas_pm_has_friends:
                 m 1eua "Alright, [player]."
-                m 3hub "You should introduce me to them sometime!"
-                m 3eub "If they're your friends, I'm sure I'd like them!"
+                m 3eub "You should introduce me to them sometime!"
+                m 3hua "If they're your friends, I'm sure I'd like them."
 
             else:
                 if persistent._mas_pm_has_friends is False:
-                    m 3eub "I'm glad you're finding friends to hang out with, [player]!"
+                    m 3eua "I'm glad you're finding friends to hang out with, [player]."
                 else:
-                    m 3eub "I'm glad you have friends to hang out with, [player]!"
+                    m 3eua "I'm glad you have friends to hang out with, [player]."
 
                 m 1rka "As much as I'd like to spend every possible second with you, {w=0.2}{nw}"
                 extend 1eub "I know how important it is for you to have friends in your own reality!"
@@ -1616,13 +1616,13 @@ label bye_prompt_hangout:
                 m 1eua "Alright, [player]."
 
                 if renpy.random.randint(1,10) == 1:
-                    m 3hub "Have you told them about us yet?"
+                    m 3eta "Have you told them about us yet?"
                     m 1hub "Ahaha!"
 
                 m 1eub "Have fun!"
 
             else:
-                m 1hub "Again? That's exciting!"
+                m 1hua "Again? That's exciting!"
                 m 3eua "I hope they turn out to be a really good friend this time."
                 m 3eub "Anyway, see you later~"
 

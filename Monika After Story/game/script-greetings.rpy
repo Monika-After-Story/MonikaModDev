@@ -4074,6 +4074,8 @@ label greeting_back_from_hangout:
             m 1eua "Welcome back, [player]."
             m 3hub "I hope you had a good time!"
 
+            $ anyway_lets = "Let's"
+
         else:
             m 3eub "Welcome back, [player]."
 
@@ -4106,7 +4108,9 @@ label greeting_back_from_hangout:
                     m 3eua "I hope you're able to spend time with them often."
                     $ persistent._mas_pm_has_friends = True
 
-        m 1eua "Anyway, let's spend some more time together~"
+            $ anyway_lets = "Anyway, let's"
+
+        m 1eua "[anyway_lets] spend some more time together~"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "Hello again, [player]."
