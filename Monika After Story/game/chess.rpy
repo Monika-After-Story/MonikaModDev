@@ -991,7 +991,7 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
         #TODO: we need to have a separate version of this event if your affection
         #is high enough. Basically you should only reach the bad end if
         #you've been a dick for a while
-        #TODO: this makes sense compared to the go_ham event since
+        #NOTE: this makes sense compared to the go_ham event since
         #its just throwing away stuff instead of cheating
         #disable chess forever!
         python:
@@ -1039,8 +1039,7 @@ label mas_chess_dlg_qf_lost_may_start:
         m 1esa "...not a problem at all."
         m "I knew you were going to do this again..."
         m 1hub "...so I kept a backup of our save!"
-        # TODO: wink here please
-        m 1eua "You can't trick me anymore, [player]."
+        m 1kua "You can't trick me anymore, [player]."
         m "Now let's continue our game."
         return store.mas_chess.CHESS_GAME_BACKUP
 
@@ -1265,18 +1264,18 @@ label mas_chess_dlg_pre_go_ham:
         persistent._mas_chess_mangle_all = True
         persistent.autoload = "mas_chess_go_ham_and_delete_everything"
 
-    # TODO: similar to chess disable, we need 2 versions of this. With a certain
-    # amount of affection, you really should get a 2nd chance.
-    # i think what we can do here is do a large subtract off affection
-    # (maybe like -200/300 or something) and then if you are below a certain
-    # amount then you get the bad end, otherwise we jump to the
-    # 3rd time no edit, sorry label.
-    # TODO: actually i'm not 100% sure on this, lets leave it up to debate rn
-    # TODO: actaully, we should change some of this dialogue to make it more
-    # obvious that the player violated trust
-    # TODO: also we should like do something here where if the player
-    #  qutis during this time, we delete or jump into some other flow
-    m 6ektsc "I can't trust you anymore."
+    #TODO: similar to chess disable, we need 2 versions of this. With a certain
+    #amount of affection, you really should get a 2nd chance.
+    #i think what we can do here is do a large subtract off affection
+    #(maybe like -200/300 or something) and then if you are below a certain
+    #amount then you get the bad end, otherwise we jump to the
+    #3rd time no edit, sorry label.
+    #NOTE: actually i'm not 100% sure on this, lets leave it up to debate rn
+    #TODO: actaully, we should change some of this dialogue to make it more
+    #obvious that the player violated trust
+    #TODO: also we should like do something here where if the player
+    # qutis during this time, we delete or jump into some other flow
+    m6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"
 
     # do some permanent stuff
@@ -1689,8 +1688,7 @@ init python:
 
             #Some core vars
             self.num_turns = 0
-            self.player_move_stack = list()
-            self.monika_move_stack = list()
+            self.move_stack = list()
 
             #Store the buttons as we'll need to use this later
             self.buttons = dict() if buttons is None else buttons
@@ -1824,137 +1822,36 @@ init python:
             """
             raise NotImplementedError("Function 'check_buttons' was not implemented.")
 
-        def get_piece_at(self, px, py):
-            """
-            Gets the piece at the given coordinates
-
-            OUT:
-                chess.Piece if exists at that location
-                None otherwise
-            """
-            return self.piece_map.get((px, py), None)
-
-        def move_piece(self, px, py):
-            pass
-
-        #END: Non-implemented functions
         def handle_monika_move(self):
             """
             Handles Monika's move
 
-            Re-implement as necessary to handle different contexts
+            Re-implement to allow Monika's moves to be handled by an engine
             """
-            # Poll Monika for moves if it's her turn
-            if not self.is_game_over and not self.is_player_turn():
-                #NOTE: This is done in the case of a more tutorial like design, in which moves are pushed through dialogue
-                #Rather than by stockfish's pick
+            if not self.move_stack:
+                return
 
-                #Queue a Moni move if this is implemented
-                moni_move = self.poll_monika_move()
-                if moni_move:
-                    self.queue_monika_move(moni_move)
+            move_str = self.move_stack.pop(0)
 
-                if self.monika_move_stack:
-                    #Grab the first item from the stack and push it
-                    monika_move = self.monika_move_stack.pop(0)
-
-                    if monika_move is not None:
-                        #Now verify legality
-                        monika_move_check = chess.Move.from_uci(monika_move)
-
-                        if self.board.is_legal(monika_move_check):
-                            # Monika is thonking
-                            renpy.pause(1.5)
-
-                            self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(monika_move)
-
-                            piece = self.get_piece_at(*self.last_move_src)
-
-                            #Now move
-                            piece.move(*(self.last_move_src + self.last_move_dst))
-
-                            #Check if we've promoted
-                            if len(monika_move) == 5:
-                                piece.promote_to(monika_move[4])
-
-                            #Now push to the chess lib so we can have proper saves
-                            self.board.push_uci(monika_move)
-
-                            #Check if we need to redraw MASPieces
-                            self.check_redraw()
-
-                            #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
-                            if not self.current_turn:
-                                self.num_turns += 1
-
-                            #It's player's turn
-                            self.current_turn = not self.current_turn
-                            self.is_game_over = self.board.is_game_over()
-
-                            #Set the buttons
-                            self.set_button_states()
+            self.__push_move(move_str)
 
         def handle_player_move(self):
             """
             Handles the player's move
 
-            Re-implement as necessary to modify for differing contexts
+            Re-implement to allow the player to move pieces
             """
-            # sanity check
             if self.is_game_over:
                 return
 
-            px, py = self.get_piece_pos()
-
-            move_str = None
-
-            if self.player_move_stack:
-                move_str = self.player_move_stack.pop(0)
-
-            elif px is not None and py is not None and self.selected_piece is not None:
-                move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
-                piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
-
-                #Promote if needed
-                if (
-                    chess.Move.from_uci(move_str + 'q') in self.possible_moves
-                    and piece.get_type() == 'p'
-                    and (py == 0 or py == 7)
-                ):
-                    renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
-                    move_str += store.mas_chess.promote
-
-                    piece.promote_to(store.mas_chess.promote)
-
-            if move_str is None:
+            if not self.move_stack:
                 return
 
-            if chess.Move.from_uci(move_str) in self.possible_moves:
-                #Move the piece
-                piece.move(self.selected_piece[0], self.selected_piece[1], px, py)
-                #Add this undo
-                self.move_history.append(self.board.fen())
-                self.last_move_src = self.selected_piece
-                self.last_move_dst = (px, py)
-                self.queue_player_move(move_str)
-                #We push the move here because we need to update fens and game history
-                self.board.push_uci(move_str)
+            move_str = self.move_stack.pop(0)
 
-                #Check if we need to redraw MASPieces
-                self.check_redraw()
+            self.__push_move(move_str)
 
-                self.is_game_over = self.board.is_game_over()
-
-                #'not self.current_turn' is the equivalent of current_turn == chess.BLACK, as chess.BLACK is False
-                if not self.current_turn:
-                    self.num_turns += 1
-
-                self.current_turn = not self.current_turn
-
-                if not self.is_game_over:
-                    self.set_button_states()
-                    self.start_monika_analysis()
-
+        #END: Non-implemented functions
         def set_button_states(self):
             """
             Sets the button states according to their conditionals.
@@ -1974,23 +1871,14 @@ init python:
                 else:
                     self.winner = current_move
 
-        def queue_player_move(self, move):
+        def queue_move(self, move_str):
             """
             Queues a move to the player move stack
 
             IN:
-                move in the form
+                move_str - uci move string
             """
-            self.player_move_stack.append(move)
-
-        def queue_monika_move(self, move):
-            """
-            Queues a move to the Monika move stack
-
-            IN:
-                move in the form
-            """
-            self.monika_move_stack.append(move)
+            self.move_stack.append(move)
 
         def is_player_turn(self):
             """
@@ -2021,17 +1909,69 @@ init python:
                     *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
                 )
 
+        def get_piece_at(self, px, py):
+            """
+            Gets the piece at the given coordinates
+
+            OUT:
+                chess.Piece if exists at that location
+                None otherwise
+            """
+            return self.piece_map.get((px, py), None)
+
+        def __push_move(self, move_str):
+            """
+            Internal function which pushes a uci move to the board and all MASPieces, handling promotions as necessary
+
+            IN:
+                move_str - uci string representing the move to push
+
+            NOTE: This does NOT verify validity
+            """
+            #Step 1: Get our move locations
+            (x1, y1), (x2, y2) = MASChessDisplayableBase.uci_to_coords(move_str)
+
+            #Now get the piece
+            piece = self.get_piece_at(x1, y1)
+
+            #Move the piece
+            piece.move(x1, y1, x2, y2)
+
+            #Promote it if we need to
+            if len(move_str) > 4:
+                piece.promote_to(move_str[4])
+
+            #Add this undo if it's the player's turn
+            if self.is_player_turn():
+                self.move_history.append(self.board.fen())
+
+            self.last_move_src = (x1, y1)
+            self.last_move_dst = (x2, y2)
+
+            #Check if we need to redraw MASPieces
+            self.check_redraw()
+
+            #We push the move here because we need to update fens and game history
+            self.board.push_uci(move_str)
+
+            #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
+            if not self.current_turn:
+                self.num_turns += 1
+
+            #It's player's turn
+            self.current_turn = not self.current_turn
+            self.is_game_over = self.board.is_game_over()
+
         def game_loop(self):
             """
             Runs the game loop
             """
             while not self.quit_game:
                 # Monika turn actions
-                if not self.is_player_turn():
-                    if not self.is_game_over:
-                        renpy.show("monika 1dsc")
-                        renpy.say(m, renpy.random.choice(self.monika_move_quips), False)
-                        store._history_list.pop()
+                if not self.is_player_turn() and not self.is_game_over:
+                    renpy.show("monika 1dsc")
+                    renpy.say(m, renpy.random.choice(self.monika_move_quips), False)
+                    store._history_list.pop()
                     self.handle_monika_move()
 
                 # prepare a quip before the player turn loop
@@ -2572,30 +2512,37 @@ init python:
                 _("Done"),
                 False,
                 MASChessDisplayableBase.BUTTON_INDICATOR_X,
-                MASChessDisplayableBase.DRAWN_BUTTON_Y_MID,
+                MASChessDisplayableBase.DRAWN_BUTTON_Y_TOP,
                 MASChessDisplayableBase.BUTTON_WIDTH,
                 MASChessDisplayableBase.BUTTON_HEIGHT,
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
 
-            self._button_undo = MASButtonDisplayable.create_stb(
-                _("Undo"),
-                True,
-                MASChessDisplayableBase.BUTTON_INDICATOR_X,
-                MASChessDisplayableBase.DRAWN_BUTTON_Y_BOT,
-                MASChessDisplayableBase.BUTTON_WIDTH,
-                MASChessDisplayableBase.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound
-            )
+            if practice_mode:
+                self._button_undo = MASButtonDisplayable.create_stb(
+                    _("Undo"),
+                    True,
+                    MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                    MASChessDisplayableBase.DRAWN_BUTTON_Y_BOT,
+                    MASChessDisplayableBase.BUTTON_WIDTH,
+                    MASChessDisplayableBase.BUTTON_HEIGHT,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=gui.activate_sound
+                )
 
-            #Setup the visible buttons list
-            self._visible_buttons = [
-                self._button_save,
-                self._button_undo,
-                self._button_giveup
-            ]
+                #Setup the visible buttons list
+                self._visible_buttons = [
+                    self._button_save,
+                    self._button_undo,
+                    self._button_giveup
+                ]
+
+            else:
+                self.visible_buttons = [
+                    self._button_save,
+                    self._button_giveup
+                ]
 
             self._visible_buttons_winner = [
                 self._button_done
@@ -2627,7 +2574,6 @@ init python:
                     "_button_undo": {
                         "conditional": (
                             "not is_game_over "
-                            "and practice_mode "
                             "and player_color == current_turn "
                             "and board.fullmove_number > 0 "
                             "and move_history"
@@ -2773,8 +2719,6 @@ init python:
                     self.board.fullmove_number = old_board.fullmove_number - 1
 
                     #Adjust MASPieces
-                    #TODO: There's likely a better way to do this which doesn't involve completely wiping and redrawing all
-                    #the pieces
                     self.update_pieces()
 
                     # Increment the undo counter
@@ -2790,6 +2734,61 @@ init python:
                         #user wishes to surrender
                         self.quit_game = True
                         return self._quitPGN(True)
+
+        def handle_player_move(self):
+            """
+            Manages player move
+            """
+            # sanity check
+            if self.is_game_over:
+                return
+
+            px, py = self.get_piece_pos()
+
+            move_str = None
+
+            if px is not None and py is not None and self.selected_piece is not None:
+                move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
+
+                #Promote if needed
+                if (
+                    chess.Move.from_uci(move_str + 'q') in self.possible_moves
+                    and self.get_piece_at(self.selected_piece[0], self.selected_piece[1]).get_type() == 'p'
+                    and (py == 0 or py == 7)
+                ):
+                    renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
+                    move_str += store.mas_chess.promote
+
+            if move_str is None:
+                return
+
+            if chess.Move.from_uci(move_str) in self.possible_moves:
+                self.__push_move(move_str)
+
+                #Setup Monika's go
+                if not self.is_game_over:
+                    self.set_button_states()
+                    self.start_monika_analysis()
+
+        def handle_monika_move(self):
+            # Poll Monika for moves if it's her turn
+            if not self.is_game_over:
+                #Queue a Moni move if this is implemented
+                monika_move = self.poll_monika_move()
+
+                if monika_move is not None:
+                    #Now verify legality
+                    monika_move_check = chess.Move.from_uci(monika_move)
+
+                    if self.board.is_legal(monika_move_check):
+                        #Monika is thonking
+                        renpy.pause(1.5)
+
+                        #Push her move
+                        self.__push_move(monika_move)
+
+                        #Set the buttons
+                        self.set_button_states()
 
         def _quitPGN(self, giveup):
             """
