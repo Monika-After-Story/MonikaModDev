@@ -34,12 +34,12 @@ label dev_chess_moves_test:
             $ starting_fen = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
         "White en passant.":
-            $ player_color = chess.BLACK
-            $ starting_fen = "8/8/8/3pP3/8/8/8/k6K b - d6 0 1"
+            $ player_color = chess.WHITE
+            $ starting_fen = "8/8/8/3pP3/8/8/8/k6K w - d6 0 1"
 
         "Black en passant.":
             $ player_color = chess.BLACK
-            $ starting_fen = "k6K/8/8/8/3Pp3/8/5Pp1/8 b - d6 0 1"
+            $ starting_fen = "k6K/8/8/8/3Pp3/8/5Pp1/8 b - d3 0 1"
 
     python:
         chess_displayable_obj = MASChessDisplayable(player_color=player_color, starting_fen=starting_fen, practice_mode=True)
