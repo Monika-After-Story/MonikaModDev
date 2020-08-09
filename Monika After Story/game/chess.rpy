@@ -1613,6 +1613,7 @@ init python:
             63: (7, 7)
         }
 
+        #Converts UCI alphabets to X Coords on the MAS Board
         UCI_ALPHA_TO_X_COORD = {
             'a': 0,
             'b': 1,
@@ -1624,16 +1625,6 @@ init python:
             'h': 7
         }
 
-        X_COORD_TO_UCI_ALPHA = {
-            0: 'a',
-            1: 'b',
-            2: 'c',
-            3: 'd',
-            4: 'e',
-            5: 'f',
-            6: 'g',
-            7: 'h'
-        }
         #Lookup for inverting y coords
         #NOTE: Yes, this is just 7 - old_y, but this is slightly more efficient since we always know y is between 0 and 7
         Y_INVERT_LOOKUP = {
@@ -1713,9 +1704,6 @@ init python:
             #Now handle setup for a potential engine
             self.additional_setup()
 
-            #Separate handling of music menu open because the songs store is for main renpy interaction
-            self.music_menu_open = False
-
             # Board for integration with python-chess.
             self.board = None
 
@@ -1748,6 +1736,14 @@ init python:
 
                 #New board, so white goes first
                 self.current_turn = chess.WHITE
+
+                #However, if we have a starting FEN, then we need to check who's move it is
+                if starting_fen is not None:
+                    ind_of_space = starting_fen.find(' ')
+
+                    #Verify validity of this and only set if we can. Otherwise we'll assume the stock order (white's turn)
+                    if ind_of_space > 0:
+                        self.current_turn = starting_fen[ind_of_space + 1 : ind_of_space + 2] == 'w'
 
                 # setup player color
                 self.player_color = player_color
@@ -2277,29 +2273,6 @@ init python:
                 self.selected_piece = None
                 self.possible_moves = set([])
                 return "mouse_button_up"
-
-            # KEYMAP workarounds:
-            if ev.type == pygame.KEYUP:
-                # music menu // muting
-                if ev.key == pygame.K_m:
-                    # muting
-                    if ev.mod & pygame.KMOD_SHIFT:
-                        mute_music()
-
-                    elif not self.music_menu_open:
-                        self.music_menu_open = True
-                        select_music()
-
-                    else: # the menu is already open
-                        self.music_menu_open = False
-
-                # volume increase
-                if ev.key in [pygame.K_PLUS, pygame.K_EQUALS, pygame.K_KP_PLUS]:
-                    inc_musicvol()
-
-                # volume decrease
-                if ev.key in [pygame.K_MINUS, pygame.K_UNDERSCORE, pygame.K_KP_MINUS]:
-                    dec_musicvol()
 
             return None
 

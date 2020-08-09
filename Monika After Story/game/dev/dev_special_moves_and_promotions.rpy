@@ -35,25 +35,25 @@ label dev_chess_moves_test:
 
         "White en passant.":
             $ player_color = chess.BLACK
-            $ starting_fen = "8/8/8/3pP3/8/8/8/k6K w - d6 0 1"
+            $ starting_fen = "8/8/8/3pP3/8/8/8/k6K b - d6 0 1"
 
-        # "Black en passant.":
-        #     $ player_color = chess.BLACK
-        #     $ starting_fen = "k6K/8/8/8/3Pp3/8/5Pp1/8 b - d6 0 1"
+        "Black en passant.":
+            $ player_color = chess.BLACK
+            $ starting_fen = "k6K/8/8/8/3Pp3/8/5Pp1/8 b - d6 0 1"
 
-    $ chess_displayable_obj = MASChessDisplayable(player_color=player_color, starting_fen=starting_fen, practice_mode=True)
+    python:
+        chess_displayable_obj = MASChessDisplayable(player_color=player_color, starting_fen=starting_fen, practice_mode=True)
+        chess_displayable_obj.show()
+        results = chess_displayable_obj.game_loop()
+        chess_displayable_obj.hide()
 
-    $ ui.add(chess_displayable_obj)
-
-    $ ui.interact(suppress_underlay=True)
-
-    m 1eua "Do you want to test anything else?"
+    m 1eua "Do you want to test anything else?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you want to test anything else?{fast}"
 
         "Yes.":
-            jump dev_chess_fen_test
+            jump dev_chess_moves_test
 
         "No.":
             return
