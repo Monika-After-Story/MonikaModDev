@@ -4049,7 +4049,7 @@ label greeting_back_from_hangout:
                     m 1ekc "Oh..."
                     m 2eka "Well, don't worry, [player]. I'm always here for you."
                     m "I'll always be your friend, no matter what."
-                "They're already my friend":
+                "They're already my friend.":
                     $ persistent._mas_pm_has_friends = True
                     m 1ekb "Oh, so you made a new friend without telling me."
                     m 1eka "That's okay though, I'm just happy you have someone to hang out with."
@@ -4057,7 +4057,7 @@ label greeting_back_from_hangout:
 
         m 6eub "Lets spend some more time together~"
 
-    elif mas_isMoniDis:
+    elif mas_isMoniDis(higher=True):
         m 2euc "Hello again..."
         m 2euc "I hope at least your friends don't feel you're mistreating them..."
 
