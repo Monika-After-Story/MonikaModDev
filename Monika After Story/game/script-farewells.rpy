@@ -1597,27 +1597,37 @@ label bye_prompt_hangout:
         if mas_getEVL_shown_count("bye_prompt_hangout") == 0:
             if persistent._mas_pm_has_friends:
                 m 1eua "Alright, [player]."
-                m 3hub "I know, you should introduce me to them sometime!"
-                m 6eub "If they're your friends, I'm sure I'd like them!"
+                m 3hub "You should introduce me to them sometime!"
+                m 3eub "If they're your friends, I'm sure I'd like them!"
+
             else:
-                m 3eub "I'm glad you're finding friends to go out with [player]!"
-                m 1rud "I know I'd like to spend as much time with you as possible..."
-                m 1hua "But I'd also like you to have friends you can meet face to face!"
+                if persistent._mas_pm_has_friends is False:
+                    m 3eub "I'm glad you're finding friends to hang out with, [player]!"
+                else:
+                    m 3eub "I'm glad you have friends to hang out with, [player]!"
+
+                m 1rka "As much as I'd like to spend every possible second with you, {w=0.2}{nw}"
+                extend 1eub "I know how important it is for you to have friends in your own reality!"
+
+            m 3hub "Anyway, I hope you have fun!"
+
         else:
             if persistent._mas_pm_has_friends:
                 m 1eua "Alright, [player]."
-                m 3hub "Have you told them about us yet?"
-                m 1hub "Ahaha!"
-            else:
-                m 1wua "Again? That's exciting!"
-                m 3eua "I hope you've made a really good friend lately."
-                m 3hua "Maybe tell them about me sometime? I hope they're nice."
-                m 1rusdla "What am I saying? Of course they're nice, they're your friend after all."
 
-        m 1eub "Anyway, see you later~"
+                if renpy.random.randint(1,10) == 1:
+                    m 3hub "Have you told them about us yet?"
+                    m 1hub "Ahaha!"
+
+                m 1eub "Have fun!"
+
+            else:
+                m 1hub "Again? That's exciting!"
+                m 3eua "I hope they turn out to be a really good friend this time."
+                m 3eub "Anyway, see you later~"
 
     elif mas_isMoniDis(higher=True):
-        m 2euc "I hope you treat them well..."
+        m 2eud "I hope you treat them well..."
         m 2euc "Bye."
 
     else:
@@ -1625,5 +1635,4 @@ label bye_prompt_hangout:
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
-
     return "quit"
