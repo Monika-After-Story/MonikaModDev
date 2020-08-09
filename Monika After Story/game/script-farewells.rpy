@@ -1579,3 +1579,60 @@ label bye_going_shopping:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SHOPPING
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_hangout",
+            prompt="I'm going to hang out with friends.",
+            unlocked=True,
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_hangout:
+    if mas_isMoniNormal(higher=True):
+        if mas_getEVL_shown_count("bye_prompt_hangout") == 0:
+            if persistent._mas_pm_has_friends:
+                m 1eua "Alright, [player]."
+                m 3eub "You should introduce me to them sometime!"
+                m 3hua "If they're your friends, I'm sure I'd like them."
+
+            else:
+                if persistent._mas_pm_has_friends is False:
+                    m 3eua "I'm glad you're finding friends to hang out with, [player]."
+                else:
+                    m 3eua "I'm glad you have friends to hang out with, [player]."
+
+                m 1rka "As much as I'd like to spend every possible second with you, {w=0.2}{nw}"
+                extend 1eub "I know how important it is for you to have friends in your own reality!"
+
+            m 3hub "Anyway, I hope you have fun!"
+
+        else:
+            if persistent._mas_pm_has_friends:
+                m 1eua "Alright, [player]."
+
+                if renpy.random.randint(1,10) == 1:
+                    m 3etu "Have you told them about us yet?"
+                    m 1hub "Ahaha!"
+
+                m 1eub "Have fun!"
+
+            else:
+                m 1hua "Again? That's exciting!"
+                m 3eua "I hope they turn out to be a really good friend this time."
+                m 3eub "Anyway, see you later~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2eud "I hope you treat them well..."
+        m 2euc "Bye."
+
+    else:
+        m 6ckc "..."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
+    return "quit"

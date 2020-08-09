@@ -55,6 +55,7 @@ init -1 python in mas_greetings:
     TYPE_RESTART = "restart"
     TYPE_SHOPPING = "shopping"
     TYPE_WORKOUT = "workout"
+    TYPE_HANGOUT = "hangout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -4050,6 +4051,73 @@ label greeting_back_from_shopping:
         $ _history_list.pop()
         m 6ekc "You know what? Nevermind. {w=0.2}{nw}"
         extend 6dkc "I'm just tired."
+
+    else:
+        m 6ckc "..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_hangout",
+            category=[store.mas_greetings.TYPE_HANGOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_hangout:
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_has_friends:
+            m 1eua "Welcome back, [player]."
+            m 3hub "I hope you had a good time!"
+
+            $ anyway_lets = "Let's"
+
+        else:
+            m 3eub "Welcome back, [player]."
+
+            m 1eua "Did you make a new friend?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you make a new friend?{fast}"
+
+                "Yes.":
+                    m 1hub "That's amazing!"
+                    m 1eua "It makes me so happy knowing you have someone to hang out with."
+                    m 3hub "I hope you're able to spend more time with them in the future!"
+                    $ persistent._mas_pm_has_friends = True
+
+                "No...":
+                    m 1ekd "Oh..."
+                    m 3eka "Well, don't worry, [player]. {w=0.2}I'll always be your friend, no matter what."
+                    m 3ekd "...And don't be afraid to try again with someone else."
+                    m 1hub "I'm sure there's someone out there who'd be happy to call you their friend!"
+
+                "They're already my friend.":
+                    if persistent._mas_pm_has_friends is False:
+                        m 1rka "Oh, so you made a new friend without telling me..."
+                        m 1hub "That's okay! I'm just happy you have someone to hang out with."
+                    else:
+                        m 1hub "Oh, okay!"
+                        m 3eua "...We haven't really talked about your other friends before, so I wasn't sure if this was a new friend or not."
+                        m 3eub "But either way, I'm just glad you have friends in your reality to hang out with!"
+
+                    m 3eua "I hope you're able to spend time with them often."
+                    $ persistent._mas_pm_has_friends = True
+
+            $ anyway_lets = "Anyway, let's"
+
+        m 1eua "[anyway_lets] spend some more time together~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "Hello again, [player]."
+        m 2eud "I hope you had a good time hanging out with your friends."
+        if renpy.random.randint(1,5) == 1:
+            m 2rkc "{cps=*2}I wonder what that's like{/cps}{nw}"
+            $ _history_list.pop()
 
     else:
         m 6ckc "..."
