@@ -2771,6 +2771,9 @@ init python:
                     self.start_monika_analysis()
 
         def handle_monika_move(self):
+            """
+            Manages Monika's move
+            """
             # Poll Monika for moves if it's her turn
             if not self.is_game_over:
                 #Queue a Moni move if this is implemented
