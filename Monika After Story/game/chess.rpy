@@ -1546,7 +1546,7 @@ init python:
         PROMOLIST = ["q","r","n","b","r","k"]
 
         #Converson map to change chess.board positions to ones for our displayable
-        PIECE_MAP_TO_BOARD_COORD_LOOKUP = {
+        SQUARE_TO_BOARD_COORD_LOOKUP = {
             0: (0, 0),
             1: (1, 0),
             2: (2, 0),
@@ -1624,6 +1624,16 @@ init python:
             'h': 7
         }
 
+        X_COORD_TO_UCI_ALPHA = {
+            0: 'a',
+            1: 'b',
+            2: 'c',
+            3: 'd',
+            4: 'e',
+            5: 'f',
+            6: 'g',
+            7: 'h'
+        }
         #Lookup for inverting y coords
         #NOTE: Yes, this is just 7 - old_y, but this is slightly more efficient since we always know y is between 0 and 7
         Y_INVERT_LOOKUP = {
@@ -2008,7 +2018,7 @@ init python:
             for position, Piece in self.board.piece_map().iteritems():
                 MASPiece.fromPiece(
                     Piece,
-                    *(MASChessDisplayableBase.PIECE_MAP_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
+                    *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
                 )
 
         def game_loop(self):
@@ -2129,6 +2139,22 @@ init python:
                 #And the to highlight
                 renderer.blit(highlight, MASChessDisplayableBase.board_coords_to_screen_coords(*(self.last_move_dst + (True,))))
 
+            #Do possible move highlighting here
+            if self.possible_moves:
+                #There's possible moves, we need to filter things out
+                possible_moves_to_draw = filter(
+                    lambda x: MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[x.from_square] == (self.selected_piece[0], self.selected_piece[1]),
+                    self.possible_moves
+                )
+
+                for move in possible_moves_to_draw:
+                    renderer.blit(
+                        highlight_green,
+                        MASChessDisplayableBase.board_coords_to_screen_coords(
+                            *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[move.to_square] + (True,))
+                        )
+                    )
+
             #Draw the pieces on the Board renderer.
             for piece_location, Piece in self.piece_map.iteritems():
                 #Unpack the location
@@ -2162,31 +2188,6 @@ init python:
 
                 possible_move_str = None
                 blit_rendered = False
-
-                # FIXME: I think this part doesn't work
-                #TODO: Filter possible moves by selected piece
-                if self.possible_moves:
-                    possible_move_str = "{0}{1}".format(
-                        MASChessDisplayableBase.coords_to_uci(self.selected_piece[0], self.selected_piece[1]),
-                        MASChessDisplayableBase.coords_to_uci(ix_orig, iy_orig)
-                    )
-
-                    if chess.Move.from_uci(possible_move_str) in self.possible_moves:
-                        renderer.blit(highlight_yellow, (x, y))
-                        blit_rendered = True
-
-                    # force checking for promotion
-                    if not blit_rendered and (iy == 0 or iy == 7):
-                        index = 0
-                        while (not blit_rendered and index < len(MASChessDisplayableBase.PROMOLIST)):
-                            if (
-                                chess.Move.from_uci(possible_move_str + MASChessDisplayableBase.PROMOLIST[index])
-                                in self.possible_moves
-                            ):
-                                renderer.blit(highlight_yellow, (x, y))
-                                blit_rendered = True
-
-                            index += 1
 
                 if piece is None:
                     continue
