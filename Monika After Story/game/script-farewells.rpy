@@ -1616,7 +1616,7 @@ label bye_prompt_hangout:
                 m 1eua "Alright, [player]."
 
                 if renpy.random.randint(1,10) == 1:
-                    m 3eta "Have you told them about us yet?"
+                    m 3etu "Have you told them about us yet?"
                     m 1hub "Ahaha!"
 
                 m 1eub "Have fun!"
