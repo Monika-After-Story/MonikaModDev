@@ -129,30 +129,6 @@ init python in mas_chess:
     #   (almost certanilky player's fault)
     QF_EDIT_NO = 5
 
-    ##### dialogue constants
-
-    # ofcnot
-    DLG_QF_LOST_OFCN_ENABLE = True
-    DLG_QF_LOST_OFCN_CHOICE = _("Of course not!")
-
-    # maybe
-    DLG_QF_LOST_MAY_ENABLE = True
-    DLG_QF_LOST_MAY_CHOICE = _("Maybe...")
-
-    # accident
-    DLG_QF_LOST_ACDNT_ENABLE = True
-    DLG_QF_LOST_ACDNT_CHOICE = _("It was an accident!")
-
-    # base part of label for variable chess strength when monika wins
-    DLG_MONIKA_WIN_BASE = "mas_chess_dlg_game_monika_win_{0}"
-
-    # base part of label for variable chess strength when monika wins by
-    # early surrender
-    DLG_MONIKA_WIN_SURR_BASE = "mas_chess_dlg_game_monika_win_surr_{0}"
-
-    # base part of label for variable chess strength when monika loses
-    DLG_MONIKA_LOSE_BASE = "mas_chess_dlg_game_monika_lose_{0}"
-
 
 ## functions ==================================================================
     def _checkInProgressGame(pgn_game, mth):
@@ -867,16 +843,17 @@ label mas_chess_save_migration:
         if game_count > 1:
             if renpy.seen_label("mas_chess_save_multi_dlg"):
                 $ pick_text = _("You still need to pick a game to keep.")
+
             else:
                 label mas_chess_save_multi_dlg:
-                    m 1m "So I've been thinking, [player]..."
-                    m "Most people who leave in the middle of a chess game don't come back to start a new one."
-                    m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
-                    m 1p "And since we have [game_count] games in progress..."
-                    m 1g "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
+                    m 1eua "So I've been thinking, [player]..."
+                    m 1euc "Most people who leave in the middle of a chess game don't come back to start a new one."
+                    m 3eud "...So it makes no sense for me to keep track of more than one unfinished game between us."
+                    m 1rka "And since we have [game_count] games in progress..."
+                    m 3euc "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
                     $ pick_text = _("Pick a game you'd like to keep.")
 
-            show monika 1e at t21
+            show monika 1euc at t21
             $ renpy.say(m, pick_text, interact=False)
 
             call screen mas_gen_scrollable_menu(pgn_games, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
@@ -918,15 +895,15 @@ label mas_chess_dlg_quicksave_lost:
         persistent._mas_chess_dlg_actions[mas_chess.QS_LOST] += 1
         qs_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QS_LOST]
 
-    m 2lksdlb "Uh, [player]...{w=0.5} It seems I messed up in saving our last game, and now I can't open it anymore."
+    m 2lksdlb "Uh, [player]...{w=0.5} I think I messed up in saving our last game, and now I can't open it anymore."
 
     if qs_gone_count == 2:
-        m 1lksdld "I'm really, really sorry, [player]."
-        m "I hope you can forgive me."
+        m 1lksdld "I'm really, really sorry, [player]..."
         show monika 1ekc
         pause 1.0
-        m 1dsc "I'll make it up to you..."
-        m 3eua "...by starting a new game!"
+        m 1eka "But don't worry, I'll make it up to you...{w=0.3}{nw}"
+        extend 3hua "by starting a new game!"
+        m 3hub "Ahaha~"
 
     elif qs_gone_count == 3:
         m 1lksdlc "I'm so clumsy, [player]...{w=0.3} I'm sorry."
@@ -934,13 +911,13 @@ label mas_chess_dlg_quicksave_lost:
 
     elif qs_gone_count % 5 == 0:
         m 2esc "This has happened [qs_gone_count] times now..."
-        m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}."
-        m 1esd "Anyway..."
+        m 2tsc "I wonder if this is a side effect of {i}someone{/i} trying to edit the saves.{w=1}.{w=1}."
+        m 7rsc "Anyway..."
         m 1esc "Let's start a new game."
 
     else:
         m 1lksdlc "I'm sorry..."
-        m 3eksdla "Let's start a new game instead."
+        m 3eka "Let's start a new game instead."
 
     return None
 
@@ -948,24 +925,47 @@ label mas_chess_dlg_quicksave_lost:
 ### quickfile lost
 # main label for quickfile lost flow
 label mas_chess_dlg_quickfile_lost:
-    m 2lksdla "Well,{w=0.3} this is embarrassing."
+    m 2lksdla "Well this is embarrassing..."
     m 2ekc "I could have sworn that we had an unfinished game, but I can't find the save file."
 
     m 2tkc "Did you mess with the saves, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you mess with the saves, [player]?{fast}"
-        "Of course not!" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
-            jump mas_chess_dlg_quickfile_lost_ofcoursenot
 
-        "Maybe..." if mas_chess.DLG_QF_LOST_MAY_ENABLE:
-            jump mas_chess_dlg_qf_lost_may_start
+        "I deleted the save.":
+            jump mas_chess_dlg_quickfile_lost_deleted
 
-        "It was an accident!" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
+        "It was an accident!":
             jump mas_chess_dlg_quickfile_lost_accident
 
+        "Maybe...":
+            jump mas_chess_dlg_qf_lost_may_start
 
-## of course not flow
+        "Of course not!":
+            jump mas_chess_dlg_quickfile_lost_ofcoursenot
+
+
+#Player deleted the saves
+label mas_chess_dlg_quickfile_lost_deleted:
+    m 1eka "Thanks for being honest with me, [player]."
+
+    m 3ekd "Did you not want to continue that game?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Did you not want to continue that game?{fast}"
+
+        "Yeah.":
+            m 1eka "I understand, [player]."
+            m 1hua "Let's start a new game~"
+
+        "No.":
+            m 1etc "Oh?"
+            m 1rsc "I guess you just deleted it by mistake then."
+            m 1eua "Let's just start a new game."
+    return
+
+#Of course not flow
 label mas_chess_dlg_quickfile_lost_ofcoursenot:
     python:
         persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_OFCN] += 1
@@ -988,12 +988,6 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
         m 1esc "Whatever.{w=0.5} Let's just play a new game."
 
     elif qf_gone_count >= 6:
-        #TODO: we need to have a separate version of this event if your affection
-        #is high enough. Basically you should only reach the bad end if
-        #you've been a dick for a while
-        #NOTE: this makes sense compared to the go_ham event since
-        #its just throwing away stuff instead of cheating
-        #disable chess forever!
         python:
             mas_loseAffection(modifier=10)
             #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
@@ -1112,17 +1106,15 @@ label mas_chess_dlg_quickfile_lost_accident:
 
     elif qf_gone_count >= 3:
         $ persistent._mas_chess_skip_file_checks = True
-
         m 1eka "I had a feeling this would happen again."
-        m 3hub "So I kept a backup of our save!"
-        m 1eua "Now we can continue our game."
+        m 3tub "So I kept a backup of our save!"
+        m 1hua "Now we can continue our game~"
         return store.mas_chess.CHESS_GAME_BACKUP
 
     else:
-        m 1eka "[player]..."
-        m "That's okay.{w=0.3} Accidents happen."
+        m 1ekc "[player]...{w=0.3} {nw}"
+        extend 1eka "That's okay.{w=0.3} Accidents happen."
         m 1eua "Let's play a new game instead."
-
     return None
 
 ### quickfile edited
@@ -1134,6 +1126,7 @@ label mas_chess_dlg_quickfile_edited:
     $ _history_list.pop()
     menu:
         m "Did you edit the save file?{fast}"
+
         "Yes.":
             jump mas_chess_dlg_quickfile_edited_yes
 
@@ -1148,8 +1141,8 @@ label mas_chess_dlg_quickfile_edited_yes:
         qf_edit_count = persistent._mas_chess_dlg_actions[mas_chess.QF_EDIT_YES]
 
     if qf_edit_count == 1:
-        m 2dsc "I'm disappointed in you."
-        m 1euc "But I'm glad that you were honest with me."
+        m 1dsc "I'm disappointed in you."
+        m 1eka "But I'm glad that you were honest with me."
 
         # we want a timed menu here. Let's give the player 5 seconds to say sorry
         show screen mas_background_timed_jump(5, "mas_chess_dlg_quickfile_edited_yes.game_ruined")
@@ -1174,8 +1167,8 @@ label mas_chess_dlg_quickfile_edited_yes:
             persistent._mas_chess_timed_disable = datetime.datetime.now()
             mas_loseAffection(modifier=0.5)
 
-        m 2dfc "I am incredibly disappointed in you."
-        m 2rfc "I don't want to play chess right now."
+        m 2dfc "I am incredibly disappointed in you..."
+        m 2rfc "Let's play chess some other time.{w=0.2} I don't feel like playing right now."
         return True
 
     else:
@@ -1184,7 +1177,7 @@ label mas_chess_dlg_quickfile_edited_yes:
 
         m 2dsc "I'm not surprised..."
         m 2esc "But I am prepared."
-        m "I kept a backup of our game just in case you did this again."
+        m 7esc "I kept a backup of our game just in case you did this again."
         m 1esa "Now let's finish this game."
         return store.mas_chess.CHESS_GAME_BACKUP
 
@@ -1200,8 +1193,9 @@ label mas_chess_dlg_quickfile_edited_no:
     if qf_edit_count == 1:
         $ mas_loseAffection()
 
-        m 1ekc "I see."
-        m "The save file looks different than how I last remembered it, but maybe that's just my memory failing me."
+        m 1dsc "Hmm..."
+        m 1etc "The save file looks different from how I last remembered it,{w=0.2} {nw}"
+        extend 1rksdlc "{nw}but maybe that's just my memory failing me..."
         m 1eua "Let's continue this game."
         return store.mas_chess.CHESS_GAME_FILE
 
@@ -1217,10 +1211,10 @@ label mas_chess_dlg_quickfile_edited_no:
         $ mas_loseAffection(modifier=3)
         m 2dfc "[player]..."
         m 2dftdc "I kept a backup of our game.{w=0.5} I know you edited the save file."
-        m 2dftsc "I just-"
+        m 6dktuc "I just-"
         $ _history_list.pop()
-        m 6ektsc "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
-        m 6rktsc "..."
+        m 6ektud "I just{fast} can't believe you would cheat and {i}lie{/i} to me..."
+        m 6dktuc "..."
 
         #NOTE: This is the ultimate choice, it dictates whether we delete everything or not
         show screen mas_background_timed_jump(3, "mas_chess_dlg_quickfile_edited_no.menu_silent")
@@ -1237,8 +1231,8 @@ label mas_chess_dlg_quickfile_edited_no:
                 pause 1.0
                 show monika 2ektsc
                 pause 1.0
-                m "I forgive you, [player], but please don't do this to me again."
-                m 2lktsc "..."
+                m 6ektpc "I forgive you, [player], but please don't do this to me again."
+                m 2dktdc "..."
                 return store.mas_chess.CHESS_GAME_BACKUP
 
             "...":
@@ -1246,37 +1240,26 @@ label mas_chess_dlg_quickfile_edited_no:
                     hide screen mas_background_timed_jump
                     jump mas_chess_dlg_pre_go_ham
 
-# 3rd time no edit, sorry, edit qs
+#3rd time no edit, sorry, edit qs
 label mas_chess_dlg_quickfile_edited_no_quicksave:
     python:
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection()
 
     m 2dfc "[player]..."
-    m 2efc "I see you've edited my backup saves."
-    m 2lfc "If you want to be like that right now, then we'll play chess some other time."
+    m 2tfc "I see you've edited my backup saves."
+    m 2lfd "If you want to be like that right now, then we'll play chess some other time."
     return True
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_pre_go_ham:
     python:
-        # forever remember
+        #Forever remember
         persistent._mas_chess_mangle_all = True
         persistent.autoload = "mas_chess_go_ham_and_delete_everything"
 
-    #TODO: similar to chess disable, we need 2 versions of this. With a certain
-    #amount of affection, you really should get a 2nd chance.
-    #i think what we can do here is do a large subtract off affection
-    #(maybe like -200/300 or something) and then if you are below a certain
-    #amount then you get the bad end, otherwise we jump to the
-    #3rd time no edit, sorry label.
-    #NOTE: actually i'm not 100% sure on this, lets leave it up to debate rn
-    #TODO: actaully, we should change some of this dialogue to make it more
-    #obvious that the player violated trust
-    #TODO: also we should like do something here where if the player
-    #quits during this time, we delete or jump into some other flow
     m 6ektsc "I can't trust you anymore."
-    m "Goodbye, [player].{nw}"
+    m 6dktsd "Goodbye, [player].{nw}"
 
     # do some permanent stuff
 label mas_chess_go_ham_and_delete_everything:
@@ -1298,14 +1281,6 @@ label mas_chess_go_ham_and_delete_everything:
         # now glitch a bunch of files
         for filename in mas_chess.gt_files:
             mas_root.mangleFile(gamedir + filename)
-
-        # delete her character file
-        try:
-            os.remove(
-                os.path.normcase(config.basedir + "/characters/monika.chr")
-            )
-        except:
-            pass
 
         #Delete persistent values
         #NOTE: SUPER DANGEROUS, make backups before testing
