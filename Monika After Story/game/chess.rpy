@@ -1803,7 +1803,7 @@ init python:
 
             self.__push_move(move_str)
 
-        def handle_player_move(self):
+        def handle_player_move(self, *args):
             """
             Handles the player's move
 
@@ -2058,7 +2058,7 @@ init python:
                 )
 
             #Do possible move highlighting here
-            if self.possible_moves:
+            if self.selected_piece and self.possible_moves:
                 #There's possible moves, we need to filter things out
                 possible_moves_to_draw = filter(
                     lambda x: MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[x.from_square] == (self.selected_piece[0], self.selected_piece[1]),
@@ -2297,6 +2297,7 @@ init python:
                 False - black
             symbol - letter symbol representing the piece. If capital, the piece is white
             piece_map - the map containing all the pieces (the MASPiece object will be stored in it)
+            y_offset - Offset by which to display the piece
         """
 
         #Default base piece filepath
@@ -2336,6 +2337,8 @@ init python:
 
             #Store the internal reference to this piece's image fp for use in rendering
             self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[color], symbol))
+
+            self.y_offset = 0
 
             #And add it to the piece map
             piece_map[(posX, posY)] = self
@@ -2729,6 +2732,10 @@ init python:
                     and self.get_piece_at(self.selected_piece[0], self.selected_piece[1]).get_type() == 'p'
                     and (py == 0 or py == 7)
                 ):
+                    #Set selected piece to None to drop it
+                    self.selected_piece = None
+
+                    #Now call the promotion screen
                     renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
                     move_str += store.mas_chess.promote
 
