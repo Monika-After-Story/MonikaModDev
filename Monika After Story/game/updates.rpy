@@ -416,6 +416,9 @@ label v0_11_4(version="v0_11_4"):
         }
 
         persistent._mas_chess_stats.update(new_stats)
+
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
     return
 
 #0.11.3

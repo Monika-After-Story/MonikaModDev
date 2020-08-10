@@ -230,8 +230,7 @@ label mas_farewell_start:
 ###### BEGIN FAREWELLS ########################################################
 ## FARE WELL RULES:
 # unlocked - True means this farewell is ready for selection
-# random - randoms are used in teh default farewell action
-# pool - pooled ones are selectable in the menu
+# pool - pooled ones are selectable in the menu, if non-pool, it is assumed available in random selection
 # rules - Dict containing different rules(check event-rules for more details)
 ###
 
@@ -241,7 +240,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
-            random=True,
             conditional="mas_getSessionLength() <= datetime.timedelta(minutes=20)",
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -260,8 +258,7 @@ init 5 python:
         Event(
             persistent.farewell_database,
             eventlabel="bye_goodbye",
-            unlocked=True,
-            random=True
+            unlocked=True
         ),
         code="BYE"
     )
@@ -288,7 +285,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_sayanora",#sayanora? yes
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -304,7 +300,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -320,7 +315,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -337,7 +331,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
-            random=True,
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="BYE"
@@ -347,6 +340,25 @@ init 5 python:
 label bye_take_care:
     m 1eua "Don't forget that I always love you, [player]~"
     m 1hub "Take care!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_leaving_already_2",
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        code="BYE"
+    )
+
+label bye_leaving_already_2:
+    m 1ekc "Aww, leaving already?"
+    m 1eka "It's really sad whenever you have to go..."
+    m 3hubsa "I love you so much [player]!"
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubsb "Never forget that!"
     return 'quit'
 
 init 5 python:
@@ -681,12 +693,12 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
-# init 5 python:
-#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),code="BYE")
+init 5 python:
+    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", unlocked=True, aff_range=(mas_aff.HAPPY, None)), code="BYE")
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
-    m 1hua "Don't forget about me, okay?"
+    m 3kua "Don't forget about me, okay?~"
     return 'quit'
 
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
@@ -1531,3 +1543,96 @@ label bye_prompt_workout:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=4)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORKOUT
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_going_shopping",
+            prompt="I'm going shopping.",
+            unlocked=True,
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_going_shopping:
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Oh, going to do some shopping, [player]?"
+
+        if mas_getEVL_shown_count("bye_going_shopping") == 0 or renpy.random.randint(1,10) == 1:
+            m 1eua "I'd love if we could go to the mall together sometime."
+            m 3rua "You could help me try out all kinds of different outfits...{w=0.2}{nw}"
+            extend 3tuu "but I might need help with the zippers."
+            m 1hublb "Ahaha! See you soon~"
+
+        else:
+            m 3eua "See you soon."
+
+    elif mas_isMoniBroken():
+        m 6ckc "..."
+
+    else:
+        m 2eud "Okay [player], see you soon."
+
+    #TODO: Moni comes shopping with you(?)
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SHOPPING
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_hangout",
+            prompt="I'm going to hang out with friends.",
+            unlocked=True,
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_hangout:
+    if mas_isMoniNormal(higher=True):
+        if mas_getEVL_shown_count("bye_prompt_hangout") == 0:
+            if persistent._mas_pm_has_friends:
+                m 1eua "Alright, [player]."
+                m 3eub "You should introduce me to them sometime!"
+                m 3hua "If they're your friends, I'm sure I'd like them."
+
+            else:
+                if persistent._mas_pm_has_friends is False:
+                    m 3eua "I'm glad you're finding friends to hang out with, [player]."
+                else:
+                    m 3eua "I'm glad you have friends to hang out with, [player]."
+
+                m 1rka "As much as I'd like to spend every possible second with you, {w=0.2}{nw}"
+                extend 1eub "I know how important it is for you to have friends in your own reality!"
+
+            m 3hub "Anyway, I hope you have fun!"
+
+        else:
+            if persistent._mas_pm_has_friends:
+                m 1eua "Alright, [player]."
+
+                if renpy.random.randint(1,10) == 1:
+                    m 3etu "Have you told them about us yet?"
+                    m 1hub "Ahaha!"
+
+                m 1eub "Have fun!"
+
+            else:
+                m 1hua "Again? That's exciting!"
+                m 3eua "I hope they turn out to be a really good friend this time."
+                m 3eub "Anyway, see you later~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2eud "I hope you treat them well..."
+        m 2euc "Bye."
+
+    else:
+        m 6ckc "..."
+
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
+    return "quit"
