@@ -633,7 +633,11 @@ label game_chess:
             m 3hub "Congratulations [player], you won!"
 
             $ undo_count = new_pgn_game.headers.get("UndoCount", 0)
-            if undo_count <= 5:
+            if not undo_count:
+                m 1wuo "You didn't undo a single move!"
+                m 3hub "That's amazing, [player]~"
+
+            elif undo_count <= 5:
                 m 1hua "You only undid [undo_count] times too, great job."
 
             elif undo_count <= 10:
