@@ -408,6 +408,14 @@ label v0_11_4(version="v0_11_4"):
             if bad_evl in persistent._mas_player_derandomed:
                 mas_loseAffection(5)
 
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
     return
 
 #0.11.3
