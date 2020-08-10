@@ -1911,11 +1911,11 @@ init python:
             self.last_move_src = (x1, y1)
             self.last_move_dst = (x2, y2)
 
-            #Check if we need to redraw MASPieces
-            self.check_redraw()
-
             #We push the move here because we need to update fens and game history
             self.board.push_uci(move_str)
+
+            #Check if we need to redraw MASPieces
+            self.check_redraw()
 
             #'not self.current_turn' is the equivalent of saying the current turn is Black's turn, as chess.BLACK is False
             if not self.current_turn:
