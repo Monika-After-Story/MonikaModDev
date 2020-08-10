@@ -567,17 +567,12 @@ label game_chess:
                 m 1eka "I hope you don't get frustrated when you play with me."
                 m 3ekb "It really means a lot to me that you keep playing if you do~"
                 m 3hua "Let's play again soon, alright?"
-                #Given this is early surrender, we can assume the player may not want to play again
-                return
 
             else:
                 m 1ekc "Giving up, [player]?"
                 m 1eub "Alright, but even if things aren't going too well, it's more fun to play to the end!"
                 m 3eka "In the end, I'm just happy to be spending time with you~"
                 m 1eua "Anyway..."
-                #Since there was some work done, it's pretty likely you tried and put yourself in a losing position
-                #So you're going to try again
-                jump .play_again
 
         #Monika wins by checkmate
         else:
