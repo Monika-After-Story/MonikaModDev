@@ -128,8 +128,6 @@ init python in mas_chess:
     #   (almost certanilky player's fault)
     QF_EDIT_NO = 5
 
-
-## functions ==================================================================
     def _checkInProgressGame(pgn_game, mth):
         """
         Checks if the given pgn game is valid and in progress.
@@ -252,6 +250,13 @@ init python in mas_chess:
         if loaded_game.headers["White"] == store.mas_monika_twitter_handle:
             return store.chess.BLACK
         return store.chess.WHITE
+
+    def enqueue_output(out, queue, lock):
+        for line in iter(out.readline, b''):
+            lock.acquire()
+            queue.appendleft(line)
+            lock.release()
+        out.close()
 
 label game_chess:
     m 1eub "You want to play chess? Alright~"
@@ -555,11 +560,24 @@ label game_chess:
 
         #Monika wins by player surrender
         if is_surrender:
-            m 1ekc "Don't give up so easily..."
-            m 1eka "I'm sure if you keep trying, you can beat me."
-            m 1ekc "..."
-            m 1eka "I hope you don't get frustrated when you play with me."
-            m 3ekb "It really means a lot to me that you keep playing if you do~"
+            if num_turns < 5:
+                m 1ekc "Don't give up so easily..."
+                m 1eka "I'm sure if you keep trying, you can beat me."
+                m 1ekc "..."
+                m 1eka "I hope you don't get frustrated when you play with me."
+                m 3ekb "It really means a lot to me that you keep playing if you do~"
+                m 3hua "Let's play again soon, alright?"
+                #Given this is early surrender, we can assume the player may not want to play again
+                return
+
+            else:
+                m 1ekc "Giving up, [player]?"
+                m 1eub "Alright, but even if things aren't going too well, it's more fun to play to the end!"
+                m 3eka "In the end, I'm just happy to be spending time with you~"
+                m 1eua "Anyway..."
+                #Since there was some work done, it's pretty likely you tried and put yourself in a losing position
+                #So you're going to try again
+                jump .play_again
 
         #Monika wins by checkmate
         else:
@@ -601,13 +619,21 @@ label game_chess:
 
     #Player wins
     else:
-        $ persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
+        python:
+            player_win_quips = [
+                "I'm so proud of you, [player]!",
+                "I'm proud of you, [player]!~",
+                "Well played, [player]!",
+                "It makes me really happy to see you win~",
+                "I'm happy to see you win!"
+            ]
+            persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
 
-        #Give player XP if this is their first win
-        if not persistent.ever_won['chess']:
-            $ persistent.ever_won['chess'] = True
+            #Give player XP if this is their first win
+            if not persistent.ever_won['chess']:
+                persistent.ever_won['chess'] = True
 
-        # main dialogue
+        #Main dialogue
         if practice_mode:
             m 3hub "Congratulations [player], you won!"
 
@@ -622,13 +648,13 @@ label game_chess:
                 m 1eka "You undid [undo_count] moves though.{w=0.3} {nw}"
                 extend 3eua "But I'm sure if we keep practicing, we can get that number lower."
 
-            m 3hua "I'm proud of you, [player]!~"
+            m 3hua "[random.choice(player_win_quips)]"
 
         else:
             m 3hub "Great job, [player], you won!"
             m 3eua "No matter the outcome, I'll always enjoy playing with you."
             m 1hua "Let's play again soon, alright?"
-            m 3hub "It makes me happy to see you win~"
+            m 3hub "[random.choice(player_win_quips)]"
 
         m 1eua "Anyway..."
 
@@ -784,6 +810,7 @@ label mas_chess_dlg_game_monika_wins_often:
     m 1eka "Sorry you didn't win this time, [player]..."
     m 1ekc "I hope you'll at least keep trying though."
     m 1eua "Let's play again soon, okay?"
+    m 1hua "You'll beat me someday~"
     return
 
 label mas_chess_dlg_game_monika_wins_sometimes:
@@ -1390,45 +1417,6 @@ init python:
         except:
             store.mas_utils.writelog("Chess game folder could not be created '{0}'\n".format(file_path))
 
-    def enqueue_output(out, queue, lock):
-        for line in iter(out.readline, b''):
-            lock.acquire()
-            queue.appendleft(line)
-            lock.release()
-        out.close()
-
-    def get_mouse_pos():
-        """
-        Gets the mouse position in terms of physical screen size
-
-        OUT:
-            tuple, (x, y) coordinates representing the mouse position
-        """
-        virtual_width = config.screen_width * 10000
-        virtual_height = config.screen_height * 10000
-        physical_width, physical_height = renpy.get_physical_size()
-        dw, dh = pygame.display.get_surface().get_size()
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-
-        #Converts the mouse coordinates from pygame's relative screen size coords (based on config vars) to physical size
-        #NOTE: THIS IS NEEDED FOR UI SCALING OTHER THAN 100%
-        mouse_x = (mouse_x * physical_width) / dw
-        mouse_y = (mouse_y * physical_height) / dh
-
-        r = None
-        #This part calculates the "true" position, it can handle weirdly sized screens
-        if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
-            r = virtual_width / physical_width
-            mouse_y -= (physical_height - virtual_height / r) / 2
-        else:
-            r = virtual_height / physical_height
-            mouse_x -= (physical_width - virtual_width / r) / 2
-
-        newx = (mouse_x * r) / 10000
-        newy = (mouse_y * r) / 10000
-
-        return (newx, newy)
-
 
     #START: DISPLAYABLES AND RELATED CLASSES
     class MASChessDisplayableBase(renpy.Displayable):
@@ -2013,7 +2001,7 @@ init python:
             highlight_magenta = renpy.render(MASChessDisplayableBase.PIECE_HIGHLIGHT_MAGENTA_IMAGE, 1280, 720, st, at)
 
             #Get our mouse pos
-            mx, my = get_mouse_pos()
+            mx, my = mas_getMousePos()
 
             #Since different buttons show during the game vs post game, we'll sort out what's shown here
             visible_buttons = list()
@@ -2154,7 +2142,7 @@ init python:
                 #Draw the selected piece.
                 piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
 
-                px, py = get_mouse_pos()
+                px, py = mas_getMousePos()
                 px -= MASChessDisplayableBase.PIECE_WIDTH / 2
                 py -= MASChessDisplayableBase.PIECE_HEIGHT / 2
                 piece.render(width, height, st, at, px, py, renderer)
@@ -2217,7 +2205,7 @@ init python:
             OUT:
                 Tuple of coordinates (x, y) marking where the piece is
             """
-            mx, my = get_mouse_pos()
+            mx, my = mas_getMousePos()
             mx -= MASChessDisplayableBase.BASE_PIECE_X
             my -= MASChessDisplayableBase.BASE_PIECE_Y
             px = mx / MASChessDisplayableBase.PIECE_WIDTH
@@ -2563,12 +2551,17 @@ init python:
                 player_move_prompts=[
                     "It's your turn, [player].",
                     "Your move, [player]~",
-                    "What will you do, I wonder..."
+                    "What will you do, I wonder...",
+                    "I'm enjoying this game.",
+                    "Alright, your turn, [player]~",
+                    "You got this, [player]!"
                 ],
                 monika_move_quips=[
                     "Alright, let's see...",
                     "Okay, my turn...",
-                    "Let's see what I can do."
+                    "Let's see what I can do.",
+                    "I think I'll try this...",
+                    "Okay, I'll move this here then."
                 ]
             )
 
@@ -2657,7 +2650,7 @@ init python:
             #And set up facilities for asynchronous communication
             self.queue = collections.deque()
             self.lock = threading.Lock()
-            thrd = threading.Thread(target=enqueue_output, args=(self.stockfish.stdout, self.queue, self.lock))
+            thrd = threading.Thread(target=store.mas_chess.enqueue_output, args=(self.stockfish.stdout, self.queue, self.lock))
             thrd.daemon = True
             thrd.start()
 

@@ -5982,6 +5982,37 @@ init 2 python:
 
         return rv
 
+    def mas_getMousePos():
+        """
+        Gets the mouse position in terms of physical screen size
+
+        OUT:
+            tuple, (x, y) coordinates representing the mouse position
+        """
+        virtual_width = config.screen_width * 10000
+        virtual_height = config.screen_height * 10000
+        physical_width, physical_height = renpy.get_physical_size()
+        dw, dh = pygame.display.get_surface().get_size()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        #Converts the mouse coordinates from pygame's relative screen size coords (based on config vars) to physical size
+        #NOTE: THIS IS NEEDED FOR UI SCALING OTHER THAN 100%
+        mouse_x = (mouse_x * physical_width) / dw
+        mouse_y = (mouse_y * physical_height) / dh
+
+        r = None
+        #This part calculates the "true" position, it can handle weirdly sized screens
+        if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
+            r = virtual_width / physical_width
+            mouse_y -= (physical_height - virtual_height / r) / 2
+        else:
+            r = virtual_height / physical_height
+            mouse_x -= (physical_width - virtual_width / r) / 2
+
+        newx = (mouse_x * r) / 10000
+        newy = (mouse_y * r) / 10000
+
+        return (newx, newy)
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
@@ -7272,17 +7303,6 @@ default persistent._mas_sensitive_mode = False
 
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
-
-init python:
-    startup_check = False
-    try:
-        persistent.ever_won['hangman']
-    except:
-        persistent.ever_won['hangman']=False
-    try:
-        persistent.ever_won['piano']
-    except:
-        persistent.ever_won['piano']=False
 
 default his = "his"
 default he = "he"
