@@ -1670,6 +1670,9 @@ init python:
             # Board for integration with python-chess.
             self.board = None
 
+            self.undo_count = 0
+            self.move_history = list()
+
             #If we're basing off an existing pgn, let's load the relevant data
             if pgn_game:
                 # load this game into the board, push turns
@@ -1677,30 +1680,30 @@ init python:
                 for move in pgn_game.main_line():
                     self.board.push(move)
 
-                # whose turn?
+                #Whose turn?
                 self.current_turn = self.board.turn
 
-                # colors?
+                #Colors?
                 self.player_color = mas_chess._get_player_color(pgn_game)
 
-                # last move
+                #Last move
                 last_move = self.board.peek().uci()
                 self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move)
 
-                # undo count
+                #Undo count
                 self.undo_count = int(pgn_game.headers.get("UndoCount", 0))
 
-                # move history
+                #Move history
                 self.move_history = eval(pgn_game.headers.get("MoveHist", "[]"))
 
-                # and finally the fullmove number
+                #And finally, the fullmove number
                 self.num_turns = self.board.fullmove_number
 
             else:
                 #Start off with traditional board, or initialize with the starting fen if using a custom scenario
                 self.board = chess.Board(fen=starting_fen) if starting_fen is not None else chess.Board()
 
-                # stuff we need to save to the board
+                #Stuff we need to save to the board
                 self.today_date = datetime.date.today().strftime("%Y.%m.%d")
 
                 #New board, so white goes first
@@ -1714,10 +1717,10 @@ init python:
                     if ind_of_space > 0:
                         self.current_turn = starting_fen[ind_of_space + 1 : ind_of_space + 2] == 'w'
 
-                # setup player color
+                #Set up player color
                 self.player_color = player_color
 
-                # setup last move
+                #Set up last move
                 self.last_move_src = None
                 self.last_move_dst = None
 
@@ -1725,11 +1728,15 @@ init python:
             self.possible_moves = set([])
             self.winner = None
             self.is_game_over = False
-            # if this's true, we interrupt the game loop and hide the displayable
+
+            #If this's true, we interrupt the game loop and hide the displayable
             self.quit_game = False
 
-            # setup a pgn (could be None, in which case we are playing a fresh game)
+            #Set up a pgn (could be None, in which case we are playing a fresh game)
             self.pgn_game = pgn_game
+
+            #Requested highlights to draw, contains board-coord tuples of squares to highlight
+            self.requested_highlights = set()
 
             #If it's Monika's turn, send her the board positions so that she can start analyzing.
             if not self.is_player_turn():
@@ -1743,7 +1750,7 @@ init python:
             self.update_pieces()
 
         #START: NON-IMPLEMENTED FUNCTIONS
-        def additional_setup():
+        def additional_setup(self):
             """
             Additional setup instructions for the displayable
 
@@ -1845,7 +1852,7 @@ init python:
             IN:
                 move_str - uci move string
             """
-            self.move_stack.append(move)
+            self.move_stack.append(move_str)
 
         def is_player_turn(self):
             """
@@ -1885,6 +1892,30 @@ init python:
                 None otherwise
             """
             return self.piece_map.get((px, py), None)
+
+        def request_highlight(self, board_pos):
+            """
+            Requests the renderer to draw a highlight on the square at the specified square
+
+            IN:
+                board_pos - position string representing the board square to highlight (example a2)
+            """
+            x = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[board_pos[0]]
+            y = int(board_pos[1]) - 1
+
+            self.requested_highlights.add((x, y))
+
+        def remove_highlight(self, board_pos):
+            """
+            Removes a requested highlight from the board-coordinates provided
+
+            IN:
+                board_pos - position string representing the board square to remove the highlight
+            """
+            x = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[board_pos[0]]
+            y = int(board_pos[1]) - 1
+
+            self.requested_highlights.discard((x, y))
 
         def __push_move(self, move_str):
             """
@@ -2072,6 +2103,10 @@ init python:
                         )
                     )
 
+            #Now render requested highlights if any
+            for hl in self.requested_highlights:
+                renderer.blit(highlight_yellow, MASChessDisplayableBase.board_coords_to_screen_coords(*hl))
+
             #Draw the pieces on the Board renderer.
             for piece_location, Piece in self.piece_map.iteritems():
                 #Unpack the location
@@ -2156,6 +2191,7 @@ init python:
         def event(self, ev, x, y, st):
             #Are we in mouse button things
             if ev.type in self.MOUSE_EVENTS:
+                ret_value = None
                 #Run button checks if there are any in a function which requires implementation
                 if self._visible_buttons or self._visible_buttons_winner:
                     ret_value = self.check_buttons(ev, x, y, st)
@@ -2450,8 +2486,6 @@ init python:
         ):
 
             self.practice_mode = practice_mode
-            self.undo_count = 0
-            self.move_history = list()
             self.surrendered = False
             self.starting_fen = starting_fen
 
