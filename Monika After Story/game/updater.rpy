@@ -821,7 +821,7 @@ label mas_updater_rpy_issue:
     menu:
         m "Would you like me to delete them?{fast}"
 
-        "Yes please.":
+        "Yes, please.":
             m 1hua "Sure!"
 
             #Delete files

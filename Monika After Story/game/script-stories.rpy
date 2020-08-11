@@ -96,14 +96,16 @@ label monika_short_stories_menu:
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
                 pool=False,
-                aff=mas_curr_affection
+                aff=mas_curr_affection,
+                flag_ban=EV_FLAG_HFM
             )
         else:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 excl_cat=list(),
                 pool=False,
-                aff=mas_curr_affection
+                aff=mas_curr_affection,
+                flag_ban=EV_FLAG_HFM
             )
 
         # build menu list
@@ -159,9 +161,9 @@ label monika_short_stories_menu:
 
     # call scrollable pane
     if persistent._mas_sensitive_mode:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN,final_item)
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
     else:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -456,7 +458,7 @@ label mas_story_fisherman:
     call mas_story_begin
     m 1euc "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
     m 1eud "The Fisherman was about to put it in his basket when the little Fish spoke."
-    m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
+    m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worthwhile to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
     m 3esa "The moral of this story is, a small gain is worth more than a large promise."
@@ -602,7 +604,7 @@ label mas_story_genie_end:
     m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
     m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
     m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
-    m 1dsd "...Everything that had lead up to this moment, where he could make his own wish for the first time in a long while."
+    m 1dsd "...Everything that had led up to this moment, where he could make his own wish for the first time in a long while."
     m 1dsc "..."
     m 2eud "He wished to die."
     m 2ekc "Confused, his friend asked why and where it came from all of a sudden."
@@ -1526,13 +1528,14 @@ init 5 python:
 
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
-    $ _story = mas_getEV('mas_scary_story_flowered_lantern')
-    if _story is not None and _story.shown_count == 0:
+
+    if not mas_getEVL_shown_count("mas_scary_story_flowered_lantern"):
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."
         m 1eub "If you say no, you can ask me later to tell you the next part, so don't worry about it."
         m 4hua "Alright, let's begin now."
+
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
     m 4eud "Tsuyu's mother had been dead and her father eventually remarried."
     m 2euc "Although it became obvious to Tsuyu's father that she and her step mother couldn't get along."

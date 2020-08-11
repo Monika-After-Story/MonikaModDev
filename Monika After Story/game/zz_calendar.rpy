@@ -2151,7 +2151,7 @@ label _first_time_calendar_use:
     m 3eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
 
     $ persistent._mas_first_calendar_check = True
 

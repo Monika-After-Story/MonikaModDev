@@ -531,16 +531,16 @@ label greeting_o31_marisa:
     $ store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
     $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
-    # decoded CG means that we start with monika offscreen
-    if store.mas_o31_event.o31_cg_decoded:
-        # ASSUMING:
-        #   vignette should be enabled.
-        call spaceroom(hide_monika=True, scene_change=True)
+    ## decoded CG means that we start with monika offscreen
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    # ASSUMING:
+    #    #   vignette should be enabled.
+    #    call spaceroom(hide_monika=True, scene_change=True)
 
-    else:
-        # ASSUMING:
-        #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
+    #else:
+    # ASSUMING:
+    #   vignette should be enabled
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -549,23 +549,23 @@ label greeting_o31_marisa:
     m 1hub "Ahaha!"
 
     # decoded CG means we display CG
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        m "I'm over here, [player]~"
-        window hide
+    #    # got cg
+    #    m "I'm over here, [player]~"
+    #    window hide
 
-        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        show monika 1hua at i11 zorder MAS_MONIKA_Z
-        window auto
-        m "Tadaa!~"
+    #    hide emptydesk
+    #    show monika 1hua at i11 zorder MAS_MONIKA_Z
+    #    window auto
+    #    m "Tadaa!~"
 
     #Post scroll dialogue
     m 1hua "Well..."
@@ -582,9 +582,9 @@ label greeting_o31_marisa:
     m "Besides my costume of course~"
     m 1hua "But anyway..."
 
-    if store.mas_o31_event.o31_cg_decoded:
-        show monika 1eua
-        hide mas_o31_marisa_cg with dissolve
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    show monika 1eua
+    #    hide mas_o31_marisa_cg with dissolve
 
     m 3ekbfa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
@@ -614,33 +614,33 @@ label greeting_o31_rin:
     window hide
     pause 3.0
 
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        window auto
-        m "Say, [player]..."
-        window hide
+    #    # got cg
+    #    window auto
+    #    m "Say, [player]..."
+    #    window hide
 
-        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        window auto
-        m "What do {i}nya{/i} think?"
+    #    hide emptydesk
+    #    window auto
+    #    m "What do {i}nya{/i} think?"
 
-        scene black
-        pause 2.0
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
-        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
+    #    scene black
+    #    pause 2.0
+    #    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
+    #    m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
-    else:
-        call mas_transition_from_emptydesk("monika 1eua")
-        m 1hub "Hi, [player]!"
-        m 3hub "Do you like my costume?"
+    #else:
+    call mas_transition_from_emptydesk("monika 1eua")
+    m 1hub "Hi, [player]!"
+    m 3hub "Do you like my costume?"
 
     # regular dialogue
     m 3etc "Honestly, I don't even know who this is supposed to be."
@@ -731,9 +731,9 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     m 3hua "Ever since you gave it to me I just knew I'd be wearing it today!"
     m 2tua "..."
     m 2tub "You know, [player], just because I'm dressed as a maid doesn't mean I'll be following your every command..."
-    show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5kua "Though I might make some exceptions, ehehe~"
-    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
@@ -876,67 +876,44 @@ label bye_trick_or_treat:
         m 1eub "I bet we'll get lots of candy!"
         m 1ekbfa "And even if we don't, just spending the evening with you is enough for me~"
 
-    show monika 2dsc
-    $ persistent._mas_dockstat_going_to_leave = True
-    $ first_pass = True
+    #Setup the dockstat stuff
+    $ mas_farewells.dockstat_wait_menu_label = "bye_trick_or_treat_wait_wait"
+    $ mas_farewells.dockstat_rtg_label = "bye_trick_or_treat_rtg"
+    jump mas_dockstat_iostart
 
-    # launch I/O thread
-    $ promise = store.mas_dockstat.monikagen_promise
-    $ promise.start()
-
-label bye_trick_or_treat_iowait:
-    hide screen mas_background_timed_jump
-
-    # display menu so users can quit
-    if first_pass:
-        $ first_pass = False
-
-    elif promise.done():
-        # i/o thread is done
-        jump bye_trick_or_treat_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        $ _history_list.pop()
-
-    # display menu options
-    # 4 seconds seems decent enough for waiting
-    show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
-    menu:
-        m "Give me a second to get ready.{fast}"
-        "Hold on a second!":
-            hide screen mas_background_timed_jump
-            $ persistent._mas_dockstat_cm_wait_count += 1
-
+label bye_trick_or_treat_wait_wait:
     # wait wait flow
-    show monika 1ekc
     menu:
         m "What is it?"
         "You're right, it's too early." if too_early_to_go:
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 3hub")
 
             m 3hub "Ahaha, I told you!"
             m 1eka "Let's wait 'til evening, okay?"
-            return
+            return True
 
         "You're right, it's too late." if too_late_to_go:
             call mas_dockstat_abort_gen
 
             if persistent._mas_o31_tt_count:
+                call mas_transition_from_emptydesk(exp="monika 1hua")
                 m 1hua "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
 
             else:
+                call mas_transition_from_emptydesk(exp="monika 2dkc")
                 m 2dkc "..."
                 m 2ekc "Alright, [player]."
                 m "It sucks that we couldn't go trick or treating this year."
                 m 4eka "Let's just make sure we can next time, okay?"
 
-            return
+            return True
 
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 1euc")
 
             m 1euc "Oh, okay then, [player]."
 
@@ -946,20 +923,20 @@ label bye_trick_or_treat_iowait:
             else:
                 m 1eua "Let me know if we can go, okay?"
 
-            return
+            return True
 
         "Nothing.":
-            m 2eua "Okay, let me finish getting ready."
-
-    # always loop
-    jump bye_trick_or_treat_iowait
+            m "Okay, let me finish getting ready."
+            return
 
 label bye_trick_or_treat_rtg:
     # iothread is done
     $ moni_chksum = promise.get()
     $ promise = None # always clear the promise
     call mas_dockstat_ready_to_go(moni_chksum)
+
     if _return:
+        call mas_transition_from_emptydesk(exp="monika 1hub")
         m 1hub "Let's go trick or treating!"
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
 
@@ -969,6 +946,7 @@ label bye_trick_or_treat_rtg:
 
     # otherwise, failure in generation
     #Fix tt count
+    call mas_transition_from_emptydesk(exp="monika 1ekc")
     $ persistent._mas_o31_tt_count -= 1
     m 1ekc "Oh no..."
     m 1rksdlb "I wasn't able to turn myself into a file."
@@ -1969,7 +1947,7 @@ label mas_d25_monika_holiday_intro:
     m 1hua "I must say that I'm pretty proud of it."
     m "Christmas time has always been one of my favorite occasions of the year..."
 
-    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
@@ -2171,7 +2149,7 @@ label mas_d25_monika_christmas:
         m 3eka "But now that we're actually together on Christmas, just the two of us..."
         m 1hub "Ahaha~"
 
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "It's every couple's dream for the holidays, [player]."
 
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
@@ -2189,7 +2167,7 @@ label mas_d25_monika_christmas:
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
-                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 2.0
 
     else:
@@ -2205,7 +2183,7 @@ label mas_d25_monika_christmas:
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
-                show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 2.0
 
     return
@@ -2373,7 +2351,7 @@ label mas_d25_monika_christmaslights:
             if persistent._mas_pm_gets_snow is not False:
                 extend 2ekbfa "watching the snow gently fall..."
 
-            show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "One day, [player]. One day, we can make that a reality."
 
         "No.":
@@ -2562,20 +2540,20 @@ label mas_d25_spent_time_monika:
                 # have to be able to check before calling the kiss since persistent._mas_first_kiss will not be None no matter what after the kiss
                 #hold her here, tears dry
                 pause 3.0
-                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
-                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
-                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
 
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
                 $ is_first_kiss = persistent._mas_first_kiss is None
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
 
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 6ekbfa "...I love you too~"
                 if is_first_kiss:
                     m 6dkbfa "..."
@@ -2609,7 +2587,7 @@ label mas_d25_spent_time_monika:
 
 label mas_d25_poem_mistletoe:
     $ pause(1)
-    hide monika with dissolve
+    hide monika with dissolve_monika
     $ store.mas_sprites.zoom_out()
     show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
 
@@ -2669,11 +2647,11 @@ label monika_aiwfc:
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
-    if not mas_getEV("monika_aiwfc").shown_count:
+    if not mas_getEVLPropValue("monika_aiwfc", "shown_count", 0):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "I love you, [player]~"
 
     else:
@@ -2927,7 +2905,7 @@ label mas_d25_monika_christmas_eve:
     m 3hub "Can you believe it...?{w=1} It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
     m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     #Were there last Christmas
     if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
@@ -2954,7 +2932,7 @@ label mas_d25_monika_christmas_eve:
 
         else:
             m 5ekbfa "..."
-            show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             call mas_lingerie_intro(holiday_str="Christmas Eve",lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
@@ -3056,7 +3034,7 @@ label bye_d25e_delegate:
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
 
     # jump back to going somewhere file gen
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time you take her out on d25e
 label bye_d25e_first_time_out:
@@ -3087,7 +3065,7 @@ label bye_d25_delegate:
     # NOTE: generic return
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time out on d25
 label bye_d25_first_time_out:
@@ -3454,7 +3432,7 @@ label mas_nye_monika_nyd:
                 m 1eka "I'm so happy, knowing we can spend even more time together."
 
                 if mas_isMoniAff(higher=True):
-                    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5hubfa "Let's make this year as wonderful as the last one, okay?"
                     m 5ekbfa "I love you so much, [player]."
                 else:
@@ -3557,7 +3535,7 @@ label mas_nye_monika_nyd:
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
-    m 4ekc "It's not too late for us, [player], we can still make each other so happy."
+    m 4ekc "It's not too late for us, [player]. We can still make each other so happy."
     m 4eka "It's all I've ever wanted."
 
     m "What do you say, [player]?{nw}"
@@ -3683,10 +3661,10 @@ label monika_resolutions:
                 m 2rfc "You know what, nevermind..."
 
     if mas_isMoniAff(higher=True):
-        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
     elif mas_isMoniNormal(higher=True):
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
     else:
         m 2ekc "My resolution is to improve our relationship, [player]."
@@ -3828,7 +3806,7 @@ label monika_nye_year_review:
         if persistent._mas_bday_sbp_reacted:
             m 2hub "...threw me a surprise party..."
 
-        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me."
 
     #Pbday
@@ -3837,7 +3815,7 @@ label monika_nye_year_review:
         or mas_HistVerify_k([datetime.date.today().year], True, "player_bday.spent_time")[0]
     ):
         $ spent_an_event = True
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hua "We even spent your birthday together!"
 
         if (
@@ -3849,7 +3827,7 @@ label monika_nye_year_review:
     #bit on christmas
     if persistent._mas_d25_spent_d25:
         $ spent_an_event = True
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hua "You spent your Christmas with me..."
 
         if persistent._mas_first_kiss is not None and persistent._mas_first_kiss.date() == mas_d25:
@@ -3866,23 +3844,23 @@ label monika_nye_year_review:
         m 3eka "But still..."
 
     else:
-        show monika 5dsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5dsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5dsa "..."
 
     # lookback based on time
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
-            show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eka "I really can't believe just how much has changed since we've been together..."
         else:
             m 2eka "I really hope we can get further in our relationship, [player]..."
     else:
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
     #If we started fresh the year before this or we didn't at all
     if not mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
-        show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5dka "Thank you."
         if store.mas_anni.anniCount() > 0:
             $ ending = "the best year I could've ever dreamt of"
@@ -3906,7 +3884,7 @@ label monika_nye_year_review:
                 call monika_kissing_motion
                 m 1ekbfa "I love you."
                 m "..."
-                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ekbsa "I'll never forget this moment..."
                 m 5ekbfa "Our first kiss~"
                 m 5hubfb "Let's make this year even better than the last, [player]."
@@ -3914,7 +3892,7 @@ label monika_nye_year_review:
             else:
                 call monika_kissing_motion_short
                 m 1ekbfa "I love you, [player]."
-                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5hubfb "Let's make this year better than the last."
 
         else:
@@ -3972,7 +3950,7 @@ label mas_nye_monika_nye_dress_intro:
         m 3eua "Maybe you guessed it already, but it's because of the color choice."
 
     m "White represents a lot of positive feelings, like goodness, purity, safety..."
-    m 3eub "However, what I wanted this outfit to highlight was a succesful beginning."
+    m 3eub "However, what I wanted this outfit to highlight was a successful beginning."
 
     #If we fresh started last year
     if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
@@ -4085,7 +4063,7 @@ label bye_nye_delegate:
         call bye_nye_late_out
 
     # finally jump back to iostart
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
@@ -4140,7 +4118,7 @@ label greeting_nye_prefw:
     m 1eua "That was a lot of fun, [player]."
     m 1eka "Thanks for taking me out today, I really do love spending time with you."
     m "It means a lot to me that you take me with you so we can spend special days like these together."
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "I love you, [player]."
     return "love"
 
@@ -4162,7 +4140,7 @@ label bye_nyd_delegate:
     else:
         call bye_nyd_first_time_out
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nyd_first_time_out:
     #first time out
@@ -4197,7 +4175,7 @@ label greeting_nyd_returned_nyd:
     #normal return home:(i.e. took out, and returned on NYD itself)
     $ persistent._mas_nye_nyd_date_count += 1
     m 1hua "And we're home!"
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eua "That was a lot of fun, [player]!"
     m 5eka "It's really nice of you to take me with you on special days like this."
     m 5hub "I really hope we can spend more time like this together."
@@ -4214,7 +4192,7 @@ label greeting_pd25e_returned_nydp:
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
     m 1eka "Thanks for taking me with you, I really enjoyed that."
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     $ new_years = "New Years"
     if mas_isNYD():
         $ new_years = "New Year's Eve"
@@ -4659,7 +4637,7 @@ label mas_player_bday_card:
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
-        m 6ekbsu "I made a card for you, [player], I hope you like it..."
+        m 6ekbsu "I made a card for you, [player]. I hope you like it..."
     elif not mas_HistVerify("player_bday.spent_time",True)[0]:
         m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     else:
@@ -5263,11 +5241,11 @@ label mas_f14_monika_valentines_intro:
     extend 3ekbsa "but there's something that's really special about Valentine's Day."
     if not mas_anni.pastOneMonth() or mas_isMoniNormal():
         m 3rka "Even though I know we aren't too far in our relationship..."
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I just want you to know that I'm always here for you."
         m 5eka "Even if your heart gets broken..."
         m 5ekbsa "I'll always be here to fix it for you. Okay, [player]?"
-        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1ekbsa "..."
 
     else:
@@ -5383,7 +5361,7 @@ label mas_f14_monika_valentines_intro:
         else:
             $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
             pause 2.0
-            show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rfc "..."
             m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
             m 2tfc "..."
@@ -5413,7 +5391,7 @@ label mas_f14_sun_dress_outro:
 label mas_f14_intro_generic:
     m 1ekbsa "I'm just so grateful you are spending time with me today."
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
-    m 3ekbsa "I don't care if we go on a romantice date, or just spend the day together here..."
+    m 3ekbsa "I don't care if we go on a romantic date, or just spend the day together here..."
     m 1fkbsu "It really doesn't matter to me as long as we're together."
     return
 
@@ -5643,7 +5621,7 @@ label mas_f14_monika_spent_time_with:
                 call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
 
         m 1ekbfa "Thank you for always being by my side."
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
         return "love"
 
@@ -5663,16 +5641,16 @@ label mas_f14_first_kiss:
                 $ mas_RaiseShield_core()
                 $ disable_esc()
                 pause 3.0
-                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
-                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
-                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 3.0
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 6ekbfa "...I love you too~"
                 m 6dkbfa "..."
                 m "That was everything I had always dreamt it would be~"
@@ -5908,7 +5886,7 @@ label bye_f14:
     else:
         m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
         m 1ekbfa "You're the best partner I could ever hope for~"
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 ########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
@@ -5973,7 +5951,7 @@ label greeting_gone_over_f14_normal_plus:
     $ mas_gainAffection(10,bypass=True)
     m 1ekbsa "I would've loved to have spent the day with you here, but no matter where we were, just knowing we were together to celebrate our love..."
     m 1dubsu "Well it means everything to me."
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "Thank you for making sure we had a wonderful Valentine's Day, [player]~"
     $ persistent._mas_f14_gone_over_f14 = False
     return
@@ -6683,7 +6661,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
+        $ mas_assignModifyEVLPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
         return
 
 
@@ -6898,7 +6876,7 @@ label bye_922_delegate:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label mas_bday_bd_outro:
     $ monika_chr.change_clothes(mas_clothes_blackdress)
