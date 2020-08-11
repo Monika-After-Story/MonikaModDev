@@ -32,21 +32,21 @@ label dev_test_chess_teaching:
         for l in a_to_h:
             for num in _1_to_8:
                 chess_teaching_disp.request_highlight("{0}{1}".format(l, num))
-                renpy.pause(0.1)
+                renpy.pause(0.05)
 
     m 1eua "Now I'll remove the highlights.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     python:
         for l in a_to_h:
             for num in _1_to_8:
                 chess_teaching_disp.remove_highlight("{0}{1}".format(l, num))
-                renpy.pause(0.1)
+                renpy.pause(0.05)
 
-    m "Okay, now I'll queue a move from b2 to b4, and then push it."
+    m "Okay, now I'll queue a move from b2 to b4, and then push it.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     python:
         chess_teaching_disp.queue_move("b2b4")
         chess_teaching_disp.handle_player_move()
 
-    m 3eub "Now I'll queue and push from g8 to h6."
+    m 3eub "Now I'll queue and push from g8 to h6.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     python:
         chess_teaching_disp.queue_move("g8h6")
         chess_teaching_disp.handle_monika_move()

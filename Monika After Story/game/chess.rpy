@@ -598,8 +598,7 @@ label game_chess:
 
             else:
                 call mas_chess_dlg_game_monika_wins_sometimes
-
-            m 1eua "Anyway..."
+                m 1eua "Anyway..."
 
         if not is_surrender:
             #Monika plays a little easier if you didn't just surrender
@@ -672,6 +671,10 @@ label game_chess:
     if loaded_game:
         call mas_chess_savegame(silent=True)
         jump .play_again
+
+    #If the player surrendered under 5 moves in, we can assume they just don't want to play anymore
+    if is_surrender and num_turns < 5:
+        return
 
     #We only save a game if there's enough turns
     if num_turns > 4:
@@ -1524,74 +1527,6 @@ init python:
             False: (True, False) #Black reflects over x
         }
 
-        #Converson map to change chess.board positions to ones for our displayable
-        SQUARE_TO_BOARD_COORD_LOOKUP = {
-            0: (0, 0),
-            1: (1, 0),
-            2: (2, 0),
-            3: (3, 0),
-            4: (4, 0),
-            5: (5, 0),
-            6: (6, 0),
-            7: (7, 0),
-            8: (0, 1),
-            9: (1, 1),
-            10: (2, 1),
-            11: (3, 1),
-            12: (4, 1),
-            13: (5, 1),
-            14: (6, 1),
-            15: (7, 1),
-            16: (0, 2),
-            17: (1, 2),
-            18: (2, 2),
-            19: (3, 2),
-            20: (4, 2),
-            21: (5, 2),
-            22: (6, 2),
-            23: (7, 2),
-            24: (0, 3),
-            25: (1, 3),
-            26: (2, 3),
-            27: (3, 3),
-            28: (4, 3),
-            29: (5, 3),
-            30: (6, 3),
-            31: (7, 3),
-            32: (0, 4),
-            33: (1, 4),
-            34: (2, 4),
-            35: (3, 4),
-            36: (4, 4),
-            37: (5, 4),
-            38: (6, 4),
-            39: (7, 4),
-            40: (0, 5),
-            41: (1, 5),
-            42: (2, 5),
-            43: (3, 5),
-            44: (4, 5),
-            45: (5, 5),
-            46: (6, 5),
-            47: (7, 5),
-            48: (0, 6),
-            49: (1, 6),
-            50: (2, 6),
-            51: (3, 6),
-            52: (4, 6),
-            53: (5, 6),
-            54: (6, 6),
-            55: (7, 6),
-            56: (0, 7),
-            57: (1, 7),
-            58: (2, 7),
-            59: (3, 7),
-            60: (4, 7),
-            61: (5, 7),
-            62: (6, 7),
-            63: (7, 7)
-        }
-
         #Button handling bits
         def __init__(
             self,
@@ -1670,6 +1605,9 @@ init python:
                 #Last move
                 last_move = self.board.peek().uci()
                 self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move)
+
+                #Practice mode
+                self.practice_mode = eval(pgn_game.headers.get("Practice", "False"))
 
                 #Undo count
                 self.undo_count = int(pgn_game.headers.get("UndoCount", 0))
@@ -2552,34 +2490,16 @@ init python:
                 activate_sound=gui.activate_sound
             )
 
-            if practice_mode:
-                self._button_undo = MASButtonDisplayable.create_stb(
-                    _("Undo"),
-                    True,
-                    MASChessDisplayableBase.BUTTON_INDICATOR_X,
-                    MASChessDisplayableBase.DRAWN_BUTTON_Y_BOT,
-                    MASChessDisplayableBase.BUTTON_WIDTH,
-                    MASChessDisplayableBase.BUTTON_HEIGHT,
-                    hover_sound=gui.hover_sound,
-                    activate_sound=gui.activate_sound
-                )
-
-                #Setup the visible buttons list
-                self._visible_buttons = [
-                    self._button_save,
-                    self._button_undo,
-                    self._button_giveup
-                ]
-
-            else:
-                self.visible_buttons = [
-                    self._button_save,
-                    self._button_giveup
-                ]
-
-            self._visible_buttons_winner = [
-                self._button_done
-            ]
+            self._button_undo = MASButtonDisplayable.create_stb(
+                _("Undo"),
+                True,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                MASChessDisplayableBase.DRAWN_BUTTON_Y_BOT,
+                MASChessDisplayableBase.BUTTON_WIDTH,
+                MASChessDisplayableBase.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
 
             #Init the base displayable
             super(MASChessDisplayable, self).__init__(
@@ -2602,6 +2522,24 @@ init python:
                     "Okay, I'll move this here then."
                 ]
             )
+
+            if self.practice_mode:
+                #Setup the visible buttons list
+                self._visible_buttons = [
+                    self._button_save,
+                    self._button_undo,
+                    self._button_giveup
+                ]
+
+            else:
+                self._visible_buttons = [
+                    self._button_save,
+                    self._button_giveup
+                ]
+
+            self._visible_buttons_winner = [
+                self._button_done
+            ]
 
         def __del__(self):
             self.stockfish.stdin.close()
@@ -2813,19 +2751,27 @@ init python:
             Manages button states
             """
             if not self.is_game_over and self.is_player_white == self.current_turn:
+                should_enable_undo = self.practice_mode and self.move_history
+
+                #At least one move, so we can give up, save, and undo if in practice mode
                 if self.board.fullmove_number > 1:
                     self._button_giveup.enable()
                     self._button_save.enable()
 
-                    if self.move_history:
+                    if should_enable_undo:
                         self._button_undo.enable()
+                    else:
+                        self._button_undo.disable()
 
-                elif self.board.fullmove_number > 0:
+                #This the first move is considered
+                elif self.board.fullmove_number == 1:
                     self._button_giveup.disable()
                     self._button_save.disable()
-
-                    if self.move_history:
-                        self._button_undo.enable()
+                    self._button_undo.disable()
+                    #if should_enable_undo:
+                    #    self._button_undo.enable()
+                    #else:
+                    #    self._button_undo.disable()
 
                 else:
                     self._button_giveup.disable()
