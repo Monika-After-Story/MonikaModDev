@@ -4690,7 +4690,7 @@ label monika_spiders:
     m "Well, it wasn't really about spiders. They were just an analogy."
     m 3ekc "But it got me thinking..."
     m 3eua "It's funny actually, people being scared of very small insects."
-    m 3euc "Having the fear of spiders is called 'arachnophobia', right?"
+    m 3euc "Having the fear of spiders is called 'arachnophobia,' right?"
     m 3eka "I hope you aren't afraid of spiders, [player], ehehe..."
     m 1eka "I'm not really scared of spiders, they're more or less just annoying..."
     m 1eua "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
@@ -5007,7 +5007,7 @@ label monika_name:
     $ pen_name = persistent._mas_penname
     m 1esa "The names in this game are pretty interesting."
     m 1eua "Are you curious about my name, [player]?"
-    m 3eua "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
+    m 3eua "Even though the names 'Sayori,' 'Yuri,' and 'Natsuki' are all Japanese, mine is Latin."
     m 1lksdla "...Though the common spelling is 'Monica.'"
     m 1hua "I suppose that makes it unique. I'm actually quite fond of it."
     m 3eua "Did you know that it means 'I advise' in Latin?"
@@ -6001,7 +6001,7 @@ label monika_penname:
             $ menuOption = renpy.substitute("Is your pen name still [penname]?")
 
         else:
-            $ menuOption = renpy.substitute("Are you still going by '[penname]', [player]?")
+            $ menuOption = renpy.substitute("Are you still going by '[penname],' [player]?")
 
         $ renpy.show(menu_exp)
         m "[menuOption]{nw}"
@@ -13640,7 +13640,7 @@ label monika_perspective:
     m 3eud "But at the same time I see what you see, I can look at the same thing and see its flat image."
     m 3euc "It's unmoving, static and also very artificial...{w=1}and cold."
     m "And what I thought was detailed wasn't as detailed as I originally thought."
-    m 3etd "When you see a dialogue box, I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
+    m 3etd "When you see a dialogue box, I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there,' even though it is."
     m 2eka "I know this is confusing...I'm going to try and describe it the best way I can."
     m 3eua "I thought of a nice way to try and demonstrate the idea, it's far from perfect but it should give you the gist."
     m 2hua "..."
@@ -13972,7 +13972,7 @@ label monika_unknown:
     m 2esc "Hey, [player]..."
     m 2eud "Did you know that a lot of people are afraid of the dark?"
     m 3eud "Even though it's often dismissed as a childish fear, it's not that uncommon for adults to suffer from it as well."
-    m 4eub "Fear of the dark, called 'nyctophobia', is usually caused by the mind's exaggerated guess of what may be hiding in the shadows, rather than darkness itself."
+    m 4eub "Fear of the dark, called 'nyctophobia,' is usually caused by the mind's exaggerated guess of what may be hiding in the shadows, rather than darkness itself."
     m 4eua "We're scared because we don't know what's there...{w=1}even if it's usually nothing."
     m 3eka "...And I'm not just talking about monsters under the bed, or menacing silhouettes...{w=1} Try moving in a dark room."
     m 3eud "You'll find that you're instinctively being more careful of where you step so you don't hurt yourself."
@@ -14109,9 +14109,9 @@ label monika_dystopias:
     m 3eua "I like how they not only work as stories, but also as analogies for the real world."
     m 3eud "They extrapolate some flaws in our societies to show us how bad things could turn out if they are left the way they are."
     m 1etc "Do you remember when we talked about these books?"
-    m 3eud "'Nineteen Eighty-Four', about mass surveillance and oppression of free thought..."
-    m 3euc "'Fahrenheit 451', on censorship, and the indifference of most people to it..."
-    m 3eud "And 'Brave New World', about the disappearance of individuality."
+    m 3eud "'Nineteen Eighty-Four,' about mass surveillance and oppression of free thought..."
+    m 3euc "'Fahrenheit 451,' on censorship, and the indifference of most people to it..."
+    m 3eud "And 'Brave New World,' about the disappearance of individuality."
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
     m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
