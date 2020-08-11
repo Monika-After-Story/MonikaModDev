@@ -7,29 +7,17 @@ default persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_abandoned = 0
 default persistent._mas_game_nou_house_rules = {
     "win_points": 200,
-    "start_cards": 7,
+    "starting_cards": 7,
     "stack_d2": False,
     "play_wd4_anytime": False
 }
 
 # NOU CLASS DEF
 init 5 python in mas_nou:
-
     from store import m, persistent, Solid
     from store.mas_cardgames import *
 
     ASSETS = "mod_assets/games/nou/"
-
-    # Response constants
-    NO_REACTION = 0
-    MONIKA_REFLECTED_ACT = 1
-    PLAYER_REFLECTED_ACT = 2
-    MONIKA_REFLECTED_WDF = 3
-    PLAYER_REFLECTED_WDF = 4
-    MONIKA_REFLECTED_ACT_AFTER_WDF = 5
-    PLAYER_REFLECTED_ACT_AFTER_WDF = 6
-    MONIKA_REFLECTED_WCC = 7
-    PLAYER_REFLECTED_WCC = 8
 
     # stats for curr sesh
     player_wins_this_sesh = 0
@@ -44,6 +32,11 @@ init 5 python in mas_nou:
     # Last winner
     # NOTE: if this's not None, then we played in this sesh
     winner = None
+
+    # we allow to press these buttons only once per turn
+    # and disable them 'til next one
+    disable_remind_button = False
+    disable_yell_button = False
 
     class NoU(object):
         """
@@ -76,6 +69,8 @@ init 5 python in mas_nou:
         # Maximum cards in hand
         HAND_CARDS_LIMIT = 30
 
+        # # # Moni's quips
+
         # Quips for when we get a wdf as the first card for the discardpile
         QUIPS_MONIKA_RESHUFFLE_DECK = (
             _("Oh, let me shuffle it again.{w=1.5}{nw}"),
@@ -90,14 +85,14 @@ init 5 python in mas_nou:
         )
         QUIPS_MONIKA_SKIPS_TURN = (
             _("Oh, I have to skip my turn."),
-            _("Lucky you, I skip this turn.")
+            _("Lucky you, I'll have to skip this turn.")
         )
         QUIPS_MONIKA_DRAWS_CARDS = (
             _("Oh, I must draw some more."),
             _("Lucky you, I'll give you a handicap with these cards.")
         )
         QUIPS_MONIKA_WILL_REFLECT = (
-            _("You better be ready~"),
+            _("I was ready! Ehehe~"),
             _("No, no, no~ I'm not going to skip this turn!"),
             _("Nope! This time you'll skip turn~")
         )
@@ -118,7 +113,7 @@ init 5 python in mas_nou:
 
         # Quips if you pervert are trying to touch her hand
         QUIPS_PLAYER_CLICKS_MONIKA_CARDS = [
-            _("[player], these're my cards!"),
+            _("[player], these are my cards!"),
             _("I see what you're doing, [player]~"),
             _("This's a little embarrassing~"),
             _("Ah?{w=0.2} What are you trying to do?~")
@@ -127,13 +122,300 @@ init 5 python in mas_nou:
         if persistent._mas_chess_skip_file_checks:
             QUIPS_PLAYER_CLICKS_MONIKA_CARDS.append(_("Are you trying to cheat again?"))
 
-        # Quips when you reach the cards cap
+        # Quips when you reach the cards limit
         QUIPS_MONIKA_CARDS_LIMIT = (
-            _("[player]...{w=0.2}look I can't hold all these cards!{w=0.5} And I can't draw more either, ehehe~")
+            _("[player]...{w=0.2}look I can't hold all these cards!{w=0.5} And I can't draw more either, ehehe~"),
         )
         QUIPS_PLAYER_CARDS_LIMIT = (
-            _("There's no way you could hold more cards, ahaha!{w=0.5} You don't have to draw more this turn, [player].")
+            _("There's no way you could hold more cards, ahaha!{w=0.5} You don't have to draw more this turn, [player]."),
         )
+
+        # Quips when Monika chooses a colour to set
+        # Quips for when she gets a wild card on the first turn
+        QUIPS_MONIKA_ANNOUNCE_COLOUR_FIRST_TURN = (
+            _("I think I'll set.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.discardpile[-1].colour] color!"),
+            _("I want [store.mas_nou.game.discardpile[-1].colour] colour."),
+            _("I choose [store.mas_nou.game.discardpile[-1].colour] colour."),
+            _("Hmm.{w=0.2}.{w=0.2}.{w=0.2} I choose [store.mas_nou.game.discardpile[-1].colour]!")
+        )
+        # Quips for when she reflects a wild card
+        QUIPS_MONIKA_ANNOUNCE_COLOUR_AFTER_REFLECT = (
+            _("I'd prefer [store.mas_nou.game.discardpile[-1].colour] color~"),
+            _("I want [store.mas_nou.game.discardpile[-1].colour] color~"),
+            _("I choose [store.mas_nou.game.discardpile[-1].colour] color!"),
+            _("It'll be [store.mas_nou.game.discardpile[-1].colour]!")
+        )
+
+        # NoU quips
+        # Quips when Monika says No U
+        QUIPS_MONIKA_YELLS_NOU = (
+            _("No U, [player]!"),
+            _("I only have one card left, [player]! No U!"),
+            _("No U! Keep up, [player]!~"),
+            _("No U, [player], ehehe~"),
+            _("Just one card left! No U, [player]~")
+        )
+        # Quips when you ask her to yell NoU, but she already did it
+        QUIPS_MONIKA_ALREADY_YELLED_NOU = (
+            _("Too late, [player]!"),
+            _("I already said 'No U', [player]!"),
+            _("Silly, I already did that!~"),
+            _("[player]... How did you miss that? I already said 'No U'!")
+        )
+        # Quips when you ask her to yell NoU, but she has more than 1 card
+        QUIPS_MONIKA_DONT_NEED_YELL_NOU = (
+            _("[player], but I have more than one card in my hands!"),
+            _("Silly, you only yell 'No U' when you have one card left!"),
+            _("A bit too early, [player]! Ahaha~"),
+            _("It's not the time yet, [player]!"),
+            _("[player], I have [len(store.mas_nou.game.monika.hand)] more cards to play!")
+        )
+        QUIPS_MONIKA_FORGOT_YELL_NOU = (
+            _("Oh...You're right!"),
+            _("Whoops, you got me there!"),
+            _("Ehehe, completely unintentionally~"),
+            _("Ehehe, caught me!")
+        )
+
+        # Quips when player said nou
+        QUIPS_PLAYER_YELLS_NOU = (
+            _("Gotcha!"),
+            _("Alright!"),
+            _("I see, I see..."),
+            _("Okay, [player].")
+        )
+        # Quips when the player repeats nou for no reason
+        QUIPS_PLAYER_ALREADY_YELLED_NOU = (
+            _("Ahaha, I got it, [player]."),
+            _("You've already said it, silly~"),
+            _("I heard you, [player].")
+        )
+        # Quips when the player says nou for no reason
+        QUIPS_PLAYER_DONT_NEED_YELL_NOU = (
+            _("Silly, you still have a lot of cards to play!"),
+            _("I think you have more than one card, [player]."),
+            _("You should say 'No U' when you have only one card in your hards, [player].")
+        )
+        # Quips when Monika catches you on not saying NoU
+        QUIPS_PLAYER_FORGOT_YELL_NOU = (
+            _("You forgot to say 'No U', [player]!"),
+            _("You thought I'd not notice?~ You should've said 'No U'!"),
+            _("I caught you! You didn't say 'No U'!"),
+            _("You didn't say 'No U'! And now you should pull 2 cards!~")
+        )
+        # Quips when the player said nou, but didn't play a card afterwards
+        QUIPS_PLAYER_FALSE_NOU = (
+            _("You should say 'No U' only if you're going to play a card, [player]."),
+            _("Why didn't you play a card?"),
+            _("Don't say 'No U' if you're not going to play a card."),
+            _("[player], don't yell 'No U' for no reason!")
+        )
+
+        ### Reactions maps
+
+        # Reactions ids
+        NO_REACTION = 0
+        MONIKA_REFLECTED_ACT = 1
+        PLAYER_REFLECTED_ACT = 2
+        MONIKA_REFLECTED_WDF = 3
+        PLAYER_REFLECTED_WDF = 4
+        MONIKA_REFLECTED_WCC = 5
+        PLAYER_REFLECTED_WCC = 6
+        MONIKA_PLAYED_WILD = 7
+
+        # Format: {seen_count: list of tuples with dlg lines to choose}
+        # all the dlg lines are packed in tuples, this way we can iterate over them
+        # and have multiple lines per reaction
+        # we use lists since we may append additional lines
+
+        # First, Monika's reactions
+
+        # this's general map with lines we use in all reflect reactions
+        REACTIONS_MAP_MONIKA_REFLECTED_CARD = {
+            0: [
+                (_("Nope!"),),
+                (_("I don't think so, [player]~"),),
+                (_("But were you ready for this, huh?"),)
+            ],
+            1: [
+                (_("Still nope!"),),
+                (_("Ehehe~ I was ready this time!"),),
+                (_("Not this time, [player]!"),)
+            ],
+            2: [
+                (_("I read you as an open book."), _("Ahaha~")),
+                (_("I won't give up so easily~"),)
+            ]
+        }
+
+        # this's for reflecting an action card
+        REACTIONS_MAP_MONIKA_REFLECTED_ACT = {
+            0: [
+                (_("Thought you will catch me off guard with this?"), _("I knew you'll do it! Ehehe~"))
+            ],
+            1: [
+                (_("Ehehe~ No way, [player]~"),),
+                (_("You {i}really{/i} want me to take that, huh?~"),)
+            ],
+            2: [
+                (_("Will you{w=0.2} still love me after this?~"),)
+            ]
+        }
+
+        # this's for reflecting a Wild Choose Colour
+        REACTIONS_MAP_MONIKA_REFLECTED_WCC = {
+            0: [
+                (_("Hmm...{w=0.5}I don't like this color."),),
+                (_("Sorry, [player] but..."), _("This's not the color I want right now~"))
+            ],
+            1: [
+                (_("No-no-no!"),)
+            ],
+            2: [
+                (_("Ahaha~"), _("Are you still trying?~"))
+            ]
+        }
+
+        # this's for reflecting a Wild Draw 4
+        REACTIONS_MAP_MONIKA_REFLECTED_WD4 = {
+            0: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[0]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[0]),
+            1: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[1]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[1]) + [
+                (_("You can't reflect this!"),),
+                (_("No way you can reflect this one!"),)
+            ],
+            2: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[2]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[2])
+        }
+
+        # now fill all of those with the base lines for reflecting a card
+        for i in range(3):
+            REACTIONS_MAP_MONIKA_REFLECTED_ACT[i] += list(REACTIONS_MAP_MONIKA_REFLECTED_CARD[i])
+            REACTIONS_MAP_MONIKA_REFLECTED_WCC[i] += list(REACTIONS_MAP_MONIKA_REFLECTED_CARD[i])
+            REACTIONS_MAP_MONIKA_REFLECTED_WD4[i] += list(REACTIONS_MAP_MONIKA_REFLECTED_CARD[i])
+
+        # this's used when she chooses a colour
+        REACTIONS_MAP_MONIKA_PLAYED_WILD = {
+            0: [
+                (_("I think I'll set.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.discardpile[-1].colour] color!"),),
+                (_("I want [store.mas_nou.game.discardpile[-1].colour] color."),),
+                (_("I choose [store.mas_nou.game.discardpile[-1].colour] color."),),
+                (_("Hmm.{w=0.1}.{w=0.1}.{w=0.1} I choose [store.mas_nou.game.discardpile[-1].colour]!"),)
+            ]
+        }
+
+        ### Modifiers for the reactions quips, which only apply under certain conditions
+
+        # this modifier only works when you play with stackable cards
+        # used for seen count 2
+        REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1 = [
+            (_("That's a lot of cards for you, ehehe~"),)
+        ]
+
+        # this modifier used when Monika reflects a d2
+        # used for seen count 0
+        REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2 = [
+            (_("Ehehe~ I'm not going to draw all these cards!"),),
+            (_("All these cards will suit you~"),)
+        ]
+
+        # this modifier used when Monika reflects a skip turn/reverse
+        # used for seen count 0
+        REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3 = [
+            (_("{i}No, you{/i} will skip this turn~"),),
+            (_("Ahaha~"), _("Nope, [player]!"))
+        ]
+
+        # this modifier only works when you play with stackable cards
+        # used for seen count 2
+        # (same as for d2)
+        REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1 = list(REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1)
+
+        # Now the player's reactions
+
+        # again, general map for all reflects
+        REACTIONS_MAP_PLAYER_REFLECTED_CARD = {
+            0: [
+                (_("Aww, I wasn't expecting this!"),),
+                (_("Just once, [player]... Just once!~"),)
+            ],
+            1: [
+                (_("Alright,{w=0.2} this time you won..."),),
+                (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3} But just this time!"),),
+                (_("You're very lucky!"),)
+            ],
+            2: [
+                (_("You...{w=0.5}could go a bit easier on your girlfriend~"), _("Ahaha~"))
+            ]
+        }
+
+        # map for reflecting action cards
+        REACTIONS_MAP_PLAYER_REFLECTED_ACT = {
+            0: [
+                (_("Aww, what a shame!"),),
+                (_("This's unlucky!"),)
+            ],
+            1: [
+                (_("Jeez, I can't believe you had another card!"),),
+                (_("Jeez, you're really trying!"),),
+                (_("Can't let it go, huh?"))
+            ],
+            2: [
+                (_("Oh my gosh! How much of these do you have?!"),),
+                (_("Ehehe, I thought this's a simple game between lovers, not a competition..."), _("Guess I was wrong~"))
+            ]
+        }
+
+        REACTIONS_MAP_PLAYER_REFLECTED_WCC = {
+            0: [
+                (_("Mmmm!"),),
+                (_("Well{w=0.3}...be it, [player]!"),)
+            ],
+            1: [
+                (_("Alright, alright!~"), _("{i}This{/i} time you won~")),
+                (_("Alright...{w=0.2}{i}this{/i} time you choose the color~"),)
+            ],
+            2: [
+                (_("Oh jeez!"),)
+            ]
+        }
+
+        REACTIONS_MAP_PLAYER_REFLECTED_WD4 = {
+            0: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[0]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[0]) + [
+                (_("Hmm, I wasn't prepared for this"),)
+            ],
+            1: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[1]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[1]) + [
+                (_("Gosh! How much of these do you have?!"),),
+                (_("I will remember this~"), _("Watch out, [player]!~"))
+            ],
+            2: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[2]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[2]) + [
+                (_("[player]...{w=0.2}How do you do that?"), _("If you'll keep playing like that, I won't have a chance to win!"))
+            ]
+        }
+
+        # now fill all of those with the base lines for reflecting a card
+        for i in range(3):
+            REACTIONS_MAP_PLAYER_REFLECTED_ACT[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
+            REACTIONS_MAP_PLAYER_REFLECTED_WCC[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
+            REACTIONS_MAP_PLAYER_REFLECTED_WD4[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
+
+        # Map between reactions ids and dicts of lists of quips
+        REACTIONS_MAP = {
+            NO_REACTION: None,# 0
+            MONIKA_REFLECTED_ACT: REACTIONS_MAP_MONIKA_REFLECTED_ACT,# 1
+            PLAYER_REFLECTED_ACT: REACTIONS_MAP_PLAYER_REFLECTED_ACT,# 2
+            MONIKA_REFLECTED_WDF: REACTIONS_MAP_MONIKA_REFLECTED_WD4,# 3
+            PLAYER_REFLECTED_WDF: REACTIONS_MAP_PLAYER_REFLECTED_WD4,# 4
+            MONIKA_REFLECTED_WCC: REACTIONS_MAP_MONIKA_REFLECTED_WCC,# 5
+            PLAYER_REFLECTED_WCC: REACTIONS_MAP_PLAYER_REFLECTED_WCC,# 6
+            MONIKA_PLAYED_WILD: REACTIONS_MAP_MONIKA_PLAYED_WILD# 7
+        }
+
+        # Chances to get a reaction depend on its seen_count
+        # This's a map between seen_count and the odds
+        REACTION_CHANCES_MAP = {
+            0: 33,
+            1: 66,
+            2: 90
+        }
 
         def __init__(self):
             """
@@ -184,7 +466,7 @@ init 5 python in mas_nou:
             # used for Moni's reaction labels (so we don't end up in an inf loop)
             self.has_jumped = False
             # NOTE: Start count from 1 because it's easier to use
-            self.total_turns = 1
+            self.current_turn = 1
 
             self.__fill_drawpile()
 
@@ -213,10 +495,9 @@ init 5 python in mas_nou:
             for card in hand:
                 self.table.get_card(card).springback()
 
-        def __say_quip(self, what):
+        def __say_quip(self, what, interact=True, new_context=False):
             """
             Wrapper around renpy.say
-            NOTE: always with interact = True
 
             IN:
                 what - a list/tuple of quips or a single quip to say
@@ -227,8 +508,11 @@ init 5 python in mas_nou:
             else:
                 quip = what
 
-            quip = renpy.substitute(quip)
-            renpy.say(m, quip, True)
+            if new_context:
+                renpy.invoke_in_new_context(renpy.say, m, quip, interact=interact)
+
+            else:
+                renpy.say(m, quip, interact=interact)
 
         def __calculate_xoffset(self, player, shift=0):
             """
@@ -347,7 +631,7 @@ init 5 python in mas_nou:
 
         def __get_card_filename(self, card):
             """
-            Generates filename for card based on its colour and type
+            Generates filename for a card based on its colour and type
 
             IN:
                 card - card object
@@ -363,12 +647,12 @@ init 5 python in mas_nou:
                     part2 = card.label
                 else:
                     if card.label == "Skip":
-                        part2 = 's'
+                        part2 = "s"
                     elif card.label == "Draw Two":
                         part2 = "d2"
                     # "Reverse"
                     else:
-                        part2 = 'r'
+                        part2 = "r"
 
             # For Wild cards
             else:
@@ -385,7 +669,7 @@ init 5 python in mas_nou:
         def __load_card_asset(self, card):
             """
             Associates a card object with its asset, adds it to the deck and sets it face down
-            # NOTE: Thanks to Velius aka big pout booplicate for this cool card deck
+            # NOTE: Thanks to Velius aka big pout booplicate for these cool cards
 
             IN:
                 card - card object
@@ -407,7 +691,7 @@ init 5 python in mas_nou:
                         if type == "number":
                             for dupe in range(2):
                                 for label in self.NUMBER_LABELS:
-                                    # NOTE: we don't duplicate "0" cards
+                                    # we don't duplicate "0" cards
                                     if dupe == 1 and label == "0":
                                         continue
                                     else:
@@ -434,7 +718,7 @@ init 5 python in mas_nou:
             Moves all - except the top one - cards from the discardpile
             onto the drawpile, then shuffles them
             """
-            renpy.pause(0.5, True)
+            renpy.pause(0.5, hard=True)
 
             while len(self.discardpile) > 1:
                 card = self.discardpile[1]
@@ -445,7 +729,7 @@ init 5 python in mas_nou:
 
                 self.drawpile.append(card)
 
-            renpy.pause(0.2, True)
+            renpy.pause(0.2, hard=True)
 
             # align the last card
             last_card = self.table.get_card(self.discardpile[0])
@@ -454,7 +738,7 @@ init 5 python in mas_nou:
 
             self.shuffle_deck()
 
-        def __write_game_log(self, current_player, next_player):
+        def __update_game_log(self, current_player, next_player):
             """
             Writes/updates the log with actions/attributes of the current and next players
             It does it at the end of every turn, we can back in any turn
@@ -473,7 +757,7 @@ init 5 python in mas_nou:
                 next_player - next played
             """
             next_player_data = {
-                "turn": self.total_turns + 1,
+                "turn": self.current_turn + 1,
                 "player": next_player,
                 "had_skip_turn": next_player.should_skip_turn,
                 "had_draw_cards": next_player.should_draw_cards,
@@ -497,19 +781,29 @@ init 5 python in mas_nou:
             IN:
                 current_player - the player who ends their turn
                 next_player - next player
+
+            ASSUMES:
+                mas_nou.disable_remind_button
+                mas_nou.disable_yell_button
             """
+            global disable_remind_button
+            global disable_yell_button
+
+            # reset the buttons' states
+            disable_remind_button = False
+            disable_yell_button = False
+
             if not self.drawpile:
-                # BUG: we can still have an active interaction during this call
+                # NOTE: we can still have an active interaction during this call
                 # which will lead to a crash. Dirty fix: invoke this method
-                # Look for renpy.end_interaction(value)
                 renpy.invoke_in_new_context(self.__update_drawpile)
 
-            self.__write_game_log(current_player, next_player)
+            self.__update_game_log(current_player, next_player)
 
             current_player.should_skip_turn = False
             current_player.plays_turn = False
 
-            # now that we wrote 'should_draw_cards' in the log, we can set it to 0 if player reached the cap
+            # now that we saved 'should_draw_cards' in the log, we can set it to 0 if player reached the cap
             if (
                 next_player.should_draw_cards
                 and len(next_player.hand) >= self.HAND_CARDS_LIMIT
@@ -526,13 +820,20 @@ init 5 python in mas_nou:
                 self.__say_quip(quips)
                 next_player.should_draw_cards = 0
 
+            # reset nou var if the player drew more cards
+            if (
+                next_player.yelled_nou
+                and len(next_player.hand) > 1
+            ):
+                next_player.yelled_nou = False
+
             next_player.drew_card = False
             next_player.played_card = False
             next_player.plays_turn = True
 
-            self.set_sensitive(not next_player.isAI)
+            self.current_turn += 1
 
-            self.total_turns += 1
+            self.set_sensitive(not next_player.isAI)
 
         def __win_check(self, player):
             """
@@ -558,7 +859,7 @@ init 5 python in mas_nou:
                 winner = "Player"
                 persistent._mas_game_nou_wins[winner] += 1
 
-            renpy.pause(2, True)
+            renpy.pause(2, hard=True)
             renpy.jump("mas_nou_game_end")
 
         def __is_matching_card(self, player, card):
@@ -602,7 +903,7 @@ init 5 python in mas_nou:
                         and (
                                 persistent._mas_game_nou_house_rules["play_wd4_anytime"]
                                 or not has_colour(player.hand, self.discardpile[-1].colour)
-                            )
+                        )
                     )
                     or card.colour == self.discardpile[-1].colour
                     or card.label == self.discardpile[-1].label
@@ -715,9 +1016,9 @@ init 5 python in mas_nou:
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
-                    renpy.pause(0.4)
+                    renpy.pause(0.4, hard=True)
 
-        def deal_cards(self, player, amount=1, smooth=True):
+        def deal_cards(self, player, amount=1, mark_as_drew_card=True, smooth=True):
             """
             Deals cards to players
             Also refreshing the drawpile if there're not enough cards
@@ -726,6 +1027,8 @@ init 5 python in mas_nou:
                 player - the player whose hand we deal cards in
                 amount - amount of cards to deal
                     (Default: 1)
+                mark_as_drew_card - whether or not we set the var for the player
+                    (Defaukt: True)
                 smooth - whether or not we use a little pause between dealing cards
                     (Default: True)
             """
@@ -760,7 +1063,8 @@ init 5 python in mas_nou:
                     self.__actually_deal_cards(player, cards_to_deal, smooth)
                     player.should_draw_cards = 0
 
-            player.drew_card = True
+            if mark_as_drew_card:
+                player.drew_card = True
 
         def prepare_game(self):
             """
@@ -770,7 +1074,7 @@ init 5 python in mas_nou:
                 3. Deals cards
                 4. Places first card onto the discardpile
                     and handles if it's an action/wild card
-                5. Writes first bits in the log
+                5. Fills first bits in the log
                 6. Makes our table sensetive to the user's imput
                     if needed
             """
@@ -798,7 +1102,7 @@ init 5 python in mas_nou:
             self.shuffle_deck()
 
             # Deal 14 cards or whatever you asked her for
-            total_cards = persistent._mas_game_nou_house_rules["start_cards"] * 2 + 1
+            total_cards = persistent._mas_game_nou_house_rules["starting_cards"] * 2 + 1
             for i in range(1, total_cards):
                 if not i % 2:
                     temp_player = next_player
@@ -825,16 +1129,18 @@ init 5 python in mas_nou:
                         self.__say_quip(
                             self.QUIPS_MONIKA_RESHUFFLE_DECK
                         )
-                        renpy.pause(0.5, True)
+                        renpy.pause(0.5, hard=True)
 
                     else:
-                        renpy.pause(1, True)
+                        renpy.pause(1, hard=True)
 
-                    self.drawpile.insert(47, card)
+                    # it'safe to assume that the drawpile has 10+ cards
+                    new_id = len(self.drawpile) / 2 + renpy.random.randint(-10, 10)
+                    self.drawpile.insert(new_id, card)
                     self.table.set_rotate(card, 0)
                     self.table.set_faceup(card, False)
 
-                    renpy.pause(0.1, True)
+                    renpy.pause(0.1, hard=True)
                     self.shuffle_deck()
 
                 else:
@@ -842,10 +1148,8 @@ init 5 python in mas_nou:
 
             # The 1st player will choose a colour if it's WCC
             if self.discardpile[-1].label == "Wild":
+                # NOTE: Monika will say what the colour is later
                 if current_player.isAI:
-                    renpy.pause(0.5, True)
-                    # BUG: Moni will announce the new colour and then say that it's her turn
-                    # probably will fix it with the new changes I have in mind for choose_colour
                     self.discardpile[-1].colour = self.monika.choose_colour()
 
             # Unlucky! The 1st player should skip the turn
@@ -858,7 +1162,7 @@ init 5 python in mas_nou:
 
             # Need to write some info in the game log
             current_player_data = {
-                "turn": self.total_turns,
+                "turn": self.current_turn,
                 "player": current_player,
                 "had_skip_turn": current_player.should_skip_turn,
                 "had_draw_cards": current_player.should_draw_cards,
@@ -867,11 +1171,9 @@ init 5 python in mas_nou:
             }
             self.game_log.append(current_player_data)
 
-            # FIXME: big oooof, how to improve these spaghetti?
             if current_player.isAI:
                 if current_player.should_skip_turn:
                     can_reflect = current_player.choose_card(should_draw=False)
-                    current_player.forced_card = can_reflect
 
                     if can_reflect:
                         quips = self.QUIPS_MONIKA_WILL_REFLECT
@@ -896,9 +1198,15 @@ init 5 python in mas_nou:
                 else:
                     quips = self.QUIPS_PLAYER_PLAYS_TURN
 
+            # Moni says a general quip
             self.__say_quip(
                 quips
             )
+            # Moni says the current colour if needed
+            if current_player.isAI and self.discardpile[-1].label == "Wild":
+                self.__say_quip(
+                    self.QUIPS_MONIKA_ANNOUNCE_COLOUR_FIRST_TURN
+                )
 
             # Finally allow to interact with cards
             current_player.plays_turn = True
@@ -921,7 +1229,7 @@ init 5 python in mas_nou:
             Tracks the player's actions and responds to their interactions
             """
             while self.player.plays_turn:
-                actions = ui.interact()
+                actions = ui.interact(type="minigame")
                 
                 for evt in actions:
                     if evt.type == "hover":
@@ -931,7 +1239,6 @@ init 5 python in mas_nou:
                             # now move it
                             card.pos_offsets = (0, -35)
                             card.springback()
-
                             # this moves the card stack on top of rendering order
                             stack = card.stack
                             self.table.stacks.remove(stack)
@@ -940,7 +1247,7 @@ init 5 python in mas_nou:
                     elif evt.type == "unhover":
                         if evt.card in self.player.hand:
                             card = self.table.get_card(evt.card)
-
+                            # move it back
                             card.pos_offsets = (0, 0)
                             card.springback()
 
@@ -968,11 +1275,6 @@ init 5 python in mas_nou:
                             self.set_sensitive(True)
 
                     elif evt.type == "drag":
-                        # if we're dragging, it means we've hovered before
-                        # and we need to reset the offsets
-                        card = self.table.get_card(evt.card)
-                        card.pos_offsets = (0, 0)
-
                         # Player draws a card
                         if (
                             evt.stack is self.drawpile 
@@ -996,22 +1298,24 @@ init 5 python in mas_nou:
                             and evt.drop_stack is self.discardpile 
                             and self.discardpile[-1].colour is not None
                             and not self.player.played_card
-                            # Ensure that if you draw a card, then you can't play a defensive card anymore this turn
+                            # Ensure that if you drew a card, then you can't play a defensive card anymore this turn
                             and not (self.player.should_skip_turn and self.player.drew_card)
                         ):
                             if self.__is_matching_card(self.player, evt.card):
+                                self.set_sensitive(False)
                                 self.play_card(self.player, self.monika, evt.card)
+                                self.set_sensitive(True)
 
                                 self.__win_check(self.player)
 
-                                # NOTE: We don't leave if the player has to choose a colour
+                                # We don't leave if the player has to choose a colour
                                 if self.discardpile[-1].colour is not None:
                                     self.end_turn(self.player, self.monika)
 
                     elif evt.type == "click":
                         if (
                             evt.stack is self.monika.hand
-                            and not renpy.random.randint(0, 19)
+                            and renpy.random.randint(1, 10) == 1# 1/10
                         ):
                             self.__say_quip(
                                 self.QUIPS_PLAYER_CLICKS_MONIKA_CARDS
@@ -1025,22 +1329,22 @@ init 5 python in mas_nou:
             if not self.monika.plays_turn:
                 return
 
-            if not self.has_jumped:
-                self.has_jumped = True
-                time = 1 + renpy.random.random()
-                renpy.pause(time, True)
+            self.monika.shuffle_hand()
+            self.monika.guess_player_cards()
+            self.monika.thonk_pause()
+            next_card_to_play = self.monika.choose_card()
+            self.monika.choose_reaction(next_card_to_play)
+            self.monika.announce_reaction()
+            self.monika.play_card(next_card_to_play)
 
-                self.monika.shuffle_hand()
-                self.monika.guess_player_cards()
-                self.monika.play_card(self.monika.choose_card())
-
-                reaction = self.monika.choose_reaction()
-
-                if reaction["type"] != NO_REACTION:
-                    renpy.call(reaction["label"], reaction["seen_count"])
-
-            self.has_jumped = False
             self.end_turn(self.monika, self.player)
+
+        def game_loop(self):
+            """
+            This wrapper is supposed to be called in the main while loop
+            """
+            self.monika_turn_loop()
+            self.player_turn_loop()
 
         def set_visible(self, value):
             """
@@ -1085,7 +1389,7 @@ init 5 python in mas_nou:
             if total_cards > 15:
                 # 7/10
                 k = renpy.random.randint(0, 9)
-                renpy.pause(0.5, True)
+                renpy.pause(0.5, hard=True)
 
                 for i in range(7):
                     card_id = renpy.random.randint(0, total_cards - 2)
@@ -1101,20 +1405,54 @@ init 5 python in mas_nou:
 
                     card.pos_offsets = (x_offset, y_offset)
                     card.springback()
-                    renpy.pause(0.2, True)
+                    renpy.pause(0.2, hard=True)
 
                     self.drawpile.insert(insert_id, card.value)
 
                     card.pos_offsets = (0, 0)
                     card.springback()
-                    renpy.pause(0.2, True)
+                    renpy.pause(0.2, hard=True)
 
             self.drawpile.shuffle()
-            renpy.pause(0.5, True)
+            renpy.pause(0.5, hard=True)
 
-        # TODO: delete this
-        def pass_func(self):
-            pass
+        def yell_nou(self, player):
+            """
+            A mini wrapper that handles "yelling system"
+            NOTE: Everything here must be called in a new context
+                since we 100% will have an active interaction when we get here.
+                We also toggle the sensitivity so you don't skip the dlg
+
+            ASSUMES:
+                the player didn't play a card
+            """
+            self.set_sensitive(False)
+            if player is self.monika:
+                if self.monika.yelled_nou:
+                    self.__say_quip(self.QUIPS_MONIKA_ALREADY_YELLED_NOU, new_context=True)
+
+                elif len(self.monika.hand) > 1:
+                    self.__say_quip(self.QUIPS_MONIKA_DONT_NEED_YELL_NOU, new_context=True)
+
+                else:
+                    self.__say_quip(self.QUIPS_MONIKA_FORGOT_YELL_NOU, new_context=True)
+                    # you got her, now she must draw 2 more cards
+                    self.deal_cards(self.monika, amount=2, mark_as_drew_card=False, smooth=False)
+
+            elif player is self.player:
+                if self.player.yelled_nou:
+                    self.__say_quip(self.QUIPS_PLAYER_ALREADY_YELLED_NOU, new_context=True)
+
+                # for the player we check the second last card
+                elif len(self.player.hand) > 2:
+                    self.__say_quip(self.QUIPS_PLAYER_DONT_NEED_YELL_NOU, new_context=True)
+
+                else:
+                    # 1/4 to say something so she doesn't spam you lol
+                    if renpy.random.randint(1, 4) == 1:
+                        self.__say_quip(self.QUIPS_PLAYER_YELLS_NOU, new_context=True)
+                    self.player.yelled_nou = True
+            self.set_sensitive(True)
 
         class __Card(object):
             """
@@ -1215,6 +1553,9 @@ init 5 python in mas_nou:
                 reactions - (list) all reactions that monika had during this game
                     (even if they didn't trigger)
             """
+            MIN_THONK_TIME = 0.3
+            MAX_THONK_TIME = 1.7
+
             def __init__(self, game, leftie=False):
                 """
                 Constructor
@@ -1244,6 +1585,18 @@ init 5 python in mas_nou:
             def __repr__(self):
                 return "<__AI Monika>"
 
+            def thonk_pause(self):
+                """
+                Pauses the game giving some time to Monika to thonk out her next turn
+                """
+                if len(self.hand) == 1:
+                    thonk_time = self.MIN_THONK_TIME
+
+                else:
+                    thonk_time = renpy.random.uniform(self.MIN_THONK_TIME, self.MAX_THONK_TIME)
+
+                renpy.pause(thonk_time, hard=True)
+
             def __randomise_colour(self):
                 """
                 Chooses one of the colours at random
@@ -1268,14 +1621,13 @@ init 5 python in mas_nou:
                 """
                 Guesses cards' colours in the player's hand
                 NOTE: must run this before anything else
-                NOTE: this and player_cards_data look terrible to me, but idk
-                    how to make it better
+                NOTE: this's method is quite a mess
                 """
                 # sanity check
                 if len(self.game.game_log) < 2:
                     return
 
-                # decrement if the pleyer played a card
+                # decrement the counter if the pleyer played a card
                 if (
                     self.player_cards_data["reset_in"] > 0
                     and self.game.game_log[-2]["played_card"] is not None
@@ -1290,7 +1642,7 @@ init 5 python in mas_nou:
                         and self.game.game_log[-2]["played_card"].type == "wild"
                     )
                     or (
-                        self.game.total_turns == 2
+                        self.game.current_turn == 2
                         and len(self.game.discardpile) > 1
                         and self.game.discardpile[-2].type == "wild"
                     )
@@ -1314,7 +1666,7 @@ init 5 python in mas_nou:
                     and (
                         not persistent._mas_game_nou_house_rules["play_wd4_anytime"]
                         # 1/4
-                        or not renpy.random.randint(0, 3)
+                        or renpy.random.randint(1, 4) == 1
                     )
                     and len(self.game.discardpile) > 1
                 ):
@@ -1347,6 +1699,7 @@ init 5 python in mas_nou:
                 # if the player lacks 3 colours, we can assume which colour they have
                 if len(self.player_cards_data["lacks_colours"]) == 3:
                     missing_colours = self.player_cards_data["lacks_colours"]
+                    # convert to set so we can find difference
                     all_colours = frozenset(self.game.COLOURS)
 
                     # now compare the set and the list, then iterate to get the only element from it
@@ -1382,7 +1735,7 @@ init 5 python in mas_nou:
 
                 IN:
                     NOTE: check sortKey for these
-                    keys_order - the dict's key we're sortign by
+                    keys_order - the dict's key we're sorting by
                     values_order - the dict's values we're sorting by
 
                 OUT:
@@ -1444,7 +1797,7 @@ init 5 python in mas_nou:
                 A method that represents cards in a Monika-friendly way (c)
                     NOTE: ids of number and action cards are sorted by cards value
                     NOTE: This should be called after any changes in Monika's hand,
-                    and before she'll do anything with cards so Monika has an actual info about her cards
+                        and before she'll do anything with cards so Monika has an actual info about her cards
                 """
                 new_cards_data = {
                     "num_red": {
@@ -1544,18 +1897,18 @@ init 5 python in mas_nou:
 
                 self.cards_data = new_cards_data
 
-            def shuffle_hand(self, chance=30):
+            def shuffle_hand(self, chance=15):
                 """
-                Moves some cards in Monika's hand
+                Tosses some cards in Monika's hand
                 This's just for visuals
                 NOTE: Since this changes cards' ids,
                     either do this at the start of the turn (optimal),
-                    or update cards data again after shuffling (slow).
+                    or update cards data again after shuffling.
 
                 IN:
                     chance - the chance for Monika to shuffle cards
                 """
-                if self.game.total_turns < 4:
+                if self.game.current_turn < 4:
                     # no point in doing anything
                     return
 
@@ -1570,24 +1923,25 @@ init 5 python in mas_nou:
                     return
 
                 # how we want to shuffle
-                shuffle_type = renpy.random.randint(0, 2)
+                shuffle_type = renpy.random.randint(1, 3)
 
                 # just one
-                if shuffle_type == 0:
+                if shuffle_type == 1:
                     # choose the card
                     card_id = renpy.random.randint(0, total_cards - 1)
                     # all ids we can insert to
-                    free_ids = [id for id in range(total_cards - 1) if id != card_id]
-                    # choose the id
+                    free_ids = [id for id in range(total_cards) if id != card_id]
+                    # choose the new id
                     insert_id = renpy.random.choice(free_ids)
 
                     card = self.hand[card_id]
                     self.hand.insert(insert_id, card)
 
                 # shuffle some
-                elif shuffle_type == 1:
-                    all_ids = [id for id in range(total_cards - 1)]
+                elif shuffle_type == 2:
+                    all_ids = [id for id in range(total_cards)]
                     ids_to_shuffle = []
+                    free_ids = list(all_ids)
 
                     # decide how much cards we'll shuffle
                     if total_cards > 12:
@@ -1598,12 +1952,12 @@ init 5 python in mas_nou:
                     # make a list of ids we'll shuffle
                     for i in range(total_to_shuffle):
                         id = renpy.random.choice(all_ids)
+                        # remove from the available ids list so we don't use it twice
                         all_ids.remove(id)
                         ids_to_shuffle.append(id)
 
+                    # and finilly move the cards
                     for card_id in ids_to_shuffle:
-                        # oof
-                        free_ids = [id for id in range(total_cards - 1) if id != card_id]
                         insert_id = renpy.random.choice(free_ids)
                         card = self.hand[card_id]
                         self.hand.insert(insert_id, card)
@@ -1612,7 +1966,7 @@ init 5 python in mas_nou:
                 else:
                     self.hand.cards.sort(key=lambda card: card.value.value, reverse=True)
 
-                renpy.pause(0.5, True)
+                renpy.pause(0.5, hard=True)
 
             def choose_colour(self):
                 """
@@ -1633,24 +1987,7 @@ init 5 python in mas_nou:
                     )
                     colours = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
 
-                    rv = [self.hand[id].label == label for label in labels] + [self.hand[id].colour == colour for colour in colours]
-                    return rv
-
-                def announce_colour(colour):
-                    """
-                    TODO: move announcing to reactions
-                    Wrapper around renpy.say
-
-                    IN: colour - colour to announce
-                    """
-                    lines = (
-                        _("I think I'll set...{{w=0.5}}{0} colour!"),
-                        _("I want {0} colour."),
-                        _("I choose {0} colour."),
-                        _("Hmm.{{w=0.1}}.{{w=0.1}}.{{w=0.1}} I choose {0}!")
-                    )
-                    line = renpy.random.choice(lines)
-                    renpy.say(m, line.format(colour), True)
+                    return [self.hand[id].label == label for label in labels] + [self.hand[id].colour == colour for colour in colours]
 
                 self.__update_cards_data()
 
@@ -1662,14 +1999,13 @@ init 5 python in mas_nou:
                     else:
                         colour = self.hand[0].colour
 
-                    announce_colour(colour)
                     return colour
 
                 else:
                     if persistent._mas_game_nou_house_rules["win_points"]:
                         sorted_cards_data = self.__get_sorted_cards_data()
                     else:
-                        # NOTE: use like this because value doesn't matter in games w/o points
+                        # NOTE: use like this because values don't matter in games w/o points
                         sorted_cards_data = self.__get_sorted_cards_data(values_order=["amount"])
 
                     # more agressive
@@ -1677,7 +2013,6 @@ init 5 python in mas_nou:
                         action_ids = []
 
                         for colour in self.game.COLOURS:
-                            # BUG: this doesn't respect colours since we sort later (might be fixed)
                             action_ids += self.cards_data["act_" + colour]["ids"]
 
                         if action_ids:
@@ -1689,11 +2024,11 @@ init 5 python in mas_nou:
                             self.forced_card = self.hand[action_ids[0]]
 
                             colour = self.forced_card.colour
-                            announce_colour(colour)
                             return colour
 
                     # default
                     else:
+                        # TODO: Need to improve this part, can generalize it with the above one
                         sortByLabel = lambda card: (
                             card.label == "Skip",
                             card.label == "Draw Two",
@@ -1715,7 +2050,6 @@ init 5 python in mas_nou:
                                 # if the difference between the highest valued colour
                                 # and the one we're checking is more than 60%,
                                 # then it isn't worth it, leave to set colour by values of number cards
-                                # can make it a var tbh
                                 if (highest_value - sorted_cards_data[j][1][srt_data_key]) / highest_value >= 0.6:
                                     break
 
@@ -1733,7 +2067,6 @@ init 5 python in mas_nou:
                                         )[0]
 
                                         colour = self.forced_card.colour
-                                        announce_colour(colour)
                                         return colour
 
                     # fallback
@@ -1746,27 +2079,22 @@ init 5 python in mas_nou:
                     else:
                         colour = self.__randomise_colour()
 
-                    announce_colour(colour)
                     return colour
 
             def choose_card(self, should_draw=True):
                 """
                 Monika chooses a card to play
                 There are different variants depending on the game state
-                If Monika can't play a card, she'll draw one
                 TODO: now that we have 'player_cards_data':
                     Moni could try not to play the colour the player has
                     if that will lead to their victory (<2 card?)
                     That especially will help in a situation where she
-                    knows for sure that the palyer has only 1 colour
+                    knows for sure that the player has only 1 colour
 
                 IN:
                     should_draw - should Monika draw a card
-                        if she've not found one to play
+                        if she's not found one to play
                         (Default: True)
-                        NOTE: basically always True, the only exception is
-                            when we use this method for a reaction at the start
-                            of the game
 
                 OUT:
                     card if we found or drew one
@@ -1802,13 +2130,13 @@ init 5 python in mas_nou:
                                         # we can't be sure here, so just a guess play
                                         last_card.colour != self.player_cards_data["has_colour"]
                                         and len(self.game.player.hand) > 2
-                                        and renpy.random.randint(0, 2) == 0
+                                        and renpy.random.randint(1, 3) == 1# 1/3
                                     )
                                 )
                             ):
                                 # if we've passed all checks, let's see if we actually can play the card
-                                if self.game.__is_matching_card(self, card):
-                                    return card
+                                if self.game.__is_matching_card(self, last_card):
+                                    return last_card
 
                         # try to play something
                         for id in sorted_cards_data[colour_id][1]["ids"]:
@@ -1836,12 +2164,8 @@ init 5 python in mas_nou:
                     #     self.hand[id].label == "Draw Two",
                     #     self.hand[id].label == "Reverse"
                     # )
-                    action_cards_ids = []
-
                     def sortKey(id):
                         """
-                        TODO: with this sort key it should respect both colours and labels
-                        but I need more tests with this
                         """
                         labels = (
                             "Skip",
@@ -1850,11 +2174,11 @@ init 5 python in mas_nou:
                         )
                         colours = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
 
-                        rv = [self.hand[id].label == label for label in labels] + [self.hand[id].colour == colour for colour in colours]
-                        return rv
+                        return [self.hand[id].label == label for label in labels] + [self.hand[id].colour == colour for colour in colours]
+
+                    action_cards_ids = []
 
                     for colour in self.game.COLOURS:
-                        # BUG: this doesn't respect colours since we sort it later (might be fixed)
                         action_cards_ids += self.cards_data["act_" + colour]["ids"]
 
                     action_cards_ids.sort(key=sortKey, reverse=True)
@@ -1901,7 +2225,7 @@ init 5 python in mas_nou:
 
                 def analyse_cards(func_list):
                     """
-                    Analyse all cards we have with funcs in func_list and return first
+                    Analyses all cards we have with funcs in func_list and returns first
                     appropriate card we want and can play in this turn
 
                     IN:
@@ -1928,7 +2252,6 @@ init 5 python in mas_nou:
                 if self.should_skip_turn:
                     # Let's try to play a defensive card
                     if persistent._mas_game_nou_house_rules["win_points"]:
-                        # keys_order=["num"]
                         sorted_cards_data = self.__get_sorted_cards_data()
                     else:
                         sorted_cards_data = self.__get_sorted_cards_data(values_order=["amount"])
@@ -1955,7 +2278,7 @@ init 5 python in mas_nou:
                         and should_draw
                     ):
                         self.game.deal_cards(self, self.should_draw_cards)
-                        # fall through
+                        # # # FALL THROUGH
 
                 # Just Monika's turn
                 else:
@@ -1964,7 +2287,6 @@ init 5 python in mas_nou:
                         self.forced_card is not None
                         and self.game.__is_matching_card(self, self.forced_card)
                     ):
-                        # TODO: might want to set it to None if we faield to play it
                         return self.forced_card
 
                     # We don't have forsed card or we can't play it
@@ -1984,8 +2306,8 @@ init 5 python in mas_nou:
 
                             # the player is close to victory, need to play more aggressive
                             if (
-                                total_cards > 5
-                                and len(self.game.player.hand) < 4
+                                total_cards > 7
+                                or len(self.game.player.hand) < 4
                             ):
                                 analysis = (
                                     (
@@ -2042,14 +2364,14 @@ init 5 python in mas_nou:
 
                             if (
                                 self.game.__is_matching_card(self, card)
-                                # don't play it if it will make the player draw a card next turn
+                                # don't play it if it will make the player draw a card on the next turn
                                 and (
                                     # but always play if we have just 2 cards left
                                     len(self.hand) < 3
                                     # play if the player may have that colour
                                     or self.game.discardpile[-1].colour not in self.player_cards_data["lacks_colours"]
                                     # 1/5 to play anyway
-                                    or not renpy.random.randint(0, 4)
+                                    or renpy.random.randint(1, 5) == 1
                                 )
                             ):
                                 return card
@@ -2060,7 +2382,7 @@ init 5 python in mas_nou:
             def play_card(self, card):
                 """
                 Inner wrapper around play_card
-                NOTE: no checks done here
+                NOTE: we don't do most checks here
 
                 IN:
                     card - card to play
@@ -2080,48 +2402,21 @@ init 5 python in mas_nou:
                 ):
                     self.game.discardpile[-1].colour = self.choose_colour()
 
-            def choose_reaction(self):
+            def choose_reaction(self, next_card_to_play):
                 """
                 Helps Monika choose a dialogue based on state of the game
                 TODO: reaction if Monika wasn't able to reflect card
-                TODO: add odds so you won't trigger responses every time
-                TODO: add at the end a reaction if you draw like 5 cards in a row (player 'lets' Moni win)
-                TODO: quite hard, but would be cool if Moni could react on you both drawing cards
-                    bc you can't play a card with the current colour
-                TODO: won't work with the current choose_colour (since we announce colour there)
-                    might need to return a card with choose_card and save itы attributes,
-                    then use it here in response, and only after that actually play the card
-                    quite complicated, but should worth it
+                TODO: reaction when you both drawing cards
+                    because no one has a card with the current colour
+                TODO: reactions when Monika reflected a card on her 1st turn
+                    (the player had (had not) to skip their turn)
+                TODO: reactions when the player reflected a card on their 1st turn
+
+                IN:
+                    next_card_to_play - the next card Monika's going to play
+                        (we base reaction on it)
                 """
-                def getLabelForReaction(reaction):
-                    """
-                    Gets the label corresponding to the given reaction
-
-                    IN:
-                        reaction - the reaction id
-
-                    OUT:
-                        string with the label for that reaction
-                        or None if no reaction was found
-
-                    ASSUMES:
-                        reaction in reactions_map
-                    """
-                    reactions_map = {
-                        NO_REACTION: None,
-                        MONIKA_REFLECTED_ACT: "mas_nou_reaction_monika_reflected_act",
-                        PLAYER_REFLECTED_ACT: "mas_nou_reaction_player_reflected_act",
-                        MONIKA_REFLECTED_WDF: "mas_nou_reaction_monika_reflected_wdf",
-                        PLAYER_REFLECTED_WDF: "mas_nou_reaction_player_reflected_wdf",
-                        MONIKA_REFLECTED_ACT_AFTER_WDF: "mas_nou_reaction_monika_reflected_act_after_wdf",
-                        PLAYER_REFLECTED_ACT_AFTER_WDF: "mas_nou_reaction_player_reflected_act_after_wdf",
-                        MONIKA_REFLECTED_WCC: "mas_nou_reaction_monika_reflected_wcc",
-                        PLAYER_REFLECTED_WCC: "mas_nou_reaction_player_reflected_wcc"
-                    }
-
-                    return reactions_map[reaction]
-
-                # Someone reflected an action card
+                # # # Someone reflected an action card
                 if (
                     self.game.player.played_card
                     and self.game.player.played_cards
@@ -2134,76 +2429,60 @@ init 5 python in mas_nou:
                         self.played_card
                         and self.game.player.should_skip_turn
                     ):
-                        # Do we reflect a card that reflected a wild card before?
+                        # # # Does Monika reflect a card that reflected a wild card before?
+
                         # Monika played a wd4 > the player reflected > Monika reflected
                         if (
                             len(self.game.game_log) > 2
-                            and self.game.game_log[self.game.total_turns - 3]["player"] is self
-                            and self.game.game_log[self.game.total_turns - 3]["played_card"] is not None
-                            and self.game.game_log[self.game.total_turns - 3]["played_card"].label == "Wild Draw Four"
+                            and self.game.game_log[-3]["player"] is self
+                            and self.game.game_log[-3]["played_card"] is not None
+                            and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"
                         ):
                             reaction = {
-                                "type": MONIKA_REFLECTED_ACT_AFTER_WDF,
+                                "type": self.game.MONIKA_REFLECTED_WDF,
                                 "seen_count": 0
                             }
 
-                        # the player played a wd4 > Monika reflected > the player reflected > Monika reflected
-                        elif (
-                            # len(self.game.game_log) > 3
-                            # self.game.game_log[self.game.total_turns - 4]["player"] is self.game.player
-                            # and self.game.game_log[self.game.total_turns - 4]["played_card"] is not None
-                            # and self.game.game_log[self.game.total_turns - 4]["played_card"].label == "Wild Draw Four"
-                            # NOTE: probably we don't need all these checks, just 2 are enough
-                            self.reactions
-                            and self.reactions[-1]["type"] == MONIKA_REFLECTED_WDF
-                        ):
-                            reaction = {
-                                "type": MONIKA_REFLECTED_ACT_AFTER_WDF,
-                                "seen_count": 0
-                            }
-
-                        # the player played a wd4 > Monika reflected > the player reflected > Monika reflected > the player reflected > Monika reflected and so on
+                        # the player played a wd4 > Monika reflected > ... > the player reflected > Monika reflected
                         elif (
                             self.reactions
-                            and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT_AFTER_WDF
+                            and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
+                            and self.game.game_log
+                            and self.game.game_log[-2]["player"] is self.game.player
+                            and self.game.game_log[-3]["played_card"] is not None# should be enough to just check if the player played something
                         ):
-                            reaction = {"type": MONIKA_REFLECTED_ACT_AFTER_WDF}
+                            reaction = {"type": self.game.MONIKA_REFLECTED_WDF}
 
-                            if (
-                                len(self.reactions) > 1
-                                and self.reactions[-2]["type"] == MONIKA_REFLECTED_ACT_AFTER_WDF
-                                and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT_AFTER_WDF
-                            ):
-                                reaction["seen_count"] = 2
+                            seen_count = self.reactions[-1]["seen_count"] + 1
+                            reaction["seen_count"] = seen_count if seen_count < 3 else 2
 
-                            else:
-                                reaction["seen_count"] = 1
+                        # # # Monika does not
 
-                        # We don't, it's just the player played an act > Monika reflected
+                        # it's just the player played an act > Monika reflected
                         else:
-                            reaction = {"type": MONIKA_REFLECTED_ACT}
+                            reaction = {"type": self.game.MONIKA_REFLECTED_ACT}
 
                             # Monika keeps track on series of reactions
                             if (
                                 len(self.reactions) > 1
-                                and self.reactions[-2]["type"] == MONIKA_REFLECTED_ACT
-                                and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT
+                                and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_ACT
+                                and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
                             ):
                                 reaction["seen_count"] = 2
 
                             elif (
                                 self.reactions
-                                and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT
+                                and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
                             ):
                                 reaction["seen_count"] = 1
 
                             else:
                                 reaction["seen_count"] = 0
 
-                        reaction["turn"] = self.game.total_turns
+                        reaction["turn"] = self.game.current_turn
                         reaction["monika_card"] = self.played_cards[-1]
                         reaction["player_card"] = self.game.player.played_cards[-1]
-                        reaction["label"] = getLabelForReaction(reaction["type"])
+                        reaction["shown"] = False
 
                         self.reactions.append(reaction)
 
@@ -2212,83 +2491,66 @@ init 5 python in mas_nou:
                     # it's the Player
                     elif (
                         not self.played_card
-                        # and self.game.game_log[self.game.total_turns - 3]["played_card"]
                         and self.should_skip_turn
                     ):
-                        # Monika played wd4 > the player reflected > Monika reflected > the player reflected
-                        # NOTE: What did I mean by this??? > (also possible to get here from the case below when both player player 4 d2 which is quite hard to get)
+                        # # # the player reflected a wd4
+
+                        # Monika played wd4 > the player reflected > ... > Monika reflected > the player reflected
                         if (
                             self.reactions
-                            and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT_AFTER_WDF
+                            and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
                         ):
                             reaction = {
-                                "type": PLAYER_REFLECTED_ACT_AFTER_WDF,
-                                "turn": self.game.total_turns,
+                                "type": self.game.PLAYER_REFLECTED_WDF,
+                                "turn": self.game.current_turn,
                                 "monika_card": self.played_cards[-1],
                                 "player_card": self.game.player.played_cards[-1],
-                                "seen_count": 0
+                                "shown": False
                             }
 
-                            # TODO: could use seen_count a bit different: track for how long both players tried to reflect the card
-                            # if (
-                            #     len(self.reactions) > 1
-                            #     and self.reactions[-2]["type"] == MONIKA_REFLECTED_ACT_AFTER_WDF
-                            # ):
-                            #     reaction["seen_count"] = 1
-
-                            # else:
-                            #     reaction["seen_count"] = 0
-
-                            reaction["label"] = getLabelForReaction(reaction["type"])
+                            seen_count = self.reactions[-1]["seen_count"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
+                            reaction["seen_count"] = seen_count if seen_count < 3 else 2
 
                             self.reactions.append(reaction)
 
                             return reaction
 
-                        # the player played wd4 > Monika reflected > the player reflected
+                        # the player reflected an act card
+
+                        # Monika played an act > the player mirrored > Monika failed
+                        elif (
+                            self.game.game_log[-3]["player"] is self
+                            and self.game.game_log[-3]["played_card"] is not None
+                            and self.game.game_log[-3]["played_card"].label == self.game.player.played_cards[-1].label
+                        ):
+                            reaction = {
+                                "type": self.game.PLAYER_REFLECTED_ACT,
+                                "turn": self.game.current_turn,
+                                "monika_card": self.played_cards[-1],
+                                "player_card": self.game.player.played_cards[-1],
+                                "seen_count": 0,# for this one always use seen_count 0
+                                "shown": False
+                            }
+
+                            self.reactions.append(reaction)
+
+                            return reaction
+
+                        # someone played an act > ... > Monika mirrored > the player mirrored
                         elif (
                             self.reactions
-                            and self.reactions[-1]["type"] == MONIKA_REFLECTED_WDF
+                            and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
                         ):
                             reaction = {
-                                "type": PLAYER_REFLECTED_ACT_AFTER_WDF,
-                                "turn": self.game.total_turns,
+                                "type": self.game.PLAYER_REFLECTED_ACT,
+                                "turn": self.game.current_turn,
                                 "monika_card": self.played_cards[-1],
                                 "player_card": self.game.player.played_cards[-1],
-                                "seen_count": 0
+                                "shown": False
                             }
 
-                            reaction["label"] = getLabelForReaction(reaction["type"])
-
-                            self.reactions.append(reaction)
-
-                            return reaction
-
-                        # someone played act > ... > Monika mirrored > the player mirrored
-                        elif (
-                            self.game.game_log[self.game.total_turns - 3]["player"] is self
-                            and self.game.game_log[self.game.total_turns - 3]["played_card"] is not None
-                            and self.game.game_log[self.game.total_turns - 3]["played_card"].label == self.game.player.played_cards[-1].label
-                        ):
-                            reaction = {
-                                "type": PLAYER_REFLECTED_ACT,
-                                "turn": self.game.total_turns,
-                                "monika_card": self.played_cards[-1],
-                                "player_card": self.game.player.played_cards[-1],
-                                "seen_count": 0
-                            }
-
-                            # TODO: could use seen_count a bit different: track for how long both players tried to reflect the card
-                            # if (
-                            #     self.reactions
-                            #     and self.reactions[-1]["type"] == MONIKA_REFLECTED_ACT
-                            # ):
-                            #     reaction["seen_count"] = 1
-
-                            # else:
-                            #     reaction["seen_count"] = 0
-
-                            reaction["label"] = getLabelForReaction(reaction["type"])
+                            seen_count = self.reactions[-1]["seen_count"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
+                            reaction["seen_count"] = seen_count if seen_count < 3 else 2
 
                             self.reactions.append(reaction)
 
@@ -2297,7 +2559,7 @@ init 5 python in mas_nou:
                         # NOTE: There's a possibility that we didn't return yet,
                         # so we have to fall through remaining checks
 
-                # Monika mirrored a WDF card
+                # # # Monika mirrored a WDF card
                 if (
                     self.game.player.played_cards
                     and self.game.player.played_cards[-1].label == "Wild Draw Four"
@@ -2306,53 +2568,52 @@ init 5 python in mas_nou:
                     and self.played_cards[-1].label == "Draw Two"
                 ):
                     reaction = {
-                        "type": MONIKA_REFLECTED_WDF,
-                        "turn": self.game.total_turns,
+                        "type": self.game.MONIKA_REFLECTED_WDF,
+                        "turn": self.game.current_turn,
                         "monika_card": self.played_cards[-1],
-                        "player_card": self.game.player.played_cards[-1]
+                        "player_card": self.game.player.played_cards[-1],
+                        "seen_count": 0,
+                        "shown": False
                     }
 
-                    turns = 8
-                    if sum(reaction["type"] == MONIKA_REFLECTED_WDF and reaction["turn"] >= self.game.total_turns - 2 * turns for reaction in self.reactions[-turns:]):
-                        reaction["seen_count"] = 1
-                    else:
-                        reaction["seen_count"] = 0
-
-                    reaction["label"] = getLabelForReaction(reaction["type"])
+                    # don't delete this
+                    # turns = 8
+                    # if sum(reaction["type"] == self.game.MONIKA_REFLECTED_WDF and reaction["turn"] >= self.game.current_turn - 2 * turns for reaction in self.reactions[-turns:]):
+                    #     reaction["seen_count"] = 1
+                    # else:
+                    #     reaction["seen_count"] = 0
 
                     self.reactions.append(reaction)
 
                     return reaction
 
-                # The Player mirrored a WDF card
+                # # # The Player mirrored a WDF card
                 elif (
-                    self.game.player.played_cards
+                    self.game.player.played_card
+                    and self.game.player.played_cards
                     and self.game.player.played_cards[-1].label == "Draw Two"
                     and not self.played_card
-                    and self.played_cards
-                    and self.played_cards[-1].label == "Wild Draw Four"
                     and self.should_skip_turn
+                    and self.game.game_log[-3]["player"] is self
+                    and self.game.game_log[-3]["played_card"] is not None
+                    and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"
+                    # and self.played_cards
+                    # and self.played_cards[-1].label == "Wild Draw Four"
                 ):
                     reaction = {
-                        "type": PLAYER_REFLECTED_WDF,
-                        "turn": self.game.total_turns,
+                        "type": self.game.PLAYER_REFLECTED_WDF,
+                        "turn": self.game.current_turn,
                         "monika_card": self.played_cards[-1],
-                        "player_card": self.game.player.played_cards[-1]
+                        "player_card": self.game.player.played_cards[-1],
+                        "seen_count": 0,
+                        "shown": False
                     }
-
-                    turns = 8
-                    if sum(reaction["type"] == PLAYER_REFLECTED_WDF and reaction["turn"] >= self.game.total_turns - 2 * turns for reaction in self.reactions[-turns:]):
-                        reaction["seen_count"] = 1
-                    else:
-                        reaction["seen_count"] = 0
-
-                    reaction["label"] = getLabelForReaction(reaction["type"])
 
                     self.reactions.append(reaction)
 
                     return reaction
 
-                # Monika reflected a WCC card
+                # # # Monika reflected a WCC card
                 elif (
                     self.game.player.played_card
                     and self.game.player.played_cards[-1].label == "Wild"
@@ -2360,27 +2621,37 @@ init 5 python in mas_nou:
                     and self.played_cards[-1].label == "Wild"
                 ):
                     reaction = {
-                        "type": MONIKA_REFLECTED_WCC,
-                        "turn": self.game.total_turns,
+                        "type": self.game.MONIKA_REFLECTED_WCC,
+                        "turn": self.game.current_turn,
                         "monika_card": self.played_cards[-1],
-                        "player_card": self.game.player.played_cards[-1]
+                        "player_card": self.game.player.played_cards[-1],
+                        "shown": False
                     }
 
-                    turns = 8
-                    if sum(reaction["type"] == MONIKA_REFLECTED_WCC and reaction["turn"] >= self.game.total_turns - 2 * turns for reaction in self.reactions[-turns:]):
+                    if (
+                        len(self.reactions) > 1
+                        and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_WCC
+                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
+                        reaction["seen_count"] = 2
+
+                    elif (
+                        self.reactions
+                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
                         reaction["seen_count"] = 1
+
                     else:
                         reaction["seen_count"] = 0
-
-                    reaction["label"] = getLabelForReaction(reaction["type"])
 
                     self.reactions.append(reaction)
 
                     return reaction
 
-                # The Player reflected a WCC card
+                # # # The Player reflected a WCC card
                 elif (
                     self.game.player.played_card
+                    and self.game.player.played_cards
                     and self.game.player.played_cards[-1].label == "Wild"
                     and (
                         (
@@ -2396,19 +2667,41 @@ init 5 python in mas_nou:
                     )
                 ):
                     reaction = {
-                        "type": PLAYER_REFLECTED_WCC,
-                        "turn": self.game.total_turns,
+                        "type": self.game.PLAYER_REFLECTED_WCC,
+                        "turn": self.game.current_turn,
                         "monika_card": self.played_cards[-1],
-                        "player_card": self.game.player.played_cards[-1]
+                        "player_card": self.game.player.played_cards[-1],
+                        "shown": False
                     }
 
-                    turns = 8
-                    if sum(reaction["type"] == PLAYER_REFLECTED_WCC and reaction["turn"] >= self.game.total_turns - 2 * turns for reaction in self.reactions[-turns:]):
-                        reaction["seen_count"] = 1
+                    if (
+                        self.reactions
+                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
+                        seen_count = self.reactions[-1]["seen_count"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
+                        reaction["seen_count"] = seen_count if seen_count < 3 else 2
+
                     else:
                         reaction["seen_count"] = 0
 
-                    reaction["label"] = getLabelForReaction(reaction["type"])
+                    self.reactions.append(reaction)
+
+                    return reaction
+
+                # Monika played a wild card (basically announcing the colour)
+                # NOTE: this's below all the other checks so we can be sure about this
+                elif (
+                    self.played_card
+                    and self.played_cards[-1].type == "wild"
+                ):
+                    reaction = {
+                        "type": self.game.MONIKA_PLAYED_WILD,
+                        "turn": self.game.current_turn,
+                        "monika_card": self.played_cards[-1],
+                        "player_card": self.game.player.played_cards[-1] if self.game.player.played_cards else None,
+                        "seen_count": 0,
+                        "shown": False
+                    }
 
                     self.reactions.append(reaction)
 
@@ -2416,22 +2709,161 @@ init 5 python in mas_nou:
 
                 # Monika has nothing to say
                 reaction = {
-                    "type": NO_REACTION,
-                    "turn": self.game.total_turns,
-                    "seen_count": 0
+                    "type": self.game.NO_REACTION,
+                    "turn": self.game.current_turn,
+                    "monika_card": self.played_cards[-1] if self.played_cards else None,
+                    "player_card": self.game.player.played_cards[-1] if self.game.player.played_cards else None,
+                    "seen_count": 0,
+                    "shown": False
                 }
-
-                if self.played_cards:
-                    reaction["monika_card"] = self.played_cards[-1]
-
-                if self.game.player.played_cards:
-                    reaction["player_card"] = self.game.player.played_cards[-1]
-
-                reaction["label"] = getLabelForReaction(reaction["type"])
 
                 self.reactions.append(reaction)
 
                 return reaction
+
+            def announce_reaction(self, reaction):
+                """
+                A wrapper around renpy.say for Monika's reactions
+                NOTE: reactions that announce the current colour
+                    and NoU quips always bypass the chance check 
+
+                IN:
+                    reaction - reaction to announce
+                """
+                # Announcing nou isn't a reaction, but simple quips
+                # That's because it has kind of priority over reactions
+                if (
+                    # self.played_card
+                    not self.yelled_nou
+                    and len(self.hand) == 1
+                    and renpy.random.randint(1, 20) < 19# TODO: better way to do this, 1/20 not to say nou
+                ):
+                    should_yell_nou = True
+
+                else:
+                    should_yell_nou = False
+
+                if (
+                    not self.game.player.yelled_nou
+                    and len(self.game.player.hand) == 1
+                    and renpy.random.randint(1, 20) < 19# TODO: better way to do this, 1/20 not to remind to say nou
+                ):
+                    should_remind_yell_nou = True
+
+                else:
+                    should_remind_yell_nou = False
+
+                if (
+                    reaction["type"] != self.game.NO_REACTION
+                    and (
+                        reaction["type"] == self.game.MONIKA_PLAYED_WILD
+                        or (
+                            # these override most of the reactions
+                            not should_yell_nou
+                            and not should_remind_yell_nou
+                        )
+                    )
+                ):
+                    reaction_map = self.game.REACTIONS_MAP[reaction["type"]]
+                    total_reactions = len(reaction_map)
+
+                    # correct seen_count if needed
+                    if reaction["seen_count"] < 0:
+                        seen_count = 0
+
+                    elif reaction["seen_count"] > total_reactions - 1:
+                        seen_count = total_reactions - 1
+
+                    else:
+                        seen_count = reaction["seen_count"]
+
+                    # check if Monika wants to say this
+                    chance_to_trigger = self.game.REACTION_CHANCES_MAP[seen_count]
+                    if (
+                        reaction["type"] == self.game.MONIKA_PLAYED_WILD# NOTE: always say this one since the player needs to know the current colour
+                        or renpy.random.randint(1, 100) <= chance_to_trigger
+                    ):
+                        # if we passed all checks, mark this reaction as shown
+                        reaction["shown"] = True
+
+                        # we make a new copy because we may modify it here
+                        reaction_quips = list(reaction_map[seen_count])
+
+                        # # # START MODIFIERS
+                        additional_quips = None
+
+                        if reaction["type"] == self.game.MONIKA_REFLECTED_ACT:
+                            if (
+                                seen_count == 2
+                                and persistent._mas_game_nou_house_rules["stack_d2"]
+                            ):
+                                additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
+
+                            elif (
+                                seen_count == 0
+                                and reaction["monika_card"] is not None
+                            ):
+                                if reaction["monika_card"].label == "Draw Two":
+                                    additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2
+
+                                # elif reaction["monika_card"].label in ("Skip", "Reverse"):
+                                else:
+                                    additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3
+
+                        elif (
+                            reaction["type"] == self.game.MONIKA_REFLECTED_WDF
+                            and seen_count == 2
+                            and persistent._mas_game_nou_house_rules["stack_d2"]
+                        ):
+                            additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
+
+                        # add modifiers if any
+                        if additional_quips is not None:
+                            reaction_quips += additional_quips
+
+                        # # # END MODIFIERS
+
+                        # choose the one we will use
+                        quip = renpy.random.choice(
+                            reaction_quips
+                        )
+
+                        # say it line by line
+                        for line in quip:
+                            renpy.say(m, line, interact=True)
+
+                # Additional lines so the player knows which colour it is now
+                if reaction["type"] == self.game.MONIKA_REFLECTED_WCC:
+                    colour_quip = renpy.random.choice(self.game.QUIPS_MONIKA_ANNOUNCE_COLOUR_AFTER_REFLECT)
+                    renpy.say(m, colour_quip, interact=True)
+
+                # Additional lines so the player knows Monika has just 1 card
+                if should_yell_nou:
+                    self.yelled_nou = True
+                    nou_quip = renpy.random.choice(self.game.QUIPS_MONIKA_YELLS_NOU)
+                    # add the prefix if Monika has said something prior to this
+                    if (
+                        reaction["shown"]
+                        or reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
+                        nou_quip = "Oh and...{w=0.5}" + nou_quip
+
+                    renpy.say(m, nou_quip, interact=True)
+
+                # Additional lines where Monika remind about saying nou
+                if should_remind_yell_nou:
+                    remind_quip = renpy.random.choice(self.game.QUIPS_PLAYER_FORGOT_YELL_NOU)
+                    # add the prefix if Monika has said something prior to this
+                    if (
+                        should_yell_nou
+                        or reaction["shown"]
+                        or reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
+                        remind_quip = "Also...{w=0.5}" + remind_quip
+
+                    renpy.say(m, remind_quip, interact=True)
+                    # she caught you, draw 2 cards
+                    self.game.deal_cards(self.game.player, amount=2, mark_as_drew_card=False, smooth=False)
 
 # END CLASS DEF
 
@@ -2445,35 +2877,29 @@ init 5 python in mas_nou:
                 mas_nou.game
                 mas_nou.winner
             """
-            global game
-            global winner
-
-            if (
-                winner == "Monika"
-                or winner == "Surrendered"
-            ):
-                _key = "Monika"
+            if winner in ("Monika", "Surrendered"):
+                persist_key = "Monika"
                 loser = game.player
 
             elif winner == "Player":
-                _key = "Player"
+                persist_key = "Player"
                 loser = game.monika
 
+            # this should never happen
             else:
-                # just in case
                 return
 
             # we don't forget to add points if you win the game with a d2 or wd4
             if loser.should_draw_cards:
-                # NOTE: may need to call in new context just in case
                 game.deal_cards(
                     player=loser,
                     amount=loser.should_draw_cards,
+                    mark_as_drew_card=False,
                     smooth=False
                 )
 
             for card in loser.hand:
-                persistent._mas_game_nou_points[_key] += card.value
+                persistent._mas_game_nou_points[persist_key] += card.value
 
         def reset_points():
             """
@@ -2489,14 +2915,14 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_nou_change_house_rules",
-            prompt="Let's change our house rules for NoU",
+            prompt="Let's change our house rules for No U",
             category=["games"],
             pool=True,
             unlocked=False,
             conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
             action=EV_ACT_UNLOCK,
             rules={"no unlock": None},
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.NORMAL, None)# you can play NoU only on norm+
         )
     )
 
@@ -2525,7 +2951,7 @@ label monika_nou_change_house_rules:
                 ),
                 (
                     _("I'd like to change the number of cards we start each round with."),
-                    "start_cards",
+                    "starting_cards",
                     False,
                     False
                 ),
@@ -2536,7 +2962,7 @@ label monika_nou_change_house_rules:
                     False
                 ),
                 (
-                    _("I'd like to play with free Wild Draw 4's.") if not persistent._mas_game_nou_house_rules["play_wd4_anytime"] else _("I'd like to play with default Wild Draw 4's."),
+                    _("I'd like to play with unrestricted Wild Draw 4's.") if not persistent._mas_game_nou_house_rules["play_wd4_anytime"] else _("I'd like to play with restricted Wild Draw 4's."),
                     "play_wd4_anytime",
                     False,
                     False
@@ -2545,7 +2971,7 @@ label monika_nou_change_house_rules:
 
             if not (
                 persistent._mas_game_nou_house_rules["win_points"] == 200
-                and persistent._mas_game_nou_house_rules["start_cards"] == 7
+                and persistent._mas_game_nou_house_rules["starting_cards"] == 7
                 and persistent._mas_game_nou_house_rules["stack_d2"] == False
                 and persistent._mas_game_nou_house_rules["play_wd4_anytime"] == False
             ):
@@ -2572,7 +2998,7 @@ label monika_nou_change_house_rules:
             m 1eub "Alright!"
             call monika_nou_change_house_rules.change_win_points_loop
 
-        elif _return == "start_cards":
+        elif _return == "starting_cards":
             m 1eub "Alright!"
             call monika_nou_change_house_rules.change_starting_cards_loop
 
@@ -2581,7 +3007,7 @@ label monika_nou_change_house_rules:
                 m 1tub "Okay, but I must warn you that that might go against you~"
 
             else:
-                m 1ttu "Did I go too hard at this game for you?"
+                m 1ttu "Afraid that I'll make you draw all the cards?~"
                 m 1hub "Ahaha~ I'm just kidding!"
 
             $ persistent._mas_game_nou_house_rules["stack_d2"] = not persistent._mas_game_nou_house_rules["stack_d2"]
@@ -2592,7 +3018,7 @@ label monika_nou_change_house_rules:
                 m 1eua "That sounds fun."
 
             else:
-                m 1eua "Back to the classic rules, I see."
+                m 1eua "Back to the classic, I see."
 
             $ persistent._mas_game_nou_house_rules["play_wd4_anytime"] = not persistent._mas_game_nou_house_rules["play_wd4_anytime"]
 
@@ -2601,20 +3027,18 @@ label monika_nou_change_house_rules:
 
             python:
                 persistent._mas_game_nou_house_rules["win_points"] = 200
-                persistent._mas_game_nou_house_rules["start_cards"] = 7
+                persistent._mas_game_nou_house_rules["starting_cards"] = 7
                 persistent._mas_game_nou_house_rules["stack_d2"] = False
                 persistent._mas_game_nou_house_rules["play_wd4_anytime"] = False
 
-                persistent._mas_game_nou_points["Monika"] = 0
-                persistent._mas_game_nou_points["Player"] = 0
+                store.mas_nou.reset_points()
 
                 del[menu_items]
                 del[final_item]
 
             return
 
-    $ persistent._mas_game_nou_points["Monika"] = 0
-    $ persistent._mas_game_nou_points["Player"] = 0
+    $ store.mas_nou.reset_points()
 
     m 3eua "Is there anything else you would like to change?{nw}"
     $ _history_list.pop()
@@ -2704,7 +3128,7 @@ label .change_starting_cards_loop:
 
         $ starting_cards = store.mas_utils.tryparseint(
             renpy.input(
-                "With how many cards would you like to start the game?",
+                "How many cards would you like to start the game with?",
                 allow=numbers_only,
                 length=2
             ).strip("\t\n\r"),
@@ -2723,7 +3147,7 @@ label .change_starting_cards_loop:
                 m "Let's start with at least 4 cards?{fast}"
 
                 "Alright.":
-                    $ persistent._mas_game_nou_house_rules["start_cards"] = 4
+                    $ persistent._mas_game_nou_house_rules["starting_cards"] = 4
                     $ ready = True
 
                 "No.":
@@ -2737,7 +3161,7 @@ label .change_starting_cards_loop:
                 m "Let's leave it at 20 cards?{fast}"
 
                 "Alright.":
-                    $ persistent._mas_game_nou_house_rules["start_cards"] = 20
+                    $ persistent._mas_game_nou_house_rules["starting_cards"] = 20
                     $ ready = True
 
                 "No.":
@@ -2746,7 +3170,7 @@ label .change_starting_cards_loop:
         else:
             $ _round = _("round") if persistent._mas_game_nou_house_rules["win_points"] else _("game")
             m 3eub "Okay, from now on, we will start each [_round!t] with [starting_cards] cards!"
-            $ persistent._mas_game_nou_house_rules["start_cards"] = starting_cards
+            $ persistent._mas_game_nou_house_rules["starting_cards"] = starting_cards
             $ ready = True
 
     $ del[ready]
@@ -2760,58 +3184,77 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_nou_explain_rules",
-            prompt="Can you explain NoU rules to me?",
+            prompt="Can you explain No U rules to me?",
             category=["games"],
             pool=True,
             unlocked=False,
             conditional="renpy.seen_label('mas_reaction_gift_carddeck')",
             action=EV_ACT_UNLOCK,
             rules={"no unlock": None},
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.NORMAL, None)# you can play NoU only on norm+
         )
     )
 
 label monika_nou_explain_rules:
-    m 4eub "Even if the game looks complicated at first, it's rather quite simple."
-    m 1eua "I'm sure if we play some more games, you'll get into it."
-    m "We start the game with [persistent._mas_game_nou_house_rules[start_cards]] cards."
-    m "Your goal is to play all your cards before I play mine."
-    m 3eua "To play a card you need to match it by the color or the text on the card with the top card on the discard pile."
-    m "If you can't play a card in your turn, you must draw one from the draw pile."
-    m 1eua "You don't have to play it, though."
+    m 1hua "Of cource, [player]."
+    m 7eub "Even if the game looks complicated at first, {w=0.2}{nw}"
+    extend 4eub "it's rather quite simple."
+    m 4eua "I'm sure if we play some more games, you'll get into it."
+
+    if persistent._mas_game_nou_house_rules["starting_cards"] == 7:
+        m 7esa "So we start the game with 7 cards."
+
+    else:
+        m 7esa "So since we're playing with house rules, we start the game with [persistent._mas_game_nou_house_rules[starting_cards]] cards."
+
+    m 1esa "Your goal is to play all your cards before I play mine."
+    m 3eub "To play a card you need to match it by the color or the text with the top card on the discard pile."
+    m 3eua "If you can't play a card in your turn, you must draw one from the draw pile."
+    m 1esa "You don't {i}have{/i} to play it, though."
     m "After you played a card or skipped your turn, my turn begins. And so on until someone wins."
-    m 4eub "Besides the Number cards, there're also special cards known as Action and Wild cards."
-    m 4eua "You can distinguish an Action card by its symbol and a Wild card by its black color."
+    m 3eub "When you play your second last card, {w=0.2}{nw}"
+    extend 7eub "you should yell 'No U' so I can know that you're close to victory!"
+    m 2rksdla "Well, I guess yelling won't work in our case..."
+    m 7hub "But you can press the button to let me know!"
+    m 1eua "If one of us forgot to say 'No U,' the other can {i}remind{/i} them. That will make the unlucky person to draw 2 more cards."
+    m 3eub "Besides the Number cards, there are also special cards known as Action and Wild cards."
+    m 3eua "You can distinguish an Action card by its symbol and a Wild card by its black color."
     m 1eua "Those cards can make your opponent skip their turn or even draw some cards."
     m 1tsu "And by some I mean 12 cards in a row."
     m 1eua "The Wild cards don't have a color which means they can be placed on any card."
-    m 3eua "Although, there's one rule for Wild Draw Four. To play it you must have no other cards with the color of the discard pile."
+
+    if not persistent._mas_game_nou_house_rules["play_wd4_anytime"]:
+        m 3eua "If you have no other cards with the color of the discard pile, that is."
+
+    else:
+        m 3eua "Usually there's one condition should be met to play them, but we're playing with our own house rules."
+
     m 1eua "When you play any Wild card, you should choose what color you want to set for it."
-    m "As powerful Wild and Action cards may look, you can still save yourself from them."
-    m 3eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the same color."
-    m 3eua "Or you can play any Draw Two to mirror a Draw Two. The color won't matter in that case."
-    m 1eua "I hope all that will give you a better understanding of the game."
-    m 1eka "But I think the point of it is not winning anyway, right?"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5ekbsa "It's all about spending time with the one you love~"
+    m "As powerful Wild and Action cards may look, you still can save yourself from them."
+    m 3eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the new color."
+    m 3eua "Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
+    m 1ekb "I hope all that will give you a better understanding of the game."
+    # FIXME: generate 1eku
+    m 1eku "But I think the point of it is not winning anyway, right?"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "It's all about spending time together~"
     m 5hubfa "Ehehe~"
     return
 
 # The game handling label
 label mas_nou_game_start:
-
     if (
         persistent._mas_game_nou_house_rules["win_points"]
         and (
-                persistent._mas_game_nou_points["Monika"] > 0
-                or persistent._mas_game_nou_points["Player"] > 0
+            persistent._mas_game_nou_points["Monika"] > 0
+            or persistent._mas_game_nou_points["Player"] > 0
         )
     ):
         if store.mas_nou.winner is not None:
-            m "Let's continue~"
+            m 1hua "Let's continue~"
 
         else:
-            m "Want to finish our game?"
+            m 1hua "Want to finish our game?"
             m 3eua "Let me grab that note with our score.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
 
     else:
@@ -2823,44 +3266,58 @@ label mas_nou_game_start:
     return
 
 label mas_nou_game_loop:
-
-    window hide None
-    if not store.mas_nou.in_progress:
-        $ HKBHideButtons()
-        $ disable_esc()
-        scene bg cardgames desk with Fade(0.2, 0, 0.2)
-        show screen nou_gui
-        show screen nou_stats
-
-        $ store.mas_nou.game.set_visible(True)
-        pause 0.2
-        $ store.mas_nou.game.prepare_game()
-        $ store.mas_nou.in_progress = True
-
     python:
+        _window_hide()
+        if not store.mas_nou.in_progress:
+            # disable all hotkeys
+            HKBHideButtons()
+            disable_esc()
+            # show the desk
+            renpy.scene(layer="master")
+            renpy.show("bg cardgames desk", layer="master", zorder=0)
+            renpy.with_statement(Fade(0.2, 0, 0.2))
+            # show cards
+            store.mas_nou.game.set_visible(True)
+            # show the game screens
+            renpy.show_screen("nou_gui")
+            renpy.show_screen("nou_stats")
+            # deal cards and do other starting preparations
+            store.mas_nou.game.prepare_game()
+            store.mas_nou.in_progress = True
+
+        # game loop
         while store.mas_nou.in_progress:
-            store.mas_nou.game.player_turn_loop()
-            store.mas_nou.game.monika_turn_loop()
+            store.mas_nou.game.game_loop()
 
     return
 
 label mas_nou_game_end:
+    python:
+        # we finished the game
+        store.mas_nou.in_progress = False
+        # hide cards
+        store.mas_nou.game.set_visible(False)
+        # hide the game screens
+        renpy.hide_screen("nou_stats")
+        renpy.hide_screen("nou_gui")
+    # have to split into 3 blocks because renpy is jank
+    python:
+        # hide the desk and show the room and Monika
+        renpy.hide("bg cardgames desk", layer="master")
+        renpy.call("spaceroom", scene_change=True, force_exp="monika 1eua")
+    python:
+        # enable hotkeys
+        enable_esc()
+        HKBShowButtons()
+        store._window_auto = True
 
-    $ store.mas_nou.in_progress = False
-    $ store.mas_nou.game.set_visible(False)
-    hide screen nou_stats
-    hide screen nou_gui
-    call spaceroom(scene_change=True, force_exp="monika 1eua")
-    $ enable_esc()
-    $ HKBShowButtons()
+        if persistent._mas_game_nou_house_rules["win_points"]:
+            _round = _("round")
 
-    if persistent._mas_game_nou_house_rules["win_points"]:
-        $ _round = _("round")
+        else:
+            _round = _("game")
 
-    else:
-        $ _round = _("game")
-
-    $ choice = None
+        choice = None
 
     if store.mas_nou.winner == "Player":
         call mas_nou_reaction_player_wins_round
@@ -2899,9 +3356,10 @@ label mas_nou_game_end:
                 "No.":
                     m "Okay, just let me know when you want to play again~"
 
-            $ del[choice]
-            $ del[_round]
-            $ del[store.mas_nou.game]
+            python:
+                del[choice]
+                del[_round]
+                del[store.mas_nou.game]
             return
 
     elif store.mas_nou.winner == "Monika":
@@ -2940,18 +3398,29 @@ label mas_nou_game_end:
                 "No.":
                     m "Okay, just let me know when you want to play again~"
 
-            $ del[choice]
-            $ del[_round]
-            $ del[store.mas_nou.game]
+            python:
+                del[choice]
+                del[_round]
+                del[store.mas_nou.game]
             return
 
     else:
-        jump mas_nou_reaction_player_surrenders
+        # firstly deal with vars
+        python:
+            persistent._mas_game_nou_abandoned += 1
+            store.mas_nou.player_win_streak = 0
+            # silently add points to Monika
+            store.mas_nou.give_points()
+            if persistent._mas_game_nou_points["Monika"] >= persistent._mas_game_nou_house_rules["win_points"]:
+                store.mas_nou.reset_points()
 
-        # we don't suggest to play again if the palyer don't want to play
-        $ del[choice]
-        $ del[_round]
-        $ del[store.mas_nou.game]
+        call mas_nou_reaction_player_surrenders
+
+        # we don't suggest to play again if the player does't want to play
+        python:
+            del[choice]
+            del[_round]
+            del[store.mas_nou.game]
         return
 
     m 1eua "Would you like to play another [_round!t]?{nw}"
@@ -2971,515 +3440,471 @@ label mas_nou_game_end:
         "No.":
             m "Alright, let's play again soon."
 
-    $ del[choice]
-    $ del[_round]
-    $ del[store.mas_nou.game]
+    python:
+        del[choice]
+        del[_round]
+        del[store.mas_nou.game]
     return
 
-# All reactions labels go here
+# All end game reactions labels go here
 label mas_nou_reaction_player_wins_round:
     if persistent._mas_game_nou_abandoned > 2:
-        m "I'm glad you won this time!"
-        m "Good job, [player]!"
+        m 1hub "I'm glad you won this time!"
+        m 1eua "Good job, [player]!"
 
-    elif store.mas_nou.player_win_streak > 5:
-        $ choice = renpy.random.randint(0, 2)
+    elif store.mas_nou.player_win_streak > 3:
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "[player]...{w=0.5}you keep winning..."
+        if choice == 1:
+            m 1wud "[player]...{w=0.5}you keep winning..."
 
             if len(store.mas_nou.game.monika.hand) > 2:
-                m "I have no chance against you!"
+                m 1hksdlb "I have no chance against you!"
 
             else:
-                m "Give me at least a chance~"
-
-        elif choice == 1:
-            m "And another [_round!t]!"
-            m "Incredible, [player]!"
-
-        else:
-            m "Wow! You won again!"
-            m "Will you tell me your secret, [player]?"
-            m "I want to win too~"
-
-    elif store.mas_nou.player_win_streak > 2:
-        $ choice = renpy.random.randint(0, 3)
-
-        if not choice:
-            m "And you won another [_round!t]!"
-            m "You're really good!"
-
-        elif choice == 1:
-            m "Amazing, you won again!"
-            m "But I'm sure I'll win next [_round!t]."
+                m 1hksdlb "Give me at least a chance~"
 
         elif choice == 2:
-            m "Incredible! Another win for you!"
-            m "Don't relax, though. {w=0.5}{nw}"
-            extend "I'm sure I'll win next time!"
+            m 1eub "And another [_round!t]!"
+            m 3hub "Incredible, [player]!"
 
         else:
-            m "You're lucky today."
-            m "Ahaha~ Good job, [player]!"
+            m 1wud "Wow! You won again!"
+            m 3esa "Will you tell me your secret, [player]?"
+            m 1hua "I want to win too~"
 
-    elif store.mas_nou.monika_win_streak > 5:
-        $ choice = renpy.random.randint(0, 2)
+    elif store.mas_nou.player_win_streak > 2:
+        $ choice = renpy.random.randint(1, 4)
 
-        if not choice:
-            m "I'm really glad you won this time~"
+        if choice == 1:
+            m 1hub "And you won another [_round!t]!"
+            m 3eub "You're really good!"
 
-        elif choice == 1:
-            m "I had a feeling you will win~"
-            m "Ehehe~ Good, job!"
+        elif choice == 2:
+            m 4eub "Amazing, you won again!"
+            m 1tsu "But I'm sure I'll win next [_round!t]."
+
+        elif choice == 3:
+            m 1hub "Incredible! Another win for you!"
+            m 1eub "Don't relax, though. {w=0.5}{nw}"
+            extend 1kua "I'm sure I'll win next time!"
+
+        else:
+            m 1tuu "You're lucky today."
+            m 1hub "Ahaha~ Good job, [player]!"
+
+    elif store.mas_nou.monika_win_streak > 3:
+        $ choice = renpy.random.randint(1, 3)
+
+        if choice == 1:
+            m 3eua "I'm really glad you won this time~"
+
+        elif choice == 2:
+            m 1hua "I had a feeling you will win~"
+            m 3hub "Ehehe~ Good, job!"
 
         else:
             if len(store.mas_nou.game.monika.hand) > 2:
-                m "Your luck is back?~"
-                m "Well played! {w=0.2}{nw}"
-                extend "Ehehe~"
+                m 1tuu "Your luck is back?~"
+                m 1hua "Well played! Ehehe~"
 
             else:
-                m "Yay, you won!~"
+                m 1hub "Yay, you won!~"
 
     elif store.mas_nou.monika_win_streak > 2:
-        $ choice = renpy.random.randint(0, 2)
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "Oh, you started playing seriously?"
-            m "Ahaha~"
+        if choice == 1:
+            m 1tsa "Oh, you started playing seriously?"
+            m 1hub "Ahaha~"
 
-        elif choice == 1:
+        elif choice == 2:
             if len(store.mas_nou.game.monika.hand) < 3:
-                m "Ah... I almost won this one too!"
-                m "Well played, [player]."
+                # FIXME: generate 1ruu
+                m 1ruu "Ah... I almost won this one too!"
+                m 3hua "Well played, [player]."
 
             else:
-                m "You won, [player]!"
+                m 1hub "You won, [player]!"
                 if len(store.mas_nou.game.monika.hand) > 3:
-                    m "That was amazing!"
+                    m 3hub "That was amazing!"
 
         else:
-            if store.mas_nou.game.total_turns > 50:
-                m "You were really trying this time!"
-                m "Great job, [player]!"
+            if store.mas_nou.game.current_turn > 40:
+                m 2tub "You were really trying this time!"
+                m 1hub "Great job, [player]!"
 
             else:
-                m "And you won! Nice~"
+                m 1hua "And you won! Nice~"
 
-    elif store.mas_nou.game.total_turns < 25:
+    elif store.mas_nou.game.current_turn < 25:
         if store.mas_nou.player_win_streak > 0:
-            $ choice = renpy.random.randint(0, 2)
+            $ choice = renpy.random.randint(1, 3)
 
-            if not choice:
-                m "Another quick win for you!"
+            if choice == 1:
+                m 1hub "Another quick win for you!"
 
-                if renpy.random.randint(0, 4) > 3:
-                    m "But you better not to relax, [player]~"
+                if renpy.random.randint(1, 4) == 1:
+                    # FIXME: generate 1kuu
+                    m 1kuu "But you better not to relax, [player]~"
 
-            elif choice == 1:
-                m "Wow, [player]!"
-                # TODO: this doesn't make sense imo
-                m "I can't keep up with you!"
+            elif choice == 2:
+                m 1wuo "Wow, [player]!"
+                m 1hksdlb "I can't keep up with you!"
 
             else:
                 if len(store.mas_nou.game.monika.hand) > 3:
-                    m "Maybe I should try a bit harder?~"
-                    m "Ehehe, you keep finishing [_round!t]s before I can do anything."
+                    m 1rka "Maybe I should try a bit harder?~"
+                    m 1hksdla "Ehehe, you keep finishing [_round!t]s before I can do anything."
 
                 else:
-                    m "Ah...{w=0.1}I was so close!"
-                    m "Good job, [player]!"
+                    m 1hfb "Ah...{w=0.2}I was so close!"
+                    m 3efb "Good job, [player]!"
 
         elif (
             len(store.mas_nou.game.monika.hand) > 4
-            or not store.mas_nou.game.player.yelled_nou
+            or (
+                not store.mas_nou.game.player.yelled_nou
+                and renpy.random.randint(0, 1) == 1
+            )
         ):
-            m "Wow!{w=0.2} Played all your cards already?"
-            m "That was quick!"
+            m 4wuo "Wow!{w=0.2} Played all your cards already?"
+            # FIXME: generate 7husdlb
+            m 7husdlb "That was quick!"
 
         else:
-            $ choice = renpy.random.randint(0, 2)
+            $ choice = renpy.random.randint(1, 3)
 
-            if not choice:
-                m "Well played!"
+            if choice == 1:
+                m 3hub "Well played!"
 
-            elif choice == 1:
-                m "Impressive, [player]!"
+            elif choice == 2:
+                m 3hub "Impressive, [player]!"
 
             else:
-                m "That was a quick [_round!t] for you!"
+                m 3hub "That was a quick [_round!t] for you!"
 
-    elif store.mas_nou.game.total_turns > 75:
-        $ choice = renpy.random.randint(0, 2)
+    elif store.mas_nou.game.current_turn > 55:
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "A quite long [_round!t], [player]."
+        if choice == 1:
+            m 1esa "A quite long [_round!t], [player]."
 
             if len(store.mas_nou.game.monika.hand) < 4:
                 if store.mas_nou.player_win_streak > 0:
-                    m "And I almost won this time!"
+                    m 1hua "And I almost won this time!"
 
                 else:
-                    m "And I almost won!"
+                    m 1hua "And I almost won!"
 
-                m "Ahaha~ Well played!"
-
-            else:
-                m "Well played!"
-
-        elif choice == 1:
-            m "That was intense!"
-
-        else:
-            m "Ehehe~ You're really good!"
-
-    else:
-        $ choice = renpy.random.randint(0, 3)
-
-        if not choice:
-            if store.mas_nou.player_win_streak > 0:
-                m "You won again!"
+                m 1hub "Ahaha~ Well played!"
 
             else:
-                m "You won!~"
-
-        elif choice == 1:
-            m "This [_round!t] is yours!"
+                m 1hub "Well played!"
 
         elif choice == 2:
-            m "And you won! Good job!"
-            if renpy.random.randint(0, 8) > 7:
-                m "But don't expect to win everytime~"
+            # FIXME: generate 1kuu (dupe)
+            m 1kuu "That was intense!"
+
+        else:
+            m 1hua "Ehehe~ {w=0.3}{nw}"
+            extend 1eub "You're really good!"
+
+    else:
+        $ choice = renpy.random.randint(1, 4)
+
+        if choice == 1:
+            if store.mas_nou.player_win_streak > 0:
+                m 1eub "You won again!"
+
+            else:
+                m 1eub "You won!~"
+
+        elif choice == 2:
+            m 1hub "This [_round!t] is yours!"
+
+        elif choice == 3:
+            m 2eub "And you won! Good job!"
+            if renpy.random.randint(1, 6) > 5:
+                # FIXME: generate 2kuu
+                m 2kuu "But don't expect to win everytime~"
 
         else:
             if store.mas_nou.monika_win_streak > 1:
-                m "I'm glad you won this time~"
+                m 2eua "I'm glad you won this time~"
 
-            m "Good job, [player]!"
+            m 3hub "Good job, [player]!"
     return
 
 label mas_nou_reaction_player_wins_game:
-    $ choice = renpy.random.randint(0, 3)
+    $ choice = renpy.random.randint(1, 4)
 
-    if not choice:
-        m "Oh!{w=0.2} Actually you won this game!"
-        # TODO: check here for saying NoU and total turns
-        m "I didn't notice you were so close to victory."
-        m "Good job, ehehe~"
-
-    elif choice == 1:
-        m "Oh, and you won this game too!"
-        m "Congratulations! Ehehe~"
+    if choice == 1:
+        m 1eud "Oh! {w=0.2}{nw}"
+        extend 3eub "Actually you won this game!"
+        # FIXME: generate 1ruu
+        # 1lua instead?
+        m 1ruu "I didn't notice you were so close to victory."
+        m 3hua "Good job, ehehe~"
 
     elif choice == 2:
-        m "Let's see.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-        m "Oh, [player]! You won this game!"
-        if mas_isMoniEnamored(higher=True) and not renpy.random.randint(0, 4):
-            # m "I'd give you a big boop!"
-            m "I would give you a big hug if I were near you~"
-            m "Ehehe~"
+        m 3eub "Oh, and you won this game too!"
+        m 1hua "Congratulations! Ehehe~"
+
+    elif choice == 3:
+        m 1rsc "Let's see.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+        m 4eub "Oh, [player]! You won this game!"
+        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1, 2) == 1:
+            m 1hub "I would give you a big hug if I were near you~"
+            m 1hua "Ehehe~"
         else:
-            m "That was fun!"
+            m 1hua "That was fun!"
 
     else:
-        m "...And you're the first who reached [persistent._mas_game_nou_house_rules[win_points]] points!"
-        m "Congrats, [player]~"
+        m 4eub "...And you're the first who reached [persistent._mas_game_nou_house_rules[win_points]] points!"
+        m 1hua "Congrats, [player]~"
     return
 
 label mas_nou_reaction_monika_wins_round:
     if persistent._mas_game_nou_abandoned > 2:
-        m "I win!~"
-        m "Thanks for playing with me, [player], {w=0.2}{nw}"
-        extend "I'm sure you'll win next time!"
+        m 2wub "I won!~"
+        m 7eka "Thanks for finishing this game, [player], {w=0.3}{nw}"
+        extend 1hub "I'm sure you'll win next time!"
 
-    elif store.mas_nou.player_win_streak > 5:
-        $ choice = renpy.random.randint(0, 2)
+    elif store.mas_nou.player_win_streak > 3:
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
+        if choice == 1:
             if len(store.mas_nou.game.player.hand) > 4:
-                m "I won!"
-                m "..."
-                m "Not without your help, I guess. Ehehe~"
+                m 1hub "I won!"
+                m 1hksdla "..."
+                m 1eka "Not without your help, I guess. Ehehe~"
 
             else:
-                m "Told you I'll win!"
-                m "Now it's time for you to draw cards."
+                m 3tsb "Told you I'll win!"
+                m 1tfu "Now it's time for you to draw cards."
 
-        elif choice == 1:
-            m "Ahaha! My luck is back~"
+        elif choice == 2:
+            m 4sub "Ahaha! My luck is back~"
 
         else:
-            m "There we go!"
-            m "I finally won~"
+            m 4sub "There we go!"
+            m 7hub "I finally won~"
 
     elif store.mas_nou.player_win_streak > 2:
-        $ choice = renpy.random.randint(0, 2)
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "Don't relax, [player]~"
+        if choice == 1:
+            m 2tub "Don't relax, [player]~"
 
-        elif choice == 1:
-            m "I won!"
-
-        else:
-            m "Yay I won this time!~"
-
-    elif store.mas_nou.monika_win_streak > 5:
-        $ choice = renpy.random.randint(0, 2)
-
-        if not choice:
-            m "And another win for me!~"
-
-        elif choice == 1:
-            if len(store.mas_nou.game.player.hand) < 3:
-                m "That was tough, [player]!"
-                extend "You almost won this time."
-
-            else:
-                m "I have a feeling that you'll win next [_round!t]."
+        elif choice == 2:
+            m 1hua "I won!"
 
         else:
+            m 1hub "Yay I won this time!~"
+
+    elif store.mas_nou.monika_win_streak > 3:
+        $ choice = renpy.random.randint(1, 3)
+
+        if choice == 1:
+            m 1hub "And another win for me!~"
+
+        elif choice == 2:
             if len(store.mas_nou.game.player.hand) < 3:
-                m "Well played, [player]. But the win is mine again~"
+                m 1eub "That was tough, [player]! {w=0.5}{nw}"
+                extend 3eua "You almost won this time."
 
             else:
-                m "That was fun!"
-                m "I hope you're enjoying playing with me, [player]~"
-                m "Maybe next time you'll win."
+                m 1kua "I have a feeling that you'll win next [_round!t]~"
+
+        else:
+            if len(store.mas_nou.game.player.hand) < 3:
+                m 1huu "Well played, [player]. But the win is mine again~"
+
+            else:
+                m 3eub "That was fun!"
+                m 1eka "I hope you're enjoying playing with me, [player]~"
+                m 1kua "Maybe next time you'll win."
 
     elif store.mas_nou.monika_win_streak > 2:
-        $ choice = renpy.random.randint(0, 2)
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "Ehehe~ Another win for me~"
+        if choice == 1:
+            m 1hua "Ehehe~ Another win for me~"
 
-        elif choice == 1:
+        elif choice == 2:
             if len(store.mas_nou.game.player.hand) < 3:
-                m "You were quite close this time, [player]."
+                m 3eub "You were quite close this time, [player]."
 
             else:
-                m "Should I go easy on you?"
-                m "Ahaha, just kidding, [player]~"
+                m 2tuu "Should I go easier on you?"
+                m 7hub "Ahaha, just kidding, [player]~"
 
         else:
-            m "I won again!"
+            m 4hub "I won again!"
 
-    elif store.mas_nou.game.total_turns < 25:
+    elif store.mas_nou.game.current_turn < 25:
         if store.mas_nou.monika_win_streak > 0:
-            $ choice = renpy.random.randint(0, 2)
+            $ choice = renpy.random.randint(1, 3)
 
-            if not choice:
-                m "Another quick win for me!"
+            if choice == 1:
+                m 4hub "Another quick win for me!"
 
-            elif choice == 1:
-                m "Can't keep up with me, huh?~"
+            elif choice == 2:
+                m 1tub "Can't keep up with me, huh?~"
 
             else:
-                m "Yay, I won again!"
+                m 1eub "Yay, I won again!"
 
         else:
-            $ choice = renpy.random.randint(0, 1)
+            $ choice = renpy.random.randint(1, 2)
 
-            if not choice:
-                m "Yay, I won~"
+            if choice == 1:
+                m 1wub "Yay, I won~"
 
             else:
-                m "That was quick."
+                m 3eub "That was quick!"
 
-    elif store.mas_nou.game.total_turns > 75:
-        $ choice = renpy.random.randint(0, 2)
+    elif store.mas_nou.game.current_turn > 55:
+        $ choice = renpy.random.randint(1, 3)
 
-        if not choice:
-            m "That was a long [_round!t]!"
+        if choice == 1:
+            m 1eub "That was a long [_round!t]!"
 
             if len(store.mas_nou.game.player.hand) < 4:
                 if store.mas_nou.monika_win_streak > 0:
-                    m "You almost won this time."
+                    m 3eua "You almost won this time."
 
                 else:
-                    m "You almost won."
+                    m 3eua "You almost won."
 
-                m "Ehehe~ Well played!"
+                m 3hub "Ehehe~ Well played!"
 
             else:
-                m "Well played!"
+                m 3hub "Well played!"
 
-        elif choice == 1:
-            m "That was intense!"
+        elif choice == 2:
+            m 1hub "That was intense!"
 
         else:
             if len(store.mas_nou.game.player.hand) > 4:
-                m "Not bad, [player]."
-                m "I think you could even have won this time, if not for all those cards you drew"
+                m 1tsb "Not bad, [player]."
+                m 3tub "I think you could even have won this time, {w=0.5}{nw}"
+                extend 1tuu "if not for all those cards you drew"
+                m 1hub "Ahaha~"
 
             else:
-                # sparkle pls
-                m "Oh, I won!"
+                m 1wub "Oh, I won!"
 
     else:
         if store.mas_nou.monika_win_streak > 0:
-            m "I won again~"
+            m 1hua "I won again~"
 
         elif store.mas_nou.player_win_streak > 1:
-            m "Finally I won too~"
+            m 1sub "Finally I won too~"
 
         else:
-            m "I won~"
-
+            m 1hua "I won~"
     return
 
 label mas_nou_reaction_monika_wins_game:
-    $ choice = renpy.random.randint(0, 3)
+    $ choice = renpy.random.randint(1, 4)
 
-    if not choice:
-        m "And this time I won the game!"
+    if choice == 1:
+        m 1eub "And this time I won the game!"
         if (persistent._mas_game_nou_house_rules["win_points"] - persistent._mas_game_nou_points["Player"]) / persistent._mas_game_nou_house_rules["win_points"] < 0.2:
-            m "You were quite close, though!"
-            if renpy.random.randint(0, 14):
-                m "I'm sure you'll win next time."
+            m 4eub "You were quite close, though!"
+            if renpy.random.randint(1, 15) < 15:
+                m 4hua "I'm sure you'll win next time."
 
             # 1/15
             else:
-                m "Did you let me win on purpose?"
-                m "Ehehe~"
+                # FIXME: generate 7ttu
+                m 7ttu "Did you let me win on purpose?"
+                m 1huu "Ehehe~"
 
         else:
-            # m "It's really interesting to play against you, [player]."
-            m "I had a lot of fun!"
-            m "I'm sure you'll win next time."
-
-    elif choice == 1:
-        m "Oh!{w=0.1} I won this game!"
-        m "That was really fun!"
-        if (persistent._mas_game_nou_house_rules["win_points"] - persistent._mas_game_nou_points["Player"]) / persistent._mas_game_nou_house_rules["win_points"] > 0.4:
-            m "I hope you had fun too."
-            # TODO: move it out of the RNG selection to 100% get it
-            if (
-                persistent._mas_game_nou_wins["Monika"] + persistent._mas_game_nou_wins["Player"] < 15
-                and persistent._mas_game_nou_wins["Monika"] > persistent._mas_game_nou_wins["Player"]
-            ):
-                m "I'm sure if we play more games you'll win too."
-
-            else:
-                "Maybe next time you'll win~"
+            # m "It really is interesting to play against you, [player]."
+            m 1hub "I had a lot of fun!"
+            m 3eua "I'm sure you'll win next time."
 
     elif choice == 2:
-        m "I won this game too!"
-        m "Ehehe~"
-        m "Thanks for playing with me, [player]."
+        m 1wub "Oh!{w=0.1} I won this game!"
+        m 3hub "That was really fun!"
+        if (persistent._mas_game_nou_house_rules["win_points"] - persistent._mas_game_nou_points["Player"]) / persistent._mas_game_nou_house_rules["win_points"] > 0.4:
+            m 1eka "I hope you had fun too."
+            # TODO: move it out of the RNG selection to 100% get it?
+            if (
+                persistent._mas_game_nou_wins["Monika"] + persistent._mas_game_nou_wins["Player"] < 20
+                and persistent._mas_game_nou_wins["Monika"] > persistent._mas_game_nou_wins["Player"]
+            ):
+                m 3hua "I'm sure if we play more games you'll win too."
+
+            else:
+                m 3hua "Maybe next time you'll win~"
+
+    elif choice == 3:
+        m 2wub "I won this game too!"
+        m 2hua "Ehehe~"
+        m 1hub "Thanks for playing with me, [player]~"
 
     else:
-        m "And I'm the first who reached [persistent._mas_game_nou_house_rules[win_points]] points!"
-        m "I won this time~"
+        m 3eub "And I'm the first who reached [persistent._mas_game_nou_house_rules[win_points]] points!"
+        m 1hua "I won this time~"
     return
 
 label mas_nou_reaction_player_surrenders:
-    $ persistent._mas_game_nou_abandoned += 1
-    $ store.mas_nou.player_win_streak = 0
-    # TODO: consider silently add points to Monika here
-    # so you can't abuse it when you're losing
-
     if persistent._mas_game_nou_abandoned > 4:
-        m "That's alright, [player]..."
-        m "But promise you'll finish the game next time?{w=0.4} For me?~"
+        m 1ekc "That's alright, [player]..."
+        m 1eka "But promise you'll finish the game next time?{w=0.4} For me?~"
 
     elif persistent._mas_game_nou_abandoned > 2:
-        m "[player]...{w=0.3}{nw}"
-        extend "you keep giving up on our games..."
-        m "I hope you're enjoying playing with me."
-        m "I do enjoy every moment I'm with you~"
+        m 1ekc "[player]...{w=0.3}{nw}"
+        extend 1eksdld "you keep giving up on our games..."
+        m 1rksdlc "I hope you're enjoying playing with me."
+        m 1eka "I do enjoy every moment I'm with you~"
 
-    elif store.mas_nou.game.total_turns == 1:
-        m "But we just started."
-        m "Let me know when you'll have time."
+    elif store.mas_nou.game.current_turn == 1:
+        # FIXME: generate 1etd
+        m 1etd "But we just started."
+        m 1ekc "Let me know when you'll have time."
 
-    elif store.mas_nou.game.total_turns < 6:
-        m "Giving up already, [player]?"
+    elif store.mas_nou.game.current_turn < 6:
+        m 1ekc "Giving up already, [player]?"
         if (
             len(store.mas_nou.game.monika.hand) < 5
             and len(store.mas_nou.game.player.hand) > 8
         ):
-            m "I love to play with you no matter what the outcome is!"
-            m "I hope you're feeling the same way."
+            m 3ekb "I love to play with you no matter what the outcome is!"
+            m 1eka "I hope you're feeling the same way~"
 
         else:
-            m "You could at least try..."
+            m 1eud "You could at least try..."
+            m 1eka "It would mean a lot to me."
 
     else:
         # This part isn't really correct, but she just tries to support you
         if len(store.mas_nou.game.monika.hand) >= len(store.mas_nou.game.player.hand):
-            m "I'm pretty sure you could win this [_round!t], [player]!"
+            m 3ekb "I'm pretty sure you could win this [_round!t], [player]!"
 
         else:
             if len(store.mas_nou.game.monika.hand) > 1:
-                m "Actually I had quite bad cards, [player]."
+                m 2esa "Actually, I had quite bad cards, [player]."
             else:
-                m "Actually I had a quite bad card, [player]."
+                m 2esa "Actually, I had a quite bad last card, [player]."
 
-            m "I think you could win this [_round!t]."
+            m 7eka "I think you could win this [_round!t]."
 
-        m "Don't give up so easily next time."
+        m 3ekb "Don't give up so easily next time."
     return
 
-label mas_nou_reaction_monika_reflected_act(seen_count=0):
-    if seen_count == 0:
-        m "I read you as an open book~"
-
-    elif seen_count == 1:
-        m "Nope!"
-
-    else:
-        m "Still nope~"
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_player_reflected_act(seen_count=0):
-    m "Just this time..."
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_monika_reflected_wdf(seen_count=0):
-    m "Ahaha! I knew you will do that!"
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_player_reflected_wdf(seen_count=0):
-    m "TODO: ME"
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_monika_reflected_act_after_wdf(seen_count=0):
-    if seen_count == 0:
-        pass
-
-    elif seen_count == 1:
-        m "I don't think so, [player]!"
-
-    else:
-        pass
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_player_reflected_act_after_wdf(seen_count=0):
-    if seen_count == 0:
-        m "Hmm, I wasn't prepared for this."
-
-    else:
-        m "Ehehe, I thought it was a simple game between lovers, not a tournament."
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_monika_reflected_wcc(seen_count=0):
-    jump mas_nou_game_loop
-
-label mas_nou_reaction_player_reflected_wcc(seen_count=0):
-    jump mas_nou_game_loop
-
 # SL and stuff
-# NOTE: Can be used in other games in the future
-image bg cardgames desk = MASFilterSwitch(
-    "mod_assets/games/nou/desk.png"
-)
+
 # Points screen
 screen nou_stats():
 
     layer "master"
-    zorder 0
+    zorder 5
 
     style_prefix "nou"
 
@@ -3513,140 +3938,158 @@ screen nou_gui():
 
     style_prefix "nou"
 
-    # $ turns = store.mas_nou.game.total_turns
-    $ played_card = store.mas_nou.game.player.played_card
-    $ end_turn = store.mas_nou.game.end_turn
-    $ player = store.mas_nou.game.player
-    $ monika = store.mas_nou.game.monika
+    default fn_end_turn = store.mas_nou.game.end_turn
+    default fn_yell_nou = store.mas_nou.game.yell_nou
+    default game = store.mas_nou.game
+    default player = store.mas_nou.game.player
+    default monika = store.mas_nou.game.monika
+    default discardpile = store.mas_nou.game.discardpile
 
     # Game menu
     vbox:
-        xpos 1050
-        ypos 360
-        yanchor 0.5
+        xalign 0.95
+        yalign 0.5
 
         if (
-            store.mas_nou.game.player.plays_turn 
+            player.plays_turn 
             and (
-                store.mas_nou.game.player.drew_card
-                or store.mas_nou.game.player.should_skip_turn
+                player.drew_card
+                or player.should_skip_turn
             )
             and (
-                not store.mas_nou.game.player.should_draw_cards
-                or len(store.mas_nou.game.player.hand) >= store.mas_nou.game.HAND_CARDS_LIMIT
+                not player.should_draw_cards
+                or len(player.hand) >= game.HAND_CARDS_LIMIT
             )
             and (
-                store.mas_nou.game.discardpile
-                and store.mas_nou.game.discardpile[-1].colour is not None
+                discardpile
+                and discardpile[-1].colour is not None
             )
         ):
             textbutton _("Skip turn"):
                 action [
-                        Function(end_turn, player, monika),
-                        Return([])
-                    ]
+                    Function(fn_end_turn, player, monika),
+                    Return([])
+                ]
 
         else:
             textbutton _("Skip turn")
 
-        if store.mas_nou.game.player.plays_turn and not store.mas_nou.game.player.played_card:
-            # TODO: need a func for this
+        if (
+            not store.mas_nou.disable_yell_button
+            and player.plays_turn
+            and not player.played_card
+        ):
             textbutton _("Yell 'No U!'"):
-                action Function(store.mas_nou.game.pass_func)
+                action [
+                    SetField(mas_nou, "disable_yell_button", True),
+                    Function(fn_yell_nou, player)
+                ]
 
         else:
             textbutton _("Yell 'No U!'")
 
-        if not store.mas_nou.game.player.played_card:
-            # TODO: need a func for this
+        if (
+            not store.mas_nou.disable_remind_button
+            and (
+                player.plays_turn
+                or monika.plays_turn
+            )
+            and not player.played_card
+        ):
             textbutton _("Remind Monika to yell 'No U!'"):
-                action Function(store.mas_nou.game.pass_func)
+                action [
+                    SetField(mas_nou, "disable_remind_button", True),
+                    Function(fn_yell_nou, monika)
+                ]
 
         else:
             textbutton _("Remind Monika to yell 'No U!'")
 
         null height 30
 
-        if store.mas_nou.game.player.hand and store.mas_nou.game.monika.hand:
+        if player.hand and monika.hand:
             textbutton _("Give up"):
+                selected False
                 action [
-                        SetField(mas_nou, "winner", "Surrendered"),
-                        SetField(mas_nou, "in_progress", False),
-                        Jump("mas_nou_game_end")
-                    ]
+                    SetField(mas_nou, "winner", "Surrendered"),
+                    SetField(mas_nou, "in_progress", False),
+                    Jump("mas_nou_game_end")
+                ]
 
         else:
             textbutton _("Give up")
 
     # Choose colour menu
     vbox:
-        xpos 640
-        ypos 360
-        anchor (0.5, 0.5)
+        align (0.5, 0.5)
 
         if (
-            store.mas_nou.game.player.plays_turn
+            player.plays_turn
             # and store.mas_nou.game.is_sensitive()
             and (
-                store.mas_nou.game.discardpile
-                and store.mas_nou.game.discardpile[-1].colour is None
+                discardpile
+                and discardpile[-1].colour is None
             )
-            and store.mas_nou.game.player.hand
+            and player.hand
         ):
             $ top_card = store.mas_nou.game.discardpile[-1]
 
             textbutton _("Red"):
                 xminimum 230
-                action If(played_card,
-                        true = [
-                                SetField(top_card, "colour", "red"),
-                                Function(end_turn, player, monika),
-                                Return([])
-                            ],
-                        false = [
-                                SetField(top_card, "colour", "red"),
-                                Return([])
-                            ]
-                        )
+                action If(
+                    player.played_card,
+                    true = [
+                        SetField(top_card, "colour", "red"),
+                        Function(fn_end_turn, player, monika),
+                        Return([])
+                    ],
+                    false = [
+                        SetField(top_card, "colour", "red"),
+                        Return([])
+                    ]
+                )
             textbutton _("Blue"):
                 xminimum 230
-                action If(played_card,
-                        true = [
-                                SetField(top_card, "colour", "blue"),
-                                Function(end_turn, player, monika),
-                                Return([])
-                            ],
-                        false = [
-                                SetField(top_card, "colour", "blue"),
-                                Return([])
-                            ]
-                        )
+                action If(
+                    player.played_card,
+                    true = [
+                        SetField(top_card, "colour", "blue"),
+                        Function(fn_end_turn, player, monika),
+                        Return([])
+                    ],
+                    false = [
+                        SetField(top_card, "colour", "blue"),
+                        Return([])
+                    ]
+                )
             textbutton _("Green"):
                 xminimum 230
-                action If(played_card,
-                        true = [
-                                SetField(top_card, "colour", "green"),
-                                Function(end_turn, player, monika),
-                                Return([])
-                            ],
-                        false = [
-                                SetField(top_card, "colour", "green"),
-                                Return([])
-                            ]
-                        )
+                action If(
+                    player.played_card,
+                    true = [
+                        SetField(top_card, "colour", "green"),
+                        Function(fn_end_turn, player, monika),
+                        Return([])
+                    ],
+                    false = [
+                        SetField(top_card, "colour", "green"),
+                        Return([])
+                    ]
+                )
             textbutton _("Yellow"):
                 xminimum 230
-                action If(played_card,
-                        true = [
-                                SetField(top_card, "colour", "yellow"),
-                                Function(end_turn, player, monika),
-                                Return([])
-                            ],
-                        false = [
-                                SetField(top_card, "colour", "yellow"),
-                                Return([])
-                            ]
-                        )
+                action If(
+                    player.played_card,
+                    true = [
+                        SetField(top_card, "colour", "yellow"),
+                        Function(fn_end_turn, player, monika),
+                        Return([])
+                    ],
+                    false = [
+                        SetField(top_card, "colour", "yellow"),
+                        Return([])
+                    ]
+                )
 
 # Styles for NoU GUI
 style nou_vbox is vbox:
@@ -3666,16 +4109,11 @@ style nou_button_dark is generic_button_dark:
     ypadding 5
 
 style nou_button_text is generic_button_text_light:
-    # xalign 0.5
-    # yalign 0.5
     kerning 0.2
     layout "subtitle"
     text_align 0.5
-    # line_leading 2
 
 style nou_button_text_dark is generic_button_text_dark:
-    # xalign 0.5
-    # yalign 0.5
     kerning 0.2
     layout "subtitle"
     text_align 0.5
@@ -3705,6 +4143,8 @@ transform nou_pen_rotate_right:
 # # # FRAMEWORK FOR CARDGAMES
 
 # Copyright 2008-2020 Tom Rothamel <pytom@bishoujo.us>
+# This version was updated for Monika After Story,
+# please credit the project as appropriate.
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -3717,10 +4157,42 @@ transform nou_pen_rotate_right:
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
-init -10 python in mas_cardgames:
+# NOTE: This can be used in other games in the future
+image bg cardgames desk = mas_cardgames.DeskSpriteSwitch()
 
+init -10 python in mas_cardgames:
     import pygame
-    from store import RotoZoom, MASFilterSwitch
+    from store import RotoZoom, ConditionSwitch, MASFilterSwitch, mas_background
+
+    # THE MAP BETWEEN BACKGROUNDS AND DESK SPRITES
+    # NOTE: It should be updated as we get more sprites for desks for each new background
+    # Let's keep all desk sprites in /mod_assets/games/nou
+    # Format: {background_id: img_file_name_no_extension}
+    DESK_SPRITES_MAP = {
+        "spaceroom": "desk_spaceroom"
+    }
+
+    def DeskSpriteSwitch():
+        """
+        ConditionSwitch inside a ConditionSwitch :o
+
+        Returns ConditionSwitch with all available desk sprites.
+        NOTE: if a background doesn't have a desk sprite for board games,
+            we will use the one for spaceroom as a fallback
+        """
+        args = list()
+        for bg_id in mas_background.BACKGROUND_MAP.iterkeys():
+            # condition
+            args.append(
+                "store.persistent._mas_current_background == '{0}'".format(bg_id)
+            )
+            # img path
+            args.append(
+                MASFilterSwitch(
+                    "mod_assets/games/nou/{0}.png".format(DESK_SPRITES_MAP.get(bg_id, "spaceroom"))
+                )
+            )
+        return ConditionSwitch(*args)
 
     # Drag type constants
     DRAG_NONE = 0
@@ -3880,28 +4352,28 @@ init -10 python in mas_cardgames:
 
             self.st = 0
 
-        def show(self, layer="master"):
+        def show(self, layer="minigames"):
             """
             Shows the table on the given layer
 
             IN:
-                layer - the layer we'll render our table om
-                    (Default: "master")
+                layer - the layer we'll render our table on
+                    (Default: "minigames")
             """
             for v in self.cards.itervalues():
                 v.offset = __Fixed(0, 0)
 
             ui.layer(layer)
-            ui.add(self)
+            ui.implicit_add(self)
             ui.close()
 
-        def hide(self, layer="master"):
+        def hide(self, layer="minigames"):
             """
             Hides the table on the given layer
 
             IN:
-                layer - the layer we render our table om
-                    (Default: "master")
+                layer - the layer we rendered our table on
+                    (Default: "minigames")
             """
             ui.layer(layer)
             ui.remove(self)
@@ -4137,7 +4609,8 @@ init -10 python in mas_cardgames:
             self.st = st
 
             if not self.sensitive:
-                raise renpy.IgnoreEvent()
+                return
+                # raise renpy.IgnoreEvent()
 
             grabbed = renpy.display.focus.get_grab()
 
@@ -4177,6 +4650,7 @@ init -10 python in mas_cardgames:
                 if card is not None:
                     xoffset, yoffset = card.offset.offset()
                     if (xoffset or yoffset) and not card.hovered:
+                        # return
                         raise renpy.IgnoreEvent()
 
                 # Move the stack containing the card to the front.
@@ -4280,10 +4754,7 @@ init -10 python in mas_cardgames:
             if (
                 ev.type == pygame.MOUSEMOTION
                 or (
-                    (
-                        ev.type == pygame.MOUSEBUTTONDOWN
-                        or ev.type == pygame.MOUSEBUTTONUP
-                    )
+                    ev.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP)
                     and ev.button == 1
                 )
             ):
@@ -4422,8 +4893,10 @@ init -10 python in mas_cardgames:
 
             if evt_list:
                 return evt_list
+
             else:
-                raise renpy.IgnoreEvent()
+                return None
+                # raise renpy.IgnoreEvent()
 
     class CardEvent(object):
         """
