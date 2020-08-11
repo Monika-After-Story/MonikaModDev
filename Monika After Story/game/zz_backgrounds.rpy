@@ -2691,6 +2691,11 @@ init -2 python in mas_background:
         store.mas_lockEVL("mas_monika_islands", "EVE")
         store.mas_lockEVL("monika_why_spaceroom", "EVE")
 
+        #Lock the weather is the background we are changing to does not support it
+        #This handles the case where you switch bgs but on startup the entry pp unlocks the weather and it remains unlocked
+        if _new.disable_progressive:
+            store.mas_lockEVL("monika_change_weather", "EVE")
+
 
 
 #START: bg defs
