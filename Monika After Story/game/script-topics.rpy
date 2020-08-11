@@ -5376,7 +5376,7 @@ label monika_hypnosis:
     m 5tsu "..."
     show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1eka "Not that I would do that to you, [player]! I just find it interesting to think about."
-    m 1eua "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
+    m 1eua "...You know, [player], I'd love to look into your eyes, I could just sit here and stare forever."
     m 2tku "What about you, hmm? What do you think about my eyes?~"
     m 2sub "Will you be hypnotized by them?~"
     m 2hua "Ahaha~"
