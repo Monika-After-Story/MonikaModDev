@@ -15619,9 +15619,9 @@ init 5 python:
 
 label monika_discworld:
     m 1esa "Say [player], have you ever heard of a world drifting through space on top of four elephants, who themselves are standing on the shell of a giant turtle?"
-    m 3hub "If you have, you're probably already familiar with Sir Terry Pratchett's {i}Discworld{i}!"
+    m 3hub "If you have, you're probably already familiar with Sir Terry Pratchett's {i}Discworld{/i}!"
     m 3hksdlb "Ahaha, it sounds kinda weird when I put it like that, doesn't it?"
-    m 1eua "{i}Discworld{i} is a comic fantasy book series of forty-one volumes written over the span of three decades."
+    m 1eua "{i}Discworld{/i} is a comic fantasy book series of forty-one volumes written over the span of three decades."
     m 3esc "The series started out as a parody making fun of common fantasy tropes, but soon turned into something much deeper."
     m 3eub "In fact, later books are clearly satires rather than parodies, using a clever mix of slapstick, puns, and light-hearted humor to comment on all kinds of issues."
     m 1huu "But while satire may be the soul of the series, what makes its heart beat is the way it's written."
