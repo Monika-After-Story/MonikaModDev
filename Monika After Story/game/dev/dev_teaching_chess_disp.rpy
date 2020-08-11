@@ -19,7 +19,7 @@ label dev_test_chess_teaching:
 
     m 1dsa "Let me show the board.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     python:
-        chess_teaching_disp = MASChessDisplayableBase(player_color=True)
+        chess_teaching_disp = MASChessDisplayableBase(is_player_white=True)
         chess_teaching_disp.show()
 
     m 1esa "Let's just test the highlights.{w=0.3}.{w=0.3}.{w=0.3}{nw}"

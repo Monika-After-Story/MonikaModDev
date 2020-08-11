@@ -258,7 +258,12 @@ init python in mas_chess:
             lock.release()
         out.close()
 
+#START: Main game label
 label game_chess:
+    #NOTE: This is a failsafe in case people jump to this label
+    if persistent._mas_chess_timed_disable is not None:
+        jump mas_chess_locked_no_play
+
     m 1eub "You want to play chess? Alright~"
 
     #Do some var setup
@@ -348,7 +353,7 @@ label game_chess:
             m "Let's continue our unfinished game."
 
             if loaded_game:
-                $ player_color = mas_chess._get_player_color(loaded_game)
+                $ is_player_white = mas_chess._get_player_color(loaded_game)
                 jump .start_chess
 
         # otherwise, read the game from file
@@ -478,7 +483,7 @@ label game_chess:
 
     if loaded_game:
         python:
-            player_color = mas_chess._get_player_color(loaded_game)
+            is_player_white = mas_chess._get_player_color(loaded_game)
 
             practice_mode = loaded_game.headers.get("Practice", False)
 
@@ -506,18 +511,18 @@ label game_chess:
         m "What color would suit you?{fast}"
 
         "White.":
-            $ player_color = chess.WHITE
+            $ is_player_white = chess.WHITE
 
         "Black.":
-            $ player_color = chess.BLACK
+            $ is_player_white = chess.BLACK
 
         "Let's draw lots!":
             $ choice = random.randint(0, 1) == 0
             if choice:
-                $ player_color = chess.WHITE
+                $ is_player_white = chess.WHITE
                 m 2eua "Oh look, I drew black! Let's begin!"
             else:
-                $ player_color = chess.BLACK
+                $ is_player_white = chess.BLACK
                 m 2eua "Oh look, I drew white! Let's begin!"
 
         "Nevermind.":
@@ -528,6 +533,10 @@ label game_chess:
     label .start_chess:
         pass
 
+    #NOTE: This is a failsafe in case people jump to the .start_chess label
+    if persistent._mas_chess_timed_disable is not None:
+        jump mas_chess_locked_no_play
+
     window hide None
     show monika 1eua at t21
     python:
@@ -535,7 +544,7 @@ label game_chess:
         quick_menu = False
 
         #Add the displayable
-        chess_displayable_obj = MASChessDisplayable(player_color, pgn_game=loaded_game, practice_mode=practice_mode)
+        chess_displayable_obj = MASChessDisplayable(is_player_white, pgn_game=loaded_game, practice_mode=practice_mode)
         chess_displayable_obj.show()
         results = chess_displayable_obj.game_loop()
         chess_displayable_obj.hide()
@@ -793,6 +802,12 @@ label mas_chess_savegame(silent=False):
 
         if game_result == mas_chess.IS_ONGOING:
             m 1eub "Let's continue this game soon!"
+    return
+
+
+label mas_chess_locked_no_play:
+    m 1euc "No thanks, [player]."
+    m 1rsc "I don't really feel like playing chess right now."
     return
 
 label mas_chess_cannot_work_embarrassing:
@@ -1344,7 +1359,7 @@ screen mas_chess_confirm():
                 textbutton _("No") action Return(False)
 
 # promotion screen for chess
-screen mas_chess_promote(player_color):
+screen mas_chess_promote:
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1374,17 +1389,17 @@ screen mas_chess_promote(player_color):
                 imagebutton idle PROMO_KNIGHT action Return('n')
                 imagebutton idle PROMO_BISHOP action Return('b')
 
-label mas_chess_promote_context(player_color):
+label mas_chess_promote_context(is_player_white):
     python:
         #Define some images here
-        clr_str = MASPiece.FP_COLOR_LOOKUP[player_color]
-        PROMO_QUEEN = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "Q" if player_color else "q"))
-        PROMO_ROOK = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "R" if player_color else "r"))
-        PROMO_KNIGHT = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "N" if player_color else "n"))
-        PROMO_BISHOP = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "B" if player_color else "b"))
+        clr_str = MASPiece.FP_COLOR_LOOKUP[is_player_white]
+        PROMO_QUEEN = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "Q" if is_player_white else "q"))
+        PROMO_ROOK = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "R" if is_player_white else "r"))
+        PROMO_KNIGHT = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "N" if is_player_white else "n"))
+        PROMO_BISHOP = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "B" if is_player_white else "b"))
 
 
-    call screen mas_chess_promote(player_color)
+    call screen mas_chess_promote
     $ store.mas_chess.promote = _return
     return
 
@@ -1577,38 +1592,12 @@ init python:
             63: (7, 7)
         }
 
-        #Converts UCI alphabets to X Coords on the MAS Board
-        UCI_ALPHA_TO_X_COORD = {
-            'a': 0,
-            'b': 1,
-            'c': 2,
-            'd': 3,
-            'e': 4,
-            'f': 5,
-            'g': 6,
-            'h': 7
-        }
-
-        #Lookup for inverting y coords
-        #NOTE: Yes, this is just 7 - old_y, but this is slightly more efficient since we always know y is between 0 and 7
-        BOARD_COORD_INVERT_LOOKUP = {
-            0: 7,
-            1: 6,
-            2: 5,
-            3: 4,
-            4: 3,
-            5: 2,
-            6: 1,
-            7: 0
-        }
-
         #Button handling bits
         def __init__(
             self,
-            player_color,
+            is_player_white,
             pgn_game=None,
             starting_fen=None,
-            buttons=None,
             player_move_prompts=None,
             monika_move_quips=None
         ):
@@ -1616,20 +1605,12 @@ init python:
             MASChessDisplayableBase constructor
 
             IN:
-                player_color - color the player is playing
+                is_player_white - color the player is playing
                 pgn_game - previous game to load (chess.pgn.Game)
                     if a starting_fen is provided alongside this, the fen is ignored
                     (Default: None)
                 starting_fen - starting fen to use if starting a custom scenario
                     NOTE: This is not verified for validity
-                    (Default: None)
-                buttons - Dict representing button data
-                    if not provided, no buttons will be controlled internally within the functions in this class
-                    key:
-                        variable name for the button
-                    value:
-                        conditional for the button to be active
-                        NOTE: Not verified for validity
                     (Default: None)
                 player_move_prompts - prompts to use to indicate player move
                     If not provided, no player prompt will be used
@@ -1650,9 +1631,6 @@ init python:
             #Some core vars
             self.num_turns = 0
             self.move_stack = list()
-
-            #Store the buttons as we'll need to use this later
-            self.buttons = dict() if buttons is None else buttons
 
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
@@ -1684,7 +1662,7 @@ init python:
                 self.current_turn = self.board.turn
 
                 #Colors?
-                self.player_color = mas_chess._get_player_color(pgn_game)
+                self.is_player_white = mas_chess._get_player_color(pgn_game)
 
                 #Last move
                 last_move = self.board.peek().uci()
@@ -1718,7 +1696,7 @@ init python:
                         self.current_turn = starting_fen[ind_of_space + 1 : ind_of_space + 2] == 'w'
 
                 #Set up player color
-                self.player_color = player_color
+                self.is_player_white = is_player_white
 
                 #Set up last move
                 self.last_move_src = None
@@ -1770,7 +1748,7 @@ init python:
             NOTE: IMPLEMENTATION OF THIS IS OPTIONAL.
             It is only required if and only if we want Monika to play using an engine rather than manually queued moves
             """
-            return None
+            return NotImplemented
 
         def poll_monika_move(self):
             """
@@ -1781,7 +1759,16 @@ init python:
             NOTE: IMPLEMENTATION OF THIS IS OPTIONAL.
             It is only required if and only if we want Monika to play using an engine rather than manually queued moves
             """
-            return None
+            return NotImplemented
+
+        def set_button_states(self):
+            """
+            Sets button states
+
+            NOTE: IMPLEMENTATION OF THIS IS OPTIONAL.
+            If is only required for chess displayables which would need to manage any buttons for states
+            """
+            return NotImplemented
 
         def check_buttons(self, ev, x, y, st):
             """
@@ -1826,18 +1813,6 @@ init python:
             self.__push_move(move_str)
 
         #END: Non-implemented functions
-        def set_button_states(self):
-            """
-            Sets the button states according to their conditionals.
-
-            NOTE: CONDITIONALS ARE NOT VALIDATED FOR ERRORS
-            """
-            for button_obj_name, button_data in self.buttons.iteritems():
-                if eval(button_data["conditional"], self.__dict__):
-                    self.__dict__[button_obj_name].enable()
-                else:
-                    self.__dict__[button_obj_name].disable()
-
         def check_winner(self, current_move):
             if self.board.is_game_over():
                 if self.board.result() == '1/2-1/2':
@@ -1858,7 +1833,7 @@ init python:
             """
             Checks if it's currently the player's turn
             """
-            return self.player_color == self.current_turn
+            return self.is_player_white == self.current_turn
 
         def check_redraw(self):
             """
@@ -1880,7 +1855,8 @@ init python:
             for position, Piece in self.board.piece_map().iteritems():
                 MASPiece.fromPiece(
                     Piece,
-                    *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP.get(position) + (self.piece_map,))
+                    MASChessDisplayableBase.square_to_board_coords(position),
+                    self.piece_map
                 )
 
         def get_piece_at(self, px, py):
@@ -1900,7 +1876,7 @@ init python:
             IN:
                 board_pos - position string representing the board square to highlight (example a2)
             """
-            x = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[board_pos[0]]
+            x = MASChessDisplayableBase.uci_alpha_to_x_coord(board_pos[0])
             y = int(board_pos[1]) - 1
 
             self.requested_highlights.add((x, y))
@@ -1912,7 +1888,7 @@ init python:
             IN:
                 board_pos - position string representing the board square to remove the highlight
             """
-            x = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[board_pos[0]]
+            x = MASChessDisplayableBase.uci_alpha_to_x_coord(board_pos[0])
             y = int(board_pos[1]) - 1
 
             self.requested_highlights.discard((x, y))
@@ -1933,7 +1909,7 @@ init python:
             piece = self.get_piece_at(x1, y1)
 
             #Move the piece
-            piece.move(x1, y1, x2, y2)
+            piece.move(x2, y2)
 
             #Promote it if we need to
             if len(move_str) > 4:
@@ -2076,14 +2052,16 @@ init python:
                 renderer.blit(
                     highlight,
                     MASChessDisplayableBase.board_coords_to_screen_coords(
-                        *(self.last_move_src + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
+                        self.last_move_src,
+                        MASChessDisplayableBase.COORD_REFLECT_MAP[self.is_player_white]
                     )
                 )
                 #And the to highlight
                 renderer.blit(
                     highlight,
                     MASChessDisplayableBase.board_coords_to_screen_coords(
-                        *(self.last_move_dst + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
+                        self.last_move_dst,
+                        MASChessDisplayableBase.COORD_REFLECT_MAP[self.is_player_white]
                     )
                 )
 
@@ -2091,7 +2069,7 @@ init python:
             if self.selected_piece and self.possible_moves:
                 #There's possible moves, we need to filter things out
                 possible_moves_to_draw = filter(
-                    lambda x: MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[x.from_square] == (self.selected_piece[0], self.selected_piece[1]),
+                    lambda x: MASChessDisplayableBase.square_to_board_coords(x.from_square) == (self.selected_piece[0], self.selected_piece[1]),
                     self.possible_moves
                 )
 
@@ -2099,13 +2077,14 @@ init python:
                     renderer.blit(
                         highlight_green,
                         MASChessDisplayableBase.board_coords_to_screen_coords(
-                            *(MASChessDisplayableBase.SQUARE_TO_BOARD_COORD_LOOKUP[move.to_square] + MASChessDisplayableBase.COORD_REFLECT_MAP[self.player_color])
+                            MASChessDisplayableBase.square_to_board_coords(move.to_square),
+                            MASChessDisplayableBase.COORD_REFLECT_MAP[self.is_player_white]
                         )
                     )
 
             #Now render requested highlights if any
             for hl in self.requested_highlights:
-                renderer.blit(highlight_yellow, MASChessDisplayableBase.board_coords_to_screen_coords(*hl))
+                renderer.blit(highlight_yellow, MASChessDisplayableBase.board_coords_to_screen_coords(hl))
 
             #Draw the pieces on the Board renderer.
             for piece_location, Piece in self.piece_map.iteritems():
@@ -2117,7 +2096,7 @@ init python:
                 ix_orig = ix
 
                 #White
-                if self.player_color:
+                if self.is_player_white:
                     iy = 7 - iy
 
                 #Black
@@ -2125,7 +2104,7 @@ init python:
                     #Black player should be reversed X
                     ix = 7 - ix
 
-                x, y = MASChessDisplayableBase.board_coords_to_screen_coords(ix, iy)
+                x, y = MASChessDisplayableBase.board_coords_to_screen_coords((ix, iy))
 
                 #Don't render the currently held piece again
                 if (
@@ -2151,8 +2130,8 @@ init python:
                     and mx >= x and mx < x + MASChessDisplayableBase.PIECE_WIDTH
                     and my >= y and my < y + MASChessDisplayableBase.PIECE_HEIGHT
                     and (
-                        (piece.is_white() and self.player_color)
-                        or (not piece.is_white() and not self.player_color)
+                        (piece.is_white and self.is_player_white)
+                        or (not piece.is_white and not self.is_player_white)
                     )
                 ):
                     renderer.blit(highlight_green, (x, y))
@@ -2212,8 +2191,8 @@ init python:
                     self.is_player_turn()
                     and test_piece is not None
                     and (
-                        (test_piece.is_white() and self.player_color)
-                        or (not test_piece.is_white() and not self.player_color)
+                        (test_piece.is_white and self.is_player_white)
+                        or (not test_piece.is_white and not self.is_player_white)
                     )
                 ):
 
@@ -2247,7 +2226,7 @@ init python:
             py = my / MASChessDisplayableBase.PIECE_HEIGHT
 
             #White
-            if self.player_color:
+            if self.is_player_white:
                 py = 7 - py
 
             #Black
@@ -2287,38 +2266,71 @@ init python:
             OUT:
                 list of tuples, [(x1, y1), (x2, y2)] representing from coords -> to coords
             """
-            x1 = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[uci[0]]
-            x2 = MASChessDisplayableBase.UCI_ALPHA_TO_X_COORD[uci[2]]
+            x1 = MASChessDisplayableBase.uci_alpha_to_x_coord(uci[0])
+            x2 = MASChessDisplayableBase.uci_alpha_to_x_coord(uci[2])
             y1 = int(uci[1]) - 1
             y2 = int(uci[3]) - 1
 
             return [(x1, y1), (x2, y2)]
 
         @staticmethod
-        def board_coords_to_screen_coords(x, y, invert_x=False, invert_y=False):
+        def uci_alpha_to_x_coord(alpha):
+            """
+            Converts a uci alphabet (a-h) to an x-coord for the board
+
+            IN:
+                alpha - alphabet to convert to a board x-coord
+            """
+            return ord(alpha) - 97
+
+        @staticmethod
+        def square_to_board_coords(sq_num):
+            """
+            Converts from square number to board coords
+
+            IN:
+                sq_num - square number to convert
+
+            OUT:
+                tuple - (x, y) coords representing board coordinates for the square provided
+            """
+            return (sq_num % 8, sq_num / 8)
+
+        @staticmethod
+        def board_coords_to_screen_coords(pos_tuple, inversion_tuple=(False,False)):
             """
             Converts board coordinates to (x, y) coordinates to use to position things on screen
 
             IN:
-                x - x board coordinate to convert
-                y - y board coordinate to convert
-                invery_x - Whether or not we should invert the x coordinate
-                    (Default: False)
-                invert_y - Whether or not we should invert the y coordinate
-                    (Default: False)
+                pos_tuple - (x, y) tuple representing coordinates which need to be converted
+                inversion_tuple - (x_invert, y_invert) tuple representing direction to invert piece coords
 
             OUT:
                 Tuple - (x, y) coordinates for the screen to use
             """
-            if invert_x:
-                x = MASChessDisplayableBase.BOARD_COORD_INVERT_LOOKUP[x]
-            if invert_y:
-                y = MASChessDisplayableBase.BOARD_COORD_INVERT_LOOKUP[y]
+            x = pos_tuple[0]
+            y = pos_tuple[1]
+
+            if inversion_tuple[0]:
+                x = MASChessDisplayableBase.invert_coord(x)
+            if inversion_tuple[1]:
+                y = MASChessDisplayableBase.invert_coord(y)
 
             return (
                 int(MASChessDisplayableBase.BASE_PIECE_X + (x * MASChessDisplayableBase.PIECE_WIDTH)),
                 int(MASChessDisplayableBase.BASE_PIECE_Y + (y * MASChessDisplayableBase.PIECE_HEIGHT))
             )
+
+        @staticmethod
+        def invert_coord(value):
+            """
+            Inverts a board coordinate
+
+            IN:
+                value - coordinate part (x or y) to invert
+            """
+            return 7 - value
+
 
     class MASPiece(object):
         """
@@ -2332,7 +2344,8 @@ init python:
                 False - black
             symbol - letter symbol representing the piece. If capital, the piece is white
             piece_map - the map containing all the pieces (the MASPiece object will be stored in it)
-            y_offset - Offset by which to display the piece
+            x_pos - x coordinate of this piece on the board
+            y_pos - y coordinate of this piece on the board
         """
 
         #Default base piece filepath
@@ -2346,7 +2359,7 @@ init python:
 
         def __init__(
             self,
-            color,
+            is_white,
             symbol,
             posX,
             posY,
@@ -2356,24 +2369,24 @@ init python:
             MASPiece constructor
 
             IN:
-                color - Color of the piece:
-                    True - white
-                    False - black
+                is_white - Whether or not the piece is white
                 symbol - letter symbol representing the piece. If capital, the piece is white
                 posX - x position of the piece
                 posY - y position of the piece
                 piece_map - Map to store this piece in
             """
-            self.color = color
+            self.is_white = is_white
             self.symbol = symbol
 
             #Store an internal reference to the piece map so we can execute moves from the piece
             self.piece_map = piece_map
 
             #Store the internal reference to this piece's image fp for use in rendering
-            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[color], symbol))
+            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[is_white], symbol))
 
-            self.y_offset = 0
+            #Internal reference to the position
+            self.x_pos = posX
+            self.y_pos = posY
 
             #And add it to the piece map
             piece_map[(posX, posY)] = self
@@ -2390,15 +2403,17 @@ init python:
             """
             Handles a representation of this piece
             """
-            return "MASPiece with color: {0} and symbol: {1}".format(self.color, self.symbol)
+            return "MASPiece which: {0} and symbol: {1}".format("is white" if self.is_white else "is black", self.symbol)
 
         @staticmethod
-        def fromPiece(piece, posX, posY, piece_map):
+        def fromPiece(piece, pos_tuple, piece_map):
             """
             Initializes a MASPiece from a chess.Piece object
 
             IN:
                 piece - piece to base the MASPiece off of
+                pos_tuple - (x, y) tuple representing the piece's board coords
+
                 SEE: __init__ for the rest of the parameters
 
             OUT:
@@ -2407,20 +2422,10 @@ init python:
             return MASPiece(
                 piece.color,
                 piece.symbol(),
-                posX,
-                posY,
+                pos_tuple[0],
+                pos_tuple[1],
                 piece_map
             )
-
-        def is_white(self):
-            """
-            Checks if the piece is white or not
-
-            OUT:
-                True if piece is white
-                False otherwise
-            """
-            return self.color
 
         def get_type(self):
             """
@@ -2438,7 +2443,7 @@ init python:
             OUT:
                 Tuple, (x, y) coords representing the location of the piece on the board
             """
-            return self.piece_map.keys()[self.piece_map.values().index(self)]
+            return (self.x_pos, self.y_pos)
 
         def promote_to(self, promoted_piece_symbol):
             """
@@ -2447,15 +2452,21 @@ init python:
             IN:
                 promoted_piece_symbol - Symbol representing the piece we're promoting to
             """
-            self.symbol = promoted_piece_symbol.upper() if self.is_white() else promoted_piece_symbol
+            self.symbol = promoted_piece_symbol.upper() if self.is_white else promoted_piece_symbol
             #Update the piece image
-            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[self.color], self.symbol))
+            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[self.is_white], self.symbol))
 
-        def move(self, curr_x, curr_y, new_x, new_y):
+        def move(self, new_x, new_y):
             """
             Moves the piece from the given position, to the given position
             """
-            self.piece_map.pop((curr_x, curr_y))
+            self.piece_map.pop((self.x_pos, self.y_pos))
+
+            #Adjust internal positions
+            self.x_pos = new_x
+            self.y_pos = new_y
+
+            #Add back to the piece map
             self.piece_map[(new_x, new_y)] = self
 
         def render(self, width, height, st, at, x, y, renderer):
@@ -2479,7 +2490,7 @@ init python:
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
             self,
-            player_color,
+            is_player_white,
             pgn_game=None,
             starting_fen=None,
             practice_mode=False
@@ -2554,36 +2565,9 @@ init python:
 
             #Init the base displayable
             super(MASChessDisplayable, self).__init__(
-                player_color,
+                is_player_white,
                 pgn_game,
                 starting_fen,
-                buttons={
-                    "_button_save": {
-                        "conditional": (
-                            "not is_game_over "
-                            "and player_color == current_turn "
-                            "and board.fullmove_number > 1"
-                        )
-                    },
-                    "_button_giveup": {
-                        "conditional": (
-                            "not is_game_over "
-                            "and player_color == current_turn "
-                            "and board.fullmove_number > 1"
-                        )
-                    },
-                    "_button_done": {
-                        "conditional": "is_game_over is not None"
-                    },
-                    "_button_undo": {
-                        "conditional": (
-                            "not is_game_over "
-                            "and player_color == current_turn "
-                            "and board.fullmove_number > 0 "
-                            "and move_history"
-                        )
-                    }
-                },
                 player_move_prompts=[
                     "It's your turn, [player].",
                     "Your move, [player]~",
@@ -2769,7 +2753,7 @@ init python:
                     self.selected_piece = None
 
                     #Now call the promotion screen
-                    renpy.call_in_new_context("mas_chess_promote_context", self.player_color)
+                    renpy.call_in_new_context("mas_chess_promote_context", self.is_player_white)
                     move_str += store.mas_chess.promote
 
             if move_str is None:
@@ -2806,6 +2790,38 @@ init python:
                         #Set the buttons
                         self.set_button_states()
 
+        def set_button_states(self):
+            """
+            Manages button states
+            """
+            if not self.is_game_over and self.is_player_white == self.current_turn:
+                if self.board.fullmove_number > 1:
+                    self._button_giveup.enable()
+                    self._button_save.enable()
+
+                    if self.move_history:
+                        self._button_undo.enable()
+
+                elif self.board.fullmove_number > 0:
+                    self._button_giveup.disable()
+                    self._button_save.disable()
+
+                    if self.move_history:
+                        self._button_undo.enable()
+
+                else:
+                    self._button_giveup.disable()
+                    self._button_save.disable()
+                    self._button_undo.disable()
+
+            else:
+                self._button_giveup.disable()
+                self._button_save.disable()
+                self._button_undo.disable()
+
+            if self.is_game_over is not None:
+                self._button_done.enable()
+
         def _quitPGN(self, giveup):
             """
             Generates a pgn of the board, and depending on if we are
@@ -2825,7 +2841,7 @@ init python:
 
             if giveup:
                 #Player is playing white
-                if self.player_color:
+                if self.is_player_white:
                     new_pgn.headers["Result"] = "0-1"
                 #Player is playing black
                 else:
@@ -2833,7 +2849,7 @@ init python:
 
             # monika's ingame name will be her twitter handle
             #Player plays white
-            if self.player_color:
+            if self.is_player_white:
                 new_pgn.headers["White"] = persistent.playername
                 new_pgn.headers["Black"] = mas_monika_twitter_handle
 
@@ -2856,11 +2872,11 @@ init python:
                 (
                     (
                         new_pgn.headers["Result"] == MASChessDisplayableBase.STATE_WHITE_WIN
-                        and new_pgn.headers["White"] == mas_monika_twitter_handle
+                        and not self.is_player_white #Player is black, so monika is white
                     )
                     or (
                         new_pgn.headers["Result"] == MASChessDisplayableBase.STATE_BLACK_WIN
-                        and new_pgn.headers["Black"] == mas_monika_twitter_handle
+                        and self.is_player_white #Player is white, so monika is black
                     )
                 ),
                 giveup,

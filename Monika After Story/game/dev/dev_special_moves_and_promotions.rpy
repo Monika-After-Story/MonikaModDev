@@ -42,7 +42,7 @@ label dev_chess_moves_test:
             $ starting_fen = "k6K/8/8/8/3Pp3/8/5Pp1/8 b - d3 0 1"
 
     python:
-        chess_displayable_obj = MASChessDisplayable(player_color=player_color, starting_fen=starting_fen, practice_mode=True)
+        chess_displayable_obj = MASChessDisplayable(is_player_white=player_color, starting_fen=starting_fen, practice_mode=True)
         chess_displayable_obj.show()
         results = chess_displayable_obj.game_loop()
         chess_displayable_obj.hide()
