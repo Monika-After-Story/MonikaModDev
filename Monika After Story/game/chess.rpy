@@ -1632,6 +1632,9 @@ init python:
             self.num_turns = 0
             self.move_stack = list()
 
+            #Are we sensitive to the user input?
+            self.sensitive = True
+
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
 
@@ -1813,6 +1816,16 @@ init python:
             self.__push_move(move_str)
 
         #END: Non-implemented functions
+        def toggle_sensitivity(self):
+            """
+            Toggles sensitivity of this displayable
+
+            OUT:
+                new sensitivity as a boolean
+            """
+            self.sensitive = not self.sensitive
+            return self.sensitive
+
         def check_winner(self, current_move):
             if self.board.is_game_over():
                 if self.board.result() == '1/2-1/2':
@@ -2168,6 +2181,7 @@ init python:
 
         #Handles events.
         def event(self, ev, x, y, st):
+            #Buttons are always sensitive since they are only semi-part of this displayable
             #Are we in mouse button things
             if ev.type in self.MOUSE_EVENTS:
                 ret_value = None
@@ -2178,37 +2192,41 @@ init python:
                 if ret_value is not None:
                     return ret_value
 
-            # Mousebutton down == possibly select the piece to move
-            if (
-                ev.type == pygame.MOUSEBUTTONDOWN
-                and ev.button == 1
-                and not self.is_game_over# don't allow to move pieces if the game is over
-            ):
-                # continue
-                px, py = self.get_piece_pos()
-                test_piece = self.get_piece_at(px, py)
+            #Board events however respect the displayable state
+            if self.sensitive:
+                # Mousebutton down == possibly select the piece to move
                 if (
-                    self.is_player_turn()
-                    and test_piece is not None
-                    and (
-                        (test_piece.is_white and self.is_player_white)
-                        or (not test_piece.is_white and not self.is_player_white)
-                    )
+                    ev.type == pygame.MOUSEBUTTONDOWN
+                    and ev.button == 1
+                    and not self.is_game_over# don't allow to move pieces if the game is over
                 ):
+                    # continue
+                    px, py = self.get_piece_pos()
+                    test_piece = self.get_piece_at(px, py)
+                    if (
+                        self.is_player_turn()
+                        and test_piece is not None
+                        and (
+                            (test_piece.is_white and self.is_player_white)
+                            or (not test_piece.is_white and not self.is_player_white)
+                        )
+                    ):
+                        piece = test_piece
 
-                    piece = test_piece
+                        self.possible_moves = self.board.legal_moves
+                        self.selected_piece = (px, py)
+                        return "mouse_button_down"
 
-                    self.possible_moves = self.board.legal_moves
-                    self.selected_piece = (px, py)
-                    return "mouse_button_down"
+                # Mousebutton up == possibly release the selected piece
+                if (
+                    ev.type == pygame.MOUSEBUTTONUP
+                    and ev.button == 1
+                ):
+                    self.handle_player_move()
 
-            # Mousebutton up == possibly release the selected piece
-            if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
-                self.handle_player_move()
-
-                self.selected_piece = None
-                self.possible_moves = set([])
-                return "mouse_button_up"
+                    self.selected_piece = None
+                    self.possible_moves = set([])
+                    return "mouse_button_up"
 
             return None
 
