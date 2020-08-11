@@ -14,6 +14,10 @@ init -5 python in mas_background:
     #value: ignored
     EXP_SKIP_LEADIN = "skip_leadin"
 
+    #Tells the background changer to skip the transition (black screen)
+    #value: ignored
+    EXP_SKIP_TRANSITION = "skip_transition"
+
     #Tells the background changer to skip the outro dialogue
     #value: ignored
     EXP_SKIP_OUTRO = "skip_outro"
@@ -2865,23 +2869,25 @@ label monika_change_background_loop:
 
     python:
         skip_leadin = mas_background.EXP_SKIP_LEADIN in sel_background.ex_props
+        skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
     call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
-label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_persistent=False):
+label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, skip_outro=False, set_persistent=False):
     # otherwise, we can change the background now
     if not skip_leadin:
         m 1eua "Alright!"
         m 1hua "Let's go, [player]!"
 
     #Little transition
-    hide monika
-    scene black
-    with dissolve
-    pause 2.0
+    if not skip_transition:
+        hide monika
+        scene black
+        with dissolve
+        pause 2.0
 
     python:
         #Set persistent
@@ -2890,11 +2896,6 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
 
         #Store the old bg for use later
         old_bg = mas_current_background
-
-        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
-        #NOTE: If you intend to force a weather for your background, set it via prog points
-        if new_bg.disable_progressive:
-            mas_lockEVL("monika_change_weather", "EVE")
 
         #Otherwise, If we're disabling progressive AND hiding masks, weather isn't supported here
         #so we lock to clear
@@ -2914,6 +2915,11 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
 
             #Then we unlock the weather sel here
             mas_unlockEVL("monika_change_weather", "EVE")
+
+        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        #NOTE: If you intend to force a weather for your background, set it via prog points
+        if new_bg.disable_progressive:
+            mas_lockEVL("monika_change_weather", "EVE")
 
         #Finally, change the background
         mas_changeBackground(new_bg)
