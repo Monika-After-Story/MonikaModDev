@@ -297,6 +297,8 @@ label game_shiritori:
                 $ shiritori_loop = False
 
             # getting Monika's next word
+            # TODO: add a sanity check to make sure Monika even has a possible valid word
+            #   there *shouldn't* be a scenario where such a check fails, but it won't hurt to have it
             while last_word_m_invalid:
                 if renpy.random.randint(1,100) <= full_dict_chance  and game_variant != "cities":
                     # small chance to have Monika pull from the full vocab
