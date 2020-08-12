@@ -228,11 +228,11 @@ init 3 python:
         "^hoe$",
         "^tit$",
         "abortion",
-        "anal",
+        "(?<![bc])(anal)(?![y]|og)",
         "annoying",
-        "anus",
+        "(?<!m)anus",
         "arrogant",
-        "ass",
+        "(?<![bclmprs])(?<!crev)(ass)(?!i|ail|ault|embl|ert|ess|oc|ort|um|ur|yr)"
         "atrocious",
         "awful",
         "bastard",
@@ -244,19 +244,19 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "(butt)(?!er|on|ress)"
         "cheater",
         "cock",
         "conceited",
         "condom",
         "corrupt",
         "cougar",
-        "crap",
+        "(?<!s)(crap)",
         "crazy",
         "creepy",
         "criminal",
         "cruel",
-        "cum",
+        "(?<!cir)(?<!do)(?<!e)cum(?!b|ul)",
         "cunt",
         "damn",
         "demon",
@@ -307,7 +307,7 @@ init 3 python:
         "lezbo",
         "liar",
         "loser",
-        "mad",
+        "(?<!ar|no)(mad)(?!agasc)",
         "maniac",
         "masochist",
         "milf",
@@ -332,13 +332,12 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<=[dgt])(?<!sc)(?<!the)rape",
         "repulsive",
         "retard",
         "rogue",
-        "rump",
+        "(?<![cgt])(rump)",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
@@ -470,34 +469,9 @@ init 3 python:
         "virgin"
     ]
 
-    # filters out false positives that trigger the bad nickname list
-    mas_bad_nickname_fp_list = [
-        "(?<=[bc])(anal)",
-        "(anal)(?=[y]|og)",
-        "manus",
-        "crevass",
-        "(?<=[bclmprs])(ass)",
-        "(ass)(?=[i]|ail|ault|embl|ert|ess|oc|ort|um|ur|yr)",
-        "(butt)(?=er|on|ress)",
-        "scrap",
-        "circum",
-        "document",
-        "ecum",
-        "(cum)(?=[b]|ul)",
-        "(?<=ar|no)(mad)",
-        "(mad)(?=agasc)",
-        "scrape",
-        "therapeut",
-        "(?<=[dgt])(rape)",
-        "(?<=[cgt])(rump)"
-    ]
-
     mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
-    mas_bad_name_fp_comp = re.compile('|'.join(mas_bad_nickname_fp_list), re.IGNORECASE)
-
-
 
 
 label mas_player_name_enter_name_loop(input_prompt):
@@ -557,7 +531,7 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
-        elif mas_bad_name_comp.search(tempname) and not mas_bad_name_fp_comp.search(tempname):
+        elif mas_bad_name_comp.search(tempname):
             $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
