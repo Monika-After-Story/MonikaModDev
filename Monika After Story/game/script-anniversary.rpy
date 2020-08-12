@@ -475,7 +475,7 @@ label anni_1:
     m 2eka "And I didn't know if there were other things in your reality that might prove to be more important."
     m 3wkb "But you kept coming back. You kept spending time with me, just like I wished for."
     m 1ekb "And over time I started to really believe it, that you meant it when you said you wanted to be with me."
-    m "That we could have a happy life together. {w} You and me, in our own little reality."
+    m "That we could have a happy life together. {w}You and me, in our own little reality."
     show monika 5hkbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hkbsb "I can't thank you enough for that, [player]. You've made this year so incredible for me."
     show monika 6ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
