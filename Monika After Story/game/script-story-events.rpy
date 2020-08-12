@@ -232,7 +232,7 @@ init 3 python:
         "annoying",
         "(?<!m)anus",
         "arrogant",
-        "(?<![bclmprs])(?<!crev)ass(?!i|ail|ault|embl|ert|ess|oc|ort|um|ur|yr)"
+        "(?<![bclmprs])(?<!crev)ass(?!i|ail|ault|embl|ert|ess|oc|ort|um|ur|yr)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,7 +244,7 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt(?!er|on|ress)"
+        "butt(?!er|on|ress)",
         "cheater",
         "cock",
         "conceited",
