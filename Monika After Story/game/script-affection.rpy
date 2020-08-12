@@ -2047,7 +2047,11 @@ label monika_affection_nickname:
                     m 1eka "Can you choose something more appropriate, [player]?"
 
                 else:
-                    if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
+                    if (
+                        not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]
+                        ) or (
+                        mas_bad_name_comp.search(inputname) and mas_bad_name_fp_comp.search(inputname)
+                        ):
                         if inputname == "Monika":
                             m 3hua "Ehehe, back to the classics I see~"
 
