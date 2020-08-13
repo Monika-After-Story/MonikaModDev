@@ -120,6 +120,16 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: 1,
+        DISTRESSED: 2,
+        UPSET: 3,
+        NORMAL: 4,
+        HAPPY: 4,
+        AFFECTIONATE: 5,
+        ENAMORED: 6,
+        LOVE: 6
+    }
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
@@ -451,6 +461,9 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
         layout.QUIT = mas_layout.QUIT_BROKEN
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(BROKEN)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -475,6 +488,9 @@ init 15 python in mas_affection:
         if persistent._mas_acs_enable_promisering:
             renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
             persistent._mas_acs_enable_promisering = False
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(DISTRESSED)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -504,6 +520,9 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(UPSET)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -595,6 +614,9 @@ init 15 python in mas_affection:
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(HAPPY)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -631,6 +653,9 @@ init 15 python in mas_affection:
 
         # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -1955,10 +1980,11 @@ label monika_affection_nickname:
         m 3hua "I'll still get the final say, though!"
         m "What do you say?{nw}"
         python:
-            # change the prompt for this event
-            aff_nickname_ev.prompt = _("Can I call you a different name?")
-            Event.lockInit("prompt", ev=aff_nickname_ev)
-            persistent._mas_offered_nickname = True
+            if aff_nickname_ev:
+                # change the prompt for this event
+                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                Event.lockInit("prompt", ev=aff_nickname_ev)
+                persistent._mas_offered_nickname = True
 
     else:
         jump monika_affection_nickname_yes
@@ -2064,7 +2090,8 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
 
                             show monika 1efc
@@ -2078,7 +2105,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
@@ -2090,7 +2117,7 @@ label monika_affection_nickname:
                             $ m_name = "Monika"
                             $ persistent._mas_monika_nickname = "Monika"
 
-                        $ mas_lockEventLabel("monika_affection_nickname")
+                        $ mas_lockEVL("monika_affection_nickname", "EVE")
                         $ done = True
 
         "No.":
