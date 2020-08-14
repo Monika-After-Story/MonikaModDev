@@ -10068,7 +10068,7 @@ label monika_fastfood:
     m 3ekc "Most places that serve it put a lot of unhealthy things in their food."
     m 1lsc "Even the vegetarian options can be awful."
 
-    m "[player], do you eat fast food often?{nw}"
+    m 3ekd "[player], do you eat fast food often?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you eat fast food often?{fast}"
