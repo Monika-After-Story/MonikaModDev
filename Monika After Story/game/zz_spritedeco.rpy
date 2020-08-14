@@ -3,7 +3,7 @@
 
 
 
-init -20 python mas_deco:
+init -20 python in mas_deco:
 
     deco_name_db = {}
     # maps shorthand deco names to actual deco names
