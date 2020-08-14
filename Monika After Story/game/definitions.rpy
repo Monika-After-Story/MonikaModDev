@@ -3598,10 +3598,42 @@ init -991 python in mas_utils:
         return abs(left-right) < acc
 
 
+    def truncround(value, places=6):
+        """
+        Does "truncated rounding" for floats. This is done via a floatsplit_i
+        that reassembles into a float.
+
+        IN:
+            value - float to round
+            places - number of decimal places to truncate round to
+                (Default: 6)
+
+        RETURNS: truncate-rounded float
+        """
+        return floatcombine_i(floatsplit_i(value, places), places)
+
+
+    def floatcombine_i(value, places=6):
+        """
+        Combines output of floatsplit_i back into a float
+
+        IN:
+            value - tuple of the following format:
+                [0]: integer part of the float
+                [1]: float part of the float as integer
+            places - number of places to apply to the float part
+                (Default: 6)
+
+        RETURNS: float
+        """
+        return value[0] + (value[1] / (10.0**places))
+
+
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
-        returns two ints)
+        returns three ints, or floatsplit_i which returns two ints with
+        rounding)
 
         IN:
             value - float to split
@@ -3612,6 +3644,25 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
+
+
+    def floatsplit_i(value, places=6):
+        """
+        Similar to floatsplit, but converts the float portion into an int
+
+        IN:
+            value - float to split
+            places - number of decimal places to keep when converting the
+                float to an int
+                (Default: 6)
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float 
+            [1] - float portion of float, multiplied by 10^places
+        """
+        int_part, float_part = floatsplit(value)
+        scale = 10**places
+        return int_part, int(float_part * scale)
 
 
     def pdget(key, table, validator=None, defval=None):

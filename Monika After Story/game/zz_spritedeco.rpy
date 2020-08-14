@@ -3,104 +3,289 @@
 
 
 
-init 5 python:
- import store
- #Short Cut
- store.MD = store.mas_decorations
- 
+init -20 python mas_deco:
 
-init python:
+    deco_name_db = {}
+    # maps shorthand deco names to actual deco names
+    # key: shorthand decoration name
+    # value: real decoration name
 
-        
-    class MASDecoration(MASSpriteFallbackBase):
+    deco_db = {}
+    # decoration filename DB
+    # key: decoration name
+    # value: MASDecoration object
+
+    # zorder layers that all deco objects are allowed to be on
+    LAYER_FRONT = 5
+    LAYER_MID = 6
+    LAYER_BACK = 7
+
+    LAYERS = (
+        LAYER_FRONT,
+        LAYER_MID,
+        LAYER_BACK,
+    )
+
+    # decoration prefix
+    DECO_PREFIX = "mas_deco_"
+
+
+    def add_deco(s_name, obj):
         """
-        This is an offshot of MASClothes/MASAccessory classes to keep proper formatting with json system.
-        This class is used to pass infromation to create MASSelectableDecoration objects from the jsons system.
+        Adds deco object to the deco db. Raises an exception if there are
+        duplicates. All deco objects get prefixed wtih text to prevent
+        collisions with standard sprite objects.
+
+        IN:
+            s_name - shorthand name to apply to this deco object
+            obj - MASDecoration object to add to the deco db
         """
-        
-        def __init__(self,
-            name,
-            img_sit,
-            pose_map,
-            img_stand="",
-            stay_on_start=False,
-            entry_pp=None,
-            exit_pp=None,
-            ex_props=None,
-            weather_map = {},
-            sub_objects = {},
-            unlock = False,
-            thumb = None
-            ):
-      
+        if s_name in deco_name_db:
+            raise Exception("Deco object '{0}' already exists".format(s_name))
+
+        # we can probably assume that DECO_PREFIX + s_name does not exist
+        # in the deco_db at this point.
+        new_deco_name = DECO_PREFIX + s_name
+        obj.name = new_deco_name
+
+        deco_name_db[s_name] = new_deco_name
+        deco_db[new_deco_name] = obj
+
+
+    def get_deco(name):
+        """
+        Gets a deco object by name. This accepts shortname or regular deco name
+
+        IN:
+            name - can either be shortname or actual deco name
+
+        RETURNS: MASDecoration object, or None if not valid name
+        """
+        if not name.startswith(DECO_PREFIX):
+            name = deco_name_db.get(name, "")
+
+        if name:
+            return deco_db.get(name, None)
+
+        return None
+
+
+init -19 python:
+
+
+    class MASDecoration(object):
+        """
+        Decoration object. Does NOT know positioning.
+
+        PROPERTIES:
+            name - unique identifier of this deco object 
+            ex_props - arbitrary properties associated with tihs deco object
+        """
+
+        def __init__(self, s_name, img=None, fwm=None, ex_props=None):
             """
-            Constructor.
+            constructor for MASDecoration. this will auto add the 
+            deco object to the deco_db. 
 
             IN:
-                name - name of this decoration
-                img_sit - file name of the main decoration image
-                pose_map - MASPoseMap object that contains information for sub_objects
-                img_stand - N/A just keep for compatibility reasons
-                stay_on_start - N/A just keep for compatibility reasons
-                entry_pp - programming point to call when wearing this sprite
-                    the MASMonika object that is being changed is fed into this
-                    function
+                s_name - shortname for this deco object. This should be
+                    unique.
+                    NOTE: this object's real name will be set to something
+                        different. To lookup deco objects, 
+                        see mas_deco.get_deco.
+                img - image filepath associated with this deco object. If None,
+                    then we assume fwm is set.
                     (Default: None)
-                exit_pp - programming point to call when taking off this sprite
-                    the MASMonika object that is being changed is fed into this
-                    function
+                fwm - MASFilterWeatherMap to use for this deco object. pass
+                    None to mark the deco object as a "simple" object that 
+                    gets the standard filters applied.
                     (Default: None)
-                ex_props - dict of additional properties to apply to this
-                    decoration object. This can be used to specify the existence of 
-                    different asset versions for different weathers.
+                ex_props - dict of arbitrary properties associated with this
+                    deco object.
                     (Default: None)
             """
-            #imports
-            import store
+            # check for duplicate name
+            self.name = ""
+            store.mas_deco.add_deco(s_name, self)
 
+            # img or fwm is required
+            if img is None and fwm is None:
+                raise Exception(
+                    (
+                        "Deco object '{0}' does not contain image or "
+                        "MASFilterWeatherMap"
+                    ).format(name)
+                )
 
-            #Standard properties
-            self.name = name
-            self.img_sit = img_sit
-            self.pose_map = pose_map
+            self._img = img
+            self._fwm = fwm # TODO: verify fwm
+            
+            if ex_props is None:
+                ex_props = {}
             self.ex_props = ex_props
-            self.unlock = unlock
-            self.thumb = thumb
-            
-            #Specific to Decorations
-            self.weather_map = weather_map
-            self.sub_objects = sub_objects
-            self.dir = store.mas_decorations.DECORATION_DIR
-            self.FILE_EXT = store.mas_sprites.FILE_EXT
-            self.__sp_type = store.mas_sprites_json.SP_DECORATIONS
-            self.full_img_path = "{0}{1}{2}".format(self.dir, self.img_sit, self.FILE_EXT)
 
-            
-            #Currently unused
-            self.entry_pp = entry_pp
-            self.entry_pp = entry_pp
-            self.img_stand = img_stand
-            self.stay_on_start = stay_on_start
+            # mark if this is a complex or simple deco object
+            # simple deco objects do not have custom filter settings
+            self._simple = fwm is None
 
-        
-        def _build_loadstrs(self):
+
+        def is_simple(self):
             """
-            Just gets img_sit to be verified
+            Returns True if this is a simple deco object.
+            Simple Deco objects do not have custom filter settings.
 
-            RETURNS: List with img_sit just so it works with the existing verification system 
+            RETURNS: True if simple deco object, False otherwise
             """
-            to_verify = []
-            to_verify.append(self.full_img_path)
+            return self._simple
 
-            return to_verify
-            
-        def gettype(self):
-            """
-            Gets the type of this sprite object
 
-            RETURNS: type of this sprite object
+    class MASImageTagDecoration(MASDecoration):
+        """
+        Variation of MASDecoration meant for images already defined as image
+        tags in game.
+
+        PROPERTIES:
+            name - IMAGE TAG of this 
+        """
+
+
+    class MASDecoFrame(object):
+        """
+        Contains position, layer, scale, and rotation info about a decoration
+
+        PROPERTIES:
+            deco - MASDecoration object associated with this MASDecoFrame
+            layer - layer this decoration exists on. This should be set by the
+                MASDecoManager
+            pos - (x, y) coordinates of the top left of the decoration
+            scale - (ws, hs) scale values to apply to the image's width and 
+                height. This is fed directly to FactorScale. 
+                    ws - multiplied to the decoration's image's width
+                    hs - multiplied to the decoration's images' height
+                Both scale values have a precision limit of 2 decimal places
+            rotation - radians/degrees to rotate the decoration. 
+                NOTE: CURRENTLY UNUSED
+        """
+
+        def __init__(self, 
+                deco,
+                layer=store.mas_deco.LAYER_FRONT,
+                pos=(0, 0),
+                scale=1
+        ):
             """
-            return self.__sp_type
+            Constructor for a MASDecoFrame
+
+            IN:
+                deco - MASDecoration object associated with this frame
+                layer - initial layer to show the decoration on
+                    (Default: LAYER_FRONT)
+                pos - initial (x, y) coordinates to show the decoration on
+                    (Default: (0, 0))
+                scale - (ws, hs) scale values to apply to the image's width and 
+                    height. This is fed directly to FactorScale. 
+                        ws - multiplied to the decoration's image's width
+                        hs - multiplied to the decoration's images' height
+                    Both scale values have a precision limit of 2 decimal places
+            """
+            self.deco = deco
+            self.layer = layer
+            self.pos = pos
+            self.scale = scale
+            self.rotation = 0
+
+        def __setattr__(self, name, value):
+            """
+            Set attr override for MASDecoFrame. This does very specific checks
+            for all numerical values to ensure compliance. This is important
+            since these are directly responsible for image appearance.
+            """
+            if name == "layer":
+                # ensure layers are valid
+                if value not in store.mas_deco.LAYERS:
+                    return
+
+            elif name == "pos":
+                # ensure position coordinates are integers
+                value = (int(value[0]), int(value[1]))
+
+            elif name == "scale":
+                # round scale to 2 decimal points, with adjustments for
+                # close to integer values.
+                ws, hs = value
+
+                if store.mas_utils.eqfloat(abs(ws), ws, 2):
+                    ws = abs(ws)
+                else:
+                    ws = store.mas_utils.truncround(ws, 2)
+
+                if store.mas_utils.eqfloat(abs(hs), hs, 2):
+                    hs = abs(hs)
+                else:
+                    hs = store.mas_utils.truncround(hs, 2)
+
+                value = (ws, hs)
+
+            #elif name == "rotation":
+            #    pass
+
+            super(MASDecoFrame, self).__setattr__(name, value)
+
+        def fromTuple(self, data):
+            """
+            Loads data from a tuple into this deco frame's propeties.
+
+            IN:
+                data - tuplized data of a MASDecoFrame. See toTuple for format
+
+            RETURNS: True if successful, false otherwise
+            """
+            if len(data) < 6:
+                # tuple data has 6 elements
+                return False
+
+            if data[0] != self.deco.name:
+                # name must match this decoration
+                return False
+
+            # NOTE: setattr will auto handle most of these
+            self.layer = data[1]
+            self.pos = data[2]
+            self.scale = (
+                store.mas_utils.floatcombine_i(data[3], 2),
+                store.mas_utils.floatcombine_i(data[4], 2),
+            )
+            self.rotation = data[5]
+
+            return True
+
+        def toTuple(self):
+            """
+            Creates a tuple of this deco's properties for saving.
+
+            RETURNS: tuple of the following format:
+                [0]: name of the decoration object
+                [1]: layer
+                [2]: position (x, y)
+                [3]: width scale (integer, float part as integer)
+                [4]: height scale (integer, float part as integer)
+                [5]: rotation
+            """
+            return (
+                self.deco.name,
+                self.layer,
+                self.pos,
+                store.mas_utils.floatsplit_i(self.scale[0], 2),
+                store.mas_utils.floatsplit_i(self.scale[1], 2),
+                self.rotation
+            )
+
+
+    class MASDecoManager(object):
+        """
+        Decoration manager for a background.
+        Manages decoration objects and their assocation with layers
+        """
         
         
     class MASSelectableDecoration(store.MASSelectableSprite):
