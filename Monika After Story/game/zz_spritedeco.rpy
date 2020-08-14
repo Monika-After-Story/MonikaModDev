@@ -1,6 +1,7 @@
-#V.0.1.8.0
 
-default persistent.mas_decorations_items = {}
+# large rewrite incoming
+
+
 
 init 5 python:
  import store
