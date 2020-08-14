@@ -897,7 +897,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # hide emptydesk if monika is visible
     if not hide_monika and not show_emptydesk:
         hide emptydesk
-
+        
+    $renpy.show("decoration", zorder = 5)
     return
 
 
