@@ -2019,11 +2019,11 @@ init 810 python:
         TEXT_AT_LIST = [mas_piano_lyric_label]
 
         # expressions
-        DEFAULT = "monika 1a"
-        AWKWARD = "monika 1l"
-        HAPPY = "monika 1j"
-        FAILED = "monika 1m"
-        CONFIGGING = "monika 3a"
+        DEFAULT = "monika 1eua"
+        AWKWARD = "monika 1hksdlb"
+        HAPPY = "monika 1hua"
+        FAILED = "monika 1lksdla"
+        CONFIGGING = "monika 3eua"
 #        CONFIG_CHANGE = "monika 3a"
 
         # Text related
