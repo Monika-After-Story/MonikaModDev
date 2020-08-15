@@ -1,4 +1,4 @@
-# special module that contains a screen dedicated to expression prevewing. 
+# special module that contains a screen dedicated to expression prevewing.
 # we really needed this lol.
 
 init 5 python:
@@ -94,7 +94,6 @@ init 999 python:
         ROWS = 13
 
         SPR_FOUND = "#ffe6f4"
-        SPR_MISS = "#ff0000"
 
         MONI_X = -240
         MONI_Y = 20
@@ -304,7 +303,7 @@ init 999 python:
             "Filter: "
         ]
 
-    
+
         ### button retvals
         SQ_BUTTON_RETVALS = [
             "torso",
@@ -444,7 +443,7 @@ init 999 python:
                 ),
             },
         }
-                
+
 
         # list of keys that matter for a sprite code
         SC_PARTS = [
@@ -478,7 +477,7 @@ init 999 python:
             "time": 12
         }
 
-            
+
 
 
         # pygame stuff
@@ -643,7 +642,7 @@ init 999 python:
                 color="#fa9",
                 outlines=[]
             )
-    
+
             self.button_done = MASButtonDisplayable(
                 button_text_done_idle,
                 button_text_done_hover,
@@ -738,16 +737,11 @@ init 999 python:
             # sprite as  atransform
             self.spr_tran = self._create_sprite()
 
-            # does this sprite xist?
-            self.sprite_exist = (
-                getCharacterImage("monika", self.curr_spr_code) is not None
-            )
-
             # need to check which render state we should be in
             if self.spr_tran is None:
                # dont need to change anything here
                 self.state = self.STATE_MONI_SHOW
-                
+
 
             else:
                 # blit mode needs some adjustments
@@ -805,7 +799,7 @@ init 999 python:
                     emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
-                return Transform(trn, 
+                return Transform(trn,
                     zoom=0.80*1.00,
                     alpha=1.00
                 )
@@ -814,7 +808,7 @@ init 999 python:
                 # the eval failed because we didnt have an image
                 return None
 
-           
+
         def _xcenter(self, v_width, width):
             """
             Returns the appropriate X location to center an object with the
@@ -835,7 +829,7 @@ init 999 python:
             Returns appropraite X location to center the selection text object
             with the given width.
 
-            NOTE: This is soley meant for use with selection text 
+            NOTE: This is soley meant for use with selection text
 
             IN:
                 with - width of the selection text
@@ -920,7 +914,7 @@ init 999 python:
         # If the direct is positive, selection is moved right.
         # otherwise, direct is moved left
 
-        def _sel_arms(self, direct): 
+        def _sel_arms(self, direct):
             self._adj_sel(direct, "arms")
             self._update_spr_code()
             self._update_sel_tx("arms")
@@ -987,7 +981,7 @@ init 999 python:
             self._adj_sel(direct, "tears")
             self._update_spr_code()
             self._update_sel_tx("tears")
-       
+
 
         def _sel_time(self, direct):
             self._adj_sel(direct, "time")
@@ -1020,8 +1014,8 @@ init 999 python:
 
 
         ############################# selection text functions ###############
-       
-    
+
+
         def _build_sel_tx(self, key):
             """
             Builds a Text object using the given key
@@ -1108,7 +1102,7 @@ init 999 python:
             Get sprite code for a given sprite key
 
             IN:
-                key - what sprite code do we need 
+                key - what sprite code do we need
                 nose - set to True to do special handling for the nose
                     (effectilye make the default nose work with sprite code),
                     False will retrive it raw
@@ -1160,7 +1154,7 @@ init 999 python:
             IN:
                 key - what image name do we need
                 eyes - current eyes as img name
-            
+
             REUTRNS the image name we need
             """
             tears_name = self._get_img_name(key)
@@ -1215,26 +1209,23 @@ init 999 python:
 
                 # selected text
                 _r_sel_tx = renpy.render(
-                    self.curr_sel_txts[x], 
-                    width, 
-                    height, 
-                    st, 
+                    self.curr_sel_txts[x],
+                    width,
+                    height,
+                    st,
                     at
                 )
 
                 rst_w, rst_h = _r_sel_tx.get_size()
-                
+
                 r_sel_txts.append((
                     _r_sel_tx,
                     (self._seltx_xcenter(rst_w), self.lbl_y_list[x])
                 ))
 
 
-            # sprite code 
-            if self.sprite_exist:
-                spr_clr = self.SPR_FOUND
-            else:
-                spr_clr = self.SPR_MISS
+            #All sprites exist. no need for miss codes
+            spr_clr = self.SPR_FOUND
 
             spr_txt = Text(
                 "Sprite Code: " + self.curr_spr_code,
@@ -1253,7 +1244,7 @@ init 999 python:
                     )
                     self.sprite_changed = False
                 except:
-                    # this failed to render 
+                    # this failed to render
                     self.state = self.STATE_MONI_SHOW
 
             # and blit
@@ -1302,12 +1293,6 @@ init 999 python:
 
                     # if this is None, we just dont render it
                     self.spr_tran = self._create_sprite()
-
-                    # check for sprite code existence
-                    self.sprite_exist = (
-                        getCharacterImage("monika", self.curr_spr_code) 
-                        is not None
-                    )
 
                     if self.spr_tran is None:
                         self.state = self.STATE_MONI_SHOW

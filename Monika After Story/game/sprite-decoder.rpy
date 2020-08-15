@@ -43,7 +43,7 @@ init python in mas_sprite_decoder:
         "2": "crossed",
         "3": "restleftpointright",
         "4": "pointright",
-        "5": "def",
+        "5": ("def", "def"),
         "6": "down",
         "7": "downleftpointright",
     }
@@ -262,8 +262,12 @@ init python in mas_sprite_decoder:
 
         #First parse arms, taking care of leaning as well here
         arms = ARM_MAP[exp[0]]
-        if arms == "def":
-            kwargs["lean"] = "def"
+
+        #Leaning is always a tuple
+        if isinstance(arms, tuple):
+            #Since this is a tuple, we should unpack this here, so lean type and arms are set accordingly
+            kwargs["lean"], arms = arms
+
             #We'll also manage leaning's standing sprite fully here
             kwargs["single"] = SINGLE_MAP.get(exp[-1], "3b")
 
@@ -271,25 +275,23 @@ init python in mas_sprite_decoder:
             #Leaning doesn't get sides
             kwargs["left"], kwargs["right"] = SIDES_MAP[exp[0]]
 
+
         kwargs["arms"] = arms
 
-        #Remove the first char
-        exp = exp[1:]
-
         #Now let's see if we have a head match
-        kwargs["head"] = HEAD_MAP.get("".join((exp[0], exp[1], exp[-1])), "")
+        kwargs["head"] = HEAD_MAP.get("".join((exp[1], exp[2], exp[-1])), "")
 
         #Now the eyes
-        kwargs["eyes"] = EYE_MAP[exp[0]]
-        exp = exp[1:]
+        kwargs["eyes"] = EYE_MAP[exp[1]]
 
         #Now the eyebrows
-        kwargs["eyebrows"] = EYEBROW_MAP[exp[0]]
-        exp = exp[1:]
+        kwargs["eyebrows"] = EYEBROW_MAP[exp[2]]
 
         #Next, we'll take care of the mouth
         kwargs["mouth"] = MOUTH_MAP[exp[-1]]
-        exp = exp[:-1]
+
+        #Let's condense the exp string here
+        exp = exp[3:-1]
 
         #Since nose is static, just keep that here
         kwargs["nose"] = "def"
