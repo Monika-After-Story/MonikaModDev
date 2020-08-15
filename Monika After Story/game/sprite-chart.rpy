@@ -124,48 +124,6 @@ default persistent._mas_force_clothes = False
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
 
-image monika g1:
-    "monika/g1.png"
-    xoffset 35 yoffset 55
-    parallel:
-        zoom 1.00
-        linear 0.10 zoom 1.03
-        repeat
-    parallel:
-        xoffset 35
-        0.20
-        xoffset 0
-        0.05
-        xoffset -10
-        0.05
-        xoffset 0
-        0.05
-        xoffset -80
-        0.05
-        repeat
-    time 1.25
-    xoffset 0 yoffset 0 zoom 1.00
-    "monika 3"
-
-image monika g2:
-    block:
-        choice:
-            "monika/g2.png"
-        choice:
-            "monika/g3.png"
-        choice:
-            "monika/g4.png"
-    block:
-        choice:
-            pause 0.05
-        choice:
-            pause 0.1
-        choice:
-            pause 0.15
-        choice:
-            pause 0.2
-    repeat
-
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
