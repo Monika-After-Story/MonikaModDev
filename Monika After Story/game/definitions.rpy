@@ -138,8 +138,7 @@ python early:
 
         IN:
             trans - the transition to use
-            always - if True, the transition will always occur, even if the user has
-                disabled transitions
+            always - if True, the transition will always occur, even if the user has disabled transitions
             paired - Tom knows
             clear - if True cleans out transient stuff at the end of an interaction
 
@@ -180,6 +179,88 @@ python early:
         return renpy.game.interface.do_with(trans, paired, clear=clear)
 
     renpy.exports.with_statement = mas_with_statement
+
+    #START: overrides
+    def mas_find_target(self):
+        """
+        This method tries to find an image by its reference. It can be a displayable or tuple.
+        If this method can't find an image and it follows the pattern of Monika's sprites, it'll try to generate one.
+        """
+        name = self.name
+
+        if isinstance(name, renpy.display.core.Displayable):
+            self.target = name
+            return True
+
+        if not isinstance(name, tuple):
+            name = tuple(name.split())
+
+        def error(msg):
+            self.target = renpy.text.text.Text(msg, color=(255, 0, 0, 255), xanchor=0, xpos=0, yanchor=0, ypos=0)
+
+            if renpy.config.debug:
+                raise Exception(msg)
+
+        args = [ ]
+
+        while name:
+            target = renpy.display.image.images.get(name, None)
+
+            if target is not None:
+                break
+
+            args.insert(0, name[-1])
+            name = name[:-1]
+
+        if not name:
+            if (
+                isinstance(self.name, tuple)
+                and len(self.name) == 2
+                and self.name[0] == "monika"
+            ):
+                #We did some sanity checks, but just in case will use a try/except block
+                try:
+                    #Reset name
+                    name = self.name
+                    #Generate
+                    generate_images(name[1])
+                    #Try to get the img again
+                    target = renpy.display.image.images[name]
+
+                #If we somehow failed, show the exception and return False
+                except:
+                    error("Image '%s' not found." % ' '.join(self.name))
+                    return False
+
+            else:
+                error("Image '%s' not found." % ' '.join(self.name))
+                return False
+
+        try:
+            a = self._args.copy(name=name, args=args)
+            self.target = target._duplicate(a)
+
+        except Exception as e:
+            if renpy.config.debug:
+                raise
+
+            error(str(e))
+
+        #Copy the old transform over.
+        new_transform = self.target._target()
+
+        if isinstance(new_transform, renpy.display.transform.Transform):
+            if self.old_transform is not None:
+                new_transform.take_state(self.old_transform)
+
+            self.old_transform = new_transform
+
+        else:
+            self.old_transform = None
+
+        return True
+
+    renpy.display.image.ImageReference.find_target = mas_find_target
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
