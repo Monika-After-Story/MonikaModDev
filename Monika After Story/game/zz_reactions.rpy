@@ -1239,8 +1239,7 @@ label mas_reaction_gift_generic:
 label mas_reaction_gift_test1:
     m "Thank you for gift test 1!"
 
-    $ gift_ev = mas_getEV("mas_reaction_gift_test1")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_test1", "category"))
     return
 
 #init 5 python:
@@ -1249,8 +1248,7 @@ label mas_reaction_gift_test1:
 label mas_reaction_gift_test2:
     m "Thank you for gift test 2!"
 
-    $ gift_ev = mas_getEV("mas_reaction_gift_test2")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_test2", "category"))
     return
 
 ## GENERIC SPRITE OBJECT JSONS
@@ -1498,8 +1496,7 @@ label mas_reaction_gift_coffee:
     #NOTE: This function already checks if we're maxed. So restocking while maxed is okay as it adds nothing
     $ coffee.restock()
 
-    $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_coffee", "category"))
     return
 
 init 5 python:
@@ -1574,8 +1571,7 @@ label mas_reaction_hotchocolate:
     #NOTE: Like coffee, this runs checks to see if we should actually stock
     $ hotchoc.restock()
 
-    $ gift_ev = mas_getEV("mas_reaction_hotchocolate")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_hotchocolate", "category"))
     return
 
 init 5 python:
@@ -1656,8 +1652,7 @@ label mas_reaction_quetzal_plush:
     else:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
 
-    $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_quetzal_plush", "category"))
     # derandom pets topic once given
     $ mas_hideEVL("monika_pets", "EVE", derandom=True)
     return
@@ -1718,8 +1713,8 @@ label mas_reaction_promisering:
             call monika_kissing_motion(hide_ui=False)
             m 6ekbfa "I love you, [player]..."
             m 6dkbfu "More than anything else in this fleeting world~"
-            $ gift_ev = mas_getEV("mas_reaction_promisering")
-            $ store.mas_filereacts.delete_file(gift_ev.category)
+
+            $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_promisering", "category"))
             return "love"
 
         else:
@@ -1755,8 +1750,7 @@ label mas_reaction_promisering:
         m 1rksdlb "[player]..."
         m 1rusdlb "You already gave me a ring!"
 
-    $ gift_ev = mas_getEV("mas_reaction_promisering")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_promisering", "category"))
     return
 
 
@@ -1773,9 +1767,9 @@ label mas_reaction_cupcake:
     m 1rksdlb "Buuut I've yet to make a kitchen to use!"
     m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
     m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
+
     $ mas_receivedGift("mas_reaction_cupcake")
-    $ gift_ev = mas_getEV("mas_reaction_cupcake")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_cupcake", "category"))
     return
 
 
@@ -1847,14 +1841,9 @@ label mas_reaction_candy:
         show monika at t11
 
     $ mas_receivedGift("mas_reaction_candy")
-    $ gift_ev = mas_getEV("mas_reaction_candy")
-
-    #Since this ev can be none, we need to make sure it exists before accessing its attributes
-    if not gift_ev:
-        return
-
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candy", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 init 5 python:
@@ -1913,15 +1902,10 @@ label mas_reaction_candycorn:
         show monika at t11
 
     $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
-    $ gift_ev = mas_getEV("mas_reaction_candycorn")
-
-    #Since this ev can be none, we need to make sure it exists before accessing its attributes
-    if not gift_ev:
-        return
-
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candycorn", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     # allow multi gifts
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 init 5 python:
@@ -1950,10 +1934,10 @@ label mas_reaction_fudge:
         m 3eksdla "...maybe later, okay?"
 
     $ mas_receivedGift("mas_reaction_fudge")
-    $ gift_ev = mas_getEV("mas_reaction_fudge")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_fudge", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     # allow multi gifts
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 
@@ -1985,15 +1969,10 @@ label mas_reaction_christmascookies:
         m 3eksdla "You can give me more after I finish these, okay?"
 
     $ mas_receivedGift("mas_reaction_christmascookies")
-    $ gift_ev = mas_getEV("mas_reaction_christmascookies")
-
-    #Since this ev can be none, we need to make sure it exists before accessing its attributes
-    if not gift_ev:
-        return
-
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_christmascookies", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     # allow multi gifts
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 init 5 python:
@@ -2021,15 +2000,10 @@ label mas_reaction_candycane:
         m 1eka "You can save them for later, alright?"
 
     $ mas_receivedGift("mas_reaction_candycane")
-    $ gift_ev = mas_getEV("mas_reaction_candycane")
-
-    #Since this ev can be none, we need to make sure it exists before accessing its attributes
-    if not gift_ev:
-        return
-
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candycane", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     #weird not to have her see the gift file that's in the characters folder.
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 #Ribbon stuffs
@@ -2379,12 +2353,11 @@ label _mas_reaction_ribbon_helper(label):
 
     # normal gift processing
     $ mas_receivedGift(label)
-    $ gift_ev = mas_getEV(label)
-    if gift_ev:
-        # for regular ribbons
-        $ store.mas_filereacts.delete_file(gift_ev.category)
-        #we have dlg for repeating ribbons, may as well have it used
-        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ gift_ev_cat = mas_getEVLPropValue(label, "category")
+    # for regular ribbons
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
+    #we have dlg for repeating ribbons, may as well have it used
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
 
     return
 
@@ -2452,7 +2425,7 @@ default persistent._date_last_given_roses = None
 
 label mas_reaction_gift_roses:
     python:
-        gift_ev = mas_getEV("mas_reaction_gift_roses")
+        gift_ev_cat = mas_getEVLPropValue("mas_reaction_gift_roses", "category")
 
         monika_chr.wear_acs(mas_acs_roses)
 
@@ -2518,12 +2491,12 @@ label mas_reaction_gift_roses:
                 m 1ekbsa "A single rose from you is already more than I could have ever asked for."
 
     # Pop from reacted map
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     $ persistent._date_last_given_roses = datetime.date.today()
 
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_roses")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     return
 
 
@@ -2533,7 +2506,7 @@ init 5 python:
 default persistent._given_chocolates_before = False
 
 label mas_reaction_gift_chocolates:
-    $ gift_ev = mas_getEV("mas_reaction_gift_chocolates")
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_gift_chocolates", "category")
 
     if not persistent._mas_given_chocolates_before:
         $ persistent._mas_given_chocolates_before = True
@@ -2624,10 +2597,10 @@ label mas_reaction_gift_chocolates:
         call mas_remove_choc
 
     #pop from reacted map
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_chocolates")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
     return
 
 label mas_remove_choc:
@@ -2671,18 +2644,18 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
 
     m 2ekbfa "Well...{w=0.5} What do you think?"
     m 2hubfa "Do I look like a mermaid? Ehehe."
-    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "I think it's really cute, [player]..."
     m 5hubfa "We'll have to go to the beach sometime!"
 
     if mas_isWinter() or mas_isMoniNormal(lower=True):
         if mas_isWinter():
-            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rksdla "...But for now, it's a little chilly in here..."
             m 2eka "So I'm going to go put on something a little warmer..."
 
         elif mas_isMoniNormal(lower=True):
-            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2hksdlb "Ahaha..."
             m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
             m 2eka "I hope you don't mind, but I'm going to go change..."

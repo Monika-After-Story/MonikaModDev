@@ -718,6 +718,20 @@ image monika 1eubsa:
         0.06
         repeat
 
+image monika 1eubsu:
+    block:
+        "monika 1eubsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsu_static"
+        0.06
+        repeat
+
 image monika 1euc:
     block:
         "monika 1euc_static"
@@ -771,6 +785,20 @@ image monika 1fkbsu:
             choice:
                 7
         "monika 1dkbsu_static"
+        0.06
+        repeat
+
+image monika 1fubsa:
+    block:
+        "monika 1fubsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsa_static"
         0.06
         repeat
 
@@ -1567,6 +1595,20 @@ image monika 1rtc:
             choice:
                 7
         "monika 1dtc_static"
+        0.06
+        repeat
+
+image monika 1rub:
+    block:
+        "monika 1rub_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dub_static"
         0.06
         repeat
 
@@ -3068,6 +3110,20 @@ image monika 2ektpd:
         0.06
         repeat
 
+image monika 2ektpu:
+    block:
+        "monika 2ektpu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dktpu_static"
+        0.06
+        repeat
+
 image monika 2ektsc:
     block:
         "monika 2ektsc_static"
@@ -4185,6 +4241,20 @@ image monika 2rubfu:
             choice:
                 7
         "monika 2dubfu_static"
+        0.06
+        repeat
+
+image monika 2rud:
+    block:
+        "monika 2rud_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dud_static"
         0.06
         repeat
 
@@ -6280,6 +6350,20 @@ image monika 3rtc:
         0.06
         repeat
 
+image monika 3rua:
+    block:
+        "monika 3rua_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dua_static"
+        0.06
+        repeat
+
 image monika 3rubfb:
     block:
         "monika 3rubfb_static"
@@ -6893,90 +6977,6 @@ image monika 3wkd:
             choice:
                 7
         "monika 3dkd_static"
-        0.06
-        repeat
-
-image monika 3wub:
-    block:
-        "monika 3wub_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dub_static"
-        0.06
-        repeat
-
-image monika 3wubfb:
-    block:
-        "monika 3wubfb_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubfb_static"
-        0.06
-        repeat
-
-image monika 3wubfsdld:
-    block:
-        "monika 3wubfsdld_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubfsdld_static"
-        0.06
-        repeat
-
-image monika 3wubfsdlo:
-    block:
-        "monika 3wubfsdlo_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubfsdlo_static"
-        0.06
-        repeat
-
-image monika 3wubso:
-    block:
-        "monika 3wubso_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubso_static"
-        0.06
-        repeat
-
-image monika 3wubsw:
-    block:
-        "monika 3wubsw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 3dubsw_static"
         0.06
         repeat
 
