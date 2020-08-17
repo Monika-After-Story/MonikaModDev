@@ -20,7 +20,7 @@ label dev_exp_previewer:
 
     $ HKBHideButtons()
     $ prev_flt = store.mas_sprites.get_filter()
-    $ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
+    #$ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
     $ prev_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
     $ prev_moni_state = monika_chr.save_state(True, True, True)
@@ -721,7 +721,7 @@ init 999 python:
                 "nose": 0,
                 "sweat": 0,
                 "tears": 0,
-                "time": 0,
+                "time": 0 if store.mas_current_background.isFltDay() else 1,
                 "torso": 0
             }
 
