@@ -1538,17 +1538,17 @@ label mas_song_we_have_all_the_time_in_the_world_long:
 
     m 1dud "{i}{cps=12}~Every step {w=1.25}of the way~{/cps}{/i}"
     m 1duo "{i}{cps=12}~Will find us~{/cps}{/i}"
-    m 3eua "{i}{cps=16}~With the cares {w=1.8}of the world~{/cps}{/i}"
+    m 3eua "{i}{cps=12}~With the cares {w=1.8}of the world~{/cps}{/i}"
     m 1duo "{i}{cps=12}~Far behind us~{/cps}{/i}"
 
     m 1dud "{i}{cps=12}~We have all {w=1.8}the time {w=1.8}in the world~{/cps}{/i}"
-    m 1dua "{i}{cps=12}~Just for love~{/cps}{/i}"
+    m 1dubsa "{i}{cps=12}~Just for love~{/cps}{/i}"
     m 3eubsb "{i}{cps=16}~Nothing more, {w=1.5}nothing less~{/cps}{/i}"
     m 1ekbsa "{i}{cps=12}~Only love~{/cps}{/i}"
 
     m 1dud "{i}{cps=12}~Every step {w=1.5}of the way~{/cps}{/i}"
-    m 1dua "{i}{cps=12}~Will find us~{/cps}{/i}"
-    m 1dud "{i}{cps=16}~With the cares {w=1.8}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=12}~Will find us~{/cps}{/i}"
+    m 1dua "{i}{cps=12}~With the cares {w=1.8}of the world~{/cps}{/i}"
     m 1duo "{i}{cps=12}~Far behind us~{/cps}{/i}"
 
     m 1eub "{i}{cps=12}~We have all {w=2}the time {w=2}in the world~{/cps}{/i}"
