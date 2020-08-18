@@ -15661,7 +15661,7 @@ label monika_eating_meat:
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
-    m 3rksdla "I don't hate the taste of meat, but I don't think I'd want it to be a major part of my meal, either"
+    m 3rksdla "I don't hate the taste of meat, but I don't think I'd want it to be a major part of my meal, either."
     m 1eka "...But if you prepared something with meat, I could try a little bit as a side dish... {w=0.3}{nw}"
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
