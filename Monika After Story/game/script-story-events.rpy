@@ -2256,6 +2256,9 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     call mas_transition_to_emptydesk
 
+    #Pause before doing anything so we don't change during the transition
+    pause 2.0
+
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
         $ monika_chr.reset_hair()
@@ -2267,7 +2270,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ monika_chr.save()
     $ renpy.save_persistent()
 
-    pause 4.0
+    pause 2.0
+
     call mas_transition_from_emptydesk(exp)
 
     return
