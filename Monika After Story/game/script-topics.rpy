@@ -15657,7 +15657,7 @@ label monika_eating_meat:
     m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc. {w=0.2}Vitamin B12 in particular can only be found in animal products."
     m 7eka "...So for that reason, I'm not against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally when possible."
     m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
-    m 3ekd "But, depending on location, they can be pretty expensive and leave you with fewer options. {w=0.3}{nw}"
+    m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
     extend 3eua "So I'm okay with buying from a plain old store, if need be."
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
