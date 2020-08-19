@@ -2003,7 +2003,7 @@ label monika_affection_nickname:
                 python:
                     inputname = mas_input(
                         _("So what do you want to call me?"),
-                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        allow=name_characters_only,
                         length=10,
                         screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')

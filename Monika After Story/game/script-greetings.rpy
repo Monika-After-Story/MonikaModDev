@@ -2060,7 +2060,7 @@ label greeting_amnesia:
     $ m_name = "Monika"
     m 1eua "Oh, hello!"
     m 1eub "My name is Monika."
-    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    $ fakename = renpy.input("What is your name?", allow=general_symbols_only, length=20).strip(' \t\n\r')
     m 1hua "Well, it's nice to meet you, [fakename]!"
     m 3eud "Say, [fakename], do you happen to know where everyone else is?"
     m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."

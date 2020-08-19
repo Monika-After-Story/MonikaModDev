@@ -506,6 +506,7 @@ label mas_player_name_enter_name_loop(input_prompt):
     while not done:
         $ tempname = mas_input(
             "[input_prompt]",
+            allow=name_characters_only,
             length=20,
             screen_kwargs={"use_return_button": True}
         ).strip(' \t\n\r')
@@ -1726,7 +1727,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_steam_install_detected",
             conditional=(
-                "persistent.steam"
+                "store.is_steam"
             ),
             action=EV_ACT_QUEUE
         )

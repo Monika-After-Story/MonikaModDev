@@ -1,9 +1,8 @@
 define persistent.demo = False
-define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
 
-init 1 python:
-    persistent.steam = "steamapps" in config.basedir.lower()
+define is_steam = "steamapps" in config.basedir.lower()
+# define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
     import singleton
@@ -7273,16 +7272,7 @@ default persistent._mas_sensitive_mode = False
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 
-init python:
-    startup_check = False
-    try:
-        persistent.ever_won['hangman']
-    except:
-        persistent.ever_won['hangman']=False
-    try:
-        persistent.ever_won['piano']
-    except:
-        persistent.ever_won['piano']=False
+define startup_check = False
 
 default his = "his"
 default he = "he"
@@ -7295,6 +7285,10 @@ default guy = "guy"
 default him = "him"
 default himself = "himself"
 
+# Input characters filters
+define lower_letters_only = " abcdefghijklmnopqrstuvwxyz"
+define letters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define name_characters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'"
 
 #Default is NORMAL
 default persistent._mas_randchat_freq = mas_randchat.NORMAL

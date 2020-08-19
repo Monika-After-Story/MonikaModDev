@@ -8,9 +8,6 @@ define mas_rev_unseen = []
 define mas_rev_seen = []
 define mas_rev_mostseen = []
 define testitem = 0
-define numbers_only = "0123456789"
-define lower_letters_only = "qwertyuiopasdfghjklzxcvbnm "
-define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
 define mas_sensitive_limit = 3
 
@@ -7380,6 +7377,7 @@ label monika_orchestra:
             while not instrumentname:
                 $ instrumentname = mas_input(
                     "What instrument do you play?",
+                    allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
                     length=15,
                     screen_kwargs={"use_return_button": True}
                 ).strip(' \t\n\r')

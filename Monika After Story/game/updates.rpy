@@ -410,6 +410,20 @@ label v0_11_4(version="v0_11_4"):
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.is_steam"
+
     return
 
 #0.11.3
