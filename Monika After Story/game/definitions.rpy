@@ -7286,6 +7286,7 @@ default him = "him"
 default himself = "himself"
 
 # Input characters filters
+define numbers_only = "0123456789"
 define lower_letters_only = " abcdefghijklmnopqrstuvwxyz"
 define letters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define name_characters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'"
