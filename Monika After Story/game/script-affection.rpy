@@ -2121,7 +2121,7 @@ label mas_affection_playernickname:
         ]
 
     m 1euc "Hey [player]?"
-    m 1eka "Since you can call me by a nickname now, I thought it'd be nice if I could call you by nickname."
+    m 1eka "Since you can call me by a nickname now, I thought it'd be nice if I could call you by one."
 
     m 1etc "Is that alright with you?{nw}"
     $ _history_list.pop()
