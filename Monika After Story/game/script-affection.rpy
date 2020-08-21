@@ -2236,11 +2236,13 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
                     $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
                     m 1rksdlb "[awkward_quip]"
                     m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+                    jump .name_enter_skip_loop
 
                 elif mas_bad_name_comp.search(lowername):
                     $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
                     m 1ekd "[bad_quip]"
                     m 3eka "Please pick a nicer name for yourself, okay?"
+                    jump .name_enter_skip_loop
 
                 elif lowername in acceptable_nicknames:
                     m 3rksdla "You already told me I can call you that, [player]..."
