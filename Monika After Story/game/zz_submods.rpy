@@ -88,8 +88,7 @@ init -991 python in mas_submod_utils:
             """
             #First make sure this name us unique
             if name in submod_map:
-                store.mas_utils.writelog("[SUBMOD ERROR]: A submod with name '{0}' already exists. Ignoring.\n".format(name))
-                return
+                raise SubmodError("A submod with name '{0}' has been installed twice. Please uninstall the duplicate.".format(name))
 
             #Now we verify that the version number is something proper
             try:
