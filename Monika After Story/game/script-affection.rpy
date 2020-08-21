@@ -2183,7 +2183,9 @@ label monika_change_player_nicknames:
 
 label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     show monika 1eua at t21
-    $ renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
+    python:
+        renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
+        nickname_pool.sort()
     call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     python:
