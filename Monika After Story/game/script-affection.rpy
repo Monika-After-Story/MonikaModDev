@@ -2121,7 +2121,7 @@ label mas_affection_playernickname:
         ]
 
     m 1euc "Hey [player]?"
-    m 1eka "Since you can call me by a nickname now, I was wondering if I could call you by a nickname."
+    m 1eka "Since you can call me by a nickname now, I thought it'd be nice if I could call you by nickname."
 
     m 1etc "Is that alright with you?{nw}"
     $ _history_list.pop()
@@ -2131,7 +2131,7 @@ label mas_affection_playernickname:
         "Sure, [m_name].":
             m 1hua "Great!"
             m 3eud "I should ask though, what names are you comfortable with?"
-            call mas_player_nickname_loop("Diselect the names you're not comfortable with me calling you", base_nicknames)
+            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you", base_nicknames)
 
         "No.":
             m 1eka "Alright, [player]."
@@ -2150,7 +2150,7 @@ init 5 python:
             category=['you'],
             pool=True,
             unlocked=False,
-            rules={"no_unlock": None},
+            rules={"no unlock": None},
             aff_range=(mas_aff.AFFECTIONATE,None)
         )
     )

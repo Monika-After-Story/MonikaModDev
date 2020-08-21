@@ -5893,8 +5893,10 @@ init 21 python:
 
         IN:
             capitalize - Whether or not we should capitalize the first character
+                (Default: False)
+
             exclude_names - List of names to be excluded in the selection pool for nicknames
-                (Default: None)
+                (Default: Empty list)
 
             _default - Default name to return if affection < affectionate or no nicknames have been set/allowed
                 If None, the player's name is assumed

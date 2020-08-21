@@ -4145,7 +4145,7 @@ label monika_girlfriend:
         m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
         m 3eka "I know you wouldn't cheat on me."
         m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
-        m 1hua "I won't let someone else steal my loving [mas_get_player_nickname(exclude_names=['my love', 'love', player], _default='sweetheart'])]!"
+        m 1hua "I won't let someone else steal my loving [mas_get_player_nickname(exclude_names=['my love', 'love', player], _default='sweetheart']).replace('my ', '')]!"
     return
 
 init 5 python:
@@ -4700,7 +4700,7 @@ label monika_spiders:
     m 1eua "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
     m 3ekc "[player], if you happen to get a really bad spider bite, with venom and all that..."
     m "You should really get medical attention as soon as possible."
-    m 1eka "I don't want my [mas_get_player_nickname(exclude_names=['my love', player], _default='sweetheart')] to get seriously injured by a small spider bite~"
+    m 1eka "I don't want my [mas_get_player_nickname(_default='sweetheart').replace('my ', '')] to get seriously injured by a small spider bite~"
     m "So be sure to check what spiders in your area are dangerous, okay?"
     return
 
@@ -4841,7 +4841,7 @@ label monika_real:
     m 1eua "Or maybe you'll be the one to make that technology come true...{w=0.5}who knows?"
     m 1eka "In the end, all I want is to always be with you, [mas_get_player_nickname()]."
     m 3eka "After all, you're the only reason why I'm still here."
-    m 1hubfb "I only want to spend eternity with my [mas_get_player_nickname(exclude_names=['my love', player], _default='sweetheart')], and no one else!"
+    m 1hubfb "I only want to spend eternity with my [mas_get_player_nickname(exclude_names=['my love', player], _default='sweetheart').replace('my ', '')], and no one else!"
     return
 
 init 5 python:
@@ -6595,7 +6595,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fahrenheit451",category=['literature'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
-    m 1euc "[mas_get_player_nickname(True)], have you ever heard of Ray Bradbury?"
+    m 1euc "[mas_get_player_nickname(capitalize=True)], have you ever heard of Ray Bradbury?"
     m 3euc "He wrote a book called {i}Fahrenheit 451{/i}."
     m 3eud "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 2ekc "I can't imagine a world where knowledge is forbidden and destroyed."
@@ -8069,7 +8069,7 @@ label monika_system_charging:
 #    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
-    m 1euc "[mas_get_player_nickname(True)], do you get good sleep?"
+    m 1euc "[mas_get_player_nickname(capitalize=True)], do you get good sleep?"
     m 1ekc "It can be really hard to get enough sleep nowadays."
     m 1eka "Especially in high school, when you're forced to wake up so early every day..."
     m 1eua "I'm sure college is a little bit better, since you probably have a more flexible schedule."
@@ -9968,7 +9968,7 @@ label monika_dating:
 
             m 1wubsw "What? I-I'm your first?"
             m 1tsbsb "Oh...{w=0.3} I see."
-            m 1tfu "You're just saying that to make me feel extra special, aren't you [mas_get_player_nickname()]?"
+            m 1tfu "You're just saying that to make me feel extra special, aren't you [player]?"
             m 1tku "There's no way someone like you has never dated before..."
             m 3hubsb "You're the definition of cute and sweet!"
             m 3ekbfa "Well...{w=0.3} If you're not just messing with me and actually telling me the truth then...{w=0.3}{nw}"
@@ -12731,7 +12731,7 @@ label monika_whydoyouloveme:
     elif mas_isMoniEnamored(higher=True):
         if renpy.random.randint(1,10) > 1:
             m 1eksdla "Why do I love you?"
-            m 1dka "[mas_get_player_nickname(True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
+            m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
             if store.mas_anni.anniCount() >= 1:
                 m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."

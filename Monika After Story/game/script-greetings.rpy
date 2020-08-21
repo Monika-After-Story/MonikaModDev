@@ -2913,7 +2913,7 @@ label greeting_back_from_school:
 
                 if mas_isMoniAff(higher=True):
                     m 1rfc "It {i}better{/i} not be..."
-                    m 1rfd "Bothering my [mas_get_player_nickname(exclude_names=['my love', player], _default='sweetheart')] like that again."
+                    m 1rfd "Bothering my [mas_get_player_nickname(_default='sweetheart').replace('my ', '')] like that again."
 
                 m 2ekc "I wish I could do more to help you, [player]..."
                 m 2eka "But I'm here if you need me."
