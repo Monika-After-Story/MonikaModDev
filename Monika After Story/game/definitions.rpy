@@ -7264,6 +7264,8 @@ define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
 
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define skip_setting_weather = False# in case of crashes/reloads, predefine it here
+
 define mas_monika_twitter_handle = "lilmonix3"
 
 # sensitive mode enabler
@@ -7274,16 +7276,16 @@ default persistent._mas_ddlc_reload_count = 0
 
 define startup_check = False
 
-default his = "his"
-default he = "he"
-default hes = "he's"
-default heis = "he is"
-default bf = "boyfriend"
-default man = "man"
-default boy = "boy"
-default guy = "guy"
-default him = "him"
-default himself = "himself"
+define his = "his"
+define he = "he"
+define hes = "he's"
+define heis = "he is"
+define bf = "boyfriend"
+define man = "man"
+define boy = "boy"
+define guy = "guy"
+define him = "him"
+define himself = "himself"
 
 # Input characters filters
 define numbers_only = "0123456789"
