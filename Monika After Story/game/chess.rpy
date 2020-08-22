@@ -1628,11 +1628,17 @@ label mas_chess_save_migration:
                 $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
-                    m 1m "So I've been thinking, [player]..."
+                    # TODO: i am removing expressions on these lines, 
+                    # so travis will pass, assuming that the chess PR will be
+                    # in prior to launch.
+                    # reagrdless, even if the chess PR doest make it, this is
+                    # an incredibly rare case that its fine to not have
+                    # expressions
+                    m "So I've been thinking, [player]..."
                     m "Most people who leave in the middle of a chess game don't come back to start a new one."
-                    m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
-                    m 1p "And since we have [game_count] games in progress..."
-                    m 1g "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
+                    m "It makes no sense for me to keep track of more than one unfinished game between us."
+                    m "And since we have [game_count] games in progress..."
+                    m "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
                     $ pick_text = _("Pick a game you'd like to keep.")
             show monika 1e at t21
             $ renpy.say(m, pick_text, interact=False)
