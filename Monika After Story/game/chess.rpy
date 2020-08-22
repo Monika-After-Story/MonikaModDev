@@ -1640,7 +1640,7 @@ label mas_chess_save_migration:
                     m "And since we have [game_count] games in progress..."
                     m "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
                     $ pick_text = _("Pick a game you'd like to keep.")
-            show monika 1e at t21
+            show monika 1eua at t21 # TODO: also this line was just set to 1eua
             $ renpy.say(m, pick_text, interact=False)
 
             call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
