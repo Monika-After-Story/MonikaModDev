@@ -2846,7 +2846,7 @@ init python:
                 else:
                     new_pgn.headers["Result"] = "1-0"
 
-            elif quit_reason == 1:
+            elif quit_reason == 2:
                 new_pgn.headers["Result"] = "1/2-1/2"
                 #And a special header to indicate this was a requested draw
                 new_pgn.headers["DRAW REQUESTED"] = True
