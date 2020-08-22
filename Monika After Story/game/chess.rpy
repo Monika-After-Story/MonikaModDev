@@ -610,7 +610,7 @@ label game_chess:
 
     #Stalemate
     elif game_result == "1/2-1/2":
-        if new_pgn_game.headers.get("DRAW REQUESTED"):
+        if new_pgn_game.headers.get("DrawRequested"):
             m 1eua "Sure, we'll call this game a draw."
             m 3wuo "That was a pretty long game!"
             $ line_start = "Great job though"
@@ -2798,7 +2798,7 @@ init python:
                 self._button_save.disable()
                 self._button_undo.disable()
 
-            if self.is_game_over is not None:
+            if self.is_game_over:
                 self._button_done.enable()
 
         def _quitPGN(self, quit_reason=0):
@@ -2828,15 +2828,15 @@ init python:
             if quit_reason == 1:
                 #Player is playing white
                 if self.is_player_white:
-                    new_pgn.headers["Result"] = "0-1"
+                    new_pgn.headers["Result"] = MASChessDisplayableBase.STATE_BLACK_WIN
                 #Player is playing black
                 else:
-                    new_pgn.headers["Result"] = "1-0"
+                    new_pgn.headers["Result"] = MASChessDisplayableBase.STATE_WHITE_WIN
 
             elif quit_reason == 2:
                 new_pgn.headers["Result"] = "1/2-1/2"
                 #And a special header to indicate this was a requested draw
-                new_pgn.headers["DRAW REQUESTED"] = True
+                new_pgn.headers["DrawRequested"] = True
 
             # monika's ingame name will be her twitter handle
             #Player plays white
