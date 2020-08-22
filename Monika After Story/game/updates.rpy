@@ -411,6 +411,9 @@ label v0_11_4(version="v0_11_4"):
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
 
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
         # In case someone updates from a really oudated version
         for _key in ("hangman", "piano"):
             if _key not in persistent.ever_won:
