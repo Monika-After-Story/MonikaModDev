@@ -631,7 +631,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_changename",
             category=['you'],
-            prompt="Can you call me by a different name?",
+            prompt="I changed my name",
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
