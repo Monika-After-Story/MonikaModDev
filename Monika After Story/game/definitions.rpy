@@ -180,11 +180,12 @@ python early:
 
     renpy.exports.with_statement = mas_with_statement
 
-    #START: overrides
     def mas_find_target(self):
         """
         This method tries to find an image by its reference. It can be a displayable or tuple.
         If this method can't find an image and it follows the pattern of Monika's sprites, it'll try to generate one.
+
+        Main change to this function is the ability to auto generate displayables
         """
         name = self.name
 
@@ -212,12 +213,15 @@ python early:
             args.insert(0, name[-1])
             name = name[:-1]
 
+        #Main difference:
+        #Check if the sprite exists at all
         if not name:
             if (
                 isinstance(self.name, tuple)
                 and len(self.name) == 2
                 and self.name[0] == "monika"
             ):
+                #If this is a Monika sprite and it doesn't exist, we should try to generate it
                 #We did some sanity checks, but just in case will use a try/except block
                 try:
                     #Reset name
