@@ -2819,13 +2819,22 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #         (x, y, width, height)
 #     scroll_align - alignment of the scroll bar for the menu
 #     return_button_prompt - prompt for the return button (is only used when the user's selected a button)
-#         (Default: 'Done')
+#         (Default: 'Done.')
+#     default_button_prompt - prmpt for the return button provided no buttons are selected
+#         (Default: 'Nevermind.')
 #     return_all - whether or not we return all items or only the items with True in their values
 #         (Default: False)
 #
 # OUT:
 #     dict of buttons keys and new values
-screen mas_check_scrollable_menu(items, display_area, scroll_align, return_button_prompt="Done.", return_all=False):
+screen mas_check_scrollable_menu(
+    items,
+    display_area,
+    scroll_align,
+    return_button_prompt="Done.",
+    default_button_prompt="Nevermind.",
+    return_all=False
+):
     default buttons_data = {
         _tuple[1]: {
             "return_value": _tuple[3] if _tuple[2] else _tuple[4],
@@ -2863,7 +2872,7 @@ screen mas_check_scrollable_menu(items, display_area, scroll_align, return_butto
 
             null height 20
 
-            textbutton store.mas_ui.check_scr_menu_choose_prompt(buttons_data, return_button_prompt):
+            textbutton store.mas_ui.check_scr_menu_choose_prompt(buttons_data, return_button_prompt, default_button_prompt):
                 xsize display_area[2]
                 action Function(
                     store.mas_ui.check_scr_menu_return_values,

@@ -340,7 +340,7 @@ init -10 python in mas_ui:
         """
         return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
 
-    def check_scr_menu_choose_prompt(buttons_data, selected_prompt):
+    def check_scr_menu_choose_prompt(buttons_data, selected_prompt, default_prompt):
         """
         A method to choose a prompt for the return button.
         "Nevermind." by default,
@@ -349,6 +349,7 @@ init -10 python in mas_ui:
         IN:
             buttons_data - the screen buttons data
             selected_prompt - the prompt for the return button
+            default_prompt - the prompt to use when no items are selected
 
         OUT:
             string with prompt
@@ -356,4 +357,4 @@ init -10 python in mas_ui:
         for data in buttons_data.itervalues():
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
-        return "Nevermind."
+        return default_prompt

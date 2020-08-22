@@ -2131,7 +2131,7 @@ label mas_affection_playernickname:
         "Sure, [m_name].":
             m 1hua "Great!"
             m 3eud "I should ask though, what names are you comfortable with?"
-            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you", base_nicknames)
+            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you.", base_nicknames)
 
         "No.":
             m 1eka "Alright, [player]."
@@ -2186,7 +2186,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     python:
         renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
         nickname_pool.sort()
-    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, default_button_prompt="Done.")
 
     python:
         done = False
