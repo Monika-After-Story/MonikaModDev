@@ -2130,6 +2130,15 @@ init python:
                 if ret_value is not None:
                     return ret_value
 
+            elif config.developer and ev.type == pygame.KEYDOWN:
+                # debug keys for dev testing
+                if ev.key == pygame.K_d:
+                    # toggle draw button state
+                    if self._button_draw.disabled:
+                        self._button_draw.enable()
+                    else:
+                        self._button_draw.disable()
+
             #Board events however respect the displayable state
             if self.sensitive:
                 # Mousebutton down == possibly select the piece to move
