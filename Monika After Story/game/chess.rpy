@@ -2489,6 +2489,10 @@ init python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
+            # if player is Black, this button is enabled until Monika's first
+            # move. Not sure why, but defaulting buttons to disable at first
+            # is fine.
+            self._button_draw.disable()
 
             self._button_done = MASButtonDisplayable.create_stb(
                 _("Done"),
@@ -2787,7 +2791,6 @@ init python:
                     else:
                         self._button_undo.disable()
 
-                #This is considered the first move
                 else:
                     self._button_giveup.disable()
                     self._button_save.disable()
