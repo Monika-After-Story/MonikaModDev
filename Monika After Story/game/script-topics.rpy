@@ -10060,13 +10060,21 @@ label monika_familygathering:
 default persistent._mas_pm_eat_fast_food = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_fastfood",
+            category=['life','monika'],
+            prompt="Do you like fast food?",
+            pool=True
+        )
+    )
 
 label monika_fastfood:
     m 1euc "Hm? Do I like fast food?"
-    m 1ekc "Honestly, the thought of it slightly disgusts me."
-    m 3ekc "Most places that serve it put a lot of unhealthy things in their food."
-    m 1lsc "Even the vegetarian options can be awful."
+    m 1rsc "Honestly, the thought of it slightly disgusts me."
+    m 3eud "Most places that serve it put a lot of unhealthy things in their food...{w=0.3} {nw}"
+    extend 1dsc "Even the vegetarian options can be awful."
 
     m 3ekd "[player], do you eat fast food often?{nw}"
     $ _history_list.pop()
@@ -10075,35 +10083,35 @@ label monika_fastfood:
 
         "Yes, I do.":
             $ persistent._mas_pm_eat_fast_food = True
-            m 3eua "I guess it's okay to have it every once in a while."
-            m 2ekc "Yet I can't help but worry if you're eating such awful things."
-            m 1eka "If I were there, I'd cook much healthier things for you."
-            m 4rksdla "Even though I can't cook very well yet..."
-            m 4hksdlb "Well, love is always the secret ingredient to any good food!"
-            m 1eua "So [player], would you do something for me?"
-            m 3eka "Could you please try to eat better?"
+            m 3eka "I guess it's okay to have it every once in a while."
+            m 1ekc "...But I can't help but worry if you're eating such awful things so often."
+            m 3eua "If I were there, I'd cook much healthier things for you."
+            m 3rksdla "Even though I can't cook very well yet..."
+            m 1hksdlb "Well, love is always the secret ingredient to any good food, ahaha!"
+            m 1eka "Until I can do that though, could you try to eat better,{w=0.2} for me?"
             m 1ekc "I would hate it if you became sick because of your lifestyle."
             m 1eka "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
-            m 1eua "But maybe you could see cooking as an opportunity to have fun?"
-            m 3eub "Or perhaps a skill for you to become really good at?"
+            m 3eua "But maybe you could see cooking as an opportunity to have fun?"
+            m 3eub "...Or perhaps a skill for you to become really good at!"
             m 1hua "Knowing how to cook is always a good thing, you know!"
-            m 1eua "Plus, I would really love to try your dishes someday."
-            m "You could serve me some of your own dishes when we go on our first date."
-            m 1ekbfa "That would be really romantic~"
-            m 1eub "And that way, we can both enjoy ourselves and you would be eating better."
-            m 1hua "That's what I call a win-win!"
-            m 3eud "Just don't forget, [player]."
+            m 1eua "Plus, I would really love to try something you made someday."
+            m 3hubsb "You could even serve me some of your own dishes when we go on our first date~"
+            m 1ekbla "That would be really romantic. [player]~"
+            m 1eua "And that way, we can both enjoy ourselves and you would be eating better."
+            m 3hub "That's what I call a win-win!"
+            m 3eua "Just don't forget, [player]."
             m 3hksdlb "I'm a vegetarian! Ahaha!"
 
         "No, I don't.":
             $ persistent._mas_pm_eat_fast_food = False
-            m 1hua "Oh, that's a relief."
-            m 1eka "Sometimes you really worry me, [player]."
-            m 1eua "I suppose instead of eating out, you make your own food?"
-            m "Fast food can be really expensive over time, so doing it yourself is usually a cheaper alternative."
+            m 1eua "Oh, that's a relief."
+            m 3rksdla "Sometimes you really worry me, [player]."
+            m 1etc "I suppose instead of eating out, you make your own food?"
+            m 1eud "Fast food can be really expensive over time, so preparing your own food is usually a cheaper alternative."
             m 1hua "It also tastes a lot better!"
-            m 3eka "I know some people can find cooking overwhelming..."
-            m 3ekc "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
+            m 3eka "I know some people can find cooking overwhelming."
+            m 3eud "...Having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal..."
+            m 1rksdlc "It can get to be a little too much for some..."
             m 1eka "But I think the results are worth the effort."
             m 3eua "Are you any good at cooking, [player]?"
             m 1hua "It doesn't matter if you're not. I'd eat anything you prepared for me!"
