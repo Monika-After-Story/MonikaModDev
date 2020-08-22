@@ -1385,7 +1385,7 @@ screen mas_chess_promote:
             yalign .5
             spacing 30
 
-            label _("Promote to:"):
+            label _("Promote to"): # only use : if the choices are to the right of the label
                 style "confirm_prompt"
                 text_color mas_globals.button_text_idle_color
                 xalign 0.5
@@ -2870,6 +2870,6 @@ init python:
                         and self.is_player_white #Player is white, so monika is black
                     )
                 ),
-                giveup,
+                quit_reason == 1, # player surrendered
                 self.board.fullmove_number
             )
