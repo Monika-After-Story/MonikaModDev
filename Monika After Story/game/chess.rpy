@@ -1653,7 +1653,6 @@ init python:
 
             self.selected_piece = None
             self.possible_moves = set([])
-            self.winner = None
             self.is_game_over = False
 
             #If this's true, we interrupt the game loop and hide the displayable
@@ -1771,13 +1770,6 @@ init python:
             """
             self.sensitive = not self.sensitive
             return self.sensitive
-
-        def check_winner(self, current_move):
-            if self.board.is_game_over():
-                if self.board.result() == '1/2-1/2':
-                    self.winner = None
-                else:
-                    self.winner = current_move
 
         def queue_move(self, move_str):
             """
