@@ -610,10 +610,17 @@ label game_chess:
 
     #Stalemate
     elif game_result == "1/2-1/2":
-        m 1eka "Aw, looks like we have a stalemate."
+        if new_pgn_game.headers.get("DRAW REQUESTED"):
+            m 1eua "Sure, we'll call this game a draw."
+            m 3wuo "That was a pretty long game!"
+            $ line_start = "Great job though"
+
+        else:
+            m 1eka "Aw, looks like we have a stalemate."
+            $ line_start = "But on the bright side"
 
         if not persistent.ever_won.get("chess"):
-            m 3hub "But on the bright side, you're getting closer and closer to beating me, [player]~"
+            m 3hub "[line_start], you're getting closer and closer to beating me, [player]~"
 
         else:
             m 1hua "Nice work on getting this far, [player]~"
@@ -1513,6 +1520,7 @@ init python:
         #Button Positions
         DRAWN_BUTTON_Y_TOP = BOARD_Y_POS
         DRAWN_BUTTON_Y_MID = DRAWN_BUTTON_Y_TOP + BUTTON_HEIGHT + BUTTON_Y_SPACING
+        DRAWN_BUTTON_Y_MID_LOW = DRAWN_BUTTON_Y_MID + BUTTON_HEIGHT + BUTTON_Y_SPACING
         DRAWN_BUTTON_Y_BOT = BOARD_Y_POS + BOARD_HEIGHT - BUTTON_HEIGHT
 
         #Win states
@@ -2479,6 +2487,17 @@ init python:
                 activate_sound=gui.activate_sound
             )
 
+            self._button_draw = MASButtonDisplayable.create_stb(
+                _("Call Draw"),
+                True,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                MASChessDisplayableBase.DRAWN_BUTTON_Y_MID_LOW,
+                MASChessDisplayableBase.BUTTON_WIDTH,
+                MASChessDisplayableBase.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
             self._button_done = MASButtonDisplayable.create_stb(
                 _("Done"),
                 False,
@@ -2528,13 +2547,15 @@ init python:
                 self._visible_buttons = [
                     self._button_save,
                     self._button_undo,
-                    self._button_giveup
+                    self._button_giveup,
+                    self._button_draw
                 ]
 
             else:
                 self._visible_buttons = [
                     self._button_save,
-                    self._button_giveup
+                    self._button_giveup,
+                    self._button_draw
                 ]
 
             self._visible_buttons_winner = [
@@ -2637,16 +2658,21 @@ init python:
             # inital check for winner
             if self.is_game_over:
                 if self._button_done.event(ev, x, y, st):
-                    # user clicks Done
+                    #User clicks Done
                     self.quit_game = True
-                    return self._quitPGN(False)
+                    return self._quitPGN()
 
             # inital check for buttons
             elif self.is_player_turn():
                 if self._button_save.event(ev, x, y, st):
-                    # user wants to save this game
+                    #Iser wants to save this game
                     self.quit_game = True
-                    return self._quitPGN(False)
+                    return self._quitPGN()
+
+                elif self._button_draw.event(ev, x, y, st):
+                    #User wants to request a draw
+                    self.quit_game = True
+                    return self._quitPGN(2)
 
                 elif self._button_undo.event(ev, x, y, st):
                     #user wants to undo the last move
@@ -2680,9 +2706,9 @@ init python:
                 elif self._button_giveup.event(ev, x, y, st):
                     renpy.call_in_new_context("mas_chess_confirm_context")
                     if mas_chess.quit_game:
-                        #user wishes to surrender
+                        #User wishes to surrender
                         self.quit_game = True
-                        return self._quitPGN(True)
+                        return self._quitPGN(1)
 
         def handle_player_move(self):
             """
@@ -2753,6 +2779,12 @@ init python:
             if not self.is_game_over and self.is_player_white == self.current_turn:
                 should_enable_undo = self.practice_mode and self.move_history
 
+                #Considering this is a more casual environment, we're using a modified version of the 50 move rule to allow draw requests
+                if self.board.halfmove_clock >= 40:
+                    self._button_draw.enable()
+                else:
+                    self._button_draw.disable()
+
                 #At least one move, so we can give up, save, and undo if in practice mode
                 if self.board.fullmove_number > 1:
                     self._button_giveup.enable()
@@ -2763,15 +2795,11 @@ init python:
                     else:
                         self._button_undo.disable()
 
-                #This the first move is considered
+                #This is considered the first move
                 elif self.board.fullmove_number == 1:
                     self._button_giveup.disable()
                     self._button_save.disable()
                     self._button_undo.disable()
-                    #if should_enable_undo:
-                    #    self._button_undo.enable()
-                    #else:
-                    #    self._button_undo.disable()
 
                 else:
                     self._button_giveup.disable()
@@ -2786,14 +2814,21 @@ init python:
             if self.is_game_over is not None:
                 self._button_done.enable()
 
-        def _quitPGN(self, giveup):
+        def _quitPGN(self, quit_reason=0):
             """
             Generates a pgn of the board, and depending on if we are
             doing previous game or not, does appropriate header
             setting
 
             IN:
+                quit_reason - reason the game was quit
+                    0 - Normal savegame/victor found
+                    1 - Player surrendered
+                    2 - Player requested draw
+                    (Default: 0)
+
                 giveup - True if the player surrendered, False otherwise
+                requested_draw - whether or not the player requested a draw
 
             RETURNS: tuple of the following format:
                 [0]: chess.pgn.Game object of this game
@@ -2803,13 +2838,18 @@ init python:
             """
             new_pgn = chess.pgn.Game.from_board(self.board)
 
-            if giveup:
+            if quit_reason == 1:
                 #Player is playing white
                 if self.is_player_white:
                     new_pgn.headers["Result"] = "0-1"
                 #Player is playing black
                 else:
                     new_pgn.headers["Result"] = "1-0"
+
+            elif quit_reason == 1:
+                new_pgn.headers["Result"] = "1/2-1/2"
+                #And a special header to indicate this was a requested draw
+                new_pgn.headers["DRAW REQUESTED"] = True
 
             # monika's ingame name will be her twitter handle
             #Player plays white
