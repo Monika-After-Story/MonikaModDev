@@ -2796,11 +2796,6 @@ init python:
                         self._button_undo.disable()
 
                 #This is considered the first move
-                elif self.board.fullmove_number == 1:
-                    self._button_giveup.disable()
-                    self._button_save.disable()
-                    self._button_undo.disable()
-
                 else:
                     self._button_giveup.disable()
                     self._button_save.disable()
