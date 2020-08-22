@@ -1839,11 +1839,11 @@ label monika_rap:
             $ persistent._mas_pm_like_rap = True
             m 3eub "That's really cool!"
             m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
-            m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
+            m 1hub "And feel free to turn up the bass if you'd like, ahaha!"
             if (
-                    not renpy.seen_label("monika_add_custom_music_instruct")
-                    and not persistent._mas_pm_added_custom_bgm
-                ):
+                not renpy.seen_label("monika_add_custom_music_instruct")
+                and not persistent._mas_pm_added_custom_bgm
+            ):
                 m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
                 m 3eua "All you have to do is follow these steps..."
                 call monika_add_custom_music_instruct
@@ -1858,7 +1858,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
-    m 1hua "Ehehe. Yuri did something really funny once."
+    m 1hua "Ehehe, Yuri did something really funny once."
     m 1eua "We were all in the clubroom and just relaxing, as usual..."
     m 4wuo "And out of nowhere, Yuri just pulled out a small bottle of wine."
     m 4eua "I'm not even kidding!"
@@ -2384,7 +2384,7 @@ label monika_holdme_reactions:
             m 6dubsa "Mm..."
             m 6eud "Oh?"
             m 1hubfa "Finally done, [player]?"
-            m 3tubfb "I {i}guess{/i} that was long enough, ehehe~"
+            m 3tubfu "I {i}guess{/i} that was long enough, ehehe~"
             m 1rkbfb "I wouldn't mind another hug..."
             m 1hubfa "But I'm sure you're saving one for later, aren't you?"
         #happy
@@ -2437,7 +2437,7 @@ label monika_holdme_reactions:
             m 1eua "I hope you do too."
             m 2rksdla "Well, even if you don't..."
             m 3hubfb "You could always hold me again, ahaha!"
-            m 1hkbfsdlb "Actually...{w=0.5}you can hold me again either way, ehehe~"
+            m 1hkbfsdlb "Actually...{w=0.5}you can hold me again either way~"
             m 1ekbfa "Just let me know when you want to~"
         elif mas_isMoniEnamored():
             m 1hubfa "Mmm~"
@@ -5707,10 +5707,10 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m 5hubfu "Ehehe~"
     if (
-            persistent._mas_pm_like_vocaloids
-            and not renpy.seen_label("monika_add_custom_music_instruct")
-            and not persistent._mas_pm_added_custom_bgm
-        ):
+        persistent._mas_pm_like_vocaloids
+        and not renpy.seen_label("monika_add_custom_music_instruct")
+        and not persistent._mas_pm_added_custom_bgm
+    ):
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
@@ -6383,7 +6383,7 @@ label monika_sayhappybirthday:
                                 m 1lksdla "Sorry again, [player]"
                             else:
                                 m 1lksdla "Sorry, [player]"
-                                m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
+                                m 2lksdlb "I told you, I'm self-conscious on camera, ahaha..."
 
                         m "Should I try again?{nw}"
                         $ _history_list.pop()
@@ -7018,9 +7018,9 @@ label monika_rock:
             m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
             m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
             if (
-                    not renpy.seen_label("monika_add_custom_music_instruct")
-                    and not persistent._mas_pm_added_custom_bgm
-                ):
+                not renpy.seen_label("monika_add_custom_music_instruct")
+                and not persistent._mas_pm_added_custom_bgm
+            ):
                 m 1eua "If you ever do feel like sharing your favorite rock music with me, [player], it's really easy to do so!"
                 m 3eua "All you have to do is follow these steps..."
                 call monika_add_custom_music_instruct
@@ -7401,7 +7401,7 @@ label monika_orchestra:
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
                 m 1hua "Maybe we could do a duet someday!"
-                m 1hub "Ehehe~"
+                m 1huu "Ehehe~"
                 $ persistent._mas_pm_plays_instrument = True
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
@@ -7422,7 +7422,7 @@ label monika_orchestra:
                     m "That's {i}sooo{/i} adorable!"
                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
-                    m 5eubfb "Ehehe~"
+                    m 5eubfa "Ehehe~"
 
             elif tempinstrument == "harmonica":
                 m 1hub "Wow, I've always wanted to try the harmonica out!"
@@ -8155,7 +8155,7 @@ label monika_breakup:
 
                     "Of course not.":
                         m 2hua "Ehehe, you're so sweet."
-                        m 2eka "I love you so much, [player]! Ehehe~"
+                        m 2eka "I love you so much, [player]!~"
                         return "love"
 
         #Second time
@@ -10022,7 +10022,7 @@ label monika_familygathering:
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
     m 1lksdlc "Not even around the holidays or on special occasions."
-    m 1hub "When you see your family this year, be sure to bring me along okay? Ehehe~"
+    m 1hub "When you see your family this year, be sure to bring me along okay?"
     m 1eua "I'd love to meet all of your relatives."
 
     m "Do you think they'd like me, [player]?{nw}"
@@ -10387,7 +10387,7 @@ label monika_driving:
             m 1eua "Oh, really?"
             m 3hua "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
-            m 1eub "Just imagine all the places we could go together, ehehe~"
+            m 1eub "Just imagine all the places we could go together..."
             m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
             m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
@@ -10440,7 +10440,7 @@ label monika_driving:
                     m 1eua "I'm glad nothing bad has happened to you while learning."
                     m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
                     m 3eub "I can't wait to finally be able to go somewhere with you, [player]!"
-                    m 1hksdlb "I hope I'm not getting too excited, ehehe~"
+                    m 1hksdlb "I hope I'm not getting too excited, ahaha~"
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eua "Gosh, I just can't stop thinking about it now!"
 
@@ -11718,14 +11718,14 @@ label monika_vehicle_motorcycle:
     m 1lksdlb "To be honest, I'm a little hesitant to ride one, ahaha!"
     m 1eua "Really, I shouldn't be scared..."
     m 3eua "You're the one driving after all."
-    m 1lksdla "That puts my mind at ease...{w=1}a little."
+    m 1lksdla "That puts my mind at ease...{w=0.3}a little."
     m 1eua "Just take it nice and slow, okay?"
     m 3hua "After all, we aren't in any rush."
-    m 1tsu "Or...{w=1}was it your plan to drive fast, so that I would hang on to you tightly?"
-    m 3tsu "That's pretty sneaky of you, [player]."
-    m 1hub "Ehehe~"
-    m 3eka "There's no need to be shy, my love."
-    m 3ekbsa "I'll hug you, even if you don't ask for it..."
+    m 1tsu "Or...{w=0.3}was it your plan to drive so fast I'd have no choice but to hold on to you tight?~"
+    m 3kua "That's pretty sneaky of you, [player]."
+    m 1hub "Ahaha!"
+    m 3eka "There's no need to be shy...{w=0.3}{nw}"
+    extend 3ekbsa "I'll hug you, even if you don't ask for it..."
     m 1hkbfa "That's how much I love you~"
     return "love"
 
@@ -12325,9 +12325,9 @@ label monika_backpacking:
     if mas_isMoniAff(higher=True):
         m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
         m 2tsbsa "..."
-        m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
+        m 1hubfu "I hope you're not too shy, [player]. Ehehe~"
         m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
-        m 3hubfa "Waking up each morning to a glorious sunrise!"
+        m 3hubfb "Waking up each morning to a glorious sunrise!"
 
     else:
         m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
@@ -13521,7 +13521,7 @@ label monika_hemispheres:
 
     else:
         m 2rksdla "So you can see why I would have thought you would be living in the Northern Hemisphere..."
-        m 1hub "But I guess that makes you a bit more special, ehehe~"
+        m 1huu "But I guess that makes you a bit more special, ehehe~"
 
     if mas_isSpring():
         m 1eua "That said, it must be spring for you right now."

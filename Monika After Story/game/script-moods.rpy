@@ -351,10 +351,10 @@ label mas_mood_tired:
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
-    m  "...Ehehe."
+    m "...Ehehe."
     m 2hksdlb "That sounded a bit creepy, sorry."
     m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     return
 
 init 5 python:
@@ -510,7 +510,7 @@ label mas_mood_lazy:
         m 3eub "That can include washing up, getting a good breakfast..."
 
         if mas_isMoniLove():
-            m 1rkbsb "Getting your good morning kiss, ehehe..."
+            m 1dkbsu "Getting your good morning kiss, ehehe..."
 
         m 1hksdlb "Or you could laze around for now."
         m 1eka "Just as long as you don't forget to do anything important, alright, [player]?"
