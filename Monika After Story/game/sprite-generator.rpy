@@ -1,13 +1,5 @@
-init 999 python:
+init python in mas_sprites:
     #START: main funcs
-    def is_r7():
-        """
-        Checks if we're running renpy 7
-
-        OUT:
-            boolean - True if we're running r7, False otherwise
-        """
-        return renpy.version(True)[0] == 7
 
     def register_image(name, d):
         """
@@ -20,7 +12,7 @@ init 999 python:
             name - tuple of strings (tag, attributes)
             d - displayables
         """
-        if is_r7:
+        if store.mas_globals.is_r7:
             renpy.display.image.register_image(name, d)
 
         else:
@@ -94,10 +86,10 @@ init 999 python:
         """
         register_image(
             ("monika", exp + "_static"),
-            DynamicDisplayable(
-                mas_drawmonika_rk,
-                character=monika_chr,
-                **mas_sprite_decoder.parse_exp_to_kwargs(exp)
+            store.DynamicDisplayable(
+                store.mas_drawmonika_rk,
+                character=store.monika_chr,
+                **store.mas_sprite_decoder.parse_exp_to_kwargs(exp)
             )
         )
 
@@ -150,7 +142,7 @@ init 999 python:
             if needs_tear_atl(exp):
                 register_image(
                     ("monika", exp),
-                    streaming_tears_transform(
+                    store.streaming_tears_transform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )
@@ -159,7 +151,7 @@ init 999 python:
             else:
                 register_image(
                     ("monika", exp),
-                    blink_transform(
+                    store.blink_transform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )
@@ -185,7 +177,7 @@ init 999 python:
         #And now we make its ATL
         register_image(
             ("monika", exp),
-            wink_transform(
+            store.wink_transform(
                 "monika " + exp + "_static",
                 "monika " + open_eye_variant
             )
@@ -204,5 +196,3 @@ init 999 python:
             generate_wink_sprite(exp)
         else:
             generate_normal_sprite(exp)
-
-    is_r7 = is_r7()

@@ -31,6 +31,9 @@ init -890 python in mas_globals:
     if tt_detected:
         store.persistent._mas_pm_has_went_back_in_time = True
 
+    #Internal renpy version check
+    is_r7 = renpy.version(True)[0] == 7
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 

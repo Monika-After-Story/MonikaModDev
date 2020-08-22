@@ -223,7 +223,7 @@ python early:
                     #Reset name
                     name = self.name
                     #Generate
-                    generate_images(name[1])
+                    store.mas_sprites.generate_images(name[1])
                     #Try to get the img again
                     target = renpy.display.image.images[name]
 
