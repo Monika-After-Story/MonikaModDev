@@ -120,45 +120,6 @@ def check_file(fpath, sp_dict, gen_if_missing):
     return sp_mismatches
 
 
-def check_file_dynamic(fpath, sp_dict):
-    """
-    Checks the given file for sprite code correctness
-
-    IN:
-        fpath - filepath of the fie to check
-
-    OUT:
-        sp_dict - will contain all sprite codes we found
-
-    RETURNS:
-        list of SpriteMismatches, one for every sprite code that was bad
-    """
-    sp_mismatches = list()
-    ln_count = 1
-
-    with open(fpath, "r") as rpy_file:
-        for line in rpy_file:
-
-            _code = try_extract_code(line.strip())
-
-            if _code and _code not in sp_dict:
-                # we have a code but its not in the dict?!
-                # attempt to generate it as a sprite
-                gen_spr = StaticSprite(_code)
-
-                if gen_spr.invalid:
-                    sp_mismatches.append(
-                        SpriteMismatch(_code, ln_count, fpath)
-                    )
-                else:
-                    # add to sprite dict so we are aware of this
-                    sp_dict[_code] = gen_spr
-
-            ln_count += 1
-
-    return sp_mismatches
-
-
 def extract_dlg_code(line):
     """
     Extracts the sprite code from the given line
