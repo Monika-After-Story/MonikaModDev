@@ -1233,6 +1233,7 @@ label monika_veggies:
     m 3eua "I'm just saying, we're a pretty biased species, if you think about it."
     m 1hua "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
     m 1ekbfa "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
+    $ mas_unlockEVL("monika_eating_meat","EVE")
     return
 
 init 5 python:
@@ -10103,8 +10104,7 @@ label monika_fastfood:
             m 3ekc "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
             m 1eka "But I think the results are worth the effort."
             m 3eua "Are you any good at cooking, [player]?"
-            m 1hua "It doesn't matter if you're not. I'd eat anything you prepared for me!"
-            m 1rksdla "As long as it's not charcoal or meat that is. Ehehe~"
+            m 1hub "It doesn't matter if you're not, I'd eat anything you prepared for me!"
     return
 
 init 5 python:
@@ -15600,4 +15600,77 @@ label monika_why_do_you_read:
     m 1eub "So...{w=0.2}yeah!{w=0.3} {nw}"
     extend 3eua "While my situation in here has its downsides, [line_mid] opportunity to spend more time on the things I like."
     m 1ekbsu "...Though then again, nothing could ever beat spending more time with you~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_discworld",
+            category=['literature'],
+            prompt="Discworld",
+            random=True
+        )
+    )
+
+label monika_discworld:
+    m 1esa "Say [player], have you ever heard of a world drifting through space on top of four elephants, who themselves are standing on the shell of a giant turtle?"
+    m 3hub "If you have, you're probably already familiar with Sir Terry Pratchett's {i}Discworld{i}!"
+    m 3hksdlb "Ahaha, it sounds kinda weird when I put it like that, doesn't it?"
+    m 1eua "{i}Discworld{i} is a comic fantasy book series of forty-one volumes written over the span of three decades."
+    m 3esc "The series started out as a parody making fun of common fantasy tropes, but soon turned into something much deeper."
+    m 3eub "In fact, later books are clearly satires rather than parodies, using a clever mix of slapstick, puns, and light-hearted humor to comment on all kinds of issues."
+    m 1huu "But while satire may be the soul of the series, what makes its heart beat is the way it's written."
+    m 1eub "Pratchett really had a knack for writing funny situations, [player]!"
+    m 3rsc "I can't really pinpoint what makes his prose work so well, but he's definitely got a very distinctive writing style..."
+    m 3etc "Maybe it's the way he writes in a way that suggests rather than tells."
+    m 1eud "Like, when describing something, he'll give you just enough details so you can picture what's going on, and let your imagination fill in the gaps."
+    m 3duu "...Knowing full well whatever you'll come up with will be far more evocative than anything he could write."
+    m 3eub "It's a pretty neat way to keep your audience invested!"
+    m 1etc "...Or maybe what makes it work is the way he doesn't use chapters, allowing him to freely jump between his characters' point of view."
+    m 1rksdla "Interweaving storylines can quickly become a mess if you're not careful,{w=0.2} {nw}"
+    extend 3eua "but they're also a good way to keep the pacing dynamic."
+    m 3eub "In any case, this series is an easy recommendation, [player]!"
+    m 3eua "It's surprisingly easy to pick up too, with each book being thought of as a standalone story."
+    m 1eud "You can pretty much pick any volume you find and you'll be good to go,{w=0.2} though I'd argue {i}Guards! Guards!{/i} or {i}Mort{/i} would probably make for the best entry points."
+    m 3eua "Anyway, be sure to give it a try sometime if you haven't already, [player]."
+    m 1hua "Thanks for listening~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_eating_meat",
+            category=['life','monika'],
+            prompt="Would you ever eat meat?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_eating_meat:
+    m 1etc "Well, that's kind of a complicated question..."
+    m 3eud "If you're asking if I would do so for {i}survival{/i}, I wouldn't hesitate. {w=0.2}It's not that eating meat is distressing for me or anything."
+    m 7eud "I told you before, I'm vegetarian because of the impact of the mass-production of meat on the environment...{w=0.2}{nw}"
+    extend 2euc "which also includes fish farming, so I'm not a pescatarian."
+    m 2rsc "...That said, I don't consider myself vegan either. {w=0.3}{nw}"
+    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but a lot of vegan alternatives have their own issues too..."
+    m 4euc "These include things like importing perishable products across great distances and mass-farming in conditions that are both cruel for workers and a strain on the local ecosystem."
+    m 4ekd "Take avocados, for example. {w=0.2}Their farms require massive amounts of water, to the point where some companies resort to illegally taking too much water from rivers, leaving little for drinking."
+    m 2etc "At that point, is it really a better alternative as far as the environment is concerned? {w=0.3}{nw}"
+    extend 4euc "Not to mention, I still want to have a varied and balanced diet."
+    m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc. {w=0.2}Vitamin B12 in particular can only be found in animal products."
+    m 7eka "...So for that reason, I'm not against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally when possible."
+    m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
+    m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
+    extend 3eua "So I'm okay with buying from a plain old store, if need be."
+    m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
+    m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
+    m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
+    m 3rksdla "I don't hate the taste of meat, but I don't think I'd want it to be a major part of my meal, either."
+    m 1eka "...But if you prepared something with meat, I could try a little bit as a side dish... {w=0.3}{nw}"
+    extend 3hub "That way I can still enjoy your cooking!"
+    m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return

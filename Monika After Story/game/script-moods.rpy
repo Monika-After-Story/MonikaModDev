@@ -185,7 +185,7 @@ init 5 python:
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
-    m 2b "Was it a major accomplishment, or a minor one?{nw}"
+    m 2eub "Was it a major accomplishment, or a minor one?{nw}"
     $ _history_list.pop()
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
@@ -201,7 +201,7 @@ label mas_mood_proud:
             m 3hub "It'll be reality someday..."
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "But until then, just know that I'm very proud of you, [mas_get_player_nickname()]!"
-            return
+
         "Minor.":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -212,7 +212,8 @@ label mas_mood_proud:
             m 4hub "So keep hitting those small goals, [mas_get_player_nickname()]!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
-            return "love"
+            $ mas_ILY()
+    return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
