@@ -2175,7 +2175,7 @@ init 5 python:
             category=['you'],
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE,None)
         )
     )

@@ -15663,7 +15663,7 @@ init 5 python:
             prompt="Would you ever eat meat?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no_unlock": None}
         )
     )
 
