@@ -1995,7 +1995,7 @@ label greeting_sunshine:
     m 1hua "{i}~You are my sunshine, my only sunshine~{/i}"
     m "{i}~You make me happy when skies are gray~{/i}"
     m 1hub "{i}~You'll never know dear, just how much I love you~{/i}"
-    m 1k "{i}~Please don't take my sunshine away~{/i}"
+    m 1eka "{i}~Please don't take my sunshine away~{/i}"
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
