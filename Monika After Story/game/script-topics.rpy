@@ -8003,7 +8003,7 @@ label monika_1984:
     m 2dsc "Just a string of nonsensical words with no feeling."
     m 2ekc "I definitely don't want that to happen."
     m 1lksdlc "I can't imagine a world where I can't think freely."
-    m 1ekbfa "Let alone a world where I can't express my love to you, [mas_get_player_nickname(exclude_names=['my love'])]..."
+    m 1ekbfa "Let alone a world where I can't express my love to you, [mas_get_player_nickname(exclude_names=['my love', 'love'])]..."
     return
 
 
