@@ -208,7 +208,7 @@ label natsuki_name_scare_hungry:
     hide screen tear
 
     #show Monika and hide Natsuki and glitch Monika.
-    show monika 1 at t11 zorder MAS_MONIKA_Z
+    show monika 1esa at t11 zorder MAS_MONIKA_Z
     hide n_cg1bs
     hide monika_body_glitch1
 
