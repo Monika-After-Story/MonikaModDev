@@ -1,7 +1,5 @@
 define persistent.demo = False
 define config.developer = False #This is the flag for Developer tools
-
-define is_steam = "steamapps" in config.basedir.lower()
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
