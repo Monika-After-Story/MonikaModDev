@@ -6381,7 +6381,7 @@ label monika_sayhappybirthday:
                             if take_counter > 1:
                                 m 1lksdla "Sorry again, [player]"
                             else:
-                                m 1lksdla "Sorry, [mas_get_player_nickname()]"
+                                m 1lksdla "Sorry, [mas_get_player_nickname()]."
                                 m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
 
                         m "Should I try again?{nw}"
