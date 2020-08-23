@@ -2186,7 +2186,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     python:
         renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
         nickname_pool.sort()
-    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Done", default_button_prompt="Done")
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Done", default_button_prompt="Done")
 
     python:
         done = False

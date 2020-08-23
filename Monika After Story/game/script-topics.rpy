@@ -723,7 +723,7 @@ label mas_rerandom:
     else:
         $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
 
-    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Allow selected.")
+    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Allow selected.")
 
     $ topics_to_rerandom = _return
 

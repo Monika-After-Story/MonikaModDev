@@ -343,12 +343,10 @@ init -10 python in mas_ui:
     def check_scr_menu_choose_prompt(buttons_data, selected_prompt, default_prompt):
         """
         A method to choose a prompt for the return button.
-        "Nevermind." by default,
-        or selected_prompt if the user has selected something
 
         IN:
             buttons_data - the screen buttons data
-            selected_prompt - the prompt for the return button
+            selected_prompt - the prompt for the return button when at least one item was selected
             default_prompt - the prompt to use when no items are selected
 
         OUT:
