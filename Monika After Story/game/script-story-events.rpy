@@ -1727,7 +1727,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_steam_install_detected",
             conditional=(
-                "store.is_steam"
+                "store.mas_globals.is_steam"
             ),
             action=EV_ACT_QUEUE
         )

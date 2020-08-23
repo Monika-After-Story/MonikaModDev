@@ -425,7 +425,7 @@ label v0_11_4(version="v0_11_4"):
             steam_install_detected_ev is not None
             and steam_install_detected_ev.conditional is not None
         ):
-            steam_install_detected_ev.conditional = "store.is_steam"
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
 
     return
 
