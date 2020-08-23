@@ -35,7 +35,7 @@ init -890 python in mas_globals:
     is_r7 = renpy.version(True)[0] == 7
 
     # Check whether or not the user uses a steam install
-    is_steam = "steamapps" in config.basedir.lower()
+    is_steam = "steamapps" in renpy.config.basedir.lower()
 
 init -1 python in mas_globals:
     # global that are not actually globals.
