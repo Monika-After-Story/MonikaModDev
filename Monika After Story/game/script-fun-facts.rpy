@@ -294,7 +294,7 @@ label mas_fun_fact_vincent_van_gone:
     m 2dkc "There will come a time where it'll no longer be there."
     m 2rkc "...Or at least be noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
-    m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
+    m 5hub "I will always accept and take on any burdens that you shoulder, [mas_get_player_nickname()]~"
     #No end for this fact
     $ persistent._mas_funfactfun = True
     return
