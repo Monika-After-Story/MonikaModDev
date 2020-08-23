@@ -3655,7 +3655,7 @@ label monika_resolutions:
                     m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself..."
                 else:
                     m "Well, if anything comes to mind before the clock strikes twelve, do write it down for yourself..."
-                m 1kua "Maybe you'll think of something that you want to do, [player]."
+                m 1kua "Maybe you'll think of something that you want to do."
             else:
                 m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
                 m 2rfc "You know what, nevermind..."
