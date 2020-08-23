@@ -1,9 +1,6 @@
 define persistent.demo = False
-define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
-
-init 1 python:
-    persistent.steam = "steamapps" in config.basedir.lower()
+# define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
     import singleton
@@ -7350,6 +7347,8 @@ define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
 
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define skip_setting_weather = False# in case of crashes/reloads, predefine it here
+
 define mas_monika_twitter_handle = "lilmonix3"
 
 # sensitive mode enabler
@@ -7358,28 +7357,24 @@ default persistent._mas_sensitive_mode = False
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 
-init python:
-    startup_check = False
-    try:
-        persistent.ever_won['hangman']
-    except:
-        persistent.ever_won['hangman']=False
-    try:
-        persistent.ever_won['piano']
-    except:
-        persistent.ever_won['piano']=False
+define startup_check = False
 
-default his = "his"
-default he = "he"
-default hes = "he's"
-default heis = "he is"
-default bf = "boyfriend"
-default man = "man"
-default boy = "boy"
-default guy = "guy"
-default him = "him"
-default himself = "himself"
+define his = "his"
+define he = "he"
+define hes = "he's"
+define heis = "he is"
+define bf = "boyfriend"
+define man = "man"
+define boy = "boy"
+define guy = "guy"
+define him = "him"
+define himself = "himself"
 
+# Input characters filters
+define numbers_only = "0123456789"
+define lower_letters_only = " abcdefghijklmnopqrstuvwxyz"
+define letters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define name_characters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'"
 
 #Default is NORMAL
 default persistent._mas_randchat_freq = mas_randchat.NORMAL

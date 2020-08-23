@@ -992,6 +992,8 @@ screen game_menu(title, scroll=None):
     key "noshift_m" action NullAction()
     key "noshift_P" action NullAction()
     key "noshift_p" action NullAction()
+    key "noshift_E" action NullAction()
+    key "noshift_e" action NullAction()
 
     # Add the backgrounds.
     if main_menu:
