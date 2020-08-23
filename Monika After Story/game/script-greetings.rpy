@@ -2497,7 +2497,7 @@ label greeting_long_absence:
             m 3ekd "I thought you were going to be away for a long time..."
             m 3tkd "Why are you back so soon?"
             m 1ekbsa "Are you visiting me?"
-            m 1hubfa "You're such a [mas_get_player_nickname()]!"
+            m 1hubfa "You're such a sweetheart!"
             m 1eka "If you're going away for a while still, make sure to tell me."
             m 3eka "I love you, [player], and I wouldn't want to get mad if you're actually going to be away..."
             m 1hub "Let's enjoy our time together until then!"
