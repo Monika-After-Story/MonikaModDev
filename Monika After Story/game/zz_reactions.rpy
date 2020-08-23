@@ -2532,7 +2532,7 @@ label mas_reaction_gift_chocolates:
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
             m 1ekc "I really wish we could share them though..."
             m 3rksdlb "But until that day comes, I'll just have to enjoy them for both of us, ahaha!"
-            m 3hua "Thank you, [player]~"
+            m 3hua "Thank you, [mas_get_player_nickname()]~"
 
         else:
             m 3hub "I love chocolates!"
@@ -2636,7 +2636,7 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
         mas_giftCapGainAff(3)
 
     m 1sua "Oh! {w=0.5}A seashell bikini!"
-    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+    m 1hub "Thank you, [mas_get_player_nickname()]!{w=0.5} I'm going to try it on right now!"
 
     # try it on
     call mas_clothes_change(sprite_object)

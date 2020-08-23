@@ -124,48 +124,6 @@ default persistent._mas_force_clothes = False
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
 
-image monika g1:
-    "monika/g1.png"
-    xoffset 35 yoffset 55
-    parallel:
-        zoom 1.00
-        linear 0.10 zoom 1.03
-        repeat
-    parallel:
-        xoffset 35
-        0.20
-        xoffset 0
-        0.05
-        xoffset -10
-        0.05
-        xoffset 0
-        0.05
-        xoffset -80
-        0.05
-        repeat
-    time 1.25
-    xoffset 0 yoffset 0 zoom 1.00
-    "monika 3"
-
-image monika g2:
-    block:
-        choice:
-            "monika/g2.png"
-        choice:
-            "monika/g3.png"
-        choice:
-            "monika/g4.png"
-    block:
-        choice:
-            pause 0.05
-        choice:
-            pause 0.1
-        choice:
-            pause 0.15
-        choice:
-            pause 0.2
-    repeat
-
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
@@ -7127,114 +7085,115 @@ image emptydesk = DynamicDisplayable(
 #   The only sprite combos with closed eyes standing are _sc and _sd.
 #   everything else does not have a closed eye variant. sux to succ
 
-# pose 1
-image monika 1 = "monika 1esa"
-image monika 1a = "monika 1eua"
-image monika 1b = "monika 1eub"
-image monika 1c = "monika 1euc"
-image monika 1d = "monika 1eud"
-image monika 1e = "monika 1eka"
-image monika 1f = "monika 1ekc"
-image monika 1g = "monika 1ekd"
-image monika 1h = "monika 1esc"
-image monika 1i = "monika 1esd"
-image monika 1j = "monika 1hua"
-image monika 1k = "monika 1hub"
-image monika 1l = "monika 1hksdlb"
-image monika 1ll = "monika 1hksdrb"
-image monika 1m = "monika 1lksdla"
-image monika 1mm = "monika 1rksdla"
-image monika 1n = "monika 1lksdlb"
-image monika 1nn = "monika 1rksdlb"
-image monika 1o = "monika 1lksdlc"
-image monika 1oo = "monika 1rksdlc"
-image monika 1p = "monika 1lksdld"
-image monika 1pp = "monika 1rksdld"
-image monika 1q = "monika 1dsc"
-image monika 1r = "monika 1dsd"
-
-# pose 2
-image monika 2 = "monika 2esa"
-image monika 2a = "monika 2eua"
-image monika 2b = "monika 2eub"
-image monika 2c = "monika 2euc"
-image monika 2d = "monika 2eud"
-image monika 2e = "monika 2eka"
-image monika 2f = "monika 2ekc"
-image monika 2g = "monika 2ekd"
-image monika 2h = "monika 2esc"
-image monika 2i = "monika 2esd"
-image monika 2j = "monika 2hua"
-image monika 2k = "monika 2hub"
-image monika 2l = "monika 2hksdlb"
-image monika 2ll = "monika 2hksdrb"
-image monika 2m = "monika 2lksdla"
-image monika 2mm = "monika 2rksdla"
-image monika 2n = "monika 2lksdlb"
-image monika 2nn = "monika 2rksdlb"
-image monika 2o = "monika 2lksdlc"
-image monika 2oo = "monika 2rksdlc"
-image monika 2p = "monika 2lksdld"
-image monika 2pp = "monika 2rksdld"
-image monika 2q = "monika 2dsc"
-image monika 2r = "monika 2dsd"
-
-# pose 3
-image monika 3 = "monika 3esa"
-image monika 3a = "monika 3eua"
-image monika 3b = "monika 3eub"
-image monika 3c = "monika 3euc"
-image monika 3d = "monika 3eud"
-image monika 3e = "monika 3eka"
-image monika 3f = "monika 3ekc"
-image monika 3g = "monika 3ekd"
-image monika 3h = "monika 3esc"
-image monika 3i = "monika 3esd"
-image monika 3j = "monika 3hua"
-image monika 3k = "monika 3hub"
-image monika 3l = "monika 3hksdlb"
-image monika 3ll = "monika 3hksdrb"
-image monika 3m = "monika 3lksdla"
-image monika 3mm = "monika 3rksdla"
-image monika 3n = "monika 3lksdlb"
-image monika 3nn = "monika 3rksdlb"
-image monika 3o = "monika 3lksdlc"
-image monika 3oo = "monika 3rksdlc"
-image monika 3p = "monika 3lksdld"
-image monika 3pp = "monika 3rksdld"
-image monika 3q = "monika 3dsc"
-image monika 3r = "monika 3dsd"
-
-# pose 4
-image monika 4 = "monika 4esa"
-image monika 4a = "monika 4eua"
-image monika 4b = "monika 4eub"
-image monika 4c = "monika 4euc"
-image monika 4d = "monika 4eud"
-image monika 4e = "monika 4eka"
-image monika 4f = "monika 4ekc"
-image monika 4g = "monika 4ekd"
-image monika 4h = "monika 4esc"
-image monika 4i = "monika 4esd"
-image monika 4j = "monika 4hua"
-image monika 4k = "monika 4hub"
-image monika 4l = "monika 4hksdlb"
-image monika 4ll = "monika 4hksdrb"
-image monika 4m = "monika 4lksdla"
-image monika 4mm = "monika 4rksdla"
-image monika 4n = "monika 4lksdlb"
-image monika 4nn = "monika 4rksdlb"
-image monika 4o = "monika 4lksdlc"
-image monika 4oo = "monika 4rksdlc"
-image monika 4p = "monika 4lksdld"
-image monika 4pp = "monika 4rksdld"
-image monika 4q = "monika 4dsc"
-image monika 4r = "monika 4dsd"
-
-# pose 5
-image monika 5 = "monika 5eua"
-image monika 5a = "monika 5eua"
-image monika 5b = "monika 5euc"
+#NOTE: KEEPING THIS FOR REFERENCE AS TO WHAT SPRITES HAVE A STANDING EQUIVALENT
+## pose 1
+#monika 1 = "monika 1esa"
+#monika 1a = "monika 1eua"
+#monika 1b = "monika 1eub"
+#monika 1c = "monika 1euc"
+#monika 1d = "monika 1eud"
+#monika 1e = "monika 1eka"
+#monika 1f = "monika 1ekc"
+#monika 1g = "monika 1ekd"
+#monika 1h = "monika 1esc"
+#monika 1i = "monika 1esd"
+#monika 1j = "monika 1hua"
+#monika 1k = "monika 1hub"
+#monika 1l = "monika 1hksdlb"
+#monika 1ll = "monika 1hksdrb"
+#monika 1m = "monika 1lksdla"
+#monika 1mm = "monika 1rksdla"
+#monika 1n = "monika 1lksdlb"
+#monika 1nn = "monika 1rksdlb"
+#monika 1o = "monika 1lksdlc"
+#monika 1oo = "monika 1rksdlc"
+#monika 1p = "monika 1lksdld"
+#monika 1pp = "monika 1rksdld"
+#monika 1q = "monika 1dsc"
+#monika 1r = "monika 1dsd"
+#
+## pose 2
+#monika 2 = "monika 2esa"
+#monika 2a = "monika 2eua"
+#monika 2b = "monika 2eub"
+#monika 2c = "monika 2euc"
+#monika 2d = "monika 2eud"
+#monika 2e = "monika 2eka"
+#monika 2f = "monika 2ekc"
+#monika 2g = "monika 2ekd"
+#monika 2h = "monika 2esc"
+#monika 2i = "monika 2esd"
+#monika 2j = "monika 2hua"
+#monika 2k = "monika 2hub"
+#monika 2l = "monika 2hksdlb"
+#monika 2ll = "monika 2hksdrb"
+#monika 2m = "monika 2lksdla"
+#monika 2mm = "monika 2rksdla"
+#monika 2n = "monika 2lksdlb"
+#monika 2nn = "monika 2rksdlb"
+#monika 2o = "monika 2lksdlc"
+#monika 2oo = "monika 2rksdlc"
+#monika 2p = "monika 2lksdld"
+#monika 2pp = "monika 2rksdld"
+#monika 2q = "monika 2dsc"
+#monika 2r = "monika 2dsd"
+#
+## pose 3
+#monika 3 = "monika 3esa"
+#monika 3a = "monika 3eua"
+#monika 3b = "monika 3eub"
+#monika 3c = "monika 3euc"
+#monika 3d = "monika 3eud"
+#monika 3e = "monika 3eka"
+#monika 3f = "monika 3ekc"
+#monika 3g = "monika 3ekd"
+#monika 3h = "monika 3esc"
+#monika 3i = "monika 3esd"
+#monika 3j = "monika 3hua"
+#monika 3k = "monika 3hub"
+#monika 3l = "monika 3hksdlb"
+#monika 3ll = "monika 3hksdrb"
+#monika 3m = "monika 3lksdla"
+#monika 3mm = "monika 3rksdla"
+#monika 3n = "monika 3lksdlb"
+#monika 3nn = "monika 3rksdlb"
+#monika 3o = "monika 3lksdlc"
+#monika 3oo = "monika 3rksdlc"
+#monika 3p = "monika 3lksdld"
+#monika 3pp = "monika 3rksdld"
+#monika 3q = "monika 3dsc"
+#monika 3r = "monika 3dsd"
+#
+## pose 4
+#monika 4 = "monika 4esa"
+#monika 4a = "monika 4eua"
+#monika 4b = "monika 4eub"
+#monika 4c = "monika 4euc"
+#monika 4d = "monika 4eud"
+#monika 4e = "monika 4eka"
+#monika 4f = "monika 4ekc"
+#monika 4g = "monika 4ekd"
+#monika 4h = "monika 4esc"
+#monika 4i = "monika 4esd"
+#monika 4j = "monika 4hua"
+#monika 4k = "monika 4hub"
+#monika 4l = "monika 4hksdlb"
+#monika 4ll = "monika 4hksdrb"
+#monika 4m = "monika 4lksdla"
+#monika 4mm = "monika 4rksdla"
+#monika 4n = "monika 4lksdlb"
+#monika 4nn = "monika 4rksdlb"
+#monika 4o = "monika 4lksdlc"
+#monika 4oo = "monika 4rksdlc"
+#monika 4p = "monika 4lksdld"
+#monika 4pp = "monika 4rksdld"
+#monika 4q = "monika 4dsc"
+#monika 4r = "monika 4dsd"
+#
+## pose 5
+#monika 5 = "monika 5eua"
+#monika 5a = "monika 5eua"
+#monika 5b = "monika 5euc"
 
 ### [IMG040]
 # Custom animated sprites

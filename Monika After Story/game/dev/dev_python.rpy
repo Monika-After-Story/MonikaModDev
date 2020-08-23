@@ -8,7 +8,7 @@ init 10 python:
 
 
 init 998 python:
-    
+
     def mas_reset_ptods():
         """
         Removes all PTODS from the lockDB and per_eventDB
@@ -229,7 +229,7 @@ label dev_ptod_console_testing_block:
 
     m 1hua "I'm going to test block statements."
 
-    m eua "First, let's define two test values."
+    m 1eua "First, let's define two test values."
     $ store.mas_ptod.write_command("test = 12")
     pause 0.7
     $ store.mas_ptod.exec_command(local_context)

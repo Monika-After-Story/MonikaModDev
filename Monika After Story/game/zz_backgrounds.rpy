@@ -5,6 +5,23 @@ default persistent._mas_background_MBGdata = {}
 #Defaults to def (spaceroom)
 default persistent._mas_current_background = "spaceroom"
 
+init -5 python in mas_background:
+    #Marks this background as an outdoor type (disables opendoor for it)
+    #value: ignored
+    EXP_TYPE_OUTDOOR = "outdoor"
+
+    #Tells the background changer to skip the leadin dialogue
+    #value: ignored
+    EXP_SKIP_LEADIN = "skip_leadin"
+
+    #Tells the background changer to skip the transition (black screen)
+    #value: ignored
+    EXP_SKIP_TRANSITION = "skip_transition"
+
+    #Tells the background changer to skip the outro dialogue
+    #value: ignored
+    EXP_SKIP_OUTRO = "skip_outro"
+
 #START: Class definition
 init -10 python:
 
@@ -1848,6 +1865,7 @@ init -10 python:
             unlocked=False,
             entry_pp=None,
             exit_pp=None,
+            ex_props=None
         ):
             """
             Constructor for background objects
@@ -1892,6 +1910,10 @@ init -10 python:
 
                 exit_pp:
                     Exit programming point for this background
+                    (Default: None)
+
+                ex_props:
+                    Extra properties for backgrounds. If None, an empty dict is assigned
                     (Default: None)
             """
             # sanity checks
@@ -1942,6 +1964,12 @@ init -10 python:
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
+
+            #Add ex_props
+            if ex_props is None:
+                ex_props = dict()
+
+            self.ex_props = ex_props
 
             # add to background map
             self.mas_background.BACKGROUND_MAP[background_id] = self
@@ -2014,19 +2042,19 @@ init -10 python:
                     )
                 )
 
-        def entry(self, old_background):
+        def entry(self, old_background, **kwargs):
             """
             Run the entry programming point
             """
             if self.entry_pp is not None:
-                self.entry_pp(old_background)
+                self.entry_pp(old_background, **kwargs)
 
-        def exit(self, new_background):
+        def exit(self, new_background, **kwargs):
             """
             Run the exit programming point
             """
             if self.exit_pp is not None:
-                self.exit_pp(new_background)
+                self.exit_pp(new_background, **kwargs)
 
         def fromTuple(self, data_tuple):
             """
@@ -2453,7 +2481,7 @@ init -20 python in mas_background:
 
 #START: BG change functions
 init 800 python:
-    def mas_setBackground(_background):
+    def mas_setBackground(_background, **kwargs):
         """
         Sets the initial bg
 
@@ -2465,14 +2493,17 @@ init 800 python:
             _background:
                 The background we're changing to.
                 Assumes this is already built.
+
+            **kwargs:
+                Additional kwargs to send to the prog points
         """
         if _background != mas_current_background:
             global mas_current_background
             old_background = mas_current_background
             mas_current_background = _background
-            mas_current_background.entry(old_background)
+            mas_current_background.entry(old_background, **kwargs)
 
-    def mas_changeBackground(new_background, by_user=None, set_persistent=False):
+    def mas_changeBackground(new_background, by_user=None, set_persistent=False, **kwargs):
         """
         changes the background w/o any scene changes. Will not run progpoints
         or do any actual bg changes if the current background is already set to
@@ -2487,6 +2518,9 @@ init 800 python:
 
             set_persistent:
                 True if we want this to be persistent
+
+            **kwargs:
+                Additional kwargs to send to the prog points
         """
         if by_user is not None:
             mas_background.force_background = bool(by_user)
@@ -2495,8 +2529,8 @@ init 800 python:
             persistent._mas_current_background = new_background.background_id
 
         if new_background != mas_current_background:
-            mas_current_background.exit(new_background)
-            mas_setBackground(new_background)
+            mas_current_background.exit(new_background, **kwargs)
+            mas_setBackground(new_background, **kwargs)
 
     def mas_startupBackground():
         """
@@ -2505,10 +2539,10 @@ init 800 python:
         if (
             mas_isMoniEnamored(higher=True)
             and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
-            and store.mas_background.BACKGROUND_MAP[persistent._mas_current_background].unlocked
+            and mas_getBackground(persistent._mas_current_background).unlocked
         ):
             background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
-            mas_changeBackground(background_to_set)
+            mas_changeBackground(background_to_set, startup=True)
 
             if background_to_set.disable_progressive:
                 store.skip_setting_weather = True
@@ -2532,6 +2566,20 @@ init 800 python:
     #Just set us to the normal room here
     mas_setBackground(mas_background_def)
 
+#NOTE: This is at init 0 so it can be used for conditionals in events/etc
+init python:
+    def mas_getBackground(background_id, default=None):
+        """
+        Gets a MASFilterableBackground by id
+
+        IN:
+            background_id - id of the background to get
+            default - default to return if not found
+
+        OUT:
+            MASFilterableBackground if found, None otherwise
+        """
+        return store.mas_background.BACKGROUND_MAP.get(background_id, default)
 
 #START: Programming points
 init -2 python in mas_background:
@@ -2613,7 +2661,7 @@ init -2 python in mas_background:
             store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
 
 
-    def _def_background_entry(_old):
+    def _def_background_entry(_old, **kwargs):
         """
         Entry programming point for default background
         """
@@ -2633,25 +2681,20 @@ init -2 python in mas_background:
         #This catches the potential of a deleted background which does not support weather
         store.mas_unlockEVL("monika_change_weather", "EVE")
 
-        #TODO: update with new EV funcs once merged
-        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
-        if spaceroom_ev and spaceroom_ev.unlock_date:
-            spaceroom_ev.unlocked = True
+        if store.mas_getEVLPropValue("monika_why_spaceroom", "unlock_date", None):
+            store.mas_unlockEVL("monika_why_spaceroom", "EVE")
 
-    def _def_background_exit(_new):
+    def _def_background_exit(_new, **kwargs):
         """
         Exit programming point for default background
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
+        store.mas_lockEVL("monika_why_spaceroom", "EVE")
 
         #Lock the weather is the background we are changing to does not support it
+        #This handles the case where you switch bgs but on startup the entry pp unlocks the weather and it remains unlocked
         if _new.disable_progressive:
             store.mas_lockEVL("monika_change_weather", "EVE")
-
-        #TODO: update with new EV funcs once merged
-        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
-        if spaceroom_ev and spaceroom_ev.unlock_date:
-            spaceroom_ev.unlocked = False
 
 
 
@@ -2829,21 +2872,27 @@ label monika_change_background_loop:
         m "Try again~"
         jump monika_change_background_loop
 
-    call mas_background_change(sel_background, set_persistent=True)
+    python:
+        skip_leadin = mas_background.EXP_SKIP_LEADIN in sel_background.ex_props
+        skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
+        skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
+
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
-label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_persistent=False):
+label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, skip_outro=False, set_persistent=False):
     # otherwise, we can change the background now
     if not skip_leadin:
         m 1eua "Alright!"
         m 1hua "Let's go, [player]!"
 
     #Little transition
-    hide monika
-    scene black
-    with dissolve
-    pause 2.0
+    if not skip_transition:
+        hide monika
+        scene black
+        with dissolve
+        pause 2.0
 
     python:
         #Set persistent
@@ -2853,14 +2902,11 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
         #Store the old bg for use later
         old_bg = mas_current_background
 
-        #Finally, change the background
-        mas_changeBackground(new_bg)
-
-        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        #Otherwise, If we're disabling progressive AND hiding masks, weather isn't supported here
+        #so we lock to clear
         if new_bg.disable_progressive and new_bg.hide_masks:
             mas_weather.temp_weather_storage = mas_current_weather
             mas_changeWeather(mas_weather_def)
-            mas_lockEVL("monika_change_weather", "EVE")
 
         else:
             if mas_weather.temp_weather_storage is not None:
@@ -2875,6 +2921,15 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
             #Then we unlock the weather sel here
             mas_unlockEVL("monika_change_weather", "EVE")
 
+        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        #NOTE: If you intend to force a weather for your background, set it via prog points
+        if new_bg.disable_progressive:
+            mas_lockEVL("monika_change_weather", "EVE")
+
+        #Finally, change the background
+        mas_changeBackground(new_bg)
+
+    #Now redraw the room
     call spaceroom(scene_change=True, dissolve_all=True)
 
     if not skip_outro:

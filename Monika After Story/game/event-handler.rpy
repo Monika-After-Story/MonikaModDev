@@ -2894,7 +2894,7 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     else:
         $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Remove selected.")
 
     $ bookmarks_to_remove = _return
     $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")
