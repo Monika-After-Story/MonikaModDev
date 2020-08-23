@@ -1,7 +1,7 @@
 # module that adds a tiny mouse tracker overlay
 
 init -1 python:
-    
+
     # quick functions to enable disable the mouse tracker
     def mas_enableMouseTracking():
         if not mas_isMouseTrackingVisible():
@@ -180,14 +180,14 @@ init 5 python:
     )
 
 label dev_hold_still_monika:
-    m 1eua "okay!"
+    m 1eua "Okay!"
     $ sel_pose = renpy.input("pose number (1-7)", allow="1234567", length=1)
     $ sel_pose = store.mas_utils.tryparseint(sel_pose, 1)
     if sel_pose < 1:
         $ sel_pose = 1
     elif sel_pose > 7:
         $ sel_pose = 7
-    
+
     $ pose_to_make = str(sel_pose) + "eua"
     $ renpy.show("monika " + pose_to_make)
     m "HOLDING! (Click once to dismiss menu, once more to stop holding)"
@@ -195,7 +195,19 @@ label dev_hold_still_monika:
     $ ui.interact()
 
     m 1eua "Done holding!"
-    return
+
+    m 3eua "Would you like to test another pose?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to test another pose?{fast}"
+
+        "Yes.":
+            jump dev_hold_still_monika
+
+        "No.":
+            return
+
+
 
 init python:
     class MASClickZoneTester(renpy.Displayable):
@@ -240,7 +252,7 @@ init python:
             return r
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.KEYUP: 
+            if ev.type == pygame.KEYUP:
 
                 if ev.key == pygame.K_q:
                     # quit when user hits q
