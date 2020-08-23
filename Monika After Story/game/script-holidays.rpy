@@ -5562,8 +5562,8 @@ label mas_f14_monika_vday_origins:
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
     m 3eubsb "...Like me and you!"
     m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
-    m 1ekbsu "I'm glad we're able to share such a magical day, [mas_get_player_nickname()]."
-    m 1ekbfa "Happy Valentine's Day, [player]~"
+    m 1ekbsu "I'm glad we're able to share such a magical day together.{w=0.2} {nw}"
+    extend 1ekbfa "Happy Valentine's Day, [mas_get_player_nickname()]~"
     return
 
 #######################[HOL050] TIME SPENT

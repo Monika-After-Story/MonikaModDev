@@ -5972,7 +5972,7 @@ init 2 python:
         return "A" if should_capitalize else "a"
 
 init 21 python:
-    def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None):
+    def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
         """
         Picks a nickname for the player at random based on accepted nicknames
 
@@ -5985,6 +5985,10 @@ init 21 python:
 
             _default - Default name to return if affection < affectionate or no nicknames have been set/allowed
                 If None, the player's name is assumed
+                (Default: None)
+
+            regex_replace_with_nullstr - Regex str to use to identify parts of a nickname which should be replaced with an empty
+                string. If None, this is ignored
                 (Default: None)
 
         NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
@@ -6013,9 +6017,12 @@ init 21 python:
         #Now select a name
         selected_nickname = random.choice(nickname_pool)
 
+        if regex_replace_with_nullstr is not None:
+            selected_nickname = re.sub(regex_replace_with_nullstr, "", selected_nickname)
+
         #And handle capitalization
         if capitalize:
-            return selected_nickname.capitalize()
+            selected_nickname = selected_nickname.capitalize()
         return selected_nickname
 
     def mas_input(prompt, default="", allow=None, exclude="{}", length=None, with_none=None, pixel_width=None, screen="input", screen_kwargs={}):
