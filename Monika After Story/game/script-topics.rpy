@@ -6379,7 +6379,7 @@ label monika_sayhappybirthday:
                         if take_counter % take_threshold != 0:
                             m 1wud "Eh?!"
                             if take_counter > 1:
-                                m 1lksdla "Sorry again, [player]"
+                                m 1lksdla "Sorry again, [player]."
                             else:
                                 m 1lksdla "Sorry, [mas_get_player_nickname()]."
                                 m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
