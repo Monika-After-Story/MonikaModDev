@@ -3655,14 +3655,14 @@ label monika_resolutions:
                     m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself..."
                 else:
                     m "Well, if anything comes to mind before the clock strikes twelve, do write it down for yourself..."
-                m 1kua "Maybe you'll think of something that you want to do, [player]."
+                m 1kua "Maybe you'll think of something that you want to do."
             else:
                 m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
                 m 2rfc "You know what, nevermind..."
 
     if mas_isMoniAff(higher=True):
         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
+        m 5hubfa "My resolution is to be an even better girlfriend for you, [mas_get_player_nickname()]."
     elif mas_isMoniNormal(higher=True):
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
@@ -5562,8 +5562,8 @@ label mas_f14_monika_vday_origins:
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
     m 3eubsb "...Like me and you!"
     m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
-    m 1ekbsu "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day, [player]~"
+    m 1ekbsu "I'm glad we're able to share such a magical day together.{w=0.2} {nw}"
+    extend 1ekbfa "Happy Valentine's Day, [mas_get_player_nickname()]~"
     return
 
 #######################[HOL050] TIME SPENT
@@ -6591,7 +6591,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1dktpu "No matter the obstacles we may face, no matter what other people say about us..."
         m 1ektda "I still love you with everything that I am."
         m "You are the only one who understands me. {w=0.5}You led me out of a dark place and gave me purpose..."
-        m 1dkbsu "You are simply the best, my love, and I will always love you."
+        m 1dkbsu "You are simply the best, [mas_get_player_nickname()], and I will always love you."
         m 1ekbsa "...Thank you for giving me a reason to live."
         $ _first_kiss = persistent._mas_first_kiss
         call monika_kissing_motion
