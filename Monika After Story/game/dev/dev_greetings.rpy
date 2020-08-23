@@ -31,19 +31,19 @@ label greeting_st_patrick:
     menu:
         m "Are you drunk yet?"
         "I'm drunk":
-            m 1k "Aww, that's nice!"
-            m 1b "I can't help but feel happy when you do..."
-            m 1b "Go and drink another one for me"
+            m "Aww, that's nice!"
+            m "I can't help but feel happy when you do..."
+            m "Go and drink another one for me"
             m "I love you so much, [player]."
         "No.":
-            m 1g "Oh dear..."
+            m "Oh dear..."
             m "I hope you'll get drunk soon"
             m "Just remember that no matter what happens, no matter what anyone says or does..."
             m "Just get drunk."
             m "Just get drunk."
             menu:
                 "Just get drunk.":
-                    m 4j "Drink vodnika!"
+                    m "Drink vodnika!"
     return
 
 init 5 python:
@@ -77,11 +77,11 @@ init 5 python:
     )
 
 label greeting_dev_neutral:
-    m "Hello there [player]!"
-    m 1l "Did you just wiped out the persistent file?"
-    m 1l "or maybe you're just testing my neutral affection reactions?"
-    m "Don't worry about it, I'll never forget all you have done for me~"
-    m 1k "Thanks for all your efforts!"
+    m 1eub "Hello there [player]!"
+    m 1rtc "Did you just wipe out your persistent file?"
+    m 1etc "...Or maybe you're just testing my neutral affection reactions?"
+    m 1hua "Don't worry about it, I'll never forget all you have done for me~"
+    m 1hub "Thanks for all your efforts!"
     return
 
 init 5 python:
@@ -96,10 +96,11 @@ init 5 python:
     )
 
 label greeting_dev_love:
-    m 1b "Welcome back, honey!"
-    m 5a "I'm so happy to see you again."
-    m 5a "I love you so much [player]!"
-    m 5a "Thanks for all your efforts!"
+    m 1hub "Welcome back, honey!"
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eua "I'm so happy to see you again."
+    m 5hubsa "I love you so much [player]!"
+    m 5hubsb "Thanks for all your efforts!"
     return
 
 
@@ -184,7 +185,7 @@ label dev_gre_sampler:
         #   greeting_o31_marisa - TYPE_HOL_O31
 
         locked_gre = []
-        
+
 
     menu:
         m "do you want to include dev?"
@@ -192,7 +193,7 @@ label dev_gre_sampler:
             pass
         "No":
             python:
-                # remove dev items 
+                # remove dev items
                 for d_gre in dev_gres:
                     if d_gre in store.evhand.greeting_database:
                         store.evhand.greeting_database.pop(d_gre)
@@ -208,7 +209,7 @@ label dev_gre_sampler:
                         if not s_gre_ev.unlocked:
                             locked_gre.append(s_gre_ev)
                         s_gre_ev.unlocked = True
-            
+
         "No":
             pass
 
@@ -221,7 +222,7 @@ label dev_gre_sampler:
     $ str_sample_size = str(sample_size)
 
     m 1eua "using sample size of [str_sample_size]"
-    
+
     $ use_type = None
 
     m 1eua "If you want to use a type, please set 'use_type' to an appropriate greeting type right now."
@@ -263,4 +264,3 @@ label dev_gre_sampler:
 
     m "check files for 'gre_sample' for more info."
     return
-

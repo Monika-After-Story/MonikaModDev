@@ -419,6 +419,10 @@ label v0_11_4(version="v0_11_4"):
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
     return
 
 #0.11.3
