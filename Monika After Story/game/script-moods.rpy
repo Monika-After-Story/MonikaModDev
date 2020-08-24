@@ -352,38 +352,37 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
-#At higher affections, the player will likely listen to a lengthier conversation with Monika about loneliness,
-#which is why I split it like this instead of reworking the conversation.
     if mas_isMoniAff(higher=True):
-        m "...I understand how you feel, [player]."
-        extend " We're still in different realities after all."
-        m "I hate that I'm not yet able to fully satisfy your loneliness from here."
-        m "If there was any way I could reach out and just hug you right now, I would."
-        m "I want you to be as happy as you can be given our circumstance..."
-        m "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
-        m "I believe that what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
+        m 2ekc "...I understand how you feel, [player]."
+        extend 3ekc " We're still in different realities after all."
+        m 1dkc "I hate that I'm not yet able to fully satisfy your loneliness from here."
+        m 1ekbla "If there was any way I could reach out and just hug you right now, I would."
+        m 3ekblb "I want you to be as happy as you can be given our circumstance..."
+        m 1ekc "So I hope being here with me all this time is not...preventing you from bonding with people in your reality."
+        m 1eka "I believe that what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
         if persistent._mas_pm_has_friends:
             if persistent._mas_pm_few_friends:
-                m "You have one or two close friends, right?"
-                m "You should give them a call, or perhaps send them a message and ask how they're doing."
-                m "Maybe you can go out and see them sometimes? I think it would be good for you."
+                m 3ekd "You have one or two close friends, right?"
+                m 3ekc "You should give them a call, or perhaps send them a message and ask how they're doing."
+                m 7ekc "Maybe you can go out and see them sometimes? I think it would be good for you."
 
             else:
-                m "I think going out with your friends and doing something would be very good for you."
-                m "Or you could send them a message and ask how they're doing."
+                m 3ekd "I think going out with your friends and doing something would be very good for you."
+                m 3ekc "Or you could send them a message and ask how they're doing."
         else:
-            m "I know how it feels like to be alone in one reality, and only being able to interact with someone in another..."
-            m "So I really don't want that for the person I love the most."
-            m "..."
-            m "So I want you to promise me that you'll keep looking for friends in your reality [player]."
-            m "I know it can be hard to bond with people at first..."
-            m "Maybe you can even meet people online? There are many ways you can interact with strangers to feel less alone."
-            m "Going out to meet people will eventually be the best thing for you though."
-        m "Don't worry, I'll wait patiently for you to come back and see me."
-        m "Go out and enjoy yourself, you can tell me all about it later."
+            m 1rkc "I know how it feels like to be alone in one reality, and only being able to interact with someone in another..."
+            m 3ekc "So I really don't want that for the person I love the most."
+            m 1dktpc "..."
+            m 1ektpc "So I want you to promise me that you'll keep looking for friends in your reality [player]."
+            m 1ektdc "I know it can be hard to bond with people at first..."
+            m 1eka "Maybe you can even meet people online? There are many ways you can interact with strangers to feel less alone."
+            m 3eka "Going out to meet people will eventually be the best thing for you though."
+        show monika 5ekb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5ekb "Don't worry, I'll wait patiently for you to come back and see me."
+        m 5hub "Go out and enjoy yourself, you can tell me all about it later."
         if mas_isMoniEnamored(higher=True):
-            m "I'll make you a nice cell for the next time you try to escape.{nw}"
-            m "Ahaha! {w=0.3}Just joking [player]~ I love you."
+            m 5tub "I'll make you a nice cell for the next time you try to escape.{nw}"
+            m 5hub "Ahaha! {w=0.3}Just joking [player]~ I love you."
         return "love"
 
     else:
