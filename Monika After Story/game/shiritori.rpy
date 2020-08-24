@@ -288,43 +288,51 @@ label game_shiritori:
 
             # Monika's turn
             m "Hmm...{w=1}{nw}"
-            $ last_word_m_invalid = True
 
-            # turn exhaustion
-            if shiritori_monika_turnsleft[last_word_p[-1]] <= 0:
+            # checking for turn exhaustion or if Monika has no valid words to play
+            # valid word check allows for arbitrarily small word dictionaries/large recent_words without an infinite loop occurring
+            if (
+                    (shiritori_monika_turnsleft[last_word_p[-1]] <= 0)
+                    or
+                    (
+                        (recent_words.intersection(dictionary_full[last_word_p[-1]]) != set(dictionary_full[last_word_p[-1]]))
+                        and
+                        (recent_words.intersection(dictionary_monika[last_word_p[-1]]) != set(dictionary_monika[last_word_p[-1]]))
+                    )
+                ):
                 pause (timelimit/4)
                 call monika_loss(reason = "timeout")
                 $ shiritori_loop = False
 
-            # getting Monika's next word
-            # TODO: add a sanity check to make sure Monika even has a possible valid word
-            #   there *shouldn't* be a scenario where such a check fails, but it won't hurt to have it
-            while last_word_m_invalid:
-                if renpy.random.randint(1,100) <= full_dict_chance  and game_variant != "cities":
-                    # small chance to have Monika pull from the full vocab
-                    # not in cities mode - the dicts are the same, just decapitalized
-                    $ last_word_m = renpy.random.choice(dictionary_full[last_word_p[-1]])
-                else:
-                    $ last_word_m = renpy.random.choice(dictionary_monika[last_word_p[-1]])
-
-                # TODO: Add bad word filter here - Monika should be able to recognize them, but not use them herself
-                # checking if recently played
-                if last_word_m not in recent_words:
-                    $ last_word_m_invalid = False
-
-            extend " [last_word_m]{w=1}{nw}"
-            # checking if used
-            if last_word_m.lower() in used_words:
-                call monika_loss(reason = "used")
-                $ shiritori_loop = False
-
             else:
-                # update used word sets and remaining turns
-                python:
-                    shiritori_monika_turnsleft[last_word_p[-1]] -= 1
-                    used_words.add(last_word_m.lower())
-                    recent_words.add(last_word_m.lower())
-                    if len(recent_words) > 10:
-                        recent_words.pop()
+                # getting Monika's next word
+                $ last_word_m_invalid = True
+                while last_word_m_invalid:
+                    if renpy.random.randint(1,100) <= full_dict_chance  and game_variant != "cities":
+                        # small chance to have Monika pull from the full vocab
+                        # not in cities mode - the dicts are the same, just decapitalized
+                        $ last_word_m = renpy.random.choice(dictionary_full[last_word_p[-1]])
+                    else:
+                        $ last_word_m = renpy.random.choice(dictionary_monika[last_word_p[-1]])
+
+                    # TODO: Add bad word filter here - Monika should be able to recognize them, but not use them herself
+                    # checking if recently played
+                    if last_word_m not in recent_words:
+                        $ last_word_m_invalid = False
+
+                extend " [last_word_m]{w=1}{nw}"
+                # checking if used
+                if last_word_m.lower() in used_words:
+                    call monika_loss(reason = "used")
+                    $ shiritori_loop = False
+
+                else:
+                    # update used word sets and remaining turns
+                    python:
+                        shiritori_monika_turnsleft[last_word_p[-1]] -= 1
+                        used_words.add(last_word_m.lower())
+                        recent_words.add(last_word_m.lower())
+                        if len(recent_words) > 10:
+                            recent_words.pop()
 
     return
