@@ -381,7 +381,7 @@ label mas_mood_lonely:
         m 5ekb "Don't worry, I'll wait patiently for you to come back and see me."
         m 5hub "Go out and enjoy yourself, you can tell me all about it later."
         if mas_isMoniEnamored(higher=True):
-            m 5tub "I'll make you a nice cell for the next time you try to escape.{nw}"
+            m 5tub "I'll make you a nice cell for the next time you try to escape."
             m 5hub "Ahaha! {w=0.3}Just joking [player]~ I love you."
         return "love"
 
