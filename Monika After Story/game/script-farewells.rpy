@@ -40,8 +40,6 @@ init -1 python in mas_farewells:
     #(Used in the generic rtg label if we failed to generate a file)
     dockstat_failed_io_still_going_ask_label = None
 
-    MOST_USED_SORT_KEY = lambda x: x.shown_count
-
     def resetDockstatFlowVars():
         """
         Resets all the dockstat flow vars back to the original states (None)
@@ -201,9 +199,9 @@ label mas_farewell_start:
             bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
                 for k,ev in bye_pool_events.iteritems()
-            ], mas_ui.SCROLLABLE_MENU_PROMPT_SORT_KEY)
+            ])
 
-            most_used_fare = sorted(bye_pool_events.values(), key=store.mas_farewells.MOST_USED_SORT_KEY)[-1]
+            most_used_fare = sorted(bye_pool_events.values(), key=Event.shown_count_sort)[-1]
 
             # setup the last option
             final_items = (
