@@ -66,7 +66,7 @@ label monika_gtod_tip000:
     m 3eksdld "...Maybe you think of strict teachers, or stuck-up editors..."
     m 3eka "But I think that there's a certain beauty in mastering how you write and eloquently delivering your message."
     m 1eub "So...{w=0.5}starting today, I'll be sharing Monika's Grammar Tip of the Day!"
-    m 1hua "Let's improve our writing together, my love~"
+    m 1hua "Let's improve our writing together, [mas_get_player_nickname()]~"
     m 3eub "We'll start with clauses, the basic building blocks of sentences!"
 
     # hide the intro topic after viewing
