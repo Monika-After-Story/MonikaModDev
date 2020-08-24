@@ -40,6 +40,8 @@ init -1 python in mas_farewells:
     #(Used in the generic rtg label if we failed to generate a file)
     dockstat_failed_io_still_going_ask_label = None
 
+    MOST_USED_SORT_KEY = lambda x: x.shown_count
+
     def resetDockstatFlowVars():
         """
         Resets all the dockstat flow vars back to the original states (None)
@@ -201,14 +203,17 @@ label mas_farewell_start:
                 for k,ev in bye_pool_events.iteritems()
             ]
 
-            # add the random selection
-            bye_prompt_list.append((_("Goodbye."), -1, False, False))
+            most_used_fare = sorted(bye_pool_events.values(), key=store.mas_farewells.MOST_USED_SORT_KEY)[-1]
 
             # setup the last option
-            bye_prompt_back = (_("Nevermind."), False, False, False, 20)
+            final_items = (
+                (_("Goodbye."), -1, False, False, 20),
+                (most_used_fare.prompt, most_used_fare, False, False, 0),
+                (_("Nevermind."), False, False, False, 0)
+            )
 
         # call the menu
-        call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, bye_prompt_back)
+        call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_VLOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         if not _return:
             # nevermind
