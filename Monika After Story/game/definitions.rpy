@@ -740,7 +740,7 @@ python early:
 
         #repr override
         def __repr__(self):
-            return "<Event: {{ evl: {0} }}>".format(self.eventlabel)
+            return "<Event: (evl: {0})>".format(self.eventlabel)
 
         def monikaWantsThisFirst(self):
             """
