@@ -198,10 +198,10 @@ label mas_farewell_start:
         # we have selectable options
         python:
             # build a prompt list
-            bye_prompt_list = [
+            bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
                 for k,ev in bye_pool_events.iteritems()
-            ]
+            ], mas_ui.SCROLLABLE_MENU_PROMPT_SORT_KEY)
 
             most_used_fare = sorted(bye_pool_events.values(), key=store.mas_farewells.MOST_USED_SORT_KEY)[-1]
 

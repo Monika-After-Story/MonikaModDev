@@ -80,6 +80,9 @@ init -200 python in mas_ui:
     SCROLLABLE_MENU_TXT_MEDIUM_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TXT_MEDIUM_H)
     SCROLLABLE_MENU_TXT_LOW_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TXT_LOW_H)
 
+    #Sort function for scrollable menu prompts
+    SCROLLABLE_MENU_PROMPT_SORT_KEY = key=lambda x: x[0]
+
 # START: Helper method(s)
 init python:
     import store.mas_globals as mas_globals
