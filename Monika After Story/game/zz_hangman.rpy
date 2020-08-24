@@ -587,7 +587,7 @@ label mas_hangman_game_loop:
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
