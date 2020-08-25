@@ -15673,7 +15673,7 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
