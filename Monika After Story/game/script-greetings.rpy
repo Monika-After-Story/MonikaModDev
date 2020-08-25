@@ -2066,44 +2066,39 @@ label greeting_amnesia:
     $ m_name = "Monika"
     m 1eua "Oh, hello!"
     m 1eub "My name is Monika."
-    $ entered_good_name = False
-    $ fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
-    
-    $ lowerfake = fakename.lower()
+    python:
+        entered_good_name = True
+        fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        lowerfake = fakename.lower()
 
     if lowerfake in ("sayori", "yuri", "natsuki"):
-        $ entered_good_name = True
         m 3euc "Uh, that's funny."
         m 3eud "One of my friends shares the same name."
 
     elif lowerfake == "monika":
-        $ entered_good_name = True
         m 3eub "Oh, are you called Monika as well?"
         m 3hub "Ahaha, what are the odds, right?"
 
     elif lowerfake == "monica":
-        $ entered_good_name = True
         m 1hua "Hey, we have such similar names, ehehe~"
 
     elif lowerfake == player.lower():
-        $ entered_good_name = True
         m 1hub "Oh, what a lovely name!"
     
     elif lowerfake == "":
+        $ entered_good_name = False
         m 1euc "..."
         m 1etd "Are you trying to tell me you don't have a name?"
         m 1eka "That's a little strange, but I guess it doesn't matter too much."
 
     elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
+        $ entered_good_name = False
         m 1rksdla "That's...{w=0.4}{nw}"
         extend 1hksdlb "kind of an unusual name, ahaha..."
         m 1eksdla "Are you...{w=0.3}trying to mess with me?"
         m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
-        
-    else:        
-        $ entered_good_name = True
 
-    if entered_good_name is False:
+    if not entered_good_name:
         m 1hua "Well, it's nice to meet you!"
         m 3eud "Say, do you happen to know where everyone else is?"
         m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
