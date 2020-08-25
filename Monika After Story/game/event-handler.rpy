@@ -2593,8 +2593,8 @@ label show_prompt_list(sorted_event_labels):
         hide_unseen_event = mas_getEV("mas_hide_unseen")
 
         final_items = (
-            (_("I don't want to see this menu anymore."), "mas_hide_unseen", False, False, 20),
-            (_("Nevermind."), False, False, False, 0)
+            (_("I don't want to see this menu anymore"), "mas_hide_unseen", False, False, 20),
+            (_("Nevermind"), False, False, False, 0)
         )
 
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)

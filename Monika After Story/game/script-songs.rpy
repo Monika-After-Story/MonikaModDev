@@ -246,7 +246,7 @@ label monika_sing_song_pool_menu:
         else:
             space = 20
 
-        ret_back = ("Nevermind.", False, False, False, space)
+        ret_back = ("Nevermind", False, False, False, space)
         switch = ("I'd like to hear a [switch_str] song instead", "monika_sing_song_pool_menu", False, False, 20)
 
         unlocked_song_list = mas_songs.getUnlockedSongs(length=song_length)
