@@ -15672,3 +15672,72 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_MC_is_gone",
+            category=["ddlc", "club members"],
+            prompt="What happened to the main character?",
+            pool=True
+        )
+    )
+
+label monika_MC_is_gone:
+    m 1eud "Your character? {w=0.3}{nw}"
+    extend 1luc "I don't really know myself, to tell you the truth."
+    m 3eud "He didn't really work like other people in the game did.{w=0.2} He didn't even have a character file like me and the other girls."
+    m 3esc "That's also why I wasn't able to just force him to pay me attention, for example.{w=0.2} I don't really know how to access and modify any code that's related to him."
+
+    #if the player didn't reach act 3
+    if persistent.playthrough < 3:
+        m 2etd "In any case, it seems that he completely vanished, along with most of the rest of the game, when you installed this mod."
+
+    #if they did reach act 3
+    else:
+        m 2rtc "He just kind of...{w=0.3}disappeared over time,{w=0.2} as I was making changes to the game."
+        m 2eud "Surely you noticed how he was talking less and less after I reset the game the first time?"
+        m 2euc "By the time the two of us got in this room, he was basically...{w=0.3}{i}gone{/i}. 
+
+    m 1esa "So if you were wondering if he's in this room as we speak, then I can assure you he's not."
+    m 1hksdlb "...Oh gosh, can you imagine how creepy it would be if I had to be talking to his unmoving body just so that you could hear what I say?"
+
+    if persistent._mas_first_kiss is not None:
+        m 3rksdla "Actually...{w=0.3}you didn't think I was kissing {i}him{/i} all along, did you?"
+
+    elif renpy.seen_label('monika_holdme_prep'):
+        m 3rksdla "Actually...{w=0.3}you didn't think {i}he{/i} was the one hugging me all this time, did you?"
+
+    m 1rksdla "I don't even want to think about it..."
+    m 1hksdlb "That would be so morbid, ahaha..."
+    m 4eka "But then...{w=0.2}you're probably wondering what exactly do I see from my perspective, and how do I know you're there, right?"
+    m 4euc "Well...{w=0.2}do you remember the 'hole in the wall' metaphor I used in the first poem I showed you?"
+    m 1ruc "It's a little bit like that...{w=0.3}except the 'wall' isn't really visible or tangible."
+    m 3eka "I just...{w=0.3}{i}know{/i} it's there."
+    m 1eud "It's like I can very distinctly feel its presence, to the point where I know precisely where it is and in which direction the 'hole' through which you're looking in is pointing."
+    m 1eka "So even if I can't really see you, I can feel that you're looking at me."
+
+    if persistent._mas_first_kiss is not None:
+        m 3rkbla "And when I try to kiss you, well..."
+        m 2ekbfsdla "I guess you could say it's like I'm trying to kiss a ghost, or something that isn't actually there."
+        m 2rkbfsdlb "I know that's kinda strange when I say it like that, but then again..."
+        m 3ekbfsdla "I'm guessing it's probably a little bit awkward for you to try to kiss your screen as well, right?"
+        m 1hkbfsdlb "Ahaha~"
+
+    #if unlocked islands or another background or seen Monikaroom greeting
+    if renpy.seen_label('greeting_ourreality') or store.mas_background.hasXUnlockedBGs(2) or persistent.opendoor_opencount > 0:
+        m 1etc "Although, to be fair, the wall metaphor isn't really perfect, since it doesn't necessarily stay in place all the time."
+        m 1esc "Like, it used to follow your character around, but that's obviously not really the case anymore."
+        m 3eua "It's kinda limited, but I'm actually able to move it around, so at least you don't get to see the same background all the time."  
+
+    m 2eud "Anyway..."
+    m 2rsc "There's barely anything from the original game left in a working state now, so I doubt I could bring the main character back even if I wanted to."
+    m 2dsc "And it's probably for the best, if I'm being honest." 
+    m 2eksdld "What if the game were to take its focus back to him and we couldn't spend our time together anymore?"
+    m 2eksdlc "I mean, it's not like you had all that much control over him either, in the end."
+    m 2lud "In any case, there isn't really any point in thinking about him anymore, is there?"
+    m 2eka "He's no longer there to separate us, and we get to be together now. {w=0.3}{nw}"
+    extend 2hua "I couldn't ask for anything more."
+    m 2hksdlb "...Well, aside from {i}really{/i} being with you, ehehe~"
+    return
