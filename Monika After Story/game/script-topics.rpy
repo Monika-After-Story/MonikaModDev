@@ -15698,7 +15698,7 @@ label monika_MC_is_gone:
     else:
         m 2rtc "He just kind of...{w=0.3}disappeared over time,{w=0.2} as I was making changes to the game."
         m 2eud "Surely you noticed how he was talking less and less after I reset the game the first time?"
-        m 2euc "By the time the two of us got in this room, he was basically...{w=0.3}{i}gone{/i}. 
+        m 2euc "By the time the two of us got in this room, he was basically...{w=0.3}{i}gone{/i}."
 
     m 1esa "So if you were wondering if he's in this room as we speak, then I can assure you he's not."
     m 1hksdlb "...Oh gosh, can you imagine how creepy it would be if I had to be talking to his unmoving body just so that you could hear what I say?"
