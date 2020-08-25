@@ -154,7 +154,6 @@ init -19 python:
         Contains position, layer, scale, and rotation info about a decoration
 
         PROPERTIES:
-            deco - MASDecoration object associated with this MASDecoFrame
             layer - layer this decoration exists on. This should be set by the
                 MASDecoManager
             pos - (x, y) coordinates of the top left of the decoration
@@ -167,28 +166,19 @@ init -19 python:
                 NOTE: CURRENTLY UNUSED
         """
 
-        def __init__(self, 
-                deco,
-                layer=store.mas_deco.LAYER_FRONT,
-                pos=(0, 0),
-                scale=1
-        ):
+        def __init__(self, layer, pos, scale):
             """
             Constructor for a MASDecoFrame
 
             IN:
-                deco - MASDecoration object associated with this frame
                 layer - initial layer to show the decoration on
-                    (Default: LAYER_FRONT)
                 pos - initial (x, y) coordinates to show the decoration on
-                    (Default: (0, 0))
                 scale - (ws, hs) scale values to apply to the image's width and 
                     height. This is fed directly to FactorScale. 
                         ws - multiplied to the decoration's image's width
                         hs - multiplied to the decoration's images' height
                     Both scale values have a precision limit of 2 decimal places
             """
-            self.deco = deco
             self.layer = layer
             self.pos = pos
             self.scale = scale
@@ -240,6 +230,8 @@ init -19 python:
 
             RETURNS: True if successful, false otherwise
             """
+            # TODO: change this
+            # decorations and frames are indepent of each other
             if len(data) < 6:
                 # tuple data has 6 elements
                 return False
@@ -259,7 +251,7 @@ init -19 python:
 
             return True
 
-        def toTuple(self):
+        def toTuple(self): # TODO: change this
             """
             Creates a tuple of this deco's properties for saving.
 
