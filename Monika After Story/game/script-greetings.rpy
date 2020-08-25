@@ -2066,11 +2066,11 @@ label greeting_amnesia:
     $ m_name = "Monika"
     m 1eua "Oh, hello!"
     m 1eub "My name is Monika."
-    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    $ fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
     
     $ lowerfake = fakename.lower()
 
-    if lowerfake == "sayori" or lowerfake == "yuri" or lowerfake == "natsuki":
+    if lowerfake in ("sayori", "yuri", "natsuki"):
         m 3euc "Uh, that's funny."
         m 3eud "One of my friends shares the same name."
 
@@ -2085,17 +2085,19 @@ label greeting_amnesia:
         m 1hub "Oh, what a lovely name!"
     
     elif lowerfake == "":
+        $ persistent._mas_entered_good_name = False
         m 1euc "..."
         m 1etd "Are you trying to tell me you don't have a name?"
         m 1eka "That's a little strange, but I guess it doesn't matter too much."
 
     elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
+        $ persistent._mas_entered_good_name = False
         m 1rksdla "That's...{w=0.4}{nw}"
         extend 1hksdlb "kind of an unusual name, ahaha..."
         m 1eksdla "Are you...{w=0.3}trying to mess with me?"
         m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
 
-    if mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake) or lowerfake == "":
+    if persistent._mas_entered_good_name is False:
         m 1hua "Well, it's nice to meet you!"
         m 3eud "Say, do you happen to know where everyone else is?"
         m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
