@@ -738,6 +738,9 @@ python early:
             else:
                 return super(Event, self).__getattribute__(name)
 
+        #repr override
+        def __repr__(self):
+            return "<Event: (evl: {0})>".format(self.eventlabel)
 
         def monikaWantsThisFirst(self):
             """
