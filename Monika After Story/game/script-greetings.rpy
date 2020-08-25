@@ -2061,6 +2061,9 @@ init 5 python:
         code="GRE"
     )
 
+#Set to false if the player enters a bad/awkward/nonexistent name
+default persistent._mas_entered_good_name = None
+
 label greeting_amnesia:
     $ tempname = m_name
     $ m_name = "Monika"
