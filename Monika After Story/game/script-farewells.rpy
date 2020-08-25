@@ -203,12 +203,19 @@ label mas_farewell_start:
 
             most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
 
-            # setup the last option
-            final_items = (
+            #Setup the last option
+            final_items = [
                 (_("Goodbye."), -1, False, False, 20),
-                (most_used_fare.prompt, most_used_fare, False, False, 0),
                 (_("Nevermind."), False, False, False, 0)
-            )
+            ]
+
+            #add the most used option only if we have one
+            if most_used_fare.shown_count > 0:
+                final_items.insert(1, (most_used_fare.prompt, most_used_fare, False, False, 0))
+                _menu_area = mas_ui.SCROLLABLE_MENU_VLOW_AREA
+
+            else:
+                _menu_area = mas_ui.SCROLLABLE_MENU_LOW_AREA
 
         # call the menu
         call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_VLOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
