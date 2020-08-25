@@ -1884,13 +1884,6 @@ python early:
 
             #NOTE: we don't add the rest since there's no reason to undo those.
 
-        @staticmethod
-        def shown_count_sort(ev):
-            """
-            Static function for sorting event objects by shown_count
-            """
-            return ev.shown_count
-
 # init -1 python:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
