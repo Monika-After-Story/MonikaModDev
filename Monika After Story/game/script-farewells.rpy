@@ -201,7 +201,7 @@ label mas_farewell_start:
                 for k,ev in bye_pool_events.iteritems()
             ])
 
-            most_used_fare = sorted(bye_pool_events.values(), key=Event.shown_count_sort)[-1]
+            most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
 
             # setup the last option
             final_items = (
