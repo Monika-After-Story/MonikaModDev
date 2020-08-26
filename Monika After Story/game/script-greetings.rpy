@@ -3879,10 +3879,10 @@ init 5 python:
     #TODO: How does this work with events/holidays?
     # Should there be a reaction for being out too short/long at this?
 label greeting_dockstat_housework:
-        m "All finished with your chores, [player]?"
-        m "It feels so rewarding to get things done around the house."
-        m "I hope I could give you a little boost to your motivation, ehehe~"
-        m "Now, let's relax and spend some time together."
+    m "All finished with your chores, [player]?"
+    m "It feels so rewarding to get things done around the house."
+    m "I hope I could give you a little boost to your motivation, ehehe~"
+    m "Now, let's relax and spend some time together."
     return
 
 init 5 python:

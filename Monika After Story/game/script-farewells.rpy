@@ -1487,9 +1487,6 @@ label bye_prompt_housework:
                 m "Oh, that's okay."
                 m "You're probably not going too far anyway, ahaha!"
                 m "Do your best, alright? I'll be waiting for you when you get back."
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
-        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
-            return 'quit'
 
     else:
         if mas_isMoniNormal(higher=True):
@@ -1510,9 +1507,10 @@ label bye_prompt_housework:
             m 6ekc "Goodbye, [player]."
         else:
             m 6ckc "..."
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
-        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
-        return 'quit'
+
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
+    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
+    return 'quit'
 
 init 5 python:
     addEvent(
