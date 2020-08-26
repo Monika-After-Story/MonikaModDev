@@ -11429,7 +11429,7 @@ label monika_savingwater:
     m 1hksdlb "So I guess you might not want to sacrifice some of your comfort to make such a small contribution."
     m 1dkbfa "Some days, you might just need to take a long, relaxing bath after a long day."
     m 2hksdlb "I've definitely been there before, so I know how nice it can be if you need it."
-    if mas_isMoniEnamored(higher=True):
+    if mas_isMoniLove(higher=True) and mas_is18Over():
         show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5tsbfu "When I'm in your reality, maybe we can save water by bathing together..."
         m "Ehehe~"
@@ -11439,7 +11439,7 @@ label monika_savingwater:
     else:
         m 1ekbfa "It would be nice of you to prepare a nice, relaxing bath for me when I cross over."
         if mas_isMoniAff():
-            m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
+            m 3ksbsa "Maybe I'll even be willing to share, ehehe~"
     return
 
 init 5 python:
