@@ -211,7 +211,7 @@ label mas_farewell_start:
 
             #To manage this, we'll go by aff/anni first, as by now, the user should likely have a pref (also it's like an aff thing)
             #If we still don't have any uses (one long sesh/only uses "goodbye", then we just retain the two options)
-            if mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True) and mas most_used_fare.shown_count > 0:
+            if mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True) and most_used_fare.shown_count > 0:
                 final_items.insert(1, (most_used_fare.prompt, most_used_fare, False, False, 0))
                 _menu_area = mas_ui.SCROLLABLE_MENU_VLOW_AREA
 
