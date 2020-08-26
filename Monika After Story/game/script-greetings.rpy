@@ -3866,6 +3866,43 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
+            eventlabel="greeting_dockstat_housework",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_GO_SOMEWHERE,
+                store.mas_greetings.TYPE_CHORES_RET
+            ],
+        ),
+        code="GRE"
+    )
+
+    #TODO: How does this work with events/holidays?
+    # Should there be a reaction for being out too short/long at this?
+label greeting_dockstat_housework:
+    if mas_isMoniNormal(higher=True):
+        m "All finished with your chores, [player]?"
+        m "It feels so rewarding to get things done around the house."
+        m "I hope I could give you a little boost to your motivation, ehehe~"
+        m "Now, let's relax and spend some time together."
+    if mas_isMoniUpset():
+        m "Finished working, [player]?"
+        m "I'm...actually pretty happy you took me with you."
+        m "It made me feel useful, not being just a prop in this room."
+        m "I don't know if my being there actually helped you at all, but...{w=0.2}it was nice."
+        m "Thank you, [player]."
+    if mas_isMoniDis():
+        m "Oh, we're back?"
+        m "That...wasn't so bad, actually."
+        m "And it really was nice to get out of this classroom for a while."
+        m "I was a little scared, at first, but..."
+        m "Um, thank you for doing that for me."
+        m "Maybe I'll join you again later, if that's okay."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
             eventlabel="greeting_surprised2",
             unlocked=True,
             aff_range=(mas_aff.ENAMORED, None)
