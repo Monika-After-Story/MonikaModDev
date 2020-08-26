@@ -546,7 +546,21 @@ label bye_prompt_sleep:
 
     if 20 <= curr_hour < 24:
         # decent time to sleep
-        if mas_isMoniNormal(higher=True):
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 5) == 1:
+            m 1rublsdla "Think I could...get a goodnight kiss?"
+            $ _history_list.pop()
+            menu:
+                m "Think I could...get a goodnight kiss?"
+                "Sure!":
+                    call monika_kissing_motion
+                    m 6ekbfa "Now I hope you'll dream better~"
+                    m 1hkbfb "Sleep tight!"
+
+                "Perhaps another time.":
+                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1kkb "I love you! Sleep tight!"
+
+        elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
             m 1hua "Sweet dreams!"
 
