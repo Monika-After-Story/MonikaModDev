@@ -1487,8 +1487,8 @@ label bye_prompt_housework:
                 m "Oh, that's okay."
                 m "You're probably not going too far anyway, ahaha!"
                 m "Do your best, alright? I'll be waiting for you when you get back."
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
-            $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
             return 'quit'
 
     else:
