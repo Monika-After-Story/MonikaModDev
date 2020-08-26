@@ -546,7 +546,7 @@ label bye_prompt_sleep:
 
     if 20 <= curr_hour < 24:
         # decent time to sleep
-        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 5) == 1:
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 3) == 1:
             m 1rublsdla "Think I could...get a goodnight kiss?"
             $ _history_list.pop()
             menu:
@@ -575,7 +575,21 @@ label bye_prompt_sleep:
 
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
-        if mas_isMoniNormal(higher=True):
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 4) == 1:
+            m 1rublsdla "Think I could...get a goodnight kiss?"
+            $ _history_list.pop()
+            menu:
+                m "Think I could...get a goodnight kiss?"
+                "Sure!":
+                    call monika_kissing_motion
+                    m 6ekbfa "Now I hope you'll dream better~"
+                    m 1hkbfb "Sleep tight!"
+
+                "Perhaps another time.":
+                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1kkb "I love you! Sleep tight!"
+
+        elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
@@ -593,7 +607,21 @@ label bye_prompt_sleep:
 
     elif 3 <= curr_hour < 5:
         # pretty late to sleep
-        if mas_isMoniNormal(higher=True):
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 5) == 1:
+            m 1rublsdla "Think I could...get a goodnight kiss?"
+            $ _history_list.pop()
+            menu:
+                m "Think I could...get a goodnight kiss?"
+                "Sure!":
+                    call monika_kissing_motion
+                    m 6ekbfa "I hope you'll finally get some shuteye now~"
+                    m 1hkbfb "Sleep tight!"
+
+                "Perhaps another time.":
+                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1kkb "I love you! Sleep tight!"
+
+        elif mas_isMoniNormal(higher=True):
             m 1euc "[player]..."
             m "Make sure you get enough rest, okay?"
             m 1eka "I don't want you to get sick."
@@ -620,7 +648,33 @@ label bye_prompt_sleep:
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
-        if mas_isMoniBroken():
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None and random.randint(1, 6) == 1:
+            show monika 2dsc
+            pause 0.7
+            m 2tfd "[player]!"
+            m "You stayed up the entire night!"
+            m 2tfu "I bet you can barely keep your eyes open."
+            $ _cantsee_a = glitchtext(15)
+            $ _cantsee_b = glitchtext(12)
+            menu:
+                "[_cantsee_a]":
+                    pass
+                "[_cantsee_b]":
+                    pass
+            m "I thought so.{w=0.2} Go get some rest, [player]."
+            m 1rublsdla "Think I could...get a goodnight kiss?"
+            $ _history_list.pop()
+            menu:
+                m "Think I could...get a goodnight kiss?"
+                "Sure!":
+                    call monika_kissing_motion
+                    m 6ekbfa "Now I hope you'll finally get some shuteye~"
+                    m 1hkbfb "Sleep tight!"
+
+                "Perhaps another time.":
+                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1kkb "I love you! Sleep tight!"
+        elif mas_isMoniBroken():
             m 6ckc "..."
 
         else:
