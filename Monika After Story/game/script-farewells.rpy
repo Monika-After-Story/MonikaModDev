@@ -1462,24 +1462,14 @@ init 5 python:
 label bye_prompt_housework:
 #TODOS: Chance for upset/distressed to not want to go with you, if not I'd ideally like it to default to regular goodbye
 # How to set it to non-generic "we're home" greeting?
-    if persistent.mas_carryme_choice == mas.dockstat.CM_TAKE_MONI:
+    if persistent.mas_carryme_choice == mas.dockstat.CM_TAKE_MONI and mas_isMoniNormal(higher=True):
         if mas_isMoniNormal(higher=True):
             m "You've got some things to get done around the house?"
             m "I'm glad you're taking good care of your space, [player]."
             m "Hang on, I'll come with you!"
             jump mas_dockstat_iostart
-        elif mas_isMoniUpset():
-            m "Oh, you're doing some work?"
-            m "...Well, I'm glad you're being productive, at least."
-            m "I'm going to make sure you're not slacking off, though."
-            jump mas_dockstat_iostart
-        elif mas_isMoniDis():
-            m "...I want to come with."
-            m "I need to get out of this room, I don't really care if we're not going anywhere."
-            jump mas_dockstat_iostart
 
-    elif persistent.mas_carryme_choice = mas.dockstat.CM_ASK_MONI
-        if mas_isMoniNormal(higher=True):
+    elif persistent.mas_carryme_choice == mas.dockstat.CM_ASK_MONI and mas_isMoniNormal(higher=True):
         m "Oh, you've got some chores to get done?"
         m "I know there's not much I can do to help out, but..."
         m "Could I come along?{nw}"
@@ -1497,48 +1487,6 @@ label bye_prompt_housework:
                 m "Oh, that's okay."
                 m "You're probably not going too far anyway, ahaha!"
                 m "Do your best, alright? I'll be waiting for you when you get back."
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
-            $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
-            return 'quit'
-
-        elif mas_isMoniUpset():
-        m "Oh, you're doing chores?"
-        m "At least you're taking care of something..."
-        m "Should I come with you this time?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Should I come with you this time?{fast}"
-        
-            "Yes.":
-                m "Alright, good."
-                m "I can't really do much, but maybe this will do {i}some{/i} good."
-                m "Let's...try and enjoy ourselves, okay?"
-                jump mas_dockstat_iostart
-
-            "No.":
-                m "Hmm. Alright."
-                m "I'm sure you have your reasons."
-                m "You'd better come back when you're done."
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
-            $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
-            return 'quit'
-        elif mas_isMoniDis():
-        m "I see..."
-        m "Um...could I come with you this time?"
-        m "It would be nice to get out of here for a bit...{nw}"
-        $ _history_list.pop()
-        menu:
-            m "It would be nice to get out of here for a bit...{fast}"
-        
-            "Yes."
-                m "Really? I mean--of course!"
-                m "I'll do my best to stay out of the way, don't worry!"
-                jump mas_dockstat_iostart
-            
-            "No."
-                m "Ah...I see."
-                m "I guess it doesn't really matter."
-                m "I'll...stay here for now, then."
             $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
             $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
             return 'quit'
