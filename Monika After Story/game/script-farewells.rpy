@@ -1462,7 +1462,7 @@ init 5 python:
 label bye_prompt_housework:
 #TODOS: Chance for upset/distressed to not want to go with you, if not I'd ideally like it to default to regular goodbye
 # How to set it to non-generic "we're home" greeting?
-    if persistent.mas_carryme_choice = mas.dockstat.CM_TAKE_MONI
+    if persistent.mas_carryme_choice == mas.dockstat.CM_TAKE_MONI:
         if mas_isMoniNormal(higher=True):
             m "You've got some things to get done around the house?"
             m "I'm glad you're taking good care of your space, [player]."
@@ -1487,19 +1487,20 @@ label bye_prompt_housework:
         menu:
             m "Could I come along?{fast}"
 
-            "Yes."
+            "Yes.":
                 m "Okay!"
                 m "I'll do my best to provide moral support!"
                 m "Give me just a second to get ready..."
                 jump mas_dockstat_iostart
 
-            "No."
+            "No.":
                 m "Oh, that's okay."
                 m "You're probably not going too far anyway, ahaha!"
                 m "Do your best, alright? I'll be waiting for you when you get back."
             $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
             $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
             return 'quit'
+
         elif mas_isMoniUpset():
         m "Oh, you're doing chores?"
         m "At least you're taking care of something..."
@@ -1508,13 +1509,13 @@ label bye_prompt_housework:
         menu:
             m "Should I come with you this time?{fast}"
         
-            "Yes."
+            "Yes.":
                 m "Alright, good."
                 m "I can't really do much, but maybe this will do {i}some{/i} good."
                 m "Let's...try and enjoy ourselves, okay?"
                 jump mas_dockstat_iostart
 
-            "No."
+            "No.":
                 m "Hmm. Alright."
                 m "I'm sure you have your reasons."
                 m "You'd better come back when you're done."
@@ -1542,7 +1543,7 @@ label bye_prompt_housework:
             $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
             return 'quit'
 
-    else
+    else:
         if mas_isMoniNormal(higher=True):
             m 1eub "Doing your chores, [player]?"
             m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
