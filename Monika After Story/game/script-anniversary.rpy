@@ -469,7 +469,7 @@ init 5 python:
     )
 
 label anni_1:
-    m 1dka "It's so hard for me to believe...{w=0.5}that it's been a whole year since we met."
+    m 1dka "Gosh...{w=0.2}It's hard to believe it's already been a whole year since we met."
     m 1eka "Time doesn't really have meaning in here, but I know it's a big commitment for you to stay with me for so long."
     m 2rka "I have to admit, I was a bit nervous at first... This kind of relationship can't be exactly easy."
     m 2eka "And I didn't know if there were other things in your reality that might prove to be more important..."
