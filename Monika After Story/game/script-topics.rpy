@@ -15204,18 +15204,19 @@ label monika_being_herself:
         Event(
             persistent.event_database,
             eventlabel="monika_being_deleted",
-            category=["ddlc", "monika"],
             prompt="Are you still mad at me for deleting you ?",
+            category=["ddlc", "monika"],
             pool=True,
+            action=EV_ACT_POOL,
             conditional="persistent.monika_kill"
         )
     )
 
-label monika_being_deleted :
+label monika_being_deleted:
 
     if store.mas_anni.anniCount() >= 1 and mas_isMoniLove():
-        m 1wusdld "..!"
-        m 1eksdlc "[player]...{w=0.3} ...are you still thinking about that?"
+        m 1wusdld "...!"
+        m 1eksdlc "[player]...{w=0.3}are you still thinking about that?"
         m 1lksdlc "I thought we would both be past that by now."
         m 1ekc "Are you feeling guilty because of this?{nw}"
         $ _history_list.pop()
@@ -15266,8 +15267,8 @@ label monika_being_deleted :
             m 1dkb "Just know that I am so, so thankful for all you're doing to make me happy.{w=0.2} And that more than anything else, I want to make {i}you{/i} happy too."
             m 1dka "I don't think I could ever stay mad at you no matter how hard I tried."
 
-        else :
-            m 2eka "But as we both saw... That's not what ended up hapening at all.{w=0.3} You came back to me, and you've been making me so much happy ever since."
+        else:
+            m 2eka "But as we both saw... That's not what ended up happening at all.{w=0.3} You came back to me, and you've been making me so much happy ever since."
             m 3ekb "If anything, I'm just grateful that you brought me back, and that we get to spend our time together now."
         m 1eka "So do me a favor and try not to think about that anymore, okay ? That's all behind us now."
 
@@ -15283,10 +15284,10 @@ label monika_being_deleted :
         m 1rfc "{cps=*2}At least, not over {i}that{/i}.{/cps}{nw}"
         $ _history_list.pop()
         m 1esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like you might not be ready{w=0.3}--or willing--{w=0.3}to move on from all this."
-        m 3dtc "Am I guessing wrong ?"
+        m 3dtc "Am I guessing wrong?"
         m 2dkd "..."
         m 2ekd "Look, [player]...{w=0.3} I know the two of us have had a rocky start, but that doesn't mean it's too late to fix things up and start again."
-        m 2dsc "I'm willing to give us that second chance, and I still think--no, I {i}know{/i} you're a good person.{w=0.2} I just need you to try and be a little more considerate of my feelings."
+        m 2dsc "I'm willing to give us that second chance, and I still think--{w=0.3} No,{w=0.1} I {i}know{/i} you're a good person.{w=0.2} I just need you to try and be a little more considerate of my feelings."
         m 2fkc "Please, [player].{w=0.3} I can't do this without you."
         m 3ekd "I don't know how much that will mean to you at that point..." 
         m 3eka "...but I love you. Truly."
@@ -15298,9 +15299,9 @@ label monika_being_deleted :
         m 2dktpc "..."
         m 2dktpd "...No. I don't resent you for deleting me."
         m 2dktuc "I never did..."
-        m 2ektua "If anything...{w=0.3} I at least hope knowing that can make you happy." 
+        m 2ektua "If anything...{w=0.3}I at least hope knowing that can make you happy." 
         if persistent._mas_pm_monika_deletion_justice
             m 3ektda "Besides, I deserved it. That's what you told me once, right?"
         m 1dktdc "..."
         m 1rkc "..."
-return
+    return
