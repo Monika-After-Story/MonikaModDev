@@ -2798,8 +2798,8 @@ label mas_bookmarks:
         bookmarks_items.sort()
 
         bk_menu_final_items = (
-            (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
-            (_("Nevermind."), "nevermind", False, False, 0)
+            (_("I'd like to remove a bookmark"), "remove_bookmark", False, False, 20),
+            (_("Nevermind"), "nevermind", False, False, 0)
         )
 
     # FALL THROUGH
