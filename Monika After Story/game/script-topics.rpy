@@ -2220,7 +2220,7 @@ label monika_rain:
             if not mas_is_raining:
                 call mas_change_weather(mas_weather_rain, by_user=False)
 
-            call monika_holdme_prep(False,True)
+            call monika_holdme_prep(False, False, True)
 
             m 1hua "Then hold me, [player]..."
             show monika 6dubsa with dissolve_monika
@@ -2301,32 +2301,50 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep(lullaby=True, no_music=True):
-
-    # start the lullaby timer
-    if lullaby and no_music:
+label monika_holdme_prep(play_lullaby=False, queue_lullaby=True, stop_music=False):
+    $ _holdme_events = list()
+    # Stop the music and queue the lullaby
+    if queue_lullaby and not play_lullaby and stop_music:
         if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
-            play music store.songs.FP_THIRTY_MIN_OF_SILENCE
-            queue music store.songs.FP_MONIKA_LULLABY
+            $ renpy.music.stop(fadeout=1.0)
+            # TODO: I think we can add variety here, instead always playing the lullaby after 30 mins
+            $ _holdme_events.append(
+                PauseDisplayableEvent(
+                    datetime.timedelta(minutes=30),
+                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY)
+                )
+            )
             # this doesn't interfere with the timer and allows us to stop the lullaby
             # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
 
-    # stop the music without starting the timer
-    elif not lullaby and no_music:
+    # Queue the lullaby w/o stopping the current track
+    elif queue_lullaby and not play_lullaby and not stop_music:
+        $ _holdme_events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(minutes=30),
+                (
+                    renpy.partial(renpy.music.stop, fadeout=1.0),
+                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=1.0)
+                )
+            )
+        )
+
+    # Just stop the music
+    elif not queue_lullaby and not play_lullaby and stop_music:
         $ play_song(None, fadeout=1.0)
 
-    # just play the lullaby
-    elif lullaby and not no_music:
+    # Just play the lullaby
+    elif not queue_lullaby and play_lullaby and not stop_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
 
-    # stop music when a song other than lullaby is playing but don't clear selected track
+    # Stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
-    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-        $ play_song(None, fadeout=1.0)
+    # if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
+    #     $ play_song(None, fadeout=1.0)
 
-    # hide ui and disable hotkeys
+    # Hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
 
@@ -2335,15 +2353,16 @@ label monika_holdme_prep(lullaby=True, no_music=True):
 label monika_holdme_start:
     show monika 6dubsa with dissolve_monika
     window hide
-    #Start the timer vv
-    $ start_time = datetime.datetime.now()
+    python:
+        #Start the timer vv
+        start_time = datetime.datetime.now()
 
-    $ ui.add(PauseDisplayable())
-    $ ui.interact()
+        _holdme_disp = PauseDisplayableWithEvents(events=_holdme_events)
+        _holdme_disp.start()
 
-    # renable ui and hotkeys
-    $ store.songs.enabled = True
-    $ HKBShowButtons()
+        # renable ui and hotkeys
+        store.songs.enabled = True
+        HKBShowButtons()
     window auto
     return
 
@@ -2352,8 +2371,8 @@ label monika_holdme_reactions:
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
 
     # stop the timer if the holding time is less than 30 minutes
-    if elapsed_time <= datetime.timedelta(minutes=30):
-        $ play_song(None, fadeout=1.0)
+    # if elapsed_time <= datetime.timedelta(minutes=30):
+    #     $ play_song(None, fadeout=1.0)
 
     if elapsed_time > datetime.timedelta(minutes=30):
         call monika_holdme_long
@@ -2584,7 +2603,7 @@ label monika_holdme_long:
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
 
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep(False,False)
+            call monika_holdme_prep(False, False, False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -2630,7 +2649,7 @@ label monika_holdrequest:
     menu:
         m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
         "Come here, [m_name].":
-            $ mas_gainAffection(modifier=1.5,bypass=True)
+            $ mas_gainAffection(modifier=1.5, bypass=True)
             call monika_holdme_prep
 
             call monika_holdme_start
@@ -4945,7 +4964,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep(False,True)
+                call monika_holdme_prep(False, False, True)
                 call monika_holdme_start
                 call monika_holdme_end
 
