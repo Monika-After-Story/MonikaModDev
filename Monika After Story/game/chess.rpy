@@ -2541,7 +2541,6 @@ init python:
                     "It's your turn, [player].",
                     "Your move, [player]~",
                     "What will you do, I wonder...",
-                    "I'm enjoying this game.",
                     "Alright, your turn, [player]~",
                     "You got this, [player]!"
                 ],
