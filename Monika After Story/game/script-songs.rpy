@@ -607,7 +607,7 @@ label mas_song_your_song:
     m 2hubfb "{i}~I hope you don't mind~{/i}"
     m 2hub "{i}~That I put down in words~{/i}"
     m 1dso "{i}~How wonderful life is while you're in the world~{/i}"
-    m 1hua "Ahaha~"
+    m 1hub "Ahaha~"
     m 3eka "It's not often I find songs that relate to me as much as this one does."
     m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
     return
