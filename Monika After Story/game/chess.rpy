@@ -1060,10 +1060,10 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
 
     else:
         m 1lksdlb "Ah, yeah. You wouldn't do that to me."
-        m "I must have misplaced the save files."
+        m "I must have misplaced the save file."
         m 1lksdlc "Sorry, [player]."
-        m "I'll make it up to you..."
-        m 1eua "by starting a new game!"
+        m 1eka "I'll make it up to you...{w=0.3}{nw}"
+        extend 1eub "by starting a new game!"
 
     return None
 
@@ -1585,6 +1585,7 @@ init python:
             #Are we sensitive to the user input?
             self.sensitive = True
 
+            #TODO: Make these quips category ordered so we can have specialized ones for different scenarios
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
 
@@ -2505,9 +2506,9 @@ init python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            # if player is Black, this button is enabled until Monika's first
-            # move. Not sure why, but defaulting buttons to disable at first
-            # is fine.
+
+            #If player is Black, this button is enabled until Monika's first move.
+            #Not sure why, but defaulting buttons to disable at first is fine.
             self._button_draw.disable()
 
             self._button_done = MASButtonDisplayable.create_stb(
@@ -2707,8 +2708,10 @@ init python:
                     #Adjust MASPieces
                     self.update_pieces()
 
-                    # Increment the undo counter
+                    #Increment the undo counter
                     self.undo_count += 1
+
+                    #TODO: Allow undo of a checkmate, but still flag as a loss
 
                     self.set_button_states()
                     return None
@@ -2788,8 +2791,6 @@ init python:
             Manages button states
             """
             if not self.is_game_over and self.is_player_white == self.current_turn:
-                should_enable_undo = self.practice_mode and self.move_history
-
                 #Considering this is a more casual environment, we're using a modified version of the 50 move rule to allow draw requests
                 if self.board.halfmove_clock >= 40:
                     self._button_draw.enable()
