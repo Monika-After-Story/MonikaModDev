@@ -749,7 +749,7 @@ label mas_chess_savegame(silent=False):
                 )
 
         #Check if we should return
-        save_name == "cancel_input":
+        if save_name == "cancel_input":
             return
 
         python:
