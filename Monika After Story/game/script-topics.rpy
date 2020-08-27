@@ -2339,11 +2339,6 @@ label monika_holdme_prep(play_lullaby=False, queue_lullaby=True, stop_music=Fals
     elif not queue_lullaby and play_lullaby and not stop_music:
         $ play_song(store.songs.FP_MONIKA_LULLABY)
 
-    # Stop music when a song other than lullaby is playing but don't clear selected track
-    # this way the lullaby will play only if the user has clicked the no music button
-    # if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-    #     $ play_song(None, fadeout=1.0)
-
     # Hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -2369,10 +2364,6 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
-
-    # stop the timer if the holding time is less than 30 minutes
-    # if elapsed_time <= datetime.timedelta(minutes=30):
-    #     $ play_song(None, fadeout=1.0)
 
     if elapsed_time > datetime.timedelta(minutes=30):
         call monika_holdme_long
