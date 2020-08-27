@@ -557,7 +557,7 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
-                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
@@ -586,7 +586,7 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
-                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
@@ -618,7 +618,7 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
-                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
@@ -662,17 +662,17 @@ label bye_prompt_sleep:
                 "[_cantsee_b]":
                     pass
             m "I thought so.{w=0.2} Go get some rest, [player]."
-            m 1rublsdla "Think I could...get a goodnight kiss?"
+            m 1rublsdla "Think I could...get a goodnight kiss first?"
             $ _history_list.pop()
             menu:
-                m "Think I could...get a goodnight kiss?"
+                m "Think I could...get a goodnight kiss first?"
                 "Sure!":
                     call monika_kissing_motion
                     m 6ekbfa "Now I hope you'll finally get some shuteye~"
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
-                    m 1wkblc "Aww...Okay, but you owe me one."
+                    m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
         elif mas_isMoniBroken():
             m 6ckc "..."
