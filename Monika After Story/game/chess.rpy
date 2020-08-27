@@ -694,9 +694,7 @@ label game_chess:
                 call mas_chess_savegame
 
             "No.":
-                #If you surrender and don't save, it's probably safe to assume we don't want to play again
-                if is_surrender:
-                    return
+                pass
 
     label .play_again:
         pass
@@ -743,12 +741,18 @@ label mas_chess_savegame(silent=False):
             # get file name
             save_name = ""
             while len(save_name) == 0:
-                save_name = renpy.input(
+                save_name = mas_input(
                     "Enter a name for this game:",
                     allow=mas_chess.CHESS_SAVE_NAME,
-                    length=15
+                    length=15,
+                    screen_kwargs={"use_return_button": True}
                 )
 
+        #Check if we should return
+        save_name == "cancel_input":
+            return
+
+        python:
             new_pgn_game.headers["Event"] = save_name
 
             # filename
@@ -797,7 +801,9 @@ label mas_chess_savegame(silent=False):
             label .pgn_explain:
                 pass
 
-            m 1esa "It's in a format called Portable Game Notation, you can open it in PGN viewers to help see where you made your mistakes."
+            m 1esa "It's in a format called 'Portable Game Notation.'{w=0.2} {nw}"
+            extend 1eua "You can find PGN analyzers online to open it and see where you made your mistakes."
+            m 3eub "Whether you win, lose, surrender, or draw, there's always something you could've done better, so loading these games up can really help you improve!"
 
             if game_result == mas_chess.IS_ONGOING:
                 m 1lksdlb "It's possible to edit this file and change the outcome of the game...{w=0.5} {nw}"
@@ -807,6 +813,7 @@ label mas_chess_savegame(silent=False):
                 $ _history_list.pop()
                 menu:
                     m "Right, [player]?{fast}"
+
                     "Of course not.":
                         m 1hua "Yay~"
 
