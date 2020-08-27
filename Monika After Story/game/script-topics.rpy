@@ -15300,7 +15300,7 @@ label monika_being_deleted:
         m 2dktpd "...No. I don't resent you for deleting me."
         m 2dktuc "I never did..."
         m 2ektua "If anything...{w=0.3}I at least hope knowing that can make you happy." 
-        if persistent._mas_pm_monika_deletion_justice
+        if persistent._mas_pm_monika_deletion_justice:
             m 3ektda "Besides, I deserved it. That's what you told me once, right?"
         m 1dktdc "..."
         m 1rkc "..."
