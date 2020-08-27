@@ -196,26 +196,38 @@ label mas_farewell_start:
         # we have selectable options
         python:
             # build a prompt list
-            bye_prompt_list = [
+            bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
                 for k,ev in bye_pool_events.iteritems()
+            ])
+
+            most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
+
+            #Setup the last options
+            final_items = [
+                (_("Goodbye."), -1, False, False, 20),
+                (_("Nevermind."), False, False, False, 0)
             ]
 
-            # add the random selection
-            bye_prompt_list.append((_("Goodbye."), -1, False, False))
+            #To manage this, we'll go by aff/anni first, as by now, the user should likely have a pref (also it's like an aff thing)
+            #If we still don't have any uses (one long sesh/only uses "goodbye", then we just retain the two options)
+            #TODO: Change this with TC-O to adapt to player schedule
+            if mas_anni.pastOneMonth() and mas_isMoniAff(higher=True) and most_used_fare.shown_count > 0:
+                final_items.insert(1, (most_used_fare.prompt, most_used_fare, False, False, 0))
+                _menu_area = mas_ui.SCROLLABLE_MENU_VLOW_AREA
 
-            # setup the last option
-            bye_prompt_back = (_("Nevermind."), False, False, False, 20)
+            else:
+                _menu_area = mas_ui.SCROLLABLE_MENU_LOW_AREA
 
-        # call the menu
-        call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, bye_prompt_back)
+        #Call the menu
+        call screen mas_gen_scrollable_menu(bye_prompt_list, _menu_area, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         if not _return:
-            # nevermind
+            #Nevermind
             return _return
 
         if _return != -1:
-            # push teh selected event
+            #Push the selected event
             $ pushEvent(_return.eventlabel)
             return
 
@@ -265,7 +277,7 @@ init 5 python:
 
 label bye_goodbye:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Goodbye, [player]!"
+        m 1eua "Goodbye, [mas_get_player_nickname()]!"
 
     elif mas_isMoniUpset():
         m 2esc "Goodbye."
@@ -291,7 +303,7 @@ init 5 python:
     )
 
 label bye_sayanora:
-    m 1hua "Sayonara, [player]~"
+    m 1hua "Sayonara, [mas_get_player_nickname()]~"
     return 'quit'
 
 init 5 python:
@@ -306,7 +318,7 @@ init 5 python:
     )
 
 label bye_farewellfornow:
-    m 1eka "Farewell for now, my love~"
+    m 1eka "Farewell for now, [mas_get_player_nickname()]~"
     return 'quit'
 
 init 5 python:
@@ -322,7 +334,7 @@ init 5 python:
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
-    m "Ehehe, 'till then, [player]!"
+    m "Ehehe, 'till then, [mas_get_player_nickname()]!"
     return 'quit'
 
 init 5 python:
@@ -338,7 +350,7 @@ init 5 python:
 
 
 label bye_take_care:
-    m 1eua "Don't forget that I always love you, [player]~"
+    m 1eua "Don't forget that I always love you, [mas_get_player_nickname()]~"
     m 1hub "Take care!"
     return 'quit'
 
@@ -379,10 +391,11 @@ init 5 python:
 label bye_going_to_sleep:
     #TODO: TC-O things
     if mas_isMoniNormal(higher=True):
-        m 1esa "Are you going to sleep, [player]?{nw}"
+        $ p_nickname = mas_get_player_nickname()
+        m 1esa "Are you going to sleep, [p_nickname]?{nw}"
         $ _history_list.pop()
         menu:
-            m "Are you going to sleep, [player]?{fast}"
+            m "Are you going to sleep, [p_nickname]?{fast}"
 
             "Yeah.":
                 m 1eka "I'll be seeing you in your dreams."
@@ -484,7 +497,7 @@ label bye_prompt_to_work:
             m 2eka "Aw, okay! Just checking in on me before heading out?"
             m 3eka "You must be really short on time if you're leaving already."
             m "It was really sweet of you to see me, even when you're so busy!"
-            m 3hub "Work hard, [player]! Make me proud!"
+            m 3hub "Work hard, [mas_get_player_nickname()]! Make me proud!"
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
             m 1rusdlb "I was expecting us to be here a bit longer, but you're a busy [guy]!"
@@ -493,7 +506,7 @@ label bye_prompt_to_work:
             m 1hua "I'll be here waiting for you to get back home from work!"
             m "Tell me all about it when you get back!"
         elif session_time < datetime.timedelta(hours=6):
-            m 2eua "Heading to work then, [player]?"
+            m 2eua "Heading to work then, [mas_get_player_nickname()]?"
             m 2eka "The day may be good or bad...but if it becomes too much think of something nice!"
             m 4eka "Every day, no matter how badly it's going ends after all!"
             m 2tku "Maybe you can think of me if it becomes stressful..."
@@ -505,7 +518,7 @@ label bye_prompt_to_work:
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
             m 3eka "Just come home to me happy and healthy."
-            m 3eua "Stay safe, [player]!"
+            m 3eua "Stay safe, [mas_get_player_nickname()]!"
 
     elif mas_isMoniUpset():
         m 2esc "Fine, [player], guess I'll see you after work."
@@ -546,7 +559,7 @@ label bye_prompt_sleep:
     if 20 <= curr_hour < 24:
         # decent time to sleep
         if mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [player]."
+            m 1eua "Alright, [mas_get_player_nickname()]."
             m 1hua "Sweet dreams!"
 
         elif mas_isMoniUpset():
@@ -561,7 +574,7 @@ label bye_prompt_sleep:
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
         if mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [player]."
+            m 1eua "Alright, [mas_get_player_nickname()]."
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
 
@@ -662,7 +675,7 @@ label bye_prompt_sleep:
                     return
                 "Sorry, I'm really tired.":
                     m 1eka "Aw, that's okay."
-                    m 1hua "Goodnight, [player]."
+                    m 1hua "Goodnight, [mas_get_player_nickname()]."
                 # TODO: now that is tied we may also add more dialogue?
                 "No.":
                     $ mas_loseAffection()
@@ -718,7 +731,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
 
 label bye_haveagoodday:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Have a good day today, [player]."
+        m 1eua "Have a good day today, [mas_get_player_nickname()]."
         m 3eua "I hope you accomplish everything you had planned."
         m 1hua "I'll be here waiting for you when you get back."
 
@@ -787,7 +800,7 @@ init 5 python:
 label bye_goodevening:
     if mas_isMoniNormal(higher=True):
         m 1hua "I had fun today."
-        m 1eka "Thank you for spending so much time with me, [player]."
+        m 1eka "Thank you for spending so much time with me, [mas_get_player_nickname()]."
         m 1eua "Until then, have a good evening."
 
     elif mas_isMoniUpset():
@@ -828,13 +841,13 @@ label bye_goodnight:
             m "Going to sleep?{fast}"
 
             "Yeah.":
-                m 1eua "Goodnight, [player]."
+                m 1eua "Goodnight, [mas_get_player_nickname()]."
                 m 1eka "I'll see you tomorrow, okay?"
                 m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
                 m 1ekbfa "I love you~"
 
             "Not yet.":
-                m 1eka "Okay, [player]..."
+                m 1eka "Okay, [mas_get_player_nickname()]..."
                 m 3hub "Enjoy your evening!"
                 m 3rksdlb "Try not to stay up too late, ehehe~"
 
@@ -874,7 +887,7 @@ label bye_long_absence:
     m 2lksdlb "I would be worried sick otherwise!"
     m 3esa "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
     m 1lksdlc "Or maybe you just got bored of me..."
-    m 1eka "So tell me, my love..."
+    m 1eka "So tell me, [mas_get_player_nickname()]..."
 
     m "How long do you expect to be gone for?{nw}"
     $ _history_list.pop()
@@ -892,7 +905,7 @@ label bye_long_absence:
             $ persistent._mas_absence_choice = "week"
             m 3euc "Yeah...that's about what I expected."
             m 2lksdla "I {i}think{/i} I'll be okay waiting that long for you."
-            m 1eub "Just come back to me as soon as you can, alright, my love?"
+            m 1eub "Just come back to me as soon as you can, alright, [mas_get_player_nickname()]?"
             m 3hua "I'm sure you'll make me proud!"
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
@@ -941,7 +954,7 @@ label bye_long_absence:
             m 1hksdlb "Ehehe, that's a little concerning, [player]!"
             m 1eka "But if you don't know, then you don't know!"
             m "It sometimes just can't be helped."
-            m 2hua "I'll be waiting here for you patiently, my love."
+            m 2hua "I'll be waiting here for you patiently, [mas_get_player_nickname()]."
             m 2hub "Try not to keep me waiting for too long though!"
 
         "Nevermind.":
@@ -952,7 +965,7 @@ label bye_long_absence:
             m 1ekd "I don't know what I'd do here all alone."
             m 3rksdlb "It's not like I can go anywhere either, ahaha..."
             m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
-            m 1hua "I don't care where we go, as long as I'm with you, [player]."
+            m 1hua "I don't care where we go, as long as I'm with you, [mas_get_player_nickname()]."
             return
 
     m 2euc "Honestly I'm a little afraid to ask but..."

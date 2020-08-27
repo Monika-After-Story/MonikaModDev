@@ -56,6 +56,7 @@ init -200 python in mas_ui:
     SCROLLABLE_MENU_TALL_H = 640
     SCROLLABLE_MENU_MEDIUM_H = 572
     SCROLLABLE_MENU_LOW_H = 528
+    SCROLLABLE_MENU_VLOW_H = 484
 
     SCROLLABLE_MENU_TXT_TALL_H = 528
     SCROLLABLE_MENU_TXT_MEDIUM_H = 440
@@ -68,10 +69,12 @@ init -200 python in mas_ui:
     #    TALL for menus w/o final buttons
     #    MEDIUM for menus w/ one final button
     #    LOW for menus w/ 2 final buttons
+    #    VLOW for menus w/ 3 final buttons
 
     SCROLLABLE_MENU_TALL_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TALL_H)
     SCROLLABLE_MENU_MEDIUM_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_MEDIUM_H)
     SCROLLABLE_MENU_LOW_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_LOW_H)
+    SCROLLABLE_MENU_VLOW_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_VLOW_H)
 
     SCROLLABLE_MENU_TXT_TALL_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TXT_TALL_H)
     SCROLLABLE_MENU_TXT_MEDIUM_AREA = (SCROLLABLE_MENU_X, SCROLLABLE_MENU_Y, SCROLLABLE_MENU_W, SCROLLABLE_MENU_TXT_MEDIUM_H)
@@ -340,15 +343,14 @@ init -10 python in mas_ui:
         """
         return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
 
-    def check_scr_menu_choose_prompt(buttons_data, selected_prompt):
+    def check_scr_menu_choose_prompt(buttons_data, selected_prompt, default_prompt):
         """
         A method to choose a prompt for the return button.
-        "Nevermind." by default,
-        or selected_prompt if the user has selected something
 
         IN:
             buttons_data - the screen buttons data
-            selected_prompt - the prompt for the return button
+            selected_prompt - the prompt for the return button when at least one item was selected
+            default_prompt - the prompt to use when no items are selected
 
         OUT:
             string with prompt
@@ -356,4 +358,4 @@ init -10 python in mas_ui:
         for data in buttons_data.itervalues():
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
-        return "Nevermind."
+        return default_prompt

@@ -466,7 +466,7 @@ label ch30_reload_continuous_dlg:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]

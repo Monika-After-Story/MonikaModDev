@@ -83,7 +83,7 @@ label dev_check_scrollable_menu_test:
                     ("Button #{0}".format(i), "button_#_{0}".format(i), False, true_value, false_value)
                 )
 
-    call screen mas_check_scrollable_menu(items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Finish test", return_all=return_all)
+    call screen mas_check_scrollable_menu(items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Finish test", return_all=return_all)
 
     if _return:
         $ result = str(_return).replace("{", "{{")
