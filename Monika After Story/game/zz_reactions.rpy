@@ -1774,9 +1774,11 @@ label mas_reaction_cupcake:
 
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
-    $ persistent._mas_filereacts_just_reacted = False
-    #Save all the new sprite data just in case we crash shortly after this
-    $ renpy.save_persistent()
+    python:
+        persistent._mas_filereacts_just_reacted = False
+        #Save all the new sprite data just in case we crash shortly after this
+        store.mas_selspr.save_selectables()
+        renpy.save_persistent()
     return
 
 init 5 python:
