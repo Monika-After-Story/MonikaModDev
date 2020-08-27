@@ -3471,12 +3471,12 @@ init -1 python in _mas_root:
             "piano": False,
             "nou": False
         }
-        renpy.game.persistent.sessions={
-            'last_session_end':datetime.datetime.now(),
-            'current_session_start':datetime.datetime.now(),
-            'total_playtime':datetime.timedelta(seconds=0),
-            'total_sessions':0,
-            'first_session':datetime.datetime.now()
+        renpy.game.persistent.sessions = {
+            "last_session_end": datetime.datetime.now(),
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 0,
+            "first_session": datetime.datetime.now()
         }
         renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
@@ -7357,7 +7357,13 @@ default persistent.ever_won = {
     "piano": False,
     "nou": False
 }
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
+default persistent.sessions = {
+    "last_session_end": None,
+    "current_session_start": None,
+    "total_playtime": datetime.timedelta(seconds=0),
+    "total_sessions": 0,
+    "first_session": datetime.datetime.now()
+}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default persistent._mas_enable_random_repeats = True

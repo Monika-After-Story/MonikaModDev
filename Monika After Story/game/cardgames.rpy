@@ -174,12 +174,12 @@ init 5 python in mas_nou:
             _("No U, [player]~"),
             _("No U~"),
             _("Just one card left! No U, [player]~"),
-            _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2} U!{fast}"),
+            _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2} U!"),
             _("No U!")
         )
         # Quips when you ask her to yell NoU, but she already did it
         QUIPS_MONIKA_ALREADY_YELLED_NOU = (
-            _("Too late, [player]!"),
+            _("But, [player], I've said 'No U'!"),
             _("I've already said 'No U', [player]!"),
             _("Silly, I already did that!~"),
             _("[player]... How did you miss that? I already said 'No U'!"),
@@ -417,7 +417,7 @@ init 5 python in mas_nou:
             1: [
                 (_("Jeez, I can't believe you had another card!"),),
                 (_("Jeez, you're really trying to win!"),),
-                (_("Can't let it go, huh?"))
+                (_("Can't let it go, huh?"),)
             ],
             2: [
                 (_("Oh my gosh! How much of these do you have?!"),),
@@ -1774,7 +1774,7 @@ init 5 python in mas_nou:
                     colour = self.game.game_log[-2]["played_card"].colour
 
                     self.player_cards_data["has_colour"] = colour
-                    self.player_cards_data["reset_in"] = 4
+                    self.player_cards_data["reset_in"] = 3
 
                     # remove it from the other dict
                     if colour in self.player_cards_data["lacks_colours"]:
@@ -1828,7 +1828,7 @@ init 5 python in mas_nou:
 
                     # now compare the set and the list, then iterate to get the only element from it
                     self.player_cards_data["has_colour"] = next(iter(all_colours.difference(missing_colours)))
-                    self.player_cards_data["reset_in"] = 4
+                    self.player_cards_data["reset_in"] = 3
 
                 # Now we check if we should reset some of our data
                 # reset the data if the player drew 2+ cards in their turn
@@ -1916,12 +1916,7 @@ init 5 python in mas_nou:
                     ),
                     reverse=True
                 )
-                # renpy.invoke_in_new_context(
-                #     renpy.say,
-                #     who=m,
-                #     what=str(sorted_list).replace("[", "[[").replace("{", "{{"),
-                #     interact=True
-                # )
+
                 return sorted_list
 
             def __get_cards_data(self, cards=None):
@@ -2004,12 +1999,6 @@ init 5 python in mas_nou:
                     key=lambda card_obj: card_obj.value,
                     reverse=should_reverse
                 )
-                # renpy.invoke_in_new_context(
-                #     renpy.say,
-                #     who=m,
-                #     what=str(sorted_cards).replace("[", "[["),
-                #     interact=True
-                # )
 
                 # Now fill the dict with the sorted data
                 for card in sorted_cards:
@@ -2123,7 +2112,8 @@ init 5 python in mas_nou:
                     Sorts by both cards colours and labels
 
                     ASSUMES:
-                        cards (global)
+                        cards
+                        sorted_cards_data
                     """
                     labels = (
                         "Skip",
@@ -2196,7 +2186,7 @@ init 5 python in mas_nou:
                         else:
                             srt_data_key = "amount"
 
-                        highest_value = sorted_cards_data[0][1][srt_data_key]
+                        highest_value = float(sorted_cards_data[0][1][srt_data_key])
 
                         # no reason to enter the loop if we have no number cards
                         if highest_value:
@@ -2204,7 +2194,7 @@ init 5 python in mas_nou:
                                 # if the difference between the highest valued colour
                                 # and the one we're checking is more than 60%,
                                 # then it isn't worth it, leave to set colour by values of number cards
-                                if (highest_value - sorted_cards_data[j][1][srt_data_key]) / highest_value >= 0.6:
+                                if float(highest_value - sorted_cards_data[j][1][srt_data_key]) / highest_value >= 0.6:
                                     break
 
                                 # try to find an action card with the colour of most valuebale number cards
@@ -2238,12 +2228,6 @@ init 5 python in mas_nou:
             def choose_card(self, should_draw=True, should_choose_colour=True):
                 """
                 Monika chooses a card to play
-                There are different variants depending on the game state
-                TODO: now that we have 'player_cards_data':
-                    Monika could try not to play the colour the player has
-                    if that will lead to their victory (<2 card?)
-                    That especially will help in a situation where she
-                    knows for sure that the player has only 1 colour
 
                 IN:
                     should_draw - should Monika draw a card
@@ -2258,31 +2242,6 @@ init 5 python in mas_nou:
                     or None if we don't want to (or can't) play a card this turn
                 """
                 # nested functions to analyse cards
-                # def is_bad_card(card):
-                #     """
-                #     Checks if the player may win if Monika played the given card
-                #     if it is a bad card, then Monika will TRY to play something else
-
-                #     IN:
-                #         card - card to check
-
-                #     OUT:
-                #         boolean - True if dangerous, False otherwise
-
-                #     ASSUMES:
-                #         total_cards
-                #     """
-                #     if (
-                #         # total_cards < 5
-                #         # total_player_cards < 3
-                #         card.colour == self.player_cards_data["has_colour"]
-                #         or (
-                #             len(self.player_cards_data["lacks_colours"]) > 1
-                #             # better to sort card data considering player cards
-                #         )
-                #         or card.colour in self.player_cards_data["lacks_colours"]
-                #     ):
-                #         pass
                 def analyse_numbers():
                     """
                     Goes through the cards data in the order we sorted it
@@ -2296,24 +2255,42 @@ init 5 python in mas_nou:
                         sorted_cards_data
                         player_cards_data
                     """
-                    for colour_id in range(4):
+                    MAX_ID = 4
+
+                    if persistent._mas_game_nou_house_rules["victory_points"]:
+                        data_key = "value"
+
+                    else:
+                        data_key = "amount"
+
+                    highest_value = float(sorted_cards_data[0][1][data_key])
+                    want_try_another_colour = False
+                    reserved_card = None
+
+                    for colour_id in range(MAX_ID):
                         # let's see if we want to play a 0
-                        if sorted_cards_data[colour_id][1]["amount"]:
+                        if sorted_cards_data[colour_id][1]["amount"] > 2:
                             # get the last card as a possible 0
                             last_card = self.hand[
                                 sorted_cards_data[colour_id][1]["ids"][-1]
                             ]
 
                             if (
-                                last_card.label == "0"
-                                and sorted_cards_data[colour_id][1]["amount"] > 2
+                                last_card.label == "0"# make sure it's a 0
                                 and (
-                                    last_card.colour in self.player_cards_data["lacks_colours"]
+                                    last_card.colour in self.player_cards_data["lacks_colours"]# and player doesn't have this colour
                                     or (
-                                        # we can't be sure here, so just a guess play
-                                        last_card.colour != self.player_cards_data["has_colour"]
-                                        and total_player_cards > 2
-                                        and renpy.random.randint(1, 3) == 1# 1/3
+                                        total_player_cards > 2
+                                        and (
+                                            (
+                                                self.player_cards_data["has_colour"] is not None
+                                                and last_card.colour != self.player_cards_data["has_colour"]
+                                            )
+                                            or (
+                                                self.player_cards_data["has_colour"] is None
+                                                and renpy.random.randint(1, 3) == 1# 1/3
+                                            )
+                                        )
                                     )
                                 )
                             ):
@@ -2322,13 +2299,75 @@ init 5 python in mas_nou:
                                     return last_card
                                 # Otherwise fall through
 
+                        # get this colour name
+                        this_colour = sorted_cards_data[colour_id][0].replace("num_", "")
+                        # get total value (or amount) of cards with this colour
+                        this_colour_value = float(sorted_cards_data[colour_id][1][data_key])
+                        # get the id for the next loop
+                        next_colour_id = colour_id + 1
+
+                        # make sure we have more colours to check (idx from 0 to 3)
+                        if next_colour_id < MAX_ID:
+                            # next_colour = sorted_cards_data[next_colour_id][0].replace("num_", "")
+                            next_colour_value = float(sorted_cards_data[next_colour_id][1][data_key])
+
+                        else:
+                            # next_colour = None
+                            next_colour_value = None
+
+                        # does player has cards with this colour?
+                        if this_colour == self.player_cards_data["has_colour"]:
+                           # if next_colour_value is None:
+                                # want_reserve_next_card = True
+                                #TODO
+                                #move to this to the check below in its own condition
+                                # so ew can get in the same flow anyway
+
+                            # if so, can we play something else?
+                            if (
+                                (
+                                    next_colour_value is None# even if we can't choose a better colour to play, we'll still use the same logic to decide if we want to play a card at all
+                                    or (
+                                        #next_colour_value is not None# we have more colours to choose from
+                                        highest_value == 0# all our cards are 0's
+                                        or (highest_value - this_colour_value) / highest_value < 0.5# or the difference in values is less than 50%
+                                        or total_player_cards < 3# or the player is about to finish the game
+                                    )
+                                )
+                                and (
+                                    this_colour != self.game.discardpile[-1].colour# no reason not to play it if this's the current colour
+                                    or renpy.random.randint(1, 5) == 1# 1/5 to take the risk and draw a card in hope it'll worth it
+                                )
+                            ):
+                                want_try_another_colour = True
+
                         # try to play something
                         for id in sorted_cards_data[colour_id][1]["ids"]:
                             card = self.hand[id]
 
                             if self.game.__is_matching_card(self, card):
-                                return card
+                                if (
+                                    want_try_another_colour
+                                    and reserved_card is not None
+                                ):
+                                    # reserve this card
+                                    reserved_card = card
+                                    # and check the next colour
+                                    break
 
+                                else:
+                                    return card
+
+                    # If we are here, we couldn't find a good card to play
+                    if (
+                        reserved_card is not None# Do we have a reserved variant to play?
+                        and (
+                            total_cards < 4# play if we may win soon
+                            or renpy.random.randint(1, 4) == 1# 1/4 to play anyway
+                        )
+                    ):
+                        return reserved_card
+                    # Or None if we can't don't want to play a number right now
                     return None
 
                 def analyse_actions():
@@ -2897,6 +2936,7 @@ init 5 python in mas_nou:
                 if (
                     next_card_to_play is not None
                     and next_card_to_play.type == "wild"
+                    and len(self.hand) > 1# No need to announce the colour if you won lol
                 ):
                     reaction = {
                         "type": self.game.MONIKA_PLAYED_WILD,
@@ -3196,7 +3236,7 @@ init 5 python:
             unlocked=False,
             conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL, None)# you can play NoU only on norm+
         )
     )
@@ -3465,7 +3505,7 @@ init 5 python:
             unlocked=False,
             conditional="renpy.seen_label('mas_reaction_gift_carddeck')",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL, None)# you can play NoU only on norm+
         )
     )
@@ -3509,7 +3549,6 @@ label monika_explain_nou_rules:
     m 3eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the new color."
     m 3eua "Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
-    # FIXME: generate 1eku
     m 1eku "But I think the point of it is not winning anyway, right?"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "It's all about spending time together~"
@@ -3794,7 +3833,6 @@ label mas_nou_reaction_player_wins_round:
 
         elif dlg_choice == 2:
             if len(store.mas_nou.game.monika.hand) < 3:
-                # FIXME: generate 1ruu
                 m 1ruu "Ah... I almost won this one too!"
                 m 3hua "Well played, [player]."
 
@@ -3819,7 +3857,6 @@ label mas_nou_reaction_player_wins_round:
                 m 1hub "Another quick win for you!"
 
                 if renpy.random.randint(1, 4) == 1:
-                    # FIXME: generate 1kuu
                     m 1kuu "But you better not to relax, [player]~"
 
             elif dlg_choice == 2:
@@ -3843,7 +3880,6 @@ label mas_nou_reaction_player_wins_round:
             )
         ):
             m 4wuo "Wow!{w=0.2} Played all your cards already?"
-            # FIXME: generate 7husdlb
             m 7husdlb "That was quick!"
 
         else:
@@ -3877,7 +3913,6 @@ label mas_nou_reaction_player_wins_round:
                 m 1hub "Well played!"
 
         elif dlg_choice == 2:
-            # FIXME: generate 1kuu (dupe)
             m 1kuu "That was intense!"
 
         else:
@@ -3900,7 +3935,6 @@ label mas_nou_reaction_player_wins_round:
         elif dlg_choice == 3:
             m 2eub "And you won! Good job!"
             if renpy.random.randint(1, 6) > 5:
-                # FIXME: generate 2kuu
                 m 2kuu "But don't expect to win everytime~"
 
         else:
@@ -3916,7 +3950,6 @@ label mas_nou_reaction_player_wins_game:
     if dlg_choice == 1:
         m 1eud "Oh! {w=0.2}{nw}"
         extend 3eub "Actually you won this game!"
-        # FIXME: generate 1ruu
         # 1lua instead?
         m 1ruu "I didn't notice you were so close to victory."
         m 3hua "Good job, ehehe~"
@@ -4093,7 +4126,6 @@ label mas_nou_reaction_monika_wins_game:
 
             # 1/15
             else:
-                # FIXME: generate 7ttu
                 m 7ttu "Did you let me win on purpose?"
                 m 1huu "Ehehe~"
 
@@ -4139,7 +4171,6 @@ label mas_nou_reaction_player_surrenders:
         m 1eka "I do enjoy every moment I'm with you~"
 
     elif store.mas_nou.game.current_turn == 1:
-        # FIXME: generate 1etd
         m 1etd "But we just started."
         m 1ekc "Let me know when you'll have time."
 
