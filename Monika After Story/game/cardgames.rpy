@@ -165,30 +165,30 @@ init 5 python in mas_nou:
         )
 
         # NoU quips
-        # Quips when Monika says No U
+        # Quips when Monika says NOU
         QUIPS_MONIKA_YELLS_NOU = (
-            _("No U, [player]!"),
-            _("I have only one card left, [player]! No U!"),
-            _("No U! Keep up, [player]!~"),
-            _("No U, [player], ehehe~"),
-            _("No U, [player]~"),
-            _("No U~"),
-            _("Just one card left! No U, [player]~"),
+            _("NOU, [player]!"),
+            _("I have only one card left, [player]! NOU!"),
+            _("NOU! Keep up, [player]!~"),
+            _("NOU, [player], ehehe~"),
+            _("NOU, [player]~"),
+            _("NOU~"),
+            _("Just one card left! NOU, [player]~"),
             _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2} U!"),
-            _("No U!")
+            _("NOU!")
         )
         # Quips when you ask her to yell NoU, but she already did it
         QUIPS_MONIKA_ALREADY_YELLED_NOU = (
-            _("But, [player], I've said 'No U'!"),
-            _("I've already said 'No U', [player]!"),
+            _("But, [player], I've said 'NOU'!"),
+            _("I've already said 'NOU', [player]!"),
             _("Silly, I already did that!~"),
-            _("[player]... How did you miss that? I already said 'No U'!"),
-            _("Uh, [player]...{w=0.3} I already said 'No U'!")
+            _("[player]... How did you miss that? I already said 'NOU'!"),
+            _("Uh, [player]...{w=0.3} I already said 'NOU'!")
         )
         # Quips when you ask her to yell NoU, but she has more than 1 card
         QUIPS_MONIKA_DONT_NEED_YELL_NOU = (
             _("[player], but I have more than one card in my hands!"),
-            _("Silly, you yell 'No U' when you have only one card left!"),
+            _("Silly, you yell 'NOU' when you have only one card left!"),
             _("Ahaha~ A bit too early, [player]!"),
             _("It's not the time yet, [player]!"),
             _("[player], I have [len(store.mas_nou.game.monika.hand)] more cards to play!")
@@ -233,30 +233,30 @@ init 5 python in mas_nou:
         # Quips when the player says nou for no reason
         QUIPS_PLAYER_DONT_NEED_YELL_NOU = (
             _("Silly, you still have a lot of cards to play!"),
-            _("Silly, you yell 'No U' when you have only one card left!"),
+            _("Silly, you yell 'NOU' when you have only one card left!"),
             _("I think you still have more than one card, [player]."),
-            _("You have too many cards to say 'No U' now."),
-            _("A bit early for yelling 'No U', [player]!"),
-            _("You should say 'No U' before playing your second last card, [player]."),
+            _("You have too many cards to say 'NOU' now."),
+            _("A bit early for yelling 'NOU', [player]!"),
+            _("You should say 'NOU' before playing your second last card, [player]."),
             _("[player], you can be so silly sometimes~")
         )
         # Quips when Monika catches you on not saying NoU
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
-            _("Aha!{w=0.3} No U, [player]!"),
-            _("You forgot to say 'No U', [player]!"),
-            _("You thought I'd not notice?~ You should've said 'No U'!"),
-            _("Certain someone who forgot to yell 'No U' must draw 2 cards now~"),
-            _("Guess who must take 2 cards for not saying 'No U'~"),
-            _("I caught you! You didn't say 'No U'!"),
-            _("You didn't say 'No U'! And now you must take 2 cards!~")
+            _("Aha!{w=0.3} NOU, [player]!"),
+            _("You forgot to say 'NOU', [player]!"),
+            _("You thought I'd not notice?~ You should've said 'NOU'!"),
+            _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
+            _("Guess who must take 2 cards for not saying 'NOU'~"),
+            _("I caught you! You didn't say 'NOU'!"),
+            _("You didn't say 'NOU'! And now you must take 2 cards!~")
         )
         # Quips when the player said nou, but didn't play a card afterwards
         QUIPS_PLAYER_FALSE_NOU = (
-            _("You should say 'No U' only if you're going to play a card, [player]."),
+            _("You should say 'NOU' only if you're going to play a card, [player]."),
             _("Why didn't you play a card?"),
-            _("Eh, [player]? You should play a card after saying 'No U'!"),
-            _("Don't say 'No U' if you're not going to play a card."),
-            _("[player], don't yell 'No U' for no reason..."),
+            _("Eh, [player]? You should play a card after saying 'NOU'!"),
+            _("Don't say 'NOU' if you're not going to play a card."),
+            _("[player], don't yell 'NOU' for no reason..."),
             _("[player], you can be so silly sometimes~")
         )
 
@@ -885,10 +885,10 @@ init 5 python in mas_nou:
                     current_player.yelled_nou = False
                     current_player.nou_reminder_timeout = 0
 
-                # Did this player yell 'No U', but didn't play a card?
+                # Did this player yell 'NOU', but didn't play a card?
                 # FIXME: this could use elif instead?
                 if current_player.should_play_card:
-                    # Monika will always play a card after saying 'No U'
+                    # Monika will always play a card after saying 'NOU'
                     # But we will have a fallback just in case
                     if current_player.isAI:
                         quips = self.QUIPS_MONIKA_FALSE_NOU
@@ -1080,8 +1080,8 @@ init 5 python in mas_nou:
                     next_player.should_draw_cards = 4
                     current_player.should_draw_cards = 0
 
-            # if this player should say 'No U', we'll set the timeout
-            # during which they can be cautch by other players if they don't say 'No U'
+            # if this player should say 'NOU', we'll set the timeout
+            # during which they can be cautch by other players if they don't say 'NOU'
             if len(current_player.hand) == 1:
                 current_player.nou_reminder_timeout = self.current_turn + 2
 
@@ -1636,9 +1636,9 @@ init 5 python in mas_nou:
                 should_draw_cards - (int) should player draw cards and how much
                 played_card - (bool) has player played a card in this turn
                 should_skip_turn - (bool) should player skip their turn
-                yelled_nou - (bool) has player yelled "No U" before playing their last card
-                should_play_card - (bool) do we expect this player to play a card (after saying 'No U')
-                nou_reminder_timeout - (int) the turn when this player cannot be caught for not saying 'No U' any longer
+                yelled_nou - (bool) has player yelled "NOU" before playing their last card
+                should_play_card - (bool) do we expect this player to play a card (after saying 'NOU')
+                nou_reminder_timeout - (int) the turn when this player cannot be caught for not saying 'NOU' any longer
             """
             def __init__(self, leftie=False):
                 """
@@ -2663,7 +2663,7 @@ init 5 python in mas_nou:
             def choose_reaction(self, next_card_to_play):
                 """
                 Helps Monika choose a dialogue based on the state of the game
-                NOTE: 'No U' is handled differently, right in announce_reaction(), w/o corresponding reactions from here
+                NOTE: 'NOU' is handled differently, right in announce_reaction(), w/o corresponding reactions from here
 
                 TODO: reaction when you both are drawing cards
                     because no one has a card with the current colour
@@ -2974,8 +2974,8 @@ init 5 python in mas_nou:
 
                 OUT:
                     tuple of 2 booleans:
-                        has_yelled_nou - whether or not Monika yelled 'No U' this turn
-                        has_reminded_yell_nou - whether or not Monika reminded the player to yell 'No U' this turn
+                        has_yelled_nou - whether or not Monika yelled 'NOU' this turn
+                        has_reminded_yell_nou - whether or not Monika reminded the player to yell 'NOU' this turn
                 """
                 def should_miss_this_nou():
                     """
@@ -3056,7 +3056,7 @@ init 5 python in mas_nou:
                 A wrapper around renpy.say for Monika's reactions
 
                 Here we check if the reaction passes rng check, add modifiers to it,
-                    and handle 'No U' quips
+                    and handle 'NOU' quips
 
                 IN:
                     reaction - reaction to announce
@@ -3230,7 +3230,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_change_nou_house_rules",
-            prompt="Let's change our house rules for No U",
+            prompt="Let's change our house rules for NOU",
             category=["games"],
             pool=True,
             unlocked=False,
@@ -3298,7 +3298,7 @@ label monika_change_nou_house_rules:
 
         $ renpy.say(m, _("What kind of rule would you like to change?"), interact=False)
 
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         show monika 1eua at t11 zorder MAS_MONIKA_Z
 
@@ -3499,7 +3499,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_explain_nou_rules",
-            prompt="Can you explain No U rules to me?",
+            prompt="Can you explain NOU rules to me?",
             category=["games"],
             pool=True,
             unlocked=False,
@@ -3528,10 +3528,10 @@ label monika_explain_nou_rules:
     m 1esa "You don't {i}have{/i} to play it, though."
     m "After you played a card or skipped your turn, my turn begins. And so on until someone wins."
     m 3eub "When you play your second last card, {w=0.2}{nw}"
-    extend 7eub "you should yell 'No U' so I can know that you're close to victory!"
+    extend 7eub "you should yell 'NOU' so I can know that you're close to victory!"
     m 2rksdla "Well, I guess yelling won't work in our case..."
     m 7hub "But you can press the button to let me know!"
-    m 1eua "If one of us forgot to say 'No U,' the other can {i}remind{/i} them. That will make the unlucky person to draw 2 more cards."
+    m 1eua "If one of us forgot to say 'NOU,' the other can {i}remind{/i} them. That will make the unlucky person to draw 2 more cards."
     m 3eub "Besides the Number cards, there are also special cards known as Action and Wild cards."
     m 3eua "You can distinguish an Action card by its symbol and a Wild card by its black color."
     m 1eua "Those cards can make your opponent skip their turn or even draw some cards."
@@ -4284,31 +4284,33 @@ screen nou_gui():
         if (
             player.plays_turn
             and not player.played_card
-            and not player.drew_card
         ):
             if not store.mas_nou.disable_yell_button:
-                textbutton _("No U!"):
+                textbutton _("NOU!"):
                     action [
                         SetField(mas_nou, "disable_yell_button", True),
                         Function(fn_handle_nou_logic, "player")
                     ]
 
             else:
-                textbutton _("No U!")
+                textbutton _("NOU!")
 
-            if not store.mas_nou.disable_remind_button:
-                textbutton _("You forgot to say 'No U'!"):
+            if (
+                not store.mas_nou.disable_remind_button
+                and not player.drew_card
+            ):
+                textbutton _("You forgot to say 'NOU'!"):
                     action [
                         SetField(mas_nou, "disable_remind_button", True),
                         Function(fn_handle_nou_logic, "monika")
                     ]
 
             else:
-                textbutton _("You forgot to say 'No U'!")
+                textbutton _("You forgot to say 'NOU'!")
 
         else:
-            textbutton _("No U!")
-            textbutton _("You forgot to say 'No U'!")
+            textbutton _("NOU!")
+            textbutton _("You forgot to say 'NOU'!")
 
         null height 20
 

@@ -177,10 +177,11 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_nou",
-            prompt="No U",
+            prompt="NOU",
             aff_range=(mas_aff.NORMAL, None)
         ),
-        code="GME"
+        code="GME",
+        restartBlacklist=True
     )
 
 label mas_nou:

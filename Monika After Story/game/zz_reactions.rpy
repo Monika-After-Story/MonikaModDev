@@ -2866,7 +2866,7 @@ label mas_reaction_gift_carddeck:
     if mas_isMoniNormal(higher=True):
         m 1wub "Oh!{w=0.3} A deck of cards!"
         m 3eua "And I think I know how to play this game!"
-        m 1eua "Have you ever played 'NoU', [player]?{w=0.3}{nw} "
+        m 1eua "Have you ever played 'NOU', [player]?{w=0.3}{nw} "
         extend 4eub "It's a popular card game where to win you need to play all your cards before your opponents."
         # TODO: 2husdlb could work
         m 1rssdlb "It sounds quite obvious, ahaha~"
@@ -2875,7 +2875,7 @@ label mas_reaction_gift_carddeck:
         m 1esc "I also heard it might {i}affect{/i} your relationships with people you're playing with."
 
         if mas_isMoniAff(higher=True):
-            show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eubsa "But I know our relationship can stand much more than just a simple card game~"
             m 5hubsa "Ehehe~"
             m 3eub "Let me know when you want to play it."
