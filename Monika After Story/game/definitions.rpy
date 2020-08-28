@@ -738,6 +738,9 @@ python early:
             else:
                 return super(Event, self).__getattribute__(name)
 
+        #repr override
+        def __repr__(self):
+            return "<Event: (evl: {0})>".format(self.eventlabel)
 
         def monikaWantsThisFirst(self):
             """
@@ -1883,7 +1886,6 @@ python early:
                     mas_rmallEVL(ev.eventlabel)
 
             #NOTE: we don't add the rest since there's no reason to undo those.
-
 
 # init -1 python:
     # this should be in the EARLY block
