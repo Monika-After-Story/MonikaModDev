@@ -897,7 +897,7 @@ init 5 python in mas_nou:
                         quips = self.QUIPS_PLAYER_FALSE_NOU
 
                     self.set_sensitive(False)
-                    self.__say_quip(quips)
+                    self.__say_quip(quips, new_context=True)
 
                     current_player.should_play_card = False
 
@@ -916,7 +916,7 @@ init 5 python in mas_nou:
                     quips = self.QUIPS_MONIKA_CARDS_LIMIT
 
                 self.set_sensitive(False)
-                self.__say_quip(quips)
+                self.__say_quip(quips, new_context=True)
 
                 next_player.should_draw_cards = 0
 
