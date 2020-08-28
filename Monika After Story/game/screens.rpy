@@ -138,9 +138,6 @@ init python in mas_layout:
         store.layout.QUIT_NO = quit_no
 
 
-#    def  # TODO: function
-
-
 init 900 python:
     import store.mas_layout
     store.mas_layout.setupQuits()
@@ -2494,12 +2491,10 @@ style scrollable_menu_vbox is vbox:
     spacing 5
 
 style scrollable_menu_button is choice_button:
-    selected_background Frame("mod_assets/buttons/generic/selected_bg.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_dark is choice_button_dark:
-    selected_background Frame("mod_assets/buttons/generic/selected_bg_d.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
@@ -2585,6 +2580,30 @@ style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_but
 
 style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_menu_button_text_dark:
     bold True
+
+# check scrollable menu
+style check_scrollable_menu_button is scrollable_menu_button:
+    background Frame("mod_assets/buttons/checkbox/[prefix_]check_bg.png", Borders(33, 31, 5, 5), tile=True)
+    padding (33, 5, 25, 5)
+
+style check_scrollable_menu_button_dark is scrollable_menu_button_dark:
+    background Frame("mod_assets/buttons/checkbox/[prefix_]check_bg_d.png", Borders(33, 32, 5, 5), tile=True)
+    padding (33, 5, 25, 5)
+
+style check_scrollable_menu_button_text is scrollable_menu_button_text
+style check_scrollable_menu_button_text_dark is scrollable_menu_button_text_dark
+style check_scrollable_menu_new_button is scrollable_menu_new_button
+style check_scrollable_menu_new_button_dark is scrollable_menu_new_button_dark
+style check_scrollable_menu_new_button_text is scrollable_menu_new_button_text
+style check_scrollable_menu_new_button_text_dark is scrollable_menu_new_button_text_dark
+style check_scrollable_menu_special_button is scrollable_menu_special_button
+style check_scrollable_menu_special_button_dark is scrollable_menu_special_button_dark
+style check_scrollable_menu_special_button_text is scrollable_menu_special_button_text
+style check_scrollable_menu_special_button_text_dark is scrollable_menu_special_button_text_dark
+style check_scrollable_menu_crazy_button is scrollable_menu_crazy_button
+style check_scrollable_menu_crazy_button_dark is scrollable_menu_crazy_button_dark
+style check_scrollable_menu_crazy_button_text is scrollable_menu_crazy_button_text
+style check_scrollable_menu_crazy_button_text_dark is scrollable_menu_crazy_button_text_dark
 
 # adjustments for the twopane menu
 define prev_adj = ui.adjustment()
@@ -2828,7 +2847,7 @@ screen mas_check_scrollable_menu(
         for _tuple in items
     }
 
-    style_prefix "scrollable_menu"
+    style_prefix "check_scrollable_menu"
 
     fixed:
         area display_area
@@ -2844,21 +2863,20 @@ screen mas_check_scrollable_menu(
 
                 vbox:
                     for button_prompt, button_key, start_selected, true_value, false_value in items:
-                        #hbox:
-                            
-                            textbutton button_prompt:
-                                selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
-                                xsize display_area[2]
-                                action ToggleDict(
-                                    buttons_data[button_key],
-                                    "return_value",
-                                    true_value,
-                                    false_value
-                                )
+                        textbutton button_prompt:
+                            selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
+                            xsize display_area[2]
+                            action ToggleDict(
+                                buttons_data[button_key],
+                                "return_value",
+                                true_value,
+                                false_value
+                            )
 
             null height 20
 
             textbutton store.mas_ui.check_scr_menu_choose_prompt(buttons_data, selected_button_prompt, default_button_prompt):
+                style "scrollable_menu_button"
                 xsize display_area[2]
                 action Function(
                     store.mas_ui.check_scr_menu_return_values,
