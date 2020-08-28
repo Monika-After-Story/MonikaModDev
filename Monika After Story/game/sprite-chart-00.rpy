@@ -707,6 +707,18 @@ image monika 1dsbso_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1dsbssdlb_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="big",
+    arms="steepling",
+    blush="shade",
+    sweat="def"
+)
+
 image monika 1dsbssdlu_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -2723,6 +2735,18 @@ image monika 1rsbsd_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1rsbssdlb_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    arms="steepling",
+    blush="shade",
+    sweat="def"
+)
+
 image monika 1rsbssdlu_static = DynamicDisplayable(
     mas_drawmonika_rk,
     character=monika_chr,
@@ -3301,6 +3325,17 @@ image monika 1tubsb_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    arms="steepling",
+    blush="shade"
+)
+
+image monika 1tubsu_static = DynamicDisplayable(
+    mas_drawmonika_rk,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     arms="steepling",
     blush="shade"
 )
@@ -5600,46 +5635,5 @@ image monika 2lkbsa_static = DynamicDisplayable(
     left="1l",
     right="2r",
     blush="shade"
-)
-
-image monika 2lkbsc_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="left",
-    nose="def",
-    mouth="smirk",
-    arms="crossed",
-    head="o",
-    left="1l",
-    right="2r",
-    blush="shade"
-)
-
-image monika 2lkc_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="left",
-    nose="def",
-    mouth="smirk",
-    arms="crossed",
-    head="o",
-    left="1l",
-    right="2r"
-)
-
-image monika 2lksdla_static = DynamicDisplayable(
-    mas_drawmonika_rk,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="left",
-    nose="def",
-    mouth="smile",
-    arms="crossed",
-    head="m",
-    left="1l",
-    right="2r",
-    sweat="def"
 )
 
