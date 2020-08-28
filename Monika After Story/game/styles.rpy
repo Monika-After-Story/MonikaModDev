@@ -281,13 +281,13 @@ style generic_button_text_dark is generic_button_text_base:
 # and the entire frame gets colored
 style generic_fancy_check_button:
     properties gui.button_properties("check_button")
-    foreground "mod_assets/buttons/generic/[prefix_]fancy_check.png"
+    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
     hover_background Solid("#FFBDE1")
     selected_background Solid("#FFBDE1")
 
 style generic_fancy_check_button_dark:
     properties gui.button_properties("check_button_dark")
-    foreground "mod_assets/buttons/generic/[prefix_]fancy_check.png"
+    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
     hover_background Solid("#CE4A7E")
     selected_background Solid("#CE4A7E")
 
