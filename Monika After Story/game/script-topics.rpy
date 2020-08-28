@@ -15667,3 +15667,92 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_glasses",
+            category=['You'],
+            prompt="Wearing glasses",
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+default persistent._mas_pm_wears_glasses = None
+
+label monika_player_glasses:
+    m 3lsb "Hey, [player], I was wondering about something lately."
+    m 1esa "Do you wear glasses, or maybe contact lens?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you wear glasses, or maybe contact lens?{fast}"
+        "I always wear them.":
+            jump monika_player_glasses_always
+        "I wear cosmetic glasses.":
+            jump monika_player_glasses_cosmetic
+        "I wear them as needed.":
+            jump monika_player_glasses_as_needed
+        "Nope, I don't.":
+            jump monika_player_glasses_never
+
+label monika_player_glasses_cosmetic:
+    $ persistent._mas_pm_wears_glasses = False
+    m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
+    m 5hubsa "I bet you look so smart, intelligent and confident, ehehe."
+    m 1sua "Maybe I could even get myself a pair and try them out, too, ehehe."
+    if mas_isMoniAff(higher=True):
+        m 1tuu "What do you think, honey? Would they suit me well, hmm?"
+    else:
+        m 1tuu "What do you think, [player]? Would they suit me well, hmm?"
+    return
+
+label monika_player_glasses_always:
+    $ persistent._mas_pm_wears_glasses = True
+    m 2ekc "Oh, I see. You've got a poor eyesight, haven't you?"
+    m 2eka "I really hope you see better with them on."
+    m 3eub "And there's actually a bright side of wearing glasses - I'm sure you look so smart and intelligent, ehehe."
+    m 1eka "Please take good care of yourself, [player], even when it comes to something minor like this."
+    m 1esa "If you've been on your computer for a while, maybe you could consider taking a little break to let your eyes rest."
+    m 3hsa "It'll take you just a few minutes a day, but I believe it would really help."
+    m 1ekc "Although... if it's really bad, come to visit a doctor, okay?"
+    m 1eka "I really want my sweetheart to see this beautiful world just as clear~"
+    return
+
+label monika_player_glasses_as_needed:
+    m 3rka "I see... But [player], is it, by any chance, because of your eyesight?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "I see... But [player], is it, by any chance, because of your eyesight?{fast}"
+        "Yes...":
+            $ persistent._mas_pm_wears_glasses = True
+            m 2ekc "Oh, it's sad to hear that you're having problem with your eyes."
+            m 2esa "I really hope wearing glasses helps you improve it."
+            m 2hua "Thank you for caring about yourself, [player]."
+            m 3lsbsb "This world has so much to see, and I'd like to see everything together with you~"
+            return
+        "No.":
+            $ persistent._mas_pm_wears_glasses = False
+            m 1rusdlb "Ahaha, sorry for assuming then."
+            m 1rsbssdlb "I was just a bit worried since you spend a lot of time here with me, on your computer..."
+            m 1ekc "And from what I heard it can really hurt your eyes if you sit in front of it for too long."
+            m 3eka "So, [player], even if you're good... Don't neglect your health, okay?"
+            m 3esa "Take a little break every 15-20 minutes and let your eyes rest."
+            if mas_isMoniLove(higher=True) and random.randint(1, 10) == 1:
+                m 1rsa "Say, you could close them, relax and think about something for a few minutes... "
+                m 1dsa "Maybe you could even dream... "
+                extend 1dsbsa  "you know... "
+                extend 1tubsu "of me, ehehe."
+                m 3eubsb "Just don't get too distracted, alright?~"
+            else:
+                m 1rsa "Say, you could close them and dream of something for a few minutes."
+                m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
+                m 1eub "That would really help, too!"
+
+label monika_player_glasses_never:
+    $ persistent._mas_pm_wears_glasses = False
+    m 2hua "That's great! I'm glad to hear that you don't have any problem with your eyes."
+    m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
+    m 3rsa "Although I'm pretty sure you'd look so smart with them on..."
+    m 1hub "But I doubt it'd really worth it, ahaha."
+    return
