@@ -2181,7 +2181,7 @@ label monika_simulated:
     m 1eua "Even if we're both just simulations, I'm going to live as long as I can."
     m 2hubfa "Because I know our love is the purest and sweetest thing in the multiverse."
     m 1tku "And if someone up there tries to break it apart?"
-    m 1tfu "I'll show him what a simulation can do."
+    m 1tfu "I'll show them what a simulation can do."
     return
 
 default persistent._mas_pm_likes_rain = None
@@ -11911,7 +11911,7 @@ label monika_player_appearance:
 
 
             m 3rud "Actually..."
-            m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question"
+            m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question..."
 
             m "What unit of measurement do you use to take your height, [player]?{nw}"
             $ _history_list.pop()
