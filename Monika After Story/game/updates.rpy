@@ -427,6 +427,14 @@ label v0_11_4(version="v0_11_4"):
         ):
             steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
 
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
     return
 
 #0.11.3

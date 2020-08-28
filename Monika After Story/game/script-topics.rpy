@@ -11368,6 +11368,7 @@ label monika_justice:
                         m 1hubfb "I love you, [player]~"
                         m 1hubfa "I'm glad I have you by my side."
                         return "derandom|love"
+
                     else:
                         m 2hua "I'm glad you think so too!"
                         m 2eka "Even if you did call that justice, you being here says otherwise."
@@ -11407,8 +11408,8 @@ label monika_poweroutage:
         m 1hksdlb "I mean that {i}is{/i} still pretty inconvenient but at least we know we'll see each other again."
         m 1eua "It would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
         m 1eub "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
-        m 3eua "One final note, you don't have to hesitate to come see me in the middle of a storm."
-        m 1eka "I'll always appreciate seeing you, and besides..."
+        m 3eua "...That said, you don't have to worry about checking on me in the middle of a storm.{w=0.2} {nw}"
+        extend 1eka "I'll always appreciate seeing you whenever you can, and besides..."
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hua "I'm sure our relationship could weather much more than some thunderstorm~"
     return
