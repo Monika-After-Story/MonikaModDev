@@ -138,6 +138,9 @@ init python in mas_layout:
         store.layout.QUIT_NO = quit_no
 
 
+#    def  # TODO: function
+
+
 init 900 python:
     import store.mas_layout
     store.mas_layout.setupQuits()
@@ -1733,31 +1736,6 @@ style slider_vbox:
 
 style slider_pref_vbox is pref_vbox
 
-# Outfit check
-style outfit_check_button:
-    properties gui.button_properties("check_button")
-    foreground "gui/button/check_[prefix_]foreground.png"
-
-style outfit_check_button_dark:
-    properties gui.button_properties("check_button_dark")
-    foreground "gui/button/check_[prefix_]foreground_d.png"
-
-style outfit_check_button_text is gui_button_text:
-    properties gui.button_text_properties("outfit_check_button")
-    font "gui/font/Halogen.ttf"
-    color "#BFBFBF"
-    hover_color "#FFAA99"
-    selected_color "#FFEEEB"
-    outlines []
-
-style outfit_check_button_text_dark is gui_button_text_dark:
-    properties gui.button_text_properties("outfit_check_button_dark")
-    font "gui/font/Halogen.ttf"
-    color "#BFBFBF"
-    hover_color "#FFAA99"
-    selected_color "#FFEEEB"
-    outlines []
-
 ##Notifications Settings Screen
 screen notif_settings():
     tag menu
@@ -2866,15 +2844,17 @@ screen mas_check_scrollable_menu(
 
                 vbox:
                     for button_prompt, button_key, start_selected, true_value, false_value in items:
-                        textbutton button_prompt:
-                            selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
-                            xsize display_area[2]
-                            action ToggleDict(
-                                buttons_data[button_key],
-                                "return_value",
-                                true_value,
-                                false_value
-                            )
+                        #hbox:
+                            
+                            textbutton button_prompt:
+                                selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
+                                xsize display_area[2]
+                                action ToggleDict(
+                                    buttons_data[button_key],
+                                    "return_value",
+                                    true_value,
+                                    false_value
+                                )
 
             null height 20
 
