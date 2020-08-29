@@ -556,7 +556,7 @@ label mas_hangman_game_loop:
 
                 # hide monika and display glitch version
                 hide monika
-                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at t21_i(z=1.0)
+                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at i21
 
                 # hide window sayori and display glitch version
                 show hm_s_win_0 as window_sayori
