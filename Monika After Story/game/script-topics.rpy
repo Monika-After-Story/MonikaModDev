@@ -15683,10 +15683,10 @@ default persistent._mas_pm_wears_glasses = None
 
 label monika_player_glasses:
     m 3lsb "Hey, [player], I was wondering about something lately."
-    m 1esa "Do you wear glasses, or maybe contact lens?{nw}"
+    m 1esa "Do you wear glasses, or maybe contact lenses?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you wear glasses, or maybe contact lens?{fast}"
+        m "Do you wear glasses, or maybe contact lenses?{fast}"
         "I always wear them.":
             jump monika_player_glasses_always
         "I wear cosmetic glasses.":
@@ -15701,22 +15701,19 @@ label monika_player_glasses_cosmetic:
     m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
     m 5hubsa "I bet you look so smart, intelligent and confident, ehehe."
     m 1sua "Maybe I could even get myself a pair and try them out, too, ehehe."
-    if mas_isMoniAff(higher=True):
-        m 1tuu "What do you think, honey? Would they suit me well, hmm?"
-    else:
-        m 1tuu "What do you think, [player]? Would they suit me well, hmm?"
+    m 1tuu "What do you think, [mas_get_player_nickname()]? Would they suit me well, hmm?"
     return
 
 label monika_player_glasses_always:
     $ persistent._mas_pm_wears_glasses = True
-    m 2ekc "Oh, I see. You've got a poor eyesight, haven't you?"
+    m 2ekc "Oh, I see. You've got poor eyesight, haven't you?"
     m 2eka "I really hope you see better with them on."
-    m 3eub "And there's actually a bright side of wearing glasses - I'm sure you look so smart and intelligent, ehehe."
+    m 3eub "And there's actually a bright side of wearing glasses - I'm sure you look so smart and intelligent, ehehe~"
     m 1eka "Please take good care of yourself, [player], even when it comes to something minor like this."
     m 1esa "If you've been on your computer for a while, maybe you could consider taking a little break to let your eyes rest."
     m 3hsa "It'll take you just a few minutes a day, but I believe it would really help."
-    m 1ekc "Although... if it's really bad, come to visit a doctor, okay?"
-    m 1eka "I really want my sweetheart to see this beautiful world just as clear~"
+    m 1ekc "Although... if it gets really bad, go see a doctor, okay?"
+    m 1eka "I really want my sweetheart to see this beautiful world just as clear as I do~"
     return
 
 label monika_player_glasses_as_needed:
@@ -15738,7 +15735,7 @@ label monika_player_glasses_as_needed:
             m 1ekc "And from what I heard it can really hurt your eyes if you sit in front of it for too long."
             m 3eka "So, [player], even if you're good... Don't neglect your health, okay?"
             m 3esa "Take a little break every 15-20 minutes and let your eyes rest."
-            if mas_isMoniLove(higher=True) and random.randint(1, 10) == 1:
+            if mas_isMoniLove(higher=True):
                 m 1rsa "Say, you could close them, relax and think about something for a few minutes... "
                 m 1dsa "Maybe you could even dream... "
                 extend 1dsbsa  "you know... "
