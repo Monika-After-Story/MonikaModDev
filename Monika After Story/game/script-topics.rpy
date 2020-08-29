@@ -15732,7 +15732,6 @@ label monika_player_glasses_as_needed:
             m 2esa "I really hope wearing glasses helps you improve it."
             m 2hua "Thank you for caring about yourself, [player]."
             m 3lsbsb "This world has so much to see, and I'd like to see everything together with you~"
-            return
         "No.":
             $ persistent._mas_pm_wears_glasses = False
             m 1rusdlb "Ahaha, sorry for assuming then."
@@ -15750,6 +15749,7 @@ label monika_player_glasses_as_needed:
                 m 1rsa "Say, you could close them and dream of something for a few minutes."
                 m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
                 m 1eub "That would really help, too!"
+    return
 
 label monika_player_glasses_never:
     $ persistent._mas_pm_wears_glasses = False
