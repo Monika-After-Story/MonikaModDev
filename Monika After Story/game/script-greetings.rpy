@@ -1883,7 +1883,7 @@ label monikaroom_greeting_cleanup:
         mas_disable_quit()
 
         # 2 - music is renabled
-        mas_MUMUDropShield()
+        mas_MUINDropShield()
 
         # 3 - keymaps should be set
         set_keymaps()
@@ -2637,8 +2637,8 @@ label greeting_hairdown:
     $ mas_lockEVL("greeting_hairdown", "GRE")
 
     # cleanup
-    # enable music menu
-    $ mas_MUMUDropShield()
+    # enable music menu and music hotkeys
+    $ mas_MUINDropShield()
 
     # 3 - set the keymaps
     $ set_keymaps()

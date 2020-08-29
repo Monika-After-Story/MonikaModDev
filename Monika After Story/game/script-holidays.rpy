@@ -2574,7 +2574,7 @@ label mas_d25_spent_time_monika:
 
                 #Re-enable buttons
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
         return
 
@@ -5659,7 +5659,7 @@ label mas_f14_first_kiss:
                 m 6ekbsu "...the moment of our first kiss."
                 m "Happy Valentine's Day, [player]~"
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
                 return
 
