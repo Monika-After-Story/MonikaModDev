@@ -1024,7 +1024,7 @@ init 799 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather, by_user=None, set_persistent=False):
+    def mas_changeWeather(new_weather, by_user=None, set_persistent=False, new_bg=None):
         """
         Changes weather without doing scene changes
 
@@ -1034,10 +1034,16 @@ init 799 python:
             new_weather - weather to change to
             by_user - flag for if user changes weather or not
             set_persistent - whether or not we want to make this weather persistent
+            new_bg - MASFilterableBackground which will be switched to along with weather change.
+                If none, mas_current_background is used.
+                (Default: None)
         """
+        if new_bg is None:
+            new_bg = store.mas_current_background
+
         #If the current background doesn't support weather, we set to def weather instead
         #Since it has no sfx or anything
-        if store.mas_current_background.disable_progressive:
+        if new_bg.disable_progressive and new_bg.hide_masks:
             new_weather = store.mas_weather_def
 
         if by_user is not None:
