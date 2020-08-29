@@ -669,7 +669,7 @@ label bye_prompt_sleep:
                             "Okay.":
                                 show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
                                 call monika_kissing_motion
-                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 6ekbfa "I hope you'll finally get some shuteye now~"
                                 m 1hkbfb "Sleep tight!"
                             "No.":
                                 $ mas_loseAffection()
@@ -743,7 +743,7 @@ label bye_prompt_sleep:
                             "Okay.":
                                 show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
                                 call monika_kissing_motion
-                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 6ekbfa "Now I hope you'll finally get some shuteye~"
                                 m 1hkbfb "Sleep tight!"
                             "No.":
                                 $ mas_loseAffection()
