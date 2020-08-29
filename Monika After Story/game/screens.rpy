@@ -2583,11 +2583,11 @@ style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_men
 
 # check scrollable menu
 style check_scrollable_menu_button is scrollable_menu_button:
-    background Frame("mod_assets/buttons/checkbox/[prefix_]check_bg.png", Borders(33, 32, 5, 5), tile=True)
+    foreground "mod_assets/buttons/checkbox/[prefix_]check_fg.png"
     padding (33, 5, 25, 5)
 
 style check_scrollable_menu_button_dark is scrollable_menu_button_dark:
-    background Frame("mod_assets/buttons/checkbox/[prefix_]check_bg_d.png", Borders(33, 32, 5, 5), tile=True)
+    foreground "mod_assets/buttons/checkbox/[prefix_]check_fg_d.png"
     padding (33, 5, 25, 5)
 
 style check_scrollable_menu_button_text is scrollable_menu_button_text
