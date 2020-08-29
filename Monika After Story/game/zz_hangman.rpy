@@ -582,12 +582,12 @@ label mas_hangman_game_loop:
                 hide mbg
                 hide window_sayori
                 hide hm_s
-                show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
+                show monika 1esa zorder MAS_MONIKA_Z at hangman_monika_i
                 $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori

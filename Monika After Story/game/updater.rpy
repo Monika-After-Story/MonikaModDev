@@ -850,7 +850,7 @@ label forced_update_now:
     $ mas_updater.force = True
 
     # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
+    if store.mas_globals.is_steam and not persistent._mas_unstable_mode:
 
         $ mas_RaiseShield_core()
 
@@ -860,7 +860,7 @@ label forced_update_now:
             # current in dialogue workflow, we should only enable the escape
             # and music stuff
             $ enable_esc()
-            $ mas_MUMUDropShield()
+            $ mas_MUINDropShield()
 
         else:
             # otherwise, reenable core interactions
@@ -877,7 +877,7 @@ label forced_update_now:
             # current in dialogue workflow, we should only enable the escape
             # and music stuff
             $ enable_esc()
-            $ mas_MUMUDropShield()
+            $ mas_MUINDropShield()
 
         else:
             # otherwise, reenable core interactions
@@ -886,10 +886,10 @@ label forced_update_now:
 
 #This file goes through the actions for updating Monika After story
 label update_now:
-    $import time #this instance of time can stay
+    $ import time #this instance of time can stay
 
     # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
+    if store.mas_globals.is_steam and not persistent._mas_unstable_mode:
         return
 
     # screen check

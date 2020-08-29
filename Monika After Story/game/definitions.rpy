@@ -1,9 +1,6 @@
 define persistent.demo = False
-define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
-
-init 1 python:
-    persistent.steam = "steamapps" in config.basedir.lower()
+# define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
     import singleton
@@ -138,8 +135,7 @@ python early:
 
         IN:
             trans - the transition to use
-            always - if True, the transition will always occur, even if the user has
-                disabled transitions
+            always - if True, the transition will always occur, even if the user has disabled transitions
             paired - Tom knows
             clear - if True cleans out transient stuff at the end of an interaction
 
@@ -180,6 +176,92 @@ python early:
         return renpy.game.interface.do_with(trans, paired, clear=clear)
 
     renpy.exports.with_statement = mas_with_statement
+
+    def mas_find_target(self):
+        """
+        This method tries to find an image by its reference. It can be a displayable or tuple.
+        If this method can't find an image and it follows the pattern of Monika's sprites, it'll try to generate one.
+
+        Main change to this function is the ability to auto generate displayables
+        """
+        name = self.name
+
+        if isinstance(name, renpy.display.core.Displayable):
+            self.target = name
+            return True
+
+        if not isinstance(name, tuple):
+            name = tuple(name.split())
+
+        def error(msg):
+            self.target = renpy.text.text.Text(msg, color=(255, 0, 0, 255), xanchor=0, xpos=0, yanchor=0, ypos=0)
+
+            if renpy.config.debug:
+                raise Exception(msg)
+
+        args = [ ]
+
+        while name:
+            target = renpy.display.image.images.get(name, None)
+
+            if target is not None:
+                break
+
+            args.insert(0, name[-1])
+            name = name[:-1]
+
+        #Main difference:
+        #Check if the sprite exists at all
+        if not name:
+            if (
+                isinstance(self.name, tuple)
+                and len(self.name) == 2
+                and self.name[0] == "monika"
+            ):
+                #If this is a Monika sprite and it doesn't exist, we should try to generate it
+                #We did some sanity checks, but just in case will use a try/except block
+                try:
+                    #Reset name
+                    name = self.name
+                    #Generate
+                    store.mas_sprites.generate_images(name[1])
+                    #Try to get the img again
+                    target = renpy.display.image.images[name]
+
+                #If we somehow failed, show the exception and return False
+                except:
+                    error("Image '%s' not found." % ' '.join(self.name))
+                    return False
+
+            else:
+                error("Image '%s' not found." % ' '.join(self.name))
+                return False
+
+        try:
+            a = self._args.copy(name=name, args=args)
+            self.target = target._duplicate(a)
+
+        except Exception as e:
+            if renpy.config.debug:
+                raise
+
+            error(str(e))
+
+        #Copy the old transform over.
+        new_transform = self.target._target()
+
+        if isinstance(new_transform, renpy.display.transform.Transform):
+            if self.old_transform is not None:
+                new_transform.take_state(self.old_transform)
+
+            self.old_transform = new_transform
+
+        else:
+            self.old_transform = None
+
+        return True
+
+    renpy.display.image.ImageReference.find_target = mas_find_target
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -656,6 +738,9 @@ python early:
             else:
                 return super(Event, self).__getattribute__(name)
 
+        #repr override
+        def __repr__(self):
+            return "<Event: (evl: {0})>".format(self.eventlabel)
 
         def monikaWantsThisFirst(self):
             """
@@ -1801,7 +1886,6 @@ python early:
                     mas_rmallEVL(ev.eventlabel)
 
             #NOTE: we don't add the rest since there's no reason to undo those.
-
 
 # init -1 python:
     # this should be in the EARLY block
@@ -5886,6 +5970,60 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+init 21 python:
+    def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
+        """
+        Picks a nickname for the player at random based on accepted nicknames
+
+        IN:
+            capitalize - Whether or not we should capitalize the first character
+                (Default: False)
+
+            exclude_names - List of names to be excluded in the selection pool for nicknames
+                (Default: Empty list)
+
+            _default - Default name to return if affection < affectionate or no nicknames have been set/allowed
+                If None, the player's name is assumed
+                (Default: None)
+
+            regex_replace_with_nullstr - Regex str to use to identify parts of a nickname which should be replaced with an empty
+                string. If None, this is ignored
+                (Default: None)
+
+        NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
+        """
+        if _default is None:
+            _default = player
+
+        #If we're at or below happy, we just use playername
+        if mas_isMoniHappy(lower=True) or not persistent._mas_player_nicknames:
+            return _default
+
+        nickname_pool = persistent._mas_player_nicknames + [player]
+
+        #If we have some exclusions, we should factor them in
+        if exclude_names:
+            nickname_pool = [
+                nickname
+                for nickname in nickname_pool
+                if nickname not in exclude_names
+            ]
+
+            #If we've excluded everything, we'll use the default value
+            if not nickname_pool:
+                return _default
+
+        #Now select a name
+        selected_nickname = random.choice(nickname_pool)
+
+        if regex_replace_with_nullstr is not None:
+            selected_nickname = re.sub(regex_replace_with_nullstr, "", selected_nickname)
+
+        #And handle capitalization
+        if capitalize:
+            selected_nickname = selected_nickname.capitalize()
+        return selected_nickname
+
     def mas_input(prompt, default="", allow=None, exclude="{}", length=None, with_none=None, pixel_width=None, screen="input", screen_kwargs={}):
         """
         Calling this function pops up a window asking the player to enter some
@@ -7265,6 +7403,8 @@ define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
 
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define skip_setting_weather = False# in case of crashes/reloads, predefine it here
+
 define mas_monika_twitter_handle = "lilmonix3"
 
 # sensitive mode enabler
@@ -7273,28 +7413,24 @@ default persistent._mas_sensitive_mode = False
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 
-init python:
-    startup_check = False
-    try:
-        persistent.ever_won['hangman']
-    except:
-        persistent.ever_won['hangman']=False
-    try:
-        persistent.ever_won['piano']
-    except:
-        persistent.ever_won['piano']=False
+define startup_check = False
 
-default his = "his"
-default he = "he"
-default hes = "he's"
-default heis = "he is"
-default bf = "boyfriend"
-default man = "man"
-default boy = "boy"
-default guy = "guy"
-default him = "him"
-default himself = "himself"
+define his = "his"
+define he = "he"
+define hes = "he's"
+define heis = "he is"
+define bf = "boyfriend"
+define man = "man"
+define boy = "boy"
+define guy = "guy"
+define him = "him"
+define himself = "himself"
 
+# Input characters filters
+define numbers_only = "0123456789"
+define lower_letters_only = " abcdefghijklmnopqrstuvwxyz"
+define letters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define name_characters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'"
 
 #Default is NORMAL
 default persistent._mas_randchat_freq = mas_randchat.NORMAL

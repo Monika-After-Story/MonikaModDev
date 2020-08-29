@@ -83,7 +83,7 @@ label dev_check_scrollable_menu_test:
                     ("Button #{0}".format(i), "button_#_{0}".format(i), False, true_value, false_value)
                 )
 
-    call screen mas_check_scrollable_menu(items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Finish test", return_all=return_all)
+    call screen mas_check_scrollable_menu(items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Finish test", return_all=return_all)
 
     if _return:
         $ result = str(_return).replace("{", "{{")
@@ -94,3 +94,51 @@ label dev_check_scrollable_menu_test:
         m 4eub "The menu returned an empty dict."
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_check_scrollable_menu_sample",
+            category=["dev"],
+            prompt="SAMPLE CHECK SCROLLABLE MENU",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_check_scrollable_menu_sample:
+
+    m 1eua "I show sample of check scrollable buttons"
+
+    # generate buttons
+    python:
+        buttons = [
+            ("Checked Button #1", "cb1", True, True, False),
+            ("Unchecked Button #1", "ub1", False, True, False),
+            (
+                "Very long button name so this is forced to wrap because "
+                "the name is way too long.",
+                "lb1",
+                False,
+                True,
+                False
+            ),
+            ("Filler button #1", "fb1", True, True, False),
+            ("Filler button #2", "fb2", False, True, False),
+            ("Filler button #3", "fb3", True, True, False),
+            ("Filler button #4", "fb4", False, True, False),
+            ("Filler button #5", "fb5", False, True, False),
+            ("Filler button #6", "fb6", True, True, False),
+            ("Filler button #7", "fb7", False, True, False),
+            ("Filler button #8", "fb8", True, True, False),
+            ("Filler button #9", "fb9", True, True, False),
+            ("Filler button #10", "fb10", False, True, False),
+        ]
+
+    call screen mas_check_scrollable_menu(buttons, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Finish test")
+
+    m "sample complete"
+
+    return
+
