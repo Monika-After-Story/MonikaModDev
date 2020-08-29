@@ -15696,7 +15696,7 @@ label monika_player_glasses:
             jump monika_player_glasses_always
         "I wear cosmetic glasses.":
             jump monika_player_glasses_cosmetic
-        "I wear them as needed.":
+        "I wear them when needed.":
             jump monika_player_glasses_as_needed
         "Nope, I don't.":
             jump monika_player_glasses_never
