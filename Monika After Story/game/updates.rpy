@@ -435,6 +435,13 @@ label v0_11_4(version="v0_11_4"):
         }
 
         persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
     return
 
 #0.11.3

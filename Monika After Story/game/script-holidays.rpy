@@ -6529,8 +6529,8 @@ init 5 python:
             eventlabel="mas_bday_spent_time_with",
             conditional="mas_recognizedBday()",
             action=EV_ACT_QUEUE,
-            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
-            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
+            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
             years=[]
         ),
         skipCalendar=True
