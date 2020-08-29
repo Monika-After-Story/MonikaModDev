@@ -427,6 +427,21 @@ label v0_11_4(version="v0_11_4"):
         ):
             steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
 
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
     return
 
 #0.11.3

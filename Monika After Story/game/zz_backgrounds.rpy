@@ -2814,7 +2814,7 @@ init 5 python:
             prompt="Can we go somewhere else?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED, None)
         ),
         restartBlacklist=True
