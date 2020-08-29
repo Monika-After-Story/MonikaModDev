@@ -7166,8 +7166,38 @@ init 5 python:
 
 label monika_promisering:
     m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
-    m 2hksdlb "...What am I saying? Of course you do."
-    m 1rksdla "Anyway, I was just wondering..."
+    $ _history_list.pop()
+    menu:
+        m "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?{fast}"
+
+        "I do.":
+            m 1wkbld "Oh..."
+            m 1rkbla "..."
+            m 2hkblb "Sorry, I was just spacing out there for a second..."
+            m 6lkbssdla "Imagining somewhere else you'd say that~"
+            m 7hkbssdlb "Ahaha, I'm just joking."
+            m 1hkbssdlb "I'm not thinking about that at all..."
+            extend 3ekbfb " I was more thinking about promise rings."
+            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
+            m 3tkbfb "It also helps to remind you of our undying love..."
+            m 2ekbfu "Anyway, I was just wondering..."
+
+        "I don't...":
+            m 1ekblu "Well, I'm sure you know that when people get engaged they do at least..."
+            m 3ekblu "But that's actually not what I was thinking about."
+            m 3ekbfb "I was more thinking about promise rings."
+            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
+            m 3tkbfb "It also helps to remind you of our undying love..."
+            m 2ekbfu "Anyway, I was just wondering..."
+
+        "Like...marriage?":
+            m 1hkblb "Ahaha, that too of course!"
+            m 1hkblsdrb "..."
+            m 3ekblu "But that's actually not what I was thinking about..."
+            m 3ekbfb "I was more thinking about promise rings."
+            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
+            m 3tkbfb "It also helps to remind you of our undying love..."
+            m 2ekbfu "Anyway, I was just wondering..."
 
     pause 1.0
     m 1eksdla "Do you wear a ring for me, [player]?{nw}"
