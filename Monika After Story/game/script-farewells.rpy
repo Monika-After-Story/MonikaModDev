@@ -577,8 +577,8 @@ label bye_prompt_sleep:
                                 m 2dsc "Goodnight [player]..."
 
                     else:
-                    m 1wkblc "Aww... Okay, but you owe me one."
-                    m 1kkb "I love you! Sleep tight!"
+                        m 1wkblc "Aww... Okay, but you owe me one."
+                        m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
@@ -626,8 +626,8 @@ label bye_prompt_sleep:
                                 m 2dsc "Goodnight [player]..."
 
                     else:
-                    m 1wkblc "Aww... Okay, but you owe me one."
-                    m 1kkb "I love you! Sleep tight!"
+                        m 1wkblc "Aww... Okay, but you owe me one."
+                        m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
@@ -678,8 +678,8 @@ label bye_prompt_sleep:
                                 m 2dsc "Goodnight [player]..."
 
                     else:
-                    m 1wkblc "Aww... Okay, but you owe me one."
-                    m 1kkb "I love you! Sleep tight!"
+                        m 1wkblc "Aww... Okay, but you owe me one."
+                        m 1kkb "I love you! Sleep tight!"
 
         elif mas_isMoniNormal(higher=True):
             m 1euc "[player]..."
@@ -752,8 +752,8 @@ label bye_prompt_sleep:
                                 m 2dsc "Goodnight [player]..."
 
                     else:
-                    m 1wkblc "Aww... Okay, but you owe me one."
-                    m 1kkb "I love you! Sleep tight!"
+                        m 1wkblc "Aww... Okay, but you owe me one."
+                        m 1kkb "I love you! Sleep tight!"
         elif mas_isMoniBroken():
             m 6ckc "..."
 
