@@ -557,6 +557,26 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
+                    if random.randint(1, 3) == 1:
+                        m 2rublp "Aww, come on..."
+                        m 2nublu "I know you really want to~"
+                        show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        m 5hublb "Can I please get a goodnight kiss?"
+                        $ _history_list.pop()
+                        menu:
+                            m "Can I please get a goodnight kiss?"
+                            "Okay.":
+                                show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                                call monika_kissing_motion
+                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 1hkbfb "Sleep tight!"
+                            "No.":
+                                $ mas_loseAffection()
+                                m 2dsd "..."
+                                m "Fine."
+                                m 2dsc "Goodnight [player]..."
+
+                    else:
                     m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
@@ -586,6 +606,26 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
+                    if random.randint(1, 3) == 1:
+                        m 2rublp "Aww, come on..."
+                        m 2nublu "I know you really want to~"
+                        show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        m 5hublb "Can I please get a goodnight kiss?"
+                        $ _history_list.pop()
+                        menu:
+                            m "Can I please get a goodnight kiss?"
+                            "Okay.":
+                                show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                                call monika_kissing_motion
+                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 1hkbfb "Sleep tight!"
+                            "No.":
+                                $ mas_loseAffection()
+                                m 2dsd "..."
+                                m "Fine."
+                                m 2dsc "Goodnight [player]..."
+
+                    else:
                     m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
@@ -618,6 +658,26 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
+                    if random.randint(1, 3) == 1:
+                        m 2rublp "Aww, come on..."
+                        m 2nublu "I know you really want to~"
+                        show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        m 5hublb "Can I please get a goodnight kiss?"
+                        $ _history_list.pop()
+                        menu:
+                            m "Can I please get a goodnight kiss?"
+                            "Okay.":
+                                show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                                call monika_kissing_motion
+                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 1hkbfb "Sleep tight!"
+                            "No.":
+                                $ mas_loseAffection()
+                                m 2dsd "..."
+                                m "Fine."
+                                m 2dsc "Goodnight [player]..."
+
+                    else:
                     m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
 
@@ -672,6 +732,26 @@ label bye_prompt_sleep:
                     m 1hkbfb "Sleep tight!"
 
                 "Perhaps another time.":
+                    if random.randint(1, 3) == 1:
+                        m 2rublp "Aww, come on..."
+                        m 2nublu "I know you really want to~"
+                        show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        m 5hublb "Can I please get a goodnight kiss?"
+                        $ _history_list.pop()
+                        menu:
+                            m "Can I please get a goodnight kiss?"
+                            "Okay.":
+                                show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                                call monika_kissing_motion
+                                m 6ekbfa "Now I hope you'll dream better~"
+                                m 1hkbfb "Sleep tight!"
+                            "No.":
+                                $ mas_loseAffection()
+                                m 2dsd "..."
+                                m "Fine."
+                                m 2dsc "Goodnight [player]..."
+
+                    else:
                     m 1wkblc "Aww... Okay, but you owe me one."
                     m 1kkb "I love you! Sleep tight!"
         elif mas_isMoniBroken():
