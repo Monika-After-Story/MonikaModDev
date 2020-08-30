@@ -15307,7 +15307,7 @@ label monika_why_spaceroom:
     $ has_one_bg_unlocked = mas_background.hasXUnlockedBGs(1)
     if has_one_bg_unlocked:
         m 1rtc "As for why we're {i}still{/i} here..."
-        m 3eua "It hasn't really occured to me to move someplace else..."
+        m 3eua "It hasn't really occurred to me to move someplace else..."
 
     else:
         m 1rtc "As for why I'm still using it..."
