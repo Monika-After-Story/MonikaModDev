@@ -4,6 +4,7 @@
 
 
 init -20 python in mas_deco:
+    import store
 
     deco_name_db = {}
     # maps shorthand deco names to actual deco names
@@ -50,6 +51,22 @@ init -20 python in mas_deco:
 
         deco_name_db[s_name] = new_deco_name
         deco_db[new_deco_name] = obj
+
+
+    def _add_it_deco(obj):
+        """
+        Adds a MASImageTagDecoration object to the deco db. Raises exceptions 
+        if a duplicate was found OR if the object is not a 
+        MASImageTagDecoration. 
+
+        IN:
+            obj - MASImageTagDecoration object to add to the deco db
+        """
+        if not isinstance(obj, store.MASImageTagDecoration):
+            raise Exception("{0} is not MASImageTagDecoration".format(obj))
+
+        # MASImageTagDecoration objects's names are added directly to the deco
+        # db
 
 
     def get_deco(name):
@@ -128,7 +145,6 @@ init -19 python:
             # simple deco objects do not have custom filter settings
             self._simple = fwm is None
 
-
         def is_simple(self):
             """
             Returns True if this is a simple deco object.
@@ -145,8 +161,20 @@ init -19 python:
         tags in game.
 
         PROPERTIES:
-            name - IMAGE TAG of this 
+            See MASDecoration
         """
+
+        def __init__(self, tag, ex_props=None):
+            """
+            Constructor for MASImageTagDecoration
+
+            IN:
+                tag - image tag to build this decoration for. This is also
+                    used as the decoration name.
+                ex_props - arbitraary props to assocaitd with this deco object
+                    (Default: None)
+            """
+            #self. # TODO
 
 
     class MASDecoFrame(object):
@@ -230,24 +258,18 @@ init -19 python:
 
             RETURNS: True if successful, false otherwise
             """
-            # TODO: change this
-            # decorations and frames are indepent of each other
-            if len(data) < 6:
-                # tuple data has 6 elements
-                return False
-
-            if data[0] != self.deco.name:
-                # name must match this decoration
+            if len(data) < 5:
+                # tuple data has 5 elements
                 return False
 
             # NOTE: setattr will auto handle most of these
-            self.layer = data[1]
-            self.pos = data[2]
+            self.layer = data[0]
+            self.pos = data[1]
             self.scale = (
+                store.mas_utils.floatcombine_i(data[2], 2),
                 store.mas_utils.floatcombine_i(data[3], 2),
-                store.mas_utils.floatcombine_i(data[4], 2),
             )
-            self.rotation = data[5]
+            self.rotation = data[4]
 
             return True
 
@@ -256,15 +278,13 @@ init -19 python:
             Creates a tuple of this deco's properties for saving.
 
             RETURNS: tuple of the following format:
-                [0]: name of the decoration object
-                [1]: layer
-                [2]: position (x, y)
-                [3]: width scale (integer, float part as integer)
-                [4]: height scale (integer, float part as integer)
-                [5]: rotation
+                [0]: layer
+                [1]: position (x, y)
+                [2]: width scale (integer, float part as integer)
+                [3]: height scale (integer, float part as integer)
+                [4]: rotation
             """
             return (
-                self.deco.name,
                 self.layer,
                 self.pos,
                 store.mas_utils.floatsplit_i(self.scale[0], 2),
