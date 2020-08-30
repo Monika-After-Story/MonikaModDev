@@ -6701,7 +6701,7 @@ label monika_daydream:
             daydream_quips_enamplus.append("the two of us resting our heads under the cherry blossom tree...")
 
         #Player appearance related thing
-        if not persistent._mas_pm_hair_length == "bald":
+        if persistent._mas_pm_hair_length is not None and persistent._mas_pm_hair_length != "bald":
             daydream_quips_enamplus.append("me gently playing with your hair while your head rests in my lap...")
 
         #Pick the quip
