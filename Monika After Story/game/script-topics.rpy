@@ -15704,7 +15704,7 @@ label monika_player_glasses:
 label monika_player_glasses_cosmetic:
     $ persistent._mas_pm_wears_glasses = False
     m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
-    m 5hubsa "I bet you look so smart, intelligent and confident, ehehe."
+    m 5hubsa "I bet you look so smart, intelligent and confident~"
     m 1sua "Maybe I could even get myself a pair and try them out, too, ehehe."
     m 1tuu "What do you think, [mas_get_player_nickname()]? Would they suit me well, hmm?"
     return
