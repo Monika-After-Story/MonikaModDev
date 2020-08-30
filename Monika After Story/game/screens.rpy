@@ -2834,8 +2834,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done.",
-    default_button_prompt="Nevermind.",
+    selected_button_prompt="Done",
+    default_button_prompt="Nevermind",
     return_all=False
 ):
     default buttons_data = {
