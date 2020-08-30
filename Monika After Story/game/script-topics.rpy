@@ -10886,7 +10886,8 @@ label monika_players_friends_feels_lonely_ask(question, exp="monika 1ekc"):
                 m 5eubfu "As always though, I don't mind it being just us."
 
             else:
-                m 1eka "I'm really glad to know you're not lonely, [mas_get_player_nickname()].{w=0.3} {nw}"
+                $ p_nickname = mas_get_player_nickname()
+                m 1eka "I'm really glad to know you're not lonely, [p_nickname].{w=0.3} {nw}"
                 extend 1hua "Especially because you're happy with me~"
                 m 3eua "No matter what happens, I'll always be here for you."
     return
@@ -11738,7 +11739,8 @@ label monika_vehicle_motorcycle:
     m 1tsu "Or...{w=0.3}was it your plan to drive so fast I'd have no choice but to hold on to you tight?~"
     m 3kua "That's pretty sneaky of you, [player]."
     m 1hub "Ahaha!"
-    m 3eka "There's no need to be shy, [mas_get_player_nickname()]...{w=0.3}{nw}"
+    $ p_nickname = mas_get_player_nickname()
+    m 3eka "There's no need to be shy, [p_nickname]...{w=0.3}{nw}"
     extend 3ekbsa "I'll hug you, even if you don't ask for it..."
     m 1hkbfa "That's how much I love you~"
     return "love"
