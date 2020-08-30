@@ -2441,6 +2441,17 @@ label call_next_event:
 
 label prompt_menu:
 
+    if store.mas_randchat.rand_chat_waittime_left < 2 and store.mas_randchat.rand_chat_waittime_left > 0:
+        m 3eud "..."
+        m 1husdlb "Oh no, go ahead, you wanted to talk about something?"
+        m 1lusdlb "I didn't mean to interrupt you..."
+        menu:
+            "That's alright, go ahead Monika!":
+                m 1eubla "Ahaha, thank you [player]~"
+                call pick_random_topic
+            "Okay, thanks!":
+                jump prompt_menu.local_label
+
     $ mas_RaiseShield_dlg()
 
     if store.mas_globals.in_idle_mode:
