@@ -1574,7 +1574,7 @@ label bye_going_shopping:
         m 1eud "Oh, going to do some shopping, [player]?"
 
         if mas_getEVL_shown_count("bye_going_shopping") == 0 or renpy.random.randint(1,10) == 1:
-            m 1eua "I'd love if we could go to the mall together sometime."
+            m 1eua "I'd love it if we could go to the mall together sometime."
             m 3rua "You could help me try out all kinds of different outfits...{w=0.2}{nw}"
             extend 3tuu "but I might need help with the zippers."
             m 1hublb "Ahaha! See you soon~"
