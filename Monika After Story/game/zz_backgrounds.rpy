@@ -2814,7 +2814,7 @@ init 5 python:
             prompt="Can we go somewhere else?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED, None)
         ),
         restartBlacklist=True
@@ -2906,11 +2906,11 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         #so we lock to clear
         if new_bg.disable_progressive and new_bg.hide_masks:
             mas_weather.temp_weather_storage = mas_current_weather
-            mas_changeWeather(mas_weather_def)
+            mas_changeWeather(mas_weather_def, new_bg=new_bg)
 
         else:
             if mas_weather.temp_weather_storage is not None:
-                mas_changeWeather(mas_weather.temp_weather_storage)
+                mas_changeWeather(mas_weather.temp_weather_storage, new_bg=new_bg)
                 #Now reset the temp storage for weather
                 mas_weather.temp_weather_storage = None
 

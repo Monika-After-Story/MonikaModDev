@@ -1887,7 +1887,6 @@ python early:
 
             #NOTE: we don't add the rest since there's no reason to undo those.
 
-
 # init -1 python:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
@@ -5702,17 +5701,17 @@ init -1 python:
 
             for i in range(4):
                 # Value Name, Value Data, Value Type
-                n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath":
+                n, installPath, t = _winreg.EnumValue(keyVal, i)
+                if n == "InstallPath":
                     break
 
-            installPath+="/steamapps"
+            installPath += "/steamapps"
 
-        elif renpy.mac:
-            installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+        elif renpy.macintosh:
+            installPath = os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
 
         elif renpy.linux:
-            installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
+            installPath = os.environ.get("HOME") + "/.steam/Steam/steamapps"
             # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
 
         #Ideally we should never end up here, but in the case we do, we should prevent any work from being done

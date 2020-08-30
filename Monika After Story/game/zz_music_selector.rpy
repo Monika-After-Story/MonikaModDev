@@ -1150,7 +1150,7 @@ init python:
             if store.mas_globals.dlg_workflow:
                 # the dialogue workflow means we should only enable
                 # music menu interactions
-                mas_MUMUDropShield()
+                mas_MUINDropShield()
 
             elif store.mas_globals.in_idle_mode:
                 # to idle

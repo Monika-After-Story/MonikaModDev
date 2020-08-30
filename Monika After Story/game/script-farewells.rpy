@@ -196,26 +196,38 @@ label mas_farewell_start:
         # we have selectable options
         python:
             # build a prompt list
-            bye_prompt_list = [
+            bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
                 for k,ev in bye_pool_events.iteritems()
+            ])
+
+            most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
+
+            #Setup the last options
+            final_items = [
+                (_("Goodbye."), -1, False, False, 20),
+                (_("Nevermind."), False, False, False, 0)
             ]
 
-            # add the random selection
-            bye_prompt_list.append((_("Goodbye."), -1, False, False))
+            #To manage this, we'll go by aff/anni first, as by now, the user should likely have a pref (also it's like an aff thing)
+            #If we still don't have any uses (one long sesh/only uses "goodbye", then we just retain the two options)
+            #TODO: Change this with TC-O to adapt to player schedule
+            if mas_anni.pastOneMonth() and mas_isMoniAff(higher=True) and most_used_fare.shown_count > 0:
+                final_items.insert(1, (most_used_fare.prompt, most_used_fare, False, False, 0))
+                _menu_area = mas_ui.SCROLLABLE_MENU_VLOW_AREA
 
-            # setup the last option
-            bye_prompt_back = (_("Nevermind."), False, False, False, 20)
+            else:
+                _menu_area = mas_ui.SCROLLABLE_MENU_LOW_AREA
 
-        # call the menu
-        call screen mas_gen_scrollable_menu(bye_prompt_list, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, bye_prompt_back)
+        #Call the menu
+        call screen mas_gen_scrollable_menu(bye_prompt_list, _menu_area, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         if not _return:
-            # nevermind
+            #Nevermind
             return _return
 
         if _return != -1:
-            # push teh selected event
+            #Push the selected event
             $ pushEvent(_return.eventlabel)
             return
 
@@ -356,7 +368,7 @@ init 5 python:
 label bye_leaving_already_2:
     m 1ekc "Aww, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
-    m 3hubsa "I love you so much [player]!"
+    m 3hubsa "I love you so much, [player]!"
     show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsb "Never forget that!"
     return 'quit'
@@ -1200,7 +1212,7 @@ label bye_prompt_game:
             m 3hksdlb "It's the middle of the night!"
             m 2rksdlc "It's one thing that you're still up this late..."
             m 2rksdld "But you're thinking of playing another game?"
-            m 4tfu "....A game big enough that you can't have me in the background..."
+            m 4tfu "...A game big enough that you can't have me in the background..."
             m 1eka "Well... {w=1}I can't stop you, but I really hope you go to bed soon..."
             m 1hua "Don't worry about coming back to say goodnight to me, you can go-{nw}"
             $ _history_list.pop()

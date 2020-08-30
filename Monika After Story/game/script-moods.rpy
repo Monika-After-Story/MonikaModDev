@@ -181,7 +181,16 @@ label mas_mood_sad:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_proud",
+            prompt="...proud of myself.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
@@ -190,7 +199,7 @@ label mas_mood_proud:
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
         "Major.":
-            m 1euc "You know, [player]..."
+            m 1ekc "You know, [player]..."
             m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
             m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
             m 3eub "There's nothing quite like sharing your accomplishments with the people you care about."
@@ -203,8 +212,8 @@ label mas_mood_proud:
             m 5hubfb "But until then, just know that I'm very proud of you, [mas_get_player_nickname()]!"
 
         "Minor.":
-            m 2hua "Ahaha!~"
-            m 2hub "That's wonderful!"
+            m 2hub "Ahaha!~"
+            m 2hua "That's wonderful!"
             m 4eua "It's very important to celebrate the small victories in life."
             m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
             m 2rksdla "They can be challenging to reach on their own."
@@ -343,10 +352,10 @@ label mas_mood_tired:
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
-    m  "...Ehehe."
+    m "...Ehehe."
     m 2hksdlb "That sounded a bit creepy, sorry."
     m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     return
 
 init 5 python:
@@ -502,7 +511,7 @@ label mas_mood_lazy:
         m 3eub "That can include washing up, getting a good breakfast..."
 
         if mas_isMoniLove():
-            m 1rkbsb "Getting your good morning kiss, ehehe..."
+            m 1dkbsu "Getting your good morning kiss, ehehe..."
 
         m 1hksdlb "Or you could laze around for now."
         m 1eka "Just as long as you don't forget to do anything important, alright, [player]?"
