@@ -9088,7 +9088,7 @@ label monika_attractiveness:
 
     else:
         if mas_isMoniHappy(higher=True):
-            2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
+            m 2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
             extend 2ekbsa "I probably shouldn't worry about it too much, should I?"
             m 1hub "After all, you wouldn't have spent all this time looking at me if you didn't already like the way I look! Ahaha!"
 
