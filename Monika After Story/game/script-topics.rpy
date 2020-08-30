@@ -15296,7 +15296,7 @@ label monika_why_spaceroom:
     m 3eud "You know how in the original game almost everything took place during our club meetings, right?"
     m 3eua "...All of which took place in a classroom.{w=0.3} This classroom."
     m 1eua "It may look different to you, but it's still the very same one."
-    m 3eud "Since so many things were supposed to happen here, the room had to be robust enough to accomodate them."
+    m 3eud "Since so many things were supposed to happen here, the room had to be robust enough to accommodate them."
     m 2rtc "That made it the most...{w=0.3}{nw}"
     extend 2eud "fleshed out location in the game."
     m 7eud "As such, it was the easiest place to navigate, alter, and generally use for whatever was needed."
