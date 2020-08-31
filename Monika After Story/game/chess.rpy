@@ -253,9 +253,9 @@ init python in mas_chess:
 
     def enqueue_output(out, queue, lock):
         for line in iter(out.readline, b''):
-            lock.acquire()
-            queue.appendleft(line)
-            lock.release()
+            with lock:
+                queue.appendleft(line)
+
         out.close()
 
 #START: Main game label
@@ -2585,14 +2585,14 @@ init python:
             OUT:
                 move - representing the best move stockfish found
             """
-            self.lock.acquire()
-            res = None
-            while self.queue:
-                line = self.queue.pop()
-                match = re.match(r"^bestmove (\w+)", line)
-                if match:
-                    res = match.group(1)
-            self.lock.release()
+            with self.lock:
+                res = None
+                while self.queue:
+                    line = self.queue.pop()
+                    match = re.match(r"^bestmove (\w+)", line)
+                    if match:
+                        res = match.group(1)
+
             return res
 
         def start_monika_analysis(self):
