@@ -1625,11 +1625,15 @@ init python:
                 #Practice mode
                 self.practice_mode = eval(pgn_game.headers.get("Practice", "False"))
 
+                #Check if we lost in practice
+                self.practice_lost = eval(pgn_game.headers.get("PracticeLost", "False"))
+
                 #Undo count
                 self.undo_count = int(pgn_game.headers.get("UndoCount", 0))
 
                 #Move history
                 self.move_history = eval(pgn_game.headers.get("MoveHist", "[]"))
+
 
                 #And finally, the fullmove number
                 self.num_turns = self.board.fullmove_number
@@ -2470,8 +2474,10 @@ init python:
         ):
 
             self.practice_mode = practice_mode
-            self.surrendered = False
             self.starting_fen = starting_fen
+
+            self.surrendered = False
+            self.practice_lost = False
 
             #Init the 4 buttons
             self._button_save = MASButtonDisplayable.create_stb(
@@ -2563,6 +2569,11 @@ init python:
                     self._button_draw
                 ]
 
+                self._visible_buttons_winner = [
+                    self._button_done,
+                    self._button_undo
+                ]
+
             else:
                 self._visible_buttons = [
                     self._button_save,
@@ -2570,9 +2581,9 @@ init python:
                     self._button_draw
                 ]
 
-            self._visible_buttons_winner = [
-                self._button_done
-            ]
+                self._visible_buttons_winner = [
+                    self._button_done
+                ]
 
         def __del__(self):
             self.stockfish.stdin.close()
@@ -2674,6 +2685,9 @@ init python:
                     self.quit_game = True
                     return self._quitPGN()
 
+                elif self._button_undo.event(ev, x, y, st):
+                    return self.undo_move()
+
             # inital check for buttons
             elif self.is_player_turn():
                 if self._button_save.event(ev, x, y, st):
@@ -2687,35 +2701,7 @@ init python:
                     return self._quitPGN(2)
 
                 elif self._button_undo.event(ev, x, y, st):
-                    #user wants to undo the last move
-                    #NOTE: While the chess.Board object has a pop function, we cannot use it here due to the nature of saving these as
-                    #pgn files. As such we pop somewhat inefficiently, but we do it such that the fen can always be used to restore
-                    last_move_fen = self.move_history.pop(-1)
-
-                    #Remove the last move since we've undone
-                    old_board = self.board
-                    old_board.move_stack = old_board.move_stack[:len(old_board.move_stack)-2]
-                    old_board.stack = old_board.stack[:len(old_board.stack)-2]
-
-                    #Update the board to the undo
-                    self.board = chess.Board(fen=last_move_fen)
-
-                    #Now transfer the move data
-                    self.board.move_stack = old_board.move_stack
-                    self.board.stack = old_board.stack
-                    self.board.fullmove_number = old_board.fullmove_number - 1
-
-                    #Adjust MASPieces
-                    self.update_pieces()
-
-                    #Increment the undo counter
-                    self.undo_count += 1
-
-                    #TODO: Allow undo of a checkmate, but still flag as a loss
-
-                    self.set_button_states()
-                    return None
-
+                    return self.undo_move()
 
                 elif self._button_giveup.event(ev, x, y, st):
                     renpy.call_in_new_context("mas_chess_confirm_context")
@@ -2723,6 +2709,45 @@ init python:
                         #User wishes to surrender
                         self.quit_game = True
                         return self._quitPGN(1)
+
+        def undo_move(self):
+            """
+            Undoes the last move
+
+            OUT:
+                None
+            """
+            #user wants to undo the last move
+            #NOTE: While the chess.Board object has a pop function, we cannot use it here due to the nature of saving these as
+            #pgn files. As such we pop somewhat inefficiently, but we do it such that the fen can always be used to restore
+            last_move_fen = self.move_history.pop(-1)
+
+            #Remove the last move since we've undone
+            old_board = self.board
+            old_board.move_stack = old_board.move_stack[:len(old_board.move_stack)-2]
+            old_board.stack = old_board.stack[:len(old_board.stack)-2]
+
+            #Update the board to the undo
+            self.board = chess.Board(fen=last_move_fen)
+
+            #Now transfer the move data
+            self.board.move_stack = old_board.move_stack
+            self.board.stack = old_board.stack
+            self.board.fullmove_number = old_board.fullmove_number - 1
+
+            #Adjust MASPieces
+            self.update_pieces()
+
+            #Increment the undo counter
+            self.undo_count += 1
+
+            #If this is checkmate, mark this as a practice loss
+            if self.is_game_over:
+                self.practice_lost = True
+                self.is_game_over = False
+
+            self.set_button_states()
+            return None
 
         def handle_player_move(self):
             """
@@ -2790,7 +2815,7 @@ init python:
             """
             Manages button states
             """
-            if not self.is_game_over and self.is_player_white == self.current_turn:
+            if not self.is_game_over and self.is_player_turn():
                 #Considering this is a more casual environment, we're using a modified version of the 50 move rule to allow draw requests
                 if self.board.halfmove_clock >= 40:
                     self._button_draw.enable()
@@ -2802,23 +2827,26 @@ init python:
                     self._button_giveup.enable()
                     self._button_save.enable()
 
-                    if should_enable_undo:
-                        self._button_undo.enable()
-                    else:
-                        self._button_undo.disable()
-
                 else:
                     self._button_giveup.disable()
                     self._button_save.disable()
-                    self._button_undo.disable()
+
+                #Game isn't over, but since we could undo from a checkmate, we'll disable the done button
+                self._button_done.disable()
 
             else:
                 self._button_giveup.disable()
                 self._button_save.disable()
-                self._button_undo.disable()
 
-            if self.is_game_over:
-                self._button_done.enable()
+                #If the game is over, then we should enable done
+                if self.is_game_over:
+                    self._button_done.enable()
+
+            if self.practice_mode and self.move_history and self.is_player_turn():
+                self._button_undo.enable()
+
+            else:
+                self._button_undo.disable()
 
         def _quitPGN(self, quit_reason=0):
             """
@@ -2857,7 +2885,7 @@ init python:
                 #And a special header to indicate this was a requested draw
                 new_pgn.headers["DrawRequested"] = True
 
-            # monika's ingame name will be her twitter handle
+            #Monika's ingame name will be her twitter handle
             #Player plays white
             if self.is_player_white:
                 new_pgn.headers["White"] = persistent.playername
@@ -2873,9 +2901,13 @@ init python:
             new_pgn.headers["Date"] = datetime.date.today().strftime("%Y.%m.%d")
             new_pgn.headers["FEN"] = self.starting_fen if self.starting_fen is not None else MASChessDisplayableBase.START_FEN
             new_pgn.headers["SetUp"] = "1"
+
+            #Hist related to undo + practice mode
             new_pgn.headers["Practice"] = self.practice_mode
             new_pgn.headers["MoveHist"] = self.move_history
             new_pgn.headers["UndoCount"] = self.undo_count
+            #Store this just to mark the pgn that it was lost in practice
+            new_pgn.headers["PracticeLost"] = self.practice_lost
 
             return (
                 new_pgn,
@@ -2889,6 +2921,6 @@ init python:
                         and self.is_player_white #Player is white, so monika is black
                     )
                 ),
-                quit_reason == 1, # player surrendered
+                quit_reason == 1, #Player surrendered
                 self.board.fullmove_number
             )
