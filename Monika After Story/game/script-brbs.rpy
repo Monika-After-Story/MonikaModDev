@@ -242,14 +242,19 @@ label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
 
-        if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
+        if (
+            mas_isMoniLove()
+            and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
+            and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
+            and renpy.random.randint(1,20) == 1
+        ):
             m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
             m 1hubsa "You could just relax with me some more~"
             m 1hub "Ahaha!"
 
         else:
             m 1hua "I hope you had a nice shower."
-            if mas_getEV("monika_idle_shower").shown_count == 1:
+            if mas_getEVL_shown_count("monika_idle_shower") == 1:
                 m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
                 m 1hub "Ahaha!"
 
@@ -664,6 +669,84 @@ label monika_idle_working_callback:
 
     else:
         m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_screen_break",
+            prompt="My eyes need a break from the screen",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_screen_break:
+    if mas_isMoniNormal(higher=True):
+        if mas_timePastSince(mas_getEVL_last_seen("monika_idle_screen_break"), mas_getSessionLength()):
+
+            if mas_getSessionLength() < datetime.timedelta(minutes=40):
+                m 1esc "Oh,{w=0.3} okay."
+                m 3eka "You haven't been here for that long but if you say you need a break, then you need a break."
+
+            elif mas_getSessionLength() < datetime.timedelta(hours=2, minutes=30):
+                m 1eua "Going to rest your eyes for a bit?"
+
+            else:
+                m 1lksdla "Yeah, you probably need that, don't you?"
+
+            m 1hub "I'm glad you're taking care of your health, [player]."
+
+            if not persistent._mas_pm_works_out and random.randint(1,3) == 1:
+                m 3eua "Why not take the opportunity to do a few stretches as well, hmm?"
+                m 1eub "Anyway, come back soon!~"
+
+            else:
+                m 1eub "Come back soon!~"
+
+        else:
+            m 1eua "Taking another break, [player]?"
+            m 1hua "Come back soon!~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh...{w=0.5} {nw}"
+        extend 2rsc "Okay."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_screen_break_callback")
+    $ persistent._mas_idle_data["monika_idle_screen_break"] = True
+    return "idle"
+
+label monika_idle_screen_break_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        m 1eub "Welcome back, [player]."
+
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_screen_break"):
+            m 1hksdlb "You must've really needed that break, considering how long you were gone."
+            m 1eka "I hope you're feeling a little better now."
+        else:
+            m 1hua "I hope you're feeling a little better now~"
+
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m 2esc "Welcome back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5} You're back."
+
+    else:
+        m 6ckc "..."
+
     return
 
 #Rai's og game idle

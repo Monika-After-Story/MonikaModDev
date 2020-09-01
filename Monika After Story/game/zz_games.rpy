@@ -190,7 +190,7 @@ label mas_pick_a_game:
             if mas_isGameUnlocked(renpy.substitute(ev.prompt))
         ], key=lambda x:renpy.substitute(x[0]))
 
-        ret_back = ("Nevermind.", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
 
     #Move Moni left
     show monika 1eua at t21
@@ -199,7 +199,7 @@ label mas_pick_a_game:
     $ renpy.say(m, play_menu_dlg, interact=False)
 
     #Call scrollable pane
-    call screen mas_gen_scrollable_menu(game_menuitems, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(game_menuitems, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ selected_game = _return
 

@@ -25,8 +25,8 @@
                 "C5",
                 "B4"
             ],
-            "express": "1b",
-            "postexpress": "1a"
+            "express": "1eub",
+            "postexpress": "1eua"
         },
         {
             "text": "Happy Birthday to you",
@@ -39,8 +39,8 @@
                 "D5",
                 "C5"
             ],
-            "express": "1b",
-            "postexpress": "1a"
+            "express": "1eub",
+            "postexpress": "1eua"
         },
         {
             "text": "Happy Birthday, Happy Birthday",
@@ -54,8 +54,8 @@
                 "B4",
                 "A4"
             ],
-            "express": "1k",
-            "postexpress": "1j"
+            "express": "1hub",
+            "postexpress": "1hua"
         },
         {
             "text": "Happy Birthday to you!",
@@ -68,8 +68,8 @@
                 "D5",
                 "C5"
             ],
-            "express": "1k",
-            "postexpress": "1j"
+            "express": "3hub",
+            "postexpress": "1hua"
         }
     ]
 }

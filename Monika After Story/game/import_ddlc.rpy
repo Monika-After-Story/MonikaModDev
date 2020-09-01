@@ -28,7 +28,7 @@ label import_ddlc_persistent_in_settings:
         # current in dialogue workflow, we should only enable the escape
         # and music stuff
         $ enable_esc()
-        $ mas_MUMUDropShield()
+        $ mas_MUINDropShield()
 
     else:
         # otherwise, reenable core interactions
