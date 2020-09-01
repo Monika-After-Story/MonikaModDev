@@ -1640,7 +1640,7 @@ init python:
 
             else:
                 #Start off with traditional board, or initialize with the starting fen if using a custom scenario
-                self.board = chess.Board(fen=starting_fen) if starting_fen is not None else chess.Board()
+                self.board = MASBoard(fen=starting_fen) if starting_fen is not None else MASBoard()
 
                 #Stuff we need to save to the board
                 self.today_date = datetime.date.today().strftime("%Y.%m.%d")
@@ -1953,6 +1953,22 @@ init python:
             ui.layer("minigames")
             ui.remove(self)
             ui.close()
+
+        def is_player_winner(self):
+            """
+            Checks if Monika has won the game
+
+            OUT:
+                boolean:
+                    - True if Monika has won the game
+                    - False if not, or the game is still in progress
+            """
+            result = self.board.result()
+
+            return(
+                (result == MASChessDisplayableBase.STATE_WHITE_WIN and self.is_player_white) #Player is white, so monika is black
+                or (result == MASChessDisplayableBase.STATE_BLACK_WIN and not self.is_player_white) #Player is black, so monika is white
+            )
 
         # Renders the board, pieces, etc.
         def render(self, width, height, st, at):
@@ -2464,6 +2480,182 @@ init python:
                 (x, y)
             )
 
+    class MASBoard(chess.Board):
+        """
+        Extension class for the chess.Board class
+        """
+        def __init__(self, fen=chess.STARTING_FEN, chess960=False):
+            """
+            MASBoard constructor
+
+            Same as chess.Board constructor, adds one property
+            """
+            super(MASBoard, self).__init__(fen, chess960)
+
+            #Flag for needing to request a redraw for the board
+            self.request_redraw = False
+
+        def push(self, move):
+            """
+            push override
+
+            Updates the position with the given move and puts it onto the
+            move stack
+
+            Also sets a flag which the MASChessDisplayableBase can use to manage redrawing MASPieces
+
+            IN:
+                chess.Move to push
+            """
+            # Remember game state.
+            self.stack.append(chess._BoardState(self))
+            self.move_stack.append(move)
+
+            move = self._to_chess960(move)
+
+            # Reset en passant square.
+            ep_square = self.ep_square
+            self.ep_square = None
+
+            # Increment move counters.
+            self.halfmove_clock += 1
+            if not self.turn:
+                self.fullmove_number += 1
+
+            # On a null move, simply swap turns and reset the en passant square.
+            if not move:
+                self.turn = not self.turn
+                return
+
+            # Drops.
+            if move.drop:
+                self._set_piece_at(move.to_square, move.drop, self.turn)
+                self.turn = not self.turn
+                return
+
+            # Zero the half-move clock.
+            if self.is_zeroing(move):
+                self.halfmove_clock = 0
+
+            from_bb = BB_SQUARES[move.from_square]
+            to_bb = BB_SQUARES[move.to_square]
+
+            promoted = self.promoted & from_bb
+            piece_type = self._remove_piece_at(move.from_square)
+            capture_square = move.to_square
+            captured_piece_type = self.piece_type_at(capture_square)
+
+            #Update castling rights
+            self.castling_rights = self.clean_castling_rights() & ~to_bb & ~from_bb
+
+            if piece_type == chess.KING and not promoted:
+                if self.turn:
+                    self.castling_rights &= ~BB_RANK_1
+                else:
+                    self.castling_rights &= ~BB_RANK_8
+
+            elif captured_piece_type == chess.KING and not self.promoted & to_bb:
+                if self.turn and square_rank(move.to_square) == 7:
+                    self.castling_rights &= ~BB_RANK_8
+
+                elif not self.turn and square_rank(move.to_square) == 0:
+                    self.castling_rights &= ~BB_RANK_1
+
+            #Handle special pawn moves
+            if piece_type == chess.PAWN:
+                diff = move.to_square - move.from_square
+
+                if diff == 16 and square_rank(move.from_square) == 1:
+                    self.ep_square = move.from_square + 8
+
+                elif diff == -16 and square_rank(move.from_square) == 6:
+                    self.ep_square = move.from_square - 8
+
+                elif move.to_square == ep_square and abs(diff) in [7, 9] and not captured_piece_type:
+                    #Remove pawns captured en passant
+                    down = -8 if self.turn == WHITE else 8
+                    capture_square = ep_square + down
+                    captured_piece_type = self._remove_piece_at(capture_square)
+
+                    #MASPiece needs to redraw, ASAP
+                    self.request_redraw = True
+
+            #Promotion
+            if move.promotion:
+                promoted = True
+                piece_type = move.promotion
+
+            #Castling
+            castling = piece_type == chess.KING and self.occupied_co[self.turn] & to_bb
+
+            if castling:
+                a_side = square_file(move.to_square) < square_file(move.from_square)
+
+                self._remove_piece_at(move.from_square)
+                self._remove_piece_at(move.to_square)
+
+                if a_side:
+                    self._set_piece_at(C1 if self.turn == chess.WHITE else C8, chess.KING, self.turn)
+                    self._set_piece_at(D1 if self.turn == chess.WHITE else D8, chess.ROOK, self.turn)
+
+                else:
+                    self._set_piece_at(G1 if self.turn == chess.WHITE else G8, chess.KING, self.turn)
+                    self._set_piece_at(F1 if self.turn == chess.WHITE else F8, chess.ROOK, self.turn)
+
+                #MASPiece needs to redraw, ASAP
+                self.request_redraw = True
+
+            # Put the piece on the target square.
+            if not castling and piece_type:
+                was_promoted = self.promoted & to_bb
+                self._set_piece_at(move.to_square, piece_type, self.turn, promoted)
+
+                if captured_piece_type:
+                    self._push_capture(move, capture_square, captured_piece_type, was_promoted)
+
+            # Swap turn.
+            self.turn = not self.turn
+
+        def result(self, claim_draw=False):
+            """
+            Gets the game result.
+
+            ``1-0``, ``0-1`` or ``1/2-1/2`` if the
+            :func:`game is over <chess.Board.is_game_over()>`. Otherwise, the
+            result is undetermined: ``*``.
+            """
+            # Chess variant support.
+            if self.is_variant_loss():
+                return "0-1" if self.turn == chess.WHITE else "1-0"
+            elif self.is_variant_win():
+                return "1-0" if self.turn == chess.WHITE else "0-1"
+            elif self.is_variant_draw():
+                return "1/2-1/2"
+
+            #Checkmate
+            if self.is_checkmate():
+                return "0-1" if self.turn == chess.WHITE else "1-0"
+
+            #Draw claimed
+            if claim_draw and self.can_claim_draw():
+                return "1/2-1/2"
+
+            #Seventyfive-move rule or fivefold repetition
+            if self.is_seventyfive_moves() or self.is_fivefold_repetition():
+                return "1/2-1/2"
+
+            #Insufficient material
+            if self.is_insufficient_material():
+                return "1/2-1/2"
+
+            #Stalemate
+            #Fuck you
+            #if not any(self.generate_legal_moves()):
+            #    return "1/2-1/2"
+
+            #Still in progress
+            return "*"
+
     class MASChessDisplayable(MASChessDisplayableBase):
         def __init__(
             self,
@@ -2753,8 +2945,9 @@ init python:
             """
             Manages player move
             """
-            # sanity check
+            #Sanity check
             if self.is_game_over:
+                self.set_button_states()
                 return
 
             px, py = self.get_piece_pos()
@@ -2842,7 +3035,13 @@ init python:
                 if self.is_game_over:
                     self._button_done.enable()
 
-            if self.practice_mode and self.move_history and self.is_player_turn():
+            #Since we can undo a checkmate, we basically want to be able to undo only if Monika has checkmated the player
+            if (
+                self.practice_mode
+                and self.move_history
+                and self.is_player_turn()
+                and not self.is_player_winner()
+            ):
                 self._button_undo.enable()
 
             else:
@@ -2906,6 +3105,7 @@ init python:
             new_pgn.headers["Practice"] = self.practice_mode
             new_pgn.headers["MoveHist"] = self.move_history
             new_pgn.headers["UndoCount"] = self.undo_count
+
             #Store this just to mark the pgn that it was lost in practice
             new_pgn.headers["PracticeLost"] = self.practice_lost
 
@@ -2921,6 +3121,6 @@ init python:
                         and self.is_player_white #Player is white, so monika is black
                     )
                 ),
-                quit_reason == 1, #Player surrendered
+                quit_reason == 1, #Did player surrender?
                 self.board.fullmove_number
             )
