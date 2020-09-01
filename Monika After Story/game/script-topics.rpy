@@ -15730,7 +15730,7 @@ label monika_staring:
     else:
         m "When we're alone together, I can't help but envision your eyes..."
     show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5dubsa "Time stops, and I can finally just... Let out all this baggage."
+    m 5dubsa "Time stops, and I can finally just...let out all this baggage."
     show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 6hubfb "..."
     m 6tubfa "Thank you so much, [player]~"
