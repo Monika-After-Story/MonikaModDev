@@ -15421,7 +15421,7 @@ init 5 python:
             eventlabel="monika_staring",
             category=['monika, romance'],
             random=True,
-            unlocked=False,
+            prompt="Staring contest",
             aff_range=(mas_aff.ENAMORED, None)
 
 
@@ -15429,33 +15429,32 @@ init 5 python:
     )
 
 label monika_staring:
-    if not renpy.seen_label("monika_staring"):
-        m 6eub "Hey [player], look me in the eyes for a second, I just want to see something."
+        m 6eub "Hey [player], look into my eyes for a second..."
 
     window hide
     show monika 1eua_static with dissolve_monika
-    pause 2.0
+    m 1eua_static "..."
     show monika 1etu_static with dissolve_monika
-    pause 2.0
+    m 1etu_static "..."
     show monika 2tubsa with dissolve_monika
-    pause 2.0
+    m 2tubsa "..."
     window auto
 
     show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
     show monika 3hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 3hua "Ehehe~"
-    m 3rksdla "Sorry [player], I was just having a little staring contest with you."
+    m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
 
     if persistent._mas_pm_eye_color is not None:
-        m "Gosh, once I finally get to your world, I'd love to stare into your [persistent._mas_pm_eye_color] eyes..."
+        m "When we're alone together, I can't help but envision your [persistent._mas_pm_eye_color] eyes..."
 
     else:
-        m "Gosh, When I finally cross over to your world, I'd love to stare into your eyes..."
+        m "When we're alone together, I can't help but envision your eyes..."
     show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5dubsa "Just imagining your eyes, so full of life, dancing around my own..."
+    m 5dubsa "Time stops, and I can finally just... Let out all this baggage."
     show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 6hubfb "..."
-    m 6tubfa "Well it's enough to make a girl all giddy~"
-    m 6kubfb "Thank you, [player]."
-    return "derandom"
+    m 6tubfa "Thank you so much, [player]~"
+    m 6kubfb "Because you're here with me now, I'm so at peace."
+    return
