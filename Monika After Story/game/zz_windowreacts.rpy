@@ -147,6 +147,7 @@ init python:
         ):
             from Xlib.display import Display
             from Xlib.X import AnyPropertyType
+            from Xlib.error import BadWindow
 
             display = Display()
             root = display.screen().root
@@ -155,11 +156,16 @@ init python:
             NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
 
             active_winid = root.get_full_property(NET_ACTIVE_WINDOW, AnyPropertyType).value[0]
-            active_winobj = display.create_resource_object("window", active_winid)
-            if friendly:
-                return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
-            else:
-                return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
+            try:
+                # Raises BadWindow exception if active_winid refers to nonexistent window.
+                # Also active_winid is 0, which is really weird.
+                active_winobj = display.create_resource_object("window", active_winid)
+                if friendly:
+                    return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
+                else:
+                    return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
+            except BadWindow:
+                return ""
 
         else:
             #TODO: Mac vers (if possible)
@@ -315,7 +321,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika After Story' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
