@@ -7187,7 +7187,7 @@ label monika_promisering:
         "Like...marriage?":
             m 1hkblb "Ahaha, that too of course!{w=0.2}{nw}"
             extend 3ekblu " But that's actually not what I was thinking about..."
-            m 3ekbfb "I was more thinking about promise rings."
+            m 3eub "I was more thinking about promise rings."
 
         m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
         m 3tkbsb "It also helps remind you of our undying love~"
