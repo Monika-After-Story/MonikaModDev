@@ -536,7 +536,7 @@ label monika_idle_nap_callback:
     if mas_isMoniNormal(higher=True):
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=5), "monika_idle_nap"):
             m 2hksdlb "Oh, [player]! You're finally awake!"
-            m 7rksdlb "When you said you were going to take a nap, I was expecting that you take maybe an hour or two..."
+            m 7rksdlb "When you said you were going to take a nap, I was expecting you take maybe an hour or two..."
             m 1hksdlb "I guess you must have been really tired, ahaha..."
             m 3eua "But at least after sleeping for so long, you'll be here with me for a while, right?"
             m 1hua "Ehehe~"
