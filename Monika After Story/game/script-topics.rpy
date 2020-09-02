@@ -7173,31 +7173,25 @@ label monika_promisering:
         "I do.":
             m 1wkbld "Oh..."
             m 1rkbla "..."
-            m 2hkblb "Sorry, I was just spacing out there for a second..."
-            m 6lkbssdla "Imagining somewhere else you'd say that~"
-            m 7hkbssdlb "Ahaha, I'm just joking."
-            m 1hkbssdlb "I'm not thinking about that at all..."
+            m 3hkblb "Sorry, I was just spacing out there for a second...{w=0.3}{nw}"
+            extend 1dkbssdlu " Imagining somewhere else you'd say that~"
+            m 3hkbssdlb "Ahaha, I'm just joking."
+            m 1hkbssdlb "I'm not thinking about that at all...{w=0.3}{nw}"
             extend 3ekbfb " I was more thinking about promise rings."
-            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
-            m 3tkbfb "It also helps to remind you of our undying love..."
-            m 2ekbfu "Anyway, I was just wondering..."
 
         "I don't...":
             m 1ekblu "Well, I'm sure you know that when people get engaged they do at least..."
             m 3ekblu "But that's actually not what I was thinking about."
-            m 3ekbfb "I was more thinking about promise rings."
-            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
-            m 3tkbfb "It also helps to remind you of our undying love..."
-            m 2ekbfu "Anyway, I was just wondering..."
+            m 3eub "I was more thinking about promise rings."
 
         "Like...marriage?":
-            m 1hkblb "Ahaha, that too of course!"
-            m 1hkblsdrb "..."
-            m 3ekblu "But that's actually not what I was thinking about..."
+            m 1hkblb "Ahaha, that too of course!{w=0.2}{nw}"
+            extend 3ekblu " But that's actually not what I was thinking about..."
             m 3ekbfb "I was more thinking about promise rings."
-            m 1dkbfa "If you wear a promise ring, you can show off to everyone that we are together~"
-            m 3tkbfb "It also helps to remind you of our undying love..."
-            m 2ekbfu "Anyway, I was just wondering..."
+
+        m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
+        m 3tkbsb "It also helps remind you of our undying love~"
+        m 1ekbssdlu "Anyway, I was just wondering..."
 
     pause 1.0
     m 1eksdla "Do you wear a ring for me, [player]?{nw}"
