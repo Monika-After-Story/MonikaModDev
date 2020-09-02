@@ -1,5 +1,5 @@
 
-# holds words the player has told Monika are real despite no being in the dictionary
+# holds words the player has told Monika are real despite not being in the dictionary
 default persistent._mas_shiritori_extra_words = set()
 
 init 5 python:
@@ -63,7 +63,7 @@ label player_loss(reason=""):
 
     elif reason == "used":
         m "Wait a second, [last_word_p_raw]?"
-        if last_word_p in recent_words:
+        if last_word_p in shiritori_recent_words:
             m "That one was played just a second ago!"
         else:
             m "I'm pretty sure one of us already used that one."
@@ -220,9 +220,10 @@ label game_shiritori:
 
         shiritori_loop = True
         # all the words used in current game
-        used_words = set()
+        shiritori_used_words = set()
         # last 10 words - serves as Monika's short-term memory to avoid immediately repeating a word
-        recent_words = set()
+        shiritori_mem_size = 10
+        shiritori_recent_words = set()
 
     # if Monika has the first turn
     if monika_first:
@@ -231,8 +232,8 @@ label game_shiritori:
             first_letter = renpy.random.choice("abcdefghijklmnopqrstuvwxyz")
             last_word_m = renpy.random.choice(dictionary_monika[first_letter])
             # add first word to used and recent
-            used_words.add(last_word_m.lower())
-            recent_words.add(last_word_m.lower())
+            shiritori_used_words.add(last_word_m.lower())
+            shiritori_recent_words.add(last_word_m.lower())
         m "[last_word_m]"
     else:
         $ last_word_m = "_none"
@@ -274,30 +275,30 @@ label game_shiritori:
             call player_loss(reason = "invalid")
 
         # check against used words
-        elif last_word_p in used_words:
+        elif last_word_p in shiritori_used_words:
             $ shiritori_loop = False
             call player_loss(reason = "used")
 
         else:
             # update used word sets
             python:
-                used_words.add(last_word_p)
-                recent_words.add(last_word_p)
-                if len(recent_words) > 10:
-                    recent_words.pop()
+                shiritori_used_words.add(last_word_p)
+                shiritori_recent_words.add(last_word_p)
+                if len(shiritori_recent_words) > shiritori_mem_size:
+                    shiritori_recent_words.pop()
 
             # Monika's turn
             m "Hmm...{w=1}{nw}"
 
             # checking for turn exhaustion or if Monika has no valid words to play
-            # valid word check allows for arbitrarily small word dictionaries/large recent_words without an infinite loop occurring
+            # valid word check allows for arbitrarily small word dictionaries/large shiritori_recent_words without an infinite loop occurring
             if (
                     (shiritori_monika_turnsleft[last_word_p[-1]] <= 0)
                     or
                     (
-                        (recent_words.intersection(dictionary_full[last_word_p[-1]]) != set(dictionary_full[last_word_p[-1]]))
+                        (shiritori_recent_words.intersection(dictionary_full[last_word_p[-1]]) != set(dictionary_full[last_word_p[-1]]))
                         and
-                        (recent_words.intersection(dictionary_monika[last_word_p[-1]]) != set(dictionary_monika[last_word_p[-1]]))
+                        (shiritori_recent_words.intersection(dictionary_monika[last_word_p[-1]]) != set(dictionary_monika[last_word_p[-1]]))
                     )
                 ):
                 pause (timelimit/4)
@@ -317,12 +318,12 @@ label game_shiritori:
 
                     # TODO: Add bad word filter here - Monika should be able to recognize them, but not use them herself
                     # checking if recently played
-                    if last_word_m not in recent_words:
+                    if last_word_m not in shiritori_recent_words:
                         $ last_word_m_invalid = False
 
                 extend " [last_word_m]{w=1}{nw}"
                 # checking if used
-                if last_word_m.lower() in used_words:
+                if last_word_m.lower() in shiritori_used_words:
                     call monika_loss(reason = "used")
                     $ shiritori_loop = False
 
@@ -330,9 +331,9 @@ label game_shiritori:
                     # update used word sets and remaining turns
                     python:
                         shiritori_monika_turnsleft[last_word_p[-1]] -= 1
-                        used_words.add(last_word_m.lower())
-                        recent_words.add(last_word_m.lower())
-                        if len(recent_words) > 10:
-                            recent_words.pop()
+                        shiritori_used_words.add(last_word_m.lower())
+                        shiritori_recent_words.add(last_word_m.lower())
+                        if len(shiritori_recent_words) > 10:
+                            shiritori_recent_words.pop()
 
     return
