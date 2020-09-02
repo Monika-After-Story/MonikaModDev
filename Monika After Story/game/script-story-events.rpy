@@ -2119,11 +2119,7 @@ label mas_notification_windowreact:
 
 
         elif renpy.linux:
-            if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
-            else:
-                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
-                extend 3hua "I'll be able to know what your active window is!"
+            m 3rksdla "Also, since you're using Linux...I now know how to check what your active window is."
 
         if not renpy.macintosh:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
