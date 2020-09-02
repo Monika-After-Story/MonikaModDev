@@ -7189,9 +7189,9 @@ label monika_promisering:
             extend 3ekblu " But that's actually not what I was thinking about..."
             m 3ekbfb "I was more thinking about promise rings."
 
-        m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
-        m 3tkbsb "It also helps remind you of our undying love~"
-        m 1ekbssdlu "Anyway, I was just wondering..."
+    m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
+    m 3tkbsb "It also helps remind you of our undying love~"
+    m 1ekbssdlu "Anyway, I was just wondering..."
 
     pause 1.0
     m 1eksdla "Do you wear a ring for me, [player]?{nw}"
