@@ -4377,14 +4377,14 @@ label mas_player_bday_autoload_check:
 
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
-            not persistent._mas_player_bday_in_player_bday_mode
-            and persistent._mas_player_confirmed_bday
-            and mas_isMoniNormal(higher=True)
-            and not persistent._mas_player_bday_spent_time
-            and not mas_isD25()
-            and not mas_isO31()
-            and not mas_isF14()
-        ):
+        not persistent._mas_player_bday_in_player_bday_mode
+        and persistent._mas_player_confirmed_bday
+        and mas_isMoniNormal(higher=True)
+        and not persistent._mas_player_bday_spent_time
+        and not mas_isD25()
+        and not mas_isO31()
+        and not mas_isF14()
+    ):
 
         python:
             # first we determine if we want to run a surprise greeting this year
@@ -6000,6 +6000,7 @@ init -810 python:
             "_mas_bday_date_count": "922.actions.date.count",
             "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
             "_mas_bday_gone_over_bday": "922.gone_over_bday",
+            "_mas_bday_has_done_bd_outro": "922.done_bd_outro",
 
             "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
             "_mas_bday_confirmed_party": "922.actions.confirmed_party",
@@ -6126,7 +6127,7 @@ init -1 python:
             if persistent._mas_bday_confirmed_party:
                 #We should also handle if the player confirmed the party pre-note
                 if persistent._mas_bday_hint_filename:
-                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+                    store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
                 return True
 
             #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
@@ -6146,6 +6147,8 @@ init -1 python:
                     if persistent._mas_bday_hint_filename:
                         store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
 
+                    #We should also return a new file indicating the player has confirmed the party
+                    _write_txt("/characters/gotcha", "")
                     #Step 5a, return true since party is confirmed
                     return True
 
@@ -6158,26 +6161,29 @@ init -1 python:
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
-    if not mas_isMonikaBirthday():
-        $ persistent._mas_bday_in_bday_mode = False
-        #Also make sure we're no longer showing visuals
-        $ persistent._mas_bday_visuals = False
+    python:
+        if not mas_isMonikaBirthday():
+            persistent._mas_bday_in_bday_mode = False
+            #Also make sure we're no longer showing visuals
+            persistent._mas_bday_visuals = False
 
-        #Lock the event clothes selector
-        $ store.mas_lockEVL("monika_event_clothes_select", "EVE")
+            #Lock the event clothes selector
+            store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
-        #And reset outfit if not at the right aff
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
-            $ monika_chr.reset_clothes(False)
-            $ monika_chr.save()
-            $ renpy.save_persistent()
+            store.mas_utils.trydel("characters/gotcha")
 
-    #It's Moni's bday! If we're here that means we're spending time with her, so:
-    $ persistent._mas_bday_no_time_spent = False
+            #And reset outfit if not at the right aff
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
-    $ persistent._mas_bday_opened_game = True
-    #Have we recogized bday?
-    $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
+        #It's Moni's bday! If we're here that means we're spending time with her, so:
+        persistent._mas_bday_no_time_spent = False
+
+        persistent._mas_bday_opened_game = True
+        #Have we recogized bday?
+        persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
     jump mas_ch30_post_holiday_check
 
@@ -6879,25 +6885,37 @@ label bye_922_delegate:
     jump mas_dockstat_iostart
 
 label mas_bday_bd_outro:
-    $ monika_chr.change_clothes(mas_clothes_blackdress)
-    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
-    $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
-    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    python:
+        monika_chr.change_clothes(mas_clothes_blackdress)
+        mas_temp_zoom_level = store.mas_sprites.zoom_level
+
+        #Flag so we don't end up back into this flow
+        persistent._mas_bday_has_done_bd_outro = True
 
     call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
     #NOTE: We change the zoom here because we want to show off the outfit.
 
-    m 3tka "Well, [player]?"
-    m 1hua "What do you think?"
-    m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
-    m 3eub "Maybe we could visit the mall, or even the park!"
-    m 1eka "But knowing you, you've already got something amazing planned for us~"
+    if mas_SELisUnlocked(mas_clothes_blackdress):
+        m 1hua "Ehehe~"
+        m 1eua "I'm so excited to see what you've got planned for us today."
+        m 3eua "...But even if it's not much, I'm sure we'll have a great time together~"
+
+    else:
+        m 3tka "Well, [player]?"
+        m 1hua "What do you think?"
+        m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
+        m 3eub "Maybe we could visit the mall, or even the park!"
+        m 1eka "But knowing you, you've already got something amazing planned for us~"
+
     m 1hua "Let's go, [player]!"
-    $ persistent._mas_zoom_zoom_level = mas_temp_zoom_level
 
     python:
-        # setup check and log this file checkout
+        store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
+        mas_addClothesToHolidayMap(mas_clothes_blackdress)
+        persistent._mas_zoom_zoom_level = mas_temp_zoom_level
+
+        #Setup check and log this file checkout
         store.mas_dockstat.checkoutMonika(moni_chksum)
 
         #Now setup ret greet
