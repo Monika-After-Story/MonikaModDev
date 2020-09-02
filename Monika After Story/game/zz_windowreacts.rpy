@@ -75,25 +75,14 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
-        import subprocess
         try:
-            subprocess.call(['notify-send', '--version'])
-
-        except OSError as e:
-            #Command wasn't found
+            import Xlib
+        except ImportError:
             store.mas_windowreacts.can_show_notifs = False
-            store.mas_utils.writelog(
-                "[WARNING]: notify-send not found, disabling notifications.\n"
-            )
-
-        try:
-            subprocess.call(["xdotool", "--version"])
-
-        except OSError:
-            #Command not found
-            persistent._mas_windowreacts_windowreacts_enabled = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
+            store.mas_utils.writelog(
+                    "[WARNING]: Xlib failed to be imported, disabling notifications.\n"
+            )
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -156,18 +145,21 @@ init python:
             and mas_windowreacts.can_show_notifs
             and mas_canCheckActiveWindow()
         ):
-            #Try except this in the case of a non-zero exit code
-            try:
-                window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
-            except:
-                store.mas_utils.writelog("[ERROR]: xdotool exited with a non-zero exit code.\n")
-                return ""
+            from Xlib.display import Display
+            from Xlib.X import AnyPropertyType
 
-            #If we have a window handle, let's just process it as friendly/unfriendly and return it
+            display = Display()
+            root = display.screen().root
+
+            NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
+            NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
+
+            active_winid = root.get_full_property(NET_ACTIVE_WINDOW, AnyPropertyType).value[0]
+            active_winobj = display.create_resource_object("window", active_winid)
             if friendly:
-                return window_handle.replace("\n", "")
+                return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
             else:
-                return window_handle.lower().replace(" ","").replace("\n", "")
+                return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
 
         else:
             #TODO: Mac vers (if possible)
