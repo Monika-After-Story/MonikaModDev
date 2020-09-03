@@ -2537,8 +2537,8 @@ init python:
             if self.is_zeroing(move):
                 self.halfmove_clock = 0
 
-            from_bb = BB_SQUARES[move.from_square]
-            to_bb = BB_SQUARES[move.to_square]
+            from_bb = chess.BB_SQUARES[move.from_square]
+            to_bb = chess.BB_SQUARES[move.to_square]
 
             promoted = self.promoted & from_bb
             piece_type = self._remove_piece_at(move.from_square)
