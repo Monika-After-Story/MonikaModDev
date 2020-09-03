@@ -34,7 +34,6 @@ from six import PY3, byte2int, indexbytes
 
 # Xlib modules
 from .. import error
-from ..ext import ge
 
 from ..support import lock, connect
 
@@ -383,7 +382,7 @@ class Display(object):
                 if rtype == 1:
                     gotreq = self.parse_request_response(request) or gotreq
                     continue
-                elif rtype & 0x7f == ge.GenericEventCode:
+                elif rtype & 0x7f == 35:
                     self.parse_event_response(rtype)
                     continue
                 else:
@@ -395,7 +394,7 @@ class Display(object):
             if rtype == 0:
                 gotreq = self.parse_error_response(request) or gotreq
 
-            elif rtype == 1 or rtype & 0x7f == ge.GenericEventCode:
+            elif rtype == 1 or rtype & 0x7f == 35:
                 rlen = int(struct.unpack('=L', self.data_recv[4:8])[0])
                 self.recv_packet_len = 32 + rlen * 4
 
@@ -466,7 +465,7 @@ class Display(object):
     def parse_event_response(self, etype):
         etype = etype & 0x7f
 
-        if etype == ge.GenericEventCode:
+        if etype == 35:
             length = self.recv_packet_len
         else:
             length = 32
@@ -482,7 +481,7 @@ class Display(object):
 
         e = estruct(display = self, binarydata = self.data_recv[:length])
 
-        if etype == ge.GenericEventCode:
+        if etype == 35:
             self.recv_packet_len = 0
 
         self.data_recv = bytesview(self.data_recv, length)
