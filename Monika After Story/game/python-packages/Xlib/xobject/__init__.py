@@ -20,10 +20,6 @@
 #    Boston, MA 02111-1307 USA
 
 __all__ = [
-    'colormap',
-    'cursor',
     'drawable',
-    'fontable',
-    'icccm',
-    'resource',
+    'resource'
     ]

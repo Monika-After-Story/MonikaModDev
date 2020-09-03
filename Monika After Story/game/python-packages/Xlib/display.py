@@ -29,14 +29,12 @@ from .xobject import drawable
 _resource_baseclasses = {
     'resource': resource.Resource,
     'drawable': drawable.Drawable,
-    'window': drawable.Window,
-    'pixmap': drawable.Pixmap
+    'window': drawable.Window
     }
 
 _resource_hierarchy = {
-    'resource': ('drawable', 'window', 'pixmap'),
-    'drawable': ('window', 'pixmap'),
-    'fontable': ('font', 'gc')
+    'resource': ('drawable', 'window'),
+    'drawable': ('window', 'pixmap')
     }
 
 class _BaseDisplay(protocol_display.Display):

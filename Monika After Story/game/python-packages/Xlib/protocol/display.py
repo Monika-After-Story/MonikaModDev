@@ -43,9 +43,7 @@ from . import rq
 from . import event
 
 if PY3:
-
     class bytesview(object):
-
         def __init__(self, data, offset=0, size=None):
             if size is None:
                 size = len(data)-offset
