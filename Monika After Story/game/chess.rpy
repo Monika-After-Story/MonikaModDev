@@ -544,7 +544,12 @@ label game_chess:
         quick_menu = False
 
         #Add the displayable
-        chess_displayable_obj = MASChessDisplayable(is_player_white, pgn_game=loaded_game, practice_mode=practice_mode)
+        chess_displayable_obj = MASChessDisplayable(
+            is_player_white,
+            pgn_game=loaded_game,
+            practice_mode=practice_mode,
+            starting_fen=mas_chess.generate_fen()
+        )
         chess_displayable_obj.show()
         results = chess_displayable_obj.game_loop()
         chess_displayable_obj.hide()
@@ -2595,12 +2600,12 @@ init python:
                 self._remove_piece_at(move.to_square)
 
                 if a_side:
-                    self._set_piece_at(C1 if self.turn == chess.WHITE else C8, chess.KING, self.turn)
-                    self._set_piece_at(D1 if self.turn == chess.WHITE else D8, chess.ROOK, self.turn)
+                    self._set_piece_at(C1 if self.turn == chess.WHITE else chess.C8, chess.KING, self.turn)
+                    self._set_piece_at(D1 if self.turn == chess.WHITE else chess.D8, chess.ROOK, self.turn)
 
                 else:
-                    self._set_piece_at(G1 if self.turn == chess.WHITE else G8, chess.KING, self.turn)
-                    self._set_piece_at(F1 if self.turn == chess.WHITE else F8, chess.ROOK, self.turn)
+                    self._set_piece_at(G1 if self.turn == chess.WHITE else chess.G8, chess.KING, self.turn)
+                    self._set_piece_at(F1 if self.turn == chess.WHITE else chess.F8, chess.ROOK, self.turn)
 
                 #MASPiece needs to redraw, ASAP
                 self.request_redraw = True
@@ -2649,9 +2654,9 @@ init python:
                 return "1/2-1/2"
 
             #Stalemate
-            #Fuck you
-            #if not any(self.generate_legal_moves()):
-            #    return "1/2-1/2"
+            if not any(self.generate_legal_moves()):
+                #TODO: Casual rules
+                return "1/2-1/2"
 
             #Still in progress
             return "*"
