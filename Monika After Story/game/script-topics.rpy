@@ -15692,3 +15692,51 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tanabata",
+            category=['misc'],
+            prompt="Orihime and Hikoboshi",
+            conditional="seen_event('mas_story_tanabata')",
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            random=True
+        )
+    )
+
+label monika_tanabata:
+    m 6eua "Hey [player], remember when I told you the story of the weaver girl and the cowherd?"
+    m 3eua "Did you know there's a festival dedicated to it called Tanabata?"
+    m 2eua "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
+    m 4eua "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
+    m 7euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
+    m 1euc "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
+    m 3eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ruu "Even though the term was coined in Romeo and Juliet, the term 'star-crossed lovers' is really fitting here!"
+    m 5eua "Star-crossed lovers is a term describing a pair of lovers whose relationship is thwarted by outside forces."
+    show monika 6eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 6eua "As the day of the festival draws closer, long narrow strips of colorful paper known as tanzaku..."
+    m "...vibrant ornaments and other decorations are hung from bamboo branches to enliven the decor of homes, shopping arcades and other public spaces."
+    m 3eua "Before they are hung, tanzaku are inscribed with a wish..."
+    m "...such as a child's dream of becoming a famous soccer player, or a parent's hope of career success."
+    m 1hua "It's really cute and heartwarming!"
+    m 1wua "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or on the next day."
+    m 1hub "There's even a very cute traditional Tanabata song associated with it."
+    m 1eub "Would you like to hear it?"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to hear it?"
+
+        "Yes.":
+            m 1wub "Great, let me just..."
+            extend 6dub " get the translation{w=0.3}.{w=0.3}.{w=0.3}.{nw}"
+            jump mas_song_tanabata_song
+
+        "No.":
+            m 5rup "Awe, okay."
+            m 5hua "Just let me know if you would like to hear it sometime~"
+    m 1wua "I would love to go to Japan and celebrate Tanabata with you sometime after I cross over."
+    return
