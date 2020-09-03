@@ -156,16 +156,20 @@ init python:
             NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
 
             active_winid = root.get_full_property(NET_ACTIVE_WINDOW, AnyPropertyType).value[0]
+            active_winobj = display.create_resource_object("window", active_winid)
             try:
-                # Raises BadWindow exception if active_winid refers to nonexistent window.
-                # Also active_winid is 0, which is really weird.
-                active_winobj = display.create_resource_object("window", active_winid)
+                # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
                 if friendly:
                     return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
                 else:
                     return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
             except BadWindow:
                 return ""
+            finally:
+                # Release resources to prevent memory leak.
+                display.display.free_resource_id(active_winid)
+                display.flush()
+                display.close()
 
         else:
             #TODO: Mac vers (if possible)
