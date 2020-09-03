@@ -19,15 +19,6 @@
 #    Suite 330,
 #    Boston, MA 02111-1307 USA
 
-# Python modules
-import types
-
-# Python 2/3 compatibility.
-from six import create_unbound_method
-
-# Xlib modules
-from . import error
-from . import ext
 from . import X
 
 # Xlib.protocol modules
@@ -62,10 +53,6 @@ _resource_hierarchy = {
     }
 
 class _BaseDisplay(protocol_display.Display):
-
-    # Implement a cache of atom names, used by Window objects when
-    # dealing with some ICCCM properties not defined in Xlib.Xatom
-
     def __init__(self, *args, **keys):
         self.resource_classes = _resource_baseclasses.copy()
         protocol_display.Display.__init__(self, *args, **keys)
@@ -76,8 +63,6 @@ class _BaseDisplay(protocol_display.Display):
             return self._atom_cache[atomname]
 
         r = request.InternAtom(display = self, name = atomname, only_if_exists = only_if_exists)
-
-         # don't cache NONE responses in case someone creates this later
         if r.atom != X.NONE:
             self._atom_cache[atomname] = r.atom
 
@@ -87,61 +72,22 @@ class _BaseDisplay(protocol_display.Display):
 class Display(object):
     def __init__(self, display = None):
         self.display = _BaseDisplay(display)
-
-        # Create the keymap cache
         self._keymap_codes = [()] * 256
         self._keymap_syms = {}
-
-        # Translations for keysyms to strings.
         self.keysym_translations = {}
-
-        # Find all supported extensions
         self.extensions = []
         self.class_extension_dicts = {}
         self.display_extension_methods = {}
-
-        # a dict that maps the event name to the code
-        # or, when it's an event with a subcode, to a tuple of (event,subcode)
-        # note this wraps the dict so you address it as
-        # extension_event.EXTENSION_EVENT_NAME rather than
-        # extension_event["EXTENSION_EVENT_NAME"]
         self.extension_event = rq.DictWrapper({})
 
     def close(self):
-        """Close the display, freeing the resources that it holds."""
         self.display.close()
 
     def flush(self):
-        """Flush the request queue, building and sending the queued
-        requests. This can be necessary in applications that never wait
-        for events, and in threaded applications."""
         self.display.flush()
 
     def create_resource_object(self, type, id):
-        """Create a resource object of type for the integer id. type
-        should be one of the following strings:
-
-        resource
-        drawable
-        window
-        pixmap
-        fontable
-        font
-        gc
-        colormap
-        cursor
-
-        This function can be used when a resource ID has been fetched
-        e.g. from an resource or a command line argument. Resource
-        objects should never be created by instantiating the appropriate
-        class directly, since any X extensions dynamically added by the
-        library will not be available.
-        """
         return self.display.resource_classes[type](self.display, id)
-
-    ###
-    ### display information retrieval
-    ###
 
     def screen(self, sno = None):
         if sno is None:
@@ -149,14 +95,7 @@ class Display(object):
         else:
             return self.display.info.roots[sno]
 
-    ###
-    ### X requests
-    ###
-
     def intern_atom(self, name, only_if_exists = 0):
-        """Intern the string name, returning its atom number. If
-        only_if_exists is true and the atom does not already exist, it
-        will not be created and X.NONE is returned."""
         r = request.InternAtom(display = self.display,
                                name = name,
                                only_if_exists = only_if_exists)
