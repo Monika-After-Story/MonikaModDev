@@ -18,9 +18,6 @@
 #    59 Temple Place,
 #    Suite 330,
 #    Boston, MA 02111-1307 USA
-
-from . import X
-
 # Xlib.protocol modules
 from .protocol import display as protocol_display
 from .protocol import request, event, rq
@@ -63,7 +60,7 @@ class _BaseDisplay(protocol_display.Display):
             return self._atom_cache[atomname]
 
         r = request.InternAtom(display = self, name = atomname, only_if_exists = only_if_exists)
-        if r.atom != X.NONE:
+        if r.atom != 0:
             self._atom_cache[atomname] = r.atom
 
         return r.atom

@@ -146,7 +146,6 @@ init python:
             and mas_canCheckActiveWindow()
         ):
             from Xlib.display import Display
-            from Xlib.X import AnyPropertyType
             from Xlib.error import BadWindow
 
             display = Display()
@@ -155,7 +154,7 @@ init python:
             NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
             NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
 
-            active_winid = root.get_full_property(NET_ACTIVE_WINDOW, AnyPropertyType).value[0]
+            active_winid = root.get_full_property(NET_ACTIVE_WINDOW, 0).value[0]
             active_winobj = display.create_resource_object("window", active_winid)
             try:
                 # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
