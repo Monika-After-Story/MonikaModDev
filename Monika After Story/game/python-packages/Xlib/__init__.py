@@ -29,7 +29,6 @@ __all__ = [
     'X',
     'XK',
     'Xatom',
-    'Xcursorfont',
     'Xutil',
     'display',
     'error'
