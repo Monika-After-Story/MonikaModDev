@@ -25,26 +25,16 @@ from .protocol import request, event, rq
 # Xlib.xobjects modules
 from .xobject import resource
 from .xobject import drawable
-from .xobject import fontable
-from .xobject import colormap
-from .xobject import cursor
 
 _resource_baseclasses = {
     'resource': resource.Resource,
     'drawable': drawable.Drawable,
     'window': drawable.Window,
-    'pixmap': drawable.Pixmap,
-    'fontable': fontable.Fontable,
-    'font': fontable.Font,
-    'gc': fontable.GC,
-    'colormap': colormap.Colormap,
-    'cursor': cursor.Cursor,
+    'pixmap': drawable.Pixmap
     }
 
 _resource_hierarchy = {
-    'resource': ('drawable', 'window', 'pixmap',
-                 'fontable', 'font', 'gc',
-                 'colormap', 'cursor'),
+    'resource': ('drawable', 'window', 'pixmap'),
     'drawable': ('window', 'pixmap'),
     'fontable': ('font', 'gc')
     }
