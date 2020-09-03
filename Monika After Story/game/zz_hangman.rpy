@@ -408,7 +408,7 @@ label mas_hangman_game_select_diff:
 label mas_hangman_game_preloop:
 
     # setup positions
-    show monika at hangman_monika
+    show monika at t21
     if store.mas_globals.dark_mode:
         show hm_frame_dark at hangman_board zorder 13
     else:
@@ -502,6 +502,7 @@ label mas_hangman_game_loop:
     $ guesses = 0
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
+    $ give_up = False
 
     if persistent._mas_sensitive_mode:
         $ avail_letters.remove("?")
@@ -555,7 +556,7 @@ label mas_hangman_game_loop:
 
                 # hide monika and display glitch version
                 hide monika
-                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at hangman_monika_i(z=1.0)
+                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at i21
 
                 # hide window sayori and display glitch version
                 show hm_s_win_0 as window_sayori
@@ -582,12 +583,12 @@ label mas_hangman_game_loop:
                 hide mbg
                 hide window_sayori
                 hide hm_s
-                show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
+                show monika 1esa zorder MAS_MONIKA_Z at i21
                 $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
@@ -630,7 +631,10 @@ label mas_hangman_game_loop:
             elif guess == "!": # give up dialogue
                 if is_window_sayori_visible:
                     show hm_s_win_fail as window_sayori at hangman_sayori_i3
+
+                $ give_up = True
                 $ done = True
+
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
@@ -639,6 +643,7 @@ label mas_hangman_game_loop:
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
+
                 elif chances == 5:
                     m 1ekc "Don't give up so easily."
                     m 3eka "That was only your first wrong letter!"
@@ -646,8 +651,10 @@ label mas_hangman_game_loop:
                         m 1eka "You still had [chances] more lives left."
                     else:
                         m 1eka "You still had [chances] more life left."
+
                     m 1hua "I know you can do it!"
                     m 1eka "It would really mean a lot to me if you just tried a bit harder."
+
                 else:
                     m "You should at least play to the end..."
                     m 1ekc "Giving up so easily is a sign of poor resolve."
@@ -655,7 +662,9 @@ label mas_hangman_game_loop:
                         m "I mean, you'd have to miss [chances] more letters to actually lose."
                     else:
                         m "I mean, you'd have to miss [chances] more letter to actually lose."
+
                 m 1eka "Can you play to the end next time, [player]? For me?"
+
             else:
                 $ guesses += 1
                 python:
@@ -690,9 +699,14 @@ label mas_hangman_game_loop:
 
         m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
+
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
         #TODO: grant a really tiny amount of affection?
+
+    #Give up just ends
+    if give_up:
+        jump mas_hangman_game_end
 
     # try again?
     m "Would you like to play again?{nw}"
@@ -705,9 +719,13 @@ label mas_hangman_game_loop:
                 # each game counts as a game played
                 $ hang_ev.shown_count += 1
 
+            show monika at t21
             jump mas_hangman_game_loop
+
         "No.":
             pass
+
+            #FALL THROUGH
 
     # RETURN AT END
 
@@ -748,5 +766,10 @@ label mas_hangman_dlg_game_end_long:
 
 # short form of ending dialogue
 label mas_hangman_dlg_game_end_short:
-    m 1eua "Okay. Let's play again soon!"
+    if give_up:
+        $ dlg_line = "Let's play again soon, okay?"
+    else:
+        $ dlg_line = "Okay. Let's play again soon!"
+
+    m 1eua "[dlg_line]"
     return

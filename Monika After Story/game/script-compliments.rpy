@@ -17,14 +17,15 @@ init 3 python in mas_compliments:
 
     compliment_database = dict()
 
+init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
-        _("Thanks for telling me that again, my love!"),
-        _("You always make me feel special, [player]."),
+        _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
+        _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
-        _("Thanks, [player]!"),
+        _("Thanks, [mas_get_player_nickname()]!"),
         _("You always flatter me, [player].")
     ]
 
@@ -75,7 +76,7 @@ label monika_compliments:
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -384,12 +385,14 @@ label mas_compliment_thanks:
     m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
-            if mas_getEV('mas_compliment_thanks').shown_count == 0:
+            if mas_getEVL_shown_count("mas_compliment_thanks") == 0:
                 $ mas_gainAffection(10,bypass=True)
+
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both...{w=0.5}{nw}"
             extend 1dkbfa "know that I'll always love you and be here for you."
+
         "Yeah.":
             m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
@@ -716,7 +719,7 @@ label mas_compliment_thinking_of_you_2:
             $ mas_loseAffection()
             m 2esc "..."
             m 2etc "..."
-            m 2rksdlc "Oh, umm...."
+            m 2rksdlc "Oh, umm..."
             m 2rksdld "I'm sorry?"
     return
 

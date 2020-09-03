@@ -514,14 +514,16 @@ init 5 python:
             end_prep = random.randint(self.prep_low, self.prep_high)
 
             #Setup the event conditional
-            prep_ev = mas_getEV(self.finish_prep_evl)
-            prep_ev.conditional = (
-                "persistent._mas_current_consumable[{0}]['prep_time'] is not None "
-                "and (datetime.datetime.now() - "
-                "persistent._mas_current_consumable[{0}]['prep_time']) "
-                "> datetime.timedelta(0, {1})"
-            ).format(self.consumable_type, end_prep)
-            prep_ev.action = EV_ACT_QUEUE
+            mas_setEVLPropValues(
+                self.finish_prep_evl,
+                conditional=(
+                    "persistent._mas_current_consumable[{0}]['prep_time'] is not None "
+                    "and (datetime.datetime.now() - "
+                    "persistent._mas_current_consumable[{0}]['prep_time']) "
+                    "> datetime.timedelta(0, {1})"
+                ).format(self.consumable_type, end_prep),
+                action=EV_ACT_QUEUE
+            )
 
             #Now we set what we're having
             persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
@@ -545,12 +547,14 @@ init 5 python:
             persistent._mas_current_consumable[self.consumable_type]["consume_time"] = _start_time + consumable_time
 
             #Setup the event conditional
-            cons_ev = mas_getEV(self.finish_cons_evl)
-            cons_ev.conditional = (
-                "persistent._mas_current_consumable[{0}]['consume_time'] is not None "
-                "and datetime.datetime.now() > persistent._mas_current_consumable[{0}]['consume_time']"
-            ).format(self.consumable_type)
-            cons_ev.action = EV_ACT_QUEUE
+            mas_setEVLPropValues(
+                self.finish_cons_evl,
+                conditional=(
+                    "persistent._mas_current_consumable[{0}]['consume_time'] is not None "
+                    "and datetime.datetime.now() > persistent._mas_current_consumable[{0}]['consume_time']"
+                ).format(self.consumable_type),
+                action=EV_ACT_QUEUE
+            )
 
             #Skipping leadin? We need to set this to persistent and wear the acs for it
             if skip_leadin:
@@ -786,23 +790,10 @@ init 5 python:
                 monika_chr.remove_acs(consumable.acs)
                 consumable.re_serves_had = 0
 
-                #Get evs
-                get_ev = mas_getEV(consumable.get_cons_evl)
-                prep_ev = mas_getEV(consumable.finish_prep_evl)
-                cons_ev = mas_getEV(consumable.finish_cons_evl)
-
-                #Reset the events
-                get_ev.conditional = None
-                cons_ev.action = None
-                prep_ev.conditional = None
-                prep_ev.action = None
-                cons_ev.conditional = None
-                cons_ev.action = None
-
-                #And remove them from the event list
-                mas_rmEVL(consumable.get_cons_evl)
-                mas_rmEVL(consumable.finish_prep_evl)
-                mas_rmEVL(consumable.finish_cons_evl)
+                #Strip EVs
+                mas_stripEVL(consumable.get_cons_evl, list_pop=True)
+                mas_stripEVL(consumable.finish_prep_evl, list_pop=True)
+                mas_stripEVL(consumable.finish_cons_evl, list_pop=True)
 
                 #Now reset the persist var for this type
                 persistent._mas_current_consumable[consumable.consumable_type] = {
@@ -843,8 +834,6 @@ init 5 python:
             if not curr_cons:
                 return False
 
-            prep_ev = mas_getEV(curr_cons.finish_prep_evl)
-
             return (
                 (
                     MASConsumable._isHaving(_type)
@@ -856,10 +845,7 @@ init 5 python:
                 or (
                     persistent._mas_current_consumable[_type]["prep_time"] is not None
                     and (
-                            (
-                                prep_ev
-                                and prep_ev.conditional is None
-                            )
+                        mas_checkEVL(curr_cons.finish_prep_evl, lambda x: x.conditional is None)
                         or curr_cons not in available_cons
                     )
                 )

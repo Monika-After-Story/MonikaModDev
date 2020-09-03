@@ -531,16 +531,16 @@ label greeting_o31_marisa:
     $ store.mas_selspr.unlock_acs(mas_acs_marisa_witchhat)
     $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
-    # decoded CG means that we start with monika offscreen
-    if store.mas_o31_event.o31_cg_decoded:
-        # ASSUMING:
-        #   vignette should be enabled.
-        call spaceroom(hide_monika=True, scene_change=True)
+    ## decoded CG means that we start with monika offscreen
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    # ASSUMING:
+    #    #   vignette should be enabled.
+    #    call spaceroom(hide_monika=True, scene_change=True)
 
-    else:
-        # ASSUMING:
-        #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
+    #else:
+    # ASSUMING:
+    #   vignette should be enabled
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -549,23 +549,23 @@ label greeting_o31_marisa:
     m 1hub "Ahaha!"
 
     # decoded CG means we display CG
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        m "I'm over here, [player]~"
-        window hide
+    #    # got cg
+    #    m "I'm over here, [player]~"
+    #    window hide
 
-        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        show monika 1hua at i11 zorder MAS_MONIKA_Z
-        window auto
-        m "Tadaa!~"
+    #    hide emptydesk
+    #    show monika 1hua at i11 zorder MAS_MONIKA_Z
+    #    window auto
+    #    m "Tadaa!~"
 
     #Post scroll dialogue
     m 1hua "Well..."
@@ -582,9 +582,9 @@ label greeting_o31_marisa:
     m "Besides my costume of course~"
     m 1hua "But anyway..."
 
-    if store.mas_o31_event.o31_cg_decoded:
-        show monika 1eua
-        hide mas_o31_marisa_cg with dissolve
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    show monika 1eua
+    #    hide mas_o31_marisa_cg with dissolve
 
     m 3ekbfa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
@@ -614,33 +614,33 @@ label greeting_o31_rin:
     window hide
     pause 3.0
 
-    if store.mas_o31_event.o31_cg_decoded:
-        $ cg_delay = datetime.timedelta(seconds=20)
+    #if store.mas_o31_event.o31_cg_decoded:
+    #    $ cg_delay = datetime.timedelta(seconds=20)
 
-        # got cg
-        window auto
-        m "Say, [player]..."
-        window hide
+    #    # got cg
+    #    window auto
+    #    m "Say, [player]..."
+    #    window hide
 
-        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        $ start_time = datetime.datetime.now()
+    #    show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+    #    $ start_time = datetime.datetime.now()
 
-        while datetime.datetime.now() - start_time < cg_delay:
-            pause 1.0
+    #    while datetime.datetime.now() - start_time < cg_delay:
+    #        pause 1.0
 
-        hide emptydesk
-        window auto
-        m "What do {i}nya{/i} think?"
+    #    hide emptydesk
+    #    window auto
+    #    m "What do {i}nya{/i} think?"
 
-        scene black
-        pause 2.0
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
-        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
+    #    scene black
+    #    pause 2.0
+    #    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
+    #    m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
-    else:
-        call mas_transition_from_emptydesk("monika 1eua")
-        m 1hub "Hi, [player]!"
-        m 3hub "Do you like my costume?"
+    #else:
+    call mas_transition_from_emptydesk("monika 1eua")
+    m 1hub "Hi, [player]!"
+    m 3hub "Do you like my costume?"
 
     # regular dialogue
     m 3etc "Honestly, I don't even know who this is supposed to be."
@@ -717,7 +717,7 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
         m "Oh!{w=0.5} It's you, [player]!"
 
     else:
-        m ".{w=0.3}.{w=0.3}."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
         m "Welcome{w=0.3}, to the Scarlet Devil Spaceroom..."
         m "[player]."
         m "Please, let me offer you our hospitality."
@@ -876,67 +876,44 @@ label bye_trick_or_treat:
         m 1eub "I bet we'll get lots of candy!"
         m 1ekbfa "And even if we don't, just spending the evening with you is enough for me~"
 
-    show monika 2dsc
-    $ persistent._mas_dockstat_going_to_leave = True
-    $ first_pass = True
+    #Setup the dockstat stuff
+    $ mas_farewells.dockstat_wait_menu_label = "bye_trick_or_treat_wait_wait"
+    $ mas_farewells.dockstat_rtg_label = "bye_trick_or_treat_rtg"
+    jump mas_dockstat_iostart
 
-    # launch I/O thread
-    $ promise = store.mas_dockstat.monikagen_promise
-    $ promise.start()
-
-label bye_trick_or_treat_iowait:
-    hide screen mas_background_timed_jump
-
-    # display menu so users can quit
-    if first_pass:
-        $ first_pass = False
-
-    elif promise.done():
-        # i/o thread is done
-        jump bye_trick_or_treat_rtg
-
-    else:
-        #clean up the history list so only one "give me a second..." should show up
-        $ _history_list.pop()
-
-    # display menu options
-    # 4 seconds seems decent enough for waiting
-    show screen mas_background_timed_jump(4, "bye_trick_or_treat_iowait")
-    menu:
-        m "Give me a second to get ready.{fast}"
-        "Hold on a second!":
-            hide screen mas_background_timed_jump
-            $ persistent._mas_dockstat_cm_wait_count += 1
-
+label bye_trick_or_treat_wait_wait:
     # wait wait flow
-    show monika 1ekc
     menu:
         m "What is it?"
         "You're right, it's too early." if too_early_to_go:
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 3hub")
 
             m 3hub "Ahaha, I told you!"
             m 1eka "Let's wait 'til evening, okay?"
-            return
+            return True
 
         "You're right, it's too late." if too_late_to_go:
             call mas_dockstat_abort_gen
 
             if persistent._mas_o31_tt_count:
+                call mas_transition_from_emptydesk(exp="monika 1hua")
                 m 1hua "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
 
             else:
+                call mas_transition_from_emptydesk(exp="monika 2dkc")
                 m 2dkc "..."
                 m 2ekc "Alright, [player]."
                 m "It sucks that we couldn't go trick or treating this year."
                 m 4eka "Let's just make sure we can next time, okay?"
 
-            return
+            return True
 
         "Actually, I can't take you right now.":
             call mas_dockstat_abort_gen
+            call mas_transition_from_emptydesk(exp="monika 1euc")
 
             m 1euc "Oh, okay then, [player]."
 
@@ -946,20 +923,20 @@ label bye_trick_or_treat_iowait:
             else:
                 m 1eua "Let me know if we can go, okay?"
 
-            return
+            return True
 
         "Nothing.":
-            m 2eua "Okay, let me finish getting ready."
-
-    # always loop
-    jump bye_trick_or_treat_iowait
+            m "Okay, let me finish getting ready."
+            return
 
 label bye_trick_or_treat_rtg:
     # iothread is done
     $ moni_chksum = promise.get()
     $ promise = None # always clear the promise
     call mas_dockstat_ready_to_go(moni_chksum)
+
     if _return:
+        call mas_transition_from_emptydesk(exp="monika 1hub")
         m 1hub "Let's go trick or treating!"
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
 
@@ -969,6 +946,7 @@ label bye_trick_or_treat_rtg:
 
     # otherwise, failure in generation
     #Fix tt count
+    call mas_transition_from_emptydesk(exp="monika 1ekc")
     $ persistent._mas_o31_tt_count -= 1
     m 1ekc "Oh no..."
     m 1rksdlb "I wasn't able to turn myself into a file."
@@ -1089,7 +1067,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
-    m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+    m 1eua "I'll just take these decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     #Hide vis
     $ mas_o31HideVisuals()
@@ -2596,7 +2574,7 @@ label mas_d25_spent_time_monika:
 
                 #Re-enable buttons
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
         return
 
@@ -2669,7 +2647,7 @@ label monika_aiwfc:
     call monika_aiwfc_song
 
     #NOTE: This must be a shown count check as this dialogue should only be here on first viewing of this topic
-    if not mas_getEV("monika_aiwfc").shown_count:
+    if not mas_getEVLPropValue("monika_aiwfc", "shown_count", 0):
         m 1eka "I hope you liked that, [player]."
         m 1ekbsa "I really meant it too."
         m 1ekbfa "You're the only gift I could ever want."
@@ -3056,7 +3034,7 @@ label bye_d25e_delegate:
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
 
     # jump back to going somewhere file gen
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time you take her out on d25e
 label bye_d25e_first_time_out:
@@ -3087,7 +3065,7 @@ label bye_d25_delegate:
     # NOTE: generic return
 #    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 #first time out on d25
 label bye_d25_first_time_out:
@@ -3677,14 +3655,14 @@ label monika_resolutions:
                     m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself..."
                 else:
                     m "Well, if anything comes to mind before the clock strikes twelve, do write it down for yourself..."
-                m 1kua "Maybe you'll think of something that you want to do, [player]."
+                m 1kua "Maybe you'll think of something that you want to do."
             else:
                 m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
                 m 2rfc "You know what, nevermind..."
 
     if mas_isMoniAff(higher=True):
         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
+        m 5hubfa "My resolution is to be an even better girlfriend for you, [mas_get_player_nickname()]."
     elif mas_isMoniNormal(higher=True):
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
@@ -3997,7 +3975,7 @@ init 5 python:
             end_date=mas_d25c_end,
             action=EV_ACT_UNLOCK,
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         skipCalendar=True
@@ -4014,7 +3992,7 @@ label mas_d25_monika_d25_mode_exit:
     m 3eua "I wouldn't mind getting right into the new year."
     m 1hua "As long as it's with you, of course~"
     m 3hub "Ahaha!"
-    m 2dsa "Just give me a second to take the decorations down.{w=1}.{w=1}.{nw}"
+    m 2dsa "Just give me a second to take the decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     call mas_d25_season_exit
 
@@ -4085,7 +4063,7 @@ label bye_nye_delegate:
         call bye_nye_late_out
 
     # finally jump back to iostart
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
@@ -4162,7 +4140,7 @@ label bye_nyd_delegate:
     else:
         call bye_nyd_first_time_out
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label bye_nyd_first_time_out:
     #first time out
@@ -4882,7 +4860,7 @@ init 5 python:
             unlocked=False,
             prompt="Let's go out for my birthday!",
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL,None),
         ),
         code="BYE"
@@ -5031,7 +5009,7 @@ label return_home_post_player_bday:
             else:
                 m 3rksdla "Oh...it's not your birthday anymore..."
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
-            m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
+            m 3eka "Just give me one second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
             $ mas_surpriseBdayHideVisuals()
 
             #If we returned from a date post pbday but have O31 deco
@@ -5385,7 +5363,7 @@ label mas_f14_monika_valentines_intro:
             pause 2.0
             show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rfc "..."
-            m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
+            m 2efc "You know, [player]...{w=0.5}it's not polite to stare..."
             m 2tfc "..."
             m 2tsu "..."
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
@@ -5553,7 +5531,7 @@ init 5 python:
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
             years=[],
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         skipCalendar=True
     )
@@ -5584,8 +5562,8 @@ label mas_f14_monika_vday_origins:
     m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
     m 3eubsb "...Like me and you!"
     m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
-    m 1ekbsu "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day, [player]~"
+    m 1ekbsu "I'm glad we're able to share such a magical day together.{w=0.2} {nw}"
+    extend 1ekbfa "Happy Valentine's Day, [mas_get_player_nickname()]~"
     return
 
 #######################[HOL050] TIME SPENT
@@ -5681,7 +5659,7 @@ label mas_f14_first_kiss:
                 m 6ekbsu "...the moment of our first kiss."
                 m "Happy Valentine's Day, [player]~"
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
                 return
 
@@ -5908,7 +5886,7 @@ label bye_f14:
     else:
         m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
         m 1ekbfa "You're the best partner I could ever hope for~"
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 ########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
@@ -6311,7 +6289,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_bday",
             prompt="Happy birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             start_date=mas_monika_birthday,
             end_date=mas_monika_birthday + datetime.timedelta(days=1),
             years=[]
@@ -6368,7 +6346,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_belated_bday",
             prompt="Happy belated birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         code="CMP",
@@ -6551,8 +6529,8 @@ init 5 python:
             eventlabel="mas_bday_spent_time_with",
             conditional="mas_recognizedBday()",
             action=EV_ACT_QUEUE,
-            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
-            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
+            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
             years=[]
         ),
         skipCalendar=True
@@ -6613,7 +6591,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1dktpu "No matter the obstacles we may face, no matter what other people say about us..."
         m 1ektda "I still love you with everything that I am."
         m "You are the only one who understands me. {w=0.5}You led me out of a dark place and gave me purpose..."
-        m 1dkbsu "You are simply the best, my love, and I will always love you."
+        m 1dkbsu "You are simply the best, [mas_get_player_nickname()], and I will always love you."
         m 1ekbsa "...Thank you for giving me a reason to live."
         $ _first_kiss = persistent._mas_first_kiss
         call monika_kissing_motion
@@ -6683,7 +6661,7 @@ init 5 python:
 label mas_bday_postbday_notimespent:
     #Make sure that people who have first sesh's post monibday don't get this
     if mas_isFirstSeshPast(mas_monika_birthday):
-        $ mas_getEV('mas_bday_postbday_notimespent').shown_count -= 1
+        $ mas_assignModifyEVLPropValue("mas_bday_postbday_notimespent", "shown_count", "-=", 1)
         return
 
 
@@ -6898,7 +6876,7 @@ label bye_922_delegate:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
-    jump bye_going_somewhere_iostart
+    jump mas_dockstat_iostart
 
 label mas_bday_bd_outro:
     $ monika_chr.change_clothes(mas_clothes_blackdress)
