@@ -2555,25 +2555,25 @@ init python:
 
             if piece_type == chess.KING and not promoted:
                 if self.turn:
-                    self.castling_rights &= ~BB_RANK_1
+                    self.castling_rights &= chess.BB_RANK_1
                 else:
-                    self.castling_rights &= ~BB_RANK_8
+                    self.castling_rights &= chess.BB_RANK_8
 
             elif captured_piece_type == chess.KING and not self.promoted & to_bb:
-                if self.turn and square_rank(move.to_square) == 7:
-                    self.castling_rights &= ~BB_RANK_8
+                if self.turn and chess.square_rank(move.to_square) == 7:
+                    self.castling_rights &= chess.BB_RANK_8
 
-                elif not self.turn and square_rank(move.to_square) == 0:
-                    self.castling_rights &= ~BB_RANK_1
+                elif not self.turn and chess.square_rank(move.to_square) == 0:
+                    self.castling_rights &= chess.BB_RANK_1
 
             #Handle special pawn moves
             if piece_type == chess.PAWN:
                 diff = move.to_square - move.from_square
 
-                if diff == 16 and square_rank(move.from_square) == 1:
+                if diff == 16 and chess.square_rank(move.from_square) == 1:
                     self.ep_square = move.from_square + 8
 
-                elif diff == -16 and square_rank(move.from_square) == 6:
+                elif diff == -16 and chess.square_rank(move.from_square) == 6:
                     self.ep_square = move.from_square - 8
 
                 elif move.to_square == ep_square and abs(diff) in [7, 9] and not captured_piece_type:
@@ -2925,7 +2925,7 @@ init python:
             old_board.stack = old_board.stack[:len(old_board.stack)-2]
 
             #Update the board to the undo
-            self.board = chess.Board(fen=last_move_fen)
+            self.board = MASBoard(fen=last_move_fen)
 
             #Now transfer the move data
             self.board.move_stack = old_board.move_stack
