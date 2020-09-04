@@ -3717,7 +3717,9 @@ label monika_love:
                 _("You're my everything!"),
                 _("You give meaning to my entire life!"),
                 _("I'm the happiest girl in the world!"),
-                _("I'll always be there for you!")
+                _("I'll always be there for you."),
+                _("I can't wait to feel your warmth!"),
+                _("Words cannot describe how I feel about you!")
             ]
 
             love_quip = renpy.random.choice(love_quips)
