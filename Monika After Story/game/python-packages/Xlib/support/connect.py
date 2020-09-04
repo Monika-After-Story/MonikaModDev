@@ -19,84 +19,22 @@
 #    Suite 330,
 #    Boston, MA 02111-1307 USA
 
-import sys
-import importlib
+# *** This file has been minified using python-minifier
 
-# List the modules which contain the corresponding functions
-
-_display_mods = {
-    'OpenVMS': 'vms_connect',
-    }
-
-_default_display_mod = 'unix_connect'
-
-_socket_mods = {
-    'OpenVMS': 'vms_connect'
-    }
-
-_default_socket_mod = 'unix_connect'
-
-_auth_mods = {
-    'OpenVMS': 'vms_connect'
-    }
-
-_default_auth_mod = 'unix_connect'
-
-
-# Figure out which OS we're using.
-# sys.platform is either "OS-ARCH" or just "OS".
-
-_parts = sys.platform.split('-')
-platform = _parts[0]
+_C='unix_connect'
+_B='vms_connect'
+_A='OpenVMS'
+import sys,importlib
+_display_mods={_A:_B}
+_default_display_mod=_C
+_socket_mods={_A:_B}
+_default_socket_mod=_C
+_auth_mods={_A:_B}
+_default_auth_mod=_C
+_parts=sys.platform.split('-')
+platform=_parts[0]
 del _parts
-
-
-def _relative_import(modname):
-    return importlib.import_module('..' + modname, __name__)
-
-
-def get_display(display):
-    """dname, protocol, host, dno, screen = get_display(display)
-
-    Parse DISPLAY into its components.  If DISPLAY is None, use
-    the default display.  The return values are:
-
-      DNAME    -- the full display name (string)
-      PROTOCOL -- the protocol to use (None if automatic)
-      HOST     -- the host name (string, possibly empty)
-      DNO      -- display number (integer)
-      SCREEN   -- default screen number (integer)
-    """
-
-    modname = _display_mods.get(platform, _default_display_mod)
-    mod = _relative_import(modname)
-    return mod.get_display(display)
-
-
-def get_socket(dname, protocol, host, dno):
-    """socket = get_socket(dname, protocol, host, dno)
-
-    Connect to the display specified by DNAME, PROTOCOL, HOST and DNO, which
-    are the corresponding values from a previous call to get_display().
-
-    Return SOCKET, a new socket object connected to the X server.
-    """
-
-    modname = _socket_mods.get(platform, _default_socket_mod)
-    mod = _relative_import(modname)
-    return mod.get_socket(dname, protocol, host, dno)
-
-
-def get_auth(sock, dname, protocol, host, dno):
-    """auth_name, auth_data = get_auth(sock, dname, protocol, host, dno)
-
-    Return authentication data for the display on the other side of
-    SOCK, which was opened with DNAME, HOST and DNO, using PROTOCOL.
-
-    Return AUTH_NAME and AUTH_DATA, two strings to be used in the
-    connection setup request.
-    """
-
-    modname = _auth_mods.get(platform, _default_auth_mod)
-    mod = _relative_import(modname)
-    return mod.get_auth(sock, dname, protocol, host, dno)
+def _relative_import(modname):return importlib.import_module('..'+modname,__name__)
+def get_display(display):A=_display_mods.get(platform,_default_display_mod);B=_relative_import(A);return B.get_display(display)
+def get_socket(dname,protocol,host,dno):A=_socket_mods.get(platform,_default_socket_mod);B=_relative_import(A);return B.get_socket(dname,protocol,host,dno)
+def get_auth(sock,dname,protocol,host,dno):A=_auth_mods.get(platform,_default_auth_mod);B=_relative_import(A);return B.get_auth(sock,dname,protocol,host,dno)

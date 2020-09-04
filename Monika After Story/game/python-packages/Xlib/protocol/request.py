@@ -19,52 +19,12 @@
 #    Suite 330,
 #    Boston, MA 02111-1307 USA
 
+# *** This file has been minified using python-minifier
 
-# Xlib modules
-from .. import X
-
-# Xlib.protocol modules
-from . import rq
-
-class InternAtom(rq.ReplyRequest):
-    _request = rq.Struct(
-        rq.Opcode(16),
-        rq.Bool('only_if_exists'),
-        rq.RequestLength(),
-        rq.LengthOf('name', 2),
-        rq.Pad(2),
-        rq.String8('name'),
-        )
-
-    _reply = rq.Struct(
-        rq.ReplyCode(),
-        rq.Pad(1),
-        rq.Card16('sequence_number'),
-        rq.ReplyLength(),
-        rq.Card32('atom'),
-        rq.Pad(20),
-        )
-
-class GetProperty(rq.ReplyRequest):
-    _request = rq.Struct(
-        rq.Opcode(20),
-        rq.Bool('delete'),
-        rq.RequestLength(),
-        rq.Window('window'),
-        rq.Card32('property'),
-        rq.Card32('type'),
-        rq.Card32('long_offset'),
-        rq.Card32('long_length'),
-        )
-
-    _reply = rq.Struct(
-        rq.ReplyCode(),
-        rq.Format('value', 1),
-        rq.Card16('sequence_number'),
-        rq.ReplyLength(),
-        rq.Card32('property_type'),
-        rq.Card32('bytes_after'),
-        rq.LengthOf('value', 4),
-        rq.Pad(12),
-        rq.PropertyData('value'),
-        )
+_C='sequence_number'
+_B='name'
+_A='value'
+from ..  import X
+from .  import rq
+class InternAtom(rq.ReplyRequest):_request=rq.Struct(rq.Opcode(16),rq.Bool('only_if_exists'),rq.RequestLength(),rq.LengthOf(_B,2),rq.Pad(2),rq.String8(_B));_reply=rq.Struct(rq.ReplyCode(),rq.Pad(1),rq.Card16(_C),rq.ReplyLength(),rq.Card32('atom'),rq.Pad(20))
+class GetProperty(rq.ReplyRequest):_request=rq.Struct(rq.Opcode(20),rq.Bool('delete'),rq.RequestLength(),rq.Window('window'),rq.Card32('property'),rq.Card32('type'),rq.Card32('long_offset'),rq.Card32('long_length'));_reply=rq.Struct(rq.ReplyCode(),rq.Format(_A,1),rq.Card16(_C),rq.ReplyLength(),rq.Card32('property_type'),rq.Card32('bytes_after'),rq.LengthOf(_A,4),rq.Pad(12),rq.PropertyData(_A))
