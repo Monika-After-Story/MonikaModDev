@@ -667,13 +667,13 @@ label game_chess:
                 m 1eka "You undid [undo_count] moves though.{w=0.3} {nw}"
                 extend 3eua "But I'm sure if we keep practicing, we can get that number lower."
 
-            m 3hua "[random.choice(player_win_quips)]"
+            m 3hua "[renpy.substitute(random.choice(player_win_quips))]"
 
         else:
             m 3hub "Great job, [player], you won!"
             m 3eua "No matter the outcome, I'll always enjoy playing with you."
             m 1hua "Let's play again soon, alright?"
-            m 3hub "[random.choice(player_win_quips)]"
+            m 3hub "[renpy.substitute(random.choice(player_win_quips))]"
 
         m 1eua "Anyway..."
 
@@ -2555,16 +2555,16 @@ init python:
 
             if piece_type == chess.KING and not promoted:
                 if self.turn:
-                    self.castling_rights &= chess.BB_RANK_1
+                    self.castling_rights &= ~chess.BB_RANK_1
                 else:
-                    self.castling_rights &= chess.BB_RANK_8
+                    self.castling_rights &= ~chess.BB_RANK_8
 
             elif captured_piece_type == chess.KING and not self.promoted & to_bb:
                 if self.turn and chess.square_rank(move.to_square) == 7:
-                    self.castling_rights &= chess.BB_RANK_8
+                    self.castling_rights &= ~chess.BB_RANK_8
 
                 elif not self.turn and chess.square_rank(move.to_square) == 0:
-                    self.castling_rights &= chess.BB_RANK_1
+                    self.castling_rights &= ~chess.BB_RANK_1
 
             #Handle special pawn moves
             if piece_type == chess.PAWN:
@@ -2980,10 +2980,10 @@ init python:
 
             if chess.Move.from_uci(move_str) in self.possible_moves:
                 self.__push_move(move_str)
+                self.set_button_states()
 
                 #Setup Monika's go
                 if not self.is_game_over:
-                    self.set_button_states()
                     self.start_monika_analysis()
 
         def handle_monika_move(self):
