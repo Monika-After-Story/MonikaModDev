@@ -15718,7 +15718,7 @@ label monika_literature_value:
     m 1dsu "As you can imagine, I don't believe that...{w=0.5} {nw}"
     extend 1rfu "If literature was so useless, why would it be so repressed in many parts of the world?"
     m 3eud "Words have a power, [player]. And literature is the art of dancing with words."
-    m 3eub "Like any form of expression, it allows us to connect with each other.{w=0.3} To see how the world looks like in each other's eyes!"
+    m 3eub "Like any form of expression, it allows us to connect with each other.{w=0.3} To see how the world looks in each other's eyes!"
     m 3duu "Literature lets you confront your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place to live in."
     m 1hksdlb "That's just my opinion as president of a literature club, though. I guess most people wouldn't think that far about it."
