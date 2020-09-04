@@ -729,19 +729,22 @@ init -99 python in mas_sprites:
     FLT_DAY = "day"
     FLT_NIGHT = "night"
     FLT_SUNSET = "sunset"
+    FLT_SUNSET_N = "sunset_n" # same as sunset, but for night chunks
 
     # filter dict
     FILTERS = {
         FLT_DAY: store.im.matrix.identity(),
         FLT_NIGHT: store.im.matrix.tint(0.59, 0.49, 0.55),
         FLT_SUNSET: store.im.matrix.tint(0.93, 0.82, 0.78),
+        FLT_SUNSET_N: store.im.matrix.tint(0.93, 0.82, 0.78),
     }
 
     # filter fallback dict
     # key: filter
     # value: filter that should be considered "base" filter
     FLT_FB = {
-        FLT_SUNSET: FLT_DAY
+        FLT_SUNSET: FLT_DAY,
+        FLT_SUNSET_N: FLT_SUNSET,
     }
 
     # contains all base filters. These are filtesr without a fallback.

@@ -2736,6 +2736,12 @@ init -1 python:
                 MASBackgroundFilterSlice.cachecreate(
                     store.mas_sprites.FLT_NIGHT,
                     60
+                ),
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_SUNSET_N,
+                    60,
+                    30*60,
+                    10
                 )
             ),
             MASBackgroundFilterChunk(
@@ -2761,6 +2767,12 @@ init -1 python:
             MASBackgroundFilterChunk(
                 False,
                 None,
+                MASBackgroundFilterSlice.cachecreate(
+                    store.mas_sprites.FLT_SUNSET_N,
+                    60,
+                    30*60,
+                    10
+                ),
                 MASBackgroundFilterSlice.cachecreate(
                     store.mas_sprites.FLT_NIGHT,
                     60
