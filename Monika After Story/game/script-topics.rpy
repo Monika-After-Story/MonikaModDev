@@ -15707,7 +15707,7 @@ init 5 python:
 label monika_literature_value:
     m 1rsc "You know...{w=0.2}{nw}"
     extend 3esd "back in the literature club days, I often heard people dismiss literature as some sort of old, useless thing..."
-    m 1rsc "It always bothers me when I hear someone say that, especially since most of the time the person never even bothered giving it a try."
+    m 1rsc "It always bothers me when I hear someone say that, especially since most of the time, the person never even bothered giving it a try."
     m 3etc "Like, do they even know what they're talking about?"
     m 1esd "From what I hear, people who think that often like to oppose literature to more scientific fields, like physics or mathematics."
     m 1dkc "...Claiming the former is a waste of time since it doesn't produce anything practical."
@@ -15718,7 +15718,7 @@ label monika_literature_value:
     m 1dsu "As you can imagine, I don't believe that...{w=0.5} {nw}"
     extend 1rfu "If literature was so useless, why would it be so repressed in many parts of the world?"
     m 3eud "Words have a power, [player]. And literature is the art of dancing with words."
-    m 3eub "Like any form of expression, it allows us to connect with each other.{w=0.3} To see how the world looks like in each others eyes!"
+    m 3eub "Like any form of expression, it allows us to connect with each other.{w=0.3} To see how the world looks like in each other's eyes!"
     m 3duu "Literature lets you confront your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place to live in."
     m 1hksdlb "That's just my opinion as president of a literature club, though. I guess most people wouldn't think that far about it."
