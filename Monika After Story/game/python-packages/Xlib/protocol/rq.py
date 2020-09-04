@@ -47,18 +47,8 @@ else:
 
 class BadDataError(Exception): pass
 
-# These are struct codes, we know their byte sizes
-
 signed_codes = { 1: 'b', 2: 'h', 4: 'l' }
 unsigned_codes = { 1: 'B', 2: 'H', 4: 'L' }
-
-
-# Unfortunately, we don't know the array sizes of B, H and L, since
-# these use the underlying architecture's size for a char, short and
-# long.  Therefore we probe for their sizes, and additionally create
-# a mapping that translates from struct codes to array codes.
-#
-# Bleah.
 
 array_unsigned_codes = { }
 struct_to_array_codes = { }
@@ -72,44 +62,7 @@ for c in 'bhil':
     except KeyError:
         pass
 
-# print array_unsigned_codes, struct_to_array_codes
-
-
 class Field(object):
-    """Field objects represent the data fields of a Struct.
-
-    Field objects must have the following attributes:
-
-       name         -- the field name, or None
-       structcode   -- the struct codes representing this field
-       structvalues -- the number of values encodes by structcode
-
-    Additionally, these attributes should either be None or real methods:
-
-       check_value  -- check a value before it is converted to binary
-       parse_value  -- parse a value after it has been converted from binary
-
-    If one of these attributes are None, no check or additional
-    parsings will be done one values when converting to or from binary
-    form.  Otherwise, the methods should have the following behaviour:
-
-       newval = check_value(val)
-         Check that VAL is legal when converting to binary form.  The
-         value can also be converted to another Python value.  In any
-         case, return the possibly new value.  NEWVAL should be a
-         single Python value if structvalues is 1, a tuple of
-         structvalues elements otherwise.
-
-       newval = parse_value(val, display)
-         VAL is an unpacked Python value, which now can be further
-         refined.  DISPLAY is the current Display object.  Return the
-         new value.  VAL will be a single value if structvalues is 1,
-         a tuple of structvalues elements otherwise.
-
-    If `structcode' is None the Field must have the method
-    f.parse_binary_value() instead.  See its documentation string for
-    details.
-    """
     name = None
     default = None
 
@@ -125,19 +78,6 @@ class Field(object):
         pass
 
     def parse_binary_value(self, data, display, length, format):
-        """value, remaindata = f.parse_binary_value(data, display, length, format)
-
-        Decode a value for this field from the binary string DATA.
-        If there are a LengthField and/or a FormatField connected to this
-        field, their values will be LENGTH and FORMAT, respectively.  If
-        there are no such fields the parameters will be None.
-
-        DISPLAY is the display involved, which is really only used by
-        the Resource fields.
-
-        The decoded value is returned as VALUE, and the remaining part
-        of DATA shold be returned as REMAINDATA.
-        """
         raise RuntimeError('Neither structcode or parse_binary_value ' \
                 'provided for {0}'.format(self))
 
@@ -167,30 +107,11 @@ class ReplyCode(ConstantField):
         self.value = 1
 
 class LengthField(Field):
-    """A LengthField stores the length of some other Field whose size
-    may vary, e.g. List and String8.
-
-    Its name should be the same as the name of the field whose size
-    it stores.  The other_fields attribute can be used to specify the
-    names of other fields whose sizes are stored by this field, so
-    a single length field can set the length of multiple fields.
-
-    The lf.get_binary_value() method of LengthFields is not used, instead
-    a lf.get_binary_length() should be provided.
-
-    Unless LengthField.get_binary_length() is overridden in child classes,
-    there should also be a lf.calc_length().
-    """
     structcode = 'L'
     structvalues = 1
     other_fields = None
 
     def calc_length(self, length):
-        """newlen = lf.calc_length(length)
-
-        Return a new length NEWLEN based on the provided LENGTH.
-        """
-
         return length
 
 
@@ -240,13 +161,6 @@ class OddLength(LengthField):
 
 
 class FormatField(Field):
-    """A FormatField encodes the format of some other field, in a manner
-    similar to LengthFields.
-
-    The ff.get_binary_value() method is not used, replaced by
-    ff.get_binary_format().
-    """
-
     structvalues = 1
 
     def __init__(self, name, size):
@@ -302,8 +216,6 @@ class Resource(Card32):
             return value
 
     def parse_value(self, value, display):
-        # if not display:
-        #    return value
         if value in self.codes:
             return value
 
@@ -455,7 +367,6 @@ class String16(ValueField):
         self.pad = pad
 
     def pack_value(self, val):
-        """Convert 8-byte string into 16-byte list"""
         if isinstance(val, bytes):
             val = list(iterbytes(val))
 
@@ -484,14 +395,6 @@ class String16(ValueField):
 
 
 class List(ValueField):
-    """The List, FixedList and Object fields store compound data objects.
-    The type of data objects must be provided as an object with the
-    following attributes and methods:
-
-    ...
-
-    """
-
     structcode = None
 
     def __init__(self, name, type, pad = 1):
@@ -862,16 +765,9 @@ class EventField(ValueField):
 
         estruct = display.event_classes.get(byte2int(data) & 0x7f, event.AnyEvent)
         if type(estruct) == dict:
-            # this etype refers to a set of sub-events with individual subcodes
             estruct = estruct[indexbytes(data, 1)]
 
         return estruct(display = display, binarydata = data[:32]), data[32:]
-
-
-#
-# Objects usable for List and FixedList fields.
-# Struct is also usable.
-#
 
 class ScalarObj(object):
     def __init__(self, code):
@@ -893,8 +789,6 @@ class ResourceObj(object):
         self.check_value = None
 
     def parse_value(self, value, display):
-        # if not display:
-        #     return value
         c = display.get_resource_class(self.class_name)
         if c:
             return c(display, value)
@@ -918,31 +812,8 @@ Str = StrClass()
 
 
 class Struct(object):
-
-    """Struct objects represents a binary data structure.  It can
-    contain both fields with static and dynamic sizes.  However, all
-    static fields must appear before all dynamic fields.
-
-    Fields are represented by various subclasses of the abstract base
-    class Field.  The fields of a structure are given as arguments
-    when instantiating a Struct object.
-
-    Struct objects have two public methods:
-
-      to_binary()    -- build a binary representation of the structure
-                        with the values given as arguments
-      parse_binary() -- convert a binary (string) representation into
-                        a Python dictionary or object.
-
-    These functions will be generated dynamically for each Struct
-    object to make conversion as fast as possible.  They are
-    generated the first time the methods are called.
-    """
-
     def __init__(self, *fields):
         self.fields = fields
-
-        # Structures for to_binary, parse_value and parse_binary
         self.static_codes = '='
         self.static_values = 0
         self.static_fields = []
@@ -950,20 +821,13 @@ class Struct(object):
         self.var_fields = []
 
         for f in self.fields:
-            # Append structcode if there is one and we haven't
-            # got any varsize fields yet.
             if f.structcode is not None:
                 assert not self.var_fields
-
                 self.static_codes = self.static_codes + f.structcode
-
-                # Only store fields with values
                 if f.structvalues > 0:
                     self.static_fields.append(f)
                     self.static_values = self.static_values + f.structvalues
 
-            # If we have got one varsize field, all the rest must
-            # also be varsize fields.
             else:
                 self.var_fields.append(f)
 
@@ -975,22 +839,7 @@ class Struct(object):
             self.structcode = self.static_codes[1:]
             self.structvalues = self.static_values
 
-
-    # These functions get called only once, as they will override
-    # themselves with dynamically created functions in the Struct
-    # object
-
     def to_binary(self, *varargs, **keys):
-        """data = s.to_binary(...)
-
-        Convert Python values into the binary representation.  The
-        arguments will be all value fields with names, in the order
-        given when the Struct object was instantiated.  With one
-        exception: fields with default arguments will be last.
-
-        Returns the binary representation as the string DATA.
-        """
-        # Emulate Python function argument handling with our field names
         names = [f.name for f in self.fields \
                  if isinstance(f, ValueField) and f.name]
         field_args = dict(zip(names, varargs))
@@ -1003,11 +852,6 @@ class Struct(object):
                 if f.default is None:
                     raise TypeError("Missing required argument {0}".format(f.name))
                 field_args[f.name] = f.default
-        # /argument handling
-
-        # First pack all varfields so their lengths and formats are
-        # available when we pack their static LengthFields and
-        # FormatFields
 
         total_length = self.static_size
         var_vals = {}
