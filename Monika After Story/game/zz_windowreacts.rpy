@@ -127,53 +127,45 @@ init python:
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
-        if (
-            renpy.windows
-            and mas_windowreacts.can_show_notifs
-            and mas_canCheckActiveWindow()
-        ):
-            from win32gui import GetWindowText, GetForegroundWindow
+        if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
+            if renpy.windows:
+                from win32gui import GetWindowText, GetForegroundWindow
 
-            window_handle = GetWindowText(GetForegroundWindow())
-            if friendly:
-                return window_handle
-            else:
-                return window_handle.lower().replace(" ","")
-
-        elif (
-            renpy.linux
-            and mas_windowreacts.can_show_notifs
-            and mas_canCheckActiveWindow()
-        ):
-            from Xlib.display import Display
-            from Xlib.error import BadWindow
-
-            display = Display()
-            root = display.screen().root
-
-            NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
-            NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
-
-            active_winid = root.get_full_property(NET_ACTIVE_WINDOW, 0).value[0]
-            active_winobj = display.create_resource_object("window", active_winid)
-            try:
-                # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
+                window_handle = GetWindowText(GetForegroundWindow())
                 if friendly:
-                    return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
+                    return window_handle
                 else:
-                    return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
-            except BadWindow:
-                return ""
-            finally:
-                # Release resources to prevent memory leak.
-                display.display.free_resource_id(active_winid)
-                display.flush()
-                display.close()
+                    return window_handle.lower().replace(" ","")
 
-        else:
-            #TODO: Mac vers (if possible)
-            #NOTE: We return "" so this doesn't rule out notifications
-            return ""
+            elif renpy.linux:
+                from Xlib.display import Display
+                from Xlib.error import BadWindow
+
+                display = Display()
+                root = display.screen().root
+
+                NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
+                NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
+
+                active_winid = root.get_full_property(NET_ACTIVE_WINDOW, 0).value[0]
+                active_winobj = display.create_resource_object("window", active_winid)
+                try:
+                    # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
+                    if friendly:
+                        return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
+                    else:
+                        return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
+                except BadWindow:
+                    return ""
+                finally:
+                    # Release resources to prevent memory leak.
+                    display.flush()
+                    display.close()
+
+            else:
+                #TODO: Mac vers (if possible)
+                #NOTE: We return "" so this doesn't rule out notifications
+                return ""
 
     def mas_isFocused():
         """
