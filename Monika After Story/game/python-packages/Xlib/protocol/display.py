@@ -63,7 +63,6 @@ if PY3:
             return self.view[key]
 
 else:
-
     def bytesview(data, offset=0, size=None):
         if not isinstance(data, (bytes, buffer)):
             raise TypeError('unsupported type: {}'.format(type(data)))

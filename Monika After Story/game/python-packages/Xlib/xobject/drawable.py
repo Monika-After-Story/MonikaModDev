@@ -62,6 +62,3 @@ class Window(Drawable):
             return prop
         else:
             return None
-
-def roundup(value, unit):
-    return (value + (unit - 1)) & ~(unit - 1)
