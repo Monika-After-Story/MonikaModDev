@@ -24,10 +24,6 @@ import os
 import platform
 import socket
 
-# FCNTL is deprecated from Python 2.2, so only import it if we doesn't
-# get the names we need.  Furthermore, FD_CLOEXEC seems to be missing
-# in Python 2.2.
-
 import fcntl
 
 if hasattr(fcntl, 'F_SETFD'):
@@ -39,13 +35,10 @@ if hasattr(fcntl, 'F_SETFD'):
 else:
     from FCNTL import F_SETFD, FD_CLOEXEC
 
-
 from Xlib import error, xauth
-
 
 SUPPORTED_PROTOCOLS = (None, 'tcp', 'unix')
 
-# Darwin funky socket.
 uname = platform.uname()
 if (uname[0] == 'Darwin') and ([int(x) for x in uname[2].split('.')] >= [9, 0]):
     SUPPORTED_PROTOCOLS += ('darwin',)
@@ -53,9 +46,7 @@ if (uname[0] == 'Darwin') and ([int(x) for x in uname[2].split('.')] >= [9, 0]):
 
 DISPLAY_RE = re.compile(r'^((?P<proto>tcp|unix)/)?(?P<host>[-:a-zA-Z0-9._]*):(?P<dno>[0-9]+)(\.(?P<screen>[0-9]+))?$')
 
-
 def get_display(display):
-    # Use $DISPLAY if display isn't provided
     if display is None:
         display = os.environ.get('DISPLAY', '')
 
@@ -76,7 +67,6 @@ def get_display(display):
         raise error.DisplayNameError(display)
 
     if protocol == 'tcp' and not host:
-        # Host is mandatory when protocol is TCP.
         raise error.DisplayNameError(display)
 
     dno = int(dno)
@@ -86,7 +76,6 @@ def get_display(display):
         screen = 0
 
     return display, protocol, host, dno, screen
-
 
 def _get_tcp_socket(host, dno):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -101,49 +90,38 @@ def _get_unix_socket(address):
 def get_socket(dname, protocol, host, dno):
     assert protocol in SUPPORTED_PROTOCOLS
     try:
-        # Darwin funky socket.
         if protocol == 'darwin':
             s = _get_unix_socket(dname)
 
-        # TCP socket, note the special case: `unix:0.0` is equivalent to `:0.0`.
         elif (protocol is None or protocol != 'unix') and host and host != 'unix':
             s = _get_tcp_socket(host, dno)
 
-        # Unix socket.
         else:
             address = '/tmp/.X11-unix/X%d' % dno
             if not os.path.exists(address):
-                # Use abstract address.
                 address = '\0' + address
             try:
                 s = _get_unix_socket(address)
             except socket.error:
                 if not protocol and not host:
-                    # If no protocol/host was specified, fallback to TCP.
+
                     s = _get_tcp_socket(host, dno)
                 else:
                     raise
     except socket.error as val:
         raise error.DisplayConnectionError(dname, str(val))
 
-    # Make sure that the connection isn't inherited in child processes.
     fcntl.fcntl(s.fileno(), F_SETFD, FD_CLOEXEC)
-
     return s
-
 
 def new_get_auth(sock, dname, protocol, host, dno):
     assert protocol in SUPPORTED_PROTOCOLS
-    # Translate socket address into the xauth domain
     if protocol == 'darwin':
         family = xauth.FamilyLocal
         addr = socket.gethostname()
 
     elif protocol == 'tcp':
         family = xauth.FamilyInternet
-
-        # Convert the prettyprinted IP number into 4-octet string.
-        # Sometimes these modules are too damn smart...
         octets = sock.getpeername()[0].split('.')
         addr = bytearray(int(x) for x in octets)
     else:
@@ -161,10 +139,6 @@ def new_get_auth(sock, dname, protocol, host, dno):
         except error.XNoAuthError:
             pass
 
-        # We need to do this to handle ssh's X forwarding.  It sets
-        # $DISPLAY to localhost:10, but stores the xauth cookie as if
-        # DISPLAY was :10.  Hence, if localhost and not found, try
-        # again as a Unix socket.
         if family == xauth.FamilyInternet and addr == b'\x7f\x00\x00\x01':
             family = xauth.FamilyLocal
             addr = socket.gethostname().encode()
@@ -173,18 +147,10 @@ def new_get_auth(sock, dname, protocol, host, dno):
 
 
 def old_get_auth(sock, dname, host, dno):
-    # Find authorization cookie
     auth_name = auth_data = b''
-
     try:
-        # We could parse .Xauthority, but xauth is simpler
-        # although more inefficient
         data = os.popen('xauth list %s 2>/dev/null' % dname).read()
 
-        # If there's a cookie, it is of the format
-        #      DISPLAY SCHEME COOKIE
-        # We're interested in the two last parts for the
-        # connection establishment
         lines = data.split('\n')
         if len(lines) >= 1:
             parts = lines[0].split(None, 2)
@@ -193,7 +159,6 @@ def old_get_auth(sock, dname, host, dno):
                 hexauth = parts[2]
                 auth = b''
 
-                # Translate hexcode into binary
                 for i in range(0, len(hexauth), 2):
                     auth = auth + chr(int(hexauth[i:i+2], 16))
 
