@@ -2776,7 +2776,7 @@ label monika_this_christmas_kiss:
 
     call mas_song_this_christmas_kiss
 
-show monika 1dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    show monika 1dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1dubsa "..."
     m 1eubsa "One of these days, I'll kiss you for real."
     show monika 5subsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
