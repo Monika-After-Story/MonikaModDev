@@ -27,7 +27,6 @@ __version_string__ = '.'.join(map(str, __version__)) + __version_extra__
 
 __all__ = [
     'X',
-    'Xatom',
     'Xutil',
     'display',
     'error'
