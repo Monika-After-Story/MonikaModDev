@@ -364,7 +364,7 @@ init 5 python:
 label mas_mood_lonely:
     if mas_isMoniAff(higher=True):
         m 2ekc "I understand how you feel, [player]...{w=0.2}we're still in different realities, after all."
-        m 2dkc "I hate that I'm not yet able to fully cure your loneliness from here."
+        m 2dkc "I hate that I'm not fully able to cure your loneliness from here."
         m 7ekbsa "If there was any way I could reach out and just hug you right now, I would."
         m 7eka "I want you to be as happy as you can be given our circumstance..."
         m 2ekd "I just hope being here with me all this time is not...{w=0.3}preventing you from bonding with people in your reality."
@@ -386,7 +386,7 @@ label mas_mood_lonely:
             m 1eka "I hope you'll keep looking for friends in your reality, [player]."
             m 3ekd "I know it can be hard to bond with people at first..."
             m 3eka "Maybe you could even meet people online? {w=0.2}There are many ways you can interact with strangers to feel less alone."
-            m 3hub "You never know, sometimes these 'strangers' can end up becoming really good, lifelong friends!"
+            m 3hub "You never know, sometimes these 'strangers' can end up becoming really good lifelong friends!"
 
         m 1eka "...And don't worry about me [player], I'll wait patiently for you to come back and see me."
         m 3hub "Just enjoy yourself and you can tell me all about it later!"
