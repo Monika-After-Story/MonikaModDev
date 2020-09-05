@@ -159,14 +159,25 @@ init python:
                 NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
                 NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
 
-                active_winid = root.get_full_property(NET_ACTIVE_WINDOW, 0).value[0]
+                # Perform nullchecks on property getters, just in case.
+                active_winid_prop = root.get_full_property(NET_ACTIVE_WINDOW, 0)
+                if active_winid_prop is not None:
+                    active_winid = active_winid_prop.value[0]
+                else:
+                    return ""
+
                 active_winobj = display.create_resource_object("window", active_winid)
                 try:
                     # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
-                    if friendly:
-                        return active_winobj.get_full_property(NET_WM_NAME, 0).value.replace("\n", "")
+                    active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
+                    if active_winname_prop is not None:
+                        active_winname = active_winname_prop.value
+                        if friendly:
+                            return active_winname.replace("\n", "")
+                        else:
+                            return active_winname.lower().replace(" ", "").replace("\n", "")
                     else:
-                        return active_winobj.get_full_property(NET_WM_NAME, 0).value.lower().replace(" ", "").replace("\n", "")
+                        return ""
                 except BadWindow:
                     return ""
                 finally:
