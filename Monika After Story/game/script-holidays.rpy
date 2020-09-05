@@ -6898,7 +6898,7 @@ label mas_bday_bd_outro:
 
     if mas_SELisUnlocked(mas_clothes_blackdress):
         m 1hua "Ehehe~"
-        m 1eua "I'm so excited to see what you've got planned for us today."
+        m 1euu "I'm so excited to see what you've got planned for us today."
         m 3eua "...But even if it's not much, I'm sure we'll have a great time together~"
 
     else:
