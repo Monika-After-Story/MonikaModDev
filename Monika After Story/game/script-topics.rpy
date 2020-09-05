@@ -15695,7 +15695,7 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
     
-    # is player an introvert ?
+# is player an introvert ?
 default persistent._mas_pm_introvert = None
 
 # is player an extrovert ? 
@@ -15764,7 +15764,7 @@ label monika_introversion_extroversion:
             m 4euc "A lot of introverts have no trouble at all interacting with other people."
             m 4eka "They just prefer not to do so too often, and would rather save their energy for activities that they actually enjoy."
             m 2etc "And besides,{w=0.3} shy extroverts exist too, which only further prove my point, if you ask me."
-            m 2ekbla"In any case, I hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
+            m 2ekbla "In any case, I hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
             m 1hublb "I'll try my best to make sure you're always feeling comfortable with me, I promise~"
 
         "I'm extroverted.":
@@ -15797,13 +15797,13 @@ label monika_introversion_extroversion:
             m 7esc "And as for the negatives, I don't know if it's the same with you, but I've always had a hard time making deep, genuine connections with others..."
             m 1eud "It's like, I have an easier time understanding most people, sure, but it doesn't mean I can always relate with them, you know ?"
             m 1lksdld "So yeah, I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.4}unfullfilling."
-            m 3elsdlc "The same thing happened with the club, for example."
+            m 3eksdlc "The same thing happened with the club, for example."
             m 3dksdld "I was so convinced that by bringing people together around something I truly enjoy, I'd have a better chance at bonding with them over our shared interests..."
             show monika 5rkd at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5rkd "...and at the end of the day, we spent most of our time silently hanging out, everyone minding their own business."
             m 5eka "Well, no point thinking about that."
             m 5eubla "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
-            extend m 5fubfu "A very charming someone, might I add~"
+            extend 5fubfu "A very charming someone, might I add~"
 
         "I'm not really sure.":
             $ persistent._mas_pm_social_personality_unsure = True
