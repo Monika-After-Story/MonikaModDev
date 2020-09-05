@@ -15748,7 +15748,7 @@ label monika_introversion_extroversion:
     menu:
         "How would you describe yourself, [player]?"
 
-        "I'm introverted."
+        "I'm introverted.":
             $ persistent._mas_pm_introvert = True
             $ persistent._mas_pm_extrovert = False
             $ persistent._mas_pm_ambivert = False
@@ -15767,7 +15767,7 @@ label monika_introversion_extroversion:
             m 2ekbla"In any case, I hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
             m 1hublb "I'll try my best to make sure you're always feeling comfortable with me, I promise~"
 
-        "I'm extroverted."
+        "I'm extroverted.":
             $ persistent._mas_pm_extrovert = True
             $ persistent._mas_pm_introvert = False
             $ persistent._mas_pm_ambivert = False
@@ -15784,7 +15784,7 @@ label monika_introversion_extroversion:
             m 5rkblsdra "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well. {w=0.3}{nw}" 
             extend 5hksdrb "I hope you don't mind if I'm not always able to keep up, ahaha!"
 
-        "I'm somewhat in-between."
+        "I'm somewhat in-between.":
             $ persistent._mas_pm_ambivert = True
             $ persistent._mas_pm_introvert = False
             $ persistent._mas_pm_extrovert = False
@@ -15805,7 +15805,7 @@ label monika_introversion_extroversion:
             m 5eubla "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
             extend m 5fubfu "A very charming someone, might I add~"
 
-        "I'm not really sure."
+        "I'm not really sure.":
             $ persistent._mas_pm_social_personality_unsure = True
             $ persistent._mas_pm_introvert = None
             $ persistent._mas_pm_extrovert = None
