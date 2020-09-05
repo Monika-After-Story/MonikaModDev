@@ -75,9 +75,7 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
-        from os import environ
-
-        session_type = environ.get("XDG_SESSION_TYPE")
+        session_type = os.environ.get("XDG_SESSION_TYPE")
         if session_type == "wayland":
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
