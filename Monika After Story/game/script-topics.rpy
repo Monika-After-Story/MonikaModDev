@@ -15821,4 +15821,4 @@ label monika_introversion_extroversion:
             5eka "I can definitely say that I feel comfortable just spending time with you, though.{w=0.3} And I really hope it's the same with you."
             m 5ekb "I'm sure we'll be able to figure out each other's comfort zones over time." 
             m 5hublb "In any case, you'll always be my sweetheart, no matter what kind of person you are~"
-	return "derandom"
+        return "derandom"
