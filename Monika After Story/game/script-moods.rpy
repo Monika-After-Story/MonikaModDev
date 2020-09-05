@@ -446,11 +446,11 @@ label mas_mood_inadequate:
         m "You took time out of your schedule to be with me on Christmas..."
 
     if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
-        m 1ekbfa "On Valentine's Day..."
+        m 1ekbsa "On Valentine's Day..."
 
     #TODO: change this back to not no_recognize once we change those defaults.
     if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
-        m 1ekbfb "You even made the time to celebrate my birthday with me."
+        m 1ekbsb "You even made the time to celebrate my birthday with me!"
 
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
@@ -467,10 +467,9 @@ label mas_mood_inadequate:
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
-    m 4eua "You just need to exist, have fun, and get through each day..."
-    m 1hua "Finding meaning in the people who matter."
+    m 4eua "You just need to exist, have fun, get through each day, and perhaps most importantly, find meaning in the people who matter."
     m 1eka "Please don't forget that, okay?"
-    m 1ekbfa "I love you, [player]~"
+    m 1ekbsa "I love you, [player]~"
     return "love"
 
 init 5 python:
