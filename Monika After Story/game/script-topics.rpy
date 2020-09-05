@@ -15199,7 +15199,7 @@ label monika_being_herself:
     extend 5eua "Well, {i}Just Me.{/i}"
     return
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
