@@ -75,13 +75,27 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
-        try:
-            import Xlib
-        except ImportError:
+        from os import environ
+
+        session_type = environ.get("XDG_SESSION_TYPE")
+        if session_type == "wayland":
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
             store.mas_utils.writelog(
+                "[WARNING]: Wayland is not yet supported, disabling notifications.\n"
+            )
+        elif session_type == "x11":
+            try:
+                import Xlib
+            except ImportError:
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_windowreacts.can_do_windowreacts = False
+                store.mas_utils.writelog(
                     "[WARNING]: Xlib failed to be imported, disabling notifications.\n"
+                )
+        else:
+            store.mas_utils.writelog(
+                "[WARNING]: Cannot detect current session type, disabling notifications.\n"
             )
 
     else:
