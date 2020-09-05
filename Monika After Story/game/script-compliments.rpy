@@ -17,14 +17,15 @@ init 3 python in mas_compliments:
 
     compliment_database = dict()
 
+init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
-        _("Thanks for telling me that again, my love!"),
-        _("You always make me feel special, [player]."),
+        _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
+        _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
-        _("Thanks, [player]!"),
+        _("Thanks, [mas_get_player_nickname()]!"),
         _("You always flatter me, [player].")
     ]
 
@@ -718,7 +719,7 @@ label mas_compliment_thinking_of_you_2:
             $ mas_loseAffection()
             m 2esc "..."
             m 2etc "..."
-            m 2rksdlc "Oh, umm...."
+            m 2rksdlc "Oh, umm..."
             m 2rksdld "I'm sorry?"
     return
 

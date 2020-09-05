@@ -410,6 +410,38 @@ label v0_11_4(version="v0_11_4"):
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
     return
 
 #0.11.3
