@@ -1,0 +1,2 @@
+__extensions__=[('Generic Event Extension','ge'),('XTEST','xtest'),('SHAPE','shape'),('XINERAMA','xinerama'),('RECORD','record'),('Composite','composite'),('RANDR','randr'),('XFIXES','xfixes'),('SECURITY','security'),('XInputExtension','xinput'),('NV-CONTROL','nvcontrol'),('DAMAGE','damage')]
+__all__=map(lambda x:x[1],__extensions__)
