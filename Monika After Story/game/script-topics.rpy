@@ -9088,7 +9088,7 @@ label monika_attractiveness:
 
     else:
         if mas_isMoniHappy(higher=True):
-            2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
+            m 2lsbsa "Although, considering you're still here with me...{w=0.5}{nw}"
             extend 2ekbsa "I probably shouldn't worry about it too much, should I?"
             m 1hub "After all, you wouldn't have spent all this time looking at me if you didn't already like the way I look! Ahaha!"
 
@@ -15692,3 +15692,52 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_relationship_quiz',
+            prompt="Relationship quiz",
+            category=['you','us'],
+            random=True
+        )
+    )
+
+label monika_relationship_quiz
+    m "Hey [mas_get_player_nickname()]... "
+    m "I was wondering, do you have some time?"
+    m "It's just, I found this thing online and...it may be kind of silly, but I just wanted to hear your opinion on it."
+    m "It's called a relationship quiz."
+    m "I was just thinking that after being with you for so long, finally settling into our relationship..."
+    m "There's still so much that I don't know about you...{w=0.2}your likes...{w=0.2}...your preferences...{w=0.2}your view on relationships."
+    m "Would you perhaps be interested in me asking you a few questions?"
+    m "Ahaha! I'm not trying to put you on the spot here, really! It's just...I really want to know more about you [player]."
+
+#Here I want some if checks referencing monika_player_appearance vars
+
+#Afterwards, leading into the relationship quiz with a two sentence prompt, making sure the player is ready and have some time on their hands.
+
+#Question 1: "Do you like it if I show my affection through compliments?"
+
+#Question 2: "Do you prefer being in a relationship with only one person at a time, or multiple people?"
+
+#Question 3: "Are you comfortable sharing all of your secrets with your partner?"
+
+#Question 4: "Do you like going out on dates, or do you prefer staying at home?"
+
+#Question 5: "How do you feel about marriage?" - Tie monika_marriage vars into this somehow.
+
+#Question 6: "What are your views on being physically intimate with your partner?" - 18+ check?
+
+#Question 7: "What do you think about having children?"
+
+#Question 8: "Do you have any pets, or would you like some?"
+
+#Question 9: "Do you have trouble 'coming out' to family and friends about having a girlfriend stuck in a computer?"
+
+#Question 10: "Do you ever look at pornography?" - 18+ check definitely
+
+#Answers to these questions will likely be from 3-5 options. Even the 'closed questions' like #4, #8 and #10 should have more options to elaborate.
+#These questions are just temporary, as I will take feedback and change things around so it's relevant and fair for everyone.
+return
