@@ -18,6 +18,7 @@ import spritepuller as spp
 import spritechecker as spc
 import spritemaker as spm
 import testsgenerator as tg
+import minipack as mp
 import menutils
 
 menu_main = [
@@ -25,7 +26,8 @@ menu_main = [
     ("Sprite Puller", spp.run),
     ("Check Sprites", spc.run),
     ("Make Sprites", spm.run),
-    ("Generate Expressions Test", tg.run)
+    ("Generate Expressions Test", tg.run),
+    ("Minify Python Packages/Modules", mp.run)
 ]
 
 choice = True
