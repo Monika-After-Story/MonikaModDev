@@ -24,7 +24,7 @@ def run():
     for path in listdir(PYPACKS_DIR):
         path = join(PYPACKS_DIR, path)
         if isfile(path) and splitext(path)[1] == ".py":
-            options.append(("Module " + basename(path), path))
+            options.append(("Module  " + basename(path), path))
         elif isdir(path) and not splitext(path)[1] == ".dist-info" and "__pycache__" not in path:
             options.append(("Package " + basename(path), path))
 
