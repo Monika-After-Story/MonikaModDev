@@ -3,7 +3,7 @@ from __future__ import print_function
 def run():
     from os.path import join, split, splitext, isdir, isfile, basename, dirname
     from os import listdir, walk, stat
-    from shutil import copytree
+    from shutil import copy, copytree
     
     import menutils
 
@@ -36,6 +36,7 @@ def run():
 
         if isfile(path):
             files = [splitext(path)[0] + "_min.py"]
+            copy(path, files[0])
         else:
             minipack_dir = path + "_min"
             copytree(path, minipack_dir)
