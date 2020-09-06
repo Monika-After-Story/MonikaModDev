@@ -844,7 +844,7 @@ label bye_goodnight:
                 m 1eua "Goodnight, [mas_get_player_nickname()]."
                 m 1eka "I'll see you tomorrow, okay?"
                 m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
-                m 1ekbfa "I love you~"
+                m 1ekbsa "I love you~"
 
             "Not yet.":
                 m 1eka "Okay, [mas_get_player_nickname()]..."
@@ -1110,7 +1110,7 @@ label bye_going_somewhere_normalplus_flow_aff_check:
         #   and will ask u to wait for her to get ready
         m 1sub "Really?"
         m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
+        m 1ekbsa "I wonder where you'll take me today..."
 
     jump bye_going_somewhere_post_aff_check
 
@@ -1191,7 +1191,7 @@ label bye_prompt_game:
             "Yes.":
                 if mas_isMoniNormal(higher=True):
                     m 3sub "Really?"
-                    m 1hubfb "Yay!"
+                    m 1hubsb "Yay!"
                 else:
                     m 2eka "Okay..."
                 jump monika_idle_game.skip_intro
@@ -1219,7 +1219,7 @@ label bye_prompt_game:
             m 1eub "Don't worry about coming back to say goodnight to me,{fast} you {i}should{/i} go right to bed when you're finished."
             m 3hua "Have fun, and goodnight, [player]!"
             if renpy.random.randint(1,2) == 1:
-                m 1hubfb "I love you~{w=1}{nw}"
+                m 1hubsb "I love you~{w=1}{nw}"
         else:
             m 2efd "[player], it's the middle of the night!"
             m 4rfc "Really...it's this late already, and you're going to play another game?"
@@ -1242,7 +1242,7 @@ label bye_prompt_game:
         m 3eua "But I also don't want to keep you from doing other things."
         m 1hua "Maybe one day you'll finally be able to show me what you've been up to and then I can come with you!"
         if renpy.random.randint(1,5) == 1:
-            m 3tubfu "Until then, you just have to make it up to me every time you leave me to play another game, alright?"
+            m 3tubsu "Until then, you just have to make it up to me every time you leave me to play another game, alright?"
             m 1hubfa "Ehehe~"
 
     else:
@@ -1298,7 +1298,7 @@ label bye_prompt_eat:
             m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
             if mas_is18Over() and mas_isMoniLove(higher=True) and renpy.random.randint(1,25) == 1:
-                m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
+                m 2tubsu "You know, if I were there, maybe we could have a bit of both..."
                 show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
                 m 5hubfb "Ehehe~"
@@ -1436,7 +1436,7 @@ label bye_prompt_eat:
                     $ persistent._mas_pm_ate_snack_times[2] += 1
                     if mas_isMoniNormal(higher=True):
                         m 1eua "Having an evening snack?"
-                        m 1tubfu "Can't you just feast your eyes on me?"
+                        m 1tubsu "Can't you just feast your eyes on me?"
                         m 3hubfb "Ahaha, I hope you enjoy your snack, [player]~"
                         m 1ekbfb "Just make sure you still have room for all of my love!"
                     else:

@@ -172,12 +172,12 @@ label mas_mood_sad:
                             m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
                             m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out."
-                            m 1hubfa "Never forget that you're wonderful and I will always love you~"
+                            m 1hubsa "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
                             m 1ekc "Well, it was worth a shot."
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
-                            m 1ekbfa "I love you, [player], and I always will~"
+                            m 1ekbsa "I love you, [player], and I always will~"
     return "love"
 
 init 5 python:
@@ -364,7 +364,7 @@ init 5 python:
 label mas_mood_lonely:
     m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
     m 3hua "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
-    m 1ekbfa "Remember that I'll always be by your side, [player]~"
+    m 1ekbsa "Remember that I'll always be by your side, [player]~"
     return
 
 #Maybe we could tie this to the I'm breaking up topic and have monika say something special like:
@@ -424,7 +424,7 @@ label mas_mood_scared:
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn't {i}always{/i} bad, you know?"
     m 2esc "Besides..."
-    m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+    m 2ekbsa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
@@ -502,7 +502,7 @@ label mas_mood_lazy:
             extend 1dkbsa "Especially if I woke up next to you~"
 
             if mas_isMoniLove():
-                m 1dkbfa "{i}Then I'd never want to get up~{/i}"
+                m 1dkbsa "{i}Then I'd never want to get up~{/i}"
                 m 1dsbfu "I hope you don't mind being 'stuck', [player]..."
                 m 1hubfa "Ehehe~"
 
