@@ -15704,7 +15704,7 @@ init 5 python:
         )
     )
 
-label monika_relationship_quiz
+label monika_relationship_quiz:
     m "Hey [mas_get_player_nickname()]... "
     m "I was wondering, do you have some time?"
     m "It's just, I found this thing online and...it may be kind of silly, but I just wanted to hear your opinion on it."
