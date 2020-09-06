@@ -2236,7 +2236,7 @@ init python:
             for ev in evhand.event_database.itervalues()
             if (
                 Event._filterEvent(ev, unlocked=False, pool=True)
-                and "no unlock" not in ev.rules
+                and "no_unlock" not in ev.rules
             )
         ]
         u_count = count
@@ -2593,8 +2593,8 @@ label show_prompt_list(sorted_event_labels):
         hide_unseen_event = mas_getEV("mas_hide_unseen")
 
         final_items = (
-            (_("I don't want to see this menu anymore."), "mas_hide_unseen", False, False, 20),
-            (_("Nevermind."), False, False, False, 0)
+            (_("I don't want to see this menu anymore"), "mas_hide_unseen", False, False, 20),
+            (_("Nevermind"), False, False, False, 0)
         )
 
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
@@ -2765,7 +2765,7 @@ label prompts_categories(pool=True):
 
 # sets up the bookmarks menu
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no_unlock":None}))
     # NOTE: do not use this as an ev.
 
 label mas_bookmarks:
@@ -2798,8 +2798,8 @@ label mas_bookmarks:
         bookmarks_items.sort()
 
         bk_menu_final_items = (
-            (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
-            (_("Nevermind."), "nevermind", False, False, 0)
+            (_("I'd like to remove a bookmark"), "remove_bookmark", False, False, 20),
+            (_("Nevermind"), "nevermind", False, False, 0)
         )
 
     # FALL THROUGH

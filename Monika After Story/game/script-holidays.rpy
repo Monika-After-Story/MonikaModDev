@@ -717,7 +717,7 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
         m "Oh!{w=0.5} It's you, [player]!"
 
     else:
-        m ".{w=0.3}.{w=0.3}."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
         m "Welcome{w=0.3}, to the Scarlet Devil Spaceroom..."
         m "[player]."
         m "Please, let me offer you our hospitality."
@@ -1067,7 +1067,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
-    m 1eua "I'll just take these decorations down.{w=0.5}.{w=0.5}.{nw}"
+    m 1eua "I'll just take these decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     #Hide vis
     $ mas_o31HideVisuals()
@@ -2574,7 +2574,7 @@ label mas_d25_spent_time_monika:
 
                 #Re-enable buttons
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
         return
 
@@ -3975,7 +3975,7 @@ init 5 python:
             end_date=mas_d25c_end,
             action=EV_ACT_UNLOCK,
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         skipCalendar=True
@@ -3992,7 +3992,7 @@ label mas_d25_monika_d25_mode_exit:
     m 3eua "I wouldn't mind getting right into the new year."
     m 1hua "As long as it's with you, of course~"
     m 3hub "Ahaha!"
-    m 2dsa "Just give me a second to take the decorations down.{w=1}.{w=1}.{nw}"
+    m 2dsa "Just give me a second to take the decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     call mas_d25_season_exit
 
@@ -4860,7 +4860,7 @@ init 5 python:
             unlocked=False,
             prompt="Let's go out for my birthday!",
             pool=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL,None),
         ),
         code="BYE"
@@ -5009,7 +5009,7 @@ label return_home_post_player_bday:
             else:
                 m 3rksdla "Oh...it's not your birthday anymore..."
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
-            m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
+            m 3eka "Just give me one second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
             $ mas_surpriseBdayHideVisuals()
 
             #If we returned from a date post pbday but have O31 deco
@@ -5363,7 +5363,7 @@ label mas_f14_monika_valentines_intro:
             pause 2.0
             show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rfc "..."
-            m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
+            m 2efc "You know, [player]...{w=0.5}it's not polite to stare..."
             m 2tfc "..."
             m 2tsu "..."
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
@@ -5531,7 +5531,7 @@ init 5 python:
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
             years=[],
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         skipCalendar=True
     )
@@ -5659,7 +5659,7 @@ label mas_f14_first_kiss:
                 m 6ekbsu "...the moment of our first kiss."
                 m "Happy Valentine's Day, [player]~"
                 $ enable_esc()
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ HKBShowButtons()
                 return
 
@@ -6289,7 +6289,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_bday",
             prompt="Happy birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             start_date=mas_monika_birthday,
             end_date=mas_monika_birthday + datetime.timedelta(days=1),
             years=[]
@@ -6346,7 +6346,7 @@ init 5 python:
             eventlabel="mas_bday_pool_happy_belated_bday",
             prompt="Happy belated birthday!",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             years=[]
         ),
         code="CMP",
@@ -6529,8 +6529,8 @@ init 5 python:
             eventlabel="mas_bday_spent_time_with",
             conditional="mas_recognizedBday()",
             action=EV_ACT_QUEUE,
-            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
-            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
+            start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
             years=[]
         ),
         skipCalendar=True
