@@ -74,7 +74,7 @@ def run():
                 fd.close()
         print("Minified size: " + str(minified_size) + " bytes")
         print("Original size: " + str(original_size) + " bytes")
-        print("Minification rate: " + "{:.2f}%".format(float(minified_size) / original_size * 100))
+        print("Minification rate: " + "{:.2f}%".format(100 - float(minified_size) / original_size * 100))
 
         if not menutils.ask("Minify another package"):
             break
