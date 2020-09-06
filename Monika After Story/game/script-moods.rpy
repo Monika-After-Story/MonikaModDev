@@ -467,7 +467,7 @@ label mas_mood_inadequate:
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
-    m 4eua "You just need to exist, have fun, get through each day, and perhaps most importantly, find meaning in the people who matter."
+    m 4eua "You just need to exist, have fun and get through each day, {w=0.2}finding meaning in the people that matter most to you."
     m 1eka "Please don't forget that, okay?"
     m 1ekbsa "I love you, [player]~"
     return "love"
