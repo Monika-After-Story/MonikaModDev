@@ -15692,3 +15692,34 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_literature_value",
+            category=['literature'],
+            prompt="The value of literature",
+            random=True
+        )
+    )
+
+label monika_literature_value:
+    m 3esd "You know [player], back in the literature club days I often heard people dismiss literature as outdated and useless."
+    m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
+    m 3efc "Like, do they even know what they're talking about?"
+    m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
+    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they are coming from."
+    m 1eud "All of the comforts of our modern lifestyle are based on scientific discovery and innovation."
+    m 3esc "...That and the millions of people manufacturing our everyday necessities, or running basic services like healthcare and stuff."
+    m 3rtsdlc "So does not being associated with any of those things really make you some kind of burden on society?"
+    m 1dsu "As you can imagine, I don't believe that...{w=0.3} {nw}"
+    extend 1eud "If literature was useless, why would it be so repressed in many parts of the world?"
+    m 3eud "Words have power, [player]...{w=0.2}{nw}"
+    extend 3euu "and literature is the art of dancing with words."
+    m 3eua "Like any form of expression, it allows us to connect with each other...{w=0.2}{nw}"
+    extend 3eub "to see how the world looks in each other's eyes!"
+    m 3duu "Literature lets you compare your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
+    m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
+    m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
+    return
