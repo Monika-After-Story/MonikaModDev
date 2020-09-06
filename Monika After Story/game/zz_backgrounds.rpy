@@ -1523,9 +1523,14 @@ init -10 python:
             IN:
                 flt - filter to check
 
-            RETURNS: True if day, false if not
+            RETURNS: True if day, false if not, None if filter not associatd
+                with this filter manager
             """
-            return flt in self._day_filters
+            if flt in self._day_filters:
+                return True
+            if flt in self._night_filters:
+                return False
+            return None
 
         def _organize(self):
             """
@@ -2231,7 +2236,8 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "day" filter according to this bg
+            RETURNS: True if flt is a "day" filter according to this bg,
+                False if night filter, None if not associated with this BG
             """
             if flt is None:
                 flt = store.mas_sprites.get_filter()
@@ -2247,9 +2253,13 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "night" filter according to this BG
+            RETURNS: True if flt is a "night" filter according to this BG,
+                False if day filter, None if not associated with this BG.
             """
-            return not self.isFltDay(flt)
+            flt_res = self.isFltDay(flt)
+            if flt_res is not None:
+                return not flt_res
+            return None
 
         def _lookback(self, flt):
             """
