@@ -5091,7 +5091,7 @@ label monika_chloroform:
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
     if persistent._mas_pm_introvert:
-        m 3rksdla "I know you're probably not one to enjoy doing that often, but just in case..."
+        m 3rksdla "I know you're probably not one to enjoy doing this often, but just in case..."
     m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
     m 1eub "Just throw it out."
     m "That's the only way to make sure it hasn't been drugged."
