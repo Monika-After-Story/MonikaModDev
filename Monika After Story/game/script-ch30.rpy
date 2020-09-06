@@ -31,6 +31,12 @@ init -890 python in mas_globals:
     if tt_detected:
         store.persistent._mas_pm_has_went_back_in_time = True
 
+    #Internal renpy version check
+    is_r7 = renpy.version(True)[0] == 7
+
+    # Check whether or not the user uses a steam install
+    is_steam = "steamapps" in renpy.config.basedir.lower()
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -76,6 +82,9 @@ init -1 python in mas_globals:
 
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
+
+    this_ev = None
+    # the current topic, but as event object. may be None.
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -390,6 +399,19 @@ init python:
             renpy.with_statement(Dissolve(1.0))
 
 
+    def mas_validate_suntimes():
+        """
+        Validates both persistent and store suntimes are in a valid state.
+        Sunrise is always used as the lead if a reset is needed.
+        """
+        if (
+            mas_suntime.sunrise > mas_suntime.sunset
+            or persistent._mas_sunrise > persistent._mas_sunset
+        ):
+            mas_suntime.sunset = mas_suntime.sunrise
+            persistent._mas_sunset = persistent._mas_sunrise
+
+
     def show_calendar():
         """RUNTIME ONLY
         Opens the calendar if we can
@@ -697,14 +719,14 @@ init python:
 
     def mas_get_player_derandoms(derandomed_evls):
         """
-        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Gets topics which are derandomed by the player (in check-scrollable-menu format)
         Also cleans out events which no longer exist
 
         IN:
             derandomed_evls - appropriate variable holding the derandomed eventlabels
 
         OUT:
-            List of player derandomed topics in mas_gen_scrollable_menu form
+            List of player derandomed topics in mas_check_scrollable_menu form
         """
         derandlist = []
 
@@ -719,7 +741,7 @@ init python:
 
             #Ev exists. Add it to the menu item list
             elif ev.unlocked:
-                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, True, False))
 
         return derandlist
 
@@ -1517,7 +1539,7 @@ label ch30_post_mid_loop_eval:
             jump mas_ch30_select_mostseen
 
 #        elif not seen_random_limit:
-#            $pushEvent('random_limit_reached')
+#            $pushEvent('mas_random_limit_reached')
 
 label post_pick_random_topic:
 
@@ -1532,10 +1554,9 @@ label mas_ch30_select_unseen:
     if len(mas_rev_unseen) == 0:
 
         if not persistent._mas_enable_random_repeats:
-            # no repeats means we should push randomlimit if appropriate,
-            # otherwise stay slient
-            if not seen_random_limit:
-                $ pushEvent("random_limit_reached")
+            # no repeats means we should push randomlimit if appropriate, otherwise stay slient
+            if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
+                $ pushEvent("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -1559,10 +1580,12 @@ label mas_ch30_select_seen:
                 # jump to most seen if we have any left
                 jump mas_ch30_select_mostseen
 
-            if len(mas_rev_mostseen) == 0 and not seen_random_limit:
-                # all topics seen within last seen delta, push random seen
-                # limit if not already.
-                $ pushEvent("random_limit_reached")
+            #As a way of indicating you're out of topics because of the last seen delta, we'll use a shorter check here
+            if (
+                len(mas_rev_mostseen) == 0
+                and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
+            ):
+                $ pushEvent("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop
@@ -1960,6 +1983,10 @@ label ch30_reset:
 
     #Check BGSel topic unlocked state
     $ mas_checkBackgroundChangeDelegate()
+
+    # verify suntimes are correct
+    # NOTE: must be before background build update
+    $ store.mas_validate_suntimes()
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()

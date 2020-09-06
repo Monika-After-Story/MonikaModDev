@@ -120,6 +120,16 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: 1,
+        DISTRESSED: 2,
+        UPSET: 3,
+        NORMAL: 4,
+        HAPPY: 4,
+        AFFECTIONATE: 5,
+        ENAMORED: 6,
+        LOVE: 6
+    }
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
@@ -451,6 +461,9 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
         layout.QUIT = mas_layout.QUIT_BROKEN
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(BROKEN)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -475,6 +488,9 @@ init 15 python in mas_affection:
         if persistent._mas_acs_enable_promisering:
             renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
             persistent._mas_acs_enable_promisering = False
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(DISTRESSED)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -504,6 +520,9 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(UPSET)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -595,6 +614,9 @@ init 15 python in mas_affection:
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(HAPPY)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -631,6 +653,9 @@ init 15 python in mas_affection:
 
         # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -920,26 +945,18 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, [player]?"),
-            _("Yes, [player]?"),
-            _("What's on your mind, [player]?"),
-            _("What would you like to talk about, [player]?")
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, honey?"),
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("What's on your mind, darling?"),
-            _("What would you like to talk about, sweetie?"),
-            _("What would you like to talk about, [player]?"),
-            _("Yes, [player]?"),
-            _("What's on your mind, [player]?"),
-            _("What would you like to talk about, [player]?")
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
         ]
         save_quips(ENAMORED, quips)
 
@@ -947,19 +964,12 @@ init 15 python in mas_affection:
         quips = [
 #            "Hey, what's up?",
             _("What's on your mind?"),
-            _("What's on your mind, darling?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("Anything on your mind?"),
-            _("Anything on your mind, hun?"),
-            _("What's up, darling?"),
-            _("What's up, honey?"),
-            _("What's up, dear?"),
-            _("What's up, sweetie?"),
-            _("What's up, [player]?"),
+            _("Anything on your mind, [mas_get_player_nickname()]?"),
+            _("What's up, [mas_get_player_nickname()]?"),
 #            "What's up?",
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("Yes, love?"),
+            _("Yes, [mas_get_player_nickname()]?"),
             _("^_^"),
             _("<3"),
             _("Anything you'd like to talk about?"),
@@ -1026,32 +1036,29 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."),
-            _("Pick anything you like, [player].")
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()].")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."),
-            _("Pick anything you like, [player]."),
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetheart."),
-            _("Pick anything you like, sweetie.")
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetie."),
-            _("Pick anything you like, sweetheart."),
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
             _("Yay! Let's play together!"),
             _("I'd love to play something with you!"),
             _("I'd love to play with you!")
         ]
+
         save_quips(LOVE, quips)
 
     _init_talk_quips()
@@ -1919,7 +1926,7 @@ init 5 python:
             random=False,
             pool=True,
             unlocked=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         restartBlacklist=True
@@ -1955,10 +1962,16 @@ label monika_affection_nickname:
         m 3hua "I'll still get the final say, though!"
         m "What do you say?{nw}"
         python:
-            # change the prompt for this event
-            aff_nickname_ev.prompt = _("Can I call you a different name?")
-            Event.lockInit("prompt", ev=aff_nickname_ev)
-            persistent._mas_offered_nickname = True
+            if aff_nickname_ev:
+                # change the prompt for this event
+                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                Event.lockInit("prompt", ev=aff_nickname_ev)
+                persistent._mas_offered_nickname = True
+
+            #Also give the player nickname event a start_date so it doesn't queue instantly
+            pnick_ev = mas_getEV("mas_affection_playernickname")
+            if pnick_ev:
+                pnick_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
 
     else:
         jump monika_affection_nickname_yes
@@ -1977,7 +1990,7 @@ label monika_affection_nickname:
                 python:
                     inputname = mas_input(
                         _("So what do you want to call me?"),
-                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        allow=name_characters_only,
                         length=10,
                         screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')
@@ -2064,7 +2077,8 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
 
                             show monika 1efc
@@ -2078,7 +2092,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
@@ -2090,7 +2104,7 @@ label monika_affection_nickname:
                             $ m_name = "Monika"
                             $ persistent._mas_monika_nickname = "Monika"
 
-                        $ mas_lockEventLabel("monika_affection_nickname")
+                        $ mas_lockEVL("monika_affection_nickname", "EVE")
                         $ done = True
 
         "No.":
@@ -2106,6 +2120,182 @@ label monika_affection_nickname_bad_lock:
     m 1efc "Let's talk about something else."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_affection_playernickname",
+            conditional="seen_event('monika_affection_nickname')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+default persistent._mas_player_nicknames = list()
+
+label mas_affection_playernickname:
+    python:
+        #A list of names we always want to have
+        base_nicknames = [
+            ("Darling", "darling", True, True, False),
+            ("Honey", "honey", True, True, False),
+            ("Love", "love", True, True, False),
+            ("My love", "my love", True, True, False),
+            ("Sweetheart", "sweetheart", True, True, False),
+            ("Sweetie", "sweetie", True, True, False),
+        ]
+
+    m 1euc "Hey, [player]?"
+    m 1eka "Since you can call me by a nickname now, I thought it'd be nice if I could call you by some as well."
+
+    m 1etc "Is that alright with you?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Is that alright with you?{fast}"
+
+        "Sure, [m_name].":
+            m 1hua "Great!"
+            m 3eud "I should ask though, what names are you comfortable with?"
+            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you.", base_nicknames)
+
+        "No.":
+            m 1eka "Alright, [player]."
+            m 3eua "Just let me know if you ever change your mind, okay?"
+
+    #Now unlock the nickname change ev
+    $ mas_unlockEVL("monika_change_player_nicknames", "EVE")
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_change_player_nicknames",
+            prompt="Can you call me different nicknames?",
+            category=['you'],
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        )
+    )
+
+label monika_change_player_nicknames:
+    m 1hub "Sure [player]!"
+
+    python:
+        #Generate a list of names we're using now so we can set things
+        if not persistent._mas_player_nicknames:
+            current_nicknames = [
+                ("Darling", "darling", False, True, False),
+                ("Honey", "honey", False, True, False),
+                ("Love", "love", False, True, False),
+                ("My love", "my love", False, True, False),
+                ("Sweetheart", "sweetheart", False, True, False),
+                ("Sweetie", "sweetie", False, True, False),
+            ]
+            dlg_line = "Pick the names you'd like me to call you."
+
+        else:
+            current_nicknames = [
+                (nickname.capitalize(), nickname, True, True, False)
+                for nickname in persistent._mas_player_nicknames
+            ]
+            dlg_line = "Deselect the names you don't want me to call you anymore."
+
+    call mas_player_nickname_loop("[dlg_line]", current_nicknames)
+    return
+
+label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
+    show monika 1eua at t21
+    python:
+        renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
+        nickname_pool.sort()
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Done", default_button_prompt="Done")
+
+    python:
+        done = False
+        acceptable_nicknames = _return.keys()
+
+        if acceptable_nicknames:
+            dlg_line = "Is there anything else you'd like me to call you?"
+
+        else:
+            dlg_line = "Is there something else you'd like me to call you instead?"
+
+    show monika at t11
+    while not done:
+        m 1eua "[dlg_line]{nw}"
+        $ _history_list.pop()
+        menu:
+            m "[dlg_line]{fast}"
+
+            "Yes.":
+                label .name_enter_skip_loop:
+                    pass
+
+                #Now parse this
+                python:
+                    lowername = mas_input(
+                        _("So what do you want me to call you?"),
+                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        length=10,
+                        screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
+                    ).strip(' \t\n\r').lower()
+
+                #Now validate
+                if lowername == "nevermind":
+                    $ done = True
+
+                elif lowername == "":
+                    m 1eksdla "..."
+                    m 3rksdlb "You have to give me a name to call you, [player]..."
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif lowername == player.lower():
+                    m 2hua "..."
+                    m 4hksdlb "That's the same name you have right now, silly!"
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif mas_awk_name_comp.search(lowername):
+                    $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
+                    m 1rksdlb "[awkward_quip]"
+                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+                    jump .name_enter_skip_loop
+
+                elif mas_bad_name_comp.search(lowername):
+                    $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
+                    m 1ekd "[bad_quip]"
+                    m 3eka "Please pick a nicer name for yourself, okay?"
+                    jump .name_enter_skip_loop
+
+                elif lowername in acceptable_nicknames:
+                    m 3rksdla "You already told me I can call you that, [player]..."
+                    m 1hua "Try again~"
+                    jump .name_enter_skip_loop
+
+                else:
+                    #If this is all good, then we'll add this to a list of things to add
+                    $ acceptable_nicknames.append(lowername)
+
+            "No.":
+                $ done = True
+
+    if acceptable_nicknames:
+        $ dlg_line = "Just let me know if you ever want me to call you some other names, okay?"
+
+    else:
+        $ dlg_line = "Just let me know if you ever change your mind, okay?"
+
+    m 1hua "Alright, [player]."
+    m 3eub "[dlg_line]"
+
+    #Now set persistent
+    $ persistent._mas_player_nicknames = acceptable_nicknames
+    return
+
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1dsc "Hey, [player]..."
@@ -2113,7 +2303,7 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
@@ -2122,7 +2312,7 @@ label mas_affection_happynotif:
     m 1eua "I just wanted to say thank you for being such a wonderful person."
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     return "love"
 
 init 5 python:
@@ -2203,9 +2393,9 @@ label monika_being_virtual:
     m 3rksdld "To you, this whole world...{w=0.5}my whole reality..."
     m 3ektpd "It's all just a game, isn't it?"
 
-    show monika 1dktsc with dissolve
+    show monika 1dktsc with dissolve_monika
     pause 3.0
-    show monika 1ektpc with dissolve
+    show monika 1ektpc with dissolve_monika
     pause 2.0
 
     m 1ektpc "Say, [player]...{w=0.5}has anything I ever said reached you, even once?"

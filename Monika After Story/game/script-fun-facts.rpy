@@ -43,7 +43,7 @@ init 5 python:
     )
 
 label monika_fun_facts_open:
-    if mas_getEV('monika_fun_facts_open').shown_count == 0:
+    if mas_getEVL_shown_count("monika_fun_facts_open") == 0:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
@@ -294,7 +294,7 @@ label mas_fun_fact_vincent_van_gone:
     m 2dkc "There will come a time where it'll no longer be there."
     m 2rkc "...Or at least be noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
-    m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
+    m 5hub "I will always accept and take on any burdens that you shoulder, [mas_get_player_nickname()]~"
     #No end for this fact
     $ persistent._mas_funfactfun = True
     return

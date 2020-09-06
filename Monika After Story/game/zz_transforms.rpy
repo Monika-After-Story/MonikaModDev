@@ -96,6 +96,9 @@ init -10 python:
         except:
             return None
 
+# A transition of the new type
+# which only works with mas_with_statement or Ren'Py 7.0+
+define dissolve_monika = {"master": Dissolve(0.25)}
 
 # user defined trasnforms
 transform leftin_slow(x=640, z=0.80, t=1.00):
@@ -162,3 +165,38 @@ transform mas_chlongjump(x, y, ymax, travel_time=1.0):
     parallel:
         easeout travel_time*0.6 ypos ymax
         easein travel_time*0.4 ypos y
+
+#START: Transforms for Monika's sprite animations (blinking/winking/tear-specific-blinking)
+transform blink_transform(open_eyes_img, closed_eyes_img):
+    block:
+        open_eyes_img
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        closed_eyes_img
+        0.06
+        repeat
+
+transform wink_transform(wink_img, open_eye_img):
+    block:
+        wink_img
+        1
+        open_eye_img
+
+transform streaming_tears_transform(open_eyes_img, closed_eyes_img):
+    block:
+        open_eyes_img
+        block:
+            choice:
+                9
+            choice:
+                11
+            choice:
+                12
+        closed_eyes_img
+        0.15
+        repeat

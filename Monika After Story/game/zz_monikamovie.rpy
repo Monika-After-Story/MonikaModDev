@@ -286,7 +286,7 @@ label mas_monikamovie:
         $ timer.seconds = 0
         $ MovieOverlayHideButtons()
         $ play_song(store.songs.selected_track)
-        show monika 1
+        show monika 1esa
         jump ch30_loop
 
     label mm_movie_pausefilm:

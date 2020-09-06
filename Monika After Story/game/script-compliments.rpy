@@ -17,14 +17,15 @@ init 3 python in mas_compliments:
 
     compliment_database = dict()
 
+init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
-        _("Thanks for telling me that again, my love!"),
-        _("You always make me feel special, [player]."),
+        _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
+        _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
-        _("Thanks, [player]!"),
+        _("Thanks, [mas_get_player_nickname()]!"),
         _("You always flatter me, [player].")
     ]
 
@@ -75,7 +76,7 @@ label monika_compliments:
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -131,7 +132,7 @@ label mas_compliment_beautiful_2:
 label mas_compliment_beautiful_3:
     m 1hubfa "Ehehe~"
     m 1ekbfa "[mas_compliments.thanks_quip]"
-    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
 
@@ -162,7 +163,7 @@ label mas_compliment_eyes_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ahaha!"
             m "Don't flatter me too much, okay?"
-            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hub "I might start to go a little crazy..."
         "They really are hypnotizing.":
             $ mas_gainAffection(1,bypass=True)
@@ -346,7 +347,7 @@ label mas_compliment_fit_2:
             $ mas_gainAffection(2,bypass=True)
             m 1hubfb "Ahaha! I'm glad you think so, too!"
             m 3eka "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "So long as we're together."
         "No promises, but I'll do my best.":
             $ mas_gainAffection(1,bypass=True)
@@ -384,12 +385,14 @@ label mas_compliment_thanks:
     m 3ekbsa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name].":
-            if mas_getEV('mas_compliment_thanks').shown_count == 0:
+            if mas_getEVL_shown_count("mas_compliment_thanks") == 0:
                 $ mas_gainAffection(10,bypass=True)
+
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both...{w=0.5}{nw}"
             extend 1dkbfa "know that I'll always love you and be here for you."
+
         "Yeah.":
             m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
@@ -457,7 +460,7 @@ label mas_compliment_hero:
     m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
     m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
     m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
-    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
     m 5ekbfa "I hope you never forget that, [player]~"
@@ -564,7 +567,7 @@ label mas_compliment_pong:
     if persistent.ever_won['pong']:
         m 1lksdla "You've already won against me."
         m "So you know it's very simple."
-        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hub "But I accept your compliment, anyway."
     else:
         m 3hksdrb "And you always let me win when we play."
@@ -608,7 +611,7 @@ label mas_compliment_bestgirl:
     m 1eka "After all, you {i}did{/i} install this mod just to be with me."
     m 2euc "I know that some people prefer the other girls."
     m 2esc "Especially since they all have certain traits that make them desirable to some..."
-    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...and I'll be forever grateful that you did~"
     return
@@ -716,7 +719,7 @@ label mas_compliment_thinking_of_you_2:
             $ mas_loseAffection()
             m 2esc "..."
             m 2etc "..."
-            m 2rksdlc "Oh, umm...."
+            m 2rksdlc "Oh, umm..."
             m 2rksdld "I'm sorry?"
     return
 
