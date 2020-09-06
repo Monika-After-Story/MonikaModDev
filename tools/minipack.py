@@ -1,9 +1,9 @@
 from __future__ import print_function
 
 def run():
-    from os.path import join, split, splitext, isdir, isfile, basename, dirname
-    from os import listdir, walk, stat
-    from shutil import copy, copytree
+    from os.path import join, split, splitext, isdir, isfile, exists, basename, dirname
+    from os import listdir, walk, unlink
+    from shutil import copy, copytree, rmtree
     
     import menutils
 
@@ -34,11 +34,16 @@ def run():
         if path is None:
             break
 
+        menutils.clear_screen()
         if isfile(path):
             files = [splitext(path)[0] + "_min.py"]
+            if exists(files[0]) and menutils.ask(minipack_dir + " already exists. Overwrite"):
+                unlink(files[0])
             copy(path, files[0])
         else:
             minipack_dir = path + "_min"
+            if exists(minipack_dir) and menutils.ask(minipack_dir + " already exists. Overwrite"):
+                rmtree(minipack_dir)
             copytree(path, minipack_dir)
             files = []
             for dir_, _, walk_files in walk(minipack_dir):
@@ -49,7 +54,7 @@ def run():
         
         menutils.clear_screen()
         for file_ in files:
-            print("Working on " + basename(file_))
+            print("Minifying " + basename(file_) + " ...")
             src = ""
             fd = open(file_, "r")
             try:
@@ -72,6 +77,8 @@ def run():
                     minified_size += len(chunk)
             finally:
                 fd.close()
+
+        print()
         print("Minified size: " + str(minified_size) + " bytes")
         print("Original size: " + str(original_size) + " bytes")
         print("Minification rate: " + "{:.2f}%".format(100 - float(minified_size) / original_size * 100))
