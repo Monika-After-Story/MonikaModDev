@@ -2398,6 +2398,11 @@ label call_next_event:
                 $ ev.unlocked = False
                 $ ev.unlock_date = None
 
+            if "unlock" in ret_items:
+                $ ev.unlocked = True
+                if ev.unlock_date is None:
+                    $ ev.unlock_date = ev.last_seen
+
             if "rebuild_ev" in ret_items:
                 $ mas_rebuildEventLists()
 
