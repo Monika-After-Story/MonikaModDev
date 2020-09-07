@@ -2220,7 +2220,7 @@ label monika_rain:
             if not mas_is_raining:
                 call mas_change_weather(mas_weather_rain, by_user=False)
 
-            call monika_holdme_prep(False, False, True)
+            call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=True)
 
             m 1hua "Then hold me, [player]..."
             show monika 6dubsa with dissolve_monika
@@ -2301,7 +2301,7 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep(play_lullaby=False, queue_lullaby=True, stop_music=False):
+label monika_holdme_prep(queue_lullaby=True, play_lullaby=False, stop_music=False):
     $ _holdme_events = list()
     # Stop the music and queue the lullaby
     if queue_lullaby and not play_lullaby and stop_music:
@@ -2325,8 +2325,8 @@ label monika_holdme_prep(play_lullaby=False, queue_lullaby=True, stop_music=Fals
             PauseDisplayableEvent(
                 datetime.timedelta(minutes=30),
                 (
-                    renpy.partial(renpy.music.stop, fadeout=1.0),
-                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=1.0)
+                    renpy.partial(renpy.music.stop, fadeout=5.0),
+                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=5.0)
                 )
             )
         )
@@ -2594,7 +2594,7 @@ label monika_holdme_long:
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
 
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep(False, False, False)
+            call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -4955,7 +4955,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep(False, False, True)
+                call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=True)
                 call monika_holdme_start
                 call monika_holdme_end
 
