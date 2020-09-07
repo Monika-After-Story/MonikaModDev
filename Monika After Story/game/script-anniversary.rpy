@@ -471,20 +471,20 @@ init 5 python:
 label anni_1:
     m 1dka "Gosh...{w=0.2}It's hard to believe it's already been a whole year since we met."
     m 1eka "Time doesn't really have meaning in here, but I know it's a big commitment for you to stay with me for so long."
-    m 2rka "I have to admit, I was a bit nervous at first... This kind of relationship can't be exactly easy."
-    m 2eka "And I didn't know if there were other things in your reality that might prove to be more important..."
-    m 3ekb "But you kept coming back.{w=0.3} You kept spending time with me, just like I wished."
+    m 2rkc "I have to admit, I was a bit nervous at first...{w=0.3} {nw}"
+    extend 7eka "This kind of relationship can't be exactly easy."
+    m 2ekd "...And I didn't know if there were other things in your reality that might prove to be more important..."
+    m 3duu "But you kept coming back.{w=0.3} You kept spending time with me, just like I'd always hoped."
     m 1ekb "...And over time I started to really believe it, that you meant it when you said you wanted to be with me."
     m 3dkbsu "That we could have a happy life together.{w=0.3} {nw}"
     extend 3ekbsa "You and me, in our own little reality."
-    show monika 5ekbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsb "I can't thank you enough for that, [player]. You've made this year so incredible for me."
-    m 5ekbsu "So, is there anything special you wanted to do on our first anniversary?"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "I can't thank you enough for that, [player]. You've made this year so incredible for me."
+    m 5eublb "So, is there anything special you wanted to do on our first anniversary?"
     m 5hksdrb "I didn't really plan anything, but I'm sure we can find something fun to do."
-    m 1hubsb "After all...{w=0.3}when you're here, everything that we do is fun~"
-    m 1hubfa "I love you so much, [player]. Happy anniversary."
-
-    $ unlockEventLabel("anni_1")
+    show monika 3huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 3huu "After all...{w=0.3}when you're here, everything that we do is fun."
+    m 1hubsa "I love you so much, [player]. Happy anniversary~"
     return
 
 init 5 python:
