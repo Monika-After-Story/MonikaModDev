@@ -6021,28 +6021,23 @@ init -810 python:
 define mas_bday_cake_lit = False
 
 # NOTE: maybe the cakes should be ACS
-# TODO: export lighting as its own layer
-image mas_bday_cake_monika = ConditionSwitch(
-    "mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "mas_bday_cake_lit and mas_current_background.isFltNight()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "True",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
+
+image mas_bday_cake_monika = LiveComposite(
+    (1280, 850),
+    (0, 0), MASFilterSwitch("mod_assets/location/spaceroom/bday/monika_birthday_cake.png"),
+    (0, 0), ConditionSwitch(
+        "mas_bday_cake_lit", "mod_assets/location/spaceroom/bday/monika_birthday_cake_lights.png",
+        "True", Null()
+        )
 )
 
-# TODO: export lighting as its own layer
-image mas_bday_cake_player = ConditionSwitch(
-    "mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "mas_bday_cake_lit and mas_current_background.isFltNight()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "True",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+image mas_bday_cake_player = LiveComposite(
+    (1280, 850),
+    (0, 0), MASFilterSwitch("mod_assets/location/spaceroom/bday/player_birthday_cake.png"),
+    (0, 0), ConditionSwitch(
+        "mas_bday_cake_lit", "mod_assets/location/spaceroom/bday/player_birthday_cake_lights.png",
+        "True", Null()
+        )
 )
 
 image mas_bday_banners = MASFilterSwitch(
