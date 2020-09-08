@@ -326,7 +326,7 @@ label mas_mood_tired:
         if persistent._mas_pm_has_work:
             m 2ekd "Do you have work today?"
             m 3eka "If so, you should maybe try to take a shower and splash your face with water."
-            m 1eku "I wouldn't want my [mas_get_player_nickname()] to miss work."
+            m 1eku "I wouldn't want my [mas_get_player_nickname(exclude_names=[player], regex_replace_with_nullstr=' ', _default='sweetheart')] to miss work."
             m 7eka "These mornings happen... I just hope you got enough sleep."
             m 1hub "Now rise and shine, [player], the day is full of opportunities!{w=0.3}{nw}"
             extend 3tub " And me~"
