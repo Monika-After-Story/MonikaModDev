@@ -15681,8 +15681,9 @@ label monika_eating_meat:
     m 4ekd "Take avocados, for example. {w=0.2}Their farms require massive amounts of water, to the point where some companies resort to illegally taking too much water from rivers, leaving little for drinking."
     m 2etc "At that point, is it really a better alternative as far as the environment is concerned? {w=0.3}{nw}"
     extend 4euc "Not to mention, I still want to have a varied and balanced diet."
-    m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc. {w=0.2}Vitamin B12 in particular can only be found in animal products."
-    m 7eka "...So for that reason, I'm not against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally when possible."
+    m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc."
+    m "Granted, there are still some options including supplements, but balancing a vegan diet takes a lot of care and thought."
+    m 7eka "...So for that reason, I'm not personally against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally whenever possible."
     m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
     m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
     extend 3eua "So I'm okay with buying from a plain old store, if need be."
@@ -15694,11 +15695,11 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
-    
+
 # is player an introvert ?
 default persistent._mas_pm_introvert = None
 
-# is player an extrovert ? 
+# is player an extrovert ?
 default persistent._mas_pm_extrovert = None
 
 # is player in-between ?
@@ -15738,7 +15739,7 @@ label monika_introversion_extroversion:
     show monika 2eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 2eud "Some introverts can be more outgoing than others, for example."
     m 2rsc "In other words, some people are closer to a middle ground between the two extremes..."
-    m 3eua "Which is probably where I would fit in, for example." 
+    m 3eua "Which is probably where I would fit in, for example."
     m 1eud "I told you about how I was feeling kind of in-between, while still being a little more extroverted, remember?"
     m 1rud "Speaking of...{w=0.4} When thinking about all this, I realised that while this is an arguably pretty important part of one's personality..."
     m 3rksdla "...I don't actually know where you would fit on that spectrum."
@@ -15758,7 +15759,7 @@ label monika_introversion_extroversion:
             m 4eka "Don't worry, I can totally understand.{w=0.3} And to tell you the truth..."
             show monika 5fubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5fubla "...the idea of spending my evenings staying at home, cuddling with you does sound lovely."
-            m 5ruc "You know, a lot of people seem to think being an introvert means that you must be a shy person. {w=0.3}{nw}" 
+            m 5ruc "You know, a lot of people seem to think being an introvert means that you must be a shy person. {w=0.3}{nw}"
             extend 5wud "But that couldn't be further from the truth!"
             show monika 4euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 4euc "A lot of introverts have no trouble at all interacting with other people."
@@ -15781,7 +15782,7 @@ label monika_introversion_extroversion:
             extend 5ekbsb "but that's just one more reason I'm so happy we're in a couple now."
             m 5hubsa "We'll never truly be alone again."
             m 5eubfb "I'm sure you are a really fun person to be around, [player].{w=0.3} I can't wait to be with you for real~"
-            m 5rkblsdra "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well. {w=0.3}{nw}" 
+            m 5rkblsdra "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well. {w=0.3}{nw}"
             extend 5hksdrb "I hope you don't mind if I'm not always able to keep up, ahaha!"
 
         "I'm somewhat in-between.":
@@ -15813,12 +15814,43 @@ label monika_introversion_extroversion:
             m 4ekb "That's alright, [player].{w=0.4} Things like that aren't always so clear."
             m 4eua "I'm a little like you on that front."
             m 2eka "I know I told you I was more on the extroversion side of things, but I still need a moment of tranquility to relax every once in a while, you know ?"
-            m 2lkd "And I wouldn't say I'm always so comfortable dealing with people, either..." 
+            m 2lkd "And I wouldn't say I'm always so comfortable dealing with people, either..."
             if renpy.seen_label('monika_confidence'):
                 m 2euc "I told you, didn't I ?"
             m 2lksdlc "I often need to force myself to fake confidence just to get through some simple conversations."
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
             5eka "I can definitely say that I feel comfortable just spending time with you, though.{w=0.3} And I really hope it's the same with you."
-            m 5ekb "I'm sure we'll be able to figure out each other's comfort zones over time." 
+            m 5ekb "I'm sure we'll be able to figure out each other's comfort zones over time."
             m 5hublb "In any case, you'll always be my sweetheart, no matter what kind of person you are~"
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_literature_value",
+            category=['literature'],
+            prompt="The value of literature",
+            random=True
+        )
+    )
+
+label monika_literature_value:
+    m 3esd "You know [player], back in the literature club days I often heard people dismiss literature as outdated and useless."
+    m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
+    m 3efc "Like, do they even know what they're talking about?"
+    m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
+    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they are coming from."
+    m 1eud "All of the comforts of our modern lifestyle are based on scientific discovery and innovation."
+    m 3esc "...That and the millions of people manufacturing our everyday necessities, or running basic services like healthcare and stuff."
+    m 3rtsdlc "So does not being associated with any of those things really make you some kind of burden on society?"
+    m 1dsu "As you can imagine, I don't believe that...{w=0.3} {nw}"
+    extend 1eud "If literature was useless, why would it be so repressed in many parts of the world?"
+    m 3eud "Words have power, [player]...{w=0.2}{nw}"
+    extend 3euu "and literature is the art of dancing with words."
+    m 3eua "Like any form of expression, it allows us to connect with each other...{w=0.2}{nw}"
+    extend 3eub "to see how the world looks in each other's eyes!"
+    m 3duu "Literature lets you compare your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
+    m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
+    m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
+    return
