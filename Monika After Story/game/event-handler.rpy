@@ -2446,7 +2446,10 @@ label prompt_menu:
         m 1eua "Oh no, go ahead,{w=0.2} you wanted to talk about something?{w=0.2} {nw}"
         extend 3eksdla "I didn't mean to interrupt you..."
         $ _history_list.pop()
+        $ _history_list.pop()
         menu:
+            m "Oh no, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
+
             m "Oh no, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
 
             "It's alright, go ahead [m_name].":
