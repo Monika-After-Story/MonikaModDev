@@ -2441,53 +2441,56 @@ label call_next_event:
 
 label prompt_menu:
 
-    if store.mas_randchat.rand_chat_waittime_left < 2 and store.mas_randchat.rand_chat_waittime_left > 0:
+    if 0 < store.mas_randchat.rand_chat_waittime_left < 2:
         m 3eud "..."
-        m 1husdlb "Oh no, go ahead, you wanted to talk about something?"
-        m 1lusdlb "I didn't mean to interrupt you..."
+        m 1eua "Oh no, go ahead,{w=0.2} you wanted to talk about something?{w=0.2} {nw}"
+        extend 3eksdla "I didn't mean to interrupt you..."
+        $ _history_list.pop()
         menu:
-            "That's alright, go ahead Monika!":
-                m 1eubla "Ahaha, thank you [player]~"
-                call pick_random_topic
+            m "Oh no, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
+
+            "It's alright, go ahead [m_name].":
+                m 1hua "Ahaha, thank you [player]~"
+                jump pick_random_topic
+
             "Okay, thanks!":
-                jump prompt_menu.local_label
+                show monika idle
 
-    label prompt_menu.local_label:
-        $ mas_RaiseShield_dlg()
+    $ mas_RaiseShield_dlg()
 
-        if store.mas_globals.in_idle_mode:
-            # if talk is hit here, then we retrieve label from mailbox and
-            # call it.
-            # after the event is over, we drop shields return to idle flow
-            $ cb_label = mas_idle_mailbox.get_idle_cb()
+    if store.mas_globals.in_idle_mode:
+        # if talk is hit here, then we retrieve label from mailbox and
+        # call it.
+        # after the event is over, we drop shields return to idle flow
+        $ cb_label = mas_idle_mailbox.get_idle_cb()
 
-            # NOTE: we call the label directly instead of pushing to event stack
-            #   so that if the user quits during the event, we get the appropriate
-            #   greeting instead of the regular reload greeting.
-            #
-            #   This also prevents the end-of-idle label from being saved and
-            #   restored on a relaunch, which would make no sense lol.
+        # NOTE: we call the label directly instead of pushing to event stack
+        #   so that if the user quits during the event, we get the appropriate
+        #   greeting instead of the regular reload greeting.
+        #
+        #   This also prevents the end-of-idle label from being saved and
+        #   restored on a relaunch, which would make no sense lol.
 
-            # only call label if it exists
-            if cb_label is not None:
-                call expression cb_label
+        # only call label if it exists
+        if cb_label is not None:
+            call expression cb_label
 
-            #Show idle exp here so we dissolve like other topics
-            show monika idle with dissolve_monika
+        #Show idle exp here so we dissolve like other topics
+        show monika idle with dissolve_monika
 
-            # clean up idle stuff
-            $ persistent._mas_greeting_type = None
-            $ store.mas_globals.in_idle_mode = False
+        # clean up idle stuff
+        $ persistent._mas_greeting_type = None
+        $ store.mas_globals.in_idle_mode = False
 
-            # this event will cleanup the remaining idle vars
-            $ pushEvent("mas_idle_mode_greeting_cleanup")
-            $ mas_idle_mailbox.send_skipmidloopeval()
+        # this event will cleanup the remaining idle vars
+        $ pushEvent("mas_idle_mode_greeting_cleanup")
+        $ mas_idle_mailbox.send_skipmidloopeval()
 
-            # NOTE: we only need to enable music hotkey since we are in dlg mode
-            #$ mas_DropShield_idle()
-            $ store.mas_hotkeys.music_enabled = True
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
 
-            jump prompt_menu_end
+        jump prompt_menu_end
 
     python:
         #We want to adjust the time of day vars
