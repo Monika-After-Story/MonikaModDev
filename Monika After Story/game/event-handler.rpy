@@ -2449,8 +2449,6 @@ label prompt_menu:
         menu:
             m "Oh no, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
 
-            m "Oh no, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
-
             "It's alright, go ahead [m_name].":
                 m 1hua "Ahaha, thank you [player]~"
                 jump pick_random_topic
