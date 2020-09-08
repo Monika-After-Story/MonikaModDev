@@ -1254,6 +1254,8 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
+        $ tempname = m_name
+        $ m_name = "???"
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
 
@@ -1333,6 +1335,7 @@ label monikaroom_greeting_ear_narration:
     call spaceroom(dissolve_all=True, scene_change=True)
 
     if mas_isMoniNormal(higher=True):
+        $ m_name = tempname
         m 1hub "It's me!"
         m "Welcome back, [mas_get_player_nickname()]!"
 
