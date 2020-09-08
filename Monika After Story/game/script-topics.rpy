@@ -3198,40 +3198,40 @@ label monika_vn:
     m 4hua "We showed them that English visual novels can be kamige too!"
     return
 
-init 5 python:
-    # get folder where all Ren'Py saves are stored by default:
-    base_savedir = os.path.normpath(os.path.dirname(config.savedir))
-    save_folders = os.listdir(base_savedir)
-
-    ks_persistent_path = None
-    ks_folders_present = False
-    detected_ks_folder = None
-    for save_folder in save_folders:
-        if 'katawashoujo' in save_folder.lower():
-            ks_folders_present = True
-            detected_ks_folder = os.path.normpath(
-                os.path.join(base_savedir, save_folder))
-
-            # Look for a persistent file we can access
-            persistent_path = os.path.join(
-                base_savedir, save_folder, 'persistent')
-
-            if os.access(persistent_path, os.R_OK):
-                # Yep, we've got read access.
-                ks_persistent_path = persistent_path
-
-    def map_keys_to_topics(keylist, topic, add_random=True):
-        for key in keylist:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append(topic)
-
-        if add_random:
-            monika_random_topics.append(topic)
-
-    # Add general KS topics:
-    general_ks_keys = ['katawa shoujo', 'ks']
-    if ks_folders_present:
-        map_keys_to_topics(general_ks_keys, 'monika_ks_present')
+#init 5 python:
+#    # get folder where all Ren'Py saves are stored by default:
+#    base_savedir = os.path.normpath(os.path.dirname(config.savedir))
+#    save_folders = os.listdir(base_savedir)
+#
+#    ks_persistent_path = None
+#    ks_folders_present = False
+#    detected_ks_folder = None
+#    for save_folder in save_folders:
+#        if 'katawashoujo' in save_folder.lower():
+#            ks_folders_present = True
+#            detected_ks_folder = os.path.normpath(
+#                os.path.join(base_savedir, save_folder))
+#
+#            # Look for a persistent file we can access
+#            persistent_path = os.path.join(
+#                base_savedir, save_folder, 'persistent')
+#
+#            if os.access(persistent_path, os.R_OK):
+#                # Yep, we've got read access.
+#                ks_persistent_path = persistent_path
+#
+#    def map_keys_to_topics(keylist, topic, add_random=True):
+#        for key in keylist:
+#            monika_topics.setdefault(key,[])
+#            monika_topics[key].append(topic)
+#
+#        if add_random:
+#            monika_random_topics.append(topic)
+#
+#    # Add general KS topics:
+#    general_ks_keys = ['katawa shoujo', 'ks']
+#    if ks_folders_present:
+#        map_keys_to_topics(general_ks_keys, 'monika_ks_present')
 
     # if ks_persistent_path is not None:
     #     # Now read the persistent file from KS:
