@@ -491,6 +491,7 @@ init 5 python:
     )
 
 label bye_prompt_to_work:
+    $ persistent._mas_pm_has_work = None
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
@@ -531,6 +532,7 @@ label bye_prompt_to_work:
         m 6ckc "..."
     # TODO:
     # can monika join u at work
+    $ persistent._mas_pm_has_work = True
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=20)
     return 'quit'
