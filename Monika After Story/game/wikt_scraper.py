@@ -12,7 +12,9 @@ cycles through all words in the letter's list
 	gets wiktionary content for word
 	checks for english subsection
 	checks for flags
-	if page 404s, has no english section, or has flags in it, write into the manual check file'''
+	if page 404s, has no english section, or has flags in it, write into the manual check file
+
+also reconstructs the list without 404s in a separate file'''
 
 def mancheck(check_file,word,reason):
 	"""
@@ -25,12 +27,13 @@ def mancheck(check_file,word,reason):
 	"""
 	line = word + ' ' + reason
 	print(line)
-	check_file.write(line)
+	check_file.write(line+'\n')
 
 def getpage(word):
 	"""
 	IN:
 		word - string, the word to get the page for
+
 	Returns a html thing if corresponding page exists on wiktionary, 0 otherwise
 	"""
 	try:
@@ -70,12 +73,14 @@ else:
 		'Template:superlative_of'
 		]
 	check_file = open('man_check_file_'+letter+'.txt','w')
+	de404_file = open('de404_'+letter+'.txt','w')
 
 	for word in word_list:
 		content = getpage(word)
 		if content == 0:
 			mancheck(check_file = check_file, word = word, reason = "404")
 		else:
+			de404_file.write('\t\t"'+ word + '",\n')
 			soup = BeautifulSoup(content.read(),'html.parser').__str__()
 			if ('<span class="mw-headline" id="English">' not in soup):
 				# no english section
@@ -88,3 +93,4 @@ else:
 						break
 
 check_file.close()
+de404_file.close()
