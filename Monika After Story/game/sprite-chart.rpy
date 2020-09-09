@@ -2225,6 +2225,39 @@ init -3 python:
             #   of highlights
             self.tablechair = MASTableChair("def", "def")
 
+        def __repr__(self):
+            """
+            this is lengthy and will contain all objects
+            """
+            # build ACS strings
+            # this determines order to show ACS in
+            acs_str_map = (
+                ("PRE", self.acs_pre),
+                ("BBH", self.acs_bbh),
+                ("BSE", self.acs_bse),
+                ("BBA", self.acs_bba),
+                ("ASE", self.acs_ase),
+                ("BAT", self.acs_bat),
+                ("MAT", self.acs_mat),
+                ("MAB", self.acs_mab),
+                ("BFH", self.acs_bfh),
+                ("AFH", self.acs_afh),
+                ("MID", self.acs_mid),
+                ("PST", self.acs_pst),
+            )
+            acs_str = [
+                "{0}: {1}".format(pfx, acs_list)
+                for pfx, acs_list in acs_str_map
+                if len(acs_list) > 0
+            ]
+
+            return "<Monika: ({0}, {1}, {2}, {3})>".format(
+                self.clothes,
+                self.hair,
+                ", ".join(acs_str),
+                self.tablechair
+            )
+
         def __get_acs(self, acs_type):
             """
             Returns the accessory list associated with the given type
@@ -3650,6 +3683,12 @@ init -3 python:
                     hl_data[0],
                     hl_data[1]
                 )
+
+        def __repr__(self):
+            return "<TableChair: (table: {0}, chair: {1})>".format(
+                self.table,
+                self.chair
+            )
 
         def prepare(self):
             """
@@ -5582,6 +5621,9 @@ init -3 python:
                 hl_data
             )
 
+        def __repr__(self):
+            return "<ACS: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, poseid):
             """
             Builds highlight load strs for a pose
@@ -5812,6 +5854,9 @@ init -3 python:
             )
 
             self.arm_split = arm_split
+
+        def __repr__(self):
+            return "<SACS: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, poseid, armcode):
             """
@@ -6251,6 +6296,9 @@ init -3 python:
 
             self.split = split
 
+        def __repr__(self):
+            return "<Hair: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds highlight load strs for a split layer
@@ -6522,6 +6570,9 @@ init -3 python:
                 for hair_name in mas_sprites.HAIR_MAP:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
+
+        def __repr__(self):
+            return "<Clothes: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
