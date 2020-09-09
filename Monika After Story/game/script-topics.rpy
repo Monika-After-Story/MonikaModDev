@@ -15733,7 +15733,7 @@ init 5 python:
             category=['you'],
             prompt="I'm no longer working.",
             pool=True,
-            conditional=("persistent._mas_has_work = True"),
+            conditional=("persistent._mas_has_work is True"),
             aff_range=(mas_aff.NORMAL, None)
 
         )
