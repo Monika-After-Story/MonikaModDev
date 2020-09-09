@@ -1785,14 +1785,8 @@ label ch30_reset:
         mas_unlockGame("pong") # always unlock pong
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
-            # try grabbing event if possible
-            game_unlock_ev = mas_getEV(game_startlabel)
-            if game_unlock_ev:
-                if game_unlock_ev.shown_count > 0:
-                    mas_unlockGame(game_name)
-
-            elif renpy.seen_label(game_startlabel):
-                # otherwise, just use label check
+            # unlock if we've seen the label
+            if mas_getEVL_shown_count(game_startlabel) > 0 or renpy.seen_label(game_startlabel):
                 mas_unlockGame(game_name)
 
 
