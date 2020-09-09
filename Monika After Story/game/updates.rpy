@@ -372,6 +372,34 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.11.5
+label v0_11_5(version="v0_11_5"):
+    python:
+        dt_now = datetime.datetime.now()
+
+        # properly unlock game topics if 0.7.1-era topics were seen
+        game_evls = (
+            ("unlock_hangman", "mas_hangman", "mas_unlock_hangman"),
+            ("unlock_chess", "mas_chess", "mas_unlock_chess",),
+            ("unlock_piano", "mas_piano", "mas_unlock_piano"),
+        )
+
+        for old_evl, new_evl, unlock_evl in game_evls:
+            if renpy.seen_label(old_evl):
+                mas_unlockEVL(new_evl, "GME")
+
+                # mark unlock event as shown and cleared
+                unlock_ev = mas_getEV(unlock_evl)
+                if unlock_ev:
+                    unlock_ev.conditional = None
+                    unlock_ev.unlock_date = dt_now
+                    unlock_ev.action = None
+                    unlock_ev.unlocked = False
+                    unlock_ev.shown_count = 1
+
+    return
+
 #0.11.4
 label v0_11_4(version="v0_11_4"):
     python:

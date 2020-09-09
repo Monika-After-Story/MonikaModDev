@@ -1775,8 +1775,6 @@ label ch30_reset:
 
     # check for game unlocks
     python:
-        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
-        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
@@ -1786,7 +1784,10 @@ label ch30_reset:
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
-            if mas_getEVL_shown_count(game_startlabel) > 0 or renpy.seen_label(game_startlabel):
+            if (
+                    mas_getEVL_shown_count(game_startlabel) > 0
+                    or renpy.seen_label(game_startlabel)
+            ):
                 mas_unlockGame(game_name)
 
 
