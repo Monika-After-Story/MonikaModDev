@@ -376,8 +376,6 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.5
 label v0_11_5(version="v0_11_5"):
     python:
-        dt_now = datetime.datetime.now()
-
         # properly unlock game topics if 0.7.1-era topics were seen
         game_evls = (
             ("unlock_hangman", "mas_hangman", "mas_unlock_hangman"),
@@ -394,7 +392,6 @@ label v0_11_5(version="v0_11_5"):
                 if unlock_ev:
                     mas_rmEVL(unlock_evl)
                     unlock_ev.conditional = None
-                    unlock_ev.unlock_date = dt_now
                     unlock_ev.action = None
                     unlock_ev.unlocked = False
                     unlock_ev.shown_count = 1
