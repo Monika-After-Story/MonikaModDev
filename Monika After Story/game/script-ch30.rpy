@@ -1784,10 +1784,7 @@ label ch30_reset:
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
-            if (
-                    mas_getEVL_shown_count(game_startlabel) > 0
-                    or renpy.seen_label(game_startlabel)
-            ):
+            if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)
 
 

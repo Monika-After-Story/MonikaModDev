@@ -392,6 +392,7 @@ label v0_11_5(version="v0_11_5"):
                 # mark unlock event as shown and cleared
                 unlock_ev = mas_getEV(unlock_evl)
                 if unlock_ev:
+                    mas_rmEVL(unlock_evl)
                     unlock_ev.conditional = None
                     unlock_ev.unlock_date = dt_now
                     unlock_ev.action = None
