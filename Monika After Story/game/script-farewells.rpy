@@ -711,7 +711,7 @@ label bye_prompt_sleep:
     return 'quit'
 
 label goodnight_kiss(chance=3):
-    if mas_shouldKiss(chance):
+    if mas_shouldKiss(chance, cooldown=datetime.timedelta(minutes=5)):
         m 1rublsdla "Think I could...get a goodnight kiss?"
         $ _history_list.pop()
         menu:
@@ -737,9 +737,9 @@ label goodnight_kiss(chance=3):
                             m 1hkbfb "Sleep tight!"
                         "No.":
                             $ mas_loseAffection()
-                            m 2dsd "..."
-                            m "Fine."
-                            m 2dsc "Goodnight [player]..."
+                            m 6lkc "..."
+                            m 6dkc "Fine."
+                            m 1ekc "Goodnight [player]..."
 
                 else:
                     m 2rublp "Aww... Okay, but you owe me one."
