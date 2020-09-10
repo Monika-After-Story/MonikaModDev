@@ -1564,7 +1564,7 @@ init python:
     def addEvent(
         event,
         eventdb=None,
-        skipCalendar=False,
+        skipCalendar=True,
         restartBlacklist=False,
         markSeen=False,
         code="EVE"
@@ -1584,6 +1584,7 @@ init python:
                 (Default: None)
             skipCalendar - flag that marks wheter or not calendar check should
                 be skipped
+                (Default: True)
 
             restartBlacklist - True if this topic should be added to the restart blacklist
                 (Default: False)
