@@ -239,7 +239,7 @@ init python:
                     ev.unlocked=False
 
                 #Add the blacklist
-                if "no unlock" in ev.rules:
+                if "no_unlock" in ev.rules:
                     mas_addBlacklistReact(ev_label)
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
@@ -501,8 +501,8 @@ label mas_wrs_youtube:
     $ wrs_success = display_notif(
         m_name,
         [
-            "What are you watching, [player]?",
-            "Watching anything interesting, [player]?"
+            "What are you watching, [mas_get_player_nickname()]?",
+            "Watching anything interesting, [mas_get_player_nickname()]?"
         ],
         'Window Reactions'
     )
@@ -588,7 +588,7 @@ init 5 python:
 
 label mas_wrs_twitter:
     python:
-        temp_line = renpy.substitute("I love you, [player].")
+        temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
         temp_len = len(temp_line)
 
         # quip: is_ily

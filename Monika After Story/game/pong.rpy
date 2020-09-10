@@ -973,8 +973,6 @@ label mas_pong_dlg_loser:
 
         #Extreme
         else:
-            m 2wuo "Wow!"
-            m 2wuw "You beat me three times and I'm giving it all I have!"
             m 2hub "Great job, [player]!"
             m 1kua "Ehehe!"
 
