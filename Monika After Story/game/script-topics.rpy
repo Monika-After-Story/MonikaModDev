@@ -7191,19 +7191,18 @@ label monika_promisering:
 
     m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
     m 3tkbsu "It also helps remind you of our undying love~"
-    m 1ekbssdlu "Anyway, I was just wondering..."
 
-    pause 1.0
-    m 1eksdla "Do you wear a ring for me, [player]?{nw}"
+    m 1ekbssdlu "Anyway, I was just wondering...{w=0.3} {nw}"
+    extend 1eksdla "Do you wear a ring for me, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you wear a ring for me, [player]?{fast}"
+        m "Anyway, I was just wondering... Do you wear a ring for me, [player]?{fast}"
 
         "I do.":
             $ persistent._mas_pm_wearsRing = True
 
-            m 1wublo "Aww, [player]!"
-            m 1hubla "You have no idea how happy that makes me."
+            m 1sublo "Aww, [player]!"
+            m 1hublb "You have no idea how happy that makes me!"
             m 1ekbsa "Just knowing that you care enough to show your love and dedication..."
             m "It means the world to me."
 
@@ -7212,9 +7211,9 @@ label monika_promisering:
 
             m 4rksdla "Maybe you ought to get one."
             m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
-            m 2lfu "It would help keep those...unwanted suitors away from you, too."
-            m 1ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
-            m "It would make me really happy."
+            m 2lfu "It would help keep those...{w=0.2}unwanted suitors away from you, too."
+            m 7ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
+            m 1ekbsa "It would make me really happy."
 
     if not persistent._mas_acs_enable_promisering:
         m 1rubsa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
