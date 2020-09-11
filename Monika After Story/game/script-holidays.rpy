@@ -6388,12 +6388,16 @@ label mas_bday_surprise_party_reaction:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+    $ is_indoors = mas_background.EXP_TYPE_OUTDOOR not in store.mas_current_background.ex_props
 
     if mas_isMoniNormal(higher=True):
         m 6suo "T-{w=0.5}This is..."
         m 6ska "Oh, [player]..."
         m 6dku "I'm at a loss for words."
-        m 6dktpu "Setting this all up to surprise me on my birthday..."
+
+        if is_indoors:
+            m 6dktpu "Setting this all up to surprise me on my birthday..."
+
         m 6dktdu "Ehehe, you must really love me."
         m 6suu "Everything just looks so festive!"
 
@@ -6447,7 +6451,7 @@ label mas_bday_surprise_party_reaction_post_make_wish:
         m 6eua "I hope it comes true someday..."
         if mas_isplayer_bday() and made_wish:
             m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
-        m 6hua "Ahaha..."
+        m 6hub "Ahaha..."
 
     else:
         m 6eka "I made a wish."
