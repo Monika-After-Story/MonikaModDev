@@ -368,7 +368,7 @@ init 5 python:
 label bye_leaving_already_2:
     m 1ekc "Aww, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
-    m 3hubsa "I love you so much [player]!"
+    m 3hubsa "I love you so much, [player]!"
     show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsb "Never forget that!"
     return 'quit'
@@ -1212,7 +1212,7 @@ label bye_prompt_game:
             m 3hksdlb "It's the middle of the night!"
             m 2rksdlc "It's one thing that you're still up this late..."
             m 2rksdld "But you're thinking of playing another game?"
-            m 4tfu "....A game big enough that you can't have me in the background..."
+            m 4tfu "...A game big enough that you can't have me in the background..."
             m 1eka "Well... {w=1}I can't stop you, but I really hope you go to bed soon..."
             m 1hua "Don't worry about coming back to say goodnight to me, you can go-{nw}"
             $ _history_list.pop()

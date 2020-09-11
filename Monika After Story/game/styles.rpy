@@ -277,6 +277,35 @@ style generic_button_text_dark is generic_button_text_base:
     hover_color mas_ui.dark_button_text_hover_color
     insensitive_color mas_ui.dark_button_text_insensitive_color
 
+# fancy checkbox buttons lose the box when selected
+# and the entire frame gets colored
+style generic_fancy_check_button:
+    properties gui.button_properties("check_button")
+    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
+    hover_background Solid("#FFBDE1")
+    selected_background Solid("#FFBDE1")
+
+style generic_fancy_check_button_dark:
+    properties gui.button_properties("check_button_dark")
+    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
+    hover_background Solid("#CE4A7E")
+    selected_background Solid("#CE4A7E")
+
+style generic_fancy_check_button_text is gui_button_text:
+    properties gui.button_text_properties("generic_fancy_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#BFBFBF"
+    hover_color "#000000"
+    selected_color "#000000"
+    outlines []
+
+style generic_fancy_check_button_text_dark is gui_button_text_dark:
+    properties gui.button_text_properties("generic_fancy_check_button_dark")
+    font "gui/font/Halogen.ttf"
+    color "#BFBFBF"
+    hover_color "#FFAA99"
+    selected_color "#FFAA99"
+    outlines []
 
 # START: image definitions
 image menu_bg:

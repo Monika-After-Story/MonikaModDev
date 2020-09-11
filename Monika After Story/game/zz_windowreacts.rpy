@@ -239,7 +239,7 @@ init python:
                     ev.unlocked=False
 
                 #Add the blacklist
-                if "no unlock" in ev.rules:
+                if "no_unlock" in ev.rules:
                     mas_addBlacklistReact(ev_label)
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):

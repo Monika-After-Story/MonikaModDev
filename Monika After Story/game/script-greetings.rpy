@@ -978,7 +978,9 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
+
+    if mas_isMoniHappy(lower=True):
+        m 1lkbsa "Oh gosh...that was kinda embarrassing, ehehe~"
     return
 
 init 5 python:
@@ -1252,8 +1254,11 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
+        $ tempname = m_name
+        $ m_name = "???"
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+        $ m_name = tempname
 
     elif mas_isMoniUpset():
         m "Oh, so for once you're actually going to listen?"
@@ -1881,7 +1886,7 @@ label monikaroom_greeting_cleanup:
         mas_disable_quit()
 
         # 2 - music is renabled
-        mas_MUMUDropShield()
+        mas_MUINDropShield()
 
         # 3 - keymaps should be set
         set_keymaps()
@@ -2027,6 +2032,7 @@ label greeting_hai_domo:
     m "Virtual girlfriend, Monika here!"
     m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1eua "I have to say, she's rather charming..."
+    $ mas_lockEVL("greeting_hai_domo", "GRE")
     return
 
 #TODO needs additional dialogue so can be used for all aff
@@ -2634,8 +2640,8 @@ label greeting_hairdown:
     $ mas_lockEVL("greeting_hairdown", "GRE")
 
     # cleanup
-    # enable music menu
-    $ mas_MUMUDropShield()
+    # enable music menu and music hotkeys
+    $ mas_MUINDropShield()
 
     # 3 - set the keymaps
     $ set_keymaps()
@@ -3073,7 +3079,7 @@ label greeting_back_from_work:
             m 2dsc "You're just there trying your best, and somehow it's not good enough for someone..."
             m 2eka "If it's still really bothering you, I think it would do you some good to try and relax a little."
             m 3eka "Maybe talking about something else or even playing a game will help get your mind off of it."
-            m 1hua "I'm sure you'll feel better after we spend some together."
+            m 1hua "I'm sure you'll feel better after we spend some time together."
             return
 
         label .passed_over:
@@ -3285,14 +3291,20 @@ label greeting_ourreality:
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
-    m 3hksdrb "Just give me a second to get it ready..."
-    m 1dsc "..."
-    m 1dsd "Almost done..."
+    if persistent._mas_current_background != "spaceroom":
+        m 4eub "...But we need to go back to the spaceroom for the best view."
+        m 1hua "Let's head over, [player]."
+        call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
+        m 1eua "Here we are!"
+        m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    else:
+        m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
     m 1hua "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
-    m 4eub "Would you kindly look out the window, [player]"
+    m 4eub "Would you kindly look out the window, [player]?"
     $ mas_OVLHide()
     $ disable_esc()
     if mas_current_background.isFltDay():

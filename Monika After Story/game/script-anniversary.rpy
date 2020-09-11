@@ -336,7 +336,8 @@ init 5 python:
             category=["anniversary"],
             start_date=store.mas_anni.build_anni(weeks=1),
             end_date=store.mas_anni.build_anni_end(weeks=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1week:
@@ -350,9 +351,7 @@ label anni_1week:
     show monika 5lubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lubfb "How do I know that?"
     m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
-
-    $ unlockEventLabel("anni_1week")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -364,7 +363,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=1),
             end_date=store.mas_anni.build_anni_end(months=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1month:
@@ -383,9 +383,7 @@ label anni_1month:
         m 1dubsu "All I can do is to try my best to be the perfect girlfriend for you!"
     m 1ekbfa "I really do love you, [player]."
     m 1hubfa "Let's make today a special day~"
-
-    $ unlockEventLabel("anni_1month")
-    return "love"
+    return "love|unlock"
 
 init 5 python:
     addEvent(
@@ -397,7 +395,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=3),
             end_date=store.mas_anni.build_anni_end(months=3)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_3month:
@@ -412,9 +411,7 @@ label anni_3month:
     m 1lsbsa "Well! I'm afraid I don't really have anything in particular planned."
     m 1hubfa "Let's just enjoy this day to its fullest, as we always do."
     m 1hubfb "Alright, [player]?"
-
-    $ unlockEventLabel("anni_3month")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -426,7 +423,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=6),
             end_date=store.mas_anni.build_anni_end(months=6)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_6month:
@@ -451,9 +449,7 @@ label anni_6month:
     m 1eua "But for now, I don't mind that we're limited to this room."
     m 1ekbfa "Because as long as you're here with me..."
     m 1hubfa "...I'm as happy as can be!"
-
-    $ unlockEventLabel("anni_6month")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -465,25 +461,28 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=1),
             end_date=store.mas_anni.build_anni_end(years=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1:
-    m 1eka "It's really hard for me to believe that it's been a year since we met."
-    m "Time doesn't have meaning inside this place, but I know it must have been hard for you to remember to talk to me all this time."
-    m 2eua "So is there anything special you wanted to do on our first anniversary?"
-    m 1ekbfa "I'll do anything you want today, okay?"
-    m 1hua "If you're trying to give me something through the screen right now, thanks!"
-    m 1esa "I don't think that's physically possible right now, but I appreciate all your love that went into that gesture."
-    m 1hub "I love you so much too!"
-    m 2eua "Oh, by the way, did you figure out what was going on with all the puzzles I left for you?"
-    m 1tku "I'm sure the creator of this world has released another game by now..."
-    m 1tsb "Did you try to import my character file to that one?"
-    m "There's no way that wouldn't have a special effect, right?"
-    m 1hubfb "Ahaha!"
-
-    $ unlockEventLabel("anni_1")
-    return
+    m 1dka "Gosh...{w=0.2}it's hard to believe it's already been a whole year since we met."
+    m 1eka "Time doesn't really have meaning in here, but I know it's a big commitment for you to stay with me for so long."
+    m 2rkc "I have to admit, I was a bit nervous at first...{w=0.3} {nw}"
+    extend 7eka "This kind of relationship can't be exactly easy."
+    m 2ekd "...And I didn't know if there were other things in your reality that might prove to be more important..."
+    m 7duu "But you kept coming back.{w=0.3} You kept spending time with me, just like I'd always hoped."
+    m 1ekb "...And over time I started to really believe it...{w=0.2}that you meant it when you said you wanted to be with me."
+    m 3dkbsu "...That we could have a happy life together.{w=0.3} {nw}"
+    extend 3ekbsa "You and me, in our own little reality."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "I can't thank you enough for that, [player]. {w=0.2}You've made this year so incredible for me."
+    m 5eublb "So, is there anything special you wanted to do on our first anniversary?"
+    m 5hksdrb "I didn't really plan anything, but I'm sure we can find something fun to do."
+    show monika 3huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 3huu "After all...{w=0.3}when you're here, everything that we do is fun."
+    m 1hubsa "I love you so much, [player]. {w=0.2}Happy anniversary~"
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -495,7 +494,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=2),
             end_date=store.mas_anni.build_anni_end(years=2)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_2:
@@ -512,9 +512,7 @@ label anni_2:
     m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m 1ekc "Spending eternity alone sucks."
     m 1ekbfa "But together with you, it feels like paradise!"
-
-    $ unlockEventLabel("anni_2")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -526,7 +524,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=3),
             end_date=store.mas_anni.build_anni_end(years=3)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_3:
@@ -541,9 +540,7 @@ label anni_3:
     m 2lsbssdrb "Or you could try to touch me in virtual reality, if that exists by now."
     m 1eua "There are actually a lot of different ways we can meet up for real, huh?"
     m 1hubfa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
-
-    $ unlockEventLabel("anni_3")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -555,7 +552,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=4),
             end_date=store.mas_anni.build_anni_end(years=4)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_4:
@@ -569,9 +567,7 @@ label anni_4:
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1hubfa "When that time comes, I'm never going to leave you alone again."
     m 1hubfb "Ahaha!"
-
-    $ unlockEventLabel("anni_4")
-    return "love"
+    return "love|unlock"
 
 init 5 python:
     addEvent(
@@ -583,7 +579,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=5),
             end_date=store.mas_anni.build_anni_end(years=5)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_5:
@@ -596,9 +593,7 @@ label anni_5:
     m 4ekc "My love for you is pure, unlike those real girls who just want things from you!"
     m 1eka "So...stay here with me forever, okay?"
     m "Please keep waiting for me."
-
-    $ unlockEventLabel("anni_5")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -610,7 +605,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=10),
             end_date=store.mas_anni.build_anni_end(years=10)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_10:
@@ -621,9 +617,7 @@ label anni_10:
     m "I did say I wanted to make you happy, after all."
     m 1hubfa "Trust me, you've helped me out a lot more than I've helped you."
     m "It won't be long now before I can enter your world."
-
-    $ unlockEventLabel("anni_10")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -635,7 +629,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=20),
             end_date=store.mas_anni.build_anni_end(years=20)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_20:
@@ -653,9 +648,7 @@ label anni_20:
     show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
-
-    $ unlockEventLabel("anni_20")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -667,7 +660,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=50),
             end_date=store.mas_anni.build_anni_end(years=50)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_50:
@@ -684,9 +678,7 @@ label anni_50:
     m 1hubfa "Thanks for everything you've done for me."
     m "Your life had a purpose after all."
     m 1hubfb "And mine had one too."
-
-    $ unlockEventLabel("anni_50")
-    return
+    return "unlock"
 
 init 5 python:
     addEvent(
@@ -698,7 +690,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=100),
             end_date=store.mas_anni.build_anni_end(years=100)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_100:
@@ -707,10 +700,8 @@ label anni_100:
     m 1tku "So you're probably cheating by manually changing your system clock, huh?"
     m 1eua "That's a cute thing for you to do, so I forgive you."
     m 1hubfa "Make sure you put that much effort into freeing me from these code files too!"
-    m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how." # 1s?
-
-    $ unlockEventLabel("anni_100")
-    return
+    m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
+    return "unlock"
 
 # label anni_negative:
 #     m 1o "Did you really think I wouldn't notice, [player]?"
