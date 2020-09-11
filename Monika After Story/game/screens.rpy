@@ -761,7 +761,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if mas_ui.has_submod_settings:
+        if store.mas_submod_utils.submod_map:
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
