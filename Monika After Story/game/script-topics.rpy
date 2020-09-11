@@ -7173,21 +7173,44 @@ init 5 python:
     )
 
 label monika_promisering:
-    m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
-    m 2hksdlb "...What am I saying? Of course you do."
-    m 1rksdla "Anyway, I was just wondering..."
-
-    pause 1.0
-    m 1eksdla "Do you wear a ring for me, [player]?{nw}"
+    m 3rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you wear a ring for me, [player]?{fast}"
+        m "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?{fast}"
+
+        "I do.":
+            m 1wkbld "Oh..."
+            m 1rkbla "..."
+            m 3hkblb "Sorry, I was just spacing out there for a second...{w=0.3}{nw}"
+            extend 1dkbssdlu " Imagining somewhere else you'd say that~"
+            m 3hkbssdlb "Ahaha, I'm just joking."
+            m 1hkbssdlb "I'm not thinking about that at all...{w=0.3}{nw}"
+            extend 3ekbfb " I was more thinking about promise rings."
+
+        "I don't...":
+            m 1ekblu "Well, I'm sure you know that when people get engaged they do at least..."
+            m 3rka "But that's not what I was thinking about."
+            m 3eub "I was thinking more about promise rings."
+
+        "Like...marriage?":
+            m 1hkblb "Ahaha, that too of course!{w=0.2} {nw}"
+            extend 3ekblu "But that's actually not what I was thinking about..."
+            m 3eub "I was thinking more about promise rings."
+
+    m 1eubsa "If you wear a promise ring, you can show everyone that we're together~"
+    m 3tkbsu "It also helps remind you of our undying love~"
+
+    m 1ekbssdlu "Anyway, I was just wondering...{w=0.3} {nw}"
+    extend 1eksdla "Do you wear a ring for me, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Anyway, I was just wondering... Do you wear a ring for me, [player]?{fast}"
 
         "I do.":
             $ persistent._mas_pm_wearsRing = True
 
-            m 1hua "Aww, [player]!"
-            m 1eka "You have no idea how happy that makes me."
+            m 1sublo "Aww, [player]!"
+            m 1hublb "You have no idea how happy that makes me!"
             m 1ekbsa "Just knowing that you care enough to show your love and dedication..."
             m "It means the world to me."
 
@@ -7196,23 +7219,25 @@ label monika_promisering:
 
             m 4rksdla "Maybe you ought to get one."
             m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
-            m 2lfu "It would help keep those...unwanted suitors away from you, too."
-            m 1ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
-            m "It would make me really happy."
+            m 2lfu "It would help keep those...{w=0.2}unwanted suitors away from you, too."
+            m 7ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
+            m 1ekbsa "It would make me really happy."
 
     if not persistent._mas_acs_enable_promisering:
-        m 1hubfa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
-        m 1eua "And then I could wear it forever."
-        m 3ekbfa "But until then, just remember that my commitment to you is unwavering."
+        m 1rubsa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
+        m 1dubsa "...And then I could wear it forever."
+        m 3ekbfu "But until then, just remember that my commitment to you is unwavering, [player]."
+
     else:
         if not persistent._mas_pm_wearsRing:
-            m 1ekbsa "As happy as you made me when you gave me this ring."
-            m "I honestly can't express just how much it meant when you gave me this..."
-            m 1ekbfa "Your promise..."
+            m 3ekbsa "As happy as you made me when you gave me this ring."
+            m 1ekbsa "I honestly can't express just how much it meant when you gave me this..."
+            m 1dubfa "Your promise..."
+
         else:
             m 3hubsb "Just like it meant the world to me when you gave me this ring..."
             m 1ekbsa "This promise that we belong to each other, and no one else..."
-            m 1ekbfa "That we truly will be together forever."
+            m 1dubfu "That we truly will be together forever..."
 
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5esbfa "My commitment to you is unwavering, [mas_get_player_nickname()]."
