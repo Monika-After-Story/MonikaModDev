@@ -11780,6 +11780,7 @@ label monika_vehicle_other:
 
 ##### PM Vars for player appearance
 default persistent._mas_pm_eye_color = None
+default persistent._mas_pm_has_heterochromia = None
 default persistent._mas_pm_hair_color = None
 default persistent._mas_pm_hair_length = None
 default persistent._mas_pm_skin_tone = None
@@ -11855,6 +11856,7 @@ label monika_player_appearance:
 
                 "I have blue eyes.":
                     $ persistent._mas_pm_eye_color = "blue"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
                     m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
@@ -11868,6 +11870,7 @@ label monika_player_appearance:
 
                 "I have brown eyes.":
                     $ persistent._mas_pm_eye_color = "brown"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
                     m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
@@ -11882,6 +11885,7 @@ label monika_player_appearance:
 
                 "I have green eyes.":
                     $ persistent._mas_pm_eye_color = "green"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
                     m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
@@ -11895,6 +11899,7 @@ label monika_player_appearance:
 
                 "I have hazel eyes.":
                     $ persistent._mas_pm_eye_color = "hazel"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
                     m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
@@ -11904,6 +11909,7 @@ label monika_player_appearance:
 
                 "I have gray eyes.":
                     $ persistent._mas_pm_eye_color = "gray"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 1sub "That's so cool!"
                     m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
@@ -11916,6 +11922,7 @@ label monika_player_appearance:
 
                 "I have black eyes.":
                     $ persistent._mas_pm_eye_color = "black"
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 1esd "Black eyes are pretty uncommon, [player]."
                     m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
@@ -11929,11 +11936,19 @@ label monika_player_appearance:
 
                 "My eyes are another color.":
                     $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+                    $ persistent._mas_pm_has_heterochromia = False
 
                     m 3hub "Oh! That's a beautiful color, [player]!"
                     m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
                     m 3hua "Now, onto my next question--"
 
+                "I have heterochromia.":
+                    $ persistent._mas_pm_has_heterochromia = True
+
+                    m "Really? You're so special, [player]!"
+                    m "If I recall correctly, less than one percent of people in world have this curious feature..."
+                    m "...So you must be really rare, ehehe~"
+                    m "Let's get to my next question--"
 
             m 3rud "Actually..."
             m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question..."
