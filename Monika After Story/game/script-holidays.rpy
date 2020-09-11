@@ -6101,7 +6101,8 @@ init -1 python:
         """
         if cake:
             renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
-        renpy.show("mas_bday_banners", zorder=7)
+        if store.mas_is_indoors:
+            renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
 
@@ -6388,14 +6389,13 @@ label mas_bday_surprise_party_reaction:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
-    $ is_indoors = mas_background.EXP_TYPE_OUTDOOR not in store.mas_current_background.ex_props
 
     if mas_isMoniNormal(higher=True):
         m 6suo "T-{w=0.5}This is..."
         m 6ska "Oh, [player]..."
         m 6dku "I'm at a loss for words."
 
-        if is_indoors:
+        if store.mas_is_indoors:
             m 6dktpu "Setting this all up to surprise me on my birthday..."
 
         m 6dktdu "Ehehe, you must really love me."

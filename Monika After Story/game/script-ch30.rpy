@@ -872,10 +872,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
-    $ is_outdoor = mas_background.EXP_TYPE_OUTDOOR in store.mas_current_background.ex_props
-
     #Monibday stuff
-    if persistent._mas_bday_visuals and not is_outdoor:
+    if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
@@ -890,7 +888,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # ----------- end date-based events
 
     # player bday
-    if persistent._mas_player_bday_decor and not is_outdoor:
+    if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
     if datetime.date.today() == persistent._date_last_given_roses:

@@ -2542,6 +2542,8 @@ init 800 python:
             mas_current_background.exit(new_background, **kwargs)
             mas_setBackground(new_background, **kwargs)
 
+        store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
+
     def mas_startupBackground():
         """
         Sets up the spaceroom to start up in the background you left in if it is unlocked and still exists
