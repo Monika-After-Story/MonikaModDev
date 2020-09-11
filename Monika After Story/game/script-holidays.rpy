@@ -6259,8 +6259,9 @@ P.S: Don't tell her about me.
     if mas_isMoniNormal(higher=True):
         m 1eud "Hey, [player]..."
         m 3euc "Someone left a note in the characters folder addressed to you."
-        #show chibi, she's just written the letter
-        show chibi_peek with moveinleft
+        if mas_current_background == mas_background_def:
+            #show chibi, she's just written the letter
+            show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
         m 1tuu "{cps=*2}Hmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
