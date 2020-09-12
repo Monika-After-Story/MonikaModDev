@@ -15756,23 +15756,34 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_renewable_energy",
             category=['technology'],
-            prompt="Renewable Energy",
+            prompt="Renewable energy",
             random=True
         )
     )
 
 label monika_renewable_energy:
     m 4eub "What do you think about renewable energy, [player]?"
-    m 4eud "Honestly, I care about it a lot."
+    m 4eud "It's a complicated subject; we talked about it a lot in the Debate Club."
     m 7rsd "As humanity's reliance on technology grows, so too does its demand for energy."
-    m 1esd "That's fine on its own, but then fossil fuels come in."
-    m 1ekc "Currently, a signifigant percentage of energy is produced from burning fossil fuels."
-    m 2ekc "Part of the problem is that renewable energy isn't without its drawbacks."
-    m 3ekc "Take hydropower, for example."
-    m 5lkc "Hydropower is flexible, efficient, and hardly produces any carbon dioxide, but it can also severely affect the local area."
-    m 5tkd "Ecosystems are disrupted, entire communities need to be relocated, and some resevoirs even produce methane."
-    m 5ekp "It can be tricky, balancing the needs of society with the environment."
-    m 5euu "Still, there's been a lot of progress in the past few years."
-    m 2eub "So as scary as climate change can be, I think that things will get better." 
-    m 7ksu "Just keep an eye on the world for me, okay? Ehehe~"
+    m 1esc "Currently, a signifigant percentage of energy worldwide is produced by burning fossil fuels."
+    m 3esc "Fossil fuels are incredibly efficient, time-tested, and have widespread infrastructure, but they're also non-renewable and emmission-heavy."
+    m 3euc "Mining and drilling for fossil fuels results in air and water pollution, and oil spills devestate ocean life."
+    m 2euc "So why haven't we swapped away from fossil fuels if they're so unsustainable?"
+    m 2esc "One problem is that renewable energy is a developing industry with its own drawbacks."
+    m 3lkc "For instance, Hydropower is flexible and cost efficient, but it can also harm the local ecosystem."
+    m 3tkd "Ecosystems are disrupted, entire communities need to be relocated, and some larger resevoirs even produce methane."
+    m 2esc "Solar and wind can be effective, but they're both weather and climate reliant and take up a lot of space."
+    m 1rksdrb "Nuclear is...well, let's just say that it's a topic of its own
+    show monika 5ekp at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekp "The point is that while fossil fuels do hurt the environment, renewable energy struggles with issues of its own."  
+    m 5eut "So what do I think?"
+    m 5eua "Well, there's been a lot of progress in the past few decades."
+     show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 3eua "Dams are regulated better, wind turbines are quieter, and the efficiency of solar power has skyrocketed."
+    m 3esu "There are new technologies on the horizon such as tidal power, wave power, and even nuclear fusion."
+    m 2esu "Biomass is an option as well as a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
+    m 2eub "Sure, there's still a long way to go to optimize renewable energy, but it's certainly a lot better than it was thirty years ago." 
+    m 7hsu "Because of that, I think that renewable energy has a bright future, even if the path to that future is a bit bumpy."
+    m 3rssdrb "Sorry, I got carried away there."
+    m 1tsb "Debates sure are something, huh? Ehehe~"
     return
