@@ -2130,6 +2130,22 @@ init -3 python:
             ASE_ACS,
         )
 
+        # rec layers in standard render order
+        RENDER_ORDER = (
+            PRE_ACS,
+            BBH_ACS,
+            BSE_ACS,
+            BBA_ACS,
+            ASE_ACS,
+            BAT_ACS,
+            MAT_ACS,
+            MAB_ACS,
+            BFH_ACS,
+            AFH_ACS,
+            MID_ACS,
+            PST_ACS,
+        )
+
         def __init__(self):
             """
             Constructor
@@ -2147,58 +2163,43 @@ init -3 python:
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
 
-            # accesories to be rendereed before anything
-            self.acs_pre = []
-
-            # accessories to be rendered after back hair, before body
-            self.acs_bbh = []
-
-            # accessories to be rendered after base body, before body clothes
-            self.acs_bse = []
-
-            # accessories to be rendered after body, before back arms
-            self.acs_bba = []
-
-            # accessories to be rendered after base arms, before arm clothes
-            self.acs_ase = []
-
-            # accessories to be rendered after back arms, before table
-            self.acs_bat = []
-
-            # accessories to be rendered after table, before middle arms
-            self.acs_mat = []
-
-            # accessories to be rendered after middle arms before boobs
-            self.acs_mab = []
-
-            # accessories to be rendered after boobs, before front hair
-            self.acs_bfh = []
-
-            # accessories to be rendered after fornt hair, before face
-            self.acs_afh = []
-
-            # accessories to be rendered after face, before front arms
-            self.acs_mid = []
-
-            # accessories to be rendered last
-            self.acs_pst = []
-
-            self.hair_hue=0 # hair color?
-
             # setup acs dict
             self.acs = {
-                self.PRE_ACS: self.acs_pre,
-                self.MID_ACS: self.acs_mid,
-                self.PST_ACS: self.acs_pst,
-                self.BBH_ACS: self.acs_bbh,
-                self.BFH_ACS: self.acs_bfh,
-                self.AFH_ACS: self.acs_afh,
-                self.BBA_ACS: self.acs_bba,
-                self.MAB_ACS: self.acs_mab,
-                self.BSE_ACS: self.acs_bse,
-                self.ASE_ACS: self.acs_ase,
-                self.BAT_ACS: self.acs_bat,
-                self.MAT_ACS: self.acs_mat,
+                # accesories to be rendereed before anything
+                self.PRE_ACS: [],
+
+                # accessories to be rendered after back hair, before body
+                self.BBH_ACS: [],
+
+                # accessories to be rendered after base body, before body clothes
+                self.BSE_ACS: [],
+
+                # accessories to be rendered after body, before back arms
+                self.BBA_ACS: [],
+
+                # accessories to be rendered after base arms, before arm clothes
+                self.ASE_ACS: [],
+
+                # accessories to be rendered after back arms, before table
+                self.BAT_ACS: [],
+
+                # accessories to be rendered after table, before middle arms
+                self.MAT_ACS: [],
+
+                # accessories to be rendered after middle arms before boobs
+                self.MAB_ACS: [],
+
+                # accessories to be rendered after boobs, before front hair
+                self.BFH_ACS: [],
+
+                # accessories to be rendered after fornt hair, before face
+                self.AFH_ACS: [],
+
+                # accessories to be rendered after face, before front arms
+                self.MID_ACS: [],
+
+                # accessories to be rendered last
+                self.PST_ACS: [],
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -2232,24 +2233,25 @@ init -3 python:
             # build ACS strings
             # this determines order to show ACS in
             acs_str_map = (
-                ("PRE", self.acs_pre),
-                ("BBH", self.acs_bbh),
-                ("BSE", self.acs_bse),
-                ("BBA", self.acs_bba),
-                ("ASE", self.acs_ase),
-                ("BAT", self.acs_bat),
-                ("MAT", self.acs_mat),
-                ("MAB", self.acs_mab),
-                ("BFH", self.acs_bfh),
-                ("AFH", self.acs_afh),
-                ("MID", self.acs_mid),
-                ("PST", self.acs_pst),
+                "PRE",
+                "BBH",
+                "BSE",
+                "BBA",
+                "ASE",
+                "BAT",
+                "MAT",
+                "MAB",
+                "BFH",
+                "AFH",
+                "MID",
+                "PST",
             )
-            acs_str = [
-                "{0}: {1}".format(pfx, acs_list)
-                for pfx, acs_list in acs_str_map
-                if len(acs_list) > 0
-            ]
+            acs_str = []
+            for idx, pfx in enumerate(acs_str_map):
+                rec_layer = self.RENDER_ORDER[idx]
+                acs_list = self.__get_acs(rec_layer)
+                if len(acs_list) > 0:
+                    acs_str.append("{0}: {1}".format(pfx, acs_list))
 
             return "<Monika: ({0}, {1}, {2}, {3})>".format(
                 self.clothes,
@@ -2460,18 +2462,19 @@ init -3 python:
             return True
 
         def _load(self,
+                # NOTE: this is in REC_LAYER order
                 _clothes_name,
                 _hair_name,
                 _acs_pre_names,
                 _acs_bbh_names,
-                _acs_bse_names,
-                _acs_bba_names,
-                _acs_ase_names,
-                _acs_mab_names,
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
                 _acs_pst_names,
+                _acs_bba_names,
+                _acs_mab_names,
+                _acs_bse_names,
+                _acs_ase_names,
                 _acs_bat_names,
                 _acs_mat_names,
                 startup=False
@@ -2486,14 +2489,14 @@ init -3 python:
                 _hair_name - name of hair to load
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
-                _acs_bse_names - list of bse acs names to load
-                _acs_bba_names - list of bba acs names to load
-                _acs_ase_names - list of ase acs names to load
-                _acs_mab_names - list of mab acs names to load
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
-                _acs_pst_names - list of pst acs names to load,
+                _acs_pst_names - list of pst acs names to load
+                _acs_bba_names - list of bba acs names to load
+                _acs_mab_names - list of mab acs names to load
+                _acs_bse_names - list of bse acs names to load
+                _acs_ase_names - list of ase acs names to load
                 _acs_bat_names - list of bat acs names to load
                 _acs_mat_names - list of mat acs names to load
                 startup - True if we are loading on start, False if not
@@ -2507,6 +2510,7 @@ init -3 python:
             )
 
             # acs
+            # NOTE: this is in render layer order
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
             self._load_acs(_acs_bse_names, self.BSE_ACS)
@@ -3046,14 +3050,14 @@ init -3 python:
                 store.persistent._mas_monika_hair,
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
-                store.persistent._mas_acs_bse_list,
-                store.persistent._mas_acs_bba_list,
-                store.persistent._mas_acs_ase_list,
-                store.persistent._mas_acs_mab_list,
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
                 store.persistent._mas_acs_pst_list,
+                store.persistent._mas_acs_bba_list,
+                store.persistent._mas_acs_mab_list,
+                store.persistent._mas_acs_bse_list,
+                store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bat_list,
                 store.persistent._mas_acs_mat_list,
                 startup=startup
@@ -3095,8 +3099,8 @@ init -3 python:
             self.change_outfit(_data[0], _data[1])
 
             # acs
-            for index in range(len(self.REC_LAYERS)):
-                self._load_acs_obj(_data[index+2], self.REC_LAYERS[index])
+            for index, rec_layer in enumerate(self.REC_LAYERS):
+                self._load_acs_obj(_data[index+2], rec_layer)
 
         def reset_all(self, by_user=None):
             """
