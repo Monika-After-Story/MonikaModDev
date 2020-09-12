@@ -1526,15 +1526,7 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.day == 30
         ):
             # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
-            if not mhs_922.isFuture(dt_now):
-                # the mhs was JUSt triggered, and is either currently active
-                # or happened in the past.
-                # in this case, we should always set to next year
-                trigger_year = dt_now.year + 1
-            else:
-                trigger_year = dt_now.year
-
-            mhs_922.setTrigger(datetime.datetime(trigger_year, 1, 6))
+            mhs_922.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
             # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
 
             mhs_922.use_year_before = True
@@ -1566,15 +1558,7 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.day == 2
         ):
             # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
-            if not mhs_o31.isFuture(dt_now):
-                # the mhs was JUSt triggered, and is either currently active
-                # or happened in the past.
-                # in this case, we should always set to next year
-                trigger_year = dt_now.year + 1
-            else:
-                trigger_year = dt_now.year
-
-            mhs_o31.setTrigger(datetime.datetime(trigger_year, 1, 6))
+            mhs_o31.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
             # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
 
             mhs_o31.use_year_before = True
