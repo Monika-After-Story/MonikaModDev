@@ -12189,7 +12189,10 @@ label monika_player_appearance:
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
                         m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
                         m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
-                        m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
+                        if not persistent._mas_pm_has_heterochromia:
+                            m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
+                        else:
+                            m 3hua "But anyway...I think that a [guy] with black hair and eyes like yours is the best sight of all, [player]~"
 
                     "It's red.":
                         $ persistent._mas_pm_hair_color = "red"
@@ -12282,7 +12285,10 @@ label monika_player_appearance:
 
             show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you're real."
-            m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+            if not persistent._mas_pm_has_heterochromia:
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+            else:
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful eyes, [player]."
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I love you more than words could ever say."
