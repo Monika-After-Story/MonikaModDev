@@ -15773,7 +15773,7 @@ label monika_renewable_energy:
     m 3lkc "For instance, Hydropower is flexible and cost efficient, but it can harm the local ecosystem."
     m 3tkd "Ecosystems are disrupted, entire communities need to be relocated, and some larger reservoirs even produce methane."
     m 2esc "Solar and wind can be effective, but they're heavily dependent on the climate and weather."
-    m 1rksdrb "Nuclear is...well, let's just say that Nuclear is a topic of its own."
+    m 1rksdrb "Nuclear is...well, let's just say that nuclear is a topic of its own."
     show monika 5ekp at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekp "The point is that while fossil fuels do hurt the environment, renewable energy isn't a perfect solution either."  
     m 5eut "So what do I think?"
