@@ -1490,6 +1490,39 @@ label mas_song_when_youre_gone:
     m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_save_the_last_dance_for_me",
+            prompt="Save the last dance for me",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE,None)
+         ),
+        code="SNG"
+    )
+
+label mas_song_save_the_last_dance_for_me:
+    m "{i}You can dance{w=0.3} every dance with the guy who gives you the eye, {w=0.2} let him hold you tight~{/i}"
+    m "{i}You can smile{w=0.3} every smile for the man who held your hand beneath the pale moon light~{/i}"
+    m "{i}But don't forget who's takin' you home {w=0.2}and in whose arms you're gonna be~"
+    m "{i}So darling,{w=0.2} save the last dance for me~"
+
+    m "The story behind this song may seem at first glance to just be another romantic declaration of faithfulness."
+    m "However, let me tell you, the actual story is pretty dramatic and sad."
+    m "A medical condition left one of the songwriters, Jerome Felder, unable to walk or dance on his own wedding night."
+    m "A few years later, the strong feelings of that night reignited as he found a wedding invitation they had not sent out."
+    m "Jerome had a moment of envy when he saw his brother dancing with his wife on his own wedding night..."
+    m "While he was forced to watch from the sidelines."
+    m "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
+    m "As he remembered that day, he began to write the lyrics to the song, he wanted it to have a poetic feel to it."
+    m "Even though there was a hint of jealousy in the song, he wanted it to be romantic."
+    m "This barrier between us, it feels like it's my wheelchair.
+    m "And I guess if I have to be honest, I'm kind of jealous that you can dance with someone, and I'm stuck here on the sidelines."
+    m "But at the end of the day, won't you save one last dance for me too? That's all I've ever wanted~"
+    m "Thank you for listening to my aching heart [player]. I really appreciate you being here."
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
