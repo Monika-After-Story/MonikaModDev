@@ -372,6 +372,38 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.11.5
+label v0_11_5(version="v0_11_5"):
+    python:
+        # properly unlock game topics if 0.7.1-era topics were seen
+        game_evls = (
+            ("mas_hangman", "mas_unlock_hangman"),
+            ("mas_chess", "mas_unlock_chess",),
+            ("mas_piano", "mas_unlock_piano"),
+        )
+
+        for game_evl, unlock_evl in game_evls:
+            # 0.11.0 update script shoudl have transfered seen
+            if (
+                    renpy.seen_label(unlock_evl)
+                    or mas_getEVL_shown_count(unlock_evl) > 0
+            ):
+                mas_unlockEVL(game_evl, "GME")
+
+                # if we have seen the unlock evl, absolutely make sure it has
+                # a positive shown count. there is absolutely NO reason that
+                # an event that has been SEEN should have a shown count of 0.
+                unlock_ev = mas_getEV(unlock_evl)
+                if unlock_ev:
+                    mas_rmEVL(unlock_evl)
+                    unlock_ev.conditional = None
+                    unlock_ev.action = None
+                    unlock_ev.unlocked = False
+                    unlock_ev.shown_count = 1
+
+    return
+
 #0.11.4
 label v0_11_4(version="v0_11_4"):
     python:
