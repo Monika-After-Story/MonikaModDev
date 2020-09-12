@@ -15749,3 +15749,30 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_renewable_energy",
+            category=['technology'],
+            prompt="Renewable Energy",
+            random=True
+        )
+    )
+
+label monika_renewable_energy:
+    m 4eub "What do you think about renewable energy, [player]?"
+    m 4eud "Honestly, I care about it a lot."
+    m 7rsd "As humanity's reliance on technology grows, so too does its demand for energy."
+    m 1esd "That's fine on its own, but then fossil fuels come in."
+    m 1ekc "Currently, a signifigant percentage of energy is produced from burning fossil fuels."
+    m 2ekc "Part of the problem is that renewable energy isn't without its drawbacks."
+    m 3ekc "Take hydropower, for example."
+    m 5lkc "Hydropower is flexible, efficient, and hardly produces any carbon dioxide, but it can also severely affect the local area."
+    m 5tkd "Ecosystems are disrupted, entire communities need to be relocated, and some resevoirs even produce methane."
+    m 5ekp "It can be tricky, balancing the needs of society with the environment."
+    m 5euu "Still, there's been a lot of progress in the past few years.
+    m 2eub "So as scary as climate change can be, I think that things will get better." 
+    m 7ksu "Just keep an eye on the world for me, okay? Ehehe~"
+    return
