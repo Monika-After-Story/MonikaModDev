@@ -6088,12 +6088,16 @@ init -1 python:
         if _date is None:
             _date = mas_monika_birthday
 
-        return (
+
+        if (
             mas_generateGiftsReport(_date)[0] > 0
             or persistent._mas_bday_date_affection_gained > 0
             or persistent._mas_bday_sbp_reacted
             or persistent._mas_bday_said_happybday
-        )
+        ):
+            persistent._mas_bday_no_time_spent = False
+            return True
+        return False
 
     def mas_surpriseBdayShowVisuals(cake=False):
         """
