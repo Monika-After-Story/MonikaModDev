@@ -15749,3 +15749,34 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_environment",
+            category=['society'],
+            prompt="The environment",
+            random=True
+        )
+    )
+ 
+ label monika_environment:
+ 
+    m 2eub "[player], do you know why I care about the environment?"
+    m 1esa "Well, there are a few reasons."
+    m 3euu "For one, I think it's beautiful."
+    m 1dsd "Vibrant meadows in the spring, chittering forests in the fall..."
+    m 2hub "Breathtaking beaches in the summer, and shimmering snow in the winter."
+    m 7wsu "Sometimes it can be euphoric just to sit down and admire nature, you know?"
+    m 1lut "The environment also sustains life."
+    m 4dsc "Biodiversity, decomposition, pollination, reduced erosion, heat absorption, good air and water quality..."  
+    m 6rkd "Without the environment, none of that would be possible, and life would have never existed as it does today."
+    m 1fkc "All Earth would have been is a dead rock with some microbes sprinkled here and there, and you and I would have never existed."
+    m 3wuo "Speaking of which..."
+    m 4eka "You're part of why I care about the environment, too."
+    m 7duu "I want you to live in a happy, healthy world, free of hurt or strife."
+    m 2lkc "The last thing I want is for you to be depressed by the state of the environment, or worse."
+    m 1fsu "Well, we'll just have to work together to make sure that doesn't happen."
+    m 3esb "Okay?" 
+    return
