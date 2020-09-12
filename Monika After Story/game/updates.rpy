@@ -1546,6 +1546,10 @@ label v0_10_0(version="v0_10_0"):
             )
             concert_ev.action = EV_ACT_RANDOM
 
+        # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+        dt_now = datetime.datetime.now()
+        # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
@@ -1553,7 +1557,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
-            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_922.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_922.use_year_before = True
 
         mhs_pbday = store.mas_history.getMHS("player_bday")
@@ -1582,7 +1589,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.month == 11
                 and mhs_o31.trigger.day == 2
         ):
-            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_o31.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_o31.use_year_before = True
 
         # always save mhs
