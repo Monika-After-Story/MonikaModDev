@@ -547,7 +547,7 @@ init -850 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
-
+            self._was_triggered = False
 
         @staticmethod
         def getSortKey(_mhs):
@@ -560,7 +560,6 @@ init -850 python:
             RETURNS the sort key, which is trigger datetime
             """
             return _mhs.trigger
-
 
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -800,6 +799,8 @@ init -850 python:
             if self.exit_pp is not None:
                 self.exit_pp(self)
 
+            # mark that we ran
+            self._was_triggered = True
 
         def toTuple(self):
             """
@@ -811,6 +812,12 @@ init -850 python:
                     NOTE: needed for ease of migrations
             """
             return (self.trigger, self.use_year_before)
+
+        def was_triggered(self):
+            """
+            RETURNS: True if this MHS was triggered during this session
+            """
+            return self._was_triggered
 
 
 init -800 python in mas_history:

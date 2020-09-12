@@ -1254,8 +1254,11 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
+        $ tempname = m_name
+        $ m_name = "???"
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+        $ m_name = tempname
 
     elif mas_isMoniUpset():
         m "Oh, so for once you're actually going to listen?"

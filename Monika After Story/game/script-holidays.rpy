@@ -4377,14 +4377,14 @@ label mas_player_bday_autoload_check:
 
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
-            not persistent._mas_player_bday_in_player_bday_mode
-            and persistent._mas_player_confirmed_bday
-            and mas_isMoniNormal(higher=True)
-            and not persistent._mas_player_bday_spent_time
-            and not mas_isD25()
-            and not mas_isO31()
-            and not mas_isF14()
-        ):
+        not persistent._mas_player_bday_in_player_bday_mode
+        and persistent._mas_player_confirmed_bday
+        and mas_isMoniNormal(higher=True)
+        and not persistent._mas_player_bday_spent_time
+        and not mas_isD25()
+        and not mas_isO31()
+        and not mas_isF14()
+    ):
 
         python:
             # first we determine if we want to run a surprise greeting this year
@@ -6000,6 +6000,7 @@ init -810 python:
             "_mas_bday_date_count": "922.actions.date.count",
             "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
             "_mas_bday_gone_over_bday": "922.gone_over_bday",
+            "_mas_bday_has_done_bd_outro": "922.done_bd_outro",
 
             "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
             "_mas_bday_confirmed_party": "922.actions.confirmed_party",
@@ -6020,28 +6021,23 @@ init -810 python:
 define mas_bday_cake_lit = False
 
 # NOTE: maybe the cakes should be ACS
-# TODO: export lighting as its own layer
-image mas_bday_cake_monika = ConditionSwitch(
-    "mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
-    "mas_bday_cake_lit and mas_current_background.isFltNight()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit-n.png",
-    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake.png",
-    "True",
-    "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
+
+image mas_bday_cake_monika = LiveComposite(
+    (1280, 850),
+    (0, 0), MASFilterSwitch("mod_assets/location/spaceroom/bday/monika_birthday_cake.png"),
+    (0, 0), ConditionSwitch(
+        "mas_bday_cake_lit", "mod_assets/location/spaceroom/bday/monika_birthday_cake_lights.png",
+        "True", Null()
+        )
 )
 
-# TODO: export lighting as its own layer
-image mas_bday_cake_player = ConditionSwitch(
-    "mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
-    "mas_bday_cake_lit and mas_current_background.isFltNight()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
-    "not mas_bday_cake_lit and mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
-    "True",
-    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
+image mas_bday_cake_player = LiveComposite(
+    (1280, 850),
+    (0, 0), MASFilterSwitch("mod_assets/location/spaceroom/bday/player_birthday_cake.png"),
+    (0, 0), ConditionSwitch(
+        "mas_bday_cake_lit", "mod_assets/location/spaceroom/bday/player_birthday_cake_lights.png",
+        "True", Null()
+        )
 )
 
 image mas_bday_banners = MASFilterSwitch(
@@ -6105,7 +6101,8 @@ init -1 python:
         """
         if cake:
             renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
-        renpy.show("mas_bday_banners", zorder=7)
+        if store.mas_is_indoors:
+            renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
 
@@ -6126,7 +6123,7 @@ init -1 python:
             if persistent._mas_bday_confirmed_party:
                 #We should also handle if the player confirmed the party pre-note
                 if persistent._mas_bday_hint_filename:
-                        store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+                    store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
                 return True
 
             #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
@@ -6146,6 +6143,8 @@ init -1 python:
                     if persistent._mas_bday_hint_filename:
                         store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
 
+                    #We should also return a new file indicating the player has confirmed the party
+                    _write_txt("/characters/gotcha", "")
                     #Step 5a, return true since party is confirmed
                     return True
 
@@ -6158,26 +6157,29 @@ init -1 python:
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
-    if not mas_isMonikaBirthday():
-        $ persistent._mas_bday_in_bday_mode = False
-        #Also make sure we're no longer showing visuals
-        $ persistent._mas_bday_visuals = False
+    python:
+        if not mas_isMonikaBirthday():
+            persistent._mas_bday_in_bday_mode = False
+            #Also make sure we're no longer showing visuals
+            persistent._mas_bday_visuals = False
 
-        #Lock the event clothes selector
-        $ store.mas_lockEVL("monika_event_clothes_select", "EVE")
+            #Lock the event clothes selector
+            store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
-        #And reset outfit if not at the right aff
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
-            $ monika_chr.reset_clothes(False)
-            $ monika_chr.save()
-            $ renpy.save_persistent()
+            store.mas_utils.trydel("characters/gotcha")
 
-    #It's Moni's bday! If we're here that means we're spending time with her, so:
-    $ persistent._mas_bday_no_time_spent = False
+            #And reset outfit if not at the right aff
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
-    $ persistent._mas_bday_opened_game = True
-    #Have we recogized bday?
-    $ persistent._mas_bday_no_recognize = not mas_recognizedBday()
+        #It's Moni's bday! If we're here that means we're spending time with her, so:
+        persistent._mas_bday_no_time_spent = False
+
+        persistent._mas_bday_opened_game = True
+        #Have we recogized bday?
+        persistent._mas_bday_no_recognize = not mas_recognizedBday()
 
     jump mas_ch30_post_holiday_check
 
@@ -6257,8 +6259,9 @@ P.S: Don't tell her about me.
     if mas_isMoniNormal(higher=True):
         m 1eud "Hey, [player]..."
         m 3euc "Someone left a note in the characters folder addressed to you."
-        #show chibi, she's just written the letter
-        show chibi_peek with moveinleft
+        if mas_current_background == mas_background_def:
+            #show chibi, she's just written the letter
+            show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
         m 1tuu "{cps=*2}Hmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
@@ -6392,7 +6395,10 @@ label mas_bday_surprise_party_reaction:
         m 6suo "T-{w=0.5}This is..."
         m 6ska "Oh, [player]..."
         m 6dku "I'm at a loss for words."
-        m 6dktpu "Setting this all up to surprise me on my birthday..."
+
+        if store.mas_is_indoors:
+            m 6dktpu "Setting this all up to surprise me on my birthday..."
+
         m 6dktdu "Ehehe, you must really love me."
         m 6suu "Everything just looks so festive!"
 
@@ -6446,7 +6452,7 @@ label mas_bday_surprise_party_reaction_post_make_wish:
         m 6eua "I hope it comes true someday..."
         if mas_isplayer_bday() and made_wish:
             m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
-        m 6hua "Ahaha..."
+        m 6hub "Ahaha..."
 
     else:
         m 6eka "I made a wish."
@@ -6879,25 +6885,37 @@ label bye_922_delegate:
     jump mas_dockstat_iostart
 
 label mas_bday_bd_outro:
-    $ monika_chr.change_clothes(mas_clothes_blackdress)
-    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
-    $ mas_addClothesToHolidayMap(mas_clothes_blackdress)
-    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    python:
+        monika_chr.change_clothes(mas_clothes_blackdress)
+        mas_temp_zoom_level = store.mas_sprites.zoom_level
+
+        #Flag so we don't end up back into this flow
+        persistent._mas_bday_has_done_bd_outro = True
 
     call mas_transition_from_emptydesk("monika 1eua")
     call monika_zoom_transition_reset(1.0)
     #NOTE: We change the zoom here because we want to show off the outfit.
 
-    m 3tka "Well, [player]?"
-    m 1hua "What do you think?"
-    m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
-    m 3eub "Maybe we could visit the mall, or even the park!"
-    m 1eka "But knowing you, you've already got something amazing planned for us~"
+    if mas_SELisUnlocked(mas_clothes_blackdress):
+        m 1hua "Ehehe~"
+        m 1euu "I'm so excited to see what you've got planned for us today."
+        m 3eua "...But even if it's not much, I'm sure we'll have a great time together~"
+
+    else:
+        m 3tka "Well, [player]?"
+        m 1hua "What do you think?"
+        m 1ekbsa "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
+        m 3eub "Maybe we could visit the mall, or even the park!"
+        m 1eka "But knowing you, you've already got something amazing planned for us~"
+
     m 1hua "Let's go, [player]!"
-    $ persistent._mas_zoom_zoom_level = mas_temp_zoom_level
 
     python:
-        # setup check and log this file checkout
+        store.mas_selspr.unlock_clothes(mas_clothes_blackdress)
+        mas_addClothesToHolidayMap(mas_clothes_blackdress)
+        persistent._mas_zoom_zoom_level = mas_temp_zoom_level
+
+        #Setup check and log this file checkout
         store.mas_dockstat.checkoutMonika(moni_chksum)
 
         #Now setup ret greet

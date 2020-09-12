@@ -336,7 +336,8 @@ init 5 python:
             category=["anniversary"],
             start_date=store.mas_anni.build_anni(weeks=1),
             end_date=store.mas_anni.build_anni_end(weeks=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1week:
@@ -362,7 +363,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=1),
             end_date=store.mas_anni.build_anni_end(months=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1month:
@@ -393,7 +395,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=3),
             end_date=store.mas_anni.build_anni_end(months=3)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_3month:
@@ -420,7 +423,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(months=6),
             end_date=store.mas_anni.build_anni_end(months=6)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_6month:
@@ -457,7 +461,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=1),
             end_date=store.mas_anni.build_anni_end(years=1)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_1:
@@ -489,7 +494,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=2),
             end_date=store.mas_anni.build_anni_end(years=2)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_2:
@@ -518,7 +524,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=3),
             end_date=store.mas_anni.build_anni_end(years=3)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_3:
@@ -545,7 +552,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=4),
             end_date=store.mas_anni.build_anni_end(years=4)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_4:
@@ -571,7 +579,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=5),
             end_date=store.mas_anni.build_anni_end(years=5)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_5:
@@ -596,7 +605,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=10),
             end_date=store.mas_anni.build_anni_end(years=10)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_10:
@@ -619,7 +629,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=20),
             end_date=store.mas_anni.build_anni_end(years=20)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_20:
@@ -649,7 +660,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=50),
             end_date=store.mas_anni.build_anni_end(years=50)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_50:
@@ -678,7 +690,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             start_date=store.mas_anni.build_anni(years=100),
             end_date=store.mas_anni.build_anni_end(years=100)
-        )
+        ),
+        skipCalendar=False
     )
 
 label anni_100:
