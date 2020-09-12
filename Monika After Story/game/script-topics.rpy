@@ -11945,10 +11945,11 @@ label monika_player_appearance:
                 "I have heterochromia.":
                     $ persistent._mas_pm_has_heterochromia = True
 
-                    m "Really? You're so special, [player]!"
-                    m "If I recall correctly, less than one percent of people in world have this curious feature..."
-                    m "...So you must be really rare, ehehe~"
-                    m "Let's get to my next question--"
+                    m 1sub "Really? {w=0.5}{nw}"
+                    extend 3hua "You're so special, [player]!"
+                    m 5rtc "If I recall correctly, less than one percent of people in world have this curious feature..."
+                    m 1hua "...So you must be really rare, ehehe~"
+                    m 3hua "Let's get to my next question--"
 
             m 3rud "Actually..."
             m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question..."
