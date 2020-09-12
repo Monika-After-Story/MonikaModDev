@@ -474,9 +474,9 @@ label v0_11_4(version="v0_11_4"):
 
         # NOTE: this caused a crash.
         #   mas_loseAffection is not available during init
-        for bad_evl in bad_topic_derand_list:
-            if bad_evl in persistent._mas_player_derandomed:
-                persistent._mas_affection["affection"] -= 5
+        #for bad_evl in bad_topic_derand_list:
+        #    if bad_evl in persistent._mas_player_derandomed:
+        #        persistent._mas_affection["affection"] -= 5
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
