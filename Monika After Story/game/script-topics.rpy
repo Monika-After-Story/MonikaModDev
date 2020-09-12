@@ -15765,7 +15765,7 @@ label monika_renewable_energy:
     m 4eub "What do you think about renewable energy, [player]?"
     m 4eud "It's a complicated subject; we talked about it a lot in the Debate Club."
     m 7rsd "As humanity's reliance on technology grows, so does its demand for energy."
-    m 1esc "Currently, a signifigant percentage of energy worldwide is produced by burning fossil fuels."
+    m 1esc "Currently, a significant percentage of energy worldwide is produced by burning fossil fuels."
     m 3esc "Fossil fuels are incredibly efficient, time-tested, and have widespread infrastructure, but they're also non-renewable and emmission-heavy."
     m 3euc "Mining and drilling for fossil fuels results in air and water pollution, and oil spills devestate ocean life."
     m 2euc "So why haven't we swapped away from fossil fuels if they're so unsustainable?"
