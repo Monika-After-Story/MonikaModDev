@@ -15772,7 +15772,7 @@ label monika_renewable_energy:
     m 5lkc "Hydropower is flexible, efficient, and hardly produces any carbon dioxide, but it can also severely affect the local area."
     m 5tkd "Ecosystems are disrupted, entire communities need to be relocated, and some resevoirs even produce methane."
     m 5ekp "It can be tricky, balancing the needs of society with the environment."
-    m 5euu "Still, there's been a lot of progress in the past few years.
+    m 5euu "Still, there's been a lot of progress in the past few years."
     m 2eub "So as scary as climate change can be, I think that things will get better." 
     m 7ksu "Just keep an eye on the world for me, okay? Ehehe~"
     return
