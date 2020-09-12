@@ -1523,6 +1523,8 @@ label mas_song_save_the_last_dance_for_me:
     m "But at the end of the day, won't you save one last dance for me too? That's all I've ever wanted~"
     m "Thank you for listening to my aching heart [player]. I really appreciate you being here."
 
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
