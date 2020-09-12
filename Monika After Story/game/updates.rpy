@@ -444,9 +444,11 @@ label v0_11_4(version="v0_11_4"):
             "monika_dying_same_day"
         ]
 
-        for bad_evl in bad_topic_derand_list:
-            if bad_evl in persistent._mas_player_derandomed:
-                mas_loseAffection(5)
+        # NOTE: this caused a crash.
+        #   mas_loseAffection is not available during init
+#        for bad_evl in bad_topic_derand_list:
+#            if bad_evl in persistent._mas_player_derandomed:
+#                mas_loseAffection(5)
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
