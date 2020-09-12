@@ -385,7 +385,10 @@ label v0_11_5(version="v0_11_5"):
 
         for game_evl, unlock_evl in game_evls:
             # 0.11.0 update script shoudl have transfered seen
-            if renpy.seen_label(unlock_evl):
+            if (
+                    renpy.seen_label(unlock_evl)
+                    or mas_getEVL_shown_count(unlock_evl) > 0
+            ):
                 mas_unlockEVL(game_evl, "GME")
 
                 # if we have seen the unlock evl, absolutely make sure it has
