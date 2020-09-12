@@ -7377,6 +7377,9 @@ define MAS_RAIN_BROKEN = 70
 # snow
 define mas_is_snowing = False
 
+# True if the current background is an indoors one
+define mas_is_indoors = True
+
 # idle
 default persistent._mas_in_idle_mode = False
 default persistent._mas_idle_data = {}
