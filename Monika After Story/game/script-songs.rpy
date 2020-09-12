@@ -1518,7 +1518,7 @@ label mas_song_save_the_last_dance_for_me:
     m "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
     m "As he remembered that day, he began to write the lyrics to the song, he wanted it to have a poetic feel to it."
     m "Even though there was a hint of jealousy in the song, he wanted it to be romantic."
-    m "This barrier between us, it feels like it's my wheelchair.
+    m "This barrier between us, it feels like it's my wheelchair."
     m "And I guess if I have to be honest, I'm kind of jealous that you can dance with someone, and I'm stuck here on the sidelines."
     m "But at the end of the day, won't you save one last dance for me too? That's all I've ever wanted~"
     m "Thank you for listening to my aching heart [player]. I really appreciate you being here."
