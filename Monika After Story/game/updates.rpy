@@ -1526,7 +1526,7 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.day == 30
         ):
             # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
-            if mhs_922.was_triggered() and not mhs_922.isFuture(dt_now):
+            if not mhs_922.isFuture(dt_now):
                 # the mhs was JUSt triggered, and is either currently active
                 # or happened in the past.
                 # in this case, we should always set to next year
@@ -1566,7 +1566,7 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.day == 2
         ):
             # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
-            if mhs_o31.was_triggered() and not mhs_o31.isFuture(dt_now):
+            if not mhs_o31.isFuture(dt_now):
                 # the mhs was JUSt triggered, and is either currently active
                 # or happened in the past.
                 # in this case, we should always set to next year
