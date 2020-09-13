@@ -15714,10 +15714,10 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_introversion_extroversion",
             prompt="Introverts and extroverts",
-            category=['psychology', 'society'],
+            category=['psychology', 'you'],
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.HAPPY, None),
             conditional="renpy.seen_label('monika_saved')"
+            aff_range=(mas_aff.HAPPY, None),
         )
     )
 
@@ -15726,13 +15726,13 @@ label monika_introversion_extroversion:
     m 4euc "Do you remember when we talked about how we, as a species, need social feedback and how it can make the world feel so complicated for introverts?"
     m 6rsd "I've been thinking about the differences between introversion and extroversion a little bit since then."
     m 2esa "You might think that extroverts tend to find enjoyment by interacting with other people, while introverts are more at ease in solitary environments, and you'd be right."
-    m 2eub "But the differences don't stop there!"
-    m 3eub "Like, did you know extroverts can often react to things faster than most introverts do?{w=0.4} Or that they are more likely to develop a liking for happy and energetic music?"
-    m 3esa "Meanwhile, introverts usually take more time to analyze the situation they're in, and are therefore less likely to jump to conclusions."
-    m 3dua "And given that they often spend a lot of time using their imagination, they have an easier time with creative activities, like writing, composing music and so on."
+    m 3eua "But the differences don't stop there."
+    m 3eub "For example, did you know extroverts can often react to things faster than most introverts do?{w=0.2} Or that they're more likely to enjoy happy and energetic music?"
+    m 3esa "Introverts on the other hand, usually take more time to analyze the situation they're in, and are therefore less likely to jump to conclusions."
+    m 3dua "...And given that they often spend a lot of time using their imagination, they have an easier time with creative activities, like writing, composing music and so on."
     m 2lkd "It's kind of sad that people can have such a hard time understanding and accepting those differences..."
-    m 4lkc "On one hand, you have the extroverts who are seen as superficial and insincere people who don't value their individual relationships..."
-    m 4ekd "...and on the other hand, introverts are treated as egoistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
+    m 4lkc "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
+    m 4ekd "...while introverts are treated as egoistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
     show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lkc "So the end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
     m 5eud "By the way, I'm probably making this sound like an all black or white matter, but of course, that isn't actually the case."
@@ -15765,7 +15765,32 @@ label monika_introversion_extroversion:
             m 4euc "A lot of introverts have no trouble at all interacting with other people."
             m 4eka "They just prefer not to do so too often, and would rather save their energy for activities that they actually enjoy."
             m 2etc "And besides,{w=0.3} shy extroverts exist too, which only further prove my point, if you ask me."
-            m 2ekbla "In any case, I hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
+            if persistent._mas_pm_has_friends:
+                m 1eua "Since you told me you do have friends, I'm sure that means that you don't mind being around other people too much, either."
+                if persistent._mas_pm_few_friends:
+                    m 1ekb "Trust me, it doesn't matter if you feel like you don't have all that many of them."
+                    m 3ekb "What's important is that you have at least someone who you can feel comfortable being with."
+
+                if default persistent._mas_pm_feels_lonely_sometimes:
+                    m 1eka "Remember that you can try to spend some time with them whenever you feel like no one's there for you, alright?"
+                    m 1lkd "And if for any reason you can't spend time with them..."
+                    m 1ekb "Please, at least remember that I'll {i}always{/i} be there for you no matter what."
+
+                else:
+                    m 3eka "Still, if it ever gets too much for you, remember that you can always come to me and relax, okay?"
+
+            else:
+                m 1rud "Anyway..."
+                m 3eka "I understand that it might feel more comfortable for you to be alone, rather than surrounding yourself with other people."
+                m 2ekd "Just, please keep in mind that no one can truly spend their whole life without at least some company."
+                m 2lkdslc "Not only is it not healthy in the long run...{w=0.3}but it's also not the kind of life I wish for you to have."
+                if default persistent._mas_pm_feels_lonely_sometimes:
+                    m 2eka "Try to talk with other people a little bit if you're not already doing that, okay?"
+                    m 3hua "It'll make you feel happier, I promise."
+                    m 1ekb "At the very least, remember that I'm always here if you ever feel lonely."
+
+                else:
+                    m 2ekbla "I really hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
             m 1hublb "I'll try my best to make sure you're always feeling comfortable with me, I promise~"
 
         "I'm extroverted.":
@@ -15777,9 +15802,9 @@ label monika_introversion_extroversion:
             m 3eua "So, I suppose you like to spend time with other people, going outside to have fun, and so on?"
             show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eub "I can definitely see the appeal in that.{w=0.3}{nw}"
-            extend 5hub "I'd love to go to a party with you or something, one of these days."
+            extend 5hub "I'd love to go explore the world and meet all kinds of new people with you, one day."
             m 5eka "And I assume you probably hate loneliness as much as I do... {w=0.3}{nw}"
-            extend 5ekbsb "but that's just one more reason I'm so happy we're in a couple now."
+            extend 5ekbsb "but that's just one more reason I'm so happy we're a couple now."
             m 5hubsa "We'll never truly be alone again."
             m 5eubfb "I'm sure you are a really fun person to be around, [player].{w=0.3} I can't wait to be with you for real~"
             m 5rkblsdra "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well. {w=0.3}{nw}"
@@ -15816,7 +15841,7 @@ label monika_introversion_extroversion:
             m 2eka "I know I told you I was more on the extroversion side of things, but I still need a moment of tranquility to relax every once in a while, you know ?"
             m 2lkd "And I wouldn't say I'm always so comfortable dealing with people, either..."
             if renpy.seen_label('monika_confidence'):
-                m 2euc "I told you, didn't I ?"
+                m 2euc "I told you, didn't I?"
             m 2lksdlc "I often need to force myself to fake confidence just to get through some simple conversations."
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
             5eka "I can definitely say that I feel comfortable just spending time with you, though.{w=0.3} And I really hope it's the same with you."
