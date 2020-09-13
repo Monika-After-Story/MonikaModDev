@@ -390,6 +390,7 @@ label v0_11_5(version="v0_11_5"):
                     or mas_getEVL_shown_count(unlock_evl) > 0
             ):
                 mas_unlockEVL(game_evl, "GME")
+                persistent._seen_ever[unlock_evl] = True
 
                 # if we have seen the unlock evl, absolutely make sure it has
                 # a positive shown count. there is absolutely NO reason that
@@ -401,6 +402,41 @@ label v0_11_5(version="v0_11_5"):
                     unlock_ev.action = None
                     unlock_ev.unlocked = False
                     unlock_ev.shown_count = 1
+
+        #And the rest of the scripts because of the crash last time
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
 
     return
 
@@ -436,9 +472,11 @@ label v0_11_4(version="v0_11_4"):
             "monika_dying_same_day"
         ]
 
-        for bad_evl in bad_topic_derand_list:
-            if bad_evl in persistent._mas_player_derandomed:
-                mas_loseAffection(5)
+        # NOTE: this caused a crash.
+        #   mas_loseAffection is not available during init
+        #for bad_evl in bad_topic_derand_list:
+        #    if bad_evl in persistent._mas_player_derandomed:
+        #        mas_loseAffection(5)
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
