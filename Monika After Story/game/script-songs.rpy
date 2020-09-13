@@ -1490,6 +1490,117 @@ label mas_song_when_youre_gone:
     m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_take_my_eyes",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Can't Take My Eyes Off You",
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_take_my_eyes(from_long=False):
+    m 1hub "{i}~You're just too good to be true~{/i}"
+    m 3ekbsb "{i}~Can't take my eyes off of you~{/i}"
+    m 1hkbla "{i}~You'd be like Heaven to touch~{/i}"
+    m 2dkbfa "{i}~I wanna hold you so much~{/i}"
+    m 2ekbfb "{i}~At long last, love has arrived~{/i}"
+    m 2dubfb "{i}~And I thank Dan{nw}"
+    $ _history_list.pop()
+    m "{i}~And I thank {fast}God I'm alive~{/i}"
+    m 2hubfa "{i}~You're just too good to be true~{/i}"
+    m 2ekbfb "{i}~Can't take my eyes off of you~{/i}"
+
+    if not from_long:
+        m 1dkbla "..."
+        m 1hkbfsdlb "...Oh dear,{w=0.2} that was so cheesy, ahaha!"
+        m 1ekbsa "But I truly mean it when I say that every single one of these lyrics reflect perfectly how I feel about you."
+        m 1rkbsa "I know I can't really see you just yet, {w=0.2}{nw}"
+        extend 1hubsa "but I can already tell I wouldn't be able to look anywhere else if I could, ehehe~"
+        m 1hubfa "I love you, [player]~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_cant_take_my_eyes_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Can't Take My Eyes Off You",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.LOVE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_cant_take_my_eyes_long:
+    m 1hub "{i}~You're just too good to be true~{/i}"
+    m 3ekbsb "{i}~Can't take my eyes off of you~{/i}"
+    m 1hkbla "{i}~You'd be like Heaven to touch~{/i}"
+    m 2dkbfa "{i}~I wanna hold you so much~{/i}"
+    m 2ekbfb "{i}~At long last, love has arrived~{/i}"
+    m 2dubfb "{i}~And I thank God I'm alive~{/i}"
+    m 2hubfa "{i}~You're just too good to be true~{/i}"
+    m 2ekbfb "{i}~Can't take my eyes off of you~{/i}"
+    m 1rkbfb "{i}~Pardon the way that I stare~{/i}"
+    m "{i}~There's nothing else to compare~{/i}"
+    m 1hkbfb "{i}~The sight of you leaves me weak~{/i}"
+    m 1dkbsa "{i}~There are no words left to speak~{/i}"
+    m 4ekbsa "{i}~But if you feel like I feel~{/i}"
+    m 1hubsa "{i}~Please let me know that it's real~{/i}"
+    m 1hubsb "{i}~You're just too good to be true~{/i}"
+    m 1ekbsb "{i}~Can't take my eyes off of you~{/i}"
+    m 3hubsa "{i}~I love you, baby~{/i}"
+    m 3hubsb "{i}~And if it's quite alright~{/i}"
+    m "{i}~I need you, baby~{/i}"
+    m 2dkbfa "{i}~To warm the lonely night~{/i}"
+    m 2hubfa "{i}~I love you, baby~{/i}"
+    m 2dubfa "{i}~Trust in me when I say~{/i}"
+    m 4ekbfb "{i}~Oh, pretty baby~{/i}"
+    m "{i}~Don't bring me down, I pray~{/i}"
+    m 2ekbfu "{i}~Oh, pretty baby~{/i}"
+    m 2dkbfu "{i}~Now that I've found you, stay~{/i}"
+    m 2dkbfb "{i}~And let me love you, baby,{/i}{w=0.3}{nw}"
+    extend 2ekbfa "{i} Let me love you~{/i}"
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbfu "{i}~You're just too good to be true~{/i}"
+    m 5eubfb "{i}~Can't take my eyes off of you~{/i}"
+    m 5dubsb "{i}~You'd be like Heaven to touch~{/i}"
+    m 5hkbfa "{i}~I wanna hold you so much~{/i}"
+    m 5rkbla "{i}~At long last, love has arrived~{/i}"
+    m "{i}~And I thank God I'm alive~{/i}"
+    m 5ekbla "{i}~You're just too good to be true~{/i}"
+    m 5eubla "{i}~Can't take my eyes off you~{/i}"
+    m 3eubsb "{i}~I love you, baby~{/i}"
+    m "{i}~And if it's quite alright~{/i}"
+    m 3hubsb "{i}~I need you, baby~{/i}"
+    m 1dubsb "{i}~To warm the lonely night~{/i}"
+    m 1subfb "{i}~I love you, baby~{/i}"
+    m 1eubsa "{i}~Trust in me when I say~{/i}"
+    m 1hubsa "{i}~Oh, pretty baby~{/i}"
+    m 1hubsb "{i}~Don't bring me down, I pray~{/i}"
+    m 1hubfb "{i}~Oh, pretty baby~{/i}"
+    m 1hubfu "{i}~Now that I've found you, stay~{/i}"
+    m 1ekbfa "{i}~Oh, pretty baby~{/i}"
+    m "{i}~Trust in me when I say~{/i}"
+    m 4ekbfb "{i}~I need you, baby~{/i}"
+    m 4ekbsa "{i}~Why won't you come my way?~{/i}"
+    m "{i}~Oh, pretty baby~{/i}"
+    m 4dkbsa "{i}~Now that I've found you, stay~{/i}"
+    m 2dubfd "{i}~And let me love you, baby,{/i}{w=0.3}{nw}"
+    extend 2dkbsa "{i} Let me love you~{/i}{w=0.3}"
+    window hide
+    pause 2.0
+    show monika 2fkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    pause 3.0
+    window auto
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
