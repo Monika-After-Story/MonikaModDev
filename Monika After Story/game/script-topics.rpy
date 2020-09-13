@@ -15755,7 +15755,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_environment",
-            category=['society'],
+            category=['nature'],
             prompt="The environment",
             random=True
         )
@@ -15763,19 +15763,24 @@ init 5 python:
  
 label monika_environment:
     m 2eud "[player], do you know why I care about the environment?"
-    m 1esa "Well, there are a few reasons."
+    m 3esa "Well, there are a few reasons."
     m 7eub "For one, I think it's beautiful."
-    m 1dsd "Vibrant meadows in the spring, chittering forests in the fall..."
-    m 2hsb "Breathtaking beaches in the summer, and shimmering snow in the winter."
-    m 1ruu "Sometimes it can be euphoric just to sit down and admire nature, you know?"
-    m 3lsd "The environment also sustains life."
-    m 4dsc "Biodiversity, decomposition, pollination, reduced erosion, heat absorption, good air and water quality..."  
-    m 6rkd "Without the environment, none of that would be possible, and life would have never existed as it does today."
-    m 1fkc "All Earth would have been is a dead rock with some microbes sprinkled here and there, and you and I would have never existed."
-    m 3eud "Speaking of which..."
-    m 4eka "You're part of why I care about the environment, too."
-    m 7duu "I want you to live in a happy, healthy world, free of hurt or strife."
-    m 6lkc "The last thing I want is for you to be depressed by the state of the environment...or worse."
-    m 1fsu "We'll just have to work together to make sure that doesn't happen."
-    m 7esb "Okay?" 
+    m 1eub "Sometimes it can be so relaxing just to sit back, relax, and take in all of the nature around you."
+    m 3dsu "Picture a tranquil meadow enveloped in a cool, chittering forest..."
+    m 1dsa "...a sparkling river carved underneath shimmering, snowcapped mountains..."
+    m 1esu "...or a vibrant coral reef, resting in the silent currents of a soft sea."
+    m 1eub "To me, the environment is one captivating image after another; an enchanting world filled with all kinds of life."
+    m 3esd "The environment also sustains that life."
+    m 4lsc "Biodiversity, decomposition, pollination, temperature regulation, good air and water quality..."  
+    m 3esd "Without the environment, none of that would be possible, and life on Earth would have never developed."
+    m 1dkc "All it would have been is a cold, barren rock with some microbes sprinkled here and there, and you and I would have never existed."
+    m 1eua "Speaking of which..."
+    m 7ekb "You're part of why I care about the environment too, [player]!"
+    m 3eud "I want you to live in a happy, healthy world, free of hurt or strife."
+    m 2ekc "The last thing I want is for you to be depressed by the state of the environment...or worse."
+    m 2rksdrb "Of course, I'm also speaking for myself."
+    m 3eksdra "Whenever I see photos of your world online, it looks like such a lovely place." 
+    m 3hksdrb "I'd hate to finally come there only for it to have turned into a dark, desolated wasteland."
+    m 4esa "Well, I guess that means we'll have to work together to make sure that doesn't happen."
+    m 7esu "Okay?" 
     return
