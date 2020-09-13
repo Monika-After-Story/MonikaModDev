@@ -362,6 +362,14 @@ python early:
     #   shown_count - number of times this event has been shown to the user
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
+    #       NOTE: IF AN EVENT HAS BEEN SEEN, IT SHOULD ALWAYS HAVE A POSITIVE
+    #           SHOWN COUNT. The only exception to this is if we crashed
+    #           halfway through a topic, in which case we will know this
+    #           since shown count will be 0 and the label would have been seen.
+    #           In that circumstance, we should immediately update the shown
+    #           count. (Event will not do this in case you need to do specific
+    #           crash handling). Call syncShownCount on the event object to 
+    #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
     #       has been seen. This string will respect \n and other formatting
@@ -864,6 +872,13 @@ python early:
             """
             self.start_date = None
             self.end_date = None
+
+        def syncShownCount(self):
+            """
+            Updates shown count if it is < 1 but we have seen the label
+            """
+            if self.shown_count < 1 and renpy.seen_label(self.eventlabel):
+                self.shown_count = 1
 
         def timePassedSinceLastSeen_d(self, time_passed, _now=None):
             """
@@ -7412,6 +7427,9 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# True if the current background is an indoors one
+define mas_is_indoors = True
 
 # idle
 default persistent._mas_in_idle_mode = False

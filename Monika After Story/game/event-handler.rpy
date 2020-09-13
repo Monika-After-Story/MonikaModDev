@@ -1564,7 +1564,7 @@ init python:
     def addEvent(
         event,
         eventdb=None,
-        skipCalendar=False,
+        skipCalendar=True,
         restartBlacklist=False,
         markSeen=False,
         code="EVE"
@@ -1584,6 +1584,7 @@ init python:
                 (Default: None)
             skipCalendar - flag that marks wheter or not calendar check should
                 be skipped
+                (Default: True)
 
             restartBlacklist - True if this topic should be added to the restart blacklist
                 (Default: False)
@@ -2398,6 +2399,11 @@ label call_next_event:
                 $ ev.unlocked = False
                 $ ev.unlock_date = None
 
+            if "unlock" in ret_items:
+                $ ev.unlocked = True
+                if ev.unlock_date is None:
+                    $ ev.unlock_date = ev.last_seen
+
             if "rebuild_ev" in ret_items:
                 $ mas_rebuildEventLists()
 
@@ -2431,7 +2437,7 @@ label call_next_event:
 
     # return to normal pose
     if not renpy.showing("monika idle"):
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     return False
 
@@ -2894,7 +2900,7 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     else:
         $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Remove selected.")
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Remove selected")
 
     $ bookmarks_to_remove = _return
     $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")
