@@ -15716,8 +15716,8 @@ init 5 python:
             prompt="Introverts and extroverts",
             category=['psychology', 'you'],
             action=EV_ACT_RANDOM,
-            conditional="renpy.seen_label('monika_saved')"
-            aff_range=(mas_aff.HAPPY, None),
+            conditional="renpy.seen_label('monika_saved')",
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -15801,7 +15801,7 @@ label monika_introversion_extroversion:
             m 3eub "Alright!"
             m 3eua "So, I suppose you like to spend time with other people, going outside to have fun, and so on?"
             show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5eub "I can definitely see the appeal in that.{w=0.3}{nw}"
+            m 5eub "I can definitely see the appeal in that. {w=0.3}{nw}"
             extend 5hub "I'd love to go explore the world and meet all kinds of new people with you, one day."
             m 5eka "And I assume you probably hate loneliness as much as I do... {w=0.3}{nw}"
             extend 5ekbsb "but that's just one more reason I'm so happy we're a couple now."
