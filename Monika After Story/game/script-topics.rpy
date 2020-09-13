@@ -15761,7 +15761,7 @@ init 5 python:
         )
     )
  
- label monika_environment:
+label monika_environment:
     m 2eub "[player], do you know why I care about the environment?"
     m 1esa "Well, there are a few reasons."
     m 3euu "For one, I think it's beautiful."
