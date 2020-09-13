@@ -15771,20 +15771,19 @@ label monika_renewable_energy:
     m 7eto "So why not use renewable energy instead?"
     m 2euc "One issue is that each type of renewable energy is a developing industry with its own drawbacks."
     m 3lud "For instance, hydropower is flexible and cost efficient, but it can harm the local ecosystem."
-    m 3dkt "Habitats are disrupted, entire communities need to be relocated, and some larger reservoirs even produce methane."
-    m 4esc "Solar and wind can be effective, but they're heavily dependent on optimal weather."
-    m 4rsd "Geothermal is in the same vein; it needs an optimal location. Geothermal systems can also cause earthquakes."
+    m 3dkc "Habitats are disrupted, entire communities need to be relocated, and some larger reservoirs may even produce methane."
+    m 4esd "Solar power and wind power can be effective, but they depend on the weather."
+    m 4rsc "Geothermal is in the same vein; it needs an optimal location. Geothermal systems can also cause earthquakes."
     m 1rksdrb "Nuclear is...well, let's just say that nuclear is its own topic."
-    show monika 5ekp at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekp "The idea is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation."  
-    m 5wut "So what do I think?"
-    show monika 1luc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 1luc "Well, there's been a lot of progress made on renewable energy in the past few decades."
-    m 3esb "Dams are regulated better, wind turbines are quieter, and the efficiency of solar panels has skyrocketed."
-    m 3lso "There are new technologies on the horizon such as tidal power, wave power, and even nuclear fusion."
-    m 2esu "Biomass is an option as well. It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
-    m 2eud "Sure, renewable energy still has a ways to go, but it's far better now than it was thirty years ago." 
-    m 7hsu "Because of that, I think that renewable energy has a bright future ahead, albeit a bumpy one."
+    show monika 5eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eud "The idea is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation."  
+    m 5euc "So what do I think?"
+    show monika 1lua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1lua "Well, there's been a lot of progress made on renewable energy in the past few decades."
+    m 3esb "Dams are regulated better, the efficiency of photovoltaics has improved, and there are other emerging fields such as tidal power, wave power, and even nuclear fusion."
+    m 2esd "Biomass is an option as well. It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
+    m 2eud "Sure, renewable energy still has a ways to go, but it's far more practical now than it was thirty years ago." 
+    m 7hsa "Because of that, I think that renewable energy has a bright future ahead, albeit a bumpy one."
     m 3lksdrb "Sorry, I got carried away there."
     m 1ttu "Debates sure are something, huh? Ehehe~"
     return
