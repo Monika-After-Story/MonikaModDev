@@ -15750,40 +15750,30 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_renewable_energy",
-            category=['technology'],
-            prompt="Renewable energy",
-            random=True
-        )
-    )
+init 5 python: addEvent(Event(persistent.event_database,eventlabel="monika_renewable_energy",category=['technology'],prompt="Renewable energy",random=True))
 
 label monika_renewable_energy:
     m 4eub "What do you think about renewable energy, [player]?"
     m 4esa "It was a popular topic in the debate club."
     m 7rub "As humanity's reliance on technology grows, so does its demand for energy."
     m 1esc "Currently, a significant percentage of energy worldwide is produced by burning fossil fuels."
-    m 3esd "Fossil fuels are incredibly efficient, time-tested, and have widespread infrastructure, but they're also non-renewable and emission-heavy."
-    m 1duc "Mining and drilling for fossil fuels creates air and water pollution, and oil spills devastate aquatic life."
+    m 3esd "Fossil fuels are efficient, time-tested, and have widespread infrastructure, but they're also non-renewable and emission-heavy."
+    m 1duc "Mining and drilling for fossil fuels creates air and water pollution, and both oil spills and acid rain can devastate wildlife."
     m 7eto "So why not use renewable energy instead?"
     m 2euc "One issue is that each type of renewable energy is a developing industry with its own drawbacks."
     m 3lud "For instance, hydropower is flexible and cost efficient, but it can harm the local ecosystem."
     m 3dkc "Habitats are disrupted, entire communities need to be relocated, and some larger reservoirs may even produce methane."
-    m 4esd "Solar power and wind power can be effective, but they depend on the weather."
+    m 4esd "Solar power and wind power can be effective, but they rely on ideal weather."
     m 4rsc "Geothermal is in the same vein; it needs an optimal location. Geothermal systems can also cause earthquakes."
     m 1rksdrb "Nuclear is...well, let's just say that nuclear is its own topic."
-    show monika 5eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5eud "The idea is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation."  
-    m 5euc "So what do I think?"
-    show monika 1lua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 4esd "The idea is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation."  
+    m 7euc "So, what do I think?"
     m 1lua "Well, there's been a lot of progress made on renewable energy in the past few decades."
-    m 3esb "Dams are regulated better, the efficiency of photovoltaics has improved, and there are other emerging fields such as tidal power, wave power, and even nuclear fusion."
+    m 3esb "Dams are regulated better, the efficiency of photovoltaics has improved, and there are emerging innovations such as tidal power, wave power, and hydrogen fuel."
     m 2esd "Biomass is an option as well. It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
-    m 2eud "Sure, renewable energy still has a ways to go, but it's far more practical now than it was thirty years ago." 
+    m 2eud "Yes, renewable energy still has a ways to go, but it's far more practical now than it was thirty years ago." 
     m 7hsa "Because of that, I think that renewable energy has a bright future ahead, albeit a bumpy one."
     m 3lksdrb "Sorry, I got carried away there."
     m 1ttu "Debates sure are something, huh? Ehehe~"
     return
+    
