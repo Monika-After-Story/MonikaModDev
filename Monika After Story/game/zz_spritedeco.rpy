@@ -90,7 +90,32 @@ init -20 python in mas_deco:
 init -19 python:
 
 
-    class MASDecoration(object):
+    class MASDecorationBase(object):
+        """
+        Base class for decortaions objects.
+
+        PROPERTIES:
+            name - unique identifier of this deco object
+            ex_props- arbitrary properties associated with this deco object
+        """
+
+        def __init__(self, name, ex_props=None)
+            """
+            Constructor for base decoration objets
+
+            IN:
+                name - unique identifier to use for this deco object
+                ex_props - dict of aribtrary properties associated with this
+                    deco object.
+                    (Default: None)
+            """
+            self.name = name
+            if ex_props is None:
+                ex_props = {}
+            self.ex_props = ex_props
+
+
+    class MASDecoration(MASDecorationBase):
         """
         Decoration object. Does NOT know positioning.
 
@@ -121,8 +146,9 @@ init -19 python:
                     deco object.
                     (Default: None)
             """
+            super(MASDecoration, self).__init__("", ex_props)
+
             # check for duplicate name
-            self.name = ""
             store.mas_deco.add_deco(s_name, self)
 
             # img or fwm is required
@@ -131,15 +157,11 @@ init -19 python:
                     (
                         "Deco object '{0}' does not contain image or "
                         "MASFilterWeatherMap"
-                    ).format(name)
+                    ).format(s_name)
                 )
 
             self._img = img
             self._fwm = fwm # TODO: verify fwm
-            
-            if ex_props is None:
-                ex_props = {}
-            self.ex_props = ex_props
 
             # mark if this is a complex or simple deco object
             # simple deco objects do not have custom filter settings
@@ -155,7 +177,7 @@ init -19 python:
             return self._simple
 
 
-    class MASImageTagDecoration(MASDecoration):
+    class MASImageTagDecoration(MASDecorationBase
         """
         Variation of MASDecoration meant for images already defined as image
         tags in game.
@@ -174,7 +196,7 @@ init -19 python:
                 ex_props - arbitraary props to assocaitd with this deco object
                     (Default: None)
             """
-            #self. # TODO
+            super(MASImageTagDecoration, self).__init__(tag, ex_props)
 
 
     class MASDecoFrame(object):
