@@ -15780,7 +15780,7 @@ label monika_environment:
     m 2ekc "The last thing I want is for you to be depressed by the state of the environment...or worse."
     m 2rksdrb "Of course, I'm also speaking for myself."
     m 3eksdra "Whenever I see photos of your world online, it looks like such a lovely place." 
-    m 3hksdrb "I'd hate to finally come there only for it to have turned into a dark, desolated wasteland."
+    m 3hksdrb "I'd hate to finally come there only for it to have turned into a dark, desolate wasteland."
     m 4esa "Well, I guess that means we'll have to work together to make sure that doesn't happen."
     m 7esu "Okay?" 
     return
