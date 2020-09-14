@@ -15767,7 +15767,7 @@ label monika_environment:
     m 7eub "For one, I think it's beautiful."
     m 1eub "Sometimes it can be so relaxing just to sit back, relax, and take in all of the nature around you."
     m 3dsu "Picture a tranquil meadow enveloped in a cool, chittering forest..."
-    m 1dsa "...a sparkling river carved underneath shimmering, snowcapped mountains..."
+    m 1dsa "...a sparkling river carved underneath shimmering, snow capped mountains..."
     m 1esu "...or a vibrant coral reef, resting in the silent currents of a soft sea."
     m 1eub "To me, the environment is one captivating image after another; an enchanting world filled with all kinds of life."
     m 3esd "The environment also sustains that life."
