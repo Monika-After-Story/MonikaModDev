@@ -96,7 +96,14 @@ init python:
             store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
 
     else:
-        store.mas_windowreacts.can_do_windowreacts = False
+        # MacOS
+        try:
+            import Quartz
+            import AppKit
+        except ImportError:
+            store.mas_utils.writelog("[WARNING]: Quartz/AppKit package failed to import, disabling windowreacts.\n")    
+            persistent._mas_windowreacts_windowreacts_enabled = False
+            store.mas_windowreacts.can_do_windowreacts = False
 
 
     #List of notif quips (used for topic alerts)
@@ -170,15 +177,28 @@ init python:
                 return window_handle.lower().replace(" ","").replace("\n", "")
 
         else:
-            #TODO: Mac vers (if possible)
-            #NOTE: We return "" so this doesn't rule out notifications
+            from AppKit import NSWorkspace
+            from Quartz import CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly, kCGNullWindowID
+
+            active_app = NSWorkspace.sharedWorkspace().frontmostApplication()
+            active_app_pid = NSWorkspace.sharedWorkspace().active_application()["NSApplicationProcessIdentifier"]
+            window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID)
+            for window in window_list:
+                window_pid = window["kCGWindowOwnerPID"]
+                window_id = window["kCGWindowNumber"]
+                window_owner = window["kCGWindowOwner"]
+                window_title = window.get("kCGWindowName", "")
+                if active_app_pid == window_pid:
+                    if friendly:
+                        return window_title.replace("\n", "")
+                    else:
+                        return window_title.lower().replace(" ","").replace("\n", "")
             return ""
 
     def mas_isFocused():
         """
         Checks if MAS is the focused window
         """
-        #TODO: Mac vers (if possible)
         return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name
 
     def mas_isInActiveWindow(keywords, non_inclusive=False):
