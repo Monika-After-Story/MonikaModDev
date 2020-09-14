@@ -15768,14 +15768,14 @@ label monika_environment:
     m 2eud "Hey [player], I've been wondering..."
     $ _history_list.pop()
     menu:
-        m 2eua "Do you care about the environment{fast}?"
+        m "Do you care about the environment{fast}?"
         "Yes."
-        persistent._mas_pm_cares_environment = True
+        $ persistent._mas_pm_cares_environment = True
         m 3sub "That's wonderful!"
         m 3hsb "I'm so glad to hear that, player."
         
         "No."
-        persistent._mas_pm_cares_environment = False
+        $ persistent._mas_pm_cares_environment = False
         m 1rkb "That's alright, you're entitled to your opinion."
         m 3rkb "Not everyone is a nature person, after all."
   
