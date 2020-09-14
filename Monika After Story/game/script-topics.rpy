@@ -15754,41 +15754,47 @@ label monika_literature_value:
 default persistent._mas_pm_cares_environment = None
 
 init 5 python:
-    addEvent(
-        Event(persistent.event_database,eventlabel="monika_environment",category=['nature', 'life'],prompt="The environment",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_environment",category=['nature', 'life'],prompt="The environment",random=True))
  
 label monika_environment:
-    m 2eud "Hey [player], I've been wondering..."
+    m 2esd "Hey [player], I've been wondering..."
     $ _history_list.pop()
     menu:
         m "Do you care about the environment{fast}?"
         "Yes.":
             $ persistent._mas_pm_cares_environment = True
-            m 3sub "That's wonderful!"
-            m 3hsb "I'm so glad to hear that, player."
-        
+            m 2suo "Really? That's wonderful!"
+            m 2wsa "I'm so glad to hear that, [player]."
+            m 3esd "Personally, I think that the environment is something we should treasure."
+            m 3esa "It's a beautiful world filled with all kinds of life, and there's a lot nature does to lend humanity a hand."
+            m 4esb "Insects pollinate crops, decomposers recycle waste, trees provide food and shade, oceans absorb heat, and so on."
+            m 1esu "Since nature does so much to help us, I think it's only fair that we give something back in return."
+            m 7hub "So, here's Monika's Green Tip of the Day!"
+            m 7esc "Sometimes, it might seem difficult to make a difference when products such as electric vehicles and solar roofs can be expensive."
+            m 3eub "However, you can make a difference and save money just by performing a few simple tasks each day!"
+            m 3esb "Turning off appliances, taking shorter showers, buying a reusable water bottle, commuting by public transport..."
+            m 4esa "If you feel up to it, you can even become a vegetarian and start growing your own garden!"
+            m 7eud "Voting and engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow!"
+            m 3esu "The important thing is to work hard and stay optimistic. If you do that, there's nothing you can't accomplish."
+            m 3wud "Who knows, maybe going green will even make you healthier and happier."
+            m 4esu "After all, a sustaininable life is a satisfying life."
+            m 3esa "For me, at least."
+            m 3esb "That's my advice for today!"
+            m 2hka "Thanks for listening~"
+     
         "No.":
             $ persistent._mas_pm_cares_environment = False
-            m 1rkb "That's alright, you're entitled to your opinion."
-            m 3rkb "Not everyone is a nature person, after all."
-  
-    m 3esa "Personally, there are a few reasons why I care about the environment."
-    m 7eub "For one, I think it's beautiful."
-    m 1eub "Sometimes it can be so relaxing just to sit back, relax, and take in all of the nature around you."
-    m 3dsu "Picture a tranquil meadow enveloped in a cool, chittering forest..."
-    m 1dsa "...a sparkling river carved underneath shimmering, snow capped mountains..."
-    m 1esu "...or a vibrant coral reef, resting in the silent currents of a soft sea."
-    m 1eub "To me, the environment is one captivating image after another; an enchanting world filled with all kinds of life."
-    m 3esd "The environment also sustains that life."
-    m 4lsc "Biodiversity, decomposition, pollination, temperature regulation, good air and water quality..."  
-    m 3esd "Without the environment, none of that would be possible, and life on Earth would have never developed."
-    m 1dkc "All it would have been is a cold, barren rock with some microbes sprinkled here and there, and you and I would have never existed."
-    m 1eua "Speaking of which..."
-    m 7ekb "You're part of why I care about the environment too, [player]!"
-    m 3eud "I want you to live in a happy, healthy world, free of hurt or strife."
-    m 2ekc "The last thing I want is for you to be depressed by the state of the environment...or worse."
-    m 2rksdrb "Of course, I'm also speaking for myself."
-    m 3eksdra "Whenever I see photos of your world online, it looks like such a lovely place." 
-    m 3hksdrb "I'd hate to finally come there only for it to have turned into a dark, desolate wasteland."
-    m 4esa "I doubt it'll be that bad, though!"   
+            m 1duc "Hmm..."
+            m 3lsd "Well, I can see why you may feel that way; natural can be cruel."
+            m 4ekc "Diseases and natural disasters devastate millions, pests ravage crops, plant roots can damage infrastructure, and some insects are flat out obnoxious."
+            m 2ekx "I mean, I don't think I've ever met anyone who likes mosquitos."
+            m 2esd "There's also the fact that some people enjoy a comfortable standard of living."
+            m 3euc "Thanks to technology, we live in a more convienent and connected world than ever, and sometimes it may feel like nature does nothing but get in the way."
+            m 2ekd "For instance, the COVID-19 pandemic has disrupted events worldwide, crippled entire industries, inhibited scientific research, and forced many into isolation."
+            m 1dkc "Some have lost their loved ones, their jobs, their happiness...all because of one infectious virus."
+            m 1lkc "Because of that, I can see why some people might dislike the environment."
+            m 3esd "Just keep in mind that the harder humanity pushes against nature, the harder nature will push back."
+            m 2ekd "Whether it's rising sea levels, bigger wildfires, or heavier droughts, nature will hit, and it'll hit hard."
+            m 2esa "Don't worry, though; if anything happens, I'll always be by your side." 
+            m 3euu "Together, there's nothing we can't handle."
     return "derandom"
