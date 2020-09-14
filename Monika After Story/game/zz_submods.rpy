@@ -52,7 +52,8 @@ init -991 python in mas_submod_utils:
             description=None,
             dependencies={},
             settings_pane=None,
-            version_updates={}
+            version_updates={},
+            coauthors=[]
         ):
             """
             Submod object constructor
@@ -86,6 +87,9 @@ init -991 python in mas_submod_utils:
 
                     becomes:
                         label monikaafterstory_example_submod_v1_2_3(version="v1_2_3")
+
+                coauthors - list/tuple of co-authors of this submod
+                    (Default: empty list)
             """
             #First make sure this name us unique
             if name in submod_map:
@@ -111,6 +115,7 @@ init -991 python in mas_submod_utils:
             self.dependencies = dependencies
             self.settings_pane = settings_pane
             self.version_updates = version_updates
+            self.coauthors = tuple(coauthors)
 
             #Now we add these to our maps
             submod_map[name] = self
@@ -118,6 +123,12 @@ init -991 python in mas_submod_utils:
             #NOTE: We check for things having updated later so all update scripts get called together
             if name not in persistent._mas_submod_version_data:
                 persistent._mas_submod_version_data[name] = version
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<Submod {0} v{1} by {2}>".format(self.name, self.version, self.author)
 
         def getVersionNumberList(self):
             """
