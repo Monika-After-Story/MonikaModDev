@@ -15750,7 +15750,8 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
 
-init 5 python: addEvent(Event(persistent.event_database,eventlabel="monika_renewable_energy",category=['technology'],prompt="Renewable energy",random=True))
+init 5 python: 
+    addEvent(Event(persistent.event_database,eventlabel="monika_renewable_energy",category=['technology'],prompt="Renewable energy",random=True))
 
 label monika_renewable_energy:
     m 4eub "What do you think about renewable energy, [player]?"
@@ -15774,6 +15775,5 @@ label monika_renewable_energy:
     m 2eud "Yes, renewable energy still has a ways to go, but it's far more practical now than it was thirty years ago." 
     m 7hsa "Because of that, I think that renewable energy has a bright future ahead, albeit a bumpy one."
     m 3lksdrb "Sorry, I got carried away there."
-    m 1ttu "Debates sure are something, huh? Ehehe~"
+    m 1ttu "Debates sure are something, huh?"
     return
-    
