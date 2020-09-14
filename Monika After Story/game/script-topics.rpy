@@ -15750,20 +15750,36 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
     
+# Do you care about the environment?
+default persistent._mas_pm_cares_environment = None
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_environment",
-            category=['nature'],
+            category=['nature', 'life'],
             prompt="The environment",
             random=True
         )
     )
  
 label monika_environment:
-    m 2eud "[player], do you know why I care about the environment?"
-    m 3esa "Well, there are a few reasons."
+    m 2eud "Hey [player], I've been wondering..."
+    $ _history_list.pop()
+    menu:
+        m 2eua "Do you care about the environment{fast}?"
+        "Yes."
+        persistent._mas_pm_cares_environment = True
+        m 3sub "That's wonderful!"
+        m 3hsb "I'm so glad to hear that, player."
+        
+        "No."
+        persistent._mas_pm_cares_environment = False
+        m 1rkb "That's alright, you're entitled to your opinion."
+        m 3rkb "Not everyone is a nature person, after all."
+  
+    m 3esa "Personally, there are a few reasons why I care about the environment."
     m 7eub "For one, I think it's beautiful."
     m 1eub "Sometimes it can be so relaxing just to sit back, relax, and take in all of the nature around you."
     m 3dsu "Picture a tranquil meadow enveloped in a cool, chittering forest..."
@@ -15781,6 +15797,12 @@ label monika_environment:
     m 2rksdrb "Of course, I'm also speaking for myself."
     m 3eksdra "Whenever I see photos of your world online, it looks like such a lovely place." 
     m 3hksdrb "I'd hate to finally come there only for it to have turned into a dark, desolate wasteland."
-    m 4esa "Well, I guess that means we'll have to work together to make sure that doesn't happen."
-    m 7esu "Okay?" 
-    return
+    
+    if persistent._mas_pm_cares_environment = True 
+      m 4esa "Well, I guess that means we'll have to work together to make sure that doesn't happen."
+      m 7esu "Okay?"    
+      
+    else: 
+      m 4esa "Well, I guess that means I'll have to do my best to make sure that doesn't happen."
+      m 7ekb "Let me know if you change your mind, [player!]
+      return "derandom"
