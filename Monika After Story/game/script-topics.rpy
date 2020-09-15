@@ -15785,7 +15785,7 @@ label monika_environment:
         "No.":
             $ persistent._mas_pm_cares_environment = False
             m 1duc "Hmm..."
-            m 3lsd "Well, I can see why you may feel that way; natural can be cruel."
+            m 3lsd "Well, I can see why you may feel that way; nature can be cruel."
             m 4ekc "Diseases and natural disasters devastate millions, pests ravage crops, plant roots can damage infrastructure, and some insects are flat out obnoxious."
             m 2ekx "I mean, I don't think I've ever met anyone who likes mosquitos."
             m 2esd "There's also the fact that some people enjoy a comfortable standard of living."
