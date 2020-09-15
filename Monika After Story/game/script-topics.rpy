@@ -15789,7 +15789,7 @@ label monika_environment:
             m 4ekc "Diseases and natural disasters devastate millions, pests ravage crops, plant roots can damage infrastructure, and some insects are flat out obnoxious."
             m 2ekx "I mean, I don't think I've ever met anyone who likes mosquitos."
             m 2esd "There's also the fact that some people enjoy a comfortable standard of living."
-            m 3euc "Thanks to technology, we live in a more convienent and connected world than ever, and sometimes it may feel like nature does nothing but get in the way."
+            m 3euc "Thanks to technology, we live in a more convenient and connected world than ever, and sometimes it may feel like nature does nothing but get in the way."
             m 2ekd "For instance, the COVID-19 pandemic has disrupted events worldwide, crippled entire industries, inhibited scientific research, and forced many into isolation."
             m 1dkc "Some have lost their loved ones, their jobs, their happiness...all because of one infectious virus."
             m 1lkc "Because of that, I can see why some people might dislike the environment."
