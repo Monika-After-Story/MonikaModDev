@@ -15751,50 +15751,52 @@ label monika_literature_value:
     return
     
 # Do you care about the environment?
-default persistent._mas_pm_cares_environment = None
+default persistent._mas_pm_likes_nature = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_environment",category=['nature', 'life'],prompt="The environment",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_nature",category=['you', 'life'],prompt="Nature",random=True))
  
-label monika_environment:
+label monika_nature:
     m 2esd "Hey [player], I've been wondering..."
     $ _history_list.pop()
     menu:
-        m "Do you care about the environment{fast}?"
+        m "Do you like nature{fast}?"
         "Yes.":
-            $ persistent._mas_pm_cares_environment = True
+            $ persistent._mas_pm_likes_nature = True
             m 2suo "Really? That's wonderful!"
-            m 2wsa "I'm so glad to hear that, [player]."
-            m 3esd "Personally, I think that the environment is something we should treasure."
-            m 3esa "It's a beautiful world filled with all kinds of life, and there's a lot nature does to lend humanity a hand."
+            m 2wsa "I'm glad to hear that, [player]."
+            m 3esd "Personally, I think that nature is something we should treasure."
+            m 3esa "It's a beautiful world filled with all kinds of life, and there's a lot that nature does to lend humanity a hand."
             m 4esb "Insects pollinate crops, decomposers recycle waste, trees provide food and shade, oceans absorb heat, and so on."
             m 1esu "Since nature does so much to help us, I think it's only fair that we give something back in return."
             m 7hub "So, here's Monika's Green Tip of the Day!"
             m 7esc "Sometimes, it might seem difficult to make a difference when products such as electric vehicles and solar roofs can be expensive."
             m 3eub "However, you can make a difference and save money just by performing a few simple tasks each day!"
             m 3esb "Turning off appliances, taking shorter showers, buying a reusable water bottle, commuting by public transport..."
-            m 4esa "If you feel up to it, you can even become a vegetarian and start growing your own garden!"
-            m 7eud "Voting and engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow!"
+            m 4esa "You could even buy a houseplant, or start your own garden!"
+            m 7eud "Voting and engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow."
             m 3esu "The important thing is to work hard and stay optimistic. If you do that, there's nothing you can't accomplish."
             m 3wud "Who knows, maybe going green will even make you healthier and happier."
             m 4esu "After all, a sustainable life is a satisfying life."
-            m 3esa "For me, at least."
+            m 3rsa "For me, at least."
             m 3esb "That's my advice for today!"
             m 2hka "Thanks for listening~"
      
         "No.":
-            $ persistent._mas_pm_cares_environment = False
-            m 1duc "Hmm..."
-            m 3lsd "Well, I can see why you may feel that way; nature can be cruel."
-            m 4ekc "Diseases and natural disasters devastate millions, pests ravage crops, plant roots can damage infrastructure, and some insects are flat out obnoxious."
-            m 2ekx "I mean, I don't think I've ever met anyone who likes mosquitos."
-            m 2esd "There's also the fact that some people enjoy a comfortable standard of living."
-            m 3euc "Thanks to technology, we live in a more convenient and connected world than ever, and sometimes it may feel like nature does nothing but get in the way."
-            m 2ekd "For instance, the COVID-19 pandemic has disrupted events worldwide, crippled entire industries, inhibited scientific research, and forced many into isolation."
-            m 1dkc "Some have lost their loved ones, their jobs, their happiness...all because of one infectious virus."
-            m 1lkc "Because of that, I can see why some people might dislike the environment."
-            m 3esd "Just keep in mind that the harder humanity pushes against nature, the harder nature will push back."
-            m 2ekd "Whether it's rising sea levels, bigger wildfires, or heavier droughts, nature will hit, and it'll hit hard."
-            m 2esa "Don't worry, though; if anything happens, I'll always be by your side." 
-            m 3euu "Together, there's nothing we can't handle."
+            $ persistent._mas_pm_likes_nature = False
+            m 1esa "That's okay, [player]."
+            m 3lsd "Not everyone is an outdoors person."
+            m 3euc "Some prefer the comfortable ambience of their home, especially when technology is more convenient than ever."
+            m 1esd "Honestly, I can understand where they're coming from."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you; all of that is easier to do inside."
+            m 4ekc "Others have allergies or medical conditions, and can't stay outside for long."
+            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another."
+            m 1hkb "Even I have things that I dislike about it."
+            m 2tfd "I don't mind most insects, but some are just downright obnoxious."
+            m 3tkx "Constantly buzzing around your head, getting in your face, landing on your food...some mosquitos and ticks even carry nasty diseases." 
+            m 2rud "Summer can be difficult as well with tropical storms and high humidity."
+            m 1eku "Well, as long as I'm with you I'm fine with staying indoors."
+            m 3esb "Just make sure you get some sun every once in a while, okay?" 
+            m 2tfb "You don't want me getting on your case, do you?"
+            m 2hua "Ehehe~"
     return "derandom"
