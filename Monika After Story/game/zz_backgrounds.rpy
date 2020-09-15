@@ -22,6 +22,7 @@ init -5 python in mas_background:
     #value: ignored
     EXP_SKIP_OUTRO = "skip_outro"
 
+
 #START: Class definition
 init -10 python:
 
@@ -168,6 +169,16 @@ init -10 python:
             Not equals implementation
             """
             return not self.__eq__(other)
+
+        def __repr__(self):
+            return (
+                "<FilterSlice: (name: {0}, min: {1}, max: {2}, pri: {3})>"
+            ).format(
+                self.name,
+                self.minlength,
+                self.maxlength,
+                self.priority
+            )
 
         def __str__(self):
             """
@@ -326,6 +337,17 @@ init -10 python:
             if isinstance(other, MASBackgroundFilterSliceData):
                 return self.order < other.order
             return NotImplemented
+
+        def __repr__(self):
+            return (
+                "<FilterSliceData: (order: {0}, offset: {1}, length: {2}"
+                ", flt_slice: {3})>"
+            ).format(
+                self.order,
+                self.offset,
+                self.length,
+                self.flt_slice
+            )
 
         def __str__(self):
             """
@@ -487,6 +509,17 @@ init -10 python:
             # the last length value passed into build
 
             self._parse_slices(slices)
+
+        def __repr__(self):
+            return (
+                "<FilterChunk: (index: {0}, length: {1}, slices: {2}, "
+                "eff_slices: {3})>"
+            ).format(
+                self.index,
+                self.length,
+                self._slices,
+                self._eff_slices
+            )
 
         def __str__(self):
             """
@@ -1048,7 +1081,6 @@ init -10 python:
             """
             # advance slices
             self._index = self.adv_slice(sfco, self._index, True, curr_time)
-
             return self.current()
 
         def update(self, ct_off):
@@ -1195,6 +1227,22 @@ init -10 python:
 
             self._updated = False
             # set to True upon an update, set to False upon progress
+
+        def __repr__(self):
+            return (
+                "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
+                "day_flts: {3}, night_flts: {4}, mn_sr: {5}, sr_ss: {6}, "
+                "ss_mn: {7})>"
+            ).format(
+                self._index,
+                self._updates,
+                self._prev_flt,
+                self._day_filters,
+                self._night_filters,
+                self._mn_sr,
+                self._sr_ss,
+                self._ss_mn
+            )
 
         def __str__(self):
             """
@@ -2292,7 +2340,14 @@ init -10 python:
                     )
                 )
 
-            new_flt = self._flt_man.progress()
+            try:
+                new_flt = self._flt_man.progress()
+            except Error as e:
+                # in this case, we don't know what happened, but we got
+                # screwed. log out state of the flt man as well as the
+                # traceback
+                exc_type, exc_value, exc_tb = store.mas_utils.sys.exc_info()
+                store.mas_background.log_bg(self, exc_tb)
 
             if store.mas_background.dbg_log:
                 store.mas_utils.writelog(
@@ -2303,7 +2358,21 @@ init -10 python:
                     )
                 )
 
-            return new_flt
+            if new_flt is not None:
+                return new_flt
+
+            # if we had an issue with filter progression OR if we didn't get
+            # a filter back, we'll return a fallback of the first filter 
+            # available in the filter manager. If that doesn't work,
+            # then its forever daytime (FLT_DAY) 
+
+            flts = self._flt_man.filters()
+            if len(flts) > 0:
+                new_flt = flts[0]
+                if new_flt is not None:
+                    return new_flt
+            
+            return store.mas_sprites.FLT_DAY # should exist for every sprite
 
         def update(self, curr_time=None):
             """
@@ -2488,6 +2557,44 @@ init -20 python in mas_background:
                 return True
 
         return False
+
+
+    def log_bg(bg_obj, tbout=None):
+        """
+        Logs the given BG object to standard bg log
+
+        IN:
+            bg_obj - bg object to log
+            tbout - traceback object to print out, if provided
+                (Default: None)
+        """
+        if bg_obj is None:
+            return
+
+        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
+        if not bg_log.open():
+            # could not log, just abort here
+            return
+
+        # otherwise log output 
+        bg_log.raw_write = True
+
+        # NOTE: version should already be written out if this is runtime
+        bg_log.write("\n\nBackground Object: {0}\n".format(
+            bg_obj.background_id
+        ))
+        bg_log.write("Filter System:\n\n")
+        bg_log.write(str(bg_obj))
+        bg_log.write("\n\nRaw Filter Manager Data:\n")
+        bg_log.write(repr(bg_obj))
+
+        if tbout:
+            import traceback
+
+            bg_log.write("\n\n")
+            for tb_line in traceback.format_tb(tbout):
+                bg_log.write(tb_line)
+
 
 #START: BG change functions
 init 800 python:
