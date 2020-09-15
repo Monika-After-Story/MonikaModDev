@@ -15777,7 +15777,7 @@ label monika_environment:
             m 7eud "Voting and engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow!"
             m 3esu "The important thing is to work hard and stay optimistic. If you do that, there's nothing you can't accomplish."
             m 3wud "Who knows, maybe going green will even make you healthier and happier."
-            m 4esu "After all, a sustaininable life is a satisfying life."
+            m 4esu "After all, a sustainable life is a satisfying life."
             m 3esa "For me, at least."
             m 3esb "That's my advice for today!"
             m 2hka "Thanks for listening~"
