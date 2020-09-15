@@ -1080,6 +1080,7 @@ init -10 python:
             """
             # advance slices
             self._index = self.adv_slice(sfco, self._index, True, curr_time)
+
             return self.current()
 
         def update(self, ct_off):
