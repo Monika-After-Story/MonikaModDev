@@ -22,7 +22,6 @@ init -5 python in mas_background:
     #value: ignored
     EXP_SKIP_OUTRO = "skip_outro"
 
-
 #START: Class definition
 init -10 python:
 
@@ -2584,9 +2583,9 @@ init -20 python in mas_background:
             bg_obj.background_id
         ))
         bg_log.write("Filter System:\n\n")
-        bg_log.write(str(bg_obj))
+        bg_log.write(str(bg_obj._flt_man))
         bg_log.write("\n\nRaw Filter Manager Data:\n")
-        bg_log.write(repr(bg_obj))
+        bg_log.write(repr(bg_obj._flt_man))
 
         if tbout:
             import traceback
