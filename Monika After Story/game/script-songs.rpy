@@ -1528,11 +1528,11 @@ label mas_song_save_the_last_dance_for_me:
 return
 
 label mas_song_save_the_last_dance_for_me_lyrics:
-    m 1dud "{i}You can dance{w=0.3} every dance with the guy who gives you the eye, {w=0.2} let him hold you tight~{/i}"
-    m 1huu "{i}You can smile{w=0.3} every smile for the man who held your hand beneath the pale moon light~{/i}"
-    m 4eublo "{i}But don't forget who's takin' you home {w=0.3}{nw}"
+    m 1dud "{i}~You can dance{w=0.3} every dance with the guy who gives you the eye, {w=0.2} let him hold you tight~{/i}"
+    m 1huu "{i}~You can smile{w=0.3} every smile for the man who held your hand beneath the pale moon light~{/i}"
+    m 4eublo "{i}~But don't forget who's takin' you home {w=0.3}{nw}"
     extend 4tublu "and in whose arms you're gonna be~"
-    m 4hublo "{i}So darling,{w=0.2} save the last dance for me~"
+    m 4hublo "{i}~So darling,{w=0.2} save the last dance for me~"
 return
 
 init 5 python:
