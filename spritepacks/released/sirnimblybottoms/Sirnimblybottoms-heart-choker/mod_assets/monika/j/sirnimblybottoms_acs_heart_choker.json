@@ -1,0 +1,30 @@
+{
+    "__author": "Sirnimblybottoms",
+    "version": 3,
+    "type": 0,
+    "name": "sirnimblybottoms_heart_choker",
+    "img_sit": "sirnimblybottoms_heart_choker",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 8,
+    "acs_type": "choker",
+    "stay_on_start": true,
+    "priority": 8,
+    "dlg_desc": "choker",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Heart Choker",
+        "thumb": "sirnimblybottoms_heart_choker",
+        "group": "choker",
+        "select_dlg": [
+            "Aww the heart design is so cute~"
+        ]
+    },
+    "giftname": "heartchoker",
+    "arm_split": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}

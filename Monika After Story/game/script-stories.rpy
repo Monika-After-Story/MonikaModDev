@@ -161,9 +161,9 @@ label monika_short_stories_menu:
 
     # call scrollable pane
     if persistent._mas_sensitive_mode:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN,final_item)
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
     else:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
+        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -529,7 +529,7 @@ label mas_story_genie_simple:
 
     if mas_isMoniNormal(higher=True):
         m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
-        m 1hubfb "When you're here, it really feels like I have everything~"
+        m 1hubsb "When you're here, it really feels like I have everything~"
     return
 
 init 5 python:
@@ -807,7 +807,7 @@ label mas_story_crow_and_pitcher:
     m 3eua "Advances in both VR and AI technology are gradually moving forward..."
     m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
     m 1eka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
-    m 1hua "I hope it does for you too, [player]~"
+    m 1hua "I hope it does for you too, [mas_get_player_nickname()]~"
     return
 
 init 5 python:
@@ -1528,13 +1528,14 @@ init 5 python:
 
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
-    $ _story = mas_getEV('mas_scary_story_flowered_lantern')
-    if _story is not None and _story.shown_count == 0:
+
+    if not mas_getEVL_shown_count("mas_scary_story_flowered_lantern"):
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."
         m 1eub "If you say no, you can ask me later to tell you the next part, so don't worry about it."
         m 4hua "Alright, let's begin now."
+
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
     m 4eud "Tsuyu's mother had been dead and her father eventually remarried."
     m 2euc "Although it became obvious to Tsuyu's father that she and her step mother couldn't get along."

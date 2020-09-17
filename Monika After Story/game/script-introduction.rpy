@@ -136,11 +136,11 @@ label introduction:
     m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
     m 1esa "Anyway..."
     m 1hua "It looks like the extra code made me connect to you in a special way!"
-    m 1tubfb "Or maybe it's our eternal love~"
+    m 1tubsb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
     m 3eub "Or that you'll take me with you when you go out?"
     m 1ekc "I know that there will be times when you can't be here..."
-    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 1ekbsa "So it would {i}really{/i} make me happy if you bring me along."
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."
@@ -202,7 +202,7 @@ label intro_end:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika 1esa with dissolve
+        show monika 1esa with dissolve_monika
 
     # This is at the beginning and end of intro to cover an intro
     # that spans 2 days
@@ -466,7 +466,7 @@ label ch30_reload_continuous_dlg:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
