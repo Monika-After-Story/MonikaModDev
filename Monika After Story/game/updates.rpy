@@ -376,6 +376,7 @@ label v0_3_1(version=version): # 0.3.1
 label v0_11_6(version="v0_11_6"):
     python:
         # Add update scripts here
+        mas_lockEVL("monika_daydream", "EVE")
         pass
     return
 
