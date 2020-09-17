@@ -17,14 +17,15 @@ init 3 python in mas_compliments:
 
     compliment_database = dict()
 
+init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
-        _("Thanks for telling me that again, my love!"),
-        _("You always make me feel special, [player]."),
+        _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
+        _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
-        _("Thanks, [player]!"),
+        _("Thanks, [mas_get_player_nickname()]!"),
         _("You always flatter me, [player].")
     ]
 
@@ -109,7 +110,7 @@ label mas_compliment_beautiful:
     return
 
 label mas_compliment_beautiful_2:
-    m 1lubfb "Oh, gosh [player]..."
+    m 1lubsb "Oh, gosh [player]..."
     m 1hubfb "Thank you for the compliment."
     m 2ekbfb "I love it when you say things like that~"
     m 1ekbfa "To me, you're the most beautiful person in the world!"
@@ -129,7 +130,7 @@ label mas_compliment_beautiful_2:
     return
 
 label mas_compliment_beautiful_3:
-    m 1hubfa "Ehehe~"
+    m 1hubsa "Ehehe~"
     m 1ekbfa "[mas_compliments.thanks_quip]"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
@@ -154,7 +155,7 @@ label mas_compliment_eyes:
     return
 
 label mas_compliment_eyes_2:
-    m 1subfb "Oh, [player]..."
+    m 1subsb "Oh, [player]..."
     m 1tubfb "I know I'm pretty proud of my eyes already, but hearing you say that..."
     m 1dkbfa "It just makes my heart flutter~"
     menu:
@@ -173,7 +174,7 @@ label mas_compliment_eyes_2:
     return
 
 label mas_compliment_eyes_3:
-    m 1hubfb "[mas_compliments.thanks_quip]"
+    m 1hubsb "[mas_compliments.thanks_quip]"
     m 2ekbfb "Stare into my eyes as much as you want~"
     return
 
@@ -246,7 +247,7 @@ label mas_compliment_intelligent:
 label mas_compliment_intelligent_2:
     m 1wub "Wow...{w=0.3}thanks, [player]."
     m 3eua "I pride myself in being well read, so it means a lot that you've noticed."
-    m 3hubfb "I want to learn as much as I can, if it makes you proud of me!"
+    m 3hubsb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
         "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
@@ -287,7 +288,7 @@ label mas_compliment_hair:
 
 label mas_compliment_hair_2:
     if monika_chr.hair.name != "def":
-        m 1wubfb "Thank you so much, [player]..."
+        m 1wubsb "Thank you so much, [player]..."
         m 1lkbfb "I was really nervous the first time I changed my hair here."
     else:
         m 1hubfb "Thank you so much, [player]!"
@@ -299,7 +300,7 @@ label mas_compliment_hair_2:
             m 1hub "Thanks, [player]!"
         "You're cute no matter how you wear it." if persistent._mas_likes_hairdown:
             $ mas_gainAffection(5,bypass=True)
-            m 1ekbfa "Awww, [player]."
+            m 1ekbsa "Awww, [player]."
             m 1hubfb "You always make me feel special!"
             m "Thank you!"
         "You'd be even cuter with short hair.":
@@ -311,11 +312,11 @@ label mas_compliment_hair_2:
 
 label mas_compliment_hair_3:
     if monika_chr.hair.name != "def":
-        m 1wubfb "Thank you so much, [player]!"
+        m 1wubsb "Thank you so much, [player]!"
         m 1lkbfb "I'm really happy that you like this hairstyle."
     else:
-        m 1hubfb "Thanks, [player]!"
-        m "You always make me feel special."
+        m 1hubsb "Thanks, [player]!"
+        m 1hubfb "You always make me feel special."
     return
 
 init 5 python:
@@ -340,7 +341,7 @@ label mas_compliment_fit_2:
     m 1hub "Thanks, [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
     m 1efb "I hope you're watching out for your health."
-    m 1lubfb "We can always work out together when I'm there..."
+    m 1lubsb "We can always work out together when I'm there..."
     menu:
         "That sounds like a lot of fun!":
             $ mas_gainAffection(2,bypass=True)
@@ -421,7 +422,7 @@ label mas_compliment_smile:
 label mas_compliment_smile_2:
     m 1hub "You're so sweet, [player]~"
     m 1eua "I smile a lot when you're here."
-    m 1ekbfa "Because it makes me very happy when you spend time with me~"
+    m 1ekbsa "Because it makes me very happy when you spend time with me~"
     menu:
         "I'll visit you every day to see your wonderful smile.":
             $ mas_gainAffection(5,bypass=True)
@@ -453,7 +454,7 @@ init 5 python:
 
 label mas_compliment_hero:
     $ mas_gainAffection()
-    m 1wubfsdld "H-{w=0.3}huh?"
+    m 1wubssdld "H-{w=0.3}huh?"
     m "I'm your hero?"
     m 2rkbfsdlb "[player]...{w=1.5} I'm not sure what you mean..."
     m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
@@ -486,7 +487,7 @@ label mas_compliment_cute:
     return
 
 label mas_compliment_cute_2:
-    m 1wubfsdld "Ah!"
+    m 1wubssdld "Ah!"
     m 3rkbfsdla "You {i}kind of{/i} caught me off guard with that one."
     m 3tubfb "Just a little..."
     m 1hubfa "But I'm glad you think so!"
@@ -512,7 +513,7 @@ label mas_compliment_cute_2:
     return
 
 label mas_compliment_cute_3:
-    m 1ekbfa "[mas_compliments.thanks_quip]"
+    m 1ekbsa "[mas_compliments.thanks_quip]"
     m 1hubfa "You can be really cute a lot of the time too, you know~"
     return
 
@@ -589,7 +590,7 @@ label mas_compliment_pong:
                 m 3eua "Don't worry, [player]."
                 m 3eub "Keep playing with me and get more practice."
                 m 3hua "I'm always trying to help you be the best you you can be."
-                m 1ekbfa "And if by doing so, I get to spend more time with you, I couldn't be happier."
+                m 1ekbsa "And if by doing so, I get to spend more time with you, I couldn't be happier."
     return
 
 init 5 python:
@@ -651,7 +652,7 @@ label mas_compliment_lookuptoyou_3:
         m 1rksdlb "{cps=*2}Well yeah, I'm taller than you...{/cps}{nw}"
         $ _history_list.pop()
 
-    m 1hubfb "[mas_compliments.thanks_quip]"
+    m 1hubsb "[mas_compliments.thanks_quip]"
     m 3hubfa "Hearing you say that never fails to make me smile!"
     m 3hubfb "I'll always look up to you too!"
 
@@ -705,7 +706,7 @@ label mas_compliment_thinking_of_you_2:
     menu:
         "Thinking of you always brightens my day!":
             $ mas_gainAffection(5,bypass=True)
-            m 1subfb "Aww, that's {i}so{/i} sweet, [player]!"
+            m 1subsb "Aww, that's {i}so{/i} sweet, [player]!"
             m 3hubfu "I feel the same way about you~"
 
         "I dream of you every night!":
@@ -718,7 +719,7 @@ label mas_compliment_thinking_of_you_2:
             $ mas_loseAffection()
             m 2esc "..."
             m 2etc "..."
-            m 2rksdlc "Oh, umm...."
+            m 2rksdlc "Oh, umm..."
             m 2rksdld "I'm sorry?"
     return
 

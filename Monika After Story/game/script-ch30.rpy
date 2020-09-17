@@ -31,6 +31,12 @@ init -890 python in mas_globals:
     if tt_detected:
         store.persistent._mas_pm_has_went_back_in_time = True
 
+    #Internal renpy version check
+    is_r7 = renpy.version(True)[0] == 7
+
+    # Check whether or not the user uses a steam install
+    is_steam = "steamapps" in renpy.config.basedir.lower()
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -1769,17 +1775,16 @@ label ch30_reset:
 
     # check for game unlocks
     python:
-        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
-        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
-            "pong": "ch30_main", # pong should always be unlocked
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
         }
+        mas_unlockGame("pong") # always unlock pong
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
-            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
+            # unlock if we've seen the label
+            if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)
 
 

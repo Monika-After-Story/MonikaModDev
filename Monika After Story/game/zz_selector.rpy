@@ -2939,7 +2939,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             if mailbox.read_outfit_checkbox_visible():
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
-                    style "outfit_check_button"
+                    style "generic_fancy_check_button"
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -3528,7 +3528,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.UPSET, mas_aff.NORMAL)
         ),
         restartBlacklist=True,
@@ -3596,7 +3596,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("hair", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         restartBlacklist=True,
         markSeen=True
@@ -3642,7 +3642,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL, None)
         ),
         restartBlacklist=True
@@ -3707,7 +3707,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("left-hair-clip", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
@@ -3731,7 +3731,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("left-hair-flower", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
@@ -3781,7 +3781,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("choker", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
@@ -3805,7 +3805,7 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("hat", "change"),
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
         restartBlacklist=True,
