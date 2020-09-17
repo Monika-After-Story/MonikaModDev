@@ -15770,7 +15770,7 @@ label monika_nature:
             m 3esd "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist."
             m 1esa "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
             m 7hub "So, here's Monika's Green Tip of the Day!"
-            m 7esc "Sometimes, people hesitate to go green because they're worried that it's too expensive."
+            m 7eud "Sometimes, people hesitate to go green because they're worried that it's too expensive."
             m 4esd "That's partially true. Electric vehicles, smart homes, and solar roofs can all cost a fortune."
             m 3wuo "However, you can make a difference and {i}save{/i} money just by making a few simple choices each day!"
             m 3eub "Turning off appliances, taking shorter showers, buying a reusable water bottle, commuting by public transport..."
