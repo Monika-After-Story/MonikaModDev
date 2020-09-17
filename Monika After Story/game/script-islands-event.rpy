@@ -3,6 +3,127 @@
 # it basically shows a new screen over everything, and has an image map
 # Monika reacts to he place the player clicks
 
+
+python early:
+
+    # islands-specific displayable, handles issues with no decoding
+    def MASIslandBackground(**filter_pairs):
+        """
+        DynamicDisplayable for Island background images. This includes
+        special handling to return None if island images could not be
+        decoded.
+
+        All Island images should use fallback handling and are built with that
+        in mind.
+
+        IN:
+            **filter_pairs - filter pairs to MASFilterWeatherMap.
+
+        RETURNS: DynamicDisplayable for Island images that respect filters and
+            weather.
+        """
+        return MASFilterWeatherDisplayableCustom(
+            _mas_islands_select,
+            True,
+            **filter_pairs
+        )
+
+
+# island image definitions
+image mas_islands_wf = MASIslandBackground(
+    day=MASWeatherMap({
+        mas_weather.PRECIP_TYPE_DEF: (
+            "mod_assets/location/special/with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_RAIN: (
+            "mod_assets/location/special/rain_with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_SNOW: (
+            "mod_assets/location/special/snow_with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_OVERCAST: (
+            "mod_assets/location/special/overcast_with_frame.png"
+        ),
+    }),
+    night=MASWeatherMap({
+        mas_weather.PRECIP_TYPE_DEF: (
+            "mod_assets/location/special/night_with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_RAIN: (
+            "mod_assets/location/special/night_rain_with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_SNOW: (
+            "mod_assets/location/special/night_snow_with_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_OVERCAST: (
+            "mod_assets/location/special/night_overcast_with_frame.png"
+        ),
+    })
+)
+image mas_islands_wof = MASIslandBackground(
+    day=MASWeatherMap({
+        mas_weather.PRECIP_TYPE_DEF: (
+            "mod_assets/location/special/without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_RAIN: (
+            "mod_assets/location/special/rain_without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_SNOW: (
+            "mod_assets/location/special/snow_without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_OVERCAST: (
+            "mod_assets/location/special/overcast_without_frame.png"
+        ),
+    }),
+    night=MASWeatherMap({
+        mas_weather.PRECIP_TYPE_DEF: (
+            "mod_assets/location/special/night_without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_RAIN: (
+            "mod_assets/location/special/night_rain_without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_SNOW: (
+            "mod_assets/location/special/night_snow_without_frame.png"
+        ),
+        mas_weather.PRECIP_TYPE_OVERCAST: (
+            "mod_assets/location/special/night_overcast_without_frame.png"
+        ),
+    })
+)
+
+init 2 python:
+    # snow-specific maps. This is because the cherry-blossom thing.
+    # NOTE: we even though this is snow, we set the precip types to def
+    #   this is so we can leverage the fallback system
+    mas_islands_snow_wf_mfwm = MASFilterWeatherMap(
+        day=MASWeatherMap({
+            mas_weather.PRECIP_TYPE_DEF: (
+                "mod_assets/location/special/snow_with_frame.png"
+            )
+        }),
+        night=MASWeatherMap({
+            mas_weather.PRECIP_TYPE_DEF: (
+                "mod_assets/location/special/night_snow_with_frame.png"
+            )
+        }),
+    )
+    mas_islands_snow_wof_mfwm = MASFilterWeatherMap(
+        day=MASWeatherMap({
+            mas_weather.PRECIP_TYPE_DEF: (
+                "mod_assets/location/special/snow_without_frame.png"
+            )
+        }),
+        night=MASWeatherMap({
+            mas_weather.PRECIP_TYPE_DEF: (
+                "mod_assets/location/special/night_snow_without_frame.png"
+            )
+        }),
+    )
+
+    mas_islands_snow_wf_mfwm.use_fb = True
+    mas_islands_snow_wof_mfwm.use_fb = True
+
+
 ### initialize the island images
 init -10 python:
     ## NOTE: we assume 2 things:
@@ -15,6 +136,24 @@ init -10 python:
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
+
+
+    def _mas_islands_select(st, at, mfwm):
+        """
+        Selection function to use in Island-based images
+
+        IN:
+            st - renpy related
+            at - renpy related
+            mfwm - MASFilterWeatherMap for this island
+
+        RETURNS: displayable data
+        """
+        if mas_cannot_decode_islands:
+            return "None", None
+
+        # otherwise standard mechanics
+        return mas_fwm_select(st, at, mfwm)
 
 
 init -11 python in mas_island_event:
@@ -83,7 +222,7 @@ init 5 python:
                 prompt="Can you show me the floating islands?",
                 pool=True,
                 unlocked=False,
-                rules={"no unlock": None},
+                rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
                 aff_range=(mas_aff.ENAMORED, None)
             )
         )
@@ -155,7 +294,7 @@ label mas_monika_islands:
     $ enable_esc()
     $ store.mas_hotkeys.no_window_hiding = False
 
-    m 1eua "I hope you liked it, [player]~"
+    m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
 
 label mas_island_upsidedownisland:
@@ -337,9 +476,9 @@ label mas_island_day3:
     return
 
 label mas_island_night1:
-    m "You're probably wondering what happened to that orange comet that occasionally passes by."
-    m "Don't worry, I've dealt with it."
-    m "I wouldn't want you to get hurt~"
+    m "While it's nice to be productive during the day, there's something so peaceful about the night."
+    m "The sounds of crickets chirping mixed with a gentle breeze is so relaxing."
+    m "You'd hold me on a night like that, right~"
     return
 
 label mas_island_night2:
@@ -348,7 +487,7 @@ label mas_island_night2:
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
     else:
-        m "Have you ever gone stargazing, [player]?"
+        m "Have you ever gone stargazing, [mas_get_player_nickname()]?"
         m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
         m "It's surprisingly relaxing, you know?"
         m "I've found that it can really relieve stress and clear your head..."
@@ -469,6 +608,8 @@ label mas_island_bookshelf2:
     return
 
 #NOTE: This is temporary until we split islands into foreground/background
+# NOTE: change the island image definitions (see top of this file) when this
+#   happens.
 init 500 python in mas_island_event:
     def getBackground():
         """
@@ -476,20 +617,23 @@ init 500 python in mas_island_event:
 
         Picks the islands bg to use based on the season.
 
-        OUT:
-            image filepath to show
+        RETURNS: image to use as a displayable. (or image path)
         """
         if store.mas_isWinter():
-            return store.mas_weather_snow.isbg_window(
-                store.mas_current_background.isFltDay(),
-                store._mas_island_window_open
+            if store._mas_island_window_open:
+                return store.mas_islands_snow_wof_mfwm.fw_get(
+                    store.mas_sprites.get_filter()
+                )
+
+            return store.mas_islands_snow_wf_mfwm.fw_get(
+                store.mas_sprites.get_filter()
             )
 
-        else:
-            return store.mas_current_weather.isbg_window(
-                store.mas_current_background.isFltDay(),
-                store._mas_island_window_open
-            )
+        if store._mas_island_window_open:
+            return "mas_islands_wof"
+
+        return "mas_islands_wf"
+
 
 screen mas_islands_background:
 

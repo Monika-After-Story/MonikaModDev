@@ -47,25 +47,24 @@ label mas_mood_theroom:
 
 label mas_mood_horny:
     if persistent.playername.lower() == "monik":
-        m 1k "Ahh, only for my one and only~"
+        m "Ahh, only for my one and only~"
     elif persistent.playername.lower() == "rune":
-        m 1e "I wouldn't mind, Dragon Writer~"
+        m "I wouldn't mind, Dragon Writer~"
     elif persistent.playername.lower() == "thepotatoguy":
-        m 2r "Sorry, I have no interest in potatoes."
+        m "Sorry, I have no interest in potatoes."
     elif persistent.playername.lower() == "ronin":
-        m 2p "Aren't you married? Go talk to your wife."
+        m "Aren't you married? Go talk to your wife."
     elif persistent.playername.lower() == "pi":
-        m 2h "Don't you have a girlfriend? Stop being a weeb or she's gonna kill you."
+        m "Don't you have a girlfriend? Stop being a weeb or she's gonna kill you."
     elif persistent.playername.lower() == "lucian.chr":
-        m 2q "No Dark Lords, thank you."
+        m "No Dark Lords, thank you."
     elif persistent.playername.lower() == "subzero":
-        m 1r "Damn horny kid..."
+        m "Damn horny kid..."
     elif persistent.playername.lower() == "ryuse":
-        m 1h "Nope, bye."
+        m "Nope, bye."
         return 'quit'
     else:
-        m 3n "Sorry [player], but we aren't that far into our relationship yet. Maybe in a year or two~"
+        m 3rksdla "Sorry [player], but we aren't that far into our relationship yet. Maybe in a year or two~"
     return
 
 ## end dev easter eggs ========================================================
-

@@ -43,7 +43,7 @@ init 5 python:
     )
 
 label monika_fun_facts_open:
-    if mas_getEV('monika_fun_facts_open').shown_count == 0:
+    if mas_getEVL_shown_count("monika_fun_facts_open") == 0:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
@@ -95,7 +95,7 @@ init 5 python:
 
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
     m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
     m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
@@ -294,7 +294,7 @@ label mas_fun_fact_vincent_van_gone:
     m 2dkc "There will come a time where it'll no longer be there."
     m 2rkc "...Or at least be noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
-    m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
+    m 5hub "I will always accept and take on any burdens that you shoulder, [mas_get_player_nickname()]~"
     #No end for this fact
     $ persistent._mas_funfactfun = True
     return
@@ -330,7 +330,7 @@ init 5 python:
 
 label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
-    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 3eub "The longest word in English that only contains a single vowel is 'strength.'"
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
@@ -449,7 +449,7 @@ label mas_fun_fact_binky:
     m 1eua "It's the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
     m 1rksdla "Well, although you make me so happy that I can't help but be filled with energy."
     m 1rksdlb "Don't expect me to start hopping around, [player]!"
-    m 1dkbfa "...That would be {i}way{/i} too embarrassing to do."
+    m 1dkbsa "...That would be {i}way{/i} too embarrassing to do."
     #Call the end
     call mas_fun_facts_end
     return
@@ -513,7 +513,7 @@ label mas_fun_fact_I_am:
     m 1eua "Here's an example."
     m 2rfb "'{i}Monika! Who's [player]'s loving girlfriend?{/i}'"
     m 3hub "'I am!'"
-    m 1hubfa "Ehehe~"
+    m 1hubsa "Ehehe~"
     #Call the end
     call mas_fun_facts_end
     return
@@ -754,6 +754,103 @@ label mas_fun_fact_cloud_weight:
     extend 1eua "It's hard to imagine that something so heavy can just float in the air like that."
     m 3eub "It kind of reminds me of the classic question...what's heavier, a kilogram of steel or a kilogram of feathers?"
     m 1tua "You most likely already know the answer to that though, right [player]? Ehehe~"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_coffee_origin",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_coffee_origin:
+    m 1eua "Oh, here's one that's particularly interesting to me..."
+    m 1eud "The last time I had a cup of coffee, I got a little curious about its origins..."
+    m 3euc "The use of coffee has been recorded consistently since around the 15th century, but...{w=0.2}it's unclear {i}how{/i} exactly it was discovered."
+    m 3eud "...There are actually quite a few legends claiming to be the very first."
+    m 1eua "Several accounts involve farmers or monks observing animals acting oddly after eating some strange, bitter berries."
+    m 3wud "Upon trying the beans for themselves, they were amazed to find that they too were energized!"
+    m 2euc "One such myth claims that an Ethiopian monk named Kaldi brought the berries to a nearby monastery, wanting to share what he'd found."
+    m 7eksdld "...But when he did so, he was met with disapproval and the coffee beans were thrown into a fire."
+    m 3duu "As they burned, however, the beans began to let off the most {i}delicious{/i} aroma. {w=0.3}It was so enticing that the monks scrambled to save the beans and put them in water."
+    m 3eub "...Thus producing the first cup of coffee!"
+    m 2euc "Another claim states that an Islamic scholar named Omar discovered coffee beans during his exile from Mecca."
+    m 2eksdld "At the time, he was starving and struggling to survive. {w=0.3}{nw}"
+    extend 7wkd "If not for the energy they provided, he may have died!"
+    m 3hua "However, when word of his discovery spread, he was asked to return and made a saint."
+    m 1esd "Whether or not that was truly its first use, coffee became very prevalent in the Islamic world after its discovery."
+    m 3eud "For example, during fasting periods it was used to ease hunger and help people remain energized."
+    m 3eua "When its use spread to Europe, many countries initially used it for medicinal purposes. {w=0.3}By the 17th century, coffeehouses were becoming plentiful and popular."
+    m 3hub "...And I for one can certainly attest that the love of coffee has remained strong to this day!"
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_synesthesia",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_synesthesia:
+    m 1esa "Okay, this one's pretty interesting..."
+    m 3eua "Some people experience a phenomenon known as {i}synesthesia{/i},{w=0.1} which is where something that stimulates one of our senses also triggers another sense simultaneously."
+    m 1hua "That's kind of a wordy explanation, ehehe...{w=0.2} Let's find an example!"
+    m 1eua "It says here that a common form of synesthesia is {i}grapheme–color synesthesia{/i},{w=0.1} which is where people 'experience' letters and numbers as colors."
+    m 3eua "Another kind is {i}spatial sequence synesthesia{/i},{w=0.1} which is where numbers and figures are 'seen' at specific locations in space."
+    m "Like, one number appears 'closer' or 'further' away than another number. {w=0.2}{nw}"
+    extend 3eub "It's kinda like a map!"
+    m 1eua "...And there's a whole bunch of other kinds of synesthesia too."
+    m 1esa "Researchers aren't really sure how prevalent it is--{w=0.1}some have suggested as much as 25 percent of the population experiences it, but I seriously doubt that since I'd never heard of it until now."
+    m 3eub "Probably the most accurate estimate so far is that it's just over 4 percent of people, so that's what I'll go with!"
+    m 1eua "Experiencing synesthesia sounds like it'd be pretty neat,{w=0.2} don't you think so [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_dream_faces",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_dream_faces:
+    m 3eub "Okay, got one!"
+    m 1eua "Supposedly, our minds don't invent new faces when we dream.{w=0.2} Every person you've met in your dreams is someone you've seen in real life at some point."
+    m 3wud "You don't even have to talk to them in real life!"
+    m 3eud "If you just walked past them while shopping or something, their face gets registered in your mind and they can appear in your dreams."
+    m 1hua "I think it's incredible how much info the brain can store!"
+    m 1ekbla "I wonder...{w=0.2}do you ever dream about me, [player]?"
+    #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_monochrome_dreams",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_monochrome_dreams:
+    m 3eua "Did you know that from 1915 to the 1950s, most people's dreams were in black and white?"
+    m 1esa "Nowadays, it's a relatively rare phenomenon for people with unimpaired vision."
+    m 3eua "Researchers have linked this to the fact that movies and shows were almost exclusively black and white back then."
+    m 3eud "...But I think that's kinda weird, because people still saw everything in color.{w=0.3} {nw}"
+    extend 3hksdlb "It's not like the world went black and white!"
+    m 1esd "It just goes to show that the content you absorb can have all kinds of effects on your mind, even if it's trivial."
+    m 3eua "I think if there's a lesson to be learned here, it's that we should be very careful about the kind of media we consume, okay [player]?"
     #Call the end
     call mas_fun_facts_end
     return

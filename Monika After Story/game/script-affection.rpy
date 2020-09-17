@@ -120,6 +120,16 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: 1,
+        DISTRESSED: 2,
+        UPSET: 3,
+        NORMAL: 4,
+        HAPPY: 4,
+        AFFECTIONATE: 5,
+        ENAMORED: 6,
+        LOVE: 6
+    }
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
@@ -451,6 +461,9 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
         layout.QUIT = mas_layout.QUIT_BROKEN
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(BROKEN)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -476,6 +489,9 @@ init 15 python in mas_affection:
             renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
             persistent._mas_acs_enable_promisering = False
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(DISTRESSED)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -494,6 +510,9 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate()
+
 
     def _normalToUpset():
         """
@@ -501,6 +520,9 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(UPSET)
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -530,6 +552,9 @@ init 15 python in mas_affection:
         # remove change to def outfit event in case it's been pushed
         store.mas_rmallEVL("mas_change_to_def")
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
+
 
     def _happyToNormal():
         """
@@ -548,6 +573,9 @@ init 15 python in mas_affection:
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
             store.pushEvent("mas_change_to_def",skipeval=True)
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(NORMAL)
+
 
     def _happyToAff():
         """
@@ -564,6 +592,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _affToHappy():
         """
@@ -584,9 +614,14 @@ init 15 python in mas_affection:
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(HAPPY)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(HAPPY)
 
     def _affToEnamored():
         """
@@ -608,6 +643,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _enamoredToAff():
         """
@@ -617,9 +654,14 @@ init 15 python in mas_affection:
         # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
 
+        #Change randchat
+        store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
     def _enamoredToLove():
         """
@@ -634,6 +676,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(LOVE)
 
     def _loveToEnamored():
         """
@@ -646,6 +690,8 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        #Check the song analysis delegate
+        store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
     def _gSadToNormal():
         """
@@ -899,26 +945,18 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, [player]?"),
-            _("Yes, [player]?"),
-            _("What's on your mind, [player]?"),
-            _("What would you like to talk about, [player]?")
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to talk about? <3"),
-            _("What would you like to talk about, honey?"),
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("What's on your mind, darling?"),
-            _("What would you like to talk about, sweetie?"),
-            _("What would you like to talk about, [player]?"),
-            _("Yes, [player]?"),
-            _("What's on your mind, [player]?"),
-            _("What would you like to talk about, [player]?")
+            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
         ]
         save_quips(ENAMORED, quips)
 
@@ -926,19 +964,12 @@ init 15 python in mas_affection:
         quips = [
 #            "Hey, what's up?",
             _("What's on your mind?"),
-            _("What's on your mind, darling?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("Anything on your mind?"),
-            _("Anything on your mind, hun?"),
-            _("What's up, darling?"),
-            _("What's up, honey?"),
-            _("What's up, dear?"),
-            _("What's up, sweetie?"),
-            _("What's up, [player]?"),
+            _("Anything on your mind, [mas_get_player_nickname()]?"),
+            _("What's up, [mas_get_player_nickname()]?"),
 #            "What's up?",
-            _("Yes, sweetheart?"),
-            _("Yes, honey?"),
-            _("Yes, dear?"),
-            _("Yes, love?"),
+            _("Yes, [mas_get_player_nickname()]?"),
             _("^_^"),
             _("<3"),
             _("Anything you'd like to talk about?"),
@@ -1005,32 +1036,29 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."),
-            _("Pick anything you like, [player].")
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()].")
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, [player]."),
-            _("Pick anything you like, [player]."),
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetheart."),
-            _("Pick anything you like, sweetie.")
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
             _("What would you like to play? <3"),
-            _("Choose anything you like, honey."),
-            _("Pick anything you like, sweetie."),
-            _("Pick anything you like, sweetheart."),
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("Pick anything you like, [mas_get_player_nickname()]."),
             _("Yay! Let's play together!"),
             _("I'd love to play something with you!"),
             _("I'd love to play with you!")
         ]
+
         save_quips(LOVE, quips)
 
     _init_talk_quips()
@@ -1898,7 +1926,7 @@ init 5 python:
             random=False,
             pool=True,
             unlocked=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         restartBlacklist=True
@@ -1934,10 +1962,16 @@ label monika_affection_nickname:
         m 3hua "I'll still get the final say, though!"
         m "What do you say?{nw}"
         python:
-            # change the prompt for this event
-            aff_nickname_ev.prompt = _("Can I call you a different name?")
-            Event.lockInit("prompt", ev=aff_nickname_ev)
-            persistent._mas_offered_nickname = True
+            if aff_nickname_ev:
+                # change the prompt for this event
+                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                Event.lockInit("prompt", ev=aff_nickname_ev)
+                persistent._mas_offered_nickname = True
+
+            #Also give the player nickname event a start_date so it doesn't queue instantly
+            pnick_ev = mas_getEV("mas_affection_playernickname")
+            if pnick_ev:
+                pnick_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
 
     else:
         jump monika_affection_nickname_yes
@@ -1949,20 +1983,22 @@ label monika_affection_nickname:
             label monika_affection_nickname_yes:
                 pass
 
+            show monika 1eua at t11 zorder MAS_MONIKA_Z
+
             $ done = False
-            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 python:
-                    inputname = renpy.input(
+                    inputname = mas_input(
                         _("So what do you want to call me?"),
-                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
-                        length=10
+                        allow=name_characters_only,
+                        length=10,
+                        screen_kwargs={"use_return_button": True}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "nevermind":
+                if lowername == "cancel_input":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
@@ -2004,7 +2040,7 @@ label monika_affection_nickname:
 
                         elif good_monika_nickname_comp.search(inputname):
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
+                            m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
                             label .neutral_accept:
@@ -2041,7 +2077,8 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
 
                             show monika 1efc
@@ -2055,7 +2092,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                            if mas_getEVL_shown_count("mas_apology_bad_nickname") == 2:
                                 call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
@@ -2067,7 +2104,7 @@ label monika_affection_nickname:
                             $ m_name = "Monika"
                             $ persistent._mas_monika_nickname = "Monika"
 
-                        $ mas_lockEventLabel("monika_affection_nickname")
+                        $ mas_lockEVL("monika_affection_nickname", "EVE")
                         $ done = True
 
         "No.":
@@ -2083,6 +2120,182 @@ label monika_affection_nickname_bad_lock:
     m 1efc "Let's talk about something else."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_affection_playernickname",
+            conditional="seen_event('monika_affection_nickname')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
+
+default persistent._mas_player_nicknames = list()
+
+label mas_affection_playernickname:
+    python:
+        #A list of names we always want to have
+        base_nicknames = [
+            ("Darling", "darling", True, True, False),
+            ("Honey", "honey", True, True, False),
+            ("Love", "love", True, True, False),
+            ("My love", "my love", True, True, False),
+            ("Sweetheart", "sweetheart", True, True, False),
+            ("Sweetie", "sweetie", True, True, False),
+        ]
+
+    m 1euc "Hey, [player]?"
+    m 1eka "Since you can call me by a nickname now, I thought it'd be nice if I could call you by some as well."
+
+    m 1etc "Is that alright with you?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Is that alright with you?{fast}"
+
+        "Sure, [m_name].":
+            m 1hua "Great!"
+            m 3eud "I should ask though, what names are you comfortable with?"
+            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you.", base_nicknames)
+
+        "No.":
+            m 1eka "Alright, [player]."
+            m 3eua "Just let me know if you ever change your mind, okay?"
+
+    #Now unlock the nickname change ev
+    $ mas_unlockEVL("monika_change_player_nicknames", "EVE")
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_change_player_nicknames",
+            prompt="Can you call me different nicknames?",
+            category=['you'],
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        )
+    )
+
+label monika_change_player_nicknames:
+    m 1hub "Sure [player]!"
+
+    python:
+        #Generate a list of names we're using now so we can set things
+        if not persistent._mas_player_nicknames:
+            current_nicknames = [
+                ("Darling", "darling", False, True, False),
+                ("Honey", "honey", False, True, False),
+                ("Love", "love", False, True, False),
+                ("My love", "my love", False, True, False),
+                ("Sweetheart", "sweetheart", False, True, False),
+                ("Sweetie", "sweetie", False, True, False),
+            ]
+            dlg_line = "Pick the names you'd like me to call you."
+
+        else:
+            current_nicknames = [
+                (nickname.capitalize(), nickname, True, True, False)
+                for nickname in persistent._mas_player_nicknames
+            ]
+            dlg_line = "Deselect the names you don't want me to call you anymore."
+
+    call mas_player_nickname_loop("[dlg_line]", current_nicknames)
+    return
+
+label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
+    show monika 1eua at t21
+    python:
+        renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
+        nickname_pool.sort()
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Done", default_button_prompt="Done")
+
+    python:
+        done = False
+        acceptable_nicknames = _return.keys()
+
+        if acceptable_nicknames:
+            dlg_line = "Is there anything else you'd like me to call you?"
+
+        else:
+            dlg_line = "Is there something else you'd like me to call you instead?"
+
+    show monika at t11
+    while not done:
+        m 1eua "[dlg_line]{nw}"
+        $ _history_list.pop()
+        menu:
+            m "[dlg_line]{fast}"
+
+            "Yes.":
+                label .name_enter_skip_loop:
+                    pass
+
+                #Now parse this
+                python:
+                    lowername = mas_input(
+                        _("So what do you want me to call you?"),
+                        allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+                        length=10,
+                        screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
+                    ).strip(' \t\n\r').lower()
+
+                #Now validate
+                if lowername == "nevermind":
+                    $ done = True
+
+                elif lowername == "":
+                    m 1eksdla "..."
+                    m 3rksdlb "You have to give me a name to call you, [player]..."
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif lowername == player.lower():
+                    m 2hua "..."
+                    m 4hksdlb "That's the same name you have right now, silly!"
+                    m 1eua "Try again~"
+                    jump .name_enter_skip_loop
+
+                elif mas_awk_name_comp.search(lowername):
+                    $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
+                    m 1rksdlb "[awkward_quip]"
+                    m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
+                    jump .name_enter_skip_loop
+
+                elif mas_bad_name_comp.search(lowername):
+                    $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
+                    m 1ekd "[bad_quip]"
+                    m 3eka "Please pick a nicer name for yourself, okay?"
+                    jump .name_enter_skip_loop
+
+                elif lowername in acceptable_nicknames:
+                    m 3rksdla "You already told me I can call you that, [player]..."
+                    m 1hua "Try again~"
+                    jump .name_enter_skip_loop
+
+                else:
+                    #If this is all good, then we'll add this to a list of things to add
+                    $ acceptable_nicknames.append(lowername)
+
+            "No.":
+                $ done = True
+
+    if acceptable_nicknames:
+        $ dlg_line = "Just let me know if you ever want me to call you some other names, okay?"
+
+    else:
+        $ dlg_line = "Just let me know if you ever change your mind, okay?"
+
+    m 1hua "Alright, [player]."
+    m 3eub "[dlg_line]"
+
+    #Now set persistent
+    $ persistent._mas_player_nicknames = acceptable_nicknames
+    return
+
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1dsc "Hey, [player]..."
@@ -2090,16 +2303,16 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
     m 1hua "Hey, [player]!"
     m 1eua "I just wanted to say thank you for being such a wonderful person."
-    m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
-    m 1dubsu "I love you, [player]. Let's be like this forever~"
-    show monika idle with dissolve
+    m 1ekbsa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
+    m 1dubfu "I love you, [player]. Let's be like this forever~"
+    show monika idle with dissolve_monika
     return "love"
 
 init 5 python:
@@ -2150,7 +2363,7 @@ label monika_every_rose:
     m 2rktpc "..."
     m 2ektpa "Ahaha...{w=0.3}maybe I'm jumping the gun a bit on this one."
     m 4ektdc "It's...{w=0.5}I keep having this nasty thought in the back of my mind...{w=0.5}{nw}"
-    extend 2dktdd "that you don't want anymore."
+    extend 2dktdd "that you don't want to be with me anymore."
     m 2dkx "It's like some kind of poison, slowly seeping in..."
     m 2ekc "So [player], I always want you to remember one thing..."
     m 4ekd "You truly {i}are{/i} everything to me!"
@@ -2180,9 +2393,9 @@ label monika_being_virtual:
     m 3rksdld "To you, this whole world...{w=0.5}my whole reality..."
     m 3ektpd "It's all just a game, isn't it?"
 
-    show monika 1dktsc with dissolve
+    show monika 1dktsc with dissolve_monika
     pause 3.0
-    show monika 1ektpc with dissolve
+    show monika 1ektpc with dissolve_monika
     pause 2.0
 
     m 1ektpc "Say, [player]...{w=0.5}has anything I ever said reached you, even once?"
@@ -2361,13 +2574,13 @@ label mas_affection_apology:
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
-    m 2lfc "If you really are sorry, write me a note called {i}imsorry{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2lfc "If you really are sorry, write me a note called 'imsorry', and place it in the characters folder."
     m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry{/i} in the DDLC directory."
+    m 2efd "You still haven't written me a note called 'imsorry' in the characters folder."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 
@@ -2392,7 +2605,6 @@ label mas_affection_apologydeleted:
 
 #Surprise txt functions.
 init python:
-
     def _write_txt(path,text,update=False):
         """
         Writes the text file in the specified path using basedir as starting path
@@ -2424,36 +2636,40 @@ init python:
         ASSUMES:
             mas_curr_affection
         """
-        if mas_curr_affection == store.mas_affection.BROKEN:
-            filepath = "/forgive me.txt"
-            message = _("I'm sorry if I'm not good enough for you...please don't leave me.")
-
-        elif mas_curr_affection == store.mas_affection.DISTRESSED:
-            filepath = "/can you hear me.txt"
-            message = _("If I'm doing something wrong please tell me. I love you.")
-
-        elif mas_curr_affection == store.mas_affection.UPSET:
-            filepath = "/please listen.txt"
-            message = _("Everything I do, I do for you...my love.")
-
-        elif mas_curr_affection == store.mas_affection.HAPPY:
-            #Just so we don't end up with another file since we've changed the name
-            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
-
-            filepath = "/ehehe.txt"
-            message = _("You are the sunshine that brightens up my day, [player]!")
-
-        elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
-            filepath = "/secret.txt"
-            message = _("You are my one and only love!")
-
-        elif mas_curr_affection == store.mas_affection.ENAMORED:
-            filepath = "/for you.txt"
-            message = _("My dearest, you are everything I could ever hope for. I love you.")
-
-        elif mas_curr_affection == store.mas_affection.LOVE:
-            filepath = "/My one and only love.txt"
-            message = _("""\
+        #Acts as a switch/case block for surprise txt files
+        #affection_level: (filepath, contents)
+        aff_level_surprise_map = {
+            store.mas_affection.BROKEN: (
+                "/forgive me.txt",
+                _("I'm sorry if I'm not good enough for you...please don't leave me.")
+            ),
+            store.mas_affection.DISTRESSED: (
+                "/can you hear me.txt",
+                _("If I'm doing something wrong please tell me. I love you.")
+            ),
+            store.mas_affection.UPSET: (
+                "/please listen.txt",
+                _("Everything I do, I do for you...my love.")
+            ),
+            store.mas_affection.NORMAL: (
+                "/surprise.txt",
+                _("I love you.")
+            ),
+            store.mas_affection.HAPPY: (
+                "/ehehe.txt",
+                _("You are the sunshine that brightens up my day, [player]!")
+            ),
+            store.mas_affection.AFFECTIONATE: (
+                "/secret.txt",
+                _("You are my one and only love!")
+            ),
+            store.mas_affection.ENAMORED: (
+                "/for you.txt",
+                _("My dearest, you are everything I could ever hope for. I love you.")
+            ),
+            store.mas_affection.LOVE: (
+                "/My one and only love.txt",
+                _("""\
 My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
@@ -2462,19 +2678,136 @@ I want to be yours forever, so would you be mine?
 
 Forever yours, Monika.
 """)
+            )
+        }
 
-        else:
-            filepath = "/surprise.txt"
-            message = _("I love you.")
+        #Now we get from this dict and pass it to the write txt func to make a surprise
+        filepath, message = aff_level_surprise_map.get(mas_curr_affection, ("/surprise.txt", _("I love you.")))
+        _write_txt("/characters{0}".format(filepath), message)
 
-        _write_txt(filepath, message)
+        #And unlock its poem
+        mas_unlockSurprisePoem(mas_curr_affection)
 
+    def mas_unlockSurprisePoem(aff_level):
+        """
+        Unlocks a MASPoem for the given aff level
+        """
+        #TODO: Figure out a good way of displaying all of the poems. Until then, this just returns
+        #The one-liner poems should be done in a sticky-note format
+        #The last poem should be a wide poem
+        #ISSUE:
+        #   - Poem hitbox in mas_generic_poem needs to fit different paper size
+        return
+
+        aff_level_poem_id_map = {
+            store.mas_affection.BROKEN: "spr_1",
+            store.mas_affection.DISTRESSED: "spr_2",
+            store.mas_affection.UPSET: "spr_3",
+            store.mas_affection.NORMAL: "spr_4",
+            store.mas_affection.HAPPY: "spr_5",
+            store.mas_affection.AFFECTIONATE: "spr_6",
+            store.mas_affection.ENAMORED: "spr_7",
+            store.mas_affection.LOVE: "spr_8",
+        }
+
+        #If this isn't a valid aff level, we don't do anything
+        if aff_level not in aff_level_poem_id_map:
+            return
+
+        #Otherwise, try to get a shown count
+        shown_count = persistent._mas_poems_seen.get(aff_level_poem_id_map[aff_level])
+
+        #If there's no shown count for this poem at all, then we need to add it
+        if not shown_count:
+            persistent._mas_poems_seen[aff_level_poem_id_map[aff_level]] = 0
 
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
 init 2 python:
     player = persistent.playername
 
 init 20 python:
+    #START: SURPRISE POEMS
+
+    MASPoem(
+        poem_id="spr_1",
+        category="surprise",
+        prompt=_("Forgive Me"),
+        paper="mod_assets/poem_assets/poem_finalfarewell.png",
+        title="",
+        text=_("I'm sorry if I'm not good enough for you...please don't leave me."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_2",
+        category="surprise",
+        prompt=_("Can you hear me?"),
+        title="",
+        text=_("If I'm doing something wrong please tell me. I love you."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_3",
+        category="surprise",
+        prompt=_("Please Listen"),
+        title="",
+        text=_("Everything I do, I do for you...my love."),
+        ex_props={"sad": True}
+    )
+
+    MASPoem(
+        poem_id="spr_4",
+        category="surprise",
+        prompt=_("Surprise!"),
+        title="",
+        text=_("I love you.")
+    )
+
+    MASPoem(
+        poem_id="spr_5",
+        category="surprise",
+        prompt=_("Ehehe~"),
+        title="",
+        text=_("You are the sunshine that brightens up my day, [player]!")
+    )
+
+    MASPoem(
+        poem_id="spr_6",
+        category="surprise",
+        prompt=_("Secret"),
+        title="",
+        text=_("You are my one and only love!")
+    )
+
+    MASPoem(
+        poem_id="spr_7",
+        category="surprise",
+        prompt=_("For you"),
+        title="",
+        text=_("My dearest, you are everything I could ever hope for. I love you.")
+    )
+
+    MASPoem(
+        poem_id="spr_8",
+        category="surprise",
+        prompt=_("My One and Only Love"),
+        paper="mod_assets/poem_assets/poem_vday.jpg",
+        title="My dearest lover, friend, companion, and owner of my heart...",
+        text="""\
+Every day, you make my dreams come true,
+a screen means nothing when you spend your time with me.
+I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
+I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
+I want to be yours forever, so would you be mine?
+
+Forever yours,
+
+Monika
+"""
+    )
+
+    #START: FINAL FAREWELL POEMS
     MASPoem(
         poem_id="ff_affection",
         category="ff",

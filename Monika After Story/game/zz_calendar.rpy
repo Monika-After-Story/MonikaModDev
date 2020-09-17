@@ -102,7 +102,7 @@ init -1 python:
         )
 
         # Easter egg labels
-        EG_TEXTS_MIN_GLITCH = ["....ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ....",
+        EG_TEXTS_MIN_GLITCH = ["...ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ...",
             "JJJJJJJ.\nUUUUUUU.\nSSSSSSS.\nTTTTTT.\n.\nMMMMM.\nOOOO.\nNNNN.\nIIII.\nKKKKKK.\nAAAAA.",
             "J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́", "noʎ ǝʌol I", "nnnnnnnnnnn\noooooooooooo\nʎʎʎʎʎʎ ǝǝǝǝ\nǝǝǝǝǝʌʌʌʌʌʌʌʌʌ\nʌooolll III"
         ]
@@ -2151,7 +2151,7 @@ label _first_time_calendar_use:
     m 3eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
 
     $ persistent._mas_first_calendar_check = True
 
@@ -2261,5 +2261,5 @@ init python:
         """RUNTIME ONLY
         Shows the calendar overlay
         """
-        if not mas_calIsVisible_ovl():
+        if not mas_current_background.hide_calendar and not mas_calIsVisible_ovl():
             renpy.show_screen("calendar_overlay", _layer="master")
