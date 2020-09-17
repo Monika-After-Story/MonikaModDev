@@ -1506,14 +1506,14 @@ init 5 python:
     )
 
 label mas_song_we_have_all_the_time_in_the_world(from_long=False):
-    m 1dud "{i}{cps=12}~We have all {w=2}the time {w=2}in the world~{/cps}{/i}"
-    m 1eua "{i}{cps=16}~Time enough for life~{/cps}{/i}"
-    m 3eub "{i}{cps=16}~To unfold {w=1.25}all the precious things~{/cps}{/i}"
-    m 3hua "{i}{cps=16}~Love has in store~{/cps}{/i}"
+    m 1dud "{i}{cps=20}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
+    m 1eua "{i}{cps=24}~Time enough for life~{/cps}{/i}"
+    m 3eub "{i}{cps=24}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
+    m 3hua "{i}{cps=24}~Love has in store~{/cps}{/i}"
 
-    m 1dub "{i}{cps=12}~We have all {w=1.8}the love {w=1.8}in the world~{/cps}{/i}"
-    m 1esd "{i}{cps=16}~And if that's all we have {w=1.25}you will find~{/cps}{/i}"
-    m 3dka "{i}{cps=16}~We need nothing more~{/cps}{/i}"
+    m 1dub "{i}{cps=20}~We have all {w=0.9}the love {w=0.9}in the world~{/cps}{/i}"
+    m 1esd "{i}{cps=24}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
+    m 3dka "{i}{cps=24}~We need nothing more~{/cps}{/i}"
 
     if not from_long:
         m 1duu "..."
