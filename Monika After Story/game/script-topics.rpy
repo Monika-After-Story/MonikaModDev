@@ -15778,4 +15778,4 @@ label mas_not_working:
     m "I'll be here for you every step of the way until you find work again."
     m "I love you so much. Never forget that."
 
-    return
+    return "love"
