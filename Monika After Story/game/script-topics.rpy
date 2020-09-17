@@ -15773,7 +15773,7 @@ label monika_renewable_energy:
     m 3eub "Dams are regulated better, the efficiency of photovoltaics has improved, and there are emerging technologies such as ocean power and enhanced geothermal systems."
     m 2rsd "Biomass is an option as well. It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."                  
     m 2eud "Yes, renewable energy still has a ways to go in terms of cost and practicality, but it's far better now than it was thirty years ago." 
-    m 7hsb "Because of that, I think that renewable energy is a worthwhile investment, and that the road ahead is a bright one—literally!" 
+    m 7hub "Because of that, I think that renewable energy is a worthwhile investment, and that the road ahead is a bright one—literally!" 
     m 3lksdra "Sorry, I got carried away there."
-    m 1ttu "Debates sure are something, huh?"
+    m 1tuu "Debates sure are something, huh?"
     return
