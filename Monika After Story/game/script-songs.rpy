@@ -1536,7 +1536,7 @@ label mas_song_we_have_all_the_time_in_the_world_long:
 
     m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
-    m 3eua "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
+    m 3eud "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
 
     m 1dud "{i}{cps=18}~We have all {w=0.9}the time {w=0.9}in the world~{/cps}{/i}"
