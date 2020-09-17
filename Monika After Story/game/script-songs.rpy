@@ -1504,12 +1504,12 @@ init 5 python:
     )
 
 label mas_song_we_have_all_the_time_in_the_world(from_long=False):
-    m 1dud "{i}{cps=18}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
     m 1eua "{i}{cps=22}~Time enough for life~{/cps}{/i}"
     m 3eub "{i}{cps=22}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
     m 3hua "{i}{cps=22}~Love has in store~{/cps}{/i}"
 
-    m 1dub "{i}{cps=18}~We have all {w=0.9}the love {w=0.9}in the world~{/cps}{/i}"
+    m 1dub "{i}{cps=18}~We have all {w=0.7}the love {w=0.7}in the world~{/cps}{/i}"
     m 1esd "{i}{cps=22}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
     m 3dka "{i}{cps=22}~We need nothing more~{/cps}{/i}"
 
@@ -1536,20 +1536,20 @@ label mas_song_we_have_all_the_time_in_the_world_long:
 
     m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
-    m 3eud "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
+    m 3eud "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
 
-    m 1dud "{i}{cps=18}~We have all {w=0.9}the time {w=0.9}in the world~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
     m 1dubsa "{i}{cps=18}~Just for love~{/cps}{/i}"
     m 3eubsb "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
     m 1ekbsa "{i}{cps=18}~Only love~{/cps}{/i}"
 
     m 1dud "{i}{cps=18}~Every step {w=0.75}of the way~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
-    m 1dua "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
+    m 1dua "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
     m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
 
-    m 1eub "{i}{cps=18}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
+    m 1eub "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
     m 3ekbsa "{i}{cps=18}~Just for love~{/cps}{/i}"
     m 1dkbsd "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
     m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
