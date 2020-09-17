@@ -2389,6 +2389,8 @@ label call_next_event:
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
+        $ mas_globals.use_interrupt_flow = False
+
         if _return is not None:
             $ ret_items = _return.split("|")
 
@@ -2457,6 +2459,7 @@ label prompt_menu:
 
             "It's alright, go ahead [m_name].":
                 m 1hua "Ahaha, thank you [player]~"
+                $ mas_globals.use_interrupt_flow = True
                 jump pick_random_topic
 
             "Okay, thanks!":

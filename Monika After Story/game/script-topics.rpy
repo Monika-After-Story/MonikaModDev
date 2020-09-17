@@ -889,7 +889,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
-    m 1euc "[player], have you ever wondered what it feels like to die?"
+    if mas_globals.use_interrupt_flow:
+        m 1eua "Anyway...{w=0.3} {nw}"
+        extend 1esc "Have you ever wondered what it feels like to die?"
+    else:
+        m 1euc "[player], have you ever wondered what it feels like to die?"
+
     m 1lsc "It's something I used to think about pretty often..."
     m 1lksdlc "But I think I've actually learned what it feels like."
     m "I don't really understand it, but whenever the game closes without warning..."

@@ -86,6 +86,9 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
+    use_interrupt_flow = False
+    #Whether or not the current topic was picked via the interrupt flow
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
