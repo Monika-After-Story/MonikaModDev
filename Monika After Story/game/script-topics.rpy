@@ -15750,53 +15750,53 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
     
-# Do you care about the environment?
+# Do you like nature?
 default persistent._mas_pm_likes_nature = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nature",category=['you', 'life'],prompt="Nature",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_nature",category=['nature', 'you'],prompt="The outdoors",random=True))
  
 label monika_nature:
-    m 2esd "Hey [player], I've been wondering..."
+    m 2esd "Hey, [player]..."
     $ _history_list.pop()
     menu:
         m "Do you like nature{fast}?"
         "Yes.":
             $ persistent._mas_pm_likes_nature = True
             m 2suo "Really? That's wonderful!"
-            m 2wsa "I'm glad to hear that, [player]."
-            m 3esd "Personally, I think that nature is something we should treasure."
-            m 3esa "It's a beautiful world filled with all kinds of life, and there's a lot that nature does to lend humanity a hand."
-            m 4esb "Insects pollinate crops, decomposers recycle waste, trees provide food and shade, oceans absorb heat, and so on."
-            m 1esu "Since nature does so much to help us, I think it's only fair that we give something back in return."
+            m 3esd "You know, I think nature is something we should cherish."
+            m 3esa "Not only is it beautiful, but it also helps humanity out."
+            m 4esb "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 3esd "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist."
+            m 1esu "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
             m 7hub "So, here's Monika's Green Tip of the Day!"
-            m 7esc "Sometimes, it might seem difficult to make a difference when products such as electric vehicles and solar roofs can be expensive."
-            m 3eub "However, you can make a difference and save money just by performing a few simple tasks each day!"
+            m 7esc "Sometimes, people hesitate to go green because they're worried about that it's too expensive."
+            m 4eud "That's partially true. Electric vehicles, smart homes, and solar roofs can all cost a fortune."
+            m 3eub "However, you can make a difference and {i}save{/i} money just by making a few simple choices each day!"
             m 3esb "Turning off appliances, taking shorter showers, buying a reusable water bottle, commuting by public transport..."
-            m 4esa "You could even buy a houseplant, or start your own garden!"
-            m 7eud "Voting and engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow."
-            m 3esu "The important thing is to work hard and stay optimistic. If you do that, there's nothing you can't accomplish."
-            m 3wud "Who knows, maybe going green will even make you healthier and happier."
+            m 4esa "You could even buy a houseplant, or grow your own garden!"
+            m 7eud "Engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow."
+            m 3esu "The important thing is to make a habit of thinking sustainably. If you can do that, you'll reduce your egological footprint in no time."
+            m 3wud "Who knows, maybe you'll even become happier and healthier on the way."
             m 4esu "After all, a sustainable life is a satisfying life."
-            m 3rsa "For me, at least."
+            m 3eua "For me, at least."
             m 3esb "That's my advice for today!"
-            m 2hka "Thanks for listening~"
+            m 2hka "Thanks for listening, [player]~"
      
         "No.":
             $ persistent._mas_pm_likes_nature = False
             m 1esa "That's okay, [player]."
-            m 3lsd "Not everyone is an outdoors person."
-            m 3euc "Some prefer the comfortable ambience of their home, especially when technology is more convenient than ever."
+            m 3lsd "Not everyone enjoys the outdoors."
+            m 3euc "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
             m 1esd "Honestly, I can understand where they're coming from."
-            m 3eud "I spend most of my time reading, writing, coding, and being with you; all of that is easier to do inside."
-            m 4ekc "Others have allergies or medical conditions, and can't stay outside for long."
-            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you; all of that is easier to do indoors."
+            m 4ekc "Others have allergies or medical conditions that prevent them from staying out for too long, lest they get sick or hurt."
+            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another, and that's fine."
             m 1hkb "Even I have things that I dislike about it."
-            m 2tfd "I don't mind most insects, but some are just downright obnoxious."
+            m 2tfd "For instance, I don't mind most insects, but some are just downright obnoxious."
             m 3tkx "Constantly buzzing around your head, getting in your face, landing on your food...some mosquitos and ticks even carry nasty diseases." 
-            m 2rud "Summer can be difficult as well with tropical storms and high humidity."
-            m 1eku "Well, as long as I'm with you I'm fine with staying indoors."
-            m 3esb "Just make sure you get some sun every once in a while, okay?" 
-            m 2tfb "You don't want me getting on your case, do you?"
+            m 2rud "Storms can be problematic too; anyone outside is at risk of getting poured on, and then there are power outages..."
+            m 1eku "Well, as long as I'm with you I'm fine if you'd prefer to be indoors."
+            m 2tfb "Don't expect me to let you stay inside all the time, though."
             m 2hua "Ehehe~"
     return "derandom"
