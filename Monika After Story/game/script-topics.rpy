@@ -15766,7 +15766,7 @@ label monika_nature:
             m 2sub "Really? That's wonderful!"
             m 3wud "You know, I think nature is something we should cherish."
             m 3eua "Not only is it beautiful, but it also helps humanity out."
-            m 4esb "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 4esc "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
             m 3esd "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist."
             m 1esa "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
             m 7hub "So, here's Monika's Green Tip of the Day!"
@@ -15779,7 +15779,7 @@ label monika_nature:
             m 3esa "The important thing is to make a habit of thinking sustainably. If you can do that, you'll reduce your ecological footprint in no time."
             m 3esd "Who knows, maybe you'll even become happier and healthier on the way."
             m 4esa "After all, a sustainable life is a satisfying life."
-            m 3euu "For me, at least."
+            m 3eua "For me, at least."
             m 3eub "That's my advice for today!"
             m 2hua "Thanks for listening, [player]~"
      
