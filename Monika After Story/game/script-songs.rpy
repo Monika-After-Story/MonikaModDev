@@ -1490,8 +1490,6 @@ label mas_song_when_youre_gone:
     m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
     return
 
-# The original singer is Louis Armstrong,
-# but this song was made to be close to Iggy Pop's cover
 init 5 python:
     addEvent(
         Event(
@@ -1506,14 +1504,14 @@ init 5 python:
     )
 
 label mas_song_we_have_all_the_time_in_the_world(from_long=False):
-    m 1dud "{i}{cps=20}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
-    m 1eua "{i}{cps=24}~Time enough for life~{/cps}{/i}"
-    m 3eub "{i}{cps=24}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
-    m 3hua "{i}{cps=24}~Love has in store~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
+    m 1eua "{i}{cps=22}~Time enough for life~{/cps}{/i}"
+    m 3eub "{i}{cps=22}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
+    m 3hua "{i}{cps=22}~Love has in store~{/cps}{/i}"
 
-    m 1dub "{i}{cps=20}~We have all {w=0.9}the love {w=0.9}in the world~{/cps}{/i}"
-    m 1esd "{i}{cps=24}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
-    m 3dka "{i}{cps=24}~We need nothing more~{/cps}{/i}"
+    m 1dub "{i}{cps=18}~We have all {w=0.9}the love {w=0.9}in the world~{/cps}{/i}"
+    m 1esd "{i}{cps=22}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
+    m 3dka "{i}{cps=22}~We need nothing more~{/cps}{/i}"
 
     if not from_long:
         m 1duu "..."
@@ -1536,27 +1534,27 @@ init 5 python:
 label mas_song_we_have_all_the_time_in_the_world_long:
     call mas_song_we_have_all_the_time_in_the_world(from_long=True)
 
-    m 1dud "{i}{cps=12}~Every step {w=1.25}of the way~{/cps}{/i}"
-    m 1duo "{i}{cps=12}~Will find us~{/cps}{/i}"
-    m 3eua "{i}{cps=12}~With the cares {w=1.8}of the world~{/cps}{/i}"
-    m 1duo "{i}{cps=12}~Far behind us~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 3eua "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
 
-    m 1dud "{i}{cps=12}~We have all {w=1.8}the time {w=1.8}in the world~{/cps}{/i}"
-    m 1dubsa "{i}{cps=12}~Just for love~{/cps}{/i}"
-    m 3eubsb "{i}{cps=16}~Nothing more, {w=1.5}nothing less~{/cps}{/i}"
-    m 1ekbsa "{i}{cps=12}~Only love~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~We have all {w=0.9}the time {w=0.9}in the world~{/cps}{/i}"
+    m 1dubsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 3eubsb "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 1ekbsa "{i}{cps=18}~Only love~{/cps}{/i}"
 
-    m 1dud "{i}{cps=12}~Every step {w=1.5}of the way~{/cps}{/i}"
-    m 1duo "{i}{cps=12}~Will find us~{/cps}{/i}"
-    m 1dua "{i}{cps=12}~With the cares {w=1.8}of the world~{/cps}{/i}"
-    m 1duo "{i}{cps=12}~Far behind us~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~Every step {w=0.75}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 1dua "{i}{cps=18}~With the cares {w=0.9}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
 
-    m 1eub "{i}{cps=12}~We have all {w=2}the time {w=2}in the world~{/cps}{/i}"
-    m 3ekbsa "{i}{cps=12}~Just for love~{/cps}{/i}"
-    m 1dkbsd "{i}{cps=16}~Nothing more, {w=1.5}nothing less~{/cps}{/i}"
-    m 3dkbsb "{i}{cps=12}~Only love~{/cps}{/i}"
+    m 1eub "{i}{cps=18}~We have all {w=1}the time {w=1}in the world~{/cps}{/i}"
+    m 3ekbsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 1dkbsd "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
 
-    m 1ekbla "{i}{cps=12}~Only love~{/cps}{/i}"
+    m 1ekbla "{i}{cps=18}~Only love~{/cps}{/i}"
     return
 
 ################################ NON-DB SONGS############################################
