@@ -15769,7 +15769,7 @@ label monika_renewable_energy:
     m 1rksdrb "Nuclear power is...well, let's just say that it's complicated."
     m 4esd "The point is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation; neither option is perfect."  
     m 7euo "So, what do I think?"
-    m 1eua "Well, lot of progress has been made on renewable energy in the past decade."
+    m 1eua "Well, a lot of progress has been made on renewable energy in the past decade."
     m 3eub "Dams are regulated better, the efficiency of photovoltaics has improved, and there are emerging technologies such as ocean power and enhanced geothermal systems."
     m 2rsd "Biomass is an option as well. It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."                  
     m 2eud "Yes, renewable energy still has a ways to go in terms of cost and practicality, but it's far better now than it was thirty years ago." 
