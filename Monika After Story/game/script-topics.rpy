@@ -1889,7 +1889,7 @@ label monika_rap:
 
                 else:
                     m 1ekc "Oh...{w=0.3}well I can understand that, rap music isn't everyone's taste."
-                    m 3huB "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
+                    m 3hub "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
                 $ persistent._mas_pm_like_rap = False
 
     return
