@@ -560,7 +560,7 @@ label bye_prompt_sleep:
         # decent time to sleep
 
         if mas_isMoniNormal(higher=True):
-            call goodnight_kiss(chance=3)
+            call bye_prompt_sleep_goodnight_kiss(chance=3)
             if _return == "quit":
                 return _return
             m 1eua "Alright, [mas_get_player_nickname()]."
@@ -579,7 +579,7 @@ label bye_prompt_sleep:
         # somewhat late to sleep
 
         if mas_isMoniNormal(higher=True):
-            call goodnight_kiss(chance=4)
+            call bye_prompt_sleep_goodnight_kiss(chance=4)
             if _return == "quit":
                 return _return
             m 1eua "Alright, [mas_get_player_nickname()]."
@@ -601,7 +601,7 @@ label bye_prompt_sleep:
         # pretty late to sleep
 
         if mas_isMoniNormal(higher=True):
-            call goodnight_kiss(chance=5)
+            call bye_prompt_sleep_goodnight_kiss(chance=5)
             if _return == "quit":
                 return _return
             m 1euc "[player]..."
@@ -649,7 +649,7 @@ label bye_prompt_sleep:
                     pass
             m "I thought so.{w=0.2} Go get some rest, [player]."
             if mas_isMoniNormal(higher=True):
-                call goodnight_kiss(chance=6)
+                call bye_prompt_sleep_goodnight_kiss(chance=6)
                 if _return == "quit":
                     return _return
                 m 2ekc "I wouldn't want you to get sick."
@@ -722,40 +722,48 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
-label goodnight_kiss(chance=3):
+#TODO: Maybe generalize this?
+label bye_prompt_sleep_goodnight_kiss(chance=3):
     if mas_shouldKiss(chance, cooldown=datetime.timedelta(minutes=5)):
-        m 1rublsdla "Think I could...get a goodnight kiss?"
+        m 1eublsdla "Think I could...{w=0.3}{nw}"
+        extend 1rublsdlu "get a goodnight kiss?{nw}"
         $ _history_list.pop()
         menu:
-            m "Think I could...get a goodnight kiss?"
-            "Sure!":
-                call monika_kissing_motion
-                m 6ekbfa "Now I hope you'll dream better~"
-                m 1hkbfb "Sleep tight!"
+            m "Think I could...get a goodnight kiss?{fast}"
 
-            "Perhaps another time.":
+            "Sure, [m_name].":
+                show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                pause 2.0
+                call monika_kissing_motion
+                m 6ekbfb "Now I hope you'll dream better~"
+                m 1hubfa "Sleep tight!"
+
+            "Maybe another time...":
                 if random.randint(1, 3) == 1:
-                    m 2rublp "Aww, come on..."
-                    m 2nublu "I know you really want to~"
-                    show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5hublb "Can I please get a goodnight kiss?"
+                    m 3rkblp "Aww, come on...{w=0.3}{nw}"
+                    extend 3nublu "I know you want to~"
+
+                    m 1ekbsa "Can I please get a goodnight kiss?{nw}"
                     $ _history_list.pop()
                     menu:
-                        m "Can I please get a goodnight kiss?"
+                        m "Can I please get a goodnight kiss?{fast}"
                         "Okay.":
-                            show monika 6dubfd at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                            show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                            pause 2.0
                             call monika_kissing_motion
-                            m 6ekbfa "Now I hope you'll dream better~"
-                            m 1hkbfb "Sleep tight!"
+                            m 6ekbfa "Sweet dreams, [player]~"
+                            m 6hubfb "Sleep tight!"
+
                         "No.":
                             $ mas_loseAffection()
-                            m 6lkc "..."
-                            m 6dkc "Fine."
-                            m 1ekc "Goodnight [player]..."
+                            m 1lkc "..."
+                            m 7dkd "Fine..."
+                            m 2lsc "Goodnight [player]..."
 
                 else:
-                    m 2rublp "Aww... Okay, but you owe me one."
-                    m 1kkb "I love you! Sleep tight!"
+                    m 1rkblc "Aww...{w=0.3}{nw}"
+                    extend 1ekbla "okay, but you owe me one."
+                    m 1hubsb "I love you! Sleep tight!~"
 
         return "quit"
     return None
