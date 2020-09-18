@@ -1523,9 +1523,14 @@ init -10 python:
             IN:
                 flt - filter to check
 
-            RETURNS: True if day, false if not
+            RETURNS: True if day, false if not, None if filter not associatd
+                with this filter manager
             """
-            return flt in self._day_filters
+            if flt in self._day_filters:
+                return True
+            if flt in self._night_filters:
+                return False
+            return None
 
         def _organize(self):
             """
@@ -2231,7 +2236,8 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "day" filter according to this bg
+            RETURNS: True if flt is a "day" filter according to this bg,
+                False if night filter, None if not associated with this BG
             """
             if flt is None:
                 flt = store.mas_sprites.get_filter()
@@ -2247,9 +2253,13 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "night" filter according to this BG
+            RETURNS: True if flt is a "night" filter according to this BG,
+                False if day filter, None if not associated with this BG.
             """
-            return not self.isFltDay(flt)
+            flt_res = self.isFltDay(flt)
+            if flt_res is not None:
+                return not flt_res
+            return None
 
         def _lookback(self, flt):
             """
@@ -2531,6 +2541,8 @@ init 800 python:
         if new_background != mas_current_background:
             mas_current_background.exit(new_background, **kwargs)
             mas_setBackground(new_background, **kwargs)
+
+        store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
 
     def mas_startupBackground():
         """
@@ -2814,7 +2826,7 @@ init 5 python:
             prompt="Can we go somewhere else?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED, None)
         ),
         restartBlacklist=True
@@ -2906,11 +2918,11 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         #so we lock to clear
         if new_bg.disable_progressive and new_bg.hide_masks:
             mas_weather.temp_weather_storage = mas_current_weather
-            mas_changeWeather(mas_weather_def)
+            mas_changeWeather(mas_weather_def, new_bg=new_bg)
 
         else:
             if mas_weather.temp_weather_storage is not None:
-                mas_changeWeather(mas_weather.temp_weather_storage)
+                mas_changeWeather(mas_weather.temp_weather_storage, new_bg=new_bg)
                 #Now reset the temp storage for weather
                 mas_weather.temp_weather_storage = None
 

@@ -222,7 +222,7 @@ init 5 python:
                 prompt="Can you show me the floating islands?",
                 pool=True,
                 unlocked=False,
-                rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
+                rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
                 aff_range=(mas_aff.ENAMORED, None)
             )
         )
@@ -476,9 +476,9 @@ label mas_island_day3:
     return
 
 label mas_island_night1:
-    m "You're probably wondering what happened to that orange comet that occasionally passes by."
-    m "Don't worry, I've dealt with it."
-    m "I wouldn't want you to get hurt~"
+    m "While it's nice to be productive during the day, there's something so peaceful about the night."
+    m "The sounds of crickets chirping mixed with a gentle breeze is so relaxing."
+    m "You'd hold me on a night like that, right~"
     return
 
 label mas_island_night2:

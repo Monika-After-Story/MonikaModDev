@@ -2220,7 +2220,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-            and not mas_SELisUnlocked(mas_clothes_blackdress)
+            and not persistent._mas_bday_has_done_bd_outro
         ):
             if len(persistent._mas_dockstat_checkout_log) == 0:
                 #We change Moni's outfit here because she just got ready
@@ -2516,7 +2516,7 @@ label mas_dockstat_generic_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        m 1eua "Give me a second to get ready."
+        m 1eua "Give me a second to get ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
         #Prepare the current drink to be removed if needed
         python:
