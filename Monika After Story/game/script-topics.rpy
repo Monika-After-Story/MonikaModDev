@@ -15767,7 +15767,7 @@ label monika_nature:
             m 3wub "You know, I think nature is something we should cherish."
             m 3eua "Not only is it beautiful, but it also helps humanity out."
             m 7eub "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
-            m 3esd "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist."
+            m 3esb "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist!"
             m 1esa "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
             m 7hub "So, here's Monika's Green Tip of the Day!"
             m 7ruc "Sometimes, people hesitate to go green because they're worried that it's too expensive."
