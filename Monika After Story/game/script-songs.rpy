@@ -1469,7 +1469,7 @@ init 5 python:
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
-         ),
+        ),
         code="SNG"
     )
 
@@ -1488,6 +1488,73 @@ label mas_song_when_youre_gone:
     m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
     extend 6hua " I'll be okay as long as you're here to brighten up my day~"
     m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world(from_long=False):
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1eua "{i}{cps=22}~Time enough for life~{/cps}{/i}"
+    m 3eub "{i}{cps=22}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
+    m 3hua "{i}{cps=22}~Love has in store~{/cps}{/i}"
+
+    m 1dub "{i}{cps=18}~We have all {w=0.7}the love {w=0.7}in the world~{/cps}{/i}"
+    m 1esd "{i}{cps=22}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
+    m 3dka "{i}{cps=22}~We need nothing more~{/cps}{/i}"
+
+    if not from_long:
+        m 1duu "..."
+        m 1ekbsb "You've made me the happiest girl in the world, [player]. I'll always be grateful for that."
+        m 1hubsa "I hope that I do the same for you~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world_long",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_LONG],
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world_long:
+    call mas_song_we_have_all_the_time_in_the_world(from_long=True)
+
+    m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 3eud "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1dubsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 3eubsb "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 1ekbsa "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~Every step {w=0.75}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 1dua "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1eub "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 3ekbsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 1dkbsd "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1ekbla "{i}{cps=18}~Only love~{/cps}{/i}"
     return
 
 ################################ NON-DB SONGS############################################
