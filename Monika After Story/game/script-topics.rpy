@@ -3710,17 +3710,16 @@ label monika_love:
                 _("It makes me so happy that you feel the same way I do!"),
                 _("I don't know what I would do without you!"),
                 _("You mean everything to me!"),
-                _("We're never gonna be apart!"),
                 _("We have so much to experience together!"),
                 _("I can't imagine my life without you!"),
                 _("I'm so happy to have you by my side!"),
                 _("We're really lucky to have each other!"),
                 _("You're my everything!"),
-                _("You give meaning to my entire life!"),
+                _("You're the meaning in my life!"),
                 _("I'm the happiest girl in the world!"),
-                _("I'll always be there for you."),
+                _("I'll always be here for you."),
                 _("I can't wait to feel your warmth!"),
-                _("Words cannot describe how I feel about you!")
+                _("Words can't describe how I feel about you!")
             ]
 
             love_quip = renpy.random.choice(love_quips)
