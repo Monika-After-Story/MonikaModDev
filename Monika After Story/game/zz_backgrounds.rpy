@@ -345,7 +345,7 @@ init -10 python:
                 self.order,
                 self.offset,
                 self.length,
-                self.flt_slice
+                repr(self.flt_slice)
             )
 
         def __str__(self):
