@@ -2362,8 +2362,8 @@ init -10 python:
                 # in this case, we don't know what happened, but we got
                 # screwed. log out state of the flt man as well as the
                 # traceback
-                exc_type, exc_value, exc_tb = store.mas_utils.sys.exc_info()
-                store.mas_background.log_bg(self, exc_tb)
+                exc_info = store.mas_utils.sys.exc_info()
+                store.mas_background.log_bg(self, exc_info)
                 
                 # reset the manager to defualt indexes. Next time progress
                 # is called will hopefully update without error
@@ -2580,13 +2580,16 @@ init -20 python in mas_background:
         return False
 
 
-    def log_bg(bg_obj, tbout=None):
+    def log_bg(bg_obj, exc_info=None):
         """
         Logs the given BG object to standard bg log
 
         IN:
             bg_obj - bg object to log
-            tbout - traceback object to print out, if provided
+            exc_info - exception info. Should be tuple:
+                [0] - exception type
+                [1] - exception value
+                [2] - traceback
                 (Default: None)
         """
         if bg_obj is None:
@@ -2609,11 +2612,11 @@ init -20 python in mas_background:
         bg_log.write("\n\nRaw Filter Manager Data:\n")
         bg_log.write(repr(bg_obj._flt_man))
 
-        if tbout:
+        if exc_info:
             import traceback
 
             bg_log.write("\n\n")
-            for tb_line in traceback.format_tb(tbout):
+            for tb_line in traceback.format_exception(*exc_info):
                 bg_log.write(tb_line)
 
 
