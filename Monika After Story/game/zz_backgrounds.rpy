@@ -2362,8 +2362,10 @@ init -10 python:
                 # in this case, we don't know what happened, but we got
                 # screwed. log out state of the flt man as well as the
                 # traceback
-                exc_info = store.mas_utils.sys.exc_info()
-                store.mas_background.log_bg(self, exc_info)
+                store.mas_background.log_bg(
+                    self,
+                    store.mas_utils.sys.exc_info()
+                )
                 
                 # reset the manager to defualt indexes. Next time progress
                 # is called will hopefully update without error
