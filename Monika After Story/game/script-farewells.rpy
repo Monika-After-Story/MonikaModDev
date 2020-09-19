@@ -630,7 +630,6 @@ label bye_prompt_sleep:
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
-        label .aaa:
         if mas_isMoniBroken():
             m 6ckc "..."
 
