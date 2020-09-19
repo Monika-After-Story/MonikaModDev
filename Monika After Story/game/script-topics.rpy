@@ -15751,3 +15751,53 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_",
+            random=True
+        )
+    )
+
+label monika_:
+    m "..."
+    m "You know...{w=0.2}there's something I've been thinking about lately."
+    m "Depression."
+    m "Ah-{w=0.2}{nw}" # wide eyed realization
+    extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
+    m "It's just it's kind of {w=0.2}{nw}" # 1-3-1
+    extend "fascinating {w=0.2}{nw}"
+    extend "in a morbid way."
+
+
+    m "There's a poem I read that delivers that message quite well."
+    m "Would you like me to read it out for you?"
+
+    $ _history_list.pop()
+    menu:
+        m "Would you like me to read it out for you?{fast}"
+
+        "Please do.":
+            m "Alright then."
+            m "Ozymandias by Perry Shelley"
+            m "{i}I met a traveller from an antique land{/i}"
+            m "{i}Who said: Two vast and trunkless legs of stone{/i}"
+            m "{i}Stand in the desert. Near them, on the sand,{/i}"
+            m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
+            m "{i}And wrinkled lip, and sneer of cold command,{/i}"
+            m "{i}Tell that its sculptor well those passions read{/i}"
+            m "{i}Which yet survive, stamped on these lifeless things,{/i}"
+            m "{i}The hand that mocked them and the heart that fed:{/i}"
+            m "{i}And on the pedestal these words appear:{/i}"
+            m "{i}'My name is Ozymandias, king of kings:{/i}"
+            m "{i}Look on my works, ye Mighty, and despair!'{/i}"
+            m "{i}Nothing beside remains. Round the decay{/i}"
+            m "{i}Of that colossal wreck, boundless and bare{/i}"
+            m "{i}The lone and level sands stretch far away.{/i}"
+
+        "Not right now":
+            m "Okay, maybe some other time then."
+
+    return "derandom"
