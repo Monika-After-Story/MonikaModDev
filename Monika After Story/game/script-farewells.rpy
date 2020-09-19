@@ -630,7 +630,7 @@ label bye_prompt_sleep:
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
-
+        label .aaa:
         if mas_isMoniBroken():
             m 6ckc "..."
 
@@ -639,21 +639,33 @@ label bye_prompt_sleep:
             pause 0.7
             m 2tfd "[player]!"
             m "You stayed up the entire night!"
-            m 2tfu "I bet you can barely keep your eyes open."
-            $ _cantsee_a = glitchtext(15)
-            $ _cantsee_b = glitchtext(12)
+
+            $ first_pass = True
+
+            label .reglitch:
+                hide screen mas_background_timed_jump
+
+            if first_pass:
+                m 2tfu "I bet you can barely keep your eyes open.{nw}"
+                $ first_pass = False
+            else:
+                $ _history_list.pop()
+
+            show screen mas_background_timed_jump(1, "bye_prompt_sleep.reglitch")
+            $ _history_list.pop()
             menu:
-                "[_cantsee_a]":
+                m "[glitchtext(41)]{fast}"
+                "[glitchtext(15)]":
                     pass
-                "[_cantsee_b]":
+                "[glitchtext(12)]":
                     pass
-            m "I thought so.{w=0.2} Go get some rest, [player]."
+
+            hide screen mas_background_timed_jump
+            m 2tku "I thought so.{w=0.2} Go get some rest, [player]."
+
             if mas_isMoniNormal(higher=True):
-                call bye_prompt_sleep_goodnight_kiss(chance=6)
-                if _return == "quit":
-                    return _return
                 m 2ekc "I wouldn't want you to get sick."
-                m 1eka "Sleep earlier next time, okay?"
+                m 7eka "Sleep earlier next time, okay?"
                 m 1hua "Sweet dreams!"
 
     elif 12 <= curr_hour < 18:
@@ -734,8 +746,9 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
             "Sure, [m_name].":
                 show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 2.0
-                call monika_kissing_motion
-                m 6ekbfb "Now I hope you'll dream better~"
+                call monika_kissing_motion_short
+                m 6ekbfb "I hope that gave you something to dream about~"
+                show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 1hubfa "Sleep tight!"
 
             "Maybe another time...":
@@ -747,10 +760,11 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                     $ _history_list.pop()
                     menu:
                         m "Can I please get a goodnight kiss?{fast}"
+
                         "Okay.":
                             show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                             pause 2.0
-                            call monika_kissing_motion
+                            call monika_kissing_motion_short
                             m 6ekbfa "Sweet dreams, [player]~"
                             m 6hubfb "Sleep tight!"
 
