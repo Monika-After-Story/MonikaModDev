@@ -3715,7 +3715,6 @@ label monika_love:
                 _("I'm so happy to have you by my side!"),
                 _("We're really lucky to have each other!"),
                 _("You're my everything!"),
-                _("You're the meaning in my life!"),
                 _("I'm the happiest girl in the world!"),
                 _("I'll always be here for you."),
                 _("I can't wait to feel your warmth!"),
