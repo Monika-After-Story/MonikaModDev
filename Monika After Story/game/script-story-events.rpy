@@ -406,6 +406,7 @@ init 3 python:
     mas_good_nickname_list_player_modifiers = [
         "king",
         "prince",
+        player + "y",
     ]
 
     #Modifier for Monika's nickname choice
@@ -526,6 +527,9 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 4hksdlb "That's the same name you have right now, silly!"
             m 1eua "Try again~"
 
+        elif lowername == player.lower() + "y":
+            jump mas_player_name_enter_name_loop.else
+
         elif mas_awk_name_comp.search(tempname):
             $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
             m 1rksdlb "[awkward_quip]"
@@ -537,50 +541,51 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3eka "Please pick a nicer name for yourself, okay?"
 
         else:
-            #Sayori name check
-            if tempname.lower() == "sayori":
-                call sayori_name_scare
+            label .else:
+                #Sayori name check
+                if tempname.lower() == "sayori":
+                    call sayori_name_scare
 
-            elif (
-                    persistent.playername.lower() == "sayori"
-                    and not persistent._mas_sensitive_mode
-                ):
-                $ songs.initMusicChoices()
+                elif (
+                        persistent.playername.lower() == "sayori"
+                        and not persistent._mas_sensitive_mode
+                    ):
+                    $ songs.initMusicChoices()
 
-            python:
-                def adjustNames(new_name):
-                    """
-                    Adjusts the names to the new names
-                    """
-                    global player
+                python:
+                    def adjustNames(new_name):
+                        """
+                        Adjusts the names to the new names
+                        """
+                        global player
 
-                    persistent.mcname = player
-                    mcname = player
-                    persistent.playername = new_name
-                    player = new_name
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = new_name
+                        player = new_name
 
-            if lowername == "monika":
-                $ adjustNames(tempname)
-                m 1tkc "Really?"
-                m "That's the same as mine!"
-                m 1tku "Well..."
-                m "Either it really is your name or you're playing a joke on me."
-                m 1hua "But it's fine by me if that's what you want me to call you~"
-                $ done = True
+                if lowername == "monika":
+                    $ adjustNames(tempname)
+                    m 1tkc "Really?"
+                    m "That's the same as mine!"
+                    m 1tku "Well..."
+                    m "Either it really is your name or you're playing a joke on me."
+                    m 1hua "But it's fine by me if that's what you want me to call you~"
+                    $ done = True
 
-            elif mas_good_player_name_comp.search(tempname):
-                $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
-                m 1sub "[good_quip]"
-                $ adjustNames(tempname)
-                m 3esa "Okay then! From now on, I'll call you '[player].'"
-                m 1hua "Ehehe~"
-                $ done = True
+                elif mas_good_player_name_comp.search(tempname):
+                    $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                    m 1sub "[good_quip]"
+                    $ adjustNames(tempname)
+                    m 3esa "Okay then! From now on, I'll call you '[player].'"
+                    m 1hua "Ehehe~"
+                    $ done = True
 
-            else:
-                $ adjustNames(tempname)
-                m 1eub "Okay then!"
-                m 3eub "From now on, I'll call you '[player].'"
-                $ done = True
+                else:
+                    $ adjustNames(tempname)
+                    m 1eub "Okay then!"
+                    m 3eub "From now on, I'll call you '[player].'"
+                    $ done = True
 
         if not done:
             show monika 1eua
