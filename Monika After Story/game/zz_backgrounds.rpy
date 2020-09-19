@@ -514,8 +514,8 @@ init -10 python:
                 "<FilterChunk: (index: {0}, length: {1}, slices: {2}, "
                 "eff_slices: {3})>"
             ).format(
-                self.index,
-                self.length,
+                self._index,
+                self._length,
                 self._slices,
                 self._eff_slices
             )
@@ -991,7 +991,7 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     flt_old,
@@ -1229,19 +1229,27 @@ init -10 python:
             # set to True upon an update, set to False upon progress
 
         def __repr__(self):
+            day_f = self._day_filters
+            if day_f is not None:
+                day_f = day_f.keys()
+
+            night_f = self._night_filters
+            if night_f is not None:
+                night_f = night_f.keys()
+
             return (
                 "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
                 "day_flts: {3}, night_flts: {4}, mn_sr: {5}, sr_ss: {6}, "
                 "ss_mn: {7})>"
             ).format(
                 self._index,
-                self._updates,
+                self._updated,
                 self._prev_flt,
-                self._day_filters,
-                self._night_filters,
-                self._mn_sr,
-                self._sr_ss,
-                self._ss_mn
+                day_f,
+                night_f,
+                repr(self._mn_sr),
+                repr(self._sr_ss),
+                repr(self._ss_mn)
             )
 
         def __str__(self):
@@ -1334,7 +1342,7 @@ init -10 python:
                         new_chunk,
                         curr_time
                     )
-                except Error as e:
+                except Exception as e:
                     store.mas_utils.writelog(self._ERR_PP_STR_G.format(
                         repr(e),
                         str(curr_chunk),
@@ -1623,7 +1631,7 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     str(chunk_old),
@@ -1707,6 +1715,14 @@ init -10 python:
                 sfmn - (self._calc_off(self._index)[0]),
                 curr_time
             )
+
+        def reset_indexes(self):
+            """
+            Resets all indexes to 0, so we are in fresh state mode
+            """
+            self._index = 0
+            for chunk in self._chunks:
+                chunk._index = 0
 
         def update(self, curr_time=None):
             """
@@ -2342,12 +2358,17 @@ init -10 python:
 
             try:
                 new_flt = self._flt_man.progress()
-            except Error as e:
+            except Exception as e:
                 # in this case, we don't know what happened, but we got
                 # screwed. log out state of the flt man as well as the
                 # traceback
                 exc_type, exc_value, exc_tb = store.mas_utils.sys.exc_info()
                 store.mas_background.log_bg(self, exc_tb)
+                
+                # reset the manager to defualt indexes. Next time progress
+                # is called will hopefully update without error
+                self._flt_man.reset_indexes()
+                new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
                 store.mas_utils.writelog(
