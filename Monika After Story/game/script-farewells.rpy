@@ -647,10 +647,8 @@ label bye_prompt_sleep:
             if first_pass:
                 m 2tfu "I bet you can barely keep your eyes open.{nw}"
                 $ first_pass = False
-            else:
-                $ _history_list.pop()
 
-            show screen mas_background_timed_jump(1, "bye_prompt_sleep.reglitch")
+            show screen mas_background_timed_jump(4, "bye_prompt_sleep.reglitch")
             $ _history_list.pop()
             menu:
                 m "[glitchtext(41)]{fast}"
