@@ -1923,7 +1923,7 @@ label monika_kiss:
                     _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
                     _("You can kiss me as many times as you like, [mas_get_player_nickname()]~"),
                     _("You know...{w=0.2}you could kiss me once again~"),
-                    _("It felt {i}so{/i} good...{w=0.2}but I want a little more~")
+                    _("It felt really nice...{w=0.2}but I want a little more~")
                 ]
 
                 kiss_quips_again_risque = [
