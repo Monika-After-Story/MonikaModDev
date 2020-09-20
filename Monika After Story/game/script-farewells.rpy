@@ -776,6 +776,8 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                     extend 1ekbla "okay, but you owe me one."
                     m 1hubsb "I love you! Sleep tight!~"
 
+        $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
         return "quit"
     return None
 
