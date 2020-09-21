@@ -7091,14 +7091,13 @@ label monika_soda:
     $ _history_list.pop()
     menu:
         m "Do you drink soda, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_drinks_soda = True
-
-            # TODO: product placement zevia soda as a healthy alternative
             m 4ekc "You know that soda is really bad for you, right?"
             m 2ekc "It has a lot of stuff that damages your body and overall health."
             m 2tkd "It can also corrode your teeth and give you cavities."
-            m "You might also think that diet soda is less damaging but it can be just as harmful to you."
+            m 2euc "You might also think that diet soda is less damaging, but it can be just as harmful to you."
             m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
             m 2eua "Why don't you try copying my healthy lifestyle?"
             m 1hua "That way, you can be more fit like me!"
@@ -7106,6 +7105,7 @@ label monika_soda:
             m 2ekc "I'd really hate it if you let go of your health, [player]."
             m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
             m "So cut down on the soda, alright [mas_get_player_nickname()]?"
+
         "No.":
             $ persistent._mas_pm_drinks_soda = False
             m 2eka "That's a relief to hear."
@@ -7113,7 +7113,7 @@ label monika_soda:
             m 3eub "Still, it's perfectly fine to have a small treat once in a while, you know?"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "Maybe someday we could both have some soda together."
-            m 5hua "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun on a hot day."
+            m 5hua "Sure, it might not be fancy, but it could really hit the spot on a hot day."
     return "derandom"
 
 init 5 python:
@@ -8892,7 +8892,7 @@ label monika_concerts:
     m 5eua "And if you were to take me,{w=1} then that would truly be a dream come true!"
     m 4eua "But if you're not that interested in concerts..."
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
-    m 1hua "That would be more than enough for me hehe~"
+    m 1hua "That would be more than enough for me, ehehe~"
     if (
         not renpy.seen_label("monika_add_custom_music_instruct")
         and not persistent._mas_pm_added_custom_bgm
@@ -10428,7 +10428,7 @@ label monika_driving:
             m 1eub "Just imagine all the places we could go together..."
             m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
             m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
-            m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
+            m 7hksdlb "I mean...{w=0.3}I know you're smart, but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
 
             m 1eka "I hope you've never had to experience that, [player], have you?{nw}"
