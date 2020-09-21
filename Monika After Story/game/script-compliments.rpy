@@ -727,3 +727,48 @@ label mas_compliment_thinking_of_you_3:
     m 1ekbsa "[mas_compliments.thanks_quip]"
     m 3hubfb "You're the center of my world!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_humor",
+            prompt="I love your sense of humor!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_humor:
+    if not renpy.seen_label("mas_compliment_humor_2"):
+        call mas_compliment_humor_2
+    else:
+        call mas_compliment_humor_3
+    return
+
+label mas_compliment_humor_2:
+    m "Ehehe~"
+    m "I'm glad you do, [player]."
+    m "A sign of a good couple is being able to laugh together, don't you think?"
+    menu:
+        "You always brighten my day.":
+            $ mas_gainAffection(5,bypass=True)
+            m "Oh...[player]..."
+            m "That's so sweet of you to say."
+            m "Knowing I can make you smile is the greatest compliment I could receive!"
+        "You have such a quick wit!":
+            $ mas_gainAffection(3,bypass=True)
+            m "Ahaha!"
+            m "All that reading must have paid off, if you like my wordplay that much."
+            m "I'll try to keep the jokes coming, if you like them so much. Ehehe~"
+        "I laugh at you all the time.":
+            $ mas_loseAffection()
+            m "...Ahaha..."
+            m "You meant that you laugh {w=0.2}{i}with{/i} me, right?"
+            m "I'll try to take that as a compliment..."
+    return
+
+label mas_compliment_humor_3:
+    m 1hubfb "[mas_compliments.thanks_quip]"
+    m 2ekbfb "I wish I could hear your beautiful laugh!"
+    return
