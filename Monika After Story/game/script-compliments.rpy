@@ -747,25 +747,25 @@ label mas_compliment_humor:
     return
 
 label mas_compliment_humor_2:
-    m "Ehehe~"
-    m "I'm glad you do, [player]."
-    m "A sign of a good couple is being able to laugh together, don't you think?"
+    m 1hua "Ehehe~"
+    m 1hub "I'm glad you do, [player]."
+    m 3eub "A sign of a good couple is being able to laugh together, don't you think?"
     menu:
         "You always brighten my day.":
             $ mas_gainAffection(5,bypass=True)
-            m "Oh...[player]..."
-            m "That's so sweet of you to say."
-            m "Knowing I can make you smile is the greatest compliment I could receive!"
+            m 1wubfd "Oh...[player]..."
+            m 1ekbfa "That's so sweet of you to say."
+            m 1hubfb "Knowing I can make you smile is the greatest compliment I could receive!"
         "You have such a quick wit!":
             $ mas_gainAffection(3,bypass=True)
-            m "Ahaha!"
-            m "All that reading must have paid off, if you like my wordplay that much."
-            m "I'll try to keep the jokes coming for you. Ehehe~"
+            m 1hub "Ahaha!"
+            m 2tub "All that reading must have paid off, if you like my wordplay that much."
+            m 2hublb "I'll try to keep the jokes coming for you. Ehehe~"
         "I laugh at you all the time.":
             $ mas_loseAffection()
-            m "...Ahaha..."
-            m "You meant that you laugh {w=0.2}{i}with{/i} me, right?"
-            m "I'll try to take that as a compliment..."
+            m 1eksdlb "...Ahaha..."
+            m 3rksdlb "You meant that you laugh {w=0.2}{i}with{/i} me, right?"
+            m 1tkc "I guess I'll try to take that as a compliment..."
     return
 
 label mas_compliment_humor_3:
