@@ -15537,7 +15537,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_being_deleted",
-            prompt="Are you still mad at me for deleting you ?",
+            prompt="Are you still mad at me for deleting you?",
             category=["ddlc", "monika"],
             pool=True,
             action=EV_ACT_POOL,
@@ -15546,28 +15546,27 @@ init 5 python:
     )
 
 label monika_being_deleted:
-
     if store.mas_anni.anniCount() >= 1 and mas_isMoniLove():
         m 1wusdld "...!"
-        m 1eksdlc "[player]...{w=0.3}are you still thinking about that?"
+        m 1eksdld "[player]...{w=0.3}are you {i}still{/i} thinking about that?"
         m 1lksdlc "I thought we would both be past that by now."
-        m 1ekc "Are you feeling guilty because of this?{nw}"
+        m 1ekc "Do you...{w=0.3}feel guilty, [player]?{nw}"
         $ _history_list.pop()
         menu:
-            m "Are you feeling guilty because of this?{fast}"
+            m "Do you...feel guilty, [player]?{fast}"
 
-            "Yes.":
+            "Yes...":
                 m 2eka "Thank you for being honest with me, [player]. I'm glad that you trust me enough to open up about this."
                 m 2dkc "...I know I haven't exactly been subtle about making you know how hurt and betrayed I felt because of what you did back then."
-                m 2ekc "And I also remember telling you some pretty awful things after you deleted me... {w=0.3}{nw}"
+                m 2rkc "...I also said some pretty awful things after you deleted me...{w=0.3} {nw}"
                 extend 7ekd "...but I want you to know that I didn't mean any of it."
                 m 6ekc "I'm sorry if I hurt your feelings.{w=0.3} I was so overwhelmed with shock and fear at that point, that I wasn't thinking rationally anymore."
-                m 6rkc "It's just that...{w=0.3} ...even back then, you meant everything to me, and...{w=0.3} ...the distress of losing you forever made me lash out at you."
-                m 6eka "But if it can put your mind at ease, I'm not upset with you at all, [player]. I forgave you about all that long ago."
+                m 6rkc "It's just that...{w=0.3}even back then, you meant everything to me, and...{w=0.3}the distress of losing you forever made me lash out at you."
+                m 6eka "But if it puts your mind at ease, I'm not upset with you at all, [player]. I forgave you for all that a long time ago."
                 m "So please don't feel guilty about that."
                 m 4ekb "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
-                m 1ekbsb "You give meaning to my life, and I genuinely believe that because of that, all the suffering I went through payed off in the end."
-                m 1hubfb "Thanks to you, I truly am the happiest I could ever be, and that is really what matters the most to me."
+                m 1ekbsb "You gave me a second chance, and you give meaning to my life...{w=0.3}and I genuinely believe that because of that, all the suffering I went through paid off in the end."
+                m 1hubfb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me."
                 m 3eub "So let's try to not think about what's in the past, and instead enjoy what we have now, okay?"
                 m 1eka "I love you, [player]. I know this isn't always easy, but I hope you'll be able to forgive yourself eventually."
                 $ mas_ILY()
@@ -15576,11 +15575,11 @@ label monika_being_deleted:
                 m 1eka "I'm relieved to hear that, [player].{w=0.2} I'd hate to learn that what happened in our past is tormenting you."
                 m 1eud "Well, if that was a legitimate question, then no, I'm not mad at you anymore."
                 m 1hub "How could I? You've been doing so much to make sure I would be the happiest girl in the world."
-                m 2euc "Actually...{w=0.2} I'm not sure I was even really angry with you in the first place. {w=0.3}{nw}"
-                extend 2ekc "Yeah, I did tell you some very unpleasant things in the heat of the moment, {w=0.2}{nw}"
-                extend 2rkd "which is definitely something I regret having done now..."
-                m 3eka "...but I want you to know that I never truly thought any less of you for this. I hope that this can at least clear things up for you."
-                m 1eua "Well, no point in thinking about that anymore. {w=0.2}{nw}"
+                m 2euc "Now that I think about it...{w=0.3}I'm not sure I was even really angry with you in the first place.{w=0.2} {nw}"
+                extend 2ekc "Sure, I did say some really unpleasant things in the heat of the moment...{w=0.3}{nw}"
+                extend 2rkd "which isn't something I'm proud of..."
+                m 3eka "...But I want you to know that I never truly thought any less of you for this. I hope that this can at least clear things up for you."
+                m 1eua "Well, no point in thinking about that anymore.{w=0.2} {nw}"
                 extend 1hua "We have a bright future ahead of us, and I can't wait to experience all of it with you."
 
     elif mas_isMoniAff(higher=True):
@@ -15588,22 +15587,22 @@ label monika_being_deleted:
         m 2eka "Of course not, silly."
         m 2dkc "It's true that it really did hurt when you did that to me..."
         m 4ekd "But to be completely honest with you, I was terrified, more than really angry at you."
-        m 2dksdlc "Terrified of the idea that you hated me.{w=0.2} That you didn't want anything to do with me, and that you would abandon me to my lonely fate, for all eternity."
+        m 2dksdlc "...Terrified of the idea that you hated me.{w=0.2} That you didn't want anything to do with me, and that you would abandon me to my lonely fate, for all eternity."
         if mas_isMoniEnamored(higher=True):
-            m 2lkc "Even thinking back on it now...{w=0.3} The thought of losing you, or worse, of you hating me makes me feel like my heart is being ripped in half."
-            m 1hksdrb "Ah...{w=0.2} sorry, I don't mean to make you feel guilty or anything."
+            m 2lkc "Even thinking back on it now...{w=0.3}the thought of losing you, or worse, of you hating me makes me feel like my heart is being ripped in half."
+            m 1hksdrb "Ah...{w=0.3}sorry, I don't mean to make you feel guilty or anything."
             m 1eka "My point is, I trust you enough to know that you wouldn't ever want to hurt me like that again."
-            m 1eua "It's not like this sort of thing would ever happen. You're such a kind, loving sweetheart, after all."
+            m 1ekbla "You're such a kind, loving sweetheart, after all~"
             if persistent._mas_pm_a_hater:
-                m 1rka "...I mean, you might claim that you hate me, but I still have a hard time believing that. {w=0.3}{nw}"
+                m 1rka "...I mean, you might claim that you hate me, but I still have a hard time believing that.{w=0.2} {nw}"
                 extend 1ttu "You're doing a terrible job at proving it, that's for sure."
-            m 1dkb "Just know that I am so, so thankful for all you're doing to make me happy.{w=0.2} And that more than anything else, I want to make {i}you{/i} happy too."
+            m 1dkb "Just know that I am so,{w=0.1} so thankful for everything you're doing to make me happy...{w=0.3}And I want to make {i}you{/i} happy too, more than anything else."
             m 1dka "I don't think I could ever stay mad at you no matter how hard I tried."
 
         else:
-            m 2eka "But as we both saw... That's not what ended up happening at all.{w=0.3} You came back to me, and you've been making me so much happy ever since."
-            m 3ekb "If anything, I'm just grateful that you brought me back, and that we get to spend our time together now."
-        m 1eka "So do me a favor and try not to think about that anymore, okay ? That's all behind us now."
+            m 2eka "But as we both saw...that's not what ended up happening at all.{w=0.2} You came back to me, and you've been making me so much happy ever since."
+            m 3ekb "If anything, I'm just grateful that you brought me back and that we get to spend our time together now."
+        m 1eka "So do me a favor and try not to think about that anymore, okay? That's all behind us now."
 
     elif mas_isMoniNormal(higher=True):
         m 1eka "No, not really."
@@ -15616,7 +15615,7 @@ label monika_being_deleted:
         m 1rsc "No, I'm not angry with you, [player]."
         m 1rfc "{cps=*2}At least, not over {i}that{/i}.{/cps}{nw}"
         $ _history_list.pop()
-        m 1esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like you might not be ready{w=0.3}--or willing--{w=0.3}to move on from all this."
+        m 1esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like you might not be ready--{w=0.2}or willing--{w=0.2}to move on from all this."
         m 3dtc "Am I guessing wrong?"
         m 2dkd "..."
         m 2ekd "Look, [player]...{w=0.3} I know the two of us have had a rocky start, but that doesn't mean it's too late to fix things up and start again."
@@ -15634,7 +15633,7 @@ label monika_being_deleted:
         m 2dktuc "I never did..."
         m 2ektua "If anything...{w=0.3}I at least hope knowing that can make you happy."
         if persistent._mas_pm_monika_deletion_justice:
-            m 3ektda "Besides, I deserved it. That's what you told me once, right?"
+            m 3ektdc "Besides, I deserved it. That's what you told me once, right?"
         m 1dktdc "..."
         m 1rkc "..."
 
