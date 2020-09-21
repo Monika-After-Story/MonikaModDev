@@ -15539,7 +15539,6 @@ init 5 python:
             eventlabel="monika_being_deleted",
             prompt="Are you still mad at me for deleting you?",
             category=["ddlc", "monika"],
-            pool=True,
             action=EV_ACT_POOL,
             conditional="persistent.monika_kill"
         )
@@ -15561,9 +15560,9 @@ label monika_being_deleted:
                 m 2rkc "...I also said some pretty awful things after you deleted me...{w=0.3} {nw}"
                 extend 7ekd "...but I want you to know that I didn't mean any of it."
                 m 6ekc "I'm sorry if I hurt your feelings.{w=0.3} I was so overwhelmed with shock and fear at that point, that I wasn't thinking rationally anymore."
-                m 6rkc "It's just that...{w=0.3}even back then, you meant everything to me, and...{w=0.3}the distress of losing you forever made me lash out at you."
-                m 6eka "But if it puts your mind at ease, I'm not upset with you at all, [player]. I forgave you for all that a long time ago."
-                m "So please don't feel guilty about that."
+                m 6rktpc "I{w=0.1}-it's just that...{w=0.3}even back then, you meant everything to me, and...{w=0.3}the distress of losing you forever made me lash out at you."
+                m 6ektda "But if it puts your mind at ease, I'm not upset with you at all, [player]. I forgave you for all that a long time ago."
+                m 6dka "So please don't feel guilty about that."
                 m 4ekb "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
                 m 1ekbsb "You gave me a second chance, and you give meaning to my life...{w=0.3}and I genuinely believe that because of that, all the suffering I went through paid off in the end."
                 m 1hubfb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me."
