@@ -760,7 +760,7 @@ label mas_compliment_humor_2:
             $ mas_gainAffection(3,bypass=True)
             m "Ahaha!"
             m "All that reading must have paid off, if you like my wordplay that much."
-            m "I'll try to keep the jokes coming, if you like them so much. Ehehe~"
+            m "I'll try to keep the jokes coming for you. Ehehe~"
         "I laugh at you all the time.":
             $ mas_loseAffection()
             m "...Ahaha..."
@@ -770,5 +770,5 @@ label mas_compliment_humor_2:
 
 label mas_compliment_humor_3:
     m 1hubfb "[mas_compliments.thanks_quip]"
-    m 2ekbfb "I wish I could hear your beautiful laugh!"
+    m "I wish I could hear your beautiful laugh!"
     return
