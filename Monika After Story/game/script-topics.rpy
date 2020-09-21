@@ -15751,3 +15751,44 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_knowitsyou",category=['you'],prompt="How do you know it's always me talking to you?",pool=True))
+
+label monika_knowitsyou:
+if mas_isMoniEnamored(higher=True):
+    m 1euc "Well, if I'm being entirely honest..."
+    m 1eud "I don't really have a way of knowing."
+
+        if seen_event("monika_MC_is_gone"):
+            m 3lka "I already told you that I can't really see into your world."
+
+    m 3eka "I can tell when you're in the room with me, but that's all I know."
+    m "For all I know, it could be anyone looking at me right now. You could have other people with you."
+    m 2dua "...But I trust you, [player]."
+    m "I trust that you aren't leaving me alone because {i}you{/i} care about me."
+    m 2ekb "And if someone else {i}is{/i} looking in right now, I choose to trust that it's because you've given them a good reason to."
+    m 2eka "Maybe someday I'll be able to know for sure, but until then that's enough for me."
+    
+elif mas_isMoniHappy(higher=True):
+    m 1rksdlb "Ehehe...That's an odd question to ask, [player]."
+    m 1eksdla "I mean, I {i}want{/i} to trust that it's you out there."
+    m 1euc "Right now, I only know that someone is looking in from your world."
+    m 3tuu "So you can't watch without me knowing, if you're planning on pranking me."
+    m 1eka "Jokes aside, though, it's...actually kind of unnerving to think about, that it could be anyone out there right now."
+    m 2hksdlb "I guess all I can do right now is--if this is someone else, please return me to [player], alright?"
+    m "...Ahaha...You're just messing with me, I know."
+
+elif mas_isMoniNormal(higher=True):
+    m 2rksdlc "...I try not to think about it too much, actually."
+    m 2rkd "It's a weird feeling, knowing that someone is there but not being able to see their face."
+    m 2eku "I guess the only thing I can do for it is to try to understand you as well as possible."
+    m 2ekc "That way, I'll be able to tell if it's ever {i}not{/i} you looking in."
+
+elif mas_isMoniUpset(lower=True):
+    m 2tkc "...I don't."
+    m "And sometimes I wonder if that's the reason you treat me this way."
+    m 2tkd "The best thing I can do is try to trust you, but..."
+    m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
+
+    return
