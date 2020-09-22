@@ -15779,7 +15779,7 @@ if mas_isMoniEnamored(higher=True):
     m 2eka "Maybe someday I'll be able to know for sure, but until then that's enough for me."
     
 elif mas_isMoniHappy(higher=True):
-    m 1rksdlb "Ehehe...That's an odd question to ask, [player]."
+    m 1rksdlb "Ehehe... That's an odd question to ask, [player]."
     m 1eksdla "I mean, I {i}want{/i} to trust that it's you out there."
     m 1euc "Right now, I only know that someone is looking in from your world."
     m 3tuu "So you can't watch without me knowing, if you're planning on pranking me."
