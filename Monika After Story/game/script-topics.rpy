@@ -15756,32 +15756,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_nihilism",
+            eventlabel="monika_not_nihilism",
             category=["philosophy"],
             random=True,
-            prompt="Nihilism",
-            aff_range=(mas_aff.ENAMORED,None)
+            prompt="Placeholder name until I think of something",
+            aff_range=(mas_aff.ENAMORED,None),
+            sensitive=True
         )
     )
 
-label monika_nihilism:
-    if not mas_getEVL_shown_count("monika_nihilism"):
+label monika_not_nihilism:
+    if not mas_getEVL_shown_count("monika_not_nihilism"):
         # first time intro from random
         m "..."
         m "You know...{w=0.2}there's something that's been on my mind lately."
-        m "Things like impermanence..." # manual extends
-        # impermanence? get a better word
-        extend " Nihilism..."
-        extend " Depression."
-        m "Ah-{w=0.2}{nw}" # wide eyed realization
-        extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
-        m "It's just kind of {w=0.2}{nw}" # 1-3-1
-        extend "fascinating {w=0.2}{nw}"
-        extend "in a morbid way."
+
     else:
         # repeat from menu intro
-        # maybe skip the main choice from here
-        m ""
+        # safe to assume the player wants to hear what Moni has to say, so maybe skip the main choice from here
+        m "You know, I find myself thinking about some dark stuff occasionally."
+
+    m "Concepts like impermanence..." # manual extends
+    extend " Nihilism..."
+    extend " Depression."
+    m "Ah-{w=0.2}{nw}" # wide eyed realization
+    extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
+    m "It's just kind of {w=0.2}{nw}" # 1-3-1
+    extend "fascinating {w=0.2}{nw}"
+    extend "in a morbid way."
 
     m "So I wanted to share my thoughts with you."
     extend "If that's alright with you, of course."
@@ -15824,19 +15826,30 @@ label monika_nihilism:
                 "Not right now":
                     m "Okay, maybe some other time then."
 
-            # maybe rephrase next line based on poem choice
             m "Basically, what it boils down to is that no matter how great the mark you leave on history is, it will fade away {i}eventually{/i}."
             m "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
             extend "give up." # manual extend
             extend " To fall into a pit of despair and stay there. Sometimes for as long as they live."
             m "After all, nothing you do matters in the grand scheme of things."
             m "Nothing you {i}can{/i} do matters. So why bother doing anything at all?"
-            m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization."
+            m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization. It's almost scary."
             m "It can be...{w=0.2} enticing...{w=0.2} even comforting...{w=0.2} in it's own twisted way."
             m "But let me ask you a question."
             m "Even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
-            # make reference to monika_stoicism
-            # moar stuff here
+            m "One day you'd still be gone."
+            m "And some time after that, there'd still come a day when someone thought about you, the real you, for the last time."
+            m "Be it eighty years from now, or a billion, poetry will still be beautiful, cats will still be adorable, and the universe will still be as indifferent as it ever was."
+            m "Why should the fact that nothing really matters be the one thing that {i}does{/i} matter?"
+
+            if mas_getEVL_shown_count("monika_stoicism"):
+                m "Remember when we talked about stoicism?"
+                m "I think it applies quite well here. There's no point in worrying, or being upset about things you can't change."
+
+            m "When you look at it that way, the act of finding hope becomes as arbitrary as losing it."
+            m "..."
+            m "I guess, what I'm trying to say here is..."
+            m "Yes, there will be an end. To you, to me, and eventually everything else."
+            m "But that's the way it's always been, and there's no point in feeling down about it. Now, or ever."
 
         "I'd rather you not.":
             # somewhat dejected / disappointed
@@ -15844,6 +15857,5 @@ label monika_nihilism:
             m "I know those aren't exactly the most pleasant topics to discuss."
             m "I won't bring this up again, but let me know if you change your mind."
             m "I think it's with difficult topics like these that a point of view different from one's own can be the most useful."
-            # fall through to return
 
     return "derandom"
