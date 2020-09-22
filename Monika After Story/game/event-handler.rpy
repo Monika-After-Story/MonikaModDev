@@ -2389,8 +2389,11 @@ label call_next_event:
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
+        $ mas_globals.use_interrupt_flow = False
+
         if _return is not None:
             $ ret_items = _return.split("|")
+            $ store.mas_globals.pushed_from_talk = False
 
             if "derandom" in ret_items:
                 $ ev.random = False
@@ -2446,6 +2449,22 @@ label call_next_event:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+
+    if 0 < store.mas_randchat.rand_chat_waittime_left < 2:
+        m 3eud "..."
+        m 1eua "Oh, go ahead,{w=0.2} you wanted to talk about something?{w=0.2} {nw}"
+        extend 3eksdla "I didn't mean to interrupt you...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Oh, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
+
+            "It's alright, go ahead [m_name].":
+                m 1hua "Ahaha, thank you [player]~"
+                $ mas_globals.use_interrupt_flow = True
+                jump pick_random_topic
+
+            "Okay, thanks!":
+                show monika idle
 
     $ mas_RaiseShield_dlg()
 
@@ -2765,7 +2784,8 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ pushEvent(_return)
+                $ store.mas_globals.pushed_from_talk = True
+                $ pushEvent(_return,skipeval=True)
 
     return _return
 

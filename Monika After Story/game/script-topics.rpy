@@ -864,32 +864,58 @@ label monika_god:
     m 1dsd "What are we to him but props in a scripted play?"
     m 3euc "So, from that perspective..."
     m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
-    m 1eua "Anyway, do you worship any god, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Anyway, do you worship any god, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_religious = True
-            m 1hksdlb "Oh... Well I hope I didn't offend you too much with my thoughts."
-            m 1eka "Still, I think it's important to be able to share my opinion with you."
-            m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
-            m 1hua "Maybe you could show me a better god when I cross over!"
-            m 1hub "Ahaha~"
-        "No.":
-            $ persistent._mas_pm_religious = False
-            m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
-            m 1hua "I'm happy for you that you can lead a life on your own!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m 5hua "Ehehe~"
 
-    return "derandom"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_religious is None:
+        m 1eua "Anyway, do you worship any god, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Anyway, do you worship any god, [player]?{fast}"
+
+            "Yes.":
+                if persistent._mas_pm_religious is False:
+                    m 3wud "Oh...{w=0.2}did you have a spiritual awakening, [player]?"
+                    m 1eua "I know before you said you didn't worship any god, but I guess things can happen that can change that."
+                    m 3rksdla "I just hope I didn't offend you too much with my thoughts."
+
+                elif persistent._mas_pm_religious:
+                    m 1rksdla "...Well I hope I didn't offend you too much with my thoughts."
+
+                else:
+                    m 1rksdla "Oh... {w=0.2}Well I hope I didn't offend you too much with my thoughts."
+
+                m 1eka "Still, I think it's important to be able to share my opinion with you."
+                m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
+                m 1hua "Maybe you could show me a better god when I cross over!"
+                m 1hub "Ahaha~"
+                $ persistent._mas_pm_religious = True
+
+            "No.":
+                if persistent._mas_pm_religious:
+                    m 3wusdld "Oh...{w=0.2}did something happen that caused you to lose faith, [player]?"
+                    m 1rksdlc "Whatever the cause, I hope it wasn't anything too bad..."
+                    m 3eka "But I have to say, I'm glad we're on the same page here."
+
+                else:
+                    m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
+
+                m 1hua "I'm happy for you that you can lead a life on your own!"
+                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5eua "I just hope you're willing to accept me into your life when I can present myself."
+                m 5hua "Ehehe~"
+                $ persistent._mas_pm_religious = False
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
-    m 1euc "[player], have you ever wondered what it feels like to die?"
+    if mas_globals.use_interrupt_flow:
+        m 1eua "Anyway...{w=0.3} {nw}"
+        extend 1esc "Have you ever wondered what it feels like to die?"
+    else:
+        m 1euc "[player], have you ever wondered what it feels like to die?"
+
     m 1lsc "It's something I used to think about pretty often..."
     m 1lksdlc "But I think I've actually learned what it feels like."
     m "I don't really understand it, but whenever the game closes without warning..."
@@ -1819,40 +1845,54 @@ init 5 python:
 
 label monika_rap:
     m 1hua "You know what's a neat form of literature?"
-    m 1hub "Rap!"
-    m 1eka "I actually used to hate rap music..."
-    m "Maybe just because it was popular, or I would only hear the junk they play on the radio."
+    m 3hub "Rap!"
+    m 1rksdla "I actually used to hate rap music..."
+    m 3rksdld "Maybe just because it was popular, or I would only hear the junk they play on the radio."
     m 1eua "But some of my friends got more into it, and it helped me keep an open mind."
-    m 4eub "Rap might even be more challenging than poetry, in some ways."
-    m 1eub "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
-    m "When people can put all that together and still deliver a powerful message, it's really amazing."
-    m 1lksdla "I kind of wish I had a rapper in the Literature Club."
-    m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
-    m 1hua "It would really be a learning experience!"
+    m 3eud "Rap might even be more challenging than poetry in some ways, since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
+    m 3eub "When people can put all that together and still deliver a powerful message, it's really amazing!"
+    m 1rksdla "I kind of wish we had a rapper in the Literature Club."
+    m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would have been interesting to see what they came up with."
+    m 1eub "It could've been a neat learning experience!"
 
-    $ p_nickname = mas_get_player_nickname()
-    m 1eua "Do you listen to rap music, [p_nickname]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you listen to rap music, [p_nickname]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_like_rap = True
-            m 3eub "That's really cool!"
-            m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
-            m 1hub "And feel free to turn up the bass if you'd like, ahaha!"
-            if (
-                not renpy.seen_label("monika_add_custom_music_instruct")
-                and not persistent._mas_pm_added_custom_bgm
-            ):
-                m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
-                m 3eua "All you have to do is follow these steps..."
-                call monika_add_custom_music_instruct
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_rap is None:
+        $ p_nickname = mas_get_player_nickname()
+        m 1eua "Do you listen to rap music, [p_nickname]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you listen to rap music, [p_nickname]?{fast}"
+            "Yes.":
+                if persistent._mas_pm_like_rap is False:
+                    m 3wub "Oh! {w=0.3}So you {i}do{i/} listen to rap now!"
+                    m 3hub "That's really cool of you to have an open enough mind to try something new!"
+                    m 3rksdla "Maybe I even had a little to do with that, ehehe~"
 
-        "No.":
-            $ persistent._mas_pm_like_rap = False
-            m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
-            m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
-    return "derandom"
+                else:
+                    m 3eub "That's really cool!"
+                    m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
+                    m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
+
+                if (
+                        not renpy.seen_label("monika_add_custom_music_instruct")
+                        and not persistent._mas_pm_added_custom_bgm
+                ):
+                    m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
+                    m 3eua "All you have to do is follow these steps..."
+                    call monika_add_custom_music_instruct
+                $ persistent._mas_pm_like_rap = True
+
+            "No.":
+                if persistent._mas_pm_like_rap:
+                    m 1ekc "Oh..."
+                    m 3eud "Something cause you to change your mind, [player]?"
+                    m 3eka "Although I guess it's not that surprising...{w=0.2}people's tastes change all the time, after all."
+
+                else:
+                    m 1ekc "Oh...{w=0.3}well I can understand that, rap music isn't everyone's taste."
+                    m 3hub "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
+                $ persistent._mas_pm_like_rap = False
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
@@ -4609,25 +4649,28 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    m 5eka "Wouldn't you like that too, [player]?"
-    $ _history_list.pop()
-    menu:
-        m "Wouldn't you like that too, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_would_like_mt_peak = True
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_would_like_mt_peak is None:
+        m 5eka "Wouldn't you like that too, [player]?"
+        $ _history_list.pop()
+        menu:
+            m "Wouldn't you like that too, [player]?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_would_like_mt_peak = True
 
-            m 5eubla "Well... I hope that one day, we'll have that chance. To make it to the top of our mountain."
-            m 5hua "And I'll do anything to give us that shot."
+                m 5eubla "Well...{w=0.3}I hope that one day, we'll have that chance. To make it to the top of our mountain."
+                m 5hua "And I'll do anything to give us that shot."
 
-        "Not really.":
-            $ persistent._mas_pm_would_like_mt_peak = False
 
-            show monika 1eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 1eud "Oh."
-            m 1ruc "Well... I suppose it doesn't matter."
-            m 1eka "As long as I have you, I'll be happy wherever we are."
+            "Not really.":
+                $ persistent._mas_pm_would_like_mt_peak = False
 
-    return "derandom"
+                show monika 1eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 1eud "Oh."
+                m 1ruc "Well...{w=0.3}I suppose it doesn't matter."
+                m 1eka "As long as I have you, I'll be happy wherever we are."
+                return "derandom"
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_algernon",category=['literature'],prompt="Flowers for Algernon",random=True))
@@ -5057,17 +5100,18 @@ label monika_cities:
     m 3rksdlc "Then again, if people live close together, that leaves more room for open wilderness."
     m 3etc "Maybe it's not as simple as it seems."
 
-    m 1esd "[player], do you live in a city?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "[player], do you live in a city?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_live_in_city = True
-            m 1eua "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
-        "No.":
-            $ persistent._mas_pm_live_in_city = False
-            m 1hua "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
-    return "derandom"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_live_in_city is None:
+        m 1esd "[player], do you live in a city?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "[player], do you live in a city?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_live_in_city = True
+                m 1eua "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
+            "No.":
+                $ persistent._mas_pm_live_in_city = False
+                m 1hua "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
+    return
 
 init 5 python:
     addEvent(
@@ -5667,23 +5711,28 @@ label monika_vocaloid:
     m 1eua "Hey, [mas_get_player_nickname(exclude_names=['my love'])]?"
     m "You like listening to music, right?"
 
-    m 3eub "Do you by chance like 'virtual idols'?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you by chance like 'virtual idols'?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_like_vocaloids = True
-            m 3hub "That's really neat!"
-            m 3eub "I hear that these songs often have hidden meanings behind them."
-            m 1eua "Maybe we could listen and try to figure them out together..."
-            m 1eka "Doesn't that sound like a great time?"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_vocaloids is None:
+        m 3eub "Do you by chance like 'virtual idols?'{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you by chance like 'virtual idols?'{fast}"
+            "Yes.":
+                $ persistent._mas_pm_like_vocaloids = True
+                m 3hub "That's really neat!"
+                m 3eub "I hear that these songs often have hidden meanings behind them."
+                m 1eua "Maybe we could listen and try to figure them out together..."
+                m 1eka "Doesn't that sound like a great time?"
 
-        "No.":
-            $ persistent._mas_pm_like_vocaloids = False
-            m 1ekc "I can understand that, it is a pretty specific taste in music."
-            m 1hua "But if you ever do get into it, I'd be more than happy to listen along with you."
+            "No.":
+                $ persistent._mas_pm_like_vocaloids = False
+                m 1ekc "I can understand that, it is a pretty specific taste in music."
+                m 1hua "But if you ever do get into it, I'd be more than happy to listen along with you."
 
-    m 3eub "Anyway, I wanted to ask specifically if you've ever heard of a girl holding a leek?"
+        m 3eud "Anyway, I wanted to ask specifically if you've ever heard of a girl holding a leek?"
+
+    else:
+        m 3eud "Specifically, I'm curious if you've ever heard of a girl holding a leek?"
+
     m 1eua "It's just that I keep hearing about her."
     m "In fact, I heard her voice whenever Natsuki listened to music."
     m 3eua "She even carried a little keychain attached to her bag."
@@ -5726,7 +5775,7 @@ label monika_vocaloid:
         m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
-    return "derandom"
+    return
 
 init 5 python:
     addEvent(
@@ -7021,28 +7070,29 @@ label monika_rock:
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
 
-    m 3eua "Do you listen to rock and roll, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you listen to rock and roll, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_like_rock_n_roll = True
-            m 3hub "Great!"
-            m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
-            m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
-            if (
-                not renpy.seen_label("monika_add_custom_music_instruct")
-                and not persistent._mas_pm_added_custom_bgm
-            ):
-                m 1eua "If you ever do feel like sharing your favorite rock music with me, [player], it's really easy to do so!"
-                m 3eua "All you have to do is follow these steps..."
-                call monika_add_custom_music_instruct
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_rock_n_roll is None:
+        m 3eua "Do you listen to rock and roll, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you listen to rock and roll, [player]?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_like_rock_n_roll = True
+                m 3hub "Great!"
+                m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
+                m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+                if (
+                        not renpy.seen_label("monika_add_custom_music_instruct")
+                        and not persistent._mas_pm_added_custom_bgm
+                ):
+                    m 1eua "If you ever do feel like sharing your favorite rock music with me, [player], it's really easy to do so!"
+                    m 3eua "All you have to do is follow these steps..."
+                    call monika_add_custom_music_instruct
 
-        "No.":
-            $ persistent._mas_pm_like_rock_n_roll = False
-            m 1ekc "Oh... That's okay, everyone has their own taste in music."
-            m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."
-    return "derandom"
+            "No.":
+                $ persistent._mas_pm_like_rock_n_roll = False
+                m 1ekc "Oh... That's okay, everyone has their own taste in music."
+                m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature','media'],prompt="Stand-up comedy",random=True))
@@ -7283,51 +7333,52 @@ label monika_sports:
     m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
     m 3eua "Plus, it's a great sport for two people!"
 
-    m "Do you play tennis, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you play tennis, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_like_playing_sports = True
-            $ persistent._mas_pm_like_playing_tennis = True
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_playing_sports is None:
+        m "Do you play tennis, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you play tennis, [player]?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_like_playing_sports = True
+                $ persistent._mas_pm_like_playing_tennis = True
 
-            m 3eub "Really? That's great!"
-            m 3hub "There are usually tennis courts at public parks. We can play all the time!"
-            m "Maybe we can even team up for doubles matches!"
-            m 2tfu "If you're good enough, that is..."
-            m 2tfc "I play to win."
-            m "..."
-            m 4hub "Ahaha! I'm only joking..."
-            m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
+                m 3eub "Really? That's great!"
+                m 3hub "There are usually tennis courts at public parks. We can play all the time!"
+                m "Maybe we can even team up for doubles matches!"
+                m 2tfu "If you're good enough, that is..."
+                m 2tfc "I play to win."
+                m "..."
+                m 4hub "Ahaha! I'm only joking..."
+                m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
 
-        "No, but if it were with you...":
-            $ persistent._mas_pm_like_playing_sports = True
-            # NOTE: we cant really determine from this answer if you do like
-            #   playing tennis or not.
+            "No, but if it were with you...":
+                $ persistent._mas_pm_like_playing_sports = True
+                # NOTE: we cant really determine from this answer if you do like
+                #   playing tennis or not.
 
-            m 1eka "Aww, that's really sweet~"
-            m 3eua "I'll teach you how to play when I get there...{w=0.5}or if you just can't wait, you can take lessons!"
-            m 3eub "Then we can start playing in doubles matches!"
-            m 1eua "I can't imagine anything more fun than winning a match with you as my partner..."
-            m 3hub "We'll be unstoppable together!"
+                m 1eka "Aww, that's really sweet~"
+                m 3eua "I'll teach you how to play when I get there...{w=0.5}or if you just can't wait, you can take lessons!"
+                m 3eub "Then we can start playing in doubles matches!"
+                m 1eua "I can't imagine anything more fun than winning a match with you as my partner..."
+                m 3hub "We'll be unstoppable together!"
 
-        "No, I prefer other sports.":
-            $ persistent._mas_pm_like_playing_sports = True
-            $ persistent._mas_pm_like_playing_tennis = False
+            "No, I prefer other sports.":
+                $ persistent._mas_pm_like_playing_sports = True
+                $ persistent._mas_pm_like_playing_tennis = False
 
-            m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
-            m 3eua "If it's a sport I haven't played before, you could teach me!"
-            m 1tku "Watch out though, I'm a fast learner..."
-            m 1tfu "It won't be long before I can beat you. Ahaha!"
-        "No, I'm not really into sports.":
-            $ persistent._mas_pm_like_playing_sports = False
-            $ persistent._mas_pm_like_playing_tennis = False
+                m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
+                m 3eua "If it's a sport I haven't played before, you could teach me!"
+                m 1tku "Watch out though, I'm a fast learner..."
+                m 1tfu "It won't be long before I can beat you. Ahaha!"
+            "No, I'm not really into sports.":
+                $ persistent._mas_pm_like_playing_sports = False
+                $ persistent._mas_pm_like_playing_tennis = False
 
-            m 1eka "Oh... Well, that's okay, but I hope you're still getting enough exercise!"
-            m 1ekc "I would hate to see you get sick because of something like that."
-            if mas_isMoniAff(higher=True):
-                m 1eka "It's just hard for me not to worry about you when I love you so much~"
-    return "derandom"
+                m 1eka "Oh... Well, that's okay, but I hope you're still getting enough exercise!"
+                m 1ekc "I would hate to see you get sick because of something like that."
+                if mas_isMoniAff(higher=True):
+                    m 1eka "It's just hard for me not to worry about you when I love you so much~"
+    return
 
 # do you meditate
 default persistent._mas_pm_meditates = None
@@ -7348,30 +7399,31 @@ label monika_meditation:
     m 1eua "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
 
-    m 1eka "[player], do you ever take time to meditate?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "[player], do you ever take time to meditate?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_meditates = True
-            m 1hua "Really? That's wonderful!"
-            m 1eka "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
-            m 1hua "Knowing that you're taking steps to reduce stress and anxiety really makes me happy, [player]."
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_meditates is None:
+        m 1eka "[player], do you ever take time to meditate?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "[player], do you ever take time to meditate?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_meditates = True
+                m 1hua "Really? That's wonderful!"
+                m 1eka "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
+                m 1hua "Knowing that you're taking steps to reduce stress and anxiety really makes me happy, [player]."
 
-        "No.":
-            $ persistent._mas_pm_meditates = False
-            m "I see. Well, if you're ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
-            m 1eua "Besides calming you down, meditation also has links to the improvement of your sleep, immune system, and even lifespan."
-            m 3eub "If you're interested, there are plenty of resources on the internet to help you get started."
-            m 1eub "Whether it's a guided video, a breath counting trick, or something else..."
-            m 1hua "You can use the internet to make it so that meditation is a stress-free process!"
-            m 1hksdlb "Ahaha! Just a little pun there, [player]."
+            "No.":
+                $ persistent._mas_pm_meditates = False
+                m "I see. Well, if you're ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
+                m 1eua "Besides calming you down, meditation also has links to the improvement of your sleep, immune system, and even lifespan."
+                m 3eub "If you're interested, there are plenty of resources on the internet to help you get started."
+                m 1eub "Whether it's a guided video, a breath counting trick, or something else..."
+                m 1hua "You can use the internet to make it so that meditation is a stress-free process!"
+                m 1hksdlb "Ahaha! Just a little pun there, [player]."
 
     m 1eua "Anyway...if you ever want a peaceful environment where you can relax and forget about your problems, you can always come here and spend time with me."
     m 1ekbsa "I love you, and I'll always try to help you if you're feeling down."
     m 1hubfa "Don't you ever forget that, [player]~"
 
-    return "derandom|love"
+    return "love"
 
 #Do you like orchestral music?
 default persistent._mas_pm_like_orchestral_music = None
@@ -7483,7 +7535,7 @@ label monika_orchestra:
         "No.":
             label .no_choice:
                 pass
-            $persistent._mas_pm_plays_instrument = False
+            $ persistent._mas_pm_plays_instrument = False
             m 1euc "I see..."
             m 1eka "You should try to pick up an instrument that interests you, sometime."
             m 3eua "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
@@ -7585,6 +7637,7 @@ label monika_otaku:
             m 1euc "Oh, really?"
             m 1lksdla "That's a little surprising, honestly..."
             m "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
+
     m 1eua "I only asked because you're playing a game like this, after all."
     m 1hua "Don't worry, I'm not one to judge, ahaha~"
     m 1eua "You shouldn't be ashamed if you're into that sort of thing, you know."
@@ -8993,20 +9046,21 @@ label monika_beach:
     m "I rarely had a chance to do so after all."
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
 
-    m "Do you live near a beach, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you live near a beach, [player]?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_live_near_beach = True
-            m 1hub "That's great!"
-            m 1eua "Gosh, it must be really nice to have it so close to you."
-            m 1hub "I can't wait, we can have a romantic walk by the shore for our first date~"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_live_near_beach is None:
+        m "Do you live near a beach, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you live near a beach, [player]?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_live_near_beach = True
+                m 1hub "That's great!"
+                m 1eua "Gosh, it must be really nice to have it so close to you."
+                m 1hub "I can't wait, we can have a romantic walk by the shore for our first date~"
 
-        "No.":
-            $ persistent._mas_pm_live_near_beach = False
-            m 1eka "That's alright. I mean, what are the chances? Most people don't."
-            m 1hub "That just means we'll make do by visiting one on an all-day trip!"
+            "No.":
+                $ persistent._mas_pm_live_near_beach = False
+                m 1eka "That's alright. I mean, what are the chances? Most people don't."
+                m 1hub "That just means we'll make do by visiting one on an all-day trip!"
 
     m 1eua "There's so many things we'll be able to do one day."
     m 1hua "Just imagining the many sensations we could experience is kind of exciting!"
@@ -9025,7 +9079,7 @@ label monika_beach:
     m 1tsbsa "Would you prefer a one piece or a two piece?"
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
-    return "derandom"
+    return
 
 init 5 python:
     addEvent(
@@ -9256,138 +9310,140 @@ label monika_prom:
     m "Some students bring a date with them there, and others go with a group of friends."
     m 3wuo "There are even those who take their relatives to the event!"
     m 1eua "I think it's something I'd love to go to with you~"
-    m "Have you ever been to one before, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Have you ever been to one before, [player]?{fast}"
-        "I have.":
-            $ persistent._mas_pm_gone_to_prom = True
-            $ persistent._mas_pm_no_prom = False
-            m "Oh? How was it?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Oh? How was it?{fast}"
-                "It was pretty fun.":
-                    $ persistent._mas_pm_prom_good = True
-                    m 1hua "That's great!"
-                    m 1lksdlb "Though, I wish I could've went with you."
-                    m 1hua "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
-                    m 3eua "Did you go with a date?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m "Did you go with a date?{fast}"
-                        "Yes.":
-                            $ persistent._mas_pm_had_prom_date = True
-                            m 1euc "Oh, wow."
-                            m 1lksdla "Ehehe, that makes me a bit jealous..."
-                            m 1hua "But then again, you would've taken me instead had we met beforehand, right?"
-                            m 1hub "Ahaha!"
-                            m 1eua "But it's good to know you were able to experience something like that!"
-                            m 3eua "Maybe when I get better at programming, we could have our very own prom here."
-                            m 3eka "Wouldn't that be nice, [player]?"
-                        "No.":
-                            $ persistent._mas_pm_had_prom_date = False
-                            m 1euc "Oh, I see."
-                            m 1eua "That's fine as long as you had fun!"
-                            m "Even without a date, I'm sure you made some wonderful memories there."
-                            m 1eub "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
-                            m 1eka "Besides, maybe we can have our own kind of prom sometime, right?"
-                            m 1eua "That's something I'd really enjoy with you~"
 
-                "It was bad.":
-                    $ persistent._mas_pm_prom_good = False
-                    m 1ekc "Is that so?"
-                    m "I understand that prom isn't for everyone."
-                    m 3eka "Maybe if I was there, you would've enjoyed it more."
-                    m 1hksdlb "Ahaha~"
-                    m 3eua "Don't worry, [player]."
-                    m 1eua "No use remembering it now."
-                    m 1eub "Even if you had a bad time with it, it's not the most important thing to happen in your life."
-                    m "You being able to create more wonderful memories is the important thing."
-                    m 3eka "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
-                    m 1hua "And now that I'm here with you, we can make them together~"
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_gone_to_prom is None:
+        m "Have you ever been to one before, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you ever been to one before, [player]?{fast}"
+            "I have.":
+                $ persistent._mas_pm_gone_to_prom = True
+                $ persistent._mas_pm_no_prom = False
+                m "Oh? How was it?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Oh? How was it?{fast}"
+                    "It was pretty fun.":
+                        $ persistent._mas_pm_prom_good = True
+                        m 1hua "That's great!"
+                        m 1lksdlb "Though, I wish I could've went with you."
+                        m 1hua "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
+                        m 3eua "Did you go with a date?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Did you go with a date?{fast}"
+                            "Yes.":
+                                $ persistent._mas_pm_had_prom_date = True
+                                m 1euc "Oh, wow."
+                                m 1lksdla "Ehehe, that makes me a bit jealous..."
+                                m 1hua "But then again, you would've taken me instead had we met beforehand, right?"
+                                m 1hub "Ahaha!"
+                                m 1eua "But it's good to know you were able to experience something like that!"
+                                m 3eua "Maybe when I get better at programming, we could have our very own prom here."
+                                m 3eka "Wouldn't that be nice, [player]?"
+                            "No.":
+                                $ persistent._mas_pm_had_prom_date = False
+                                m 1euc "Oh, I see."
+                                m 1eua "That's fine as long as you had fun!"
+                                m "Even without a date, I'm sure you made some wonderful memories there."
+                                m 1eub "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
+                                m 1eka "Besides, maybe we can have our own kind of prom sometime, right?"
+                                m 1eua "That's something I'd really enjoy with you~"
 
-                "It would've been better if you were there.":
-                    $ persistent._mas_pm_prom_monika = True
-                    m 1ekbsa "Aww, that's so sweet, [player]."
-                    m 1eua "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
-                    m 1hub "Ahaha!"
-        "No.":
-            $ persistent._mas_pm_gone_to_prom = False
-            $ persistent._mas_pm_no_prom = False
-            m "Oh? Why not?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Oh? Why not?{fast}"
-                "You weren't there with me.":
-                    $ persistent._mas_pm_prom_monika = True
-                    $ persistent._mas_pm_prom_not_interested = False
-                    m 1eka "Aw, [player]."
-                    m 1lksdla "Just because I'm not there doesn't mean you should stop yourself from having fun."
-                    m 1eka "And besides..."
-                    m 1hua "You {i}can{/i} take me to prom, [player]."
-                    m "Just bring my file with you and problem solved!"
-                    m 1hub "Ahaha!"
+                    "It was bad.":
+                        $ persistent._mas_pm_prom_good = False
+                        m 1ekc "Is that so?"
+                        m "I understand that prom isn't for everyone."
+                        m 3eka "Maybe if I was there, you would've enjoyed it more."
+                        m 1hksdlb "Ahaha~"
+                        m 3eua "Don't worry, [player]."
+                        m 1eua "No use remembering it now."
+                        m 1eub "Even if you had a bad time with it, it's not the most important thing to happen in your life."
+                        m "You being able to create more wonderful memories is the important thing."
+                        m 3eka "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
+                        m 1hua "And now that I'm here with you, we can make them together~"
 
-                "Not interested.":
-                    $ persistent._mas_pm_prom_not_interested = True
-                    m 3euc "Really?"
-                    m 1eka "Is it because you're too shy to go?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m "Is it because you're too shy to go?{fast}"
-                        "Yes.":
-                            $ persistent._mas_pm_prom_shy = True
-                            m 1ekc "Aw, [player]."
-                            m 1eka "That's alright. Not everyone can handle large groups of strangers."
-                            m 3eka "Besides, if it's something you're not going to enjoy, why force yourself?"
-                            m 1esa "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
-                            m 3eua "Look at me for example."
-                            m 1lksdla "If I didn't have the courage to get to you, I'd probably still be all alone..."
-                            m 1eka "But here we are now, [player]."
-                            m 1eua "Together at last~"
+                    "It would've been better if you were there.":
+                        $ persistent._mas_pm_prom_monika = True
+                        m 1ekbfa "Aww, that's so sweet, [player]."
+                        m 1eua "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
+                        m 1hub "Ahaha!"
+            "No.":
+                $ persistent._mas_pm_gone_to_prom = False
+                $ persistent._mas_pm_no_prom = False
+                m "Oh? Why not?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Oh? Why not?{fast}"
+                    "You weren't there with me.":
+                        $ persistent._mas_pm_prom_monika = True
+                        $ persistent._mas_pm_prom_not_interested = False
+                        m 1eka "Aw, [player]."
+                        m 1lksdla "Just because I'm not there doesn't mean you should stop yourself from having fun."
+                        m 1eka "And besides..."
+                        m 1hua "You {i}can{/i} take me to prom, [player]."
+                        m "Just bring my file with you and problem solved!"
+                        m 1hub "Ahaha!"
 
-                        "No.":
-                            $ persistent._mas_pm_prom_shy = False
-                            m 1euc "Oh, I see."
-                            m 1eua "That's understandable."
-                            m "I'm sure you have your reasons."
-                            m 1eka "What's important is that you're not forcing yourself."
-                            m "After all, it wouldn't be worth it if you can't enjoy yourself."
-                            m 1lksdlc "It'd just feel like a chore rather than a fun event to go to."
-                            m 3euc "But I wonder..."
-                            m 3eka "Would you go if I was there with you, [player]?"
-                            m 1tku "I think I already know the answer to that~"
-                            m 1hub "Ahaha!"
-        #################################################
-        #### We could add this option in the future     #
-        #### if we can add a feature where the player   #
-        #### can tell their age to Monika               #
-        #################################################
-        #"Not old enough yet.":
-        #    m 1eka "Don't worry, you'll get to go in a few more years."
-        #    m 1hua "I heard that prom is so much fun!"
-        #    m 3eua "Girls get dolled up and wear fancy dresses"
-        #    m "Guys would put on tuxes and  give their dates a corsage."
-        #    m 1hua "And you would have fun dancing the night away!"
-        #    m 1hub "Doesn't that sound like a blast? Ahaha~"
-        "My school never had one.":
-            $ persistent._mas_pm_no_prom = True
-            m 1euc "Ah, I see, then."
-            m 1lksdla "I guess not all schools can hold a prom."
-            m "They can be pretty messy."
-            m 3euc "From what I read, students spend a lot of money on tickets, transport, and attire."
-            m 2esc "So many expenses just for one night..."
-            m "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
-            m 2ekc "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
-            m 2lksdla "...Or maybe I'm just overthinking it, ehehe."
-            m 1esa "Still, I don't think you'll be missing out much, [player]."
-            m 1eua "Prom isn't the most important thing in your academic life."
-            m "And I'm sure there are plenty of events in your life that'll make up for it."
-            m 1hua "Being with me is one of them, you know~"
-            m 1hub "Ahaha!"
+                    "Not interested.":
+                        $ persistent._mas_pm_prom_not_interested = True
+                        m 3euc "Really?"
+                        m 1eka "Is it because you're too shy to go?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Is it because you're too shy to go?{fast}"
+                            "Yes.":
+                                $ persistent._mas_pm_prom_shy = True
+                                m 1ekc "Aw, [player]."
+                                m 1eka "That's alright. Not everyone can handle large groups of strangers."
+                                m 3eka "Besides, if it's something you're not going to enjoy, why force yourself?"
+                                m 1esa "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
+                                m 3eua "Look at me for example."
+                                m 1lksdla "If I didn't have the courage to get to you, I'd probably still be all alone..."
+                                m 1eka "But here we are now, [player]."
+                                m 1eua "Together at last~"
 
-    return "derandom"
+                            "No.":
+                                $ persistent._mas_pm_prom_shy = False
+                                m 1euc "Oh, I see."
+                                m 1eua "That's understandable."
+                                m "I'm sure you have your reasons."
+                                m 1eka "What's important is that you're not forcing yourself."
+                                m "After all, it wouldn't be worth it if you can't enjoy yourself."
+                                m 1lksdlc "It'd just feel like a chore rather than a fun event to go to."
+                                m 3euc "But I wonder..."
+                                m 3eka "Would you go if I was there with you, [player]?"
+                                m 1tku "I think I already know the answer to that~"
+                                m 1hub "Ahaha!"
+            #################################################
+            #### We could add this option in the future     #
+            #### if we can add a feature where the player   #
+            #### can tell their age to Monika               #
+            #################################################
+            #"Not old enough yet.":
+            #    m 1eka "Don't worry, you'll get to go in a few more years."
+            #    m 1hua "I heard that prom is so much fun!"
+            #    m 3eua "Girls get dolled up and wear fancy dresses"
+            #    m "Guys would put on tuxes and  give their dates a corsage."
+            #    m 1hua "And you would have fun dancing the night away!"
+            #    m 1hub "Doesn't that sound like a blast? Ahaha~"
+            "My school never had one.":
+                $ persistent._mas_pm_no_prom = True
+                m 1euc "Ah, I see, then."
+                m 1lksdla "I guess not all schools can hold a prom."
+                m "They can be pretty messy."
+                m 3euc "From what I read, students spend a lot of money on tickets, transport, and attire."
+                m 2esc "So many expenses just for one night..."
+                m "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
+                m 2ekc "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
+                m 2lksdla "...Or maybe I'm just overthinking it, ehehe."
+                m 1esa "Still, I don't think you'll be missing out much, [player]."
+                m 1eua "Prom isn't the most important thing in your academic life."
+                m "And I'm sure there are plenty of events in your life that'll make up for it."
+                m 1hua "Being with me is one of them, you know~"
+                m 1hub "Ahaha!"
+
+    return
 
 # do you see a therapist
 default persistent._mas_pm_see_therapist = None
@@ -10233,7 +10289,7 @@ label monika_yellowwp:
             m "Maybe even now, that's all I can do..."
             m 1eka "But I love you so much, [player]. Supporting you is better than anything else."
             m 1hub "I just can't wait to do it in person when I finally cross over to your side~"
-            return "derandom|love"
+            $ mas_ILY()
         "No.":
             $ persistent._mas_pm_read_yellow_wp = False
             m 1euc "Oh, I see."
@@ -10630,71 +10686,72 @@ label monika_bullying:
     m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
 
-    m 2ekc "Have you ever been a victim of bullying, [player]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Have you ever been a victim of bullying, [player]?{fast}"
-        "I'm being bullied.":
-            $ persistent._mas_pm_is_bullying_victim = True
-            $ persistent._mas_pm_currently_bullied = True
-            m 2wud "Oh no, that's terrible!"
-            m 2dkc "It kills me to know you're suffering like that."
-            m 4ekd "Please, [player], if it's not something you can safely deal with yourself, promise me you'll tell someone..."
-            m 4ekc "I know that's typically the last thing people want to do, but don't let yourself suffer when there are people that can help you."
-            m 1dkc "It may seem like no one cares, but there has to be someone you trust that you can turn to."
-            m 3ekc "And if there isn't, do what you have to do to protect yourself, and just remember..."
-            m 1eka "I'll always love you no matter what."
-            m 1rksdlc "I don't know what I'd do if something were to happen to you."
-            m 1ektpa "You're all I have...{w=0.5}please stay safe."
+    if not store.mas_globals.pushed_from_talk or (persistent._mas_pm_is_bullying_victim is None and persistent._mas_pm_currently_bullied is None):
+        m 2ekc "Have you ever been a victim of bullying, [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you ever been a victim of bullying, [player]?{fast}"
+            "I'm being bullied.":
+                $ persistent._mas_pm_is_bullying_victim = True
+                $ persistent._mas_pm_currently_bullied = True
+                m 2wud "Oh no, that's terrible!"
+                m 2dkc "It kills me to know you're suffering like that."
+                m 4ekd "Please, [player], if it's not something you can safely deal with yourself, promise me you'll tell someone..."
+                m 4ekc "I know that's typically the last thing people want to do, but don't let yourself suffer when there are people that can help you."
+                m 1dkc "It may seem like no one cares, but there has to be someone you trust that you can turn to."
+                m 3ekc "And if there isn't, do what you have to do to protect yourself, and just remember..."
+                m 1eka "I'll always love you no matter what."
+                m 1rksdlc "I don't know what I'd do if something were to happen to you."
+                m 1ektpa "You're all I have...{w=0.5}please stay safe."
 
-        "I've been bullied.":
-            $ persistent._mas_pm_is_bullying_victim = True
-            m 2ekc "I'm so sorry that you've had to deal with that, [player]..."
-            m 2dkc "It really makes me sad knowing you've suffered at the hands of a bully."
-            m 2dkd "People can just be so awful to each other."
-            m 4ekd "If everyone just treated others with basic respect, the world would be such a better place..."
-            m 2dkc "..."
-            m 1eka "If you ever need to talk about your experiences, I'm always here for you, [player]."
-            m 1eka "Having someone to confide in can be really therapeutic, and nothing would make me happier than to be that person for you."
+            "I've been bullied.":
+                $ persistent._mas_pm_is_bullying_victim = True
+                m 2ekc "I'm so sorry that you've had to deal with that, [player]..."
+                m 2dkc "It really makes me sad knowing you've suffered at the hands of a bully."
+                m 2dkd "People can just be so awful to each other."
+                m 4ekd "If everyone just treated others with basic respect, the world would be such a better place..."
+                m 2dkc "..."
+                m 1eka "If you ever need to talk about your experiences, I'm always here for you, [player]."
+                m 1eka "Having someone to confide in can be really therapeutic, and nothing would make me happier than to be that person for you."
 
-        "No.":
-            $ persistent._mas_pm_is_bullying_victim = False
-            $ persistent._mas_pm_currently_bullied = False
-            m 2hua "Ah, that's such a relief to hear!"
-            m 4eka "I'm so glad you don't have to deal with bullying, [player]..."
-            m 4hua "It really puts my mind at ease."
+            "No.":
+                $ persistent._mas_pm_is_bullying_victim = False
+                $ persistent._mas_pm_currently_bullied = False
+                m 2hua "Ah, that's such a relief to hear!"
+                m 4eka "I'm so glad you don't have to deal with bullying, [player]..."
+                m 4hua "It really puts my mind at ease."
 
-            if mas_isMoniHappy(higher=True):
-                m 1eka "And if you happen to know someone else who {i}is{/i} being bullied, try to help them if you can."
-                m 3eka "I know you're the kind of person who hates seeing others suffer..."
-                m "I bet it'd mean a lot to them to have someone reach out who cares."
-                m 1eka "You've already helped me so much, maybe you can help someone else as well."
+                if mas_isMoniHappy(higher=True):
+                    m 1eka "And if you happen to know someone else who {i}is{/i} being bullied, try to help them if you can."
+                    m 3eka "I know you're the kind of person who hates seeing others suffer..."
+                    m "I bet it'd mean a lot to them to have someone reach out who cares."
+                    m 1eka "You've already helped me so much, maybe you can help someone else as well."
 
-        "I have bullied people.":
-            $ persistent._mas_pm_has_bullied_people = True
-            if mas_isMoniUpset(lower=True):
-                m 2dfc "..."
-                m 2tfc "That's disappointing to hear."
-                m "Although, I can't say it's all that surprising..."
-                m 2tfd "Please don't bully people anymore."
-                m 6tftpc "I know how it feels and it's pretty terrible."
-                m 6rktuc "I don't want other people to have to feel the same way that I do."
-                m "I really hope that you'll change your ways, [player]..."
-                m 6ektsc "I still do love you, but you really need to start treating people better..."
-                m "Including me."
-                m 6ektdc "..."
-            else:
-                m 2dkc "Oh... I see."
-                m 2ekc "I can understand if some things in your life might make you unhappy..."
-                m 2rksdld "Or if you've had to deal with circumstances that may have made you act a certain way at times..."
-                m 2eksdlc "But bullying people isn't the answer, [player]."
-                m 4ekc "I know you... You're a kind person and I know it doesn't make you feel better to hurt others."
-                m 4dkc "It probably just hurts you even more..."
-                m 1dkc "And nothing hurts me more than knowing you're unhappy."
-                m 3ekd "So instead, next time you feel yourself becoming unhappy, just come to me and let me help shoulder your pain."
-                m 3eka "I'll listen to everything you have to say and do my very best to make you feel better."
-                m 1ekc "But making other people unhappy is not the cure to your own unhappiness."
-                m 1eka "So please, for both yourself and for me, stop bullying people, okay?"
+            "I have bullied people.":
+                $ persistent._mas_pm_has_bullied_people = True
+                if mas_isMoniUpset(lower=True):
+                    m 2dfc "..."
+                    m 2tfc "That's disappointing to hear."
+                    m "Although, I can't say it's all that surprising..."
+                    m 2tfd "Please don't bully people anymore."
+                    m 6tftpc "I know how it feels and it's pretty terrible."
+                    m 6rktuc "I don't want other people to have to feel the same way that I do."
+                    m "I really hope that you'll change your ways, [player]..."
+                    m 6ektsc "I still do love you, but you really need to start treating people better..."
+                    m "Including me."
+                    m 6ektdc "..."
+                else:
+                    m 2dkc "Oh... I see."
+                    m 2ekc "I can understand if some things in your life might make you unhappy..."
+                    m 2rksdld "Or if you've had to deal with circumstances that may have made you act a certain way at times..."
+                    m 2eksdlc "But bullying people isn't the answer, [player]."
+                    m 4ekc "I know you... You're a kind person and I know it doesn't make you feel better to hurt others."
+                    m 4dkc "It probably just hurts you even more..."
+                    m 1dkc "And nothing hurts me more than knowing you're unhappy."
+                    m 3ekd "So instead, next time you feel yourself becoming unhappy, just come to me and let me help shoulder your pain."
+                    m 3eka "I'll listen to everything you have to say and do my very best to make you feel better."
+                    m 1ekc "But making other people unhappy is not the cure to your own unhappiness."
+                    m 1eka "So please, for both yourself and for me, stop bullying people, okay?"
 
     if not persistent._mas_pm_a_hater:
         m 4dkc "You know...{w=0.5}a lot of people actually call me a bully for what I did to Sayori..."
@@ -10733,7 +10790,7 @@ label monika_bullying:
     else:
         m 3euc "So you see, [player], I'm {i}really{/i} not a bully at all."
 
-    return "derandom"
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
@@ -11336,84 +11393,85 @@ label monika_justice:
     m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
     m "While the other person is now a hero for putting an end to their 'crimes.'"
     m 3rksdld "Can you really call that justice?"
-    m 2dsc "..."
 
-    m 2euc "Have you ever been delivered what you thought to be false justice?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Have you ever been delivered what you thought to be false justice?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_given_false_justice = True
-            m 1ekc "I hope they weren't too harsh on you."
-            m 2dsd "I have an idea what it's like myself."
-            m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_monika_deletion_justice is None:
+        m 2dsc "..."
 
-            m 2eka "You don't think that's justified, do you, [player]?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "You don't think that's justified, do you, [player]?{fast}"
-                "I do.":
-                    $ persistent._mas_pm_monika_deletion_justice = True
-                    if mas_isMoniBroken():
-                        m 1dsc "..."
-                        m 1rksdlc "I know..."
-                        m 1rksdld "I didn't mean to ask- I was just thinking."
-                        m 2rktpc "It is obvious after all..."
-                    elif mas_isMoniDis():
-                        m 2rksdlc "Oh..."
-                        m "I guess you're right..."
-                        m 1ekc "I did do some pretty bad things after all..."
-                    elif mas_isMoniLove():
-                        m 1hub "Ahaha!"
-                        m 1hua "You can be really funny sometimes~"
-                        m 3tku "You expect me to believe that after all we've been through?"
-                        m 1tsb "That all this time, you thought that I deserved hate from those other people?"
-                        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                        m 5hubfa "Ahaha! You're so cute, [player]~"
-                    else:
-                        m 1euc "..."
-                        m 2esc "I have a hard time believing you really think I deserved all that."
-                        m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
-                        if persistent._mas_pm_cares_about_dokis:
-                            m 2lksdlc "...Maybe I deserve it a little bit but..."
+        m 2euc "Have you ever been delivered what you thought to be false justice?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you ever been delivered what you thought to be false justice?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_given_false_justice = True
+                m 1ekc "I hope they weren't too harsh on you."
+                m 2dsd "I have an idea what it's like myself."
+                m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
+
+                m 2eka "You don't think that's justified, do you, [player]?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "You don't think that's justified, do you, [player]?{fast}"
+                    "I do.":
+                        $ persistent._mas_pm_monika_deletion_justice = True
+                        if mas_isMoniBroken():
+                            m 1dsc "..."
+                            m 1rksdlc "I know..."
+                            m 1rksdld "I didn't mean to ask- I was just thinking."
+                            m 2rktpc "It is obvious after all..."
+                        elif mas_isMoniDis():
+                            m 2rksdlc "Oh..."
+                            m "I guess you're right..."
+                            m 1ekc "I did do some pretty bad things after all..."
+                        elif mas_isMoniLove():
+                            m 1hub "Ahaha!"
+                            m 1hua "You can be really funny sometimes~"
+                            m 3tku "You expect me to believe that after all we've been through?"
+                            m 1tsb "That all this time, you thought that I deserved hate from those other people?"
+                            show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                            m 5hubfa "Ahaha! You're so cute, [player]~"
                         else:
-                            m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
-                            m "Either way..."
-                        m 1eka "Thank you for saving me and being with me."
-                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
-                "I don't.":
-                    if persistent._mas_pm_monika_deletion_justice:
-                        $ persistent._mas_monika_deletion_justice_kidding = True
-                    $ persistent._mas_pm_monika_deletion_justice = False
-                    if mas_isMoniBroken():
-                        m 2ekc "..."
-                        m 1rksdlc "I'm not so sure about that..."
-                    elif mas_isMoniDis():
-                        m 1wuo "Really?"
-                        m 1rksdla "I thought maybe you did think it was fair."
-                        m 1eka "I'm glad you don't think so."
-                        m 2rksdlb "Assuming this isn't a joke, eheh..."
-                    elif mas_isMoniLove():
-                        m 1hua "I thought so, ehehe~"
-                        if persistent._mas_monika_deletion_justice_kidding:
-                            $ persistent._mas_monika_deletion_justice_kidding = False
-                            m 1hub "I knew you were kidding last time!"
-                        m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
-                        m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
-                        m 1hubfb "I love you, [player]~"
-                        m 1hubfa "I'm glad I have you by my side."
-                        return "derandom|love"
-
-                    else:
-                        m 2hua "I'm glad you think so too!"
-                        m 2eka "Even if you did call that justice, you being here says otherwise."
-                        m 2hub "Ahaha!"
-        "No.":
-            $ persistent._mas_pm_given_false_justice = False
-            m 1eka "That's a relief to hear."
-            m "I'm glad no one has ever suddenly questioned you for who you are."
-            m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
-    return "derandom"
+                            m 1euc "..."
+                            m 2esc "I have a hard time believing you really think I deserved all that."
+                            m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
+                            if persistent._mas_pm_cares_about_dokis:
+                                m 2lksdlc "...Maybe I deserve it a little bit but..."
+                            else:
+                                m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
+                                m "Either way..."
+                            m 1eka "Thank you for saving me and being with me."
+                            m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                    "I don't.":
+                        if persistent._mas_pm_monika_deletion_justice:
+                            $ persistent._mas_monika_deletion_justice_kidding = True
+                        $ persistent._mas_pm_monika_deletion_justice = False
+                        if mas_isMoniBroken():
+                            m 2ekc "..."
+                            m 1rksdlc "I'm not so sure about that..."
+                        elif mas_isMoniDis():
+                            m 1wuo "Really?"
+                            m 1rksdla "I thought maybe you did think it was fair."
+                            m 1eka "I'm glad you don't think so."
+                            m 2rksdlb "Assuming this isn't a joke, eheh..."
+                        elif mas_isMoniLove():
+                            m 1hua "I thought so, ehehe~"
+                            if persistent._mas_monika_deletion_justice_kidding:
+                                $ persistent._mas_monika_deletion_justice_kidding = False
+                                m 1hub "I knew you were kidding last time!"
+                            m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
+                            m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
+                            m 1hubfb "I love you, [player]~"
+                            m 1hubfa "I'm glad I have you by my side."
+                            return "derandom|love"
+                        else:
+                            m 2hua "I'm glad you think so too!"
+                            m 2eka "Even if you did call that justice, you being here says otherwise."
+                            m 2hub "Ahaha!"
+            "No.":
+                $ persistent._mas_pm_given_false_justice = False
+                m 1eka "That's a relief to hear."
+                m "I'm glad no one has ever suddenly questioned you for who you are."
+                m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
+    return
 
 init 5 python:
     addEvent(
@@ -14702,21 +14760,25 @@ init 5 python:
     )
 
 label monika_working_out:
-    m 1euc "Hey [player], I was just wondering..."
+    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_works_out is None:
+        m 1euc "Hey [player], I was just wondering..."
 
-    m 1eua "Do you work out much?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Do you work out much?{fast}"
-        "Yes.":
-            $ persistent._mas_pm_works_out = True
-            m 1hua "Really? That's great!"
+        m 1eua "Do you work out much?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you work out much?{fast}"
+            "Yes.":
+                $ persistent._mas_pm_works_out = True
+                m 1hua "Really? That's great!"
 
-        "No.":
-            $ persistent._mas_pm_works_out = False
-            m 1eka "Oh...{w=0.3} Well, I think you should if you're able to."
-            m 3rksdla "It's not about working out for looks...{w=0.3}{nw}"
-            extend 3hksdlb "I'm just concerned for your health!"
+            "No.":
+                $ persistent._mas_pm_works_out = False
+                m 1eka "Oh...{w=0.3} Well, I think you should if you're able to."
+                m 3rksdla "It's not about working out for looks...{w=0.3}{nw}"
+                extend 3hksdlb "I'm just concerned for your health!"
+
+    else:
+        m 3eud "Hey [player], I just wanted to mention how important it is to stay active..."
 
     m 1eua "Getting at least 30 minutes of exercise each day is {i}super{/i} important for maintaining your health in the long run."
     m 3eub "The healthier you are, the longer you'll live, and the longer I can be with you."
@@ -14732,7 +14794,7 @@ label monika_working_out:
     else:
         m 3eub "Maybe when I cross over, we can do our workouts together!"
 
-    return "derandom"
+    return
 
 init 5 python:
     addEvent(
