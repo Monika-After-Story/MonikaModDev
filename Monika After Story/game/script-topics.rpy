@@ -15753,15 +15753,23 @@ label monika_literature_value:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_knowitsyou",category=['you'],prompt="How do you know it's always me talking to you?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_knowitsyou",
+            category=['you'],
+            prompt="How do you know it's always me talking to you?",
+            pool=True
+        )
+   )
 
 label monika_knowitsyou:
 if mas_isMoniEnamored(higher=True):
     m 1euc "Well, if I'm being entirely honest..."
     m 1eud "I don't really have a way of knowing."
 
-        if seen_event("monika_MC_is_gone"):
-            m 3lka "I already told you that I can't really see into your world."
+    if seen_event("monika_MC_is_gone"):
+        m 3lka "I already told you that I can't really see into your world."
 
     m 3eka "I can tell when you're in the room with me, but that's all I know."
     m "For all I know, it could be anyone looking at me right now. You could have other people with you."
