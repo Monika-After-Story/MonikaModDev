@@ -15756,48 +15756,94 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_",
-            random=True
+            eventlabel="monika_nihilism",
+            category=["philosophy"],
+            random=True,
+            prompt="Nihilism",
+            aff_range=(mas_aff.ENAMORED,None)
         )
     )
 
-label monika_:
-    m "..."
-    m "You know...{w=0.2}there's something I've been thinking about lately."
-    m "Depression."
-    m "Ah-{w=0.2}{nw}" # wide eyed realization
-    extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
-    m "It's just it's kind of {w=0.2}{nw}" # 1-3-1
-    extend "fascinating {w=0.2}{nw}"
-    extend "in a morbid way."
+label monika_nihilism:
+    if not mas_getEVL_shown_count("monika_nihilism"):
+        # first time intro from random
+        m "..."
+        m "You know...{w=0.2}there's something that's been on my mind lately."
+        m "Things like impermanence..." # manual extends
+        # impermanence? get a better word
+        extend " Nihilism..."
+        extend " Depression."
+        m "Ah-{w=0.2}{nw}" # wide eyed realization
+        extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
+        m "It's just kind of {w=0.2}{nw}" # 1-3-1
+        extend "fascinating {w=0.2}{nw}"
+        extend "in a morbid way."
+    else:
+        # repeat from menu intro
+        # maybe skip the main choice from here
+        m ""
 
-
-    m "There's a poem I read that delivers that message quite well."
-    m "Would you like me to read it out for you?"
+    m "So I wanted to share my thoughts with you."
+    extend "If that's alright with you, of course."
 
     $ _history_list.pop()
     menu:
-        m "Would you like me to read it out for you?{fast}"
+        m "So I wanted to share my thoughts with you. If that's alright with you, of course.{fast}"
 
         "Please do.":
-            m "Alright then."
-            m "Ozymandias by Perry Shelley"
-            m "{i}I met a traveller from an antique land{/i}"
-            m "{i}Who said: Two vast and trunkless legs of stone{/i}"
-            m "{i}Stand in the desert. Near them, on the sand,{/i}"
-            m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
-            m "{i}And wrinkled lip, and sneer of cold command,{/i}"
-            m "{i}Tell that its sculptor well those passions read{/i}"
-            m "{i}Which yet survive, stamped on these lifeless things,{/i}"
-            m "{i}The hand that mocked them and the heart that fed:{/i}"
-            m "{i}And on the pedestal these words appear:{/i}"
-            m "{i}'My name is Ozymandias, king of kings:{/i}"
-            m "{i}Look on my works, ye Mighty, and despair!'{/i}"
-            m "{i}Nothing beside remains. Round the decay{/i}"
-            m "{i}Of that colossal wreck, boundless and bare{/i}"
-            m "{i}The lone and level sands stretch far away.{/i}"
+            m "Well, you've heard the term {i}entropy{/i}, right?"
+            m "Usually it goes something like{w=0.2}{nw}"
+            extend " 'Entropy must always increase,{w=0.2}{nw}"
+            extend " the universe tends to disorder,{w=0.2}{nw}"
+            extend " everything turns to chaos.'"
+            m "That kind of stuff."
+            m "Actually, there's a poem I read that delivers this message quite well."
+            m "Would you like to hear it?"
 
-        "Not right now":
-            m "Okay, maybe some other time then."
+            $ _history_list.pop()
+            menu:
+                m "Would you like to hear it?{fast}"
+
+                "Yes please.":
+                    m "Alright then."
+                    m "{i}I met a traveller from an antique land{/i}"
+                    m "{i}Who said: Two vast and trunkless legs of stone{/i}"
+                    m "{i}Stand in the desert. Near them, on the sand,{/i}"
+                    m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
+                    m "{i}And wrinkled lip, and sneer of cold command,{/i}"
+                    m "{i}Tell that its sculptor well those passions read{/i}"
+                    m "{i}Which yet survive, stamped on these lifeless things,{/i}"
+                    m "{i}The hand that mocked them and the heart that fed:{/i}"
+                    m "{i}And on the pedestal these words appear:{/i}"
+                    m "{i}'My name is Ozymandias, king of kings:{/i}"
+                    m "{i}Look on my works, ye Mighty, and despair!'{/i}"
+                    m "{i}Nothing beside remains. Round the decay{/i}"
+                    m "{i}Of that colossal wreck, boundless and bare{/i}"
+                    m "{i}The lone and level sands stretch far away.{/i}"
+
+                "Not right now":
+                    m "Okay, maybe some other time then."
+
+            # maybe rephrase next line based on poem choice
+            m "Basically, what it boils down to is that no matter how great the mark you leave on history is, it will fade away {i}eventually{/i}."
+            m "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
+            extend "give up." # manual extend
+            extend " To fall into a pit of despair and stay there. Sometimes for as long as they live."
+            m "After all, nothing you do matters in the grand scheme of things."
+            m "Nothing you {i}can{/i} do matters. So why bother doing anything at all?"
+            m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization."
+            m "It can be...{w=0.2} enticing...{w=0.2} even comforting...{w=0.2} in it's own twisted way."
+            m "But let me ask you a question."
+            m "Even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
+            # make reference to monika_stoicism
+            # moar stuff here
+
+        "I'd rather you not.":
+            # somewhat dejected / disappointed
+            m "Fair enough."
+            m "I know those aren't exactly the most pleasant topics to discuss."
+            m "I won't bring this up again, but let me know if you change your mind."
+            m "I think it's with difficult topics like these that a point of view different from one's own can be the most useful."
+            # fall through to return
 
     return "derandom"
