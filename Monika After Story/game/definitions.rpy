@@ -3554,11 +3554,14 @@ init -995 python in mas_utils:
                 - 0 if the current version is the same as the comparitive version
                 - 1 if the current version is greater than the comparitive version
         """
-
         #Define a local function to use to fix up the version lists if need be
         def fixVersionListLen(smaller_vers_list, larger_vers_list):
             """
             Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
 
             OUT:
                 adjusted version list
@@ -3569,19 +3572,16 @@ init -995 python in mas_utils:
                 smaller_vers_list.append(0)
             return smaller_vers_list
 
-
-        #Now, let's do some work.
-        #First, we check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #The lists are not the same, which means we need to do a bit of work.
-        #Before we do that, let's verify that the lists are the same length
-        if len(comparative_vers) > len(curr_vers):
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
             curr_vers = fixVersionListLen(curr_vers, comparative_vers)
 
         elif len(curr_vers) > len(comparative_vers):
             comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
 
         #Now we iterate and check the version numbers sequentially from left to right
         for index in range(len(curr_vers)):
@@ -3592,7 +3592,6 @@ init -995 python in mas_utils:
             elif curr_vers[index] < comparative_vers[index]:
                 #Comparative version is greater, the rest of this is irrelevant
                 return -1
-
 
 init -991 python in mas_utils:
     import store
