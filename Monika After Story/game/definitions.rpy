@@ -3586,11 +3586,13 @@ init -995 python in mas_utils:
         #Now we iterate and check the version numbers sequentially from left to right
         for index in range(len(curr_vers)):
             if curr_vers[index] > comparative_vers[index]:
-                #We've found a number which was greater, let's return 1 as we know this version is greater
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
                 return 1
 
-        #If we're here, we never found something greater. Let's return -1
-        return -1
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
 
 init -991 python in mas_utils:
     import store
