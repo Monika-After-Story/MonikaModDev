@@ -567,4 +567,9 @@ init 999 python:
         #Run functions
         store.mas_submod_utils.getAndRunFunctions(name)
 
+        #Let's also check if the current label is an override label, if so, we'll then mark the base label as seen
+        base_label = _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.get(name)
+        if base_label is not None:
+            persistent._seen_ever[base_label] = True
+
     config.label_callback = label_callback

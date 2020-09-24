@@ -368,7 +368,7 @@ python early:
     #           since shown count will be 0 and the label would have been seen.
     #           In that circumstance, we should immediately update the shown
     #           count. (Event will not do this in case you need to do specific
-    #           crash handling). Call syncShownCount on the event object to 
+    #           crash handling). Call syncShownCount on the event object to
     #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
@@ -3545,12 +3545,35 @@ init -1 python in _mas_root:
 init -999 python:
     import os
 
+    _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
+
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
         try:
             os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
         except:
             pass
+
+    def mas_override_label(label_to_override, override_label):
+        """
+        Label override function
+
+        IN:
+            label_to_override - the label which will be overridden
+            override_label - the label to override with
+        """
+        global _OVERRIDE_LABEL_TO_BASE_LABEL_MAP
+
+        #Check if we're overriding an already overridden label
+        if label_to_override in config.label_overrides:
+            old_override = config.label_overrides.pop(label_to_override)
+
+            #Remove the data for the label which is no longer acting as an override
+            if old_override in _OVERRIDE_LABEL_TO_BASE_LABEL_MAP:
+                _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.pop(old_override)
+
+        config.label_overrides[label_to_override] = override_label
+        _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
 init -995 python in mas_utils:
     def compareVersionLists(curr_vers, comparative_vers):
