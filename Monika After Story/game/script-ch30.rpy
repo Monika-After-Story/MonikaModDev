@@ -2004,4 +2004,7 @@ label ch30_reset:
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
 
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in config.label_overrides.iteritems():
+            _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
     return
