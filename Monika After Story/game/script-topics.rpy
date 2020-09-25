@@ -5999,16 +5999,20 @@ label penname_loop(new_name_question):
 
             while not penbool:
                 $ penname = mas_input(
-                    "What is your penname?",
+                    "What's your pen name?",
                     length=20,
                     screen_kwargs={"use_return_button": True}
                 ).strip(' \t\n\r')
 
                 $ lowerpen = penname.lower()
 
-                if lowerpen == player.lower():
+                if persistent._mas_penname is not None and lowerpen == persistent._mas_penname.lower():
+                    m 3hub "That's your current pen name, silly!"
+                    m 3eua "Try again."
+
+                elif lowerpen == player.lower():
                     m 1eud "Oh, so you're using your pen name?"
-                    m 4euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
+                    m 3euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
                     m 1eka "But I guess it's pretty special that you shared your pen name with me!"
                     $ persistent._mas_penname = penname
                     $ penbool = True
@@ -6023,7 +6027,7 @@ label penname_loop(new_name_question):
                 elif lowerpen == "natsuki":
                     m 2euc "..."
                     m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
-                    m 1eua "It's something of a common name."
+                    m 7eua "It's something of a common name."
                     m 1rksdla "You might make me jealous, though."
                     $ persistent._mas_penname = penname
                     $ penbool = True
@@ -6031,7 +6035,7 @@ label penname_loop(new_name_question):
                 elif lowerpen == "yuri":
                     m 2euc "..."
                     m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
-                    m 1eua "It's something of a common name."
+                    m 7eua "It's something of a common name."
                     m 1tku "Of course, there's something else that name could refer to..."
                     if persistent.gender =="F":
                         m 5eua "And well...I could get behind that, since it's you~"
