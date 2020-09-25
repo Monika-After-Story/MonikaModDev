@@ -573,3 +573,12 @@ init 999 python:
             persistent._seen_ever[base_label] = True
 
     config.label_callback = label_callback
+
+    @store.mas_submod_utils.functionplugin("ch30_reset", priority=-999)
+    def __build_override_label_to_base_label_map():
+        """
+        Populates a lookup dict for all label overrides which are in effect
+        """
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in config.label_overrides.iteritems():
+            _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
