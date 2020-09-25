@@ -128,7 +128,7 @@ init -991 python in mas_submod_utils:
             """
             Representation of this object
             """
-            return "<Submod {0} v{1} by {2}>".format(self.name, self.version, self.author)
+            return "<Submod: ({0} v{1} by {2})>".format(self.name, self.version, self.author)
 
         def getVersionNumberList(self):
             """
