@@ -15756,16 +15756,16 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_not_nihilism",
+            eventlabel="monika_impermanence",
             category=["philosophy"],
             random=True,
-            prompt="Placeholder name until I think of something",
-            aff_range=(mas_aff.ENAMORED,None),
+            prompt="Impermanence",
             sensitive=True
         )
     )
 
-label monika_not_nihilism:
+label monika_impermanence:
+    $ wants_full_topic = None
     if not mas_getEVL_shown_count("monika_not_nihilism"):
         # first time intro from random
         m "..."
@@ -15773,89 +15773,97 @@ label monika_not_nihilism:
 
     else:
         # repeat from menu intro
-        # safe to assume the player wants to hear what Moni has to say, so maybe skip the main choice from here
+        # safe to assume the player wants to hear what Moni has to say, skip the main choice from here
         m "You know, I find myself thinking about some dark stuff occasionally."
+        $ wants_full_topic = True
 
     m "Concepts like impermanence..." # manual extends
     extend " Nihilism..."
     extend " Depression."
-    m "Ah-{w=0.2}{nw}" # wide eyed realization
-    extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
+
+    if mas_isMoniAff(higher=True):
+        m "I'm not going through anything like that myself, of course."
+        m "Courtesy of a certain someone."
+    else:
+        m "Ah-{w=0.2}{nw}" # wide eyed realization
+        extend " I don't mean to worry you, I'm not going through it myself, or anything like that."
+
     m "It's just kind of {w=0.2}{nw}" # 1-3-1
     extend "fascinating {w=0.2}{nw}"
     extend "in a morbid way."
-
     m "So I wanted to share my thoughts with you."
-    extend "If that's alright with you, of course."
 
-    $ _history_list.pop()
-    menu:
-        m "So I wanted to share my thoughts with you. If that's alright with you, of course.{fast}"
+    if (wants_full_topic is None):
+        extend "If that's alright with you, of course."
+        $ _history_list.pop()
+        menu:
+            m "So I wanted to share my thoughts with you. If that's alright with you, of course.{fast}"
 
-        "Please do.":
-            m "Well, you've heard the term {i}entropy{/i}, right?"
-            m "Usually it goes something like{w=0.2}{nw}"
-            extend " 'Entropy must always increase,{w=0.2}{nw}"
-            extend " the universe tends to disorder,{w=0.2}{nw}"
-            extend " everything turns to chaos.'"
-            m "That kind of stuff."
-            m "Actually, there's a poem I read that delivers this message quite well."
-            m "Would you like to hear it?"
+            "Please do.":
+                $ wants_full_topic = True
 
-            $ _history_list.pop()
-            menu:
-                m "Would you like to hear it?{fast}"
+            "I'd rather you not.":
+                $ wants_full_topic = False
 
-                "Yes please.":
-                    m "Alright then."
-                    m "{i}I met a traveller from an antique land{/i}"
-                    m "{i}Who said: Two vast and trunkless legs of stone{/i}"
-                    m "{i}Stand in the desert. Near them, on the sand,{/i}"
-                    m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
-                    m "{i}And wrinkled lip, and sneer of cold command,{/i}"
-                    m "{i}Tell that its sculptor well those passions read{/i}"
-                    m "{i}Which yet survive, stamped on these lifeless things,{/i}"
-                    m "{i}The hand that mocked them and the heart that fed:{/i}"
-                    m "{i}And on the pedestal these words appear:{/i}"
-                    m "{i}'My name is Ozymandias, king of kings:{/i}"
-                    m "{i}Look on my works, ye Mighty, and despair!'{/i}"
-                    m "{i}Nothing beside remains. Round the decay{/i}"
-                    m "{i}Of that colossal wreck, boundless and bare{/i}"
-                    m "{i}The lone and level sands stretch far away.{/i}"
+    if (wants_full_topic):
+        m "Well, you've heard the term {i}entropy{/i}, right?"
+        m "Usually it goes something like{w=0.2}{nw}"
+        extend " 'Entropy must always increase,{w=0.2}{nw}"
+        extend " the universe tends to disorder,{w=0.2}{nw}"
+        extend " everything turns to chaos.'"
+        m "That kind of stuff."
+        m "Actually, there's a poem I read that delivers this message quite well."
+        m "Would you like to hear it?"
 
-                "Not right now":
-                    m "Okay, maybe some other time then."
+        $ _history_list.pop()
+        menu:
+            m "Would you like to hear it?{fast}"
 
-            m "Basically, what it boils down to is that no matter how great the mark you leave on history is, it will fade away {i}eventually{/i}."
-            m "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
-            extend "give up." # manual extend
-            extend " To fall into a pit of despair and stay there. Sometimes for as long as they live."
-            m "After all, nothing you do matters in the grand scheme of things."
-            m "Nothing you {i}can{/i} do matters. So why bother doing anything at all?"
-            m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization. It's almost scary."
-            m "It can be...{w=0.2} enticing...{w=0.2} even comforting...{w=0.2} in it's own twisted way."
-            m "But let me ask you a question."
-            m "Even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
-            m "One day you'd still be gone."
-            m "And some time after that, there'd still come a day when someone thought about you, the real you, for the last time."
-            m "Be it eighty years from now, or a billion, poetry will still be beautiful, cats will still be adorable, and the universe will still be as indifferent as it ever was."
-            m "Why should the fact that nothing really matters be the one thing that {i}does{/i} matter?"
+            "Yes please.":
+                m "Alright then."
+                m "{i}I met a traveller from an antique land{/i}"
+                m "{i}Who said: Two vast and trunkless legs of stone{/i}"
+                m "{i}Stand in the desert. Near them, on the sand,{/i}"
+                m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
+                m "{i}And wrinkled lip, and sneer of cold command,{/i}"
+                m "{i}Tell that its sculptor well those passions read{/i}"
+                m "{i}Which yet survive, stamped on these lifeless things,{/i}"
+                m "{i}The hand that mocked them and the heart that fed:{/i}"
+                m "{i}And on the pedestal these words appear:{/i}"
+                m "{i}'My name is Ozymandias, king of kings:{/i}"
+                m "{i}Look on my works, ye Mighty, and despair!'{/i}"
+                m "{i}Nothing beside remains. Round the decay{/i}"
+                m "{i}Of that colossal wreck, boundless and bare{/i}"
+                m "{i}The lone and level sands stretch far away.{/i}"
 
-            if mas_getEVL_shown_count("monika_stoicism"):
-                m "Remember when we talked about stoicism?"
-                m "I think it applies quite well here. There's no point in worrying, or being upset about things you can't change."
+            "Not right now":
+                m "Okay, maybe some other time then."
 
-            m "When you look at it that way, the act of finding hope becomes as arbitrary as losing it."
-            m "..."
-            m "I guess, what I'm trying to say here is..."
-            m "Yes, there will be an end. To you, to me, and eventually everything else."
-            m "But that's the way it's always been, and there's no point in feeling down about it. Now, or ever."
+        m "Basically, what it boils down to is that no matter how great the mark you leave on history is, it will fade away {i}eventually{/i}."
+        m "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
+        extend "give up." # manual extend
+        extend " To fall into a pit of despair and stay there. Sometimes for as long as they live."
+        m "After all, nothing you do matters in the grand scheme of things."
+        m "Nothing you {i}can{/i} do matters. So why bother doing anything at all?"
+        m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization. It's almost scary."
+        m "It can be...{w=0.2} enticing...{w=0.2} even comforting...{w=0.2} in it's own twisted way."
+        m "But let me ask you a question."
+        m "Even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
+        m "One day you'd still be gone."
+        m "And some time after that, there'd still come a day when someone thought about you, the real you, for the last time."
+        m "Be it eighty years from now, or a billion, poetry will still be beautiful, cats will still be adorable, and the universe will still be as indifferent as it ever was."
+        m "Why should the fact that nothing really matters be the one thing that {i}does{/i} matter?"
+        m "When you look at it that way, the act of finding hope becomes as arbitrary as losing it."
+        m "..."
+        m "I guess, what I'm trying to say here is..."
+        m "Yes, there will be an end. To you, to me, and eventually everything else."
+        m "But that's the way it's always been, and there's no point in feeling down about it. Now, or ever."
 
-        "I'd rather you not.":
-            # somewhat dejected / disappointed
-            m "Fair enough."
-            m "I know those aren't exactly the most pleasant topics to discuss."
-            m "I won't bring this up again, but let me know if you change your mind."
-            m "I think it's with difficult topics like these that a point of view different from one's own can be the most useful."
+    else:
+        # somewhat dejected / disappointed
+        m "Fair enough."
+        m "I know those aren't exactly the most pleasant topics to discuss."
+        m "I won't bring this up again, but let me know if you change your mind."
+        m "I think it's with difficult topics like these that a point of view different from one's own can be the most useful."
 
     return "derandom"
