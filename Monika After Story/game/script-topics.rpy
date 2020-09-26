@@ -15766,7 +15766,7 @@ init 5 python:
 
 label monika_impermanence:
     $ wants_full_topic = None
-    if not mas_getEVL_shown_count("monika_not_nihilism"):
+    if not mas_getEVL_shown_count("monika_impermanence"):
         # first time intro from random
         m "..."
         m "You know...{w=0.2}there's something that's been on my mind lately."
@@ -15847,7 +15847,14 @@ label monika_impermanence:
         m "Nothing you {i}can{/i} do matters. So why bother doing anything at all?"
         m "It's not really that hard to see why some might consider this way of thinking as the natural conclusion of such a realization. It's almost scary."
         m "It can be...{w=0.2} enticing...{w=0.2} even comforting...{w=0.2} in it's own twisted way."
-        m "But let me ask you a question."
+
+        m "Alternatively, there's another, perhaps even more destructive, stance you could arrive at."
+        m "If nothing is of any ultimate consequence, can't you just do whatever you please?"
+        extend "Take whatever you like?"
+        extend "{i}Hurt{/i} whoever you want?"
+        m "But I digress..."
+
+        m "Let me ask you a question."
         m "Even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
         m "One day you'd still be gone."
         m "And some time after that, there'd still come a day when someone thought about you, the real you, for the last time."
@@ -15856,8 +15863,11 @@ label monika_impermanence:
         m "When you look at it that way, the act of finding hope becomes as arbitrary as losing it."
         m "..."
         m "I guess, what I'm trying to say here is..."
-        m "Yes, there will be an end. To you, to me, and eventually everything else."
-        m "But that's the way it's always been, and there's no point in feeling down about it. Now, or ever."
+        m "Yes, there will be an end. To you, me, and eventually everything else."
+        if mas_isMoniAff(higher=True):
+            m "But while we're here, what a silly decision it would be to waste our time feeling miserable."
+        else:
+            m "But that's the way it's always been, and there's no point in feeling down about it. Now, or ever."
 
     else:
         # somewhat dejected / disappointed
