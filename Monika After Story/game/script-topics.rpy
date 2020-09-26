@@ -15793,3 +15793,33 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_renewable_energy",category=['technology'],prompt="Renewable energy",random=True))
+
+label monika_renewable_energy:
+    m 1eua "What do you think about renewable energy, [player]?"
+    m 3euu "It was a {i}hot{/i} topic in the debate club."
+    m 3esd "As humanity's reliance on technology grows, so does its demand for energy."
+    m 1euc "Currently, a large percentage of energy worldwide is produced by burning fossil fuels."
+    m 3esd "Fossil fuels are time-tested, efficient, and have widespread infrastructure...{w=0.2}{nw}"
+    extend 3ekc "but they're also non-renewable and emission-heavy."
+    m 1dkc "Mining and drilling for fossil fuels creates both air and water pollution, and things like oil spills and acid rain can devastate plants and wildlife alike."
+    m 1etd "So why not use renewable energy instead?"
+    m 3esc "One issue is that each type of renewable energy is a developing industry with its own drawbacks."
+    m 3esd "Hydropower is flexible and cost efficient, but it can drastically impact the local ecosystem."
+    m 3dkc "Countless habitats are disrupted and entire communities may even need to be relocated."
+    m 1esd "Solar power and wind power are mostly emission-free, but they're heavily reliant on specific weather for consistency."
+    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for living near them."
+    m 3rsc "Geothermal power is reliable and great for heating and cooling, but it's expensive, location-specific, and can even cause earthquakes."
+    m 1rksdrb "Nuclear power is...{w=0.2}well, let's just say that it's complicated."
+    m 3esd "The point is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation...{w=0.2}neither option is perfect."
+    m 1etc "So, what do I think?"
+    m 3eua "Well, a lot of progress has been made on renewable energy in the past decade..."
+    m 3eud "Dams are regulated better, the efficiency of photovoltaics has improved, and there are emerging technologies such as ocean power and enhanced geothermal systems."
+    m 4esd "Biomass is an option as well. {w=0.2}It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
+    m 2eua "Yes,{w=0.1} renewable energy still has a ways to go in terms of cost and practicality, but it's far better now than it was thirty years ago."
+    m 7hub "Because of that, I think that renewable energy is a worthwhile investment and that the road ahead is a bright one--literally!"
+    m 3lksdrb "Sorry, I got carried away there, ahaha!"
+    m 1tuu "Debates sure are something, huh?"
+    return
