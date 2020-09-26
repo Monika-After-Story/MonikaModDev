@@ -1922,14 +1922,14 @@ label monika_kiss:
                     _("I'll never get tired of kissing you~"),
                     _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
                     _("You can kiss me as many times as you like, [mas_get_player_nickname()]~"),
-                    _("You know...{w=0.2}you could kiss me once again~"),
-                    _("It felt really nice...{w=0.2}but I want a little more~")
+                    _("You know...{w=0.2}you could kiss me again~")
                 ]
 
                 kiss_quips_again_risque = [
                     _("We can do it the whole day~"),
                     _("This almost seems like the start of a make-out session, [player]~"),
-                    _("I don't think I've had enough just yet, [mas_get_player_nickname()]~")
+                    _("I don't think I've had enough just yet, [mas_get_player_nickname()]~"),
+                    _("That was really nice...{w=0.2}but I want a little more~")
                 ]
 
                 if mas_isMoniLove() and random.randint(1, 10) == 1:
