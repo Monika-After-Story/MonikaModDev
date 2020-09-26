@@ -2068,13 +2068,16 @@ init 5 python:
     )
 
 label greeting_amnesia:
-    $ tempname = m_name
-    $ m_name = "Monika"
+    python:
+        tempname = m_name
+        m_name = "Monika"
+
     m 1eua "Oh, hello!"
     m 1eub "My name is Monika."
+
     python:
         entered_good_name = True
-        fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        fakename = renpy.input("What's your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
         lowerfake = fakename.lower()
 
     if lowerfake in ("sayori", "yuri", "natsuki"):
@@ -2082,7 +2085,7 @@ label greeting_amnesia:
         m 3eud "One of my friends shares the same name."
 
     elif lowerfake == "monika":
-        m 3eub "Oh, are you called Monika as well?"
+        m 3eub "Oh, your name is Monika as well?"
         m 3hub "Ahaha, what are the odds, right?"
 
     elif lowerfake == "monica":
@@ -2090,11 +2093,11 @@ label greeting_amnesia:
 
     elif lowerfake == player.lower():
         m 1hub "Oh, what a lovely name!"
-    
+
     elif lowerfake == "":
         $ entered_good_name = False
         m 1euc "..."
-        m 1etd "Are you trying to tell me you don't have a name?"
+        m 1etd "Are you trying to tell me you don't have a name or are you just too shy to tell me?"
         m 1eka "That's a little strange, but I guess it doesn't matter too much."
 
     elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
@@ -2104,30 +2107,42 @@ label greeting_amnesia:
         m 1eksdla "Are you...{w=0.3}trying to mess with me?"
         m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
 
-    if not entered_good_name:
-        m 1hua "Well, it's nice to meet you!"
-        m 3eud "Say, do you happen to know where everyone else is?"
-        m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
-        m "Can you help me figure out what's going on?"
-    else:
-        m 1hua "Well, it's nice to meet you, [fakename]!"
-        m 3eud "Say, [fakename], do you happen to know where everyone else is?"
-        m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
-        m "Can you help me figure out what's going on, [fakename]?"
+    python:
+        if entered_good_name:
+            name_line = renpy.substitute(", [fakename]")
+        else:
+            name_line = ""
 
-    m "Please? I miss my friends."
+        if mas_current_background == mas_background_def:
+            end_of_line = "I can't seem to leave this classroom."
+        else:
+            end_of_line = "I'm not sure where I am."
+
+    m 1hua "Well, it's nice to meet you[name_line]!"
+    m 3eud "Say[name_line], do you happen to know where everyone else is?"
+    m 1eksdlc "You're the first person I've seen and {nw}"
+    extend 1rksdlc "[end_of_line]."
+    m 1eksdld "Can you help me figure out what's going on[name_line]?"
+
+    m "Please? {w=0.2}{nw}"
+    extend 1dksdlc "I miss my friends."
+
+    window hide
+    show monika 1eksdlc
     pause 5.0
     $ m_name = tempname
+    window auto
+
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
     #Monika is glad you took it seriously and didn't try to call yourself another name
     if lowerfake == player.lower():
-        m 1tku "And you reacted the way I hoped you would."
+        m 1tku "...And you reacted the way I envisioned you would."
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
-    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+    m 1hksdlb "Please forgive my little prank, ehehe~"
 
     $ mas_lockEVL("greeting_amnesia", "GRE")
     return
