@@ -169,6 +169,16 @@ init -10 python:
             """
             return not self.__eq__(other)
 
+        def __repr__(self):
+            return (
+                "<FilterSlice: (name: {0}, min: {1}, max: {2}, pri: {3})>"
+            ).format(
+                self.name,
+                self.minlength,
+                self.maxlength,
+                self.priority
+            )
+
         def __str__(self):
             """
             Slice as string
@@ -326,6 +336,17 @@ init -10 python:
             if isinstance(other, MASBackgroundFilterSliceData):
                 return self.order < other.order
             return NotImplemented
+
+        def __repr__(self):
+            return (
+                "<FilterSliceData: (order: {0}, offset: {1}, length: {2}"
+                ", flt_slice: {3})>"
+            ).format(
+                self.order,
+                self.offset,
+                self.length,
+                repr(self.flt_slice)
+            )
 
         def __str__(self):
             """
@@ -487,6 +508,17 @@ init -10 python:
             # the last length value passed into build
 
             self._parse_slices(slices)
+
+        def __repr__(self):
+            return (
+                "<FilterChunk: (index: {0}, length: {1}, slices: {2}, "
+                "eff_slices: {3})>"
+            ).format(
+                self._index,
+                self._length,
+                self._slices,
+                self._eff_slices
+            )
 
         def __str__(self):
             """
@@ -959,7 +991,7 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     flt_old,
@@ -1196,6 +1228,30 @@ init -10 python:
             self._updated = False
             # set to True upon an update, set to False upon progress
 
+        def __repr__(self):
+            day_f = self._day_filters
+            if day_f is not None:
+                day_f = day_f.keys()
+
+            night_f = self._night_filters
+            if night_f is not None:
+                night_f = night_f.keys()
+
+            return (
+                "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
+                "day_flts: {3}, night_flts: {4}, mn_sr: {5}, sr_ss: {6}, "
+                "ss_mn: {7})>"
+            ).format(
+                self._index,
+                self._updated,
+                self._prev_flt,
+                day_f,
+                night_f,
+                repr(self._mn_sr),
+                repr(self._sr_ss),
+                repr(self._ss_mn)
+            )
+
         def __str__(self):
             """
             Shows chunks and curr chunk information
@@ -1286,7 +1342,7 @@ init -10 python:
                         new_chunk,
                         curr_time
                     )
-                except Error as e:
+                except Exception as e:
                     store.mas_utils.writelog(self._ERR_PP_STR_G.format(
                         repr(e),
                         str(curr_chunk),
@@ -1575,7 +1631,7 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     str(chunk_old),
@@ -1659,6 +1715,14 @@ init -10 python:
                 sfmn - (self._calc_off(self._index)[0]),
                 curr_time
             )
+
+        def reset_indexes(self):
+            """
+            Resets all indexes to 0, so we are in fresh state mode
+            """
+            self._index = 0
+            for chunk in self._chunks:
+                chunk._index = 0
 
         def update(self, curr_time=None):
             """
@@ -2292,7 +2356,21 @@ init -10 python:
                     )
                 )
 
-            new_flt = self._flt_man.progress()
+            try:
+                new_flt = self._flt_man.progress()
+            except Exception as e:
+                # in this case, we don't know what happened, but we got
+                # screwed. log out state of the flt man as well as the
+                # traceback
+                store.mas_background.log_bg(
+                    self,
+                    store.mas_utils.sys.exc_info()
+                )
+                
+                # reset the manager to defualt indexes. Next time progress
+                # is called will hopefully update without error
+                self._flt_man.reset_indexes()
+                new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
                 store.mas_utils.writelog(
@@ -2303,7 +2381,21 @@ init -10 python:
                     )
                 )
 
-            return new_flt
+            if new_flt is not None:
+                return new_flt
+
+            # if we had an issue with filter progression OR if we didn't get
+            # a filter back, we'll return a fallback of the first filter 
+            # available in the filter manager. If that doesn't work,
+            # then its forever daytime (FLT_DAY) 
+
+            flts = self._flt_man.filters()
+            if len(flts) > 0:
+                new_flt = flts[0]
+                if new_flt is not None:
+                    return new_flt
+            
+            return store.mas_sprites.FLT_DAY # should exist for every sprite
 
         def update(self, curr_time=None):
             """
@@ -2489,6 +2581,47 @@ init -20 python in mas_background:
 
         return False
 
+
+    def log_bg(bg_obj, exc_info=None):
+        """
+        Logs the given BG object to standard bg log
+
+        IN:
+            bg_obj - bg object to log
+            exc_info - exception info. Should be tuple:
+                [0] - exception type
+                [1] - exception value
+                [2] - traceback
+                (Default: None)
+        """
+        if bg_obj is None:
+            return
+
+        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
+        if not bg_log.open():
+            # could not log, just abort here
+            return
+
+        # otherwise log output 
+        bg_log.raw_write = True
+
+        # NOTE: version should already be written out if this is runtime
+        bg_log.write("\n\nBackground Object: {0}\n".format(
+            bg_obj.background_id
+        ))
+        bg_log.write("Filter System:\n\n")
+        bg_log.write(str(bg_obj._flt_man))
+        bg_log.write("\n\nRaw Filter Manager Data:\n")
+        bg_log.write(repr(bg_obj._flt_man))
+
+        if exc_info:
+            import traceback
+
+            bg_log.write("\n\n")
+            for tb_line in traceback.format_exception(*exc_info):
+                bg_log.write(tb_line)
+
+
 #START: BG change functions
 init 800 python:
     def mas_setBackground(_background, **kwargs):
@@ -2541,6 +2674,8 @@ init 800 python:
         if new_background != mas_current_background:
             mas_current_background.exit(new_background, **kwargs)
             mas_setBackground(new_background, **kwargs)
+
+        store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
 
     def mas_startupBackground():
         """
