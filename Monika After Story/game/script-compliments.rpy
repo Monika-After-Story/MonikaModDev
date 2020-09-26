@@ -121,10 +121,12 @@ label mas_compliment_beautiful_2:
             m "I love you so much, [player]!"
             # manually handle the "love" return key
             $ mas_ILY()
+
         "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
             m 2lsc "Well, thanks, I guess..."
+
         "Thanks.":
             pass
     return
@@ -165,9 +167,11 @@ label mas_compliment_eyes_2:
             m "Don't flatter me too much, okay?"
             show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hub "I might start to go a little crazy..."
+
         "They really are hypnotizing.":
             $ mas_gainAffection(1,bypass=True)
             m "Ahaha~"
+
         "They are the color of grass!":
             $ mas_gainAffection(0.5,bypass=True) # at least you tried
             m 2lksdrb "...That's not really the analogy I'd use, but thanks!"
@@ -206,6 +210,7 @@ label mas_compliment_awesome_2:
         "I wish you were here right now!":
             $ mas_gainAffection(3,bypass=True)
             m "That's my biggest wish too, [player]!"
+
         "I'll never let you go from my embrace.":
             $ mas_gainAffection(5,bypass=True)
             show monika 6dubsa
@@ -214,6 +219,7 @@ label mas_compliment_awesome_2:
             m 1wubfsdld "Oh, sorry [player]."
             m 2lksdla "I was trying to feel your embrace from here."
             m 2hub "Ahaha~"
+
         "... I don't like hugs.":
             $ mas_loseAffection() # you monster.
             m 1eft "...Really?"
@@ -255,9 +261,11 @@ label mas_compliment_intelligent_2:
             m 3hubfb "We'll have a lifetime of self-improvement together!"
             # manually handle the "love" return key
             $ mas_ILY()
+
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
+
         "You make me feel stupid sometimes.":
             $ mas_loseAffection(modifier=0.5)
             m 1wkbsc "..."
@@ -298,11 +306,13 @@ label mas_compliment_hair_2:
         "It really shows. It looks so healthy.":
             $ mas_gainAffection(3,bypass=True)
             m 1hub "Thanks, [player]!"
+
         "You're cute no matter how you wear it." if persistent._mas_likes_hairdown:
             $ mas_gainAffection(5,bypass=True)
             m 1ekbsa "Awww, [player]."
             m 1hubfb "You always make me feel special!"
             m "Thank you!"
+
         "You'd be even cuter with short hair.":
             $ mas_loseAffection(modifier=0.3)
             m "Well, I can't exactly go to the salon from here..."
@@ -349,10 +359,12 @@ label mas_compliment_fit_2:
             m 3eka "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "So long as we're together."
+
         "No promises, but I'll do my best.":
             $ mas_gainAffection(1,bypass=True)
             m 1tfb "You better!"
             m 2tub "Don't think I plan on letting you off easy if you're out of shape."
+
         "I'd rather not get sweaty...":
             m 1eka "I understand if it's not your thing, but you should give it a little try..."
             m 1lksdla "It'd make me really happy if you shared my interests, you know?"
@@ -429,6 +441,7 @@ label mas_compliment_smile_2:
             m 1wubfsdld "Oh, [player]..."
             m 1lkbfa "I think my heart just skipped a beat."
             m 3hubfa "See? You always make me as happy as I can be."
+
         "I like to see you smile.":
             m 1hub "Ahaha~"
             m 3eub "Then all you have to do is keep coming back, [player]!"
@@ -498,6 +511,7 @@ label mas_compliment_cute_2:
             m 1hubfb "Aww, it really warms my heart to hear you say that!"
             m 1dkbfu "...Almost as much as when I picture us finally being together in the same reality."
             m 1ekbfa "I can barely contain myself just imagining that special day~"
+
         "You're even cuter when you're flustered.":
             $ persistent._mas_pm_monika_cute_as_natsuki = False
             $ mas_gainAffection(3,bypass=True)
@@ -505,6 +519,7 @@ label mas_compliment_cute_2:
             m 2rubfu "Hmph, I just wasn't expecting it."
             m 3tubfb "Don't expect it to be so easy next time..."
             m 1tubfu "I'll get you back someday, ehehe~"
+
         "You're as cute as Natsuki.":
             $ persistent._mas_pm_monika_cute_as_natsuki = True
             $ mas_loseAffection(modifier=0.5)
@@ -577,6 +592,7 @@ label mas_compliment_pong:
                 m 2lksdla "Thanks [player], but you really don't have to let me win."
                 m 1eub "Feel free to play seriously whenever you want to."
                 m 1hub "I'd never get mad at you because I lost a game fair and square."
+
             "...yeah.":
                 m 1tku "You don't seem too confident about that, [player]."
                 m 1tsb "You really don't have to let me win."
@@ -584,6 +600,7 @@ label mas_compliment_pong:
                 m 1lksdlb "It's just a game, after all!"
                 m 3hub "You can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
+
             "No. I've tried my best and still lost.":
                 m 1hua "Ahaha~"
                 m "I figured!"
@@ -748,27 +765,29 @@ label mas_compliment_humor:
 
 label mas_compliment_humor_2:
     m 1hua "Ehehe~"
-    m 1hub "I'm glad you do, [player]."
+    m 1efu "I'm glad you find me so punny, [player]."
     m 3eub "A sign of a good couple is being able to laugh together, don't you think?"
     menu:
         "You always brighten my day.":
             $ mas_gainAffection(5,bypass=True)
-            m 1wubfd "Oh...[player]..."
-            m 1ekbfa "That's so sweet of you to say."
-            m 1hubfb "Knowing I can make you smile is the greatest compliment I could receive!"
+            m 1subsd "Oh...{w=0.2}[player]..."
+            m 1ekbsa "That's so sweet of you to say."
+            m 1hubsb "Knowing I can make you smile is the greatest compliment I could receive!"
+
         "You have such a quick wit!":
             $ mas_gainAffection(3,bypass=True)
             m 1hub "Ahaha!"
-            m 2tub "All that reading must have paid off, if you like my wordplay that much."
-            m 2hublb "I'll try to keep the jokes coming for you. Ehehe~"
+            m 2tub "All that reading must have paid off if you like my wordplay that much."
+            m 2hublu "I'll try to keep the jokes coming for you. Ehehe~"
+
         "I laugh at you all the time.":
             $ mas_loseAffection()
             m 1eksdlb "...Ahaha..."
-            m 3rksdlb "You meant that you laugh {w=0.2}{i}with{/i} me, right?"
-            m 1tkc "I guess I'll try to take that as a compliment..."
+            m 3rksdla "You meant that you laugh {w=0.2}{i}with{/i}{w=0.2} me...{w=0.5}{nw}"
+            extend 3eksdld "right?"
     return
 
 label mas_compliment_humor_3:
-    m 1hubfb "[mas_compliments.thanks_quip]"
+    m 1hubsb "[mas_compliments.thanks_quip]"
     m "I wish I could hear your beautiful laugh!"
     return
