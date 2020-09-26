@@ -2073,7 +2073,8 @@ label greeting_amnesia:
         m_name = "Monika"
 
     m 1eua "Oh, hello!"
-    m 1eub "My name is Monika."
+    m 3eub "My name is Monika."
+    show monika 1eua zorder MAS_MONIKA_Z
 
     python:
         entered_good_name = True
@@ -2121,7 +2122,7 @@ label greeting_amnesia:
     m 1hua "Well, it's nice to meet you[name_line]!"
     m 3eud "Say[name_line], do you happen to know where everyone else is?"
     m 1eksdlc "You're the first person I've seen and {nw}"
-    extend 1rksdlc "[end_of_line]."
+    extend 1rksdlc "[end_of_line]"
     m 1eksdld "Can you help me figure out what's going on[name_line]?"
 
     m "Please? {w=0.2}{nw}"
@@ -2140,9 +2141,10 @@ label greeting_amnesia:
     #Monika is glad you took it seriously and didn't try to call yourself another name
     if lowerfake == player.lower():
         m 1tku "...And you reacted the way I envisioned you would."
+
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
-    m 1hksdlb "Please forgive my little prank, ehehe~"
+    m 1hksdlb "I hope you can forgive my little prank, ahaha~"
 
     $ mas_lockEVL("greeting_amnesia", "GRE")
     return
