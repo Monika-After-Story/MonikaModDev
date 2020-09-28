@@ -6,16 +6,38 @@ init 10 python:
     store.mas_submod_utils.Submod._checkUpdates()
 
 init -989 python:
+    #Log initialized submods
+    if store.mas_submod_utils.submod_map:
+        store.mas_submod_utils.writeLog(
+            "INSTALLED SUBMODS: {0}\n".format(
+                ", ".join(
+                    ["'{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                )
+            )
+        )
+
     #Run dependency checks
     store.mas_submod_utils.Submod._checkDependencies()
 
 init -991 python in mas_submod_utils:
     import re
     import store
-    import sys
-    import traceback
+    # import sys
+    # import traceback
 
     persistent = store.persistent
+
+    log = store.mas_utils.getMASLog("log/submod_log", append=True, flush=True)
+    log.write("VERSION: {0}".format(persistent.version_number))
+
+    def writeLog(msg):
+        """
+        Writes to the submod log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        log.write(msg)
 
     submod_map = dict()
 

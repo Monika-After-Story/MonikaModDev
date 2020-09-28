@@ -3538,6 +3538,33 @@ init -999 python:
             pass
 
 init -995 python in mas_utils:
+    import store
+    import os
+    import stat
+    import shutil
+    import datetime
+    import codecs
+    import platform
+    import time
+    import traceback
+    import sys
+    #import tempfile
+    from os.path import expanduser
+    from renpy.log import LogFile
+    from bisect import bisect
+    from contextlib import contextmanager
+
+    # LOG messges
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
+
+    # bad text dict
+    BAD_TEXT = {
+        "{": "{{",
+        "[": "[["
+    }
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker
@@ -3593,34 +3620,6 @@ init -995 python in mas_utils:
                 #Comparative version is greater, the rest of this is irrelevant
                 return -1
 
-init -991 python in mas_utils:
-    import store
-    import os
-    import stat
-    import shutil
-    import datetime
-    import codecs
-    import platform
-    import time
-    import traceback
-    import sys
-    #import tempfile
-    from os.path import expanduser
-    from renpy.log import LogFile
-    from bisect import bisect
-    from contextlib import contextmanager
-
-    # LOG messges
-    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
-    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
-    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
-
-    # bad text dict
-    BAD_TEXT = {
-        "{": "{{",
-        "[": "[["
-    }
-
     def all_none(data=None, lata=None):
         """
         Checks if a dict and/or list is all None
@@ -3647,7 +3646,6 @@ init -991 python in mas_utils:
 
         return True
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -3662,7 +3660,6 @@ init -991 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
-
 
     def eqfloat(left, right, places=6):
         """
@@ -3682,7 +3679,6 @@ init -991 python in mas_utils:
 
         return abs(left-right) < acc
 
-
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
@@ -3697,7 +3693,6 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
-
 
     def pdget(key, table, validator=None, defval=None):
         """
@@ -3725,7 +3720,6 @@ init -991 python in mas_utils:
 
         return defval
 
-
     def td2hr(duration):
         """
         Converts a timedetla to hours (fractional)
@@ -3736,7 +3730,6 @@ init -991 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
-
 
     def tryparseint(value, default=0):
         """
@@ -3755,7 +3748,6 @@ init -991 python in mas_utils:
             return int(value)
         except:
             return default
-
 
     def copyfile(oldpath, newpath):
         """
@@ -3779,7 +3771,6 @@ init -991 python in mas_utils:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
 
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -3796,7 +3787,6 @@ init -991 python in mas_utils:
         finally:
             sys.stdout = oldout
 
-
     def writelog(msg):
         """
         Writes to the mas log if it is open
@@ -3807,13 +3797,21 @@ init -991 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+    def wtf(msg):
+        """
+        Wow That Failed
+        For logging stuff that should never happen
+
+        IN:
+            msg - message to log
+        """
+        writelog(msg)
 
     def writestack():
         """
         Prints current stack to log
         """
         writelog("".join(traceback.format_stack()))
-
 
     def trydel(f_path, log=False):
         """
@@ -3826,7 +3824,6 @@ init -991 python in mas_utils:
         except Exception as e:
             if log:
                 writelog("[exp] {0}\n".format(repr(e)))
-
 
     def trywrite(f_path, msg, log=False, mode="w"):
         """
@@ -3852,7 +3849,6 @@ init -991 python in mas_utils:
         finally:
             if outfile is not None:
                 outfile.close()
-
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
@@ -3880,7 +3876,6 @@ init -991 python in mas_utils:
                 store.persistent.version_number
             ))
         return new_log
-
 
     def logrotate(logpath, filename):
         """
@@ -3940,7 +3935,6 @@ init -991 python in mas_utils:
 
         # and delete the current file
         trydel(old_path)
-
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -4070,7 +4064,6 @@ init -991 python in mas_utils:
             except:
                 self.file = False
                 return False
-
 
     # A map from the log name to a log object.
     mas_mac_log_cache = { }
