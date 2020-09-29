@@ -1225,10 +1225,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
 
 label monika_portraitof:
-    if store.mas_globals.pushed_from_talk:
-        m 4eua "Hey, you know that book you were reading with Yuri?"
-    else:
-        m 4eua "You know that book you were reading with Yuri?"
+    $ line_start = "Hey, you" if mas_globals.pushed_from_talk else "You"
+    m 4eua "[line_start] know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
     m 4hub "It's funny, because I'm pretty sure that book--"
     m 1wuw "Ah..."
