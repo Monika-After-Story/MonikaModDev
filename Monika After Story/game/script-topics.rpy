@@ -1538,7 +1538,8 @@ init 5 python:
 
 label monika_tea:
     if not mas_getEVL_shown_count("monika_tea"):
-        m 2hua "Hey, I wonder if Yuri's tea set is still in here somewhere..."
+        $ line_start = "I" if mas_globals.pushed_from_talk else "Hey, I"
+        m 2hua "[line_start] wonder if Yuri's tea set is still in here somewhere..."
 
         if not persistent._mas_pm_cares_about_dokis:
             m 2hksdlb "...or maybe that got deleted, too."
