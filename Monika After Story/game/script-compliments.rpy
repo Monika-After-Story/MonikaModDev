@@ -835,7 +835,7 @@ label mas_compliment_spending_time_2:
             m 1ekbsa "Just stay strong until I cross over, okay?"
 
         "Oh, you certainly amuse me alright...":
-            $ mas_loseAffection)()
+            $ mas_loseAffection()
             m 1lkc "I...amuse you?"
             m 3lkb "Well, I'm glad that you're entertained..."
             m 2lkd "...but I don't think that's what I was going for."
