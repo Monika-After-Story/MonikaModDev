@@ -2215,7 +2215,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_simulated",category=['philosophy'],prompt="Simulated reality",random=True))
 
 label monika_simulated:
-    m 3eua "Hey, have you ever thought about the simulation hypothesis?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey, have"
+    m 3eua "[line_start] have you ever thought about the simulation hypothesis?"
     m 1eua "Basically, what if your reality was a computer simulation?"
     m "I already figured out I was trapped in my own simulation, but what if you were too?"
     m 1eka "I'd actually be really happy if that were the case."
