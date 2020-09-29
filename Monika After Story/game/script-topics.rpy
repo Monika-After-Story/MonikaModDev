@@ -15824,12 +15824,15 @@ label monika_renewable_energy:
     m 1tuu "Debates sure are something, huh?"
     return
 
-label monika_skygazing:
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_stargazing",category=['nature'],prompt="Stargazing",random=True))
+
+label monika_stargazing:
     m 2eub "[player], do you know what would be really romantic?"
-    m 3ekbsa "Skygazing~"
+    m 3ekbsa "Stargazing~"
     m 4esblb "Picture it: Just the two of us, lying in a calm field and watching the stars..."
     m 6dsbsa "...holding each other close, pointing out constellations or making our own..."
-    m 7wublb "...maybe we could even bring a telescope and try to spot planets!"
+    m 7wublb "...maybe we could even bring a telescope and look at planets!"
     show monika 5lkbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lkbla "Oh, [player]...wouldn't that just be wonderful?"
     return 
