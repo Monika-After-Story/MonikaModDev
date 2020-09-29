@@ -1355,7 +1355,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_color",category=['monika'],prompt="Favorite color",random=True))
 
 label monika_color:
-    m 3eua "Hey, what's your favorite color?"
+    $ line_start = "What's" if mas_globals.pushed_from_talk else "Hey, what's"
+    m 3eua "[line_start] your favorite color?"
     m "Mine is emerald green."
     m 3hub "It's the color of my eyes!"
     m 3rksdla "...That's not conceited or anything, is it?"
