@@ -15810,7 +15810,7 @@ label monika_renewable_energy:
     m 3esd "Hydropower is flexible and cost efficient, but it can drastically impact the local ecosystem."
     m 3dkc "Countless habitats are disrupted and entire communities may even need to be relocated."
     m 1esd "Solar power and wind power are mostly emission-free, but they're heavily reliant on specific weather for consistency."
-    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for living near them."
+    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for those living near them."
     m 3rsc "Geothermal power is reliable and great for heating and cooling, but it's expensive, location-specific, and can even cause earthquakes."
     m 1rksdrb "Nuclear power is...{w=0.2}well, let's just say that it's complicated."
     m 3esd "The point is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation...{w=0.2}neither option is perfect."
