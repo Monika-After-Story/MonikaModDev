@@ -1578,7 +1578,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_favoritegame",category=['ddlc'],prompt="Favorite video game",random=True))
 
 label monika_favoritegame:
-    m 3eua "Hey, what's your favorite game?"
+    $ line_start = "What's" if mas_globals.pushed_from_talk else "Hey, what's"
+    m 3eua "[line_start] your favorite game?"
     m 3hua "Mine is {i}Doki Doki Literature Club!{/i}"
     m 1hub "Ahaha! That was a joke."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
