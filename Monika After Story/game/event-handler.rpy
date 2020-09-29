@@ -387,6 +387,80 @@ init 6 python:
 
     del code, ev_db
 
+
+    class MAS_EVL(object):
+        """
+        Context manager wrapper for Event objects via event labels.
+        This has handling for when an eventlabel doesn't return an actual
+        event object via mas_getEV. 
+
+        Use as follows:
+            with MASev('some event label') as ev:
+                ev.<property name> = new_value
+                curr_value ev.<property_name>
+
+        property names should be same as used on Event object.
+        functions can also be used.
+        additionally, the resulting context object can be compared with 
+        other event objects like normal.
+
+        In cases where the Event does not exist, the following occurs:
+            - all properties return None
+            - property set operations do nothing
+            - functions calls do nothing
+            - all comparisons return False.
+        """
+
+        def __init__(self, evl):
+            """
+            Constructor
+
+            IN:
+                evl - event label to build context manager for
+            """
+            self._ev = mas_getEV(evl)
+
+        def __repr__(self):
+            return repr(self._ev)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback):
+            return False # always propagate exceptions
+
+        def __getattr__(self, name):
+            if self._ev is None:
+                return MASDummyClass()
+
+            return getattr(self._ev, name)
+
+        def __setattr__(self, name, value):
+            if name == "_ev":
+                self.__dict__["_ev"] = value
+
+            elif self._ev is None:
+                return
+
+            elif self._ev is not None:
+                setattr(self._ev, name, value)
+
+            else:
+                super(self, MAS_EVL).__setattr__(name, value)
+
+        def __eq__(self, other):
+            if self._ev is None:
+                return False
+            if isinstance(other, Event):
+                return self._ev == other
+            return False
+
+        def __ne__(self, other):
+            if self._ev is None:
+                return False
+            return not self.__eq__(other)
+
+
     def mas_getEV(ev_label):
         """
         Global get function that retreives an event given the label

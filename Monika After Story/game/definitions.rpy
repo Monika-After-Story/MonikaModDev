@@ -23,6 +23,47 @@ python early:
         """
         return
 
+    class MASDummyClass(object):
+        """
+        Dummy class that does nothing.
+
+        If compared to, it will always return False.
+        """
+
+        def __call__(self, *args, **kwargs):
+            return None
+
+        def __len__(self):
+            return 0
+
+        def __getattr__(self, name):
+            return MASDummyClass()
+
+        def __setattr__(self, name, value):
+            return
+
+        def __lt__(self, other):
+            return False
+
+        def __le__(self, other):
+            return False
+
+        def __eq__(self, other):
+            return False
+
+        def __ne__(self, other):
+            return False
+
+        def __gt__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return False
+
+        def __nonzero__(self):
+            return False
+
+
     # clear this so no more traceback. We expect node loops anyway
     renpy.execution.check_infinite_loop = dummy
 
@@ -1901,6 +1942,7 @@ python early:
                     mas_rmallEVL(ev.eventlabel)
 
             #NOTE: we don't add the rest since there's no reason to undo those.
+
 
 # init -1 python:
     # this should be in the EARLY block
