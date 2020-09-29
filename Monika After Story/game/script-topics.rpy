@@ -2121,7 +2121,8 @@ init 5 python:
     )
 
 label monika_yuri:
-    m 3eua "Hey, have you ever heard of the term 'yandere?'"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey, have"
+    m 3eua "[line_start] you ever heard of the term 'yandere?'"
     m 1eua "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
     m 1lksdla "Usually to the point of craziness..."
     m 1eka "They might stalk you to make sure you don't spend time with anyone else."
