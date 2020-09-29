@@ -1225,7 +1225,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
 
 label monika_portraitof:
-    $ line_start = "Hey, you" if mas_globals.pushed_from_talk else "You"
+    $ line_start = "You" if mas_globals.pushed_from_talk else "Hey, you"
     m 4eua "[line_start] know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
     m 4hub "It's funny, because I'm pretty sure that book--"
@@ -1546,8 +1546,8 @@ label monika_tea:
         m 2eka "It's kind of funny how Yuri took her tea so seriously."
 
     else:
-        $ line_start = "You know, " if mas_globals.pushed_from_talk else ""
-        m 2eka "[line_start]It's kind of funny how Yuri took her tea so seriously."
+        $ line_start = "It's" if mas_globals.pushed_from_talk else "You know, it's"
+        m 2eka "[line_start] kind of funny how Yuri took her tea so seriously."
 
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
