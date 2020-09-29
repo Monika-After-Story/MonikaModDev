@@ -1943,7 +1943,6 @@ python early:
 
             #NOTE: we don't add the rest since there's no reason to undo those.
 
-
 # init -1 python:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
