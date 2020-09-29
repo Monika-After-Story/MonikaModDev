@@ -2939,7 +2939,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_read",category=['advice','literature'],prompt="Becoming a reader",random=True))
 
 label monika_read:
-    m 1eua "[player], how much do you read?"
+    $ line_start = "How" if mas_globals.pushed_from_talk else "[player], how"
+    m 1eua "[line_start] much do you read?"
     m "It's way too easy to neglect reading books..."
     m 1euc "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
     m 1eua "But once you get into a good book, it's like magic...you get swept away."
