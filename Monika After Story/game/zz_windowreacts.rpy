@@ -488,7 +488,7 @@ label mas_wrs_wikipedia:
 
             # May contain clarification in trailing parentheses
             wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
-            wikipedia_reacts.append("'" + wiki_article + "'...\nSeems interesting, " + player + ".")
+            wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
 
         except ValueError:
             pass
