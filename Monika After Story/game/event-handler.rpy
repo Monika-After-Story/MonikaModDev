@@ -2390,10 +2390,10 @@ label call_next_event:
             $ ev.last_seen = datetime.datetime.now()
 
         $ mas_globals.use_interrupt_flow = False
+        $ store.mas_globals.pushed_from_talk = False
 
         if _return is not None:
             $ ret_items = _return.split("|")
-            $ store.mas_globals.pushed_from_talk = False
 
             if "derandom" in ret_items:
                 $ ev.random = False
