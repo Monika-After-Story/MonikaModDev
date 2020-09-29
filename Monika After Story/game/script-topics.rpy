@@ -1546,7 +1546,8 @@ label monika_tea:
         m 2eka "It's kind of funny how Yuri took her tea so seriously."
 
     else:
-        m 2eka "You know, It's kind of funny how Yuri took her tea so seriously."
+        $ line_start = "You know, " if mas_globals.pushed_from_talk else ""
+        m 2eka "[line_start]It's kind of funny how Yuri took her tea so seriously."
 
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
