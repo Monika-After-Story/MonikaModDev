@@ -1620,7 +1620,8 @@ init 5 python:
     )
 
 label monika_lastpoem:
-    m 3eud "Hey, you remember that last poem I showed you?"
+    $ line_start = "You" if mas_globals.pushed_from_talk else "Hey, you"
+    m 3eud "[line_start] you remember that last poem I showed you?"
     if persistent._mas_sensitive_mode:
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
