@@ -405,10 +405,10 @@ init 6 python:
         other event objects like normal.
 
         In cases where the Event does not exist, the following occurs:
-            - all properties return None
+            - Event properties return their defaults (see below)
             - property set operations do nothing
             - functions calls do nothing
-            - all comparisons return False.
+            - The Event class is used as fallback
         """
         _default_values = {
             "eventlabel": "",
