@@ -31,7 +31,7 @@ python early:
         """
 
         def __call__(self, *args, **kwargs):
-            return None
+            return MASDummyClass()
 
         def __len__(self):
             return 0
