@@ -410,6 +410,32 @@ init 6 python:
             - functions calls do nothing
             - all comparisons return False.
         """
+        _default_values = {
+            "eventlabel": "",
+            "prompt": None,
+            "label": None,
+            "category": None,
+            "unlocked": False,
+            "random": False,
+            "pool": False,
+            "conditional": None,
+            "action": None,
+            "start_date": None,
+            "end_date": None,
+            "unlock_date": None,
+            "shown_count": 0,
+            "last_seen": None,
+            "years": None,
+            "sensitive": False,
+            "aff_range": None,
+            "show_in_idle": False,
+            "flags": 0,
+        }
+
+        _null_dicts = {
+            "per_eventdb": 0,
+            "rules": 0,
+        }
 
         def __init__(self, evl):
             """
@@ -431,7 +457,21 @@ init 6 python:
 
         def __getattr__(self, name):
             if self._ev is None:
-                return MASDummyClass()
+                
+                # event props
+                if name in MAS_EVL._default_values:
+                    return MAS_EVL._default_values.get(name)
+
+                # event props where we dont want static vars to collide
+                if name in MAS_EVL._null_dicts:
+                    return {}
+
+                if callable(Event.__dict__.get(name)):
+                    # functions (on object, not class)
+                    return MASDummyClass()
+
+                # everything else gets whatever we have in event
+                return getattr(Event, name)
 
             return getattr(self._ev, name)
 
