@@ -4001,7 +4001,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Determinism",random=True))
 
 label monika_freewill:
-    m 1euc "Hey [player], have you ever heard of determinism?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey [player], have"
+    m 1euc "[line_start] you ever heard of determinism?"
     m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
     m 3rsc "In some games, I guess the idea makes sense..."
     m 3eud "But when you apply it to real life, I don't think it really works out."
