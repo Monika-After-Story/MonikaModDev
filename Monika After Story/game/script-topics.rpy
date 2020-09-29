@@ -3007,7 +3007,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_introduce",category=['monika'],prompt="Introducing to friends",random=True))
 
 label monika_introduce:
-    m 1eua "[player], would you ever introduce your friends to me?"
+    $ line_start = "Would" if mas_globals.pushed_from_talk else "[player], would"
+    m 1eua "[line_start] you ever introduce your friends to me?"
     m 1hua "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
     m 1eua "Maybe it's because I really want to be someone who makes you proud."
     m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
