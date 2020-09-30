@@ -743,7 +743,7 @@ label mas_mood_uok:
     m 1ekd "So if you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
-        m "So If you need to talk about something, I'm right here.{fast}"
+        m "So if you need to talk about something, I'm right here.{fast}"
 
         "I'd like to vent.":
             m 3eka "Go ahead, [player]."
