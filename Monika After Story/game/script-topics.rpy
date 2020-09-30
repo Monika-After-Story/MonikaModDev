@@ -6673,7 +6673,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fahrenheit451",category=['literature'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
-    m 1euc "[player], have you ever heard of Ray Bradbury?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "[player], have"
+    m 1euc "[line_start] you ever heard of Ray Bradbury?"
     m 3euc "He wrote a book called {i}Fahrenheit 451{/i}."
     m 3eud "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 2ekc "I can't imagine a world where knowledge is forbidden and destroyed."
