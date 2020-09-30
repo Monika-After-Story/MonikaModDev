@@ -10134,7 +10134,8 @@ init 5 python:
     )
 
 label monika_familygathering:
-    m 1eua "Hey [player], do you go to family gatherings often?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "Hey, [player], do"
+    m 1eua "[line_start] you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
