@@ -8894,7 +8894,8 @@ label monika_concerts:
     # genres and the concert just referencing back to that?
     # this topic is starting to get too complicated
 
-    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "Hey, [player], I've"
+    m 1euc "[line_start] been thinking about something we could do together one day..."
     m 1eud "You know how I like different forms of music?"
     m 1hua "Well..."
     m 3eub "Why don't we go to a concert?"
