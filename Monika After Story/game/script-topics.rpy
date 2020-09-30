@@ -8742,10 +8742,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=False))
 
 label monika_asks_family:
-    m 1eua "[player], do you have a family?{nw}"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "[player], do"
+    m 1eua "[line_start] you have a family?{nw}"
     $ _history_list.pop()
     menu:
-        m "[player], do you have a family?{fast}"
+        m "[line_start] you have a family?{fast}"
         "I do.":
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
