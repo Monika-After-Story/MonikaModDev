@@ -5726,7 +5726,7 @@ label monika_vocaloid:
         and not persistent._mas_pm_added_custom_bgm
     ):
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
+        m 1eua "And if you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
     return "derandom"
