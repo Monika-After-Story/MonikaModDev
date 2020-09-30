@@ -6107,7 +6107,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_zombie",category=['society'],prompt="Zombies",random=True))
 
 label monika_zombie:
-    m 1lsc "Hey, this might sound a bit weird..."
+    $ line_start = "This" if mas_globals.pushed_from_talk else "Hey, this"
+    m 1lsc "[line_start] might sound a bit weird..."
     m 1esc "But, I'm really fascinated by the concept of zombies."
     m 1euc "The idea of society dying to a disease, all because of a deadly pandemic that humans couldn't handle quickly."
     m 3esd "I mean, think about your everyday schedule."
