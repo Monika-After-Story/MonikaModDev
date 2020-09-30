@@ -6911,7 +6911,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_confidence_2",category=['life'],prompt="Lack of confidence",random=True))
 
 label monika_confidence_2:
-    m 1ekc "[player], do you ever feel like you lack the initiative to do something?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "[player], do"
+    m 1ekc "[line_start] you ever feel like you lack the initiative to do something?"
     m "When I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
     m 1tkc "Almost as if everything around me comes to a standstill."
     m "It feels like my will to approach a task confidently, like sharing my literature with people, just vanishes."
