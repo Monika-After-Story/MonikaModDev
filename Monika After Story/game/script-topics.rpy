@@ -11362,7 +11362,8 @@ init 5 python:
     )
 
 label monika_shipping:
-    m 3eua "Hey, [player].{w=0.2} Have you ever heard of 'shipping?'"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey, [player].{w=0.2} Have"
+    m 3eua "[line_start] you ever heard of 'shipping?'"
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
     m 1eka "I think most people do it subconsciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
@@ -11407,7 +11408,8 @@ init 5 python:
 
 
 label monika_justice:
-    m 1esa "[player], do you ever think the concept of justice is kind of ironic?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "[player], do"
+    m 1esa "[line_start] you ever think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
     m 2ekd "It doesn't even have to be some famous bank robber or anything; even everyday people like you and me can be brought to some sort of righteousness!"
     m 4esc "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
@@ -11508,7 +11510,8 @@ init 5 python:
     )
 
 label monika_poweroutage:
-    m 1eua "Hey [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "Hey [player], do"
+    m 1eua "[line_start] you remember how I said I liked listening to the peaceful sound of rain?"
     m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
     m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
     m 1lksdlb "The effects can be pretty, well...shocking I guess you could say."
@@ -11573,7 +11576,8 @@ init 5 python:
     )
 
 label monika_pygmalion:
-    m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey [player], have"
+    m 1eua "[line_start] you ever read {i}The Metamorphoses{/i}?"
     m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
     m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
@@ -12400,7 +12404,8 @@ init 5 python:
         )
 
 label monika_players_control:
-    m 3eub "[player], did you know that you have more control over this game than I do?"
+    $ line_start = "Did" if mas_globals.pushed_from_talk else "[player], did"
+    m 3eub "[line_start] you know that you have more control over this game than I do?"
     m 3eua "You have access to the game's files and code, right?"
     m 1eka "So you can change them however you want."
     m 3eka "You could do things that even I can't."
@@ -13148,7 +13153,8 @@ init 5 python:
     )
 
 label monika_trick:
-    m 2eud "Say [player], I have a question..."
+    $ line_start = "I" if mas_globals.pushed_from_talk else "Say [player], I"
+    m 2eud "[line_start] have a question..."
     m 2lksdlb "I hope I don't sound insecure when I say this..."
     m 2eka "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
 
@@ -13309,7 +13315,8 @@ init 5 python:
     )
 
 label monika_snow:
-    m 1eua "Hey [player], now that it's winter, I was wondering..."
+    $ line_start = "Now" if mas_globals.pushed_from_talk else "Hey [player], now"
+    m 1eua "[line_start] that it's winter, I was wondering..."
 
     m "Does it ever snow where you live?{nw}"
     $ _history_list.pop()
@@ -13376,7 +13383,8 @@ init 5 python:
     )
 
 label monika_snowmen:
-    m 3eua "Hey [player], have you ever built a snowman?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey [player], have"
+    m 3eua "[line_start] you ever built a snowman?"
     m 3hub "I think it sounds like a lot of fun!"
     m 1eka "Building snowmen is usually seen as something children do,{w=0.2} {nw}"
     extend 3hua "but I think they're really cute."
@@ -13491,7 +13499,8 @@ init 5 python:
 
 label monika_snowcanvas:
     if persistent._mas_pm_gets_snow is not False:
-        m 3euc "[player], have you ever looked at snow and thought it resembles a blank canvas?"
+        $ line_start = "Have" if mas_globals.pushed_from_talk else "[player], have"
+        m 3euc "[line_start] you ever looked at snow and thought it resembles a blank canvas?"
         m 1hksdlb "I know I'm not really good with art..."
         m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
         m 3hub "We can just step outside and let our imaginations run wild!"
@@ -13623,7 +13632,8 @@ init 5 python:
     )
 
 label monika_hemispheres:
-    m 1euc "Hey [player], I've been wondering..."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "Hey [player], I've"
+    m 1euc "[line_start] been wondering..."
     m 1eua "Which hemisphere do you live in?"
     m 1eka "I know it's kind of a strange question..."
     m 3hub "But it gives me a better idea of how things work around you."
