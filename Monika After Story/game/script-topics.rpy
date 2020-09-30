@@ -7219,7 +7219,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Age gap",random=True))
 
 label monika_immortal:
-    m 3hua "[player]! I've been thinking about something..."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "[player]! I've"
+    m 3hua "[line_start] been thinking about something..."
     m 1eua "Did you know that this game has a wiki page for me?"
     m 1lsc "Well..."
     m 2lsc "It says I'm eighteen."
