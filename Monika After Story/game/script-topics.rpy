@@ -6240,7 +6240,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
 
 label monika_completionist:
-    m 1euc "Hey [player], this is a random question, but..."
+    $ line_start = "This" if mas_globals.pushed_from_talk else "Hey [player], this"
+    m 1euc "[line_start] is a random question, but..."
     m "What do you play video games for?"
     m 1eua "Like, what makes you keep playing?"
     m 3eua "Personally, I consider myself a bit of a completionist."
