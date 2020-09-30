@@ -6518,7 +6518,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_home_memories",category=['romance','monika','life'],prompt="Making memories",random=True))
 
 label monika_home_memories:
-    m 1eua "[player], how is it like to live where you are?"
+    $ line_start = "How" if mas_globals.pushed_from_talk else "[player], how"
+    m 1eua "[line_start] is it like to live where you are?"
     m "I'd stay with you if I could."
     m 3hua "We would be able to do so much! You could show me around, see how it's like to be in your place."
     m 1eka "Imagine all the memories we'd make!"
