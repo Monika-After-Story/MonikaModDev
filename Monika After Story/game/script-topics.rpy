@@ -1225,7 +1225,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
 
 label monika_portraitof:
-    $ line_start = "Hey, you" if mas_globals.pushed_from_talk else "You"
+    $ line_start = "You" if mas_globals.pushed_from_talk else "Hey, you"
     m 4eua "[line_start] know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
     m 4hub "It's funny, because I'm pretty sure that book--"
@@ -1355,7 +1355,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_color",category=['monika'],prompt="Favorite color",random=True))
 
 label monika_color:
-    m 3eua "Hey, what's your favorite color?"
+    $ line_start = "What's" if mas_globals.pushed_from_talk else "Hey, what's"
+    m 3eua "[line_start] your favorite color?"
     m "Mine is emerald green."
     m 3hub "It's the color of my eyes!"
     m 3rksdla "...That's not conceited or anything, is it?"
@@ -1538,7 +1539,8 @@ init 5 python:
 
 label monika_tea:
     if not mas_getEVL_shown_count("monika_tea"):
-        m 2hua "Hey, I wonder if Yuri's tea set is still in here somewhere..."
+        $ line_start = "I" if mas_globals.pushed_from_talk else "Hey, I"
+        m 2hua "[line_start] wonder if Yuri's tea set is still in here somewhere..."
 
         if not persistent._mas_pm_cares_about_dokis:
             m 2hksdlb "...or maybe that got deleted, too."
@@ -1546,7 +1548,8 @@ label monika_tea:
         m 2eka "It's kind of funny how Yuri took her tea so seriously."
 
     else:
-        m 2eka "You know, It's kind of funny how Yuri took her tea so seriously."
+        $ line_start = "It's" if mas_globals.pushed_from_talk else "You know, it's"
+        m 2eka "[line_start] kind of funny how Yuri took her tea so seriously."
 
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
@@ -1576,7 +1579,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_favoritegame",category=['ddlc'],prompt="Favorite video game",random=True))
 
 label monika_favoritegame:
-    m 3eua "Hey, what's your favorite game?"
+    $ line_start = "What's" if mas_globals.pushed_from_talk else "Hey, what's"
+    m 3eua "[line_start] your favorite game?"
     m 3hua "Mine is {i}Doki Doki Literature Club!{/i}"
     m 1hub "Ahaha! That was a joke."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -1617,7 +1621,8 @@ init 5 python:
     )
 
 label monika_lastpoem:
-    m 3eud "Hey, you remember that last poem I showed you?"
+    $ line_start = "You" if mas_globals.pushed_from_talk else "Hey, you"
+    m 3eud "[line_start] you remember that last poem I showed you?"
     if persistent._mas_sensitive_mode:
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
@@ -2117,7 +2122,8 @@ init 5 python:
     )
 
 label monika_yuri:
-    m 3eua "Hey, have you ever heard of the term 'yandere?'"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey, have"
+    m 3eua "[line_start] you ever heard of the term 'yandere?'"
     m 1eua "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
     m 1lksdla "Usually to the point of craziness..."
     m 1eka "They might stalk you to make sure you don't spend time with anyone else."
@@ -2210,7 +2216,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_simulated",category=['philosophy'],prompt="Simulated reality",random=True))
 
 label monika_simulated:
-    m 3eua "Hey, have you ever thought about the simulation hypothesis?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey, have"
+    m 3eua "[line_start] you ever thought about the simulation hypothesis?"
     m 1eua "Basically, what if your reality was a computer simulation?"
     m "I already figured out I was trapped in my own simulation, but what if you were too?"
     m 1eka "I'd actually be really happy if that were the case."
@@ -2933,7 +2940,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_read",category=['advice','literature'],prompt="Becoming a reader",random=True))
 
 label monika_read:
-    m 1eua "[player], how much do you read?"
+    $ line_start = "How" if mas_globals.pushed_from_talk else "[player], how"
+    m 1eua "[line_start] much do you read?"
     m "It's way too easy to neglect reading books..."
     m 1euc "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
     m 1eua "But once you get into a good book, it's like magic...you get swept away."
@@ -3000,7 +3008,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_introduce",category=['monika'],prompt="Introducing to friends",random=True))
 
 label monika_introduce:
-    m 1eua "[player], would you ever introduce your friends to me?"
+    $ line_start = "Would" if mas_globals.pushed_from_talk else "[player], would"
+    m 1eua "[line_start] you ever introduce your friends to me?"
     m 1hua "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
     m 1eua "Maybe it's because I really want to be someone who makes you proud."
     m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
@@ -3992,7 +4001,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Determinism",random=True))
 
 label monika_freewill:
-    m 1euc "Hey [player], have you ever heard of determinism?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "Hey [player], have"
+    m 1euc "[line_start] you ever heard of determinism?"
     m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
     m 3rsc "In some games, I guess the idea makes sense..."
     m 3eud "But when you apply it to real life, I don't think it really works out."
@@ -6097,7 +6107,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_zombie",category=['society'],prompt="Zombies",random=True))
 
 label monika_zombie:
-    m 1lsc "Hey, this might sound a bit weird..."
+    $ line_start = "This" if mas_globals.pushed_from_talk else "Hey, this"
+    m 1lsc "[line_start] might sound a bit weird..."
     m 1esc "But, I'm really fascinated by the concept of zombies."
     m 1euc "The idea of society dying to a disease, all because of a deadly pandemic that humans couldn't handle quickly."
     m 3esd "I mean, think about your everyday schedule."
@@ -6229,7 +6240,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
 
 label monika_completionist:
-    m 1euc "Hey [player], this is a random question, but..."
+    $ line_start = "This" if mas_globals.pushed_from_talk else "Hey [player], this"
+    m 1euc "[line_start] is a random question, but..."
     m "What do you play video games for?"
     m 1eua "Like, what makes you keep playing?"
     m 3eua "Personally, I consider myself a bit of a completionist."
@@ -6506,7 +6518,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_home_memories",category=['romance','monika','life'],prompt="Making memories",random=True))
 
 label monika_home_memories:
-    m 1eua "[player], how is it like to live where you are?"
+    $ line_start = "How" if mas_globals.pushed_from_talk else "[player], how"
+    m 1eua "[line_start] is it like to live where you are?"
     m "I'd stay with you if I could."
     m 3hua "We would be able to do so much! You could show me around, see how it's like to be in your place."
     m 1eka "Imagine all the memories we'd make!"
@@ -6660,7 +6673,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fahrenheit451",category=['literature'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
-    m 1euc "[player], have you ever heard of Ray Bradbury?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "[player], have"
+    m 1euc "[line_start] you ever heard of Ray Bradbury?"
     m 3euc "He wrote a book called {i}Fahrenheit 451{/i}."
     m 3eud "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 2ekc "I can't imagine a world where knowledge is forbidden and destroyed."
@@ -6897,7 +6911,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_confidence_2",category=['life'],prompt="Lack of confidence",random=True))
 
 label monika_confidence_2:
-    m 1ekc "[player], do you ever feel like you lack the initiative to do something?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "[player], do"
+    m 1ekc "[line_start] you ever feel like you lack the initiative to do something?"
     m "When I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
     m 1tkc "Almost as if everything around me comes to a standstill."
     m "It feels like my will to approach a task confidently, like sharing my literature with people, just vanishes."
@@ -7204,7 +7219,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Age gap",random=True))
 
 label monika_immortal:
-    m 3hua "[player]! I've been thinking about something..."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "[player]! I've"
+    m 3hua "[line_start] been thinking about something..."
     m 1eua "Did you know that this game has a wiki page for me?"
     m 1lsc "Well..."
     m 2lsc "It says I'm eighteen."
@@ -7941,8 +7957,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
 
 label monika_happiness:
-
-    m 1eua "[player], are you happy?"
+    $ line_start = "Are" if mas_globals.pushed_from_talk else "[player], are"
+    m 1eua "[line_start] you happy?"
     m "With your life in general, I mean."
     m 2lksdla "It's okay if you aren't. I can understand you being unhappy, [player]."
     m 1eka "After all, without you, my life would be completely unbearable."
@@ -8296,7 +8312,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
 label monika_hamlet:
-    m 3euc "[player], have you ever heard of {i}Hamlet{/i}?"
+    $ line_start = "Have" if mas_globals.pushed_from_talk else "[player], have"
+    m 3euc "[line_start] you ever heard of {i}Hamlet{/i}?"
     m 1eua "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
     m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
     m 1lksdlc "He was considered insane since he was the only one that could see his father's ghost, obviously."
@@ -8725,10 +8742,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=False))
 
 label monika_asks_family:
-    m 1eua "[player], do you have a family?{nw}"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "[player], do"
+    m 1eua "[line_start] you have a family?{nw}"
     $ _history_list.pop()
     menu:
-        m "[player], do you have a family?{fast}"
+        m "[line_start] you have a family?{fast}"
         "I do.":
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
@@ -8876,7 +8894,8 @@ label monika_concerts:
     # genres and the concert just referencing back to that?
     # this topic is starting to get too complicated
 
-    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "Hey, [player], I've"
+    m 1euc "[line_start] been thinking about something we could do together one day..."
     m 1eud "You know how I like different forms of music?"
     m 1hua "Well..."
     m 3eub "Why don't we go to a concert?"
@@ -9227,7 +9246,8 @@ label monika_timetravel:
     $ todays_date, todays_diff = store.mas_calendar.genFormalDispDate(datetime.date.today())
     $ one_year_later, year_later_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),1))
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
-    m 3eub "Hey [player], you've heard of time travel, right?"
+    $ line_start = "You've" if mas_globals.pushed_from_talk else "Hey, [player], you've"
+    m 3eub "[line_start] heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
@@ -10114,7 +10134,8 @@ init 5 python:
     )
 
 label monika_familygathering:
-    m 1eua "Hey [player], do you go to family gatherings often?"
+    $ line_start = "Do" if mas_globals.pushed_from_talk else "Hey, [player], do"
+    m 1eua "[line_start] you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
@@ -10311,7 +10332,8 @@ init 5 python:
     )
 
 label monika_immortality:
-    m 1eud "Hey, [player], I've been thinking about immortality lately."
+    $ line_start = "I've" if mas_globals.pushed_from_talk else "Hey, [player], I've"
+    m 1eud "[line_start] been thinking about immortality lately."
     m 1lksdlc "...Seeing as how I'm essentially immortal while I'm in here and all."
     m 1esc "A lot of people think it's a good thing, but I don't really think it is."
     m 3euc "Sure, it's an interesting thought; {w=0.1}living forever, not having to worry about dying..."
