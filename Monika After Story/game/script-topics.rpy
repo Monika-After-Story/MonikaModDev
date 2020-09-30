@@ -6987,7 +6987,7 @@ label monika_cats:
     m 1eua "Despite looking so elegant, they always seem to end up in funny situations."
     m 1lksdla "It's no wonder they're so popular on the internet."
     m 3eua "Did you know the ancient Egyptians considered cats sacred?"
-    m 1eua "There was a Cat Goddess named Bastet that they worshipped. She was a protector of sorts."
+    m 1eua "There was a Cat goddess named Bastet that they worshipped. She was a protector of sorts."
     m 1eub "Domesticated cats were held on a high pedestal since they were incredible hunters for small critters and vermin."
     m "Back then, you'd see them mostly associated with rich nobles and other higher classes in their society."
     m 1eua "It's amazing how far people would take their love with their pets."
