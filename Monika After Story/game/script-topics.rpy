@@ -9246,7 +9246,8 @@ label monika_timetravel:
     $ todays_date, todays_diff = store.mas_calendar.genFormalDispDate(datetime.date.today())
     $ one_year_later, year_later_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),1))
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
-    m 3eub "Hey [player], you've heard of time travel, right?"
+    $ line_start = "You've" if mas_globals.pushed_from_talk else "Hey, [player], you've"
+    m 3eub "[line_start] heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
