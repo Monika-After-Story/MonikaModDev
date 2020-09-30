@@ -7957,8 +7957,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
 
 label monika_happiness:
-
-    m 1eua "[player], are you happy?"
+    $ line_start = "Are" if mas_globals.pushed_from_talk else "[player], are"
+    m 1eua "[line_start] you happy?"
     m "With your life in general, I mean."
     m 2lksdla "It's okay if you aren't. I can understand you being unhappy, [player]."
     m 1eka "After all, without you, my life would be completely unbearable."
