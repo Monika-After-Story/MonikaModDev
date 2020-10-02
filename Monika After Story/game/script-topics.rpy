@@ -107,22 +107,21 @@ init -1 python:
         IN:
             sel_list - list to select from
         """
-        sel_ev = True
-        while sel_ev is not None:
+        while True:
             sel_ev = mas_randomSelectAndRemove(sel_list)
 
-            if (
-                    # valid event
-                    sel_ev
+            # Is valid event?
+            if sel_ev is None:
+                return
 
-                    # event not blocked from random selection
-                    and not sel_ev.anyflags(EV_FLAG_HFRS)
-
-                    # event not blocked because of sensitivty
-                    and (
-                        not persistent._mas_sensitive_mode
-                        or not sel_ev.sensitive
-                    )
+            elif (
+                # Event not blocked from random selection
+                not sel_ev.anyflags(EV_FLAG_HFRS)
+                # Event not blocked because of sensitivty
+                and (
+                    not persistent._mas_sensitive_mode
+                    or not sel_ev.sensitive
+                )
             ):
                 pushEvent(sel_ev.eventlabel, notify=True)
                 return
@@ -341,7 +340,12 @@ init python:
         label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
 
         if ev_label is None:
-            ev_label = persistent.current_monikatopic
+            if persistent.current_monikatopic is not None:
+                ev_label = persistent.current_monikatopic
+
+            # No topic was provided and we are in idle
+            else:
+                return
 
         ev = mas_getEV(ev_label)
 
@@ -393,7 +397,12 @@ init python:
         label_prefix_map = store.mas_bookmarks_derand.label_prefix_map
 
         if ev_label is None:
-            ev_label = persistent.current_monikatopic
+            if persistent.current_monikatopic is not None:
+                ev_label = persistent.current_monikatopic
+
+            # No topic was provided and we are in idle
+            else:
+                return
 
         ev = mas_getEV(ev_label)
 

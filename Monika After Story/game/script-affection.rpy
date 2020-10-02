@@ -336,7 +336,12 @@ init -1 python in mas_affection:
                 NOTE: for load / save operations ONLY
         """
         if ldsv is None:
-            piece_one = store.persistent.current_monikatopic
+            if store.persistent.current_monikatopic is None:
+                piece_one = "idle"
+
+            else:
+                piece_one = store.persistent.current_monikatopic
+
         else:
             piece_one = ldsv
 
