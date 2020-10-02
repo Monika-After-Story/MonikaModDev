@@ -1570,9 +1570,6 @@ init python:
             box - "mailbox" with messages
             topic_mode - current topic mode
         """
-        # Defalt timedelta for mail lifetime
-        MAIL_EXPIRY_TD = datetime.timedelta(minutes=1)
-
         # Consts for pushing events
         TM_DEFAULT = "def"
         # Monika brought up this topic on her own
@@ -1623,24 +1620,31 @@ init python:
             self._box = dict()
             self._topic_mode = self.TM_DEFAULT
 
-        def send(self, msg, expiry=None):
+        def __repr__(self):
+            """
+            repr override
+            """
+            return "<MASEventMailbox: (mail: {0}, topic_mode: {1})>".format(self._box, self._topic_mode)
+
+        def send(self, msg, contents, expiry=datetime.timedelta(minutes=1)):
             """
             Method to send messages to other topics
 
             IN:
                 msg - message to send
-                expiry - timedelta after which, this message will expire. If None, it will be set to 1 min
-                    (Default: None)
+                value - contents to send with the message
+                expiry - datetime.timedelta when this message will expire. If None, it will not expire until a topic ends
+                    (Default: 5 minutes)
             """
-            if expiry is None:
-                expiry = self.MAIL_EXPIRY_TD
+            self._box[msg] = (
+                (datetime.datetime.now() + expiry) if expiry is not None else expiry,
+                contents
+            )
 
-            self._box[msg] = datetime.datetime.now() + expiry
-
-        def read(self, msg):
+        def get_message(self, msg):
             """
             Method to read messages from other topics
-            NOTE: if the message has expired, this'll return False
+            NOTE: if the message has expired, this'll return None
 
             IN:
                 msg - message to read (which may or may not exist)
@@ -1649,17 +1653,29 @@ init python:
                 boolean:
                     True if we read the message, False otherwise
             """
-            expiry = self._box.get(msg, None)
-            # See if we ever sent this message
-            if expiry is not None:
-                # See if it's still actual
+            #Get our message expiry time and the message's contents
+            expiry, contents = self._box.get(msg, None)
+
+            #Check if this has an expiry
+            if expiry is None:
+                #No expiry, so just return the contents
+                return contents
+
+            else:
+                #Since this message can expire, we should check before we approve it
                 if datetime.datetime.now() <= expiry:
-                    return True
+                    return contents
 
-                # Otherwise pop it as outdated
+                #Otherwise pop it as outdated
                 self._box.pop(msg)
+                #And return None
+                return None
 
-            return False
+        def empty(self):
+            """
+            Empties the mailbox (discards all mail)
+            """
+            self._box.clear()
 
         def _set_topic_mode(self, value):
             """
@@ -2511,8 +2527,6 @@ init 1 python in evhand:
 # event called or None if the list is empty or the label is invalid
 #
 label call_next_event:
-
-
     $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
@@ -2605,6 +2619,9 @@ label call_next_event:
             if "prompt" in ret_items:
                 show monika idle
                 jump prompt_menu
+
+        #Dump the mailbox
+        $ mas_event_mailbox.empty()
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
