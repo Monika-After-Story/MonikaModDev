@@ -2534,6 +2534,7 @@ label call_next_event:
         if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.session_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
         if _return is not None:

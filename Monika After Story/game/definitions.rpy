@@ -408,6 +408,9 @@ python early:
     #       (Default: False)
     #   flags - bitmask system that acts as unchanging or temporary flags.
     #       (Default: 0)
+    #   session_count - number of times this event has been shown to the user
+    #       in the current session. Follows same rules as shown_count, except
+    #       syncing.
     class Event(object):
 
         # tuple constants
@@ -440,7 +443,8 @@ python early:
             "locks",
             "rules",
             "diary_entry",
-            "flags"
+            "flags",
+            "session_count",
         )
 
         # filterables
@@ -583,6 +587,7 @@ python early:
 
             self.rules = rules
             self.flags = flags
+            self.session_count = 0
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
