@@ -874,7 +874,7 @@ label monika_god:
     m 3euc "So, from that perspective..."
     m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_religious is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_religious is None:
         m 1eua "Anyway, do you worship any god, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -919,7 +919,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
-    if mas_globals.use_interrupt_flow:
+    if mas_event_mailbox.is_post_interruption_mode():
         m 1eua "Anyway...{w=0.3} {nw}"
         extend 1esc "Have you ever wondered what it feels like to die?"
     else:
@@ -1864,7 +1864,7 @@ label monika_rap:
     m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would have been interesting to see what they came up with."
     m 1eub "It could've been a neat learning experience!"
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_rap is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_rap is None:
         $ p_nickname = mas_get_player_nickname()
         m 1eua "Do you listen to rap music, [p_nickname]?{nw}"
         $ _history_list.pop()
@@ -4661,7 +4661,7 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_would_like_mt_peak is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_would_like_mt_peak is None:
         m 5eka "Wouldn't you like that too, [player]?"
         $ _history_list.pop()
         menu:
@@ -5112,7 +5112,7 @@ label monika_cities:
     m 3rksdlc "Then again, if people live close together, that leaves more room for open wilderness."
     m 3etc "Maybe it's not as simple as it seems."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_live_in_city is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_live_in_city is None:
         m 1esd "[player], do you live in a city?{nw}"
         $ _history_list.pop()
         menu:
@@ -5723,7 +5723,7 @@ label monika_vocaloid:
     m 1eua "Hey, [mas_get_player_nickname(exclude_names=['my love'])]?"
     m "You like listening to music, right?"
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_vocaloids is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_vocaloids is None:
         m 3eub "Do you by chance like 'virtual idols?'{nw}"
         $ _history_list.pop()
         menu:
@@ -7112,7 +7112,7 @@ label monika_rock:
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_rock_n_roll is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_rock_n_roll is None:
         m 3eua "Do you listen to rock and roll, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -7375,7 +7375,7 @@ label monika_sports:
     m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
     m 3eua "Plus, it's a great sport for two people!"
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_like_playing_sports is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_playing_sports is None:
         m "Do you play tennis, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -7441,7 +7441,7 @@ label monika_meditation:
     m 1eua "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_meditates is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_meditates is None:
         m 1eka "[player], do you ever take time to meditate?{nw}"
         $ _history_list.pop()
         menu:
@@ -9088,7 +9088,7 @@ label monika_beach:
     m "I rarely had a chance to do so after all."
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_live_near_beach is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_live_near_beach is None:
         m "Do you live near a beach, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -9353,7 +9353,7 @@ label monika_prom:
     m 3wuo "There are even those who take their relatives to the event!"
     m 1eua "I think it's something I'd love to go to with you~"
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_gone_to_prom is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_gone_to_prom is None:
         m "Have you ever been to one before, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -10728,7 +10728,7 @@ label monika_bullying:
     m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
 
-    if not store.mas_globals.pushed_from_talk or (persistent._mas_pm_is_bullying_victim is None and persistent._mas_pm_currently_bullied is None):
+    if mas_event_mailbox.is_player_initiated_mode() or (persistent._mas_pm_is_bullying_victim is None and persistent._mas_pm_currently_bullied is None):
         m 2ekc "Have you ever been a victim of bullying, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -11436,7 +11436,7 @@ label monika_justice:
     m "While the other person is now a hero for putting an end to their 'crimes.'"
     m 3rksdld "Can you really call that justice?"
 
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_monika_deletion_justice is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_monika_deletion_justice is None:
         m 2dsc "..."
 
         m 2euc "Have you ever been delivered what you thought to be false justice?{nw}"
@@ -14802,7 +14802,7 @@ init 5 python:
     )
 
 label monika_working_out:
-    if not store.mas_globals.pushed_from_talk or persistent._mas_pm_works_out is None:
+    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_works_out is None:
         m 1euc "Hey [player], I was just wondering..."
 
         m 1eua "Do you work out much?{nw}"

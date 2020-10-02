@@ -1519,7 +1519,7 @@ label ch30_post_mid_loop_eval:
 #        if persistent.random_seen < random_seen_limit:
 
         # Set random mode since Monika will pick this topic
-        $ mas_event_mailbox.set_random_mode()
+        $ mas_event_mailbox.set_monika_initiated_mode()
 
     # FALL THROUGH
 

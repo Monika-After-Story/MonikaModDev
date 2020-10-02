@@ -1571,17 +1571,18 @@ init python:
             topic_mode - current topic mode
         """
         # Defalt timedelta for mail lifetime
-        MAIL_EXPIRY_TD = datetime.timedelta(minutes=5)
+        MAIL_EXPIRY_TD = datetime.timedelta(minutes=1)
 
         # Consts for pushing events
+        TM_DEFAULT = "def"
         # Monika brought up this topic on her own
-        TM_RANDOM = "random"
-        # The player let Monika continue her topic
-        TM_POST_INTERRUPTION = "post_interruption"
-        # Monika started next topic right after finishing another one
-        TM_CHAIN = "chain"
+        TM_MONIKA_INITIATED = "monika_initiated"
         # The player's initiated this topic
         TM_PLAYER_INITIATED = "player_initiated"
+        # The player let Monika continue her topic
+        TM_POST_INTERRUPTION = "post_interruption"
+        # Monika started this topic right after finishing another one
+        TM_CHAIN = "chain"
 
         # Consts for ev messages
         # NOTE: Add as needed
@@ -1610,15 +1611,17 @@ init python:
         TALKED_ABOUT_CUTENESS = "talk_cuteness"
 
         # THANKING
-        THANKED = "thanked"
-        EXPECTS_THANKS = "exp_thanks"
+        MONIKA_THANKED = "m_thanked"
+        PLAYER_THANKED = "p_thanked"
+        MONIKA_EXPECTS_THANKS = "m_exp_thanks"
+        # PLAYER_EXPECTS_THANKS = "p_exp_thanks"# Not sure how useful this is
 
         def __init__(self):
             """
             Constructor for the mailbox
             """
             self._box = dict()
-            self._topic_mode = self.TM_RANDOM
+            self._topic_mode = self.TM_DEFAULT
 
         def send(self, msg, expiry=None):
             """
@@ -1626,13 +1629,13 @@ init python:
 
             IN:
                 msg - message to send
-                expiry - datetime when this message will expire. If None, it will be set to 5 mins
+                expiry - timedelta after which, this message will expire. If None, it will be set to 1 min
                     (Default: None)
             """
             if expiry is None:
-                expiry = datetime.datetime.now() + self.MAIL_EXPIRY_TD
+                expiry = self.MAIL_EXPIRY_TD
 
-            self._box[msg] = expiry
+            self._box[msg] = datetime.datetime.now() + expiry
 
         def read(self, msg):
             """
@@ -1661,21 +1664,27 @@ init python:
         def _set_topic_mode(self, value):
             """
             Sets topic mode to the given value
-            NOTE: this assumes the value is one of the MASEventMailbox's constants
+            NOTE: this assumes the value is one of MASEventMailbox's constants
             """
             self._topic_mode = value
 
-        def get_topic_mode(self):
+        def set_default_mode(self):
             """
-            Returns current topic mode
+            Resets topic mode to default value
             """
-            return self._topic_mode
+            self._set_topic_mode(self.TM_DEFAULT)
 
-        def set_random_mode(self):
+        def set_monika_initiated_mode(self):
             """
-            Sets topic mode to random (aka Monika initiated)
+            Sets topic mode to monika_initiated (aka random)
             """
-            self._set_topic_mode(self.TM_RANDOM)
+            self._set_topic_mode(self.TM_MONIKA_INITIATED)
+
+        def set_player_initiated_mode(self):
+            """
+            Sets topic mode to player_initiated (aka the player started current topic)
+            """
+            self._set_topic_mode(self.TM_PLAYER_INITIATED)
 
         def set_post_interruption_mode(self):
             """
@@ -1689,11 +1698,35 @@ init python:
             """
             self._set_topic_mode(self.TM_CHAIN)
 
-        def set_player_initiated_mode(self):
+        def _get_topic_mode(self):
             """
-            Sets topic mode to player_initiated (aka the player started current topic)
+            Returns current topic mode
             """
-            self._set_topic_mode(self.TM_PLAYER_INITIATED)
+            return self._topic_mode
+
+        def is_monika_initiated_mode(self):
+            """
+            Checks if the current topic mode is monika_initiated
+            """
+            return self._get_topic_mode() == self.TM_MONIKA_INITIATED
+
+        def is_player_initiated_mode(self):
+            """
+            Checks if the current topic mode is player_initiated
+            """
+            return self._get_topic_mode() == self.TM_PLAYER_INITIATED
+
+        def is_post_interruption_mode(self):
+            """
+            Checks if the current topic mode is post_interruption
+            """
+            return self._get_topic_mode() == self.TM_POST_INTERRUPTION
+
+        def is_chain_mode(self):
+            """
+            Checks if the current topic mode is chain
+            """
+            return self._get_topic_mode() == self.TM_CHAIN
 
     mas_event_mailbox = MASEventMailbox()
 
@@ -2510,12 +2543,13 @@ label call_next_event:
         python:
             persistent.current_monikatopic = None
             mas_globals.this_ev = None
-            # Reset to random if we have no more topics,
+            # Reset topic mode if we have no more topics,
             # or to chain if Monika has more to discuss
             if not persistent.event_list:
-                mas_event_mailbox.set_random_mode()
+                mas_event_mailbox.set_default_mode()
 
             else:
+                # NOTE: this does NOT account for song delegate and similar events
                 mas_event_mailbox.set_chain_mode()
 
         #if this is a random topic, make sure it's unlocked for prompts
@@ -2524,7 +2558,7 @@ label call_next_event:
             if ev.random and not ev.unlocked:
                 python:
                     ev.unlocked = True
-                    ev.unlock_date=datetime.datetime.now()
+                    ev.unlock_date = datetime.datetime.now()
 
         else:
             # othrewise, pull an ev from the all event database
