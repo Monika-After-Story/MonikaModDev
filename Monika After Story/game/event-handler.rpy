@@ -1639,7 +1639,7 @@ init python:
             self._send(
                 msg, 
                 (
-                    datetime.datetime.now() + expiry) if expiry is not None else expiry,
+                    (datetime.datetime.now() + expiry) if expiry is not None else expiry,
                     contents
                 )
             )
