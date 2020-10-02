@@ -4925,15 +4925,15 @@ init 5 python:
 
 label monika_fanfiction:
     m 1euc "You know, I think fanfiction is pretty interesting."
-     $ _history_list.pop()
-     menu:
-         m 3eud "Have you heard of fanfiction, [player?]{fast}"
-         "Yes.":
+    $ _history_list.pop()
+    menu:
+        m "Have you heard of fanfiction, [player?]{fast}"
+        "Yes.":
             m 3esb "Ah, that's good."
             m 2tuu "I hope you haven't been reading anything too questionable, [player]..."
             m 2hub "Ahaha~"
 
-         "No.":
+        "No.":
             m 2esa "That's okay, I'd be happy to tell you about it!"
             m 3eub "Fanfiction is a popular writing form, especially with casual writers."
             m 4esa "With fanfiction, writers create stories for some of their favorite novels, shows, games, and more."
@@ -4956,7 +4956,7 @@ label monika_fanfiction_expansion:
     $ _history_list.pop()
     show monika 1eua
     menu:
-        m 1euc "Have you written any fanfiction before, [mas_get_player_nickname()]?{fast}"
+        m "Have you written any fanfiction before, [mas_get_player_nickname()]?{fast}"
         "Yes.":
             m 1euc "Really? That's great!"
             m 1euc "I'd love to read what you've written, [player]."
