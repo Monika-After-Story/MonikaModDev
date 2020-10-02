@@ -1618,7 +1618,7 @@ init python:
             Constructor for the mailbox
             """
             self._topic_mode = self.TM_DEFAULT
-            super(self, MASEventMailbox).__init__()
+            super(MASEventMailbox, self).__init__()
 
         def __repr__(self):
             """
