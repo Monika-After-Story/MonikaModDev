@@ -15758,6 +15758,7 @@ init 5 python:
  
 label monika_nature:
     m 2esd "Hey, [player]..."
+    m "Do you like nature{nw}?"
     $ _history_list.pop()
     menu:
         m "Do you like nature{fast}?"
@@ -15781,7 +15782,7 @@ label monika_nature:
             m 4esa "After all, a sustainable life is a satisfying life."
             m 3rua "For me, at least."
             m 3eub "That's my advice for today!"
-            m 2hua "Thanks for listening, [player]~"
+            m 2hua "Thanks for listening, [mas_get_player_nickname()]~"
      
         "No.":
             $ persistent._mas_pm_likes_nature = False
