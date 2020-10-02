@@ -2341,8 +2341,10 @@ init 1 python in evhand:
 #
 label call_next_event:
 
+    python:
+        event_label, notify = popEvent()
+        renpy.save_persistent()# Save persistent here in case of a crash
 
-    $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
         # TODO: we should have a way to keep track of how many topics/hr
