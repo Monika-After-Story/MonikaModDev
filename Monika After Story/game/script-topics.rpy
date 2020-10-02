@@ -4921,25 +4921,58 @@ label monika_mythology:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fanfiction",category=['literature'],prompt="Fanfiction",random=True))
 
+# Highly WIP — expansion isn't coded to trigger yet.
+
 label monika_fanfiction:
-    # I'm too tired to check this over right now.
-    m 1wuo "[player]!"
-    m 1eua "I've been curious about something lately."
-    m 1euc "Have you heard of fanfiction?"
-    m "..."
-    m 3eua "Personally, I think it's a better way of writing."
-    m 3eud "There's more freedom."
-    m 1rsc "Letting your mind wander to create some...{w=0.5}{nw}"
-    extend 1rksdla "interesting stories."
+    m 1euc "You know, I think fanfiction is pretty interesting."
+     $ _history_list.pop()
+     menu:
+         m 3eud "Have you heard of fanfiction, [player?]{fast}"
+         "Yes.":
+            m 3esb "Ah, that's good."
+            m 2tuu "I hope you haven't been reading anything too questionable, [player]..."
+            m 2hub "Ahaha~"
+
+         "No.":
+            m 2esa "That's okay, I'd be happy to tell you about it!"
+            m 3eub "Fanfiction is a popular writing form, especially with casual writers."
+            m 4esa "With fanfiction, writers create stories for some of their favorite novels, shows, games, and more."
+            m 7eub "Fanfictions aren't canon — they're stories made by fans, so they're 'fanon' — but they can still be really well made!"
+    m 3eud "With fanfiction, there's plenty of freedom, it's easy to get into, and it enables writers to explore countless possibilities that the original source material couldn't!"
+    m 1rsc "Of course, that also allows for some...{w=0.5}{nw}"
+    extend 1rksdla "{i}interesting{/i} stories."
     m 1euc "[player], I'm curious."
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
-    m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
+    m 3lksdrb "I know I could look for some myself, but I feel like that would be kind of awkward."
+    m 1hua "Maybe you could read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
+        m 1lkbfa "Just wholesome ones, though. Let's save that for another time!~"
     else:
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
+
+label monika_fanfiction_expansion
+    $ _history_list.pop()
+    menu:
+        m 1euc "Have you written any fanfiction before, [mas_get_player_nickname()]?{fast}"
+        "Yes.":
+            m 1euc "Really? That's great!"
+            m 1euc "I'd love to read what you've written, [player]."
+            m 1euc "As long as it's not too explicit, of course."
+
+        "No.":
+            m 1euc "Ah, okay; that's fine."
+            m 1euc "Fanfiction is a hobby inside a hobby, so I'm not surprised that you haven't written any."
+            m 1euc "Still, it might be interesting to give it a try sometime!"
+ m 1euc "I'd love it if we could write a fanfiction together."
+ m 1euc "It wouldn't have to be very long -- a one-shot is fine -- and you could pick the topic."
+ m 1euc "The idea is just to spend time together, telling a story from both of our hearts."
+ m 1euc "Your words with mine, our voices singing onto the page in perfect harmony..."
+ m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
+ return
+
+
 
 init 5 python:
     addEvent(
