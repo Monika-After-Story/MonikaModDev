@@ -4972,8 +4972,6 @@ label monika_fanfiction_expansion
  m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
  return
 
-
-
 init 5 python:
     addEvent(
         Event(
