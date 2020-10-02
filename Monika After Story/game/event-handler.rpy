@@ -1562,7 +1562,7 @@ init python:
     import datetime
 
     # Event mailbox
-    class MASEventMailbox(object):
+    class MASEventMailbox(store.MASMailbox):
         """
         Mailbox for communications between topics
 
@@ -1617,8 +1617,8 @@ init python:
             """
             Constructor for the mailbox
             """
-            self._box = dict()
             self._topic_mode = self.TM_DEFAULT
+            super(self, MASEventMailbox).__init__()
 
         def __repr__(self):
             """
@@ -1636,9 +1636,12 @@ init python:
                 expiry - datetime.timedelta when this message will expire. If None, it will not expire until a topic ends
                     (Default: 5 minutes)
             """
-            self._box[msg] = (
-                (datetime.datetime.now() + expiry) if expiry is not None else expiry,
-                contents
+            self._send(
+                msg, 
+                (
+                    datetime.datetime.now() + expiry) if expiry is not None else expiry,
+                    contents
+                )
             )
 
         def get_message(self, msg):
@@ -1654,7 +1657,7 @@ init python:
                     True if we read the message, False otherwise
             """
             #Get our message expiry time and the message's contents
-            expiry, contents = self._box.get(msg, None)
+            expiry, contents = self.read(msg)
 
             #Check if this has an expiry
             if expiry is None:
@@ -1667,7 +1670,7 @@ init python:
                     return contents
 
                 #Otherwise pop it as outdated
-                self._box.pop(msg)
+                self.get(msg)
                 #And return None
                 return None
 
