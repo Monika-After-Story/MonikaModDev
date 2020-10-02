@@ -4952,8 +4952,9 @@ label monika_fanfiction:
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
 
-label monika_fanfiction_expansion
+label monika_fanfiction_expansion:
     $ _history_list.pop()
+    show monika 1eua
     menu:
         m 1euc "Have you written any fanfiction before, [mas_get_player_nickname()]?{fast}"
         "Yes.":
@@ -4965,11 +4966,11 @@ label monika_fanfiction_expansion
             m 1euc "Ah, okay; that's fine."
             m 1euc "Fanfiction is a hobby inside a hobby, so I'm not surprised that you haven't written any."
             m 1euc "Still, it might be interesting to give it a try sometime!"
- m 1euc "I'd love it if we could write a fanfiction together."
- m 1euc "It wouldn't have to be very long -- a one-shot is fine -- and you could pick the topic."
- m 1euc "The idea is just to spend time together, telling a story from both of our hearts."
- m 1euc "Your words with mine, our voices singing onto the page in perfect harmony..."
- m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
+    m 1euc "I'd love it if we could write a fanfiction together."
+    m 1euc "It wouldn't have to be very long -- a one-shot is fine -- and you could pick the topic."
+    m 1euc "The idea is just to spend time together, telling a story from both of our hearts."
+    m 1euc "Your words with mine, our voices singing onto the page in perfect harmony..."
+    m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
  return
 
 init 5 python:
