@@ -1624,7 +1624,7 @@ init python:
             """
             repr override
             """
-            return "<MASEventMailbox: (mail: {0}, topic_mode: {1})>".format(self._box, self._topic_mode)
+            return "<MASEventMailbox: (mail: {0}, topic_mode: {1})>".format(self.box, self._topic_mode)
 
         def send(self, msg, contents, expiry=datetime.timedelta(minutes=1)):
             """
@@ -1682,7 +1682,7 @@ init python:
             """
             Empties the mailbox (discards all mail)
             """
-            self._box.clear()
+            self.box.clear()
 
         def _set_topic_mode(self, value):
             """
