@@ -4971,7 +4971,7 @@ label monika_fanfiction_expansion:
     m 1euc "The idea is just to spend time together, telling a story from both of our hearts."
     m 1euc "Your words with mine, our voices singing onto the page in perfect harmony..."
     m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
- return
+    return
 
 init 5 python:
     addEvent(
