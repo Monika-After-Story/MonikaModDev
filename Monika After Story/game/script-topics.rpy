@@ -2529,7 +2529,9 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
+    window show
     m "..."
+    window auto
     menu:
         "{i}Wake Monika up.{/i}":
             $ play_song(None, fadeout=5.0)

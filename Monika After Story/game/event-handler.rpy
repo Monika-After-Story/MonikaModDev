@@ -2437,7 +2437,7 @@ label call_next_event:
 
     # return to normal pose
     if not renpy.showing("monika idle"):
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     return False
 
