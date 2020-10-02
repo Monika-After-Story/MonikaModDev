@@ -4925,9 +4925,10 @@ init 5 python:
 
 label monika_fanfiction:
     m 1euc "You know, I think fanfiction is pretty interesting."
+    m "Have you heard of fanfiction, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you heard of fanfiction, [player?]{fast}"
+        m "Have you heard of fanfiction, [player]?{fast}"
         "Yes.":
             m 3esb "Ah, that's good."
             m 2tuu "I hope you haven't been reading anything too questionable, [player]..."
@@ -4953,6 +4954,7 @@ label monika_fanfiction:
     return
 
 label monika_fanfiction_expansion:
+    m "Have you written any fanfiction before, [mas_get_player_nickname()]?{nw}"
     $ _history_list.pop()
     show monika 1eua
     menu:
