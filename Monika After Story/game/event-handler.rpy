@@ -1657,7 +1657,11 @@ init python:
                     True if we read the message, False otherwise
             """
             #Get our message expiry time and the message's contents
-            expiry, contents = self.read(msg)
+            msg_data = self.read(msg)
+            if msg_data is None:
+                self.get(msg)
+                return None
+            expiry, contents = msg_data
 
             #Check if this has an expiry
             if expiry is None:
