@@ -1143,6 +1143,7 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
+            "_mas_pm_has_heterochromia": "pm.looks.eyes.heterochromia",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",
