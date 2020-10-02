@@ -546,7 +546,8 @@ label mas_bad_derand_topic:
 
             "It's alright.":
                 m 2eka "Thank you, [player]."
-                m "I appreciate that you're still willing to hear me out."
+                $ _stil_ = " " if mas_isMoniNormal(higher=True) else " still "
+                m "I appreciate that you're[_stil_]willing to hear me out."
 
     else:
         #No ask here. You're this low, you probably did it on purpose
