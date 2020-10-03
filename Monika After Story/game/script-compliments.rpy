@@ -812,16 +812,16 @@ label mas_compliment_spending_time:
 
 label mas_compliment_spending_time_2:
     python:
-        dlg_line = ", "
+        dlg_line = ""
 
         if renpy.seen_label("monika_holdme_prep"):
-            dlg_line += "holds me close"
+            dlg_line = ", holds me close"
 
             if persistent._mas_filereacts_historic:
                 dlg_line += ", and even gives me nice gifts"
 
         elif persistent._mas_filereacts_historic:
-            dlg_line += "gives me nice gifts"
+            dlg_line = ", gives me nice gifts"
 
     m 1eub "I love spending time with you too, [player]!"
     m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
