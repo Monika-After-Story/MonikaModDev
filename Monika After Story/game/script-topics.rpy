@@ -15832,7 +15832,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_criticism",
             category=['advice'],
-            prompt="Changing you mind",
+            prompt="Changing your mind",
             random=True
         )
     )
