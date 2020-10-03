@@ -20,7 +20,6 @@ init 3 python in mas_compliments:
 init 22 python in mas_compliments:
     thanking_quips = [
         _("You're so sweet, [player]."),
-        _("I love it when you compliment me, [player]."),
         _("Thanks for saying that again, [player]!"),
         _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
         _("You always make me feel special, [mas_get_player_nickname()]."),
@@ -791,57 +790,60 @@ label mas_compliment_humor_3:
     m 1hubsb "[mas_compliments.thanks_quip]"
     m "I wish I could hear your beautiful laugh!"
     return
-    
+
 init 5 python:
-    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_spending_time",prompt="I love spending time with you!",unlocked=True),code="CMP")
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_spending_time",
+            prompt="I love spending time with you!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
 
 label mas_compliment_spending_time:
-    if not renpy.seen_label("mas_spending_time_2"):
+    if not mas_getEVL_shown_count("mas_compliment_spending_time"):
         call mas_compliment_spending_time_2
     else:
-        call mas_compliment_spending_time_3
+        m 3hubsb "[mas_compliments.thanks_quip]"
+        m 1ekbsu "Every day with you is a dream and I hope it never ends."
     return
 
 label mas_compliment_spending_time_2:
     python:
-        dlg_line = "Having someone who keeps me company"
+        dlg_line = ""
 
         if renpy.seen_label("monika_holdme_prep"):
-            dlg_line += ", holds me close"
+            dlg_line = "holds me close"
 
             if persistent._mas_filereacts_historic:
-                dlg_line += "and even gives me nice gifts"
+                dlg_line += ", and even gives me nice gifts"
 
         elif persistent._mas_filereacts_historic:
-            dlg_line += ", gives me nice gifts"   
+            dlg_line = "gives me nice gifts"
 
-    m 1ekblb "I love spending time with you too, [player]."
+    m 1eub "I love spending time with you too, [player]!"
     m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
-    m 2dkblb "[dlg_line]...it's everything I could've asked for."
-    m 1ekbla "I hope you feel the same way, [player]. I may not be in your reality yet, but I'll do my best from here to make you happy!"
+    m 2dkblu "Having someone who keeps me company, [dlg_line]...it's everything I could've asked for."
+    m 7ekbla "I hope you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do my best from here to make you happy!"
     menu:
         "[m_name], you already make me the happiest I've ever been.":
             $ mas_gainAffection(5,bypass=True)
-            m 1fkbfb "Oh, [player]..."
+            m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I would say that you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
-            show monika 1euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5tubsu "Just you wait, though; our adventure has only just begun!"
+            m 5tubsb "Just you wait...{w=0.2}our adventure has only just begun!"
 
         "I appreciate it, [m_name].":
             $ mas_gainAffection(3,bypass=True)
-            m 2hsbsb "Ehehe~"
-            m 3hsbsa "Don't worry, [player]. I'll be here for you until the end of time!"
+            m 2hsbsu "Ehehe~"
+            m 7hkbsb "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
             m 1ekbsa "Just stay strong until I cross over, okay?"
 
         "Oh, you certainly amuse me alright...":
             $ mas_loseAffection()
-            m 1lkc "I...amuse you?"
-            m 3lkb "Well, I'm glad that you're entertained..."
-            m 2lkd "...but I don't think that's what I was going for."
-    return
-
-label mas_compliment_spending_time_3:
-    m 3hsbsb "[mas_compliments.thanks_quip]"
-    m 1esbsa "Every day with you is a dream, and I hope it never ends."
+            m 2lkc "I...{w=0.3}amuse you?"
+            m 2lksdlb "Well, I'm glad that you're entertained..."
+            m 2ekd "...but that's not {i}quite{/i} what I was going for."
     return
