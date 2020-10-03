@@ -797,7 +797,10 @@ init 5 python:
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_spending_time",
             prompt="I love spending time with you!",
-            unlocked=True
+            unlocked=False,
+            conditional="store.mas_anni.pastThreeMonths()",
+            action=EV_ACT_UNLOCK,
+            aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="CMP"
     )
@@ -833,16 +836,9 @@ label mas_compliment_spending_time_2:
             $ mas_gainAffection(5, bypass=True)
             m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-
-            if mas_anni.pastThreeMonths() and mas_getAvgHourPerDay() >= 1.5:
-                m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
-                m 5ekbfu "Yet we still have a lot more to experience together~"
-                m 5nubsb "And I'll make sure you always stay happy~"
-
-            else:
-                m 5ekbfa "You have no idea how glad I am to hear that..."
-                m 5tubsb "Just wait...{w=0.2}this is only the beginning of our adventure~"
-                m 5hubfb "And who knows, maybe I'll make you even more happy~"
+            m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
+            m 5ekbfu "We've spent so much time together and still have a lot more to experience..."
+            m 5hubfb "I promise I'll do everything I can to make you even happier!"
 
         "I appreciate it, [m_name].":
             $ mas_gainAffection(3, bypass=True)
