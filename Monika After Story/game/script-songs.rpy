@@ -968,7 +968,7 @@ label mas_song_my_silver_lining:
     else:
         m 3tuu "It wasn't always easy being the perfect student you know? It didn't come without shedding its share of effort. Ahaha~"
 
-    m 1ekbfu "And then you came along and turned my whole world upside down..."
+    m 1ekbsu "And then you came along and turned my whole world upside down..."
 
     if mas_isMoniAff(higher=True):
         m 1dubsu "I want you to know, I don't regret having my epiphany, [player]."
@@ -998,7 +998,6 @@ label mas_song_my_silver_lining:
                 m 3eka "I'll save my thoughts on the subject for another time. Be sure to let me know when you want to hear them, okay?"
 
     return
-
 
 init 5 python:
     addEvent(
@@ -1052,15 +1051,12 @@ label mas_song_my_silver_lining_analysis(from_song=False):
     m 2dku "{i}~A song's never just sad~{/i}"
     m 7eka "{i}~There's hope, there's a silver lining~{/i}"
     m 3duu "{i}~Show me my silver lining~{/i}"
-    m 3eub "Then I'd say the song becomes more about optimistic nihilism."
-    m 3eua "Optimistic nihilism's a concept based on existential nihilism, but builds upon it to underline the bright side of life."
-    m 4eua "The idea is, since nothing really matters, anything that makes you unhappy doesn't really matter either."
-    m 4dsa "By this logic, there's no real reason for you to ever feel bad about life..."
-    m 4eub "...On the contrary! It's like an invitation to let go of your worries and live your life as freely as can be!"
-    m 7hub "It's a very empowering belief if you can get behind it."
+    m 3eub "Then I'd say the meaning of the song isn't so much about nihilism as it is about hope."
+    m 3hua "And maybe that's what important, after all."
+    m 3ekblu "Whether our lives matter or not, I want to believe there's a bright side of life, [player]..."
 
     if persistent._mas_pm_religious:
-        m 2etc "But maybe that's not something you need, [player]. {nw}"
+        m 2esc "Not that it'd matter in your case.{w=0.3} {nw}"
         extend 2esa "If you believe in God, maybe you've already found some kind of meaning to your life?"
 
         if mas_isMoniLove():
@@ -1070,25 +1066,22 @@ label mas_song_my_silver_lining_analysis(from_song=False):
         else:
             m 7dka "Whatever that meaning may be, I hope I can be a part of it someday..."
 
-    elif mas_isMoniLove():
-        m 2dubsu "But just so you know, I don't believe our lives really are meaningless..."
-
     else:
-        m 2etc "What do you think, [player]? Do you believe our lives really are meaningless?"
-
-        if mas_isMoniEnamored():
-            m 2ekbsa "Whatever the truth is, I hope you'll strive to make your time on this earth as fulfilling as possible."
-            m 2dkbsu "That's all I could ever wish for, [player]..."
+        if mas_isMoniLove():
+            m 2duu "But just so you know, I don't believe our lives really are meaningless..."        
         else:
-            m 2dtu "Whatever the truth is, maybe we could try to figure it out together..."
-            m 2hksdlb "But until we do, we'll just have to keep on living and not worry about whatever might come next! Ahaha~"
+            m 3esc "What about you? Do you believe our lives really are meaningless?"
+            if mas_isMoniEnamored():
+                m 2ekbsa "Whatever the truth is, I hope you'll strive to make your time on this earth as fulfilling as possible."
+                m 2dkbsu "That's all I could ever wish for, [player]..."
+            else:
+                m 2dtu "Whatever the truth is, maybe we could try to figure it out together..."
+                m 2tsu "But until we do, you'll just have to keep smiling and not worry about whatever might come next. Ehehe~"
 
     if mas_isMoniLove(): #follow-up for the last two 'love' segments
-        m 1ekbfa "Ever since I met you, I've grown to care so much about you...{w=0.3} {nw}"
-        extend 1dkbfu "I wouldn't care for a universe without you in it."
-        m 3ekbfu "Somewhere along the way, you've become the meaning of my life [player]."
-        m 4hubfb "I love you so much!{w=0.3} {nw}"
-        extend 4dubfa "I'd want nothing more than to know you're living your life to the fullest..."
+        m 1ekbsa "Falling in love with you...{w=0.3} it really turned my whole universe upside down, you know?"
+        m 3ekbfu "Somewhere along the way, you've become the meaning of my life."
+        m 4hubfb "I love you, [player]!{w=0.3} I'd want nothing more than to know you're living your life to the fullest."
         $ mas_ILY()
 
     return
