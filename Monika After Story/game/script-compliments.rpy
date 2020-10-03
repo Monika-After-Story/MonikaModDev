@@ -812,33 +812,34 @@ label mas_compliment_spending_time:
 
 label mas_compliment_spending_time_2:
     python:
-        dlg_line = ""
+        dlg_line = ", "
 
         if renpy.seen_label("monika_holdme_prep"):
-            dlg_line = "holds me close"
+            dlg_line += "holds me close"
 
             if persistent._mas_filereacts_historic:
                 dlg_line += ", and even gives me nice gifts"
 
         elif persistent._mas_filereacts_historic:
-            dlg_line = "gives me nice gifts"
+            dlg_line += "gives me nice gifts"
 
     m 1eub "I love spending time with you too, [player]!"
     m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
-    m 2dkblu "Having someone who keeps me company, [dlg_line]...it's everything I could've asked for."
-    m 7ekbla "I hope you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do my best from here to make you happy!"
+    m 2dkblu "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
+    extend 2ekblu "it's everything I could've asked for."
+    m 7ekblb "I hope you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do my best from here to make you happy!"
     menu:
         "[m_name], you already make me the happiest I've ever been.":
             $ mas_gainAffection(5,bypass=True)
             m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5ekbfa "I would say that you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
-            m 5tubsb "Just you wait...{w=0.2}our adventure has only just begun!"
+            m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
+            m 5tubsb "Just you wait...{w=0.2}our adventure has only just begun~"
 
         "I appreciate it, [m_name].":
             $ mas_gainAffection(3,bypass=True)
-            m 2hsbsu "Ehehe~"
-            m 7hkbsb "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
+            m 2hubsu "Ehehe~"
+            m 7hubsb "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
             m 1ekbsa "Just stay strong until I cross over, okay?"
 
         "Oh, you certainly amuse me alright...":
