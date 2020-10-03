@@ -830,14 +830,22 @@ label mas_compliment_spending_time_2:
     m 7ekblb "I hope you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do my best from here to make you happy!"
     menu:
         "[m_name], you already make me the happiest I've ever been.":
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
-            m 5tubsb "Just you wait...{w=0.2}our adventure has only just begun~"
+
+            if mas_anni.pastThreeMonths() and mas_getAvgHourPerDay() >= 1.5:
+                m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
+                m 5ekbfu "Yet we still have a lot more to experience together~"
+                m 5nubsb "And I'll make sure you always stay happy~"
+
+            else:
+                m 5ekbfa "You have no idea how glad I am to hear that..."
+                m 5tubsb "Just wait...{w=0.2}this is only the beginning of our adventure~"
+                m 5hubfb "And who knows, maybe I'll make you even more happy~"
 
         "I appreciate it, [m_name].":
-            $ mas_gainAffection(3,bypass=True)
+            $ mas_gainAffection(3, bypass=True)
             m 2hubsu "Ehehe~"
             m 7hubsb "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
             m 1ekbsa "Just stay strong until I cross over, okay?"
