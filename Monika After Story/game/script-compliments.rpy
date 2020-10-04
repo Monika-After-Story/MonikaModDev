@@ -827,7 +827,7 @@ label mas_compliment_spending_time_2:
             dlg_line = ", gives me nice gifts"
 
     m 1eub "I love spending time with you too, [player]!"
-    m 3ekbla "I know     I say it a lot, but I really mean it when I say that you're the center of my world."
+    m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
     m 2dkblb "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
     extend 2ekblu "it's everything I could've asked for."
     m 7ekbla "I hope I make you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I hope that me supporting you from here is enough."
