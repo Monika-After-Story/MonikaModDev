@@ -810,7 +810,7 @@ label mas_compliment_spending_time:
         call mas_compliment_spending_time_2
     else:
         m 3hubsb "[mas_compliments.thanks_quip]"
-        m 1ekbsu "Every day with you is a dream and I hope it never ends."
+        m 1ekbsu "Every day with you is like a wonderful dream, and I hope it never ends."
     return
 
 label mas_compliment_spending_time_2:
@@ -827,18 +827,18 @@ label mas_compliment_spending_time_2:
             dlg_line = ", gives me nice gifts"
 
     m 1eub "I love spending time with you too, [player]!"
-    m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
-    m 2dkblu "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
+    m 3ekbla "I know     I say it a lot, but I really mean it when I say that you're the center of my world."
+    m 2dkblb "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
     extend 2ekblu "it's everything I could've asked for."
-    m 7ekblb "I hope you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do my best from here to make you happy!"
+    m 7ekbla "I hope I make you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I hope that me supporting you from here is enough."
     menu:
-        "[m_name], you already make me the happiest I've ever been.":
+        "[m_name], with you I'm the happiest I've ever been.":
             $ mas_gainAffection(5, bypass=True)
             m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
-            m 5ekbfu "We've spent so much time together and still have a lot more to experience..."
-            m 5hubfb "I promise I'll do everything I can to make you even happier!"
+            m 5ekbfu "We've spent so much time together, and yet our journey has only just begun..."
+            m 5hubfb "...but with you by my side, I know that every step will be an unforgettable one."
 
         "I appreciate it, [m_name].":
             $ mas_gainAffection(3, bypass=True)
@@ -850,5 +850,5 @@ label mas_compliment_spending_time_2:
             $ mas_loseAffection()
             m 2lkc "I...{w=0.3}amuse you?"
             m 2lksdlb "Well, I'm glad that you're entertained..."
-            m 2ekd "...but that's not {i}quite{/i} what I was going for."
+            m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
