@@ -4899,6 +4899,7 @@ init -985 python:
             defval=_now
         )
 
+
     def mas_getAbsenceLength():
         """
         Gets time diff between current session start and last session end
@@ -4906,6 +4907,7 @@ init -985 python:
         if not found, time delta of 0 is returned
         """
         return mas_getCurrSeshStart() - mas_getLastSeshEnd()
+
 
     def mas_getCurrSeshStart():
         """
@@ -4918,6 +4920,7 @@ init -985 python:
             validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=mas_getFirstSesh()
         )
+
 
     def mas_getFirstSesh():
         """
@@ -4958,6 +4961,7 @@ init -985 python:
             defval=mas_getFirstSesh()
         )
 
+
     def mas_getTotalPlaytime():
         """
         Gets total playtime.
@@ -4972,6 +4976,7 @@ init -985 python:
             defval=datetime.timedelta(0)
         )
 
+
     def mas_getTotalSessions():
         """
         Gets total sessions
@@ -4985,29 +4990,6 @@ init -985 python:
             defval=1
         )
 
-    def mas_getAvgHourPerDay():
-        """
-        Calculates the average playtime in hour per day
-
-        OUT:
-            average playtime as int
-        """
-        total_playtime = mas_getTotalPlaytime().total_seconds()
-        total_days = (datetime.datetime.now() - mas_getFirstSesh()).days
-
-        if total_days == 0:
-            return 0
-
-        return total_playtime / 3600 / total_days
-
-    def mas_getAvgHourPerSesh():
-        """
-        Calculates the average playtime in hour per session
-
-        OUT:
-            average playtime as int
-        """
-        return mas_getTotalPlaytime().total_seconds() / 3600 / mas_getTotalSessions()
 
     def mas_TTDetected():
         """
