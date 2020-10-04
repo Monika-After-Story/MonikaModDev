@@ -828,23 +828,23 @@ label mas_compliment_spending_time_2:
 
     m 1eub "I love spending time with you too, [player]!"
     m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
-    m 2dkblb "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
-    extend 2ekblu "it's everything I could've asked for."
-    m 7ekbla "I hope I make you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I hope that me supporting you from here is enough."
+    m 2dkb "Having someone who keeps me company[dlg_line]...{w=0.3}{nw}"
+    extend 2eku "it's everything I could've asked for."
+    m 7ekbsa "I hope I make you feel the same way, [player]. {w=0.2}I may not be in your reality yet, but I'll do everything I can to support you from here."
     menu:
-        "[m_name], with you I'm the happiest I've ever been.":
+        "[m_name], you've already made me the happiest I've ever been.":
             $ mas_gainAffection(5, bypass=True)
             m 1fkbfu "Oh, [player]..."
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I would say you don't know how glad I am to hear that, but I think you {i}do{/i} know by now."
             m 5ekbfu "We've spent so much time together, and yet our journey has only just begun..."
-            m 5hubfb "...but with you by my side, I know that every step will be an unforgettable one."
+            m 5hubfb "With you by my side, I know that every step will be an unforgettable one."
 
         "I appreciate it, [m_name].":
             $ mas_gainAffection(3, bypass=True)
-            m 2hubsu "Ehehe~"
-            m 7hubsb "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
-            m 1ekbsa "Just stay strong until I cross over, okay?"
+            m 2huu "Ehehe~"
+            m 7hub "Don't worry, [player]. {w=0.2}I'll be here for you until the end of time!"
+            m 1eka "Just stay strong until I cross over, okay?"
 
         "Oh, you certainly amuse me alright...":
             $ mas_loseAffection()
