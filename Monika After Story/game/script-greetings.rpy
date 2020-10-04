@@ -1572,10 +1572,10 @@ label monikaroom_greeting_ear_renpy_docs:
     jump monikaroom_greeting_choice
 
 init 5 python:
-    if ((renpy.seen_label('monikaroom_greeting_ear_rmrfe'))
-        and (not renpy.seen_label('monikaroom_greeting_ear_ackermann'))
-        and (persistent._mas_player_bday is not None)
-        and (mas_isMoniNormal())):
+    if (renpy.seen_label('monikaroom_greeting_ear_rmrfe')
+        and not renpy.seen_label('monikaroom_greeting_ear_ackermann')
+        and persistent._mas_player_bday is not None
+        and mas_isMoniNormal()):
         gmr.eardoor.append("monikaroom_greeting_ear_ackermann")
 
 label monikaroom_greeting_ear_ackermann:
@@ -1606,6 +1606,23 @@ label monikaroom_greeting_ear_ackermann:
         else:
             calculable = 0
 
+        def a(m,n):
+            """
+            Trivialized Ackermann's function
+            IN: m,n - integers
+                allowed values (1,any),(2,any),(3,1-6)
+            OUT: a(m,n) if (m,n) is allowed
+                0 otherwise
+            """
+            if m == 1:
+                return (n+2)
+            elif m == 2:
+                return (2*n+3)
+            elif m == 3 and n <= 6:
+                return (8*(2**n)-3)
+            else:
+                return 0
+
     m "...Alright, what's next?"
     m "{i}a(m,n), in: 2 ints, returns int{/i}..."
     m "Wait, that's it?"
@@ -1614,40 +1631,22 @@ label monikaroom_greeting_ear_ackermann:
     m "Hmm...{w=1} Maybe I can try to figure out what it's supposed to be."
     m "Sounds like a fun little exercise~"
     m "Let's see..."
+    m "[a_cmd1] returns {w=0.2}{nw}"
 
-    # set up console with the a(m,n) function
-    #TODO set this up without using mas_wx_cmd as proxy if possible
-    $ local_ctx = dict()
-
-    # a(m,n) with analytic values for accepted inputs
-    # returns empty string otherwise to emulate freezing and imminent crash
-    call mas_wx_cmd("""def a(m,n):
-        if m == 1:
-            return (n+2)
-        elif m == 2:
-            return (2*n+3)
-        elif m == 3 and n <= 8:
-            return (8*(2**n)-3)
-        else:
-            return ''""", local_ctx, w_wait = 0, x_wait = 0)
-
-    # clear console and show it
-    $ store.mas_ptod.rst_cn()
-    show screen mas_py_console_teaching
-    call mas_wx_cmd(a_cmd1, local_ctx)
     if (calculable):
-        $ a_out_1 = store.mas_ptod.get_last_line()
-        m "[a_out_1], huh."
+        $ a_out1 = a(a_tuple1[0],a_tuple1[1])
+        extend "[a_out1], huh."
         m "Let's try another one, maybe I'll see a pattern."
 
         if (a_tuple1 != a_tuple2):
-            call mas_wx_cmd(a_cmd2, local_ctx)
+            m "How about [a_cmd2]."
         else:
-            call mas_wx_cmd("a(9,22)", local_ctx)
+            m "How about a(9,22)."
+        m "That gives {w=1}{nw}" # long wait, ackermann takes a while
 
         if (calculable == 2):
-            $ a_out_2 = store.mas_ptod.get_last_line()
-            m "[a_out_2]..."
+            $ a_out2 = a(a_tuple2[0],a_tuple2[1])
+            extend "[a_out2]..."
             if ((a_tuple1[0] == a_tuple2[0]) and (a_tuple1[0] != 3)):
                 if (a_tuple1[0] == 1):
                     m "So it sums the two inputs and adds 1? Maybe?"
@@ -1658,14 +1657,14 @@ label monikaroom_greeting_ear_ackermann:
             else:
                 m "Hmm, still nothing obvious."
                 m "Maybe I'll see it if I try one more."
-            call mas_wx_cmd("a(9,22)", local_ctx)
+            m "Hmm...{w=0.5}a(9,22)"
 
     #TODO stop bg animation and bgm if on
     pause 5.0
 
     # enable part 2, remove this from eardoor pool
     $ mas_unlockEVL("monikaroom_greeting_ear_ackermann2", "GRE")
-    gmr.eardoor.remove("monikaroom_greeting_ear_ackermann")
+    $ gmr.eardoor.remove("monikaroom_greeting_ear_ackermann")
     return 'quit'
 
 init 5 python:
