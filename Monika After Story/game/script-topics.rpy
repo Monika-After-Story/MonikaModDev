@@ -15832,7 +15832,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_criticism",
             category=['advice'],
-            prompt="Changing your mind",
+            prompt="Taking criticism",
             random=True
         )
     )
@@ -15841,16 +15841,18 @@ label monika_criticism:
     m 1esd "[player], how willing are you to listen to criticism?"
     m 3rksdlc "I feel like it's way too easy to get caught up in your own way of thinking if you're not careful."
     m 3esc "...Even if I can understand why it'd be so.{w=0.3} {nw}"
-    extend 3esd "Changing one's mind isn't easy, because it means publicly admitting you were wrong before."
+    extend 3esd "Changing one's mind isn't easy, because it means you have to admit you were wrong in the first place."
     m 1eksdlc "For people faced with great expectations, in particular, this kind of logic can easily become a big source of anguish."
     m 3dkd "What if others think less of you because you didn't give a perfect answer? What if they start rejecting you or laugh behind your back?"
     m 2rkc "It'd be like showing some kind of vulnerability for others to take advantage of..."
     m 2esc "But let me tell you,{w=0.2} {nw}"
-    extend 7esd "there's no shame at all in changing your mind, [player]! Not even a bit!"
-    m 1rsc "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them..."
+    extend 7esd "there's no shame in changing your mind, [player]! Not even a bit!"
+    m 1etc "After all, we all make mistakes, don't we?{w=0.3} {nw}"
+    extend 1etd "What matters is the things we learn from those mistakes."
+    m 3rsc "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them..."
     m 3eka "So don't feel bad next time you hear someone criticize you, [player].{w=0.3} {nw}"
-    extend 3huu "You'll find a bit of open-mindedness really goes a long way."
-    m 1rssdlc "I don't mean to say you have to go along with what anybody says.{w=0.3} {nw}"
-    extend 1esd "If you've got an opinion, it's totally fair you'd defend it..."
+    extend 1huu "You'll find a bit of open-mindedness really goes a long way."
+    m 1rssdld "I don't mean to say you have to go along with what anybody says.{w=0.3} {nw}"
+    extend 1esc "If you've got an opinion, it's totally fair you'd defend it..."
     m 3dku "...But you've got to do it for the right reasons."
     return
