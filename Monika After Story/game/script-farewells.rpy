@@ -366,7 +366,8 @@ init 5 python:
     )
 
 label bye_leaving_already_2:
-    m 1ekc "Aww, leaving already?"
+    if mas_getSessionLength() <= datetime.timedelta(minutes=30):
+        m 1ekc "Aww, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3hubsa "I love you so much, [player]!"
     show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -782,7 +783,24 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
     return None
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", unlocked=True, aff_range=(mas_aff.HAPPY, None)), code="BYE")
+    rules = dict()
+    # TODO: update this when TC-O comes out
+    rules.update(
+        MASSelectiveRepeatRule.create_rule(
+            hours=(18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6)
+        )
+    )
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_illseeyou",
+            unlocked=True,
+            rules=rules,
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        code="BYE"
+    )
+    del rules
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
