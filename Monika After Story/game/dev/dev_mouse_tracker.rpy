@@ -111,9 +111,6 @@ init 5 python:
         )
     )
 
-    if config.developer:
-        mas_enableMouseTracking()
-
 
 label dev_mouse_tracker:
     if mas_isMouseTrackingVisible():
