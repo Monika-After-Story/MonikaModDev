@@ -1574,7 +1574,7 @@ label monikaroom_greeting_ear_renpy_docs:
 init 5 python:
     if (renpy.seen_label('monikaroom_greeting_ear_rmrfe')
         and not renpy.seen_label('monikaroom_greeting_ear_ackermann')
-        and persistent._mas_player_bday is not None
+        and persistent._mas_player_bday
         and mas_isMoniNormal()):
         gmr.eardoor.append("monikaroom_greeting_ear_ackermann")
 
@@ -1659,7 +1659,7 @@ label monikaroom_greeting_ear_ackermann:
                 m "Maybe I'll see it if I try one more."
             m "Hmm...{w=0.5}a(9,22)"
 
-    #TODO stop bg animation and bgm if on
+    #TODO stop bgm if on
     pause 5.0
 
     # enable part 2, remove this from eardoor pool
@@ -1670,8 +1670,12 @@ label monikaroom_greeting_ear_ackermann:
 init 5 python:
 
     # high priority to force this after part 1
+    # also time limit, it makes no sense to get this if you come back the next day
     ev_rules = {}
-    ev_rules.update(MASPriorityRule.create_rule(10))
+    if mas_getAbsenceLength() <= datetime.timedelta(hours=1):
+        ev_rules.update(MASPriorityRule.create_rule(10))
+    else:
+        $ mas_lockEVL("monikaroom_greeting_ear_ackermann2", "GRE")
 
     addEvent(
         Event(
@@ -1732,6 +1736,7 @@ label monikaroom_greeting_ear_ackermann3:
 
             m "But don't worry. As you can see, I'm alright."
             m "It just surprised me a bit."
+            #TODO transition to desk here
 
         "Knock.":
             $ mas_disable_quit()
