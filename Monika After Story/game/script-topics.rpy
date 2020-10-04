@@ -15828,11 +15828,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_stargazing",category=['nature'],prompt="Stargazing",random=True))
 
 label monika_stargazing:
-    m 2eub "[player], do you know what would be really romantic?"
-    m 3ekbsa "Stargazing~"
-    m 4esblb "Picture it: Just the two of us, lying in a calm field and watching the stars..."
-    m 6dsbsa "...holding each other close, pointing out constellations or making our own..."
-    m 7wublb "...maybe we could even bring a telescope and look at planets!"
-    show monika 5lkbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5lkbla "Oh, [player]...wouldn't that just be wonderful?"
-    return 
+    m 2eub "[player], I'd really love to go stargazing sometime..."
+    m 6dubsa "Picture it...{w=0.2}just the two of us, lying in a calm field watching the stars..."
+    m 6dublu "...holding each other close, pointing out constellations or making our own..."
+    m 6sub "...maybe we could even bring a telescope and look at planets!"
+    m 6rta "..."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eka "You know [mas_get_player_nickname()], to me you're like a star..."
+    m 5rkbsu "A beautiful, bright beacon from a distant world, forever out of reach."
+    m 5dkbsu "..."
+    m 5ekbsa "At least, for now..."
+    show monika 5kkbsa
+    pause 2.0
+    return
