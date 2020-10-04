@@ -6972,7 +6972,7 @@ label monika_dogs:
     m 3eua "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 1hua "They're just so lovable, I really like them!"
     m 1lksdla "I know Natsuki felt the same..."
-    m "She was always so embarrassed to like cute things. I wish she was more accepting of her own interests."
+    m "She was always so embarrassed to like cute things. I wish she'd felt more comfortable being herself."
     m 2lsc "But..."
     m 2lksdlc "I suppose her environment had a hand in that."
     m 2eka "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
