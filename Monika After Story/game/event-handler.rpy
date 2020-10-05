@@ -1560,6 +1560,7 @@ init -1 python in evhand:
 init python:
     import store.evhand as evhand
     import datetime
+    from collections import OrderedDict
 
     # Event mailbox
     class MASEventMailbox(store.MASMailbox):
@@ -1569,6 +1570,7 @@ init python:
         PROPERTIES:
             box - "mailbox" with messages
             topic_mode - current topic mode
+            discussed_topics - ordered dict of discussed topics
         """
         # Consts for pushing events
         TM_DEFAULT = "def"
@@ -1611,32 +1613,52 @@ init python:
         MONIKA_THANKED = "m_thanked"
         PLAYER_THANKED = "p_thanked"
         MONIKA_EXPECTS_THANKS = "m_exp_thanks"
-        # PLAYER_EXPECTS_THANKS = "p_exp_thanks"# Not sure how useful this is
+        # PLAYER_EXPECTS_THANKS = "p_exp_thanks"# Not sure how useful this would be
 
         def __init__(self):
             """
             Constructor for the mailbox
             """
-            self._topic_mode = self.TM_DEFAULT
             super(MASEventMailbox, self).__init__()
+            self._topic_mode = self.TM_DEFAULT
+            self.discussed_topics = OrderedDict()
 
         def __repr__(self):
             """
             repr override
             """
-            return "<MASEventMailbox: (mail: {0}, topic_mode: {1})>".format(self.box, self._topic_mode)
+            return "<MASEventMailbox: (mail: {0}, topic_mode: '{1}')>".format(self.box, self._topic_mode)
 
-        def send(self, msg, contents, expiry=datetime.timedelta(minutes=1)):
+        def __send(self, key, value):
+            """
+            Method to access the parent class' send method
+            """
+            super(MASEventMailbox, self).send(key, value)
+
+        def __get(self, key):
+            """
+            Method to access the parent class' get method
+            """
+            return super(MASEventMailbox, self).get(key)
+
+        def __read(self, key):
+            """
+            Method to access the parent class' read method
+            """
+            return super(MASEventMailbox, self).read(key)
+
+        def send(self, msg, contents=None, expiry=datetime.timedelta(minutes=1)):
             """
             Method to send messages to other topics
 
             IN:
                 msg - message to send
-                value - contents to send with the message
+                contents - contents to send with the message
+                    (Default: None)
                 expiry - datetime.timedelta when this message will expire. If None, it will not expire until a topic ends
-                    (Default: 5 minutes)
+                    (Default: 1 minute)
             """
-            self._send(
+            self.__send(
                 msg, 
                 (
                     (datetime.datetime.now() + expiry) if expiry is not None else expiry,
@@ -1644,45 +1666,98 @@ init python:
                 )
             )
 
-        def get_message(self, msg):
+        def __verify_msg_data(self, msg_data):
             """
-            Method to read messages from other topics
-            NOTE: if the message has expired, this'll return None
+            Verifies message data and returns either the message contents or None
+
+            IN:
+                msg_data - message data
+
+            OUT:
+                message content or None
+            """
+            if msg_data is not None:
+                expiry, contents = msg_data
+                #Check expiry
+                if expiry is None or datetime.datetime.now() <= expiry:
+                    return contents
+
+            return None
+
+        def get(self, msg):
+            """
+            Method to get message content
+            NOTE: this will pop the message from the mailbox
+
+            IN:
+                msg - the message whose contents we return
+
+            OUT:
+                the message's content, or None if the message has expired or doesn't exist
+            """
+            return self.__verify_msg_data(
+                self.__get(msg)
+            )
+
+        def read(self, msg):
+            """
+            Method to read message content
 
             IN:
                 msg - message to read (which may or may not exist)
 
             OUT:
-                boolean:
-                    True if we read the message, False otherwise
+                the message's content, or None if the message has expired or doesn't exist
             """
-            #Get our message expiry time and the message's contents
-            msg_data = self.read(msg)
-            if msg_data is None:
-                self.get(msg)
-                return None
-            expiry, contents = msg_data
+            return self.__verify_msg_data(
+                self.__read(msg)
+            )
 
-            #Check if this has an expiry
-            if expiry is None:
-                #No expiry, so just return the contents
-                return contents
+        def check(self, msg):
+            """
+            Checks if a mail is in the mailbox
 
-            else:
-                #Since this message can expire, we should check before we approve it
-                if datetime.datetime.now() <= expiry:
-                    return contents
+            IN:
+                msg - message to check
 
-                #Otherwise pop it as outdated
-                self.get(msg)
-                #And return None
-                return None
+            OUT:
+                True if the message in the mailbox, False otherwise
+            """
+            return self.__read(msg) is not None
+
+        def remove(self, msg):
+            """
+            Removes a mail from the box
+
+            IN:
+                msg - msg to remove
+            """
+            self.__get(msg)
 
         def empty(self):
             """
             Empties the mailbox (discards all mail)
             """
             self.box.clear()
+
+        def add_topic(self, ev_label):
+            """
+            Adds an event label to discussed topics
+            """
+            if (
+                ev_label.startswith("monika_")
+                or mas_inRulesEVL(ev_label, "topic")
+            ):
+                if ev_label in self.discussed_topics:
+                    self.discussed_topics.pop(ev_label)
+                self.discussed_topics[ev_label] = True
+
+        def remove_topic(self, ev_label):
+            """
+            Removes a topic from discussed topics
+            """
+            if ev_label in self.discussed_topics:
+                self.discussed_topics.pop(ev_label)
 
         def _set_topic_mode(self, value):
             """
@@ -1721,7 +1796,7 @@ init python:
             """
             self._set_topic_mode(self.TM_CHAIN)
 
-        def _get_topic_mode(self):
+        def get_topic_mode(self):
             """
             Returns current topic mode
             """
@@ -1731,25 +1806,25 @@ init python:
             """
             Checks if the current topic mode is monika_initiated
             """
-            return self._get_topic_mode() == self.TM_MONIKA_INITIATED
+            return self.get_topic_mode() == self.TM_MONIKA_INITIATED
 
         def is_player_initiated_mode(self):
             """
             Checks if the current topic mode is player_initiated
             """
-            return self._get_topic_mode() == self.TM_PLAYER_INITIATED
+            return self.get_topic_mode() == self.TM_PLAYER_INITIATED
 
         def is_post_interruption_mode(self):
             """
             Checks if the current topic mode is post_interruption
             """
-            return self._get_topic_mode() == self.TM_POST_INTERRUPTION
+            return self.get_topic_mode() == self.TM_POST_INTERRUPTION
 
         def is_chain_mode(self):
             """
             Checks if the current topic mode is chain
             """
-            return self._get_topic_mode() == self.TM_CHAIN
+            return self.get_topic_mode() == self.TM_CHAIN
 
     mas_event_mailbox = MASEventMailbox()
 
@@ -2564,6 +2639,8 @@ label call_next_event:
         python:
             persistent.current_monikatopic = None
             mas_globals.this_ev = None
+            # Add to the list of discussed topics
+            mas_event_mailbox.add_topic(event_label)
             # Reset topic mode if we have no more topics,
             # or to chain if Monika has more to discuss
             if not persistent.event_list:
@@ -2626,9 +2703,6 @@ label call_next_event:
             if "prompt" in ret_items:
                 show monika idle
                 jump prompt_menu
-
-        #Dump the mailbox
-        $ mas_event_mailbox.empty()
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
