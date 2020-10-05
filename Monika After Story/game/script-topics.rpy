@@ -15825,3 +15825,33 @@ label monika_renewable_energy:
     m 3lksdrb "Sorry, I got carried away there, ahaha!"
     m 1tuu "Debates sure are something, huh?"
     return
+
+# Poses are placeholders.
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gmos",
+            category=['technology', 'nature'],
+            prompt="GMOs",
+            random=True
+        )
+    )
+
+label monika_gmos:
+    m 1euc "Back when I was in debate club, one of the most divisive subjects we covered was GMOs, or genetically modified organisms."
+    m 1euc "This is going to be a long one, so buckle up."
+    m 1euc "I think the first thing that we need to cover is how GMOs are made."
+    m 1euc "Scientists start by identifying the gene — or genetic information — that gives an organism a desired trait, such as naturally producing insecticide." 
+    m 1euc "Next, the gene is copied and inserted into the DNA of another organism. It's important to note here that the addition of the copied gene does {i}not{/i} change other existing genes."
+    m 1euc "Think of it like going into a long book and changing a single word; the word is different, but the rest of the book stays the same."
+    m 1euc "Once the gene is inserted, the modified organism is grown, tested, and reviewed for years before it finally becomes available for commercial distribution."
+    m 1euc "That brings us to our first question...are GMOs safe?"
+    m 1euc "The short answer is, we don't know. Decades of heavy research into GMOs indicate that they're harmless to humans, but we still need more data before we can be absolutely sure that they're safe."
+    m 1euc "One of the safety concerns with GMOs isn't the GMOs themselves, but the increased usage of herbicides such as glyphosate."
+    m 1euc "So far, research has suggested that glyphosate is unlikely to be a carcinogen. However, research is still ongoing, and there's another problem: Superbugs and superweeds."
+    m 1euc "One major issue in modern medicine is that over time, strains of bacteria, viruses, and more will adapt to the drugs that were designed to kill them."
+    m 1euc "This applies to herbicides as well. If pests and weeds were to adapt to glyphosate, farmers could be forced to turn towards riskier and costlier alternatives."
+    m 1euc "Even if GMOs were engineered to produce pesticide rather than resist herbicide — and some are — pests would still be able to adapt."
+    m 1euc "With that said, superbugs are a bigger issue that scientists have been battling for years, and GMOs are an invaluable tool to help fend them off."
