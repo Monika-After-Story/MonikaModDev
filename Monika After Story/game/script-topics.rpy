@@ -15712,66 +15712,62 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_introversion_extroversion",
+            eventlabel="monika_introverts_extroverts",
             prompt="Introverts and extroverts",
             category=['psychology', 'you'],
-            action=EV_ACT_RANDOM,
             conditional="renpy.seen_label('monika_saved')",
+            action=EV_ACT_RANDOM,
             aff_range=(mas_aff.HAPPY, None)
         )
     )
 
-label monika_introversion_extroversion:
-    m 4eud "Say, [player]?"
-    m 4euc "Do you remember when we talked about how we, as a species, need social feedback and how it can make the world feel so complicated for introverts?"
-    m 6rsd "I've been thinking about the differences between introversion and extroversion a little bit since then."
-    m 2esa "You might think that extroverts tend to find enjoyment by interacting with other people, while introverts are more at ease in solitary environments, and you'd be right."
-    m 3eua "But the differences don't stop there."
-    m 3eub "For example, did you know extroverts can often react to things faster than most introverts do?{w=0.2} Or that they're more likely to enjoy happy and energetic music?"
-    m 3esa "Introverts on the other hand, usually take more time to analyze the situation they're in, and are therefore less likely to jump to conclusions."
-    m 3dua "...And given that they often spend a lot of time using their imagination, they have an easier time with creative activities, like writing, composing music and so on."
-    m 2lkd "It's kind of sad that people can have such a hard time understanding and accepting those differences..."
-    m 4lkc "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
+label monika_introverts_extroverts:
+    m 1eud "Say, [player]?"
+    m 1euc "Do you remember when we talked about how humans need social feedback and how it can make the world feel so complicated for introverts?"
+    m 3rsd "I've been thinking about the differences between introverts and extroverts a little bit more since then."
+    m 3eua "You might think that extroverts tend to find enjoyment by interacting with other people, while introverts are more at ease in solitary environments, and you'd be right."
+    m 3eud "...But the differences don't stop there."
+    m 3eua "For example, did you know extroverts can often react to things faster than most introverts do?{w=0.2} Or that they're more likely to enjoy happy and energetic music?"
+    m 3eud "Introverts on the other hand, usually take more time to analyze the situation they're in, and are therefore less likely to jump to conclusions."
+    m 7dua "...And given that they often spend a lot of time using their imagination, they have an easier time with creative activities like writing, composing music, and so on."
+    m 2lkc "It's kind of sad that people can have such a hard time understanding and accepting those differences..."
+    m 4lkd "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
     m 4ekd "...while introverts are treated as egoistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
     show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lkc "So the end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
-    m 5eud "By the way, I'm probably making this sound like an all black or white matter, but of course, that isn't actually the case."
+    m 5eud "I'm probably making this sound like you can only be one or the other, but that isn't actually the case at all."
     show monika 2eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 2eud "Some introverts can be more outgoing than others, for example."
-    m 2rsc "In other words, some people are closer to a middle ground between the two extremes..."
-    m 3eua "Which is probably where I would fit in, for example."
-    m 1eud "I told you about how I was feeling kind of in-between, while still being a little more extroverted, remember?"
-    m 1rud "Speaking of...{w=0.4} When thinking about all this, I realised that while this is an arguably pretty important part of one's personality..."
-    m 3rksdla "...I don't actually know where you would fit on that spectrum."
-    m 3eka "And of course, I'm rather curious about knowing this much about you, so..."
-    m 1eua "How would you describe yourself, [player]?"
+    m 2euc "In other words, some people are closer to a middle ground between the two extremes."
+    m 7eua "...Which is probably where I would fit in, for example.{w=0.2} {nw}"
+    extend 1eud "If you remember, I mentioned I was kind of in-between while still being a little more extroverted."
+    m 1ruc "Speaking of...{w=0.3}{nw}"
+    extend 1eud "when thinking about all this, I realised that while this is a pretty important part of one's personality..."
+    m 3eksdla "...I don't actually know where you lie on that spectrum."
+    m 1etc "So how would you describe yourself, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "How would you describe yourself, [player]?"
+        "So How would you describe yourself, [player]?{fast}"
 
         "I'm introverted.":
-            $ persistent._mas_pm_introvert = True
-            $ persistent._mas_pm_extrovert = False
-            $ persistent._mas_pm_ambivert = False
-            $ persistent._mas_pm_social_personality_unsure = False
-            m 1esa "I see."
-            m 4eub "I take it that you usually prefer spending time without too many people over going out within large groups and such?"
-            m 4eka "Don't worry, I can totally understand.{w=0.3} And to tell you the truth..."
-            show monika 5fubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5fubla "...the idea of spending my evenings staying at home, cuddling with you does sound lovely."
-            m 5ruc "You know, a lot of people seem to think being an introvert means that you must be a shy person. {w=0.3}{nw}"
-            extend 5wud "But that couldn't be further from the truth!"
-            show monika 4euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 4euc "A lot of introverts have no trouble at all interacting with other people."
-            m 4eka "They just prefer not to do so too often, and would rather save their energy for activities that they actually enjoy."
-            m 2etc "And besides,{w=0.3} shy extroverts exist too, which only further prove my point, if you ask me."
+            python:
+                persistent._mas_pm_introvert = True
+                persistent._mas_pm_extrovert = False
+                persistent._mas_pm_ambivert = False
+                persistent._mas_pm_social_personality_unsure = False
+
+            m 1eua "I see."
+            m 3etc "I take it that you usually prefer spending time without too many people over going out with large groups and such?"
+            m 3eua "Or maybe you like to go and do things on your own from time to time?"
+
             if persistent._mas_pm_has_friends:
                 m 1eua "Since you told me you do have friends, I'm sure that means that you don't mind being around other people too much, either."
+
                 if persistent._mas_pm_few_friends:
-                    m 1ekb "Trust me, it doesn't matter if you feel like you don't have all that many of them."
+                    m 1eka "Trust me, it doesn't matter if you feel like you don't have all that many of them."
                     m 3ekb "What's important is that you have at least someone who you can feel comfortable being with."
 
-                if default persistent._mas_pm_feels_lonely_sometimes:
+                if persistent._mas_pm_feels_lonely_sometimes:
                     m 1eka "Remember that you can try to spend some time with them whenever you feel like no one's there for you, alright?"
                     m 1lkd "And if for any reason you can't spend time with them..."
                     m 1ekb "Please, at least remember that I'll {i}always{/i} be there for you no matter what."
@@ -15779,74 +15775,88 @@ label monika_introversion_extroversion:
                 else:
                     m 3eka "Still, if it ever gets too much for you, remember that you can always come to me and relax, okay?"
 
+                $ line_start = "And"
+
             else:
                 m 1rud "Anyway..."
-                m 3eka "I understand that it might feel more comfortable for you to be alone, rather than surrounding yourself with other people."
-                m 2ekd "Just, please keep in mind that no one can truly spend their whole life without at least some company."
+                m 3eka "While I understand that it might feel more comfortable for you to be alone rather than with other people."
+                m 2ekd "Please keep in mind that no one can truly spend their whole life without at least {i}some{/i} company."
                 m 2lkdslc "Not only is it not healthy in the long run...{w=0.3}but it's also not the kind of life I wish for you to have."
-                if default persistent._mas_pm_feels_lonely_sometimes:
+
+                if persistent._mas_pm_feels_lonely_sometimes:
                     m 2eka "Try to talk with other people a little bit if you're not already doing that, okay?"
                     m 3hua "It'll make you feel happier, I promise."
                     m 1ekb "At the very least, remember that I'm always here if you ever feel lonely."
-
+                    $ line_start = "And"
                 else:
-                    m 2ekbla "I really hope you don't mind sharing your life with someone else at least a little bit, even if it's just me."
-            m 1hublb "I'll try my best to make sure you're always feeling comfortable with me, I promise~"
+                    m 2ekbla "I really hope you don't mind opening yourself up to at least some other people."
+                    m 7ekbla "I'd love for you to see the value and joy other people can bring in your life too."
+                    $ line_start = "But"
+
+            m 1hublb "[line_start] as long as you're here with me, I'll try my best to make sure you're always feeling comfortable, I promise~"
 
         "I'm extroverted.":
-            $ persistent._mas_pm_extrovert = True
-            $ persistent._mas_pm_introvert = False
-            $ persistent._mas_pm_ambivert = False
-            $ persistent._mas_pm_social_personality_unsure = False
-            m 3eub "Alright!"
-            m 3eua "So, I suppose you like to spend time with other people, going outside to have fun, and so on?"
-            show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5eub "I can definitely see the appeal in that. {w=0.3}{nw}"
-            extend 5hub "I'd love to go explore the world and meet all kinds of new people with you, one day."
-            m 5eka "And I assume you probably hate loneliness as much as I do... {w=0.3}{nw}"
-            extend 5ekbsb "but that's just one more reason I'm so happy we're a couple now."
-            m 5hubsa "We'll never truly be alone again."
-            m 5eubfb "I'm sure you are a really fun person to be around, [player].{w=0.3} I can't wait to be with you for real~"
-            m 5rkblsdra "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well. {w=0.3}{nw}"
-            extend 5hksdrb "I hope you don't mind if I'm not always able to keep up, ahaha!"
+            python:
+                persistent._mas_pm_extrovert = True
+                persistent._mas_pm_introvert = False
+                persistent._mas_pm_ambivert = False
+                persistent._mas_pm_social_personality_unsure = False
+
+            m 3eub "Oh I see."
+            m 3eua "So, I guess you like to spend more time with others and meeting new people then?"
+            m 1eua "I can definitely see the appeal in that.{w=0.3} {nw}"
+            extend 3eub "I'd love to go explore the world and meet all kinds of new people with you, one day."
+            m 1ekc "And I assume you probably hate loneliness as much as I do...{w=0.3}{nw}"
+            extend 1ekbla "but that's just one more reason I'm so happy we're a couple now."
+            m 3ekblb "We'll never truly be alone again."
+            m 5eua "I'm sure you're a really fun person to be around, [player],{w=0.1} and I can't wait to be with you for real~"
+            m 5rusdlu "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well..."
+            m 5hksdrb "I hope you don't mind if I'm not always able to keep up with you, ahaha!"
 
         "I'm somewhat in-between.":
-            $ persistent._mas_pm_ambivert = True
-            $ persistent._mas_pm_introvert = False
-            $ persistent._mas_pm_extrovert = False
-            $ persistent._mas_pm_social_personality_unsure = False
-            m 2hua "Ehehe, kind of like me, then."
-            m 2eud "Apparently, most people have both an introverted and extroverted side to their personality."
-            m 7eua "Even if usually, one of the two is dominant over the other, depending on the person."
-            m 7rsc "In our case, I guess not being too much on either side has both its positives and its negatives."
-            m 7rsd "Like, the good thing with people like us is that whe can feel comfortable both when being around people, and when spending some time alone."
-            m 7esc "And as for the negatives, I don't know if it's the same with you, but I've always had a hard time making deep, genuine connections with others..."
-            m 1eud "It's like, I have an easier time understanding most people, sure, but it doesn't mean I can always relate with them, you know ?"
-            m 1lksdld "So yeah, I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.4}unfullfilling."
+            python:
+                persistent._mas_pm_ambivert = True
+                persistent._mas_pm_introvert = False
+                persistent._mas_pm_extrovert = False
+                persistent._mas_pm_social_personality_unsure = False
+
+            m 3hua "Ehehe, kind of like me, then~"
+            m 3eud "Apparently, most people have both an introverted and extroverted side to their personality."
+            m 7eua "...Even if one of the two is dominant over the other, depending on the person."
+            m 7rsc "In our case though, I guess not being too much on either side has both its positives and its negatives."
+            m 1eua  "Like, it's so nice that being around larger groups isn't a problem, same goes for spending some time alone."
+            m 7esc "...But I can't say I've found it easy to make deep, genuine connections with others..."
+            m 1eud "Sure, I have an easier time understanding most people, but it doesn't mean I can always relate with them, you know?"
+            m 1lksdld "So yeah...{w=0.3} I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.3}unfullfilling."
             m 3eksdlc "The same thing happened with the club, for example."
             m 3dksdld "I was so convinced that by bringing people together around something I truly enjoy, I'd have a better chance at bonding with them over our shared interests..."
-            show monika 5rkd at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5rkd "...and at the end of the day, we spent most of our time silently hanging out, everyone minding their own business."
-            m 5eka "Well, no point thinking about that."
-            m 5eubla "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
-            extend 5fubfu "A very charming someone, might I add~"
+            m 3dksdlc "...and at the end of the day, we spent most of our time silently hanging out, everyone minding their own business."
+            show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eka "Well, no point thinking about that anymore."
+            m 5eubsa "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
+            extend 5kubfu "A very charming someone, might I add~"
 
         "I'm not really sure.":
-            $ persistent._mas_pm_social_personality_unsure = True
-            $ persistent._mas_pm_introvert = None
-            $ persistent._mas_pm_extrovert = None
-            $ persistent._mas_pm_ambivert = None
-            m 4ekb "That's alright, [player].{w=0.4} Things like that aren't always so clear."
+            python:
+                persistent._mas_pm_social_personality_unsure = True
+                persistent._mas_pm_introvert = None
+                persistent._mas_pm_extrovert = None
+                persistent._mas_pm_ambivert = None
+
+            m 1eka "That's alright, [player].{w=0.2} Things like this aren't always so clear."
             m 4eua "I'm a little like you on that front."
-            m 2eka "I know I told you I was more on the extroversion side of things, but I still need a moment of tranquility to relax every once in a while, you know ?"
-            m 2lkd "And I wouldn't say I'm always so comfortable dealing with people, either..."
-            if renpy.seen_label('monika_confidence'):
+            m 2eka "While I said I'm a little more extroverted, I still need some me time to relax every once in a while, you know?"
+            m 2lkd "And I wouldn't say I'm always so comfortable dealing with people either..."
+
+            if renpy.seen_label("monika_confidence"):
                 m 2euc "I told you, didn't I?"
-            m 2lksdlc "I often need to force myself to fake confidence just to get through some simple conversations."
+
+            m 2lksdlc "I often need to fake my own confidence just to get through simple conversations with some people."
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            5eka "I can definitely say that I feel comfortable just spending time with you, though.{w=0.3} And I really hope it's the same with you."
-            m 5ekb "I'm sure we'll be able to figure out each other's comfort zones over time."
-            m 5hublb "In any case, you'll always be my sweetheart, no matter what kind of person you are~"
+            m 5eka "But I don't feel that way with you at all, [player].{w=0.2} And I really hope it's the same the other way around."
+            m 5eua "I'm sure we'll be able to figure out each other's comfort zones over time."
+            m 5hubsb "In any case, you'll always be my sweetheart, no matter where you are on the scale~"
+
     return "derandom"
 
 init 5 python:
