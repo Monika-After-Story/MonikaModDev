@@ -2751,7 +2751,7 @@ python early:
             """
             Event function
             """
-            if ev.type == self._button_down:
+            if ev.type == self._button_down and not self.disabled:
                 # determine if this event happend here
                 if self._isOverMe(x, y):
                     return ev.button
