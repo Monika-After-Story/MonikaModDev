@@ -15684,7 +15684,7 @@ init 5 python:
         )
     )
 
-default persistent._mas_pm_wears_glasses = None
+default persistent._mas_pm_uses_eyesight_aids = None
 define eyesight_aid_glasses = False
 
 label monika_player_eyesight:
