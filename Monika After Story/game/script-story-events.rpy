@@ -405,8 +405,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
-        player + "y",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -499,18 +498,23 @@ label mas_player_name_enter_name_loop(input_prompt):
             "That's a great name!"
         ]
 
+        lowerplayer = player.lower()
+        cute_nickname_pattern = "(?:{0}|{1})\\w?y".format(lowerplayer, lowerplayer[0:-1])
+
     #Now we prompt user
     show monika 1eua at t11 zorder MAS_MONIKA_Z
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
+            is_cute_nickname = bool(re.search(cute_nickname_pattern, lowername))
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -522,70 +526,66 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3rksdlb "You have to give me a name to call you, [player]..."
             m 1eua "Try again!"
 
-        elif lowername == player.lower():
+        elif lowername == lowerplayer:
             m 2hua "..."
             m 4hksdlb "That's the same name you have right now, silly!"
             m 1eua "Try again~"
 
-        elif lowername == player.lower() + "y":
-            jump mas_player_name_enter_name_loop.else
-
-        elif mas_awk_name_comp.search(tempname):
+        elif not is_cute_nickname and mas_awk_name_comp.search(tempname):
             $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
-        elif mas_bad_name_comp.search(tempname):
+        elif not is_cute_nickname and mas_bad_name_comp.search(tempname):
             $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
 
         else:
-            label .else:
-                #Sayori name check
-                if tempname.lower() == "sayori":
-                    call sayori_name_scare
+            #Sayori name check
+            if lowername == "sayori":
+                call sayori_name_scare
 
-                elif (
-                        persistent.playername.lower() == "sayori"
-                        and not persistent._mas_sensitive_mode
-                    ):
-                    $ songs.initMusicChoices()
+            elif (
+                    persistent.playername.lower() == "sayori"
+                    and not persistent._mas_sensitive_mode
+                ):
+                $ songs.initMusicChoices()
 
-                python:
-                    def adjustNames(new_name):
-                        """
-                        Adjusts the names to the new names
-                        """
-                        global player
+            python:
+                def adjustNames(new_name):
+                    """
+                    Adjusts the names to the new names
+                    """
+                    global player
 
-                        persistent.mcname = player
-                        mcname = player
-                        persistent.playername = new_name
-                        player = new_name
+                    persistent.mcname = player
+                    mcname = player
+                    persistent.playername = new_name
+                    player = new_name
 
-                if lowername == "monika":
-                    $ adjustNames(tempname)
-                    m 1tkc "Really?"
-                    m "That's the same as mine!"
-                    m 1tku "Well..."
-                    m "Either it really is your name or you're playing a joke on me."
-                    m 1hua "But it's fine by me if that's what you want me to call you~"
-                    $ done = True
+            if lowername == "monika":
+                $ adjustNames(tempname)
+                m 1tkc "Really?"
+                m "That's the same as mine!"
+                m 1tku "Well..."
+                m "Either it really is your name or you're playing a joke on me."
+                m 1hua "But it's fine by me if that's what you want me to call you~"
+                $ done = True
 
-                elif mas_good_player_name_comp.search(tempname):
-                    $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
-                    m 1sub "[good_quip]"
-                    $ adjustNames(tempname)
-                    m 3esa "Okay then! From now on, I'll call you '[player].'"
-                    m 1hua "Ehehe~"
-                    $ done = True
+            elif is_cute_nickname or mas_good_player_name_comp.search(tempname):
+                $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                m 1sub "[good_quip]"
+                $ adjustNames(tempname)
+                m 3esa "Okay then! From now on, I'll call you '[player].'"
+                m 1hua "Ehehe~"
+                $ done = True
 
-                else:
-                    $ adjustNames(tempname)
-                    m 1eub "Okay then!"
-                    m 3eub "From now on, I'll call you '[player].'"
-                    $ done = True
+            else:
+                $ adjustNames(tempname)
+                m 1eub "Okay then!"
+                m 3eub "From now on, I'll call you '[player].'"
+                $ done = True
 
         if not done:
             show monika 1eua
