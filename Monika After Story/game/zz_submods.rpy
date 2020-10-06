@@ -11,7 +11,7 @@ init -989 python:
         store.mas_submod_utils.writeLog(
             "INSTALLED SUBMODS: {0}\n".format(
                 ", ".join(
-                    ["'{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                    ["    '{0}' v{1}\n".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
                 )
             )
         )
