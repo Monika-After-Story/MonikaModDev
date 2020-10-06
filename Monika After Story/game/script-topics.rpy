@@ -15890,7 +15890,7 @@ label monika_aliens:
     m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
 
     if mas_isMoniAff(higher=True): 
-        show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5rua "But, at the end of the day... {w=0.5}{nw}"
         extend 5ekbla "I still got to meet you, and that's really everything I could ever possibly need."
         m 5hubfa "Ehehe~"
