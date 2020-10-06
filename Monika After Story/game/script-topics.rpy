@@ -15732,7 +15732,7 @@ label monika_introverts_extroverts:
     m 7dua "...And given that they often spend a lot of time using their imagination, they have an easier time with creative activities like writing, composing music, and so on."
     m 2lkc "It's kind of sad that people can have such a hard time understanding and accepting those differences..."
     m 4lkd "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
-    m 4ekd "...while introverts are treated as egoistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
+    m 4ekd "...while introverts are treated as egotistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
     show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lkc "So the end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
     m 5eud "I'm probably making this sound like you can only be one or the other, but that isn't actually the case at all."
