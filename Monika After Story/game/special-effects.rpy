@@ -235,7 +235,7 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
     show monika with dissolve_monika
     if hide_ui:
         if store.mas_globals.dlg_workflow:
-            $ mas_MUMUDropShield()
+            $ mas_MUINDropShield()
             $ enable_esc()
         else:
             $ mas_DropShield_core()

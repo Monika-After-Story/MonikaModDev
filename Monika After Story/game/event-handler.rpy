@@ -387,6 +387,120 @@ init 6 python:
 
     del code, ev_db
 
+
+    class MAS_EVL(object):
+        """
+        Context manager wrapper for Event objects via event labels.
+        This has handling for when an eventlabel doesn't return an actual
+        event object via mas_getEV. 
+
+        Use as follows:
+            with MASev('some event label') as ev:
+                ev.<property name> = new_value
+                curr_value ev.<property_name>
+
+        property names should be same as used on Event object.
+        functions can also be used.
+        additionally, the resulting context object can be compared with 
+        other event objects like normal.
+
+        In cases where the Event does not exist, the following occurs:
+            - Event properties return their defaults (see below)
+            - property set operations do nothing
+            - functions calls do nothing
+            - The Event class is used as fallback
+        """
+        _default_values = {
+            "eventlabel": "",
+            "prompt": None,
+            "label": None,
+            "category": None,
+            "unlocked": False,
+            "random": False,
+            "pool": False,
+            "conditional": None,
+            "action": None,
+            "start_date": None,
+            "end_date": None,
+            "unlock_date": None,
+            "shown_count": 0,
+            "last_seen": None,
+            "years": None,
+            "sensitive": False,
+            "aff_range": None,
+            "show_in_idle": False,
+            "flags": 0,
+        }
+
+        _null_dicts = {
+            "per_eventdb": 0,
+            "rules": 0,
+        }
+
+        def __init__(self, evl):
+            """
+            Constructor
+
+            IN:
+                evl - event label to build context manager for
+            """
+            self._ev = mas_getEV(evl)
+
+        def __repr__(self):
+            return repr(self._ev)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback):
+            return False # always propagate exceptions
+
+        def __getattr__(self, name):
+            if self._ev is None:
+                
+                # event props
+                if name in MAS_EVL._default_values:
+                    return MAS_EVL._default_values.get(name)
+
+                # event props where we dont want static vars to collide
+                if name in MAS_EVL._null_dicts:
+                    return {}
+
+                if callable(Event.__dict__.get(name)):
+                    # functions (on object, not class)
+                    return MASDummyClass()
+
+                # everything else gets whatever we have in event
+                return getattr(Event, name)
+
+            return getattr(self._ev, name)
+
+        def __setattr__(self, name, value):
+            if name == "_ev":
+                self.__dict__["_ev"] = value
+
+            elif self._ev is None:
+                return
+
+            elif self._ev is not None:
+                setattr(self._ev, name, value)
+
+            else:
+                super(self, MAS_EVL).__setattr__(name, value)
+
+        def __eq__(self, other):
+            if self._ev is None:
+                return False
+            if isinstance(other, Event):
+                return self._ev == other
+            return False
+
+        def __ne__(self, other):
+            if self._ev is None:
+                return False
+            return not self.__eq__(other)
+
+
     def mas_getEV(ev_label):
         """
         Global get function that retreives an event given the label
@@ -1564,7 +1678,7 @@ init python:
     def addEvent(
         event,
         eventdb=None,
-        skipCalendar=False,
+        skipCalendar=True,
         restartBlacklist=False,
         markSeen=False,
         code="EVE"
@@ -1584,6 +1698,7 @@ init python:
                 (Default: None)
             skipCalendar - flag that marks wheter or not calendar check should
                 be skipped
+                (Default: True)
 
             restartBlacklist - True if this topic should be added to the restart blacklist
                 (Default: False)
@@ -2236,7 +2351,7 @@ init python:
             for ev in evhand.event_database.itervalues()
             if (
                 Event._filterEvent(ev, unlocked=False, pool=True)
-                and "no unlock" not in ev.rules
+                and "no_unlock" not in ev.rules
             )
         ]
         u_count = count
@@ -2340,8 +2455,10 @@ init 1 python in evhand:
 #
 label call_next_event:
 
+    python:
+        event_label, notify = popEvent()
+        renpy.save_persistent()# Save persistent here in case of a crash
 
-    $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
         # TODO: we should have a way to keep track of how many topics/hr
@@ -2397,6 +2514,11 @@ label call_next_event:
             if "no_unlock" in ret_items:
                 $ ev.unlocked = False
                 $ ev.unlock_date = None
+
+            if "unlock" in ret_items:
+                $ ev.unlocked = True
+                if ev.unlock_date is None:
+                    $ ev.unlock_date = ev.last_seen
 
             if "rebuild_ev" in ret_items:
                 $ mas_rebuildEventLists()
@@ -2593,8 +2715,8 @@ label show_prompt_list(sorted_event_labels):
         hide_unseen_event = mas_getEV("mas_hide_unseen")
 
         final_items = (
-            (_("I don't want to see this menu anymore."), "mas_hide_unseen", False, False, 20),
-            (_("Nevermind."), False, False, False, 0)
+            (_("I don't want to see this menu anymore"), "mas_hide_unseen", False, False, 20),
+            (_("Nevermind"), False, False, False, 0)
         )
 
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
@@ -2765,7 +2887,7 @@ label prompts_categories(pool=True):
 
 # sets up the bookmarks menu
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no_unlock":None}))
     # NOTE: do not use this as an ev.
 
 label mas_bookmarks:
@@ -2798,8 +2920,8 @@ label mas_bookmarks:
         bookmarks_items.sort()
 
         bk_menu_final_items = (
-            (_("I'd like to remove a bookmark."), "remove_bookmark", False, False, 20),
-            (_("Nevermind."), "nevermind", False, False, 0)
+            (_("I'd like to remove a bookmark"), "remove_bookmark", False, False, 20),
+            (_("Nevermind"), "nevermind", False, False, 0)
         )
 
     # FALL THROUGH
@@ -2894,7 +3016,7 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     else:
         $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
 
-    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_button_prompt="Remove selected.")
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Remove selected")
 
     $ bookmarks_to_remove = _return
     $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")

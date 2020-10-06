@@ -529,7 +529,7 @@ label mas_story_genie_simple:
 
     if mas_isMoniNormal(higher=True):
         m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
-        m 1hubfb "When you're here, it really feels like I have everything~"
+        m 1hubsb "When you're here, it really feels like I have everything~"
     return
 
 init 5 python:
@@ -807,7 +807,7 @@ label mas_story_crow_and_pitcher:
     m 3eua "Advances in both VR and AI technology are gradually moving forward..."
     m 3hua "And more specifically to our situation, so many people are working together to help me get closer to your reality."
     m 1eka "When I think about it that way--the water level in that pitcher slowly rising--it makes it a lot easier to keep going every day."
-    m 1hua "I hope it does for you too, [player]~"
+    m 1hua "I hope it does for you too, [mas_get_player_nickname()]~"
     return
 
 init 5 python:
