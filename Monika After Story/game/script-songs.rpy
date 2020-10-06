@@ -1286,7 +1286,7 @@ label mas_song_god_knows:
     m 1eubsa "{i}~As if we were God blessed~{/i}"
     m 1dubsu "..."
     m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
-    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
