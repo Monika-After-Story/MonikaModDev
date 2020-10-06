@@ -98,7 +98,7 @@
 # hmmmmmm (1etecc)
 
 # This defines a dynamic displayable for Monika whose position and style changes
-# depending on the variables is_sitting 
+# depending on the variables is_sitting
 define is_sitting = True
 
 # accessories list
@@ -109,7 +109,7 @@ default persistent._mas_acs_bba_list = []
 default persistent._mas_acs_ase_list = []
 default persistent._mas_acs_bat_list = []
 default persistent._mas_acs_mat_list = []
-default persistent._mas_acs_mab_list = [] 
+default persistent._mas_acs_mab_list = []
 default persistent._mas_acs_bfh_list = []
 default persistent._mas_acs_afh_list = []
 default persistent._mas_acs_mid_list = []
@@ -123,48 +123,6 @@ default persistent._mas_force_clothes = False
 
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
-
-image monika g1:
-    "monika/g1.png"
-    xoffset 35 yoffset 55
-    parallel:
-        zoom 1.00
-        linear 0.10 zoom 1.03
-        repeat
-    parallel:
-        xoffset 35
-        0.20
-        xoffset 0
-        0.05
-        xoffset -10
-        0.05
-        xoffset 0
-        0.05
-        xoffset -80
-        0.05
-        repeat
-    time 1.25
-    xoffset 0 yoffset 0 zoom 1.00
-    "monika 3"
-
-image monika g2:
-    block:
-        choice:
-            "monika/g2.png"
-        choice:
-            "monika/g3.png"
-        choice:
-            "monika/g4.png"
-    block:
-        choice:
-            pause 0.05
-        choice:
-            pause 0.1
-        choice:
-            pause 0.15
-        choice:
-            pause 0.2
-    repeat
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
@@ -181,7 +139,7 @@ image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
 # properties.
 
 init -101 python in mas_sprites:
-    
+
     class ACSTemplate(renpy.store.object):
         """
         ACS template object
@@ -194,7 +152,7 @@ init -101 python in mas_sprites:
             keep_on_desk - default keep on desk flag for this templat
         """
 
-        def __init__(self, 
+        def __init__(self,
                 acs_type,
                 mux_type=None,
                 ex_props=None,
@@ -254,8 +212,8 @@ init -101 python in mas_sprites:
 
         def _apply_mux_type(self, acs):
             """
-            Applies mux type defaults to the given ACS. 
-            
+            Applies mux type defaults to the given ACS.
+
             acs_type is NOT checked.
 
             IN:
@@ -290,7 +248,7 @@ init -100 python in mas_sprites:
 
     EXP_A_EXCLHP = "excluded-hair-props"
     # v: list of strings
-    # marks that an ACS requires a hairstyle with none of the value'd props 
+    # marks that an ACS requires a hairstyle with none of the value'd props
     # to be worn
 
     EXP_A_LHSEL = "left-hair-strand-eye-level"
@@ -810,7 +768,7 @@ init -5 python in mas_sprites:
     # list of available clothes
     CLOTHES = [
         "def" # school uniform
-    ]            
+    ]
 
     # zoom adjuster
     def adjust_zoom():
@@ -951,7 +909,7 @@ init -5 python in mas_sprites:
         NUM_POSE[5],
     ]
 
-    # all poses 
+    # all poses
     # this is purely for iterative purposes
     ALL_POSES = []
     ALL_POSES.extend(POSES)
@@ -1271,7 +1229,7 @@ init -5 python in mas_sprites:
 
 
 ##### special mas monika functions (hooks)
-    # NOTE: set flag "abort" to True in prechange points to prevent 
+    # NOTE: set flag "abort" to True in prechange points to prevent
     #   change/add/removal. This is dependent on the specific hook.
     #   ACS: only wear_mux_pre_change and rm_exit_pre_change
     #   HAIR: hair_exit_pre_change
@@ -1336,7 +1294,7 @@ init -5 python in mas_sprites:
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
         """
-        Runs after mux type acs removed, before insertion 
+        Runs after mux type acs removed, before insertion
 
         IN:
             temp space - temp space
@@ -1460,13 +1418,13 @@ init -5 python in mas_sprites:
 
             moni_chr.wear_acs(ACS_MAP[desired_ribbon])
 
-        # if current hair is incompatible, swap to def. 
+        # if current hair is incompatible, swap to def.
         # NOTE: we will enforce def has a hairstyle that all clothing
         #   items MUST work with.
         if not is_clotheshair_compatible(new_cloth, moni_chr.hair):
             moni_chr.reset_hair(False)
-    
-    
+
+
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
         """
         Runs pre hair change code. This code is ran prior to hair being
@@ -1806,6 +1764,321 @@ init -5 python in mas_sprites:
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
 
+
+init -10 python:
+
+    class MASHighlightMap(object):
+        """SEALED
+        Maps arbitrary keys to <MASFilterMap> objects
+
+        DO NOT EXTEND THIS CLASS. If you need similar functionality, make a
+        wrapper around this. This class contains functions that may crash
+        when used in an unexpected context.
+
+        NOTE: values dont have to be MASFilterMAP objects, but certain
+            functions will fail if not.
+
+        NOTE: this can iterated over to retrieve all objects in here
+            EXCEPT for the default.
+
+        PROPERTIES:
+            None. Use provided functions to manipulate the map.
+        """
+        __KEY_ALL = "*"
+
+        def __init__(self, keys, default=None):
+            """
+            Constructor
+
+            IN:
+                keys - iterable of keys that we are allowed to use.
+                    NOTE: the default catch all key of "*" (KEY_ALL) does NOt
+                    need to be in here.
+                default - value to use as the default/catch all object. This
+                    is assigned to the KEY_ALL key.
+            """
+            self.__map = { self.__KEY_ALL: default }
+
+            # remove keyall
+            key_list = list(keys)
+            if self.__KEY_ALL in key_list:
+                key_list.remove(self.__KEY_ALL)
+
+            # remove duplicate
+            self.__valid_keys = tuple(set(key_list))
+
+        def __iter__(self):
+            """
+            Iterator object (generator)
+            """
+            for key in self.__valid_keys:
+                item = self.get(key)
+                if item is not None:
+                    yield item
+
+        def _add_key(self, new_key, new_value=None):
+            """
+            Adds a key to the valid keys list. Also adds a value if desired
+            NOTE: this is not intended to be done wildly. Please do not
+            make a habit of adding keys after construction.
+            NOTE: do not use this to add values. if the given key already
+            exists, the value is ignored.
+
+            IN:
+                new_key - new key to add
+                new_value - new value to associate with this key
+                    (Default: None)
+            """
+            if new_key not in self.__valid_keys and new_key != self.__KEY_ALL:
+                key_list = list(self.__valid_keys)
+                key_list.append(new_key)
+                self.__valid_keys = tuple(key_list)
+                self.add(new_key, new_value)
+
+        def add(self, key, value):
+            """
+            Adds value to map.
+            NOTE: type is enforced here. If the given item is None
+            it is ignored.
+            NOTE: this will NOT set the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to store item to
+                value - value to add
+                    if None is passed, this is equivalent to clear
+            """
+            if value is None:
+                self.clear(key)
+                return
+
+            if key == self.__KEY_ALL or key not in self.__valid_keys:
+                return
+
+            # otherwise valid to add
+            self.__map[key] = value
+
+        def apply(self, mapping):
+            """
+            Applies the given dict mapping to this MASHighlightMap.
+            NOTE: will not add invalid keys.
+
+            IN:
+                mapping - dict of the following format:
+                    key: valid key for this map
+                    value: value to add
+            """
+            for key in mapping:
+                self.add(key, mapping[key])
+
+        def clear(self, key):
+            """
+            Clears value with the given key.
+            NOTE: will NOT clear the default even if KEY_ALL is passed in
+
+            IN:
+                key - key to clear with
+            """
+            if key != self.__KEY_ALL and key in self.__map:
+                self.__map.pop(key)
+
+        @staticmethod
+        def clear_hl_mapping(hl_mpm_data):
+            """
+            Clears hl mapping in the given hl data object. AKA: Sets the
+            hl mapping portion of a pre-MHM MPM to {}.
+
+            NOTE: this should only be used with  the MASPoseMap._transform
+            function with MASAccessory
+
+            IN:
+                hl_mpm_data - hl data set in a MASPoseMap.
+
+            RETURNS: hl data to set in a MASPoseMap.
+            """
+            if hl_mpm_data is None:
+                return None
+            return (hl_mpm_data[0], {})
+
+        @staticmethod
+        def convert_mpm(hl_keys, mpm):
+            """
+            Converts hl mappings in a MASPoseMap to MASHighlightMAp objects
+
+            IN:
+                hl_keys - highlight keys to use
+                mpm - MASPoseMap object to convert
+            """
+            if mpm is None:
+                return
+
+            # first, build modify pargs map
+            pargs = {}
+            for param in MASPoseMap.P_PARAM_NAMES:
+                hl_data = mpm.get(MASPoseMap.pn2lp(param), None)
+                if hl_data is None:
+                    pargs[param] = None
+                else:
+                    pargs[param] = MASHighlightMap.create_from_mapping(
+                        hl_keys,
+                        hl_data[0],
+                        hl_data[1]
+                    )
+
+            # then modify the mpm
+            mpm._modify(**pargs)
+
+        @staticmethod
+        def create_from_mapping(hl_keys, hl_def, hl_mapping):
+            """
+            Creates a MASHighlightMap using keys/default/mapping
+
+            IN:
+                hl_keys - list of keys to use
+                hl_def - default highlight to use. Can be None
+                hl_mapping - mapping to use.
+
+            RETURNS: created MASHighlightMap
+            """
+            mhm = MASHighlightMap(hl_keys, default=hl_def)
+            mhm.apply(hl_mapping)
+            return mhm
+
+        def fltget(self, key, flt, defval=None):
+            """
+            Combines getting from here and getting the resulting MASFilterMap
+            object.
+
+            IN:
+                key - key to get from this map
+                flt - filter to get from associated MASFilterMap, if found
+                defval - default value to return if no flt value could be
+                    found.
+                    (Default: None)
+
+            RETURNS: value in the MASFilterMap associated with the given
+                flt, using the MASFilterMap associated with the given key.
+                or defval if no valid MASfilterMap or value found.
+            """
+            mfm = self.get(key)
+            if mfm is None:
+                return defval
+
+            return mfm.get(flt, defval=defval)
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl, hl_keys):
+            """
+            Builds hl data from JSON data
+
+            IN:
+                json_obj - JSON object to parse
+                ind_lvl - indentation level
+                    NOTE: this function handles loading/success log so
+                    do NOT increment indent when passing in
+                hl_keys - expected keys of this highlight map
+
+            OUT:
+                msg_log - list to add messagse to
+
+            RETURNS: hl_data, ready to passed split and passed into
+                create_from_mapping. Tuple:
+                [0] - default MASFilterMap object
+                [1] - dict:
+                    key: hl_key
+                    value: MASFilterMap object
+                or None if no data, False if failure in parsing occured
+            """
+            # first log loading
+            msg_log.append((
+                store.mas_sprites_json.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprites_json.MHM_LOADING
+            ))
+
+            # parse the data
+            hl_data = MASHighlightMap._fromJSON_hl_data(
+                json_obj,
+                msg_log,
+                ind_lvl + 1,
+                hl_keys
+            )
+
+            # check fai/succ
+            if hl_data is False:
+                # loggin should take care of this already
+                return False
+
+            # log success
+            msg_log.append((
+                store.mas_sprites_json.MSG_INFO_T,
+                ind_lvl,
+                store.mas_sprites_json.MHM_SUCCESS
+            ))
+
+            return hl_data
+
+        def get(self, key):
+            """
+            Gets value wth the given key.
+
+            IN:
+                key - key of item to get
+
+            RETURNS: MASFilterMap object, or None if not found
+            """
+            if key in self.__map:
+                return self.__map[key]
+
+            # otherwise return default
+            return self.getdef()
+
+        def getdef(self):
+            """
+            Gets the default value
+
+            RETURNS: MASFilterMap object, or NOne if not found
+            """
+            return self.__map.get(self.__KEY_ALL, None)
+
+        def keys(self):
+            """
+            gets keys in this map
+
+            RETURNS: tuple of keys
+            """
+            return self.__valid_keys
+
+        @staticmethod
+        def o_fltget(mhm, key, flt, defval=None):
+            """
+            Similar to fltget, but on a MASHighlightMap object.
+            NOTE: does None checks of mhm and flt.
+
+            IN:
+                mhm - MASHighlightMap object to run fltget on
+                key - key to get MASFilterMap from mhm
+                flt - filter to get from associated MASFilterMap
+                defval - default value to return if no flt value could be found
+                    (Default: None)
+
+            RETURNS: See fltget
+            """
+            if mhm is None or flt is None:
+                return defval
+
+            return mhm.fltget(key, flt, defval=defval)
+
+        def setdefault(self, value):
+            """
+            Sets the default value
+
+            IN:
+                value - value to use as default
+            """
+            if value is None or isinstance(value, MASFilterMap):
+                self.__map[self.__KEY_ALL] = value
+
+
 init -3 python:
 #    import renpy.store as store
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
@@ -1832,7 +2105,7 @@ init -3 python:
         MAT_ACS = 11 # between middle arms and table
 
         # valid rec layers
-        # NOTE: this MUST be in the same order as save_state/load_State 
+        # NOTE: this MUST be in the same order as save_state/load_State
         # NOTE: do not remove layers. Because of load state, we can only
         #   ignore layers if needed, but not remove. BEtter to just replace
         #   a layer than remove it.
@@ -1857,6 +2130,22 @@ init -3 python:
             ASE_ACS,
         )
 
+        # rec layers in standard render order
+        RENDER_ORDER = (
+            PRE_ACS,
+            BBH_ACS,
+            BSE_ACS,
+            BBA_ACS,
+            ASE_ACS,
+            BAT_ACS,
+            MAT_ACS,
+            MAB_ACS,
+            BFH_ACS,
+            AFH_ACS,
+            MID_ACS,
+            PST_ACS,
+        )
+
         def __init__(self):
             """
             Constructor
@@ -1869,63 +2158,48 @@ init -3 python:
 
             self.clothes = mas_clothes_def # default clothes is school outfit
             self.hair = mas_hair_def # default hair is the usual whtie ribbon
-            #self.table = mas_table_def # default table 
+            #self.table = mas_table_def # default table
 
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
 
-            # accesories to be rendereed before anything
-            self.acs_pre = []
-
-            # accessories to be rendered after back hair, before body
-            self.acs_bbh = []
-
-            # accessories to be rendered after base body, before body clothes
-            self.acs_bse = []
-
-            # accessories to be rendered after body, before back arms
-            self.acs_bba = []
-
-            # accessories to be rendered after base arms, before arm clothes
-            self.acs_ase = []
-
-            # accessories to be rendered after back arms, before table
-            self.acs_bat = []
-
-            # accessories to be rendered after table, before middle arms
-            self.acs_mat = []
-
-            # accessories to be rendered after middle arms before boobs
-            self.acs_mab = []
-
-            # accessories to be rendered after boobs, before front hair
-            self.acs_bfh = []
-
-            # accessories to be rendered after fornt hair, before face
-            self.acs_afh = []
-
-            # accessories to be rendered after face, before front arms
-            self.acs_mid = []
-
-            # accessories to be rendered last
-            self.acs_pst = []
-
-            self.hair_hue=0 # hair color?
-
             # setup acs dict
             self.acs = {
-                self.PRE_ACS: self.acs_pre,
-                self.MID_ACS: self.acs_mid,
-                self.PST_ACS: self.acs_pst,
-                self.BBH_ACS: self.acs_bbh,
-                self.BFH_ACS: self.acs_bfh,
-                self.AFH_ACS: self.acs_afh,
-                self.BBA_ACS: self.acs_bba,
-                self.MAB_ACS: self.acs_mab,
-                self.BSE_ACS: self.acs_bse,
-                self.ASE_ACS: self.acs_ase,
-                self.BAT_ACS: self.acs_bat,
-                self.MAT_ACS: self.acs_mat,
+                # accesories to be rendereed before anything
+                self.PRE_ACS: [],
+
+                # accessories to be rendered after back hair, before body
+                self.BBH_ACS: [],
+
+                # accessories to be rendered after base body, before body clothes
+                self.BSE_ACS: [],
+
+                # accessories to be rendered after body, before back arms
+                self.BBA_ACS: [],
+
+                # accessories to be rendered after base arms, before arm clothes
+                self.ASE_ACS: [],
+
+                # accessories to be rendered after back arms, before table
+                self.BAT_ACS: [],
+
+                # accessories to be rendered after table, before middle arms
+                self.MAT_ACS: [],
+
+                # accessories to be rendered after middle arms before boobs
+                self.MAB_ACS: [],
+
+                # accessories to be rendered after boobs, before front hair
+                self.BFH_ACS: [],
+
+                # accessories to be rendered after fornt hair, before face
+                self.AFH_ACS: [],
+
+                # accessories to be rendered after face, before front arms
+                self.MID_ACS: [],
+
+                # accessories to be rendered last
+                self.PST_ACS: [],
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -1945,12 +2219,46 @@ init -3 python:
             # set to True to allow ACS overriding
             self._override_rec_layer = False
 
-            # the current table/chair combo we 
+            # the current table/chair combo we
             # NOTE: this is associated with monika because we could definitely
             # have multiple table/chairs in a MASBackground.
             # NOTE: replacing this is untested, but will be required because
             #   of highlights
             self.tablechair = MASTableChair("def", "def")
+
+        def __repr__(self):
+            """
+            this is lengthy and will contain all objects
+            """
+            # build ACS strings
+            # this determines order to show ACS in
+            acs_str_map = (
+                "PRE",
+                "BBH",
+                "BSE",
+                "BBA",
+                "ASE",
+                "BAT",
+                "MAT",
+                "MAB",
+                "BFH",
+                "AFH",
+                "MID",
+                "PST",
+            )
+            acs_str = []
+            for idx, pfx in enumerate(acs_str_map):
+                rec_layer = self.RENDER_ORDER[idx]
+                acs_list = self.__get_acs(rec_layer)
+                if len(acs_list) > 0:
+                    acs_str.append("{0}: {1}".format(pfx, acs_list))
+
+            return "<Monika: ({0}, {1}, {2}, {3})>".format(
+                self.clothes,
+                self.hair,
+                ", ".join(acs_str),
+                self.tablechair
+            )
 
         def __get_acs(self, acs_type):
             """
@@ -2014,12 +2322,12 @@ init -3 python:
             # MASPoseArms rules:
             #   1. If the pose_arms property in clothes is None, then we assume
             #   that the clothes follows the base pose rules.
-            #   2. If the pose_arms property exists, and the 
+            #   2. If the pose_arms property exists, and the
             #   corresponding pose in that map is None, then we assume that
             #   the clothes does NOT have layers for this pose.
             # select MASPoseArms for baes and outfit
 
-            # NOTE: we can always assume that base arms exist 
+            # NOTE: we can always assume that base arms exist
             # NOTE: but we will default steepling justin case
             base_arms = [
                 store.mas_sprites.base_arms.get(arm_id)
@@ -2154,18 +2462,19 @@ init -3 python:
             return True
 
         def _load(self,
+                # NOTE: this is in REC_LAYER order
                 _clothes_name,
                 _hair_name,
                 _acs_pre_names,
                 _acs_bbh_names,
-                _acs_bse_names,
-                _acs_bba_names,
-                _acs_ase_names,
-                _acs_mab_names,
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
                 _acs_pst_names,
+                _acs_bba_names,
+                _acs_mab_names,
+                _acs_bse_names,
+                _acs_ase_names,
                 _acs_bat_names,
                 _acs_mat_names,
                 startup=False
@@ -2180,14 +2489,14 @@ init -3 python:
                 _hair_name - name of hair to load
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
-                _acs_bse_names - list of bse acs names to load
-                _acs_bba_names - list of bba acs names to load
-                _acs_ase_names - list of ase acs names to load
-                _acs_mab_names - list of mab acs names to load
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
-                _acs_pst_names - list of pst acs names to load,
+                _acs_pst_names - list of pst acs names to load
+                _acs_bba_names - list of bba acs names to load
+                _acs_mab_names - list of mab acs names to load
+                _acs_bse_names - list of bse acs names to load
+                _acs_ase_names - list of ase acs names to load
                 _acs_bat_names - list of bat acs names to load
                 _acs_mat_names - list of mat acs names to load
                 startup - True if we are loading on start, False if not
@@ -2201,6 +2510,7 @@ init -3 python:
             )
 
             # acs
+            # NOTE: this is in render layer order
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
             self._load_acs(_acs_bse_names, self.BSE_ACS)
@@ -2311,7 +2621,7 @@ init -3 python:
                 startup - True if we are loading on startup, False if not
                     When True, we dont respect locking
                     (Default: False)
-                outfit_mode - True means we should change hair/acs if it 
+                outfit_mode - True means we should change hair/acs if it
                     completes the outfit. False means we should not.
                     NOTE: this does NOT affect hair/acs that must change for
                         consistency purposes.
@@ -2506,7 +2816,7 @@ init -3 python:
                 flag_value - flag value to check for
                     (Default: True)
 
-            RETURNS: list of ACS objects with a keep_on_desk flag set to 
+            RETURNS: list of ACS objects with a keep_on_desk flag set to
                 flag_value
             """
             acs_items = []
@@ -2514,7 +2824,7 @@ init -3 python:
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs and _acs.keep_on_desk == flag_value:
                     acs_items.append(_acs)
-            
+
             return acs_items
 
 
@@ -2528,7 +2838,7 @@ init -3 python:
                     False will return the first one
                     (Default: False)
 
-            RETURNS: single matching acs or None if get_all is False, list of 
+            RETURNS: single matching acs or None if get_all is False, list of
                 matching acs or empty list if get_all is True.
             """
             if get_all:
@@ -2722,7 +3032,7 @@ init -3 python:
                 ribbon-like ex prop
             """
             return (
-                self.is_wearing_acs_type("ribbon") 
+                self.is_wearing_acs_type("ribbon")
                 or self.is_wearing_acs_with_exprop("ribbon-like")
             )
 
@@ -2740,14 +3050,14 @@ init -3 python:
                 store.persistent._mas_monika_hair,
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
-                store.persistent._mas_acs_bse_list,
-                store.persistent._mas_acs_bba_list,
-                store.persistent._mas_acs_ase_list,
-                store.persistent._mas_acs_mab_list,
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
                 store.persistent._mas_acs_pst_list,
+                store.persistent._mas_acs_bba_list,
+                store.persistent._mas_acs_mab_list,
+                store.persistent._mas_acs_bse_list,
+                store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bat_list,
                 store.persistent._mas_acs_mat_list,
                 startup=startup
@@ -2789,8 +3099,8 @@ init -3 python:
             self.change_outfit(_data[0], _data[1])
 
             # acs
-            for index in range(len(self.REC_LAYERS)):
-                self._load_acs_obj(_data[index+2], self.REC_LAYERS[index])
+            for index, rec_layer in enumerate(self.REC_LAYERS):
+                self._load_acs_obj(_data[index+2], rec_layer)
 
         def reset_all(self, by_user=None):
             """
@@ -3354,7 +3664,7 @@ init -3 python:
             constructor
 
             IN:
-                table - table tag to use 
+                table - table tag to use
                 chair - chair tag to use
                 hl_data - highlight mapping data. format:
                     [0] - default highilght to use. Pass in None to not set
@@ -3378,6 +3688,12 @@ init -3 python:
                     hl_data[1]
                 )
 
+        def __repr__(self):
+            return "<TableChair: (table: {0}, chair: {1})>".format(
+                self.table,
+                self.chair
+            )
+
         def prepare(self):
             """
             Prepares this table chair combo by checking for shadow.
@@ -3397,7 +3713,7 @@ init -3 python:
 
             IN:
                 new_table - the new table tag to set
-                    if an invalid string or NOne is passed in, we reset to 
+                    if an invalid string or NOne is passed in, we reset to
                     default
             """
             if new_table:
@@ -3407,10 +3723,10 @@ init -3 python:
 
             self.prepare()
 
-    
+
     class MASArm(object):
         """
-        Representation of an "Arm" 
+        Representation of an "Arm"
 
         Each Arm consists of of a layered combination:
         NOTE: we re using spaced layers so we can insert more if needed.
@@ -3442,7 +3758,7 @@ init -3 python:
                     key: image layer code
                     value: True if exists, False if not
                 hl_data - highlght map data. tuple of the following formaT:
-                    [0] - default MASFilterMap to use. Pass in None to 
+                    [0] - default MASFilterMap to use. Pass in None to
                         not set a default highlight
                     [1] - highlight mapping to use. Format:
                         key: image layer code
@@ -3452,7 +3768,7 @@ init -3 python:
             self.tag = tag
             self.clean_map(layer_map)
             self.layer_map = layer_map
-            
+
             if hl_data is not None:
                 self.hl_map = MASHighlightMap.create_from_mapping(
                     self.__MPA_KEYS,
@@ -3552,10 +3868,10 @@ init -3 python:
 
             # now check highlight
             if store.mas_sprites_json.HLITE in json_obj:
-                
+
                 # parse
                 vhl_data = {}
-                
+
                 if store.mas_sprites_json._validate_highlight(
                         json_obj,
                         vhl_data,
@@ -3591,8 +3907,8 @@ init -3 python:
                 prefix - prefix to apply to the loadstrs
                     should be list of strings
 
-            RETURNS: list of lists of strings representing the load strings 
-                for this arm, + highlights 
+            RETURNS: list of lists of strings representing the load strings
+                for this arm, + highlights
             """
             if not self.tag:
                 return []
@@ -3837,7 +4153,7 @@ init -3 python:
             # first validate the arm data
             for arm_key in arm_data.keys():
 
-                # then check 
+                # then check
                 if arm_key in store.mas_sprites.NUM_ARMS:
                     # NOneify invalid data
                     if not isinstance(arm_data[arm_key], MASArm):
@@ -4016,7 +4332,7 @@ init -3 python:
                 leanpose - the leanpose to get arms for
 
             RETURNS: Tuple of arms associated with the leanpose. None may be
-                returned if no arms for the leanpose. The number of arms is 
+                returned if no arms for the leanpose. The number of arms is
                 not a guarantee.
             """
             arm_data = []
@@ -4031,313 +4347,6 @@ init -3 python:
             # otherwse return None because no arms
             return None
 
-
-    class MASHighlightMap(object):
-        """
-        Maps arbitrary keys to <MASFilterMap> objects
-        
-        NOTE: values dont have to be MASFilterMAP objects, but certain
-            functions will fail if not.
-
-        NOTE: this can iterated over to retrieve all objects in here
-            EXCEPT for the default.
-
-        PROPERTIES:
-            None. Use provided functions to manipulate the map.
-        """
-        __KEY_ALL = "*"
-
-        def __init__(self, keys, default=None):
-            """
-            Constructor
-
-            IN:
-                keys - iterable of keys that we are allowed to use.
-                    NOTE: the default catch all key of "*" (KEY_ALL) does NOt
-                    need to be in here.
-                default - value to use as the default/catch all object. This
-                    is assigned to the KEY_ALL key.
-            """
-            self.__map = { self.__KEY_ALL: default }
-
-            # remove keyall
-            key_list = list(keys)
-            if self.__KEY_ALL in key_list:
-                key_list.remove(self.__KEY_ALL)
-
-            # remove duplicate
-            self.__valid_keys = tuple(set(key_list))
-
-        def __iter__(self):
-            """
-            Iterator object (generator)
-            """
-            for key in self.__valid_keys:
-                item = self.get(key)
-                if item is not None:
-                    yield item
-
-        def _add_key(self, new_key, new_value=None):
-            """
-            Adds a key to the valid keys list. Also adds a value if desired
-            NOTE: this is not intended to be done wildly. Please do not
-            make a habit of adding keys after construction. 
-            NOTE: do not use this to add values. if the given key already 
-            exists, the value is ignored.
-
-            IN:
-                new_key - new key to add
-                new_value - new value to associate with this key 
-                    (Default: None)
-            """
-            if new_key not in self.__valid_keys and new_key != self.__KEY_ALL:
-                key_list = list(self.__valid_keys)
-                key_list.append(new_key)
-                self.__valid_keys = tuple(key_list)
-                self.add(new_key, new_value)
-
-        def add(self, key, value):
-            """
-            Adds value to map.
-            NOTE: type is enforced here. If the given item is NOT a 
-            MASFilterMap or None, it is ignored.
-            NOTE: this will NOT set the default even if KEY_ALL is passed in
-
-            IN:
-                key - key to store item to
-                value - value to add
-                    if None is passed, this is equivalent to clear
-            """
-            if value is None:
-                self.clear(key)
-                return
-
-            if key == self.__KEY_ALL or key not in self.__valid_keys:
-                return
-
-            # otherwise valid to add
-            self.__map[key] = value
-
-        def apply(self, mapping):
-            """
-            Applies the given dict mapping to this MASHighlightMap.
-            NOTE: will not add invalid keys.
-
-            IN:
-                mapping - dict of the following format:
-                    key: valid key for this map
-                    value: MASFilterMap object or None
-            """
-            for key in mapping:
-                self.add(key, mapping[key])
-
-        def clear(self, key):
-            """
-            Clears value with the given key.
-            NOTE: will NOT clear the default even if KEY_ALL is passed in
-
-            IN:
-                key - key to clear with
-            """
-            if key != self.__KEY_ALL and key in self.__map:
-                self.__map.pop(key)
-
-        @staticmethod
-        def clear_hl_mapping(hl_mpm_data):
-            """
-            Clears hl mapping in the given hl data object. AKA: Sets the
-            hl mapping portion of a pre-MHM MPM to {}.
-
-            NOTE: this should only be used with  the MASPoseMap._transform
-            function with MASAccessory
-
-            IN:
-                hl_mpm_data - hl data set in a MASPoseMap.
-
-            RETURNS: hl data to set in a MASPoseMap.
-            """
-            if hl_mpm_data is None:
-                return None
-            return (hl_mpm_data[0], {})
-
-        @staticmethod
-        def convert_mpm(hl_keys, mpm):
-            """
-            Converts hl mappings in a MASPoseMap to MASHighlightMAp objects
-
-            IN:
-                hl_keys - highlight keys to use
-                mpm - MASPoseMap object to convert
-            """
-            if mpm is None:
-                return
-
-            # first, build modify pargs map
-            pargs = {}
-            for param in MASPoseMap.P_PARAM_NAMES:
-                hl_data = mpm.get(MASPoseMap.pn2lp(param), None)
-                if hl_data is None:
-                    pargs[param] = None
-                else:
-                    pargs[param] = MASHighlightMap.create_from_mapping(
-                        hl_keys,
-                        hl_data[0],
-                        hl_data[1]
-                    )
-
-            # then modify the mpm
-            mpm._modify(**pargs)
-
-        @staticmethod
-        def create_from_mapping(hl_keys, hl_def, hl_mapping):
-            """
-            Creates a MASHighlightMap using keys/default/mapping
-
-            IN:
-                hl_keys - list of keys to use
-                hl_def - default highlight to use. Can be None
-                hl_mapping - mapping to use.
-
-            RETURNS: created MASHighlightMap
-            """
-            mhm = MASHighlightMap(hl_keys, default=hl_def)
-            mhm.apply(hl_mapping)
-            return mhm
-
-        def fltget(self, key, flt, defval=None):
-            """
-            Combines getting from here and getting the resulting MASFilterMap
-            object.
-
-            IN:
-                key - key to get from this map
-                flt - filter to get from associated MASFilterMap, if found
-                defval - default value to return if no flt value could be
-                    found.
-                    (Default: None)
-
-            RETURNS: value in the MASFilterMap associated with the given
-                flt, using the MASFilterMap associated with the given key.
-                or defval if no valid MASfilterMap or value found.
-            """
-            mfm = self.get(key)
-            if mfm is None:
-                return defval
-
-            return mfm.get(flt, defval=defval)
-
-        @staticmethod
-        def fromJSON(json_obj, msg_log, ind_lvl, hl_keys):
-            """
-            Builds hl data from JSON data
-
-            IN:
-                json_obj - JSON object to parse
-                ind_lvl - indentation level
-                    NOTE: this function handles loading/success log so
-                    do NOT increment indent when passing in
-                hl_keys - expected keys of this highlight map
-
-            OUT:
-                msg_log - list to add messagse to
-
-            RETURNS: hl_data, ready to passed split and passed into
-                create_from_mapping. Tuple:
-                [0] - default MASFilterMap object
-                [1] - dict:
-                    key: hl_key
-                    value: MASFilterMap object
-                or None if no data, False if failure in parsing occured
-            """
-            # first log loading
-            msg_log.append((
-                store.mas_sprites_json.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprites_json.MHM_LOADING
-            ))
-
-            # parse the data
-            hl_data = MASHighlightMap._fromJSON_hl_data(
-                json_obj,
-                msg_log,
-                ind_lvl + 1,
-                hl_keys
-            )
-
-            # check fai/succ
-            if hl_data is False:
-                # loggin should take care of this already
-                return False
-
-            # log success
-            msg_log.append((
-                store.mas_sprites_json.MSG_INFO_T,
-                ind_lvl,
-                store.mas_sprites_json.MHM_SUCCESS
-            ))
-
-            return hl_data
-
-        def get(self, key):
-            """
-            Gets value wth the given key.
-
-            IN:
-                key - key of item to get
-
-            RETURNS: MASFilterMap object, or None if not found
-            """
-            if key in self.__map:
-                return self.__map[key]
-
-            # otherwise return default
-            return self.getdef()
-
-        def getdef(self):
-            """
-            Gets the default value
-
-            RETURNS: MASFilterMap object, or NOne if not found
-            """
-            return self.__map.get(self.__KEY_ALL, None)
-
-        def keys(self):
-            """
-            gets keys in this map
-
-            RETURNS: tuple of keys
-            """
-            return self.__valid_keys
-
-        @staticmethod
-        def o_fltget(mhm, key, flt, defval=None):
-            """
-            Similar to fltget, but on a MASHighlightMap object.
-            NOTE: does None checks of mhm and flt.
-
-            IN:
-                mhm - MASHighlightMap object to run fltget on
-                key - key to get MASFilterMap from mhm
-                flt - filter to get from associated MASFilterMap
-                defval - default value to return if no flt value could be found
-                    (Default: None)
-
-            RETURNS: See fltget
-            """
-            if mhm is None or flt is None:
-                return defval
-
-            return mhm.fltget(key, flt, defval=defval)
-
-        def setdefault(self, value):
-            """
-            Sets the default value
-
-            IN:
-                value - value to use as default
-            """
-            if value is None or isinstance(value, MASFilterMap):
-                self.__map[self.__KEY_ALL] = value
 
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
@@ -4355,7 +4364,7 @@ init -3 python:
         from store.mas_sprites import POSES, L_POSES
         import store.mas_sprites_json as msj
 
-        # pargs 
+        # pargs
         # NOTE: order MUST be same as POSES
         PARAM_NAMES = (
             "p1", # steeplnig
@@ -4376,7 +4385,7 @@ init -3 python:
 
         # all params
         CONS_PARAM_NAMES = (
-            "default", 
+            "default",
             "l_default",
 #            "use_reg_for_l",
         ) + P_PARAM_NAMES
@@ -4439,7 +4448,7 @@ init -3 python:
                     is None, then we use the default instead of l_default
                     when rendering for lean poses
                 **pargs - the remaining name value pairs are checked in param
-                    names. Each apply to specific pose. 
+                    names. Each apply to specific pose.
                     (See MASPoseArms.PARAM_NAMES and L_PARAM_NAMES)
             """
             # setup maps
@@ -4549,7 +4558,7 @@ init -3 python:
         def _modify(self, **pargs):
             """
             Modifes poses based on given pargs.
-            NOTE: this can damage the sprite system if done incorrectly. 
+            NOTE: this can damage the sprite system if done incorrectly.
 
             IN:
                 **pargs - param name-value pairs. See MASPoseArms.PARAM_NAMES
@@ -4590,7 +4599,7 @@ init -3 python:
             self.__sync_all()
 
         @classmethod
-        def _verify_mpm_item(cls, 
+        def _verify_mpm_item(cls,
                 mpm_data,
                 msg_log,
                 ind_lvl,
@@ -4712,7 +4721,7 @@ init -3 python:
             # verify mpm type
             if mpm_prop not in json_obj:
                 msg_log.append((
-                    cls.msj.MSG_ERR_T, 
+                    cls.msj.MSG_ERR_T,
                     ind_lvl,
                     cls.msj.REQ_MISS.format(mpm_prop)
                 ))
@@ -4755,7 +4764,7 @@ init -3 python:
                         ind_lvl,
                         cls.msj.BAD_TYPE.format(
                             urfl_prop,
-                            str, 
+                            str,
                             type(use_reg_for_l)
                         )
                     ))
@@ -4803,7 +4812,7 @@ init -3 python:
                 ))
 
             if "l_default" not in mpm_data and not _param_urfl:
-                # we suggest using lean default when in fallback mode or 
+                # we suggest using lean default when in fallback mode or
                 #   acs
                 # and not using reg for l
                 msg_log.append((
@@ -4817,7 +4826,7 @@ init -3 python:
         def get(self, pose, defval):
             """
             Get passed to the internal pose map
-            only because its common to call get on this object. 
+            only because its common to call get on this object.
 
             IN:
                 pose - pose to get from pose map
@@ -4839,7 +4848,7 @@ init -3 python:
         def unique_values(self):
             """
             Gets all unique non-None values in this MASPoseMap.
-            NOTE: because MPM's may not include hashable values, this is 
+            NOTE: because MPM's may not include hashable values, this is
             try/excepted to handle those cases. If something is non-hashable,
             we always return all values.
 
@@ -5063,7 +5072,7 @@ init -3 python:
                 prefix - prefix to apply to each image. should be list of
                     strings
                     (DEfault: "")
-            
+
             RETURNS: list of lists of strings represented in this image.
                 use .join on each inner list to make the image
             """
@@ -5111,7 +5120,7 @@ init -3 python:
                 defval - default value to return if prop not found
             """
             return self.ex_props.get(prop, defval)
-    
+
         def gettype(self):
             """
             Gets the type of this sprite object
@@ -5295,7 +5304,7 @@ init -3 python:
                 leanpose - leanpose we are trying to get actual leanpose for
                 defval - default value to return if no leanpose
                     (Default: None)
-                    
+
 
             RETURNS: actual leanpose, or defval if not found
             """
@@ -5324,7 +5333,7 @@ init -3 python:
                 worn, all acs with a type in this property are removed.
             dlg_desc - user friendly way to describe this accessory in dialogue
                 Think "black bow" or "silver earrings"
-            dlg_plur - True if the dlg_desc should be used in the plural 
+            dlg_plur - True if the dlg_desc should be used in the plural
                 sense, like "these silver earrings", False if not, like:
                 "this black bow"
             keep_on_desk - Set to True to keep the ACS on the desk when monika
@@ -5411,7 +5420,7 @@ init -3 python:
                     [0] - string to use for dlg_desc
                     [1] - boolean value for dlg_plur
                     (Default: None)
-                keep_on_desk - determines if ACS should be shown if monika 
+                keep_on_desk - determines if ACS should be shown if monika
                     leaves
                     (Default: False)
                 hl_data - tuple of the following format:
@@ -5419,7 +5428,7 @@ init -3 python:
                         if None, no default highlight
                     [1] - dict-based highlight map data:
                         key: string. should match values used in pose_map
-                        value: highlight data. Determined by extended classes. 
+                        value: highlight data. Determined by extended classes.
                             if None, then no highlight for the key
                         if None, then no mapped highlights
                     if None, no highlights at all
@@ -5443,7 +5452,7 @@ init -3 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.keep_on_desk = keep_on_desk
-            
+
             if dlg_data is not None and len(dlg_data) == 2:
                 self.dlg_desc, self.dlg_plur = dlg_data
             else:
@@ -5505,13 +5514,13 @@ init -3 python:
 
         def opt_gethlc(self, poseid, flt, arm_split, defval=None):
             """
-            Optimized highlight code getter. Implementation varies in 
+            Optimized highlight code getter. Implementation varies in
             extended classes.
             The point of this is to avoid additional lookups during render.
             """
             raise NotImplementedError
 
-    
+
     class MASAccessory(MASAccessoryBase):
         """
         Standard MASAccessory object.
@@ -5583,7 +5592,7 @@ init -3 python:
                     [0] - string to use for dlg_desc
                     [1] - boolean value for dlg_plur
                     (Default: None)
-                keep_on_desk - determines if ACS should be shown if monika 
+                keep_on_desk - determines if ACS should be shown if monika
                     leaves
                     (Default: False)
                 hl_data - ACS highlight data. Format: tuple:
@@ -5615,6 +5624,9 @@ init -3 python:
                 keep_on_desk,
                 hl_data
             )
+
+        def __repr__(self):
+            return "<ACS: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, poseid):
             """
@@ -5692,7 +5704,7 @@ init -3 python:
 
         def opt_gethlc(self, poseid, flt, arm_split, defval=None):
             """
-            MASAccessory-specific gethlc. 
+            MASAccessory-specific gethlc.
             Optimized to only accept the args that actually matter for
             MASAccessory objects.
 
@@ -5706,7 +5718,7 @@ init -3 python:
             RETURNS: highlight code, or None if no highlight
             """
             return MASHighlightMap.o_fltget(self.hl_map, poseid, flt, defval)
-   
+
 
     class MASSplitAccessory(MASAccessoryBase):
         """
@@ -5714,9 +5726,9 @@ init -3 python:
         at split layers (ASE/BSE)
 
         PROPERTIES:
-            arm_split - MASPoseMap determining which arm position the ACS 
+            arm_split - MASPoseMap determining which arm position the ACS
                 should be visible in. This only applies to ACS that are
-                intended to be used in a BSE or ASE ACS layer. 
+                intended to be used in a BSE or ASE ACS layer.
                 This accepts the following values for poses;
                     "0" - sprite has "-0" version, and should be used for
                         arms-0 for this pose or body-0
@@ -5810,10 +5822,10 @@ init -3 python:
                     [0] - string to use for dlg_desc
                     [1] - boolean value for dlg_plur
                     (Default: None)
-                keep_on_desk - determines if ACS should be shown if monika 
+                keep_on_desk - determines if ACS should be shown if monika
                     leaves
                     (Default: False)
-                hl_data - highlight data. Format: 
+                hl_data - highlight data. Format:
                     key: values used for pose_map
                     value: tuple:
                         [0] - default highlight ot use. pass in None to not
@@ -5846,6 +5858,9 @@ init -3 python:
             )
 
             self.arm_split = arm_split
+
+        def __repr__(self):
+            return "<SACS: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, poseid, armcode):
             """
@@ -5916,7 +5931,7 @@ init -3 python:
 
             # loop over MASPoseMap for pose ids
             for poseid in self.pose_map.unique_values():
-                
+
                 # generate new img str
                 new_img = prefix + [
                     store.mas_sprites.PREFIX_ACS,
@@ -6040,7 +6055,7 @@ init -3 python:
                                 pm_key
                             )
                         ))
-                        
+
                         hl_data = vhl_data.get("hl_data", None)
 
                         if hl_data is not None:
@@ -6052,7 +6067,7 @@ init -3 python:
                     else:
                         # failure case
                         isbad = True
-                        
+
             # warn if any extras
             for extra_prop in json_obj:
                 msg_log.append((
@@ -6091,7 +6106,7 @@ init -3 python:
             IN:
                 poseid - poseid to get arm split code for
 
-            RETURNS: arms split code as iterable, or empty list 
+            RETURNS: arms split code as iterable, or empty list
             """
             if self.arm_split is None:
                 return []
@@ -6124,7 +6139,7 @@ init -3 python:
             """
             return self.opt_gethlc(
                 self.pose_map.get(leanpose, None),
-                flt, 
+                flt,
                 hl_key,
                 defval
             )
@@ -6182,7 +6197,7 @@ init -3 python:
             RETURNS: True if valid, false if not
             """
             return value in cls.__MHM_KEYS
-            
+
 
     class MASHair(MASSpriteFallbackBase):
         """
@@ -6285,6 +6300,9 @@ init -3 python:
 
             self.split = split
 
+        def __repr__(self):
+            return "<Hair: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds highlight load strs for a split layer
@@ -6293,7 +6311,7 @@ init -3 python:
                 prefix - prefix to apply to the load strings
                     should be a list of strings
                 hl_key - key of the hl to use
-                
+
             RETURNS: list of lists of strings
             """
             if self.hl_map is None:
@@ -6557,6 +6575,9 @@ init -3 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
+        def __repr__(self):
+            return "<Clothes: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds loadstrs for body highlights
@@ -6675,7 +6696,7 @@ init -3 python:
             loadstrs.extend(pose_arms.build_loadstrs(c_prefix))
 
             return loadstrs
-        
+
         def determine_arms(self, leanpose):
             """
             Determines arms pose to use for a given leanpose
@@ -6693,7 +6714,7 @@ init -3 python:
                     leanpose,
                     None
                 )
-            
+
             # otherwise use our arms but return None if not need to render
             return self.pose_arms.get(leanpose, None)
 
@@ -6886,7 +6907,7 @@ init -2 python in mas_sprites:
 
     # the base arms
     base_arms = store.MASPoseArms({
-        
+
         # crossed
         1: NUM_MARMS[1](
             "crossed",
@@ -7003,7 +7024,7 @@ init -2 python in mas_sprites:
     def use_bmpm(posenum):
         """
         Returns tuple of MASArms for a pose num
-        
+
         IN:
             posenum - numerical digit for a pose. This corresponds to
                 NUM_POSE.
@@ -7046,7 +7067,7 @@ define monika_chr = MASMonika()
 image emptydesk = DynamicDisplayable(
     mas_drawemptydesk_rk,
     character=monika_chr
-)   
+)
 
 
 #### IMAGE START (IMG030)
@@ -7119,114 +7140,115 @@ image emptydesk = DynamicDisplayable(
 #   The only sprite combos with closed eyes standing are _sc and _sd.
 #   everything else does not have a closed eye variant. sux to succ
 
-# pose 1
-image monika 1 = "monika 1esa"
-image monika 1a = "monika 1eua"
-image monika 1b = "monika 1eub"
-image monika 1c = "monika 1euc"
-image monika 1d = "monika 1eud"
-image monika 1e = "monika 1eka"
-image monika 1f = "monika 1ekc"
-image monika 1g = "monika 1ekd"
-image monika 1h = "monika 1esc"
-image monika 1i = "monika 1esd"
-image monika 1j = "monika 1hua"
-image monika 1k = "monika 1hub"
-image monika 1l = "monika 1hksdlb"
-image monika 1ll = "monika 1hksdrb"
-image monika 1m = "monika 1lksdla"
-image monika 1mm = "monika 1rksdla"
-image monika 1n = "monika 1lksdlb"
-image monika 1nn = "monika 1rksdlb"
-image monika 1o = "monika 1lksdlc"
-image monika 1oo = "monika 1rksdlc"
-image monika 1p = "monika 1lksdld"
-image monika 1pp = "monika 1rksdld"
-image monika 1q = "monika 1dsc"
-image monika 1r = "monika 1dsd"
-
-# pose 2
-image monika 2 = "monika 2esa"
-image monika 2a = "monika 2eua"
-image monika 2b = "monika 2eub"
-image monika 2c = "monika 2euc"
-image monika 2d = "monika 2eud"
-image monika 2e = "monika 2eka"
-image monika 2f = "monika 2ekc"
-image monika 2g = "monika 2ekd"
-image monika 2h = "monika 2esc"
-image monika 2i = "monika 2esd"
-image monika 2j = "monika 2hua"
-image monika 2k = "monika 2hub"
-image monika 2l = "monika 2hksdlb"
-image monika 2ll = "monika 2hksdrb"
-image monika 2m = "monika 2lksdla"
-image monika 2mm = "monika 2rksdla"
-image monika 2n = "monika 2lksdlb"
-image monika 2nn = "monika 2rksdlb"
-image monika 2o = "monika 2lksdlc"
-image monika 2oo = "monika 2rksdlc"
-image monika 2p = "monika 2lksdld"
-image monika 2pp = "monika 2rksdld"
-image monika 2q = "monika 2dsc"
-image monika 2r = "monika 2dsd"
-
-# pose 3
-image monika 3 = "monika 3esa"
-image monika 3a = "monika 3eua"
-image monika 3b = "monika 3eub"
-image monika 3c = "monika 3euc"
-image monika 3d = "monika 3eud"
-image monika 3e = "monika 3eka"
-image monika 3f = "monika 3ekc"
-image monika 3g = "monika 3ekd"
-image monika 3h = "monika 3esc"
-image monika 3i = "monika 3esd"
-image monika 3j = "monika 3hua"
-image monika 3k = "monika 3hub"
-image monika 3l = "monika 3hksdlb"
-image monika 3ll = "monika 3hksdrb"
-image monika 3m = "monika 3lksdla"
-image monika 3mm = "monika 3rksdla"
-image monika 3n = "monika 3lksdlb"
-image monika 3nn = "monika 3rksdlb"
-image monika 3o = "monika 3lksdlc"
-image monika 3oo = "monika 3rksdlc"
-image monika 3p = "monika 3lksdld"
-image monika 3pp = "monika 3rksdld"
-image monika 3q = "monika 3dsc"
-image monika 3r = "monika 3dsd"
-
-# pose 4
-image monika 4 = "monika 4esa"
-image monika 4a = "monika 4eua"
-image monika 4b = "monika 4eub"
-image monika 4c = "monika 4euc"
-image monika 4d = "monika 4eud"
-image monika 4e = "monika 4eka"
-image monika 4f = "monika 4ekc"
-image monika 4g = "monika 4ekd"
-image monika 4h = "monika 4esc"
-image monika 4i = "monika 4esd"
-image monika 4j = "monika 4hua"
-image monika 4k = "monika 4hub"
-image monika 4l = "monika 4hksdlb"
-image monika 4ll = "monika 4hksdrb"
-image monika 4m = "monika 4lksdla"
-image monika 4mm = "monika 4rksdla"
-image monika 4n = "monika 4lksdlb"
-image monika 4nn = "monika 4rksdlb"
-image monika 4o = "monika 4lksdlc"
-image monika 4oo = "monika 4rksdlc"
-image monika 4p = "monika 4lksdld"
-image monika 4pp = "monika 4rksdld"
-image monika 4q = "monika 4dsc"
-image monika 4r = "monika 4dsd"
-
-# pose 5
-image monika 5 = "monika 5eua"
-image monika 5a = "monika 5eua"
-image monika 5b = "monika 5euc"
+#NOTE: KEEPING THIS FOR REFERENCE AS TO WHAT SPRITES HAVE A STANDING EQUIVALENT
+## pose 1
+#monika 1 = "monika 1esa"
+#monika 1a = "monika 1eua"
+#monika 1b = "monika 1eub"
+#monika 1c = "monika 1euc"
+#monika 1d = "monika 1eud"
+#monika 1e = "monika 1eka"
+#monika 1f = "monika 1ekc"
+#monika 1g = "monika 1ekd"
+#monika 1h = "monika 1esc"
+#monika 1i = "monika 1esd"
+#monika 1j = "monika 1hua"
+#monika 1k = "monika 1hub"
+#monika 1l = "monika 1hksdlb"
+#monika 1ll = "monika 1hksdrb"
+#monika 1m = "monika 1lksdla"
+#monika 1mm = "monika 1rksdla"
+#monika 1n = "monika 1lksdlb"
+#monika 1nn = "monika 1rksdlb"
+#monika 1o = "monika 1lksdlc"
+#monika 1oo = "monika 1rksdlc"
+#monika 1p = "monika 1lksdld"
+#monika 1pp = "monika 1rksdld"
+#monika 1q = "monika 1dsc"
+#monika 1r = "monika 1dsd"
+#
+## pose 2
+#monika 2 = "monika 2esa"
+#monika 2a = "monika 2eua"
+#monika 2b = "monika 2eub"
+#monika 2c = "monika 2euc"
+#monika 2d = "monika 2eud"
+#monika 2e = "monika 2eka"
+#monika 2f = "monika 2ekc"
+#monika 2g = "monika 2ekd"
+#monika 2h = "monika 2esc"
+#monika 2i = "monika 2esd"
+#monika 2j = "monika 2hua"
+#monika 2k = "monika 2hub"
+#monika 2l = "monika 2hksdlb"
+#monika 2ll = "monika 2hksdrb"
+#monika 2m = "monika 2lksdla"
+#monika 2mm = "monika 2rksdla"
+#monika 2n = "monika 2lksdlb"
+#monika 2nn = "monika 2rksdlb"
+#monika 2o = "monika 2lksdlc"
+#monika 2oo = "monika 2rksdlc"
+#monika 2p = "monika 2lksdld"
+#monika 2pp = "monika 2rksdld"
+#monika 2q = "monika 2dsc"
+#monika 2r = "monika 2dsd"
+#
+## pose 3
+#monika 3 = "monika 3esa"
+#monika 3a = "monika 3eua"
+#monika 3b = "monika 3eub"
+#monika 3c = "monika 3euc"
+#monika 3d = "monika 3eud"
+#monika 3e = "monika 3eka"
+#monika 3f = "monika 3ekc"
+#monika 3g = "monika 3ekd"
+#monika 3h = "monika 3esc"
+#monika 3i = "monika 3esd"
+#monika 3j = "monika 3hua"
+#monika 3k = "monika 3hub"
+#monika 3l = "monika 3hksdlb"
+#monika 3ll = "monika 3hksdrb"
+#monika 3m = "monika 3lksdla"
+#monika 3mm = "monika 3rksdla"
+#monika 3n = "monika 3lksdlb"
+#monika 3nn = "monika 3rksdlb"
+#monika 3o = "monika 3lksdlc"
+#monika 3oo = "monika 3rksdlc"
+#monika 3p = "monika 3lksdld"
+#monika 3pp = "monika 3rksdld"
+#monika 3q = "monika 3dsc"
+#monika 3r = "monika 3dsd"
+#
+## pose 4
+#monika 4 = "monika 4esa"
+#monika 4a = "monika 4eua"
+#monika 4b = "monika 4eub"
+#monika 4c = "monika 4euc"
+#monika 4d = "monika 4eud"
+#monika 4e = "monika 4eka"
+#monika 4f = "monika 4ekc"
+#monika 4g = "monika 4ekd"
+#monika 4h = "monika 4esc"
+#monika 4i = "monika 4esd"
+#monika 4j = "monika 4hua"
+#monika 4k = "monika 4hub"
+#monika 4l = "monika 4hksdlb"
+#monika 4ll = "monika 4hksdrb"
+#monika 4m = "monika 4lksdla"
+#monika 4mm = "monika 4rksdla"
+#monika 4n = "monika 4lksdlb"
+#monika 4nn = "monika 4rksdlb"
+#monika 4o = "monika 4lksdlc"
+#monika 4oo = "monika 4rksdlc"
+#monika 4p = "monika 4lksdld"
+#monika 4pp = "monika 4rksdld"
+#monika 4q = "monika 4dsc"
+#monika 4r = "monika 4dsd"
+#
+## pose 5
+#monika 5 = "monika 5eua"
+#monika 5a = "monika 5eua"
+#monika 5b = "monika 5euc"
 
 ### [IMG040]
 # Custom animated sprites
@@ -7536,8 +7558,8 @@ image chibika sad = "mod_assets/other/m_sticker_sad.png"
 image chibika 3 = "gui/poemgame/m_sticker_2.png"
 
 #Ghost monika
-image ghost_monika: 
-    "mod_assets/other/ghost_monika.png" 
+image ghost_monika:
+    "mod_assets/other/ghost_monika.png"
     zoom 1.25
 
 ### [IMG200]
@@ -7547,7 +7569,7 @@ image ghost_monika:
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
 label mas_transition_to_emptydesk:
     $ store.mas_sprites.show_empty_desk()
-    hide monika with dissolve
+    hide monika with dissolve_monika
     return
 
 # transition from empty desk

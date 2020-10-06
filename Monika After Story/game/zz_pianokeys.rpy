@@ -375,11 +375,13 @@ label mas_piano_yr_prac:
 
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
+    import store
     import pygame # we need this for keymaps
     import os
-    log = renpy.store.mas_utils.getMASLog("log/pnm")
+    log = store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
+    import store.mas_ui as mas_ui
 
     # directory setup
     pnml_basedir = os.path.normcase(
@@ -396,18 +398,18 @@ init -3 python in mas_piano_keys:
         no_pnml_basedir = True
 
     # menu constants
-    MENU_X = 680
-    MENU_Y = 40
-    MENU_W = 560
-    MENU_H = 640
-    MENU_XALIGN = -0.05
+    MENU_X = mas_ui.SCROLLABLE_MENU_X
+    MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    MENU_W = mas_ui.SCROLLABLE_MENU_W
+    MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
 
     # Log constants
     MISS_KEY = "key '{0}' is missing."
     NOTE_BAD = "bad note list."
     PNOTE_BAD = "bad post note list."
-    EXP_BAD = "expression '{0}' not found."
+    EXP_BAD = "expression '{0}' is invalid."
     EVT_BAD = "ev timeout '{0}' is invalid."
     VIST_BAD = "vis timeout '{0}' is invalid."
     VERSE_BAD = "verse '{0}' is invalid."
@@ -806,7 +808,7 @@ init -3 python in mas_piano_keys:
             return
 
         _exp = jobj.pop(key)
-        if not renpy.image_exists("monika " + _exp):
+        if not store.mas_sprite_decoder.isValidSpritecode(_exp):
             _warns.append(warn_msg.format(_exp))
             return
 
@@ -988,10 +990,10 @@ init -3 python in mas_piano_keys:
                 raise PianoException("copyntoes must be positive number")
             if type(say) is not renpy.text.text.Text:
                 raise PianoException("say must be of type Text")
-            if not renpy.image_exists("monika " + express):
-                raise PianoException("Given expression does not exist")
-            if not renpy.image_exists("monika " + postexpress):
-                raise PianoException("Given post expression does not exist")
+            if not store.mas_sprite_decoder.isValidSpritecode(express):
+                store.mas_utils.writelog("Given expression '{0}' is invalid.\n".format(express))
+            if not store.mas_sprite_decoder.isValidSpritecode(postexpress):
+                store.mas_utils.writelog("Given expression '{0}' is invalid.\n".format(postexpress))
 #            if (
 #                    ev_timeout is not None
 #                    and vis_timeout is not None
@@ -2017,11 +2019,11 @@ init 810 python:
         TEXT_AT_LIST = [mas_piano_lyric_label]
 
         # expressions
-        DEFAULT = "monika 1a"
-        AWKWARD = "monika 1l"
-        HAPPY = "monika 1j"
-        FAILED = "monika 1m"
-        CONFIGGING = "monika 3a"
+        DEFAULT = "monika 1eua"
+        AWKWARD = "monika 1hksdlb"
+        HAPPY = "monika 1hua"
+        FAILED = "monika 1lksdla"
+        CONFIGGING = "monika 3eua"
 #        CONFIG_CHANGE = "monika 3a"
 
         # Text related

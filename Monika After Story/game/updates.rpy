@@ -372,9 +372,165 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.6
+label v0_11_6(version="v0_11_6"):
+    python:
+        # Add update scripts here
+        pass
+    return
 
+# 0.11.5
+label v0_11_5(version="v0_11_5"):
+    python:
+        # properly unlock game topics if 0.7.1-era topics were seen
+        game_evls = (
+            ("mas_hangman", "mas_unlock_hangman"),
+            ("mas_chess", "mas_unlock_chess",),
+            ("mas_piano", "mas_unlock_piano"),
+        )
+
+        for game_evl, unlock_evl in game_evls:
+            # 0.11.0 update script shoudl have transfered seen
+            if (
+                    renpy.seen_label(unlock_evl)
+                    or mas_getEVL_shown_count(unlock_evl) > 0
+            ):
+                mas_unlockEVL(game_evl, "GME")
+                persistent._seen_ever[unlock_evl] = True
+
+                # if we have seen the unlock evl, absolutely make sure it has
+                # a positive shown count. there is absolutely NO reason that
+                # an event that has been SEEN should have a shown count of 0.
+                unlock_ev = mas_getEV(unlock_evl)
+                if unlock_ev:
+                    mas_rmEVL(unlock_evl)
+                    unlock_ev.conditional = None
+                    unlock_ev.action = None
+                    unlock_ev.unlocked = False
+                    unlock_ev.shown_count = 1
+
+        #And the rest of the scripts because of the crash last time
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
+    return
+
+#0.11.4
+label v0_11_4(version="v0_11_4"):
+    python:
+        #Remove lucky mood
+        mas_eraseTopic("mas_mood_lucky", persistent._mas_mood_database)
+
+        #Modify randchat settings
+        OLD_NEW_RANDCHAT_MAP = {
+            0: 6,
+            1: 5,
+            2: 4,
+            3: 3,
+            4: 2,
+            5: 1,
+            6: 0
+        }
+
+        persistent._mas_randchat_freq = OLD_NEW_RANDCHAT_MAP.get(persistent._mas_randchat_freq, mas_randchat.NORMAL)
+
+        # unlock _remembrance based on _japan pre-req
+        if seen_event('monika_japan'):
+            mas_unlockEVL("monika_remembrance", "EVE")
+
+        #Remove aff for bad derands
+        bad_topic_derand_list = [
+            "monika_fear",
+            "monika_soft_rains",
+            "monika_whispers",
+            "monika_eternity",
+            "monika_dying_same_day"
+        ]
+
+        # NOTE: this caused a crash.
+        #   mas_loseAffection is not available during init
+        #for bad_evl in bad_topic_derand_list:
+        #    if bad_evl in persistent._mas_player_derandomed:
+        #        mas_loseAffection(5)
+
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
+    return
+
+#0.11.3
 label v0_11_3(version="v0_11_3"):
     python:
+        #Rerandom all songs which aren't d25 exclusive
+        for song_ev in mas_songs.song_db.itervalues():
+            if (
+                song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
+                and mas_songs.TYPE_LONG not in song_ev.category
+            ):
+                song_ev.random=True
+
         # give extra pool unlocks for recent players
         if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
             # only 0.11.0 + week ago
@@ -382,6 +538,13 @@ label v0_11_3(version="v0_11_3"):
             # NOTE: multiply by 4 becaue everyone should already have level
             #   number of pool unlocks given
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
+
+        #Adjust consumables to be at their max stock amount
+        for consumable_id in persistent._mas_consumable_map.iterkeys():
+            cons = mas_getConsumable(consumable_id)
+
+            if cons and cons.getStock() > cons.max_stock_amount:
+                persistent._mas_consumable_map[cons.consumable_id]["servings_left"] = cons.max_stock_amount
 
         # unlock monika_kiss
         mas_unlockEVL("monika_kiss", "EVE")
@@ -416,6 +579,98 @@ label v0_11_3(version="v0_11_3"):
                     tod_ev.pool = True
                     tod_ev.action = EV_ACT_UNLOCK
 
+        #Store all the files we need to rename
+        filenames_to_rename = [
+            "imsorry",
+            "imsorry.txt",
+            "forgive me.txt",
+            "can you hear me.txt",
+            "please listen.txt",
+            "surprise.txt",
+            "ehehe.txt",
+            "secret.txt",
+            "for you.txt",
+            "My one and only love.txt"
+        ]
+
+        for fn in filenames_to_rename:
+            try:
+                os.rename(
+                    renpy.config.basedir + "/{0}".format(fn),
+                    renpy.config.basedir + "/characters/{0}".format(fn)
+                )
+            except:
+                pass
+
+        #We'll also get rid of hehehe.txt if it's still here
+        try:
+            os.rename(
+                renpy.config.basedir + "/hehehe.txt",
+                renpy.config.basedir + "/characters/ehehe.txt"
+            )
+        except:
+            mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+        # add to the default unlocked pool topics
+        pool_unlock_list = [
+            "monika_meta",
+            "monika_difficulty",
+            "monika_ddlc",
+            "monika_justification",
+            "monika_girlfriend",
+            "monika_herself",
+            "monika_birthday",
+            "monika_sayhappybirthday"
+        ]
+
+        for pool_label in pool_unlock_list:
+            mas_unlockEVL(pool_label,"EVE")
+
+        #Add conditional to player appearance if not seen
+        if not seen_event("monika_player_appearance"):
+            player_appearance_ev = mas_getEV("monika_player_appearance")
+            if player_appearance_ev:
+                player_appearance_ev.random = False
+                player_appearance_ev.conditional = "seen_event('mas_gender')"
+                player_appearance_ev.action = EV_ACT_RANDOM
+
+        #Fix the islands event
+        if not mas_isWinter() and not seen_event("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        #Handle the preferred name and gender change topics again
+        gender_ev = mas_getEV("mas_gender")
+        if gender_ev:
+            #Remove the gender ev's conditional
+            gender_ev.conditional = None
+
+            preferredname_ev = mas_getEV("mas_preferredname")
+            if preferredname_ev:
+                #If we have the preferredname ev, we need to remove the conditional anyway
+                preferredname_ev.conditional = None
+
+            #If the gender topic has a last seen and the preferredname ev hasn't been seen yet
+            #We need to set up its start date
+            if gender_ev.last_seen:
+                if preferredname_ev and not preferredname_ev.last_seen:
+                    preferredname_ev.start_date = gender_ev.last_seen + datetime.timedelta(hours=2)
+
+            #If the gender topic has not been seen, then it needs its start_date set up
+            else:
+                gender_ev.start_date = mas_getFirstSesh() + datetime.timedelta(minutes=30)
+
+        # Unlock quit smoking pool topic if we smoke
+        if persistent._mas_pm_do_smoke:
+            mas_unlockEVL("monika_smoking_quit","EVE")
+
+        #Unlock the leaving already fare
+        leaving_already_ev = mas_getEV("bye_leaving_already")
+        if leaving_already_ev:
+            leaving_already_ev.random = True
+            leaving_already_ev.conditional = "mas_getSessionLength() <= datetime.timedelta(minutes=20)"
+
+        if not mas_isWinter():
+            mas_lockEVL("monika_snowballfight", "EVE")
     return
 
 #0.11.1
@@ -1335,6 +1590,10 @@ label v0_10_0(version="v0_10_0"):
             )
             concert_ev.action = EV_ACT_RANDOM
 
+        # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+        dt_now = datetime.datetime.now()
+        # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
@@ -1342,7 +1601,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
-            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_922.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_922.use_year_before = True
 
         mhs_pbday = store.mas_history.getMHS("player_bday")
@@ -1371,7 +1633,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.month == 11
                 and mhs_o31.trigger.day == 2
         ):
-            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_o31.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_o31.use_year_before = True
 
         # always save mhs

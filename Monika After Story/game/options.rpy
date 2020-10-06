@@ -6,24 +6,20 @@
 
 
 ## Basics ######################################################################
+init -999:
+    ## A human-readable name of the game. This is used to set the default window
+    ## title, and shows up in the interface and error reports.
+    ##
+    ## The _() surrounding the string marks it as eligible for translation.
+    define config.name = "Monika After Story"
 
-## A human-readable name of the game. This is used to set the default window
-## title, and shows up in the interface and error reports.
-##
-## The _() surrounding the string marks it as eligible for translation.
-
-define config.name = "Monika After Story"
-
+    ## The version of the game.
+    define config.version = "0.11.5"
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
 define gui.show_name = False
-
-
-## The version of the game.
-
-define config.version = "0.11.2"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -102,8 +98,8 @@ define config.window = "auto"
 
 ## Transitions used to show and hide the dialogue window
 
-define config.window_show_transition = Dissolve(.2)
-define config.window_hide_transition = Dissolve(.2)
+define config.window_show_transition = dissolve_textbox
+define config.window_hide_transition = dissolve_textbox
 
 
 ## Preference defaults #########################################################

@@ -9,14 +9,6 @@ init -989 python:
     #Run dependency checks
     store.mas_submod_utils.Submod._checkDependencies()
 
-init -990 python in mas_ui:
-    import store
-    has_submod_settings = len([
-        submod
-        for submod in store.mas_submod_utils.submod_map.values()
-        if submod.settings_pane is not None
-    ]) > 0
-
 init -991 python in mas_submod_utils:
     import re
     import store
@@ -33,15 +25,15 @@ init -991 python in mas_submod_utils:
         def __str__(self):
             return self.msg
 
-    class Submod:
+    class Submod(object):
         """
         Submod class
 
         PROPERTIES:
             author - submod author
             name - submod name
-            description - submod description
             version - version of the submod installed
+            description - submod description
             dependencies - dependencies required for the submod
             settings_pane - string referring to the screen used for the submod's settings
             version_updates - update labels
@@ -56,8 +48,8 @@ init -991 python in mas_submod_utils:
             self,
             author,
             name,
-            description,
             version,
+            description=None,
             dependencies={},
             settings_pane=None,
             version_updates={}
@@ -70,10 +62,11 @@ init -991 python in mas_submod_utils:
 
                 name - submod name
 
-                description - a short description for the submod
-
                 version - version number in format SPECIFICALLY like so: `1.2.3`
                     (You can add more or less as need be, but splits MUST be made using periods)
+
+                description - a short description for the submod
+                    (Default: None)
 
                 dependencies - dictionary in the following structure: {"name": ("minimum_version", "maximum_version")}
                 corresponding to the needed submod name and version required
@@ -96,8 +89,7 @@ init -991 python in mas_submod_utils:
             """
             #First make sure this name us unique
             if name in submod_map:
-                store.mas_utils.writelog("[SUBMOD ERROR]: A submod with name '{0}' already exists. Ignoring.\n".format(name))
-                return
+                raise SubmodError("A submod with name '{0}' has been installed twice. Please, uninstall the duplicate.".format(name))
 
             #Now we verify that the version number is something proper
             try:
@@ -575,4 +567,18 @@ init 999 python:
         #Run functions
         store.mas_submod_utils.getAndRunFunctions(name)
 
+        #Let's also check if the current label is an override label, if so, we'll then mark the base label as seen
+        base_label = _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.get(name)
+        if base_label is not None:
+            persistent._seen_ever[base_label] = True
+
     config.label_callback = label_callback
+
+    @store.mas_submod_utils.functionplugin("ch30_reset", priority=-999)
+    def __build_override_label_to_base_label_map():
+        """
+        Populates a lookup dict for all label overrides which are in effect
+        """
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in config.label_overrides.iteritems():
+            _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
