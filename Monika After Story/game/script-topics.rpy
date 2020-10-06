@@ -15696,17 +15696,14 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
-# is player an introvert ?
-default persistent._mas_pm_introvert = None
+#Player's social personality
+default persistent._mas_pm_social_personality = None
 
-# is player an extrovert ?
-default persistent._mas_pm_extrovert = None
-
-# is player in-between ?
-default persistent._mas_pm_ambivert = None
-
-# is player unsure about where they fit on the spectrum ?
-default persistent._mas_pm_social_personality_unsure = None
+#Consts to be used for checking this
+define mas_SP_INTROVERT = "introvert"
+define mas_SP_EXTROVERT = "extrovert"
+define mas_SP_AMBIVERT = "ambivert"
+define mas_SP_UNSURE = "unsure"
 
 init 5 python:
     addEvent(
@@ -15750,18 +15747,13 @@ label monika_introverts_extroverts:
         "So How would you describe yourself, [player]?{fast}"
 
         "I'm introverted.":
-            python:
-                persistent._mas_pm_introvert = True
-                persistent._mas_pm_extrovert = False
-                persistent._mas_pm_ambivert = False
-                persistent._mas_pm_social_personality_unsure = False
-
+            $ persistent._mas_pm_social_personality = mas_SP_INTROVERT
             m 1eua "I see."
             m 3etc "I take it that you usually prefer spending time without too many people over going out with large groups and such?"
             m 3eua "Or maybe you like to go and do things on your own from time to time?"
 
             if persistent._mas_pm_has_friends:
-                m 1eua "Since you told me you do have friends, I'm sure that means that you don't mind being around other people too much, either."
+                m 1eua "Since you told me you have some friends, I'm sure that means that you don't mind being around other people too much."
 
                 if persistent._mas_pm_few_friends:
                     m 1eka "Trust me, it doesn't matter if you feel like you don't have all that many of them."
@@ -15778,8 +15770,7 @@ label monika_introverts_extroverts:
                 $ line_start = "And"
 
             else:
-                m 1rud "Anyway..."
-                m 3eka "While I understand that it might feel more comfortable for you to be alone rather than with other people."
+                m 3eka "While I understand that it might feel more comfortable for you to be alone rather than with other people..."
                 m 2ekd "Please keep in mind that no one can truly spend their whole life without at least {i}some{/i} company."
                 m 2lkdslc "Not only is it not healthy in the long run...{w=0.3}but it's also not the kind of life I wish for you to have."
 
@@ -15790,18 +15781,13 @@ label monika_introverts_extroverts:
                     $ line_start = "And"
                 else:
                     m 2ekbla "I really hope you don't mind opening yourself up to at least some other people."
-                    m 7ekbla "I'd love for you to see the value and joy other people can bring in your life too."
+                    m 7ekbla "I'd love for you to see the value and joy other people can bring to your life too."
                     $ line_start = "But"
 
             m 1hublb "[line_start] as long as you're here with me, I'll try my best to make sure you're always feeling comfortable, I promise~"
 
         "I'm extroverted.":
-            python:
-                persistent._mas_pm_extrovert = True
-                persistent._mas_pm_introvert = False
-                persistent._mas_pm_ambivert = False
-                persistent._mas_pm_social_personality_unsure = False
-
+            $ persistent._mas_pm_social_personality = mas_SP_EXTROVERT
             m 3eub "Oh I see."
             m 3eua "So, I guess you like to spend more time with others and meeting new people then?"
             m 1eua "I can definitely see the appeal in that.{w=0.3} {nw}"
@@ -15809,17 +15795,13 @@ label monika_introverts_extroverts:
             m 1ekc "And I assume you probably hate loneliness as much as I do...{w=0.3}{nw}"
             extend 1ekbla "but that's just one more reason I'm so happy we're a couple now."
             m 3ekblb "We'll never truly be alone again."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I'm sure you're a really fun person to be around, [player],{w=0.1} and I can't wait to be with you for real~"
             m 5rusdlu "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well..."
             m 5hksdrb "I hope you don't mind if I'm not always able to keep up with you, ahaha!"
 
         "I'm somewhat in-between.":
-            python:
-                persistent._mas_pm_ambivert = True
-                persistent._mas_pm_introvert = False
-                persistent._mas_pm_extrovert = False
-                persistent._mas_pm_social_personality_unsure = False
-
+            $ persistent._mas_pm_social_personality = mas_SP_AMBIVERT
             m 3hua "Ehehe, kind of like me, then~"
             m 3eud "Apparently, most people have both an introverted and extroverted side to their personality."
             m 7eua "...Even if one of the two is dominant over the other, depending on the person."
@@ -15837,12 +15819,7 @@ label monika_introverts_extroverts:
             extend 5kubfu "A very charming someone, might I add~"
 
         "I'm not really sure.":
-            python:
-                persistent._mas_pm_social_personality_unsure = True
-                persistent._mas_pm_introvert = None
-                persistent._mas_pm_extrovert = None
-                persistent._mas_pm_ambivert = None
-
+            $ persistent._mas_pm_social_personality = mas_SP_UNSURE
             m 1eka "That's alright, [player].{w=0.2} Things like this aren't always so clear."
             m 4eua "I'm a little like you on that front."
             m 2eka "While I said I'm a little more extroverted, I still need some me time to relax every once in a while, you know?"
