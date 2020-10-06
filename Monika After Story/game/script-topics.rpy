@@ -15827,7 +15827,7 @@ label monika_introverts_extroverts:
             m 1eua  "Like, it's so nice that being around larger groups isn't a problem, same goes for spending some time alone."
             m 7esc "...But I can't say I've found it easy to make deep, genuine connections with others..."
             m 1eud "Sure, I have an easier time understanding most people, but it doesn't mean I can always relate with them, you know?"
-            m 1lksdld "So yeah...{w=0.3} I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.3}unfullfilling."
+            m 1lksdld "So yeah...{w=0.3} I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.3}unfulfilling."
             m 3eksdlc "The same thing happened with the club, for example."
             m 3dksdld "I was so convinced that by bringing people together around something I truly enjoy, I'd have a better chance at bonding with them over our shared interests..."
             m 3dksdlc "...and at the end of the day, we spent most of our time silently hanging out, everyone minding their own business."
