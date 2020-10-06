@@ -15832,7 +15832,7 @@ init 5 python:
 label monika_stargazing:
     m 2eub "[player], I'd really love to go stargazing sometime..."
     m 6dubsa "Picture it...{w=0.2}just the two of us, lying in a calm field watching the stars..."
-    m 6dublu "...holding each other close, pointing out constellations or making our own..."
+    m 6dubsu "...holding each other close, pointing out constellations or making our own..."
     m 6sub "...maybe we could even bring a telescope and look at planets!"
     m 6rta "..."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
