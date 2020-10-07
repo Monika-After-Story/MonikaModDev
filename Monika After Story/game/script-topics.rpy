@@ -15866,3 +15866,4 @@ label monika_gmos:
     m 1esd "Like I said before, GMOs are a complex topic. If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
     m 1hsa "That's all I have to say. Thanks for listening~"
     return
+    
