@@ -2220,21 +2220,13 @@ label monika_rain:
             if not mas_is_raining:
                 call mas_change_weather(mas_weather_rain, by_user=False)
 
-            call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=True)
+            call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
 
             m 1hua "Then hold me, [player]..."
-            show monika 6dubsa with dissolve_monika
-            window hide
 
-            $ mas_gainAffection()
-            $ ui.add(PauseDisplayable())
-            $ ui.interact()
-
-            # renable ui and hotkeys
-            $ store.songs.enabled = True
-            $ HKBShowButtons()
+            call monika_holdme_start
             call monika_holdme_end
-            window auto
+            $ mas_gainAffection()
 
             if mas_isMoniAff(higher=True):
                 m 1eua "If you want the rain to stop, just ask me, okay?"
@@ -2301,47 +2293,48 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep(queue_lullaby=True, play_lullaby=False, stop_music=False):
-    $ _holdme_events = list()
-    # Stop the music and queue the lullaby
-    if queue_lullaby and not play_lullaby and stop_music:
-        if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
-            $ renpy.music.stop(fadeout=1.0)
-            # TODO: I think we can add variety here, instead always playing the lullaby after 30 mins
-            $ _holdme_events.append(
-                PauseDisplayableEvent(
-                    datetime.timedelta(minutes=30),
-                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY)
+init python:
+    MAS_HOLDME_NO_LULLABY = 0
+    MAS_HOLDME_PLAY_LULLABY = 1
+    MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC = 2
+label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_music=False, disable_music_menu=False):
+    python:
+        holdme_events = list()
+        if persistent._mas_last_hold != datetime.date.today():
+            _minutes = random.randint(25, 40)
+        else:
+            _minutes = random.randint(35, 50)
+        holdme_slep_timer = datetime.timedelta(minutes=_minutes)
+
+        # Stop the music
+        if stop_music:
+            play_song(None, fadeout=5.0)
+
+        # Queue the lullaby
+        if lullaby == MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC:
+            if songs.current_track is None:
+                holdme_events.append(
+                    PauseDisplayableEvent(
+                        holdme_slep_timer,
+                        (
+                            renpy.partial(renpy.music.stop, fadeout=5.0),
+                            renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=5.0)
+                        )
+                    )
                 )
-            )
-            # this doesn't interfere with the timer and allows us to stop the lullaby
-            # from the music menu after the 30 minute mark
-            $ songs.current_track = store.songs.FP_MONIKA_LULLABY
-            $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+                # this doesn't interfere with the timer and allows us to stop the lullaby
+                # from the music menu after the 30 minute mark
+                songs.current_track = songs.FP_MONIKA_LULLABY
+                songs.selected_track = songs.FP_MONIKA_LULLABY
 
-    # Queue the lullaby w/o stopping the current track
-    elif queue_lullaby and not play_lullaby and not stop_music:
-        $ _holdme_events.append(
-            PauseDisplayableEvent(
-                datetime.timedelta(minutes=30),
-                (
-                    renpy.partial(renpy.music.stop, fadeout=5.0),
-                    renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=5.0)
-                )
-            )
-        )
+        # Just play the lullaby
+        elif lullaby == MAS_HOLDME_PLAY_LULLABY:
+            play_song(store.songs.FP_MONIKA_LULLABY)
 
-    # Just stop the music
-    elif not queue_lullaby and not play_lullaby and stop_music:
-        $ play_song(None, fadeout=1.0)
-
-    # Just play the lullaby
-    elif not queue_lullaby and play_lullaby and not stop_music:
-        $ play_song(store.songs.FP_MONIKA_LULLABY)
-
-    # Hide ui and disable hotkeys
-    $ HKBHideButtons()
-    $ store.songs.enabled = False
+        # Hide ui and disable hotkeys
+        HKBHideButtons()
+        if disable_music_menu:
+            store.songs.enabled = False
 
     return
 
@@ -2352,8 +2345,8 @@ label monika_holdme_start:
         #Start the timer vv
         start_time = datetime.datetime.now()
 
-        _holdme_disp = PauseDisplayableWithEvents(events=_holdme_events)
-        _holdme_disp.start()
+        holdme_disp = PauseDisplayableWithEvents(events=holdme_events)
+        holdme_disp.start()
 
         # renable ui and hotkeys
         store.songs.enabled = True
@@ -2365,7 +2358,14 @@ label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
 
-    if elapsed_time > datetime.timedelta(minutes=30):
+    # Reset these var if needed
+    if elapsed_time <= holdme_slep_timer:
+        if songs.current_track == songs.FP_MONIKA_LULLABY:
+            $ songs.current_track = songs.FP_NO_SONG
+        if songs.selected_track == songs.FP_MONIKA_LULLABY:
+            $ songs.selected_track = songs.FP_NO_SONG
+
+    if elapsed_time > holdme_slep_timer:
         call monika_holdme_long
 
     elif elapsed_time > datetime.timedelta(minutes=10):
@@ -2594,7 +2594,7 @@ label monika_holdme_long:
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
 
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=False)
+            call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -4955,7 +4955,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep(queue_lullaby=False, play_lullaby=False, stop_music=True)
+                call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
                 call monika_holdme_start
                 call monika_holdme_end
 
