@@ -761,7 +761,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if mas_ui.has_submod_settings:
+        if store.mas_submod_utils.submod_map:
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -829,7 +829,7 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
-        textbutton _("Hotkeys") action [ShowMenu("hot_keys")]
+        textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
         #textbutton _("About") action ShowMenu("about")
 
@@ -2834,8 +2834,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done.",
-    default_button_prompt="Nevermind.",
+    selected_button_prompt="Done",
+    default_button_prompt="Nevermind",
     return_all=False
 ):
     default buttons_data = {

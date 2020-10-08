@@ -23,6 +23,47 @@ python early:
         """
         return
 
+    class MASDummyClass(object):
+        """
+        Dummy class that does nothing.
+
+        If compared to, it will always return False.
+        """
+
+        def __call__(self, *args, **kwargs):
+            return MASDummyClass()
+
+        def __len__(self):
+            return 0
+
+        def __getattr__(self, name):
+            return MASDummyClass()
+
+        def __setattr__(self, name, value):
+            return
+
+        def __lt__(self, other):
+            return False
+
+        def __le__(self, other):
+            return False
+
+        def __eq__(self, other):
+            return False
+
+        def __ne__(self, other):
+            return False
+
+        def __gt__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return False
+
+        def __nonzero__(self):
+            return False
+
+
     # clear this so no more traceback. We expect node loops anyway
     renpy.execution.check_infinite_loop = dummy
 
@@ -362,6 +403,14 @@ python early:
     #   shown_count - number of times this event has been shown to the user
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
+    #       NOTE: IF AN EVENT HAS BEEN SEEN, IT SHOULD ALWAYS HAVE A POSITIVE
+    #           SHOWN COUNT. The only exception to this is if we crashed
+    #           halfway through a topic, in which case we will know this
+    #           since shown count will be 0 and the label would have been seen.
+    #           In that circumstance, we should immediately update the shown
+    #           count. (Event will not do this in case you need to do specific
+    #           crash handling). Call syncShownCount on the event object to
+    #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
     #       has been seen. This string will respect \n and other formatting
@@ -864,6 +913,13 @@ python early:
             """
             self.start_date = None
             self.end_date = None
+
+        def syncShownCount(self):
+            """
+            Updates shown count if it is < 1 but we have seen the label
+            """
+            if self.shown_count < 1 and renpy.seen_label(self.eventlabel):
+                self.shown_count = 1
 
         def timePassedSinceLastSeen_d(self, time_passed, _now=None):
             """
@@ -2703,6 +2759,20 @@ python early:
 
             self.__setup()
 
+        @staticmethod
+        def copyfrom(other, new_vx):
+            """
+            Copies a MASClickZone state, but applies a new_vx to it.
+
+            RETURNS: new MASClickZone to use
+            """
+            new_cz = MASClickZone(new_vx)
+            new_cz.disabled = other.disabled
+            new_cz._debug_back = other._debug_back
+            new_cz._button_down = other._button_down
+
+            return new_cz
+
         def render(self, width, height, st, at):
             """
             Render functions
@@ -2722,7 +2792,7 @@ python early:
             """
             Event function
             """
-            if ev.type == self._button_down:
+            if ev.type == self._button_down and not self.disabled:
                 # determine if this event happend here
                 if self._isOverMe(x, y):
                     return ev.button
@@ -2837,77 +2907,13 @@ python early:
 # init -1 python:
 
     class MASInteractable(renpy.Displayable):
+        """DEPRECATED
+
+        Do not use this.
         """
-        Base class for all interactable displayables.
-        Interactables are custom displayables that use clickzones
-        """
 
-        def __init__(self, zones, button_down, debug=False):
-            """
-            Constructor for an interactable.
-
-            IN:
-                zones - dict of the following format:
-                    key: key of the zone, this is returned if the zone is
-                        clicked
-                    value: list of vertexes that make teh zone
-                button_down - button_down item to use for each clickzone
-                debug - Set to True to fill the clickzones
-            """
-            super(renpy.Displayable, self).__init__()
-
-            self.zones = {}
-            self.zones_render = []
-
-            self._build_zones(zones, button_down, debug=debug)
-
-        def _build_zones(self, zones, button_down, debug=False):
-            """
-            Builds clickzone objects (self.zones and self.zones_render)
-
-            IN:
-                zones - dict of zones (see constructor)
-                button_down - button_down item to use for each clikzone
-                debug - set to True to see clickzones
-            """
-            for zone_key, zone_vx in zones.iteritems():
-                # build clickzone
-                clickzone = MASClickZone(zone_vx)
-                clickzone._debug_back = debug
-                clickzone._button_down = button_down
-
-                # add to internal lists
-                self.zones[zone_key] = clickzone
-                self.zones_render.append(clickzone)
-
-        def check_click(self, ev, x, y, st):
-            """
-            Checks if an ev was a click over a zone.
-
-            RETURNS: zone key if clicked, None if not clicked
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone.event(ev, x, y, st) is not None:
-                    return zone_key
-
-            return None
-
-        def check_over(self, x, y):
-            """
-            Checks if the given x y is over a zone, and returns the zone key
-            if appropripate
-
-            IN:
-                x - x
-                y - y
-
-            RETURNS: zone_key, or None if no click over zones
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone._isOverMe(x, y):
-                    return zone_key
-
-            return None
+        def __init__(self, *args, **kwargs):
+            pass
 
 
 # init -1 python:
@@ -3817,12 +3823,35 @@ init -1 python in _mas_root:
 init -999 python:
     import os
 
+    _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
+
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
         try:
             os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
         except:
             pass
+
+    def mas_override_label(label_to_override, override_label):
+        """
+        Label override function
+
+        IN:
+            label_to_override - the label which will be overridden
+            override_label - the label to override with
+        """
+        global _OVERRIDE_LABEL_TO_BASE_LABEL_MAP
+
+        #Check if we're overriding an already overridden label
+        if label_to_override in config.label_overrides:
+            old_override = config.label_overrides.pop(label_to_override)
+
+            #Remove the data for the label which is no longer acting as an override
+            if old_override in _OVERRIDE_LABEL_TO_BASE_LABEL_MAP:
+                _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.pop(old_override)
+
+        config.label_overrides[label_to_override] = override_label
+        _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
 init -995 python in mas_utils:
     def compareVersionLists(curr_vers, comparative_vers):
@@ -7648,6 +7677,9 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# True if the current background is an indoors one
+define mas_is_indoors = True
 
 # idle
 default persistent._mas_in_idle_mode = False
