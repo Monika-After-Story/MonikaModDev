@@ -15848,7 +15848,7 @@ init 5 python:
 label monika_quiet_time:
     if mas_isMoniNormal(higher=True):
         m 3hub "Of course not!"
-        if persistent._mas_pm_extrovert:
+        if persistent._mas_pm_social_personality == mas_SP_EXTROVERT:
             m 3eka "I know silence can feel a bit awkward at times, but I don't think we should see it as a bad thing."
             m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
             m 1dka "I for one, definitely need to recharge my social batteries every once in a while." 
@@ -15867,7 +15867,7 @@ label monika_quiet_time:
             m 2ekc "Otherwise,{w=0.2} it'd be like if you were trying to distract yourself because you feel awkward having them here with you and feeling like you're not doing enough to entertain them."
             m 2ekb "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
             extend 2eka "I think that's a testament of how special your bond with them truly is."
-            if persistent._mas_pm_introvert:
+            if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
                 show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 5eka "So I hope you know that there's no need to feel pressured about always having something to talk about with me, [mas_get_player_nickname]."
                 m 5hua "I'll always enjoy having you here with me no matter what."
@@ -15884,10 +15884,10 @@ label monika_quiet_time:
             m 1hua "Just give me some time to put them into words, okay?"
 
     else:
-        m 1rsc "Sometimes, I wonder if you even enjoy spending time with me at all..."
+        m 1rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
         m 1rkd "You...{w=0.3}{nw}"
         extend 2ekd "you do enjoy spending time with me, right?"
         m 2dkc "It doesn't really matter to me what we're doing...{w=0.4} So long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
-        m 2dksdlc"..."
+        m 2dksdlc "..."
     return
