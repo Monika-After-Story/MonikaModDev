@@ -2348,6 +2348,9 @@ label monika_holdme_start:
         holdme_disp = PauseDisplayableWithEvents(events=holdme_events)
         holdme_disp.start()
 
+        del[holdme_events]
+        del[holdme_disp]
+
         # renable ui and hotkeys
         store.songs.enabled = True
         HKBShowButtons()

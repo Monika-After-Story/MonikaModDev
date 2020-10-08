@@ -3506,17 +3506,16 @@ init 25 python:
 
             if events is not None:
                 if not isinstance(events, (tuple, list)):
-                    events = [events]
+                    self.events = [events]
 
-                self.events = sorted(events, key=self.__sort_key_td)
-                self.__all_events = list(self.events)
+                else:
+                    self.events = sorted(events, key=self.__sort_key_td)
 
             else:
                 self.events = list()
-                self.__all_events = list()
 
+            self.__all_events = list(self.events)
             self.respected_keysims = respected_keysims or self.__RESPECTED_KEYSIMS
-
             self.__abort_events = False
 
         def __repr__(self):
@@ -3577,6 +3576,9 @@ init 25 python:
 
             OUT:
                 generator over the events
+
+            ASSUMES:
+                the events are sorted
             """
             _now = datetime.datetime.now()
 
@@ -3589,12 +3591,11 @@ init 25 python:
                 else:
                     return
 
-        def __request_redraw(self):
+        def __set_timeout(self):
             """
-            Asks renpy for redraw if appropriate
-            NOTE: the actual redraw will happen 1/10 second later to be sure we won't redraw too early
+            Sets a timeout for event generator
             """
-            # No need to redraw if we have no pending events
+            # No need to do anything if we have no pending events
             if not self.events:
                 return
 
@@ -3602,26 +3603,17 @@ init 25 python:
             _end_dt = self.events[0].end_datetime
 
             if _end_dt >= _now:
-                redraw_time = (_end_dt - _now).total_seconds() + 0.1
+                timeout = (_end_dt - _now).total_seconds() + 0.1
 
             else:
-                redraw_time = 0.1
+                timeout = 0.1
 
-            renpy.redraw(self, redraw_time)
+            renpy.timeout(timeout)
 
         def render(self, width, height, st, at):
             """
-            Handles our events
+            Our render
             """
-            for event in self.__get_events_for_time():
-                if not self.__abort_events:
-                    event()
-                    if event.repeatable:
-                        event.set_end_datetime(datetime.datetime.now() + event.timedelta)
-                        store.mas_utils.insert_sort(self.events, event, self.__sort_key_dt)
-
-            self.__request_redraw()
-
             # We don't render anything
             return renpy.Render(0, 0)
 
@@ -3644,17 +3636,34 @@ init 25 python:
             """
             Handles interactions
             """
-            # Detected click? Interrupt pause
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+            # Should run our time event?
+            if ev.type == renpy.display.core.TIMEEVENT:
+                for event in self.__get_events_for_time():
+                    if not self.__abort_events:
+                        event()
+                        if event.repeatable:
+                            event.set_end_datetime(datetime.datetime.now() + event.timedelta)
+                            store.mas_utils.insert_sort(self.events, event, self.__sort_key_dt)
+
+                    # If we aborted, we need to quit asap
+                    else:
+                        return None
+
+                self.__set_timeout()
+                raise renpy.IgnoreEvent()
+
+            # Detected a m1 click? Interrupt pause
+            elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 self.__abort_events = True
                 ui.remove(self)
                 return True
 
             # Other kind of event? Check our keysims
-            else:
-                self.__check_keysims(ev)
+            elif self.__check_keysims(ev):
+                raise renpy.IgnoreEvent()
 
-            raise renpy.IgnoreEvent()
+            # Otherwise continue listening
+            return None
 
         def per_interact(self):
             """
