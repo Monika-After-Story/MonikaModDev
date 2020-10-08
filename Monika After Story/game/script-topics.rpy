@@ -5090,7 +5090,7 @@ label monika_chloroform:
     m 1eksdld "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
-    if persistent._mas_pm_introvert:
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
         m 3rksdla "I know you're probably not one to enjoy doing this often, but just in case..."
     m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
     m 1eub "Just throw it out."
