@@ -762,7 +762,7 @@ init 5 python:
         markSeen=True
     )
 
-label monika_idle_reading 
+label monika_idle_reading: 
     if mas_isMoniNormal(higher=True):
         m 2eub "Really? That's great, [player]."
         m 3lksdla "I'd love to be there reading with you, but my reality has its limits."
@@ -814,7 +814,6 @@ label monika_idle_reading_callback:
     else:
         m 6dktpc "..."
     return
-
 
 
 #Rai's og game idle
