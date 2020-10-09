@@ -776,7 +776,7 @@ label monika_idle_get_something:
     else: 
         m 6dkc "..."
 
-label monika_idle_make_get__somethingcallback:
+label monika_idle_get__something_callback:
     if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
         m 1eub "Got it? Great!"
