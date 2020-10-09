@@ -1584,7 +1584,7 @@ init python:
         TM_CHAIN = "chain"
 
         # Consts for ev messages
-        # NOTE: Add as needed
+        # NOTE: Add more as needed
 
         # COMPLIMENTS
         GAVE_CMP_LOOK = "cmp_look"
@@ -1593,6 +1593,7 @@ init python:
         GAVE_CMP_HAIR = "cmp_hair"
         GAVE_CMP_HERO = "cmp_hero"
         GAVE_CMP_CUTE = "cmp_cute"
+        GAVE_CMP_ENJOY_TIME_TOGETHER = "cmp_enj_time_together"
 
         EXPECTS_CMP_LOOK = "exp_cmp_look"
         EXPECTS_CMP_EYES = "exp_cmp_eyes"
@@ -1600,6 +1601,7 @@ init python:
         EXPECTS_CMP_HAIR = "exp_cmp_hair"
         EXPECTS_CMP_HERO = "exp_cmp_hero"
         EXPECTS_CMP_CUTE = "exp_cmp_cute"
+        EXPECTS_CMP_ENJOY_TIME_TOGETHER = "exp_cmp_enj_time_together"
 
         # DISCUSSIONS
         TALKED_ABOUT_LOOK = "talk_look"
@@ -1608,6 +1610,7 @@ init python:
         TALKED_ABOUT_HAIR = "talk_hair"
         TALKED_ABOUT_HEROISM = "talk_heroism"
         TALKED_ABOUT_CUTENESS = "talk_cuteness"
+        TALKED_ABOUT_BEING_TOGETHER = "talk_being_together"
 
         # THANKING
         MONIKA_THANKED = "m_thanked"
@@ -1647,14 +1650,14 @@ init python:
             """
             return super(MASEventMailbox, self).read(key)
 
-        def send(self, msg, contents=None, expiry=datetime.timedelta(minutes=1)):
+        def send(self, msg, contents=True, expiry=datetime.timedelta(minutes=1)):
             """
             Method to send messages to other topics
 
             IN:
                 msg - message to send
                 contents - contents to send with the message
-                    (Default: None)
+                    (Default: boolean True)
                 expiry - datetime.timedelta when this message will expire. If None, it will not expire until a topic ends
                     (Default: 1 minute)
             """
@@ -1668,21 +1671,25 @@ init python:
 
         def __verify_msg_data(self, msg_data):
             """
-            Verifies message data and returns either the message contents or None
+            Verifies message data
 
             IN:
                 msg_data - message data
 
             OUT:
-                message content or None
+                tuple:
+                    boolean whether or not we should pop the message as outdated
+                    message content (or None as fallback)
             """
             if msg_data is not None:
                 expiry, contents = msg_data
                 #Check expiry
                 if expiry is None or datetime.datetime.now() <= expiry:
-                    return contents
+                    return False, contents
 
-            return None
+                return True, None
+
+            return False, None
 
         def get(self, msg):
             """
@@ -1695,9 +1702,7 @@ init python:
             OUT:
                 the message's content, or None if the message has expired or doesn't exist
             """
-            return self.__verify_msg_data(
-                self.__get(msg)
-            )
+            return self.__verify_msg_data(self.__get(msg))[-1]
 
         def read(self, msg):
             """
@@ -1709,9 +1714,11 @@ init python:
             OUT:
                 the message's content, or None if the message has expired or doesn't exist
             """
-            return self.__verify_msg_data(
-                self.__read(msg)
-            )
+            should_pop, contents = self.__verify_msg_data(self.__read(msg))
+            if should_pop:
+                self.__get(msg)
+
+            return contents
 
         def check(self, msg):
             """
@@ -1723,7 +1730,14 @@ init python:
             OUT:
                 True if the message in the mailbox, False otherwise
             """
-            return self.__read(msg) is not None
+            msg_data = self.__read(msg)
+            if msg_data is not None:
+                if msg_data[0] is None or datetime.datetime.now() <= msg_data[0]:
+                    return True
+
+                self.__get(msg)
+
+            return False
 
         def remove(self, msg):
             """
