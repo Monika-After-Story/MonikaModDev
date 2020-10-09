@@ -332,7 +332,7 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "(?<=[g])rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
@@ -488,7 +488,6 @@ init 3 python:
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
-
 label mas_player_name_enter_name_loop(input_prompt):
     python:
         good_quips = [
@@ -497,9 +496,6 @@ label mas_player_name_enter_name_loop(input_prompt):
             "I like that name, [player].",
             "That's a great name!"
         ]
-
-        lowerplayer = player.lower()
-        cute_nickname_pattern = "(?:{0}|{1})\\w?y".format(lowerplayer, lowerplayer[0:-1])
 
     #Now we prompt user
     show monika 1eua at t11 zorder MAS_MONIKA_Z
@@ -514,7 +510,6 @@ label mas_player_name_enter_name_loop(input_prompt):
             ).strip(' \t\n\r')
 
             lowername = tempname.lower()
-            is_cute_nickname = bool(re.search(cute_nickname_pattern, lowername))
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -526,18 +521,18 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3rksdlb "You have to give me a name to call you, [player]..."
             m 1eua "Try again!"
 
-        elif lowername == lowerplayer:
+        elif lowername == player.lower():
             m 2hua "..."
             m 4hksdlb "That's the same name you have right now, silly!"
             m 1eua "Try again~"
 
-        elif not is_cute_nickname and mas_awk_name_comp.search(tempname):
-            $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+        elif mas_awk_name_comp.search(tempname):
+            $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
-        elif not is_cute_nickname and mas_bad_name_comp.search(tempname):
-            $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+        elif mas_bad_name_comp.search(tempname):
+            $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
 
@@ -573,7 +568,7 @@ label mas_player_name_enter_name_loop(input_prompt):
                 m 1hua "But it's fine by me if that's what you want me to call you~"
                 $ done = True
 
-            elif is_cute_nickname or mas_good_player_name_comp.search(tempname):
+            elif mas_good_player_name_comp.search(tempname):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
                 $ adjustNames(tempname)
