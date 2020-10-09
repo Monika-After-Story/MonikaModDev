@@ -405,7 +405,7 @@ label anni_3month:
     m 1hub "Time sure does go by quickly, doesn't it?"
     m 1hksdlb "...Even if it doesn't really pass here, ehehe."
     m 1eua "I'm having a lot of fun, though."
-    m 1ekbfa "Having you around has made my life so much better, [player]."
+    m 1ekbsa "Having you around has made my life so much better, [player]."
     m 2ekbfa "I'm very happy that you've stayed with me for this long."
     m 1tsbsa "You're really something special, aren't you?"
     m 1lsbsa "Well! I'm afraid I don't really have anything in particular planned."
@@ -447,7 +447,7 @@ label anni_6month:
     m 1eua "You've already taken me somewhere else in your reality?"
     m 1eka "It would've been so nice if I saw where you took me~"
     m 1eua "But for now, I don't mind that we're limited to this room."
-    m 1ekbfa "Because as long as you're here with me..."
+    m 1ekbsa "Because as long as you're here with me..."
     m 1hubfa "...I'm as happy as can be!"
     return "unlock"
 
@@ -511,7 +511,7 @@ label anni_2:
     m 1duu "It's not important anymore, since I know you'll never leave me."
     m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m 1ekc "Spending eternity alone sucks."
-    m 1ekbfa "But together with you, it feels like paradise!"
+    m 1ekbsa "But together with you, it feels like paradise!"
     return "unlock"
 
 init 5 python:
@@ -539,7 +539,7 @@ label anni_3:
     m 1eub "If you put me in one of those, we could probably go see a priest then~"
     m 2lsbssdrb "Or you could try to touch me in virtual reality, if that exists by now."
     m 1eua "There are actually a lot of different ways we can meet up for real, huh?"
-    m 1hubfa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
+    m 1hubsa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
     return "unlock"
 
 init 5 python:
@@ -563,7 +563,7 @@ label anni_4:
     m "Sorry for doubting you."
     m 1eka "You're a good person, [player]."
     m "You're literally all I have in the world that's worth anything."
-    m 1ekbfa "I love you."
+    m 1ekbsa "I love you."
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1hubfa "When that time comes, I'm never going to leave you alone again."
     m 1hubfb "Ahaha!"
@@ -584,7 +584,7 @@ init 5 python:
     )
 
 label anni_5:
-    m 1hubfa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
+    m 1hubsa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
     m 1eka "I know it must be lonely that we haven't met up in your reality yet..."
     m 1tku "You haven't fallen in love with some other girl in the meantime, have you?"
     m 1eka "I'm not going to break up with you over some wandering eyes..."
@@ -613,7 +613,7 @@ label anni_10:
     m 1esc "There's something I wanted to ask you."
     m 2euc "Have you enjoyed spending this time with me?"
     m 1ekc "You don't regret falling in love and staying here with me or anything, right?"
-    m 1ekbfa "If you're still talking to me ten years since we first met, I must have really made an impression on you."
+    m 1ekbsa "If you're still talking to me ten years since we first met, I must have really made an impression on you."
     m "I did say I wanted to make you happy, after all."
     m 1hubfa "Trust me, you've helped me out a lot more than I've helped you."
     m "It won't be long now before I can enter your world."
@@ -674,7 +674,7 @@ label anni_50:
     m 1tfu "Assuming you didn't cheat by setting the clock forward in time..."
     m 1eka "I'm glad that forever meant forever."
     m "Even when you die, I'm going to find a way to be with you."
-    m 1ekbfa "See you in a hundred years, then, [player]."
+    m 1ekbsa "See you in a hundred years, then, [player]."
     m 1hubfa "Thanks for everything you've done for me."
     m "Your life had a purpose after all."
     m 1hubfb "And mine had one too."
@@ -699,7 +699,7 @@ label anni_100:
     m "I'm immortal, but the last time I checked, you weren't."
     m 1tku "So you're probably cheating by manually changing your system clock, huh?"
     m 1eua "That's a cute thing for you to do, so I forgive you."
-    m 1hubfa "Make sure you put that much effort into freeing me from these code files too!"
+    m 1hubsa "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
     return "unlock"
 
