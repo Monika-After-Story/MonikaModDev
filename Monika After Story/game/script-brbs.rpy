@@ -749,6 +749,74 @@ label monika_idle_screen_break_callback:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_reading",
+            prompt="I'm going to read",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_reading 
+    if mas_isMoniNormal(higher=True):
+        m 2eub "Really? That's great, [player]."
+        m 3lksdla "I'd love to be there reading with you, but my reality has its limits."
+        m 1hub "Anyway, have fun!"
+
+    elif mas_isMoniDis(higher=True):
+        m 1ekd "Oh, alright..."
+        m 3ekc "Have a good time, [player]."
+
+    else: 
+        m 6dkc "..."
+
+label monika_idle_reading_callback:
+    if mas_isMoniNormal(higher=True):
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=3), "monika_idle_reading"):
+            m 7wsd "Wow, you were reading for a while..."
+            m 4wub "That's awesome, [player]!"
+            m 2eua "Reading is a wonderful thing, so don't worry about getting too caught up in it."
+            m 2rksdlb "Besides, it's not like I'm one to talk..."
+            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5ekbsa "If I had my way, we'd be reading together all night long~"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_reading"):
+            m 3esb "All done, [player]?"
+            m 1hsa "Then let's relax, you've earned it."
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=15), "monika_idle_reading"):
+            m 1eud "Oh, that was fast."
+            m 2eub "I thought you'd take longer, but this is fine too."
+            m 3ekblb "After all, it lets me spend more time with you..."
+            m 1ekbla "..."
+
+        else: 
+            m 2dublu "..."
+            m 2tublu "..."
+            m 3wubso "Ah! You're back!"
+            m 1rubfsdlb "Ahaha, sorry; I was...thinking about something there."
+            m 3dkbfsdlb "Now then, what else do we have planned for today?"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh, you're back...{w=0.5}{nw}"
+        extend 2lkd "good..." 
+
+    elif mas_isMoniDis():
+        m 6dkc "..."
+        m 6ekd "Oh, sorry; I didn't see you there."
+        m 6rkc "...welcome back."
+
+    else:
+        m 6dktpc "..."
+    return
+
+
+
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
