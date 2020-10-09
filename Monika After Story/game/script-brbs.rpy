@@ -749,6 +749,48 @@ label monika_idle_screen_break_callback:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_get_something",
+            prompt="I'm going to go get something",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_get_something: 
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Oh, okay."
+        m 3eua "See you in a bit!"
+
+    elif mas_isMoniDis(higher=True):
+        m 1esc "Alright."
+
+        if random.randint(1,9) == 1:
+            m 2rkd "...please don't be gone long."
+
+    else: 
+        m 6dkc "..."
+
+label monika_idle_make_get__somethingcallback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        m 1eub "Got it? Great!"
+        m 3eua "[wb_quip]"
+
+    elif mas_isMoniDis():
+        m 2esc "Welcome back."
+
+    else:
+        m 6ekc "..."
+
+    return
+
+
 #Rai's og game idle
 #label monika_idle_game:
 #    m 1eub "That sounds fun!"
