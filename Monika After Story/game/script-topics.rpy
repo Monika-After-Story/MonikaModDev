@@ -15825,3 +15825,21 @@ label monika_renewable_energy:
     m 3lksdrb "Sorry, I got carried away there, ahaha!"
     m 1tuu "Debates sure are something, huh?"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_stargazing",category=['nature'],prompt="Stargazing",random=True))
+
+label monika_stargazing:
+    m 2eub "[player], I'd really love to go stargazing sometime..."
+    m 6dubsa "Picture it...{w=0.2}just the two of us, lying in a calm field watching the stars..."
+    m 6dubsu "...holding each other close, pointing out constellations or making our own..."
+    m 6sub "...maybe we could even bring a telescope and look at planets!"
+    m 6rta "..."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eka "You know [mas_get_player_nickname()], to me you're like a star..."
+    m 5rkbsu "A beautiful, bright beacon from a distant world, forever out of reach."
+    m 5dkbsu "..."
+    m 5ekbsa "At least, for now..."
+    show monika 5kkbsa
+    pause 2.0
+    return
