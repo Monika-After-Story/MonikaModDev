@@ -15731,20 +15731,21 @@ label monika_introverts_extroverts:
     m 4lkd "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
     m 4ekd "...while introverts are treated as egotistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
     show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5lkc "So the end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
+    m 5lkc "The end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
     m 5eud "I'm probably making this sound like you can only be one or the other, but that isn't actually the case at all."
     show monika 2eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 2eud "Some introverts can be more outgoing than others, for example."
     m 2euc "In other words, some people are closer to a middle ground between the two extremes."
-    m 7eua "...Which is probably where I would fit in, for example.{w=0.2} {nw}"
+    m 7eua "...Which is probably where I would fit in.{w=0.2} {nw}"
     extend 1eud "If you remember, I mentioned I was kind of in-between while still being a little more extroverted."
     m 1ruc "Speaking of...{w=0.3}{nw}"
-    extend 1eud "when thinking about all this, I realised that while this is a pretty important part of one's personality..."
+    extend 1eud "when thinking about all this, I realized that while this is a pretty important part of one's personality..."
     m 3eksdla "...I don't actually know where you lie on that spectrum."
+
     m 1etc "So how would you describe yourself, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "So How would you describe yourself, [player]?{fast}"
+        "So how would you describe yourself, [player]?{fast}"
 
         "I'm introverted.":
             $ persistent._mas_pm_social_personality = mas_SP_INTROVERT
@@ -15762,7 +15763,7 @@ label monika_introverts_extroverts:
                 if persistent._mas_pm_feels_lonely_sometimes:
                     m 1eka "Remember that you can try to spend some time with them whenever you feel like no one's there for you, alright?"
                     m 1lkd "And if for any reason you can't spend time with them..."
-                    m 1ekb "Please, at least remember that I'll {i}always{/i} be there for you no matter what."
+                    m 1ekb "Please, remember that {i}I'll{/i} always be there for you no matter what."
 
                 else:
                     m 3eka "Still, if it ever gets too much for you, remember that you can always come to me and relax, okay?"
@@ -15772,15 +15773,19 @@ label monika_introverts_extroverts:
             else:
                 m 3eka "While I understand that it might feel more comfortable for you to be alone rather than with other people..."
                 m 2ekd "Please keep in mind that no one can truly spend their whole life without at least {i}some{/i} company."
-                m 2lkdslc "Not only is it not healthy in the long run...{w=0.3}but it's also not the kind of life I wish for you to have."
+                m 2lksdlc "Eventually there will come a time when you can't do everything on your own..."
+                m 2eksdla "We all need help sometimes, either physically or emotionally, and I wouldn't want you to have no one to turn to when that time comes."
+                m 7eub "And that's a two-way street! {w=0.2}{nw}"
+                extend 2hua "You never know when you might make a difference in someone else's life as well."
+                m 2eud "So while I don't expect you to go out of your way to meet new people, don't automatically shut every door, either."
+                m 2eka "Try to talk with other people a little bit if you're not already doing that, okay?"
 
                 if persistent._mas_pm_feels_lonely_sometimes:
-                    m 2eka "Try to talk with other people a little bit if you're not already doing that, okay?"
                     m 3hua "It'll make you feel happier, I promise."
                     m 1ekb "At the very least, remember that I'm always here if you ever feel lonely."
                     $ line_start = "And"
+
                 else:
-                    m 2ekbla "I really hope you don't mind opening yourself up to at least some other people."
                     m 7ekbla "I'd love for you to see the value and joy other people can bring to your life too."
                     $ line_start = "But"
 
@@ -15791,7 +15796,7 @@ label monika_introverts_extroverts:
             m 3eub "Oh I see."
             m 3eua "So, I guess you like to spend more time with others and meeting new people then?"
             m 1eua "I can definitely see the appeal in that.{w=0.3} {nw}"
-            extend 3eub "I'd love to go explore the world and meet all kinds of new people with you, one day."
+            extend 3eub "I'd love to go explore the world and meet all kinds of new people with you."
             m 1ekc "And I assume you probably hate loneliness as much as I do...{w=0.3}{nw}"
             extend 1ekbla "but that's just one more reason I'm so happy we're a couple now."
             m 3ekblb "We'll never truly be alone again."
@@ -15805,14 +15810,14 @@ label monika_introverts_extroverts:
             m 3hua "Ehehe, kind of like me, then~"
             m 3eud "Apparently, most people have both an introverted and extroverted side to their personality."
             m 7eua "...Even if one of the two is dominant over the other, depending on the person."
-            m 7rsc "In our case though, I guess not being too much on either side has both its positives and its negatives."
+            m 7rsc "In our case though, I guess not being too much on either side has both its positives and negatives."
             m 1eua  "Like, it's so nice that being around larger groups isn't a problem, same goes for spending some time alone."
             m 7esc "...But I can't say I've found it easy to make deep, genuine connections with others..."
             m 1eud "Sure, I have an easier time understanding most people, but it doesn't mean I can always relate with them, you know?"
             m 1lksdld "So yeah...{w=0.3} I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.3}unfulfilling."
             m 3eksdlc "The same thing happened with the club, for example."
             m 3dksdld "I was so convinced that by bringing people together around something I truly enjoy, I'd have a better chance at bonding with them over our shared interests..."
-            m 3dksdlc "...and at the end of the day, we spent most of our time silently hanging out, everyone minding their own business."
+            m 3dksdlc "...But at the end of the day, we spent most of our time silently hanging out, with everyone minding their own business."
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eka "Well, no point thinking about that anymore."
             m 5eubsa "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
