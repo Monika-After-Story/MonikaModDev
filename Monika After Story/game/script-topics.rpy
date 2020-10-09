@@ -15745,7 +15745,7 @@ label monika_introverts_extroverts:
     m 1etc "So how would you describe yourself, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "So how would you describe yourself, [player]?{fast}"
+        m "So how would you describe yourself, [player]?{fast}"
 
         "I'm introverted.":
             $ persistent._mas_pm_social_personality = mas_SP_INTROVERT
