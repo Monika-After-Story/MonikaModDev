@@ -10103,7 +10103,8 @@ label monika_familygathering:
     m "Do you think they'd like me, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "Do you think they'd like me, [player]?{fast}"
+        m "Do you think they'd like me, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_fam_like_monika = True
             m 1eka "I'm glad you think so."
