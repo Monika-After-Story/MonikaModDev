@@ -15131,9 +15131,7 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    # NOTE: Dummy value.
-    $ mas_player_initiative = True
-    if mas_player_initiative:
+    if mas_event_mailbox.is_player_initiated_mode():
         m "You know, I think I could understand couples wishing to die together, on the same day."
         m "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
         m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
