@@ -15131,15 +15131,7 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    if mas_event_mailbox.is_player_initiated_mode():
-        m "You know, I think I could understand couples wishing to die together, on the same day."
-        m "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
-        m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
-        if mas_isMoniEnamored(higher=True):
-            m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can finally understand it."
-        else:
-            m 2ekc "...But after meeting you, I can finally understand it."
-    else:
+    if mas_event_mailbox.is_monika_initiated_mode():
         m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
         m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
         m 3rfd "Before I met you, I thought the idea was completely absurd!"
@@ -15149,6 +15141,14 @@ label monika_dying_same_day:
             m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
         else:
             m 2ekc "...But after meeting you, I think I can kind of see it now."
+    else:
+        m "You know, I think I could understand couples wishing to die together, on the same day."
+        m "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
+        m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+        if mas_isMoniEnamored(higher=True):
+            m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can finally understand it."
+        else:
+            m 2ekc "...But after meeting you, I can finally understand it."
 
     m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
     m 2rksdlc "It hurts just thinking about this."
