@@ -10,6 +10,7 @@
 #
 # TOC:
 # EXM010 - ZOOM stuff
+# EXM020 - BOOP stuff
 # EXM900 - EXTRA menu stuff
 
 
@@ -219,6 +220,19 @@ label mas_extra_menu_zoom_in_max_first_time:
     pause 2.0
     m 6hubfa "Warm..."
     return
+
+
+################################# BOOP STUFF ##################################
+# [EX020]
+
+label mas_extra_menu_boop_intro:
+    m 1eua "boop intro"
+    return
+
+default persistent._mas_pm_boop_stats = {}
+# key - boop key/clickzone key
+# value - number of boops
+
 
 ################################# EXTRA MENU STUFF ############################
 # [EXM900]
