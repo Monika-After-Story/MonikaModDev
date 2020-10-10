@@ -1318,6 +1318,9 @@ label mas_song_ageage_again:
     m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
     m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
     m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+        m 1eka "That is, if you're up to it."
+        m 1hubsb "If not, there are still plenty of things I'd love to do with you~"
     return
 
 init 5 python:
