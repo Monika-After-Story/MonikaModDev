@@ -74,7 +74,7 @@ init:
                 self.ball = Image("mod_assets/games/pong/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
                 self.monika = Text(_("Monika"), size=36)
-                self.ctb = Text(_("Click to Begin"), size=36)
+                self.ctb = Text(_("Click to Begin!"), size=36)
 
                 # Sounds used.
                 self.playsounds = True
@@ -618,8 +618,8 @@ label mas_pong_dlg_winner:
     #Player lets Monika win after being asked to go easy on her without hitting the ball
     if monika_asks_to_go_easy and ball_paddle_bounces == 1:
         m 1rksdla "Ahaha..."
-        m 1hksdla "I know I asked you to go easy on me...but this isn't exactly what I had in mind, [player]."
-        m 3eka "I do appreciate the gesture though~"
+        m 1hksdla "I know I asked you to go easy on me, but this isn't exactly what I had in mind."
+        m 3eka "I do appreciate the gesture though, [player]~"
         $ monika_asks_to_go_easy = False
 
     #Player lets Monika win after being asked to go easy on her without hitting the ball too much
@@ -636,7 +636,7 @@ label mas_pong_dlg_winner:
 
         #Once
         if instant_loss_streak_counter == 1:
-            m 2rksdlb "Ahaha, how did you miss that?"
+            m 2rksdlb "Ah, that's unlucky..."
 
         #Twice
         elif instant_loss_streak_counter == 2:
@@ -647,7 +647,7 @@ label mas_pong_dlg_winner:
             m 2tfd "[player]!"
 
             if persistent._mas_pm_ever_let_monika_win_on_purpose:
-                $ menu_response = _("Are you letting me win on purpose again?")
+                $ menu_response = _("Are you letting me win again?")
             else:
                 $ menu_response = _("Are you letting me win on purpose?")
 
@@ -657,10 +657,10 @@ label mas_pong_dlg_winner:
                 m "[menu_response]{fast}"
 
                 "Yes...":
-                    m 1hua "Ehehe!"
-                    m 1eka "Thanks for letting me win, [player]~"
+                    m 1hua "Ehehe~"
+                    m 1eka "Thanks for letting me win, [player]."
                     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eka "But you know, I wouldn't mind losing to you sometimes."
+                    m 5eka "But you know, all that matters is that we have fun."
 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 5eua "I like to see you win just as much as you like to see me win~"
@@ -671,7 +671,7 @@ label mas_pong_dlg_winner:
                 "No.":
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         show monika 1ttu
-                        m "Are you sure?{nw}"
+                        m "Really? Are you sure?{nw}"
                         $ _history_list.pop()
                         menu:
                             m "Are you sure?{fast}"
@@ -679,9 +679,10 @@ label mas_pong_dlg_winner:
                             "Yes":
                                 call mas_pong_dlg_sorry_assuming
 
-                            "No":
+                            "...Maybe...":
                                 m 1rfu "[player]!"
                                 m 2hksdlb "Stop teasing me!"
+                                m 1ttu "That's my job."
                                 $ player_lets_monika_win_on_purpose = True
                                 $ lose_on_purpose = True
 
@@ -714,7 +715,7 @@ label mas_pong_dlg_winner:
             m 2tsb "Didn't I tell you I would win this time?"
         else:
             m 2ttu "Remember, [player]?"
-            m 2tfb "I told you I'd win the next game."
+            m 2tfb "I told you I'd win our next match."
 
     #Monika wins after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
@@ -731,7 +732,7 @@ label mas_pong_dlg_winner:
 
     #The player has lost 3, 8, 13, ... matches in a row.
     elif loss_streak_counter >= 3 and loss_streak_counter % 5 == 3:
-        m 2eka "Come on, [player], I know you can beat me..."
+        m 2eka "You can do this, [player]..."
         m 3hub "Keep trying!"
 
     #The player has lost 5, 10, 15, ... matches in a row.
@@ -765,6 +766,10 @@ label mas_pong_dlg_winner:
         else:
             m 3hub "Well played, [player], you're really good!"
             m 1tfu "But so am I, ahaha!"
+
+            if random.randint(1,3) == 1:
+                    m 1eka "Rai is a noob."
+                    m 1hub "Rai won't read this, though."
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_LONG_GAME
 
@@ -1095,7 +1100,7 @@ label mas_pong_dlg_winner_fast:
 label mas_pong_dlg_loser_end:
     m 1wuo "Wow, I was really trying that time."
     m 1eua "You must have really been practicing to get so good."
-    m 2tuu "I guess you wanted to impress me, [player]."
+    m 2tuu "Did you want to impress me, [player]?"
     m 1hua "You're so sweet~"
     return
 
