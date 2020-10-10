@@ -676,10 +676,10 @@ label mas_pong_dlg_winner:
                         menu:
                             m "Are you sure?{fast}"
 
-                            "Yes":
+                            "Yes.":
                                 call mas_pong_dlg_sorry_assuming
 
-                            "...Maybe...":
+                            "...Maybe.":
                                 m 1rfu "[player]!"
                                 m 2hksdlb "Stop teasing me!"
                                 m 1ttu "That's my job."
@@ -719,7 +719,7 @@ label mas_pong_dlg_winner:
 
     #Monika wins after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
-        m 1rksdla "Oh."
+        m 1rksdla "Ah."
         m 3hksdlb "Try again, [player]!"
 
         $ persistent._mas_pong_difficulty_change_next_game = PONG_PONG_DIFFICULTY_POWERDOWNBIG
@@ -873,10 +873,10 @@ label mas_pong_dlg_sorry_assuming:
     m 3eka "Would you like to take a break, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Would you like to take a break, [player]?{fast}"
+        m "Would you like to take a break, [mas_get_player_nickname()]?{fast}"
 
         "Okay.":
-            m 1eka "Alright, [player]."
+            m 1eka "Alright, if that's what you want."
             m 1hua "I had fun, thanks for playing pong with me!"
             m 1eua "Let me know when you're ready to play again."
 
@@ -888,7 +888,7 @@ label mas_pong_dlg_sorry_assuming:
             jump ch30_loop
 
         "No.":
-            m 1eka "Alright, [player]. If you're sure."
+            m 1eka "Alright, if you're sure."
             m 1hub "Keep going, you'll beat me soon!"
     return
 
@@ -925,9 +925,9 @@ label mas_pong_dlg_loser:
 
     #Player wins after losing at least three times in a row
     elif loss_streak_counter_before >= 3:
-        m 4eub "Congrats, [player]!"
-        m 2hub "I knew you would win a game after enough practice!"
-        m 4eua "Remember that skill comes mostly through repetitive training."
+        m 4eub "You did it, [mas_get_player_nickname()]!"
+        m 2hub "I knew you'd win a game after enough practice!"
+        m 4eua "Remember, skill comes mostly through repetitive training."
         m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
 
     #Monika loses after saying she would win this time
@@ -938,7 +938,7 @@ label mas_pong_dlg_loser:
 
     #Monika loses after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
-        m 1hua "Ehehe!"
+        m 1hua "Ehehe~"
         m 2hub "Good job, [player]!"
 
     #Monika loses after going even easier on the player
@@ -948,10 +948,10 @@ label mas_pong_dlg_loser:
     #Monika loses by a trickshot
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT:
-            m 2wuo "[player]!"
-            m 2hksdlb "There's no way I could've hit that!"
+            m 2wuo "Ah!"
+            m 2hksdlb "You're really playing {i}on edge{/i}, aren't you?"
         else:
-            m 2wuo "Wow, there's no way I could've hit that!"
+            m 2wuo "Wow, that was a great shot!"
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT
 
@@ -962,11 +962,11 @@ label mas_pong_dlg_loser:
 
         #Easy
         if pong_difficulty_before <= 5:
-            m 2tsu "Maybe I'm going a little bit too easy on you~"
+            m 2tsu "Maybe I'm going too easy on you~"
 
         #Medium
         elif pong_difficulty_before <= 10:
-            m 4hua "You're pretty good!"
+            m 4hua "Nice work!"
 
         #Hard
         elif pong_difficulty_before <= 15:
@@ -978,12 +978,12 @@ label mas_pong_dlg_loser:
 
         #Extreme
         else:
-            m 2hub "Great job, [player]!"
-            m 1kua "Ehehe!"
+            m 2hub "You really are something special, [mas_get_player_nickname()]."
+            m 1kua "Every game with you is a thrill."
 
     #Monika loses five times in a row
     elif win_streak_counter == 5:
-        m 2wud "[player]..."
+        m 2wud "[mas_get_player_nickname()]..."
         m 2tsu "Have you been practicing?"
         m 3hksdlb "I don't know what happened but I don't stand a chance against you!"
         m 1eka "Could you go a little bit easier on me please?"
@@ -997,17 +997,17 @@ label mas_pong_dlg_loser:
             m 4hksdlb "I can't keep up!"
         else:
             m 2hub "Amazing, [player]!"
-            m 4eub "You're really good!"
+            m 4eub "You don't give in!"
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_LONG_GAME
 
     #Monika loses a short game
     elif ball_paddle_bounces <= 2:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME:
-            m 2hksdlb "Ahaha..."
+            m 2hksdlb "Oops..."
             m 3eksdla "I guess I should try a little harder..."
         else:
-            m 1rusdlb "I didn't expect to lose this quickly."
+            m 1rusdlb "Ah, I didn't expect to lose this quickly."
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME
 
@@ -1047,7 +1047,7 @@ label mas_pong_dlg_loser:
                 if win_streak_counter > 1:
                     m 2hub "You won again! Congratulations!"
                 else:
-                    m 2hua "You won! Congratulations!"
+                    m 2hua "You won! Congrats!"
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_HARD_GAME
 
@@ -1068,11 +1068,11 @@ label mas_pong_dlg_loser:
         #Extreme
         else:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME:
-                m 3eua "You're really good, [player]."
-                m 1hub "I love playing Pong with you!"
+                m 3eua "You're amazing, [player]."
+                m 1hub "I love playing Pong with you; it's electrifying!"
             else:
-                m 1tsu "This is intense!"
-                m 1hub "Good job, [player]!"
+                m 1tsu "Woah, this is intense!"
+                m 1hub "You're outstanding, [player]!"
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME
     return
