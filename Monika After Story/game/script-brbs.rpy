@@ -198,20 +198,20 @@ label monika_idle_shower:
 
                 "Yes.":
                     hide screen mas_background_timed_jump
-                    m 2wubfd "Oh, uh...{w=0.5}you sure answered that fast."
+                    m 2wubsd "Oh, uh...{w=0.5}you sure answered that fast."
                     m 2hkbfsdlb "You...{w=0.5}sure seem eager to let me tag along, huh?"
                     m 2rkbfa "Well..."
                     m 7tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
                     m 7hubfb "Sorry, [player], ahaha!"
-                    show monika 5kubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5kubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5kubfu "Maybe another time~"
 
                 "No.":
                     hide screen mas_background_timed_jump
                     m 2eka "Aw, you rejected me so fast."
-                    m 3tubfb "Are you shy, [player]?"
+                    m 3tubsb "Are you shy, [player]?"
                     m 1hubfb "Ahaha!"
-                    show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5tubfu "Alright, I won't follow you this time, ehehe~"
 
         else:
@@ -242,15 +242,21 @@ label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
 
-        if mas_isMoniLove() and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
-            m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
+        if (
+            mas_isMoniLove()
+            and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
+            and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
+            and renpy.random.randint(1,20) == 1
+        ):
+            m 3tubsb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
             m 1hubsa "You could just relax with me some more~"
             m 1hub "Ahaha!"
 
         else:
             m 1hua "I hope you had a nice shower."
-            m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
-            m 1hub "Ahaha!"
+            if mas_getEVL_shown_count("monika_idle_shower") == 1:
+                m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
+                m 1hub "Ahaha!"
 
     elif mas_isMoniUpset():
         m 2esc "I hope you enjoyed your shower. Welcome back, [player]."
@@ -451,7 +457,7 @@ label monika_idle_workout_callback:
             # TODO: In the future add another topic which would
             # unlock once the player has seen this specific path some number of times.
 
-            m 2esa "You sure took your time, [player].{w=0.3}"
+            m 2esa "You sure took your time, [player].{w=0.3}{nw}"
             extend 2eub " That must've been one heck of a workout."
             m 2eka "It's good to push your limits, but you shouldn't overdo it."
 
@@ -538,17 +544,13 @@ label monika_idle_nap_callback:
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_nap"):
             m 1hua "Welcome back, [player]!"
             m 1eua "Did you have a nice nap?"
-            m 3eub "They're really helpful for refreshing your mind so you can spend the day with a clear state of mind."
-            m 3rksdla "But if you're out for too long, it can take a while to fully wake up again...{w=0.3}kinda like getting out of bed in the morning."
-            m 1eua "As long as you had a nice nap though, I'm happy."
-            m 1hua "...And I hope you are too~"
+            m 3hua "You were out for some time, so I hope you're feeling rested~"
+            m 1eua "Is there anything else you wanted to do today?"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_nap"):
             m 1hua "Welcome back, [player]~"
             m 1eub "I hope you had a nice little nap."
-            m 3eua "Short periods of rest throughout the day are perfect for quickly refreshing your brain and getting back to work with a fresh mind."
-            m 1eub "If you don't already, taking regular power naps between work should boost your productivity."
-            m 1eua "But now that you're back, you should be feeling a lot more energized, right?"
+            m 3eua "What else would you like to do today?"
 
         else:
             m 1eud "Oh, back already?"
@@ -658,7 +660,7 @@ label monika_idle_working:
 label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
         m 1eub "Finished with your work, [player]?"
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hua "Then let's relax together, you've earned it~"
 
     elif mas_isMoniDis(higher=True):
@@ -667,6 +669,84 @@ label monika_idle_working_callback:
 
     else:
         m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_screen_break",
+            prompt="My eyes need a break from the screen",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_screen_break:
+    if mas_isMoniNormal(higher=True):
+        if mas_timePastSince(mas_getEVL_last_seen("monika_idle_screen_break"), mas_getSessionLength()):
+
+            if mas_getSessionLength() < datetime.timedelta(minutes=40):
+                m 1esc "Oh,{w=0.3} okay."
+                m 3eka "You haven't been here for that long but if you say you need a break, then you need a break."
+
+            elif mas_getSessionLength() < datetime.timedelta(hours=2, minutes=30):
+                m 1eua "Going to rest your eyes for a bit?"
+
+            else:
+                m 1lksdla "Yeah, you probably need that, don't you?"
+
+            m 1hub "I'm glad you're taking care of your health, [player]."
+
+            if not persistent._mas_pm_works_out and random.randint(1,3) == 1:
+                m 3eua "Why not take the opportunity to do a few stretches as well, hmm?"
+                m 1eub "Anyway, come back soon!~"
+
+            else:
+                m 1eub "Come back soon!~"
+
+        else:
+            m 1eua "Taking another break, [player]?"
+            m 1hua "Come back soon!~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh...{w=0.5} {nw}"
+        extend 2rsc "Okay."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_screen_break_callback")
+    $ persistent._mas_idle_data["monika_idle_screen_break"] = True
+    return "idle"
+
+label monika_idle_screen_break_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        m 1eub "Welcome back, [player]."
+
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_screen_break"):
+            m 1hksdlb "You must've really needed that break, considering how long you were gone."
+            m 1eka "I hope you're feeling a little better now."
+        else:
+            m 1hua "I hope you're feeling a little better now~"
+
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniUpset():
+        m 2esc "Welcome back."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5} You're back."
+
+    else:
+        m 6ckc "..."
+
     return
 
 #Rai's og game idle

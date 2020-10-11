@@ -43,7 +43,7 @@ init 5 python:
     )
 
 label monika_fun_facts_open:
-    if mas_getEV('monika_fun_facts_open').shown_count == 0:
+    if mas_getEVL_shown_count("monika_fun_facts_open") == 0:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
@@ -95,7 +95,7 @@ init 5 python:
 
 label mas_fun_fact_librocubiculartist:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3eub "It's 'librocubicularist.' It looks difficult to pronounce at first glance."
     m 3rksdld "It's a real shame some words just never get used in general."
     m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
     m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
@@ -294,7 +294,7 @@ label mas_fun_fact_vincent_van_gone:
     m 2dkc "There will come a time where it'll no longer be there."
     m 2rkc "...Or at least be noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
-    m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
+    m 5hub "I will always accept and take on any burdens that you shoulder, [mas_get_player_nickname()]~"
     #No end for this fact
     $ persistent._mas_funfactfun = True
     return
@@ -330,7 +330,7 @@ init 5 python:
 
 label mas_fun_fact_strength:
     m 1hub "This fact might motivate you a bit!"
-    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 3eub "The longest word in English that only contains a single vowel is 'strength.'"
     m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
@@ -449,7 +449,7 @@ label mas_fun_fact_binky:
     m 1eua "It's the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
     m 1rksdla "Well, although you make me so happy that I can't help but be filled with energy."
     m 1rksdlb "Don't expect me to start hopping around, [player]!"
-    m 1dkbfa "...That would be {i}way{/i} too embarrassing to do."
+    m 1dkbsa "...That would be {i}way{/i} too embarrassing to do."
     #Call the end
     call mas_fun_facts_end
     return
@@ -513,7 +513,7 @@ label mas_fun_fact_I_am:
     m 1eua "Here's an example."
     m 2rfb "'{i}Monika! Who's [player]'s loving girlfriend?{/i}'"
     m 3hub "'I am!'"
-    m 1hubfa "Ehehe~"
+    m 1hubsa "Ehehe~"
     #Call the end
     call mas_fun_facts_end
     return

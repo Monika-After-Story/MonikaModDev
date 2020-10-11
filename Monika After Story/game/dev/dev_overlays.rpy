@@ -29,7 +29,7 @@ label dev_overlay_testing:
     $ mas_OVLHide()
     m "Now the overlays are gone!"
     m 1hua "I'll bring them back in three lines."
-    m eua "1"
+    m 1eua "1"
     m "2"
     m "3"
     $ mas_OVLShow()
@@ -41,8 +41,8 @@ label dev_shields_testing:
     m "Hello there! I'm going to disable the overlays, or raise shields."
     $ mas_OVLRaiseShield()
     m "Now the overlays cannot be interacted with!"
-    m hua "I'll drop the shields in three lines."
-    m eua "1"
+    m 1hua "I'll drop the shields in three lines."
+    m 1eua "1"
     m "2"
     m "3"
     $ mas_OVLDropShield()

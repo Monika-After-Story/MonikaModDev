@@ -64,20 +64,27 @@ label monika_playerapologizes:
         9: "the game crashing.",
         10: "the game crashing.", #easiest way to handle this w/o overrides
         11: "not listening to your speech.",
-        12: "calling you evil."
+        12: "calling you evil.",
+        13: "not answering you seriously."
     }
 
     #Set the prompt for this...
     if len(persistent._mas_apology_time_db) > 0:
         #If there's a non-generic apology reason pending we use "for something else."
-        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
+        $ mas_setEVLPropValues(
+            "mas_apology_generic",
+            prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0]))
+        )
     else:
         #Otherwise, we use "for something." if reason isn't 0
         if mas_apology_reason == 0:
-            $ mas_getEV('mas_apology_generic').prompt = "...for something."
+            $ mas_setEVLPropValues("mas_apology_generic", prompt="...for something.")
         else:
             #We set this to an apology reason if it's valid
-            $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
+            $ mas_setEVLPropValues(
+                "mas_apology_generic",
+                prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,"something."))
+            )
 
     #Then we delete this since we're not going to need it again until we come back here, where it's created again.
     #No need to store excess memory
@@ -102,7 +109,7 @@ label monika_playerapologizes:
 
     #Display our scrollable
     show monika at t21
-    call screen mas_gen_scrollable_menu(apologylist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(apologylist, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, return_prompt_back)
 
     #Make sure we don't lose this value
     $ apology =_return
@@ -180,7 +187,8 @@ label mas_apology_generic:
         9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
         10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
         11: "not listening to my speech. I worked really hard on it.",
-        12: "calling me evil. I know you don't really think that."
+        12: "calling me evil. I know you don't really think that.",
+        13: "not taking my questions seriously. I know you'll be honest with me from now on."
     }
 
     #If there's no reason to apologize
