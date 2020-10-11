@@ -3567,61 +3567,6 @@ init -999 python:
         _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
 init -995 python in mas_utils:
-    def compareVersionLists(curr_vers, comparative_vers):
-        """
-        Generic version number checker
-
-        IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
-        """
-
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-
-        #Now, let's do some work.
-        #First, we check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #The lists are not the same, which means we need to do a bit of work.
-        #Before we do that, let's verify that the lists are the same length
-        if len(comparative_vers) > len(curr_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #We've found a number which was greater, let's return 1 as we know this version is greater
-                return 1
-
-        #If we're here, we never found something greater. Let's return -1
-        return -1
-
-init -991 python in mas_utils:
     import store
     import os
     import stat
@@ -3649,6 +3594,61 @@ init -991 python in mas_utils:
         "[": "[["
     }
 
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+                return 1
+
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
     def all_none(data=None, lata=None):
         """
         Checks if a dict and/or list is all None
@@ -3675,7 +3675,6 @@ init -991 python in mas_utils:
 
         return True
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -3690,7 +3689,6 @@ init -991 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
-
 
     def eqfloat(left, right, places=6):
         """
@@ -3710,7 +3708,6 @@ init -991 python in mas_utils:
 
         return abs(left-right) < acc
 
-
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
@@ -3725,7 +3722,6 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
-
 
     def pdget(key, table, validator=None, defval=None):
         """
@@ -3753,7 +3749,6 @@ init -991 python in mas_utils:
 
         return defval
 
-
     def td2hr(duration):
         """
         Converts a timedetla to hours (fractional)
@@ -3764,7 +3759,6 @@ init -991 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
-
 
     def tryparseint(value, default=0):
         """
@@ -3783,7 +3777,6 @@ init -991 python in mas_utils:
             return int(value)
         except:
             return default
-
 
     def copyfile(oldpath, newpath):
         """
@@ -3807,7 +3800,6 @@ init -991 python in mas_utils:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
 
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -3824,7 +3816,6 @@ init -991 python in mas_utils:
         finally:
             sys.stdout = oldout
 
-
     def writelog(msg):
         """
         Writes to the mas log if it is open
@@ -3835,13 +3826,21 @@ init -991 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+    def wtf(msg):
+        """
+        Wow That Failed
+        For logging stuff that should never happen
+
+        IN:
+            msg - message to log
+        """
+        writelog(msg)
 
     def writestack():
         """
         Prints current stack to log
         """
         writelog("".join(traceback.format_stack()))
-
 
     def trydel(f_path, log=False):
         """
@@ -3854,7 +3853,6 @@ init -991 python in mas_utils:
         except Exception as e:
             if log:
                 writelog("[exp] {0}\n".format(repr(e)))
-
 
     def trywrite(f_path, msg, log=False, mode="w"):
         """
@@ -3880,7 +3878,6 @@ init -991 python in mas_utils:
         finally:
             if outfile is not None:
                 outfile.close()
-
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
@@ -3908,7 +3905,6 @@ init -991 python in mas_utils:
                 store.persistent.version_number
             ))
         return new_log
-
 
     def logrotate(logpath, filename):
         """
@@ -3968,7 +3964,6 @@ init -991 python in mas_utils:
 
         # and delete the current file
         trydel(old_path)
-
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -4098,7 +4093,6 @@ init -991 python in mas_utils:
             except:
                 self.file = False
                 return False
-
 
     # A map from the log name to a log object.
     mas_mac_log_cache = { }
