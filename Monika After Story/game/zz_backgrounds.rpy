@@ -2842,6 +2842,13 @@ init -2 python in mas_background:
             store.mas_lockEVL("monika_change_weather", "EVE")
 
 
+init -20 python in mas_background:
+    
+    # background ID definitions 
+    # NOTE: you do NOT need to define ids here. Assigning IDs here just
+    #   makes it easier for MASImageTagDefintions
+    MBG_DEF = "spaceroom"
+
 
 #START: bg defs
 init -1 python:
@@ -2850,7 +2857,7 @@ init -1 python:
     #Default spaceroom
     mas_background_def = MASFilterableBackground(
         # ID
-        "spaceroom",
+        store.mas_background.MBG_DEF,
         "Spaceroom",
 
         # mapping of filters to MASWeatherMaps

@@ -1,6 +1,10 @@
 
 # large rewrite incoming
 
+init -700 python in mas_deco:
+    deco_def_db = {}
+    # mapping of deco definitions. 
+
 
 
 init -20 python in mas_deco:
@@ -67,6 +71,12 @@ init -20 python in mas_deco:
 
         # MASImageTagDecoration objects's names are added directly to the deco
         # db
+        if obj.name in deco_db:
+            raise Exception("Deco object '{0}' already exists".format(
+                obj.name)
+            )
+
+        deco_db[obj.name] = obj
 
 
     def get_deco(name):
@@ -90,13 +100,15 @@ init -20 python in mas_deco:
 init -19 python:
 
 
-    class MASDecorationBase(object):
+    class MASDecorationBase(MASExtraPropable):
         """
         Base class for decortaions objects.
 
+        INHERITED PROPS:
+            ex_props- arbitrary properties associated with this deco object
+
         PROPERTIES:
             name - unique identifier of this deco object
-            ex_props- arbitrary properties associated with this deco object
         """
 
         def __init__(self, name, ex_props=None)
@@ -110,9 +122,18 @@ init -19 python:
                     (Default: None)
             """
             self.name = name
-            if ex_props is None:
-                ex_props = {}
-            self.ex_props = ex_props
+            super(MASDecorationBase, self).__init__(ex_props)
+
+        def __eq__(self, other):
+            if isinstance(other, MASDecorationBase):
+                return self.name == other.name
+            return NotImplemented
+
+        def __ne__(self, other):
+            result = self.__eq__(other)
+            if result is NotImplemented:
+                return result
+            return not result
 
 
     class MASDecoration(MASDecorationBase):
@@ -167,6 +188,12 @@ init -19 python:
             # simple deco objects do not have custom filter settings
             self._simple = fwm is None
 
+        def __repr__(self):
+            return "<MASDecoration: (name: {0}, img: {1})>".format(
+                self.name,
+                self.img
+            )
+
         def is_simple(self):
             """
             Returns True if this is a simple deco object.
@@ -177,7 +204,7 @@ init -19 python:
             return self._simple
 
 
-    class MASImageTagDecoration(MASDecorationBase
+    class MASImageTagDecoration(MASDecorationBase):
         """
         Variation of MASDecoration meant for images already defined as image
         tags in game.
@@ -198,14 +225,42 @@ init -19 python:
             """
             super(MASImageTagDecoration, self).__init__(tag, ex_props)
 
+            # check for duplicate deco
+            store.mas_deco.add_it_deco(self)
+
+        def __repr__(self):
+            return "<MASImageTagDecoration: (tag: {0})>".format(self.name)
+
+        @staticmethod
+        def create(tag, ex_props=None):
+            """
+            Creates a MASImageTagDecoration and returns it. Will return an
+            existing one if we find one with the same tag.
+
+            IN:
+                tag - tag to create MASImageTagDecoration for
+                ex_props - passed to the MASImageTagDecoration constructor.
+                    NOTE: will be ignored if an existing MASImageTagDecoration
+                    exists.
+                    (Default: None)
+
+            RETURNS: MASImageTagDecoration to use
+            """
+            it_deco = store.mas_deco.get_deco(tag)
+            if it_deco is not None:
+                return it_deco
+
+            return MASImageTagDecoration(tag, ex_props)
+
 
     class MASDecoFrame(object):
         """
-        Contains position, layer, scale, and rotation info about a decoration
+        Contains position, scale, and rotation info about a decoration
 
         PROPERTIES:
-            layer - layer this decoration exists on. This should be set by the
-                MASDecoManager
+            priority - integer priority that this deco frame should be shown.
+                Smaller numbers are rendered first, and therefore can be hidden
+                behind deco frames with higher priorities.
             pos - (x, y) coordinates of the top left of the decoration
             scale - (ws, hs) scale values to apply to the image's width and 
                 height. This is fed directly to FactorScale. 
@@ -216,12 +271,12 @@ init -19 python:
                 NOTE: CURRENTLY UNUSED
         """
 
-        def __init__(self, layer, pos, scale):
+        def __init__(self, priority, pos, scale, rotation):
             """
             Constructor for a MASDecoFrame
 
             IN:
-                layer - initial layer to show the decoration on
+                priority - integer priority that this deco frame should be shown.
                 pos - initial (x, y) coordinates to show the decoration on
                 scale - (ws, hs) scale values to apply to the image's width and 
                     height. This is fed directly to FactorScale. 
@@ -229,7 +284,7 @@ init -19 python:
                         hs - multiplied to the decoration's images' height
                     Both scale values have a precision limit of 2 decimal places
             """
-            self.layer = layer
+            self.priority = priority
             self.pos = pos
             self.scale = scale
             self.rotation = 0
@@ -240,12 +295,7 @@ init -19 python:
             for all numerical values to ensure compliance. This is important
             since these are directly responsible for image appearance.
             """
-            if name == "layer":
-                # ensure layers are valid
-                if value not in store.mas_deco.LAYERS:
-                    return
-
-            elif name == "pos":
+            if name == "pos":
                 # ensure position coordinates are integers
                 value = (int(value[0]), int(value[1]))
 
@@ -271,6 +321,16 @@ init -19 python:
 
             super(MASDecoFrame, self).__setattr__(name, value)
 
+        def __repr__(self):
+            return (
+                "<MASDecoFrame: (pty: {0}, pos: {1}, scale: {2}, rot: {3})>"
+            ).format(
+                self.priority,
+                self.pos,
+                self.scale,
+                self.rotation
+            )
+
         def fromTuple(self, data):
             """
             Loads data from a tuple into this deco frame's propeties.
@@ -285,41 +345,214 @@ init -19 python:
                 return False
 
             # NOTE: setattr will auto handle most of these
-            self.layer = data[0]
-            self.pos = data[1]
+            self.pos = data[0]
             self.scale = (
+                store.mas_utils.floatcombine_i(data[1], 2),
                 store.mas_utils.floatcombine_i(data[2], 2),
-                store.mas_utils.floatcombine_i(data[3], 2),
             )
-            self.rotation = data[4]
+            self.rotation = data[3]
+            self.priority = data[4]
 
             return True
 
-        def toTuple(self): # TODO: change this
+        def toTuple(self): 
             """
             Creates a tuple of this deco's properties for saving.
 
             RETURNS: tuple of the following format:
-                [0]: layer
-                [1]: position (x, y)
-                [2]: width scale (integer, float part as integer)
-                [3]: height scale (integer, float part as integer)
-                [4]: rotation
+                [0]: position (x, y)
+                [1]: width scale (integer, float part as integer)
+                [2]: height scale (integer, float part as integer)
+                [3]: rotation
+                [4]: priority
             """
             return (
-                self.layer,
                 self.pos,
                 store.mas_utils.floatsplit_i(self.scale[0], 2),
                 store.mas_utils.floatsplit_i(self.scale[1], 2),
-                self.rotation
+                self.rotation,
+                self.priority,
             )
+
+
+    class MASAdvancedDecoFrame(object):
+        """
+        Advanced deco frame. Basically an interface around
+        renpy.show params.
+
+        PROPERTIES: NOTE: refer to renpy.show for info
+            name - used as the decoration tag in deco db, if not given
+            at_list
+            layer
+            what
+            zorder
+            tag - used as the decoration tag in deco db, if given
+            behind
+            real_tag - tag this image ends up being shown with.
+        """
+
+        def __init__(self,
+                name,
+                at_list=None,
+                layer="master",
+                what=None,
+                zorder=0,
+                tag=None,
+                behind=None
+        ):
+            """
+            Constructor.
+            NOTE: all parameter doc is copied from renpy.show
+
+            name - name of image to show, a string
+            at_list - list of tranforms applyed to the image
+                Equivalent of the `at` property
+                (Default: None)
+            layer - string, giving name of layer on which image will be shown
+                Equivalent of the `onlayer` property
+                (Default: None)
+            what - if not None, displaybale that will be shown
+                Equivalent of `show expression`.
+                If provided, name will be the tag for the image
+                (Default: None)
+            zorder - integer for zorder
+                if None, zorder is preserved, otherwise set to 0.
+                Equivalent of `zorder` property
+                (Default: 0)
+            tag - string, used to specify the tag of image
+                Equivalent of the `as` property
+                (Default: None)
+            behind - list of strings, giving image tags that this image is
+                shown behind.
+                Equivalent of the `behind` property
+            """
+            if at_list is None:
+                at_list = []
+            if behind is None:
+                behind = []
+
+            self.name = name
+            self.at_list = at_list
+            self.layer = layer
+            self.what = what
+            self.zorder = zorder
+            self.tag = tag
+            self.behind = behind
+
+        def hide(self):
+            """
+            Hides this image
+            """
+            renpy.hide(self.real_tag, layer=self.layer)
+
+        def show(self):
+            """
+            Shows this image
+            """
+            # first, determine the tag that will end up being used.
+            if self.tag is None:
+                self.real_tag = self.name
+            else:
+                self.real_tag = self.tag
+
+            renpy.show(
+                self.name,
+                at_list=self.at_list,
+                layer=self.layer,
+                what=self.what,
+                zorder=self.zorder,
+                tag=self.tag,
+                behind=self.behind
+            )
+
+
+    class MASImageTagDecoDefinition(MASExtraPropable):
+        """
+        Class that defines bg-based properties for image tags.
+
+        PROPERTIES:
+            
+        """
+
+        # TODO:
 
 
     class MASDecoManager(object):
         """
         Decoration manager for a background.
-        Manages decoration objects and their assocation with layers
+        Manages decoration objects and their assocation with layers.
         """
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            self._decos = {}
+            # key: deco tag
+            # value: MASDecoration object
+
+            self._deco_instance_map = {}
+            # key: instance deco tag
+            # value: real deco tag
+
+            self._deco_layer_map = {}
+            # key: deco tag
+            # value: layer code
+
+            self._deco_frame_map = {}
+            # key: deco tag
+            # value: MASDecoFrame for that tag
+
+            self._deco_render_map = {
+                store.mas_deco.LAYER_BACK: [],
+                store.mas_deco.LAYER_MID: [],
+                store.mas_deco.LAYER_FRONT: [],
+            }
+            # key: layer code
+            # value: list of MASDecoration objects, in priority order
+
+        def _add_deco(self, layer, deco_obj, deco_frame):
+            """
+            Adds a decoration object to the deco manager.
+            NOTE: if decoration has already been added, the existing decoration
+            object is instead updated to the given layer and decoframe.
+
+            IN:
+                layer - layer to add deco object to
+                deco_obj - MASDecoration object to add
+                deco_frame - MASDecoFrame to associated with deco object
+            """
+            if deco_obj.name in self._decos:
+                # if the deco object already exists, remove from the
+                # decorender map
+                old_layer = self._deco_layer_map,get(deco_obj.name, None)
+                if old_layer is not None:
+                    decos = self._deco_render_map.get(old_layer, [])
+
+            # TODO: not complete
+
+
+            # add to decos if not exist
+            if deco_obj.name not in self._decos:
+                self._decos[deco_obj.name] = deco_obj
+
+            # add to layer mapping
+            # find existing layer
+            self._deco_layer[deco
+
+        def add_front(
+                self,
+                deco_obj,
+                deco_frame=None,
+                priority=None,
+                pos=None,
+                scale=None,
+                rotation=None
+        ):
+            """
+            Adds a decoration object to the front deco layer
+            """
+            # TODO: not complete
         
         
     class MASSelectableDecoration(store.MASSelectableSprite):
