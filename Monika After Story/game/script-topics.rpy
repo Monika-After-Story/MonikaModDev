@@ -15830,14 +15830,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_criticism",
+            eventlabel="monika_taking_criticism",
             category=['advice'],
             prompt="Taking criticism",
             random=True
         )
     )
 
-label monika_criticism:
+label monika_taking_criticism:
     m 1esd "[player], how willing are you to listen to criticism?"
     m 3rksdlc "I feel like it's way too easy to get caught up in your own way of thinking if you're not careful."
     m 3esc "...Even if I can understand why it'd be so.{w=0.3} {nw}"
@@ -15855,4 +15855,36 @@ label monika_criticism:
     m 1rssdld "I don't mean to say you have to go along with what anybody says.{w=0.3} {nw}"
     extend 1esc "If you've got an opinion, it's totally fair you'd defend it..."
     m 3dku "...But you've got to do it for the right reasons."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_giving_criticism",
+            category=['advice'],
+            prompt="Giving criticism",
+            conditional="mas_seenLabels(['monika_taking_criticism', 'monika_debate'], seen_all=True)",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_giving_criticism:
+    m 1esc "[player], on the subject of criticism, I've been wondering..."
+    m 7etd "...Have you ever given criticism to someone?"
+    m 1hua "Giving good criticism is something I had to learn when I became club president."
+    m 3rsc "This kind of things is easy to mess up if not done properly...{w=0.3} {nw}"
+    extend 4etd "When giving criticism, you have to keep in mind someone is at the receiving end of that critique."
+    m 4esc "You can't just look at someone's work and say {i}it's bad{/i}, {nw}"
+    extend 4eksdlu "you'll only draw that person's ire if you do that."
+    m 7eub "What matters is what the other person can gain from listening to you; {nw}"
+    extend 3esa "from this premise, even negative opinions can be voiced in a positive way."
+    m 1etd "It's like debate: You have to make it sound like you're sharing your opinion, rather than forcing it down their throat."
+    m 3huu "Consequently, you don't have to be an expert to criticize something."
+    m 3eub "Just explaining how it makes you feel and for what reasons is enough to make your feedback interesting."
+    m 3eku "Although, don't feel bad if your interlocutor decides to discard what you just said..."
+    m 1rksdlu "...After all, giving out an opinion doesn't automatically make you right either.{w=0.2} {nw}"
+    extend 3eku "The author might have reasons why they'd want to keep things their way."
+    m 3dsu "Graciously accept you can't change everyone's mind, and stay considerate when assessing someone else's work."
+    m 3hub "...That'd be Monika's critique tip of the day~"
     return
