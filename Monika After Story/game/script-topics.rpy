@@ -3196,6 +3196,7 @@ label monika_vn:
     m "What's worse, some people think they're all hardcore Japanese pornography."
     m 2eka "But if we've proved anything with this game..."
     m 4hua "We showed them that English visual novels can be kamige too!"
+    $ mas_unlockEVL("monika_kamige","EVE")
     return
 
 #init 5 python:
@@ -15750,4 +15751,34 @@ label monika_literature_value:
     m 3duu "Literature lets you compare your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kamige",
+            category=['games'],
+            prompt="What is kamige?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_kamige:
+    m 1euc "Oh, that's right... it's not exactly a common term."
+    m 4eub "{i}Kamige{/i} is a Japanese slang word that is mostly used by visual novel fans."
+    m 4ruc "If I were to try to translate it...I think it would be something like {i}godly game.{/i}"
+    m 2eub "It's sort of like when people talk about their favorite classic books or movies."
+    m 2hksdlb "I was kind of joking when I said it about this game, but it {i}did{/i} seem to get very popular for some reason."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 3euc "Maybe it's because the other girls and I seemed more realistic than your average characters."
+        m 3eud "They had problems that were genuinely relatable to people. And I'm...well, you already know why I'm more realistic."
+    else
+        m 2esc "Maybe it's because the other girls were written to have relatable problems."
+        m 2lsc "Even though their personalities were pretty odd and exaggerated, it was likely that their stories would draw people in."
+
+    m 1eka "Well, whatever the case might be...if it was the game's popularity that brought you to meet me, I think I can be grateful for it."
     return
