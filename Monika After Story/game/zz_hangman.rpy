@@ -501,6 +501,7 @@ label mas_hangman_game_loop:
         win = False
         chances = 6
         guesses = 0
+        number_literals = {2: "two", 3: "three", 4: "four", 5: "five"}
         last_chance_guesses = 0
         missed = ""
         avail_letters = list(hm_ltrs_only)
@@ -654,9 +655,9 @@ label mas_hangman_game_loop:
                     m 1ekc "Don't give up so easily."
                     m 3eka "That was only your first wrong letter!"
                     if chances > 1:
-                        m 1eka "You still had [chances] more lives left."
+                        m 1eka "You still had [number_literals[chances]] more lives left."
                     else:
-                        m 1eka "You still had [chances] more life left."
+                        m 1eka "You still had one more life left."
 
                     m 1hua "I know you can do it!"
                     m 1eka "It would really mean a lot to me if you just tried a bit harder."
@@ -665,9 +666,9 @@ label mas_hangman_game_loop:
                     m "You should at least play to the end..."
                     m 1ekc "Giving up so easily is a sign of poor resolve."
                     if chances > 1:
-                        m "I mean, you'd have to miss [chances] more letters to actually lose."
+                        m "I mean, you'd have to miss [number_literals[chances]] more letters to actually lose."
                     else:
-                        m "I mean, you'd have to miss [chances] more letter to actually lose."
+                        m "I mean, you'd have to miss [number_literals[chances]] more letter to actually lose."
 
                 m 1eka "Can you play to the end next time, [player]? For me?"
 
