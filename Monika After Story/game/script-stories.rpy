@@ -529,7 +529,7 @@ label mas_story_genie_simple:
 
     if mas_isMoniNormal(higher=True):
         m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
-        m 1hubfb "When you're here, it really feels like I have everything~"
+        m 1hubsb "When you're here, it really feels like I have everything~"
     return
 
 init 5 python:

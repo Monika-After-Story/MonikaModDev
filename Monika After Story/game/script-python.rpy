@@ -183,7 +183,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(3)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -270,7 +270,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(1)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -334,7 +334,7 @@ label monika_ptod_tip003:
 #            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(3)",
 #            action=EV_ACT_UNLOCK,
-#            rules={"no unlock":None}
+#            rules={"no_unlock":None}
 #        )
 #    )
 
@@ -379,7 +379,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -553,7 +553,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(2)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -663,7 +663,7 @@ label monika_ptod_tip006:
 #            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(6)",
 #            action=EV_ACT_UNLOCK,
-#            rules={"no unlock":None}
+#            rules={"no_unlock":None}
 #        )
 #    )
 
@@ -699,7 +699,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -784,7 +784,7 @@ init 5 python:
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(5)",
             action=EV_ACT_UNLOCK,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
@@ -870,7 +870,7 @@ label monika_ptod_tip009:
 # TODO: this should be after if statements.
 #            conditional="store.mas_ptod.has_day_past_tip(2)",
 #            action=EV_ACT_UNLOCK,
-#            rules={"no unlock":None}
+#            rules={"no_unlock":None}
 #        )
 #    )
 
