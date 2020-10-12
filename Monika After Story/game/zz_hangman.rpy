@@ -496,13 +496,15 @@ label mas_hangman_game_loop:
         m "[hm_hint]"
 
     # main loop for hangman game
-    $ done = False
-    $ win = False
-    $ chances = 6
-    $ guesses = 0
-    $ missed = ""
-    $ avail_letters = list(hm_ltrs_only)
-    $ give_up = False
+    python:
+        done = False
+        win = False
+        chances = 6
+        guesses = 0
+        last_chance_guesses = 0
+        missed = ""
+        avail_letters = list(hm_ltrs_only)
+        give_up = False
 
     if persistent._mas_sensitive_mode:
         $ avail_letters.remove("?")
@@ -600,19 +602,23 @@ label mas_hangman_game_loop:
 
         show expression hm_display zorder 18 as hmg_hanging_man at hangman_hangman
 
-
         if chances == 0:
             $ done = True
             if player_word:
                 m 1eka "[player]..."
                 m "You couldn't guess your own name?"
+            elif last_chance_guesses / guesses > 0.5:
+                if not persistent._mas_pm_cares_about_dokis:
+                    # TODO: Smug?
+                    m "You were {i}hanging{/i} in there really well, [player], ahaha."
+                else:
+                    m "You were doing really great, [player]!"
             m 1hua "Better luck next time~"
         elif "_" not in display_word:
             $ done = True
             $ win = True
         else:
             python:
-
                 # input loop
                 bad_input = True
                 while bad_input:
@@ -672,6 +678,8 @@ label mas_hangman_game_loop:
                         for index in range(0,len(word)):
                             if guess == word[index]:
                                 display_word[index] = guess
+                        if chances == 1:
+                            last_chance_guesses += 1
                     else:
                         chances -= 1
                         missed += guess
@@ -696,9 +704,26 @@ label mas_hangman_game_loop:
             $ the_word = "your name"
         else:
             $ the_word = "the word"
-
-        m 1hua "Wow, you guessed [the_word] correctly!"
-        m "Good job, [player]!"
+        
+        if chances == 6:
+            # TODO: Make her more calm next time.
+            m "...[player[0]]-[player]!"
+            m "You didn't miss a single letter!"
+            m "You must have a really good vocabulary, ahaha."
+            m "...Or maybe you just lucked out, hmm?"
+        elif chances == 1:
+            # TODO: Add reaction shortly after 'I'm feeling lucky'.
+            if last_chance_guesses / guesses < 0.5:
+                m "Phew, it was all up to your last chance, huh?"
+                m "I have to admit - you're really lucky~"
+            else:
+                # More than 50% of the guesses were made on last chance.
+                # TODO: Add reaction if previously gave up on last chance.
+                m "You just made it on the last chance!"
+                m "Wow, [player], you're {i}really{/i} lucky, ahaha~"
+        else:
+            m 1hua "Wow, you guessed [the_word] correctly!"
+            m "Good job, [player]!"
 
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
