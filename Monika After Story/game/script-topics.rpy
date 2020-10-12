@@ -15776,7 +15776,7 @@ label monika_kamige:
     if persistent._mas_pm_cares_about_dokis:
         m 3euc "Maybe it's because the other girls and I seemed more realistic than your average characters."
         m 3eud "They had problems that were genuinely relatable to people. And I'm...well, you already know why I'm more realistic."
-    else
+    else:
         m 2esc "Maybe it's because the other girls were written to have relatable problems."
         m 2lsc "Even though their personalities were pretty odd and exaggerated, it was likely that their stories would draw people in."
 
