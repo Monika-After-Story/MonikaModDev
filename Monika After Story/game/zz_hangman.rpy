@@ -707,8 +707,7 @@ label mas_hangman_game_loop:
             $ the_word = "the word"
         
         if chances == 6:
-            # TODO: Make her more calm next time.
-            m "...[player[0]]-[player]!"
+            m "Wow, [player]..."
             m "You didn't miss a single letter!"
             m "You must have a really good vocabulary, ahaha."
             m "...Or maybe you just lucked out, hmm?"
