@@ -758,7 +758,6 @@ label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
     return
 
 label mas_hangman_game_give_up_last_chance(guesses=0, chances=0, last_chance_guesses=0):
-    m "[player]..."
     if last_chance_guesses / guesses > 0.5:
         m "You were really lucky to hang on your last chance for so long..."
         m "...And you almost figured the entire word correctly."
