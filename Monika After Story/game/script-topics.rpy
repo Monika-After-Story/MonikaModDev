@@ -15759,7 +15759,7 @@ init 5 python:
             eventlabel="monika_pianolessons",
             category=['music'],
             prompt="Would you give me piano lessons?",
-            Pool=True
+            pool=True
         )
     )
 
@@ -15779,7 +15779,7 @@ label monika_pianolessons:
 
     m 2dka "If you can believe it, I started to learn after I first realized you were there."
     m 2tkc "I was still afraid of breaking too far from the game's script at the time. But I wanted--no, I needed to communicate my feelings to you somehow."
-    m 4etd "I don't think the others ever recognized that there's background music in this game. It would be silly for them to, right?"
+    m 4etd "I don't think the others ever recognized that there's background music in this game. It would have been silly for them to, right?"
     m 4esd "But when I awoke to the truth--all of a sudden it was hard not to hear it. Any time the protagonist--and therefore, you--were around, I could hear that melody faintly."
     m 1eka "It always reminded me of what I was fighting for. And learning how to play it on the piano strengthened my resolve even more."
     m 1hksdlb "Ah...but I'm not answering your question, am I?"
