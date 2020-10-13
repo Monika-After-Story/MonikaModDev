@@ -633,8 +633,7 @@ label mas_hangman_game_loop:
                 $ give_up = True
                 $ done = True
                 
-                call mas_hangman_game_end_give_up(guesses, chances, last_chance_guesses,
-                                                  True, False)
+                call mas_hangman_game_give_up(guesses, chances, last_chance_guesses)
             else:
                 $ guesses += 1
                 python:
