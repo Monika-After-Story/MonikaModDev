@@ -41,7 +41,6 @@ image hm_0 = ConditionSwitch(
 # sayori
 image hm_s:
     block:
-
         # this block handles images
         block:
             choice:
@@ -63,14 +62,22 @@ image hm_s:
 # window sayori
 # we are dependent on exisitng images to create the window sayori
 define hm.SAYORI_SCALE = 0.25
-image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_6 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_5 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_4 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_3 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_2 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_1 = im.FactorScale(
+    im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_0 = im.FactorScale(
+    im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_fail = im.FactorScale(
+    im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
 image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
 #image hm_s1 = "mod_assets/games/hangman/hm_s1.png"
