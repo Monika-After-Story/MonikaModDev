@@ -711,7 +711,7 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
 
     if not persistent.ever_won['hangman']:
         $ persistent.ever_won['hangman'] = True
-    #TODO: grant a really tiny amount of affection?
+        $ mas_gainAffection(2)
     return
 
 label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
