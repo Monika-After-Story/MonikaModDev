@@ -683,10 +683,7 @@ label mas_hangman_game_loop:
 
         "No.":
             pass
-
-            #FALL THROUGH
-
-    # RETURN AT END
+    jump mas_hangman_game_end
 
 label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
     if is_window_sayori_visible:
