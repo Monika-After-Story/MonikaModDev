@@ -5221,8 +5221,12 @@ label monika_resource:
     m 1lksdld "I..."
     m 2ekc "I'm going to outlive you, aren't I, [player]?"
     if (
-        (persistent._mas_pm_monika_evil and not persistent._mas_pm_monika_evil_but_ok)
-        or persistent._mas_pm_a_hater):
+        persistent._mas_pm_a_hater
+        or (
+            persistent._mas_pm_monika_evil
+            and persistent._mas_pm_monika_evil_but_ok is False
+        )
+    ):
         m 2dsc "Perhaps that'll be my punishment for everything I've done?"
     m 2dkc "..."
     m 2eka "Well, as long as you're with me until the end..."
@@ -10360,15 +10364,21 @@ label monika_beingevil:
         m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
         "You haven't done anything wrong":
             # variable setting at the end because they're used to determine if player has seen this path before
-            if (persistent._mas_pm_monika_innocent is None):
+            if persistent._mas_pm_monika_innocent is None:
                 # some extra aff if this is the first choice
                 $ mas_gainAffection(amount=3, bypass=True)
             else:
                 $ mas_gainAffection()
 
             if (
-                (not persistent.monika_kill and mas_isMoniNormal(higher=True))
-                or (store.mas_anni.pastOneMonth() and mas_isMoniHappy(higher=True))
+                (
+                    not persistent.monika_kill
+                    and mas_isMoniNormal(higher=True)
+                )
+                or (
+                    store.mas_anni.pastOneMonth()
+                    and mas_isMoniHappy(higher=True)
+                )
             ):
                 if (renpy.random.randint(1,10) == 1) and (persistent._mas_pm_monika_innocent is not None):
                     # joke path - not on first viewing
@@ -10390,7 +10400,7 @@ label monika_beingevil:
                         m 5eub "There's no point in getting too hung up about it."
                         m 5hub "Ahaha~"
 
-            elif mas_isMoniUpset(higher=True):
+            elif mas_isMoniNormal(higher=True):
                 m 1ekb "I think we both know that's not quite true, is it?"
                 m 1eka "I could have handled the whole situation a bit more...{w=0.3}{nw}"
                 extend 3eka "delicately, to say the least."
@@ -10417,7 +10427,7 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_innocent = False
             $ mas_gainAffection()
 
-            if mas_isMoniUpset(higher=True):
+            if mas_isMoniNormal(higher=True):
                 m 1eka "I'm glad you understand, [player]."
                 m 1eua "It's relieving to know you don't think I'm evil."
                 m 1hua "If I were there, I'd feel like giving you a big hug!"
@@ -10435,7 +10445,6 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
             $ persistent._mas_pm_monika_innocent = False
-            $ mas_gainAffection()
 
             if mas_isMoniNormal(higher=True):
                 m 1rksdlc "..."
@@ -10476,9 +10485,8 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
             $ persistent._mas_pm_monika_innocent = False
-            $ mas_gainAffection()
 
-            if mas_isMoniDis(higher=True):
+            if mas_isMoniNormal(higher=True):
                 m 2ekd "Is that true, [player]?"
 
                 if mas_isMoniUpset(higher=True):
@@ -10506,7 +10514,6 @@ label monika_beingevil:
                 m "Y-you don't {i}really{/i} think that, do you?{fast}"
                 "You deserve forgiveness.":
                     $ persistent._mas_pm_monika_evil_but_ok = True
-                    $ mas_gainAffection()
 
                     if mas_isMoniNormal(higher=True):
                         m 1rksdla "[player]..."
