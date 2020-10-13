@@ -31,6 +31,12 @@ init -890 python in mas_globals:
     if tt_detected:
         store.persistent._mas_pm_has_went_back_in_time = True
 
+    #Internal renpy version check
+    is_r7 = renpy.version(True)[0] == 7
+
+    # Check whether or not the user uses a steam install
+    is_steam = "steamapps" in renpy.config.basedir.lower()
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -77,6 +83,9 @@ init -1 python in mas_globals:
     returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
 
+    this_ev = None
+    # the current topic, but as event object. may be None.
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -118,7 +127,6 @@ init -10 python:
         # TRue if want the scene to change
 
         # end keys
-
 
         def __init__(self):
             """
@@ -377,29 +385,31 @@ init python:
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
-
-        ASSUMES:
-            mas_is_raining
-            mas_is_snowing
         """
         # hide the existing mask
         renpy.hide("rm")
 
         # get current weather masks
-        # TODO: change to pass in current filter
-        mask = mas_current_weather.sp_window(
-            mas_isCurrentFlt("day")
-        )
-
-        # should we use fallbacks instead?
-        if persistent._mas_disable_animations:
-            mask += "_fb"
+        mask = mas_current_weather.get_mask()
 
         # now show the mask
         renpy.show(mask, tag="rm")
 
         if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
+
+
+    def mas_validate_suntimes():
+        """
+        Validates both persistent and store suntimes are in a valid state.
+        Sunrise is always used as the lead if a reset is needed.
+        """
+        if (
+            mas_suntime.sunrise > mas_suntime.sunset
+            or persistent._mas_sunrise > persistent._mas_sunset
+        ):
+            mas_suntime.sunset = mas_suntime.sunrise
+            persistent._mas_sunset = persistent._mas_sunrise
 
 
     def show_calendar():
@@ -479,16 +489,8 @@ init python:
 
         RETURNS: True upon a filter change, False if not
         """
-        # TODO: this should be deferred to the BG
         curr_flt = store.mas_sprites.get_filter()
-
-        now_time = datetime.datetime.now().time()
-        if mas_isDay(now_time):
-            new_flt = store.mas_sprites.FLT_DAY
-
-        else: # mas_isNight(now_time):
-            new_flt = store.mas_sprites.FLT_NIGHT
-
+        new_flt = mas_current_background.progress()
         store.mas_sprites.set_filter(new_flt)
 
         return curr_flt != new_flt
@@ -717,14 +719,14 @@ init python:
 
     def mas_get_player_derandoms(derandomed_evls):
         """
-        Gets topics which are derandomed by the player (in gen-scrollable-menu format)
+        Gets topics which are derandomed by the player (in check-scrollable-menu format)
         Also cleans out events which no longer exist
 
         IN:
             derandomed_evls - appropriate variable holding the derandomed eventlabels
 
         OUT:
-            List of player derandomed topics in mas_gen_scrollable_menu form
+            List of player derandomed topics in mas_check_scrollable_menu form
         """
         derandlist = []
 
@@ -739,7 +741,7 @@ init python:
 
             #Ev exists. Add it to the menu item list
             elif ev.unlocked:
-                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, False))
+                derandlist.append((renpy.substitute(ev.prompt), ev.eventlabel, False, True, False))
 
         return derandlist
 
@@ -796,10 +798,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ hide_mask = store.mas_current_background.hide_masks
     if hide_calendar is None:
         $ hide_calendar = store.mas_current_background.hide_calendar
-    if day_bg is None:
-        $ day_bg = store.mas_current_background.getDayRoom()
-    if night_bg is None:
-        $ night_bg = store.mas_current_background.getNightRoom()
 
     # progress filter
     # NOTE: filter progression MUST happen here because othrewise we many have
@@ -819,15 +817,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     python:
         monika_room = None
 
-        # TODO: this will need some rework to work nicely with filter
-        #   progression. For now its just going to be customized for
-        #   our two filters.
         if scene_change:
-            if day_mode:
-                monika_room = day_bg
-
-            else:
-                monika_room = night_bg
+            monika_room = mas_current_background.getCurrentRoom()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
@@ -1548,7 +1539,7 @@ label ch30_post_mid_loop_eval:
             jump mas_ch30_select_mostseen
 
 #        elif not seen_random_limit:
-#            $pushEvent('random_limit_reached')
+#            $pushEvent('mas_random_limit_reached')
 
 label post_pick_random_topic:
 
@@ -1563,10 +1554,9 @@ label mas_ch30_select_unseen:
     if len(mas_rev_unseen) == 0:
 
         if not persistent._mas_enable_random_repeats:
-            # no repeats means we should push randomlimit if appropriate,
-            # otherwise stay slient
-            if not seen_random_limit:
-                $ pushEvent("random_limit_reached")
+            # no repeats means we should push randomlimit if appropriate, otherwise stay slient
+            if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
+                $ pushEvent("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -1590,10 +1580,12 @@ label mas_ch30_select_seen:
                 # jump to most seen if we have any left
                 jump mas_ch30_select_mostseen
 
-            if len(mas_rev_mostseen) == 0 and not seen_random_limit:
-                # all topics seen within last seen delta, push random seen
-                # limit if not already.
-                $ pushEvent("random_limit_reached")
+            #As a way of indicating you're out of topics because of the last seen delta, we'll use a shorter check here
+            if (
+                len(mas_rev_mostseen) == 0
+                and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
+            ):
+                $ pushEvent("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop
@@ -1783,17 +1775,16 @@ label ch30_reset:
 
     # check for game unlocks
     python:
-        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
-        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
-            "pong": "ch30_main", # pong should always be unlocked
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
         }
+        mas_unlockGame("pong") # always unlock pong
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
-            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
+            # unlock if we've seen the label
+            if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)
 
 
@@ -1927,21 +1918,6 @@ label ch30_reset:
     # set any prompt variants for acs that can be removed here
     $ store.mas_selspr.startup_prompt_check()
 
-
-    ## certain things may need to be reset if we took monika out
-    # NOTE: this should be at the end of this label, much of this code might
-    # undo stuff from above
-    python:
-        if store.mas_dockstat.retmoni_status is not None:
-            monika_chr.remove_acs(mas_acs_quetzalplushie)
-
-            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
-            MASConsumable._reset()
-
-            #Let's also push the event to get rid of the thermos too
-            if not mas_inEVL("mas_consumables_remove_thermos"):
-                queueEvent("mas_consumables_remove_thermos")
-
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
 
@@ -2006,4 +1982,25 @@ label ch30_reset:
 
     #Check BGSel topic unlocked state
     $ mas_checkBackgroundChangeDelegate()
+
+    # verify suntimes are correct
+    # NOTE: must be before background build update
+    $ store.mas_validate_suntimes()
+
+    # build background filter data and update the current filter progression
+    $ store.mas_background.buildupdate()
+
+    ## certain things may need to be reset if we took monika out
+    # NOTE: this should be at the end of this label, much of this code might
+    # undo stuff from above
+    python:
+        if store.mas_dockstat.retmoni_status is not None:
+            monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
+            MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not mas_inEVL("mas_consumables_remove_thermos"):
+                queueEvent("mas_consumables_remove_thermos")
     return

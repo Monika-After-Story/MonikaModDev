@@ -73,6 +73,7 @@ init python in mas_consumables:
 #2. Foods always go on Monika's left
 
 init 5 python:
+    import random
     #MASConsumable class
     class MASConsumable():
         """
@@ -513,14 +514,16 @@ init 5 python:
             end_prep = random.randint(self.prep_low, self.prep_high)
 
             #Setup the event conditional
-            prep_ev = mas_getEV(self.finish_prep_evl)
-            prep_ev.conditional = (
-                "persistent._mas_current_consumable[{0}]['prep_time'] is not None "
-                "and (datetime.datetime.now() - "
-                "persistent._mas_current_consumable[{0}]['prep_time']) "
-                "> datetime.timedelta(0, {1})"
-            ).format(self.consumable_type, end_prep)
-            prep_ev.action = EV_ACT_QUEUE
+            mas_setEVLPropValues(
+                self.finish_prep_evl,
+                conditional=(
+                    "persistent._mas_current_consumable[{0}]['prep_time'] is not None "
+                    "and (datetime.datetime.now() - "
+                    "persistent._mas_current_consumable[{0}]['prep_time']) "
+                    "> datetime.timedelta(0, {1})"
+                ).format(self.consumable_type, end_prep),
+                action=EV_ACT_QUEUE
+            )
 
             #Now we set what we're having
             persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
@@ -544,12 +547,14 @@ init 5 python:
             persistent._mas_current_consumable[self.consumable_type]["consume_time"] = _start_time + consumable_time
 
             #Setup the event conditional
-            cons_ev = mas_getEV(self.finish_cons_evl)
-            cons_ev.conditional = (
-                "persistent._mas_current_consumable[{0}]['consume_time'] is not None "
-                "and datetime.datetime.now() > persistent._mas_current_consumable[{0}]['consume_time']"
-            ).format(self.consumable_type)
-            cons_ev.action = EV_ACT_QUEUE
+            mas_setEVLPropValues(
+                self.finish_cons_evl,
+                conditional=(
+                    "persistent._mas_current_consumable[{0}]['consume_time'] is not None "
+                    "and datetime.datetime.now() > persistent._mas_current_consumable[{0}]['consume_time']"
+                ).format(self.consumable_type),
+                action=EV_ACT_QUEUE
+            )
 
             #Skipping leadin? We need to set this to persistent and wear the acs for it
             if skip_leadin:
@@ -785,23 +790,10 @@ init 5 python:
                 monika_chr.remove_acs(consumable.acs)
                 consumable.re_serves_had = 0
 
-                #Get evs
-                get_ev = mas_getEV(consumable.get_cons_evl)
-                prep_ev = mas_getEV(consumable.finish_prep_evl)
-                cons_ev = mas_getEV(consumable.finish_cons_evl)
-
-                #Reset the events
-                get_ev.conditional = None
-                cons_ev.action = None
-                prep_ev.conditional = None
-                prep_ev.action = None
-                cons_ev.conditional = None
-                cons_ev.action = None
-
-                #And remove them from the event list
-                mas_rmEVL(consumable.get_cons_evl)
-                mas_rmEVL(consumable.finish_prep_evl)
-                mas_rmEVL(consumable.finish_cons_evl)
+                #Strip EVs
+                mas_stripEVL(consumable.get_cons_evl, list_pop=True)
+                mas_stripEVL(consumable.finish_prep_evl, list_pop=True)
+                mas_stripEVL(consumable.finish_cons_evl, list_pop=True)
 
                 #Now reset the persist var for this type
                 persistent._mas_current_consumable[consumable.consumable_type] = {
@@ -842,8 +834,6 @@ init 5 python:
             if not curr_cons:
                 return False
 
-            prep_ev = mas_getEV(curr_cons.finish_prep_evl)
-
             return (
                 (
                     MASConsumable._isHaving(_type)
@@ -855,10 +845,7 @@ init 5 python:
                 or (
                     persistent._mas_current_consumable[_type]["prep_time"] is not None
                     and (
-                            (
-                                prep_ev
-                                and prep_ev.conditional is None
-                            )
+                        mas_checkEVL(curr_cons.finish_prep_evl, lambda x: x.conditional is None)
                         or curr_cons not in available_cons
                     )
                 )
@@ -1224,7 +1211,6 @@ init 6 python:
 #START: Finished brewing/drinking evs
 ##Finished brewing
 init 5 python:
-    import random
     #This event gets its params via _checkConsumables()
     addEvent(
         Event(
@@ -1243,7 +1229,6 @@ label mas_finished_brewing:
 
 ###Drinking done
 init 5 python:
-    import random
     #Like finshed_brewing, this event gets its params from
     addEvent(
         Event(
@@ -1281,7 +1266,6 @@ label mas_get_drink:
 
 #START: Generic food evs
 init 5 python:
-    import random
     #This event gets its params via _startupDrinkLogic()
     addEvent(
         Event(
@@ -1301,7 +1285,6 @@ label mas_finished_prepping:
 
 ###Drinking done
 init 5 python:
-    import random
     #Like finshed_brewing, this event gets its params from
     addEvent(
         Event(
@@ -1348,11 +1331,11 @@ label mas_consumables_generic_get(consumable):
 
         #We need to parse the dialogue depending on the given dlg_props
         if container:
-            line_starter = renpy.substitute("I'm going to get {a_an}[container]{/a_an} of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute("I'm going to get [mas_a_an_str(container)] of [consumable.disp_name][plur].")
 
         #Otherwise we use the object reference for this
         elif obj_ref:
-            line_starter = renpy.substitute("I'm going to get {a_an}[obj_ref]{/a_an} of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute("I'm going to get [mas_a_an_str(obj_ref)] of [consumable.disp_name][plur].")
 
         #No valid dlg props
         else:
@@ -1412,11 +1395,11 @@ label mas_consumables_generic_finish_having(consumable):
         dlg_map = {
             mas_consumables.PROP_CONTAINER: {
                 0: "I'm going to put this [container] away.",
-                1: "I'm going to get another [container] of [consumable.disp_name][plur]."
+                1: "I'm going to get another [container]."
             },
             mas_consumables.PROP_OBJ_REF: {
                 0: "I'm going to put this away.",
-                1: "I'm going to get another [obj_ref] of [consumable.disp_name][plur]."
+                1: "I'm going to get another [obj_ref]."
             },
             "else": {
                 0: "I'm going to put this away.",
@@ -1437,8 +1420,9 @@ label mas_consumables_generic_finish_having(consumable):
             line_starter = renpy.substitute(dlg_map["else"][get_more])
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1eua "[line_starter]"
-        m "Hold on a moment."
+        m 1eud "I finished my [consumable.disp_name].{w=0.2} {nw}"
+        extend 1eua "[line_starter]"
+        m 3eua "Hold on a moment."
 
     elif store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1esd "Oh, I've finished my [consumable.disp_name][plur].{w=1}{nw}"
