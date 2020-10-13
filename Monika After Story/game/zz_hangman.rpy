@@ -753,14 +753,16 @@ label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
     elif chances == 5:
         m 1ekc "Don't give up so easily."
         m 3eka "That was just your first wrong letter!"
-        m 1eka "You still had [number_literals[chances]] more lives left."
+        $ number_literal = number_literals[chances]
+        m 1eka "You still had [number_literal] more lives left."
         m 1hua "I know you can do it!"
         m 1eka "It would really mean a lot to me if you just tried a bit harder."
     else:
         m "You should at least play to the end..."
         m 1ekc "Giving up so easily is a sign of poor resolve."         
         if chances >= 2:
-            m "I mean, you'd have to miss [number_literals[chances]] more letters to actually lose."
+            $ number_literal = number_literals[chances]
+            m "I mean, you'd have to miss [number_literal] more letters to actually lose."
         else:
             m "I mean, you'd have to miss one more letter to actually lose."
         m 1eka "Can you play to the end next time, [player]? For me?"
