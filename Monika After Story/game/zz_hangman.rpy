@@ -217,7 +217,8 @@ init -1 python in mas_hangman:
 
     def _add_monika_words(wordlist):
         for word in MONI_WORDS:
-            wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
+            wordlist.append(renpy.store.PoemWord(glitch=False, sPoint=0, yPoint=0, 
+                            nPoint=0,word=word))
 
 
     # file names
@@ -226,7 +227,6 @@ init -1 python in mas_hangman:
 
     # hangman game text
     game_name = "Hangman"
-
 
     def copyWordsList(_mode):
         """
@@ -317,12 +317,9 @@ init -1 python in mas_hangman:
             _mode - mode to add playername to
         """
         if (
-                not store.persistent._mas_hangman_playername
-                and store.persistent.playername.lower() != "sayori"
-                and store.persistent.playername.lower() != "yuri"
-                and store.persistent.playername.lower() != "natsuki"
-                and store.persistent.playername.lower() != "monika"
-            ):
+            not store.persistent._mas_hangman_playername and
+            store.persistent.playername.lower() not in ("sayori", "yuri", "natsuki", "monika")
+        ):
             hm_words[_mode].append(-1)
 
 
@@ -363,7 +360,6 @@ init -1 python in mas_hangman:
 
 # post processing
 init 10 python:
-
     # setting up wordlists
     import store.mas_hangman as mas_hmg
 
@@ -374,9 +370,7 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
-
     $ disable_esc()
-
     python:
         import store.mas_hangman as mas_hmg
         is_sayori = (
@@ -386,14 +380,10 @@ label game_hangman:
         is_window_sayori_visible = False
 
         # instruction text and other sensitive stuff
-        instruct_txt = (
-            "Guess a letter: (Type {0}'!' to give up)"
-        )
-
+        instruct_txt = "Guess a letter: (Type {0}'!' to give up)"
         if persistent._mas_sensitive_mode:
             instruct_txt = instruct_txt.format("")
             store.mas_hangman.game_name = "Word Guesser"
-
         else:
             instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
             store.mas_hangman.game_name = "Hangman"
@@ -414,7 +404,6 @@ label mas_hangman_game_select_diff:
             $ hangman_mode = mas_hmg.HARD_MODE
 
 label mas_hangman_game_preloop:
-
     # setup positions
     show monika at t21
     if store.mas_globals.dark_mode:
@@ -447,7 +436,7 @@ label mas_hangman_game_preloop:
 
 # looping location for the hangman game
 label mas_hangman_game_loop:
-    m 1eua "I'll think of a word.{w=0.5}.{w=0.5}.{nw}"
+    m 1eua "I'll think of a word{cps=2}...{/cps}{nw}"
 
     python:
         player_word = False
@@ -461,10 +450,10 @@ label mas_hangman_game_loop:
 
         # setup display word and hint
         if (
-                word == -1
-                and persistent.playername.isalpha()
-                and len(persistent.playername) <= 15
-            ):
+            word == -1 and 
+            persistent.playername.isalpha() and
+            len(persistent.playername) <= 15
+        ):
             display_word = list("_" * len(persistent.playername.lower()))
             hm_hint = mas_hmg.HM_HINT.format("I")
             word = persistent.playername.lower()
@@ -551,10 +540,8 @@ label mas_hangman_game_loop:
 
         # sayori window easter egg
         if is_sayori:
-
             # glitch out
             if chances == 0:
-
                 # disable hotkeys, music and more
                 $ mas_RaiseShield_core()
 
@@ -613,7 +600,6 @@ label mas_hangman_game_loop:
 
         if chances == 0:
             $ done = True
-            
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -687,7 +673,6 @@ label mas_hangman_game_loop:
 
             show monika at t21
             jump mas_hangman_game_loop
-
         "No.":
             pass
     jump mas_hangman_game_end
@@ -722,8 +707,8 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
         m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
 
-    if not persistent.ever_won['hangman']:
-        $ persistent.ever_won['hangman'] = True
+    if not persistent.ever_won["hangman"]:
+        $ persistent.ever_won["hangman"] = True
     #TODO: grant a really tiny amount of affection?
     return
 
