@@ -633,7 +633,7 @@ label mas_hangman_game_loop:
                 $ give_up = True
                 $ done = True
                 
-                call mas_hangman_game_end_gave_up(guesses, chances, last_chance_guesses,
+                call mas_hangman_game_end_give_up(guesses, chances, last_chance_guesses,
                                                   True, False)
             else:
                 $ guesses += 1
