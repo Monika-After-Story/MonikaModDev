@@ -740,7 +740,7 @@ label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
         m "..."
         m 1ekc "I really enjoy playing with you, you know."
     elif chances == 1:
-        call mas_hangman_give_up_last_chance(guesses, chances, last_chance_guesses)
+        call mas_hangman_game_give_up_last_chance(guesses, chances, last_chance_guesses)
     elif chances == 5:
         m 1ekc "Don't give up so easily."
         m 3eka "That was just your first wrong letter!"
