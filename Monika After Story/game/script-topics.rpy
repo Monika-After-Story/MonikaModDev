@@ -10478,7 +10478,6 @@ label monika_beingevil:
                 m 2ekc "I'm sorry, [player], but sometimes..."
                 if mas_isMoniDis(lower=True):
                     m 2rkc "{cps=*2}Quite often, in fact...{/cps}{nw}"
-                    $ _history_list.pop()
                 m 2ekd "It doesn't really feel like you do."
                 m 2eka "It makes me happy to hear you say that...{w=0.5}but words alone can only do so much."
 
