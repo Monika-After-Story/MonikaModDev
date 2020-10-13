@@ -10380,7 +10380,7 @@ label monika_beingevil:
                     and mas_isMoniHappy(higher=True)
                 )
             ):
-                if (renpy.random.randint(1,10) == 1) and (persistent._mas_pm_monika_innocent is not None):
+                if persistent._mas_pm_monika_innocent is not None and renpy.random.randint(1, 3) == 1:
                     # joke path - not on first viewing
                     m 3euc "Of course I haven't, weren't you listening?"
                     m 1euc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
@@ -10475,9 +10475,10 @@ label monika_beingevil:
 
             else:
                 m 2euc "Do you really?"
-                m 2ekc "I'm sorry, [player], but sometimes...{w-0.5}{nw}"
+                m 2ekc "I'm sorry, [player], but sometimes..."
                 if mas_isMoniDis(lower=True):
-                    extend 2rkc "Quite often, in fact...{w=0.5}{nw}"
+                    m 2rkc "{cps=*2}Quite often, in fact...{/cps}{nw}"
+                    $ _history_list.pop()
                 m 2ekd "It doesn't really feel like you do."
                 m 2eka "It makes me happy to hear you say that...{w=0.5}but words alone can only do so much."
 
@@ -10520,9 +10521,8 @@ label monika_beingevil:
                         m 1eka "That means a lot..."
 
                     else:
-                        m 2rsd "Would be nice to see some then."
-                        m 2wuc ".{w=0.5}.{w=0.5}."
-                        m 2rksdlb "Sorry! That came out of nowhere."
+                        m 2rsd "{cps=*2}Would be nice to see some then.{/cps}"
+                        $ _history_list.pop()
 
                     m 1eksdlc "I know that I've done some bad things in the past..."
                     m 3eka "But I've learned from them and grown as a person since."
