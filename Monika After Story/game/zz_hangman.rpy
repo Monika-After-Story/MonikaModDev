@@ -700,8 +700,10 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
         m 1hub "Wow, [player], you must be {i}really{/i} lucky, ahaha~"
 
         # Make her mention previous episode of giving up on last chance just once.
-        if (mas_seenLabels(["mas_hangman_give_up_last_chance"]) and not
-            mas_seenLabels(["mas_hangman_give_up_last_chance_ref"])):
+        if (
+            mas_seenLabels(["mas_hangman_give_up_last_chance"]) and
+            not mas_seenLabels(["mas_hangman_give_up_last_chance_ref"])
+        ):
             call mas_hangman_give_up_last_chance_ref
     else:
         m 1hua "Wow, you guessed [the_word] correctly!"
@@ -718,11 +720,11 @@ label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
              m 1eka "[player]..."
              m "You couldn't guess your own name?"
         elif last_chance_guesses / (guesses - (6 - chances)) > 0.5:
-             if not persistent._mas_pm_cares_about_dokis:
-                m 1tsa "You were {i}hanging{/i} in there really well{w=0.5}{nw}, "
-                extend 1hub "[player], ahaha."
+             if not (persistent._mas_pm_cares_about_dokis or persistent._mas_sensitive_mode):
+                 m 1tsa "You were {i}hanging{/i} in there really well{w=0.5}{nw}, "
+                 extend 1hub "[player], ahaha."
              else:
-                m 1eua "You were doing really great, [player]!"
+                 m 1eua "You were doing really great, [player]!"
         m 1hua "Better luck next time~"
     else:
         m 1ekc "[player]..."
@@ -763,7 +765,7 @@ label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
 
 label mas_hangman_game_give_up_last_chance(guesses=0, last_chance_guesses=0):
     if last_chance_guesses / guesses > 0.5:
-        m 3eka "You were really lucky to hang on your last chance for so long..."
+        m 3eka "You were really lucky to hold on your last chance for so long..."
         m "And you almost figured the entire word correctly."
     m 1dkc "You shouldn't give up on your last chance, no matter how dire things seem to be..."
     m 1eka "Please, play until the very end next time."
