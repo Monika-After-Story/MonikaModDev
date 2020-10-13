@@ -10011,13 +10011,6 @@ label monika_beingevil:
         m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
         "You haven't done anything wrong":
             # variable setting at the end because they're used to determine if player has seen this path before
-            # TODO aff branching in other paths
-                # not evil - done, missing exps
-                # love anyway - done, missing exps
-                # evil too - done, kinda, can't really think of anything better, missing exps
-                # evil > still love - scrapped
-                # evil > forgive - done
-                # evil > evil - keep as is
             if (persistent._mas_pm_monika_innocent is None):
                 # some extra aff if this is the first choice
                 $ mas_gainAffection(amount=3, bypass=True)
@@ -10028,7 +10021,6 @@ label monika_beingevil:
                 (not persistent.monika_kill and mas_isMoniNormal(higher=True))
                 or (store.mas_anni.pastOneMonth() and mas_isMoniHappy(higher=True))
             ):
-                # no regrets
                 if (renpy.random.randint(1,10) == 1) and (persistent._mas_pm_monika_innocent is not None):
                     # joke path - not on first viewing
                     m 3euc "Of course I haven't, weren't you listening?"
@@ -10049,8 +10041,7 @@ label monika_beingevil:
                         m 5eub "There's no point in getting too hung up about it."
                         m 5hub "Ahaha~"
 
-            elif mas_isMoniNormal():
-                # may doubt a little
+            elif mas_isMoniUpset(higher=True):
                 m 1ekb "I think we both know that's not quite true, is it?"
                 m 1eka "I could have handled the whole situation a bit more...{w=0.3}{nw}"
                 extend 3eka "delicately, to say the least."
@@ -10058,7 +10049,6 @@ label monika_beingevil:
                 m 5eub "But putting that aside, it really puts me at ease that you think that."
 
             else:
-                # might blame herself since you do not love her
                 m 2euc "..."
                 m 2dsc "Honestly, I'm having trouble believing that."
                 m 2tud "I'm having trouble believing that {i}you{/i} believe that, [player]."
@@ -10086,11 +10076,11 @@ label monika_beingevil:
                 m 1hubfa "Ahaha, I'm just kidding!"
                 m 3tubfb "But no promises, [player]~"
             else:
-                m "..."
-                m "I want to believe you, I really do."
-                m "But then what reason would you have treat me like this?"
-                m "At least {i}one{/i} of us has to be evil."
-                m "And I don't know what I'd do if it turned out to be you."
+                m 2fsc "..."
+                m 2dkd "I want to believe you, I really do."
+                m 2ekd "But then what reason would you have treat me like this?"
+                m 2esc "{i}One{/i} of us has to be the evil one here."
+                m 2dkc "And I don't know what I'd do if it turned out to be you."
 
         "I still love you anyway.":
             $ persistent._mas_pm_monika_evil = True
@@ -10102,16 +10092,19 @@ label monika_beingevil:
                 m 1rksdlc "..."
 
                 if mas_isMoniAff(higher=True):
-                    m "You know what, [player]?"
-                    m "Regardless of whether I'm good or evil... I still got what I wanted."
+                    m 1esb "You know what, [player]?"
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                    m 5eua "Regardless of whether I'm good or evil...{w=0.3}{nw}"
+                    extend 5tua " I still got what I wanted."
 
                     if persistent.monika_kill:
                         $ come = "come back"
                     else:
                         $ come = "come"
 
-                    m "Even after everything that happened,{w=0.3} everything I've done,{w=0.3} you still chose to [come] here and stay with me."
-                    m "So I suppose it doesn't really matter in the end."
+                    m 5eua "Even after everything that happened,{w=0.3} everything I've done,{w=0.3} you still chose to [come] here and stay with me."
+                    m 5hub "So I suppose it doesn't really matter in the end."
+                    show monika 1tubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
                 else:
                     m 1ekd "[player]..."
@@ -10123,12 +10116,12 @@ label monika_beingevil:
                 m 1tubfb "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
 
             else:
-                m "Do you really?"
-                m "I'm sorry, [player], but sometimes...{w-0.5}{nw}"
+                m 2euc "Do you really?"
+                m 2ekc "I'm sorry, [player], but sometimes...{w-0.5}{nw}"
                 if mas_isMoniDis(lower=True):
-                    extend "Quite often, in fact...{w=0.5}{nw}"
-                m "It doesn't really feel like you do."
-                m "It makes me happy to hear you say that...{w=0.5}but words alone can only do so much."
+                    extend 2rkc "Quite often, in fact...{w=0.5}{nw}"
+                m 2ekd "It doesn't really feel like you do."
+                m 2eka "It makes me happy to hear you say that...{w=0.5}but words alone can only do so much."
 
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
@@ -10150,8 +10143,8 @@ label monika_beingevil:
                 m 1ekbfa "But evil or not, I'm glad to have you by my side."
                 m 1hubfa "I'm guessing it's the same for you too~"
             else:
-                m "..."
-                m "They might have a point there."
+                m 2esc "..."
+                m 2esd "They might have a point there."
 
         "You kind of are evil...":
             $ persistent._mas_pm_monika_evil = True
