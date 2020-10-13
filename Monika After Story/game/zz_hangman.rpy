@@ -761,8 +761,8 @@ label mas_hangman_game_give_up_last_chance(guesses=0, chances=0, last_chance_gue
     if last_chance_guesses / guesses > 0.5:
         m "You were really lucky to hang on your last chance for so long..."
         m "...And you almost figured the entire word correctly."
-    m "You shouldn't give up on your last chance, no matter how dire things are..."
-    m "Please, play until the very end next time, okay?"
+    m "You shouldn't give up on your last chance, no matter how dire things seem to be..."
+    m "Please, play until the very end next time."
     if mas_isMoniAff(higher=True):
         m "Would you do that for me?~"
     return
