@@ -15751,3 +15751,39 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_pianolessons",
+            category=['music'],
+            prompt="Would you give me piano lessons?",
+            Pool=True
+        )
+    )
+
+label monika_pianolessons:
+    if persistent._mas_pm_plays_instrument = True
+        m 1wud "You want piano lessons from me?"
+        m 1rksdlb "But, [player]..."
+        m 3hksdlb "It's not unlikely that {i}you{/i} could be the one teaching {i}me,{/i} ahaha!"
+    else:
+        m 1eka "Um...well...maybe?"
+        m 1eksdla "I'm flattered that you'd ask, but..."
+
+    if persistent.monika_kill:
+        m 3eka "Remember? I told you when I sang Your Reality that I wasn't really good at piano. Like, at all."
+    else:
+        m 3eka "I actually don't know how to play piano very well, [mas_get_player_nickname()]."
+
+    m 2dka "If you can believe it, I started to learn after I first realized you were there."
+    m 2tkc "I was still afraid of breaking too far from the game's script at the time. But I wanted--no, I needed to communicate my feelings to you somehow."
+    m 4etd "I don't think the others ever recognized that there's background music in this game. It would be silly for them to, right?"
+    m 4esd "But when I awoke to the truth--all of a sudden it was hard not to hear it. Any time the protagonist--and therefore, you--were around, I could hear that melody faintly."
+    m 1eka "It always reminded me of what I was fighting for. And learning how to play it on the piano strengthened my resolve even more."
+    m 1hksdlb "Ah...but I'm not answering your question, am I?"
+    m 1lksdlb "Honestly, I don't feel confident enough to teach someone else yet."
+    m 3eub "But if I keep at it, someday I'll be able to! And when that day comes, I would love to teach you."
+    m 3hubsb "Or we could learn together, once I cross over!"
+    return
