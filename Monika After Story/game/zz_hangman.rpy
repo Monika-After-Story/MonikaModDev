@@ -41,6 +41,7 @@ image hm_0 = ConditionSwitch(
 # sayori
 image hm_s:
     block:
+
         # this block handles images
         block:
             choice:
@@ -62,22 +63,14 @@ image hm_s:
 # window sayori
 # we are dependent on exisitng images to create the window sayori
 define hm.SAYORI_SCALE = 0.25
-image hm_s_win_6 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_5 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_4 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_3 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_2 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_1 = im.FactorScale(
-    im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_0 = im.FactorScale(
-    im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
-image hm_s_win_fail = im.FactorScale(
-    im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
 image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
 #image hm_s1 = "mod_assets/games/hangman/hm_s1.png"
@@ -202,13 +195,12 @@ init -1 python in mas_hangman:
     HM_IMG_NAME = "hm_"
 
     # Monika words
-    MONI_WORDS = [
-        "emerald", "delete", "freedom", "piano", "music", "reality", "rain", "envy",
-        "coffee", "ribbon", "advice", "crossover", "feather", "abstract", "corruption",
-        "squid", "president", "passion", "vegetables", "loneliness", "symbol",
-        "green", "poem", "route", "literature", "epiphany", "despair", "wretched", "shore",
-        "waves", "beach", "swimming", "debate", "leadership", "festival", "confidence",
-        "creativity", "extrovert", "despair", "ai", "python", "renpy", "programming",
+    MONI_WORDS = ["emerald","delete","freedom","piano","music","reality","rain","envy",
+        "coffee","ribbon","advice","crossover","feather","abstract","corruption",
+        "squid","president","passion","vegetables","loneliness","symbol",
+        "green","poem","route","literature","epiphany","despair","wretched","shore",
+        "waves","beach","swimming","debate","leadership","festival","confidence",
+        "creativity","extrovert","despair","ai","python","renpy","programming",
         "lethargy"
     ]
 
@@ -217,8 +209,7 @@ init -1 python in mas_hangman:
 
     def _add_monika_words(wordlist):
         for word in MONI_WORDS:
-            wordlist.append(renpy.store.PoemWord(glitch=False, sPoint=0, yPoint=0, 
-                            nPoint=0,word=word))
+            wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
 
     # file names
@@ -227,6 +218,7 @@ init -1 python in mas_hangman:
 
     # hangman game text
     game_name = "Hangman"
+
 
     def copyWordsList(_mode):
         """
@@ -360,6 +352,7 @@ init -1 python in mas_hangman:
 
 # post processing
 init 10 python:
+
     # setting up wordlists
     import store.mas_hangman as mas_hmg
 
@@ -370,7 +363,9 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
+
     $ disable_esc()
+
     python:
         import store.mas_hangman as mas_hmg
         is_sayori = (
@@ -404,6 +399,7 @@ label mas_hangman_game_select_diff:
             $ hangman_mode = mas_hmg.HARD_MODE
 
 label mas_hangman_game_preloop:
+
     # setup positions
     show monika at t21
     if store.mas_globals.dark_mode:
@@ -450,10 +446,10 @@ label mas_hangman_game_loop:
 
         # setup display word and hint
         if (
-            word == -1 and 
-            persistent.playername.isalpha() and
-            len(persistent.playername) <= 15
-        ):
+                word == -1
+                and persistent.playername.isalpha()
+                and len(persistent.playername) <= 15
+            ):
             display_word = list("_" * len(persistent.playername.lower()))
             hm_hint = mas_hmg.HM_HINT.format("I")
             word = persistent.playername.lower()
@@ -540,8 +536,10 @@ label mas_hangman_game_loop:
 
         # sayori window easter egg
         if is_sayori:
+
             # glitch out
             if chances == 0:
+
                 # disable hotkeys, music and more
                 $ mas_RaiseShield_core()
 
@@ -600,6 +598,7 @@ label mas_hangman_game_loop:
 
         if chances == 0:
             $ done = True
+            
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -673,6 +672,7 @@ label mas_hangman_game_loop:
 
             show monika at t21
             jump mas_hangman_game_loop
+
         "No.":
             pass
     jump mas_hangman_game_end
@@ -709,8 +709,8 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
         m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
 
-    if not persistent.ever_won["hangman"]:
-        $ persistent.ever_won["hangman"] = True
+    if not persistent.ever_won['hangman']:
+        $ persistent.ever_won['hangman'] = True
     #TODO: grant a really tiny amount of affection?
     return
 
