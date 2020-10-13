@@ -298,7 +298,7 @@ init 5 python:
             pool=True,
             unlocked=True,
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED,None)
         )
     )
@@ -316,13 +316,13 @@ label monika_showpoem:
             ("Happy End", poem_m4, False, False)
         ]
 
-        ret_back = ("Nevermind.", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
         #Extend the new poems
         poems_list.extend(mas_poems.getSeenPoemsMenu())
 
         renpy.say(m, "Which poem would you like to read?", interact=False)
 
-    call screen mas_gen_scrollable_menu(poems_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(poems_list, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ _poem = _return
 

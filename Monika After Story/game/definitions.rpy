@@ -1,9 +1,6 @@
 define persistent.demo = False
-define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
-
-init 1 python:
-    persistent.steam = "steamapps" in config.basedir.lower()
+# define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
     import singleton
@@ -138,8 +135,7 @@ python early:
 
         IN:
             trans - the transition to use
-            always - if True, the transition will always occur, even if the user has
-                disabled transitions
+            always - if True, the transition will always occur, even if the user has disabled transitions
             paired - Tom knows
             clear - if True cleans out transient stuff at the end of an interaction
 
@@ -180,6 +176,92 @@ python early:
         return renpy.game.interface.do_with(trans, paired, clear=clear)
 
     renpy.exports.with_statement = mas_with_statement
+
+    def mas_find_target(self):
+        """
+        This method tries to find an image by its reference. It can be a displayable or tuple.
+        If this method can't find an image and it follows the pattern of Monika's sprites, it'll try to generate one.
+
+        Main change to this function is the ability to auto generate displayables
+        """
+        name = self.name
+
+        if isinstance(name, renpy.display.core.Displayable):
+            self.target = name
+            return True
+
+        if not isinstance(name, tuple):
+            name = tuple(name.split())
+
+        def error(msg):
+            self.target = renpy.text.text.Text(msg, color=(255, 0, 0, 255), xanchor=0, xpos=0, yanchor=0, ypos=0)
+
+            if renpy.config.debug:
+                raise Exception(msg)
+
+        args = [ ]
+
+        while name:
+            target = renpy.display.image.images.get(name, None)
+
+            if target is not None:
+                break
+
+            args.insert(0, name[-1])
+            name = name[:-1]
+
+        #Main difference:
+        #Check if the sprite exists at all
+        if not name:
+            if (
+                isinstance(self.name, tuple)
+                and len(self.name) == 2
+                and self.name[0] == "monika"
+            ):
+                #If this is a Monika sprite and it doesn't exist, we should try to generate it
+                #We did some sanity checks, but just in case will use a try/except block
+                try:
+                    #Reset name
+                    name = self.name
+                    #Generate
+                    store.mas_sprites.generate_images(name[1])
+                    #Try to get the img again
+                    target = renpy.display.image.images[name]
+
+                #If we somehow failed, show the exception and return False
+                except:
+                    error("Image '%s' not found." % ' '.join(self.name))
+                    return False
+
+            else:
+                error("Image '%s' not found." % ' '.join(self.name))
+                return False
+
+        try:
+            a = self._args.copy(name=name, args=args)
+            self.target = target._duplicate(a)
+
+        except Exception as e:
+            if renpy.config.debug:
+                raise
+
+            error(str(e))
+
+        #Copy the old transform over.
+        new_transform = self.target._target()
+
+        if isinstance(new_transform, renpy.display.transform.Transform):
+            if self.old_transform is not None:
+                new_transform.take_state(self.old_transform)
+
+            self.old_transform = new_transform
+
+        else:
+            self.old_transform = None
+
+        return True
+
+    renpy.display.image.ImageReference.find_target = mas_find_target
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -280,6 +362,14 @@ python early:
     #   shown_count - number of times this event has been shown to the user
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
+    #       NOTE: IF AN EVENT HAS BEEN SEEN, IT SHOULD ALWAYS HAVE A POSITIVE
+    #           SHOWN COUNT. The only exception to this is if we crashed
+    #           halfway through a topic, in which case we will know this
+    #           since shown count will be 0 and the label would have been seen.
+    #           In that circumstance, we should immediately update the shown
+    #           count. (Event will not do this in case you need to do specific
+    #           crash handling). Call syncShownCount on the event object to 
+    #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
     #       has been seen. This string will respect \n and other formatting
@@ -656,6 +746,9 @@ python early:
             else:
                 return super(Event, self).__getattribute__(name)
 
+        #repr override
+        def __repr__(self):
+            return "<Event: (evl: {0})>".format(self.eventlabel)
 
         def monikaWantsThisFirst(self):
             """
@@ -779,6 +872,13 @@ python early:
             """
             self.start_date = None
             self.end_date = None
+
+        def syncShownCount(self):
+            """
+            Updates shown count if it is < 1 but we have seen the label
+            """
+            if self.shown_count < 1 and renpy.seen_label(self.eventlabel):
+                self.shown_count = 1
 
         def timePassedSinceLastSeen_d(self, time_passed, _now=None):
             """
@@ -1801,7 +1901,6 @@ python early:
                     mas_rmallEVL(ev.eventlabel)
 
             #NOTE: we don't add the rest since there's no reason to undo those.
-
 
 # init -1 python:
     # this should be in the EARLY block
@@ -5566,17 +5665,17 @@ init -1 python:
 
             for i in range(4):
                 # Value Name, Value Data, Value Type
-                n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath":
+                n, installPath, t = _winreg.EnumValue(keyVal, i)
+                if n == "InstallPath":
                     break
 
-            installPath+="/steamapps"
+            installPath += "/steamapps"
 
-        elif renpy.mac:
-            installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+        elif renpy.macintosh:
+            installPath = os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
 
         elif renpy.linux:
-            installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
+            installPath = os.environ.get("HOME") + "/.steam/Steam/steamapps"
             # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
 
         #Ideally we should never end up here, but in the case we do, we should prevent any work from being done
@@ -5885,6 +5984,60 @@ init 2 python:
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
+
+init 21 python:
+    def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
+        """
+        Picks a nickname for the player at random based on accepted nicknames
+
+        IN:
+            capitalize - Whether or not we should capitalize the first character
+                (Default: False)
+
+            exclude_names - List of names to be excluded in the selection pool for nicknames
+                (Default: Empty list)
+
+            _default - Default name to return if affection < affectionate or no nicknames have been set/allowed
+                If None, the player's name is assumed
+                (Default: None)
+
+            regex_replace_with_nullstr - Regex str to use to identify parts of a nickname which should be replaced with an empty
+                string. If None, this is ignored
+                (Default: None)
+
+        NOTE: If affection is below affectionate or player has no nicknames set, we just use the player name
+        """
+        if _default is None:
+            _default = player
+
+        #If we're at or below happy, we just use playername
+        if mas_isMoniHappy(lower=True) or not persistent._mas_player_nicknames:
+            return _default
+
+        nickname_pool = persistent._mas_player_nicknames + [player]
+
+        #If we have some exclusions, we should factor them in
+        if exclude_names:
+            nickname_pool = [
+                nickname
+                for nickname in nickname_pool
+                if nickname not in exclude_names
+            ]
+
+            #If we've excluded everything, we'll use the default value
+            if not nickname_pool:
+                return _default
+
+        #Now select a name
+        selected_nickname = random.choice(nickname_pool)
+
+        if regex_replace_with_nullstr is not None:
+            selected_nickname = re.sub(regex_replace_with_nullstr, "", selected_nickname)
+
+        #And handle capitalization
+        if capitalize:
+            selected_nickname = selected_nickname.capitalize()
+        return selected_nickname
 
     def mas_input(prompt, default="", allow=None, exclude="{}", length=None, with_none=None, pixel_width=None, screen="input", screen_kwargs={}):
         """
@@ -7206,8 +7359,7 @@ default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
-default seen_random_limit = False
-default persistent._mas_enable_random_repeats = False
+default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
 
@@ -7224,6 +7376,9 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# True if the current background is an indoors one
+define mas_is_indoors = True
 
 # idle
 default persistent._mas_in_idle_mode = False
@@ -7266,6 +7421,8 @@ define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
 
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define skip_setting_weather = False# in case of crashes/reloads, predefine it here
+
 define mas_monika_twitter_handle = "lilmonix3"
 
 # sensitive mode enabler
@@ -7274,70 +7431,75 @@ default persistent._mas_sensitive_mode = False
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 
-init python:
-    startup_check = False
-    try:
-        persistent.ever_won['hangman']
-    except:
-        persistent.ever_won['hangman']=False
-    try:
-        persistent.ever_won['piano']
-    except:
-        persistent.ever_won['piano']=False
+define startup_check = False
 
-default his = "his"
-default he = "he"
-default hes = "he's"
-default heis = "he is"
-default bf = "boyfriend"
-default man = "man"
-default boy = "boy"
-default guy = "guy"
-default him = "him"
-default himself = "himself"
+define his = "his"
+define he = "he"
+define hes = "he's"
+define heis = "he is"
+define bf = "boyfriend"
+define man = "man"
+define boy = "boy"
+define guy = "guy"
+define him = "him"
+define himself = "himself"
 
+# Input characters filters
+define numbers_only = "0123456789"
+define lower_letters_only = " abcdefghijklmnopqrstuvwxyz"
+define letters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define name_characters_only = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'"
 
-# default is OFTEN
-default persistent._mas_randchat_freq = 0
+#Default is NORMAL
+default persistent._mas_randchat_freq = mas_randchat.NORMAL
 define mas_randchat_prev = persistent._mas_randchat_freq
-init 1 python in mas_randchat:
+init -1 python in mas_randchat:
+    import store
     ### random chatter frequencies
 
-    # these numbers are the lower end of how many seconds to wait between
-    # random topics
-    OFTEN         = 5 # end 15
-    NORMAL        = 15 # end 45
-    LESS_OFTEN    = 40 # end 120 (2 min)
-    OCCASIONALLY  = 2*60 # end 360 (6 min)
-    RARELY        = 390 # end 1170 (19.5 min)
-    VERY_RARELY   = 20*60 # end 3600 (60 mins)
-    NEVER         = 0
+    #Name - value constants
+    VERY_OFTEN = 6
+    OFTEN = 5
+    NORMAL = 4
+    LESS_OFTEN = 3
+    OCCASIONALLY = 2
+    RARELY = 1
+    NEVER = 0
+
+    # these numbers are the lower end of how many seconds to wait between random topics
+    VERY_OFTEN_WAIT = 5 # end 15
+    OFTEN_WAIT = 15 # end 45
+    NORMAL_WAIT = 40 # end 120 (2 min)
+    LESS_OFTEN_WAIT = 2*60 # end 360 (6 min)
+    OCCASIONALLY_WAIT = 390 # end 1170 (19.5 min)
+    RARELY_WAIT = 20*60 # end 3600 (60 mins)
+    NEVER_WAIT = 0
 
     # this is multiplied to the low end to get the upper end of seconds
     SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 5
+    ## to better work with the sliders, we will create a range from 0 to 6
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
-        0: OFTEN,
-        1: NORMAL,
-        2: LESS_OFTEN,
-        3: OCCASIONALLY,
-        4: RARELY,
-        5: VERY_RARELY,
-        6: NEVER
+        NEVER: NEVER_WAIT,
+        RARELY: RARELY_WAIT,
+        OCCASIONALLY: OCCASIONALLY_WAIT,
+        LESS_OFTEN: LESS_OFTEN_WAIT,
+        NORMAL: NORMAL_WAIT,
+        OFTEN: OFTEN_WAIT,
+        VERY_OFTEN: VERY_OFTEN_WAIT
     }
 
     ## slider map for displaying
     SLIDER_MAP_DISP = {
-        0: "Often",
-        1: "Normal",
-        2: "Less Often",
-        3: "Occasionally",
-        4: "Rarely",
-        5: "Very Rarely",
-        6: "Never"
+        NEVER: "Never",
+        RARELY: "Rarely",
+        OCCASIONALLY: "Occasionally",
+        LESS_OFTEN: "Less Often",
+        NORMAL: "Normal",
+        OFTEN: "Often",
+        VERY_OFTEN: "Very Often"
     }
 
     # current frequency times
@@ -7346,15 +7508,24 @@ init 1 python in mas_randchat:
     rand_high = NORMAL * SPAN_MULTIPLIER
     rand_chat_waittime_left = 0
 
+    def reduceRandchatForAff(aff_level):
+        """
+        Reduces the randchat setting if we're too high for the current affection level
+        """
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+
+        if store.persistent._mas_randchat_freq > max_setting_for_level:
+            adjustRandFreq(max_setting_for_level)
+
     def adjustRandFreq(slider_value):
         """
         Properly adjusts the random limits given the slider value
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 5
+                Should be between 0 - 6
         """
-        slider_setting = SLIDER_MAP.get(slider_value, 1)
+        slider_setting = SLIDER_MAP.get(slider_value, 4)
 
         # otherwise set up the times
         # globalize
@@ -7363,7 +7534,7 @@ init 1 python in mas_randchat:
 
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
-        renpy.game.persistent._mas_randchat_freq = slider_value
+        store.persistent._mas_randchat_freq = slider_value
 
         setWaitingTime()
 

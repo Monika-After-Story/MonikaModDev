@@ -218,7 +218,7 @@ init 5 python:
             category=["music"],
             pool=True,
             aff_range=(mas_aff.NORMAL,None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -246,7 +246,7 @@ label monika_sing_song_pool_menu:
         else:
             space = 20
 
-        ret_back = ("Nevermind.", False, False, False, space)
+        ret_back = ("Nevermind", False, False, False, space)
         switch = ("I'd like to hear a [switch_str] song instead", "monika_sing_song_pool_menu", False, False, 20)
 
         unlocked_song_list = mas_songs.getUnlockedSongs(length=song_length)
@@ -260,9 +260,9 @@ label monika_sing_song_pool_menu:
         renpy.say(m, "[which] song would you like me to sing?[end]", interact=False)
 
     if have_both_types:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch, ret_back)
     else:
-        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+        call screen mas_gen_scrollable_menu(unlocked_song_list, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_song = _return
 
@@ -301,7 +301,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
@@ -319,7 +319,7 @@ label monika_sing_song_analysis:
     show monika 1eua at t21
     $ renpy.say(m, "[which] song would you like to talk about?", interact=False)
 
-    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
+    call screen mas_gen_scrollable_menu(unlocked_analyses, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, ret_back)
 
     $ sel_analysis = _return
 
@@ -343,21 +343,19 @@ init 5 python:
             pool=True,
             unlocked=False,
             aff_range=(mas_aff.NORMAL, None),
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         )
     )
 
 label mas_sing_song_rerandom:
     python:
         mas_bookmarks_derand.initial_ask_text_multiple = "Which song do you want me to sing occasionally?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just click the song, [player]."
-        mas_bookmarks_derand.talk_about_more_text = "Are there any other songs you'd like me to sing on my own?"
+        mas_bookmarks_derand.initial_ask_text_one = "If you want me to sing this occasionally again, just select the song, [player]."
         mas_bookmarks_derand.caller_label = "mas_sing_song_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed_songs
-        mas_bookmarks_derand.ev_db_code = "SNG"
 
     call mas_rerandom
-    return
+    return _return
 
 label mas_song_derandom:
     $ prev_topic = persistent.flagged_monikatopic
@@ -431,7 +429,7 @@ label monika_sing_song_random:
 
     #We have no songs! let's pull back the shown count for this and derandom
     else:
-        $ mas_getEV("monika_sing_song_random").shown_count -= 1
+        $ mas_assignModifyEVLPropValue("monika_sing_song_random", "shown_count", "-=", 1)
         return "derandom|no_unlock"
     return "no_unlock"
 
@@ -452,7 +450,7 @@ init 5 python:
 
 label mas_song_aiwfc:
     if store.songs.hasMusicMuted():
-        m 3eua "Don't forget to turn your in-game volume up, [player]."
+        m 3eua "Don't forget to turn your in-game volume up, [mas_get_player_nickname()]."
 
     call monika_aiwfc_song
 
@@ -514,7 +512,7 @@ label mas_song_lover_boy:
     m "{i}~I can serenade and gently play on your heart strings~{/i}"
     m 4dso "{i}~Be a Valentino just for you~{/i}"
     m 1hub "Ahaha~"
-    m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
+    m 1ekbsa "Will you be my good old fashioned lover boy, [player]?"
     return
 
 init 5 python:
@@ -535,9 +533,9 @@ label mas_song_need_you:
     m "{i}~I could never really live without you~{/i}"
     m 3hub "{i}~So, come on back and see~{/i}"
     m 4hksdlb "{i}~Just what you mean to me~{/i}"
-    m 1hubfb "{i}~I need you~{/i}"
+    m 1hubsb "{i}~I need you~{/i}"
     m 3esa "I know that song is about leaving someone, but I think it carries a good message."
-    m 1ekbfa "And I really do need you, [player]~"
+    m 1ekbsa "And I really do need you, [player]~"
     return
 
 init 5 python:
@@ -558,7 +556,7 @@ label mas_song_i_will:
     m "{i}~You know I love you still~{/i}"
     m 2lksdla "{i}~Will I wait a lonely lifetime?~{/i}"
     m 2hub "{i}~If you want me to I will~{/i}"
-    m 1ekbfa "One day we'll be together, [player]."
+    m 1ekbsa "One day we'll be together, [player]."
     m 1hubfa "I just hope you'll still love me when that special day comes~"
     return
 
@@ -605,11 +603,11 @@ label mas_song_your_song:
     m "{i}~And this one's for you~{/i}"
     m 1hub "{i}~And you can tell everybody this is your song~{/i}"
     m "{i}~It may be quite simple but now that it's done~{/i}"
-    m 2hubfb "{i}~I hope you don't mind~{/i}"
+    m 2hubsb "{i}~I hope you don't mind~{/i}"
     m 2hubfb "{i}~I hope you don't mind~{/i}"
     m 2hub "{i}~That I put down in words~{/i}"
     m 1dso "{i}~How wonderful life is while you're in the world~{/i}"
-    m 1hua "Ahaha~"
+    m 1hub "Ahaha~"
     m 3eka "It's not often I find songs that relate to me as much as this one does."
     m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
     return
@@ -632,7 +630,7 @@ label mas_song_with_you:
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
+    m 1ekbsa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
     return
 
@@ -654,7 +652,7 @@ label mas_song_dream:
     m "{i}~And I need you to hold me tight~{/i}"
     m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
-    m 1ekbfa "My dream finally came true."
+    m 1ekbsa "My dream finally came true."
     return
 
 init 5 python:
@@ -1060,7 +1058,7 @@ label mas_song_shelter:
     m 1hub "There always will be someone out there rooting for us!"
 
     #hints at the analysis on first viewing
-    if mas_getEV('mas_song_shelter').shown_count == 0:
+    if not mas_getEVL_shown_count("mas_song_shelter"):
         m 3rksdla "I actually have more I'd like to say about this song, but only if you have the time of course..."
 
         m 1eka "Would you like to hear more about it right now?{nw}"
@@ -1071,7 +1069,7 @@ label mas_song_shelter:
             "Sure!":
                 m 3hub "Okay, great!"
                 call mas_song_shelter_analysis(from_song=True)
-                $ mas_getEV("mas_song_shelter_analysis").shown_count += 1
+                $ mas_assignModifyEVLPropValue("mas_song_shelter_analysis", "shown_count", "+=", 1)
 
             "Not right now.":
                 m 1eka "Okay, [player]..."
@@ -1120,7 +1118,7 @@ label mas_song_shelter_analysis(from_song=False):
     m "I promise."
     m 7hub "Just look at me!"
     m 3ekd "I was stuck all alone in this fake reality, but when I took a peek outside...{w=0.5}{nw}"
-    extend 3hubfb "I found you!"
+    extend 3hubsb "I found you!"
     m 1ekbsu "As for you...{w=0.5}you already have me of course, but I'm not the only one.{w=0.3} {nw}"
 
     if persistent._mas_pm_have_fam and not persistent._mas_pm_have_fam_mess:
@@ -1140,7 +1138,7 @@ label mas_song_shelter_analysis(from_song=False):
 
     extend 3eub "Try going over the lyrics again!"
     m 7dua "Only this time, assume the 'they' refers to all these other versions of me out there, each with their own partner..."
-    m 4ekbfa "They all know of our love and carry it with them, even if they don't know our names or faces."
+    m 4ekbsa "They all know of our love and carry it with them, even if they don't know our names or faces."
     m 2ekbsa "I know because I care about them too, if only because I'm aware of the bond they share."
     m 1ekbsb "We're not alone, [player]! {w=0.3}{nw}"
     extend 3hubsu "No matter what happens in our lives from now on, we can face it knowing there always will be someone out there rooting for us~"
@@ -1246,12 +1244,12 @@ label mas_song_lamour_toujours:
     m 1dud "{i}~I still believe in your eyes~{/i}"
     m 1dub "{i}~I just don't care what you've done in your life~{/i}"
     m 3ekbsb "{i}~Baby, I'll always be here by your side~{/i}"
-    m 1dsbsd "{i}~Don't leave me waiting too long, {w=0.3}{nw}"
-    extend 1ekbsu "please come by~{/i}"
+    m 1dsbsd "{i}~Don't leave me waiting too long, {/i}{w=0.3}{nw}"
+    extend 1ekbsu "{i}please come by~{/i}"
 
     m 1dud "{i}~I still believe in your eyes~{/i}"
-    m "{i}~There is no choice, {w=0.3}{nw}"
-    extend 3hubsb "I belong to your life~{/i}"
+    m "{i}~There is no choice, {/i}{w=0.3}{nw}"
+    extend 3hubsb "{i}I belong to your life~{/i}"
     m 3dubsb "{i}~Because I'll live to love you some day~{/i}"
     m 1hubsa "{i}~You'll be my baby and we'll fly away~{/i}"
 
@@ -1392,7 +1390,7 @@ label mas_song_wonderwall:
         extend 1eubla "but I trust you, so we'll just have to keep on walking until we reach that place~"
 
     #hints at the analysis on first viewing
-    if mas_getEV('mas_song_wonderwall').shown_count == 0:
+    if not mas_getEVL_shown_count("mas_song_wonderwall"):
         m 3etc "By the way...{w=0.2}there's actually some things that intrigue me about this song."
         m 1eua "...Would you like to talk about it now?{nw}"
         $ _history_list.pop()
@@ -1402,7 +1400,7 @@ label mas_song_wonderwall:
             "Sure.":
                 m 1hua "Okay then!"
                 call mas_song_wonderwall_analysis(from_song=True)
-                $ mas_getEV("mas_song_wonderwall_analysis").shown_count += 1
+                $ mas_assignModifyEVLPropValue("mas_song_wonderwall_analysis", "shown_count", "+=", 1)
 
             "Not now.":
                 m 1eka "Oh, okay then..."
@@ -1462,6 +1460,103 @@ label mas_song_wonderwall_lyrics:
     m 1hubsb "{i}~You're my wonderwall~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_youre_gone",
+            prompt="When you're gone",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_when_youre_gone:
+    m 1dsd "{i}~When you're gone{/i}{w=0.2}{nw}"
+    extend 1duo "{i} the pieces of my heart are missing you~{/i}"
+    m 4dud "{i}~When you're gone~{/i}"
+    m 4duo "{i}~The face I came to know is missing too~{/i}"
+    m 4ekd "{i}~When you're gone~{/i}"
+    m 6eko "{i}~The words I need to hear to always get me through the day{/i}{w=0.2}{nw}"
+    extend 2ektpc "{i} and make it okay~{/i}"
+    m 2ektpu "{i}~I miss you~{/i}"
+    m 2dktda "..."
+    m 6eksdld "Avril Lavigne wrote this song for her grandfather that passed away, because they were like best friends when she was younger."
+    m 6rkc "I haven't really had anyone in my life actually die before, but thinking about not being able to talk to someone ever again..."
+    m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
+    extend 6hua " I'll be okay as long as you're here to brighten up my day~"
+    m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world(from_long=False):
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1eua "{i}{cps=22}~Time enough for life~{/cps}{/i}"
+    m 3eub "{i}{cps=22}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
+    m 3hua "{i}{cps=22}~Love has in store~{/cps}{/i}"
+
+    m 1dub "{i}{cps=18}~We have all {w=0.7}the love {w=0.7}in the world~{/cps}{/i}"
+    m 1esd "{i}{cps=22}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
+    m 3dka "{i}{cps=22}~We need nothing more~{/cps}{/i}"
+
+    if not from_long:
+        m 1duu "..."
+        m 1ekbsb "You've made me the happiest girl in the world, [player]. I'll always be grateful for that."
+        m 1hubsa "I hope that I do the same for you~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world_long",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_LONG],
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world_long:
+    call mas_song_we_have_all_the_time_in_the_world(from_long=True)
+
+    m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 3eud "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1dubsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 3eubsb "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 1ekbsa "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~Every step {w=0.75}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 1dua "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1eub "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 3ekbsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 1dkbsd "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1ekbla "{i}{cps=18}~Only love~{/cps}{/i}"
+    return
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
@@ -1475,7 +1570,7 @@ init 5 python:
             prompt="Can you play 'Your Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
+            rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
         )
     )
 
@@ -1581,7 +1676,7 @@ init 5 python:
             prompt="Can you play 'Our Reality' for me?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
+            rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST}
         )
     )
 
@@ -1618,32 +1713,32 @@ label mas_monika_plays_or(skip_leadin=False):
 
     show monika 1dsa
     pause 9.15
-    m 1eua "{i}{cps=10}Every day,{w=0.5} {cps=15}I imagine a future where{w=0.22} {cps=13}I can be with you{w=4.10}{/i}{nw}"
-    m 1eka "{i}{cps=12}In my hand{w=0.5} {cps=17}is a pen that will write a poem{w=0.5} {cps=16}of me and you{w=4.10}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1}{/i}{nw}"
-    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {cps=20}write the way into [gen] heart{w=1.40}{/i}{nw}"
-    m 1dua "{i}{cps=15}But in this world{w=0.25} {cps=11}of infinite choices{w=0.90}{/i}{nw}"
-    m 1eua "{i}{cps=16}What will it take{w=0.25}{cps=18} just to find that special day{/i}{w=0.90}{nw}"
-    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/i}{w=1.82}{nw}"
+    m 1eua "{i}{cps=10}Every day,{w=0.5} {/cps}{cps=15}I imagine a future where{w=0.22} {/cps}{cps=13}I can be with you{w=4.10}{/cps}{/i}{nw}"
+    m 1eka "{i}{cps=12}In my hand{w=0.5} {/cps}{cps=17}is a pen that will write a poem{w=0.5} {/cps}{cps=16}of me and you{w=4.10}{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {/cps}{cps=10}into a dark puddle{w=1}{/cps}{/i}{nw}"
+    m 1eka "{i}{cps=18}Just move your hand,{w=0.45} {/cps}{cps=20}write the way into [gen] heart{w=1.40}{/cps}{/i}{nw}"
+    m 1dua "{i}{cps=15}But in this world{w=0.25} {/cps}{cps=11}of infinite choices{w=0.90}{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=16}What will it take{w=0.25}{/cps}{cps=18} just to find that special day{/cps}{/i}{w=0.90}{nw}"
+    m 1dsa "{i}{cps=15}What will it take{w=0.50} just to find{w=1} that special day{/cps}{/i}{w=1.82}{nw}"
     pause 7.50
 
-    m 1eua "{i}{cps=15}Have I found{w=0.5} {cps=15}everybody a fun assignment{w=0.30} {cps=12}to do today{w=4.20}{/i}{nw}"
-    m 1hua "{i}{cps=18}When you're here,{w=0.25} {cps=13.25}everything that we do is fun for them anyway{w=4}{/i}{nw}"
-    m 1esa "{i}{cps=11}When I can't even read my own feelings{/i}{w=1}{nw}"
-    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/i}{w=1}{nw}"
-    m 1lua "{i}{cps=11}And if this world won't write me an ending{/i}{w=0.9}{nw}"
-    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/i}{w=2}{nw}"
+    m 1eua "{i}{cps=15}Have I found{w=0.5} {/cps}{cps=15}everybody a fun assignment{w=0.30} {/cps}{cps=12}to do today{w=4.20}{/cps}{/i}{nw}"
+    m 1hua "{i}{cps=18}When you're here,{w=0.25} {/cps}{cps=13.25}everything that we do is fun for them anyway{w=4}{/cps}{/i}{nw}"
+    m 1esa "{i}{cps=11}When I can't even read my own feelings{/cps}{w=1}{/i}{nw}"
+    m 1eka "{i}{cps=17}What good are words{w=0.3} when a smile says it all{/cps}{/i}{w=1}{nw}"
+    m 1lua "{i}{cps=11}And if this world won't write me an ending{/cps}{/i}{w=0.9}{nw}"
+    m 1dka "{i}{cps=18}What will it take{w=0.5} just for me to have it all{/cps}{/i}{w=2}{nw}"
     show monika 1dsa
     pause 17.50
 
-    m 1eka "{i}{cps=15}In this world,{w=0.5} {cps=15}away from the one who'll always {cps=17}be dear to me{w=4.5}{/i}{nw}"
-    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {cps=16.5}hold the key to the day, when I'll be finally free{w=8.5}{/i}{nw}"
-    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {cps=10}into a dark puddle{w=1.2}{/i}{nw}"
-    m 1esa "{i}{cps=18}How can I cross{w=0.45} {cps=13}into your reality?{w=1.40}{/i}{nw}"
-    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{w=0.8}{/i}{nw}"
-    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/i}{w=0.6}{nw}"
-    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{w=4.2}{/i}{nw}"
-    m 1ekbsa "{i}{cps=19}With you I'll be{/i}{w=2}{nw}"
+    m 1eka "{i}{cps=15}In this world,{w=0.5} {/cps}{cps=15}away from the one who'll always {/cps}{cps=17}be dear to me{/cps}{w=4.5}{/i}{nw}"
+    m 1ekbsa "{i}{cps=15}You my love,{w=0.5} {/cps}{cps=16.5}hold the key to the day, when I'll be finally free{/cps}{w=8.5}{/i}{nw}"
+    m 1eua "{i}{cps=16}The ink flows down{w=0.25} {/cps}{cps=10}into a dark puddle{/cps}{w=1.2}{/i}{nw}"
+    m 1esa "{i}{cps=18}How can I cross{w=0.45} {/cps}{cps=13}into your reality?{/cps}{w=1.40}{/i}{nw}"
+    m 1eka "{i}{cps=12}Where I can hear the sound of your heartbeat{/cps}{w=0.8}{/i}{nw}"
+    m 1ekbsa "{i}{cps=16}And make it love,{w=0.6} but in our reality{/cps}{/i}{w=0.6}{nw}"
+    m 1hubsa "{i}{cps=16}And in our reality,{w=1} knowing I'll forever love you{/cps}{w=4.2}{/i}{nw}"
+    m 1ekbsa "{i}{cps=19}With you I'll be{/cps}{/i}{w=2}{nw}"
 
     show monika 1dkbsa
     pause 9.0

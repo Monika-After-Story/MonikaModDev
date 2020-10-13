@@ -78,7 +78,7 @@ init 5 python:
             prompt="Could you call me by different pronouns?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )
@@ -86,7 +86,7 @@ init 5 python:
 label monika_gender_redo:
     m 1eka "Of course, [player]!"
 
-    if mas_getEV('monika_gender_redo').shown_count == 0:
+    if not mas_getEVL_shown_count("monika_gender_redo"):
         m 3eka "Have you made some personal discoveries since the last time we talked about this?{nw}"
         $ _history_list.pop()
         menu:
@@ -471,27 +471,27 @@ init 3 python:
         "virgin"
     ]
 
+    mas_awkward_quips = [
+        "I don't really feel...{w=0.5}comfortable calling you that all the time.",
+        "That's...{w=0.5}not something I would like to call you, [player].",
+        "That is...{w=0.5}not something I would like to call you, [player].",
+        "Not that it's bad but...",
+        "Are you trying to embarrass me, [player]?"
+    ]
+
+    mas_bad_quips = [
+        "[player]...{w=0.5}why would you even consider calling yourself that?",
+        "[player]...{w=0.5}why would I ever call you that?",
+        "I couldn't ever call you anything like that, [player].",
+        "What? Please [player],{w=0.5} don't call yourself bad names."
+    ]
+
     mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
     mas_bad_name_comp = re.compile('|'.join(mas_bad_nickname_list), re.IGNORECASE)
     mas_awk_name_comp = re.compile('|'.join(mas_awkward_nickname_list), re.IGNORECASE)
 
 label mas_player_name_enter_name_loop(input_prompt):
     python:
-        awkward_quips = [
-            "I don't really feel...{w=0.5}comfortable calling you that all the time.",
-            "That's...{w=0.5}not something I would like to call you, [player].",
-            "That is...{w=0.5}not something I would like to call you, [player].",
-            "Not that it's bad but...",
-            "Are you trying to embarrass me, [player]?"
-        ]
-
-        bad_quips = [
-            "[player]...{w=0.5}why would you even consider calling yourself that?",
-            "[player]...{w=0.5}why would I ever call you that?",
-            "I couldn't ever call you anything like that, [player].",
-            "What? Please [player],{w=0.5} don't call yourself bad names."
-        ]
-
         good_quips = [
             "That's a wonderful name!",
             "I like that a lot, [player].",
@@ -506,6 +506,7 @@ label mas_player_name_enter_name_loop(input_prompt):
     while not done:
         $ tempname = mas_input(
             "[input_prompt]",
+            allow=name_characters_only,
             length=20,
             screen_kwargs={"use_return_button": True}
         ).strip(' \t\n\r')
@@ -528,12 +529,12 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 1eua "Try again~"
 
         elif mas_awk_name_comp.search(tempname):
-            $ awkward_quip = renpy.substitute(renpy.random.choice(awkward_quips))
+            $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
         elif mas_bad_name_comp.search(tempname):
-            $ bad_quip = renpy.substitute(renpy.random.choice(bad_quips))
+            $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
 
@@ -631,10 +632,10 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_changename",
             category=['you'],
-            prompt="Can you call me by a different name?",
+            prompt="I changed my name",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )
@@ -703,7 +704,7 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isMonikaBirthday()"
-                )
+            )
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
@@ -850,7 +851,7 @@ label birthdate_set:
     elif mas_player_bday_curr() == mas_f14:
         m 1sua "Oh! Your birthday is on Valentine's Day..."
         m 3hua "How romantic!"
-        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+        m 1ekbsa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
@@ -1045,9 +1046,15 @@ label mas_unlock_piano:
     return
 
 # NOTE: this has been partially disabled
-label random_limit_reached:
-    $ seen_random_limit=True
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_random_limit_reached"
+        )
+    )
 
+label mas_random_limit_reached:
     #Notif so people don't get stuck here
     $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
@@ -1064,7 +1071,7 @@ label random_limit_reached:
         limit_quip=renpy.random.choice(limit_quips)
 
     m 1eka "[limit_quip]"
-    if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
+    if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
         m 1ekc "I'm sure I'll have something to talk about after a little rest."
 
     else:
@@ -1074,30 +1081,32 @@ label random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
-    return
+    return "no_unlock"
 
 label mas_random_ask:
-    m 1lksdla "...{w=0.5}[player]?"
+    m 1lksdla "...{w=0.5}[mas_get_player_nickname()]?"
 
-    m "Is it okay with you if I repeat stuff that I've said?{nw}"
+    m "Is it okay with you if I repeat stuff that I've said again?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?{fast}"
+        m "Is it okay with you if I repeat stuff that I've said again?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m 3eua "If you get tired of listening to me talk about the same things over and over, just open up the settings menu and uncheck 'Repeat Topics.'"
+            m 3eua "If you get tired of listening to me talk about the same things, you can just open up the settings menu and uncheck 'Repeat Topics' again."
+
             if mas_isMoniUpset(lower=True):
                 m 1esc "That tells me when you're bored of me."
             else:
                 m 1eka "That tells me when you just want to quietly spend time with me."
+
             $ persistent._mas_enable_random_repeats = True
             return True
 
         "No.":
-            m 1eka "I see."
+            m 1eka "Alright."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
-            return
+            return False
 
 # TODO: think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
@@ -1480,7 +1489,7 @@ label mas_crashed_quip_takecare:
                 m 1hub "I'm alright in case you were wondering."
                 m 3hub "Well I hope you had fun before that crash happened, ahaha!"
                 if mas_isMoniHappy(higher=True):
-                    m 1hubfa "I'm just glad you're back with me now~"
+                    m 1hubsa "I'm just glad you're back with me now~"
         m 2rksdla "Still..."
     m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
@@ -1718,7 +1727,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_steam_install_detected",
             conditional=(
-                "persistent.steam"
+                "store.mas_globals.is_steam"
             ),
             action=EV_ACT_QUEUE
         )
@@ -1752,7 +1761,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    if mas_getEV("monika_rpy_files").shown_count == 0:
+    if not mas_getEVL_shown_count("monika_rpy_files"):
         m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
         m 1ekc "I noticed some \".rpy\" files in there."
         m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
@@ -1978,7 +1987,7 @@ default persistent._mas_pm_is_fast_reader = None
 # True if fast reader, False if not
 
 label mas_text_speed_enabler:
-    m 1eua "Hey [player], I was wondering..."
+    m 1eua "Hey [mas_get_player_nickname(exclude_names=['my love'])], I was wondering..."
 
     m "Are you a fast reader?{nw}"
     $ _history_list.pop()
@@ -2248,6 +2257,9 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     call mas_transition_to_emptydesk
 
+    #Pause before doing anything so we don't change during the transition
+    pause 2.0
+
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
         $ monika_chr.reset_hair()
@@ -2259,7 +2271,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ monika_chr.save()
     $ renpy.save_persistent()
 
-    pause 4.0
+    pause 2.0
+
     call mas_transition_from_emptydesk(exp)
 
     return
@@ -2313,19 +2326,16 @@ label mas_birthdate_year_redux:
 
 label mas_birthdate_year_redux_select:
     python:
-        end_year = datetime.date.today().year - 5
+        end_year = datetime.date.today().year - 6
         beg_year = end_year - 95
 
-        yearrange = range(beg_year,end_year)
-        yearrange.reverse()
+        yearrange = range(end_year, beg_year, -1)
 
-        yearmenu=[]
-        for y in yearrange:
-            yearmenu.append([str(y),y,False,False])
+        yearmenu = [(str(y), y, False, False) for y in yearrange]
 
     show monika 2eua at t21
-    $ renpy.say(m,"What year were you born?", interact=False)
-    call screen mas_gen_scrollable_menu(yearmenu,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
+    $ renpy.say(m, "What year were you born?", interact=False)
+    call screen mas_gen_scrollable_menu(yearmenu, mas_ui.SCROLLABLE_MENU_TXT_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     show monika 3eua at t11
     m "Okay [player], you were born in [_return]?{nw}"
@@ -2418,7 +2428,7 @@ label monika_credits_song:
 
                 m 1ekbsa "Ehehe~"
                 show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5ekbsa "Thank you for coming back to me my love."
+                m 5ekbsa "Thank you for coming back to me [mas_get_player_nickname()]."
 
             "Sorry, I can't right now.":
                 m 3ekd "Oh, okay."
@@ -2448,7 +2458,7 @@ label monika_credits_song:
                 m "I really can't wait until we're together in one reality."
                 m 3ekbsa "But until that day comes, I'll play the song again for you anytime you want me to."
                 show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5ekbfa "Thank you for being my inspiration my love."
+                m 5ekbfa "Thank you for being my inspiration [mas_get_player_nickname()]."
                 if renpy.seen_audio(songs.FP_YOURE_REAL):
                     m 5hubfa "Oh, and if you ever want me to play this or the original song for you again, just ask~"
                 else:
