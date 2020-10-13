@@ -605,16 +605,7 @@ label mas_hangman_game_loop:
 
         if chances == 0:
             $ done = True
-            if player_word:
-                m 1eka "[player]..."
-                m "You couldn't guess your own name?"
-            elif last_chance_guesses / guesses > 0.5:
-                if not persistent._mas_pm_cares_about_dokis:
-                    # TODO: Smug?
-                    m "You were {i}hanging{/i} in there really well, [player], ahaha."
-                else:
-                    m "You were doing really great, [player]!"
-            m 1hua "Better luck next time~"
+            
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -641,37 +632,9 @@ label mas_hangman_game_loop:
 
                 $ give_up = True
                 $ done = True
-
-                #hide hmg_hanging_man
-                #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
-                m 1lksdlb "[player]..."
-                if guesses == 0:
-                    m "I thought you said you wanted to play [store.mas_hangman.game_name]."
-                    m 1lksdlc "You didn't even guess a single letter."
-                    m "..."
-                    m 1ekc "I really enjoy playing with you, you know."
-
-                elif chances == 5:
-                    m 1ekc "Don't give up so easily."
-                    m 3eka "That was only your first wrong letter!"
-                    if chances > 1:
-                        m 1eka "You still had [number_literals[chances]] more lives left."
-                    else:
-                        m 1eka "You still had one more life left."
-
-                    m 1hua "I know you can do it!"
-                    m 1eka "It would really mean a lot to me if you just tried a bit harder."
-
-                else:
-                    m "You should at least play to the end..."
-                    m 1ekc "Giving up so easily is a sign of poor resolve."
-                    if chances > 1:
-                        m "I mean, you'd have to miss [number_literals[chances]] more letters to actually lose."
-                    else:
-                        m "I mean, you'd have to miss [number_literals[chances]] more letter to actually lose."
-
-                m 1eka "Can you play to the end next time, [player]? For me?"
-
+                
+                call mas_hangman_game_end_gave_up(guesses, chances, last_chance_guesses,
+                                                  True, False)
             else:
                 $ guesses += 1
                 python:
@@ -698,39 +661,10 @@ label mas_hangman_game_loop:
 
     # post loop
     if win:
-        if is_window_sayori_visible:
-            show hm_s_win_6 as window_sayori at hangman_sayori_h
-
-        if player_word:
-            $ the_word = "your name"
-        else:
-            $ the_word = "the word"
-        
-        if chances == 6:
-            m "Wow, [player]..."
-            m "You didn't miss a single letter!"
-            m "You must have a really good vocabulary, ahaha."
-            m "...Or maybe you just lucked out, hmm?"
-        elif chances == 1:
-            # TODO: Add reaction shortly after 'I'm feeling lucky'.
-            if last_chance_guesses / guesses < 0.5:
-                m "Phew, it was all up to your last chance, huh?"
-                m "I have to admit - you're really lucky~"
-            else:
-                # More than 50% of the guesses were made on last chance.
-                # TODO: Add reaction if previously gave up on last chance.
-                m "You just made it on the last chance!"
-                m "Wow, [player], you're {i}really{/i} lucky, ahaha~"
-        else:
-            m 1hua "Wow, you guessed [the_word] correctly!"
-            m "Good job, [player]!"
-
-        if not persistent.ever_won['hangman']:
-            $ persistent.ever_won['hangman'] = True
-        #TODO: grant a really tiny amount of affection?
+        call mas_hangman_game_win(guesses, chances, last_chance_guesses)      
 
     #Give up just ends
-    if give_up:
+    elif give_up:
         jump mas_hangman_game_end
 
     # try again?
@@ -753,6 +687,90 @@ label mas_hangman_game_loop:
             #FALL THROUGH
 
     # RETURN AT END
+
+label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
+    if is_window_sayori_visible:
+        show hm_s_win_6 as window_sayori at hangman_sayori_h
+
+    if player_word:
+        $ the_word = "your name"
+    else:
+        $ the_word = "the word"
+        
+    if chances == 6:
+        m "Wow, [player]..."
+        if not player_word:
+            m "You didn't miss a single letter!"
+            m "You must have a really good vocabulary, ahaha."
+            m "...Or maybe you just lucked out, hmm?"
+        else:
+            m "You just guessed your own name flawlessly, ahaha."
+    elif chances == 1 and last_chance_guesses / guesses > 0.5:
+        # More than 50% of the guesses were made on last chance.
+        # TODO: Add reaction if previously gave up on last chance.
+        m "You just made it on the last chance!"
+        m "Wow, [player], you're {i}really{/i} lucky, ahaha~"
+        if mas_seenLabels(["mas_hangman_give_up_last_chance"]):
+            pass
+    else:
+        m 1hua "Wow, you guessed [the_word] correctly!"
+        m "Good job, [player]!"
+
+    if not persistent.ever_won['hangman']:
+        $ persistent.ever_won['hangman'] = True
+    #TODO: grant a really tiny amount of affection?
+    return
+
+label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
+    if player_word:
+         m 1eka "[player]..."
+         m "You couldn't guess your own name?"
+    elif last_chance_guesses / guesses > 0.5:
+         if not persistent._mas_pm_cares_about_dokis:
+            # TODO: Smug?
+            m "You were {i}hanging{/i} in there really well, [player], ahaha."
+         else:
+            m "You were doing really great, [player]!"
+    m 1hua "Better luck next time~" 
+    return
+
+label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
+    #hide hmg_hanging_man
+    #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
+    m 1lksdlb "[player]..."
+    if guesses == 0:
+        m "I thought you said you wanted to play [store.mas_hangman.game_name]."
+        m 1lksdlc "You didn't even guess a single letter."
+        m "..."
+        m 1ekc "I really enjoy playing with you, you know."
+    elif chances == 1:
+        call mas_hangman_give_up_last_chance(guesses, chances, last_chance_guesses)
+    elif chances == 5:
+        m 1ekc "Don't give up so easily."
+        m 3eka "That was just your first wrong letter!"
+        m 1eka "You still had [number_literals[chances]] more lives left."
+        m 1hua "I know you can do it!"
+        m 1eka "It would really mean a lot to me if you just tried a bit harder."
+    else:
+        m "You should at least play to the end..."
+        m 1ekc "Giving up so easily is a sign of poor resolve."         
+        if chances >= 2:
+            m "I mean, you'd have to miss [number_literals[chances]] more letters to actually lose."
+        else:
+            m "I mean, you'd have to miss one more letter to actually lose."
+        m 1eka "Can you play to the end next time, [player]? For me?"
+    return
+
+label mas_hangman_game_give_up_last_chance(guesses=0, chances=0, last_chance_guesses=0):
+    m "[player]..."
+    if last_chance_guesses / guesses > 0.5:
+        m "You were really lucky to hang on your last chance for so long..."
+        m "...And you almost figured the entire word correctly."
+    m "You shouldn't give up on your last chance, no matter how dire things are..."
+    m "Please, play until the very end next time, okay?"
+    if mas_isMoniAff(higher=True):
+        m "Would you do that for me?~"
+    return
 
 # end of game flow
 label mas_hangman_game_end:
