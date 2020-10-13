@@ -773,7 +773,7 @@ label mas_hangman_game_give_up_last_chance(guesses=0, last_chance_guesses=0):
 
 label mas_hangman_game_give_up_last_chance_ref:
     m 3eua "Remember how you gave up on last chance previously?"
-    m 1hub "This time you actually made, just take a look!"
+    m 1hub "This time you actually made it, just take a look!"
     if mas_isMoniAff(higher=True):
         m 1eubsa "I'm really proud of you, [player]~"
     return
