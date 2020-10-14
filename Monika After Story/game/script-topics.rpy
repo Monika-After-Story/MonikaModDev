@@ -15142,8 +15142,9 @@ label monika_dying_same_day:
         else:
             m 2ekc "...But after meeting you, I think I can kind of see it now."
     else:
-        m "You know, I think I could understand couples wishing to die together, on the same day."
-        m "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
+        m 5lsc "You know, I think I could understand couples wishing to die together, on the same day."
+        show monika 1euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1euc "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
         m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
         if mas_isMoniEnamored(higher=True):
             m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can finally understand it."
