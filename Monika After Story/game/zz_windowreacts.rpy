@@ -195,12 +195,10 @@ init python:
             from AppKit import NSWorkspace
             from Quartz import CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly, kCGNullWindowID
 
-            active_app = NSWorkspace.sharedWorkspace().frontmostApplication()
             active_app_pid = NSWorkspace.sharedWorkspace().activeApplication()["NSApplicationProcessIdentifier"]
             window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID)
             for window in window_list:
                 window_pid = window["kCGWindowOwnerPID"]
-                window_id = window["kCGWindowNumber"]
                 window_title = window.get("kCGWindowName", "")
                 if active_app_pid == window_pid:
                     if friendly:
