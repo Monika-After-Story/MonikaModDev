@@ -449,7 +449,7 @@ label mas_fun_fact_binky:
     m 1eua "It's the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
     m 1rksdla "Well, although you make me so happy that I can't help but be filled with energy."
     m 1rksdlb "Don't expect me to start hopping around, [player]!"
-    m 1dkbfa "...That would be {i}way{/i} too embarrassing to do."
+    m 1dkbsa "...That would be {i}way{/i} too embarrassing to do."
     #Call the end
     call mas_fun_facts_end
     return
@@ -513,7 +513,7 @@ label mas_fun_fact_I_am:
     m 1eua "Here's an example."
     m 2rfb "'{i}Monika! Who's [player]'s loving girlfriend?{/i}'"
     m 3hub "'I am!'"
-    m 1hubfa "Ehehe~"
+    m 1hubsa "Ehehe~"
     #Call the end
     call mas_fun_facts_end
     return
