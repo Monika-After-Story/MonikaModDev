@@ -196,7 +196,7 @@ init python:
             from Quartz import CGWindowListCopyWindowInfo, kCGWindowListOptionOnScreenOnly, kCGNullWindowID
 
             active_app = NSWorkspace.sharedWorkspace().frontmostApplication()
-            active_app_pid = NSWorkspace.sharedWorkspace().active_application()["NSApplicationProcessIdentifier"]
+            active_app_pid = NSWorkspace.sharedWorkspace().activeApplication()["NSApplicationProcessIdentifier"]
             window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID)
             for window in window_list:
                 window_pid = window["kCGWindowOwnerPID"]
