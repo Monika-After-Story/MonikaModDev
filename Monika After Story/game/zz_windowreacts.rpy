@@ -201,7 +201,6 @@ init python:
             for window in window_list:
                 window_pid = window["kCGWindowOwnerPID"]
                 window_id = window["kCGWindowNumber"]
-                window_owner = window["kCGWindowOwner"]
                 window_title = window.get("kCGWindowName", "")
                 if active_app_pid == window_pid:
                     if friendly:
