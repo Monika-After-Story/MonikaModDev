@@ -15135,21 +15135,19 @@ label monika_dying_same_day:
         m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
         m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
         m 3rfd "Before I met you, I thought the idea was completely absurd!"
-        m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
-        m 3rfd "It would be irrational and impulsive to do so!"
-        if mas_isMoniEnamored(higher=True):
-            m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
-        else:
-            m 2ekc "...But after meeting you, I think I can kind of see it now."
     else:
-        m 5lsc "You know, I think I could understand couples wishing to die together, on the same day."
-        show monika 1euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1euc "I was really sceptical about this before, thinking that it's such an irrational idea to follow your loved one there."
-        m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
-        if mas_isMoniEnamored(higher=True):
-            m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can finally understand it."
-        else:
-            m 2ekc "...But after meeting you, I can finally understand it."
+        m 1eud "You know, I was really sceptical about this idea before, {w=0.3}{nw}"
+        extend 1rkc "thinking that it would be such an irrational decision to follow your beloved one there."
+
+    m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
+
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_isMoniEnamored(higher=True):
+        m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
+    else:
+        m 2ekc "...But after meeting you, I think I can kind of see it now."
 
     m 2dkc "A person might just be unable to live without their loved one, afraid of the thought of losing their everything in an instant."
     m 2rksdlc "It hurts just thinking about this."
