@@ -203,6 +203,12 @@ image mas_o31_deco = ConditionSwitch(
     "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
 )
 
+init python:
+    MAS_O31_COSTUME_CG_MAP = {
+        mas_clothes_marisa: "o31mcg",
+        #mas_clothes_rin: "o31rcg" #TODO: Uncomment this after splitting rin
+    }
+
 #Functions
 init -10 python:
     import random
@@ -253,6 +259,9 @@ init -10 python:
             store.queueEvent('mas_change_to_def')
 
     def mas_o31CapGainAff(amount):
+        """
+        CapGainAffection function for o31. See mas_capGainAff for details
+        """
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 
@@ -333,8 +342,11 @@ init -10 python:
             # no items to select from
 
             if wearing_costume:
-                return monika_chr.clothes
+                #Check if the current costume is in the cg map, and if so, prep the cg
+                if monika_chr.clothes in MAS_O31_COSTUME_CG_MAP:
+                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes])
 
+                return monika_chr.clothes
             return None
 
         elif len(selection_pool) < 2:
@@ -350,11 +362,18 @@ init -10 python:
 
         if len(non_worn) > 0:
             # randomly select from non worn
-            return random.choice(non_worn)
+            random_outfit = random.choice(non_worn)
 
-        # otherwise randomly select from overall
-        return random.choice(selection_pool)
+        else:
+            # otherwise randomly select from overall
+            random_outfit = random.choice(selection_pool)
 
+        #Setup the image decode
+        if random_outfit in MAS_O31_COSTUME_CG_MAP:
+            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit])
+
+        #And return the outfit
+        return random_outfit
 
     def mas_o31SetCostumeWorn(clothes, year=None):
         """
@@ -383,6 +402,34 @@ init -10 python:
 
         persistent._mas_o31_costumes_worn[clothes_name] = year
 
+init -11 python in mas_o31_event:
+    import store
+    import datetime
+
+    # setup the docking station for o31
+    cg_station = store.MASDockingStation(store.mas_ics.o31_cg_folder)
+
+    # cg available?
+    cg_decoded = False
+
+
+    def decodeImage(key):
+        """
+        Attempts to decode a cg image
+
+        IN:
+            key - o31 cg key to decode
+
+        RETURNS True upon success, False otherwise
+        """
+        return store.mas_dockstat.decodeImages(cg_station, store.mas_ics.o31_map, [key])
+
+
+    def removeImages():
+        """
+        Removes decoded images at the end of their lifecycle
+        """
+        store.mas_dockstat.removeImages(cg_station, store.mas_ics.o31_map)
 
 #START: O31 AUTOLOAD CHECK
 label mas_o31_autoload_check:
@@ -390,6 +437,10 @@ label mas_o31_autoload_check:
         import random
 
         if mas_isO31() and mas_isMoniNormal(higher=True):
+            #Lock the background selector on o31
+            #TODO: Replace this with generic room deco framework for event deco
+            store.mas_lockEVL("monika_change_background", "EVE")
+
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
                 #Setup for greet
@@ -532,15 +583,15 @@ label greeting_o31_marisa:
     $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
     ## decoded CG means that we start with monika offscreen
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    # ASSUMING:
-    #    #   vignette should be enabled.
-    #    call spaceroom(hide_monika=True, scene_change=True)
+    if store.mas_o31_event.cg_decoded:
+        # ASSUMING:
+        #   vignette should be enabled.
+        call spaceroom(hide_monika=True, scene_change=True)
 
-    #else:
-    # ASSUMING:
-    #   vignette should be enabled
-    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
+    else:
+        # ASSUMING:
+        #   vignette should be enabled
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -549,23 +600,23 @@ label greeting_o31_marisa:
     m 1hub "Ahaha!"
 
     # decoded CG means we display CG
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    $ cg_delay = datetime.timedelta(seconds=20)
+    if store.mas_o31_event.cg_decoded:
+        $ cg_delay = datetime.timedelta(seconds=20)
 
-    #    # got cg
-    #    m "I'm over here, [player]~"
-    #    window hide
+        # got cg
+        m "I'm over here, [player]~"
+        window hide
 
-    #    show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-    #    $ start_time = datetime.datetime.now()
+        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
 
-    #    while datetime.datetime.now() - start_time < cg_delay:
-    #        pause 1.0
+        hide emptydesk
+        show monika 1hua at i11 zorder MAS_MONIKA_Z
 
-    #    hide emptydesk
-    #    show monika 1hua at i11 zorder MAS_MONIKA_Z
-    #    window auto
-    #    m "Tadaa!~"
+        window auto
+        m "Tadaa!~"
 
     #Post scroll dialogue
     m 1hua "Well..."
@@ -582,9 +633,9 @@ label greeting_o31_marisa:
     m "Besides my costume of course~"
     m 1hua "But anyway..."
 
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    show monika 1eua
-    #    hide mas_o31_marisa_cg with dissolve
+    if store.mas_o31_event.cg_decoded:
+        show monika 1eua
+        hide mas_o31_marisa_cg with dissolve
 
     m 3ekbsa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
@@ -614,31 +665,32 @@ label greeting_o31_rin:
     window hide
     pause 3.0
 
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    $ cg_delay = datetime.timedelta(seconds=20)
+    if store.mas_o31_event.cg_decoded:
+        $ cg_delay = datetime.timedelta(seconds=20)
 
-    #    # got cg
-    #    window auto
-    #    m "Say, [player]..."
-    #    window hide
+        # got cg
+        window auto
+        m "Say, [player]..."
+        window hide
 
-    #    show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
-    #    $ start_time = datetime.datetime.now()
+        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
 
-    #    while datetime.datetime.now() - start_time < cg_delay:
-    #        pause 1.0
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
 
-    #    hide emptydesk
-    #    window auto
-    #    m "What do {i}nya{/i} think?"
+        hide emptydesk
+        window auto
+        m "What do {i}nya{/i} think?"
 
-    #    scene black
-    #    pause 2.0
-    #    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
-    #    m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
+        scene black
+        pause 2.0
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
+        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
-    #else:
-    call mas_transition_from_emptydesk("monika 1eua")
+    else:
+        call mas_transition_from_emptydesk("monika 1eua")
+
     m 1hub "Hi, [player]!"
     m 3hub "Do you like my costume?"
 
