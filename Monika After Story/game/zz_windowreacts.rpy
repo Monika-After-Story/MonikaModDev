@@ -338,7 +338,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -a 'Monika After Story' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
