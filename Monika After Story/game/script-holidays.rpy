@@ -206,7 +206,7 @@ image mas_o31_deco = ConditionSwitch(
 init python:
     MAS_O31_COSTUME_CG_MAP = {
         mas_clothes_marisa: "o31mcg",
-        #mas_clothes_rin: "o31rcg" #TODO: Uncomment this after splitting rin
+        mas_clothes_rin: "o31rcg"
     }
 
 #Functions

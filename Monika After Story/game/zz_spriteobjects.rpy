@@ -1029,50 +1029,36 @@ init -1 python:
     ## rin
     # Neko costume based on Rin
     # thanks SovietSpartan
-    # TODO: Add costume exprop + value once this is fixed
-    # NOTE: all baked outfits are disabled completely.
-#    mas_clothes_rin = MASClothes(
-#        "rin",
-#        "rin",
-#        MASPoseMap(
-#            mpm_type=MASPoseMap.MPM_TYPE_FB,
-#            default="steepling",
-#            use_reg_for_l=True,
-#            p1="steepling",
-#            p2="crossed",
-#            p3="restleftpointright",
-#            p4="pointright",
-#            p5="steepling",
-#            p6="down",
-#            p7="restleftpointright"
-#        ),
-#        fallback=True,
-#        hair_map={
-#            "all": "custom"
-#        },
-#        stay_on_start=True,
-#        entry_pp=store.mas_sprites._clothes_rin_entry,
-#        exit_pp=store.mas_sprites._clothes_rin_exit,
-#        ex_props={
-#            "forced hair": True,
-#            "baked outfit": True,
-#        }
-#    )
-#    store.mas_sprites.init_clothes(mas_clothes_rin)
-#    store.mas_selspr.init_selectable_clothes(
-#        mas_clothes_rin,
-#        "Neko Costume",
-#        "rin",
-#        "clothes",
-#        visible_when_locked=False,
-#        hover_dlg=[
-#            "~nya?",
-#            "n-nya..."
-#        ],
-#        select_dlg=[
-#            "Nya!"
-#        ]
-#    )
+    mas_clothes_rin = MASClothes(
+        "rin",
+        "rin",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_rin_entry,
+        exit_pp=store.mas_sprites._clothes_rin_exit,
+        ex_props={
+            store.mas_sprites.EXP_C_COST: "o31",
+            store.mas_sprites.EXP_C_COSP: True,
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_rin)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_rin,
+        "Neko Costume",
+        "rin",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=[
+            "~nya?",
+            "n-nya..."
+        ],
+        select_dlg=[
+            "Nya!"
+        ]
+    )
 
     ### SANTA MONIKA
     ## santa
