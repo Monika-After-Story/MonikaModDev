@@ -1571,6 +1571,24 @@ label monikaroom_greeting_ear_renpy_docs:
 
     jump monikaroom_greeting_choice
 
+# Monika is singing a lovely song while you're away
+init 5 python:
+    if persistent._mas_affection.get("affection", 0) >= 100:
+        gmr.eardoor.append("monikaroom_greeting_ear_somebody_to_love")
+
+label monikaroom_greeting_ear_somebody_to_love:
+    m "{i}~Don't you want somebody to love~{/i}"
+    m "{i}~Don't you need somebody to love~{/i}"
+    m "{i}~Wouldn't you love somebody to love~{/i}"
+    m "{i}~You better find somebody to love~{/i}"
+    m "{i}~Love, love~{/i}"
+    window hide
+    pause 3.5
+    window auto
+    m "I wonder how soon [player] will come back...?"
+
+    jump monikaroom_greeting_choice
+
 ## ear door processing
 init 10 python:
 
