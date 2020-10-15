@@ -4206,7 +4206,7 @@ label monikaroom_greeting_ear_recursionerror:
     m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
     m "Wait, no. Gosh, how did I forget..."
     m "This has to be called right here."
-    m "There! Alright, let's see..."
+    m "Great! Alright, let's see..."
 
     show noise
     play sound "sfx/s_kill_glitch1.ogg"
