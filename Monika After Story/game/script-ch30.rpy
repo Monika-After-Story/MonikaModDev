@@ -43,48 +43,48 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+    # True means show the vignette mask, False means no show
     show_vignette = False
-    # TRue means show the vignette mask, False means no show
 
-    show_lightning = False
     # True means show lightning, False means do not
+    show_lightning = False
 
+    # Lightning chances
     lightning_chance = 16
     lightning_s_chance = 10
-    # lightning chances
 
+    # Set to True to show s easter egg
     show_s_light = False
-    # set to True to show s easter egg.
 
+    # Set to True if text speed is enabled
     text_speed_enabled = False
-    # set to True if text speed is enabled
 
+    # Set to True if in idle mode
     in_idle_mode = False
-    # set to True if in idle mode
 
+    # Set to True if we had a late farewell
     late_farewell = False
-    # set to True if we had a late farewell
 
+    # Last minute datetime (replaces calendar_last_chcked)
     last_minute_dt = datetime.datetime.now()
-    # last minute datetime (replaces calendar_last_chcked)
 
+    # Number of the hour we last ran ch30_hour
     last_hour = last_minute_dt.hour
-    # number of the hour we last ran ch30_hour
 
+    # Number of the day we last ran ch30_day
     last_day = last_minute_dt.day
-    # numbr of the day we last ran ch30_day
 
-    time_of_day_4state = None
     #Time of day, basically either morning, afternoon, evening, night. Set by ch30_hour, used in dlg
+    time_of_day_4state = None
 
-    time_of_day_3state = None
     #Time of day broken into 3 states. morning, afternoon, evening. Set by ch30_hour, used in dlg
+    time_of_day_3state = None
 
-    returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
     #Whether or not this sesh was started by a returned home greet
+    returned_home_this_sesh = bool(store.persistent._mas_moni_chksum)
 
+    # The current topic, but as event object. may be None.
     this_ev = None
-    # the current topic, but as event object. may be None.
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -1464,12 +1464,12 @@ label ch30_post_mid_loop_eval:
             $ mas_HKBDropShield()
 
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # $ persistent.current_monikatopic = None
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
         # Wait 20 to 45 seconds before saying something new
-        window hide(config.window_hide_transition)
+        window hide
 
         # Thunder / lightning if enabled
         if (
@@ -1516,27 +1516,33 @@ label ch30_post_mid_loop_eval:
         if store.mas_globals.in_idle_mode:
             jump post_pick_random_topic
 
-        # Pick a random Monika topic
 #        if persistent.random_seen < random_seen_limit:
-        label pick_random_topic:
 
-            # check if we have repeats enabled
-            if not persistent._mas_enable_random_repeats:
-                jump mas_ch30_select_unseen
+        # Set random mode since Monika will pick this topic
+        $ mas_event_mailbox.set_monika_initiated_mode()
 
-            # randomize selection
-            $ chance = random.randint(1, 100)
+    # FALL THROUGH
 
-            if chance <= store.mas_topics.UNSEEN:
-                # unseen topic shoud be selected
-                jump mas_ch30_select_unseen
+# Pick a random Monika topic
+label pick_random_topic:
 
-            elif chance <= store.mas_topics.SEEN:
-                # seen topic should be seelcted
-                jump mas_ch30_select_seen
+    # check if we have repeats enabled
+    if not persistent._mas_enable_random_repeats:
+        jump mas_ch30_select_unseen
 
-            # most seen topic should be selected
-            jump mas_ch30_select_mostseen
+    # randomize selection
+    $ chance = random.randint(1, 100)
+
+    if chance <= store.mas_topics.UNSEEN:
+        # unseen topic shoud be selected
+        jump mas_ch30_select_unseen
+
+    elif chance <= store.mas_topics.SEEN:
+        # seen topic should be seelcted
+        jump mas_ch30_select_seen
+
+    # most seen topic should be selected
+    jump mas_ch30_select_mostseen
 
 #        elif not seen_random_limit:
 #            $pushEvent('mas_random_limit_reached')
@@ -1720,6 +1726,11 @@ label ch30_day:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+    python:
+        # Fix this for people from ddlc
+        # TODO: update script for this
+        if persistent.current_monikatopic == 0:
+            persistent.current_monikatopic = None
 
     python:
         # xp fixes and adjustments
@@ -1766,7 +1777,7 @@ label ch30_reset:
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
-                    persistent.current_monikatopic = 0
+                    persistent.current_monikatopic = None
                 mas_rmallEVL("monika_rpy_files")
 
     python:
@@ -1927,8 +1938,9 @@ label ch30_reset:
             item = persistent.event_list[index]
 
             # type check
-            if type(item) != tuple:
+            if not isinstance(item, tuple):
                 new_data = (item, False)
+
             else:
                 new_data = item
 

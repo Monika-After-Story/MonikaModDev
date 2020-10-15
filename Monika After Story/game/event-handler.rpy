@@ -1560,6 +1560,287 @@ init -1 python in evhand:
 init python:
     import store.evhand as evhand
     import datetime
+    from collections import OrderedDict
+
+    # Event mailbox
+    class MASEventMailbox(store.MASMailbox):
+        """
+        Mailbox for communications between topics
+
+        PROPERTIES:
+            box - "mailbox" with messages
+            topic_mode - current topic mode
+            discussed_topics - ordered dict of discussed topics
+        """
+        # Consts for pushing events
+        TM_DEFAULT = "def"
+        # Monika brought up this topic on her own
+        TM_MONIKA_INITIATED = "monika_initiated"
+        # The player's initiated this topic
+        TM_PLAYER_INITIATED = "player_initiated"
+        # The player let Monika continue her topic
+        TM_POST_INTERRUPTION = "post_interruption"
+        # Monika started this topic right after finishing another one
+        TM_CHAIN = "chain"
+
+        # Consts for ev messages
+        # NOTE: Add more as needed
+
+        # COMPLIMENTS
+        GAVE_CMP_LOOK = "cmp_look"
+        GAVE_CMP_EYES = "cmp_eyes"
+        GAVE_CMP_INTELLIGENT = "cmp_intelligent"
+        GAVE_CMP_HAIR = "cmp_hair"
+        GAVE_CMP_HERO = "cmp_hero"
+        GAVE_CMP_CUTE = "cmp_cute"
+        GAVE_CMP_ENJOY_TIME_TOGETHER = "cmp_enj_time_together"
+
+        EXPECTS_CMP_LOOK = "exp_cmp_look"
+        EXPECTS_CMP_EYES = "exp_cmp_eyes"
+        EXPECTS_CMP_INTELLIGENT = "exp_cmp_intelligent"
+        EXPECTS_CMP_HAIR = "exp_cmp_hair"
+        EXPECTS_CMP_HERO = "exp_cmp_hero"
+        EXPECTS_CMP_CUTE = "exp_cmp_cute"
+        EXPECTS_CMP_ENJOY_TIME_TOGETHER = "exp_cmp_enj_time_together"
+
+        # DISCUSSIONS
+        TALKED_ABOUT_LOOK = "talk_look"
+        TALKED_ABOUT_EYES = "talk_eyes"
+        TALKED_ABOUT_INTELLECT = "talk_intellect"
+        TALKED_ABOUT_HAIR = "talk_hair"
+        TALKED_ABOUT_HEROISM = "talk_heroism"
+        TALKED_ABOUT_CUTENESS = "talk_cuteness"
+        TALKED_ABOUT_BEING_TOGETHER = "talk_being_together"
+
+        # THANKING
+        MONIKA_THANKED = "m_thanked"
+        PLAYER_THANKED = "p_thanked"
+        MONIKA_EXPECTS_THANKS = "m_exp_thanks"
+        # PLAYER_EXPECTS_THANKS = "p_exp_thanks"# Not sure how useful this would be
+
+        def __init__(self):
+            """
+            Constructor for the mailbox
+            """
+            super(MASEventMailbox, self).__init__()
+            self._topic_mode = self.TM_DEFAULT
+            self.discussed_topics = OrderedDict()
+
+        def __repr__(self):
+            """
+            repr override
+            """
+            return "<MASEventMailbox: (mail: {0}, topic_mode: '{1}')>".format(self.box, self._topic_mode)
+
+        def __send(self, key, value):
+            """
+            Method to access the parent class' send method
+            """
+            super(MASEventMailbox, self).send(key, value)
+
+        def __get(self, key):
+            """
+            Method to access the parent class' get method
+            """
+            return super(MASEventMailbox, self).get(key)
+
+        def __read(self, key):
+            """
+            Method to access the parent class' read method
+            """
+            return super(MASEventMailbox, self).read(key)
+
+        def send(self, msg, contents=True, expiry=datetime.timedelta(minutes=1)):
+            """
+            Method to send messages to other topics
+
+            IN:
+                msg - message to send
+                contents - contents to send with the message
+                    (Default: boolean True)
+                expiry - datetime.timedelta when this message will expire. If None, it will not expire until a topic ends
+                    (Default: 1 minute)
+            """
+            self.__send(
+                msg, 
+                (
+                    (datetime.datetime.now() + expiry) if expiry is not None else expiry,
+                    contents
+                )
+            )
+
+        def __verify_msg_data(self, msg_data):
+            """
+            Verifies message data
+
+            IN:
+                msg_data - message data
+
+            OUT:
+                tuple:
+                    boolean whether or not we should pop the message as outdated
+                    message content (or None as fallback)
+            """
+            if msg_data is not None:
+                expiry, contents = msg_data
+                #Check expiry
+                if expiry is None or datetime.datetime.now() <= expiry:
+                    return False, contents
+
+                return True, None
+
+            return False, None
+
+        def get(self, msg):
+            """
+            Method to get message content
+            NOTE: this will pop the message from the mailbox
+
+            IN:
+                msg - the message whose contents we return
+
+            OUT:
+                the message's content, or None if the message has expired or doesn't exist
+            """
+            return self.__verify_msg_data(self.__get(msg))[-1]
+
+        def read(self, msg):
+            """
+            Method to read message content
+
+            IN:
+                msg - message to read (which may or may not exist)
+
+            OUT:
+                the message's content, or None if the message has expired or doesn't exist
+            """
+            should_pop, contents = self.__verify_msg_data(self.__read(msg))
+            if should_pop:
+                self.__get(msg)
+
+            return contents
+
+        def check(self, msg):
+            """
+            Checks if a mail is in the mailbox
+
+            IN:
+                msg - message to check
+
+            OUT:
+                True if the message in the mailbox, False otherwise
+            """
+            msg_data = self.__read(msg)
+            if msg_data is not None:
+                if msg_data[0] is None or datetime.datetime.now() <= msg_data[0]:
+                    return True
+
+                self.__get(msg)
+
+            return False
+
+        def remove(self, msg):
+            """
+            Removes a mail from the box
+
+            IN:
+                msg - msg to remove
+            """
+            self.__get(msg)
+
+        def empty(self):
+            """
+            Empties the mailbox (discards all mail)
+            """
+            self.box.clear()
+
+        def add_topic(self, ev_label):
+            """
+            Adds an event label to discussed topics
+            """
+            if (
+                ev_label.startswith("monika_")
+                or mas_inRulesEVL(ev_label, "topic")
+            ):
+                if ev_label in self.discussed_topics:
+                    self.discussed_topics.pop(ev_label)
+                self.discussed_topics[ev_label] = True
+
+        def remove_topic(self, ev_label):
+            """
+            Removes a topic from discussed topics
+            """
+            if ev_label in self.discussed_topics:
+                self.discussed_topics.pop(ev_label)
+
+        def _set_topic_mode(self, value):
+            """
+            Sets topic mode to the given value
+            NOTE: this assumes the value is one of MASEventMailbox's constants
+            """
+            self._topic_mode = value
+
+        def set_default_mode(self):
+            """
+            Resets topic mode to default value
+            """
+            self._set_topic_mode(self.TM_DEFAULT)
+
+        def set_monika_initiated_mode(self):
+            """
+            Sets topic mode to monika_initiated (aka random)
+            """
+            self._set_topic_mode(self.TM_MONIKA_INITIATED)
+
+        def set_player_initiated_mode(self):
+            """
+            Sets topic mode to player_initiated (aka the player started current topic)
+            """
+            self._set_topic_mode(self.TM_PLAYER_INITIATED)
+
+        def set_post_interruption_mode(self):
+            """
+            Sets topic mode to post_interruption (aka after the player interrupted Monika)
+            """
+            self._set_topic_mode(self.TM_POST_INTERRUPTION)
+
+        def set_chain_mode(self):
+            """
+            Sets topic mode to chain (aka Monika starts a new topic right after another one)
+            """
+            self._set_topic_mode(self.TM_CHAIN)
+
+        def get_topic_mode(self):
+            """
+            Returns current topic mode
+            """
+            return self._topic_mode
+
+        def is_monika_initiated_mode(self):
+            """
+            Checks if the current topic mode is monika_initiated
+            """
+            return self.get_topic_mode() == self.TM_MONIKA_INITIATED
+
+        def is_player_initiated_mode(self):
+            """
+            Checks if the current topic mode is player_initiated
+            """
+            return self.get_topic_mode() == self.TM_PLAYER_INITIATED
+
+        def is_post_interruption_mode(self):
+            """
+            Checks if the current topic mode is post_interruption
+            """
+            return self.get_topic_mode() == self.TM_POST_INTERRUPTION
+
+        def is_chain_mode(self):
+            """
+            Checks if the current topic mode is chain
+            """
+            return self.get_topic_mode() == self.TM_CHAIN
+
+    mas_event_mailbox = MASEventMailbox()
 
     def addEvent(
         event,
@@ -1858,21 +2139,21 @@ init python:
         the event list
 
         IN:
-            @event_label - a renpy label for the event to be called
+            event_label - a renpy label for the event to be called
             skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
-            from interrupting. (Defaults: False)
+            from interrupting
+                (Default: False)
             notify - True will trigger a notification if appropriate. False
                 will not
 
         ASSUMES:
             persistent.event_list
         """
-
         persistent.event_list.append((event_label, notify))
 
         if skipeval:
             mas_idle_mailbox.send_skipmidloopeval()
-        return
+
 
     def queueEvent(event_label, notify=False):
         """
@@ -1880,16 +2161,14 @@ init python:
         the event list. This is slow, but rarely called and list should be small.
 
         IN:
-            @event_label - a renpy label for the event to be called
+            event_label - a renpy label for the event to be called
             notify - True will trigger a notification if appropriate, False
                 will not
 
         ASSUMES:
             persistent.event_list
         """
-
         persistent.event_list.insert(0, (event_label, notify))
-        return
 
 
     def unlockEvent(ev):
@@ -2015,10 +2294,12 @@ init python:
                 ev_found = mas_getEV(ev_label)
 
                 if (
-                        (ev_found is not None and ev_found.show_in_idle)
-                        or ev_label in evhand.IDLE_WHITELIST
-                    ):
-
+                    (
+                        ev_found is not None
+                        and ev_found.show_in_idle
+                    )
+                    or ev_label in evhand.IDLE_WHITELIST
+                ):
                     if remove:
                         mas_rmEVL(ev_label)
 
@@ -2031,6 +2312,7 @@ init python:
         elif remove:
             ev_data = persistent.event_list.pop()
             persistent.current_monikatopic = ev_data[0]
+
         else:
             ev_data = persistent.event_list[-1]
 
@@ -2116,13 +2398,14 @@ init python:
         This checks if there is a persistent topic, and if there was push it
         back on the stack with a little comment.
         """
-        if not mas_isRstBlk(persistent.current_monikatopic):
-            #don't push greetings back on the stack
-            pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event',skipeval=True)
-            persistent.current_monikatopic = 0
-        return
+        if persistent.current_monikatopic is not None:
+            ev_label = persistent.current_monikatopic
 
+            # Make sure we can push this again
+            if not mas_isRstBlk(ev_label):
+                pushEvent(persistent.current_monikatopic)
+                pushEvent("continue_event", skipeval=True)
+                persistent.current_monikatopic = None
 
     def mas_isRstBlk(topic_label):
         """
@@ -2340,8 +2623,6 @@ init 1 python in evhand:
 # event called or None if the list is empty or the label is invalid
 #
 label call_next_event:
-
-
     $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
@@ -2368,16 +2649,28 @@ label call_next_event:
 
         $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
-        $ persistent.current_monikatopic = 0
-        $ mas_globals.this_ev = None
+        # Now we need to reset some things post topic
+        python:
+            persistent.current_monikatopic = None
+            mas_globals.this_ev = None
+            # Add to the list of discussed topics
+            mas_event_mailbox.add_topic(event_label)
+            # Reset topic mode if we have no more topics,
+            # or to chain if Monika has more to discuss
+            if not persistent.event_list:
+                mas_event_mailbox.set_default_mode()
+
+            else:
+                # NOTE: this does NOT account for song delegate and similar events
+                mas_event_mailbox.set_chain_mode()
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
         if ev is not None:
             if ev.random and not ev.unlocked:
                 python:
-                    ev.unlocked=True
-                    ev.unlock_date=datetime.datetime.now()
+                    ev.unlocked = True
+                    ev.unlock_date = datetime.datetime.now()
 
         else:
             # othrewise, pull an ev from the all event database
@@ -2387,6 +2680,7 @@ label call_next_event:
         if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.session_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
         if _return is not None:
@@ -2446,6 +2740,22 @@ label call_next_event:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+
+    if 0 < store.mas_randchat.rand_chat_waittime_left < 2:
+        m 3eud "..."
+        m 1eua "Oh, go ahead,{w=0.2} you wanted to talk about something?{w=0.2} {nw}"
+        extend 3eksdla "I didn't mean to interrupt you...{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Oh, go ahead, you wanted to talk about something? I didn't mean to interrupt you...{fast}"
+
+            "It's alright, go ahead [m_name].":
+                m 1hua "Ahaha, thank you [player]~"
+                $ mas_event_mailbox.set_post_interruption_mode()
+                jump pick_random_topic
+
+            "Okay, thanks!":
+                show monika idle
 
     $ mas_RaiseShield_dlg()
 
@@ -2606,6 +2916,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
+        $ mas_event_mailbox.set_player_initiated_mode()
         $ pushEvent(_return)
 
     return _return
@@ -2765,7 +3076,8 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ pushEvent(_return)
+                $ mas_event_mailbox.set_player_initiated_mode()
+                $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2834,6 +3146,7 @@ label mas_bookmarks_loop:
     else:
         # got label, let's push
         show monika at t11
+        $ mas_event_mailbox.set_player_initiated_mode()
         $ pushEvent(topic_choice, skipeval=True)
         return True
 
