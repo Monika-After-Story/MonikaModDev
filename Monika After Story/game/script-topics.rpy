@@ -15841,7 +15841,7 @@ init 5 python:
 
 label monika_gmos:
     m 7esb "Back when I was in debate club, one of the most divisive subjects we covered was GMOs, or genetically modified organisms."
-    m 1hksdrb "That there's a lot of nuance to GMOs, but I'll do my best to summarize it."
+    m 1hksdrb "There's a lot of nuance to GMOs, but I'll do my best to summarize it."
     m 1esd "Scientists create GMOs by identifying a desirable gene from one organism, copying it, and inserting the copied gene into another organism."
     m 3esc "It's important to note here that the addition of the copied gene does {i}not{/i} change other existing genes."
     m 3eua "Think of it like flipping through a long book and changing a single word; the word is different, but the rest of the book stays the same."
