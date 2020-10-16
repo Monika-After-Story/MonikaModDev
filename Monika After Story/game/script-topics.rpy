@@ -15779,7 +15779,7 @@ label monika_foundation:
     m 1rtc "I mean, at its core, it's nothing but a mix of psychology, sociology, and mathematical probabilities, right?{w=0.3} {nw}"
     extend 3esd "All of which made huge progress since Asimov's time."
     m 1esc "And with the help of modern technologies, we're now able to understand human behaviors better than ever..."
-    m 3etd "...So is it really that far fetched to think we'll be able to make predictions on the level of psychohistory, one day?"
+    m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory, one day?"
     m 1dkc "Not that it'd necessarily be a good thing.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
     m 3eksdld "If someone had this much power, what could possibly stop them from owning the whole world?"
     m 1rksdlc "I really hope we won't ever have to find out..."
