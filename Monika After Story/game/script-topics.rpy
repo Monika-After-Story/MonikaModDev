@@ -10437,7 +10437,7 @@ label monika_beingevil:
             else:
                 m 2fsc "..."
                 m 2dkd "I want to believe you, I really do."
-                m 2ekd "But then what reason would you have treat me like this?"
+                m 2ekd "But then what reason would you have to treat me like this?"
                 m 2esc "{i}One{/i} of us has to be the evil one here."
                 m 2dkc "And I don't know what I'd do if it turned out to be you."
 
