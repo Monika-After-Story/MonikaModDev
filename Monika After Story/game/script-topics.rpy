@@ -15858,7 +15858,7 @@ label monika_gmos:
     m 2dsc "..."
     m 2esd "Personally, I think that GMOs have a lot of potential to do good, but only if they continue to be heavily researched and tested."
     m 4dkc "Major issues such as herbicide usage and gene flow {i}need{/i} to be fixed as well...{w=0.3}{nw}"
-    extend 4efc "biodiveristy is already at enough risk as is from climate change and deforestation."
+    extend 4efc "biodiversity is already at enough risk as is from climate change and deforestation."
     m 7esd "As long as we're careful, GMOs will be fine; it's recklessness and carelessness that pose the biggest threat."
     m 6dsc "..."
     m 3eua "So what do you think, [player]?"
