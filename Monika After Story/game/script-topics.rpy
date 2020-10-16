@@ -11948,7 +11948,7 @@ label monika_player_appearance:
                     m 1sub "Really? {w=0.5}{nw}"
                     extend 3hua "You're so special, [player]!"
                     show monika 5rtc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5rtc "If I recall correctly, less than one percent of people in world have this curious feature..."
+                    m 5rtc "If I recall correctly, less than one percent of people in the world have this curious feature..."
                     show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 1hua "...So you must be really rare, ehehe~"
                     m 3hua "Let's get to my next question--"
