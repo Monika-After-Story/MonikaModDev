@@ -15707,11 +15707,10 @@ label monika_player_eyesight:
 # Always Wears Eyesight Aids
 label monika_player_eyesight_awea(glasses=False):
     $ persistent._mas_pm_uses_eyesight_aids = True
-    m 2ekc "Oh, I see. You've got poor eyesight, haven't you?"
-    m 2eka "I really hope you see better with them on."
-    if glasses:
-        m 3eub "And there's actually a bright side of wearing glasses - I'm sure you look so smart and intelligent, ehehe~"
-    m 1eka "Please take good care of yourself, [player], even when it comes to something minor like this."
+    m 2ekc "Oh, I see. "
+    extend 2eka "I really hope you see better with them on."
+    $ aids = "glasses" if glasses else "contact lenses"
+    m 1eka "Please don't neglect your eyesight, [player], as it can still deteriorate even if you constantly wear your [aids]."
     m 1esa "If you've been on your computer for a while, maybe you could consider taking a little break to let your eyes rest."
     m 3hsa "It'll take you just a few minutes a day, but I believe it would really help."
     m 1ekc "Although... if it gets really bad, go see a doctor, okay?"
@@ -15763,6 +15762,6 @@ label monika_player_eyesight_n:
     $ persistent._mas_pm_uses_eyesight_aids = False
     m 2hua "That's great! I'm glad to hear that you don't have any problems with your eyes."
     m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
-    m 3rsa "Although I'm pretty sure you'd look so smart with glasses on..."
+    m 3rsa "Although I'm pretty sure you'll look more stylish with them on..."
     m 1hub "But I doubt it'd really worth it, ahaha."
     return
