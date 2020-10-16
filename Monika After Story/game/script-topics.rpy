@@ -15767,8 +15767,6 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
-<<<<<<< HEAD
-=======
 #Player's social personality
 default persistent._mas_pm_social_personality = None
 
@@ -16012,16 +16010,22 @@ label monika_player_eyesight:
     $ _history_list.pop()
     menu:
         m "Do you wear glasses, or maybe contact lenses?{fast}"
+
         "I always wear glasses.":
             call monika_player_eyesight_awea(glasses=True)
+
         "I wear contact lenses.":
             call monika_player_eyesight_awea(glasses=False)
+
         "I wear cosmetic glasses.":
             call monika_player_eyesight_cg
+
         "I wear them when needed.":
             call monika_player_eyesight_eawn
+
         "Nope, I don't.":
             call monika_player_eyesight_n
+
     return "derandom"
 
 # Always Wears Eyesight Aids
@@ -16052,12 +16056,14 @@ label monika_player_eyesight_eawn:
     $ _history_list.pop()
     menu:
         m "I see... But [player], is it, by any chance, because of your eyesight?{fast}"
+
         "Yes...":
             $ persistent._mas_pm_uses_eyesight_aids = True
             m 2ekc "Oh, it's sad to hear that you're having problem with your eyes."
             m 2esa "I really hope wearing glasses helps you improve it."
             m 2hua "Thank you for caring about yourself, [player]."
             m 3lsbsb "This world has so much to see, and I'd like to see everything together with you~"
+
         "No.":
             $ persistent._mas_pm_uses_eyesight_aids = False
             m 1rusdlb "Ahaha, sorry for assuming then."
@@ -16071,6 +16077,7 @@ label monika_player_eyesight_eawn:
                 extend 1dsbsa  "you know... "
                 extend 1tubsu "of me, ehehe."
                 m 3eubsb "Just don't get too distracted, alright?~"
+
             else:
                 m 1rsa "Say, you could close them and dream of something for a few minutes."
                 m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
