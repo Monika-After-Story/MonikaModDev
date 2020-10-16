@@ -1662,16 +1662,34 @@ label ch30_minute(time_since_check):
 # NOTE: it only runs when the hour changes, so don't expect this to run
 #   on start right away
 label ch30_hour:
-    $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+    python:
+        mas_runDelayedActions(MAS_FC_IDLE_HOUR)
 
-    #Runtime checks to see if we should have a consumable
-    $ MASConsumable._checkConsumables()
+        #Runtime checks to see if we should have a consumable
+        MASConsumable._checkConsumables()
 
-    # xp calc
-    $ store.mas_xp.grant()
+        # xp calc
+        store.mas_xp.grant()
 
-    #Set our TOD var
-    $ mas_setTODVars()
+        #Set our TOD var
+        mas_setTODVars()
+
+        # Inc the chance for hold request
+        with MAS_EVL("monika_holdrequest") as holdme_ev:
+            # See if we flagged the ev
+            if holdme_ev.allflags(EV_FLAG_HFRS):
+                # Get the hours the player has spent with Monika
+                hours_spent_this_sesh = int(round(float(mas_getSessionLength().total_seconds()) / 3600))
+                # Base chance to get this is 1/5
+                base_chance = 5
+                # Now calculate the chance the player got
+                chance = base_chance - hours_spent_this_sesh
+                if (
+                    chance <= 1
+                    or random.randint(1, chance) == 1
+                ):
+                    holdme_ev.unflag(EV_FLAG_HFRS)
+
     return
 
 # label for things that should run about once per day

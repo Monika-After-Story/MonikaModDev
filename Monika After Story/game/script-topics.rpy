@@ -2303,7 +2303,7 @@ init python:
 label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_music=False, disable_music_menu=False):
     python:
         holdme_events = list()
-        if persistent._mas_last_hold != datetime.date.today():
+        if mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12)):
             _minutes = random.randint(25, 40)
         else:
             _minutes = random.randint(35, 50)
@@ -2492,7 +2492,7 @@ label monika_holdme_reactions:
         #under 30 seconds
         if mas_isMoniLove():
             # TODO: when we get TMA, multiple teases in a short amount of time should reduce the chance to trigger this again
-            if persistent._mas_last_hold != datetime.date.today():
+            if mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12)):
                 $ _chance = 1
             else:
                 $ _chance = 2
@@ -2541,7 +2541,7 @@ label monika_holdme_reactions:
                 m 1hubsu "Ehehe~"
 
         elif mas_isMoniEnamored():
-            if persistent._mas_last_hold != datetime.date.today():
+            if mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12)):
                 $ _chance = 1
             else:
                 $ _chance = 2
@@ -2665,19 +2665,26 @@ default persistent._mas_last_hold = None
 
 init 5 python:
     # random chance per session Monika can ask for a hold
-    if renpy.random.randint(1,3) == 1:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_holdrequest",
-                conditional=(
-                    "renpy.seen_label('monika_holdme_prep') "
-                    "and persistent._mas_last_hold != datetime.date.today()"
-                ),
-                action=EV_ACT_RANDOM,
-                aff_range=(mas_aff.ENAMORED, None)
-            )
+    if renpy.random.randint(1, 5) == 1:
+        flags = EV_FLAG_HFRS
+
+    else:
+        flags = 0
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_holdrequest",
+            conditional=(
+                "renpy.seen_label('monika_holdme_prep') "
+                "and mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12))"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+            flags=flags
         )
+    )
+    del[flags]
 
 label monika_holdrequest:
     #TODO: if we add a mood system, path this based on current mood
@@ -2700,22 +2707,24 @@ label monika_holdrequest:
             m 2dkc "Oh...{w=1} Okay."
             m 3eka "If you have time later, you know where to find me."
 
+    $ mas_flagEVL("monika_holdrequest", "EVE", EV_FLAG_HFRS)
+
     return "no_unlock"
 
 # label to set the last time held and reset the _holdrequest params
 label monika_holdme_end:
     # set the last time held at the end of the hold to prevent a possible
     # hold request right after a hold that ends after midnight
-    $ persistent._mas_last_hold = datetime.date.today()
-    $ holdme_ev = mas_getEV('monika_holdrequest')
-    if holdme_ev is not None:
-        $ holdme_ev.random = False
-        $ holdme_ev.conditional = (
-            "renpy.seen_label('monika_holdme_prep') "
-            "and persistent._mas_last_hold != datetime.date.today()"
-        )
-        $ holdme_ev.action = EV_ACT_RANDOM
-        $ mas_rebuildEventLists()
+    python:
+        persistent._mas_last_hold = datetime.datetime.now()
+        with MAS_EVL("monika_holdrequest") as holdme_ev:
+            holdme_ev.random = False
+            holdme_ev.conditional = (
+                "renpy.seen_label('monika_holdme_prep') "
+                "and mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12))"
+            )
+            holdme_ev.action = EV_ACT_RANDOM
+        mas_rebuildEventLists()
     return
 
 init 5 python:

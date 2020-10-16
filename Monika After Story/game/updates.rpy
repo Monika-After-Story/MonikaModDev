@@ -375,8 +375,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.6
 label v0_11_6(version="v0_11_6"):
     python:
-        # Add update scripts here
-        pass
+        if persistent._mas_last_hold is not None:
+            persistent._mas_last_hold = datetime.datetime.combine(persistent._mas_last_hold, datetime.time(0, 0))
     return
 
 # 0.11.5
