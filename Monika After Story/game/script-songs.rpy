@@ -1783,7 +1783,7 @@ label mas_song_strawberry:
     m 5dkbsa "But for now{w=0.3} I guess I can just continue to daydream about all the adventures we'll have together one day."
     m 5esbsb "I can't wait to be with you..."
     m 5tsbfb "And finally get to look back into your eyes..."
-    m 2hubfa "Ah~ I can't wait untill the day we'll finally get to see that happen!"
+    m 2hubfa "Ah~ I can't wait until the day we'll finally get to see that happen!"
     m 1ekb "I know it still is far off...{w=0.3} But I hope we get to see that dream become reality."
 
 return
