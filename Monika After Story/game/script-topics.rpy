@@ -15761,7 +15761,7 @@ label monika_player_eyesight_eawn:
 # Never
 label monika_player_eyesight_n:
     $ persistent._mas_pm_uses_eyesight_aids = False
-    m 2hua "That's great! I'm glad to hear that you don't have any problem with your eyes."
+    m 2hua "That's great! I'm glad to hear that you don't have any problems with your eyes."
     m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
     m 3rsa "Although I'm pretty sure you'd look so smart with glasses on..."
     m 1hub "But I doubt it'd really worth it, ahaha."
