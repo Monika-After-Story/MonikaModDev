@@ -222,7 +222,7 @@ init 5 python:
                 prompt="Can you show me the floating islands?",
                 pool=True,
                 unlocked=False,
-                rules={"no unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
+                rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
                 aff_range=(mas_aff.ENAMORED, None)
             )
         )
@@ -476,9 +476,9 @@ label mas_island_day3:
     return
 
 label mas_island_night1:
-    m "You're probably wondering what happened to that orange comet that occasionally passes by."
-    m "Don't worry, I've dealt with it."
-    m "I wouldn't want you to get hurt~"
+    m "While it's nice to be productive during the day, there's something so peaceful about the night."
+    m "The sounds of crickets chirping mixed with a gentle breeze is so relaxing."
+    m "You'd hold me on a night like that, right~"
     return
 
 label mas_island_night2:
@@ -487,13 +487,20 @@ label mas_island_night2:
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
     else:
-        m "Have you ever gone stargazing, [mas_get_player_nickname()]?"
-        m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
-        m "It's surprisingly relaxing, you know?"
-        m "I've found that it can really relieve stress and clear your head..."
-        m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
-        m "Of course, it really makes you realize just how small we are in the universe."
-        m "Ahaha..."
+        if seen_event('monika_stargazing'):
+            m "Aren't the stars so beautiful, [player]?"
+            m "Although, this isn't {i}quite{/i} what I had in mind when I mentioned stargazing before..."
+            m "As nice as they are to look at, the part that I want to experience most is being with you, holding each other tight while we lay there."
+            m "Someday, [player].{w=0.3} Someday."
+
+        else:
+            m "Have you ever gone stargazing, [mas_get_player_nickname()]?"
+            m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
+            m "It's surprisingly relaxing, you know?"
+            m "I've found that it can really relieve stress and clear your head..."
+            m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
+            m "Of course, it really makes you realize just how small we are in the universe."
+            m "Ahaha..."
     return
 
 label mas_island_night3:

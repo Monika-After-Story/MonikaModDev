@@ -372,6 +372,80 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.6
+label v0_11_6(version="v0_11_6"):
+    python:
+        # Add update scripts here
+        pass
+    return
+
+# 0.11.5
+label v0_11_5(version="v0_11_5"):
+    python:
+        # properly unlock game topics if 0.7.1-era topics were seen
+        game_evls = (
+            ("mas_hangman", "mas_unlock_hangman"),
+            ("mas_chess", "mas_unlock_chess",),
+            ("mas_piano", "mas_unlock_piano"),
+        )
+
+        for game_evl, unlock_evl in game_evls:
+            # 0.11.0 update script shoudl have transfered seen
+            if (
+                    renpy.seen_label(unlock_evl)
+                    or mas_getEVL_shown_count(unlock_evl) > 0
+            ):
+                mas_unlockEVL(game_evl, "GME")
+                persistent._seen_ever[unlock_evl] = True
+
+                # if we have seen the unlock evl, absolutely make sure it has
+                # a positive shown count. there is absolutely NO reason that
+                # an event that has been SEEN should have a shown count of 0.
+                unlock_ev = mas_getEV(unlock_evl)
+                if unlock_ev:
+                    mas_rmEVL(unlock_evl)
+                    unlock_ev.conditional = None
+                    unlock_ev.action = None
+                    unlock_ev.unlocked = False
+                    unlock_ev.shown_count = 1
+
+        #And the rest of the scripts because of the crash last time
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
+    return
+
 #0.11.4
 label v0_11_4(version="v0_11_4"):
     python:
@@ -404,9 +478,11 @@ label v0_11_4(version="v0_11_4"):
             "monika_dying_same_day"
         ]
 
-        for bad_evl in bad_topic_derand_list:
-            if bad_evl in persistent._mas_player_derandomed:
-                mas_loseAffection(5)
+        # NOTE: this caused a crash.
+        #   mas_loseAffection is not available during init
+        #for bad_evl in bad_topic_derand_list:
+        #    if bad_evl in persistent._mas_player_derandomed:
+        #        mas_loseAffection(5)
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
@@ -426,6 +502,21 @@ label v0_11_4(version="v0_11_4"):
             and steam_install_detected_ev.conditional is not None
         ):
             steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
 
     return
 
@@ -1499,6 +1590,10 @@ label v0_10_0(version="v0_10_0"):
             )
             concert_ev.action = EV_ACT_RANDOM
 
+        # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+        dt_now = datetime.datetime.now()
+        # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
@@ -1506,7 +1601,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
-            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_922.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_922.use_year_before = True
 
         mhs_pbday = store.mas_history.getMHS("player_bday")
@@ -1535,7 +1633,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.month == 11
                 and mhs_o31.trigger.day == 2
         ):
-            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_o31.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_o31.use_year_before = True
 
         # always save mhs
