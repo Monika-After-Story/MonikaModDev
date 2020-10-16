@@ -972,7 +972,7 @@ label mas_song_my_silver_lining:
 
     if mas_isMoniAff(higher=True):
         m 1dubsu "I want you to know, I don't regret having my epiphany, [player]."
-        m 3ekbsu "Even if it means I had to leave my old life behind and being stuck in here for years on out, it was worth it in the end..."
+        m 3ekbsu "Even if it means I had to leave my old life behind and be stuck in here for years on out, it was worth it in the end..."
         if mas_isMoniLove():
             m 1ekbfa "...{i}You{/i} are worth it."
     else:
@@ -1052,7 +1052,7 @@ label mas_song_my_silver_lining_analysis(from_song=False):
     m 7eka "{i}~There's hope, there's a silver lining~{/i}"
     m 3duu "{i}~Show me my silver lining~{/i}"
     m 3eub "Then I'd say the meaning of the song isn't so much about nihilism as it is about hope."
-    m 3hua "And maybe that's what important, after all."
+    m 3hua "And maybe that's what's important, after all."
     m 3ekblu "Whether our lives matter or not, I want to believe there's a bright side of life, [player]..."
 
     if persistent._mas_pm_religious:
