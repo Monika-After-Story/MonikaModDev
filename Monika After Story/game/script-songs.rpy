@@ -1780,7 +1780,7 @@ label mas_song_strawberry:
     extend 2esbsb "{cps=26} and take home {/cps}{cps=22}as many of you as I could~{/cps}"
     m 2hsbsu "..."
     m 5ekbsu "I can't wait till the day I can finally be with you, [player]."
-    m 5dkbsa "But for now{w=0.3} I geuss I can just continue to day dream about all the adventures we'll have together one day."
+    m 5dkbsa "But for now{w=0.3} I guess I can just continue to daydream about all the adventures we'll have together one day."
     m 5esbsb "I can't wait to be with you..."
     m 5tsbfb "And finally get to look back into your eyes..."
     m 2hubfa "Ah~ I can't wait untill the day we'll finally get to see that happen!"
