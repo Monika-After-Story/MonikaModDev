@@ -1151,7 +1151,9 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
-            "_mas_pm_uses_eyesight_aids": "pm.looks.eyes.eyesight_aids",
+            "_mas_pm_wears_glasses": "pm.looks.glasses",
+            "_mas_pm_wears_lenses": "pm.looks.lenses",
+            "_mas_pm_poor_eyesight": "pm.eyes.poor_eyesight",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",
