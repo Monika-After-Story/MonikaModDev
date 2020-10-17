@@ -731,7 +731,7 @@ label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
         m "You didn't guess even a single letter..."
         m 1eka "I really hope you'll do better next time."
         if mas_isMoniAff(higher=True):
-            m 1ekbsa "Would you try a little harder for me?~"
+            m 1hksdlb "Did I pick a word that was too difficult for you, [mas_get_player_nickname()]?~"
     return
 
 label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
