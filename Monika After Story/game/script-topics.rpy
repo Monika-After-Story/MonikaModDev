@@ -2665,7 +2665,7 @@ default persistent._mas_last_hold = None
 
 init 5 python:
     # random chance per session Monika can ask for a hold
-    if renpy.random.randint(1, 5) == 1:
+    if renpy.random.randint(1, 5) != 1:
         flags = EV_FLAG_HFRS
 
     else:

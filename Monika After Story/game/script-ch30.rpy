@@ -1678,7 +1678,7 @@ label ch30_hour:
         with MAS_EVL("monika_holdrequest") as holdme_ev:
             # See if we flagged the ev
             if holdme_ev.allflags(EV_FLAG_HFRS):
-                # Get the hours the player has spent with Monika
+                # Get time in hours the player has spent with Monika
                 hours_spent_this_sesh = int(round(float(mas_getSessionLength().total_seconds()) / 3600))
                 # Base chance to get this is 1/5
                 base_chance = 5
