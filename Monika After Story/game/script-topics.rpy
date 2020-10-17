@@ -16002,7 +16002,9 @@ init 5 python:
         )
     )
 
-default persistent._mas_pm_uses_eyesight_aids = None
+default persistent._mas_pm_wears_glasses = None
+default persistent._mas_pm_wears_lenses = None
+default persistent._mas_pm_poor_eyesight = None
 
 label monika_player_eyesight:
     m 3lsb "Hey, [player], I was wondering about something lately."
@@ -16030,7 +16032,11 @@ label monika_player_eyesight:
 
 # Always Wears Eyesight Aids
 label monika_player_eyesight_awea(glasses=False):
-    $ persistent._mas_pm_uses_eyesight_aids = True
+    if glasses:
+        $ persistent._mas_pm_wears_glasses = True
+    else:
+        $ persistent._mas_pm_wears_lenses = True
+    $ persistent._mas_pm_poor_eyesight = True
     m 2ekc "Oh, I see. "
     extend 2eka "I really hope you see better with them on."
     $ aids = "glasses" if glasses else "contact lenses"
@@ -16043,7 +16049,9 @@ label monika_player_eyesight_awea(glasses=False):
 
 # Cosmetic Glasses
 label monika_player_eyesight_cg:
-    $ persistent._mas_pm_uses_eyesight_aids = False
+    $ persistent._mas_pm_wears_glasses = False
+    $ persistent._mas_pm_wears_lenses = False
+    $ persistent._mas_pm_poor_eyesight = False
     m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
     m 5hubsa "I bet you look so smart, intelligent and confident~"
     m 1sua "Maybe I could even get myself a pair and try them out, too, ehehe."
@@ -16058,14 +16066,14 @@ label monika_player_eyesight_eawn:
         m "I see... But [player], is it, by any chance, because of your eyesight?{fast}"
 
         "Yes...":
-            $ persistent._mas_pm_uses_eyesight_aids = True
+            $ persistent._mas_pm_poor_eyesight = True
             m 2ekc "Oh, it's sad to hear that you're having problem with your eyes."
             m 2esa "I really hope wearing glasses helps you improve it."
             m 2hua "Thank you for caring about yourself, [player]."
             m 3lsbsb "This world has so much to see, and I'd like to see everything together with you~"
 
         "No.":
-            $ persistent._mas_pm_uses_eyesight_aids = False
+            $ persistent._mas_pm_poor_eyesight = False
             m 1rusdlb "Ahaha, sorry for assuming then."
             m 1rsbssdlb "I was just a bit worried since you spend a lot of time here with me, on your computer..."
             m 1ekc "And from what I heard it can really hurt your eyes if you sit in front of it for too long."
@@ -16091,7 +16099,8 @@ label monika_player_eyesight_eawn:
 
 # Never
 label monika_player_eyesight_n:
-    $ persistent._mas_pm_uses_eyesight_aids = False
+    $ persistent._mas_pm_wears_glasses = False
+    $ persistent._mas_pm_poor_eyesight = False
     m 2hua "That's great! I'm glad to hear that you don't have any problems with your eyes."
     m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
     m 3rsa "Although I'm pretty sure you'll look more stylish with them on..."
