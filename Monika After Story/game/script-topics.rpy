@@ -16022,8 +16022,8 @@ label monika_player_eyesight:
         "I wear cosmetic glasses.":
             call monika_player_eyesight_cg
 
-        "I wear glasses when needed.":
-            call monika_player_eyesight_wgwn
+        "I wear glasses occasionally.":
+            call monika_player_eyesight_wgo
 
         "Nope, I don't.":
             call monika_player_eyesight_n
@@ -16058,8 +16058,8 @@ label monika_player_eyesight_cg:
     m 1tuu "What do you think, [mas_get_player_nickname()]? Would they suit me well, hmm?"
     return
 
-# Wears Glasses As Needed
-label monika_player_eyesight_wgwn:
+# Wears Glasses Occasionally
+label monika_player_eyesight_wgo:
     m 3rka "I see... But [player], is it, by any chance, because of your eyesight?{nw}"
     $ _history_list.pop()
     menu:
