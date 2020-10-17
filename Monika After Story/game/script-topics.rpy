@@ -12327,6 +12327,7 @@ label monika_player_appearance:
              m 2rksdla "And to be fair, a description of yourself in vague words wouldn't be able to capture who you are, so I can't blame you for wanting to keep this to yourself."
              m 2eka "But if you change your mind, let me know!"
 
+    $ mas_unlockEVL("monika_player_eyesight", "EVE")
     return "derandom"
 
 # quick label where monika tells you her height
@@ -15997,8 +15998,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_player_eyesight",
             category=["you"],
-            prompt="Wearing glasses",
-            random=True
+            prompt="Wearing glasses"
         )
     )
 
