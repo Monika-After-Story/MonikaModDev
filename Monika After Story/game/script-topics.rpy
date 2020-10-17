@@ -16092,8 +16092,7 @@ label monika_player_eyesight_wgwn:
                     m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
                     m 1eub "That would really help, too!"
             else:
-                $ pronoun = {"M": "his", "F": "her", "X": "their"}.get(persistent.gender, "his")
-                m 1hubsa "I just want my [mas_get_player_nickname(exclude_names=['my love'])] to have no problem with [pronoun] eyes~"
+                m 1hubsa "I just want my [mas_get_player_nickname(regex_replace_with_nullstr='^my\\s+', _default='sweetheart')] to have no problem with [his] eyes~"
     return
 
 # Never
