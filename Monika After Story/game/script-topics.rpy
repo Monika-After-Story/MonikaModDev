@@ -16011,7 +16011,7 @@ label monika_player_eyesight:
     menu:
         m "Do you wear glasses, or maybe contact lenses?{fast}"
 
-        "I always wear glasses.":
+        "I wear glasses.":
             call monika_player_eyesight_awea(glasses=True)
 
         "I wear contact lenses.":
