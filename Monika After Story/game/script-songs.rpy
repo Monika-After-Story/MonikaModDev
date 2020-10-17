@@ -1514,6 +1514,7 @@ label mas_song_tanabata_song:
     extend 1sua "{i} watching from above.{/i}"
     m 1lua "Mmm, I really like this song, [player]."
     m 1wua "I would love to visit Japan during Tanabata with you sometime~"
+    return
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't

@@ -855,7 +855,7 @@ init 5 python:
 label mas_story_tanabata:
     call mas_story_begin
     m 6eub "[player], did you ever hear the story of the weaver girl and the cowherd?"
-    m 5sub "It's an old chinese story of two divine lovers."
+    m 6sub "It's an old chinese story of two divine lovers."
     m 1dub "Orihime, the daughter of the Jade Emperor, Ruler of Heaven, wove beautiful clothes by the bank of Amanogawa."
     m 4eub "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
     m 2eud "However, Orihime was sad that because of her hard work she could never meet and fall in love with anyone."
@@ -863,14 +863,17 @@ label mas_story_tanabata:
     m 1tubsa "When the two met, they fell instantly in love with each other and married shortly after."
     m 2eud "However, once married, Orihime would no longer weave cloth and Hikoboshi would let his cows stray all over Heaven."
     m 4wuc "In anger, the emperor separated the two lovers and forbade them to meet."
-    m 2wuc "Orihime became despodent at the loss of her husband and asked her father to let them meet again."
+    m 2wuc "Orihime became despondent at the loss of her husband and asked her father to let them meet again."
     m 2eua "Moved by his daughter's tears, he allowed the two to meet on the seventh day of the seventh month if she worked hard and finished her weaving."
     m 3euc "The first time they tried to meet, however, they found that they could not cross the river as there was no bridge."
     m 3wud "Orihime cried so much...{w=0.5}{nw}"
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5duc "It is said that if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
     extend 5eub " that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
-    m 5duc "It is said the if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
+    show monika 7euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 7euc "The rain that falls on Tanabata is fittingly called 'The tear of Orihime and Hikoboshi'."
     m 1euc "I can't imagine what it must be like to be only able to meet your loved one once a year."
+    show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eubfb "But you know what they say, [player]... love can move mountains."
     m 5hubfb "And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
     return "love"
