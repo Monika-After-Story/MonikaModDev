@@ -15855,21 +15855,21 @@ label monika_quiet_time:
 
         else:
             m 1eka "I know I tend to talk a lot, but I totally understand if you need to have a moment of silence every now and then."
-            m 2eua "To tell you the truth,{w=0.2} I too find the occasional quiet time to be very relaxing."
+            m 2eua "I too find the occasional quiet time to be very relaxing."
 
         m 2rubla "Although,{w=0.2} to tell you the truth...{w=0.3}{nw}"
         extend 2hubla "simply being able to feel your presence is already very comforting to me."
         m 2hublb "I hope you feel the same about me, ehehe~"
         if mas_isMoniAff(higher=True):
-            m 4eka "You know, I think being able to silently hang out with each other is an important sign of a healthy relationship between two people."
-            m 4lkd "After all, if there's a need to always be talking or actively be doing something,{w=0.2} can you really say that the two people in question are truly comfortable with each other?"
-            m 4eud "I mean, if you really like being around someone, you probably shouldn't have to always be doing something with them, right?"
+            m 4eka "But seriously, I think being able to silently hang out with each other is an important sign of a healthy relationship."
+            m 4lkd "After all, can you really say you're truly comfortable with each other if there's a need to always be talking?"
+            m 4eud "I mean, if you really like being around someone, you probably shouldn't have to always be doing something, right?"
             m 2ekc "Otherwise,{w=0.2} it'd be like if you were trying to distract yourself because you feel awkward having them here with you and feeling like you're not doing enough to entertain them."
             m 2ekb "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
-            extend 2eka "I think that's a testament of how special your bond with them truly is."
+            extend 2eka "I think that's a testament of how special your bond truly is."
             if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
                 show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5eka "So I hope you know that there's no need to feel pressured about always having something to talk about with me, [mas_get_player_nickname]."
+                m 5eka "So I hope you don't feel pressured about always having something to talk about with me, [mas_get_player_nickname]."
                 m 5hua "I'll always enjoy having you here with me no matter what."
                 show monika 3eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
@@ -15887,7 +15887,7 @@ label monika_quiet_time:
         m 1rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
         m 1rkd "You...{w=0.3}{nw}"
         extend 2ekd "you do enjoy spending time with me, right?"
-        m 2dkc "It doesn't really matter to me what we're doing...{w=0.4} So long as I know you won't abandon me."
+        m 2dkc "It doesn't really matter to me what we're doing...{w=0.4}so long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
