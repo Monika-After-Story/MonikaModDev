@@ -2836,6 +2836,8 @@ label monika_debate:
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
     m 1eka "Ahaha! That sounds a little silly. Thanks for listening, though."
+    $ mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
+    $ mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -16036,28 +16038,28 @@ init 5 python:
             eventlabel="monika_taking_criticism",
             category=['advice'],
             prompt="Taking criticism",
-            random=True
+            random=False,
+            pool=False
         )
     )
 
 label monika_taking_criticism:
     m 1esd "[player], are you good at listening to criticism?"
     m 3rksdlc "I feel like it's way too easy to get caught up in your own way of thinking if you're not careful."
-    m 3eka "...Even if I can understand why it'd be so."
-    m 3esd "Changing one's mind isn't easy, because it means you have to admit you were wrong in the first place."
-    m 1eksdlc "For people faced with great expectations, in particular, this kind of logic can easily become a big source of anguish."
-    m 3dkd "What if others think less of you because you didn't give a perfect answer? What if they start rejecting you or laugh behind your back?"
-    m 2rkc "It'd be like showing some kind of vulnerability for others to take advantage of..."
-    m 2esc "But let me tell you,{w=0.2} {nw}"
-    extend 7eud "there's no shame in changing your mind, [player]! Not even a bit!"
-    m 1eua "After all, we all make mistakes, don't we?{w=0.3} {nw}"
-    extend 1dsu "What matters is the things we learn from those mistakes."
-    m 3rub "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them..."
+    m 3eud "And it isn't all that surprising...{w=0.2}changing your mind isn't easy because it means you have to admit you were wrong in the first place."
+    m 1eksdlc "In particular for people faced with great expectations, this kind of logic can easily become a big source of anguish."
+    m 3dksdld "What if others think less of you because you didn't give a perfect answer? {w=0.2}What if they start rejecting you or laugh behind your back?"
+    m 2rksdlc "It'd be like showing some kind of vulnerability for others to take advantage of."
+    m 4eud "But let me tell you, there's absoultely no shame in changing your mind, [player]!"
+    m 2eka "After all, we all make mistakes, don't we?{w=0.3} {nw}"
+    extend 7dsu "What matters is what we learn from those mistakes."
+    m 3eua "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them."
     m 3eka "So don't feel bad next time you hear someone criticize you, [player].{w=0.3} {nw}"
     extend 1huu "You'll find a bit of open-mindedness really goes a long way."
-    m 1rssdld "I don't mean to say you have to go along with what anybody says.{w=0.3} {nw}"
-    extend 1esc "If you've got an opinion, it's totally fair you'd defend it..."
-    m 3dku "But you've got to do it for the right reasons."
+    m 1euc "At the same time, I don't mean to say you have to go along with what everyone says...{w=0.3} {nw}"
+    extend 3eud "If you've got an opinion, it's totally fair to defend it."
+    m 3eua "But just make sure you stop and think about it first without being blindly defensive."
+    m 3huu "You never know what you might learn~"
     return
 
 init 5 python:
@@ -16067,27 +16069,27 @@ init 5 python:
             eventlabel="monika_giving_criticism",
             category=['advice'],
             prompt="Giving criticism",
-            conditional="mas_seenLabels(['monika_taking_criticism', 'monika_debate'], seen_all=True)",
-            action=EV_ACT_RANDOM
+            random=False,
+            pool=False
         )
     )
 
 label monika_giving_criticism:
-    m 1esc "[player], on the subject of criticism, I've been wondering..."
-    m 7etd "...Have you ever given criticism to someone?"
-    m 1hua "Giving good criticism is something I had to learn when I became club president."
-    m 3rsc "This kind of things is easy to mess up if not done properly...{w=0.3} {nw}"
+    m 1esc "[player], I've been wondering..."
+    m 3etd "Have you ever given anyone criticism?"
+    m 1eua "Giving good criticism is something I had to learn when I became club president."
+    m 3rksdlc "This kind of thing is easy to mess up if not done properly...{w=0.2} {nw}"
     extend 4etd "When giving criticism, you have to keep in mind someone is at the receiving end of that critique."
-    m 4esc "You can't just look at someone's work and say {i}it's bad{/i}, {nw}"
-    extend 4eksdlu "you'll only draw that person's ire if you do that."
-    m 7eub "What matters is what the other person can gain from listening to you; {nw}"
-    extend 3esa "from this premise, even negative opinions can be voiced in a positive way."
-    m 1etd "It's like debate: You have to make it sound like you're sharing your opinion, rather than forcing it down their throat."
-    m 3huu "Consequently, you don't have to be an expert to criticize something."
-    m 3eub "Just explaining how it makes you feel and for what reasons is enough to make your feedback interesting."
-    m 3eku "Although, don't feel bad if your interlocutor decides to discard what you just said..."
-    m 1rksdlu "...After all, giving out an opinion doesn't automatically make you right either.{w=0.2} {nw}"
-    extend 3eku "The author might have reasons why they'd want to keep things their way."
-    m 3dsu "Graciously accept you can't change everyone's mind, and stay considerate when assessing someone else's work."
-    m 3hub "...That'd be Monika's critique tip of the day~"
+    m 4esc "You can't just look at someone's work and say, 'it's bad.' {w=0.2}{nw}"
+    extend 2eksdld "You'll instantly put them on the defensive and ensure they don't listen to what you have to say."
+    m 7eua "What matters is what the other person can gain from listening to you. {w=0.2}{nw}"
+    extend 3hua "From this premise, even negative opinions can be voiced in a positive way."
+    m 1eud "It's like debate...{w=0.2} You have to make it sound like you're sharing your opinion, rather than forcing it down their throat."
+    m 3eud "Consequently, you don't have to be an expert to criticize something."
+    m 3eua "Just explaining how it makes you feel and for what reasons is often enough to make your feedback interesting."
+    m 3eksdla "Although, don't feel bad if the person you're criticizing decides to discard what you just said..."
+    m 1rksdlu "...After all, offering an opinion doesn't automatically make you right, either.{w=0.2} {nw}"
+    extend 3eud "They might have reasons why they'd want to keep things their way."
+    m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
+    m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
