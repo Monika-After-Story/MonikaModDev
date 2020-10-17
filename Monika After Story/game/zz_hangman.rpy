@@ -718,7 +718,7 @@ label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
     if guesses > 0:
         if player_word:
              m 1eka "[player]..."
-             m "You couldn't guess your own name?"
+             m 1hksdlb "You couldn't guess your own name?"
         elif last_chance_guesses / (guesses - (6 - chances)) > 0.5:
              if not (persistent._mas_pm_cares_about_dokis or persistent._mas_sensitive_mode):
                  m 1tsa "You were {i}hanging{/i} in there really well{w=0.5}{nw}, "
