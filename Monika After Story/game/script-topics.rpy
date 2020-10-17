@@ -16049,7 +16049,7 @@ label monika_player_eyesight_awea(glasses=False):
 
 # Cosmetic Glasses
 label monika_player_eyesight_cg:
-    $ persistent._mas_pm_wears_glasses = False
+    $ persistent._mas_pm_wears_glasses = True
     $ persistent._mas_pm_wears_lenses = False
     $ persistent._mas_pm_poor_eyesight = False
     m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
