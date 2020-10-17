@@ -16070,18 +16070,23 @@ label monika_player_eyesight_eawn:
             m 1rsbssdlb "I was just a bit worried since you spend a lot of time here with me, on your computer..."
             m 1ekc "And from what I heard it can really hurt your eyes if you sit in front of it for too long."
             m 3eka "So, [player], even if you're good... Don't neglect your health, okay?"
-            m 3esa "Take a little break every 15-20 minutes and let your eyes rest."
-            if mas_isMoniLove(higher=True):
-                m 1rsa "Say, you could close them, relax and think about something for a few minutes... "
-                m 1dsa "Maybe you could even dream... "
-                extend 1dsbsa  "you know... "
-                extend 1tubsu "of me, ehehe."
-                m 3eubsb "Just don't get too distracted, alright?~"
-
+            if mas_seenLabels(["monika_using_pcs_healthily"]):
+                m 1eub "Remember me talking about doing frequent breaks if you're using your computer for a while?"
+                m 1esa "You could take a little break every 15-20 minutes and let your eyes rest."
+                if mas_isMoniLove(higher=True):
+                    m 1rsa "Say, you could close them, relax and think about something for a few minutes... "
+                    m 1dsa "Maybe you could even dream... "
+                    extend 1dsbsa  "you know... "
+                    extend 1tubsu "of me, ehehe."
+                    m 3eubsb "Just don't get too distracted, alright?~"
+                else:
+                    m 1rsa "Say, you could close them and dream of something for a few minutes."
+                    m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
+                    m 1eub "That would really help, too!"
             else:
-                m 1rsa "Say, you could close them and dream of something for a few minutes."
-                m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
-                m 1eub "That would really help, too!"
+                $ pronoun = {"M": "his", "F": "her", "X": "their"}.get(persistent.gender, "his")
+                m 1hubsa "I just want my [mas_get_player_nickname(exclude_names=['my love'])] to have no problem with [pronoun] eyes~"
+                pushEvent("monika_using_pcs_healthily")
     return
 
 # Never
