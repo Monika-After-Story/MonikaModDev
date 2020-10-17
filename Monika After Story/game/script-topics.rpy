@@ -16094,7 +16094,6 @@ label monika_player_eyesight_wgwn:
             else:
                 $ pronoun = {"M": "his", "F": "her", "X": "their"}.get(persistent.gender, "his")
                 m 1hubsa "I just want my [mas_get_player_nickname(exclude_names=['my love'])] to have no problem with [pronoun] eyes~"
-                $ pushEvent("monika_using_pcs_healthily")
     return
 
 # Never
