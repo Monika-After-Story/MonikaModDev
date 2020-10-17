@@ -696,8 +696,8 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
             m 1hkb "You just guessed your own name flawlessly, ahaha."
     elif chances == 1 and last_chance_guesses / (guesses - (6 - chances)) > 0.5:
         # More than 50% of the guesses were made on last chance.
-        m 1sud "You just made it on the last chance!"
         m 1hub "Wow, [player], you must be {i}really{/i} lucky, ahaha~"
+        m 1tsb "...Or maybe you're just biding your time to show me how good you are, hmm?"
 
         # Make her mention previous episode of giving up on last chance just once.
         if (
