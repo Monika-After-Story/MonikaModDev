@@ -16028,7 +16028,7 @@ label monika_tabletop_rping:
     m 2rub "It could often devolve into a 'my character is invulnerable and always wins' kind of situation, you know?"
     m 3eua "To counteract this problem, tabletop roleplaying was invented."
 
-    m 3eub "The most popular tabletop roleplaying game is called 'Dungeons and Dragons', but that's far from the only one that exist..."
+    m 3eub "The most popular tabletop roleplaying game is called 'Dungeons and Dragons', but that's far from the only one that exists..."
     m 3rua "And its narrative form kind of always assumes a medieval fantasy setting, which not everyone wants."
     m 3eub "It was one of the first popular tabletop roleplaying games, and it put almost all of the major rules in place."
     m 3eud "In that game, not all players are equal, since there necessarily always needs to be a 'Dungeon Master'."
