@@ -15800,8 +15800,16 @@ label monika_literature_value:
 default persistent._mas_pm_likes_nature = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nature",category=['nature', 'you'],prompt="The outdoors",random=True))
-
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nature",
+            category=['nature', 'you'],
+            prompt="The outdoors",
+            random=True
+        ) 
+    )
+    
 label monika_nature:
     m 2esd "Hey, [player]..."
     m "Do you like nature{nw}?"
