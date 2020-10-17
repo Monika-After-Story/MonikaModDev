@@ -15195,7 +15195,7 @@ label monika_player_away:
     m 1hub "It's a really fun way to express myself!"
     m 3rta "Now that I think about it, I'm mostly just practicing skills I've already developed."
     m 3esd "For example, coding takes up a lot of my free time as I spend hours just learning and researching."
-    m 3rksdla "...But I'm too nervous to put any super big projects into the spaceroom."
+    m 3rksdla "...But I'm too nervous to put any super big projects into here."
     m 3eksdlc "I'd hate to break something that I won't know how to fix."
     m 2wusdld "What if I accidentally corrupt my file?"
     m 2eksdld "It's something I have to be extremely careful with, for sure."
