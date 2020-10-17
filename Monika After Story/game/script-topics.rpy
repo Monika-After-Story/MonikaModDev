@@ -15886,7 +15886,7 @@ label monika_aliens:
     m 1ruc "But then again, if aliens do exist, there could also be many reasons why we haven't found them yet..."
     m 2etc "Perhaps they're too far away for us to find them, or maybe they just don't have the technology to receive and answer our messages for now."
     m 2eud "Or maybe they simply don't want to initiate contact with us?" 
-    m 2euc "Maybe their society follows completely different ideals than our owns, and they believe it is for the best not to let two highly advanced species meet each other."
+    m 2euc "Maybe their society follows completely different ideals than our own, and they believe it is for the best not to let two highly advanced species meet each other."
     m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
 
     if mas_isMoniAff(higher=True): 
