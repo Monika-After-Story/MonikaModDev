@@ -499,10 +499,11 @@ label mas_hangman_game_loop:
         avail_letters = list(hm_ltrs_only)
         give_up = False
 
-    if persistent._mas_sensitive_mode:
-        $ avail_letters.remove("?")
+        if persistent._mas_sensitive_mode:
+            avail_letters.remove("?")
 
-    $ dt_color = mas_hmg.WORD_COLOR
+        dt_color = mas_hmg.WORD_COLOR
+
     while not done:
         # create displayables
         python:
