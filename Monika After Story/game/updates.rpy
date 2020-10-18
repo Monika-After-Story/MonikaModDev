@@ -375,7 +375,7 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.6
 label v0_11_6(version="v0_11_6"):
     python:
-        if renpy.seen_event("monika_debate"):
+        if seen_event("monika_debate"):
             mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
             mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
 
