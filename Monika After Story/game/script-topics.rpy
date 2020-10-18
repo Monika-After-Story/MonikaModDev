@@ -16056,7 +16056,7 @@ label monika_taking_criticism:
     m 3eua "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them."
     m 3eka "So don't feel bad next time you hear someone criticize you...{w=0.3} {nw}"
     extend 1huu "You'll find a bit of open-mindedness really goes a long way."
-    m 1euc "At the same time, I don't mean to say you have to go along with what everyone says either...{w=0.3} {nw}"
+    m 1euc "At the same time, I don't mean to say you have to go along with what everyone says, either...{w=0.3} {nw}"
     extend 3eud "If you've got an opinion, it's totally fair to defend it."
     m 3eua "But just make sure you actually consider it without being blindly defensive."
     m 3huu "You never know what you might learn~"
