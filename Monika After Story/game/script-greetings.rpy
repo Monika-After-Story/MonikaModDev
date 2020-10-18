@@ -4202,11 +4202,17 @@ label greeting_back_from_hangout:
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
 
-label monikaroom_greeting_ear_recursionerror:
+label monikaroom_greeting_ear_recursionerror_repeat:
     m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
     m "Wait, no. Gosh, how did I forget..."
     m "This has to be called right here."
     m "Great! Alright, let's see..."
+    return
+
+label monikaroom_greeting_ear_recursionerror:
+    python:
+        for _ in range(random.randint(2, 3)):
+            renpy.call("monikaroom_greeting_ear_recursionerror_repeat")
 
     show noise
     play sound "sfx/s_kill_glitch1.ogg"
