@@ -4221,7 +4221,7 @@ label monikaroom_greeting_ear_recursionerror:
     hide noise
 
     m "{cps*=2}What?!{/cps} {w=0.25}A RecursionError?!"
-    m "{cps*=1.5}'Maximum recursion depth exceeded'{/cps}{cps=2}...{/cps}{w=1}{nw}"
+    m "{cps*=0.75}'Maximum recursion depth exceeded'{/cps}{cps=2}...{/cps}{w=1}{nw}"
     extend "How is this even happening?"
     m "..."
 
