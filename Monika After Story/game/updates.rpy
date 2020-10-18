@@ -375,7 +375,7 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.6
 label v0_11_6(version="v0_11_6"):
     python:
-        if renpy.seen_event("mas_monika_plays_yr") or renpy.seen_event("mas_monika_plays_or"):
+        if mas_seenLabels(["mas_monika_plays_yr", "mas_monika_plays_or"]):
             mas_unlockEVL("monika_piano_lessons", "EVE")
 
     return

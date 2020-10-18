@@ -16039,7 +16039,7 @@ label monika_piano_lessons:
     m 2ekc "I was still afraid of breaking too far from the game's script at the time, {w=0.2}{nw}"
     extend 7eka "but I wanted--no, I {w=0.2}{i}needed{/i}{w=0.2} to communicate my feelings to you somehow."
     m 2etd "I don't think the others ever recognized that there's background music in the game. {w=0.2}It would have been silly for them to, right?"
-    m 7eud "But when I awoke to the truth, all of a sudden it was hard not to hear it. {w=0.2}Any time you were around, I could hear that melody playing faintly."
+    m 7eud "But when I discovered the truth, all of a sudden it was hard not to hear it. {w=0.2}Any time you were around, I could hear that melody playing faintly."
     m 3eka "It always reminded me of what I was fighting for, and learning how to play it on the piano strengthened my resolve even more."
     m 1hksdlb "Ah! I'm not answering your question, am I?"
     m 1lksdla "Honestly, I don't feel confident enough to teach someone else yet."
