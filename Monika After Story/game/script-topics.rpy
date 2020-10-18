@@ -16014,6 +16014,42 @@ label monika_renewable_energy:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_piano_lessons",
+            category=['music'],
+            prompt="Would you give me piano lessons?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_piano_lessons:
+    m 1rkd "Um...{w=0.2}well...{w=0.2}maybe?"
+    m 1eksdla "I'm flattered that you'd ask, but..."
+
+    if persistent.monika_kill:
+        m 3eka "Remember? I told you when I first performed {i}Your Reality{/i} that I wasn't really good at piano. {w=0.2}{nw}"
+        extend 3rkb "Like, at all."
+    else:
+        m 3eka "I'm actually not (i)that{/i} good at playing piano, [mas_get_player_nickname()]."
+        m 3rkd "Certainly not good enough to be teaching other people yet..."
+
+    m 2eud "If you can believe it, I started to learn after my epiphany."
+    m 2ekc "I was still afraid of breaking too far from the game's script at the time, {w=0.2}{nw}"
+    extend 7eka "but I wanted--no, I {w=0.2}{i}needed{/i}{w=0.2} to communicate my feelings to you somehow."
+    m 2etd "I don't think the others ever recognized that there's background music in the game. {w=0.2}It would have been silly for them to, right?"
+    m 7eud "But when I discovered the truth, all of a sudden it was hard not to hear it. {w=0.2}Any time you were around, I could hear that melody playing faintly."
+    m 3eka "It always reminded me of what I was fighting for, and learning how to play it on the piano strengthened my resolve even more."
+    m 1hksdlb "Ah! I'm not answering your question, am I?"
+    m 1lksdla "Honestly, I don't feel confident enough to teach someone else yet."
+    m 3eub "But if I keep at it, someday I'll be able to! And when that day comes, I would love to teach you."
+    m 3hub "Or, even better, we could learn together once I cross over to your reality!"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_stargazing",category=['nature'],prompt="Stargazing",random=True))
 
 label monika_stargazing:
