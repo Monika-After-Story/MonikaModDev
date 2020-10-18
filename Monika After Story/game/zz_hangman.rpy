@@ -494,7 +494,6 @@ label mas_hangman_game_loop:
         win = False
         chances = 6
         guesses = 0
-        number_literals = {2: "two", 3: "three", 4: "four", 5: "five"}
         last_chance_guesses = 0
         missed = ""
         avail_letters = list(hm_ltrs_only)
