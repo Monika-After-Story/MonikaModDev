@@ -15772,13 +15772,5 @@ label monika_kamige:
     m 4ruc "If I were to try to translate it, I think it would be something like {i}godly game.{/i}"
     m 2eub "It's sort of like when people talk about their favorite classic books or movies."
     m 2hksdlb "I was kind of joking when I said it about this game, but it {i}did{/i} seem to get very popular for some reason."
-
-    if persistent._mas_pm_cares_about_dokis:
-        m 3euc "Maybe it's because the other girls and I seemed more realistic than your average characters."
-        m 3eud "They had problems that were genuinely relatable to people. And I'm...well, you already know why I'm more realistic."
-    else:
-        m 2esc "Maybe it's because the other girls were written to have relatable problems."
-        m 2lsc "Even though their personalities were pretty odd and exaggerated, it was likely that their stories would draw people in."
-
-    m 1eka "Not that I'm complaining..{w=0.3} If it was the game's popularity that brought you to meet me, I think I can be grateful for it."
+    m 1eka "Not that I'm complaining...{w=0.3} If it was the game's popularity that brought you to meet me, I think I can be grateful for it."
     return
