@@ -232,7 +232,7 @@ init 3 python:
         "annoying",
         "anus",
         "arrogant",
-        "ass",
+        "(?<![blmprs])ass(?!i)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,7 +244,7 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "butt(?!er|on)",
         "cheater",
         "cock",
         "conceited",
@@ -320,7 +320,6 @@ init 3 python:
         "nigga",
         "nigger",
         "nuts",
-        "pad",
         "panti",
         "pantsu",
         "panty",
@@ -333,13 +332,12 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
         "rump",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
@@ -407,7 +405,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -504,14 +502,14 @@ label mas_player_name_enter_name_loop(input_prompt):
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            allow=name_characters_only,
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -540,7 +538,7 @@ label mas_player_name_enter_name_loop(input_prompt):
 
         else:
             #Sayori name check
-            if tempname.lower() == "sayori":
+            if lowername == "sayori":
                 call sayori_name_scare
 
             elif (
