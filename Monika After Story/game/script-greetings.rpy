@@ -4203,13 +4203,13 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
 
 label monikaroom_greeting_ear_recursionerror:
-    python:
-        loop_amt = random.randint(2, 3)
-        loop_count = 0
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
 
-    while loop_count != loop_amt:
-        $ loop_count += 1
-        call monikaroom_greeting_ear_recursionerror_repeat
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
 
     show noise
     play sound "sfx/s_kill_glitch1.ogg"
@@ -4231,11 +4231,3 @@ label monikaroom_greeting_ear_recursionerror:
         m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
-
-#NOTE: This also acts as the first loop dialogue
-label monikaroom_greeting_ear_recursionerror_repeat:
-    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
-    m "Wait, no. Gosh, how did I forget..."
-    m "This has to be called right here."
-    m "Great! Alright, let's see..."
-    return
