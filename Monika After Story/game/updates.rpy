@@ -372,6 +372,17 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.6
+label v0_11_6(version="v0_11_6"):
+    python:
+        if mas_seenLabels(["mas_monika_plays_yr", "mas_monika_plays_or"]):
+            mas_unlockEVL("monika_piano_lessons", "EVE")
+
+        if seen_event("monika_debate"):
+            mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
+            mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+
+    return
 
 # 0.11.5
 label v0_11_5(version="v0_11_5"):
