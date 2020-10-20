@@ -23,6 +23,47 @@ python early:
         """
         return
 
+    class MASDummyClass(object):
+        """
+        Dummy class that does nothing.
+
+        If compared to, it will always return False.
+        """
+
+        def __call__(self, *args, **kwargs):
+            return MASDummyClass()
+
+        def __len__(self):
+            return 0
+
+        def __getattr__(self, name):
+            return MASDummyClass()
+
+        def __setattr__(self, name, value):
+            return
+
+        def __lt__(self, other):
+            return False
+
+        def __le__(self, other):
+            return False
+
+        def __eq__(self, other):
+            return False
+
+        def __ne__(self, other):
+            return False
+
+        def __gt__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return False
+
+        def __nonzero__(self):
+            return False
+
+
     # clear this so no more traceback. We expect node loops anyway
     renpy.execution.check_infinite_loop = dummy
 
@@ -368,7 +409,7 @@ python early:
     #           since shown count will be 0 and the label would have been seen.
     #           In that circumstance, we should immediately update the shown
     #           count. (Event will not do this in case you need to do specific
-    #           crash handling). Call syncShownCount on the event object to 
+    #           crash handling). Call syncShownCount on the event object to
     #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
@@ -2718,6 +2759,20 @@ python early:
 
             self.__setup()
 
+        @staticmethod
+        def copyfrom(other, new_vx):
+            """
+            Copies a MASClickZone state, but applies a new_vx to it.
+
+            RETURNS: new MASClickZone to use
+            """
+            new_cz = MASClickZone(new_vx)
+            new_cz.disabled = other.disabled
+            new_cz._debug_back = other._debug_back
+            new_cz._button_down = other._button_down
+
+            return new_cz
+
         def render(self, width, height, st, at):
             """
             Render functions
@@ -2737,7 +2792,7 @@ python early:
             """
             Event function
             """
-            if ev.type == self._button_down:
+            if ev.type == self._button_down and not self.disabled:
                 # determine if this event happend here
                 if self._isOverMe(x, y):
                     return ev.button
@@ -2852,77 +2907,13 @@ python early:
 # init -1 python:
 
     class MASInteractable(renpy.Displayable):
+        """DEPRECATED
+
+        Do not use this.
         """
-        Base class for all interactable displayables.
-        Interactables are custom displayables that use clickzones
-        """
 
-        def __init__(self, zones, button_down, debug=False):
-            """
-            Constructor for an interactable.
-
-            IN:
-                zones - dict of the following format:
-                    key: key of the zone, this is returned if the zone is
-                        clicked
-                    value: list of vertexes that make teh zone
-                button_down - button_down item to use for each clickzone
-                debug - Set to True to fill the clickzones
-            """
-            super(renpy.Displayable, self).__init__()
-
-            self.zones = {}
-            self.zones_render = []
-
-            self._build_zones(zones, button_down, debug=debug)
-
-        def _build_zones(self, zones, button_down, debug=False):
-            """
-            Builds clickzone objects (self.zones and self.zones_render)
-
-            IN:
-                zones - dict of zones (see constructor)
-                button_down - button_down item to use for each clikzone
-                debug - set to True to see clickzones
-            """
-            for zone_key, zone_vx in zones.iteritems():
-                # build clickzone
-                clickzone = MASClickZone(zone_vx)
-                clickzone._debug_back = debug
-                clickzone._button_down = button_down
-
-                # add to internal lists
-                self.zones[zone_key] = clickzone
-                self.zones_render.append(clickzone)
-
-        def check_click(self, ev, x, y, st):
-            """
-            Checks if an ev was a click over a zone.
-
-            RETURNS: zone key if clicked, None if not clicked
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone.event(ev, x, y, st) is not None:
-                    return zone_key
-
-            return None
-
-        def check_over(self, x, y):
-            """
-            Checks if the given x y is over a zone, and returns the zone key
-            if appropripate
-
-            IN:
-                x - x
-                y - y
-
-            RETURNS: zone_key, or None if no click over zones
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone._isOverMe(x, y):
-                    return zone_key
-
-            return None
+        def __init__(self, *args, **kwargs):
+            pass
 
 
 # init -1 python:
@@ -3545,6 +3536,8 @@ init -1 python in _mas_root:
 init -999 python:
     import os
 
+    _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
+
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
         try:
@@ -3552,62 +3545,28 @@ init -999 python:
         except:
             pass
 
-init -995 python in mas_utils:
-    def compareVersionLists(curr_vers, comparative_vers):
+    def mas_override_label(label_to_override, override_label):
         """
-        Generic version number checker
+        Label override function
 
         IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
+            label_to_override - the label which will be overridden
+            override_label - the label to override with
         """
+        global _OVERRIDE_LABEL_TO_BASE_LABEL_MAP
 
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+        #Check if we're overriding an already overridden label
+        if label_to_override in config.label_overrides:
+            old_override = config.label_overrides.pop(label_to_override)
 
-            OUT:
-                adjusted version list
+            #Remove the data for the label which is no longer acting as an override
+            if old_override in _OVERRIDE_LABEL_TO_BASE_LABEL_MAP:
+                _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.pop(old_override)
 
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
+        config.label_overrides[label_to_override] = override_label
+        _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
-
-        #Now, let's do some work.
-        #First, we check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #The lists are not the same, which means we need to do a bit of work.
-        #Before we do that, let's verify that the lists are the same length
-        if len(comparative_vers) > len(curr_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #We've found a number which was greater, let's return 1 as we know this version is greater
-                return 1
-
-        #If we're here, we never found something greater. Let's return -1
-        return -1
-
-init -991 python in mas_utils:
+init -995 python in mas_utils:
     import store
     import os
     import stat
@@ -3635,6 +3594,61 @@ init -991 python in mas_utils:
         "[": "[["
     }
 
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+                return 1
+
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
     def all_none(data=None, lata=None):
         """
         Checks if a dict and/or list is all None
@@ -3661,7 +3675,6 @@ init -991 python in mas_utils:
 
         return True
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -3676,7 +3689,6 @@ init -991 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
-
 
     def eqfloat(left, right, places=6):
         """
@@ -3696,7 +3708,6 @@ init -991 python in mas_utils:
 
         return abs(left-right) < acc
 
-
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
@@ -3711,7 +3722,6 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
-
 
     def pdget(key, table, validator=None, defval=None):
         """
@@ -3739,7 +3749,6 @@ init -991 python in mas_utils:
 
         return defval
 
-
     def td2hr(duration):
         """
         Converts a timedetla to hours (fractional)
@@ -3750,7 +3759,6 @@ init -991 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
-
 
     def tryparseint(value, default=0):
         """
@@ -3769,7 +3777,6 @@ init -991 python in mas_utils:
             return int(value)
         except:
             return default
-
 
     def copyfile(oldpath, newpath):
         """
@@ -3793,7 +3800,6 @@ init -991 python in mas_utils:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
 
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -3810,7 +3816,6 @@ init -991 python in mas_utils:
         finally:
             sys.stdout = oldout
 
-
     def writelog(msg):
         """
         Writes to the mas log if it is open
@@ -3821,13 +3826,21 @@ init -991 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+    def wtf(msg):
+        """
+        Wow That Failed
+        For logging stuff that should never happen
+
+        IN:
+            msg - message to log
+        """
+        writelog(msg)
 
     def writestack():
         """
         Prints current stack to log
         """
         writelog("".join(traceback.format_stack()))
-
 
     def trydel(f_path, log=False):
         """
@@ -3840,7 +3853,6 @@ init -991 python in mas_utils:
         except Exception as e:
             if log:
                 writelog("[exp] {0}\n".format(repr(e)))
-
 
     def trywrite(f_path, msg, log=False, mode="w"):
         """
@@ -3866,7 +3878,6 @@ init -991 python in mas_utils:
         finally:
             if outfile is not None:
                 outfile.close()
-
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
@@ -3894,7 +3905,6 @@ init -991 python in mas_utils:
                 store.persistent.version_number
             ))
         return new_log
-
 
     def logrotate(logpath, filename):
         """
@@ -3954,7 +3964,6 @@ init -991 python in mas_utils:
 
         # and delete the current file
         trydel(old_path)
-
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -4084,7 +4093,6 @@ init -991 python in mas_utils:
             except:
                 self.file = False
                 return False
-
 
     # A map from the log name to a log object.
     mas_mac_log_cache = { }

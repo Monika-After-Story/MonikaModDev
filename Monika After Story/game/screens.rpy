@@ -3003,17 +3003,26 @@ screen submods():
                         xfill True
                         xmaximum 1000
 
-                        label submod.name yanchor 0 xalign 0
+                        label submod.name:
+                            yanchor 0
+                            xalign 0
+                            text_text_align 0.0
 
-                        hbox:
-                            spacing 20
-                            xmaximum 1000
+                        if submod.coauthors:
+                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
-                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
-                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
+                        else:
+                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+
+                        text "[authors]":
+                            yanchor 0
+                            xalign 0
+                            text_align 0.0
+                            layout "greedy"
+                            style "main_menu_version"
 
                         if submod.description:
-                            text submod.description
+                            text submod.description text_align 0.0
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))

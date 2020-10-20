@@ -1286,7 +1286,7 @@ label mas_song_god_knows:
     m 1eubsa "{i}~As if we were God blessed~{/i}"
     m 1dubsu "..."
     m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
-    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
@@ -1318,6 +1318,9 @@ label mas_song_ageage_again:
     m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
     m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
     m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+        m 1eka "That is, if you're up to it."
+        m 1hubsb "If not, there are still plenty of things I'd love to do with you~"
     return
 
 init 5 python:
@@ -1665,6 +1668,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
 
 init 5 python:
@@ -1754,4 +1758,5 @@ label mas_monika_plays_or(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
