@@ -783,27 +783,25 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
     return None
 
 init 5 python:
-    rules = dict()
-    # TODO: update this when TC-O comes out
-    rules.update(
-        MASSelectiveRepeatRule.create_rule(
-            hours=(18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6)
-        )
-    )
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_illseeyou",
             unlocked=True,
-            rules=rules,
             aff_range=(mas_aff.HAPPY, None)
         ),
         code="BYE"
     )
-    del rules
 
 label bye_illseeyou:
-    m 1eua "I'll see you later, [player]."
+    # TODO: update this when TC-O comes out
+    if mas_globals.time_of_day_3state == "evening":
+        dlg_var = "tomorrow"
+
+    else:
+        dlg_var = "later"
+
+    m 1eua "I'll see you [dlg_var], [player]."
     m 3kua "Don't forget about me, okay?~"
     return 'quit'
 
