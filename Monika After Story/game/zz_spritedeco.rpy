@@ -6,7 +6,6 @@ init -700 python in mas_deco:
     # mapping of deco definitions. 
 
 
-
 init -20 python in mas_deco:
     import store
 
@@ -470,17 +469,69 @@ init -19 python:
         """
         Class that defines bg-based properties for image tags.
 
+        The Primary purpose of these is for auto image management when
+        dealing with backgrounds. You can define position position information
+        for every image for specific backgrounds (NOTE: this is via 
+        MASAdvancedDecoFrame)
+
+        Defaults cannot be defined because of the general issues. 
+        Custom BGs should run the staticmethod register_img to setup
+        their custom mapping (or override)
+
         PROPERTIES:
-            
+            tag - tag associatd with this definition
+            bg_map - mapping of background ids to adv deco frame
         """
 
-        # TODO:
+        def __init__(self, tag):
+            """
+            Constructor
+            """
+            self.bg_map = {}
+
+            if tag in store.mas_deco.deco_def_db:
+                raise Exception("duplicate deco definition found")
+
+            store.mas_deco.deco_def_db[tag] = self
+
+        def register_bg(self, bg_id, adv_deco_frame):
+            """
+            Registers the given MASAdvanecdDecoFrame to this definition for
+            a bg id.
+
+            IN:
+                bg_id - MASBackgroundID
+                adv_deco_frame - MASAdvancedDecoFrame to register
+            """
+            self.bg_map[bg_id] = adv_deco_frame
+
+        @staticmethod
+        def register_img(tag, bg_id, adv_deco_frame):
+            """
+            Registers MASAdvancedDecoFrame for a BG and tag.
+            Will create a new entry if the tag does not have a definition yet.
+
+            IN:
+                tag - tag to register decoframe for bg
+                bg_id - id of teh bg to register decoframe for
+                adv_dec_frame - the decoframe to register
+            """
+            deco_def = store.mas_deco.deco_def_db.get(tag, None)
+            if deco_def is None:
+                deco_def = MASImageTagDecoDefinition(tag)
+                store.mas_deco.deco_def_db[tag] = deco_def
+            
+            deco_dec.register_bg(bg_id, adv_deco_frame)
 
 
     class MASDecoManager(object):
         """
         Decoration manager for a background.
         Manages decoration objects and their assocation with layers.
+
+        GETTING: 
+            This supports getting via bracket notation []
+            If a tag does not exist, None is returned.
         """
 
         def __init__(self):
@@ -488,12 +539,14 @@ init -19 python:
             Constructor
             """
             self._decos = {}
+            # db for non advanced decos
             # key: deco tag
             # value: MASDecoration object
 
-            self._deco_instance_map = {}
-            # key: instance deco tag
-            # value: real deco tag
+            self._adv_decos = {}
+            # db for decos that were added using the AdvancedDecoFrames.
+            # key: deco tag
+            # value: MASDecoration object
 
             self._deco_layer_map = {}
             # key: deco tag
@@ -501,7 +554,7 @@ init -19 python:
 
             self._deco_frame_map = {}
             # key: deco tag
-            # value: MASDecoFrame for that tag
+            # value: MASDecoFrame (adv deco frame) for that tag
 
             self._deco_render_map = {
                 store.mas_deco.LAYER_BACK: [],
@@ -511,11 +564,22 @@ init -19 python:
             # key: layer code
             # value: list of MASDecoration objects, in priority order
 
+        def __getitem__(self, item):
+            if item in self._adv_decos:
+                return self._adv_decos[item]
+
+            if item in self._decos:
+                return self._decos[item]
+
+            return None
+
         def _add_deco(self, layer, deco_obj, deco_frame):
             """
             Adds a decoration object to the deco manager.
             NOTE: if decoration has already been added, the existing decoration
             object is instead updated to the given layer and decoframe.
+
+            NOTE: this should only be used for non-advanced decos
 
             IN:
                 layer - layer to add deco object to
@@ -528,31 +592,67 @@ init -19 python:
                 old_layer = self._deco_layer_map,get(deco_obj.name, None)
                 if old_layer is not None:
                     decos = self._deco_render_map.get(old_layer, [])
+                    if deco_obj in decos:
+                        decos.remove(deco_obj)
 
-            # TODO: not complete
+            # TODO:
+            #   1 - need to decide if multiple instances should be allowed
+            #   2 - it would really be same deco but associated with different
+            #       deco frame.
+            #   3 - update all other dec db information
 
+        def _adv_add_deco(self, deco_obj, adv_deco_frame):
+            """
+            Adds a decoration object to teh deco manager.
+            This is meant for Advanced DecoFrames
 
-            # add to decos if not exist
-            if deco_obj.name not in self._decos:
-                self._decos[deco_obj.name] = deco_obj
+            IN:
+                deco_obj - MASDecoration object to add
+                adv_deco_frame - MASAdvancedDecoFRame to associate with deco
+                    object.
+            """
+            self._adv_decos[deco_obj.name] = deco_obj
+            self._deco_frame_map[deco_obj.name] = adv_deco_frame
 
-            # add to layer mapping
-            # find existing layer
-            self._deco_layer[deco
+        def add_back(self, deco_obj, deco_frame):
+            """
+            Adds a decoration object to the back deco layer
+            """
+            # TODO: complete for room deco
+            #   should just call _add_deco
 
-        def add_front(
-                self,
-                deco_obj,
-                deco_frame=None,
-                priority=None,
-                pos=None,
-                scale=None,
-                rotation=None
-        ):
+        def add_front(self, deco_obj, deco_frame):
             """
             Adds a decoration object to the front deco layer
             """
-            # TODO: not complete
+            # TODO: complete for room deco
+            #   shoudl just call _add_deco
+
+        def add_mid(self, deco_obj, deco_frame):
+            """
+            Adds a decoration object to the middle deco layer
+            """
+            # TODO: complete for room deco
+            #   should just call _add_deco
+
+        def adv_deco_iter(self):
+            """
+            Generates iter of advanced deco objects and their frames
+
+            RETURNS: iter of tuple containing deco object and adv deco frame
+            """
+            for deco_name, deco_obj in self._adv_decos:
+                yield deco_name, self._deco_frame_map[deco_name]
+
+        def deco_iter(self):
+            """
+            Generator that yields deco objects and their frames
+
+            TODO: probably should return more than this
+
+            YIELDS: tuple contianing deco object and frame
+            """
+            # TODO: complete for room deco
         
         
     class MASSelectableDecoration(store.MASSelectableSprite):

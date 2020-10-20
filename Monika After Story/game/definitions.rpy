@@ -3407,15 +3407,15 @@ python early:
         """
         base class that supports ex_prop-based extensions.
 
-        Properties can be accessed by using `ex_` prefix.
+        Properties can be accessed by using `ex__` prefix.
         Supports the following:
 
         ACCESSING props:
-            via `<obj>.ex_<name>`
+            via `<obj>.ex__<name>`
             if no prop is found, None is returned.
 
         SETTING PROPS:
-            via `<obj>.ex_<name> = <value>`
+            via `<obj>.ex__<name> = <value>`
 
         CHECKING FOR PROP EXISTENCE:
             via `<name>` in <obj>
@@ -3436,7 +3436,7 @@ python early:
         PROPERTIES:
             ex_props - direct dictionary of ex_props
         """
-        EX_PFX = "ex_"
+        EX_PFX = "ex__"
         _EX_LEN = len(EX_PFX)
 
         def __init__(self, ex_props=None):
@@ -3461,15 +3461,12 @@ python early:
 
         def __getattr__(self, key):
             if key.startswith(self.EX_PFX):
-                if key == "ex_props":
-                    return self.ex_props
-
                 return self.ex_props.get(key[self._EX_LEN:], None)
 
             return super(MASExtraPropable, self).__getattr__(key)
 
         def __setattr__(self, key, value):
-            if key.startswith(self.EX_PFX) and key != "ex_props":
+            if key.startswith(self.EX_PFX):
                 # the real property name is without the prefix
                 stripped_key = key[self._EX_LEN:]
                 if len(stripped_key) > 0:
@@ -3477,7 +3474,26 @@ python early:
 
             super(MASExtraPropable, self).__setattr__(key, value)
 
-        def pop(self, key, default=None):
+        def ex_has(self, key):
+            """
+            Checks for existence of the given exprop in this object.
+
+            IN:
+                key - name of exprop
+
+            RETURNS: True if the key exists as an ex prop, False if not
+            """
+            return key in self
+
+        def ex_iter(self):
+            """
+            Generates generator of exprops in this object.
+
+            RETURNS: iter of ex prop names and values
+            """
+            return (item for item in self.ex_props.iteritems())
+
+        def ex_pop(self, key, default=None):
             """
             Pops and returns an exprop from the internal dict
 

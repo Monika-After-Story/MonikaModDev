@@ -789,7 +789,12 @@ init python:
 #   progress_filter - True will progress the filter. False will not
 #       NOTE: use this if you explicity set the filter
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
+#   bg_change_info - MASBackgroundChangeInfo object to use when transitioning.
+#       NOTE: this should ONLY be used by mas_background_change.
+#       This will make sure that when the background changes, associated
+#       images will be hidden / shown following the appropriate transition.
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True, bg_change_info=None):
 
     with None
 
