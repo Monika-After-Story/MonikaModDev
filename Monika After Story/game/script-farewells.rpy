@@ -803,7 +803,7 @@ init 5 python:
     del rules
 
 label bye_illseeyou:
-    m 1eua "I'll see you tomorrow, [player]."
+    m 1eua "I'll see you later, [player]."
     m 3kua "Don't forget about me, okay?~"
     return 'quit'
 
