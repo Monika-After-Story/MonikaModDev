@@ -16133,6 +16133,7 @@ label monika_giving_criticism:
 init 5 python:
     addEvent(
         Event(
+            persistent.event_database,
             eventlabel="monika_tanabata",
             category=['misc'],
             prompt="Orihime and Hikoboshi",
