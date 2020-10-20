@@ -1675,7 +1675,7 @@ init 5 python:
     if mas_getAbsenceLength() <= datetime.timedelta(hours=1):
         ev_rules.update(MASPriorityRule.create_rule(10))
     else:
-        $ mas_lockEVL("monikaroom_greeting_ear_ackermann2", "GRE")
+        mas_lockEVL("monikaroom_greeting_ear_ackermann2", "GRE")
 
     addEvent(
         Event(
