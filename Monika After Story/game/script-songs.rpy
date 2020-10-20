@@ -1569,6 +1569,9 @@ init 5 python:
             prompt=('Tanabata song'),
             random=False,
             conditional="seen_event('monika_tanabata')"
+        ),
+        code="SNG"
+    )
 
 label mas_song_tanabata_song:
     m 1dua "{i}The bamboo leaves rustle,{/i}{w=0.5}{nw}"
@@ -1581,6 +1584,7 @@ label mas_song_tanabata_song:
     extend 1sua "{i} watching from above.{/i}"
     m 1lua "Mmm, I really like this song, [player]."
     m 1eua "I would love to visit Japan during Tanabata with you sometime~"
+    return
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
