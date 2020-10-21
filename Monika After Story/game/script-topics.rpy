@@ -16025,7 +16025,7 @@ label monika_player_eyesight:
         "I wear glasses occasionally.":
             call monika_player_eyesight_wgo
 
-        "Nope, I don't.":
+        "No, I don't.":
             call monika_player_eyesight_n
 
     return "derandom"
