@@ -16100,6 +16100,7 @@ label monika_player_eyesight_wgo:
 # Never
 label monika_player_eyesight_n:
     $ persistent._mas_pm_wears_glasses = False
+    $ persistent._mas_pm_wears_lenses = False
     $ persistent._mas_pm_poor_eyesight = False
     m 2hua "That's great! I'm glad to hear that you don't have any problems with your eyes."
     m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
