@@ -16032,14 +16032,16 @@ label monika_player_eyesight:
 
 # Always Wears Eyesight Aids
 label monika_player_eyesight_awea(glasses=False):
-    if glasses:
-        $ persistent._mas_pm_wears_glasses = True
-    else:
-        $ persistent._mas_pm_wears_lenses = True
+    python:
+        if glasses:
+            aids = "glasses"
+            persistent._mas_pm_wears_glasses = True
+        else:
+            aids = "contact lenses"
+            persistent._mas_pm_wears_lenses = True
     $ persistent._mas_pm_poor_eyesight = True
     m 2ekc "Oh, I see. "
     extend 2eka "I really hope you see better with them on."
-    $ aids = "glasses" if glasses else "contact lenses"
     m 1eka "Please don't neglect your eyesight, [player], as it can still deteriorate even if you constantly wear your [aids]."
     m 1esa "If you've been on your computer for a while, maybe you could consider taking a little break to let your eyes rest."
     m 3hsa "It'll take you just a few minutes a day, but I believe it would really help."
