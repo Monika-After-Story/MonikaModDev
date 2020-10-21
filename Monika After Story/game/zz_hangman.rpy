@@ -521,7 +521,8 @@ label mas_hangman_game_loop:
             """
             return guesses + chances - max_chances
 
-        def getLastChanceGuessesRatio(useCorrect=False):
+        def getLastChanceGuessesRatio(guesses, chances, last_chance_guesses,
+                                      useCorrect=False):
             """
             Get the ratio of so-called 'last chance guesses' (correct guesses
             made on the last chance remaining) to the total amount of guesses
@@ -529,15 +530,20 @@ label mas_hangman_game_loop:
             correct and incorrent amount, or just amount of correct guesses.)
             
             IN:
+                guesses - amount of guesses (including incorrect) made
+                    by the player
+                chances - amount of chances the player has
+                last_chance_guesses - amount of guesses (including
+                    incorrect) made by the player on their last chance
                 useCorrect - whether to use total amount of only correct
-                             guesses or total amount of any guesses
+                    guesses or total amount of any guesses (defaults to False)
 
             RETURNS:
                 Float in range [0; 1] representing last chance guesses to
                 correct guesses ratio.
             """
-            return last_chance_guesses / (getCorrectGuesses() if useCorrect
-                   else guesses)
+            return last_chance_guesses / (getCorrectGuesses(guesses, chances) 
+                   if useCorrect else guesses)
 
     while not done:
         # create displayables
@@ -729,7 +735,8 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
             m 1tsa "...Or maybe you just lucked out, hmm?"
         else:
             m 1hkb "You just guessed your own name flawlessly, ahaha."
-    elif chances == 1 and getLastChanceGuessesRatio(True) > 0.5:
+    elif chances == 1 and getLastChanceGuessesRatio(guesses, chances, 
+            last_chance_guesses, True) > 0.5:
         # More than 50% of the correct guesses were made on last chance.
         m 1hub "Wow, [player], you must be {i}really{/i} lucky, ahaha~"
         m 1tsb "...Or maybe you're just biding your time to show me how good you are, hmm?"
@@ -754,7 +761,7 @@ label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
         if player_word:
              m 1eka "[player]..."
              m 1hksdlb "You couldn't guess your own name?"
-        elif getLastChanceGuessesRatio(useCorrect=True) > 0.5:
+        elif getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, True) > 0.5:
              if not (persistent._mas_pm_cares_about_dokis or persistent._mas_sensitive_mode):
                  m 1tsa "You were {i}hanging{/i} in there really well{w=0.5}{nw}, "
                  extend 1hub "[player], ahaha."
@@ -797,7 +804,7 @@ label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
     return
 
 label mas_hangman_game_give_up_last_chance(guesses=0, last_chance_guesses=0):
-    if getLastChanceGuessesRatio(useCorrect=False) > 0.5:
+    if getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, False) > 0.5:
         m 3eka "You were really lucky to hold on your last chance for so long..."
         m "And you almost figured the entire word correctly."
     m 1dkc "You shouldn't give up on your last chance, no matter how dire things seem to be..."
