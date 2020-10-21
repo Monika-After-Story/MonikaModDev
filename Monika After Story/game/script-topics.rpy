@@ -15998,7 +15998,7 @@ init 5 python:
             eventlabel="monika_player_eyesight",
             category=["you"],
             prompt="Wearing glasses",
-            conditional="mas_seenLabels(['monika_player_appearance'])"
+            conditional="renpy.seen_label('monika_player_appearance')"
         )
     )
 
@@ -16078,7 +16078,7 @@ label monika_player_eyesight_wgo:
             m 1rsbssdlb "I was just a bit worried since you spend a lot of time here with me, on your computer..."
             m 1ekc "And from what I heard it can really hurt your eyes if you sit in front of it for too long."
             m 3eka "So, [player], even if you're good... Don't neglect your health, okay?"
-            if mas_seenLabels(["monika_using_pcs_healthily"]):
+            if renpy.seen_label("monika_using_pcs_healthily"):
                 m 1eub "Remember me talking about doing frequent breaks if you're using your computer for a while?"
                 m 1esa "You could take a little break every 15-20 minutes and let your eyes rest."
                 if mas_isMoniLove(higher=True):
