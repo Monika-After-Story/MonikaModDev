@@ -5,6 +5,11 @@ init -700 python in mas_deco:
     deco_def_db = {}
     # mapping of deco definitions. 
 
+    vis_store = {}
+    # mapping of deco tags (see deco_db) of all deco objects that were shown
+    # key: deco name/tag
+    # value: ignored
+
 
 init -20 python in mas_deco:
     import store
@@ -209,7 +214,7 @@ init -19 python:
         tags in game.
 
         PROPERTIES:
-            See MASDecoration
+            See MASDecorationBase
         """
 
         def __init__(self, tag, ex_props=None):
@@ -379,8 +384,10 @@ init -19 python:
         Advanced deco frame. Basically an interface around
         renpy.show params.
 
+        Equivalence is supported, but only in positionig AND tag.
+
         PROPERTIES: NOTE: refer to renpy.show for info
-            name - used as the decoration tag in deco db, if not given
+            name - set when this is shown
             at_list
             layer
             what
@@ -391,7 +398,6 @@ init -19 python:
         """
 
         def __init__(self,
-                name,
                 at_list=None,
                 layer="master",
                 what=None,
@@ -403,7 +409,6 @@ init -19 python:
             Constructor.
             NOTE: all parameter doc is copied from renpy.show
 
-            name - name of image to show, a string
             at_list - list of tranforms applyed to the image
                 Equivalent of the `at` property
                 (Default: None)
@@ -430,27 +435,57 @@ init -19 python:
             if behind is None:
                 behind = []
 
-            self.name = name
             self.at_list = at_list
             self.layer = layer
             self.what = what
             self.zorder = zorder
             self.tag = tag
             self.behind = behind
+            self.real_tag = None
+            self.name = None
+
+        def __eq__(self, other):
+            if isinstance(other, MASAdvancedDecoFrame):
+                return (
+                    self.at_list == other.at_list
+                    and self.layer == other.layer
+                    and self.what == other.what
+                    and self.zorder == other.zorder
+                    and self.tag == other.tag
+                    and self.behind == other.behind
+                )
+
+            return NotImplemented
+
+        def __ne__(self, other):
+            result = self.__eq__(other)
+            if result is NotImplemented:
+                return result
+            return not result
 
         def hide(self):
             """
             Hides this image
             """
-            renpy.hide(self.real_tag, layer=self.layer)
+            if self.real_tag is not None:
+                renpy.hide(self.real_tag, layer=self.layer)
+                self.real_tag = None
+                self.name = None
 
-        def show(self):
+        def show(self, name)e
             """
-            Shows this image
+            Shows image at this deco frame
+
+            IN:
+                name - tag of the image to show
             """
+            self.name = name
+            if self.name is None:
+                return
+
             # first, determine the tag that will end up being used.
             if self.tag is None:
-                self.real_tag = self.name
+                self.real_tag = name
             else:
                 self.real_tag = self.tag
 
@@ -479,20 +514,40 @@ init -19 python:
         their custom mapping (or override)
 
         PROPERTIES:
-            tag - tag associatd with this definition
+            deco - MASImageTagDecoration object associated with this definition
             bg_map - mapping of background ids to adv deco frame
         """
 
-        def __init__(self, tag):
+        def __init__(self, deco):
             """
             Constructor
+
+            IN:
+                deco - MASImageTagDefintion object to use
             """
             self.bg_map = {}
 
-            if tag in store.mas_deco.deco_def_db:
+            if deco.name in store.mas_deco.deco_def_db:
                 raise Exception("duplicate deco definition found")
 
-            store.mas_deco.deco_def_db[tag] = self
+            store.mas_deco.deco_def_db[deco.name] = self
+
+        @staticmethod
+        def get_adf(bg_id, tag):
+            """
+            Gets MASAdvancedDecoFrame for a bg for a given tag.
+
+            IN:
+                bg_id - background ID to get deco frame for
+                tag - tag to get deco frame for
+
+            RETURNS: MASAdvancedDecoFrame, or None if not found
+            """
+            deco_def = store.mas_deco.deco_def_db.get(tag, None)
+            if deco_def is None:
+                return None
+
+            return deco_def.bg_map.get(bg_id, None)
 
         def register_bg(self, bg_id, adv_deco_frame):
             """
@@ -510,6 +565,8 @@ init -19 python:
             """
             Registers MASAdvancedDecoFrame for a BG and tag.
             Will create a new entry if the tag does not have a definition yet.
+            NOTE: this will basically create a dummy MASImageTagDecoration 
+            object. Use store.mas_deco.get_deco to get the decoration object.
 
             IN:
                 tag - tag to register decoframe for bg
@@ -518,8 +575,9 @@ init -19 python:
             """
             deco_def = store.mas_deco.deco_def_db.get(tag, None)
             if deco_def is None:
-                deco_def = MASImageTagDecoDefinition(tag)
-                store.mas_deco.deco_def_db[tag] = deco_def
+                deco_def = MASImageTagDecoDefinition(
+                    MASImageTagDecoration(tag)
+                )
             
             deco_dec.register_bg(bg_id, adv_deco_frame)
 
@@ -635,15 +693,6 @@ init -19 python:
             # TODO: complete for room deco
             #   should just call _add_deco
 
-        def adv_deco_iter(self):
-            """
-            Generates iter of advanced deco objects and their frames
-
-            RETURNS: iter of tuple containing deco object and adv deco frame
-            """
-            for deco_name, deco_obj in self._adv_decos:
-                yield deco_name, self._deco_frame_map[deco_name]
-
         def deco_iter(self):
             """
             Generator that yields deco objects and their frames
@@ -653,7 +702,113 @@ init -19 python:
             YIELDS: tuple contianing deco object and frame
             """
             # TODO: complete for room deco
-        
+
+        def deco_iter_adv(self):
+            """
+            Generates iter of advanced deco objects and their frames
+
+            RETURNS: iter of tuple containing deco object and adv deco frame
+            """
+            for deco_name, deco_obj in self._adv_decos:
+                yield deco_obj, self._deco_frame_map[deco_name]
+
+        def diff_deco_adv(self, deco, adv_df):
+            """
+            Checks diffs between the given deco + frame and the the same deco
+            in this manager.
+
+            IN:
+                deco - deco to check
+                adv_df - MASAdvancedDecoFrame to check
+
+            RETURNS: integer code:
+                0 - the given deco and equivalent frame exist in this
+                    deco manager.
+                1 - the given deco exists but has a different frame in this
+                    deco manager.
+                -1 - the given deco does NOT exist in this deco manager.
+            """
+            df = self._deco_frame_map.get(deco.name, None)
+            if df is None:
+                return -1
+
+            if df == adv_df:
+                return 0
+
+            return 1
+
+        def rm_deco(self, name):
+            """
+            REmoves all instances of the deco with the given name from this
+            deco manager.
+
+            IN:
+                name - tag, either deco name or image tag, of the deco object
+                    to remove
+            """
+            deco_obj = None
+            if name in self._decos:
+                deco_obj = self._decos.pop(name)
+
+            if name in self._adv_decos:
+                deco_obj = self._adv_decos.pop(name)
+
+            if name in self._deco_frame_map:
+                self._deco_frame_map.pop(name)
+
+            deco_lst = self._deco_render_map.get(
+                self._deco_layer_map.get(name, None),
+                []
+            )
+            if deco_obj in deco_lst:
+                deco_lst.remove(deco_obj)
+
+
+    ## key functions
+    def mas_showDecoTag(tag, adv_frame):
+        """
+        Shows a decoration object that is an image tag.
+
+        NOTE: this should be called when you want to show a decoration-based
+        image, regardless of background. This will refer to the image tag
+        definition to determine how the object will be shown.
+
+        To hide an image shown this way, see mas_hideDecoTag
+
+        IN:
+            tag - the image tag to show
+            adv_frame - the MASAdvancedDecoFrame to show this deco with
+        """
+        # TODO
+
+
+    def mas_hideDecoTag(tag):
+        """
+        Hides a decoration object that is an image tag
+
+        NOTE: this should be called when you want to hide a decoration-based
+        image, regardless of background.
+
+        This is primarily for hiding images shown with the mas_showDecoTag
+        function.
+
+        IN:
+            tag - the image tag to hide
+        """
+        # TODO
+
+
+    def mas_isDecoTagVisible(tag):
+        """
+        Checks if the given deco tag is still visible. (as in the vis_store)
+
+        IN:
+            tag - the image tag to check
+
+        RETURNS: True if the deco is still visible, false if not
+        """
+        return tag in store.mas_deco.vis_store
+
         
     class MASSelectableDecoration(store.MASSelectableSprite):
         def __init__(self, 

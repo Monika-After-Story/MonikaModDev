@@ -2120,23 +2120,106 @@ init -10 python:
                     )
                 )
 
+        def _deco_add(self, deco=None, tag=None):
+            """
+            Adds deco object to the background. 
+            NOTE: do NOT use this. This should only be used by the public
+            show/hide deco functions as well as other internal stuff.
+
+            NOTE: currently only supports advanceed deco frames
+
+            IN:
+                deco - TODO
+                tag - ImageTag of the deco to add - This must have an image
+                    tag definition for this to work.
+            """
+            if tag is not None:
+                adv_frame = self.get_deco_adf(tag)
+                deco = store.mas_deco.get_deco(tag)
+                if adv_frame is not None and deco is not None:
+                    self._deco_man._adv_add_deco(deco, adv_frame)
+
+        def _deco_rm(self, name):
+            """
+            Removes deco object from this background.
+            NOTE: do NOT use this. This should only be used by the public 
+            show/hide deco functions as well as other internal stuff
+
+            IN:
+                name - tag, either deco name or image tag, of the deco object
+                    to remove.
+            """
+            self._deco_man.rm_deco(name)
+
         def entry(self, old_background, **kwargs):
             """
             Run the entry programming point
             """
-            # TODO: show appropriate images
+            # populate deco images to show
+            change_info = kwargs.get("_change_info", None)
+            if change_info is not None:
+                self._entry_deco(old_background, change_info)
 
             if self.entry_pp is not None:
                 self.entry_pp(old_background, **kwargs)
+
+        def _entry_deco(self, old_bg, change_info):
+            """
+            Entry code for deco
+
+            IN:
+                old_bg - BG object being changed from
+                change_info - MASBackgroundChangeInfo object
+
+            OUT:
+                change_info - MASBackgroundChangeInfo object with shows 
+                    populated.
+            """
+            for vis_tag in store.mas_deco.vis_store:
+                # show all deco objects that are currently visible.
+                # and do not have equivalent deco frames.
+
+                old_adf = old_bg.get_deco_adf(vis_tag)
+                if old_adf is not None and old_adf != adv_df:
+                    change_info.shows[vis_tag] = adv_df
+                    self._deco_add(tag=vis_tag)
 
         def exit(self, new_background, **kwargs):
             """
             Run the exit programming point
             """
-            # TODO: hide appropriate images
+            change_info = kwargs.get("_change_info", None)
+            if change_info is not None:
+                self._exit_deco(new_background, change_info)
 
             if self.exit_pp is not None:
                 self.exit_pp(new_background, **kwargs)
+
+        def _exit_deco(self, new_bg, change_info):
+            """
+            Exit code for deco
+
+            IN:
+                new_bg - BG object being changed to
+                change_info - MASBackgroundChangeInfo object
+
+            OUT:
+                change_info - MASBackgroundChangeInfo object with hides
+                    populated.
+            """
+            for deco_obj, adv_df in self._deco_man.deco_iter_adv():
+
+                new_adf = new_bg.get_deco_adf(deco_obj.name)
+                if (
+                        not mas_isDecoTagVisible(deco_obj.name)
+                        or new_adf is None
+                        or new_adf != adv_df
+                ):
+                    # hide all deco objects that do not have a definition
+                    # in the new bg OR have a differing deco frame OR are not in
+                    # the vis_store
+                    change_info.hides[deco_obj.name] = adv_df
+                    self._deco_rm(deco_obj.name)
 
         def fromTuple(self, data_tuple):
             """
@@ -2156,6 +2239,17 @@ init -10 python:
                 [0]: unlocked property
             """
             return (self.unlocked,)
+
+        def get_deco_adf(self, tag):
+            """
+            Gets MASAdvancedDecoFrame associatd with this tag, if one exists.
+
+            IN:
+                tag - tag to get deco frame for
+
+            RETURNS: MASAdvancedDecoFrame object, or None if none exists
+            """
+            return MASImageTagDecoDefinition.get_adf(self.background_id, tag)
 
         def getRoom(self, flt, weather=None):
             """
@@ -2516,8 +2610,8 @@ init -20 python in mas_background:
         to go smoothly.
 
         PROPERTIES:
-            hides - list of MASAdvancedDecoFrames to hide in the dissolve
-            shows - list of MASAdvancedDecoFrames to show in the dissolve
+            hides - dict of image tags and MASAdvancedDecoFrames to hide
+            shows - dict of image tags and MASAdvancedDecoFrames to show
         """
 
         def __init__(self, hides=None, shows=None):
@@ -2525,15 +2619,17 @@ init -20 python in mas_background:
             Constructor
 
             IN:
-                hides - list of MASAdvancedDecoFrames to hide in the dissolve
+                hides - dict of image tags and MASAdvancedDecoFrames to 
+                    hide in the dissolve
                     (Default: None)
-                shows - list of MASAdvancedDecoFrames to show in the dissolve
+                shows - dict of image tags and MASAdvancedDecoFrames to 
+                    show in the dissolve
                     (Default: None)
             """
             if hides is None:
-                hides = []
+                hides = {}
             if shows is None;
-                shows = []
+                shows = {}
 
             self.hides = hides
             self.shows = shows
