@@ -628,7 +628,6 @@ label greeting_o31_marisa:
     m 1dkc "The ribbon wouldn't stay still at all..."
     m 1rksdla "Luckily I got that sorted out."
     m 3hua "I'd say I did a good job myself."
-    m 1hub "Ehehe~"
     m 3eka "I'm wondering if you'll be able to see what's different today."
     m "Besides my costume of course~"
     m 1hua "But anyway..."
