@@ -504,15 +504,22 @@ label mas_hangman_game_loop:
 
         dt_color = mas_hmg.WORD_COLOR
 
-        def getCorrectGuesses():
+        def getCorrectGuesses(guesses, chances, max_chances=6):
             """
             Get the amount of correct guesses, i.e. the amount of guesses 
             that actually exposed letters in the word.
 
+            IN:
+                guesses - amount of guesses (including incorrect) made
+                    by the player
+                chances - amount of chances the player has
+                max_chances - maximum amount of chances player can
+                    have (defaults to 6)
+
             RETURNS:
                 Amount of correct guesses.
             """
-            return guesses + chances - 6
+            return guesses + chances - max_chances
 
         def getLastChanceGuessesRatio(useCorrect=False):
             """
