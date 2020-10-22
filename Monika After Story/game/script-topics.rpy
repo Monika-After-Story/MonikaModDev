@@ -15207,8 +15207,8 @@ label monika_dying_same_day:
         m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
         m 3rfd "Before I met you, I thought the idea was completely absurd!"
     else:
-        m 1eud "You know, I was really sceptical about this idea before, {w=0.3}{nw}"
-        extend 1rkc "thinking that it would be such an irrational decision to follow your beloved one there."
+        m 1eud "You know, I was really skeptical about this idea before, {w=0.2}{nw}"
+        extend 1rkc "thinking that it would be such an irrational decision to follow your beloved in death."
 
     m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
 
