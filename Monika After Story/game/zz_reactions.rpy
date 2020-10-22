@@ -2869,14 +2869,14 @@ label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
         mas_giftCapGainAff(3)
 
     m 1sub "Oh, a new shirt!"
-    m 3hub "It looks amazing, [player]~"
+    m 3hub "It looks amazing, [player]!"
     m 3eua "One second, let me just put it on.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     call mas_clothes_change(sprite_object)
 
     m 2eua "Well, what do you think?"
     m 7hua "I think it looks pretty cute on me.{w=0.2} {nw}"
-    extend 3rubsa "I'll definitely be saving this outfit for a date too~"
-    m 1hub "Thanks again, [player]~"
+    extend 3rubsa "I'll definitely be saving this outfit for a date~"
+    m 1hub "Thanks again, [player]!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
