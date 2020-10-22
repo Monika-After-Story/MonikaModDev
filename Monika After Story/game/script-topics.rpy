@@ -16016,4 +16016,6 @@ label monika_brainstorming:
     extend 3eub "eventually they'll become something that you'd call a good idea."
     m 2hub "This is exactly where you can let your mind go wild, and that's what I like about this technique the most!"
     m 2tkc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, and brainstorming could help one bypass this inner barrier."
-    m 2hub "Thanks for listening~"
+    m 3ekb "The beauty of thoughts can be expressed in so many different ways."
+    m 3esa "They are only ideas in transit, you're the one who give them the road."
+    return
