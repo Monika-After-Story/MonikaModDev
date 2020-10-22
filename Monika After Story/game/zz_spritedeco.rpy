@@ -472,7 +472,7 @@ init -19 python:
                 self.real_tag = None
                 self.name = None
 
-        def show(self, name)e
+        def show(self, name):
             """
             Shows image at this deco frame
 
@@ -765,7 +765,7 @@ init -19 python:
 
 
     ## key functions
-    def mas_showDecoTag(tag, adv_frame):
+    def mas_showDecoTag(tag, show_now=False):
         """
         Shows a decoration object that is an image tag.
 
@@ -773,16 +773,21 @@ init -19 python:
         image, regardless of background. This will refer to the image tag
         definition to determine how the object will be shown.
 
-        To hide an image shown this way, see mas_hideDecoTag
+        To hide an image shown this way, see mas_hideDecoTag.
 
         IN:
             tag - the image tag to show
-            adv_frame - the MASAdvancedDecoFrame to show this deco with
+            show_now - set to True to show immediately
+                (Deafult: False)
         """
-        # TODO
+        store.mas_deco.vis_store[tag] = None
+        mas_current_background._deco_add(tag=tag)
+
+        if show_now:
+            adv_frame.show(tag)
 
 
-    def mas_hideDecoTag(tag):
+    def mas_hideDecoTag(tag, hide_now=False):
         """
         Hides a decoration object that is an image tag
 
@@ -794,8 +799,16 @@ init -19 python:
 
         IN:
             tag - the image tag to hide
+            hide_now - set to True to hide immediately
+                (Default: False)
         """
-        # TODO
+        if tag in store.mas_deco.vis_store:
+            store.mas_deco.vis_store.pop(tag)
+
+        if hide_now:
+            adf = mas_current_background.get_deco_adf(tag)
+            if adf is not None:
+                adf.hide()
 
 
     def mas_isDecoTagVisible(tag):
