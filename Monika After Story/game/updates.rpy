@@ -382,6 +382,9 @@ label v0_11_6(version="v0_11_6"):
             mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
             mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
 
+        if seen_event("monika_vn"):
+            mas_unlockEVL("monika_kamige","EVE")
+
     return
 
 # 0.11.5

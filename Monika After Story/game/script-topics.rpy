@@ -3203,6 +3203,7 @@ label monika_vn:
     m "What's worse, some people think they're all hardcore Japanese pornography."
     m 2eka "But if we've proved anything with this game..."
     m 4hua "We showed them that English visual novels can be kamige too!"
+    $ mas_unlockEVL("monika_kamige","EVE")
     return
 
 #init 5 python:
@@ -15984,7 +15985,39 @@ label monika_literature_value:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_renewable_energy",category=['technology'],prompt="Renewable energy",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kamige",
+            category=['games'],
+            prompt="What is kamige?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_kamige:
+    m 1euc "Oh, that's right...{w=0.3}{nw}"
+    extend 3rksdla "it's not exactly a common term."
+    m 3eud "{i}Kamige{/i} is Japanese slang that is mostly used by visual novel fans."
+    m 3eua "If I were to try to translate it, I think it would be something like {i}godly game.{/i}"
+    m 2eub "It's sort of like when people talk about their favorite classic books or movies."
+    m 2hksdlb "I was kind of joking when I said it about this game, but it {i}did{/i} seem to get very popular for some reason."
+    m 7eka "Not that I'm complaining...{w=0.3} {nw}"
+    extend 3hua "If it was the game's popularity that brought you to meet me, I think I can be grateful for it."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_renewable_energy",
+            category=['technology'],
+            prompt="Renewable energy",
+            random=True
+        )
+    )
 
 label monika_renewable_energy:
     m 1eua "What do you think about renewable energy, [player]?"
