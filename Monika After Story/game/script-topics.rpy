@@ -16000,7 +16000,7 @@ init 5 python:
 label monika_kamige:
     m 1euc "Oh, that's right...{w=0.3}{nw}"
     extend 3rksdla "it's not exactly a common term."
-    m 3eud "{i}Kamige{/i} is a Japanese slang word that is mostly used by visual novel fans."
+    m 3eud "{i}Kamige{/i} is Japanese slang that is mostly used by visual novel fans."
     m 3eua "If I were to try to translate it, I think it would be something like {i}godly game.{/i}"
     m 2eub "It's sort of like when people talk about their favorite classic books or movies."
     m 2hksdlb "I was kind of joking when I said it about this game, but it {i}did{/i} seem to get very popular for some reason."
