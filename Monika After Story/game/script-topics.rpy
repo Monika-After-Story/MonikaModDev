@@ -15993,7 +15993,7 @@ init 5 python:
             prompt="What is kamige?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no_unlock":None}
         )
     )
 
