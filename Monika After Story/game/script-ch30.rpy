@@ -872,6 +872,14 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 if not hide_calendar:
                     mas_calShowOverlay()
 
+        # add show/hide statements for decos
+        if bg_change_info is not None:
+            if not scene_change:
+                for h_adf in bg_change_info.hides.itervalues():
+                    h_adf.hide()
+
+            for s_tag, s_adf in bg_change_info.shows.iteritems():
+                s_adf.show(s_tag)
 
     # vignette
     if store.mas_globals.show_vignette:
