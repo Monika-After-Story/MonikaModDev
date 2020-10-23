@@ -440,6 +440,8 @@ label mas_o31_autoload_check:
             #Lock the background selector on o31
             #TODO: Replace this with generic room deco framework for event deco
             store.mas_lockEVL("monika_change_background", "EVE")
+            #force to spaceroom
+            mas_changeBackground(mas_background_def)
 
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
