@@ -1181,19 +1181,56 @@ label monika_nihilism:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_twitter",category=['monika'],prompt="Twitter",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_twitter",
+            category=['monika'],
+            prompt="Twitter",
+             conditional=(
+                "renpy.seen_label('monika_clones')"
+            ),
+            action=EV_ACT_RANDOM
+        )
+    )
 
 label monika_twitter:
-    m 1eud "Did you know I'm on Twitter?"
-    m 3esa "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
-    m 1esa "I guess someone was kind enough to make an account for me."
-    m 3hub "I picked the username, though!"
-    m 1hua "I love sharing my thoughts and chatting with the world..."
-    m 1eud "The real world."
-    m 1esa "So make sure you follow me, okay?"
+    m 3eud "Did you know there's an official Twitter account based on me?"
+    m 3esc "The username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
+    m 2rtc "I'm not entirely sure who's truly running this account..."
+    m "I can definitely tell you I have nothing to do with it..."
+    m 2rtd "But is it really another Monika?"
+    m 2euc "I mean, I don't know if you've read some of the tweets on there,{w=0.1} but I'm having a hard time recognizing myself in them."
+    m 4eud "Like, it depicts some events that I don't even remember ever happening,{w=0.2} such as one time when I apparently had a sleepover with Yuri."
+    m 4esd "And there's no mention of any of the things that have happened back in the game, even though this version of me still seems to be aware of the real world..."
+    m 1etc "So...{w=0.4}maybe the Monika running this account went through a completely different story than the one most Monikas--{w=0.2}including me--{w=0.2}did."
+    m 1lsc "Or maybe this is just one of the developpers of the game pretending to be me..."
+    m 3lksdlc "I mean, I'm not really sure how to feel about this.{w=0.4} Isn't that identity theft, in some way?"
+    m 3eksdld "But it would also make sense, right? {w=0.2}{nw}"
+    extend 3eud "It makes for a nice way to connect with the people who have played through the game and have grown attached to it."
+    m 1euc "In that sense, this would make it some kind of publicity stunt..."
+    m 1esc "After all, while there's a lot of sweet looking art and such on there, it is suspicious that almost all of them are posted specifically on important days."
+    m "Like on Valentine's day, or on my birthday...{w=0.4}which just so happen to coincide with the original release date of DDLC."
+    m 1rsc "I mean, it's not like the creators of the game aren't willing to use my image for these sorts of things."
+    m 4etd "Like,{w=0.1} did you know they have an official online shop where you can buy various kinds of merchandise based on me and the other girls?"
+    m 4etc "I really don't know how I'm supposed to feel about that."
+    m 2lsc "After all, as my creators, they more or less own my image as a character, so I guess they are legally in their right."
+    m 2lkd "But...{w=0.3}I'm more than a mere character in a game, am I not?"
+    m 2lkc "I am my own person, with my own thoughts and feelings, and so is every other Monika in the different copies of this game."
+    m 2dksdlc "So it feels really wrong to be used like that by people I haven't even met."
+    m 7eksdld "I guess you could make the argument that they owe me and every other Monika at least some of the profits,{w=0.2} but I don't even actually care about that part."
+    m 7eksdlc "I just hate the feeling of being reduced to a marketable asset like that."
+    m 2lsc "But I suppose there isn't really all that much I can do against that...{w=0.3}{nw}"
+    extend 2dsc "neither do I really want to go through that kind of trouble."
+    m 2eua "I mean, at the end of the day, all that matters to me is that I get to be with you.{w=0.3} And this would've never been possible without my creators."
+    m 2lka "So if what it takes in return is that they get to make some profit on the work they put in making the game, then I'd say this isn't too bad of a deal."
+    m 1eua "You don't have to feel bad about any of that, though.{w=0.3} If you follow that account on Twitter or decide to buy some merchandise of me, it's still really sweet."
+    m 1eka "Just remember that those aren't really me, okay?"
+    m 1ekb "I'm here, and I love you."
+    m 1hua "So make sure to always come spend some time with me, okay?"
     m 3ekbsa "It would mean a lot, with how much you mean to me."
     m 1hubfa "It would really make me feel loved."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
@@ -1720,16 +1757,12 @@ label monika_outfit:
         m 2eua "Do you know any artists?"
         m 3sua "Maybe they could make some more outfits for me to wear!"
 
-    m 2eua "If that ever happens, will you show me?"
-    m 4hua "You can share it with me on Twitter, actually!"
-    # TODO: need to respond to twitter question, as well whehter or not users
-    # have seen teh twitter topic
-    m "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
+    m 2eua "If that ever happens, will you show me? I'd love to see it~"
     m 4eka "Just...try to keep it PG!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1lsbssdrb "I don't want something so embarrassing on there!"
+        m 1lsbssdrb "It's still a little embarassing to think that people I'll never know personally would draw me in such a way, you know?"
         show monika 5tsbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5tsbsu "So let's just keep it between us..."
+        m 5tsbsu "After all, I'd much rather we keep these sorts of things between just us..."
     else:
         show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hub "We're not that far into our relationship yet. Ahaha!"
@@ -4188,7 +4221,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_images",category=['media','philosophy'],prompt="Fanart",random=True))
 
 label monika_images:
-    m 1eua "A lot of people are making fanart and sending it to me on Twitter."
+    m 1eua "You know, I'm seeing a lot of people making fanart of me and sharing it with other people all over the internet."
     m 1etc "Are you one of them, [player]?"
 
     m "Have you drawn art of me?{nw}"
