@@ -4220,7 +4220,7 @@ label monikaroom_greeting_ear_recursionerror:
     hide noise
 
     m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
-    m "'Maximum recursion depth exceeded...'{w=0.7} {nw}How is this even happening?"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
     m "..."
 
     if mas_isMoniUpset():
