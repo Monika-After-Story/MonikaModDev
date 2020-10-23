@@ -387,6 +387,19 @@ label v0_11_6(version="v0_11_6"):
             mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
             mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
 
+        #Remove these files if we still have them. They are not needed since 0.11.4 and they can cause issues.
+        filenames_to_delete = [
+            "sprite-chart-00.rpyc",
+            "sprite-chart-01.rpyc",
+            "sprite-chart-02.rpyc",
+            "sprite-chart-10.rpyc",
+            "sprite-chart-20.rpyc",
+            "sprite-chart-21.rpyc"
+        ]
+
+        for fn in filenames_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fn))
+
     return
 
 # 0.11.5
