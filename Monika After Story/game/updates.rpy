@@ -387,6 +387,9 @@ label v0_11_6(version="v0_11_6"):
             mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
             mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
 
+        if seen_event("monika_vn"):
+            mas_unlockEVL("monika_kamige","EVE")
+
         #Remove these files if we still have them. They are not needed since 0.11.4 and they can cause issues.
         filenames_to_delete = [
             "sprite-chart-00.rpyc",
