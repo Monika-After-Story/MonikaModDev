@@ -895,7 +895,7 @@ style music_menu_button_text_dark is navigation_button_text:
 screen music_menu(music_page, page_num=0, more_pages=False):
     modal True
 
-    $ import store.songs as songs
+    default tooltip = MASMouseFollowerTooltip(xmaximum=800, text_align=0.0)
 
     # logic to ensure Return works
     if songs.current_track is None:
@@ -934,8 +934,15 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             spacing gui.navigation_spacing
 
             # wonderful loop so we can dynamically add songs
-            for name, song in music_page:
-                textbutton _(name) action Return(song)
+            for name, song, tt in music_page:
+                if tt:
+                    textbutton _(name):
+                        action Return(song)
+                        hovered tooltip.Action(tt)
+
+                else:
+                    textbutton _(name):
+                        action Return(song)
 
     vbox:
 
@@ -977,11 +984,12 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     label "Music Menu"
 
+    add tooltip
+
 # sets locks and calls hte appropriate screen
 label display_music_menu:
     # set var so we can block multiple music menus
     python:
-        import store.songs as songs
         songs.menu_open = True
         song_selected = False
         curr_page = 0
@@ -996,13 +1004,19 @@ label display_music_menu:
             # this should never happen. Immediately quit with None
             return songs.NO_SONG
 
+        # Repack here to add tooltips
         python:
+            music_page = list(music_page)
             for id, data_tuple in enumerate(music_page):
                 name, song = data_tuple
                 if len(name) > 27:
+                    tooltip = name
                     name = name[:25].strip() + "..."
-                    data_tuple = (name, song)
-                    music_page[id] = data_tuple
+                else:
+                    tooltip = None
+
+                data_tuple = (name, song, tooltip)
+                music_page[id] = data_tuple
 
         # otherwise, continue formatting args
         $ next_page = (curr_page + 1) in songs.music_pages
