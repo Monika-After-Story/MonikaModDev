@@ -15769,7 +15769,7 @@ label monika_boyfriendgossip:
     m "I mean, I'd just figured out that you existed, and suddenly someone was making it look like I was already taken."
     m 1esd "But apparently, that rumor was just the assumption she was supposed to come to if I was ever late to the club."
     m 1etc "Since I'm pretty extroverted and have a history with another club, I guess it wouldn't necessarily be {i}unfair{/i} to come to that kind of conclusion."
-    m 3esd "But no such character exists in the game's files to prove or disprove it. It's just an idea to fill in where I might be."
+    m 3esd "But no such character exists in the game's files to prove or disprove it."
     m 3rsd "At the time, I was practicing piano and--well, sorting my thoughts. But it seems like that kind of dialogue was there for any time I wasn't around."
     m 1etu "It's a little bit devious, actually. Think about it."
     m 3esd "As the game's story progressed, the main character might need more excuses to be alone with one of the girls."
