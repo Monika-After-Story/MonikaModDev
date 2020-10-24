@@ -492,7 +492,7 @@ label mas_o31_autoload_check:
                 else:
                     selected_greeting = "greeting_o31_generic"
 
-                #Reset zoom
+                #Save and reset zoom
                 mas_temp_zoom_level = store.mas_sprites.zoom_level
                 store.mas_sprites.reset_zoom()
 
@@ -657,6 +657,7 @@ init 5 python:
 
 label greeting_o31_rin:
     $ title_cased_hes = hes.capitalize()
+    $ mas_selspr.unlock_hair(mas_hair_braided)
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
@@ -829,17 +830,16 @@ label greeting_o31_cleanup:
     window auto
 
     python:
-        # 1 - music hotkeys should be enabled
+        #1 - music hotkeys should be enabled
         store.mas_hotkeys.music_enabled = True
-        # 2 - calendarovrelay enabled
+        #2 - calendarovrelay enabled
         mas_calDropOverlayShield()
-        # 3 - set the keymaps
+        #3 - set the keymaps
         set_keymaps()
-        # 4 - hotkey buttons should be shown
+        #4 - hotkey buttons should be shown
         HKBShowButtons()
-        # 5 - restart music
+        #5 - restart music
         mas_startup_song()
-
     return
 
 #START: O31 DOCKSTAT FARES

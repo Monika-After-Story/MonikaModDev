@@ -6190,6 +6190,9 @@ define audio.fall = "sfx/fall.ogg"
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
+#Zoom level reset const
+define mas_temp_zoom_level = 1.0
+
 # Backgrounds
 image black = "#000000"
 image dark = "#000000e4"

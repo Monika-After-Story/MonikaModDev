@@ -250,13 +250,11 @@ init -2 python in mas_sprites:
         """
         pass
 
-
     def _hair_def_exit(_moni_chr, **kwargs):
         """
         Exit programming point for ponytail
         """
         pass
-
 
     def _hair_down_entry(_moni_chr, **kwargs):
         """
@@ -264,20 +262,17 @@ init -2 python in mas_sprites:
         """
         pass
 
-
     def _hair_down_exit(_moni_chr, **kwargs):
         """
         Exit programming point for hair down
         """
         pass
 
-
     def _hair_bun_entry(_moni_chr, **kwargs):
         """
         Entry programming point for hair bun
         """
         pass
-
 
     def _hair_orcaramelo_bunbraid_exit(_moni_chr, **kwargs):
         """
@@ -286,6 +281,19 @@ init -2 python in mas_sprites:
         # always take off the headband
         _acs_remove_if_found(_moni_chr, "orcaramelo_sakuya_izayoi_headband")
 
+    def _hair_braided_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for braided hair
+        """
+        _moni_chr.wear_acs(store.mas_acs_rin_bows_back)
+        _moni_chr.wear_acs(store.mas_acs_rin_bows_front)
+
+    def _hair_braided_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for braided hair
+        """
+        _moni_chr.remove_acs(store.mas_acs_rin_bows_front)
+        _moni_chr.remove_acs(store.mas_acs_rin_bows_back)
 
     ######### CLOTHES [SPR020] ###########
     # available kwargs:
@@ -312,105 +320,17 @@ init -2 python in mas_sprites:
         """
         Entry programming point for rin clothes
         """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2=None,
-            p3="3",
-            p4=None,
-            p5=None,
-            p6=None
-        )
-        wearing_promise_ring = _moni_chr.is_wearing_acs(
-            store.mas_acs_promisering
-        )
+        outfit_mode = kwargs.get("outfit_mode")
 
-        # hide hair down select
-#        store.mas_lockEVL("monika_hair_select", "EVE")
-
-        # hide hairdown greeting
-#        store.mas_lockEVL("greeting_hairdown", "GRE")
-
-        #### ribbon stuff
-        # wearing rin clothes means we wear custom blank ribbon if we are
-        # wearing a ribbon
-        _acs_ribbon_save_and_remove(_moni_chr)
-        _acs_ribbon_like_save_and_remove(_moni_chr)
-#        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-#        if (
-#                prev_ribbon is not None
-#                and prev_ribbon != store.mas_acs_ribbon_blank
-#            ):
-#            temp_storage["hair.ribbon"] = prev_ribbon
-            #_moni_chr.wear_acs(store.mas_acs_ribbon_blank)
-#            _moni_chr.remove_acs(prev_ribbon)
-
-        # lock hair so we dont get ribbon issues
-        _moni_chr.lock_hair = True
-
-        # lock ribbon select
-#        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-        #### end ribbon stuff
-
-        #### hair acs
-        _acs_save_and_remove_exprop(
-            _moni_chr,
-            "left-hair-strand-eye-level",
-            "acs.left-hair-strand-eye-level",
-            True
-        )
-
-        #### end acs stuff
-
-        # remove ear rose
-        _moni_chr.remove_acs(store.mas_acs_ear_rose)
-
-        # lock selectors
-        _clothes_baked_entry(_moni_chr)
-
-        # re-add promise wring if it was worn
-        if wearing_promise_ring:
-            _moni_chr.wear_acs(store.mas_acs_promisering)
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_braided)
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
         """
         Exit programming point for rin clothes
         """
-        rin_map = temp_storage.get("clothes.rin", None)
-        if rin_map is not None:
-            store.mas_acs_promisering.pose_map = rin_map
-
-        # unlock hair down greeting if not unlocked
-#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
-#            store.mase_unlockEVL("greeting_hairdown", "GRE")
-
-        # wear ribbon if in tempstorage
-        _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
-
-        # NOTE: disregard below
-        # wear previous ribbon if we are wearing blank ribbon
-        # NOTE: we are gauanteed to be wearing blank ribbon when wearing
-        # these clothes. Regardless, we should always restore to what we
-        # have previously saved.
-#        _acs_wear_if_wearing_type(
-#            _moni_chr,
-#            "ribbon",
-#            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-#        )
-
-        # unlock hair
-        _moni_chr.lock_hair = False
-
-        # wear hairclips we were previously wearing (in session only)
-        # NOTE: we assume this list only contains hairclips. This is NOT true.
-        # TODO: add additional topic unlocks as needed.
-        _acs_wear_if_in_tempstorage(
-            _moni_chr,
-            "acs.left-hair-strand-eye-level"
-        )
+        pass
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -830,6 +750,34 @@ init -1 python:
         "hair",
         select_dlg=[
             "Feels nice to let my hair down...",
+            "Looks cute, don't you think?"
+        ]
+    )
+
+    ### BRAIDED
+    ## braided
+    # Hair is braided on the left/right. Auto adds bows
+    # Thanks Briar/SS
+    mas_hair_braided = MASHair(
+        "braided",
+        "braided",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        ex_props={
+            store.mas_sprites.EXP_H_NT: True
+        },
+        entry_pp=store.mas_sprites._hair_braided_entry,
+        exit_pp=store.mas_sprites._hair_braided_exit
+    )
+    store.mas_sprites.init_hair(mas_hair_braided)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_braided,
+        "Braided",
+        "braided",
+        "hair",
+        select_dlg=[
             "Looks cute, don't you think?"
         ]
     )
@@ -1484,6 +1432,33 @@ init -1 python:
         ]
     )
 
+    mas_acs_rin_bows_front = MASAccessory(
+        "rin_bows_front",
+        "rin_bows_front",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon-front",
+        mux_type=["ribbon-front"],
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_bows_front)
+
+    mas_acs_rin_bows_back = MASAccessory(
+        "rin_bows_back",
+        "rin_bows_back",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon-back",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_bows_back)
 
     ### Holly Hairclip
     ## holly_hairclip
