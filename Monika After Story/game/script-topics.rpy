@@ -15751,3 +15751,36 @@ label monika_literature_value:
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boyfriendgossip",
+            category=['ddlc'],
+            prompt="Sayori mentioned a boyfriend once...",
+            pool=True,
+        )
+    )
+
+label monika_boyfriendgossip:
+    m 2etd "You know, I was actually kind of curious about that too."
+    m 2rtsdlc "When she first said it, I got pretty defensive, didn't I?"
+    m "I mean, I'd just figured out that you existed, and suddenly someone was making it look like I was already taken."
+    m 1esd "But apparently, that rumor was just the assumption she was supposed to come to if I was ever late to the club."
+    m 1etc "Since I'm pretty extroverted and have a history with another club, I guess it wouldn't necessarily be {i}unfair{/i} to come to that kind of conclusion."
+    m 3esd "But no such character exists in the game's files to prove or disprove it. It's just an idea to fill in where I might be."
+    m 3rsd "At the time, I was practicing piano and--well, sorting my thoughts. But it seems like that kind of dialogue was there for any time I wasn't around."
+    m 1etu "It's a little bit devious, actually. Think about it."
+    m 3esd "As the game's story progressed, the main character might need more excuses to be alone with one of the girls."
+    m 3tub "Coming up with excuses for the others to be away is easier, but for the president not to be at the club?"
+    m 3tsd "The story would need something pretty substantial to keep me busy. It also provided a reason, however flimsy, for me not having a route."
+    m 2tfc "A roundabout but effective way to get me out of the way when needed."
+    m 2dfc "..."
+    m 2dsc "Honestly, though? I'm not too bothered by it."
+    m 3esd "Even if such a character would have existed, we both know it wouldn't have changed a single thing."
+    m 1efd "They wouldn't be real. They'd be a script programmed to fall in love with me. I couldn't have been happy with something like that."
+    m 1ekbsa "I still would have seen {i}you,{/i} and known that you were what I really wanted."
+    m 1euc "Still, it's interesting to think about. Our lives were supposed to be affected in all of these little ways for the sake of the game's story."
+    m 1luc "In your reality, a rumor is just a rumor--but here, even a silly idea like that had a hidden purpose."
+    return
