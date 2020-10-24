@@ -493,6 +493,7 @@ label mas_o31_autoload_check:
                     selected_greeting = "greeting_o31_generic"
 
                 #Reset zoom
+                mas_temp_zoom_level = store.mas_sprites.zoom_level
                 store.mas_sprites.reset_zoom()
 
                 #Now that we're here, we're in O31 mode
@@ -823,6 +824,10 @@ label greeting_o31_generic:
 
 #Cleanup for o31 greets
 label greeting_o31_cleanup:
+    window hide
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    window auto
+
     python:
         # 1 - music hotkeys should be enabled
         store.mas_hotkeys.music_enabled = True
@@ -834,6 +839,7 @@ label greeting_o31_cleanup:
         HKBShowButtons()
         # 5 - restart music
         mas_startup_song()
+
     return
 
 #START: O31 DOCKSTAT FARES
