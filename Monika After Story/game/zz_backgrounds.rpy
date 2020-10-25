@@ -2366,7 +2366,7 @@ init -10 python:
                     self,
                     store.mas_utils.sys.exc_info()
                 )
-                
+
                 # reset the manager to defualt indexes. Next time progress
                 # is called will hopefully update without error
                 self._flt_man.reset_indexes()
@@ -2385,16 +2385,16 @@ init -10 python:
                 return new_flt
 
             # if we had an issue with filter progression OR if we didn't get
-            # a filter back, we'll return a fallback of the first filter 
+            # a filter back, we'll return a fallback of the first filter
             # available in the filter manager. If that doesn't work,
-            # then its forever daytime (FLT_DAY) 
+            # then its forever daytime (FLT_DAY)
 
             flts = self._flt_man.filters()
             if len(flts) > 0:
                 new_flt = flts[0]
                 if new_flt is not None:
                     return new_flt
-            
+
             return store.mas_sprites.FLT_DAY # should exist for every sprite
 
         def update(self, curr_time=None):
@@ -2602,7 +2602,7 @@ init -20 python in mas_background:
             # could not log, just abort here
             return
 
-        # otherwise log output 
+        # otherwise log output
         bg_log.raw_write = True
 
         # NOTE: version should already be written out if this is runtime

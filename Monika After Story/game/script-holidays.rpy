@@ -402,6 +402,32 @@ init -10 python:
 
         persistent._mas_o31_costumes_worn[clothes_name] = year
 
+    def mas_o31Cleanup():
+        """
+        Cleanup function for o31
+        """
+        #NOTE: Since O31 is costumes, we always reset clothes + hair
+        if monika_chr.is_wearing_clothes_with_exprop("costume"):
+            monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
+            monika_chr.reset_hair()
+
+        #Reset o31_mode flag
+        persistent._mas_o31_in_o31_mode = False
+
+        #Unlock BG Sel if necessary
+        mas_checkBackgroundChangeDelegate()
+
+        #Hide visuals
+        mas_o31HideVisuals()
+
+        #unlock hairdown greet if we don't have hairdown unlocked
+        hair = store.mas_selspr.get_sel_hair(mas_hair_down)
+        if hair is not None and not hair.unlocked:
+            mas_unlockEVL("greeting_hairdown", "GRE")
+
+        #Lock the event clothes selector
+        mas_lockEVL("monika_event_clothes_select", "EVE")
+
 init -11 python in mas_o31_event:
     import store
     import datetime
@@ -512,21 +538,7 @@ label mas_o31_autoload_check:
 
         #It's not O31 anymore or we hit dis. It's time to reset
         elif not mas_isO31() or mas_isMoniDis(lower=True):
-            #NOTE: Since O31 is costumes, we always reset clothes + hair
-            if monika_chr.is_wearing_clothes_with_exprop("costume"):
-                monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
-                monika_chr.reset_hair()
-
-            #Reset o31_mode flag
-            persistent._mas_o31_in_o31_mode = False
-
-            #unlock hairdown greet if we don't have hairdown unlocked
-            hair = store.mas_selspr.get_sel_hair(mas_hair_down)
-            if hair is not None and not hair.unlocked:
-                mas_unlockEVL("greeting_hairdown", "GRE")
-
-            #Lock the event clothes selector
-            mas_lockEVL("monika_event_clothes_select", "EVE")
+            mas_o31Cleanup()
 
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
@@ -568,6 +580,32 @@ image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
 transform mas_o31_cg_scroll:
     xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520
     ease 20.0 yoffset 0.0
+
+### o31 samesesh cleanup
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_o31_cleanup",
+            conditional="persistent._mas_o31_in_o31_mode",
+            start_date=datetime.datetime.combine(mas_o31 + datetime.timedelta(days=1), datetime.time(12)),
+            action=EV_ACT_QUEUE,
+            rules={"no_unlock": None},
+            years=[]
+        )
+    )
+
+
+label mas_o31_cleanup:
+    m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
+    call mas_transition_to_emptydesk
+    pause 4.0
+    $ mas_o31Cleanup()
+    with dissolve
+    pause 1.0
+    call mas_transition_from_emptydesk("monika 1hua")
+    m 3hua "All done~"
+    return
 
 ### o31 greetings
 init 5 python:
@@ -656,8 +694,10 @@ init 5 python:
     )
 
 label greeting_o31_rin:
-    $ title_cased_hes = hes.capitalize()
-    $ mas_selspr.unlock_hair(mas_hair_braided)
+    python:
+        title_cased_hes = hes.capitalize()
+        mas_selspr.unlock_hair(mas_hair_braided)
+        mas_sprites.zoom_out()
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
@@ -829,15 +869,15 @@ label greeting_o31_cleanup:
     window auto
 
     python:
-        #1 - music hotkeys should be enabled
+        # 1 - music hotkeys should be enabled
         store.mas_hotkeys.music_enabled = True
-        #2 - calendarovrelay enabled
+        # 2 - calendarovrelay enabled
         mas_calDropOverlayShield()
-        #3 - set the keymaps
+        # 3 - set the keymaps
         set_keymaps()
-        #4 - hotkey buttons should be shown
+        # 4 - hotkey buttons should be shown
         HKBShowButtons()
-        #5 - restart music
+        # 5 - restart music
         mas_startup_song()
     return
 
