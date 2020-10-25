@@ -623,16 +623,16 @@ label greeting_o31_marisa:
 
     #Post scroll dialogue
     m 1hua "Well..."
-    m 1wub "What do you think?"
-    m 1wua "Suits me pretty well, right?"
+    m 1eub "What do you think?"
+    m 1tuu "Suits me pretty well, right?"
     m 1eua "It took me quite a while to make this costume, you know."
     m 3hksdlb "Getting the right measurements, making sure nothing was too tight or loose, that sort of stuff."
-    m 3eksdla "Especially the hat!"
+    m 3eksdla "...Especially the hat!"
     m 1dkc "The ribbon wouldn't stay still at all..."
     m 1rksdla "Luckily I got that sorted out."
     m 3hua "I'd say I did a good job myself."
     m 3eka "I'm wondering if you'll be able to see what's different today."
-    m "Besides my costume of course~"
+    m 3tub "Besides my costume of course~"
     m 1hua "But anyway..."
 
     if store.mas_o31_event.cg_decoded:
@@ -701,11 +701,10 @@ label greeting_o31_rin:
     m 3etc "Honestly, I don't even know who this is supposed to be."
     m 3etd "I just found it in the closet with a note attached that had the word 'Rin', a drawing of a girl pushing a wheelbarrow, and some blue floaty thingies."
     m 1euc "Along with instructions on how to style your hair to go along with this outfit."
-    m "Judging by these cat ears, I'm guessing this character is a catgirl."
-    m 1dtc "But why would she push a wheelbarrow around?"
-    pause 1.0
-    m 1hksdlb "Anyway, it was a pain getting my hair done."
-    m 1eub "So I hope you like the costume!"
+    m 3rtc "Judging by these cat ears, I'm guessing this character is a catgirl."
+    m 1dtc "...But why would she push a wheelbarrow around?"
+    m 1hksdlb "Anyway, it was a pain getting my hair done...{w=0.2}{nw}"
+    extend 1eub "so I hope you like the costume!"
 
     call greeting_o31_cleanup
     return
