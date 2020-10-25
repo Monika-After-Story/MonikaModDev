@@ -420,6 +420,9 @@ init -10 python:
         #Hide visuals
         mas_o31HideVisuals()
 
+        #rmall for safety
+        mas_rmallEVL("mas_o31_cleanup")
+
         #unlock hairdown greet if we don't have hairdown unlocked
         hair = store.mas_selspr.get_sel_hair(mas_hair_down)
         if hair is not None and not hair.unlocked:
@@ -1170,7 +1173,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
 
     #Hide vis
     $ mas_o31HideVisuals()
-    $ mas_rmallEVL("mas_o31_cleanup", True)
+    $ mas_rmallEVL("mas_o31_cleanup")
 
     m 3hua "There we go!"
     return
