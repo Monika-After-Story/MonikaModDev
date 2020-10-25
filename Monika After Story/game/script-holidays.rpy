@@ -731,15 +731,14 @@ label greeting_o31_rin:
         m "What do {i}nya{/i} think?"
 
         scene black
-        pause 2.0
+        pause 1.0
         call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
         call mas_transition_from_emptydesk("monika 1eua")
-
-    m 1hub "Hi, [player]!"
-    m 3hub "Do you like my costume?"
+        m 1hub "Hi, [player]!"
+        m 3hub "Do you like my costume?"
 
     # regular dialogue
     m 3etc "Honestly, I don't even know who this is supposed to be."
