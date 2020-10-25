@@ -1,5 +1,5 @@
 define persistent.demo = False
-A
+
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
