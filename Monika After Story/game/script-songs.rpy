@@ -1668,6 +1668,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
 
 init 5 python:
@@ -1757,4 +1758,5 @@ label mas_monika_plays_or(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return

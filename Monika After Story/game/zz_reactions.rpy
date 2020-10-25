@@ -2858,3 +2858,27 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "mocca_bun_blackandwhitestripedpullover")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh, a new shirt!"
+    m 3hub "It looks amazing, [player]!"
+    m 3eua "One second, let me just put it on.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    call mas_clothes_change(sprite_object)
+
+    m 2eua "Well, what do you think?"
+    m 7hua "I think it looks pretty cute on me.{w=0.2} {nw}"
+    extend 3rubsa "I'll definitely be saving this outfit for a date~"
+    m 1hub "Thanks again, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
