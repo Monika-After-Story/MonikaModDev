@@ -324,13 +324,14 @@ init -2 python in mas_sprites:
 
         if outfit_mode:
             _moni_chr.change_hair(store.mas_hair_braided)
+            _moni_chr.wear_acs(store.mas_acs_rin_ears)
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
         """
         Exit programming point for rin clothes
         """
-        pass
+        _moni_chr.remove_acs(store.mas_acs_rin_ears)
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -1432,6 +1433,10 @@ init -1 python:
         ]
     )
 
+    ###Rin bows front
+    ##rin_bows_front
+    #Hair acs for rin's braided hairstyle (frontine layer)
+    #Thanks Briar/SS
     mas_acs_rin_bows_front = MASAccessory(
         "rin_bows_front",
         "rin_bows_front",
@@ -1442,10 +1447,15 @@ init -1 python:
         stay_on_start=True,
         acs_type="ribbon-front",
         mux_type=["ribbon-front"],
-        rec_layer=MASMonika.AFH_ACS
+        rec_layer=MASMonika.AFH_ACS,
+        priority=20
     )
     store.mas_sprites.init_acs(mas_acs_rin_bows_front)
 
+    ###Rin bows back
+    ##rin_bows_back
+    #Hair acs for rin's braided hairstyle (back layer)
+    #Thanks Briar/SS
     mas_acs_rin_bows_back = MASAccessory(
         "rin_bows_back",
         "rin_bows_back",
@@ -1459,6 +1469,24 @@ init -1 python:
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_rin_bows_back)
+
+    ###Rin ears
+    ##rin_ears
+    #Ears to wear in rin cosplay
+    #Thanks Spikeran1
+    mas_acs_rin_ears = MASAccessory(
+        "rin_ears",
+        "rin_ears",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="headband",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=5
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_ears)
 
     ### Holly Hairclip
     ## holly_hairclip
