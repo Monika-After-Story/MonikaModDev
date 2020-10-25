@@ -589,6 +589,7 @@ init 5 python:
             eventlabel="mas_o31_cleanup",
             conditional="persistent._mas_o31_in_o31_mode",
             start_date=datetime.datetime.combine(mas_o31 + datetime.timedelta(days=1), datetime.time(12)),
+            end_date=mas_o31 + datetime.timedelta(weeks=1),
             action=EV_ACT_QUEUE,
             rules={"no_unlock": None},
             years=[]
@@ -1169,6 +1170,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
 
     #Hide vis
     $ mas_o31HideVisuals()
+    $ mas_rmallEVL("mas_o31_cleanup", True)
 
     m 3hua "There we go!"
     return
