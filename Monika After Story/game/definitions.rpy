@@ -1,4 +1,5 @@
 define persistent.demo = False
+A
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
@@ -6189,9 +6190,6 @@ define audio.fall = "sfx/fall.ogg"
 # custom audio
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
-
-#Zoom level reset const
-define mas_temp_zoom_level = 1.0
 
 # Backgrounds
 image black = "#000000"
