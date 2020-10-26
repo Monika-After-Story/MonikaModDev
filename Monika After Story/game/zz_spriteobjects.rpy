@@ -767,7 +767,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_NH: True
+            store.mas_sprites.EXP_H_TB: True
         },
         entry_pp=store.mas_sprites._hair_braided_entry,
         exit_pp=store.mas_sprites._hair_braided_exit
@@ -1416,7 +1416,7 @@ init -1 python:
         # muxtype handled by defaults
         ex_props={
             store.mas_sprites.EXP_A_RQHP: store.mas_sprites.EXP_H_NT,
-            store.mas_sprites.EXP_A_EXCLHP: store.mas_sprites.EXP_H_NH
+            store.mas_sprites.EXP_A_EXCLHP: store.mas_sprites.EXP_H_TB
         },
         rec_layer=MASMonika.AFH_ACS
     )

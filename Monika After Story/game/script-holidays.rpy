@@ -700,7 +700,9 @@ init 5 python:
 label greeting_o31_rin:
     python:
         title_cased_hes = hes.capitalize()
-        mas_selspr.unlock_hair(mas_hair_braided)
+        #TODO: Unlock this hairstyle once we clean it up such that it doesn't require bows
+        #Will need update script
+        #mas_selspr.unlock_hair(mas_hair_braided)
         mas_sprites.zoom_out()
 
     # ASSUME vignette

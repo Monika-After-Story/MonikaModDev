@@ -302,9 +302,9 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a hair style has no tails. By default we assume ponytail.
 
-    EXP_H_NH = "no-hat"
+    EXP_H_TB = "twinbraid"
     #v: ignored
-    #marks the hair as not capable of having a hat
+    #marks the hair as a twinbraid hairstyle
 
     # ---- CLOTHES ----
 
