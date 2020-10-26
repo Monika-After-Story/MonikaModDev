@@ -294,6 +294,8 @@ init -2 python in mas_sprites:
         """
         _moni_chr.remove_acs(store.mas_acs_rin_bows_front)
         _moni_chr.remove_acs(store.mas_acs_rin_bows_back)
+        #Always remove rin ears
+        _moni_chr.remove_acs(store.mas_acs_rin_ears)
 
     ######### CLOTHES [SPR020] ###########
     # available kwargs:
