@@ -356,6 +356,9 @@ label quit:
         # remove special images
         store.mas_island_event.removeImages()
 
+        #remove o31 cgs
+        store.mas_o31_event.removeImages()
+
         # delayed action stuff
         mas_runDelayedActions(MAS_FC_END)
         store.mas_delact.saveDelayedActionMap()
