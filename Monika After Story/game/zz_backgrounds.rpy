@@ -2685,6 +2685,7 @@ init 800 python:
 
         if new_background != mas_current_background:
             mas_current_background.exit(new_background, **kwargs)
+            new_background.update() # NOTE: do not put this in setBackground.
             mas_setBackground(new_background, **kwargs)
 
         store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
