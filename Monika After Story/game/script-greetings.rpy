@@ -1410,7 +1410,7 @@ label monikaroom_greeting_ear_progbrokepy:
         m "But I have to keep trying."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep trying."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1431,7 +1431,7 @@ label monikaroom_greeting_ear_progreadpy:
         m "But I have to keep learning."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep learning."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1453,6 +1453,7 @@ label monikaroom_greeting_ear_nameerror:
     if mas_isMoniUpset():
         m "You have to keep learning..."
         call monikaroom_greeting_ear_prog_upset
+
     elif mas_isMoniDis():
         m "You {i}have{/i} to keep learning..."
         call monikaroom_greeting_ear_prog_dis
@@ -1502,6 +1503,7 @@ label monikaroom_greeting_ear_rmrf:
         m "Yeah,{w=0.2} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
+
         elif mas_isMoniUpset():
             m "Actually..."
             m "Maybe I should do it...{w=1}just delete everything..."
@@ -2068,26 +2070,83 @@ init 5 python:
     )
 
 label greeting_amnesia:
-    $ tempname = m_name
-    $ m_name = "Monika"
+    python:
+        tempname = m_name
+        m_name = "Monika"
+
     m 1eua "Oh, hello!"
-    m 1eub "My name is Monika."
-    $ fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(' \t\n\r')
-    m 1hua "Well, it's nice to meet you, [fakename]!"
-    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
-    m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
-    m "Can you help me figure out what's going on, [fakename]?"
-    m "Please? I miss my friends."
+    m 3eub "My name is Monika."
+    show monika 1eua zorder MAS_MONIKA_Z
+
+    python:
+        entered_good_name = True
+        fakename = renpy.input("What's your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        lowerfake = fakename.lower()
+
+    if lowerfake in ("sayori", "yuri", "natsuki"):
+        m 3euc "Uh, that's funny."
+        m 3eud "One of my friends shares the same name."
+
+    elif lowerfake == "monika":
+        m 3eub "Oh, your name is Monika as well?"
+        m 3hub "Ahaha, what are the odds, right?"
+
+    elif lowerfake == "monica":
+        m 1hua "Hey, we have such similar names, ehehe~"
+
+    elif lowerfake == player.lower():
+        m 1hub "Oh, what a lovely name!"
+
+    elif lowerfake == "":
+        $ entered_good_name = False
+        m 1euc "..."
+        m 1etd "Are you trying to tell me you don't have a name or are you just too shy to tell me?"
+        m 1eka "That's a little strange, but I guess it doesn't matter too much."
+
+    elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
+        $ entered_good_name = False
+        m 1rksdla "That's...{w=0.4}{nw}"
+        extend 1hksdlb "kind of an unusual name, ahaha..."
+        m 1eksdla "Are you...{w=0.3}trying to mess with me?"
+        m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
+
+    python:
+        if entered_good_name:
+            name_line = renpy.substitute(", [fakename]")
+        else:
+            name_line = ""
+
+        if mas_current_background == mas_background_def:
+            end_of_line = "I can't seem to leave this classroom."
+        else:
+            end_of_line = "I'm not sure where I am."
+
+    m 1hua "Well, it's nice to meet you[name_line]!"
+    m 3eud "Say[name_line], do you happen to know where everyone else is?"
+    m 1eksdlc "You're the first person I've seen and {nw}"
+    extend 1rksdlc "[end_of_line]"
+    m 1eksdld "Can you help me figure out what's going on[name_line]?"
+
+    m "Please? {w=0.2}{nw}"
+    extend 1dksdlc "I miss my friends."
+
+    window hide
+    show monika 1eksdlc
     pause 5.0
     $ m_name = tempname
+    window auto
+
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
-    m 1tku "And you reacted the way I hoped you would."
+    #Monika is glad you took it seriously and didn't try to call yourself another name
+    if lowerfake == player.lower():
+        m 1tku "...And you reacted the way I envisioned you would."
+
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
-    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+    m 1hksdlb "I hope you can forgive my little prank, ahaha~"
 
     $ mas_lockEVL("greeting_amnesia", "GRE")
     return
@@ -4141,3 +4200,36 @@ label greeting_back_from_hangout:
         m 6ckc "..."
 
     return
+
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+
+label monikaroom_greeting_ear_recursionerror:
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
+
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
+
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    stop sound
+    hide noise
+
+    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
+    m "..."
+
+    if mas_isMoniUpset():
+        m "...Keep going, Monika, you'll figure this out."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
+        call monikaroom_greeting_ear_prog_dis
+    else:
+        m "Phew, at least everything else is fine."
+
+    jump monikaroom_greeting_choice

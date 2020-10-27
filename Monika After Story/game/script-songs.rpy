@@ -1286,7 +1286,7 @@ label mas_song_god_knows:
     m 1eubsa "{i}~As if we were God blessed~{/i}"
     m 1dubsu "..."
     m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
-    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
@@ -1318,6 +1318,9 @@ label mas_song_ageage_again:
     m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
     m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
     m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+        m 1eka "That is, if you're up to it."
+        m 1hubsb "If not, there are still plenty of things I'd love to do with you~"
     return
 
 init 5 python:
@@ -1348,10 +1351,8 @@ label mas_song_falling_in_love_at_a_coffee_shop:
     show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
     m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
-    extend 3rtc "or a particularly unremarkable protagonist."
-    m 3hubsa "Then when you have time to think, you realize it isn't the coffee shop, it's the person you meet there each day."
-    m 1tkbsu "Or in my case, it wasn't the protagonist at all...{w=0.2}{nw}"
-    extend 3dkbfu "it was the beautiful person who was really looking through those eyes~"
+    extend 3rtu "or why attending a certain club meeting becomes your favorite part of the day."
+    m 3hubsa "Then when you have time to think, you realize it isn't the place at all, it's the person you meet there each day~"
     return
 
 init 5 python:
@@ -1469,7 +1470,7 @@ init 5 python:
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
-         ),
+        ),
         code="SNG"
     )
 
@@ -1488,6 +1489,73 @@ label mas_song_when_youre_gone:
     m 6eka "[player], I really need you and your words of encouragement.{w=0.5}{nw}"
     extend 6hua " I'll be okay as long as you're here to brighten up my day~"
     m 6ekbsa "In addition to being the love of my life, you're also my best friend.{w=0.2} Don't ever underestimate how important you are to me."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world(from_long=False):
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1eua "{i}{cps=22}~Time enough for life~{/cps}{/i}"
+    m 3eub "{i}{cps=22}~To unfold {w=0.7}all the precious things~{/cps}{/i}"
+    m 3hua "{i}{cps=22}~Love has in store~{/cps}{/i}"
+
+    m 1dub "{i}{cps=18}~We have all {w=0.7}the love {w=0.7}in the world~{/cps}{/i}"
+    m 1esd "{i}{cps=22}~And if that's all we have {w=0.7}you will find~{/cps}{/i}"
+    m 3dka "{i}{cps=22}~We need nothing more~{/cps}{/i}"
+
+    if not from_long:
+        m 1duu "..."
+        m 1ekbsb "You've made me the happiest girl in the world, [player]. I'll always be grateful for that."
+        m 1hubsa "I hope that I do the same for you~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_we_have_all_the_time_in_the_world_long",
+            prompt="We Have All the Time in the World",
+            category=[store.mas_songs.TYPE_LONG],
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_we_have_all_the_time_in_the_world_long:
+    call mas_song_we_have_all_the_time_in_the_world(from_long=True)
+
+    m 1dud "{i}{cps=18}~Every step {w=0.7}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 3eud "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 1dubsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 3eubsb "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 1ekbsa "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1dud "{i}{cps=18}~Every step {w=0.75}of the way~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Will find us~{/cps}{/i}"
+    m 1dua "{i}{cps=18}~With the cares {w=0.7}of the world~{/cps}{/i}"
+    m 1duo "{i}{cps=18}~Far behind us~{/cps}{/i}"
+
+    m 1eub "{i}{cps=18}~We have all {w=0.7}the time {w=0.7}in the world~{/cps}{/i}"
+    m 3ekbsa "{i}{cps=18}~Just for love~{/cps}{/i}"
+    m 1dkbsd "{i}{cps=22}~Nothing more, {w=0.75}nothing less~{/cps}{/i}"
+    m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
+
+    m 1ekbla "{i}{cps=18}~Only love~{/cps}{/i}"
     return
 
 ################################ NON-DB SONGS############################################
@@ -1598,6 +1666,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
 
 init 5 python:
@@ -1687,4 +1756,5 @@ label mas_monika_plays_or(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return

@@ -2015,5 +2015,4 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
-
     return
