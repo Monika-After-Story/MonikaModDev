@@ -5486,7 +5486,7 @@ label monika_cupcake:
     m 3tku "Natsuki's cupcakes."
     m 1tsb "Man, the way she baked them was amazing."
     m 1hub "Plus they looked really cute!"
-    m 1esa "I'm not really much of a sweet tooth myself, but...{w=0.3}"
+    m 1esa "I'm not really much of a sweet tooth myself, but...{w=0.3}{nw}"
     extend 1eua "those cupcakes were the definition of sweetness."
     m 3hub "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"

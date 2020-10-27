@@ -127,7 +127,7 @@ label monika_short_stories_menu:
             else:
                 return_label = "mas_story_unlock_random"
 
-            stories_menu_items[:0] = [("A new story", return_label, True, False)]
+            stories_menu_items.insert(0, ("A new story", return_label, True, False))
 
         # build switch button
         if story_type == mas_stories.TYPE_SCARY:
