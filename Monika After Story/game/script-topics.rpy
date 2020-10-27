@@ -546,7 +546,8 @@ label mas_bad_derand_topic:
 
             "It's alright.":
                 m 2eka "Thank you, [player]."
-                m "I appreciate that you're still willing to hear me out."
+                $ _stil_ = " " if mas_isMoniNormal(higher=True) else " still "
+                m "I appreciate that you're[_stil_]willing to hear me out."
 
     else:
         #No ask here. You're this low, you probably did it on purpose
@@ -1519,7 +1520,7 @@ label monika_tea:
         m 2eka "It's kind of funny how Yuri took her tea so seriously."
 
     else:
-        m 2eka "You know, It's kind of funny how Yuri took her tea so seriously."
+        m 2eka "You know, it's kind of funny how Yuri took her tea so seriously."
 
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
@@ -5483,10 +5484,10 @@ init 5 python:
 label monika_cupcake:
     m 1eua "You know what I could really go for right now?"
     m 3tku "Natsuki's cupcakes."
-    m 1tsb "Man, the way she bakes them is amazing."
-    m 1hub "Plus they look really cute!"
-    m 1esa "I'm not really much of a sweet tooth myself, but..."
-    m 1eua "Those cupcakes are the definition of sweetness."
+    m 1tsb "Man, the way she baked them was amazing."
+    m 1hub "Plus they looked really cute!"
+    m 1esa "I'm not really much of a sweet tooth myself, but...{w=0.3}{nw}"
+    extend 1eua "those cupcakes were the definition of sweetness."
     m 3hub "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
     m 3esd "Studies show that older women have a less sensitive palate than men."
@@ -5733,7 +5734,7 @@ label monika_vocaloid:
         and not persistent._mas_pm_added_custom_bgm
     ):
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
+        m 1eua "And if you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
     return "derandom"
@@ -6170,7 +6171,7 @@ label monika_science:
     m 1eua "Have you ever wondered if science never got accepted?"
     m "Humans can be really slow when it comes to accepting new ideas."
     m 1euc "Science was usually despised back then especially by the churches."
-    m 4esc "Giordano Bruno, famous for his theory that there are thousands of Suns, was killed by the Roman Church before he could prove his theory."
+    m 4esc "Giordano Bruno, famous for his theory that there are thousands of suns, was killed by the Roman Church before he could prove his theory."
     m 1ekc "They killed him because of an idea that challenged the old."
     m 1esc "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
     m 1eka "If technology didn't thrive the way it did, we would've never found each other."
@@ -6788,7 +6789,7 @@ label monika_daydream:
         m 6lktpc "..."
         m 6ektpd "Oh, sorry, I was just..."
         m 6dktdc "You know what, nevermind."
-    return
+    return "no_unlock"
 
 # init 5 python:
 #     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
@@ -6977,8 +6978,8 @@ label monika_dogs:
     m 1hub "Dogs are great! They're really good to have around."
     m 3eua "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 1hua "They're just so lovable, I really like them!"
-    m 1lksdla "I know Natsuki feels the same..."
-    m "She was always so embarrassed to like cute things. I wish she was more accepting of her own interests."
+    m 1lksdla "I know Natsuki felt the same..."
+    m "She was always so embarrassed to like cute things. I wish she'd felt more comfortable being herself."
     m 2lsc "But..."
     m 2lksdlc "I suppose her environment had a hand in that."
     m 2eka "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
@@ -6994,7 +6995,7 @@ label monika_cats:
     m 1eua "Despite looking so elegant, they always seem to end up in funny situations."
     m 1lksdla "It's no wonder they're so popular on the internet."
     m 3eua "Did you know the ancient Egyptians considered cats sacred?"
-    m 1eua "There was a Cat Goddess named Bastet that they worshipped. She was a protector of sorts."
+    m 1eua "There was a cat goddess named Bastet that they worshipped. She was a protector of sorts."
     m 1eub "Domesticated cats were held on a high pedestal since they were incredible hunters for small critters and vermin."
     m "Back then, you'd see them mostly associated with rich nobles and other higher classes in their society."
     m 1eua "It's amazing how far people would take their love with their pets."
@@ -7140,14 +7141,13 @@ label monika_soda:
     $ _history_list.pop()
     menu:
         m "Do you drink soda, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_drinks_soda = True
-
-            # TODO: product placement zevia soda as a healthy alternative
             m 4ekc "You know that soda is really bad for you, right?"
             m 2ekc "It has a lot of stuff that damages your body and overall health."
             m 2tkd "It can also corrode your teeth and give you cavities."
-            m "You might also think that diet soda is less damaging but it can be just as harmful to you."
+            m 2euc "You might also think that diet soda is less damaging, but it can be just as harmful to you."
             m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
             m 2eua "Why don't you try copying my healthy lifestyle?"
             m 1hua "That way, you can be more fit like me!"
@@ -7155,6 +7155,7 @@ label monika_soda:
             m 2ekc "I'd really hate it if you let go of your health, [player]."
             m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
             m "So cut down on the soda, alright [mas_get_player_nickname()]?"
+
         "No.":
             $ persistent._mas_pm_drinks_soda = False
             m 2eka "That's a relief to hear."
@@ -7162,7 +7163,7 @@ label monika_soda:
             m 3eub "Still, it's perfectly fine to have a small treat once in a while, you know?"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "Maybe someday we could both have some soda together."
-            m 5hua "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun on a hot day."
+            m 5hua "Sure, it might not be fancy, but it could really hit the spot on a hot day."
     return "derandom"
 
 init 5 python:
@@ -8941,7 +8942,7 @@ label monika_concerts:
     m 5eua "And if you were to take me,{w=1} then that would truly be a dream come true!"
     m 4eua "But if you're not that interested in concerts..."
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
-    m 1hua "That would be more than enough for me hehe~"
+    m 1hua "That would be more than enough for me, ehehe~"
     if (
         not renpy.seen_label("monika_add_custom_music_instruct")
         and not persistent._mas_pm_added_custom_bgm
@@ -9116,12 +9117,13 @@ label monika_attractiveness:
     m 3euc "At first I figured that it must be her metabolism keeping her from putting on weight."
     m 3esd "...But when I learned that our world isn't real, I came up with another theory."
     m 7euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
-    m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
-    extend 2rkc "from your perspective, we don't really have bodies like people in your world do. You can only see us as a set of images to represent our appearances and current emotion."
+    m 2esc "Sayori, Natsuki, Yuri, and even me..."
+    m 2rkc "From your perspective, we don't really have bodies like people in your world do. You can only see us as a set of images to represent our appearances and current emotion."
     m 2eud "...But from my point of view, I can also see my whole world in 3 dimensions, as if everything was real."
     m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
     m 2eud "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
-    m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
+    m 2dkc "It's...{w=0.3}weird to think about."
+    m 2eud "I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
     m 7ekc "But from your point of view, I don't. I just look like a consciousness who displays a corresponding picture depending on what I do or feel."
 
     #Just seen Monika in her uniform and nothing else
@@ -10108,7 +10110,8 @@ label monika_familygathering:
     m "Do you think they'd like me, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "Do you think they'd like me, [player]?{fast}"
+        m "Do you think they'd like me, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_fam_like_monika = True
             m 1eka "I'm glad you think so."
@@ -10477,7 +10480,7 @@ label monika_driving:
             m 1eub "Just imagine all the places we could go together..."
             m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
             m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
-            m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
+            m 7hksdlb "I mean...{w=0.3}I know you're smart, but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
 
             m 1eka "I hope you've never had to experience that, [player], have you?{nw}"
@@ -15969,7 +15972,7 @@ label monika_literature_value:
     m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
     m 3efc "Like, do they even know what they're talking about?"
     m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
-    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they are coming from."
+    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they're coming from."
     m 1eud "All of the comforts of our modern lifestyle are based on scientific discovery and innovation."
     m 3esc "...That and the millions of people manufacturing our everyday necessities, or running basic services like healthcare and stuff."
     m 3rtsdlc "So does not being associated with any of those things really make you some kind of burden on society?"
@@ -16032,7 +16035,7 @@ label monika_renewable_energy:
     m 3esd "Hydropower is flexible and cost efficient, but it can drastically impact the local ecosystem."
     m 3dkc "Countless habitats are disrupted and entire communities may even need to be relocated."
     m 1esd "Solar power and wind power are mostly emission-free, but they're heavily reliant on specific weather for consistency."
-    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for living near them."
+    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for those living near them."
     m 3rsc "Geothermal power is reliable and great for heating and cooling, but it's expensive, location-specific, and can even cause earthquakes."
     m 1rksdrb "Nuclear power is...{w=0.2}well, let's just say that it's complicated."
     m 3esd "The point is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation...{w=0.2}neither option is perfect."

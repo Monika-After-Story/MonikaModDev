@@ -470,7 +470,7 @@ label mas_o31_autoload_check:
             #TODO: Replace this with generic room deco framework for event deco
             store.mas_lockEVL("monika_change_background", "EVE")
             #force to spaceroom
-            mas_changeBackground(mas_background_def)
+            mas_changeBackground(mas_background_def, set_persistent=True)
 
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
@@ -6226,7 +6226,7 @@ init -1 python:
         Checks if the player has confirmed the party
         """
         #Must be within a week of the party (including party day)
-        if mas_monika_birthday - datetime.timedelta(days=7) <= today <= mas_monika_birthday:
+        if (mas_monika_birthday - datetime.timedelta(days=7)) <= today <= mas_monika_birthday:
             #If this is confirmed already, then we just return true, since confirmed
             if persistent._mas_bday_confirmed_party:
                 #We should also handle if the player confirmed the party pre-note

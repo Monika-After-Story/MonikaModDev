@@ -1193,7 +1193,8 @@ init 6 python:
         acs=mas_acs_mug,
         portable=True,
         split_list=[11],
-        late_entry_list=[10]
+        late_entry_list=[10],
+        max_re_serve=3
     )
 
     MASConsumable(
@@ -1205,7 +1206,8 @@ init 6 python:
         acs=mas_acs_hotchoc_mug,
         portable=True,
         split_list=[22],
-        late_entry_list=[19]
+        late_entry_list=[19],
+        max_re_serve=3
     )
 
 #START: Finished brewing/drinking evs
