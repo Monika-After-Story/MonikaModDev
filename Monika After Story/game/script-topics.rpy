@@ -16070,7 +16070,7 @@ label monika_piano_lessons:
         m 3eka "Remember? I told you when I first performed {i}Your Reality{/i} that I wasn't really good at piano. {w=0.2}{nw}"
         extend 3rkb "Like, at all."
     else:
-        m 3eka "I'm actually not (i)that{/i} good at playing piano, [mas_get_player_nickname()]."
+        m 3eka "I'm actually not {i}that{/i} good at playing piano, [mas_get_player_nickname()]."
         m 3rkd "Certainly not good enough to be teaching other people yet..."
 
     m 2eud "If you can believe it, I started to learn after my epiphany."
