@@ -4233,3 +4233,23 @@ label monikaroom_greeting_ear_recursionerror:
         m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_dutch",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_dutch:
+    m 1hua "Hallo daar [player], hoe gaat het met jou vandaag?"
+    m 3hublb "Ehehe~ I just started practicing some Dutch. {w=0.2}Let's see..."
+    m 3dub "O [player] het is ook weer een mooie dag vandaag nu jij er bent. {w=0.2}{nw}"
+    extend 1ekbla "It's a little difficult to pronounce, but I think I got it right."
+    m 4hub "I asked how you're doing today, and said that it's such a beautiful day now that you're here."
+    m 1hub "So, why don't we enjoy this beautiful day together?"
+    return
