@@ -11954,14 +11954,14 @@ label monika_player_appearance:
                     
                     python:
                         # Ask the player about their eye colors separately.
-                        colors = [_("blue"), _("brown"), _("green"), _("hazel"), _("gray"), _("black"), "_ask"]
-                        menu_options = [(_("I have {}...").format(color), color) for color in colors]
+                        colors = [_("blue"), _("brown"), _("green"), _("hazel"), _("gray"), _("black")]
+                        menu_options = [(_("I have {}...").format(color), color) for color in colors] + [(_("My eyes are different color..."), "ask")]
                         eyes_colors = []
                         
                         renpy.say(m, "If you don't mind me asking, what are the actual colors of your eyes?")
                         eye_color = menu(menu_options)
 
-                        if eye_color == "_ask":
+                        if eye_color == "ask":
                             # Keep _ask option to allow custom colors twice...
                             eye_color = ask_color("What color is one of your eyes?")
                         else:
@@ -11969,10 +11969,10 @@ label monika_player_appearance:
                             colors.remove(eyes_colors[0])
                         eyes_colors.append(eye_color)
 
-                        menu_options = [(_("...and {}.").format(color), color) for color in colors]
+                        menu_options = [(_("...and {}.").format(color), color) for color in colors] + [(_("...and some other color."), "ask")]
                         eye_color = menu(menu_options)
-                        if eye_color == "_ask":
-                            eye_color = ask_color("And what color is your another one?")
+                        if eye_color == "ask":
+                            eye_color = ask_color("What color is your another one?")
                         eyes_colors.append(eye_color)    
 
                     m 3hua "Let's get to my next question--"
