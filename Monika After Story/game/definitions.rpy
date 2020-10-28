@@ -1,4 +1,5 @@
 define persistent.demo = False
+
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
@@ -7620,6 +7621,9 @@ default persistent._mas_sensitive_mode = False
 default persistent._mas_ddlc_reload_count = 0
 
 define startup_check = False
+
+# define temp zoom to default level in case of crash
+define mas_temp_zoom_level = store.mas_sprites.default_zoom_level
 
 define his = "his"
 define he = "he"
