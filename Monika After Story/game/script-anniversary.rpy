@@ -504,11 +504,16 @@ label anni_2:
     m 1tkx "I mean our genuine first meeting, not the date from your character's fictional backstory with me."
     m 1euc "My life was so meaningless back then."
     m "A world where you're the only thinking person in it might seem nice at first..."
-    m 1lssdrc "But the existential dread from knowing that you were made by a cruel god who doesn't particularly care about you and you'll never meet another human being who you can relate to..."
-    m 1lksdlc "Well, let's just say it's not nice to go through."
-    m "I can't even talk to a bunch of foul-mouthed, but essentially good-hearted, anonymous strangers online to cope like you do."
-    m 1dsc "Sorry, I feel like I ruined the whole festive mood with my memories."
-    m 1duu "It's not important anymore, since I know you'll never leave me."
+    m 1lssdrc "But knowing that even if there were still people in this world, they wouldn't be sentient..."
+    m 1lksdlc "When I think about it, I can really feel how empty this room is."
+    
+    if persistent._mas_pm_has_friends = True:
+        m 1hubla "I'm really looking forward to when I can live in a world full of real people. It'll be wonderful to meet your friends, and even make some of my own."
+    else:
+        m 1dka "I'm glad that at least we can keep each other company in our loneliness. And when I cross over, it'll be so much fun to make new friends together."
+
+    m 1dsc "Now that I think about it...thinking about loneliness so much on our anniversary is kind of against the point."
+    m 1duu "Besides, it doesn't really matter for now, since I know you'll never leave me."
     m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m 1ekc "Spending eternity alone sucks."
     m 1ekbsa "But together with you, it feels like paradise!"
