@@ -15781,14 +15781,7 @@ label monika_impermanence:
     m 1eud "Concepts like impermanence{w=0.3},{nw}"
     extend 1ekc " nihilism{w=0.3},{nw}"
     extend 1rkd " depression."
-
-    if mas_isMoniAff(higher=True):
-        m 3eksdla "I'm not going through anything like that myself, of course."
-        m 1tsa "Courtesy of a certain someone."
-    else:
-        m 1wud "Ah-{w=0.2}{nw}"
-        extend 1eub " I don't mean to worry you, I'm not going through it myself, or anything like that."
-
+    extend 1eub " I don't mean to worry you, I'm not suffering from depression myself, or anything like that."
     m 1eua "It's just that thinking about these subjects is...{w=0.5}{nw}"
     extend 3eub "{i}fascinating{/i},{w=0.5}{nw}"
     extend 1euc " in a morbid way."
@@ -15846,10 +15839,10 @@ label monika_impermanence:
         m 3eud "Nothing you {i}can{/i} do matters...{w=0.3}{nw}"
         extend 1ekc "so why bother doing anything at all?"
         m 1rkd "It's not hard to see why some might consider this as the natural conclusion of such a realization."
-        m 1rkc "It can be...{w=0.3} enticing{w=0.3}, even comforting in it's own twisted way."
+        m 1rkc "It can be...{w=0.3}enticing{w=0.3}, even comforting in it's own twisted way."
 
         m 2euc "But let me ask you a question..."
-        extend  3euc "even if you {i}could{/i} leave a permanent mark on the cosmos, some sort of an everlasting proof that you were here, would that really change so much?"
+        extend  3euc "even if you {i}could{/i} leave some sort of a permanent mark on the cosmos, would that really change so much?"
         m 1eud "One day you'd still be gone."
         m 1esd "...And some time after that, there'd still come a day when someone thought about you, the real you, for the last time."
         m 1eka "But be it eighty years from now, or a million, poetry will still be beautiful, cats will still be adorable, and the universe will still be as indifferent as it ever was."
@@ -15859,7 +15852,7 @@ label monika_impermanence:
         m 1hka "I guess, what I'm trying to say here is..."
         m 1ekb "Yes, there will be an end.{w=0.3} To you, me, and eventually everything else."
         if mas_isMoniAff(higher=True):
-            m 3esb "But while we're here, what a silly decision it would be to waste our time feeling miserable."
+            m 3esb "But while we're here, it would be rather silly to waste what time we have feeling miserable."
             m 1esa "Don't you think?"
         else:
             m 1esa "But that's the way it's always been, and there's really no point in feeling down about it. Not now, nor ever."
