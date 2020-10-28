@@ -169,6 +169,16 @@ init -10 python:
             """
             return not self.__eq__(other)
 
+        def __repr__(self):
+            return (
+                "<FilterSlice: (name: {0}, min: {1}, max: {2}, pri: {3})>"
+            ).format(
+                self.name,
+                self.minlength,
+                self.maxlength,
+                self.priority
+            )
+
         def __str__(self):
             """
             Slice as string
@@ -326,6 +336,17 @@ init -10 python:
             if isinstance(other, MASBackgroundFilterSliceData):
                 return self.order < other.order
             return NotImplemented
+
+        def __repr__(self):
+            return (
+                "<FilterSliceData: (order: {0}, offset: {1}, length: {2}"
+                ", flt_slice: {3})>"
+            ).format(
+                self.order,
+                self.offset,
+                self.length,
+                repr(self.flt_slice)
+            )
 
         def __str__(self):
             """
@@ -487,6 +508,17 @@ init -10 python:
             # the last length value passed into build
 
             self._parse_slices(slices)
+
+        def __repr__(self):
+            return (
+                "<FilterChunk: (index: {0}, length: {1}, slices: {2}, "
+                "eff_slices: {3})>"
+            ).format(
+                self._index,
+                self._length,
+                self._slices,
+                self._eff_slices
+            )
 
         def __str__(self):
             """
@@ -959,7 +991,7 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     flt_old,
@@ -1196,6 +1228,30 @@ init -10 python:
             self._updated = False
             # set to True upon an update, set to False upon progress
 
+        def __repr__(self):
+            day_f = self._day_filters
+            if day_f is not None:
+                day_f = day_f.keys()
+
+            night_f = self._night_filters
+            if night_f is not None:
+                night_f = night_f.keys()
+
+            return (
+                "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
+                "day_flts: {3}, night_flts: {4}, mn_sr: {5}, sr_ss: {6}, "
+                "ss_mn: {7})>"
+            ).format(
+                self._index,
+                self._updated,
+                self._prev_flt,
+                day_f,
+                night_f,
+                repr(self._mn_sr),
+                repr(self._sr_ss),
+                repr(self._ss_mn)
+            )
+
         def __str__(self):
             """
             Shows chunks and curr chunk information
@@ -1227,7 +1283,7 @@ init -10 python:
 
             return "\n".join(output)
 
-        def adv_chunk(self, sfmn, st_index, run_pp, curr_time, force_co):
+        def adv_chunk(self, sfmn, st_index, run_pp, curr_time):
             """
             Runs advance chunks alg, running progpoints but does NOT actually
             set new index. This WILL SET SLICE INDEXES.
@@ -1238,10 +1294,6 @@ init -10 python:
                 run_pp - True will run the progpoints, FAlse will not
                 curr_time - passed to the progpoint. should be current time
                     as a datetime.time object
-                force_co - True will force one chunk advancement. False will
-                    not. This is for cases where we are in the same chunk, but
-                    earlier than the current slice. Doing this allows us to
-                    reset the slice index.
 
             RETURNS: new chunk index
             """
@@ -1249,27 +1301,36 @@ init -10 python:
             c_len = len(self._chunks)
 
             # determine current chunk offsets
+            # Current Beginning OFFset, Next Beginning OFFset
             cb_off, nb_off = self._calc_off(st_index)
+            curr_chunk = self._chunks[st_index]
+            found = False
 
-            # loop unfil sfmn in range of current chunk
-            while sfmn < cb_off or nb_off <= sfmn or force_co:
-                # always set this to false after one iteration
-                force_co = False
+            # force stop iteration if something bad happened
+            iter_stop = 10
 
-                # get chunk chunk
-                curr_chunk = self._chunks[st_index]
+            # loop until we found the chunk, or if we found it, until the first
+            #   non-zero chunk
+            while iter_stop > 0 and (not found or len(curr_chunk) < 1):
 
-                # determine the next current offset and next index
+                # determine next chunk index
+                nxt_index = (st_index + 1) % c_len # next index or 0 if max len
 
-                # next offset or 0 if 86400
+                # next chunk
+                new_chunk = self._chunks[nxt_index]
+
+                # determine next chunk offsets
+                # next curent chunk offset offset or 0 if 86400
                 cb_off = nb_off % (store.mas_utils.secInDay())
-                st_index = (st_index + 1) % c_len # next index or 0 if max len
 
-                # now calc next offset
-                nb_off = cb_off + len(self._chunks[st_index])
+                # next chunk's offset
+                nb_off = cb_off + len(new_chunk)
 
-                # new chunk is
-                new_chunk = self._chunks[st_index]
+                # set found if we found the chunk
+                if not found:
+                    found = cb_off <= sfmn < nb_off
+                    # once this is set, the next loops will only happen if
+                    # current chunks are less than zero
 
                 # lastly run pp if desired
                 if run_pp:
@@ -1279,22 +1340,32 @@ init -10 python:
                         curr_time
                     )
 
-                # always run global after
-                try:
-                    store.mas_background._gbl_chunk_change(
-                        curr_chunk,
-                        new_chunk,
-                        curr_time
-                    )
-                except Error as e:
-                    store.mas_utils.writelog(self._ERR_PP_STR_G.format(
-                        repr(e),
-                        str(curr_chunk),
-                        str(new_chunk),
-                    ))
+                    # and global
+                    try:
+                        store.mas_background._gbl_chunk_change(
+                            curr_chunk,
+                            new_chunk,
+                            curr_time
+                        )
+                    except Exception as e:
+                        store.mas_utils.writelog(self._ERR_PP_STR_G.format(
+                            repr(e),
+                            str(curr_chunk),
+                            str(new_chunk),
+                        ))
 
-                # then finally reset slice index for this chunk
+                # then finally reset slice index for the chunk we are leaving
                 curr_chunk.reset_index()
+
+                # and set the current chunk to next chunk
+                curr_chunk = new_chunk
+                st_index = nxt_index
+
+                iter_stop -= 1
+
+            if iter_stop < 1:
+                # this is bad
+                raise Exception("inf looped here")
 
             return st_index
 
@@ -1575,7 +1646,7 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     str(chunk_old),
@@ -1639,26 +1710,35 @@ init -10 python:
             pos_data = self.current_pos()
 
             # are we technically in same chunk but before in time?
-            # if so, we need to force a chunk move
-            force_co = (
-                pos_data[1] <= sfmn < pos_data[2]  # in same chunk
-                and sfmn < (pos_data[1] + pos_data[4]) # earlier than slice
-            )
+            # reset the current chunk's slice index then advance
+            if (
+                    pos_data[1] <= sfmn < pos_data[2]  # in same chunk
+                    and sfmn < (pos_data[1] + pos_data[4]) # earlier than slice
+            ):
+                self._current_chunk().reset_index()
 
-            # start by advancing chunks correctly, if needed
-            self._index = self.adv_chunk(
-                sfmn,
-                self._index,
-                True,
-                curr_time,
-                force_co
-            )
+            else:
+                # start by advancing chunks correctly, if needed
+                self._index = self.adv_chunk(
+                    sfmn,
+                    self._index,
+                    True,
+                    curr_time
+                )
 
             # now we can start advancing slices
             return self._chunks[self._index].progress(
                 sfmn - (self._calc_off(self._index)[0]),
                 curr_time
             )
+
+        def reset_indexes(self):
+            """
+            Resets all indexes to 0, so we are in fresh state mode
+            """
+            self._index = 0
+            for chunk in self._chunks:
+                chunk._index = 0
 
         def update(self, curr_time=None):
             """
@@ -1679,19 +1759,15 @@ init -10 python:
             self._prev_flt = self.current()
 
             # establish seconds
+            # Seconds From MidNight
             sfmn = store.mas_utils.time2sec(curr_time)
 
-            # establish chunk index
-            boff, eoff = self._calc_off(0)
-            cindex = 0
-            while cindex < len(self._chunks)-1 and (sfmn < boff or eoff <= sfmn):
-                # determine next offsets
-                cindex += 1
-                boff, eoff = self._calc_off(cindex)
+            cindex = self.adv_chunk(sfmn, 0, False, curr_time)
 
             # we should now be in the correct index probably
             self._chunks[self._index].reset_index()
             self._index = cindex
+            boff, eoff = self._calc_off(cindex)
             self._chunks[cindex].update(sfmn - boff)
 
             # mark that we used update
@@ -2292,7 +2368,21 @@ init -10 python:
                     )
                 )
 
-            new_flt = self._flt_man.progress()
+            try:
+                new_flt = self._flt_man.progress()
+            except Exception as e:
+                # in this case, we don't know what happened, but we got
+                # screwed. log out state of the flt man as well as the
+                # traceback
+                store.mas_background.log_bg(
+                    self,
+                    store.mas_utils.sys.exc_info()
+                )
+
+                # reset the manager to defualt indexes. Next time progress
+                # is called will hopefully update without error
+                self._flt_man.reset_indexes()
+                new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
                 store.mas_utils.writelog(
@@ -2303,7 +2393,21 @@ init -10 python:
                     )
                 )
 
-            return new_flt
+            if new_flt is not None:
+                return new_flt
+
+            # if we had an issue with filter progression OR if we didn't get
+            # a filter back, we'll return a fallback of the first filter
+            # available in the filter manager. If that doesn't work,
+            # then its forever daytime (FLT_DAY)
+
+            flts = self._flt_man.filters()
+            if len(flts) > 0:
+                new_flt = flts[0]
+                if new_flt is not None:
+                    return new_flt
+
+            return store.mas_sprites.FLT_DAY # should exist for every sprite
 
         def update(self, curr_time=None):
             """
@@ -2489,6 +2593,47 @@ init -20 python in mas_background:
 
         return False
 
+
+    def log_bg(bg_obj, exc_info=None):
+        """
+        Logs the given BG object to standard bg log
+
+        IN:
+            bg_obj - bg object to log
+            exc_info - exception info. Should be tuple:
+                [0] - exception type
+                [1] - exception value
+                [2] - traceback
+                (Default: None)
+        """
+        if bg_obj is None:
+            return
+
+        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
+        if not bg_log.open():
+            # could not log, just abort here
+            return
+
+        # otherwise log output
+        bg_log.raw_write = True
+
+        # NOTE: version should already be written out if this is runtime
+        bg_log.write("\n\nBackground Object: {0}\n".format(
+            bg_obj.background_id
+        ))
+        bg_log.write("Filter System:\n\n")
+        bg_log.write(str(bg_obj._flt_man))
+        bg_log.write("\n\nRaw Filter Manager Data:\n")
+        bg_log.write(repr(bg_obj._flt_man))
+
+        if exc_info:
+            import traceback
+
+            bg_log.write("\n\n")
+            for tb_line in traceback.format_exception(*exc_info):
+                bg_log.write(tb_line)
+
+
 #START: BG change functions
 init 800 python:
     def mas_setBackground(_background, **kwargs):
@@ -2540,6 +2685,7 @@ init 800 python:
 
         if new_background != mas_current_background:
             mas_current_background.exit(new_background, **kwargs)
+            new_background.update() # NOTE: do not put this in setBackground.
             mas_setBackground(new_background, **kwargs)
 
         store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
@@ -2852,18 +2998,19 @@ label monika_change_background_loop:
         # default should always be at the top
         backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
 
-        # build other backgrounds list
-        other_backgrounds = [
-            (mbg_obj.prompt, mbg_obj, False, False)
-            for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-            if mbg_id != "spaceroom" and mbg_obj.unlocked
-        ]
+        if not persistent._mas_o31_in_o31_mode:
+            # build other backgrounds list
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked
+            ]
 
-        # sort other backgrounds list
-        other_backgrounds.sort()
+            # sort other backgrounds list
+            other_backgrounds.sort()
 
-        # build full list
-        backgrounds.extend(other_backgrounds)
+            # build full list
+            backgrounds.extend(other_backgrounds)
 
         # now add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
