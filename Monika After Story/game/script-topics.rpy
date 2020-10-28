@@ -11966,7 +11966,7 @@ label monika_player_appearance:
                             eye_color = ask_color("What color is one of your eyes?")
                         else:
                             # ...but remove predefined colors, since heterochromia literally means two different eye colors.
-                            colors.remove(eyes_colors[0])
+                            colors.remove(eye_color)
                         eyes_colors.append(eye_color)
 
                         menu_options = [(_("...and {}.").format(color), color) for color in colors] + [(_("...and some other color."), "ask")]
