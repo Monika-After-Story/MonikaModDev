@@ -11951,6 +11951,30 @@ label monika_player_appearance:
                     m 5rtc "If I recall correctly, less than one percent of people in the world have this curious feature..."
                     show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 1hua "...So you must be really rare, ehehe~"
+                    
+                    python:
+                        # Ask the player about their eye colors separately.
+                        colors = [_("blue"), _("brown"), _("green"), _("hazel"), _("gray"), _("black"), "_ask"]
+                        menu_options = [(_("I have {}...").format(color), color) for color in colors]
+                        eyes_colors = []
+                        
+                        renpy.say(m, "If you don't mind me asking, what are the actual colors of your eyes?")
+                        eye_color = menu(menu_options)
+
+                        if eye_color == "_ask":
+                            # Keep _ask option to allow custom colors twice...
+                            eye_color = ask_color("What color is one of your eyes?")
+                        else:
+                            # ...but remove predefined colors, since heterochromia literally means two different eye colors.
+                            colors.remove(eyes_colors[0])
+                        eyes_colors.append(eye_color)
+
+                        menu_options = [(_("...and {}.").format(color), color) for color in colors]
+                        eye_color = menu(menu_options)
+                        if eye_color == "_ask":
+                            eye_color = ask_color("And what color is your another one?")
+                        eyes_colors.append(eye_color)    
+
                     m 3hua "Let's get to my next question--"
 
             m 3rud "Actually..."
