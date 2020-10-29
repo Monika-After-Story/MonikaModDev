@@ -42,6 +42,7 @@ init python in mas_chess:
     import chess.pgn
     import store.mas_ui as mas_ui
     import store
+    import random
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -127,6 +128,12 @@ init python in mas_chess:
     # Quick File EDIT NO: the external quick save got edited, player lies
     #   (almost certanilky player's fault)
     QF_EDIT_NO = 5
+
+    #Randomly selectable pieces
+    random_piece_pool = ['r', 'n', 'p', 'q', 'b']
+
+    #Base chess FEN format
+    BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
 
     def _checkInProgressGame(pgn_game, mth):
         """
@@ -250,6 +257,67 @@ init python in mas_chess:
         if loaded_game.headers["White"] == store.mas_monika_twitter_handle:
             return store.chess.BLACK
         return store.chess.WHITE
+
+    def gen_final_row(white=True):
+        """
+        Generates the final rows of pieces
+
+        IN:
+            white - whether or not we should generate for white
+
+        OUT:
+            string representing a random assortment of pieces with a single king for the back row
+        """
+        king_char = 'K' if white else 'k'
+        king_pos = random.randint(0, 7)
+
+        row = ""
+        for ind in range(0, 8):
+            if ind == king_pos:
+                piece_to_add = king_char
+
+            else:
+                piece_to_add = random.choice(random_piece_pool)
+
+                if white:
+                    piece_to_add = piece_to_add.capitalize()
+
+            row += row.join(piece_to_add)
+
+        return row
+
+    def gen_front_row(white=True):
+        """
+        Generates the front row of pieces
+
+        IN:
+            white - whether or not we should generate for white
+
+        OUT:
+            string representing a random assortment of pieces for the front row
+        """
+        row = ""
+
+        for ind in range(0, 8):
+            piece_to_add = random.choice(random_piece_pool)
+
+            if white:
+                piece_to_add = piece_to_add.capitalize()
+
+            row += row.join(piece_to_add)
+
+        return row
+
+    def generate_fen():
+        """
+        Generates a random fen
+        """
+        return BASE_FEN.format(
+            black_pieces_back=gen_final_row(False),
+            black_pieces_front=gen_front_row(False),
+            white_pieces_front=gen_front_row(),
+            white_pieces_back=gen_final_row()
+        )
 
     def enqueue_output(out, queue, lock):
         for line in iter(out.readline, b''):
@@ -492,7 +560,18 @@ label game_chess:
     label .new_game_start:
         pass
 
-    #Otherwise first game flow
+    #NOTE: ADD GAME MODES HERE
+    m 1eua "What game mode would you like to play?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What game mode would you like to play?{fast}"
+
+        "Normal chess.":
+            $ starting_fen = None
+
+        "Really bad chess.":
+            $ starting_fen = mas_chess.generate_fen()
+
     m 3eua "Would you like to practice or play against me?{nw}"
     $ _history_list.pop()
     menu:
@@ -548,7 +627,7 @@ label game_chess:
             is_player_white,
             pgn_game=loaded_game,
             practice_mode=practice_mode,
-            starting_fen=mas_chess.generate_fen()
+            starting_fen=starting_fen
         )
         chess_displayable_obj.show()
         results = chess_displayable_obj.game_loop()
