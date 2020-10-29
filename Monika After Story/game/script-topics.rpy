@@ -11781,6 +11781,7 @@ label monika_vehicle_other:
 ##### PM Vars for player appearance
 default persistent._mas_pm_eye_color = None
 default persistent._mas_pm_has_heterochromia = None
+default persistent._mas_pm_heterochromous_eyes_colors = None
 default persistent._mas_pm_hair_color = None
 default persistent._mas_pm_hair_length = None
 default persistent._mas_pm_skin_tone = None
@@ -11976,7 +11977,8 @@ label monika_player_appearance:
                         eye_color = menu(menu_options)
                         if eye_color == "ask":
                             eye_color = ask_color("What color is your another one?")
-                        eyes_colors.append(eye_color)    
+                        eyes_colors.append(eye_color)
+                        persistent._mas_pm_heterochromous_eyes_colors = tuple(eyes_colors)
 
                     m 3hua "Let's get to my next question--"
 
