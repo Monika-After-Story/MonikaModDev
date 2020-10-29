@@ -16173,7 +16173,8 @@ init 5 python:
             eventlabel="monika_player_eyesight",
             category=["you"],
             prompt="Wearing glasses",
-            conditional="renpy.seen_label('monika_player_appearance')"
+            conditional="renpy.seen_label('monika_player_appearance')",
+            action=EV_ACT_RANDOM
         )
     )
 
@@ -16211,11 +16212,16 @@ label monika_player_eyesight_awea(glasses=False):
         if glasses:
             aids = "glasses"
             persistent._mas_pm_wears_glasses = True
+            persistent._mas_pm_wears_lenses = False
+
         else:
             aids = "contact lenses"
+            persistent._mas_pm_wears_glasses = False
             persistent._mas_pm_wears_lenses = True
-    $ persistent._mas_pm_poor_eyesight = True
-    m 2ekc "Oh, I see. "
+
+        persistent._mas_pm_poor_eyesight = True
+
+    m 2ekc "Oh, I see. {w=0.3}{nw}"
     extend 2eka "I really hope you see better with them on."
     m 1eka "Please don't neglect your eyesight, [player], as it can still deteriorate even if you constantly wear your [aids]."
     m 1esa "If you've been on your computer for a while, maybe you could consider taking a little break to let your eyes rest."
@@ -16226,17 +16232,25 @@ label monika_player_eyesight_awea(glasses=False):
 
 # Cosmetic Glasses
 label monika_player_eyesight_cg:
-    $ persistent._mas_pm_wears_glasses = True
-    $ persistent._mas_pm_wears_lenses = False
-    $ persistent._mas_pm_poor_eyesight = False
+    python:
+        persistent._mas_pm_wears_glasses = True
+        persistent._mas_pm_wears_lenses = False
+        persistent._mas_pm_poor_eyesight = False
+
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "Aw, [player], I wish I really could see your face with them on."
     m 5hubsa "I bet you look so smart, intelligent and confident~"
+    show monika 1sua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1sua "Maybe I could even get myself a pair and try them out, too, ehehe."
     m 1tuu "What do you think, [mas_get_player_nickname()]? Would they suit me well, hmm?"
     return
 
 # Wears Glasses Occasionally
 label monika_player_eyesight_wgo:
+    python:
+        persistent._mas_pm_wears_glasses = True
+        persistent._mas_pm_wears_lenses = False
+
     m 3rka "I see... But [player], is it, by any chance, because of your eyesight?{nw}"
     $ _history_list.pop()
     menu:
@@ -16244,7 +16258,7 @@ label monika_player_eyesight_wgo:
 
         "Yes...":
             $ persistent._mas_pm_poor_eyesight = True
-            m 2ekc "Oh, it's sad to hear that you're having problem with your eyes."
+            m 2ekc "Oh, it's sad to hear that you're having problems with your eyes."
             m 2esa "I really hope wearing glasses helps you improve it."
             m 2hua "Thank you for caring about yourself, [player]."
             m 3lsbsb "This world has so much to see, and I'd like to see everything together with you~"
@@ -16258,25 +16272,30 @@ label monika_player_eyesight_wgo:
             if renpy.seen_label("monika_using_pcs_healthily"):
                 m 1eub "Remember me talking about doing frequent breaks if you're using your computer for a while?"
                 m 1esa "You could take a little break every 15-20 minutes and let your eyes rest."
+
                 if mas_isMoniLove(higher=True):
                     m 1rsa "Say, you could close them, relax and think about something for a few minutes... "
-                    m 1dsa "Maybe you could even dream... "
-                    extend 1dsbsa  "you know... "
+                    m 1dsa "Maybe you could even dream...{w=0.2}{nw}"
+                    extend 1dsbsa  "you know...{w=0.2}{nw}"
                     extend 1tubsu "of me, ehehe."
                     m 3eubsb "Just don't get too distracted, alright?~"
+
                 else:
                     m 1rsa "Say, you could close them and dream of something for a few minutes."
                     m 3eua "But if you can't, you could just get distracted a bit and take a look around or glance at the window."
                     m 1eub "That would really help, too!"
+
             else:
                 m 1hubsa "I just want my [mas_get_player_nickname(regex_replace_with_nullstr='^my\\s+', _default='sweetheart')] to have no problem with [his] eyes~"
     return
 
 # Never
 label monika_player_eyesight_n:
-    $ persistent._mas_pm_wears_glasses = False
-    $ persistent._mas_pm_wears_lenses = False
-    $ persistent._mas_pm_poor_eyesight = False
+    python:
+        persistent._mas_pm_wears_glasses = False
+        persistent._mas_pm_wears_lenses = False
+        persistent._mas_pm_poor_eyesight = False
+
     m 2hua "That's great! I'm glad to hear that you don't have any problems with your eyes."
     m 2ekbsa "I wouldn't want my sweetheart to see less of this beautiful world because of poor eyesight."
     m 3rsa "Although I'm pretty sure you'll look more stylish with them on..."
