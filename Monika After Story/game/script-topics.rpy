@@ -11951,13 +11951,15 @@ label monika_player_appearance:
                     m 5rtc "If I recall correctly, less than one percent of people in the world have this curious feature..."
                     show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 1hua "...So you must be really rare, ehehe~"
-                    
+
                     python:
                         # Ask the player about their eye colors separately.
                         colors = [_("blue"), _("brown"), _("green"), _("hazel"), _("gray"), _("black")]
-                        menu_options = [(_("I have {}...").format(color), color) for color in colors] + [(_("My eyes are different color..."), "ask")]
+                        menu_options = [(_("I have {}...").format(color), color) for color in colors]
+                        menu_options.append((_("My eyes are different color..."), "ask"))
                         eyes_colors = []
-                        
+
+                        renpy.show("monika 3hua", at_list=[t11], zorder=MAS_MONIKA_Z)
                         renpy.say(m, "If you don't mind me asking, what are the actual colors of your eyes?")
                         eye_color = menu(menu_options)
 
@@ -11969,7 +11971,8 @@ label monika_player_appearance:
                             colors.remove(eye_color)
                         eyes_colors.append(eye_color)
 
-                        menu_options = [(_("...and {}.").format(color), color) for color in colors] + [(_("...and some other color."), "ask")]
+                        menu_options = [(_("...and {}.").format(color), color) for color in colors]
+                        menu_options.append((_("...and some other color."), "ask"))
                         eye_color = menu(menu_options)
                         if eye_color == "ask":
                             eye_color = ask_color("What color is your another one?")
