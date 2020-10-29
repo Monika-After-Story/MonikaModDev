@@ -432,7 +432,7 @@ label mas_hangman_game_preloop:
 
 # looping location for the hangman game
 label mas_hangman_game_loop:
-    m 1eua "I'll think of a word{cps=2}...{/cps}{nw}"
+    m 1eua "I'll think of a word.{w=0.5}.{w=0.5}.{nw}"
 
     python:
         player_word = False
