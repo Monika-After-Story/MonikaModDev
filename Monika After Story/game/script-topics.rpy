@@ -16128,7 +16128,7 @@ label monika_taking_criticism:
     m 1eksdlc "In particular, for people faced with great expectations, this kind of logic can easily become a big source of anguish."
     m 3dksdld "What if others think less of you because you didn't give a perfect answer? {w=0.2}What if they start rejecting you or laugh behind your back?"
     m 2rksdlc "It'd be like showing some kind of vulnerability for others to take advantage of."
-    m 4eud "But let me tell you, there's absoultely no shame in changing your mind, [player]!"
+    m 4eud "But let me tell you, there's absolutely no shame in changing your mind, [player]!"
     m 2eka "After all, we all make mistakes, don't we?{w=0.3} {nw}"
     extend 7dsu "What matters is what we learn from those mistakes."
     m 3eua "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them."
