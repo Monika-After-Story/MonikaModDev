@@ -521,8 +521,7 @@ label mas_hangman_game_loop:
             """
             return guesses + chances - max_chances
 
-        def getLastChanceGuessesRatio(guesses, chances, last_chance_guesses,
-                                      useCorrect=False):
+        def getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, useCorrect=False):
             """
             Get the ratio of so-called 'last chance guesses' (correct guesses
             made on the last chance remaining) to the total amount of guesses
@@ -542,8 +541,7 @@ label mas_hangman_game_loop:
                 Float in range [0; 1] representing last chance guesses to
                 correct guesses ratio.
             """
-            return last_chance_guesses / (getCorrectGuesses(guesses, chances) 
-                   if useCorrect else guesses)
+            return last_chance_guesses / (getCorrectGuesses(guesses, chances) if useCorrect else guesses)
 
     while not done:
         # create displayables
