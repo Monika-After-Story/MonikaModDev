@@ -761,7 +761,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if mas_ui.has_submod_settings:
+        if store.mas_submod_utils.submod_map:
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -829,7 +829,7 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
-        textbutton _("Hotkeys") action [ShowMenu("hot_keys")]
+        textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
         #textbutton _("About") action ShowMenu("about")
 
@@ -1733,31 +1733,6 @@ style slider_vbox:
 
 style slider_pref_vbox is pref_vbox
 
-# Outfit check
-style outfit_check_button:
-    properties gui.button_properties("check_button")
-    foreground "gui/button/check_[prefix_]foreground.png"
-
-style outfit_check_button_dark:
-    properties gui.button_properties("check_button_dark")
-    foreground "gui/button/check_[prefix_]foreground_d.png"
-
-style outfit_check_button_text is gui_button_text:
-    properties gui.button_text_properties("outfit_check_button")
-    font "gui/font/Halogen.ttf"
-    color "#BFBFBF"
-    hover_color "#FFAA99"
-    selected_color "#FFEEEB"
-    outlines []
-
-style outfit_check_button_text_dark is gui_button_text_dark:
-    properties gui.button_text_properties("outfit_check_button_dark")
-    font "gui/font/Halogen.ttf"
-    color "#BFBFBF"
-    hover_color "#FFAA99"
-    selected_color "#FFEEEB"
-    outlines []
-
 ##Notifications Settings Screen
 screen notif_settings():
     tag menu
@@ -2516,12 +2491,10 @@ style scrollable_menu_vbox is vbox:
     spacing 5
 
 style scrollable_menu_button is choice_button:
-    selected_background Frame("mod_assets/buttons/generic/selected_bg.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
 style scrollable_menu_button_dark is choice_button_dark:
-    selected_background Frame("mod_assets/buttons/generic/selected_bg_d.png", Borders(20, 20, 20, 20), tile=False)
     xysize (560, None)
     padding (25, 5, 25, 5)
 
@@ -2607,6 +2580,30 @@ style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_but
 
 style twopane_scrollable_menu_special_button_text_dark is twopane_scrollable_menu_button_text_dark:
     bold True
+
+# check scrollable menu
+style check_scrollable_menu_button is scrollable_menu_button:
+    foreground "mod_assets/buttons/checkbox/[prefix_]check_fg.png"
+    padding (33, 5, 25, 5)
+
+style check_scrollable_menu_button_dark is scrollable_menu_button_dark:
+    foreground "mod_assets/buttons/checkbox/[prefix_]check_fg_d.png"
+    padding (33, 5, 25, 5)
+
+style check_scrollable_menu_button_text is scrollable_menu_button_text
+style check_scrollable_menu_button_text_dark is scrollable_menu_button_text_dark
+style check_scrollable_menu_new_button is scrollable_menu_new_button
+style check_scrollable_menu_new_button_dark is scrollable_menu_new_button_dark
+style check_scrollable_menu_new_button_text is scrollable_menu_new_button_text
+style check_scrollable_menu_new_button_text_dark is scrollable_menu_new_button_text_dark
+style check_scrollable_menu_special_button is scrollable_menu_special_button
+style check_scrollable_menu_special_button_dark is scrollable_menu_special_button_dark
+style check_scrollable_menu_special_button_text is scrollable_menu_special_button_text
+style check_scrollable_menu_special_button_text_dark is scrollable_menu_special_button_text_dark
+style check_scrollable_menu_crazy_button is scrollable_menu_crazy_button
+style check_scrollable_menu_crazy_button_dark is scrollable_menu_crazy_button_dark
+style check_scrollable_menu_crazy_button_text is scrollable_menu_crazy_button_text
+style check_scrollable_menu_crazy_button_text_dark is scrollable_menu_crazy_button_text_dark
 
 # adjustments for the twopane menu
 define prev_adj = ui.adjustment()
@@ -2837,8 +2834,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done.",
-    default_button_prompt="Nevermind.",
+    selected_button_prompt="Done",
+    default_button_prompt="Nevermind",
     return_all=False
 ):
     default buttons_data = {
@@ -2850,7 +2847,7 @@ screen mas_check_scrollable_menu(
         for _tuple in items
     }
 
-    style_prefix "scrollable_menu"
+    style_prefix "check_scrollable_menu"
 
     fixed:
         area display_area
@@ -2879,6 +2876,7 @@ screen mas_check_scrollable_menu(
             null height 20
 
             textbutton store.mas_ui.check_scr_menu_choose_prompt(buttons_data, selected_button_prompt, default_button_prompt):
+                style "scrollable_menu_button"
                 xsize display_area[2]
                 action Function(
                     store.mas_ui.check_scr_menu_return_values,
@@ -3005,17 +3003,26 @@ screen submods():
                         xfill True
                         xmaximum 1000
 
-                        label submod.name yanchor 0 xalign 0
+                        label submod.name:
+                            yanchor 0
+                            xalign 0
+                            text_text_align 0.0
 
-                        hbox:
-                            spacing 20
-                            xmaximum 1000
+                        if submod.coauthors:
+                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
-                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
-                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
+                        else:
+                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+
+                        text "[authors]":
+                            yanchor 0
+                            xalign 0
+                            text_align 0.0
+                            layout "greedy"
+                            style "main_menu_version"
 
                         if submod.description:
-                            text submod.description
+                            text submod.description text_align 0.0
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))

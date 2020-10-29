@@ -298,7 +298,7 @@ init 5 python:
             pool=True,
             unlocked=True,
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED,None)
         )
     )
@@ -316,7 +316,7 @@ label monika_showpoem:
             ("Happy End", poem_m4, False, False)
         ]
 
-        ret_back = ("Nevermind.", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
         #Extend the new poems
         poems_list.extend(mas_poems.getSeenPoemsMenu())
 
