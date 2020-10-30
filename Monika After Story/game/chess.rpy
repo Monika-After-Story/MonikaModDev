@@ -135,6 +135,20 @@ init python in mas_chess:
     #Base chess FEN format
     BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
 
+    PIECE_POINT_MAP = {
+        "p": 1,
+        "n": 3,
+        "b": 3,
+        "r": 5,
+        "q": 9
+    }
+
+    #Low range (highest level, also equivalent to the worth of a traditional side)
+    LOWEST_SIDE_WORTH = 39
+
+    #Max range (lowest level)
+    HIGHEST_SIDE_WORTH = 70
+
     def _checkInProgressGame(pgn_game, mth):
         """
         Checks if the given pgn game is valid and in progress.
@@ -258,7 +272,33 @@ init python in mas_chess:
             return store.chess.BLACK
         return store.chess.WHITE
 
-    def gen_final_row(white=True):
+    def check_piece_points(piece_to_add, max_piece_value, total_row_points):
+        """
+        Verifies if the piece selected can be used according to the max points
+
+        IN:
+            piece_to_add - piece to check
+            max_piece_value - max points a piece can have
+            total_row_points - total points of the row
+
+        OUT:
+            the piece given if valid, otherwise a random piece below the max points thresh
+        """
+        piece_pool = ['p']
+
+        if max_piece_value and total_row_points + PIECE_POINT_MAP[piece_to_add] > max_piece_value:
+            if max_piece_value > 3:
+                piece_pool.extend(['b', 'n'])
+
+                if max_piece_value > 9:
+                    piece_pool.append('q')
+
+            return random.choice(piece_pool)
+
+        else:
+            return piece_to_add
+
+    def gen_final_row(white=True, max_piece_value=None):
         """
         Generates the final rows of pieces
 
@@ -271,6 +311,9 @@ init python in mas_chess:
         king_char = 'K' if white else 'k'
         king_pos = random.randint(0, 7)
 
+        #Setup total points for this row
+        total_row_points = 0
+
         row = ""
         for ind in range(0, 8):
             if ind == king_pos:
@@ -279,14 +322,18 @@ init python in mas_chess:
             else:
                 piece_to_add = random.choice(random_piece_pool)
 
+                piece_to_add = check_piece_points(piece_to_add, max_piece_value, total_row_points)
+
+                total_row_points += PIECE_POINT_MAP[piece_to_add]
+
                 if white:
                     piece_to_add = piece_to_add.capitalize()
 
             row += row.join(piece_to_add)
 
-        return row
+        return row, (max_piece_value - total_row_points if max_piece_value is not None else None)
 
-    def gen_front_row(white=True):
+    def gen_front_row(white=True, max_piece_value=None):
         """
         Generates the front row of pieces
 
@@ -298,26 +345,56 @@ init python in mas_chess:
         """
         row = ""
 
+        total_row_points = 0
+
         for ind in range(0, 8):
             piece_to_add = random.choice(random_piece_pool)
+
+            piece_to_add = check_piece_points(piece_to_add, max_piece_value, total_row_points)
 
             if white:
                 piece_to_add = piece_to_add.capitalize()
 
             row += row.join(piece_to_add)
 
-        return row
+        return row, (max_piece_value - total_row_points if max_piece_value is not None else None)
 
-    def generate_fen():
+    def generate_fen(is_player_white=True):
         """
         Generates a random fen
+
+        IN:
+            is_player_white - whether or not the player is playing white this game
         """
-        return BASE_FEN.format(
-            black_pieces_back=gen_final_row(False),
-            black_pieces_front=gen_front_row(False),
-            white_pieces_front=gen_front_row(),
-            white_pieces_back=gen_final_row()
+        #Setup max piece value for the player
+        max_piece_value = (
+            (HIGHEST_SIDE_WORTH - LOWEST_SIDE_WORTH) /
+            (store.persistent._mas_chess_difficulty.keys()[0] + store.persistent._mas_chess_difficulty.values()[0])
         )
+
+        player_row_front, max_piece_value = gen_front_row(is_player_white, max_piece_value)
+        player_row_back, max_piece_value = gen_final_row(is_player_white, max_piece_value)
+
+        monika_row_back, _ = gen_final_row(not is_player_white)
+        monika_row_front, _ = gen_front_row(not is_player_white)
+
+
+        #Now place things correctly
+        if is_player_white:
+            return BASE_FEN.format(
+                black_pieces_back=monika_row_back,
+                black_pieces_front=monika_row_front,
+                white_pieces_front=player_row_front,
+                white_pieces_back=player_row_back
+            )
+
+        else:
+            return BASE_FEN.format(
+                black_pieces_back=player_row_back,
+                black_pieces_front=player_row_front,
+                white_pieces_front=monika_row_front,
+                white_pieces_back=monika_row_back
+            )
 
     def enqueue_output(out, queue, lock):
         for line in iter(out.readline, b''):
@@ -567,10 +644,10 @@ label game_chess:
         m "What game mode would you like to play?{fast}"
 
         "Normal chess.":
-            $ starting_fen = None
+            $ do_really_bad_chess = False
 
         "Really bad chess.":
-            $ starting_fen = mas_chess.generate_fen()
+            $ do_really_bad_chess = True
 
     m 3eua "Would you like to practice or play against me?{nw}"
     $ _history_list.pop()
@@ -583,6 +660,8 @@ label game_chess:
         "Play.":
             $ practice_mode = False
 
+    label .play_again:
+        pass
 
     m "What color would suit you?{nw}"
     $ _history_list.pop()
@@ -611,6 +690,9 @@ label game_chess:
 
     label .start_chess:
         pass
+
+    #Setup the chess FEN
+    $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
 
     #NOTE: This is a failsafe in case people jump to the .start_chess label
     if persistent._mas_chess_timed_disable is not None:
@@ -761,7 +843,7 @@ label game_chess:
     # if you have a previous game, we are overwritting it regardless
     if loaded_game:
         call mas_chess_savegame(silent=True)
-        jump .play_again
+        jump .play_again_ask
 
     #If the player surrendered under 5 moves in, we can assume they just don't want to play anymore
     if is_surrender and num_turns < 5:
@@ -780,7 +862,7 @@ label game_chess:
             "No.":
                 pass
 
-    label .play_again:
+    label .play_again_ask:
         pass
 
     m 1eua "Would you like to play again?{nw}"
@@ -794,7 +876,7 @@ label game_chess:
                 # each game counts as a game played
                 $ chess_ev.shown_count += 1
 
-            jump .new_game_start
+            jump .play_again
 
         "No.":
             pass
