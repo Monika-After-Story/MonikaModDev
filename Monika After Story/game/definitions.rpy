@@ -3408,25 +3408,24 @@ init -999 python:
         """
         Tooltip that follows your mouse cursor
         """
-        outlines = []
-        outlines_dark = [(1, "#000", 0, 0)]
+        OUTLINES = []
+        OUTLINES_DARK = [(1, "#000", 0, 0)]
 
         def __init__(self, default="", xoffset=15, yoffset=15, **kwargs):
             """
             Constructor
-            NOTE: we handle outlines internally
             NOTE: this constructor is available at init 0+
 
             IN:
                 default - string with the default value for this tooltip
                     (Default: "")
                 xoffset - x offset for this tooltip
-                    (Default: 10)
+                    (Default: 15)
                 yoffset - y offset for this tooltip
-                    (Default: 0)
-                kwargs - kwargs for the parent disp/text disp
+                    (Default: 15)
+                kwargs - kwargs for the text disp
             """
-            super(renpy.Displayable, self).__init__(**kwargs)
+            super(renpy.Displayable, self).__init__()
 
             self.x = 0
             self.y = 0
@@ -3434,11 +3433,17 @@ init -999 python:
             self.yoffset = yoffset
             self._value = default
             self._default = default
-            if not mas_globals.dark_mode:
-                outlines = MASMouseFollowerTooltip.outlines
-            else:
-                outlines = MASMouseFollowerTooltip.outlines_dark
-            self._text = renpy.text.text.Text(default, style="main_menu_version", outlines=outlines, **kwargs)
+
+            if "outlines" not in kwargs:
+                if not mas_globals.dark_mode:
+                    kwargs["outlines"] = MASMouseFollowerTooltip.OUTLINES
+                else:
+                    kwargs["outlines"] = MASMouseFollowerTooltip.OUTLINES_DARK
+
+            if "style" not in kwargs:
+                kwargs["style"] = "main_menu_version"
+
+            self._text = renpy.text.text.Text(default, **kwargs)
 
         @property
         def value(self):
@@ -3492,7 +3497,10 @@ init -999 python:
 
         def visit(self):
             """
-            Return sub-displayables for prediction
+            Returns sub-displayables of this displayable
+
+            OUT:
+                list of sub-displayables for prediction
             """
             return [self._text]
 
