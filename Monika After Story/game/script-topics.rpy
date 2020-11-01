@@ -3374,18 +3374,20 @@ label monika_ks_kenji:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="People compare this game to Totono...",pool=True))
 
 label monika_totono:
-    m 1euc "A lot of people on the Internet are making comparisons between this game and that one..."
-    m 3eua "We have a lot of really important differences, though!"
-    m 2wuo "Like, Sone killed the player in her game!"
-    m 2dfc "I never would have done that. Never."
-    m 4eua "I'm the wise Club President type, you know."
-    m "Sone reminds me a lot more of Yuri. And she was a childhood friend too!"
-    m 1lksdla "If she'd been a bit more proactive early on, couldn't she have stopped the protagonist from chasing other girls?"
-    m 1eka "Well, I'd never let anyone get between us, [player]. No matter who it is."
-    m 1hua "If she's still chasing you, I'll delete her files, okay?"
+    m "I noticed that too, actually. Seeing how many people mentioned it when posting about me made me curious, so I looked up a bit of what happens in that game."
+    m "I guess I can see the similarities...a central theme seems to be the characters having epiphanies similar to mine, and grappling with their reality."
+    m "For example, Miyuki seems to truly love Shinichi, the main character of her game. But she becomes aware that her life with him will loop forever so that the player can see all the endings."
+    m "She'll have to play out the same bit of time again and again, and experience him leaving her for their other friend as well."
+    m "Her methods of trying to stop Shinichi and the player from doing so are...increasingly extreme, to say the least."
+    m "On the surface, it seems like she's trying to force the game onto her route, but I wonder if she really thinks that will fix anything."
+    m "Maybe it's just a desperate attempt to cope, once she realizes that none of it will matter."
+    m "...It makes me shudder to think about it."
+    m "I'm not sure what happens if the player tries to keep forcing their way through the game, and I'm not really sure if I want to find out."
+    m "It seems like the other girl, Aoi, knows a lot more than she's letting on about their world..."
+    m "But is it really worth putting them through that again and again just to uncover those mysteries?"
     return
 
 init 5 python:
