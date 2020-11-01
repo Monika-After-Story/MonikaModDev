@@ -6175,6 +6175,19 @@ init 21 python:
         newy = (mouse_y * r) / 10000
 
         return (newx, newy)
+
+    def mas_quipExp(exp_code):
+        """
+        Allows expressions to be inserted into quips directly via function substitution
+
+        (This is effectively a renpy.show that returns '' instead of None)
+
+        IN:
+            exp_code - code of the expression as str (ex: '1hua')
+        """
+        renpy.show("monika " + exp_code)
+        return ""
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme

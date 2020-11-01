@@ -589,7 +589,6 @@ label game_chess:
             is_same = str(quicksaved_game) == str(quicksaved_file)
 
         if not is_same:
-            # TODO test this
             $ failed_to_load_save = False
 
             call mas_chess_dlg_quickfile_edited
@@ -1018,7 +1017,9 @@ label mas_chess_dlg_game_monika_wins_often:
     m 1eka "Sorry you didn't win this time, [player]..."
     m 1ekc "I hope you'll at least keep trying though."
     m 1eua "Let's play again soon, okay?"
-    m 1hua "You'll beat me someday~"
+
+    if not persistent.ever_won.get("chess"):
+        m 1hua "You'll beat me someday~"
     return
 
 label mas_chess_dlg_game_monika_wins_sometimes:
@@ -1746,7 +1747,7 @@ init python:
                     (NOTE: To add more casual adjustments, use conditions with `self.casual_rules` to run casual rule logic)
                     (Default: False)
                 player_move_prompts - prompts to use to indicate player move
-                    If not provided, no player prompt will be used
+                    If not provided, no player prompts will be used
                     (Default: None)
                 monika_move_quips - quips to use when Monika's having her turn
                     If not provided, no quips will be used
@@ -2095,13 +2096,21 @@ init python:
                 # Monika turn actions
                 if not self.is_player_turn() and not self.is_game_over:
                     renpy.show("monika 1dsc")
-                    renpy.say(m, renpy.random.choice(self.monika_move_quips), False)
+                    renpy.say(
+                        m,
+                        renpy.random.choice(
+                            self.monika_move_quips["check"] if self.board.is_check() else self.monika_move_quips["generic"]
+                        ),
+                        False
+                    )
                     store._history_list.pop()
                     self.handle_monika_move()
 
                 # prepare a quip before the player turn loop
                 should_update_quip = False
-                quip = renpy.random.choice(self.player_move_prompts)
+                quip = renpy.random.choice(
+                    self.player_move_prompts["check"] if self.board.is_check() else self.player_move_prompts["generic"]
+                )
 
                 # player turn actions
                 # 'is_game_over' is to allow interaction at the end of the game
@@ -2935,20 +2944,34 @@ init python:
                 pgn_game,
                 starting_fen,
                 casual_rules,
-                player_move_prompts=[
-                    "It's your turn, [player].",
-                    "Your move, [player]~",
-                    "What will you do, I wonder...",
-                    "Alright, your turn, [player]~",
-                    "You got this, [player]!"
-                ],
-                monika_move_quips=[
-                    "Alright, let's see...",
-                    "Okay, my turn...",
-                    "Let's see what I can do.",
-                    "I think I'll try this...",
-                    "Okay, I'll move this here then."
-                ]
+                player_move_prompts={
+                    "generic": [
+                        "It's your turn, [player].",
+                        "Your move, [player]~",
+                        "What will you do, I wonder...",
+                        "Alright, your turn, [player]~",
+                        "You got this, [player]!"
+                    ],
+                    "check": [
+                        "[mas_quipExp('3tfb')]Check!",
+                        "[mas_quipExp('3huu')]I've got you now, [player]!",
+                        "[mas_quipExp('3hub')]Looks like you're in check!"
+                    ]
+                },
+                monika_move_quips={
+                    "generic": [
+                        "Alright, let's see...",
+                        "Okay, my turn...",
+                        "Let's see what I can do.",
+                        "I think I'll try this...",
+                        "Okay, I'll move this here then."
+                    ],
+                    "check": [
+                        "[mas_quipExp('1eusdlc')]Uh oh...",
+                        "[mas_quipExp('1rksdlc')]Hmm...{w=0.2}I need to get out of this...",
+                        "[mas_quipExp('1etc')]What's the right move here..."
+                    ]
+                }
             )
 
             if self.practice_mode:
