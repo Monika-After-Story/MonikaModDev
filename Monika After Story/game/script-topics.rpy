@@ -15202,11 +15202,18 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
-    m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
-    m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+        m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+        m 3rfd "Before I met you, I thought the idea was completely absurd!"
+    else:
+        m 1eud "You know, I was really skeptical about this idea before, {w=0.2}{nw}"
+        extend 1rkc "thinking that it would be such an irrational decision to follow your beloved in death."
+
     m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
-    m 3rfd "It would be irrational and impulsive to do so!"
+
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 3rfd "It would be irrational and impulsive to do so!"
 
     if mas_isMoniEnamored(higher=True):
         m 2ekc "...But with you by my side and all the time I've spent here with you...{w=0.3}I can kind of see it now."
