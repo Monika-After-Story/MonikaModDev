@@ -75,25 +75,40 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
-        import subprocess
-        try:
-            subprocess.call(['notify-send', '--version'])
-
-        except OSError as e:
-            #Command wasn't found
-            store.mas_windowreacts.can_show_notifs = False
-            store.mas_utils.writelog(
-                "[WARNING]: notify-send not found, disabling notifications.\n"
-            )
-
-        try:
-            subprocess.call(["xdotool", "--version"])
-
-        except OSError:
-            #Command not found
+        # wayland check
+        if "WAYLAND_DISPLAY" in os.environ:
             persistent._mas_windowreacts_windowreacts_enabled = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
+            store.mas_utils.writelog(
+                "[WARNING]: Window reacts do not work on Wayland\n"
+            )
+
+            # NOTE: it is possible for WAYLAND_DISPLAY to be unset on a wayland
+            # desktop. This is not ideal but is handled with try catch block
+
+        else:
+            import subprocess
+
+            # notify send check
+            try:
+                subprocess.call(['notify-send', '--version'])
+
+            except OSError as e:
+                #Command wasn't found
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_utils.writelog(
+                    "[WARNING]: notify-send not found, disabling notifications.\n"
+                )
+
+            # xdotool check
+            try:
+                subprocess.call(["xdotool", "--version"])
+
+            except OSError:
+                #Command not found
+                persistent._mas_windowreacts_windowreacts_enabled = False
+                store.mas_windowreacts.can_do_windowreacts = False
+                store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -239,7 +254,7 @@ init python:
                     ev.unlocked=False
 
                 #Add the blacklist
-                if "no unlock" in ev.rules:
+                if "no_unlock" in ev.rules:
                     mas_addBlacklistReact(ev_label)
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
@@ -323,7 +338,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """

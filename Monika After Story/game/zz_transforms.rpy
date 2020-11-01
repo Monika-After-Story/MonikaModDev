@@ -98,7 +98,9 @@ init -10 python:
 
 # A transition of the new type
 # which only works with mas_with_statement or Ren'Py 7.0+
-define dissolve_monika = {"master": Dissolve(0.25)}
+init -5 python:
+    dissolve_monika = {"master": Dissolve(0.25, alpha=True)}
+    dissolve_textbox = {"screens": Dissolve(0.2, alpha=True)}
 
 # user defined trasnforms
 transform leftin_slow(x=640, z=0.80, t=1.00):

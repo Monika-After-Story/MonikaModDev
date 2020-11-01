@@ -1764,10 +1764,9 @@ label mas_reaction_cupcake:
     m 3hub "Wow, thanks [player]!"
     m 3euc "Come to think of it, I've been meaning to make some cupcakes myself."
     m 1eua "I wanted to learn how to bake good pastries like Natsuki did."
-    m 1rksdlb "Buuut I've yet to make a kitchen to use!"
+    m 1rksdlb "Buuut I still haven't made a kitchen to use!"
     m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
-    m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
-
+    m 3hua "Would be nice to have another hobby other than writing, ehehe~"
     $ mas_receivedGift("mas_reaction_cupcake")
     $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_cupcake", "category"))
     return
@@ -1775,7 +1774,11 @@ label mas_reaction_cupcake:
 
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
-    $ persistent._mas_filereacts_just_reacted = False
+    python:
+        persistent._mas_filereacts_just_reacted = False
+        #Save all the new sprite data just in case we crash shortly after this
+        store.mas_selspr.save_selectables()
+        renpy.save_persistent()
     return
 
 init 5 python:
@@ -2850,6 +2853,30 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
     if scrunchie and scrunchie.name == "velius94_bunnyscrunchie_blue":
         m 3eub "And the bunny scrunchie complements the outfit nicely too!"
     m 1eka "Thank you so much, [player]."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "mocca_bun_blackandwhitestripedpullover")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1sub "Oh, a new shirt!"
+    m 3hub "It looks amazing, [player]!"
+    m 3eua "One second, let me just put it on.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    call mas_clothes_change(sprite_object)
+
+    m 2eua "Well, what do you think?"
+    m 7hua "I think it looks pretty cute on me.{w=0.2} {nw}"
+    extend 3rubsa "I'll definitely be saving this outfit for a date~"
+    m 1hub "Thanks again, [player]!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
