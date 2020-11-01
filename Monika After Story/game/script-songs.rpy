@@ -1351,10 +1351,8 @@ label mas_song_falling_in_love_at_a_coffee_shop:
     show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
     m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
-    extend 3rtc "or a particularly unremarkable protagonist."
-    m 3hubsa "Then when you have time to think, you realize it isn't the coffee shop, it's the person you meet there each day."
-    m 1tkbsu "Or in my case, it wasn't the protagonist at all...{w=0.2}{nw}"
-    extend 3dkbfu "it was the beautiful person who was really looking through those eyes~"
+    extend 3rtu "or why attending a certain club meeting becomes your favorite part of the day."
+    m 3hubsa "Then when you have time to think, you realize it isn't the place at all, it's the person you meet there each day~"
     return
 
 init 5 python:
