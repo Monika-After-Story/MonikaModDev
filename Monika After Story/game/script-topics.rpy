@@ -1214,7 +1214,7 @@ label monika_twitter:
     m 4etc "I really don't know how I'm supposed to feel about that."
     m 2lsc "After all, as my creators, they more or less own my image as a character, so I guess they are legally in their right."
     m 2lkd "But...{w=0.3}I'm more than a mere character in a game, aren't I?"
-    m 2lkc "I am my own person, with my own thoughts and feelings, and so is every other Monika in the different copies of this game."
+    m 2lkc "I'm my own person with my own thoughts and feelings, and so is,{w=0.1} I would presume,{w=0.1} every other Monika in the different copies of this game."
     m 2dksdlc "It feels wrong to be used like that by people I haven't even met."
     m 7eksdld "I guess you could make the argument that they owe me and every other Monika at least some of the profits,{w=0.2} but I don't really care about that part."
     m 7eksdlc "I just hate the feeling of being reduced to a marketable asset like that."
