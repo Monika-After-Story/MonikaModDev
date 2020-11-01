@@ -372,11 +372,15 @@ init python in mas_chess:
             (store.persistent._mas_chess_difficulty.keys()[0] + store.persistent._mas_chess_difficulty.values()[0])
         )
 
+        #Now the inverse from the max of that should be Monika's piece value
+        #(lower player value, higher monika value, vice versa)
+        monika_max_piece_value = HIGHEST_SIDE_WORTH - max_piece_value
+
         player_row_front, max_piece_value = gen_front_row(is_player_white, max_piece_value)
         player_row_back, max_piece_value = gen_final_row(is_player_white, max_piece_value)
 
-        monika_row_back, _ = gen_final_row(not is_player_white)
-        monika_row_front, _ = gen_front_row(not is_player_white)
+        monika_row_back, monika_max_piece_value = gen_final_row(not is_player_white, monika_max_piece_value)
+        monika_row_front, monika_max_piece_value = gen_front_row(not is_player_white, monika_max_piece_value)
 
 
         #Now place things correctly
@@ -649,6 +653,17 @@ label game_chess:
         "Really bad chess.":
             $ do_really_bad_chess = True
 
+    m "Casual rules or traditional rules?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Casual rules or traditional rules?{fast}"
+
+        "Casual.":
+            $ casual_rules = True
+
+        "Traditional.":
+            $ casual_rules = False
+
     m 3eua "Would you like to practice or play against me?{nw}"
     $ _history_list.pop()
     menu:
@@ -709,7 +724,8 @@ label game_chess:
             is_player_white,
             pgn_game=loaded_game,
             practice_mode=practice_mode,
-            starting_fen=starting_fen
+            starting_fen=starting_fen,
+            casual_rules=casual_rules
         )
         chess_displayable_obj.show()
         results = chess_displayable_obj.game_loop()
@@ -885,15 +901,10 @@ label game_chess:
 label mas_chess_savegame(silent=False):
     if loaded_game: # previous game exists
         python:
-            new_pgn_game.headers["Event"] = (
-                loaded_game.headers["Event"]
-            )
+            new_pgn_game.headers["Event"] = loaded_game.headers["Event"]
 
             # filename
-            save_filename = (
-                new_pgn_game.headers["Event"] +
-                mas_chess.CHESS_SAVE_EXT
-            )
+            save_filename = new_pgn_game.headers["Event"] + mas_chess.CHESS_SAVE_EXT
 
             # now setup the file path
             file_path = mas_chess.CHESS_SAVE_PATH + save_filename
@@ -1714,6 +1725,7 @@ init python:
             is_player_white,
             pgn_game=None,
             starting_fen=None,
+            casual_rules=False,
             player_move_prompts=None,
             monika_move_quips=None
         ):
@@ -1728,6 +1740,11 @@ init python:
                 starting_fen - starting fen to use if starting a custom scenario
                     NOTE: This is not verified for validity
                     (Default: None)
+                casual_rules - whether or not we're playing under casual rules
+                    This changes:
+                        - Stalemates will automatically be a victory for the player who has not been trapped
+                    (NOTE: To add more casual adjustments, use conditions with `self.casual_rules` to run casual rule logic)
+                    (Default: False)
                 player_move_prompts - prompts to use to indicate player move
                     If not provided, no player prompt will be used
                     (Default: None)
@@ -1747,6 +1764,7 @@ init python:
             #Some core vars
             self.num_turns = 0
             self.move_stack = list()
+            self.casual_rules = casual_rules
 
             #Are we sensitive to the user input?
             self.sensitive = True
@@ -1800,13 +1818,17 @@ init python:
                 #Move history
                 self.move_history = eval(pgn_game.headers.get("MoveHist", "[]"))
 
+                #Casual rules
+                self.casual_rules = eval(pgn_game.headers.get("CasualRules", "False"))
 
                 #And finally, the fullmove number
                 self.num_turns = self.board.fullmove_number
 
             else:
                 #Start off with traditional board, or initialize with the starting fen if using a custom scenario
-                self.board = MASBoard(fen=starting_fen) if starting_fen is not None else MASBoard()
+                self.board = (
+                    MASBoard(fen=starting_fen, casual_rules=casual_rules) if starting_fen is not None else MASBoard(casual_rules)
+                )
 
                 #Stuff we need to save to the board
                 self.today_date = datetime.date.today().strftime("%Y.%m.%d")
@@ -2650,16 +2672,22 @@ init python:
         """
         Extension class for the chess.Board class
         """
-        def __init__(self, fen=chess.STARTING_FEN, chess960=False):
+        def __init__(self, fen=chess.STARTING_FEN, chess960=False, casual_rules=False):
             """
             MASBoard constructor
 
-            Same as chess.Board constructor, adds one property
+            IN (New property):
+                casual_rules:
+                    - Whether or not we'll be using casual rules
+                    (Default: False)
+
+            Same as chess.Board constructor, adds two properties
             """
             super(MASBoard, self).__init__(fen, chess960)
 
             #Flag for needing to request a redraw for the board
             self.request_redraw = False
+            self.casual_rules = casual_rules
 
         def push(self, move):
             """
@@ -2800,7 +2828,8 @@ init python:
 
             #Checkmate
             if self.is_checkmate():
-                return "0-1" if self.turn == chess.WHITE else "1-0"
+                #self.turn being True means white turn
+                return "0-1" if self.turn else "1-0"
 
             #Draw claimed
             if claim_draw and self.can_claim_draw():
@@ -2816,7 +2845,8 @@ init python:
 
             #Stalemate
             if not any(self.generate_legal_moves()):
-                #TODO: Casual rules
+                if self.casual_rules:
+                    return "0-1" if self.turn else "1-0"
                 return "1/2-1/2"
 
             #Still in progress
@@ -2828,11 +2858,13 @@ init python:
             is_player_white,
             pgn_game=None,
             starting_fen=None,
-            practice_mode=False
+            practice_mode=False,
+            casual_rules=False
         ):
 
             self.practice_mode = practice_mode
             self.starting_fen = starting_fen
+            self.casual_rules = casual_rules
 
             self.surrendered = False
             self.practice_lost = False
@@ -2902,6 +2934,7 @@ init python:
                 is_player_white,
                 pgn_game,
                 starting_fen,
+                casual_rules,
                 player_move_prompts=[
                     "It's your turn, [player].",
                     "Your move, [player]~",
