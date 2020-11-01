@@ -3,6 +3,9 @@
         "multimokia",
         "mocca_bun"
     ],
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
     "version": 3,
     "type": 2,
     "name": "mocca_bun_blackandwhitestripedpullover",
