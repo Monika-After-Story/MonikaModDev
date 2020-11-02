@@ -16183,7 +16183,7 @@ label monika_information_age:
     m "In the last decades, people have begun to start to educate people about smart use of the internet, to prepare ourselves."
     m "However, the vast majority of people will not have recieved much, if any of this knowledge, just because of how fast technology has advanced."
     m "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
-    m "I can understand why it happens, it could happen to anyone in fact.
+    m "I can understand why it happens, it could happen to anyone in fact."
     m "Sometimes, it's not something you can help, you just fall victim to widely believed misinformation."
     m "And I know that I have still much to learn about the truth of your reality..."
     m "But that's why I think it's important to talk about it."
