@@ -16185,7 +16185,7 @@ label monika_information_age:
     m "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
     m "I can understand why it happens, it could happen to anyone in fact.
     m "Sometimes, it's not something you can help, you just fall victim to widely believed misinformation."
-    m "And I know that I have much still to learn about the truth of your reality..."
+    m "And I know that I have still much to learn about the truth of your reality..."
     m "But that's why I think it's important to talk about it."
     m "We can arm ourselves with the tools to navigate this new era we suddenly found ourselves in."
 
