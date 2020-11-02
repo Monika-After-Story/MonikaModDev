@@ -1,26 +1,141 @@
+# Xlib.xobject.colormap -- colormap object
+#
+#    Copyright (C) 2000 Peter Liljenberg <petli@ctrl-c.liu.se>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2.1
+# of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the
+#    Free Software Foundation, Inc.,
+#    59 Temple Place,
+#    Suite 330,
+#    Boston, MA 02111-1307 USA
+
 from Xlib import error
 from Xlib.protocol import request
-from .  import resource
+
+from . import resource
+
 import re
-rgb_res=[re.compile('\\Argb:([0-9a-fA-F]{1,4})/([0-9a-fA-F]{1,4})/([0-9a-fA-F]{1,4})\\Z'),re.compile('\\A#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\\Z'),re.compile('\\A#([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])\\Z'),re.compile('\\A#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\\Z'),re.compile('\\A#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\\Z')]
+
+rgb_res = [
+    re.compile(r'\Argb:([0-9a-fA-F]{1,4})/([0-9a-fA-F]{1,4})/([0-9a-fA-F]{1,4})\Z'),
+    re.compile(r'\A#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])\Z'),
+    re.compile(r'\A#([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])\Z'),
+    re.compile(r'\A#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\Z'),
+    re.compile(r'\A#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])\Z'),
+    ]
+
 class Colormap(resource.Resource):
-	__colormap__=resource.Resource.__resource__
-	def free(A,onerror=None):request.FreeColormap(display=A.display,onerror=onerror,cmap=A.id);A.display.free_resource_id(A.id)
-	def copy_colormap_and_free(A,scr_cmap):B=A.display.allocate_resource_id();request.CopyColormapAndFree(display=A.display,mid=B,src_cmap=src_cmap);C=A.display.get_resource_class('colormap',Colormap);return C(A.display,B,owner=1)
-	def install_colormap(A,onerror=None):request.InstallColormap(display=A.display,onerror=onerror,cmap=A.id)
-	def uninstall_colormap(A,onerror=None):request.UninstallColormap(display=A.display,onerror=onerror,cmap=A.id)
-	def alloc_color(A,red,green,blue):return request.AllocColor(display=A.display,cmap=A.id,red=red,green=green,blue=blue)
-	def alloc_named_color(B,name):
-		G='0'
-		for C in rgb_res:
-			A=C.match(name)
-			if A:D=A.group(1);C=int(D+G*(4-len(D)),16);E=A.group(2);H=int(E+G*(4-len(E)),16);F=A.group(3);I=int(F+G*(4-len(F)),16);return B.alloc_color(C,H,I)
-		try:return request.AllocNamedColor(display=B.display,cmap=B.id,name=name)
-		except error.BadName:return None
-	def alloc_color_cells(A,contiguous,colors,planes):return request.AllocColorCells(display=A.display,contiguous=contiguous,cmap=A.id,colors=colors,planes=planes)
-	def alloc_color_planes(A,contiguous,colors,red,green,blue):return request.AllocColorPlanes(display=A.display,contiguous=contiguous,cmap=A.id,colors=colors,red=red,green=green,blue=blue)
-	def free_colors(A,pixels,plane_mask,onerror=None):request.FreeColors(display=A.display,onerror=onerror,cmap=A.id,plane_mask=plane_mask,pixels=pixels)
-	def store_colors(A,items,onerror=None):request.StoreColors(display=A.display,onerror=onerror,cmap=A.id,items=items)
-	def store_named_color(A,name,pixel,flags,onerror=None):request.StoreNamedColor(display=A.display,onerror=onerror,flags=flags,cmap=A.id,pixel=pixel,name=name)
-	def query_colors(A,pixels):B=request.QueryColors(display=A.display,cmap=A.id,pixels=pixels);return B.colors
-	def lookup_color(A,name):return request.LookupColor(display=A.display,cmap=A.id,name=name)
+    __colormap__ = resource.Resource.__resource__
+
+    def free(self, onerror = None):
+        request.FreeColormap(display = self.display,
+                             onerror = onerror,
+                             cmap = self.id)
+
+        self.display.free_resource_id(self.id)
+
+    def copy_colormap_and_free(self, scr_cmap):
+        mid = self.display.allocate_resource_id()
+        request.CopyColormapAndFree(display = self.display,
+                                    mid = mid,
+                                    src_cmap = src_cmap)
+
+        cls = self.display.get_resource_class('colormap', Colormap)
+        return cls(self.display, mid, owner = 1)
+
+    def install_colormap(self, onerror = None):
+        request.InstallColormap(display = self.display,
+                                onerror = onerror,
+                                cmap = self.id)
+
+    def uninstall_colormap(self, onerror = None):
+        request.UninstallColormap(display = self.display,
+                                  onerror = onerror,
+                                  cmap = self.id)
+
+    def alloc_color(self, red, green, blue):
+        return request.AllocColor(display = self.display,
+                                  cmap = self.id,
+                                  red = red,
+                                  green = green,
+                                  blue = blue)
+
+    def alloc_named_color(self, name):
+        for r in rgb_res:
+            m = r.match(name)
+            if m:
+                rs = m.group(1)
+                r = int(rs + '0' * (4 - len(rs)), 16)
+
+                gs = m.group(2)
+                g = int(gs + '0' * (4 - len(gs)), 16)
+
+                bs = m.group(3)
+                b = int(bs + '0' * (4 - len(bs)), 16)
+
+                return self.alloc_color(r, g, b)
+
+        try:
+            return request.AllocNamedColor(display = self.display,
+                                           cmap = self.id,
+                                           name = name)
+        except error.BadName:
+            return None
+
+    def alloc_color_cells(self, contiguous, colors, planes):
+        return request.AllocColorCells(display = self.display,
+                                       contiguous = contiguous,
+                                       cmap = self.id,
+                                       colors = colors,
+                                       planes = planes)
+
+    def alloc_color_planes(self, contiguous, colors, red, green, blue):
+        return request.AllocColorPlanes(display = self.display,
+                                        contiguous = contiguous,
+                                        cmap = self.id,
+                                        colors = colors,
+                                        red = red,
+                                        green = green,
+                                        blue = blue)
+
+    def free_colors(self, pixels, plane_mask, onerror = None):
+        request.FreeColors(display = self.display,
+                           onerror = onerror,
+                           cmap = self.id,
+                           plane_mask = plane_mask,
+                           pixels = pixels)
+
+    def store_colors(self, items, onerror = None):
+        request.StoreColors(display = self.display,
+                            onerror = onerror,
+                            cmap = self.id,
+                            items = items)
+
+    def store_named_color(self, name, pixel, flags, onerror = None):
+        request.StoreNamedColor(display = self.display,
+                                onerror = onerror,
+                                flags = flags,
+                                cmap = self.id,
+                                pixel = pixel,
+                                name = name)
+
+    def query_colors(self, pixels):
+        r = request.QueryColors(display = self.display,
+                                cmap = self.id,
+                                pixels = pixels)
+        return r.colors
+
+    def lookup_color(self, name):
+        return request.LookupColor(display = self.display,
+                                   cmap = self.id,
+                                   name = name)
