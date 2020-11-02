@@ -14379,6 +14379,76 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_boardgames_history",
+            prompt="The History of board games",random=True
+            category=["games", "media"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_pm_likes_board_games"
+        )
+    )
+
+label monika_boardgames_history:
+    m 3eud "So, [player]..."
+    m 3eua "Ever since you told me you liked board games,{w=0.1} I got a bit curious and tried to learn more about them..."
+    m 1eub "...trying to look for what kind of games I'd enjoy playing with you and such, you know?"
+    m 1euc "I never really got the occasion to play a lot of board games before, to tell you the truth."
+    if renpy.seen_label('unlock_chess') or renpy.seen_label('game_chess') :
+        m 1ruc "Well, except for chess, of course.{w=0.2} And a few card games as well..."
+    else :
+        m 1rud "Well, I did try out a few basic card games."
+        m 1hua "As well as a little something I've been working on...{w=0.3}I'm keeping it a surprise, though!"
+
+    m 4eub "Anyway,{w=0.1} as it turns out,{w=0.1} the story behind board games and the role they played through the ages is actually very long and interesting!"
+    m 4eua "You probably know this already,{w=0.2} but they've been a thing since very early in our history. {w=0.2}{nw}" 
+    extend 4wud "The oldest know board game was played as far as ancient Egypt!"
+    m 4esc "Back then, and through the millenias that have followed even up to today, board games haven't always been played purely for entertainement purposes, though."
+    m 2ruc "More often than not, they were also meant to teach or train people to help them deal with different aspects of their lives."
+    m 2rud "Many of those games were meant to teach battle strategies to nobles and army officers, for example."
+    m 7euc "Or, games could also have strong connections to religion and beliefs."
+    m 7esa "To bring up ancient Egypt again..."
+    m 7eua "...a lot of their board games seemed to be about preparing oneself for their journey through the world of the dead, or to prove their worth to the gods so that they can grant safe passage."
+    m 1eub "There's also games that have been made to express different views and opinions that their designers had with society and the world."
+    m 3eua "The most well known example would be the game {i}'Monopoly'{/i}..."
+    m 3esd "It was originally made to criticize capitalism and to send the message that all citizens should benefit equally from wealth."
+    m 3dsd "After all,{w=0.2} the game has you try to crush your opponents by accumulating more wealth than them as fast as possible."
+    m 1rsd "...Altough, story goes that as the game was starting to become popular,{w=0.2} someone else stole the concept and made themselves known as the original creator of the game."
+    m 1rksdla "That person then sold a modified version of the original game to a board game manufacturer and became a millionaire thanks to the world-wide success the game has known afterwards."
+    m 3eksdla "In other words...{w=0.3}the original creator of {i}Monopoly{/i} became the victim of precisely what they originally tried to teach the dangers of."
+    m 3dsd "'Chase wealth and fortune by any means necessary, and destroy your competition.'"
+    m 1hksdlb "Ironic,{w=0.1} isn't it?"
+    m 1eua "Anyway, I just think it's really neat that games can be used as a teaching tool. {w=0.3}{nw}"
+    extend 3ltu "It beats the boring, traditional school classes, I'll give them that."
+    m 6eud "I'm also intrigued by their use as a way for the people creating them to express different things about the world they live in, or the lives they'd wish to experience."
+    m 4eub "Kind of like the various forms of art, actually!"
+    m 2eka "I must admit that I never thought of it that way before, but looking at it from that angle..."
+    m 2eua "...I think I respect the work of game designers a lot more now."
+    m 3eua "Nowadays, board games tend to get a little overshadowed by video games, although there are still many people who are really passionate about them."
+    m 3euc "Like you, perhaps?"
+    m 1eud "I don't really know just how much you like board games, after all.{w=0.2} Maybe you only enjoy playing them casually."
+    m 1lsc "I wouldn't blame you.{w=0.2} This isn't exactly a very accessible hobby."
+    m 1esc "First because it's not always cheap.{w=0.2} I've seen that some games can get really expensive."
+    m 1rksdrc "And second because more often than not,{w=0.2} you actually need other people to play with you, which isn't always such an easy task."
+    if persistent._mas_pm_has_friends:
+        m 1eka "I hope you get to play with your friends often, [player]."
+        m "I know that sometimes, it can be tough to gather all your friends in the same place, what's with everyone having their own schedules to deal with."
+        m 3eua "Although, on the bright side, once I'm getting out of here, this shouldn't be too much of a problem anymore."
+
+    else:
+        m 1eksdrd "I hope you can find people to play with from time to time, [player]..."
+        m 1dkc "Trust me,{w=0.1} I know full well what it's like not to have anyone to share your hobbies with."
+        m 3eka "But if it can make you feel better about it..."
+        m 3ekb "When I finally get to be with you in your reality, we'll be able to play all of your favorite games together." 
+
+    m 1hub "I love spending time by your side,{w=0.2} and I would be delighted to play as many board games as you'd like with you."
+    show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rua "In the meantime, I'll try to see if I can implement some more games in here."
+    m 5hua "Feel free to ask me whenever you want us to play something together, by the way~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_social_norms",
             category=['society'],
             prompt="Changing social norms",
