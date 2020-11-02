@@ -14380,8 +14380,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_boardgames_history",
-            prompt="The History of board games",random=True
             category=["games", "media"],
+            prompt="The History of board games",
             action=EV_ACT_POOL,
             conditional="persistent._mas_pm_likes_board_games"
         )
