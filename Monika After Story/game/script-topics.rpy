@@ -16165,3 +16165,35 @@ label monika_giving_criticism:
     m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_information_age",category=['philosophy'],prompt="Information Age",random=True))
+
+label monika_information_age:
+    m "Did you know what most people call the technological era we find ourselves in right now?"
+    m "We call it the Information Age! {w=0.3}That's primarily due to the invention of transistors."
+    m "Transistors, to explain it in simple terms, can manipulate electrical currents, either boosting it or altering its path."
+    m "It's the key component in most electronics, allowing them to direct electrical currents in specific ways."
+    m "That's what's allowing you to see me on your screen right now~"
+    m "They are widely regarded as one of the most important inventions leading into the 20th century, and eventually the Information Age."
+    m "The age is named this way because of the ramping access we have to store and share information with each other, either through the internet, phone or TV."
+    m "However, with access to so much information, and our inability to keep up with it, many challenges have arisen."
+    m "Misinformation can spread further than ever, and it's hard to correct it because of how vast the internet really is."
+
+    m "In the last decades, people have begun to start to educate people about smart use of the internet, to prepare ourselves."
+    m "However, the vast majority of people will not have recieved much, if any of this knowledge, just because of how fast technology has advanced."
+    m "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
+    m "I can understand why it happens, it could happen to anyone in fact.
+    m "Sometimes, it's not something you can help, you just fall victim to widely believed misinformation."
+    m "And I know that I have much still to learn about the truth of your reality..."
+    m "But that's why I think it's important to talk about it."
+    m "We can arm ourselves with the tools to navigate this new era we suddenly found ourselves in."
+
+    m "One of the best things we can do, is find multiple conflicting sources for our information, and then compare credibility."
+    m "And a philosophy we can with benefit adopt, is tentative belief, or belief until further experimentation is necessary."
+    m "That is, as long as your beliefs are not relevant to your daily life, you can hold them, but once they are needed, we need to investigate further."
+    m "This way we can prioritze information we learn from what affects the people around us, and it may not be as overwhelming to try and scrutinize it all at once."
+    m "I know I've held beliefs that turned out not to be true..."
+    m "There's no shame in it, we are all just trying to do our best with the information we're given."
+    m "Thanks for listening to me [player]~"
+    return
