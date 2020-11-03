@@ -3429,7 +3429,9 @@ python early:
             conditional - (None/str) python condition for this exp
             weight - (int) weight of this exp that's used in random selection
             tag - (None/str) tag for this exp
-            repeatable - (boolean) - boolean indicating whether or not this exp can be reused
+            repeatable - (boolean) boolean indicating whether or not this exp can be reused
+            add_to_tag_map - (boolean) private flag whether or not this exp will be added to the tag map
+                NOTE: usually you want to add exp to the map, unless they are temp. Exps in the map WILL NOT be removed by gc
         """
         MIN_WEIGHT = 1
         MAX_WEIGHT = 100
@@ -3437,7 +3439,7 @@ python early:
         exp_tags_map = dict()
         __conditional_cache = dict()
 
-        def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True):
+        def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
             """
             Constructor for idle expressions
 
@@ -3456,6 +3458,8 @@ python early:
                 tag - tag for this exp. Used to group exps. There's no group for exps with no tag
                     (Default: None)
                 repeatable - whether or not this exp can be used multiple times
+                    (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
                     (Default: True)
             """
             self.code = code
@@ -3488,9 +3492,9 @@ python early:
             self.duration = duration
 
             # The rest is handles in another method
-            self.__finish_init(aff_range, conditional, weight, tag, repeatable)
+            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
 
-        def __finish_init(self, aff_range, conditional, weight, tag, repeatable):
+        def __finish_init(self, aff_range, conditional, weight, tag, repeatable, add_to_tag_map):
             """
             This method only exists so we don't need to copy/paste code.
             Finishes init process. For args explanation look up __init__
@@ -3518,13 +3522,14 @@ python early:
                 )
             self.weight = weight
 
-            if tag is not None:
+            if tag is not None and add_to_tag_map:
                 if tag in MASMoniIdleExp.exp_tags_map:
                     MASMoniIdleExp.exp_tags_map[tag].append(self)
 
                 else:
                     MASMoniIdleExp.exp_tags_map[tag] = [self]
             self.tag = tag
+            self._add_to_tag_map = add_to_tag_map
 
             self.repeatable = repeatable
 
@@ -3600,8 +3605,9 @@ python early:
                 weight
                 tag
                 repeatable
+                add_to_tag_map
         """
-        def __init__(self, exps, aff_range=None, conditional=None, weight=50, tag=None, repeatable=True):
+        def __init__(self, exps, aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
             """
             Constructor for groups of idle exps
             NOTE: Check MASMoniIdleExp for explanation of params/methods
@@ -3621,6 +3627,8 @@ python early:
                     (Default: None)
                 repeatable - whether or not this group can be used multiple times
                     (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
+                    (Default: True)
             """
             if isinstance(exps, tuple):
                 exps = list(exps)
@@ -3630,7 +3638,7 @@ python early:
             self.current_index = -1
             self.current_exp = None
 
-            self.__finish_init(aff_range, conditional, weight, tag, repeatable)
+            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
 
         def progress_group(self):
             """
@@ -3688,7 +3696,7 @@ python early:
 
         def select_duration(self):
             """
-            Meaningless
+            Meaningless as hawaiian pizza
             """
             return NotImplemented
 
@@ -3794,7 +3802,7 @@ python early:
 
         def update(self):
             """
-            This cause this disp to update the current exp
+            This causes this disp to update the current exp
             """
             self.timeout = 0
             renpy.redraw(self, 0)
@@ -3823,6 +3831,7 @@ python early:
         def add_by_code(self, code, redraw=False, **kwargs):
             """
             Adds an expression to this idle disp generating it from exp code
+            NOTE: the exp won't be added to the tag map unless you specify it to
 
             IN:
                 code - exp code
@@ -3830,8 +3839,11 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
+            if "add_to_tag_map" not in kwargs:
+                kwargs["add_to_tag_map"] = False
+
             self.add(
-                MASMoniIdleExp(code, **kwargs),
+                (MASMoniIdleExp(code, **kwargs),),
                 redraw=redraw
             )
 
@@ -3869,9 +3881,9 @@ python early:
             flt = lambda exp: exp.tag != tag
 
             for exp_list in self.exp_map.itervalues():
-                exp_list = filter(flt, exp_list)
+                exp_list[:] = filter(flt, exp_list)
 
-            self.exp_groups = filter(flt, self.exp_groups)
+            self.exp_groups[:] = filter(flt, self.exp_groups)
 
             if redraw:
                 self.update()
@@ -3906,6 +3918,7 @@ python early:
         def force_by_code(self, code, clear=False, redraw=True, **kwargs):
             """
             Forces current idle expression to a new exp using exp code
+            NOTE: the exp won't be added to the tag map unless you specify it to
 
             IN:
                 code - exp code
@@ -3915,8 +3928,11 @@ python early:
                     (Default: True)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
+            if "add_to_tag_map" not in kwargs:
+                kwargs["add_to_tag_map"] = False
+
             self.force(
-                [MASMoniIdleExp(code, **kwargs)],
+                MASMoniIdleExp(code, **kwargs),
                 clear=clear,
                 redraw=redraw
             )
@@ -3953,7 +3969,7 @@ python early:
             """
             flt = lambda exp: exp.tag != tag
 
-            self.forced_exps = filter(flt, self.forced_exps)
+            self.forced_exps[:] = filter(flt, self.forced_exps)
 
             if redraw:
                 self.update()
