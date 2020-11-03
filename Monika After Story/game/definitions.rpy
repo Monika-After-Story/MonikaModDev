@@ -3967,9 +3967,13 @@ python early:
                 redraw - whether or not we're forcing redraw
                     (Default: True)
             """
-            flt = lambda exp: exp.tag != tag
+            if tag is not None:
+                for group in list(self.exp_groups):
+                    if group.tag == tag:
+                        self.exp_groups.remove(group)
 
-            self.forced_exps[:] = filter(flt, self.forced_exps)
+                flt = lambda exp: exp.tag != tag
+                self.forced_exps[:] = filter(flt, self.forced_exps)
 
             if redraw:
                 self.update()
@@ -4084,15 +4088,14 @@ python early:
                     else:
                         exp = None
 
+            # Handle inner groups
+            while isinstance(exp, MASMoniIdleExpGroup):
+                group_mode = True
+                exp = self.__handle_group(exp, add_to_list=True)
+
             # If we STILL haven't chosen anything, we use the fallback
             if exp is None:
                 exp = self.fallback
-
-            # Special handling if the selected exp is a group of exps
-            # If so, we need an additional handling
-            elif isinstance(exp, MASMoniIdleExpGroup):
-                group = exp
-                exp = self.__handle_group(group, add_to_list=True)
 
             # Otherwise check if we should remove this exp
             elif not group_mode and not exp.repeatable:
@@ -4117,7 +4120,7 @@ python early:
 
             # HACK: Reset state of wink transforms (because renpy is dum and can't do it itself)
             if self.current_exp.code[1] == "k":
-                self.__reset_transform(self.current_exp.ref._target(), self.current_exp.code)
+                MASMoniIdleDisp.__reset_transform(self.current_exp.ref._target(), self.current_exp.code)
 
             exp_render = renpy.render(self.current_exp.ref, width, height, st, at)
             main_render = renpy.Render(exp_render.width, exp_render.height)
@@ -4151,17 +4154,32 @@ python early:
                 mas_curr_affection
                 mas_aff.NORMAL
             """
+            def handle_group(group):
+                """
+                A method that handles groups of exps using recursion
+
+                IN:
+                    group - MASMoniIdleExpGroup
+
+                ASSUMES:
+                    rv - final list to return
+                """
+                for g_exp in group.exps:
+                    if isinstance(g_exp, MASMoniIdleExpGroup):
+                        handle_group(g_exp)
+                    else:
+                        rv.append(g_exp.ref)
+
+            rv = list()
+            # We don't know when the prediction will occur
             try:
                 curr_aff = mas_curr_affection
             except:
                 curr_aff = mas_aff.NORMAL
-            rv = list()
 
             for exp in self.exp_map[curr_aff]:
                 if isinstance(exp, MASMoniIdleExpGroup):
-                    group = exp
-                    for g_exp in group.exps:
-                        rv.append(g_exp.ref)
+                    handle_group(exp)
                 else:
                     rv.append(exp.ref)
 
