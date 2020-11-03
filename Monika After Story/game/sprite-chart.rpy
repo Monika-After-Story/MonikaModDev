@@ -8360,7 +8360,7 @@ image monika ATL_love_too_enam_plus:
             "monika 5esu"
 
 ### [IMG050]
-init -500:
+init 499:
     python:
         # Brand new displayable for idle
         moni_idle_disp = MASMoniIdleDisp(
@@ -8416,9 +8416,10 @@ init -500:
             )
         )
 
-    image monika idle = moni_idle_disp
+image monika idle = moni_idle_disp
+init 501 python:
     # NOTE: This is incredible heavy and requires prediction
-    $ renpy.start_predict("monika idle")
+    renpy.start_predict("monika idle")
 
 ### [IMG100]
 # chibi monika sprites
