@@ -29,7 +29,5 @@ env:
 # command to check syntax
 script: 
     - python MonikaModDev/tools/travis.py
-    - cd renpy && ./renpy.sh "../mas0105/" lint > renpy_output 
+    - cd renpy && ./renpy.sh "../mas0105/" lint > renpy_output && python ../MonikaModDev/tools/renpy_lint_parser.py && cat renpy_output_clean
     - ./renpy.sh launcher distribute "../mas0105/"
-    - python ../MonikaModDev/tools/renpy_lint_parser.py
-    - cat renpy_output_clean

@@ -8,7 +8,7 @@ import os
 # regex parsing
 
 IMG_NOT_FOUND = re.compile(
-    "\w+/\w+\.rpy:\d+ (Could not find image \(monika |The image named 'monika )\d\w\w\w+"
+    "\w+/(\w+/)*\w+\.rpy:\d+ (Could not find image \(monika |The image named 'monika )\d\w\w\w+"
 )
 
 # file load
@@ -26,7 +26,10 @@ if not INFILE or not OUTFILE:
 
 # loop and clean
 for line in INFILE:
-    if not IMG_NOT_FOUND.match(line):
+    if (
+            len(line.strip) > 0
+            and not IMG_NOT_FOUND.match(line)
+    ):
         OUTFILE.write(line)
 
 exit(0)
