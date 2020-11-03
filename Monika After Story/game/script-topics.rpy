@@ -16104,9 +16104,8 @@ label monika_stargazing:
     m 5eka "You know [mas_get_player_nickname()], to me you're like a star..."
     m 5rkbsu "A beautiful, bright beacon from a distant world, forever out of reach."
     m 5dkbsu "..."
-    m 5ekbsa "At least, for now..."
-    show monika 5kkbsa
-    pause 2.0
+    m 5ekbsa "At least, for now...{nw}"
+    extend 5kkbsa ""
     return
 
 init 5 python:
