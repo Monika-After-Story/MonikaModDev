@@ -115,6 +115,9 @@ label monika_short_stories_menu:
             if mas_stories.story_database[k].unlocked
         ]
 
+        # also sort this list
+        stories_menu_items.sort()
+
         # check if we have a story available to be unlocked and we can unlock it
         if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
 
@@ -124,10 +127,7 @@ label monika_short_stories_menu:
             else:
                 return_label = "mas_story_unlock_random"
 
-            stories_menu_items.append(("A new story", return_label, True, False))
-
-        # also sort this list
-        stories_menu_items.sort()
+            stories_menu_items.insert(0, ("A new story", return_label, True, False))
 
         # build switch button
         if story_type == mas_stories.TYPE_SCARY:
@@ -529,7 +529,7 @@ label mas_story_genie_simple:
 
     if mas_isMoniNormal(higher=True):
         m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
-        m 1hubfb "When you're here, it really feels like I have everything~"
+        m 1hubsb "When you're here, it really feels like I have everything~"
     return
 
 init 5 python:

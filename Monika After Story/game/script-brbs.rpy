@@ -198,7 +198,7 @@ label monika_idle_shower:
 
                 "Yes.":
                     hide screen mas_background_timed_jump
-                    m 2wubfd "Oh, uh...{w=0.5}you sure answered that fast."
+                    m 2wubsd "Oh, uh...{w=0.5}you sure answered that fast."
                     m 2hkbfsdlb "You...{w=0.5}sure seem eager to let me tag along, huh?"
                     m 2rkbfa "Well..."
                     m 7tubfu "I'm afraid you'll just have to go without me while I'm stuck here."
@@ -209,7 +209,7 @@ label monika_idle_shower:
                 "No.":
                     hide screen mas_background_timed_jump
                     m 2eka "Aw, you rejected me so fast."
-                    m 3tubfb "Are you shy, [player]?"
+                    m 3tubsb "Are you shy, [player]?"
                     m 1hubfb "Ahaha!"
                     show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5tubfu "Alright, I won't follow you this time, ehehe~"
@@ -248,7 +248,7 @@ label monika_idle_shower_callback:
             and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
             and renpy.random.randint(1,20) == 1
         ):
-            m 3tubfb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
+            m 3tubsb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
             m 1hubsa "You could just relax with me some more~"
             m 1hub "Ahaha!"
 
