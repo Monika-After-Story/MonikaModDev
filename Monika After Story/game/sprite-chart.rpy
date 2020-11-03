@@ -7287,206 +7287,8 @@ image monika 6ATL_cryleftright:
 
         repeat
 
-# similar to cryleft and right
-# meant for DISTRESSED
-image monika 6ATL_lookleftright:
-
-    # select image
-    block:
-        choice:
-            "monika 6rkc"
-        choice:
-            "monika 6lkc"
-
-    # select a wait time
-    block:
-        choice:
-            5.0
-        choice:
-            6.0
-        choice:
-            7.0
-        choice:
-            8.0
-        choice:
-            9.0
-        choice:
-            10.0
-    repeat
-
 ### [IMG045]
 # special purpose ATLs that cant really be used for other things atm
-
-# Below 0 to upset affection
-image monika ATL_0_to_upset:
-
-    # 1 time this part
-    "monika 2esc"
-    5.0
-
-    # repeat this part
-    block:
-        # select image
-        block:
-            choice 0.95:
-                "monika 2esc"
-            choice 0.05:
-                "monika 5tsc"
-
-        # select wait time
-        block:
-            choice:
-                10.0
-            choice:
-                12.0
-            choice:
-                14.0
-            choice:
-                16.0
-            choice:
-                18.0
-            choice:
-                20.0
-
-        repeat
-
-# affectionate
-image monika ATL_affectionate:
-    # select image
-    block:
-        choice 0.02:
-            "monika 1eua"
-            1.0
-            choice:
-                "monika 1sua"
-                4.0
-            choice:
-                "monika 1kua"
-                1.5
-            "monika 1eua"
-
-        choice 0.98:
-            choice 0.94898:
-                "monika 1eua"
-            choice 0.051020:
-                "monika 1hua"
-
-    # select wait time
-    block:
-        choice:
-            20.0
-        choice:
-            22.0
-        choice:
-            24.0
-        choice:
-            26.0
-        choice:
-            28.0
-        choice:
-            30.0
-
-    repeat
-
-# enamored
-image monika ATL_enamored:
-
-    # 1 time this part
-    "monika 1eua"
-    5.0
-
-    # repeat
-    block:
-        # select image
-        block:
-            choice 0.02:
-                "monika 1eua"
-                1.0
-                choice:
-                    "monika 1sua"
-                    4.0
-                choice:
-                    "monika 1kua"
-                    1.5
-                "monika 1eua"
-
-            choice 0.98:
-                choice 0.765306:
-                    "monika 1eua"
-                choice 0.112245:
-                    "monika 5esu"
-                choice 0.061224:
-                    "monika 5tsu"
-                choice 0.061224:
-                    "monika 1huu"
-
-        # select wait time
-        block:
-            choice:
-                20.0
-            choice:
-                22.0
-            choice:
-                24.0
-            choice:
-                26.0
-            choice:
-                28.0
-            choice:
-                30.0
-
-        repeat
-
-# love
-image monika ATL_love:
-
-    # 1 time this parrt
-    "monika 1eua"
-    5.0
-
-    # repeat
-    block:
-        # select image
-        block:
-            choice 0.02:
-                "monika 1eua"
-                1.0
-                choice:
-                    "monika 1sua"
-                    4.0
-                choice:
-                    "monika 1kua"
-                    1.5
-                "monika 1eua"
-
-            choice 0.98:
-                choice 0.510104:
-                    "monika 1eua"
-                choice 0.255102:
-                    "monika 5esu"
-                choice 0.091837:
-                    "monika 5tsu"
-                choice 0.091837:
-                    "monika 1huu"
-                choice 0.051020:
-                    "monika 5eubla"
-
-        # select wait time
-        block:
-            choice:
-                20.0
-            choice:
-                22.0
-            choice:
-                24.0
-            choice:
-                26.0
-            choice:
-                28.0
-            choice:
-                30.0
-
-        repeat
 
 # random exps for love_too at normal thru aff
 image monika ATL_love_too_norm_plus:
@@ -7539,21 +7341,65 @@ image monika ATL_love_too_enam_plus:
             "monika 5esu"
 
 ### [IMG050]
-# condition-switched images for old school image selecting
-image monika idle = ConditionSwitch(
-    "mas_isMoniBroken(lower=True)", "monika 6ckc",
-    "mas_isMoniDis()", "monika 6ATL_lookleftright",
-#    "mas_isMoniUpset()", "monika 2efc"
-#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
-    "mas_isBelowZero()", "monika ATL_0_to_upset",
-    "mas_isMoniHappy()", "monika 1eua",
-    "mas_isMoniAff()", "monika ATL_affectionate",
-    "mas_isMoniEnamored()", "monika ATL_enamored",
-    "mas_isMoniLove()", "monika ATL_love",
-    "True", "monika 1esa",
-    predict_all=True
-)
+init 500:
+    python:
+        # Brand new displayable for idle
+        moni_idle_disp = MASMoniIdleDisp(
+            (
+                # Broken (how dared you, monster?)
+                MASMoniIdleExp("6ckc", duration=999, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
+                # Distressed
+                MASMoniIdleExp("6rkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+                MASMoniIdleExp("6lkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+                # Below 0 and Upset
+                MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_exps"),
+                MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
+                MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
+                # Normal
+                MASMoniIdleExp("1esa", duration=999, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
+                # Happy
+                MASMoniIdleExp("1eua", duration=999, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
+                # Affectionate
+                MASMoniIdleExpGroup(
+                    [
+                        MASMoniIdleExp("1eua", duration=1),
+                        MASMoniIdleExp("1sua", duration=4),
+                        MASMoniIdleExp("1eua"),
+                    ],
+                    aff_range=(mas_aff.AFFECTIONATE, None),
+                    weight=2,
+                    tag="aff_plus_exps"
+                ),
+                MASMoniIdleExpGroup(
+                    [
+                        MASMoniIdleExp("1eua", duration=1),
+                        MASMoniIdleExp("1kua", duration=1),
+                        MASMoniIdleExp("1eua"),
+                    ],
+                    aff_range=(mas_aff.AFFECTIONATE, None),
+                    weight=2,
+                    tag="aff_plus_exps"
+                ),
+                MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
+                MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
+                # Enamored
+                MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_plus_exps"),
+                MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
+                MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
+                MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+                MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+                # Love
+                MASMoniIdleExp("1eua", aff_range=(mas_aff.LOVE, None), weight=50, tag="love_exps"),
+                MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
+                MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+                MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+                MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps")
+            )
+        )
 
+    image monika idle = moni_idle_disp
+    # NOTE: This is incredible heavy and requires prediction
+    $ renpy.start_predict("monika idle")
 
 ### [IMG100]
 # chibi monika sprites
