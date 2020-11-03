@@ -32,3 +32,4 @@ script:
     - cd renpy && ./renpy.sh "../mas0105/" lint > renpy_output 
     - ./renpy.sh launcher distribute "../mas0105/"
     - python ../MonikaModDev/tools/renpy_lint_parser.py
+    - cat renpy_output_clean
