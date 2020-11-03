@@ -44,6 +44,58 @@ init -1 python in mas_stories:
             _story.unlocked = True
             _story.pool = False
 
+    def unlock_random_story(story_type=None):
+        """
+        Unlocks and returns a random story of the provided type
+
+        IN:
+            story_type - Type of story to unlock. If None, an untyped (normal) stor
+        """
+        #Firstly, convert this to a proper list
+        story_type = [] if story_type is None else [story_type]
+
+        # get locked stories
+        stories = renpy.store.Event.filterEvents(
+            renpy.store.mas_stories.story_database,
+            unlocked=False,
+            pool=False,
+            category=(True, story_type),
+            aff=mas_curr_affection
+        )
+
+        if len(stories) == 0:
+            # in case the player left the game mid unlocking
+            stories = renpy.store.Event.filterEvents(
+                renpy.store.mas_stories.story_database,
+                unlocked=True,
+                seen=False,
+                pool=False,
+                category=(True, story_type),
+                aff=mas_curr_affection
+            )
+
+            if len(stories) == 0:
+                # There should be no way to get to this point but just in case
+                # let's fail 'nicely'
+                stories = renpy.store.Event.filterEvents(
+                    renpy.store.mas_stories.story_database,
+                    unlocked=True,
+                    pool=False,
+                    category=(True, story_type),
+                    aff=mas_curr_affection
+                )
+
+        # select one story randomly
+        story = stories[renpy.random.choice(stories.keys())]
+
+        # unlock the story
+        story.unlocked = True
+
+        # increment event's shown count and update last seen
+        #story.shown_count += 1
+        #story.last_seen = datetime.datetime.now()
+
+    return story.eventlabel
 
 init 5 python:
     addEvent(
@@ -70,6 +122,7 @@ label monika_short_stories_menu:
     python:
         import store.mas_stories as mas_stories
 
+        #TODO: Generalize this
         # determine if a new story can be unlocked
         mas_can_unlock_story = False
         if story_type == mas_stories.TYPE_SCARY:
@@ -134,6 +187,7 @@ label monika_short_stories_menu:
             switch_str = "short"
         else:
             switch_str = "scary"
+
         switch_item = (
             "I'd like to hear a " + switch_str + " story",
             "monika_short_stories_menu",
@@ -167,15 +221,6 @@ label monika_short_stories_menu:
 
     # return value?
     if _return:
-
-        # NOTE: call_next_event now properly records shown_count and last_seen
-        #check if it's an actual story
-#        if _return in mas_stories.story_database:
-
-            # track show_count stats
-#            $ mas_stories.story_database[_return].shown_count += 1
-#            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
-
         # switching between types
         if _return == "monika_short_stories_menu":
             # NOTE: this is not scalable.
@@ -191,19 +236,19 @@ label monika_short_stories_menu:
 
         else:
             # if we are seeing a new story, store the date for future unlocks
-            $ new_story_key = None
+            $ new_story_key = "normal" if story_type is None else story_type
 
-            if _return == "mas_story_unlock_random":
-                $ new_story_key = "normal"
-
-            elif _return == "mas_scary_story_unlock_random":
-                $ new_story_key = "scary"
-
-            elif not seen_event(_return):
-                if story_type == mas_stories.TYPE_SCARY:
-                    $ new_story_key = "scary"
-                else:
-                    $ new_story_key = "normal"
+            #if _return == "mas_story_unlock_random":
+            #    $ new_story_key = "normal"
+#
+            #elif _return == "mas_scary_story_unlock_random":
+            #    $ new_story_key = "scary"
+#
+            #elif not seen_event(_return):
+            #    if story_type == mas_stories.TYPE_SCARY:
+            #        $ new_story_key = "scary"
+            #    else:
+            #        $ new_story_key = "normal"
 
             if new_story_key is not None:
                 $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
@@ -241,90 +286,9 @@ label mas_scary_story_unlock_random:
    call mas_story_unlock_random_cat(scary=True)
    return
 
-label mas_story_unlock_random_cat(scary=False):
-
+label mas_story_unlock_random_cat(story_type=None):
     python:
-        if scary:
-            # get locked stories
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
-                unlocked=False,
-                pool=False,
-                category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                aff=mas_curr_affection
-            )
 
-            if len(stories) == 0:
-
-                # in case the player left the game mid unlocking
-                stories = renpy.store.Event.filterEvents(
-                    renpy.store.mas_stories.story_database,
-                    unlocked=True,
-                    seen=False,
-                    pool=False,
-                    category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                    aff=mas_curr_affection
-                )
-
-                if len(stories) == 0:
-
-                    # There should be no way to get to this point but just in case
-                    # let's fail 'nicely'
-                    stories = renpy.store.Event.filterEvents(
-                        renpy.store.mas_stories.story_database,
-                        unlocked=True,
-                        pool=False,
-                        category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                        aff=mas_curr_affection
-                    )
-        else:
-            # get locked stories
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
-                unlocked=False,
-                pool=False,
-                excl_cat=list(),
-                aff=mas_curr_affection
-            )
-
-            if len(stories) == 0:
-
-                # in case the player left the game mid unlocking
-                stories = renpy.store.Event.filterEvents(
-                    renpy.store.mas_stories.story_database,
-                    unlocked=True,
-                    pool=False,
-                    seen=False,
-                    excl_cat=list(),
-                    aff=mas_curr_affection
-                )
-
-                if len(stories) == 0:
-
-                    # There should be no way to get to this point but just in case
-                    # let's fail 'nicely'
-                    stories = renpy.store.Event.filterEvents(
-                        renpy.store.mas_stories.story_database,
-                        unlocked=True,
-                        pool=False,
-                        excl_cat=list(),
-                        aff=mas_curr_affection
-                    )
-
-        # select one story randomly
-        story = stories[renpy.random.choice(stories.keys())]
-
-        # unlock the story
-        story.unlocked = True
-
-        # increment event's shown count and update last seen
-        story.shown_count += 1
-        story.last_seen = datetime.datetime.now()
-
-        # using renpy.jump again cause again trasition looks like she's stuck
-        renpy.jump(story.eventlabel)
-
-    return
 
 
 init 5 python:
