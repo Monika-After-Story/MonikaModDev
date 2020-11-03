@@ -32,4 +32,6 @@ for line in INFILE:
     ):
         OUTFILE.write(line)
 
+INFILE.close()
+OUTFILE.close()
 exit(0)
