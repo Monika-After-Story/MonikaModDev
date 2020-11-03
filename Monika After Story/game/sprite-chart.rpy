@@ -7287,6 +7287,200 @@ image monika 6ATL_cryleftright:
 
         repeat
 
+# # # START: DEPRECATED IMAGES, THESE WILL BE REMOVED SOON
+image monika 6ATL_lookleftright:
+
+    # select image
+    block:
+        choice:
+            "monika 6rkc"
+        choice:
+            "monika 6lkc"
+
+    # select a wait time
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+    repeat
+
+image monika ATL_0_to_upset:
+
+    # 1 time this part
+    "monika 2esc"
+    5.0
+
+    # repeat this part
+    block:
+        # select image
+        block:
+            choice 0.95:
+                "monika 2esc"
+            choice 0.05:
+                "monika 5tsc"
+
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
+
+image monika ATL_affectionate:
+    # select image
+    block:
+        choice 0.02:
+            "monika 1eua"
+            1.0
+            choice:
+                "monika 1sua"
+                4.0
+            choice:
+                "monika 1kua"
+                1.5
+            "monika 1eua"
+
+        choice 0.98:
+            choice 0.94898:
+                "monika 1eua"
+            choice 0.051020:
+                "monika 1hua"
+
+    # select wait time
+    block:
+        choice:
+            20.0
+        choice:
+            22.0
+        choice:
+            24.0
+        choice:
+            26.0
+        choice:
+            28.0
+        choice:
+            30.0
+
+    repeat
+
+image monika ATL_enamored:
+
+    # 1 time this part
+    "monika 1eua"
+    5.0
+
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
+                "monika 1eua"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
+
+            choice 0.98:
+                choice 0.765306:
+                    "monika 1eua"
+                choice 0.112245:
+                    "monika 5esu"
+                choice 0.061224:
+                    "monika 5tsu"
+                choice 0.061224:
+                    "monika 1huu"
+
+        # select wait time
+        block:
+            choice:
+                20.0
+            choice:
+                22.0
+            choice:
+                24.0
+            choice:
+                26.0
+            choice:
+                28.0
+            choice:
+                30.0
+
+        repeat
+
+image monika ATL_love:
+
+    # 1 time this parrt
+    "monika 1eua"
+    5.0
+
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
+                "monika 1eua"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
+
+            choice 0.98:
+                choice 0.510104:
+                    "monika 1eua"
+                choice 0.255102:
+                    "monika 5esu"
+                choice 0.091837:
+                    "monika 5tsu"
+                choice 0.091837:
+                    "monika 1huu"
+                choice 0.051020:
+                    "monika 5eubla"
+
+        # select wait time
+        block:
+            choice:
+                20.0
+            choice:
+                22.0
+            choice:
+                24.0
+            choice:
+                26.0
+            choice:
+                28.0
+            choice:
+                30.0
+
+        repeat
+# # # END: DEPRECATED IMGS
+
 ### [IMG045]
 # special purpose ATLs that cant really be used for other things atm
 
