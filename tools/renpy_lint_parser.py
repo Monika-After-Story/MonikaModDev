@@ -27,7 +27,7 @@ if not INFILE or not OUTFILE:
 # loop and clean
 for line in INFILE:
     if (
-            len(line.strip) > 0
+            len(line.strip()) > 0
             and not IMG_NOT_FOUND.match(line)
     ):
         OUTFILE.write(line)
