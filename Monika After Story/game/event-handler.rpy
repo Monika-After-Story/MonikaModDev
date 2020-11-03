@@ -2540,6 +2540,30 @@ label call_next_event:
                 show monika idle
                 jump prompt_menu
 
+            # Force single idle exp
+            if "idle_exp:" in _return:
+                python:
+                    _match = re.search(r"idle_exp:\s*(\d[a-z]{3,13}),\s*(\d)", _return)
+                    if _match is not None:
+                        moni_idle_disp.force_by_code(
+                            _match.group(1),
+                            duration=int(_match.group(2))
+                        )
+
+            # Force idle exp group
+            if "idle_exp_group:" in _return:
+                python:
+                    _match = re.search(r"idle_exp_group:\s*(\w+)", _return)
+                    if _match is not None:
+                        _exp_group = MASMoniIdleDisp.weighted_choice(
+                            MASMoniIdleExp.exp_tags_map.get(
+                                _match.group(1),
+                                tuple()
+                            )
+                        )
+                        if _exp_group is not None:
+                            moni_idle_disp.force(_exp_group)
+
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
