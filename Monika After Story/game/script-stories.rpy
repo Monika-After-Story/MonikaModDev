@@ -74,8 +74,12 @@ init -1 python in mas_stories:
         return (
             seen_event(first_story)
             if new_story_ls is None
-            else new_story_ls != mas_getCurrSeshStart().date()
-
+            else (
+                new_story_ls != mas_getCurrSeshStart().date()
+                #To account for users who run MAS constantly
+                #we'll also allow them to unlock if it's been at least 24 hours in the same session
+                or store.mas_timePastSince(new_story_ls, datetime.timedelta(days=1))
+            )
         )
 
     def _unlock_everything():
