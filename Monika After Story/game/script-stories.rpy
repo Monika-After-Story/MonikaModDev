@@ -74,7 +74,8 @@ init -1 python in mas_stories:
         return (
             seen_event(first_story)
             if new_story_ls is None
-            else new_story_ls != store.persistent.sessions["current_session_start"].date()
+            else new_story_ls != mas_getCurrSeshStart().date()
+
         )
 
     def _unlock_everything():
