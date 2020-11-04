@@ -31,6 +31,10 @@ init -1 python in mas_stories:
     STORY_RETURN = "Nevermind"
     story_database = dict()
 
+    #TODO: Build functions to 'register' story types. This will add all related info to the map
+    #saving the manual additions to each part
+
+
     #Story which starts unlocked for a specific type
     FIRST_STORY_EVL_MAP = {
         TYPE_SCARY: "mas_scary_story_hunter",
