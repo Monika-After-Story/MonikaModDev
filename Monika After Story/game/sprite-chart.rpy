@@ -7040,7 +7040,7 @@ python early:
             A method to select a duration for this exp
 
             OUT:
-                int in range of the duration property of this exp, or the propr itself if it's not a range
+                int in range of the duration property of this exp, or the prop itself if it's not a range
             """
             if isinstance(self.duration, (tuple, list)):
                 return random.randint(self.duration[0], self.duration[1])
@@ -7245,6 +7245,9 @@ python early:
             fallback - (MASMoniIdleExp) fallback exp. Must be ALWAYS available
             timeout - (float) timestamp of the next planned redraw with a new exp
         """
+        # eyes codes whose transforms we manually reset
+        EYES_EXP_CODES = ("k", "n")
+
         def __init__(self, exps=None, fallback=None):
             """
             Constructor for idle displayable
@@ -7608,7 +7611,7 @@ python early:
                 redraw_time = self.timeout - ts_now + 0.1
 
             # HACK: Reset state of wink transforms (because renpy is dum and can't do it itself)
-            if self.current_exp.code[1] == "k":
+            if self.current_exp.code[1] in MASMoniIdleDisp.EYES_EXP_CODES:
                 MASMoniIdleDisp.__reset_transform(self.current_exp.ref._target(), self.current_exp.code)
 
             exp_render = renpy.render(self.current_exp.ref, width, height, st, at)
@@ -8360,62 +8363,62 @@ image monika ATL_love_too_enam_plus:
             "monika 5esu"
 
 ### [IMG050]
-init 499:
-    python:
-        # Brand new displayable for idle
-        moni_idle_disp = MASMoniIdleDisp(
-            (
-                # Broken (how dared you, monster?)
-                MASMoniIdleExp("6ckc", duration=999, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
-                # Distressed
-                MASMoniIdleExp("6rkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
-                MASMoniIdleExp("6lkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
-                # Below 0 and Upset
-                MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_exps"),
-                MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
-                MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
-                # Normal
-                MASMoniIdleExp("1esa", duration=999, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
-                # Happy
-                MASMoniIdleExp("1eua", duration=999, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
-                # Affectionate
-                MASMoniIdleExpGroup(
-                    [
-                        MASMoniIdleExp("1eua", duration=1),
-                        MASMoniIdleExp("1sua", duration=4),
-                        MASMoniIdleExp("1eua"),
-                    ],
-                    aff_range=(mas_aff.AFFECTIONATE, None),
-                    weight=2,
-                    tag="aff_plus_exps"
-                ),
-                MASMoniIdleExpGroup(
-                    [
-                        MASMoniIdleExp("1eua", duration=1),
-                        MASMoniIdleExp("1kua", duration=1),
-                        MASMoniIdleExp("1eua"),
-                    ],
-                    aff_range=(mas_aff.AFFECTIONATE, None),
-                    weight=2,
-                    tag="aff_plus_exps"
-                ),
-                MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
-                MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
-                # Enamored
-                MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_plus_exps"),
-                MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
-                MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
-                MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
-                MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
-                # Love
-                MASMoniIdleExp("1eua", aff_range=(mas_aff.LOVE, None), weight=50, tag="love_exps"),
-                MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
-                MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
-                MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
-                MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps")
-            )
+# Do not change init nor order
+init 499 python:
+    # Brand new displayable for idle
+    moni_idle_disp = MASMoniIdleDisp(
+        (
+            # Broken (how dared you, monster?)
+            MASMoniIdleExp("6ckc", duration=999, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
+            # Distressed
+            MASMoniIdleExp("6rkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+            MASMoniIdleExp("6lkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+            # Below 0 and Upset
+            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_exps"),
+            MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
+            MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
+            # Normal
+            MASMoniIdleExp("1esa", duration=999, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
+            # Happy
+            MASMoniIdleExp("1eua", duration=999, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
+            # Affectionate
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("1eua", duration=1),
+                    MASMoniIdleExp("1sua", duration=4),
+                    MASMoniIdleExp("1eua"),
+                ],
+                aff_range=(mas_aff.AFFECTIONATE, None),
+                weight=2,
+                tag="aff_plus_exps"
+            ),
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("1eua", duration=1),
+                    MASMoniIdleExp("1kua", duration=1),
+                    MASMoniIdleExp("1eua"),
+                ],
+                aff_range=(mas_aff.AFFECTIONATE, None),
+                weight=2,
+                tag="aff_plus_exps"
+            ),
+            MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
+            MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
+            # Enamored
+            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_plus_exps"),
+            MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
+            MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
+            MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+            MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+            # Love
+            MASMoniIdleExp("1eua", aff_range=(mas_aff.LOVE, None), weight=50, tag="love_exps"),
+            MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
+            MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+            MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+            MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps")
         )
-
+    )
+# Do not change init nor order
 image monika idle = moni_idle_disp
 init 501 python:
     # NOTE: This is incredible heavy and requires prediction

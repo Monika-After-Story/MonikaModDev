@@ -1374,6 +1374,7 @@ default persistent._mas_ev_yearset_blacklist = {}
 # special store to contain scrollable menu constants
 init -1 python in evhand:
     import store
+    import re
 
     # this is the event database
     event_database = dict()
@@ -1424,6 +1425,8 @@ init -1 python in evhand:
     IDLE_WHITELIST = [
         "unlock_prompt",
     ]
+
+    RET_KEY_PATTERN_IDLE_EXP = re.compile(r"idle_exp\s*:\s*(?:(?P<exp>\d[a-z]{3,13}),\s*(?P<duration>\d)|(?P<tag>\w+))")
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -2540,29 +2543,26 @@ label call_next_event:
                 show monika idle
                 jump prompt_menu
 
-            # Force single idle exp
-            if "idle_exp:" in _return:
+            # Force idle exp
+            if "idle_exp" in _return:
                 python:
-                    _match = re.search(r"idle_exp:\s*(\d[a-z]{3,13}),\s*(\d)", _return)
+                    _match = re.search(evhand.RET_KEY_PATTERN_IDLE_EXP, _return)
                     if _match is not None:
-                        moni_idle_disp.force_by_code(
-                            _match.group(1),
-                            duration=int(_match.group(2))
-                        )
-
-            # Force idle exp group
-            if "idle_exp_group:" in _return:
-                python:
-                    _match = re.search(r"idle_exp_group:\s*(\w+)", _return)
-                    if _match is not None:
-                        _exp_group = MASMoniIdleDisp.weighted_choice(
-                            MASMoniIdleExp.exp_tags_map.get(
-                                _match.group(1),
-                                tuple()
+                        if _match.group("exp") is not None and _match.group("duration") is not None:
+                            moni_idle_disp.force_by_code(
+                                _match.group("exp"),
+                                duration=int(_match.group("duration"))
                             )
-                        )
-                        if _exp_group is not None:
-                            moni_idle_disp.force(_exp_group)
+
+                        elif _match.group("tag") is not None:
+                            _exp = MASMoniIdleDisp.weighted_choice(
+                                MASMoniIdleExp.exp_tags_map.get(
+                                    _match.group("tag"),
+                                    tuple()
+                                )
+                            )
+                            if _exp is not None:
+                                moni_idle_disp.force(_exp)
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
