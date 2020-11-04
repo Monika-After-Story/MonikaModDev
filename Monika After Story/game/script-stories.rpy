@@ -22,12 +22,52 @@ default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
 init -1 python in mas_stories:
     import store
 
+    UNLOCK_NEW = "unlock new story"
+
     # TYPES:
     TYPE_SCARY = 0
 
     # pane constant
     STORY_RETURN = "Nevermind"
     story_database = dict()
+
+    #Story which starts unlocked for a specific type
+    FIRST_STORY_EVL_MAP = {
+        TYPE_SCARY: "mas_scary_story_hunter",
+        None: "mas_story_tyrant"
+    }
+
+    STORY_FILTER_KWARGS = {
+        TYPE_SCARY: {
+            "category": (True, [TYPE_SCARY])
+        }
+        None: {
+            "excl_cat": list()
+        }
+    }
+    #Override maps to have special conditionals for specific story types
+    NEW_STORY_CONDITIONAL_OVERRIDE = {
+        TYPE_SCARY: "store.mas_isO31() or check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
+    }
+
+    def check_can_unlock_new_story(story_type="normal"):
+        """
+        Checks if it has been at least one day since we've seen the last story or the initial story
+        """
+        new_story_ls = store.persistent._mas_last_seen_new_story["normal"]
+
+        #Get the first story of this type
+        first_story = FIRST_STORY_EVL_MAP.get(story_type, None)
+
+        #If this doesn't have an initial, no go
+        if not first_story:
+            return False
+
+        return (
+            seen_event(first_story)
+            if new_story_ls is None
+            else new_story_ls != store.persistent.sessions["current_session_start"].date()
+        )
 
     def _unlock_everything():
         stories = renpy.store.Event.filterEvents(
@@ -44,7 +84,7 @@ init -1 python in mas_stories:
             _story.unlocked = True
             _story.pool = False
 
-    def unlock_random_story(story_type=None):
+    def get_and_unlock_random_story(story_type=None):
         """
         Unlocks and returns a random story of the provided type
 
@@ -54,13 +94,16 @@ init -1 python in mas_stories:
         #Firstly, convert this to a proper list
         story_type = [] if story_type is None else [story_type]
 
-        # get locked stories
+        static_kwargs = {
+            "pool": False,
+            "category": (True, story_type),
+            "aff": store.mas_curr_affection
+        }
+        #Get locked stories
         stories = renpy.store.Event.filterEvents(
             renpy.store.mas_stories.story_database,
             unlocked=False,
-            pool=False,
-            category=(True, story_type),
-            aff=mas_curr_affection
+            **static_kwargs
         )
 
         if len(stories) == 0:
@@ -69,9 +112,7 @@ init -1 python in mas_stories:
                 renpy.store.mas_stories.story_database,
                 unlocked=True,
                 seen=False,
-                pool=False,
-                category=(True, story_type),
-                aff=mas_curr_affection
+                **static_kwargs
             )
 
             if len(stories) == 0:
@@ -80,9 +121,7 @@ init -1 python in mas_stories:
                 stories = renpy.store.Event.filterEvents(
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
-                    pool=False,
-                    category=(True, story_type),
-                    aff=mas_curr_affection
+                    **static_kwargs
                 )
 
         # select one story randomly
@@ -95,7 +134,7 @@ init -1 python in mas_stories:
         #story.shown_count += 1
         #story.last_seen = datetime.datetime.now()
 
-    return story.eventlabel
+        return story.eventlabel
 
 init 5 python:
     addEvent(
@@ -118,54 +157,36 @@ label monika_short_stories_premenu(story_type=None):
 
 label monika_short_stories_menu:
     # TODO: consider caching the built stories if we have many story categories
-
     python:
         import store.mas_stories as mas_stories
 
-        #TODO: Generalize this
-        # determine if a new story can be unlocked
+        #Determine if a new story can be unlocked
         mas_can_unlock_story = False
-        if story_type == mas_stories.TYPE_SCARY:
-            scary_story_ls = persistent._mas_last_seen_new_story["scary"]
 
-            if mas_isO31():
-                mas_can_unlock_story = True
-            elif scary_story_ls is None:
-                mas_can_unlock_story = seen_event("mas_scary_story_hunter")
-            else:
-                mas_can_unlock_story = scary_story_ls != datetime.date.today()
+        if story_type in mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE:
+            try:
+                mas_can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
+            except Exception as ex:
+                store.mas_utils.writelog("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+                mas_can_unlock_story = False
 
         else:
-            new_story_ls = persistent._mas_last_seen_new_story["normal"]
+            mas_can_unlock_story = mas_stories.check_can_unlock_new_story(story_type)
 
-            if new_story_ls is None:
-                mas_can_unlock_story = seen_event("mas_story_tyrant")
-            else:
-                mas_can_unlock_story = new_story_ls != datetime.date.today()
-
-        # setup stories list
-        if story_type == mas_stories.TYPE_SCARY:
-            stories = renpy.store.Event.filterEvents(
-                mas_stories.story_database,
-                category=(True,[mas_stories.TYPE_SCARY]),
-                pool=False,
-                aff=mas_curr_affection,
-                flag_ban=EV_FLAG_HFM
-            )
-        else:
-            stories = renpy.store.Event.filterEvents(
-                mas_stories.story_database,
-                excl_cat=list(),
-                pool=False,
-                aff=mas_curr_affection,
-                flag_ban=EV_FLAG_HFM
-            )
+        #Setup stories list
+        stories = renpy.store.Event.filterEvents(
+            mas_stories.story_database,
+            pool=False,
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM,
+            **mas_stories.STORY_FILTER_KWARGS.get(story_type, dict())
+        )
 
         # build menu list
         stories_menu_items = [
-            (mas_stories.story_database[k].prompt, k, False, False)
-            for k in stories
-            if mas_stories.story_database[k].unlocked
+            (mas_stories.story_database[story_evl].prompt, story_evl, False, False)
+            for story_evl in stories
+            if mas_stories.story_database[story_evl].unlocked
         ]
 
         # also sort this list
@@ -173,34 +194,24 @@ label monika_short_stories_menu:
 
         # check if we have a story available to be unlocked and we can unlock it
         if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
-
-            # Add to the menu the new story option
-            if story_type == mas_stories.TYPE_SCARY:
-                return_label = "mas_scary_story_unlock_random"
-            else:
-                return_label = "mas_story_unlock_random"
-
-            stories_menu_items.insert(0, ("A new story", return_label, True, False))
+            stories_menu_items.insert(0, ("A new story", mas_stories.UNLOCK_NEW, True, False))
 
         # build switch button
+        #TODO: Build a generalized switch for more than just two items
         if story_type == mas_stories.TYPE_SCARY:
             switch_str = "short"
         else:
             switch_str = "scary"
 
-        switch_item = (
-            "I'd like to hear a " + switch_str + " story",
-            "monika_short_stories_menu",
-            False,
-            False,
-            20
-        )
+        switch_item = ("I'd like to hear a " + switch_str + " story", "monika_short_stories_menu", False, False, 20)
 
-        # final quit item
+        #Final quit item
         if persistent._mas_sensitive_mode:
             space = 20
+
         else:
             space = 0
+
         final_item = (mas_stories.STORY_RETURN, False, False, False, space)
 
     # move Monika to the left
@@ -235,26 +246,18 @@ label monika_short_stories_menu:
             jump monika_short_stories_menu
 
         else:
-            # if we are seeing a new story, store the date for future unlocks
-            $ new_story_key = "normal" if story_type is None else story_type
+            python:
+                story_to_push = _return
 
-            #if _return == "mas_story_unlock_random":
-            #    $ new_story_key = "normal"
-#
-            #elif _return == "mas_scary_story_unlock_random":
-            #    $ new_story_key = "scary"
-#
-            #elif not seen_event(_return):
-            #    if story_type == mas_stories.TYPE_SCARY:
-            #        $ new_story_key = "scary"
-            #    else:
-            #        $ new_story_key = "normal"
+                #If we're unlocking new
+                if story_to_push == mas_stories.UNLOCK_NEW:
+                    #Get type and store the date for future unlocks
+                    new_story_key = "normal" if story_type is None else story_type
+                    persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+                    story_to_push = mas_stories.get_and_unlock_random_story(story_type)
 
-            if new_story_key is not None:
-                $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
-
-            # then push
-            $ pushEvent(_return, skipeval=True)
+                #Then push
+                pushEvent(story_to_push, skipeval=True)
             show monika at t11
 
     else:
@@ -277,19 +280,6 @@ label mas_story_begin:
     m 3eua "[story_begin_quip]"
     m 1duu "Ahem."
     return
-
-label mas_story_unlock_random:
-   call mas_story_unlock_random_cat()
-   return
-
-label mas_scary_story_unlock_random:
-   call mas_story_unlock_random_cat(scary=True)
-   return
-
-label mas_story_unlock_random_cat(story_type=None):
-    python:
-
-
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
