@@ -25,7 +25,7 @@ init -1 python in mas_stories:
     UNLOCK_NEW = "unlock new story"
 
     # TYPES:
-    TYPE_SCARY = 0
+    TYPE_SCARY = "scary"
 
     # pane constant
     STORY_RETURN = "Nevermind"
@@ -40,21 +40,25 @@ init -1 python in mas_stories:
     STORY_FILTER_KWARGS = {
         TYPE_SCARY: {
             "category": (True, [TYPE_SCARY])
-        }
+        },
         None: {
             "excl_cat": list()
         }
     }
     #Override maps to have special conditionals for specific story types
     NEW_STORY_CONDITIONAL_OVERRIDE = {
-        TYPE_SCARY: "store.mas_isO31() or check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
+        TYPE_SCARY: "mas_isO31() or mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
     }
 
-    def check_can_unlock_new_story(story_type="normal"):
+    def check_can_unlock_new_story(story_type=None):
         """
         Checks if it has been at least one day since we've seen the last story or the initial story
         """
-        new_story_ls = store.persistent._mas_last_seen_new_story["normal"]
+        #Coerse this here
+        if story_type is None:
+            story_type = "normal"
+
+        new_story_ls = store.persistent._mas_last_seen_new_story[story_type]
 
         #Get the first story of this type
         first_story = FIRST_STORY_EVL_MAP.get(story_type, None)
@@ -70,19 +74,11 @@ init -1 python in mas_stories:
         )
 
     def _unlock_everything():
-        stories = renpy.store.Event.filterEvents(
-            renpy.store.mas_stories.story_database,
-            unlocked=False
-        )
-        for _, story in stories.iteritems():
-            story.unlocked = True
-
-
-    def unlock_pooled_story(event_label):
-        _story = store.mas_getEV(event_label)
-        if _story is not None:
-            _story.unlocked = True
-            _story.pool = False
+        """
+        Dev function, unlocks all stories
+        """
+        for story in story_database.itervalues():
+            story.unlocked=True
 
     def get_and_unlock_random_story(story_type=None):
         """
@@ -91,14 +87,15 @@ init -1 python in mas_stories:
         IN:
             story_type - Type of story to unlock. If None, an untyped (normal) stor
         """
-        #Firstly, convert this to a proper list
-        story_type = [] if story_type is None else [story_type]
-
+        #Prep the args that never change so we can easily pass these into the following funcs
         static_kwargs = {
             "pool": False,
-            "category": (True, story_type),
             "aff": store.mas_curr_affection
         }
+
+        #Add the additional filters as this depends from type to type
+        static_kwargs.update(STORY_FILTER_KWARGS.get(story_type, dict()))
+
         #Get locked stories
         stories = renpy.store.Event.filterEvents(
             renpy.store.mas_stories.story_database,
@@ -106,33 +103,19 @@ init -1 python in mas_stories:
             **static_kwargs
         )
 
-        if len(stories) == 0:
-            # in case the player left the game mid unlocking
+        if not len(stories):
+            #If we somehow have no stories, we'll pick randomly from the unlocked group for this type
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=True,
-                seen=False,
                 **static_kwargs
             )
 
-            if len(stories) == 0:
-                # There should be no way to get to this point but just in case
-                # let's fail 'nicely'
-                stories = renpy.store.Event.filterEvents(
-                    renpy.store.mas_stories.story_database,
-                    unlocked=True,
-                    **static_kwargs
-                )
-
-        # select one story randomly
+        #Grab one of the stories
         story = stories[renpy.random.choice(stories.keys())]
 
-        # unlock the story
+        #Unlock and return its eventlabel
         story.unlocked = True
-
-        # increment event's shown count and update last seen
-        #story.shown_count += 1
-        #story.last_seen = datetime.datetime.now()
 
         return story.eventlabel
 
@@ -1504,7 +1487,9 @@ label mas_scary_story_flowered_lantern:
     m 2rkc "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
     m 1ekc "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu's death."
     m 1dsd "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
-    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
+
+    $ mas_setEVLPropValues("mas_scary_story_flowered_lantern_2", unlocked=True, pool=False)
+
     m 1hua "...And that's it for part one! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()
     menu:
@@ -1570,7 +1555,8 @@ label mas_scary_story_flowered_lantern_2:
     m 4dsc "Love between one who is alive and one who is dead can only result in the death of the one who is alive."
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         hide mas_lantern
-    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
+
+    $ mas_setEVLPropValues("mas_scary_story_flowered_lantern_3", unlocked=True, pool=False)
 
     m 1hua "...And that's it for part two! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()
