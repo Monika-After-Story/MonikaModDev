@@ -44,6 +44,8 @@
 
 init python:
     # need to initially define this so it can be used in topic / event creation
+    # NOTE: these are not updated until after aff progpoints so dont use this
+    #   in aff prog points.
     mas_curr_affection = store.mas_affection.NORMAL
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
