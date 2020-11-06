@@ -16214,7 +16214,7 @@ label monika_studying:
             m 1huu "I'm glad your studies are working out for you, [mas_get_player_nickname()]."
             m 1eub "Being comfortable with studying is sure to bring you many good things in the future!"
             m 3eua "Beyond the feeling of personal accomplishment, having good grades opens up many possibilities for scholarships and employment."
-            m 1huu "It's so nice to be able to pick whichever path you want from any number of possibilites."
+            m 1huu "It's so nice to be able to pick whichever path you want from any number of possibilities."
             m 3eub "So keep working hard, [player].{w=0.3} I'm sure there's a bright future ahead of you!"
 
         "No.":
