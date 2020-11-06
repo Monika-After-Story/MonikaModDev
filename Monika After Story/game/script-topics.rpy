@@ -16165,3 +16165,83 @@ label monika_giving_criticism:
     m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
+
+default persistent._mas_pm_good_at_academics = None
+default persistent._mas_pm_bad_at_academics = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_studying",
+            category=['school'],
+            prompt="Studying",
+            random=True
+        )
+    )
+
+label monika_studying:
+    m 3eub "You might have guessed already, but I've always been pretty dedicated to my studies [player]."
+    m 3eua "It's always felt natural for me to work hard at school...{w=0.2}{nw}"
+    extend 3rksdla "and it's always what's been expected of me, I guess."
+    m 1huu "Not that I'm complaining, I do love a good challenge after all!"
+    m 1esd "But as I grew older, I began asking myself...{nw}{w=0.3}"
+    extend 3etc "what was the point of all this studying?"
+    m 1rssdlc "Looking back, there were so many useless assignments."
+    m 1dksdlc "Stuff I'm probably never ever gonna see again in my life, {nw}"
+    extend 3eksdlc "and time I could've better spent doing something creative instead."
+    m 3dsc "But then again, I guess most schools aren't really about creativity."
+    m 3esd "As it is now, school is probably much more about fitting the mold than it is about discovering yourself."
+    m 3eksdlu "It makes me feel kinda bad for people who can't find satisfaction in studying."
+    m 3rksdlu "I'm sure all of them have things they're passionate about, just not things that are valued in school."
+    m 1dkc "Not that school makes it easy to be passionate about..."
+    m 2etsdld "I mean, they make you study literature and math, but they never teach you why they're important...{w=0.2}or interesting."
+    m 7rksdlc "It's as if the end goal is no longer learning but just making it past the next test."
+    m 3dksdld "...So we end up with students who lose interest in subjects they'd otherwise enjoy,{w=0.2} {nw}"
+    extend 3eksdlc "and teachers who lose interest in teaching them."
+    m 2dkc "So much for having a perfect, one size fits all education system, I guess."
+    m 7eka "As for you, I hope for your sake you've managed to find satisfaction in your studies."
+
+    m 7esc "But just so we're on the same page...{w=0.3}{nw}"
+    extend 7eua "are you good at studying, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "But just so we're on the same page...are you good at studying, [player]?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_good_at_academics = True
+            $ persistent._mas_pm_bad_at_academics = False
+            m 3hub "That's great!"
+            m 1huu "I'm glad your studies are working out for you, [mas_get_player_nickname()]."
+            m 1eub "Being comfortable with studying is sure to bring you many good things in the future!"
+            m 3eua "Beyond the feeling of personal accomplishment, having good grades opens up many possibilities for scholarships and employment."
+            m 1huu "It's so nice to be able to pick whichever path you want from any number of possibilites."
+            m 3eub "So keep working hard, [player].{w=0.3} I'm sure there's a bright future ahead of you!"
+
+        "No.":
+            $ persistent._mas_pm_good_at_academics = False
+            $ persistent._mas_pm_bad_at_academics = True
+            m 1esc "I see..."
+            m 1dkd "That's too bad, [player]...{w=0.3}{nw}"
+            extend 1eka "but even then I don't blame you."
+            m 3eku "Academics aren't for everybody after all, and it's totally fine if you're not comfortable with them."
+            m 3rksdlu "So long{w=0.2}--and only so long as you gave it an honest try, I mean."
+            m 4esd "Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
+            m 1duu "But outside of that, being good in school is definitely not the only way to live a fulfilling life."
+
+            if not persistent._mas_pm_love_yourself:
+                m 3huu "Besides, I'm sure you have plenty of other strong points already...{w=0.3}{nw}"
+                extend 3eku "even if you don't seem to be aware of them yourself."
+
+            m 3ekblb "So don't feel bad about not fitting at school, I don't think any less of you because of it."
+            m 1dubsu "I know it may seem weird coming from an honor student, but you're so much more than just your grades, [mas_get_player_nickname()]!"
+
+        "Kind of.":
+            $ persistent._mas_pm_good_at_academics = False
+            $ persistent._mas_pm_bad_at_academics = False
+            m 1huu "Ehehe, I see."
+            m 3eub "Not an honor student, but not having trouble either, right?"
+            m 3hua "Well, I'm glad your studies are working out for you, [mas_get_player_nickname()]."
+            m 3esc "Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
+            m 3eub "Keep working hard, and I'm sure lots of good things will come your way!"
+
+    return "derandom"
