@@ -16165,3 +16165,32 @@ label monika_giving_criticism:
     m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_curse_words",
+            category=["advice", "life"],
+            prompt="Curse words",
+            random=False,
+            pool=False
+        )
+    )
+
+label monika_curse_words:
+    m "Say, [player], do you use curse words sometimes?"
+    m "Ahaha, I mean, it's alright if you swear occasionally, and I don't have anything against it if you really do."
+    m "I even heard of some studies stating that using... a bit stronger language helps easing the pain if you, say, hurt yourself with something by the accident."
+    m "Or that it really helps dumping your steam if you feel so angry about something."
+    m "But don't get me wrong, I wouldn't like if you were spitting them every now and then, that's just horrible to hear!"
+    m "If you ask me, I'd say I don't curse at all, even when things seem really bad and depressing."
+    m "Our language has so many graceful ways of expressing yourself, your feelings and emotions, and even the worst things in this world could be spoken of with a bit of style and respect."
+    m "And yet there are people who are so ignorant about it!"
+    m "There is nothing cool or anything like that about curses following your every word."
+    m "It just shows how much you don't care minding your tongue and choosing the right words."
+    m "It's a really bad habit to have, and it could be a real long-term struggle for someone."
+    m "That being said, I hope you respect your language just like I do, [mas_get_player_nickname()], ahaha~"
+    m "Would you promise me to keep your tongue clean, [player]?"
+    m "I'd be really happy to make myself better together with you~"
+    return
