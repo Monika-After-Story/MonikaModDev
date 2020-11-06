@@ -6894,7 +6894,6 @@ init -3 python:
 python early:
 # # # START: Idle disp stuff
     import random
-    import time
 
     class IdleExpException(Exception):
         """
@@ -6943,7 +6942,7 @@ python early:
                     (Default: None)
                 weight - weight to use when choosing from a pool of exps. Must be between 1 and 100.
                     NOTE: if this is 100 (max value), this exp will be FORCED among with other exps that has max weight. This is to guarantee that we'll get an exp
-                    (Default : 50)
+                    (Default: 50)
                 tag - tag for this exp. Used to group exps. There's no group for exps with no tag
                     (Default: None)
                 repeatable - whether or not this exp can be used multiple times
@@ -6954,7 +6953,9 @@ python early:
             self.code = code
             self.ref = renpy.display.image.ImageReference(("monika", code,))
 
-            if isinstance(duration, (tuple, list)):
+            if isinstance(duration, list):
+                duration = tuple(duration)
+            if isinstance(duration, tuple):
                 _len = len(duration)
                 if _len != 2:
                     raise IdleExpException(
@@ -7026,13 +7027,20 @@ python early:
             """
             Representation of this object
             """
-            has_tag = self.tag is not None
-            return "<MASMoniIdleExp: (code: '{0}', duration: {1}, tag: {2}{3}{4})>".format(
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            if isinstance(self.duration, tuple):
+                duration = "{0}-{1} sec".format(self.duration[0], self.duration[1])
+            else:
+                duration = "{0} sec".format(self.duration)
+
+            return "<MASMoniIdleExp: (code: '{0}', duration: {1}, tag: {2})>".format(
                 self.code,
-                self.duration,
-                "'" if has_tag else "",
-                self.tag,
-                "'" if has_tag else ""
+                duration,
+                tag
             )
 
         def select_duration(self):
@@ -7042,7 +7050,7 @@ python early:
             OUT:
                 int in range of the duration property of this exp, or the prop itself if it's not a range
             """
-            if isinstance(self.duration, (tuple, list)):
+            if isinstance(self.duration, tuple):
                 return random.randint(self.duration[0], self.duration[1])
             return self.duration
 
@@ -7081,6 +7089,24 @@ python early:
             code_obj = MASMoniIdleExp.__conditional_cache[self.conditional]
             return bool(renpy.python.py_eval_bytecode(code_obj))
 
+        @staticmethod
+        def weighted_choice(exps):
+            """
+            Does weighted choice
+
+            IN:
+                exps - list/tuple of MASMoniIdleExp
+
+            OUT:
+                MASMoniIdleExp or None if was given incorrect input
+
+            ASSUMES:
+                mas_utils.weightedChoice
+            """
+            return mas_utils.weightedChoice(
+                [(exp, exp.weight) for exp in exps]
+            )
+
     class MASMoniIdleExpGroup(MASMoniIdleExp):
         """
         A class to represent a group of MASMoniIdleExp's
@@ -7109,9 +7135,9 @@ python early:
                 conditional - string with condition. If this doesn't pass, no exps of this group will be shown
                     (Default: None)
                 weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
-                    NOTE: if this is 100 (max value), this exp will be FORCED among with other exps/groups that has max weight.
+                    NOTE: if this is 100 (max value), this group will be FORCED among with other exps/groups that has max weight.
                         This is to guarantee that we'll get this if we want so
-                    (Default : 50)
+                    (Default: 50)
                 tag - tag for this group. Used to group groups
                     (Default: None)
                 repeatable - whether or not this group can be used multiple times
@@ -7125,9 +7151,100 @@ python early:
                 exps = [exps]
             self.exps = exps
             self.current_index = -1
-            self.current_exp = None
 
             self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self.__validate_children_aff_range()
+
+        def __validate_children_aff_range(self):
+            """
+            Validates aff range of the exps
+
+            ASSUMES:
+                we finished init this group
+            """
+            if self.aff_range is not None:
+                for exp in self.exps:
+                    if exp.aff_range is None:
+                        exp.aff_range = self.aff_range
+                        if isinstance(exp, MASMoniIdleExpGroup):
+                            exp.__validate_children_aff_range()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            return "<MASMoniIdleExpGroup (group: {0}, tag: {1})>".format(
+                self.exps,
+                tag
+            )
+
+        def select_duration(self):
+            """
+            Meaningless as hawaiian pizza
+            """
+            return NotImplemented
+
+        def check_aff(self, aff=None, check_children=True):
+            """
+            Checks if we're within aff range of this group
+
+            IN:
+                aff - affection to check, if None, uses current affection lvl
+                    (Default: None)
+                check_children - boolean wheather or not we should check this group's exps aff ranges as well
+                    (Default: True)
+
+            OUT:
+                boolean: True if we're within the range, False otherwise
+
+            ASSUMES:
+                mas_curr_affection
+                mas_affection._betweenAff
+            """
+            if aff is None:
+                aff = mas_curr_affection
+
+            return (
+                (
+                    self.aff_range is None
+                    or mas_affection._betweenAff(self.aff_range[0], aff, self.aff_range[1])
+                )
+                and (
+                    not check_children
+                    or any([exp.check_aff(aff) for exp in self.exps])
+                )
+            )
+
+        def check_conditional(self, check_children=True):
+            """
+            Checks conditional for this group
+
+            IN:
+                check_children - boolean wheather or not we should check this group's exps conditionals as well
+                    (Default: True)
+
+            OUT:
+                True if we passed, False otherwise
+            """
+            return (
+                (
+                    self.conditional is None
+                    or bool(
+                        renpy.python.py_eval_bytecode(
+                            MASMoniIdleExpGroup.__conditional_cache[self.conditional]
+                        )
+                    )
+                )
+                and (
+                    not check_children
+                    or any([exp.check_conditional() for exp in self.exps])
+                )
+            )
 
         def progress_group(self):
             """
@@ -7136,7 +7253,7 @@ python early:
             OUT:
                 tuple:
                     selected exp or None
-                        NOTE: Technically we should never get a None from this
+                        NOTE: Ideally we should never get a None from this
                     boolean whether or not we've finished this group (so we can move to the next one)
                     boolean whether or not this group is empty (so the group can be removed)
             """
@@ -7171,66 +7288,104 @@ python early:
 
             return exp, is_done, is_empty
 
+    class MASMoniIdleExpRngGroup(MASMoniIdleExpGroup):
+        """
+        Like MASMoniIdleExpGroup, but chooses exps at random
+
+        PROPERTIES:
+            exps - (list) exps (MASMoniIdleExp) in this group
+            max_uses - (int) max number of random selections for this group before switching to next exp/group
+            uses - (int) how many times we used this group to select an exp
+            These are the same as for MASMoniIdleExp:
+                aff_range
+                conditional
+                weight
+                tag
+                repeatable
+                add_to_tag_map
+        """
+        def __init__(self, exps, max_uses=None, aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
+            """
+            Constructor for groups of random idle exps
+            NOTE: Check MASMoniIdleExp and MASMoniIdleExpGroup for explanation of params/methods
+
+            IN:
+                exps - list of or a single MASMoniIdleExp
+                    NOTE: technically you CAN do inner groups by passing in MASMoniIdleExpGroup / MASMoniIdleExpRngGroup
+                max_uses - number of times this group will select an exp before ending its cycle. If None,
+                    this'll be set to the number of children
+                    (Default: None)
+                aff_range - affection range for this group. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                conditional - string with condition. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
+                    NOTE: if this is 100 (max value), this group will be FORCED among with other exps/groups that has max weight.
+                        This is to guarantee that we'll get this if we want so
+                    (Default: 50)
+                tag - tag for this group. Used to group groups
+                    (Default: None)
+                repeatable - whether or not this group can be used multiple times
+                    (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
+                    (Default: True)
+            """
+            if isinstance(exps, tuple):
+                exps = list(exps)
+            elif not isinstance(exps, list):
+                exps = [exps]
+            self.exps = exps
+
+            if max_uses is None:
+                max_uses = len(self.exps)
+            self.max_uses = max_uses
+            self.uses = 0
+
+            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self.__validate_children_aff_range()
+
         def __repr__(self):
             """
             Representation of this object
             """
-            has_tag = self.tag is not None
-            return "<MASMoniIdleExpGroup (group: {0}, tag: {1}{2}{3})>".format(
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            return "<MASMoniIdleExpRngGroup (group: {0}, tag: {1})>".format(
                 self.exps,
-                "'" if has_tag else "",
-                self.tag,
-                "'" if has_tag else ""
+                tag
             )
 
-        def select_duration(self):
+        def progress_group(self):
             """
-            Meaningless as hawaiian pizza
-            """
-            return NotImplemented
-
-        def check_aff(self, aff=None):
-            """
-            Checks if we're within aff range of this group
-            NOTE: checks children, too
-
-            IN:
-                aff - affection to check, if None, uses current affection lvl
-                    (Default: None)
+            Progresses the group to the next exp
 
             OUT:
-                boolean: True if we're within the range, False otherwise
-
-            ASSUMES:
-                mas_curr_affection
-                mas_affection._betweenAff
+                tuple:
+                    selected exp or None
+                        NOTE: Ideally we should never get a None from this
+                    boolean whether or not we've finished this group (so we can move to the next one)
+                    boolean whether or not this group is empty (so the group can be removed)
             """
-            if aff is None:
-                aff = mas_curr_affection
+            exp = None
 
-            exps_aff_check = any([exp.check_aff(aff) for exp in self.exps])
+            if self.uses < self.max_uses:
+                self.uses += 1
+                exp_pool = filter(lambda exp: exp.check_aff() and exp.check_conditional(), self.exps)
+                exp = MASMoniIdleExpRngGroup.weighted_choice(exp_pool)
 
-            if self.aff_range is None:
-                return exps_aff_check
+                if exp is not None and not exp.repeatable:
+                    self.exps.remove(exp)
 
-            return mas_affection._betweenAff(self.aff_range[0], aff, self.aff_range[1]) and exps_aff_check
+            is_done = (self.uses >= self.max_uses) or exp is None
+            is_empty = not bool(self.exps)
 
-        def check_conditional(self):
-            """
-            Checks conditional for this group
-            NOTE: checks children, too
+            if is_done and not is_empty:
+                self.uses = 0
 
-            OUT:
-                True if we passed, False otherwise
-            """
-            exps_cond_check = any([exp.check_conditional() for exp in self.exps])
-
-            if self.conditional is None:
-                return exps_cond_check
-
-            code_obj = MASMoniIdleExp.__conditional_cache[self.conditional]
-
-            return bool(renpy.python.py_eval_bytecode(code_obj)) and exps_cond_check
+            return exp, is_done, is_empty
 
     class MASMoniIdleDisp(renpy.display.core.Displayable):
         """
@@ -7242,8 +7397,9 @@ python early:
             forced_exps - (list) forced exps
             current_exp - (MASMoniIdleExp) currently selected exp
             exp_groups - (list) MASMoniIdleExpGroup objects that are being 'itered' through
-            fallback - (MASMoniIdleExp) fallback exp. Must be ALWAYS available
-            timeout - (float) timestamp of the next planned redraw with a new exp
+            fallback - (MASMoniIdleExp) fallback exp. Must ALWAYS be available
+            required_st - (int) required shown timebase to switch to the next exp
+            current_st - (float) current shown timebase
         """
         # eyes codes whose transforms we manually reset
         EYES_EXP_CODES = ("k", "n")
@@ -7257,7 +7413,7 @@ python early:
                     (Default: None)
                 fallback - MASMoniIdleExp that is used as a fallback
                     when all other exps aren't passing checks. If None, a standart MASMoniIdleExp
-                    will be used with the '1esa' exp code and 5 seconds duration.
+                    will be used with the '1esa' exp code.
                     NOTE: This one MUST ALWAYS be valid.
                     (Default: None)
 
@@ -7277,26 +7433,29 @@ python early:
             self.exp_groups = list()
 
             if fallback is None:
-                fallback = MASMoniIdleExp("1esa", duration=5)
-            self.current_exp = fallback
+                fallback = MASMoniIdleExp("1esa", duration=10, tag="fallback", add_to_tag_map=False)
             self.fallback = fallback
+            self.current_exp = fallback
+            self.predicted_exp = None
 
-            self.timeout = 0
+            self.__last_st = 0.0
+            self.required_st = 0
+            self.current_st = 0.0
 
         def __repr__(self):
             """
             Representation of this object
             """
-            return "<MASMoniIdleDisp: (curr exp: {0}, exp timeout: {1})>".format(
+            return "<MASMoniIdleDisp: (curr exp: {0}, next exp in: {1} sec)>".format(
                 self.current_exp,
-                self.timeout
+                round(self.required_st - self.current_st, 1)
             )
 
         def update(self):
             """
-            This causes this disp to update the current exp
+            This causes this disp to update
             """
-            self.timeout = 0
+            self.required_st = 0
             renpy.redraw(self, 0)
 
         def add(self, exps, redraw=False):
@@ -7305,12 +7464,12 @@ python early:
 
             IN:
                 exps - list of MASMoniIdleExp / MASMoniIdleExpGroup objects or a single object
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: False)
             """
             # Workaround for single obj
-            if not isinstance(exps, (list, tuple)):
-                exps = [exps]
+            if not isinstance(exps, (tuple, list)):
+                exps = (exps,)
 
             for exp in exps:
                 for aff_lvl, exp_list in self.exp_map.iteritems():
@@ -7327,7 +7486,7 @@ python early:
 
             IN:
                 code - exp code
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
@@ -7335,9 +7494,25 @@ python early:
                 kwargs["add_to_tag_map"] = False
 
             self.add(
-                (MASMoniIdleExp(code, **kwargs),),
+                MASMoniIdleExp(code, **kwargs),
                 redraw=redraw
             )
+
+        def add_by_tag(self, tag, redraw=False):
+            """
+            Adds an expression to this disp using tags
+            Uses weighted choice to select an exp If there's more
+            than one exp with this tag
+
+            IN:
+                tag - tag tou se
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+            """
+            exps = MASMoniIdleExp.exp_tags_map.get(tag, tuple())
+            exp = MASMoniIdleExp.weighted_choice(exps)
+            if exp is not None:
+                self.add(exp, redraw=redraw)
 
         def remove(self, exp, redraw=False):
             """
@@ -7345,7 +7520,7 @@ python early:
 
             IN:
                 exp - MASMoniIdleExp / MASMoniIdleExpGroup object
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: False)
             """
             for exp_list in self.exp_map.itervalues():
@@ -7358,6 +7533,9 @@ python early:
             ):
                 self.exp_groups.remove(exp)
 
+            if self.predicted_exp is exp:
+                self.predicted_exp = None
+
             if redraw:
                 self.update()
 
@@ -7367,7 +7545,7 @@ python early:
 
             IN:
                 tag - tag to filter by
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: False)
             """
             flt = lambda exp: exp.tag != tag
@@ -7377,24 +7555,27 @@ python early:
 
             self.exp_groups[:] = filter(flt, self.exp_groups)
 
+            if self.predicted_exp is not None and self.predicted_exp.tag == tag:
+                self.predicted_exp = None
+
             if redraw:
                 self.update()
 
-        def force(self, exps, clear=False, redraw=True):
+        def force(self, exps, clear=True, redraw=True):
             """
             Forces current idle expression to be exps
             NOTE: the weight and repeatable params are ignored
-            TODO: support dissolve in/out?
 
             IN:
                 exps - list of MASMoniIdleExp / MASMoniIdleExpGroup objects or a single object
-                clear - whether or not we'll clear the current queued exps
-                    (Default: False)
-                redraw - whether or not we're forcing redraw
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
             if clear:
                 self.forced_exps[:] = list()
+                self.exp_groups[:] = list()
 
             if isinstance(exps, (MASMoniIdleExp, MASMoniIdleExpGroup)):
                 self.forced_exps.append(exps)
@@ -7404,19 +7585,22 @@ python early:
                     exps = list(exps)
                 self.forced_exps += exps
 
+            if clear:
+                self.predicted_exp = None
+
             if redraw:
                 self.update()
 
-        def force_by_code(self, code, clear=False, redraw=True, **kwargs):
+        def force_by_code(self, code, clear=True, redraw=True, **kwargs):
             """
             Forces current idle expression to a new exp using exp code
             NOTE: the exp won't be added to the tag map unless you specify it to
 
             IN:
                 code - exp code
-                clear - whether or not we'll clear the current queued exps
-                    (Default: False)
-                redraw - whether or not we're forcing redraw
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
                     (Default: True)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
@@ -7429,13 +7613,30 @@ python early:
                 redraw=redraw
             )
 
+        def force_by_tag(self, tag, clear=True, redraw=True):
+            """
+            Forces current idle expression to a new exp using exp tag.
+            If there's several exp with the same tag, we use weighted choice.
+
+            IN:
+                tag - exp tag
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+            """
+            exps = MASMoniIdleExp.exp_tags_map.get(tag, tuple())
+            exp = MASMoniIdleExp.weighted_choice(exps)
+            if exp is not None:
+                self.force(exp, clear=clear, redraw=redraw)
+
         def unforce(self, exp, redraw=True):
             """
             Removes forced a exp by insance
 
             IN:
                 exp - MASMoniIdleExp / MASMoniIdleExpGroup object
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
             if exp in self.forced_exps:
@@ -7456,16 +7657,18 @@ python early:
 
             IN:
                 tag - tag to filter by
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
-            if tag is not None:
-                for group in list(self.exp_groups):
-                    if group.tag == tag:
-                        self.exp_groups.remove(group)
+            for group in list(self.exp_groups):
+                if group.tag == tag:
+                    self.exp_groups.remove(group)
 
-                flt = lambda exp: exp.tag != tag
-                self.forced_exps[:] = filter(flt, self.forced_exps)
+            flt = lambda exp: exp.tag != tag
+            self.forced_exps[:] = filter(flt, self.forced_exps)
+
+            if self.predicted_exp is not None and self.predicted_exp.tag == tag:
+                self.predicted_exp = None
 
             if redraw:
                 self.update()
@@ -7475,7 +7678,7 @@ python early:
             Removes all forced exp
 
             IN:
-                redraw - whether or not we're forcing redraw
+                redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
             for f_exp in self.forced_exps:
@@ -7484,6 +7687,9 @@ python early:
                     and f_exp in self.exp_groups
                 ):
                     self.exp_groups.remove(f_exp)
+
+            if self.predicted_exp in self.forced_exps:
+                self.predicted_exp = None
 
             self.forced_exps[:] = list()
 
@@ -7495,7 +7701,7 @@ python early:
             Handles a group OwO
 
             OUT:
-                selected exp
+                MASMoniIdleExp
             """
             # Get actuall exp
             exp, is_done, is_empty = group.progress_group()
@@ -7524,14 +7730,16 @@ python early:
 
             return exp
 
-        def _select_exp(self):
+        def __select_exp(self):
             """
-            Selects an expression to show
+            Selects an appropriate expression that we can show now
+            TODO: support dissolve in/out of poses?
 
             OUT:
                 MASMoniIdleExp
 
             ASSUMES:
+                mas_curr_affection
                 mas_utils.weightedChoice
             """
             exp = None
@@ -7539,14 +7747,25 @@ python early:
             group_mode = False
 
             # If we're currently using a group, then we continue
-            if self.exp_groups:
+            while exp is None and self.exp_groups:
                 group_mode = True
-                exp = self.__handle_group(self.exp_groups[-1], add_to_list=False)
+
+                group = self.exp_groups[-1]
+                # We need to check the group in case of aff/cond changes
+                if (
+                    group.check_aff(check_children=False)
+                    and group.check_conditional(check_children=False)
+                ):
+                    exp = self.__handle_group(group, add_to_list=False)
+
+                # This group should be removed as inappropriate
+                else:
+                    self.exp_groups.pop(-1)
 
             # Otherwise try to select one of forced exps
             while exp is None and self.forced_exps:
                 exp = self.forced_exps.pop(0)
-                if not (exp.check_aff() and exp.check_conditional()):
+                if not exp.check_aff() or not exp.check_conditional():
                     exp = None
 
             # If we still haven't chosen anything, select one of base exps
@@ -7595,24 +7814,55 @@ python early:
 
             return exp
 
+        def select_exp(self):
+            """
+            Actually selects an expression. If we had a predicted exp, return it,
+            otherwise select one now.
+
+            OUT:
+                MASMoniIdleExp
+            """
+            if (
+                self.predicted_exp is not None
+                and self.predicted_exp.check_aff()
+                and self.predicted_exp.check_conditional()
+            ):
+                exp = self.predicted_exp
+
+            else:
+                exp = self.__select_exp()
+
+            self.predicted_exp = None
+
+            # We meed to reset some params for wink transforms since RenPy is dum
+            if exp.code[1] in MASMoniIdleDisp.EYES_EXP_CODES:
+                MASMoniIdleDisp.__reset_transform(exp.ref._target(), exp.code)
+
+            return exp
+
         def render(self, width, height, st, at):
             """
             Render for this disp
             """
-            ts_now = time.time()
+            if st > self.__last_st:
+                self.current_st += (st - self.__last_st)
 
-            if self.timeout <= ts_now:
-                self.current_exp = self._select_exp()
-                duration = self.current_exp.select_duration()
-                self.timeout = ts_now + duration
-                redraw_time = duration + 0.1
+            self.__last_st = st
+
+            if (
+                self.required_st <= self.current_st
+                or (
+                    not self.current_exp.check_aff()
+                    or not self.current_exp.check_conditional()
+                )
+            ):
+                self.current_exp = self.select_exp()
+                self.required_st = self.current_exp.select_duration()
+                self.current_st = 0.0
+                redraw_time = self.required_st + 0.1
 
             else:
-                redraw_time = self.timeout - ts_now + 0.1
-
-            # HACK: Reset state of wink transforms (because renpy is dum and can't do it itself)
-            if self.current_exp.code[1] in MASMoniIdleDisp.EYES_EXP_CODES:
-                MASMoniIdleDisp.__reset_transform(self.current_exp.ref._target(), self.current_exp.code)
+                redraw_time = self.required_st - self.current_st + 0.1
 
             exp_render = renpy.render(self.current_exp.ref, width, height, st, at)
             main_render = renpy.Render(exp_render.width, exp_render.height)
@@ -7637,50 +7887,19 @@ python early:
 
         def visit(self):
             """
-            Returns images for prediction
+            Returns exps for prediction
 
             OUT:
                 list of displayables
-
-            ASSUMES:
-                mas_curr_affection
-                mas_aff.NORMAL
             """
-            def handle_group(group):
-                """
-                A method that handles groups of exps using recursion
-
-                IN:
-                    group - MASMoniIdleExpGroup
-
-                ASSUMES:
-                    rv - final list to return
-                """
-                for g_exp in group.exps:
-                    if isinstance(g_exp, MASMoniIdleExpGroup):
-                        handle_group(g_exp)
-                    else:
-                        rv.append(g_exp.ref)
-
-            rv = list()
-            # We don't know when the prediction will occur
-            try:
-                curr_aff = mas_curr_affection
-            except:
-                curr_aff = mas_aff.NORMAL
-
-            for exp in self.exp_map[curr_aff]:
-                if isinstance(exp, MASMoniIdleExpGroup):
-                    handle_group(exp)
-                else:
-                    rv.append(exp.ref)
-
-            return rv
+            if self.predicted_exp is None:
+                self.predicted_exp = self.__select_exp()
+            return [self.current_exp.ref, self.predicted_exp.ref]
 
         @staticmethod
         def __reset_transform(transform, code):
             """
-            A method to reset a transform
+            A method to partially reset a transform
 
             IN:
                 transform - transform to reset params for
@@ -7701,23 +7920,6 @@ python early:
             transform.set_child(og_child)
             transform.raw_child = og_child
 
-        @staticmethod
-        def weighted_choice(exps):
-            """
-            Does weighted choice
-
-            IN:
-                exps - list/tupel of MASMoniIdleExp
-
-            OUT:
-                MASMoniIdleExp or None if was given incorrect input
-
-            ASSUMES:
-                mas_utils.weightedChoice
-            """
-            return mas_utils.weightedChoice(
-                [(exp, exp.weight) for exp in exps]
-            )
 # # # END: Idle disp stuff
 
 init -2 python in mas_sprites:
@@ -8363,24 +8565,45 @@ image monika ATL_love_too_enam_plus:
             "monika 5esu"
 
 ### [IMG050]
-# Do not change init nor order
+# NOTE we need this ready before init 500
 init 499 python:
     # Brand new displayable for idle
     moni_idle_disp = MASMoniIdleDisp(
         (
             # Broken (how dared you, monster?)
-            MASMoniIdleExp("6ckc", duration=999, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
+            MASMoniIdleExp("6ckc", duration=60, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
             # Distressed
             MASMoniIdleExp("6rkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
             MASMoniIdleExp("6lkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExpRngGroup(
+                        [
+                            MASMoniIdleExp("6rktpc", duration=(5, 10)),
+                            MASMoniIdleExp("6lktpc", duration=(5, 10))
+                        ],
+                        max_uses=4
+                    ),
+                    MASMoniIdleExpRngGroup(
+                        [
+                            MASMoniIdleExp("6rktdc", duration=(5, 10)),
+                            MASMoniIdleExp("6lktdc", duration=(5, 10))
+                        ]
+                    ),
+                    MASMoniIdleExp("6dktdc", duration=(3, 5))
+                ],
+                aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED),
+                weight=2,
+                tag="dist_exps"
+            ),
             # Below 0 and Upset
-            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_exps"),
+            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_startup_exps"),
             MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
             MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
             # Normal
-            MASMoniIdleExp("1esa", duration=999, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
+            MASMoniIdleExp("1esa", duration=60, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
             # Happy
-            MASMoniIdleExp("1eua", duration=999, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
+            MASMoniIdleExp("1eua", duration=60, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
             # Affectionate
             MASMoniIdleExpGroup(
                 [
@@ -8390,7 +8613,7 @@ init 499 python:
                 ],
                 aff_range=(mas_aff.AFFECTIONATE, None),
                 weight=2,
-                tag="aff_plus_exps"
+                tag="idle_star_eyes"
             ),
             MASMoniIdleExpGroup(
                 [
@@ -8400,12 +8623,12 @@ init 499 python:
                 ],
                 aff_range=(mas_aff.AFFECTIONATE, None),
                 weight=2,
-                tag="aff_plus_exps"
+                tag="idle_wink"
             ),
             MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
             MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
             # Enamored
-            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_plus_exps"),
+            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_startup_exps"),
             MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
             MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
@@ -8415,14 +8638,11 @@ init 499 python:
             MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
-            MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps")
+            MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps"),
+            MASMoniIdleExp("5eubsa", aff_range=(mas_aff.LOVE, None), weight=2, tag="love_exps")
         )
     )
-# Do not change init nor order
 image monika idle = moni_idle_disp
-init 501 python:
-    # NOTE: This is incredible heavy and requires prediction
-    renpy.start_predict("monika idle")
 
 ### [IMG100]
 # chibi monika sprites

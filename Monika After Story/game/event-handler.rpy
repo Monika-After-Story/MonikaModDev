@@ -2556,7 +2556,7 @@ label call_next_event:
                             )
 
                         elif _match.group("tag") is not None:
-                            _exp = MASMoniIdleDisp.weighted_choice(
+                            _exp = MASMoniIdleExp.weighted_choice(
                                 MASMoniIdleExp.exp_tags_map.get(
                                     _match.group("tag"),
                                     tuple()
