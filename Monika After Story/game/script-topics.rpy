@@ -16181,8 +16181,10 @@ init 5 python:
 label monika_curse_words:
     m 3etd "Say, {w=0.2}[player], {w=0.2}do you use curse words sometimes?"
     m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's alright if you swear occasionally, {w=0.2}and I don't have anything against it if you really do."
+    show monika 5rtd at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rtd "I even heard of some studies stating that using... {w=0.5}a bit stronger language helps easing the pain if you, say, hurt yourself with something by the accident."
     m 5eta "Or that it really helps dumping your steam if you feel so angry about something."
+    show monika 7eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 7eud "But don't get me wrong, {nw}{w=0.2}"
     extend 2dsd "I wouldn't like if you were spitting them every now and then, {nw}{w=0.2}"
     extend 2tfo "that's just horrible to hear!"
