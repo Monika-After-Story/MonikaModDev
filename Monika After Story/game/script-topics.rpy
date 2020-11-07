@@ -16180,7 +16180,7 @@ init 5 python:
 
 label monika_curse_words:
     m 3etd "Say, {w=0.2}[player], {w=0.2}do you use curse words sometimes?"
-    m 1hksdlb "Ahaha, I mean, it's alright if you swear occasionally, {w=0.2}and I don't have anything against it if you really do."
+    m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's alright if you swear occasionally, {w=0.2}and I don't have anything against it if you really do."
     m 5rtd "I even heard of some studies stating that using... {w=0.5}a bit stronger language helps easing the pain if you, say, hurt yourself with something by the accident."
     m 5eta "Or that it really helps dumping your steam if you feel so angry about something."
     m 7eud "But don't get me wrong, {nw}{w=0.2}"
@@ -16188,15 +16188,15 @@ label monika_curse_words:
     extend 2tfo "that's just horrible to hear!"
     m 2dfc "...{nw}{w=0.5}"
     m 2dkc "..."
-    m 2lksdlb "Ahaha, sorry, I must have been carried away a bit."
-    m 1eua "But If you ask me, I'd say I don't curse at all, even when things seem really bad and depressing."
+    m 2lksdlb "Ahaha, {w=0.2}sorry, {w=0.2}I must have been carried away a bit."
+    m 1eua "But If you ask me, {w=0.2}I'd say I don't curse at all, {w=0.2}even when things seem really bad and depressing."
     m 3dkb "Our language has so many graceful ways of expressing yourself, your feelings and emotions, and even the worst things in this world could be spoken of with a bit of style and respect."
     m 1dkd "And yet there are people who are so ignorant about it."
     m 3tkc "There is nothing cool or anything like that about curses following your every word."
     m "It just shows how much you don't care choosing right words and minding your tongue."
     m 2lkc "It's a really bad habit to have, {nw}{w=0.2}"
     extend 2ekc "and it could be a real long-term struggle for someone."
-    m 2ekb "That being said, I hope you respect your language just like I do, {nw}{w=0.2}"
+    m 2ekb "That being said, {w=0.2}I hope you respect your language just like I do, {nw}{w=0.2}"
     extend 2hua "[mas_get_player_nickname()], {w=0.2}ehehe."
     m 2hub "Thanks for listening~"
     return
