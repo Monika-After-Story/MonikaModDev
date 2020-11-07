@@ -4255,7 +4255,7 @@ label greeting_back_from_walk:
 
         m 1eua "[anyway_lets] spend some more time together~"
 
-    elif mas_isMoniDis or mas_isMoniUpset:
+    elif mas_isMoniDis(higher=True):
         m 2euc "There you are, [player]"
         m 2eud "Did that walk help your mood at all?"
 
