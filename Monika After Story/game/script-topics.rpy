@@ -16190,7 +16190,7 @@ label monika_curse_words:
     m 2dkc "..."
     m 2lksdlb "Ahaha, {w=0.2}sorry, {w=0.2}I must have been carried away a bit."
     m 1eua "But If you ask me, {w=0.2}I'd say I don't curse at all, {w=0.2}even when things seem really bad and depressing."
-    m 3dkb "Our language has so many graceful ways of expressing yourself, your feelings and emotions, and even the worst things in this world could be spoken of with a bit of style and respect."
+    m 3dkb "Our language has so many graceful ways of expressing how you feel about this world, {w=0.2}and even the worst things could be spoken of with a bit of style and respect."
     m 1dkd "And yet there are people who are so ignorant about it."
     m 3tkc "There is nothing cool or anything like that about curses following your every word."
     m "It just shows how much you don't care choosing right words and minding your tongue."
