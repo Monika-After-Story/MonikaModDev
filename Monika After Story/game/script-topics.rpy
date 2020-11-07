@@ -16185,7 +16185,7 @@ label monika_curse_words:
     m 5rtd "I even heard of some studies stating that using... {w=0.5}a bit stronger language helps easing the pain if you, say, hurt yourself with something by the accident."
     m 5eta "Or that it really helps dumping your steam if you feel so angry about something."
     show monika 7eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 7eud "But don't get me wrong, {nw}{w=0.2}"
+    m 7eud "But don't get me wrong, {w=0.2}{nw}"
     extend 2dsd "I wouldn't like if you were spitting them every now and then, {nw}{w=0.2}"
     extend 2tfo "that's just horrible to hear!"
     m 2dfc "...{nw}{w=0.5}"
