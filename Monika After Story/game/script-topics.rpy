@@ -16185,7 +16185,7 @@ label monika_curse_words:
     m 3eta "It's called the analgesic response, which makes your body more impervous to pain."
     m 3esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
     m 3efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
-    m 3rksdlb "But there's also such a thing as too much swearing, I'd say"
+    m 3rksdlb "But there's also such a thing as too much swearing, I'd say."
     m 2eud "Swearing can actually reveal a lot about our way of behaving in company of others."
     m 3eub "For instance, {w=0.2}people are much less likely to swear in front of family than with friends, {w=0.2}and the more people you address at once, the more eloquently you try to phrase yourself."
     m 3hksdlb "Of course, not everyone cares what other people think of the way they speak."
