@@ -6912,7 +6912,7 @@ python early:
         PROPERTIES:
             code - (str) exp code for this exp
             ref - (ImageReference) image reference to the sprite
-            duration - (int/tuple) idle duration of this exp
+            duration - (int/tuple) duration of this exp in seconds
             aff_range - (None/tuple) affection range for this exp
             conditional - (None/str) python condition for this exp
             weight - (int) weight of this exp that's used in random selection
@@ -6925,7 +6925,7 @@ python early:
         MAX_WEIGHT = 100
 
         exp_tags_map = dict()
-        __conditional_cache = dict()
+        _conditional_cache = dict()
 
         def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
             """
@@ -6933,7 +6933,7 @@ python early:
 
             IN:
                 code - exp code
-                duration - duration for this exp. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
                     (Default: tuple (20, 30))
                 aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
                     Values can be None to not limit lower or upper bounds
@@ -6975,16 +6975,16 @@ python early:
 
             elif duration < 1:
                 raise IdleExpException(
-                    "Duration for idle expression must be at least one second long. Got: {0} instead.".format(
+                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
                         duration[0]
                     )
                 )
             self.duration = duration
 
             # The rest is handles in another method
-            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
 
-        def __finish_init(self, aff_range, conditional, weight, tag, repeatable, add_to_tag_map):
+        def _finish_init(self, aff_range, conditional, weight, tag, repeatable, add_to_tag_map):
             """
             This method only exists so we don't need to copy/paste code.
             Finishes init process. For args explanation look up __init__
@@ -6999,9 +6999,9 @@ python early:
 
             if (
                 conditional is not None
-                and conditional not in MASMoniIdleExp.__conditional_cache
+                and conditional not in MASMoniIdleExp._conditional_cache
             ):
-                MASMoniIdleExp.__conditional_cache[conditional] = renpy.python.py_compile(conditional, "eval")
+                MASMoniIdleExp._conditional_cache[conditional] = renpy.python.py_compile(conditional, "eval")
             self.conditional = conditional
 
             if not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
@@ -7045,7 +7045,7 @@ python early:
 
         def select_duration(self):
             """
-            A method to select a duration for this exp
+            A method to select duration for this exp
 
             OUT:
                 int in range of the duration property of this exp, or the prop itself if it's not a range
@@ -7086,7 +7086,7 @@ python early:
             if self.conditional is None:
                 return True
 
-            code_obj = MASMoniIdleExp.__conditional_cache[self.conditional]
+            code_obj = MASMoniIdleExp._conditional_cache[self.conditional]
             return bool(renpy.python.py_eval_bytecode(code_obj))
 
         @staticmethod
@@ -7152,10 +7152,10 @@ python early:
             self.exps = exps
             self.current_index = -1
 
-            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
-            self.__validate_children_aff_range()
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self._validate_children_aff_range()
 
-        def __validate_children_aff_range(self):
+        def _validate_children_aff_range(self):
             """
             Validates aff range of the exps
 
@@ -7167,7 +7167,7 @@ python early:
                     if exp.aff_range is None:
                         exp.aff_range = self.aff_range
                         if isinstance(exp, MASMoniIdleExpGroup):
-                            exp.__validate_children_aff_range()
+                            exp._validate_children_aff_range()
 
         def __repr__(self):
             """
@@ -7236,7 +7236,7 @@ python early:
                     self.conditional is None
                     or bool(
                         renpy.python.py_eval_bytecode(
-                            MASMoniIdleExpGroup.__conditional_cache[self.conditional]
+                            MASMoniIdleExpGroup._conditional_cache[self.conditional]
                         )
                     )
                 )
@@ -7341,8 +7341,8 @@ python early:
             self.max_uses = max_uses
             self.uses = 0
 
-            self.__finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
-            self.__validate_children_aff_range()
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self._validate_children_aff_range()
 
         def __repr__(self):
             """
@@ -7390,7 +7390,6 @@ python early:
     class MASMoniIdleDisp(renpy.display.core.Displayable):
         """
         Advanced displayable for managing Moni's idle sprites
-        NOTE: this is a quite heavy disp
 
         PROPERTIES:
             exp_map - (dict) map between exps and aff lvls
