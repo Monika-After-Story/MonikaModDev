@@ -203,10 +203,21 @@ init 5 python:
 label mas_transgender_reveal:
     if persistent._mas_pm_is_trans:
         m 1eua "TODO: YOU ARE TELLING ME THAT YOU ARE NO LONGER TRANSGENDER"
-        $ persistent._mas_pm_is_trans = False
+
+        python:
+            persistent._mas_pm_is_trans = False
+            mas_globals.this_ev.prompt = (
+                "I want to tell you that I am transgender"
+            )
+
     else:
         m 1eua "TODO: YOU ARE TELLING ME THAT YOU ARE TRANSGENDER"
-        $ persistent._mas_pm_is_trans = True
+
+        python:
+            persistent._mas_pm_is_trans = True
+            mas_globals.this_ev.prompt = (
+                "I want to tell you that I am no longer transgender"
+            )
 
     m 1sub "TODO: something happy i guess"
 
