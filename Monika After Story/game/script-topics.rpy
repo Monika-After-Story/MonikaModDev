@@ -16178,14 +16178,29 @@ init 5 python:
         )
     )
 
+default persistent._mas_pm_swears_occasionally = None
+
 label monika_curse_words:
     m 3etd "Say, {w=0.2}[player], {w=0.2}do you ever swear?"
-    m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's alright if you swear occasionally, {w=0.2}a lot of people do, after all."
-    m 2rtd "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
-    m 3eta "It's called the analgesic response, which makes your body more impervous to pain."
-    m 3esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
-    m 3efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
-    m 3rksdlb "But there's also such a thing as too much swearing, I'd say."
+    menu:
+        m "Say, [player], do you ever swear?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_swears_occasionally = True
+            m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
+            pass
+        "No.":
+            $ persistent._mas_pm_swears_occasionally = False
+            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."
+            pass
+    if not persistent._mas_pm_swears_occasionally:
+        m 2rtd "But, you know, maybe swearing isn't actually so bad?"
+        m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+    else:
+        m 3euc "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+    m 1eta "It's called the analgesic response, which makes your body more impervous to pain."
+    m 2esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
+    m 2efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
+    m 3rksdlb "But there's also such a thing as too much swearing, {w=0.2}I'd say."
     m 2eud "Swearing can actually reveal a lot about our way of behaving in company of others."
     m 3eub "For instance, {w=0.2}people are much less likely to swear in front of family than with friends, {w=0.2}and the more people you address at once, the more eloquently you try to phrase yourself."
     m 3hksdlb "Of course, not everyone cares what other people think of the way they speak."
@@ -16196,8 +16211,11 @@ label monika_curse_words:
     m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.5}{nw}"
     extend 1hksdlb "of course not..."
     m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
-    m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
-    m 2tka "Think you could do that for me?"
-    m 2hub "I'd be very happy if you did, ehehe."
+    if persistent._mas_pm_swears_occasionally:
+        m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
+        m 2tka "Think you could do that for me?"
+        m 2hub "I'd be very happy if you did, {w=0.2}ehehe."
+    else:
+        m 2hub "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
     m 7hua "Thanks for listening~"
     return
