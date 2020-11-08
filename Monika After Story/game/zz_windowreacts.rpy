@@ -75,26 +75,27 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
+        #Get session type
         session_type = os.environ.get("XDG_SESSION_TYPE")
+
+        #Wayland is not supported, disable wrs
         if session_type == "wayland":
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog(
-                "[WARNING]: Wayland is not yet supported, disabling notifications.\n"
-            )
+            store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
+
+        #X11 however is fine
         elif session_type == "x11":
             try:
                 import Xlib
+
             except ImportError:
                 store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
-                store.mas_utils.writelog(
-                    "[WARNING]: Xlib failed to be imported, disabling notifications.\n"
-                )
+                store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
+
         else:
-            store.mas_utils.writelog(
-                "[WARNING]: Cannot detect current session type, disabling notifications.\n"
-            )
+            store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -339,7 +340,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """

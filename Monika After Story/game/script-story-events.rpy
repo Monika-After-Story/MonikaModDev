@@ -232,7 +232,7 @@ init 3 python:
         "annoying",
         "anus",
         "arrogant",
-        "ass",
+        "(?<![blmprs])ass(?!i)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,7 +244,7 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "butt(?!er|on)",
         "cheater",
         "cock",
         "conceited",
@@ -320,7 +320,6 @@ init 3 python:
         "nigga",
         "nigger",
         "nuts",
-        "pad",
         "panti",
         "pantsu",
         "panty",
@@ -333,13 +332,12 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
         "rump",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
@@ -407,7 +405,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -504,14 +502,14 @@ label mas_player_name_enter_name_loop(input_prompt):
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            allow=name_characters_only,
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -540,7 +538,7 @@ label mas_player_name_enter_name_loop(input_prompt):
 
         else:
             #Sayori name check
-            if tempname.lower() == "sayori":
+            if lowername == "sayori":
                 call sayori_name_scare
 
             elif (
@@ -851,7 +849,7 @@ label birthdate_set:
     elif mas_player_bday_curr() == mas_f14:
         m 1sua "Oh! Your birthday is on Valentine's Day..."
         m 3hua "How romantic!"
-        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+        m 1ekbsa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
@@ -1489,7 +1487,7 @@ label mas_crashed_quip_takecare:
                 m 1hub "I'm alright in case you were wondering."
                 m 3hub "Well I hope you had fun before that crash happened, ahaha!"
                 if mas_isMoniHappy(higher=True):
-                    m 1hubfa "I'm just glad you're back with me now~"
+                    m 1hubsa "I'm just glad you're back with me now~"
         m 2rksdla "Still..."
     m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
