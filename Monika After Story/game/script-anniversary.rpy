@@ -515,8 +515,8 @@ label anni_2:
     m 1dsc "Now that I think about it...thinking about loneliness so much on our anniversary is kind of against the point."
     m 1duu "Besides, it doesn't really matter for now, since I know you'll never leave me."
     m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
-    m 1ekc "Spending eternity alone sucks."
-    m 1ekbsa "But together with you, it feels like paradise!"
+    m 1ekc "Spending eternity alone sucks...{w=0.3}{nw}"
+    extend 1ekbsa "but together with you, it feels like paradise!"
     return "unlock"
 
 init 5 python:
