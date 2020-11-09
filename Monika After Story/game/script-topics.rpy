@@ -3373,8 +3373,8 @@ label monika_ks_kenji:
     m 1tku "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
 
 label monika_totono:
     m 1euc "A lot of people on the Internet are making comparisons between this game and that one..."
