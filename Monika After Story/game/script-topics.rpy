@@ -16199,7 +16199,7 @@ label monika_curse_words:
 
         "No, I don't swear at all.":
             $ persistent._mas_pm_swear_frequency = SF_NEVER
-            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."
+            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}since I don't either."
             m 2rtd "But, you know, maybe swearing isn't actually so bad?"
             m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
 
