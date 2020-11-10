@@ -16173,8 +16173,7 @@ init 5 python:
             eventlabel="monika_curse_words",
             category=["advice", "life"],
             prompt="Curse words",
-            random=True,
-            pool=False
+            random=True
         )
     )
 
