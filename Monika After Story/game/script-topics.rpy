@@ -16178,18 +16178,18 @@ init 5 python:
         )
     )
 
-default persistent._mas_pm_swears_occasionally = None
+default persistent._mas_pm_swear_frequency = None
 
 label monika_curse_words:
     m 3etd "Say, {w=0.2}[player], {w=0.2}do you ever swear?"
     menu:
         m "Say, [player], do you ever swear?{fast}"
         "Yes.":
-            $ persistent._mas_pm_swears_occasionally = True
+            $ persistent._mas_pm_swear_frequency = 2
             m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
             pass
         "No.":
-            $ persistent._mas_pm_swears_occasionally = False
+            $ persistent._mas_pm_swear_frequency = 0
             m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."
             pass
     if not persistent._mas_pm_swears_occasionally:
