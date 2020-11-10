@@ -16214,11 +16214,13 @@ label monika_curse_words:
     m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.5}{nw}"
     extend 1hksdlb "of course not..."
     m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
+
     if persistent._mas_pm_swear_frequency != SF_NEVER:
         m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
         m 2tka "Think you could do that for me?"
         m 2hub "I'd be very happy if you did, {w=0.2}ehehe."
     else:
         m 2hub "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
+
     m 7hua "Thanks for listening~"
     return "derandom"
