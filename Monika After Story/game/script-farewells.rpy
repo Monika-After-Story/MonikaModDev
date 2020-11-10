@@ -1758,7 +1758,7 @@ label bye_prompt_walk:
         if mas_getEVL_shown_count("bye_prompt_walk") == 0:
 
             if mas_isMoniAff(higher=True) and renpy.random.randint(1,5) == 1:
-                m "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
+                m 1wublb "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Do you think I could...come with you?{fast}"
@@ -1776,7 +1776,7 @@ label bye_prompt_walk:
 
         else:
             if mas_isMoniAff(higher=True) and renpy.random.randint(1,5) == 1:
-                m "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
+                m 1wublb "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Do you think I could...come with you?{fast}"
