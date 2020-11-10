@@ -16193,6 +16193,9 @@ label monika_curse_words:
 
         "I do sometimes.":
             $ persistent._mas_pm_swear_frequency = SF_SOMETIMES
+            m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
+            m 1eua "And I'm really glad you don't forget about the clean language either."
+            m 3euc "By the way, I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
 
         "No, I don't swear at all.":
             $ persistent._mas_pm_swear_frequency = SF_NEVER
