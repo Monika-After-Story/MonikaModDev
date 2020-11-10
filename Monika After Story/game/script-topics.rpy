@@ -16181,9 +16181,9 @@ init 5 python:
 default persistent._mas_pm_swear_frequency = None
 
 label monika_curse_words:
-    m 3etd "Say, {w=0.2}[player], {w=0.2}do you ever swear?"
+    m 3etd "Say, {w=0.2}[player], {w=0.2}do you swear often?{nw}"
     menu:
-        m "Say, [player], do you ever swear?{fast}"
+        m "Say, [player], do you swear often?{fast}"
         "Yes.":
             $ persistent._mas_pm_swear_frequency = 2
             m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
