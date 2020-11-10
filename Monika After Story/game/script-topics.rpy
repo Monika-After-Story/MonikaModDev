@@ -16177,6 +16177,9 @@ init 5 python:
         )
     )
 
+define SF_OFTEN = 2
+define SF_SOMETIMES = 1
+define SF_NEVER = 0
 default persistent._mas_pm_swear_frequency = None
 
 label monika_curse_words:
@@ -16184,11 +16187,15 @@ label monika_curse_words:
     menu:
         m "Say, [player], do you swear often?{fast}"
         "Yes.":
-            $ persistent._mas_pm_swear_frequency = 2
+            $ persistent._mas_pm_swear_frequency = SF_OFTEN
             m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
             m 3euc "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
-        "No.":
-            $ persistent._mas_pm_swear_frequency = 0
+
+        "I do sometimes.":
+            $ persistent._mas_pm_swear_frequency = SF_SOMETIMES
+
+        "No, I don't swear at all.":
+            $ persistent._mas_pm_swear_frequency = SF_NEVER
             m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."
             m 2rtd "But, you know, maybe swearing isn't actually so bad?"
             m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
@@ -16207,7 +16214,7 @@ label monika_curse_words:
     m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.5}{nw}"
     extend 1hksdlb "of course not..."
     m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
-    if persistent._mas_pm_swears_occasionally:
+    if persistent._mas_pm_swear_frequency != SF_NEVER:
         m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
         m 2tka "Think you could do that for me?"
         m 2hub "I'd be very happy if you did, {w=0.2}ehehe."
