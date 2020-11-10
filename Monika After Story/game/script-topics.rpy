@@ -16221,4 +16221,4 @@ label monika_curse_words:
     else:
         m 2hub "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
     m 7hua "Thanks for listening~"
-    return
+    return "derandom"
