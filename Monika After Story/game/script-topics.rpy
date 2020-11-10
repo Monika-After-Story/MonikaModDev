@@ -16214,7 +16214,7 @@ label monika_curse_words:
     extend 2etb "I feel it contributes to a more positive atmosphere overall, {w=0.2}and you don't have to adjust your speech as much depending on who you're talking to."
     m 2ttb "And you know how certain people love atmosphere, {w=0.2}don't you [player]?"
     m 3dkb "I think our language has so many graceful ways of expressing how you feel about this world, {w=0.2}and even the worst things could be spoken of with a bit of style and respect."
-    m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.5}{nw}"
+    m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.3}{nw}"
     extend 1hksdlb "of course not..."
     m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
 
