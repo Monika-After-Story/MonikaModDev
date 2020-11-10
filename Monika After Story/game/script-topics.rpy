@@ -16187,16 +16187,12 @@ label monika_curse_words:
         "Yes.":
             $ persistent._mas_pm_swear_frequency = 2
             m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
-            pass
+            m 2rtd "But, you know, maybe swearing isn't actually so bad?"
+            m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
         "No.":
             $ persistent._mas_pm_swear_frequency = 0
-            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."
-            pass
-    if not persistent._mas_pm_swears_occasionally:
-        m 2rtd "But, you know, maybe swearing isn't actually so bad?"
-        m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
-    else:
-        m 3euc "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}because I don't, {w=0.2}either."m 3euc "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+
     m 1eta "It's called the analgesic response, which makes your body more impervous to pain."
     m 2esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
     m 2efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
@@ -16211,6 +16207,7 @@ label monika_curse_words:
     m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.5}{nw}"
     extend 1hksdlb "of course not..."
     m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
+
     if persistent._mas_pm_swears_occasionally:
         m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
         m 2tka "Think you could do that for me?"
