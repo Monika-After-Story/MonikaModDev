@@ -1427,7 +1427,7 @@ init -1 python in evhand:
     ]
 
     # Used to catch "idle_exp: EXP, DURATION" or "idle_exp: TAG"
-    RET_KEY_PATTERN_IDLE_EXP = re.compile(r"(?:(?<=\|)|(?<=^))\s*idle_exp\s*:\s*(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d)|(?P<tag>\w+))\s*(?:(?=\|)|(?=$))")
+    RET_KEY_PATTERN_IDLE_EXP = re.compile(r"(?:(?<=\|)|(?<=^))\s*idle_exp\s*:\s*(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d+)|(?P<tag>\w+))\s*(?:(?=\|)|(?=$))")
 
     # as well as special functions
     def addIfNew(items, pool):
