@@ -203,6 +203,12 @@ image mas_o31_deco = ConditionSwitch(
     "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
 )
 
+init python:
+    MAS_O31_COSTUME_CG_MAP = {
+        mas_clothes_marisa: "o31mcg",
+        mas_clothes_rin: "o31rcg"
+    }
+
 #Functions
 init -10 python:
     import random
@@ -253,6 +259,9 @@ init -10 python:
             store.queueEvent('mas_change_to_def')
 
     def mas_o31CapGainAff(amount):
+        """
+        CapGainAffection function for o31. See mas_capGainAff for details
+        """
         mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 
@@ -333,8 +342,11 @@ init -10 python:
             # no items to select from
 
             if wearing_costume:
-                return monika_chr.clothes
+                #Check if the current costume is in the cg map, and if so, prep the cg
+                if monika_chr.clothes in MAS_O31_COSTUME_CG_MAP:
+                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes])
 
+                return monika_chr.clothes
             return None
 
         elif len(selection_pool) < 2:
@@ -350,11 +362,18 @@ init -10 python:
 
         if len(non_worn) > 0:
             # randomly select from non worn
-            return random.choice(non_worn)
+            random_outfit = random.choice(non_worn)
 
-        # otherwise randomly select from overall
-        return random.choice(selection_pool)
+        else:
+            # otherwise randomly select from overall
+            random_outfit = random.choice(selection_pool)
 
+        #Setup the image decode
+        if random_outfit in MAS_O31_COSTUME_CG_MAP:
+            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit])
+
+        #And return the outfit
+        return random_outfit
 
     def mas_o31SetCostumeWorn(clothes, year=None):
         """
@@ -383,6 +402,63 @@ init -10 python:
 
         persistent._mas_o31_costumes_worn[clothes_name] = year
 
+    def mas_o31Cleanup():
+        """
+        Cleanup function for o31
+        """
+        #NOTE: Since O31 is costumes, we always reset clothes + hair
+        if monika_chr.is_wearing_clothes_with_exprop("costume"):
+            monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
+            monika_chr.reset_hair()
+
+        #Reset o31_mode flag
+        persistent._mas_o31_in_o31_mode = False
+
+        #Unlock BG Sel if necessary
+        mas_checkBackgroundChangeDelegate()
+
+        #Hide visuals
+        mas_o31HideVisuals()
+
+        #rmall for safety
+        mas_rmallEVL("mas_o31_cleanup")
+
+        #unlock hairdown greet if we don't have hairdown unlocked
+        hair = store.mas_selspr.get_sel_hair(mas_hair_down)
+        if hair is not None and not hair.unlocked:
+            mas_unlockEVL("greeting_hairdown", "GRE")
+
+        #Lock the event clothes selector
+        mas_lockEVL("monika_event_clothes_select", "EVE")
+
+init -11 python in mas_o31_event:
+    import store
+    import datetime
+
+    # setup the docking station for o31
+    cg_station = store.MASDockingStation(store.mas_ics.o31_cg_folder)
+
+    # cg available?
+    cg_decoded = False
+
+
+    def decodeImage(key):
+        """
+        Attempts to decode a cg image
+
+        IN:
+            key - o31 cg key to decode
+
+        RETURNS True upon success, False otherwise
+        """
+        return store.mas_dockstat.decodeImages(cg_station, store.mas_ics.o31_map, [key])
+
+
+    def removeImages():
+        """
+        Removes decoded images at the end of their lifecycle
+        """
+        store.mas_dockstat.removeImages(cg_station, store.mas_ics.o31_map)
 
 #START: O31 AUTOLOAD CHECK
 label mas_o31_autoload_check:
@@ -390,6 +466,12 @@ label mas_o31_autoload_check:
         import random
 
         if mas_isO31() and mas_isMoniNormal(higher=True):
+            #Lock the background selector on o31
+            #TODO: Replace this with generic room deco framework for event deco
+            store.mas_lockEVL("monika_change_background", "EVE")
+            #force to spaceroom
+            mas_changeBackground(mas_background_def, set_persistent=True)
+
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
                 #Setup for greet
@@ -439,7 +521,8 @@ label mas_o31_autoload_check:
                 else:
                     selected_greeting = "greeting_o31_generic"
 
-                #Reset zoom
+                #Save and reset zoom
+                mas_temp_zoom_level = store.mas_sprites.zoom_level
                 store.mas_sprites.reset_zoom()
 
                 #Now that we're here, we're in O31 mode
@@ -458,21 +541,7 @@ label mas_o31_autoload_check:
 
         #It's not O31 anymore or we hit dis. It's time to reset
         elif not mas_isO31() or mas_isMoniDis(lower=True):
-            #NOTE: Since O31 is costumes, we always reset clothes + hair
-            if monika_chr.is_wearing_clothes_with_exprop("costume"):
-                monika_chr.change_clothes(mas_clothes_def, outfit_mode=True)
-                monika_chr.reset_hair()
-
-            #Reset o31_mode flag
-            persistent._mas_o31_in_o31_mode = False
-
-            #unlock hairdown greet if we don't have hairdown unlocked
-            hair = store.mas_selspr.get_sel_hair(mas_hair_down)
-            if hair is not None and not hair.unlocked:
-                mas_unlockEVL("greeting_hairdown", "GRE")
-
-            #Lock the event clothes selector
-            mas_lockEVL("monika_event_clothes_select", "EVE")
+            mas_o31Cleanup()
 
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
@@ -515,6 +584,33 @@ transform mas_o31_cg_scroll:
     xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520
     ease 20.0 yoffset 0.0
 
+### o31 samesesh cleanup
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_o31_cleanup",
+            conditional="persistent._mas_o31_in_o31_mode",
+            start_date=datetime.datetime.combine(mas_o31 + datetime.timedelta(days=1), datetime.time(12)),
+            end_date=mas_o31 + datetime.timedelta(weeks=1),
+            action=EV_ACT_QUEUE,
+            rules={"no_unlock": None},
+            years=[]
+        )
+    )
+
+
+label mas_o31_cleanup:
+    m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
+    call mas_transition_to_emptydesk
+    pause 4.0
+    $ mas_o31Cleanup()
+    with dissolve
+    pause 1.0
+    call mas_transition_from_emptydesk("monika 1hua")
+    m 3hua "All done~"
+    return
+
 ### o31 greetings
 init 5 python:
     addEvent(
@@ -532,15 +628,15 @@ label greeting_o31_marisa:
     $ store.mas_selspr.unlock_hair(mas_hair_downtiedstrand)
 
     ## decoded CG means that we start with monika offscreen
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    # ASSUMING:
-    #    #   vignette should be enabled.
-    #    call spaceroom(hide_monika=True, scene_change=True)
+    if store.mas_o31_event.cg_decoded:
+        # ASSUMING:
+        #   vignette should be enabled.
+        call spaceroom(hide_monika=True, scene_change=True)
 
-    #else:
-    # ASSUMING:
-    #   vignette should be enabled
-    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
+    else:
+        # ASSUMING:
+        #   vignette should be enabled
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -549,42 +645,41 @@ label greeting_o31_marisa:
     m 1hub "Ahaha!"
 
     # decoded CG means we display CG
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    $ cg_delay = datetime.timedelta(seconds=20)
+    if store.mas_o31_event.cg_decoded:
+        $ cg_delay = datetime.timedelta(seconds=20)
 
-    #    # got cg
-    #    m "I'm over here, [player]~"
-    #    window hide
+        # got cg
+        m "I'm over here, [player]~"
+        window hide
 
-    #    show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-    #    $ start_time = datetime.datetime.now()
+        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
 
-    #    while datetime.datetime.now() - start_time < cg_delay:
-    #        pause 1.0
+        hide emptydesk
+        show monika 1hua at i11 zorder MAS_MONIKA_Z
 
-    #    hide emptydesk
-    #    show monika 1hua at i11 zorder MAS_MONIKA_Z
-    #    window auto
-    #    m "Tadaa!~"
+        window auto
+        m "Tadaa!~"
 
     #Post scroll dialogue
     m 1hua "Well..."
-    m 1wub "What do you think?"
-    m 1wua "Suits me pretty well, right?"
+    m 1eub "What do you think?"
+    m 1tuu "Suits me pretty well, right?"
     m 1eua "It took me quite a while to make this costume, you know."
     m 3hksdlb "Getting the right measurements, making sure nothing was too tight or loose, that sort of stuff."
-    m 3eksdla "Especially the hat!"
+    m 3eksdla "...Especially the hat!"
     m 1dkc "The ribbon wouldn't stay still at all..."
     m 1rksdla "Luckily I got that sorted out."
     m 3hua "I'd say I did a good job myself."
-    m 1hub "Ehehe~"
     m 3eka "I'm wondering if you'll be able to see what's different today."
-    m "Besides my costume of course~"
+    m 3tub "Besides my costume of course~"
     m 1hua "But anyway..."
 
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    show monika 1eua
-    #    hide mas_o31_marisa_cg with dissolve
+    if store.mas_o31_event.cg_decoded:
+        show monika 1eua
+        hide mas_o31_marisa_cg with dissolve
 
     m 3ekbsa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
@@ -603,7 +698,12 @@ init 5 python:
     )
 
 label greeting_o31_rin:
-    $ title_cased_hes = hes.capitalize()
+    python:
+        title_cased_hes = hes.capitalize()
+        #TODO: Unlock this hairstyle once we clean it up such that it doesn't require bows
+        #Will need update script
+        #mas_selspr.unlock_hair(mas_hair_braided)
+        mas_sprites.zoom_out()
 
     # ASSUME vignette
     call spaceroom(hide_monika=True, scene_change=True)
@@ -614,43 +714,42 @@ label greeting_o31_rin:
     window hide
     pause 3.0
 
-    #if store.mas_o31_event.o31_cg_decoded:
-    #    $ cg_delay = datetime.timedelta(seconds=20)
+    if store.mas_o31_event.cg_decoded:
+        $ cg_delay = datetime.timedelta(seconds=20)
 
-    #    # got cg
-    #    window auto
-    #    m "Say, [player]..."
-    #    window hide
+        # got cg
+        window auto
+        m "Say, [player]..."
+        window hide
 
-    #    show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
-    #    $ start_time = datetime.datetime.now()
+        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
 
-    #    while datetime.datetime.now() - start_time < cg_delay:
-    #        pause 1.0
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
 
-    #    hide emptydesk
-    #    window auto
-    #    m "What do {i}nya{/i} think?"
+        hide emptydesk
+        window auto
+        m "What do {i}nya{/i} think?"
 
-    #    scene black
-    #    pause 2.0
-    #    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
-    #    m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
+        scene black
+        pause 1.0
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
+        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
-    #else:
-    call mas_transition_from_emptydesk("monika 1eua")
-    m 1hub "Hi, [player]!"
-    m 3hub "Do you like my costume?"
+    else:
+        call mas_transition_from_emptydesk("monika 1eua")
+        m 1hub "Hi, [player]!"
+        m 3hub "Do you like my costume?"
 
     # regular dialogue
     m 3etc "Honestly, I don't even know who this is supposed to be."
     m 3etd "I just found it in the closet with a note attached that had the word 'Rin', a drawing of a girl pushing a wheelbarrow, and some blue floaty thingies."
     m 1euc "Along with instructions on how to style your hair to go along with this outfit."
-    m "Judging by these cat ears, I'm guessing this character is a catgirl."
-    m 1dtc "But why would she push a wheelbarrow around?"
-    pause 1.0
-    m 1hksdlb "Anyway, it was a pain getting my hair done."
-    m 1eub "So I hope you like the costume!"
+    m 3rtc "Judging by these cat ears, I'm guessing this character is a catgirl."
+    m 1dtc "...But why would she push a wheelbarrow around?"
+    m 1hksdlb "Anyway, it was a pain getting my hair done...{w=0.2}{nw}"
+    extend 1eub "so I hope you like the costume!"
 
     call greeting_o31_cleanup
     return
@@ -770,6 +869,10 @@ label greeting_o31_generic:
 
 #Cleanup for o31 greets
 label greeting_o31_cleanup:
+    window hide
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    window auto
+
     python:
         # 1 - music hotkeys should be enabled
         store.mas_hotkeys.music_enabled = True
@@ -1071,6 +1174,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
 
     #Hide vis
     $ mas_o31HideVisuals()
+    $ mas_rmallEVL("mas_o31_cleanup")
 
     m 3hua "There we go!"
     return
@@ -6122,7 +6226,7 @@ init -1 python:
         Checks if the player has confirmed the party
         """
         #Must be within a week of the party (including party day)
-        if mas_monika_birthday - datetime.timedelta(days=7) <= today <= mas_monika_birthday:
+        if (mas_monika_birthday - datetime.timedelta(days=7)) <= today <= mas_monika_birthday:
             #If this is confirmed already, then we just return true, since confirmed
             if persistent._mas_bday_confirmed_party:
                 #We should also handle if the player confirmed the party pre-note

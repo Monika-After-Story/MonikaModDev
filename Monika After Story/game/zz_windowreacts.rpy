@@ -338,7 +338,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
@@ -484,9 +484,12 @@ label mas_wrs_wikipedia:
             #If we're still here, we didn't value error
             #Now we get the article
             wiki_article = wind_name[:cutoff_index]
+
+            # May contain clarification in trailing parentheses
+            wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
             wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
 
-        except:
+        except ValueError:
             pass
 
     $ wrs_success = display_notif(

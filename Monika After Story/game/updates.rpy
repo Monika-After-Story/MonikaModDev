@@ -372,6 +372,44 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.7
+label v0_11_7(version="v0_11_7"):
+    python:
+        pass
+    return
+
+# 0.11.6
+label v0_11_6(version="v0_11_6"):
+    python:
+        #Lock daydream topic
+        mas_lockEVL("monika_daydream", "EVE")
+
+        #Unlock piano lessons pool topic
+        if mas_seenLabels(["mas_monika_plays_yr", "mas_monika_plays_or"]):
+            mas_unlockEVL("monika_piano_lessons", "EVE")
+
+        #Random criticism topics
+        if seen_event("monika_debate"):
+            mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
+            mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+
+        if seen_event("monika_vn"):
+            mas_unlockEVL("monika_kamige","EVE")
+
+        #Remove these files if we still have them. They are not needed since 0.11.4 and they can cause issues.
+        filenames_to_delete = [
+            "sprite-chart-00.rpyc",
+            "sprite-chart-01.rpyc",
+            "sprite-chart-02.rpyc",
+            "sprite-chart-10.rpyc",
+            "sprite-chart-20.rpyc",
+            "sprite-chart-21.rpyc"
+        ]
+
+        for fn in filenames_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fn))
+
+    return
 
 # 0.11.5
 label v0_11_5(version="v0_11_5"):
