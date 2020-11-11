@@ -392,7 +392,7 @@ init 6 python:
         """
         Context manager wrapper for Event objects via event labels.
         This has handling for when an eventlabel doesn't return an actual
-        event object via mas_getEV. 
+        event object via mas_getEV.
 
         Use as follows:
             with MASev('some event label') as ev:
@@ -401,7 +401,7 @@ init 6 python:
 
         property names should be same as used on Event object.
         functions can also be used.
-        additionally, the resulting context object can be compared with 
+        additionally, the resulting context object can be compared with
         other event objects like normal.
 
         In cases where the Event does not exist, the following occurs:
@@ -457,7 +457,7 @@ init 6 python:
 
         def __getattr__(self, name):
             if self._ev is None:
-                
+
                 # event props
                 if name in MAS_EVL._default_values:
                     return MAS_EVL._default_values.get(name)
@@ -2387,7 +2387,6 @@ init 1 python in evhand:
     import store
     import datetime
 
-
     def actionPush(ev, **kwargs):
         """
         Runs Push Event action for the given event
@@ -2458,19 +2457,21 @@ init 1 python in evhand:
 # event called or None if the list is empty or the label is invalid
 #
 label call_next_event:
-
     python:
         event_label, notify = popEvent()
         renpy.save_persistent()# Save persistent here in case of a crash
 
     if event_label and renpy.has_label(event_label):
-
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
         #if not seen_event(event_label):
         #    # give whatver the hourly rate is for unseens
         #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
+
+        #Also check here and reset the forced idle exp if necessary
+        if not event_label.startswith("mas_wrs"):
+            $ moni_idle_disp.unforce_all()
 
         $ mas_RaiseShield_dlg()
 
