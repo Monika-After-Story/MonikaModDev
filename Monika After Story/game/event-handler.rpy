@@ -2469,10 +2469,6 @@ label call_next_event:
         #    # give whatver the hourly rate is for unseens
         #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
 
-        #Also check here and reset the forced idle exp if necessary
-        if not event_label.startswith("mas_wrs"):
-            $ moni_idle_disp.unforce_all()
-
         $ mas_RaiseShield_dlg()
 
         $ ev = mas_getEV(event_label)
@@ -2486,6 +2482,10 @@ label call_next_event:
                 $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
                 $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+
+        #Also check here and reset the forced idle exp if necessary
+        if ev is not None and "keep_idle_exp" not in ev.rules:
+            $ mas_moni_idle_disp.unforce_all()
 
         $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
@@ -2551,7 +2551,7 @@ label call_next_event:
                     _match = re.search(evhand.RET_KEY_PATTERN_IDLE_EXP, _return)
                     if _match is not None:
                         if _match.group("exp") is not None and _match.group("duration") is not None:
-                            moni_idle_disp.force_by_code(
+                            mas_moni_idle_disp.force_by_code(
                                 _match.group("exp"),
                                 duration=int(_match.group("duration"))
                             )
@@ -2564,7 +2564,7 @@ label call_next_event:
                                 )
                             )
                             if _exp is not None:
-                                moni_idle_disp.force(_exp)
+                                mas_moni_idle_disp.force(_exp)
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:

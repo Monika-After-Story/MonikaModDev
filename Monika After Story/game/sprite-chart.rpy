@@ -8567,7 +8567,7 @@ image monika ATL_love_too_enam_plus:
 # NOTE we need this ready before init 500
 init 499 python:
     # Brand new displayable for idle
-    moni_idle_disp = MASMoniIdleDisp(
+    mas_moni_idle_disp = MASMoniIdleDisp(
         (
             # Broken (how dared you, monster?)
             MASMoniIdleExp("6ckc", duration=60, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
@@ -8641,7 +8641,7 @@ init 499 python:
             MASMoniIdleExp("5eubsa", aff_range=(mas_aff.LOVE, None), weight=2, tag="love_exps")
         )
     )
-image monika idle = moni_idle_disp
+image monika idle = mas_moni_idle_disp
 
 ### [IMG100]
 # chibi monika sprites

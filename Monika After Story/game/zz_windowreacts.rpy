@@ -407,7 +407,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pinterest",
             category=['pinterest'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -435,7 +439,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_duolingo",
             category=['duolingo'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -463,7 +471,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_wikipedia",
             category=['wikipedia'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -506,7 +518,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_youtube",
             category=['youtube'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -568,7 +584,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_monikamoddev",
             category=['monikamoddev'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -595,7 +615,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitter",
             category=['twitter'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -631,7 +655,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_monikatwitter",
             category=['twitter', 'lilmonix3'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -659,7 +687,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_4chan",
             category=['4chan'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -689,7 +721,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pixiv",
             category=['pixiv'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -733,7 +769,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_reddit",
             category=['reddit'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -761,7 +801,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_mal",
             category=['myanimelist'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -790,7 +834,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_deviantart",
             category=['deviantart'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -817,7 +865,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_netflix",
             category=['netflix'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -845,7 +897,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitch",
             category=['-twitch'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"

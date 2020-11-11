@@ -454,7 +454,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _disToBroken():
@@ -473,7 +473,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _disToUpset():
@@ -487,7 +487,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _upsetToDis():
@@ -511,7 +511,7 @@ init 15 python in mas_affection:
             store.pushEvent("mas_change_to_def",skipeval=True)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _upsetToNormal():
@@ -528,7 +528,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate()
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _normalToUpset():
@@ -545,7 +545,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _normalToHappy():
@@ -576,7 +576,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(HAPPY)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _happyToNormal():
@@ -600,7 +600,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(NORMAL)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
 
     def _happyToAff():
@@ -622,7 +622,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _affToHappy():
         """
@@ -653,7 +653,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(HAPPY)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _affToEnamored():
         """
@@ -679,7 +679,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _enamoredToAff():
         """
@@ -699,7 +699,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(AFFECTIONATE)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _enamoredToLove():
         """
@@ -718,7 +718,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(LOVE)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _loveToEnamored():
         """
@@ -735,7 +735,7 @@ init 15 python in mas_affection:
         store.mas_songs.checkSongAnalysisDelegate(ENAMORED)
 
         # Update idle exp
-        store.moni_idle_disp.update()
+        store.mas_moni_idle_disp.update()
 
     def _gSadToNormal():
         """
