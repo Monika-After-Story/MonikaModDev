@@ -1756,47 +1756,25 @@ init 5 python:
 label bye_prompt_walk:
     if mas_isMoniNormal(higher=True):
         if mas_getEVL_shown_count("bye_prompt_walk") == 0:
+            m 1wublb "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Do you think I could...come with you?{fast}"
 
-            if mas_isMoniAff(higher=True) and renpy.random.randint(1,5) == 1:
-                m 1wublb "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "Do you think I could...come with you?{fast}"
+                "Sure.":
+                    jump mas_dockstat_iostart
 
-                    "Yeah.":
-                        jump bye_going_somewhere
-
-                    "Maybe some other time.":
-                        m 1eka "Okay. {w=0.3}Have a nice walk~"
-
-            else:
-                m 1eua "That's great, [player]."
-                m 1hua "A walk can do wonders for body and soul."
-                m 3hub "Have a nice walk~"
+                "Maybe some other time.":
+                    m 1eka "Okay. {w=0.3}Have a nice walk~"
 
         else:
-            if mas_isMoniAff(higher=True) and renpy.random.randint(1,5) == 1:
-                m 1wublb "Ooh, a walk? Do you think I could...{w=0.3}come with you?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "Do you think I could...come with you?{fast}"
-
-                    "Yeah.":
-                        jump bye_going_somewhere
-
-                    "Maybe some other time.":
-                        m 1eka "Okay. {w=0.3}Have a nice walk~"
-            else:
-                m 1eua "Going out for a walk then?"
-
-            if renpy.random.randint(1,3) == 1:
-                m 1hubsb "Remember to dress for the weather~"
-            else:
-                m 1hubsb "Don't catch cold~"
-            m 1eubsb "See you later."
+            m 1eub "That's great, [player]!"
+            if renpy.random.randint(1,5) == 1:
+                m 1hua "A walk can do wonders for body and soul."
+            m 3hub "Have a nice walk~"
 
     elif mas_isMoniDis(higher=True):
-        m 2eud "If it helps..."
+        m 2eud "Okay, [player]..."
         m 2euc "Bye."
 
     else:

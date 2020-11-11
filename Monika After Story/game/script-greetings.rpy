@@ -4249,11 +4249,8 @@ init 5 python:
 label greeting_back_from_walk:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
-        m 3hub "I hope you had a nice walk."
-
-        $ anyway_lets = "Let's"
-
-        m 1eua "[anyway_lets] spend some more time together~"
+        m 3hub "I hope you had a nice walk!"
+        m 1eua "Anyway, let's spend some more time together~"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "There you are, [player]."
