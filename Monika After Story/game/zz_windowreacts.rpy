@@ -484,9 +484,12 @@ label mas_wrs_wikipedia:
             #If we're still here, we didn't value error
             #Now we get the article
             wiki_article = wind_name[:cutoff_index]
+
+            # May contain clarification in trailing parentheses
+            wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
             wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
 
-        except:
+        except ValueError:
             pass
 
     $ wrs_success = display_notif(
