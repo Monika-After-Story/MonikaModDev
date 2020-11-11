@@ -15,16 +15,17 @@ default mas_can_unlock_story = False
 default mas_can_unlock_scary_story = False
 default mas_full_scares = False
 # dict storing the last date we saw a new story of normal and scary type
-default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
+default persistent._mas_last_seen_new_story = {"normal": None, "scary": None}
 
 
 # store containing stories-related things
 init -1 python in mas_stories:
     import store
 
-    UNLOCK_NEW = "unlock new story"
+    UNLOCK_NEW = "mas_unlock_new_story"
 
     # TYPES:
+    TYPE_NORMAL = "normal"
     TYPE_SCARY = "scary"
 
     # pane constant
@@ -38,14 +39,14 @@ init -1 python in mas_stories:
     #Story which starts unlocked for a specific type
     FIRST_STORY_EVL_MAP = {
         TYPE_SCARY: "mas_scary_story_hunter",
-        None: "mas_story_tyrant"
+        TYPE_NORMAL: "mas_story_tyrant"
     }
 
     STORY_FILTER_KWARGS = {
         TYPE_SCARY: {
             "category": (True, [TYPE_SCARY])
         },
-        None: {
+        TYPE_NORMAL: {
             "excl_cat": list()
         }
     }
@@ -54,15 +55,15 @@ init -1 python in mas_stories:
         TYPE_SCARY: "mas_isO31() or mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
     }
 
-    def check_can_unlock_new_story(story_type=None):
+    def check_can_unlock_new_story(story_type=TYPE_NORMAL):
         """
         Checks if it has been at least one day since we've seen the last story or the initial story
-        """
-        #Coerse this here
-        if story_type is None:
-            story_type = "normal"
 
-        new_story_ls = store.persistent._mas_last_seen_new_story[story_type]
+        IN:
+            story_type - story type to check if we can unlock a new one
+                (Default: TYPE_NORMAL)
+        """
+        new_story_ls = store.persistent._mas_last_seen_new_story.get(story_type, None)
 
         #Get the first story of this type
         first_story = FIRST_STORY_EVL_MAP.get(story_type, None)
@@ -89,39 +90,38 @@ init -1 python in mas_stories:
         for story in story_database.itervalues():
             story.unlocked=True
 
-    def get_and_unlock_random_story(story_type=None):
+    def get_and_unlock_random_story(story_type=TYPE_NORMAL):
         """
         Unlocks and returns a random story of the provided type
 
         IN:
-            story_type - Type of story to unlock. If None, an untyped (normal) stor
+            story_type - Type of story to unlock.
+                (Default: TYPE_NORMAL)
         """
         #Prep the args that never change so we can easily pass these into the following funcs
         static_kwargs = {
             "pool": False,
-            "aff": store.mas_curr_affection
+            "aff": store.mas_curr_affection,
+            "category": (True, [story_type])
         }
 
-        #Add the additional filters as this depends from type to type
-        static_kwargs.update(STORY_FILTER_KWARGS.get(story_type, dict()))
-
         #Get locked stories
-        stories = renpy.store.Event.filterEvents(
-            renpy.store.mas_stories.story_database,
+        stories = store.Event.filterEvents(
+            story_database,
             unlocked=False,
             **static_kwargs
         )
 
+        #If we somehow have no stories, we'll pick randomly from the unlocked group for this type
         if not len(stories):
-            #If we somehow have no stories, we'll pick randomly from the unlocked group for this type
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
+            stories = store.Event.filterEvents(
+                story_database,
                 unlocked=True,
                 **static_kwargs
             )
 
         #Grab one of the stories
-        story = stories[renpy.random.choice(stories.keys())]
+        story = renpy.random.choice(stories.values())
 
         #Unlock and return its eventlabel
         story.unlocked = True
@@ -150,8 +150,6 @@ label monika_short_stories_premenu(story_type=None):
 label monika_short_stories_menu:
     # TODO: consider caching the built stories if we have many story categories
     python:
-        import store.mas_stories as mas_stories
-
         #Determine if a new story can be unlocked
         mas_can_unlock_story = False
 
@@ -165,28 +163,25 @@ label monika_short_stories_menu:
         else:
             mas_can_unlock_story = mas_stories.check_can_unlock_new_story(story_type)
 
-        #Setup stories list
-        stories = renpy.store.Event.filterEvents(
-            mas_stories.story_database,
-            pool=False,
-            aff=mas_curr_affection,
-            flag_ban=EV_FLAG_HFM,
-            **mas_stories.STORY_FILTER_KWARGS.get(story_type, dict())
-        )
-
         # build menu list
         stories_menu_items = [
             (mas_stories.story_database[story_evl].prompt, story_evl, False, False)
-            for story_evl in stories
-            if mas_stories.story_database[story_evl].unlocked
+            for story_evl, story_ev in mas_stories.story_database.iteritems()
+            if Event._filterEvent(
+                story_ev,
+                pool=False,
+                aff=mas_curr_affection,
+                unlocked=True,
+                flag_ban=EV_FLAG_HFM,
+                category=(True, [story_type])
+            )
         ]
 
         # also sort this list
         stories_menu_items.sort()
 
-        # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
-            stories_menu_items.insert(0, ("A new story", mas_stories.UNLOCK_NEW, True, False))
+        #Add new story
+        stories_menu_items.insert(0, ("A new story", mas_stories.UNLOCK_NEW, True, False))
 
         # build switch button
         #TODO: Build a generalized switch for more than just two items
@@ -243,9 +238,7 @@ label monika_short_stories_menu:
 
                 #If we're unlocking new
                 if story_to_push == mas_stories.UNLOCK_NEW:
-                    #Get type and store the date for future unlocks
-                    new_story_key = "normal" if story_type is None else story_type
-                    persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+                    persistent._mas_last_seen_new_story[story_type] = datetime.date.today()
                     story_to_push = mas_stories.get_and_unlock_random_story(story_type)
 
                 #Then push
@@ -274,8 +267,16 @@ label mas_story_begin:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
-        prompt="The Cat and the Cock",unlocked=True),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_tyrant",
+            prompt="The Cat and the Cock",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=True
+        ),
+        code="STY"
+    )
 
 label mas_story_tyrant:
     call mas_story_begin
@@ -289,8 +290,16 @@ label mas_story_tyrant:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
-        prompt="The Fox",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_despise",
+            prompt="The Fox",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_despise:
     call mas_story_begin
@@ -304,8 +313,16 @@ label mas_story_despise:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
-        prompt="The Shepherd Boy and the Wolf",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_lies",
+            prompt="The Shepherd Boy and the Wolf",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_lies:
     call mas_story_begin
@@ -325,8 +342,16 @@ label mas_story_lies:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
-        prompt="The Grasshopper",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_grasshoper",
+            category=[mas_stories.TYPE_NORMAL],
+            prompt="The Grasshopper",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_grasshoper:
     call mas_story_begin
@@ -343,8 +368,16 @@ label mas_story_grasshoper:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
-        prompt="The Wind and the Sun",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_wind_sun",
+            prompt="The Wind and the Sun",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_wind_sun:
     call mas_story_begin
@@ -359,8 +392,16 @@ label mas_story_wind_sun:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The Seeds",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_seeds",
+            prompt="The Seeds",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_seeds:
     call mas_story_begin
@@ -379,8 +420,16 @@ label mas_story_seeds:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The Gray Hair",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_gray_hair",
+            prompt="The Gray Hair",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -397,8 +446,16 @@ label mas_story_gray_hair:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The Fisherman",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_fisherman",
+            prompt="The Fisherman",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -412,8 +469,16 @@ label mas_story_fisherman:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old Man's Three Wishes",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_ravel",
+            prompt="Old Man's Three Wishes",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_ravel:
     call mas_story_begin
@@ -484,6 +549,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_regret",
             prompt="The Genie's Regret",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -534,6 +600,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_end",
             prompt="The Genie's End",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -572,8 +639,16 @@ label mas_story_genie_end:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
-        prompt="Love Never Ends",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_immortal_love",
+            prompt="Love Never Ends",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_immortal_love:
     call mas_story_begin
@@ -604,6 +679,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_mother_and_trees",
             prompt="A mother and her trees",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -649,6 +725,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_self_hate",
             prompt="Self-hate",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -691,8 +768,16 @@ label mas_story_self_hate:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
-        prompt="The Tale of O-Tei",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_o_tei",
+            prompt="The Tale of O-Tei",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_o_tei:
     call mas_story_begin
@@ -730,8 +815,16 @@ label mas_story_o_tei:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
-        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_crow_and_pitcher",
+            prompt="The Crow and the Pitcher",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_crow_and_pitcher:
     call mas_story_begin
@@ -762,6 +855,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_friend",
             prompt="Having A Best Friend",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=True
         ),
         code="STY"
