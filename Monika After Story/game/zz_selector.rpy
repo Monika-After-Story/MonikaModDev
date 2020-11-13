@@ -3839,7 +3839,7 @@ init 5 python:
         markSeen=True
     )
 
-label monika_earring_select:
+label monika_earrings_select:
     call mas_selector_generic_sidebar_select_acs("earrings")
     return
 
