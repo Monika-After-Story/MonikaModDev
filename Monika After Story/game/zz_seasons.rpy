@@ -132,6 +132,7 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_winter", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter_dangers", "EVE", derandom=True)
         store.mas_hideEVL("monika_snowmen", "EVE", derandom=True)
+        store.mas_lockEVL("monika_snowballfight", "EVE")
 
         # disable hot choc
         store.mas_getConsumable("hotchoc").disable()

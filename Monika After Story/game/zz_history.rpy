@@ -547,7 +547,7 @@ init -850 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
-
+            self._was_triggered = False
 
         @staticmethod
         def getSortKey(_mhs):
@@ -560,7 +560,6 @@ init -850 python:
             RETURNS the sort key, which is trigger datetime
             """
             return _mhs.trigger
-
 
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -800,6 +799,8 @@ init -850 python:
             if self.exit_pp is not None:
                 self.exit_pp(self)
 
+            # mark that we ran
+            self._was_triggered = True
 
         def toTuple(self):
             """
@@ -811,6 +812,12 @@ init -850 python:
                     NOTE: needed for ease of migrations
             """
             return (self.trigger, self.use_year_before)
+
+        def was_triggered(self):
+            """
+            RETURNS: True if this MHS was triggered during this session
+            """
+            return self._was_triggered
 
 
 init -800 python in mas_history:
@@ -970,6 +977,7 @@ init -810 python:
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
             "_mas_pm_is_trans": "pm.lifestyle.is_trans",
+            "_mas_pm_social_personality": "pm.lifestyle.social_personality",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -981,6 +989,7 @@ init -810 python:
             # lifestyle / smoking
             "_mas_pm_do_smoke": "pm.lifestyle.smoking.smokes",
             "_mas_pm_do_smoke_quit": "pm.lifestyle.smoking.trying_to_quit",
+            "_mas_pm_do_smoke_quit_succeeded_before": "pm.lifestyle.smoking.successfully_quit_before",
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",

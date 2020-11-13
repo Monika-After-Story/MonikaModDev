@@ -10,6 +10,7 @@
 #
 # TOC:
 # EXM010 - ZOOM stuff
+# EXM020 - BOOP stuff
 # EXM900 - EXTRA menu stuff
 
 
@@ -139,10 +140,11 @@ label mas_extra_menu_firsttime:
     if not persistent._mas_opened_extra_menu:
         m 1hua "Look forward to some neat things in this menu!"
 
-    python:
-        this_ev = mas_getEV("mas_extra_menu_firsttime")
-        this_ev.unlocked = True
-        this_ev.pool = True
+    $ mas_setEVLPropValues(
+        "mas_extra_menu_firsttime",
+        unlocked=True,
+        pool=True
+    )
 
     # explaining different features here
     call mas_extra_menu_zoom_intro
@@ -218,6 +220,19 @@ label mas_extra_menu_zoom_in_max_first_time:
     pause 2.0
     m 6hubfa "Warm..."
     return
+
+
+################################# BOOP STUFF ##################################
+# [EX020]
+
+label mas_extra_menu_boop_intro:
+    m 1eua "boop intro"
+    return
+
+default persistent._mas_pm_boop_stats = {}
+# key - boop key/clickzone key
+# value - number of boops
+
 
 ################################# EXTRA MENU STUFF ############################
 # [EXM900]
@@ -361,6 +376,7 @@ screen mas_extramenu_area():
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
+                    selected False
                     xsize 72
                     ysize 35
                     xalign 0.3

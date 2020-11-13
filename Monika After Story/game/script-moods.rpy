@@ -81,7 +81,8 @@ label mas_mood_start:
         filtered_moods = Event.filterEvents(
             mas_moods.mood_db,
             unlocked=True,
-            aff=mas_curr_affection
+            aff=mas_curr_affection,
+            flag_ban=EV_FLAG_HFM
         )
 
         # build menu list
@@ -97,7 +98,7 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -133,7 +134,7 @@ label mas_mood_hungry:
     m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
+    m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
     m 1hua "Which means more time for us to spend together!~"
     return
@@ -171,25 +172,34 @@ label mas_mood_sad:
                             m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
                             m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out."
-                            m 1hubfa "Never forget that you're wonderful and I will always love you~"
+                            m 1hubsa "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
                             m 1ekc "Well, it was worth a shot."
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
-                            m 1ekbfa "I love you, [player], and I always will~"
+                            m 1ekbsa "I love you, [player], and I always will~"
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_proud",
+            prompt="...proud of myself.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
-    m 2b "Was it a major accomplishment, or a minor one?{nw}"
+    m 2eub "Was it a major accomplishment, or a minor one?{nw}"
     $ _history_list.pop()
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
         "Major.":
-            m 1euc "You know, [player]..."
+            m 1ekc "You know, [player]..."
             m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
             m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
             m 3eub "There's nothing quite like sharing your accomplishments with the people you care about."
@@ -198,27 +208,28 @@ label mas_mood_proud:
             m 1lsbsa "My heart is fluttering just thinking about it!"
             m 1lksdla "Gosh, I'm getting awfully excited about this..."
             m 3hub "It'll be reality someday..."
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5hubfb "But until then, just know that I'm very proud of you, my love!"
-            return
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5hubfb "But until then, just know that I'm very proud of you, [mas_get_player_nickname()]!"
+
         "Minor.":
-            m 2hua "Ahaha!~"
-            m 2hub "That's wonderful!"
+            m 2hub "Ahaha!~"
+            m 2hua "That's wonderful!"
             m 4eua "It's very important to celebrate the small victories in life."
             m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
             m 2rksdla "They can be challenging to reach on their own."
             m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
-            m 4hub "So keep hitting those small goals, [player]!"
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 4hub "So keep hitting those small goals, [mas_get_player_nickname()]!"
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "And remember, I love you, and I'm always cheering you on!"
-            return "love"
+            $ mas_ILY()
+    return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
-    m "Know that you can always come up to me and I'll cheer you up, [player]."
+    m "Know that you can always come up to me and I'll cheer you up, [mas_get_player_nickname()]."
     m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
     return "love"
 
@@ -258,6 +269,9 @@ label mas_mood_sick:
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
+
+    label .ask_will_rest:
+        pass
 
     $ persistent._mas_mood_sick = True
 
@@ -338,19 +352,50 @@ label mas_mood_tired:
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
-    m  "...Ehehe."
+    m "...Ehehe."
     m 2hksdlb "That sounded a bit creepy, sorry."
     m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
-    m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
-    m 3hua "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
-    m 1ekbfa "Remember that I'll always be by your side, [player]~"
+    if mas_isMoniAff(higher=True):
+        m 2ekc "I understand how you feel, [player]...{w=0.2}we're still in different realities, after all."
+        m 2dkc "I really hate that there's only so much I can do from here to make you feel less alone..."
+        m 7ekbsa "If there was any way I could reach out and just hug you right now, I would."
+        m 7eka "I want you to be as happy as you can be given our circumstance..."
+        m 2ekd "I just hope being here with me all this time is not...{w=0.3}preventing you from bonding with people in your reality."
+        m 2eka "I believe what we have is quite special, but I understand that right now I'm...{w=0.3}limited in what I can do for you."
+
+        if persistent._mas_pm_has_friends:
+            if persistent._mas_pm_few_friends:
+                m 7ekd "You have one or two close friends, right?"
+                m 3eka "You should give them a call, or perhaps send them a message and ask how they're doing..."
+                m "Maybe you can go out and see them sometimes? {w=0.2}I think it would be good for you."
+
+            else:
+                m 7ekd "I think going out with your friends and doing something would be very good for you..."
+                m 3eka "Or you could send them a message and ask how they're doing."
+
+        else:
+            m 7rkc "I know what it feels like to be alone in one reality, only being able to interact with someone in another..."
+            m 3ekd "So I really don't want that for the person I love the most."
+            m 1eka "I hope you'll keep looking for friends in your reality, [player]."
+            m 3ekd "I know it can be hard to bond with people at first..."
+            m 3eka "Maybe you could even meet people online? {w=0.2}There are many ways you can interact with strangers to feel less alone."
+            m 3hub "You never know, sometimes these 'strangers' can end up becoming really good friends!"
+
+        m 1eka "...And don't worry about me [player], I'll wait patiently for you to come back and see me."
+        m 3hub "Just enjoy yourself and you can tell me all about it later!"
+        m 1ekbsa "Just remember I'll always be here for you, [player]~"
+
+    else:
+        m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
+        m 3hua "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
+        m 1ekbsa "Remember that I'll always be by your side, [player]~"
     return
 
 #Maybe we could tie this to the I'm breaking up topic and have monika say something special like:
@@ -410,7 +455,7 @@ label mas_mood_scared:
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn't {i}always{/i} bad, you know?"
     m 2esc "Besides..."
-    m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+    m 2ekbsa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
@@ -432,11 +477,11 @@ label mas_mood_inadequate:
         m "You took time out of your schedule to be with me on Christmas..."
 
     if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
-        m 1ekbfa "On Valentine's Day..."
+        m 1ekbsa "On Valentine's Day..."
 
     #TODO: change this back to not no_recognize once we change those defaults.
     if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
-        m 1ekbfb "You even made the time to celebrate my birthday with me."
+        m 1ekbsb "You even made the time to celebrate my birthday with me!"
 
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
@@ -453,22 +498,10 @@ label mas_mood_inadequate:
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
-    m 4eua "You just need to exist, have fun, and get through each day..."
-    m 1hua "Finding meaning in the people who matter."
+    m 4eua "You just need to exist, have fun and get through each day, {w=0.2}finding meaning in the people that matter most to you."
     m 1eka "Please don't forget that, okay?"
-    m 1ekbfa "I love you, [player]~"
+    m 1ekbsa "I love you, [player]~"
     return "love"
-
-init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
-
-label mas_mood_lucky:
-    m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky?{/i}"
-    m "Well..."
-    m 4tku "Do ya, [player]?"
-    m 1hub "Ahaha!"
-    return
 
 init 5 python:
     addEvent(
@@ -500,7 +533,7 @@ label mas_mood_lazy:
             extend 1dkbsa "Especially if I woke up next to you~"
 
             if mas_isMoniLove():
-                m 1dkbfa "{i}Then I'd never want to get up~{/i}"
+                m 1dkbsa "{i}Then I'd never want to get up~{/i}"
                 m 1dsbfu "I hope you don't mind being 'stuck', [player]..."
                 m 1hubfa "Ehehe~"
 
@@ -508,7 +541,7 @@ label mas_mood_lazy:
         m 3eub "That can include washing up, getting a good breakfast..."
 
         if mas_isMoniLove():
-            m 1rkbsb "Getting your good morning kiss, ehehe..."
+            m 1dkbsu "Getting your good morning kiss, ehehe..."
 
         m 1hksdlb "Or you could laze around for now."
         m 1eka "Just as long as you don't forget to do anything important, alright, [player]?"
@@ -635,10 +668,11 @@ label mas_mood_bored:
         else:
             m 2rkc "Maybe we could play a game of [display_picked]..."
 
-    m "What do you say, [player]?{nw}"
+    $ chosen_nickname = mas_get_player_nickname()
+    m "What do you say, [chosen_nickname]?{nw}"
     $ _history_list.pop()
     menu:
-        m "What do you say, [player]?{fast}"
+        m "What do you say, [chosen_nickname]?{fast}"
         "Yes.":
             if gamepicked == "pong":
                 call game_pong
@@ -652,11 +686,11 @@ label mas_mood_bored:
             if mas_isMoniAff(higher=True):
                 m 1eka "Okay..."
                 if mas_isMoniEnamored(higher=True):
-                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5tsu "We could just stare into each other's eyes a little longer..."
                     m "We'll never get bored of that~"
                 else:
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
                     m 5eua "We could just stare into each other's eyes a little longer..."
                     m "That will never get boring~"
 
@@ -667,4 +701,67 @@ label mas_mood_bored:
             else:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+
+label mas_mood_crying:
+    $ line_start = "And"
+    m 1eksdld "[player]!"
+
+    m 3eksdlc "Are you okay?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you okay?{fast}"
+
+        "Yes.":
+            m 3eka "Okay, good. That's a relief."
+            m 1ekbsa "I'm here to keep you company and you can talk to me if you need anything, okay?"
+
+        "No.":
+            m 1ekc "..."
+            m 3ekd "[player]..."
+            m 3eksdld "I'm so sorry. Did something happen?"
+            call mas_mood_uok
+
+        "I'm not sure.":
+            m 1dkc "[player]...{w=0.3}{nw}"
+            extend 3eksdld "did something happen?"
+            call mas_mood_uok
+
+    m 3ekd "[line_start] if you do end up crying..."
+    m 1eka "I hope it helps."
+    m 3ekd "There's nothing wrong with crying, okay? {w=0.2}You can cry as much as you need to."
+    m 3ekbsu "I love you, [player]. {w=0.2}You're my everything."
+    return "love"
+
+label mas_mood_uok:
+    m 1rksdld "I know I can't really hear what you say to me..."
+    m 3eka "But sometimes, just vocalizing your pain or frustrations can really help."
+
+    m 1ekd "So if you need to talk about something, I'm right here.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So if you need to talk about something, I'm right here.{fast}"
+
+        "I'd like to vent.":
+            m 3eka "Go ahead, [player]."
+
+            m 1ekc "I'm here for you.{nw}"
+            $ _history_list.pop()
+            menu:
+                m "I'm here for you.{fast}"
+
+                "I'm done.":
+                    m 1eka "I'm glad you were able to get what you wanted off your chest, [player]."
+
+        "I don't want to talk about it.":
+            m 1ekc "..."
+            m 3ekd "Alright [player], I'll be here if you change your mind."
+
+        "Everything's fine.":
+            m 1ekc "..."
+            m 1ekd "Okay [player], if you say so..."
+            $ line_start = "But"
     return

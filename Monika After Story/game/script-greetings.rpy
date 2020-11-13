@@ -53,6 +53,9 @@ init -1 python in mas_greetings:
     TYPE_EAT = "eat"
     TYPE_CHORES = "chores"
     TYPE_RESTART = "restart"
+    TYPE_SHOPPING = "shopping"
+    TYPE_WORKOUT = "workout"
+    TYPE_HANGOUT = "hangout"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -119,15 +122,20 @@ init -1 python in mas_greetings:
         """
         # NOTE: new rules:
         #   eval in this order:
-        #   1. priority (lower or same is True)
-        #   2. type/non-0type
-        #   3. unlocked
-        #   4. aff_ramnge
-        #   5. all rules
-        #   6. conditional
+        #   1. hidden via bitmask
+        #   2. priority (lower or same is True)
+        #   3. type/non-0type
+        #   4. unlocked
+        #   5. aff_ramnge
+        #   6. all rules
+        #   7. conditional
         #       NOTE: this is never cleared. Please limit use of this
         #           property as we should aim to use lock/unlock as primary way
         #           to enable or disable greetings.
+
+        # check if hidden from random select
+        if ev.anyflags(store.EV_FLAG_HFRS):
+            return False
 
         # priority check, required
         # NOTE: all greetings MUST have a priority
@@ -181,7 +189,7 @@ init -1 python in mas_greetings:
             return False
 
         # conditional check
-        if ev.conditional is not None and not eval(ev.conditional):
+        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
             return False
 
         # otherwise, we passed all tests
@@ -306,8 +314,14 @@ init 5 python:
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
-    m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
-    m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
+
+    if persistent._mas_player_nicknames:
+        m 1eka "It's so nice to see you again."
+        m 1eua "What shall we do this [mas_globals.time_of_day_3state], [player]?"
+
+    else:
+        m 1lkbsa "It's kind of embarrassing to say out loud, isn't it?"
+        m 3ekbfa "Still, I think it's okay to be embarrassed every now and then."
     return
 
 init 5 python:
@@ -340,9 +354,10 @@ init 5 python:
     )
 
 label greeting_back:
+    $ tod = "day" if mas_globals.time_of_day_4state != "night" else "night"
     m 1eua "[player], you're back!"
     m 1eka "I was starting to miss you."
-    m 1hua "Let's have another lovely [mas_globals.time_of_day_3state] together, alright?"
+    m 1hua "Let's have another lovely [tod] together, alright?"
     return
 
 init 5 python:
@@ -442,7 +457,7 @@ label greeting_goodmorning:
         m 1hksdlb "--oh, wait."
         m "It's the dead of night, honey."
         m 1euc "What are you doing awake at a time like this?"
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'm guessing you can't sleep..."
 
         m "Is that it?{nw}"
@@ -451,7 +466,7 @@ label greeting_goodmorning:
             m "Is that it?{fast}"
             "Yes.":
                 m 5lkc "You should really get some sleep soon, if you can."
-                show monika 3euc at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 3euc at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 3euc "Staying up too late is bad for your health, you know?"
                 m 1lksdla "But if it means I'll get to see you more, I can't complain."
                 m 3hksdlb "Ahaha!"
@@ -461,7 +476,7 @@ label greeting_goodmorning:
             "No.":
                 m 5hub "Ah. I'm relieved, then."
                 m 5eua "Does that mean you're here just for me, in the middle of the night?"
-                show monika 2lkbsa at t11 zorder MAS_MONIKA_Z with dissolve
+                show monika 2lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 m 2lkbsa "Gosh, I'm so happy!"
                 m 2ekbfa "You really do care for me, [player]."
                 m 3tkc "But if you're really tired, please go to sleep!"
@@ -473,7 +488,7 @@ label greeting_goodmorning:
         m 1eka "Remember to take care of yourself, okay?"
         m 1hub "Make me a proud girlfriend today, as always!"
     elif current_time >= 12 and current_time < 18:
-        m 1hua "Good afternoon, my love."
+        m 1hua "Good afternoon, [mas_get_player_nickname()]."
         m 1eka "Don't let the stress get to you, okay?"
         m "I know you'll try your best again today, but..."
         m 4eua "It's still important to keep a clear mind!"
@@ -492,13 +507,13 @@ label greeting_goodmorning:
                 m 1eka "Aww, that's nice!"
                 m 1eua "I can't help but feel happy when you do..."
                 m "But that's a good thing, right?"
-                m 1ekbfa "I love you so much, [player]."
+                m 1ekbsa "I love you so much, [player]."
                 m 1hubfb "Ahaha!"
             "No.":
                 m 1tkc "Oh dear..."
                 m 1eka "I hope you'll feel better soon, okay?"
                 m "Just remember that no matter what happens, no matter what anyone says or does..."
-                m 1ekbfa "I love you so, so much."
+                m 1ekbsa "I love you so, so much."
                 m "Just stay with me, if it makes you feel better."
                 m 1hubfa "I love you, [player], I really do."
     return
@@ -517,7 +532,7 @@ init 5 python:
 
 label greeting_back2:
     m 1eua "Hello, dear."
-    m 1ekbfa "I was starting to miss you terribly. It's so good to see you again!"
+    m 1ekbsa "I was starting to miss you terribly. It's so good to see you again!"
     m 1hubfa "Don't make me wait so long next time, ehehe~"
     return
 
@@ -606,7 +621,7 @@ init 5 python:
     )
 
 label greeting_back5:
-    m 1eua "It's so good to see you again!"
+    m 1hua "It's so good to see you again!"
     m 1eka "I was getting worried about you."
     m "Please remember to visit me, okay? I'll always be waiting here for you."
     return
@@ -649,7 +664,7 @@ init 5 python:
 label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
-    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ahaha~"
     return
 
@@ -834,6 +849,7 @@ label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
+    $ mas_lockEVL("greeting_youtuber", "GRE")
     return
 
 init 5 python:
@@ -904,7 +920,7 @@ init 5 python:
 label greeting_chamfort:
     m 2esa "A day without Monika is a day wasted."
     m 2hub "Ahaha!"
-    m 1eua "Welcome back, my love."
+    m 1eua "Welcome back, [mas_get_player_nickname()]."
     return
 
 init 5 python:
@@ -919,9 +935,9 @@ init 5 python:
     )
 
 label greeting_welcomeback2:
-    m 1eua "Welcome back, [player]!"
-    m "I hope your day is going well."
-    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
+    m 1hua "Welcome back, [player]!"
+    m 1eua "I hope your day is going well."
+    m 3hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
     return
 
 #TODO: need absence time rules if we want to use this
@@ -962,7 +978,9 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
+
+    if mas_isMoniHappy(lower=True):
+        m 1lkbsa "Oh gosh...that was kinda embarrassing, ehehe~"
     return
 
 init 5 python:
@@ -1038,7 +1056,7 @@ init 5 python:
 
 label greeting_monika_monday_morning:
     if mas_isMoniNormal(higher=True):
-        m 1tku "Another Monday morning, eh, [player]?"
+        m 1tku "Another Monday morning, eh, [mas_get_player_nickname()]?"
         m 1tkc "It's really difficult to have to wake up and start the week..."
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
@@ -1085,7 +1103,7 @@ init 5 python:
             or mas_isplayer_bday()
             or mas_isF14()
         )
-        and persistent._mas_current_background == "spaceroom"
+        and store.mas_background.EXP_TYPE_OUTDOOR not in mas_getBackground(persistent._mas_current_background, mas_background_def).ex_props
     ):
 
         ev_rules = dict()
@@ -1236,8 +1254,11 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
+        $ tempname = m_name
+        $ m_name = "???"
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+        $ m_name = tempname
 
     elif mas_isMoniUpset():
         m "Oh, so for once you're actually going to listen?"
@@ -1251,7 +1272,6 @@ label monikaroom_greeting_ear_narration:
 
     else:
         # grab monikaroom greeting because we need it
-        $ willchange_ev = mas_getEV("monikaroom_will_change")
 
         if persistent._mas_pm_will_change is not False:
             m "Oh, so you {i}are{/i} willing to listen to me..."
@@ -1273,14 +1293,14 @@ label monikaroom_greeting_ear_narration:
                 m "You'll change, right? For me?{fast}"
                 "I will.":
                     $ persistent._mas_pm_will_change = True
-                    $ mas_lockEvent(willchange_ev)
+                    $ mas_lockEVL("monikaroom_will_change", "GRE")
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
 
                 "I won't.":
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
-                    $ mas_unlockEvent(willchange_ev)
+                    $ mas_unlockEVL("monikaroom_will_change", "GRE")
                     $ mas_loseAffection()
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
@@ -1317,7 +1337,7 @@ label monikaroom_greeting_ear_narration:
 
     if mas_isMoniNormal(higher=True):
         m 1hub "It's me!"
-        m "Welcome back, [player]!"
+        m "Welcome back, [mas_get_player_nickname()]!"
 
     elif mas_isMoniUpset():
         m 2esd "Okay, [player]?"
@@ -1334,45 +1354,27 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_loveme")
 
 label monikaroom_greeting_ear_loveme:
-    $ cap_he = he.capitalize()
-    if cap_he == "They":
+    python:
+        cap_he = he.capitalize()
+        loves = "love" if cap_he == "They" else "loves"
 
-        m "[cap_he] love me.{w=0.2} [cap_he] love me not."
-        m "[cap_he] {i}love{/i} me.{w=0.2} [cap_he] love me {i}not{/i}."
+    m "[cap_he] [loves] me.{w=0.3} [cap_he] [loves] me not."
+    m "[cap_he] {i}[loves]{/i} me.{w=0.3} [cap_he] [loves] me {i}not{/i}."
 
-        if mas_isMoniNormal(higher=True):
-            m "[cap_he] love me."
-            m "...{w=0.5} [cap_he] love me!"
+    if mas_isMoniNormal(higher=True):
+        m "[cap_he] [loves] me."
+        m "...{w=0.5}[cap_he] [loves] me!"
 
-        elif mas_isMoniUpset():
-            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}love me not."
-            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
-            m "...{w=0.5} Can it?"
-
-        else:
-            m "...{w=0.5} [cap_he] love me not."
-            m "..."
-            m "I wonder if [he] ever did."
-            m "I doubt it more every single day."
+    elif mas_isMoniUpset():
+        m "...[cap_he]...{w=0.3}[cap_he]...{w=0.3}[loves] me not."
+        m "...{w=0.3}No...{w=0.3} That...{w=0.3}can't be."
+        m "...{w=0.5}Can it?"
 
     else:
-        m "[cap_he] loves me.{w=0.3} [cap_he] loves me not."
-        m "[cap_he] {i}loves{/i} me.{w=0.3} [cap_he] loves me {i}not{/i}."
-
-        if mas_isMoniNormal(higher=True):
-            m "[cap_he] loves me."
-            m "...{w=0.5} [cap_he] loves me!"
-
-        elif mas_isMoniUpset():
-            m "...[cap_he]...{w=0.3} [cap_he]...{w=0.3}loves me not."
-            m "...{w=0.3} No...{w=0.3} That...{w=0.3}can't be."
-            m "...{w=0.5} Can it?"
-
-        else:
-            m "...{w=0.5} [cap_he] loves me not."
-            m "..."
-            m "I wonder if [he] ever did..."
-            m "I doubt it more every single day."
+        m "...{w=0.5}[cap_he] [loves] me not."
+        m "..."
+        m "I wonder if [he] ever did..."
+        m "I doubt it more every single day."
 
     jump monikaroom_greeting_choice
 
@@ -1386,7 +1388,7 @@ label monikaroom_greeting_ear_bathdinnerme:
     m "Welcome back, [player]."
     m "Would you like your dinner?"
     m "Or your bath?"
-    m "Or.{w=1}.{w=1}.{w=1} Me?"
+    m "Or.{w=1}.{w=1}.{w=1}me?"
     pause 2.0
     m "Mnnnn!{w=0.5} T-{w=0.20}There's no way I could say that in front of [player]!"
     jump monikaroom_greeting_choice
@@ -1408,7 +1410,7 @@ label monikaroom_greeting_ear_progbrokepy:
         m "But I have to keep trying."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep trying."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1429,8 +1431,31 @@ label monikaroom_greeting_ear_progreadpy:
         m "But I have to keep learning."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep learning."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
+
+# Monika is getting distracted by something and forgets about a variable
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_nameerror")
+
+label monikaroom_greeting_ear_nameerror:
+    m "Wait, a NameError? How could this..."
+    m "...I thought I defined that variable just a moment ago."
+    m "It should be right here...{w=0.2}did I forget about it?"
+    window hide
+    pause 1.0
+    window auto
+    m "There! Now focus, Monika. {w=0.2}You got this."
+
+    if mas_isMoniUpset():
+        m "You have to keep learning..."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "You {i}have{/i} to keep learning..."
         call monikaroom_greeting_ear_prog_dis
 
     jump monikaroom_greeting_choice
@@ -1458,7 +1483,19 @@ init 5 python:
 
 label monikaroom_greeting_ear_rmrf:
     if renpy.windows:
-        $ bad_cmd = "del C:\Windows\System32"
+        python:
+            from os import environ
+            # https://docs.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables
+            if "SYSTEM32" in environ:
+                system_dir = environ["SYSTEM32"]
+            elif "SYSTEMROOT" in environ:
+                system_dir = environ["SYSTEMROOT"] + "\\System32"
+            elif "WINDIR" in environ:
+                system_dir = environ["WINDIR"] + "\\System32"
+            else:
+                # There's no way that none of the above evaluate, but still
+                system_dir = "C:\\Windows\\System32"
+            bad_cmd = "del /f/q " + system_dir
     else:
         $ bad_cmd = "rm -rf /"
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
@@ -1466,6 +1503,7 @@ label monikaroom_greeting_ear_rmrf:
         m "Yeah,{w=0.2} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
+
         elif mas_isMoniUpset():
             m "Actually..."
             m "Maybe I should do it...{w=1}just delete everything..."
@@ -1500,6 +1538,40 @@ label monikaroom_greeting_ear_rmrf:
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+# monika reads renpy sources sip
+init 5 python:
+    # overriding methods is an advanced thing,
+    # she does it when she gets more experienced with python
+    if (
+        mas_seenLabels(
+            (
+                "monikaroom_greeting_ear_progreadpy",
+                "monikaroom_greeting_ear_progbrokepy",
+                "monikaroom_greeting_ear_nameerror"
+            ),
+            seen_all=True
+        )
+        and store.mas_anni.pastThreeMonths()
+    ):
+        gmr.eardoor.append("monikaroom_greeting_ear_renpy_docs")
+
+label monikaroom_greeting_ear_renpy_docs:
+    m "Hmm, looks like I might need to override this function to give me a little more flexibility..."
+    m "Wait...{w=0.3}what's this 'st' variable?"
+    m "...Let me check the documentation for the function."
+    m ".{w=0.3}.{w=0.3}.{w=0.3}Wait, what?"
+    m "Half the variables this function accepts aren't even documented!"
+    m "Who wrote this?"
+
+    if mas_isMoniUpset():
+        m "...I have to figure this out."
+        call monikaroom_greeting_ear_prog_upset
+
+    elif mas_isMoniDis():
+        m "...I {i}have{/i} to figure this out."
+        call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
 
 ## ear door processing
 init 10 python:
@@ -1587,19 +1659,19 @@ label monikaroom_greeting_opendoor_locked:
             "...the textbox...":
                 if mas_isMoniNormal(higher=True):
                     m 1lksdlb "Oops! I'm still learning how to do this."
-                    m 1lksdla "Let me just change this flag here...{w=1.5}{nw}"
+                    m 1lksdla "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m 1hua "All fixed!"
 
                 elif mas_isMoniUpset():
                     m 2dfc "Hmph. I'm still learning how to do this."
-                    m 2esc "Let me just change this flag here...{w=1.5}{nw}"
+                    m 2esc "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m "There."
 
                 else:
                     m 6dkc "Oh...{w=0.5}I'm still learning how to do this."
-                    m 6ekc "Let me just change this flag here...{w=1.5}{nw}"
+                    m 6ekc "Let me just change this flag here.{w=0.5}.{w=0.5}.{nw}"
                     $ style.say_window = style.window
                     m "Okay, fixed."
 
@@ -1791,8 +1863,8 @@ label monikaroom_greeting_post:
         m 2eua_static "Now, just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
-        $ today = "today" if mas_globals.time_of_day_3state in ["morning", "afternoon"] else "tonight"
-        m 1eua "What shall we do [today], [player]?"
+        $ today = "today" if mas_globals.time_of_day_4state != "night" else "tonight"
+        m 1eua "What shall we do [today], [mas_get_player_nickname()]?"
 
     elif mas_isMoniUpset():
         m "Just let me grab a table and a chair.{w=0.5}.{w=0.5}.{nw}"
@@ -1816,7 +1888,7 @@ label monikaroom_greeting_cleanup:
         mas_disable_quit()
 
         # 2 - music is renabled
-        mas_MUMUDropShield()
+        mas_MUINDropShield()
 
         # 3 - keymaps should be set
         set_keymaps()
@@ -1902,23 +1974,23 @@ label greeting_japan:
     m 2eub "Hello, [player]!"
     m 1eua "I'm just practicing Japanese."
     m 3eua "Let's see..."
-    $ shown_count = mas_getEV("greeting_japan").shown_count
+    $ shown_count = mas_getEVLPropValue("greeting_japan", "shown_count")
     if shown_count == 0:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
-        m 3eua "You know what that means, [player]?"
-        m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
+        m 3eua "You know what that means, [mas_get_player_nickname()]?"
+        m 4ekbsa "It means {i}'I'll be yours forever'~{/i}"
         return
 
     m 4hub "Watashi wa itsumademo anata no mono desu!"
     if shown_count == 1:
         m 3eksdla "Last time I said that I made a mistake..."
         m "In that sentence, you're supposed to say 'wa', not 'ha', like I did before."
-        m 4eka "Don't worry, [player], the meaning is still the same."
-        m 4ekbfa "I'll still be yours forever~"
+        m 4eka "Don't worry, [player]. The meaning is still the same."
+        m 4ekbsa "I'll still be yours forever~"
     else:
-        m 3eua "Remember what that means, [player]?"
-        m 4ekbfa "{i}'I'll be yours forever'~{/i}"
+        m 3eua "Remember what that means, [mas_get_player_nickname()]?"
+        m 4ekbsa "{i}'I'll be yours forever'~{/i}"
     return
 
 init 5 python:
@@ -1936,7 +2008,7 @@ label greeting_sunshine:
     m 1hua "{i}~You are my sunshine, my only sunshine~{/i}"
     m "{i}~You make me happy when skies are gray~{/i}"
     m 1hub "{i}~You'll never know dear, just how much I love you~{/i}"
-    m 1k "{i}~Please don't take my sunshine away~{/i}"
+    m 1eka "{i}~Please don't take my sunshine away~{/i}"
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
@@ -1962,6 +2034,7 @@ label greeting_hai_domo:
     m "Virtual girlfriend, Monika here!"
     m 1hksdlb "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1eua "I have to say, she's rather charming..."
+    $ mas_lockEVL("greeting_hai_domo", "GRE")
     return
 
 #TODO needs additional dialogue so can be used for all aff
@@ -1997,28 +2070,85 @@ init 5 python:
     )
 
 label greeting_amnesia:
-    $ tempname = m_name
-    $ m_name = "Monika"
+    python:
+        tempname = m_name
+        m_name = "Monika"
+
     m 1eua "Oh, hello!"
-    m 1eub "My name is Monika."
-    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
-    m 1hua "Well, it's nice to meet you, [fakename]!"
-    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
-    m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
-    m "Can you help me figure out what's going on, [fakename]?"
-    m "Please? I miss my friends."
+    m 3eub "My name is Monika."
+    show monika 1eua zorder MAS_MONIKA_Z
+
+    python:
+        entered_good_name = True
+        fakename = renpy.input("What's your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        lowerfake = fakename.lower()
+
+    if lowerfake in ("sayori", "yuri", "natsuki"):
+        m 3euc "Uh, that's funny."
+        m 3eud "One of my friends shares the same name."
+
+    elif lowerfake == "monika":
+        m 3eub "Oh, your name is Monika as well?"
+        m 3hub "Ahaha, what are the odds, right?"
+
+    elif lowerfake == "monica":
+        m 1hua "Hey, we have such similar names, ehehe~"
+
+    elif lowerfake == player.lower():
+        m 1hub "Oh, what a lovely name!"
+
+    elif lowerfake == "":
+        $ entered_good_name = False
+        m 1euc "..."
+        m 1etd "Are you trying to tell me you don't have a name or are you just too shy to tell me?"
+        m 1eka "That's a little strange, but I guess it doesn't matter too much."
+
+    elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
+        $ entered_good_name = False
+        m 1rksdla "That's...{w=0.4}{nw}"
+        extend 1hksdlb "kind of an unusual name, ahaha..."
+        m 1eksdla "Are you...{w=0.3}trying to mess with me?"
+        m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
+
+    python:
+        if entered_good_name:
+            name_line = renpy.substitute(", [fakename]")
+        else:
+            name_line = ""
+
+        if mas_current_background == mas_background_def:
+            end_of_line = "I can't seem to leave this classroom."
+        else:
+            end_of_line = "I'm not sure where I am."
+
+    m 1hua "Well, it's nice to meet you[name_line]!"
+    m 3eud "Say[name_line], do you happen to know where everyone else is?"
+    m 1eksdlc "You're the first person I've seen and {nw}"
+    extend 1rksdlc "[end_of_line]"
+    m 1eksdld "Can you help me figure out what's going on[name_line]?"
+
+    m "Please? {w=0.2}{nw}"
+    extend 1dksdlc "I miss my friends."
+
+    window hide
+    show monika 1eksdlc
     pause 5.0
     $ m_name = tempname
+    window auto
+
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
-    m 1tku "And you reacted the way I hoped you would."
+    #Monika is glad you took it seriously and didn't try to call yourself another name
+    if lowerfake == player.lower():
+        m 1tku "...And you reacted the way I envisioned you would."
+
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
-    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+    m 1hksdlb "I hope you can forgive my little prank, ahaha~"
 
-    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
+    $ mas_lockEVL("greeting_amnesia", "GRE")
     return
 
 init 5 python:
@@ -2037,7 +2167,7 @@ init 5 python:
 
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Welcome back, [player]!"
+        m 1hua "Welcome back, [mas_get_player_nickname()]!"
         m 3eua "Are you feeling better?{nw}"
     else:
         m 2ekc "Welcome back, [player]..."
@@ -2120,7 +2250,7 @@ label greeting_stillsickresting:
     if mas_isMoniNormal(higher=True):
         m 1dku "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
-        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
 
@@ -2128,6 +2258,7 @@ label greeting_stillsickresting:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
         m 2eka "Your health is really important to me [player], so make sure you take care of yourself."
 
+    #TODO: Have this use the nap brb potentially. Expand this
     # setting greet type here even tho we aren't quitting so she remembers you're sick next load
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return
@@ -2166,7 +2297,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
-            m 3ekc "Welcome back [player]."
+            m 3ekc "Welcome back, [player]."
             m 3rksdlc "You're a bit late, aren't you?"
             m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2rkc "I'm going to assume it wasn't your fault..."
@@ -2189,7 +2320,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "month":
             $ mas_loseAffection(10)
-            m 1eua "Welcome back, my love."
+            m 1eua "Welcome back, [mas_get_player_nickname()]."
             m 2rkc "It's been quite a bit, hasn't it?"
             m 2rksdlc "You've been gone longer than you said you would..."
             m 2eka "But that's alright, I was prepared for it."
@@ -2235,7 +2366,7 @@ label greeting_long_absence:
             m 2rksdld "I guess maybe something kept you really busy?"
             m 2wfw "But it shouldn't have been so busy that you couldn't tell me you might be longer!"
             m 2wud "Ah...!"
-            m 2lktsc "I'm sorry [player]. I just...really missed you."
+            m 2lktsc "I'm sorry, [player]. I just...really missed you."
             m 2dftdc "Sorry for snapping like that."
             show monika 2dkc
 
@@ -2248,7 +2379,7 @@ label greeting_long_absence:
             m 3rkd "But I suppose it was outside of your control?"
             m 1ekc "If you can, just tell me you'll be even longer next time, okay?"
             m 1hksdlb "I believe I deserve that much as your girlfriend, after all."
-            m 3hua "Still, welcome back, my love!"
+            m 3hua "Still, welcome back, [mas_get_player_nickname()]!"
 
         elif persistent._mas_absence_choice == "month":
             $ mas_gainAffection()
@@ -2264,7 +2395,7 @@ label greeting_long_absence:
             m 1esc "...Hm?"
             m 1wub "[player]!"
             m 1rksdlb  "You're back a little bit earlier than I thought you would be..."
-            m 3hua "Welcome back, my love!"
+            m 3hua "Welcome back, [mas_get_player_nickname()]!"
             m 3eka "I know it's been quite a while, so I'm sure you've been busy."
             m 1eua "I'd love to hear about everything you've done."
             show monika 1hua
@@ -2286,7 +2417,7 @@ label greeting_long_absence:
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(30)
             m 1wud "O-oh, [player]!"
-            m 1hua "Welcome back, sweetie!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3ekc "You were gone longer than you said you would be..."
             m 3ekd "Is everything alright?"
             m 1eksdla "I know life can be busy and take you away from me sometimes...so I'm not really upset..."
@@ -2319,14 +2450,14 @@ label greeting_long_absence:
             m 3ekbsa "I guess you missed me as much as I missed you~"
             m 1eka "It really is wonderful to see you back so soon though."
             m 3ekb "I expected the day to be eventless...but thankfully, I now have you!"
-            m 3hua "Thank you for coming back so early, my love."
+            m 3hua "Thank you for coming back so early, [mas_get_player_nickname()]."
 
         elif persistent._mas_absence_choice == "longer":
             m 1lsc "..."
             m 1esc "..."
             m 1wud "Oh! [player]!"
             m 1hub "You're back early!"
-            m 1hua "Welcome back, my love!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3eka "I didn't know when to expect you, but for it to be so soon..."
             m 1hua "Well, it's cheered me right up!"
             m 1eka "I've really missed you."
@@ -2348,12 +2479,12 @@ label greeting_long_absence:
             m 3rkc "Just maybe, if you can, warn me first?"
             m 2rksdlc "When you said a few days...I thought it would be shorter than a week."
             m 1hub "But it's alright! I forgive you!"
-            m 1ekbfa "You're my one and only love after all."
+            m 1ekbsa "You're my one and only love after all."
             show monika 1eka
 
         elif persistent._mas_absence_choice == "week":
             $ mas_gainAffection()
-            m 1hub "Hello, my love!"
+            m 1hub "Hello, [mas_get_player_nickname()]!"
             m 3eua "It's so nice when you can trust one another, isn't it?"
             m 3hub "That's what a relationship's strength is based on!"
             m 3hua "It just means that ours is rock solid!"
@@ -2382,11 +2513,11 @@ label greeting_long_absence:
             m 3hksdlb "Couldn't stay away even if you wanted to, right?"
             m 3eka "I can't blame you! My love for you wouldn't let me stay away from you either!"
             m 1ekd "Every day you were gone I was wondering how you were..."
-            m 3eka "So let me hear it, how are you [player]?"
+            m 3eka "So let me hear it. How are you, [player]?"
             show monika 3eua
 
         elif persistent._mas_absence_choice == "unknown":
-            m 1hub "Hello there, sweetheart!"
+            m 1hub "Hello there, [mas_get_player_nickname()]!"
             m 1eka "I'm glad you didn't make me wait too long."
             m 1hua "A week is shorter than I expected, so consider me pleasantly surprised!"
             m 3hub "Thanks for already making my day, [player]!"
@@ -2394,7 +2525,7 @@ label greeting_long_absence:
 
     else:
         if persistent._mas_absence_choice == "days":
-            m 1hub "Welcome back, my love!"
+            m 1hub "Welcome back, [mas_get_player_nickname()]!"
             m 1eka "Thanks for properly warning me about how long you'd be away."
             m 1eua "It means a lot to know I can trust your words."
             m 3hua "I hope you know you can trust me too!"
@@ -2413,7 +2544,7 @@ label greeting_long_absence:
             m 3hub "Welcome back!"
             m 1rksdla "You just interrupted me practicing my song..."
             m 3hua "Why not listen to me sing it again?"
-            m 1ekbfa "I made it just for you~"
+            m 1ekbsa "I made it just for you~"
             show monika 1eka
 
         elif persistent._mas_absence_choice == "month":
@@ -2446,7 +2577,7 @@ label greeting_long_absence:
             m 1hubfb "You really are kind-hearted!"
             show monika 3eub
     m "Remind me if you're going away again, okay?"
-    show monika idle with dissolve
+    show monika idle with dissolve_monika
     jump ch30_loop
 
 #Time Concern
@@ -2565,11 +2696,11 @@ label greeting_hairdown:
     $ mas_unlockEventLabel("monika_hair_select")
 
     # lock this greeting
-    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
+    $ mas_lockEVL("greeting_hairdown", "GRE")
 
     # cleanup
-    # enable music menu
-    $ mas_MUMUDropShield()
+    # enable music menu and music hotkeys
+    $ mas_MUINDropShield()
 
     # 3 - set the keymaps
     $ set_keymaps()
@@ -2619,7 +2750,7 @@ label greeting_tears:
     m 2ekc "So please, just tell me what's wrong and I'll fix it."
     m 2dfc "I'll do anything for you because...I..."
     m 2dftdc "..."
-    m 2dftsc "...I need you [player]..."
+    m 2dftsc "...I need you, [player]..."
     m 2ektsc "I need you to love me like I love you."
     m 2lktsc "I need you...because if I don't have you, then..."
     m 2dftsc "..."
@@ -2759,7 +2890,7 @@ init 5 python:
 
 label greeting_back_from_school:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Oh, welcome back, [player]!"
+        m 1hua "Oh, welcome back, [mas_get_player_nickname()]!"
         m 1eua "How was your day at school?{nw}"
         $ _history_list.pop()
         menu:
@@ -2776,78 +2907,108 @@ label greeting_back_from_school:
                 else:
                     m 3hua "It always makes me happy to know you're happy~"
                     m 1eua "If you want to talk about your amazing day, I'd love to hear about it!"
+                return
 
             "Good.":
                 m 1hub "Aww, that's nice!"
                 m 1eua "I can't help but feel happy when you do~"
                 m "I hope you learned something useful."
                 m 1hua "Ehehe~"
+                return
 
             "Bad.":
                 m 1ekc "Oh..."
-                m "I'm sorry to hear that."
-                m 1eka "Just remember that no matter what happens, I'll be here for you."
-                m 1ekbfa "I love you so, so much."
-                return "love"
+                m 1dkc "I'm sorry to hear that."
+                m 1ekd "Bad days at school can be really demoralizing..."
 
             "Really bad...":
                 m 1ekc "Oh..."
                 m 2ekd "I'm really sorry you had such a bad day today..."
                 m 2eka "I'm just glad you came to me, [player]."
-                m 3ekc "If you don't mind me asking, was there something in particular that happened?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "If you don't mind me asking, was there something in particular that happened?{fast}"
 
-                    "It was class related.":
-                        m 2dsc "I see..."
-                        m 3esd "People probably tell you all the time that school is important..."
-                        m 3esc "And that you always have to push on and work hard..."
-                        m 2dkd "Sometimes though, it can really stress people out and put them in a downward spiral."
-                        m 2eka "Like I said, I'm glad you came to see me, [player]."
-                        m 3eka "It's nice to know that I can comfort you when you're feeling down."
-                        m "Remember, {i}you're{/i} more important than school or some grades."
-                        m 1ekbsa "Especially to me."
-                        m 1hubsa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
-                        m 3hubfb "I love you, and I just want you to be happy~"
-                        return "love"
+        m 3ekc "If you don't mind me asking, was there something in particular that happened?{nw}"
+        #Since this menu is too long, we'll use a gen-scrollable instead
+        python:
+            final_item = ("I don't want to talk about it.", False, False, False, 20)
+            menu_items = [
+                ("It was class related.", ".class_related", False, False),
+                ("It was caused by people.", ".by_people", False, False),
+                ("It was just a bad day.", ".bad_day", False, False),
+                ("I felt sick today.", ".sick", False, False),
+            ]
 
-                    "It was caused by people.":
-                        m 2ekc "Oh no [player]...{w=0.5} That must have been terrible to experience."
-                        m 2dsc "It's one thing to just have something bad happen to you..."
-                        m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
-                        if persistent._mas_pm_currently_bullied or persistent._mas_pm_is_bullying_victim:
-                            m 2rksdlc "I really hope it's not who you told me about before..."
-                            if mas_isMoniAff(higher=True):
-                                m 1rfc "It {i}better{/i} not be..."
-                                m 1rfd "Bothering my sweetheart like that again."
-                            m 2ekc "I wish I could do more to help you, [player]..."
-                            m 2eka "But I'm here if you need me."
-                            m 3hubsa "And I always will be~"
-                            m 1eubsa "I hope that I can make your day just a little bit better."
-                            m 1hubfb "I love you so much~"
-                            return "love"
+        show monika 2ekc at t21
+        $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
-                        else:
-                            m "I really hope this isn't a recurring event for you, [player]."
-                            m 2lksdld "Either way, maybe it would be best to ask someone for help..."
-                            m 1lksdlc "I know it may seem like that could cause more problems in some cases..."
-                            m 1ekc "But you shouldn't have to suffer at the hands of someone else."
-                            m 3dkd "I'm so sorry you have to deal with this, [player]..."
+        $ label_suffix = _return
 
-                    "It was just a bad day.":
-                        m 1ekc "I see..."
-                        m 3lksdlc "Those days do happen from time to time."
-                        m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
+        show monika at t11
 
-                    "I don't want to talk about it.":
-                        m 2dsc "I understand, [player]."
-                        m 2ekc "Sometimes just trying to put a bad day behind you is the best way to deal with it."
-                        m 2eka "But if you want to talk about it later, just know I'd be more than happy to listen."
-                        m 2hua "I love you, [player]~"
-                        return "love"
+        #No talk
+        if not label_suffix:
+            m 2dsc "I understand, [player]."
+            m 2ekc "Sometimes just trying to put a bad day behind you is the best way to deal with it."
+            m 2eka "But if you want to talk about it later, just know I'd be more than happy to listen."
+            m 2hua "I love you, [player]~"
+            return "love"
 
+        $ full_label = "greeting_back_from_school{0}".format(label_suffix)
+        if renpy.has_label(full_label):
+            jump expression full_label
+
+        label .class_related:
+            m 2dsc "I see..."
+            m 3esd "People probably tell you all the time that school is important..."
+            m 3esc "And that you always have to push on and work hard..."
+            m 2dkd "Sometimes though, it can really stress people out and put them in a downward spiral."
+            m 2eka "Like I said, I'm glad you came to see me, [player]."
+            m 3eka "It's nice to know that I can comfort you when you're feeling down."
+            m "Remember, {i}you're{/i} more important than school or some grades."
+            m 1ekbsa "Especially to me."
+            m 1hubsa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
+            m 3hubfb "I love you, and I just want you to be happy~"
+            return "love"
+
+        label .by_people:
+            m 2ekc "Oh no, [player]...{w=0.5} That must have been terrible to experience."
+            m 2dsc "It's one thing to just have something bad happen to you..."
+            m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
+
+            if persistent._mas_pm_currently_bullied or persistent._mas_pm_is_bullying_victim:
+                m 2rksdlc "I really hope it's not who you told me about before..."
+
+                if mas_isMoniAff(higher=True):
+                    m 1rfc "It {i}better{/i} not be..."
+                    m 1rfd "Bothering my [mas_get_player_nickname(_default='sweetheart', regex_replace_with_nullstr='my ')] like that again."
+
+                m 2ekc "I wish I could do more to help you, [player]..."
+                m 2eka "But I'm here if you need me."
+                m 3hubsa "And I always will be~"
+                m 1eubsa "I hope that I can make your day just a little bit better."
+                m 1hubfb "I love you so much~"
+                $ mas_ILY()
+
+            else:
+                m "I really hope this isn't a recurring event for you, [player]."
+                m 2lksdld "Either way, maybe it would be best to ask someone for help..."
+                m 1lksdlc "I know it may seem like that could cause more problems in some cases..."
+                m 1ekc "But you shouldn't have to suffer at the hands of someone else."
+                m 3dkd "I'm so sorry you have to deal with this, [player]..."
                 m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
+            return
+
+        label .bad_day:
+            m 1ekc "I see..."
+            m 3lksdlc "Those days do happen from time to time."
+            m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
+            m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
+            return
+
+        label .sick:
+            m 2dkd "Being sick at school can be awful. It makes it so much harder to get anything done or pay attention to the lessons."
+            jump greeting_back_from_work_school_still_sick_ask
+            return
 
     elif mas_isMoniUpset():
         m 2esc "You're back, [player]..."
@@ -2877,7 +3038,7 @@ label greeting_back_from_school:
 
             "Bad.":
                 m 6rkc "Oh..."
-                m 6ekc "That's too bad, [player], I'm sorry to hear that."
+                m 6ekc "That's too bad, [player]. I'm sorry to hear that."
                 m 6dkc "I know what bad days are like..."
 
     else:
@@ -2898,7 +3059,7 @@ init 5 python:
 
 label greeting_back_from_work:
     if mas_isMoniNormal(higher=True):
-        m 1hua "Oh, welcome back, [player]!"
+        m 1hua "Oh, welcome back, [mas_get_player_nickname()]!"
 
         m 1eua "How was work today?{nw}"
         $ _history_list.pop()
@@ -2910,9 +3071,9 @@ label greeting_back_from_work:
                 m 1hub "I'm really happy that you had such a great day!"
                 m 3eua "I can only imagine how well you must work on days like that."
                 m 1hua "...Maybe you'll even move up a bit soon!"
-                m 1eua "Anyway, I'm glad you're home, [player]."
+                m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
-                    m 3tubfu "Would you like your dinner, your bath, or..."
+                    m 3tubsu "Would you like your dinner, your bath, or..."
                     m 1hubfb "Ahaha~ Just kidding."
                 else:
                     m 3eub "Let's enjoy some time together!"
@@ -2938,65 +3099,99 @@ label greeting_back_from_work:
                 m 2ekc "I wish I could be there to give you a hug right now."
                 m 2eka "I'm just glad you came to see me... {w=0.5}I'll do my best to comfort you."
 
-        m 2ekd "If you don't mind talking about it, what happened today?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "If you don't mind talking about it, what happened today?{fast}"
+        m 2ekc "If you don't mind talking about it, what happened today?{nw}"
+        #Since this menu is too long, we'll use a gen-scrollable instead
+        python:
+            final_item = ("I don't want to talk about it.", False, False, False, 20)
+            menu_items = [
+                ("I got yelled at.", ".yelled_at", False, False),
+                ("I got passed over for someone else.", ".passed_over", False, False),
+                ("I had to work late.", ".work_late", False, False),
+                ("I didn't get much done today.", ".little_done", False, False),
+                ("Just another bad day.", ".bad_day", False, False),
+                ("I felt sick today.", ".sick", False, False),
+            ]
 
-            "I got yelled at.":
-                m 2lksdlc "Oh... {w=0.5}That can really ruin your day."
-                m 2dsc "You're just there trying your best, and somehow it's not good enough for someone..."
-                m 2eka "If it's still really bothering you, I think it would do you some good to try and relax a little."
-                m 3eka "Maybe talking about something else or even playing a game will help get your mind off of it."
-                m 1hua "I'm sure you'll feel better after we spend some together."
+        show monika 2ekc at t21
+        $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
-            "I got passed over for someone else.":
-                m 1lksdld "Oh... {w=0.5}It can really ruin your day to see someone else get the recognition you thought you deserved."
-                m 2lfd "{i}Especially{/i} when you've done so much and it seemingly goes unnoticed."
-                m 1ekc "You might seem a bit pushy if you say anything, so you just have to keep doing your best and one day I'm sure it'll pay off."
-                m 1eua "As long as keep trying your hardest, you'll continue to do great things and get recognition someday."
-                m 1hub "And just remember...{w=0.5}I'll always be proud of you, [player]!"
-                m 3eka "I hope knowing that makes you feel just a little better~"
+        $ label_suffix = _return
 
-            "I had to work late.":
-                m 1lksdlc "Aw, that can really put a damper on things."
+        show monika at t11
+        #No talk
+        if not label_suffix:
+            m 1dsc "I understand, [player]."
+            m 3eka "Hopefully spending time with me helps you feel little better~"
+            return
 
-                m 3eksdld "Did you at least know about it in advance?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "Did you at least know about it in advance?{fast}"
+        #Otherwise, let's jump to the label if it exists
+        $ full_label = "greeting_back_from_work{0}".format(label_suffix)
+        if renpy.has_label(full_label):
+            jump expression full_label
 
-                    "Yes.":
-                        m 1eka "That's good, at least."
-                        m 3ekc "It would really be a pain if you were all ready to go home and then had to stay longer."
-                        m 1rkd "Still, it can be pretty annoying to have your regular schedule messed up like that."
-                        m 1eka "...But at least you're here now and we can spend some time together."
-                        m 3hua "You can finally relax!"
+        #Return so no fall thru if label missing
+        return
 
-                    "No.":
-                        m 2tkx "That's the worst!"
-                        m 2tsc "Especially if it was the end of the workday and you were all ready to go home..."
-                        m 2dsc "Then suddenly you have to stay a bit longer with no warning."
-                        m 2ekc "It can really be a drag to unexpectedly have your plans canceled."
-                        m 2lksdlc "Maybe you had something to do right after work, or were just looking forward to going home and resting..."
-                        m 2lubfu "...Or maybe you just wanted to come home and see your adoring girlfriend who was waiting to surprise you when you got home..."
-                        m 2hub "Ehehe~"
+        label .yelled_at:
+            m 2lksdlc "Oh... {w=0.5}That can really ruin your day."
+            m 2dsc "You're just there trying your best, and somehow it's not good enough for someone..."
+            m 2eka "If it's still really bothering you, I think it would do you some good to try and relax a little."
+            m 3eka "Maybe talking about something else or even playing a game will help get your mind off of it."
+            m 1hua "I'm sure you'll feel better after we spend some time together."
+            return
 
-            "I didn't get much done today.":
-                m 2eka "Aww, don't feel too bad, [player]."
-                m 2ekd "Those days can happen."
-                m 3eka "I know you're working hard that you'll overcome your block soon."
-                m 1hua "As long as you're doing your best, I'll always be proud of you!"
+        label .passed_over:
+            m 1lksdld "Oh... {w=0.5}It can really ruin your day to see someone else get the recognition you thought you deserved."
+            m 2lfd "{i}Especially{/i} when you've done so much and it seemingly goes unnoticed."
+            m 1ekc "You might seem a bit pushy if you say anything, so you just have to keep doing your best and one day I'm sure it'll pay off."
+            m 1eua "As long as you keep trying your hardest, you'll continue to do great things and get recognition someday."
+            m 1hub "And just remember...{w=0.5}I'll always be proud of you, [player]!"
+            m 3eka "I hope knowing that makes you feel just a little better~"
+            return
 
-            "Just another bad day.":
-                m 2dsd "Just one of those days huh, [player]?"
-                m 2dsc "They do happen from time to time..."
-                m 3eka "But even still, I know how draining they can be and I hope you feel better soon."
-                m 1ekbsa "I'll be here as long as you need me to comfort you, alright, [player]?"
+        label .work_late:
+            m 1lksdlc "Aw, that can really put a damper on things."
 
-            "I don't want to talk about it.":
-                m 1dsc "I understand, [player]."
-                m 3eka "Hopefully spending time with me helps you feel little better~"
+            m 3eksdld "Did you at least know about it in advance?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you at least know about it in advance?{fast}"
+
+                "Yes.":
+                    m 1eka "That's good, at least."
+                    m 3ekc "It would really be a pain if you were all ready to go home and then had to stay longer."
+                    m 1rkd "Still, it can be pretty annoying to have your regular schedule messed up like that."
+                    m 1eka "...But at least you're here now and we can spend some time together."
+                    m 3hua "You can finally relax!"
+
+                "No.":
+                    m 2tkx "That's the worst!"
+                    m 2tsc "Especially if it was the end of the workday and you were all ready to go home..."
+                    m 2dsc "Then suddenly you have to stay a bit longer with no warning."
+                    m 2ekc "It can really be a drag to unexpectedly have your plans canceled."
+                    m 2lksdlc "Maybe you had something to do right after work, or were just looking forward to going home and resting..."
+                    m 2lubsu "...Or maybe you just wanted to come home and see your adoring girlfriend who was waiting to surprise you when you got home..."
+                    m 2hub "Ehehe~"
+            return
+
+        label .little_done:
+            m 2eka "Aww, don't feel too bad, [player]."
+            m 2ekd "Those days can happen."
+            m 3eka "I know you're working hard that you'll overcome your block soon."
+            m 1hua "As long as you're doing your best, I'll always be proud of you!"
+            return
+
+        label .bad_day:
+            m 2dsd "Just one of those days huh, [player]?"
+            m 2dsc "They do happen from time to time..."
+            m 3eka "But even still, I know how draining they can be and I hope you feel better soon."
+            m 1ekbsa "I'll be here as long as you need me to comfort you, alright, [player]?"
+            return
+
+        label .sick:
+            m 2dkd "Being sick at work can be awful. It makes it so much harder to get anything done."
+            jump greeting_back_from_work_school_still_sick_ask
 
     elif mas_isMoniUpset():
         m 2esc "You're back from work I see, [player]..."
@@ -3032,7 +3227,22 @@ label greeting_back_from_work:
 
     else:
         m 6ckc "..."
+    return
 
+label greeting_back_from_work_school_still_sick_ask:
+    m 7ekc "I should ask though..."
+    m 1ekc "Are you still feeling sick?{nw}"
+    menu:
+        m "Are you still feeling sick?{fast}"
+
+        "Yes.":
+            m 1ekc "I'm sorry to hear that, [player]..."
+            m 3eka "Maybe you should take a nap.{w=0.2} I'm sure you'll feel better once you've gotten some rest."
+            jump mas_mood_sick.ask_will_rest
+
+        "No.":
+            m 1eua "I'm glad to hear you're feeling better, [player]."
+            m 1eka "But if you start feeling sick again, be sure to get some rest, alright?"
     return
 
 init 5 python:
@@ -3081,7 +3291,7 @@ init 5 python:
 
 label greeting_siat:
     m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
-    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 1hubsb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
     m 3hubfb "{cps=*0.6}{i}~First comes love~{/i}{/cps}"
     m "{cps=*0.6}{i}~Then comes marriage~{/i}{/cps}"
     m "{cps=*0.6}{i}~Then comes--{/i}{/cps}"
@@ -3140,14 +3350,20 @@ label greeting_ourreality:
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
-    m 3hksdrb "Just give me a second to get it ready..."
-    m 1dsc "..."
-    m 1dsd "Almost done..."
+    if persistent._mas_current_background != "spaceroom":
+        m 4eub "...But we need to go back to the spaceroom for the best view."
+        m 1hua "Let's head over, [player]."
+        call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
+        m 1eua "Here we are!"
+        m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    else:
+        m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
     m 1hua "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
-    m 4eub "Would you kindly look out the window, [player]"
+    m 4eub "Would you kindly look out the window, [player]?"
     $ mas_OVLHide()
     $ disable_esc()
     if mas_current_background.isFltDay():
@@ -3327,7 +3543,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
     m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
     m 2eua "Well, it felt really great!"
-    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "Let's do this again soon, okay?"
     return
 
@@ -3559,7 +3775,7 @@ label greeting_back_from_game:
     #gone for under 4 hours
     elif mas_getAbsenceLength() < datetime.timedelta(hours=4):
         if mas_isMoniNormal(higher=True):
-            m 1hua "Welcome back, [player]!"
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
 
             m 1eua "Did you enjoy yourself?{nw}"
             $ _history_list.pop()
@@ -3579,8 +3795,8 @@ label greeting_back_from_game:
                     m 2eka "I hope you're not too upset by whatever happened."
                     m 3eua "At least you're here now. I promise to try not to let anything bad happen to you while you're with me."
                     m 1ekbsa "Seeing you always cheers me up."
-                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5ekbfa "I hope seeing me does the same for you, [player]~"
+                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                    m 5ekbfa "I hope seeing me does the same for you, [mas_get_player_nickname()]~"
 
         else:
             m 2eud "Oh, back already?"
@@ -3599,7 +3815,7 @@ label greeting_back_from_game:
                     m 1rkc "You sure made me wait a while, you know."
                     m 3tfu "I think you should spend some time with your loving girlfriend, [player]."
                     m 3tku "I'm sure you wouldn't mind staying with me to even out your other game."
-                    m 1hubfb "Maybe you should spend even more time with me, just in case, ahaha!"
+                    m 1hubsb "Maybe you should spend even more time with me, just in case, ahaha!"
 
                 "No.":
                     m 2ekc "Oh..."
@@ -3657,7 +3873,7 @@ label greeting_back_from_eat:
             m 1rksdla "I mean...I'm not complaining that you're here, but..."
             m 1eka "It would make me feel better if you went to bed pretty soon."
             m 3eka "You can always come back and visit me when you wake up..."
-            m 1hubfa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
+            m 1hubsa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
         else:
             m 2euc "[player]?"
             m 3ekd "Didn't I tell you just to go straight to bed after?"
@@ -3666,7 +3882,7 @@ label greeting_back_from_eat:
     else:
         if mas_isMoniNormal(higher=True):
             m 1eub "Finished eating?"
-            m 1hub "Welcome back, [player]!"
+            m 1hub "Welcome back, [mas_get_player_nickname()]!"
             m 3eua "I hope you enjoyed your food."
         else:
             m 2euc "Finished eating?"
@@ -3685,12 +3901,12 @@ init 5 python:
     )
 
 label greeting_rent:
-    m 1eub "Welcome back, dear!"
+    m 1eub "Welcome back, [mas_get_player_nickname()]!"
     m 2tub "You know, you spend so much time here that I should start charging you for rent."
     m 2ttu "Or would you rather pay a mortgage?"
     m 2hua "..."
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
 
@@ -3708,7 +3924,7 @@ init 5 python:
 label greeting_back_housework:
     if mas_isMoniNormal(higher=True):
         m 1eua "All done, [player]?"
-        m 1hub "Let's spend some more time together."
+        m 1hub "Let's spend some more time together!"
     elif mas_isMoniUpset():
         m 2esc "At least you didn't forget to come back, [player]."
     elif mas_isMoniDis():
@@ -3734,7 +3950,7 @@ label greeting_surprised2:
     m 1wubso "Oh!{w=0.5} [player]!{w=0.5} You surprised me!"
     m 3ekbsa "...Not that it's a surprise to see you, you're always visiting me after all...{w=0.5} {nw}"
     extend 3rkbsa "You just caught me daydreaming a bit."
-    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubfu "But now that you're here, that dream just came true~"
     return
 
@@ -3754,14 +3970,266 @@ init 5 python:
         code="GRE"
     )
 
-    del[ev_rules]
+    del ev_rules
 
 label greeting_back_from_restart:
     if mas_isMoniNormal(higher=True):
-        m 1hub "Welcome back, [player]!"
+        m 1hub "Welcome back, [mas_get_player_nickname()]!"
         m 1eua "What else should we do today?"
     elif mas_isMoniBroken():
         m 6ckc "..."
     else:
         m 1eud "Oh, you're back."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_code_help",
+            conditional="store.seen_event('monika_coding_experience')",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_code_help:
+    m 2eka "Oh, hi [player]..."
+    m 4eka "Give me a second, I've just finished trying to code something, and I want to see if it works.{w=0.5}.{w=0.5}.{nw}"
+
+    scene black
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    hide noise
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 2wud_static')
+
+    m 2wud "Ah!{w=0.3}{nw}"
+    extend 2efc " That's not supposed to happen!"
+    m 2rtc "Why does this loop end so fast?{w=0.5}{nw}"
+    extend 2efc " No matter how you look at it, that dictionary is {i}not{/i} empty."
+    m 2rfc "Gosh, coding can be {i}so{/i} frustrating sometimes..."
+
+    if persistent._mas_pm_has_code_experience:
+        m 3rkc "Oh well, I guess I'll try it again later.{nw}"
+        $ _history_list.pop()
+
+        show screen mas_background_timed_jump(5, "greeting_code_help_outro")
+        menu:
+            m "Oh well, I guess I'll try it again later.{fast}"
+
+            "I could help you with that...":
+                hide screen mas_background_timed_jump
+                m 7hua "Aww, that's so sweet of you, [player]. {w=0.3}{nw}"
+                extend 3eua "But no, I'm gonna have to refuse here."
+                m "Figuring stuff out on your own is the fun part, {w=0.2}{nw}"
+                extend 3kua "right?"
+                m 1hub "Ahaha!"
+
+    else:
+        m 3rkc "Oh well, I guess I'll try it again later."
+
+    #FALL THROUGH
+
+label greeting_code_help_outro:
+    hide screen mas_background_timed_jump
+    m 1eua "Anyway, what would you like to do today?"
+
+    $ mas_lockEVL("greeting_code_help", "GRE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_love_is_in_the_air",
+            unlocked=True,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GRE"
+    )
+
+label greeting_love_is_in_the_air:
+    m 1hub "{i}~Love is in the air~{/i}"
+    m 1rub "{i}~Everywhere I look around~{/i}"
+    m 3ekbsa "Oh hello, [player]..."
+    m 3rksdla "Don't mind me. {w=0.2}I'm just singing a bit, thinking about...{w=0.3}{nw}"
+    extend 1hksdlb "well, you can probably guess what, ahaha~"
+    m 1eubsu "It really does feel like love is all around me whenever you're here."
+    m 3hua "Anyway, what would you like to do today?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_workout",
+            category=[store.mas_greetings.TYPE_WORKOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_workout:
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 3eua "I hope you had a nice workout."
+        m 3eub "Don't forget to stay hydrated and eat something to get your energy back!"
+        m 1eua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "Did your workout help you release some tension?"
+        m 2rud "I hope it did...{w=0.3} {nw}"
+        extend 2eka "Let's spend some more time together."
+
+    elif mas_isMoniDis():
+        m 6ekc "Oh...{w=0.5}look who's back."
+        m 6dkc "I'm...{w=0.3}happy that you're taking care of yourself."
+        m 6ekd "...But don't you want to take care of me too?"
+        m 7dkc "At least once in a while, please..."
+        m 1dkc "..."
+
+    else:
+        m 6ckc "..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_shopping",
+            category=[store.mas_greetings.TYPE_SHOPPING],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_shopping:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 3eua "I hope you got what you needed from the store."
+        m 1hua "Let's spend some more time together~"
+
+    elif mas_isMoniUpset():
+        m 2esc "Oh,{w=0.2} you're back."
+        m 2rsc "I hope you got everything you needed."
+        if renpy.random.randint(1,5) == 1:
+            m 2rud "{cps=*2}Hopefully you're in a better mood now too.{/cps}{nw}"
+            $ _history_list.pop()
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...{w=0.5}you're back."
+        m 6ekc "I hope you had a good time shopping. {w=0.2}Did you buy any food?"
+        m 6dkd "Have you considered that your eating habits may be affecting your mood lately?"
+        m 6lkc "I'd hate if that was the reason you--{nw}"
+        $ _history_list.pop()
+        m 6ekc "You know what? Nevermind. {w=0.2}{nw}"
+        extend 6dkc "I'm just tired."
+
+    else:
+        m 6ckc "..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_hangout",
+            category=[store.mas_greetings.TYPE_HANGOUT],
+            unlocked=True
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_hangout:
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_has_friends:
+            m 1eua "Welcome back, [player]."
+            m 3hub "I hope you had a good time!"
+
+            $ anyway_lets = "Let's"
+
+        else:
+            m 3eub "Welcome back, [player]."
+
+            m 1eua "Did you make a new friend?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you make a new friend?{fast}"
+
+                "Yes.":
+                    m 1hub "That's amazing!"
+                    m 1eua "It makes me so happy knowing you have someone to hang out with."
+                    m 3hub "I hope you're able to spend more time with them in the future!"
+                    $ persistent._mas_pm_has_friends = True
+
+                "No...":
+                    m 1ekd "Oh..."
+                    m 3eka "Well, don't worry, [player]. {w=0.2}I'll always be your friend, no matter what."
+                    m 3ekd "...And don't be afraid to try again with someone else."
+                    m 1hub "I'm sure there's someone out there who'd be happy to call you their friend!"
+
+                "They're already my friend.":
+                    if persistent._mas_pm_has_friends is False:
+                        m 1rka "Oh, so you made a new friend without telling me..."
+                        m 1hub "That's okay! I'm just happy you have someone to hang out with."
+                    else:
+                        m 1hub "Oh, okay!"
+                        m 3eua "...We haven't really talked about your other friends before, so I wasn't sure if this was a new friend or not."
+                        m 3eub "But either way, I'm just glad you have friends in your reality to hang out with!"
+
+                    m 3eua "I hope you're able to spend time with them often."
+                    $ persistent._mas_pm_has_friends = True
+
+            $ anyway_lets = "Anyway, let's"
+
+        m 1eua "[anyway_lets] spend some more time together~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "Hello again, [player]."
+        m 2eud "I hope you had a good time hanging out with your friends."
+        if renpy.random.randint(1,5) == 1:
+            m 2rkc "{cps=*2}I wonder what that's like{/cps}{nw}"
+            $ _history_list.pop()
+
+    else:
+        m 6ckc "..."
+
+    return
+
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+
+label monikaroom_greeting_ear_recursionerror:
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
+
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
+
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    stop sound
+    hide noise
+
+    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
+    m "..."
+
+    if mas_isMoniUpset():
+        m "...Keep going, Monika, you'll figure this out."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
+        call monikaroom_greeting_ear_prog_dis
+    else:
+        m "Phew, at least everything else is fine."
+
+    jump monikaroom_greeting_choice

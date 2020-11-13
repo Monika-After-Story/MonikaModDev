@@ -30,6 +30,7 @@ define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
 init 1 python in mas_chess:
     import os
     import chess.pgn
+    import store.mas_ui as mas_ui
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -38,11 +39,11 @@ init 1 python in mas_chess:
     REL_DIR = "chess_games/"
 
     # other mas constants (menu related)
-    CHESS_MENU_X = 680
-    CHESS_MENU_Y = 40
-    CHESS_MENU_W = 560
-    CHESS_MENU_H = 640
-    CHESS_MENU_XALIGN = -0.05
+    CHESS_MENU_X = mas_ui.SCROLLABLE_MENU_X
+    CHESS_MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    CHESS_MENU_W = mas_ui.SCROLLABLE_MENU_W
+    CHESS_MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    CHESS_MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     CHESS_MENU_AREA = (CHESS_MENU_X, CHESS_MENU_Y, CHESS_MENU_W, CHESS_MENU_H)
 
     CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"
@@ -500,7 +501,7 @@ init:
                 self.piece_highlight_magenta_image = Image("mod_assets/games/chess/piece_highlight_magenta.png")
                 self.move_indicator_player = Image("mod_assets/games/chess/move_indicator_player.png")
                 self.move_indicator_monika = Image("mod_assets/games/chess/move_indicator_monika.png")
-                self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
+                self.player_move_prompt = Text(_("It's your turn, [mas_get_player_nickname()]!"), size=36)
                 self.num_turns = 0
                 self.surrendered = False
 
@@ -1627,13 +1628,19 @@ label mas_chess_save_migration:
                 $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
-                    m 1m "So I've been thinking, [player]..."
+                    # TODO: i am removing expressions on these lines, 
+                    # so travis will pass, assuming that the chess PR will be
+                    # in prior to launch.
+                    # reagrdless, even if the chess PR doest make it, this is
+                    # an incredibly rare case that its fine to not have
+                    # expressions
+                    m "So I've been thinking, [player]..."
                     m "Most people who leave in the middle of a chess game don't come back to start a new one."
-                    m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
-                    m 1p "And since we have [game_count] games in progress..."
-                    m 1g "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
+                    m "It makes no sense for me to keep track of more than one unfinished game between us."
+                    m "And since we have [game_count] games in progress..."
+                    m "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
                     $ pick_text = _("Pick a game you'd like to keep.")
-            show monika 1e at t21
+            show monika 1eua at t21 # TODO: also this line was just set to 1eua
             $ renpy.say(m, pick_text, interact=False)
 
             call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)

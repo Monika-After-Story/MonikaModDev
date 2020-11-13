@@ -1,7 +1,7 @@
 # module that adds a tiny mouse tracker overlay
 
 init -1 python:
-    
+
     # quick functions to enable disable the mouse tracker
     def mas_enableMouseTracking():
         if not mas_isMouseTrackingVisible():
@@ -180,14 +180,14 @@ init 5 python:
     )
 
 label dev_hold_still_monika:
-    m 1eua "okay!"
+    m 1eua "Okay!"
     $ sel_pose = renpy.input("pose number (1-7)", allow="1234567", length=1)
     $ sel_pose = store.mas_utils.tryparseint(sel_pose, 1)
     if sel_pose < 1:
         $ sel_pose = 1
     elif sel_pose > 7:
         $ sel_pose = 7
-    
+
     $ pose_to_make = str(sel_pose) + "eua"
     $ renpy.show("monika " + pose_to_make)
     m "HOLDING! (Click once to dismiss menu, once more to stop holding)"
@@ -195,52 +195,74 @@ label dev_hold_still_monika:
     $ ui.interact()
 
     m 1eua "Done holding!"
-    return
+
+    m 3eua "Would you like to test another pose?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to test another pose?{fast}"
+
+        "Yes.":
+            jump dev_hold_still_monika
+
+        "No.":
+            return
+
+
 
 init python:
-    class MASClickZoneTester(renpy.Displayable):
+    class MASClickZoneTester(MASZoomableInteractable):
 
         import store.mas_interactions as mib
 
         def __init__(self):
-            super(renpy.Displayable, self).__init__()
-            self.chest = self.mib.ZONE_CHEST
+            self.cz_man = self.mib.MASClickZoneManager()
             self.build_zones()
+            self.pose_one = False
+            self.debug_back = True
+            super(MASClickZoneTester, self).__init__(
+                self.cz_man,
+                zone_actions=self.build_zone_actions(),
+                debug=True
+            )
+
+        def quick_add(self, zone_enum):
+            self.cz_man.add(
+                zone_enum,
+                MASClickZone(self.mib.get_vx(zone_enum))
+            )
 
         def build_zones(self):
-            zoom_level = store.mas_sprites.zoom_level
+            self.quick_add(self.mib.ZONE_CHEST)
 
-            self.boob_click = MASClickZone(
-                self.mib.vertex_list_from_zoom(zoom_level, self.chest)
-            )
-            self.boob_click._debug_back = True
-            self.boob_click._button_down = pygame.MOUSEBUTTONDOWN
+            self.quick_add(self.mib.ZONE_CHEST_1_R)
+            self.cz_man.set_disabled(self.mib.ZONE_CHEST_1_R, True)
+            self.quick_add(self.mib.ZONE_CHEST_1_M)
+            self.cz_man.set_disabled(self.mib.ZONE_CHEST_1_M, True)
+            self.quick_add(self.mib.ZONE_CHEST_1_L)
+            self.cz_man.set_disabled(self.mib.ZONE_CHEST_1_L, True)
 
-            self.nose_click = MASClickZone(
-                self.mib.vertex_list_from_zoom(zoom_level, self.mib.ZONE_NOSE)
-            )
-            self.nose_click._debug_back = True
-            self.nose_click._button_down = pygame.MOUSEBUTTONDOWN
+            self.quick_add(self.mib.ZONE_HEAD)
+            
+            self.quick_add(self.mib.ZONE_NOSE)
 
-            self.head_click = MASClickZone(
-                self.mib.vertex_list_from_zoom(zoom_level, self.mib.ZONE_HEAD)
-            )
-            self.head_click._debug_back = True
-            self.head_click._button_down = pygame.MOUSEBUTTONDOWN
-
+        def build_zone_actions(self):
+            return {
+                self.mib.ZONE_CHEST: MASZoomableInteractable.ZONE_ACTION_NONE,
+                self.mib.ZONE_CHEST_1_R: 
+                    MASZoomableInteractable.ZONE_ACTION_NONE,
+                self.mib.ZONE_CHEST_1_M: 
+                    MASZoomableInteractable.ZONE_ACTION_NONE,
+                self.mib.ZONE_CHEST_1_L: 
+                    MASZoomableInteractable.ZONE_ACTION_NONE,
+                self.mib.ZONE_HEAD: MASZoomableInteractable.ZONE_ACTION_NONE,
+                self.mib.ZONE_NOSE: MASZoomableInteractable.ZONE_ACTION_NONE,
+            }
 
         def render(self, width, height, st, at):
-            r = renpy.Render(width, height)
-            boob_zone = renpy.render(self.boob_click, width, height, st, at)
-            nose_zone = renpy.render(self.nose_click, width, height, st, at)
-            head_zone = renpy.render(self.head_click, width, height, st, at)
-            r.blit(boob_zone, (0, 0))
-            r.blit(nose_zone, (0, 0))
-            r.blit(head_zone, (0, 0))
-            return r
+            return super(MASClickZoneTester, self).render(width, height, st, at)
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.KEYUP: 
+            if ev.type == pygame.KEYUP:
 
                 if ev.key == pygame.K_q:
                     # quit when user hits q
@@ -250,7 +272,7 @@ init python:
                     if store.mas_sprites.zoom_level > 0:
                         store.mas_sprites.zoom_level -= 1
                         store.mas_sprites.adjust_zoom()
-                        self.build_zones()
+                        self.adjust_for_zoom()
                         renpy.redraw(self, 0.0)
                         renpy.restart_interaction()
 
@@ -258,37 +280,42 @@ init python:
                     if store.mas_sprites.zoom_level < 20:
                         store.mas_sprites.zoom_level += 1
                         store.mas_sprites.adjust_zoom()
-                        self.build_zones()
+                        self.adjust_for_zoom()
                         renpy.redraw(self, 0.0)
                         renpy.restart_interaction()
 
                 elif ev.key == pygame.K_p:
                     # switch pose
-                    if self.chest == self.mib.ZONE_CHEST:
-                        self.chest = self.mib.ZONE_CHEST_1
-                        self.build_zones()
-                        renpy.redraw(self, 0.0)
-                        renpy.show("monika 1eua")
-                        renpy.restart_interaction()
-
-                    else:
-                        self.chest = self.mib.ZONE_CHEST
-                        self.build_zones()
+                    if self.pose_one:
+                        self.pose_one = False
+                        self.enable_zone(self.mib.ZONE_CHEST)
+                        self.disable_zone(self.mib.ZONE_CHEST_1_R)
+                        self.disable_zone(self.mib.ZONE_CHEST_1_M)
+                        self.disable_zone(self.mib.ZONE_CHEST_1_L)
                         renpy.redraw(self, 0.0)
                         renpy.show("monika 6eua")
                         renpy.restart_interaction()
 
-            else:
-                boob_click = self.boob_click.event(ev, x, y, st)
-                nose_click = self.nose_click.event(ev, x, y, st)
-                head_click = self.head_click.event(ev, x, y, st)
-                if (
-                        boob_click is not None
-                        or nose_click is not None
-                        or head_click is not None
-                ):
-                    renpy.play(gui.activate_sound, channel="sound")
+                    else:
+                        self.pose_one = True
+                        self.disable_zone(self.mib.ZONE_CHEST)
+                        self.enable_zone(self.mib.ZONE_CHEST_1_R)
+                        self.enable_zone(self.mib.ZONE_CHEST_1_M)
+                        self.enable_zone(self.mib.ZONE_CHEST_1_L)
 
+                        renpy.redraw(self, 0.0)
+                        renpy.show("monika 1eua")
+                        renpy.restart_interaction()
+
+                elif ev.key == pygame.K_d:
+                    # toggle debug backs
+                    self.debug_back = not self.debug_back
+                    self._cz_man._debug(self.debug_back)
+                    renpy.redraw(self, 0.0)
+
+            else:
+                if self.event_begin(ev, x, y, st):
+                    renpy.play(gui.activate_sound, channel="sound")
 
 
 init 5 python:
@@ -309,7 +336,8 @@ label dev_clickzone_tests:
     $ store.mas_sprites.reset_zoom()
     m 6eua "ok, remember q is quit"
     window hide
-    $ ui.add(MASClickZoneTester())
+    $ dbg_out = MASClickZoneTester()
+    $ ui.add(dbg_out)
     $ ui.interact()
     window auto
     m 1eua "I am done"
