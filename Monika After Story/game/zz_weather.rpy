@@ -259,7 +259,7 @@ init -99 python in mas_weather:
         tag = old_weather_tag.format(old_weather_id)
         store.renpy.image(tag, disp)
         OLD_WEATHER_OBJ[old_weather_id] = tag
-        old_weather_id += 1 
+        old_weather_id += 1
 
         return tag
 
@@ -378,7 +378,6 @@ init -20 python in mas_weather:
 
         # dont need to change anything if we are switching from thunder
         if _old != store.mas_weather_thunder:
-
             # set global flag
             store.mas_is_raining = True
 
@@ -391,6 +390,8 @@ init -20 python in mas_weather:
                 if_changed=True
             )
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_rain_exit(_new):
         """
@@ -405,6 +406,8 @@ init -20 python in mas_weather:
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
     def _weather_snow_entry(_old):
         """
@@ -418,7 +421,7 @@ init -20 python in mas_weather:
         if (
             store.mas_current_background.isFltNight()
             and not store.persistent.event_list
-            and store.mas_getEV("monika_auroras").shown_count == 0
+            and not store.mas_getEVL_shown_count("monika_auroras")
         ):
             store.queueEvent("monika_auroras", notify=True)
 
@@ -461,13 +464,15 @@ init -20 python in mas_weather:
         """
         Overcast entry programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
 
 init -10 python:
@@ -513,7 +518,7 @@ init -10 python:
             unlocked - True if this weather object starts unlocked,
                 False otherwise
                 (Default: False)
-        
+
         RETURNS: MASFitlerableWeather object
         """
         if sp_night is None:
@@ -820,7 +825,7 @@ init -10 python:
             fallback-baesd getting uses the FLT_FB dict to find the NEXT
             available value for a given precip_type. This overrides the
             MASWeatherMap's handling of using PRECIP_TYPE_DEF as a fallback
-            until the final MASWeatherMap in the chain. 
+            until the final MASWeatherMap in the chain.
             For more, see MASFilterWeatherDisplayable in sprite-chart-matrix.
 
             IN:
@@ -849,7 +854,7 @@ init -10 python:
 
         def has_def(self, flt):
             """
-            Checks if the given flt has a MASWeatherMap that contains a 
+            Checks if the given flt has a MASWeatherMap that contains a
             non-None value for the default precip type.
 
             IN:
@@ -892,7 +897,7 @@ init -10 python:
             # otherwise, use our special handling
 
             # wmap could be None because of a not-defined filter. In that case
-            # set value to None so we can traverse filters until we find a 
+            # set value to None so we can traverse filters until we find a
             # valid wmap.
             if wmap is not None:
                 value = wmap._raw_get(precip_type)
@@ -903,7 +908,7 @@ init -10 python:
             while value is None:
                 nxt_flt = store.mas_sprites._rslv_flt(curr_flt)
 
-                # if the filters match, we foudn the last one. 
+                # if the filters match, we foudn the last one.
                 if nxt_flt == curr_flt:
                     # in this case, use standard MASWeatherMap handling.
                     if wmap is None:
@@ -1024,7 +1029,7 @@ init 799 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather, by_user=None, set_persistent=False):
+    def mas_changeWeather(new_weather, by_user=None, set_persistent=False, new_bg=None):
         """
         Changes weather without doing scene changes
 
@@ -1034,10 +1039,16 @@ init 799 python:
             new_weather - weather to change to
             by_user - flag for if user changes weather or not
             set_persistent - whether or not we want to make this weather persistent
+            new_bg - MASFilterableBackground which will be switched to along with weather change.
+                If none, mas_current_background is used.
+                (Default: None)
         """
+        if new_bg is None:
+            new_bg = store.mas_current_background
+
         #If the current background doesn't support weather, we set to def weather instead
         #Since it has no sfx or anything
-        if store.mas_current_background.disable_progressive:
+        if new_bg.disable_progressive and new_bg.hide_masks:
             new_weather = store.mas_weather_def
 
         if by_user is not None:
@@ -1129,7 +1140,7 @@ init 5 python:
             prompt="Can you change the weather?",
             pool=True,
             unlocked=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
@@ -1162,13 +1173,13 @@ label monika_change_weather:
         weathers.extend(other_weathers)
 
         #Add the auto option
-        weathers.append(("Progressive","auto",False,False))
+        weathers.append(("Progressive", "auto", False, False))
 
         # now add final quit item
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_weather = _return
 

@@ -5,6 +5,23 @@ default persistent._mas_background_MBGdata = {}
 #Defaults to def (spaceroom)
 default persistent._mas_current_background = "spaceroom"
 
+init -5 python in mas_background:
+    #Marks this background as an outdoor type (disables opendoor for it)
+    #value: ignored
+    EXP_TYPE_OUTDOOR = "outdoor"
+
+    #Tells the background changer to skip the leadin dialogue
+    #value: ignored
+    EXP_SKIP_LEADIN = "skip_leadin"
+
+    #Tells the background changer to skip the transition (black screen)
+    #value: ignored
+    EXP_SKIP_TRANSITION = "skip_transition"
+
+    #Tells the background changer to skip the outro dialogue
+    #value: ignored
+    EXP_SKIP_OUTRO = "skip_outro"
+
 #START: Class definition
 init -10 python:
 
@@ -151,6 +168,16 @@ init -10 python:
             Not equals implementation
             """
             return not self.__eq__(other)
+
+        def __repr__(self):
+            return (
+                "<FilterSlice: (name: {0}, min: {1}, max: {2}, pri: {3})>"
+            ).format(
+                self.name,
+                self.minlength,
+                self.maxlength,
+                self.priority
+            )
 
         def __str__(self):
             """
@@ -309,6 +336,17 @@ init -10 python:
             if isinstance(other, MASBackgroundFilterSliceData):
                 return self.order < other.order
             return NotImplemented
+
+        def __repr__(self):
+            return (
+                "<FilterSliceData: (order: {0}, offset: {1}, length: {2}"
+                ", flt_slice: {3})>"
+            ).format(
+                self.order,
+                self.offset,
+                self.length,
+                repr(self.flt_slice)
+            )
 
         def __str__(self):
             """
@@ -470,6 +508,17 @@ init -10 python:
             # the last length value passed into build
 
             self._parse_slices(slices)
+
+        def __repr__(self):
+            return (
+                "<FilterChunk: (index: {0}, length: {1}, slices: {2}, "
+                "eff_slices: {3})>"
+            ).format(
+                self._index,
+                self._length,
+                self._slices,
+                self._eff_slices
+            )
 
         def __str__(self):
             """
@@ -942,7 +991,7 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     flt_old,
@@ -1179,6 +1228,30 @@ init -10 python:
             self._updated = False
             # set to True upon an update, set to False upon progress
 
+        def __repr__(self):
+            day_f = self._day_filters
+            if day_f is not None:
+                day_f = day_f.keys()
+
+            night_f = self._night_filters
+            if night_f is not None:
+                night_f = night_f.keys()
+
+            return (
+                "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
+                "day_flts: {3}, night_flts: {4}, mn_sr: {5}, sr_ss: {6}, "
+                "ss_mn: {7})>"
+            ).format(
+                self._index,
+                self._updated,
+                self._prev_flt,
+                day_f,
+                night_f,
+                repr(self._mn_sr),
+                repr(self._sr_ss),
+                repr(self._ss_mn)
+            )
+
         def __str__(self):
             """
             Shows chunks and curr chunk information
@@ -1210,7 +1283,7 @@ init -10 python:
 
             return "\n".join(output)
 
-        def adv_chunk(self, sfmn, st_index, run_pp, curr_time, force_co):
+        def adv_chunk(self, sfmn, st_index, run_pp, curr_time):
             """
             Runs advance chunks alg, running progpoints but does NOT actually
             set new index. This WILL SET SLICE INDEXES.
@@ -1221,10 +1294,6 @@ init -10 python:
                 run_pp - True will run the progpoints, FAlse will not
                 curr_time - passed to the progpoint. should be current time
                     as a datetime.time object
-                force_co - True will force one chunk advancement. False will
-                    not. This is for cases where we are in the same chunk, but
-                    earlier than the current slice. Doing this allows us to
-                    reset the slice index.
 
             RETURNS: new chunk index
             """
@@ -1232,27 +1301,36 @@ init -10 python:
             c_len = len(self._chunks)
 
             # determine current chunk offsets
+            # Current Beginning OFFset, Next Beginning OFFset
             cb_off, nb_off = self._calc_off(st_index)
+            curr_chunk = self._chunks[st_index]
+            found = False
 
-            # loop unfil sfmn in range of current chunk
-            while sfmn < cb_off or nb_off <= sfmn or force_co:
-                # always set this to false after one iteration
-                force_co = False
+            # force stop iteration if something bad happened
+            iter_stop = 10
 
-                # get chunk chunk
-                curr_chunk = self._chunks[st_index]
+            # loop until we found the chunk, or if we found it, until the first
+            #   non-zero chunk
+            while iter_stop > 0 and (not found or len(curr_chunk) < 1):
 
-                # determine the next current offset and next index
+                # determine next chunk index
+                nxt_index = (st_index + 1) % c_len # next index or 0 if max len
 
-                # next offset or 0 if 86400
+                # next chunk
+                new_chunk = self._chunks[nxt_index]
+
+                # determine next chunk offsets
+                # next curent chunk offset offset or 0 if 86400
                 cb_off = nb_off % (store.mas_utils.secInDay())
-                st_index = (st_index + 1) % c_len # next index or 0 if max len
 
-                # now calc next offset
-                nb_off = cb_off + len(self._chunks[st_index])
+                # next chunk's offset
+                nb_off = cb_off + len(new_chunk)
 
-                # new chunk is
-                new_chunk = self._chunks[st_index]
+                # set found if we found the chunk
+                if not found:
+                    found = cb_off <= sfmn < nb_off
+                    # once this is set, the next loops will only happen if
+                    # current chunks are less than zero
 
                 # lastly run pp if desired
                 if run_pp:
@@ -1262,22 +1340,32 @@ init -10 python:
                         curr_time
                     )
 
-                # always run global after
-                try:
-                    store.mas_background._gbl_chunk_change(
-                        curr_chunk,
-                        new_chunk,
-                        curr_time
-                    )
-                except Error as e:
-                    store.mas_utils.writelog(self._ERR_PP_STR_G.format(
-                        repr(e),
-                        str(curr_chunk),
-                        str(new_chunk),
-                    ))
+                    # and global
+                    try:
+                        store.mas_background._gbl_chunk_change(
+                            curr_chunk,
+                            new_chunk,
+                            curr_time
+                        )
+                    except Exception as e:
+                        store.mas_utils.writelog(self._ERR_PP_STR_G.format(
+                            repr(e),
+                            str(curr_chunk),
+                            str(new_chunk),
+                        ))
 
-                # then finally reset slice index for this chunk
+                # then finally reset slice index for the chunk we are leaving
                 curr_chunk.reset_index()
+
+                # and set the current chunk to next chunk
+                curr_chunk = new_chunk
+                st_index = nxt_index
+
+                iter_stop -= 1
+
+            if iter_stop < 1:
+                # this is bad
+                raise Exception("inf looped here")
 
             return st_index
 
@@ -1506,9 +1594,14 @@ init -10 python:
             IN:
                 flt - filter to check
 
-            RETURNS: True if day, false if not
+            RETURNS: True if day, false if not, None if filter not associatd
+                with this filter manager
             """
-            return flt in self._day_filters
+            if flt in self._day_filters:
+                return True
+            if flt in self._night_filters:
+                return False
+            return None
 
         def _organize(self):
             """
@@ -1553,7 +1646,7 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
-            except Error as e:
+            except Exception as e:
                 store.mas_utils.writelog(self._ERR_PP_STR.format(
                     repr(e),
                     str(chunk_old),
@@ -1617,26 +1710,35 @@ init -10 python:
             pos_data = self.current_pos()
 
             # are we technically in same chunk but before in time?
-            # if so, we need to force a chunk move
-            force_co = (
-                pos_data[1] <= sfmn < pos_data[2]  # in same chunk
-                and sfmn < (pos_data[1] + pos_data[4]) # earlier than slice
-            )
+            # reset the current chunk's slice index then advance
+            if (
+                    pos_data[1] <= sfmn < pos_data[2]  # in same chunk
+                    and sfmn < (pos_data[1] + pos_data[4]) # earlier than slice
+            ):
+                self._current_chunk().reset_index()
 
-            # start by advancing chunks correctly, if needed
-            self._index = self.adv_chunk(
-                sfmn,
-                self._index,
-                True,
-                curr_time,
-                force_co
-            )
+            else:
+                # start by advancing chunks correctly, if needed
+                self._index = self.adv_chunk(
+                    sfmn,
+                    self._index,
+                    True,
+                    curr_time
+                )
 
             # now we can start advancing slices
             return self._chunks[self._index].progress(
                 sfmn - (self._calc_off(self._index)[0]),
                 curr_time
             )
+
+        def reset_indexes(self):
+            """
+            Resets all indexes to 0, so we are in fresh state mode
+            """
+            self._index = 0
+            for chunk in self._chunks:
+                chunk._index = 0
 
         def update(self, curr_time=None):
             """
@@ -1657,19 +1759,15 @@ init -10 python:
             self._prev_flt = self.current()
 
             # establish seconds
+            # Seconds From MidNight
             sfmn = store.mas_utils.time2sec(curr_time)
 
-            # establish chunk index
-            boff, eoff = self._calc_off(0)
-            cindex = 0
-            while cindex < len(self._chunks)-1 and (sfmn < boff or eoff <= sfmn):
-                # determine next offsets
-                cindex += 1
-                boff, eoff = self._calc_off(cindex)
+            cindex = self.adv_chunk(sfmn, 0, False, curr_time)
 
             # we should now be in the correct index probably
             self._chunks[self._index].reset_index()
             self._index = cindex
+            boff, eoff = self._calc_off(cindex)
             self._chunks[cindex].update(sfmn - boff)
 
             # mark that we used update
@@ -1848,6 +1946,7 @@ init -10 python:
             unlocked=False,
             entry_pp=None,
             exit_pp=None,
+            ex_props=None
         ):
             """
             Constructor for background objects
@@ -1892,6 +1991,10 @@ init -10 python:
 
                 exit_pp:
                     Exit programming point for this background
+                    (Default: None)
+
+                ex_props:
+                    Extra properties for backgrounds. If None, an empty dict is assigned
                     (Default: None)
             """
             # sanity checks
@@ -1942,6 +2045,12 @@ init -10 python:
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
+
+            #Add ex_props
+            if ex_props is None:
+                ex_props = dict()
+
+            self.ex_props = ex_props
 
             # add to background map
             self.mas_background.BACKGROUND_MAP[background_id] = self
@@ -2014,19 +2123,19 @@ init -10 python:
                     )
                 )
 
-        def entry(self, old_background):
+        def entry(self, old_background, **kwargs):
             """
             Run the entry programming point
             """
             if self.entry_pp is not None:
-                self.entry_pp(old_background)
+                self.entry_pp(old_background, **kwargs)
 
-        def exit(self, new_background):
+        def exit(self, new_background, **kwargs):
             """
             Run the exit programming point
             """
             if self.exit_pp is not None:
-                self.exit_pp(new_background)
+                self.exit_pp(new_background, **kwargs)
 
         def fromTuple(self, data_tuple):
             """
@@ -2203,7 +2312,8 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "day" filter according to this bg
+            RETURNS: True if flt is a "day" filter according to this bg,
+                False if night filter, None if not associated with this BG
             """
             if flt is None:
                 flt = store.mas_sprites.get_filter()
@@ -2219,9 +2329,13 @@ init -10 python:
                 flt - filter to check
                     if None, we use the current filter
 
-            RETURNS: True if flt is a "night" filter according to this BG
+            RETURNS: True if flt is a "night" filter according to this BG,
+                False if day filter, None if not associated with this BG.
             """
-            return not self.isFltDay(flt)
+            flt_res = self.isFltDay(flt)
+            if flt_res is not None:
+                return not flt_res
+            return None
 
         def _lookback(self, flt):
             """
@@ -2254,7 +2368,21 @@ init -10 python:
                     )
                 )
 
-            new_flt = self._flt_man.progress()
+            try:
+                new_flt = self._flt_man.progress()
+            except Exception as e:
+                # in this case, we don't know what happened, but we got
+                # screwed. log out state of the flt man as well as the
+                # traceback
+                store.mas_background.log_bg(
+                    self,
+                    store.mas_utils.sys.exc_info()
+                )
+
+                # reset the manager to defualt indexes. Next time progress
+                # is called will hopefully update without error
+                self._flt_man.reset_indexes()
+                new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
                 store.mas_utils.writelog(
@@ -2265,7 +2393,21 @@ init -10 python:
                     )
                 )
 
-            return new_flt
+            if new_flt is not None:
+                return new_flt
+
+            # if we had an issue with filter progression OR if we didn't get
+            # a filter back, we'll return a fallback of the first filter
+            # available in the filter manager. If that doesn't work,
+            # then its forever daytime (FLT_DAY)
+
+            flts = self._flt_man.filters()
+            if len(flts) > 0:
+                new_flt = flts[0]
+                if new_flt is not None:
+                    return new_flt
+
+            return store.mas_sprites.FLT_DAY # should exist for every sprite
 
         def update(self, curr_time=None):
             """
@@ -2451,9 +2593,50 @@ init -20 python in mas_background:
 
         return False
 
+
+    def log_bg(bg_obj, exc_info=None):
+        """
+        Logs the given BG object to standard bg log
+
+        IN:
+            bg_obj - bg object to log
+            exc_info - exception info. Should be tuple:
+                [0] - exception type
+                [1] - exception value
+                [2] - traceback
+                (Default: None)
+        """
+        if bg_obj is None:
+            return
+
+        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
+        if not bg_log.open():
+            # could not log, just abort here
+            return
+
+        # otherwise log output
+        bg_log.raw_write = True
+
+        # NOTE: version should already be written out if this is runtime
+        bg_log.write("\n\nBackground Object: {0}\n".format(
+            bg_obj.background_id
+        ))
+        bg_log.write("Filter System:\n\n")
+        bg_log.write(str(bg_obj._flt_man))
+        bg_log.write("\n\nRaw Filter Manager Data:\n")
+        bg_log.write(repr(bg_obj._flt_man))
+
+        if exc_info:
+            import traceback
+
+            bg_log.write("\n\n")
+            for tb_line in traceback.format_exception(*exc_info):
+                bg_log.write(tb_line)
+
+
 #START: BG change functions
 init 800 python:
-    def mas_setBackground(_background):
+    def mas_setBackground(_background, **kwargs):
         """
         Sets the initial bg
 
@@ -2465,14 +2648,17 @@ init 800 python:
             _background:
                 The background we're changing to.
                 Assumes this is already built.
+
+            **kwargs:
+                Additional kwargs to send to the prog points
         """
         if _background != mas_current_background:
             global mas_current_background
             old_background = mas_current_background
             mas_current_background = _background
-            mas_current_background.entry(old_background)
+            mas_current_background.entry(old_background, **kwargs)
 
-    def mas_changeBackground(new_background, by_user=None, set_persistent=False):
+    def mas_changeBackground(new_background, by_user=None, set_persistent=False, **kwargs):
         """
         changes the background w/o any scene changes. Will not run progpoints
         or do any actual bg changes if the current background is already set to
@@ -2487,6 +2673,9 @@ init 800 python:
 
             set_persistent:
                 True if we want this to be persistent
+
+            **kwargs:
+                Additional kwargs to send to the prog points
         """
         if by_user is not None:
             mas_background.force_background = bool(by_user)
@@ -2495,8 +2684,11 @@ init 800 python:
             persistent._mas_current_background = new_background.background_id
 
         if new_background != mas_current_background:
-            mas_current_background.exit(new_background)
-            mas_setBackground(new_background)
+            mas_current_background.exit(new_background, **kwargs)
+            new_background.update() # NOTE: do not put this in setBackground.
+            mas_setBackground(new_background, **kwargs)
+
+        store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
 
     def mas_startupBackground():
         """
@@ -2505,10 +2697,10 @@ init 800 python:
         if (
             mas_isMoniEnamored(higher=True)
             and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
-            and store.mas_background.BACKGROUND_MAP[persistent._mas_current_background].unlocked
+            and mas_getBackground(persistent._mas_current_background).unlocked
         ):
             background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
-            mas_changeBackground(background_to_set)
+            mas_changeBackground(background_to_set, startup=True)
 
             if background_to_set.disable_progressive:
                 store.skip_setting_weather = True
@@ -2532,6 +2724,20 @@ init 800 python:
     #Just set us to the normal room here
     mas_setBackground(mas_background_def)
 
+#NOTE: This is at init 0 so it can be used for conditionals in events/etc
+init python:
+    def mas_getBackground(background_id, default=None):
+        """
+        Gets a MASFilterableBackground by id
+
+        IN:
+            background_id - id of the background to get
+            default - default to return if not found
+
+        OUT:
+            MASFilterableBackground if found, None otherwise
+        """
+        return store.mas_background.BACKGROUND_MAP.get(background_id, default)
 
 #START: Programming points
 init -2 python in mas_background:
@@ -2613,7 +2819,7 @@ init -2 python in mas_background:
             store.mas_flagEVL("greeting_ourreality", "GRE", store.EV_FLAG_HFRS)
 
 
-    def _def_background_entry(_old):
+    def _def_background_entry(_old, **kwargs):
         """
         Entry programming point for default background
         """
@@ -2633,25 +2839,20 @@ init -2 python in mas_background:
         #This catches the potential of a deleted background which does not support weather
         store.mas_unlockEVL("monika_change_weather", "EVE")
 
-        #TODO: update with new EV funcs once merged
-        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
-        if spaceroom_ev and spaceroom_ev.unlock_date:
-            spaceroom_ev.unlocked = True
+        if store.mas_getEVLPropValue("monika_why_spaceroom", "unlock_date", None):
+            store.mas_unlockEVL("monika_why_spaceroom", "EVE")
 
-    def _def_background_exit(_new):
+    def _def_background_exit(_new, **kwargs):
         """
         Exit programming point for default background
         """
         store.mas_lockEVL("mas_monika_islands", "EVE")
+        store.mas_lockEVL("monika_why_spaceroom", "EVE")
 
         #Lock the weather is the background we are changing to does not support it
+        #This handles the case where you switch bgs but on startup the entry pp unlocks the weather and it remains unlocked
         if _new.disable_progressive:
             store.mas_lockEVL("monika_change_weather", "EVE")
-
-        #TODO: update with new EV funcs once merged
-        spaceroom_ev = store.mas_getEV("monika_why_spaceroom")
-        if spaceroom_ev and spaceroom_ev.unlock_date:
-            spaceroom_ev.unlocked = False
 
 
 
@@ -2771,7 +2972,7 @@ init 5 python:
             prompt="Can we go somewhere else?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED, None)
         ),
         restartBlacklist=True
@@ -2797,24 +2998,25 @@ label monika_change_background_loop:
         # default should always be at the top
         backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
 
-        # build other backgrounds list
-        other_backgrounds = [
-            (mbg_obj.prompt, mbg_obj, False, False)
-            for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-            if mbg_id != "spaceroom" and mbg_obj.unlocked
-        ]
+        if not persistent._mas_o31_in_o31_mode:
+            # build other backgrounds list
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked
+            ]
 
-        # sort other backgrounds list
-        other_backgrounds.sort()
+            # sort other backgrounds list
+            other_backgrounds.sort()
 
-        # build full list
-        backgrounds.extend(other_backgrounds)
+            # build full list
+            backgrounds.extend(other_backgrounds)
 
         # now add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
     $ sel_background = _return
 
@@ -2829,21 +3031,27 @@ label monika_change_background_loop:
         m "Try again~"
         jump monika_change_background_loop
 
-    call mas_background_change(sel_background, set_persistent=True)
+    python:
+        skip_leadin = mas_background.EXP_SKIP_LEADIN in sel_background.ex_props
+        skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
+        skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
+
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
-label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_persistent=False):
+label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, skip_outro=False, set_persistent=False):
     # otherwise, we can change the background now
     if not skip_leadin:
         m 1eua "Alright!"
         m 1hua "Let's go, [player]!"
 
     #Little transition
-    hide monika
-    scene black
-    with dissolve
-    pause 2.0
+    if not skip_transition:
+        hide monika
+        scene black
+        with dissolve
+        pause 2.0
 
     python:
         #Set persistent
@@ -2853,18 +3061,15 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
         #Store the old bg for use later
         old_bg = mas_current_background
 
-        #Finally, change the background
-        mas_changeBackground(new_bg)
-
-        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        #Otherwise, If we're disabling progressive AND hiding masks, weather isn't supported here
+        #so we lock to clear
         if new_bg.disable_progressive and new_bg.hide_masks:
             mas_weather.temp_weather_storage = mas_current_weather
-            mas_changeWeather(mas_weather_def)
-            mas_lockEVL("monika_change_weather", "EVE")
+            mas_changeWeather(mas_weather_def, new_bg=new_bg)
 
         else:
             if mas_weather.temp_weather_storage is not None:
-                mas_changeWeather(mas_weather.temp_weather_storage)
+                mas_changeWeather(mas_weather.temp_weather_storage, new_bg=new_bg)
                 #Now reset the temp storage for weather
                 mas_weather.temp_weather_storage = None
 
@@ -2875,6 +3080,15 @@ label mas_background_change(new_bg, skip_leadin=False, skip_outro=False, set_per
             #Then we unlock the weather sel here
             mas_unlockEVL("monika_change_weather", "EVE")
 
+        #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+        #NOTE: If you intend to force a weather for your background, set it via prog points
+        if new_bg.disable_progressive:
+            mas_lockEVL("monika_change_weather", "EVE")
+
+        #Finally, change the background
+        mas_changeBackground(new_bg)
+
+    #Now redraw the room
     call spaceroom(scene_change=True, dissolve_all=True)
 
     if not skip_outro:
