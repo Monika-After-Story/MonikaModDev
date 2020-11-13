@@ -2823,6 +2823,7 @@ init 5 python:
     )
 
 label monika_merry_christmas_baby:
+    #TODO: Alt leadin for having seen this before
     # set dates for the other song to start a day after this one
     $ d25_kiss_song = mas_getEV('monika_this_christmas_kiss')
     if d25_kiss_song:
@@ -2859,24 +2860,27 @@ init 5 python:
     )
 
 label monika_this_christmas_kiss:
+    #TODO: Alt leadin for having seen this before
     m 2rubsa "Um, [player]..."
     m 2lubsa "I found this song...{w=0.4}and...{w=0.4}I was just thinking about us when I heard it."
     m 7ekbsu "I mean, you've been so sweet to me all this time..."
     m 3eubsb "And...{w=0.2}oh gosh, I just want to share it with you, if that's alright."
-    m 1hubsa "Just give me a second..."
-    m 1dubsa ".{w=0.5}.{w=0.5}.{nw}"
+    m 1hubsa "Just give me a second{nw}"
+    extend 1dubsa ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     call mas_song_this_christmas_kiss
-
     m 1dubsa "..."
 
-    if persistent._mas_first_kiss:
-        $ end_line = "I'll kiss you for real."
-    else:
-        $ end_line = "we'll finally kiss."
+    m 1rtbsu "Hmm.{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    window hide
+    show monika 6tkbsa
+    pause 1
 
-    m 1eubsa "One of these days, [end_line]"
-    m 1dubsu "...And when that day comes, my heart will leap out of my chest with joy~"
+    call monika_kissing_motion
+    window auto
+
+    m 6ekbfa "One of these days I'll kiss you for real, [player]."
+    m 1dubfu "...And when that day comes, my heart will leap out of my chest with joy~"
     $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
     return "no_unlock"
 
