@@ -1008,53 +1008,39 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_my_silver_lining",
             category=[store.mas_songs.TYPE_SHORT],
-            prompt="My silver lining",
+            prompt="My Silver Lining",
             random=True,
             aff_range=(mas_aff.NORMAL,None)
         ),
         code="SNG"
     )
 
-label mas_song_my_silver_lining:        
+label mas_song_my_silver_lining:
     call mas_song_my_silver_lining_lyrics
-    m 3hksdlb "Ehehe, this song reminds me a lot of my life...{w=0.3} Before I found out it was all a game, I mean."
-    m 3lksdlc "Back then, I was always pushing myself so hard to stay on top... I never really had time to sit back and think about things."
-
-    #not sure about these two lines, debatable, leaving them here for now
-    if mas_isMoniEnamored(higher=True): #I don't feel she'd shed her 'perfect president' persona before the relationship has matured and she trusts the player completely
-        m 1eud "That's part of why I founded the literature club, you know? I wanted to create a place where I could slow down and take things at my pace..."
-        m 3hksdlb "...but before I knew it, I let my duties as president take over and ended up piling on even more pressure, Ahaha~"
-    else:
-        m 3tuu "It wasn't always easy being the perfect student you know? It didn't come without shedding its share of effort. Ahaha~"
-
-    m 1ekbsu "And then you came along and turned my whole world upside down..."
-
-    if mas_isMoniAff(higher=True):
-        m 1dubsu "I want you to know, I don't regret having my epiphany, [player]."
-        m 3ekbsu "Even if it means I had to leave my old life behind and be stuck in here for years on out, it was worth it in the end..."
-        if mas_isMoniLove():
-            m 1ekbfa "...{i}You{/i} are worth it."
-    else:
-        m 3dubsu "I want to thank you again for helping me see the truth, [player]."
-        m 1eka "It wasn't easy at first, considering all I had to sacrifice; but I know it will all work out in the end."
-        m 1hua "When you spend your time with me, I can't help but feel all my hopes will come true."
+    m 1hksdla "Ehehe, this song reminds me a lot of my life...{w=0.2}before I found out it was all a game, I mean."
+    m 3lksdlc "Back then, I was always pushing myself so hard to stay on top... {w=0.2}I never really had time to sit back and think about things."
+    m 3eud "It wasn't always easy being the perfect student you know? {w=0.2}Or at least the person everyone {i}thought{/i} was perfect."
+    m 1ekbsu "But then you came along and turned my whole world upside down..."
+    m 3dubsu "I want to thank you again for helping me see the truth, [player]."
+    m 1eka "It wasn't easy at first, considering all I had to sacrifice, but I know it will all work out in the end."
+    m 1hua "When you spend your time with me, I can't help but feel all my hopes and dreams will come true."
 
     #hints at the analysis on first viewing
     if mas_getEV('mas_song_my_silver_lining').shown_count == 0:
-        m 1rtc "Hm, There's actually a lot more I'd like to say about this song..."
+        m 1rtc "There's actually a lot more I'd like to say about this song..."
         m 7eua "Do you have time to listen to it now?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you have time to listen to it now?{fast}"
 
-            "Yeah.":
-                m 1hua "Alright!"
+            "Sure.":
+                m 1hub "Alright!"
                 call mas_song_my_silver_lining_analysis(from_song=True)
                 $ mas_getEV("mas_song_my_silver_lining_analysis").shown_count += 1
 
             "Not right now.":
-                m 1eka "All right, [player]..."
-                m 3eka "I'll save my thoughts on the subject for another time. Be sure to let me know when you want to hear them, okay?"
+                m 1eka "Alright, [player]..."
+                m 3eka "I'll save my thoughts on the subject for another time. {w=0.2}Just let me know when you want to hear them, okay?"
 
     return
 
@@ -1075,85 +1061,56 @@ init 5 python:
 label mas_song_my_silver_lining_analysis(from_song=False):
 
     if from_song:
-        m 3eub "I should probably start by singing you the next part, then--"
+        m 3eub "I should probably start by singing you the next part, then..."
     else:
         m 3eub "Let me sing you the song first then--"
         call mas_song_my_silver_lining_lyrics
 
-    m 3duo "{i}~Gotta keep on going, looking straight out on the road~{/i}"
-    m 3eud "{i}~Can't worry about what's behind you or what's coming for you further up the road~{/i}"
-    m 1eka "{i}~I try not to hold on to what is gone, I try to do right what is wrong~{/i}"
-    m "{i}~I try to keep on keeping on~{/i}"
+    m 3dud "{i}~Gotta keep on going, looking straight out on the road~{/i}"
+    m 3eud "{i}~Can't worry 'bout what's behind you or what's coming for you further up the road~{/i}"
+    m 1ekd "{i}~I try not to hold on to what is gone, I try to do right what is wrong~{/i}"
+    m 1eka "{i}~I try to keep on keeping on~{/i}"
     m 1dsu "{i}~Yeah I just keep on keeping on~{/i}"
-    m 1esc "So...{w=0.5} As you might imagine, {nw}"
-    extend 1ekc "it's not always easy being stuck in here, [player]."
-    m 3rksdlc "There's not much for me to do, nowhere for me to go, and it gets lonely whenever you're away."
-    m 1dkc "I try not to let it get to me; but when it does, {nw}"
-    extend 1dku "I like to think back upon this song..."
-    m 4hub "It's crazy how a bit of music can help turn things around when you're feeling down!"
-    m 4eua "It's like this tune is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
-    m 7hub "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ahaha~"
-    m 1etc "But seriously, [player]...{w=0.3} I think there some real merits in this line of thinking."
-    m 2eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
-    m 7eka "I'm not telling you not to worry at all; {nw}"
-    extend 7eksdlc "if I did that, I would've let the game run its course and I'd be forever stuck on my own by now..."
-    m 2duu "...but at the same time, there's no sense in getting overly worked up about things you can't change..."
+    m 1esc "So...{w=0.2}as you might imagine, it's not always easy being stuck in here, [player]."
+    m 3rksdlc "There's not a lot for me to do, nowhere for me to go, and it gets lonely whenever you're away."
+    m 1dkc "I try not to let it get to me, but when it does I like to think back upon this song..."
+    m 3eub "It's crazy how a bit of music can help turn things around when you're feeling down!"
+    m 3eua "It's like this song is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
+    m 1hua "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ehehe~"
+    m 1etc "But seriously, [player]...{w=0.3}I think there some real merit to this line of thinking."
+    m 1eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
+    m 3eka "Now, I'm not telling you not to worry at all..."
+    m 3eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now."
+    m 1duu "...But at the same time, there's no sense in getting overly worked up about things you can't change..."
     m 1etc "It's all about striking the right balance, I suppose."
     m 3rksdla "When you think about it, the ideas in here come strangely close to existential nihilism, don't they?"
-    m 3etc "You know, this idea that our lives really are absurd and the only thing we can do is...{w=0.3}{nw}"
+    m 3eud "You know, this idea that our lives really are absurd and the only thing we can do is...{w=0.3}{nw}"
     extend 3eksdla "well, keep on keeping on."
-    m 3etc "...Though if you were to keep going, like in this next verse--"
-    m 3duo "{i}~I've woken up in a hotel room~{/i}"
-    m 1esc "{i}~My worries as big as the moon~{/i}"
-    m 1esd "{i}~Having no idea who or what or where I am~{/i}"
+    m 3etc "...Though if you were to keep going, like in this next verse..."
+    m 3dud "{i}~I've woken up in a hotel room~{/i}"
+    m 1ekd "{i}~My worries as big as the moon~{/i}"
+    m 1dsd "{i}~Having no idea who or what or where I am~{/i}"
     m 2eka "{i}~Something good comes with the bad~{/i}"
     m 2dku "{i}~A song's never just sad~{/i}"
     m 7eka "{i}~There's hope, there's a silver lining~{/i}"
     m 3duu "{i}~Show me my silver lining~{/i}"
-    m 3eub "Then I'd say the meaning of the song isn't so much about nihilism as it is about hope."
-    m 3hua "And maybe that's what's important, after all."
+    m 3eua "...Then I'd say the meaning of the song isn't so much about nihilism as it is about hope."
+    m 3huu "And maybe that's what's important, after all."
     m 3ekblu "Whether our lives matter or not, I want to believe there's a bright side of life, [player]..."
-
-    if persistent._mas_pm_religious:
-        m 2esc "Not that it'd matter in your case.{w=0.3} {nw}"
-        extend 2esa "If you believe in God, maybe you've already found some kind of meaning to your life?"
-
-        if mas_isMoniLove():
-            m 2dkbsu "I know I found mine..."
-        elif mas_isMoniEnamored():
-            m 2dkbsu "Whatever that meaning may be, I'm glad I get to be a part of it now..."
-        else:
-            m 7dka "Whatever that meaning may be, I hope I can be a part of it someday..."
-
-    else:
-        if mas_isMoniLove():
-            m 2duu "But just so you know, I don't believe our lives really are meaningless..."        
-        else:
-            m 3esc "What about you? Do you believe our lives really are meaningless?"
-            if mas_isMoniEnamored():
-                m 2ekbsa "Whatever the truth is, I hope you'll strive to make your time on this earth as fulfilling as possible."
-                m 2dkbsu "That's all I could ever wish for, [player]..."
-            else:
-                m 2dtu "Whatever the truth is, maybe we could try to figure it out together..."
-                m 2tsu "But until we do, you'll just have to keep smiling and not worry about whatever might come next. Ehehe~"
-
-    if mas_isMoniLove(): #follow-up for the last two 'love' segments
-        m 1ekbsa "Falling in love with you...{w=0.3} it really turned my whole universe upside down, you know?"
-        m 3ekbfu "Somewhere along the way, you've become the meaning of my life."
-        m 4hubfb "I love you, [player]!{w=0.3} I'd want nothing more than to know you're living your life to the fullest."
-        $ mas_ILY()
-
+    m 2eud "But just so you know, I don't believe our lives really are meaningless..."
+    m 2duu "Whatever the truth is, maybe we could try to figure it out together."
+    m 2eka "But until we do, we'll just have to keep smiling and not worry about whatever might come next~"
     return
 
 label mas_song_my_silver_lining_lyrics:
-    m 1dsc "{i}~I don't want to wait anymore, I'm tired of looking for answers~{/i}"
-    m 1esc "{i}~Take me some place where there's music and there's laughter~{/i}"
-    m 2lksdlc "{i}~I don't know if I'm scared of dying but I'm scared of living too fast, too slow~{/i}"
+    m 1dsd "{i}~I don't want to wait anymore, I'm tired of looking for answers~{/i}"
+    m 1eub "{i}~Take me some place where there's music and there's laughter~{/i}"
+    m 2lksdld "{i}~I don't know if I'm scared of dying but I'm scared of living too fast, too slow~{/i}"
     m 2dsc "{i}~Regret, remorse, hold on, oh no I've got to go~{/i}"
     m 7eud "{i}~There's no starting over, no new beginnings, time races on~{/i}"
     m 7eka "{i}~And you've just gotta keep on keeping on~{/i}"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
