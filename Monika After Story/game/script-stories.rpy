@@ -11,9 +11,10 @@
 
 # dict of tples containing the stories event data
 default persistent._mas_story_database = dict()
-default mas_can_unlock_story = False
-default mas_can_unlock_scary_story = False
+
+#Debug var to test scares
 default mas_full_scares = False
+
 # dict storing the last date we saw a new story of normal and scary type
 default persistent._mas_last_seen_new_story = {"normal": None, "scary": None}
 
@@ -21,6 +22,7 @@ default persistent._mas_last_seen_new_story = {"normal": None, "scary": None}
 # store containing stories-related things
 init -1 python in mas_stories:
     import store
+    import datetime
 
     UNLOCK_NEW = "mas_unlock_new_story"
 
@@ -76,7 +78,7 @@ init -1 python in mas_stories:
             seen_event(first_story)
             if new_story_ls is None
             else (
-                new_story_ls != mas_getCurrSeshStart().date()
+                new_story_ls != store.mas_getCurrSeshStart().date()
                 #To account for users who run MAS constantly
                 #we'll also allow them to unlock if it's been at least 24 hours in the same session
                 or store.mas_timePastSince(new_story_ls, datetime.timedelta(days=1))
@@ -145,27 +147,31 @@ label monika_short_stories:
     return _return
 
 label monika_short_stories_premenu(story_type=None):
-    $ end = ""
+    python:
+        #Because this isn't set properly if it's in the default param value, we assign it here
+        if story_type is None:
+            story_type = mas_stories.TYPE_NORMAL
+        end = ""
 
 label monika_short_stories_menu:
     # TODO: consider caching the built stories if we have many story categories
     python:
         #Determine if a new story can be unlocked
-        mas_can_unlock_story = False
+        can_unlock_story = False
 
         if story_type in mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE:
             try:
-                mas_can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
+                can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
             except Exception as ex:
                 store.mas_utils.writelog("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
-                mas_can_unlock_story = False
+                can_unlock_story = False
 
         else:
-            mas_can_unlock_story = mas_stories.check_can_unlock_new_story(story_type)
+            can_unlock_story = mas_stories.check_can_unlock_new_story(story_type)
 
         # build menu list
         stories_menu_items = [
-            (mas_stories.story_database[story_evl].prompt, story_evl, False, False)
+            (story_ev.prompt, story_evl, False, False)
             for story_evl, story_ev in mas_stories.story_database.iteritems()
             if Event._filterEvent(
                 story_ev,
@@ -233,16 +239,25 @@ label monika_short_stories_menu:
             jump monika_short_stories_menu
 
         else:
-            python:
-                story_to_push = _return
+            $ story_to_push = _return
 
-                #If we're unlocking new
-                if story_to_push == mas_stories.UNLOCK_NEW:
-                    persistent._mas_last_seen_new_story[story_type] = datetime.date.today()
-                    story_to_push = mas_stories.get_and_unlock_random_story(story_type)
+            #If we're unlocking new, check if it's possible to do so. If not, we raise dlg
+            if story_to_push == mas_stories.UNLOCK_NEW:
+                if not can_unlock_story:
+                    show monika at t11
+                    $ _story_type = story_type if story_type != 'normal' else 'short'
+                    m 1ekc "Sorry [player]...I can't really think of a new [_story_type] story right now..."
+                    m 1eka "If you give me some time I might be able to think of one soon...but in the meantime, I can always tell you an old one again~"
+                    show monika 1eua
+                    jump monika_short_stories_menu
 
-                #Then push
-                pushEvent(story_to_push, skipeval=True)
+                else:
+                    python:
+                        persistent._mas_last_seen_new_story[story_type] = datetime.date.today()
+                        story_to_push = mas_stories.get_and_unlock_random_story(story_type)
+                        #Then push
+                        pushEvent(story_to_push, skipeval=True)
+
             show monika at t11
 
     else:
