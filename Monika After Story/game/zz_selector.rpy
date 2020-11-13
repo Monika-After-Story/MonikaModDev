@@ -3835,7 +3835,7 @@ init 5 python:
             rules={"no_unlock": None},
             aff_range=(mas_aff.HAPPY, None)
         ),
-        restartBlacklist=True
+        restartBlacklist=True,
         markSeen=True
     )
 
