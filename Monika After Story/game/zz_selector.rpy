@@ -79,10 +79,12 @@ init -100 python in mas_selspr:
             "change": "Can you tie your hair with something else?",
             "wear": "Can you tie your hair with something else?",
         },
-        "_ev": "monika_earrings_select",
-        "_min-items": 1,
-        "change": "Can you change your earrings?",
-        "wear": "Can you wear earrings?",
+        "earrings": {
+            "_ev": "monika_earrings_select",
+            "_min-items": 1,
+            "change": "Can you change your earrings?",
+            "wear": "Can you wear earrings?",
+        },
     }
 
 
