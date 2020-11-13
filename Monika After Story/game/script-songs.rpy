@@ -493,22 +493,33 @@ label mas_song_merry_christmas_baby:
     m 3ekbsu "{i}~Merry Christmas, honey~{/i}"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_this_christmas_kiss",
+            prompt="This Christmas Kiss",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
 label mas_song_this_christmas_kiss:
-    m 1dud "{i}Every year{w=0.2}, I go home in December~{/i}"
-    m 1hub "{i}Dancing with you, {w=0.2}making nights to remember~{/i}"
-    m 1rub "{i}The snow falling down,{w=0.2}{nw}{/i}"
+    m 1dud "{i}~Every year{w=0.2}, I go home in December~{/i}"
+    m 1hub "{i}~Dancing with you, {w=0.2}making nights to remember~{/i}"
+    m 1rub "{i}~The snow falling down,{w=0.2}{nw}{/i}"
     extend 3rub "{i} I'm just loving this weather~{/i}"
-    m 3tub "{i}A blanket for two,{w=0.2} feels more warmer together~{/i}"
-    m 1hub "{i}Two turtle doves, {w=.02} they call us~{/i}"
-    m 1duw "{i}We fall in love, {w=0.2}, in loove~{/i}"
-    m 4kuu "{i}This is my favorite Christmaaas~{/i}"
-    m 6duu "{i}This Christmas I just can't resist{w=0.2}{nw}{/i}"
-    m 1wuu "{i}Something like this,{w=02}{nw}{/i}"
-    extend 1sub "{i} I can't resist this Christmas kiss~{/i}"
-    m 4hub "{i}'Cause I'm falling{w=0.2} buried on your lips~{/i}"
-    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5hub "{i}Something like this,{w=02}{nw}{/i}"
-    extend 5wubsb "{i} I can't resist this Christmas kiss~{/i}"
+    m 3tub "{i}~A blanket for two,{w=0.2} feels more warmer together~{/i}"
+    m 1hub "{i}~Two turtle doves,{w=0.2} they call us~{/i}"
+    m 1duo "{i}~We fall in love,{w=0.2} in looove~{/i}"
+    m 3hub "{i}~This is my favorite Christmaaas~{/i}"
+    m 3duu "{i}~This Christmas,{w=0.2} I just can't resist {w=0.2}something like this~{/i}"
+    m 1sub "{i}~I can't resist this Christmas kiss~{/i}"
+    m 3hub "{i}~'Cause I'm falling{w=0.2} buried on your lips~{/i}"
+    m 1hub "{i}~Something like this,{w=0.2}{nw}{/i}"
+    extend 1subsb "{i} I can't resist this Christmas kiss~{/i}"
     return
 
 init 5 python:
