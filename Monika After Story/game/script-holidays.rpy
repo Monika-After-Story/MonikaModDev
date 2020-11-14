@@ -2823,6 +2823,17 @@ init 5 python:
     )
 
 label monika_merry_christmas_baby:
+    #TODO: Alt leadin for having seen this before
+    # set dates for the other song to start a day after this one
+    $ d25_kiss_song = mas_getEV('monika_this_christmas_kiss')
+    if d25_kiss_song:
+        if not mas_isD25():
+            $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
+            $ d25_kiss_song.end_date = mas_d25p
+        else:
+            $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
+            $ d25_kiss_song.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
+
     m 1eua "Hey, [player]..."
     m 3eub "I just thought of another Christmas song that I really want to share with you!"
     m 3eka "I don't have any music prepared this time, but I hope you'll enjoy hearing me sing it all the same."
@@ -2833,6 +2844,46 @@ label monika_merry_christmas_baby:
     m 1hua "Ehehe..."
     m 3eka "I hope you liked it~"
     $ mas_unlockEVL("mas_song_merry_christmas_baby", "SNG")
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_this_christmas_kiss",
+            conditional="persistent._mas_d25_in_d25_mode and mas_lastSeenInYear('monika_merry_christmas_baby')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED, None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label monika_this_christmas_kiss:
+    #TODO: Alt leadin for having seen this before
+    m 2rubsa "Um, [player]..."
+    m 2lubsa "I found this song...{w=0.4}and...{w=0.4}I was just thinking about us when I heard it."
+    m 7ekbsu "I mean, you've been so sweet to me all this time..."
+    m 3eubsb "And...{w=0.2}oh gosh, I just want to share it with you, if that's alright."
+    m 1hubsa "Just give me a second{nw}"
+    extend 1dubsa ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    call mas_song_this_christmas_kiss
+    m 1dubsa "..."
+
+    m 1rtbsu "Hmm.{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    window hide
+    show monika 6tkbsa
+    pause 2.0
+    show monika 6dkbsu
+    pause 2.0
+
+    call monika_kissing_motion
+    window auto
+
+    m 6ekbfa "One of these days I'll kiss you for real, [player]."
+    m 1dubfu "...And when that day comes, my heart will leap out of my chest with joy~"
+    $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
     return "no_unlock"
 
 init 5 python:
