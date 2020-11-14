@@ -2874,7 +2874,9 @@ label monika_this_christmas_kiss:
     m 1rtbsu "Hmm.{w=0.5}.{w=0.5}.{w=0.5}{nw}"
     window hide
     show monika 6tkbsa
-    pause 1
+    pause 2.0
+    show monika 6dkbsu
+    pause 2.0
 
     call monika_kissing_motion
     window auto
