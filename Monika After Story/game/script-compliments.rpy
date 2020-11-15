@@ -852,3 +852,73 @@ label mas_compliment_spending_time_2:
             m 2lksdlb "Well, I'm glad that you're entertained..."
             m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_sweet",
+            prompt="You're really sweet!",
+            unlocked=False,
+            conditional="store.mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True)",
+            action=EV_ACT_UNLOCK,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="CMP"
+    )
+
+label monika_sweet:
+    if mas_getEVL_shown_count("mas_compliment_sweet") > 0:
+        jump mas_compliment_sweet_repeat
+
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "Aww, {w=0.2}[player]..."
+    show monika 2hkbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 2hkbsb "I don't know what to say, {w=0.2}ahaha, {w=0.2}it's {i}you{/i} who's been so sweet with me all this time."
+    m 1hua "I'm just really, {w=0.2}{i}really{/i} happy to hear you say so, {w=0.2}ehehe~"
+
+    menu:
+        "Your words always brighten up my day!":
+            python:
+                partner = "partner"
+                if persistent.gender == "M":
+                    partner = "boyfriend"
+                elif persistent.gender == "F":
+                    partner = "girlfriend"
+
+                mas_gainAffection(3)
+                mas_ILY()
+
+            m 1sub "[player]... {w=0.3}"
+            extend 1dka "I had no idea how much do my words worth to you..."
+            m 1eka "I'm so happy to have such an amazing [partner] like you, [mas_get_player_nickname(exclude_names=[player])]."
+            m 1dubsb "You really are the one I could ever hope for, {w=0.2}and I love you so much."
+            m 3kua "I hope you never forget that, {w=0.2}{nw}"
+            extend 3eua "ahaha!~"
+
+        "You're really special to me, [m_name]!":
+            python:
+                mas_gainAffection(2)
+                mas_ILY()
+
+            m 1ekbsb "Oh, [player]... {w=0.3}"
+            extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
+            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5ekbsa "I'm really happy to be special to you, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
+            show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
+
+        "You're the sweetest girl I've ever met!":
+            python:
+                person = "person"
+                if persistent.gender == "M":
+                    person = "boy"
+                elif persistent.gender == "F":
+                    person = "girl"
+
+            m 1ekbsa "Thank you, [mas_get_player_nickname()]."
+            m 3hubsb "You're the sweetest [person] I've met, too, ehehe."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eua "I'm really lucky to be with you~"
+            show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
+
+    return
