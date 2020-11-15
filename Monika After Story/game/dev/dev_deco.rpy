@@ -57,11 +57,11 @@ init 501 python:
         MASAdvancedDecoFrame(zorder=6)
     )
 
-    # fake bg 1 will have the image moved to i31
+    # fake bg 1 
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_1",
-        MASAdvancedDecoFrame(at_list=[i31], zorder=6)
+        MASAdvancedDecoFrame(at_list=[i44], zorder=6)
     )
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_two",
@@ -69,17 +69,17 @@ init 501 python:
         MASAdvancedDecoFrame(at_list=[i31], zorder=6)
     )
 
-    # fake bg 2 will have image moved to i33
+    # fake bg 2 
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_2",
-        MASAdvancedDecoFrame(at_list=[i33], zorder=6)
+        MASAdvancedDecoFrame(at_list=[i32], zorder=6)
     )
-    MASImageTagDecoDefinition.register_img(
-        "dev_monika_deco_two",
-        "dev_mas_bg_2",
-        MASAdvancedDecoFrame(at_list=[i33], zorder=6)
-    )
+    #MASImageTagDecoDefinition.register_img(
+    #    "dev_monika_deco_two",
+    #    "dev_mas_bg_2",
+    #    MASAdvancedDecoFrame(at_list=[i33], zorder=6)
+    #)
 
 
 init 5 python:
@@ -149,7 +149,7 @@ label dev_deco_tag_test_adf:
     m 1euc " now to next bg"
     call mas_background_change(dev_mas_bg_2)
 
-    m 1eud "they should be in different positions"
+    m 1eud "they should be in different positions, except deco 2 will be hidden"
     m 2wuw "now back to spaceroom"
     call mas_background_change(mas_background_def)
 
