@@ -110,12 +110,12 @@ label dev_deco_tag_test_api:
     m 1eub "image should be gone now"
 
     m 1euc "now i will show image right away"
-    $ mas_showDecoTag("dev_monika_deco_two", show_now=True)
+    $ mas_showDecoTag("dev_monika_deco_one", show_now=True)
     m 1eub "should be visible now"
 
     call mas_background_change(dev_mas_bg_1, skip_leadin=True, skip_outro=True)
     m 1euc "image should still be visible, but in different position"
-    $ mas_hideDecoTag("dev_monika_deco_two", hide_now=True)
+    $ mas_hideDecoTag("dev_monika_deco_one", hide_now=True)
     m 1eud "should be hidden now"
 
     call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True)
