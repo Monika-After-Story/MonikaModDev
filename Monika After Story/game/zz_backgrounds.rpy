@@ -2529,7 +2529,7 @@ init -10 python:
                 tag - tag to register
                 adv_deco_frame - the MASAdvancedDecoFrame to register
             """
-            MASImageTagDefinition.register_img(
+            MASImageTagDecoDefinition.register_img(
                 tag,
                 self.background_id,
                 adv_deco_frame
