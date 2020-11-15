@@ -2191,9 +2191,9 @@ init -10 python:
                 # show all deco objects that are currently visible.
                 # and do not have equivalent deco frames.
 
-                old_adf = old_bg.get_deco_adf(vis_tag)
-                if old_adf is not None and old_adf != adv_df:
-                    change_info.shows[vis_tag] = adv_df
+                new_adf = self.get_deco_adf(vis_tag)
+                if new_adf is not None:
+                    change_info.shows[vis_tag] = new_adf
                     self._deco_add(tag=vis_tag)
 
         def exit(self, new_background, **kwargs):
@@ -2640,7 +2640,7 @@ init -20 python in mas_background:
             """
             if hides is None:
                 hides = {}
-            if shows is None;
+            if shows is None:
                 shows = {}
 
             self.hides = hides
@@ -2844,7 +2844,7 @@ init 800 python:
         if set_persistent:
             persistent._mas_current_background = new_background.background_id
 
-        change_info = MASBackgroundChangeInfo()
+        change_info = store.mas_background.MASBackgroundChangeInfo()
         kwargs["_change_info"] = change_info
 
         if new_background != mas_current_background:

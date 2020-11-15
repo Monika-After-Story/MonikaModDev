@@ -115,7 +115,7 @@ init -19 python:
             name - unique identifier of this deco object
         """
 
-        def __init__(self, name, ex_props=None)
+        def __init__(self, name, ex_props=None):
             """
             Constructor for base decoration objets
 
@@ -230,7 +230,7 @@ init -19 python:
             super(MASImageTagDecoration, self).__init__(tag, ex_props)
 
             # check for duplicate deco
-            store.mas_deco.add_it_deco(self)
+            store.mas_deco._add_it_deco(self)
 
         def __repr__(self):
             return "<MASImageTagDecoration: (tag: {0})>".format(self.name)
@@ -606,7 +606,7 @@ init -19 python:
                     MASImageTagDecoration(tag)
                 )
             
-            deco_dec.register_bg(bg_id, adv_deco_frame)
+            deco_def.register_bg(bg_id, adv_deco_frame)
 
         @staticmethod
         def register_img_same(tag, bg_id_src, bg_id_dest):
@@ -834,7 +834,9 @@ init -19 python:
         mas_current_background._deco_add(tag=tag)
 
         if show_now:
-            adv_frame.show(tag)
+            adf = mas_current_background.get_deco_adf(tag)
+            if adf is not None:
+                adf.show(tag)
         else:
             mas_current_background._deco_man.changed = True
 
