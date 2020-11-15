@@ -1812,7 +1812,7 @@ init 189 python in mas_sprites_json:
 
         return True
 
-        
+
     def _validate_ex_props(jobj, save_obj, obj_based, msg_log, ind_lvl):
         """
         Validates ex_props proprety
@@ -2398,7 +2398,6 @@ init 189 python in mas_sprites_json:
 
         # check image loadables
         msg_log = []
-
         _test_loadables(sp_obj, msg_log, 0)
         if parsewritelogs(msg_log):
             _reset_sp_obj(sp_obj)
