@@ -568,7 +568,7 @@ init -21 python in mas_sprites_json:
         "hair '{0}' does not exist - found in hair_map values of these "
         "sprites: {1}. replacing with defaults."
     )
-    
+
     ## ex_props
     EP_LOADING = "loading ex_props..."
     EP_SUCCESS = "ex_props loaded successfully!"
@@ -597,7 +597,7 @@ init -21 python in mas_sprites_json:
     SP_ACS = 0
     SP_HAIR = 1
     SP_CLOTHES = 2
-    
+
     SP_CONSTS = (
         SP_ACS,
         SP_HAIR,
@@ -2224,7 +2224,6 @@ init 189 python in mas_sprites_json:
 
                 obj_based_params[param_name] = obj_val
 
-
         # validate optional shared params
         msg_log = []
         _validate_params(
@@ -2235,7 +2234,6 @@ init 189 python in mas_sprites_json:
             msg_log,
             indent_lvl
         )
-
         if parsewritelogs(msg_log):
             return
 
@@ -2252,7 +2250,7 @@ init 189 python in mas_sprites_json:
             )
             if parsewritelogs(msg_log):
                 return
-                
+
         else:
             # hair / clothes
             msg_log = []
@@ -2387,7 +2385,7 @@ init 189 python in mas_sprites_json:
                 sms.init_hair(sp_obj)
                 sel_obj_name = "hair"
 
-            elif sp_type == SP_CLOTHES:
+            else:
                 # clothing
                 sp_obj = store.MASClothes(**sp_obj_params)
                 sms.init_clothes(sp_obj)
@@ -2400,7 +2398,7 @@ init 189 python in mas_sprites_json:
 
         # check image loadables
         msg_log = []
-        
+
         _test_loadables(sp_obj, msg_log, 0)
         if parsewritelogs(msg_log):
             _reset_sp_obj(sp_obj)
