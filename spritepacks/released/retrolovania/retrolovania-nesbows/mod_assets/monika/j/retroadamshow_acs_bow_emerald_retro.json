@@ -1,0 +1,32 @@
+{
+    "__author": "retroadamshow",
+    "version": 3,
+    "type": 0,
+    "name": "retro_bow_emerald",
+    "img_sit": "retro_bow_emerald",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "bow",
+    "mux_type": [
+        "ribbon",
+        "bow"
+    ],
+    "stay_on_start": true,
+    "giftname": "8emerlbow",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "dlg_desc": "classic emerald bow",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "NES-Style Emerald",
+        "thumb": "retro_bow_emerald",
+        "group": "ribbon",
+        "select_dlg": [
+            "Back to the classics!"   
+        ]
+    }
+}
