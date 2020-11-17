@@ -881,9 +881,9 @@ label monika_compliment_sweet:
         "Your words always brighten up my day!":
             $ mas_gainAffection(3)
             m 1sub "[player]... {w=0.3}"
-            extend 1dka "I had no idea how much do my words worth to you..."
+            extend 1dka "I had no idea how much my words were worth to you..."
             m 1eka "I'm so happy to have such an amazing [boyfriend] like you, [mas_get_player_nickname(exclude_names=[player])]."
-            m 1dubsb "You really are the one I could ever hope for, {w=0.2}and I love you so much."
+            m 1dubsb "You really are the best I could ever hope for, {w=0.2}and I love you so much."
             m 3kua "I hope you never forget that, {w=0.2}{nw}"
             extend 3eua "ahaha!~"
             $ mas_ILY()
