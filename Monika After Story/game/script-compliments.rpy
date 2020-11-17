@@ -859,9 +859,9 @@ init 5 python:
             persistent._mas_compliments_database,
             eventlabel="monika_compliment_sweet",
             prompt="You're really sweet!",
-            unlocked=False,
             conditional="store.mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True)",
             action=EV_ACT_UNLOCK,
+            unlocked=False,
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="CMP"
