@@ -893,7 +893,7 @@ label monika_compliment_sweet:
             m 1ekbsb "Oh, [player]... {w=0.3}"
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5ekbsa "I'm really happy to be special to you, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
+            m 5ekbsa "I'm really happy you feel that way about me, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
