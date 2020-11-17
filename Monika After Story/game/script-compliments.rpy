@@ -901,7 +901,6 @@ label monika_sweet:
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbsa "I'm really happy to be special to you, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
-            show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
@@ -909,6 +908,5 @@ label monika_sweet:
             m 3hubsb "You're the sweetest [boy] I've met, too, ehehe."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I'm really lucky to be with you~"
-            show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
     return
