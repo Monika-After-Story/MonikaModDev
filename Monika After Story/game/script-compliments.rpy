@@ -880,14 +880,12 @@ label monika_sweet:
     menu:
         "Your words always brighten up my day!":
             python:
+                mas_gainAffection(3)
                 partner = "partner"
                 if persistent.gender == "M":
                     partner = "boyfriend"
                 elif persistent.gender == "F":
                     partner = "girlfriend"
-
-                mas_gainAffection(3)
-                mas_ILY()
 
             m 1sub "[player]... {w=0.3}"
             extend 1dka "I had no idea how much do my words worth to you..."
@@ -895,17 +893,16 @@ label monika_sweet:
             m 1dubsb "You really are the one I could ever hope for, {w=0.2}and I love you so much."
             m 3kua "I hope you never forget that, {w=0.2}{nw}"
             extend 3eua "ahaha!~"
+            $ mas_ILY()
 
         "You're really special to me, [m_name]!":
-            python:
-                mas_gainAffection(2)
-                mas_ILY()
-
+            $ mas_gainAffection(2)
             m 1ekbsb "Oh, [player]... {w=0.3}"
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbsa "I'm really happy to be special to you, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
             show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
             python:
