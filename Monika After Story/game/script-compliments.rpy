@@ -905,15 +905,8 @@ label monika_sweet:
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
-            python:
-                person = "person"
-                if persistent.gender == "M":
-                    person = "boy"
-                elif persistent.gender == "F":
-                    person = "girl"
-
             m 1ekbsa "Thank you, [mas_get_player_nickname()]."
-            m 3hubsb "You're the sweetest [person] I've met, too, ehehe."
+            m 3hubsb "You're the sweetest [boy] I've met, too, ehehe."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I'm really lucky to be with you~"
             show monika at t11 zorder MAS_MONIKA_Z with dissolve_monika
