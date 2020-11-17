@@ -867,7 +867,7 @@ init 5 python:
         code="CMP"
     )
 
-label monika_sweet:
+label monika_compliment_sweet:
     if mas_getEVL_shown_count("monika_compliment_sweet") > 0:
         jump mas_compliment_sweet_repeat
 
