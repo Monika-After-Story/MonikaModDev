@@ -857,7 +857,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
-            eventlabel="mas_compliment_sweet",
+            eventlabel="monika_compliment_sweet",
             prompt="You're really sweet!",
             unlocked=False,
             conditional="store.mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True)",
@@ -868,7 +868,7 @@ init 5 python:
     )
 
 label monika_sweet:
-    if mas_getEVL_shown_count("mas_compliment_sweet") > 0:
+    if mas_getEVL_shown_count("monika_compliment_sweet") > 0:
         jump mas_compliment_sweet_repeat
 
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
