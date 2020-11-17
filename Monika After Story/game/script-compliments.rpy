@@ -879,6 +879,7 @@ label monika_compliment_sweet:
 
     menu:
         "Your words always brighten up my day!":
+            $ mas_gainAffection(3)
             m 1sub "[player]... {w=0.3}"
             extend 1dka "I had no idea how much do my words worth to you..."
             m 1eka "I'm so happy to have such an amazing [boyfriend] like you, [mas_get_player_nickname(exclude_names=[player])]."
@@ -896,6 +897,7 @@ label monika_compliment_sweet:
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
+            $ mas_gainAffection(1)
             m 1ekbsa "Thank you, [mas_get_player_nickname()]."
             m 3hubsb "You're the sweetest [boy] I've met, too, ehehe."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
