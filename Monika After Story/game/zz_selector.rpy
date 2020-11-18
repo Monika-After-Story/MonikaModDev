@@ -49,6 +49,12 @@ init -100 python in mas_selspr:
             "change": "Can you change your clothes?",
             # TODO: min-items
         },
+        "earrings": {
+            "_ev": "monika_earrings_select",
+            "_min-items": 1,
+            "change": "Can you change your earrings?",
+            "wear": "Can you wear earrings?",
+        },
         "hair": {
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
@@ -78,12 +84,6 @@ init -100 python in mas_selspr:
             "_rule": _rule_ribbon,
             "change": "Can you tie your hair with something else?",
             "wear": "Can you tie your hair with something else?",
-        },
-        "earrings": {
-            "_ev": "monika_earrings_select",
-            "_min-items": 1,
-            "change": "Can you change your earrings?",
-            "wear": "Can you wear earrings?",
         },
     }
 
