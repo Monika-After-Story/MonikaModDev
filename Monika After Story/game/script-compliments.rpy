@@ -868,7 +868,7 @@ init 5 python:
     )
 
 label monika_compliment_sweet:
-    if mas_getEVL_shown_count("monika_compliment_sweet") > 0:
+    if mas_getEVL_shown_count("monika_compliment_sweet"):
         jump mas_compliment_sweet_repeat
 
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
