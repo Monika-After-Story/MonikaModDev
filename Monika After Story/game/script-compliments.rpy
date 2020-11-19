@@ -904,3 +904,8 @@ label monika_compliment_sweet:
             m 5eua "I'm really lucky to be with you~"
 
     return
+
+label monika_compliment_sweet_repeat:
+    m 3hubsb "[mas_compliments.thanks_quip]"
+    m 1hubfa "I'm so happy to feel this way, ehehe~"
+    return
