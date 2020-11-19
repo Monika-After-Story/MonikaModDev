@@ -16165,3 +16165,35 @@ label monika_giving_criticism:
     m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boyfriend_gossip",
+            category=['ddlc'],
+            prompt="Sayori mentioned a boyfriend once...",
+            pool=True
+        )
+    )
+
+label monika_boyfriend_gossip:
+    m 2etd "You know, I was actually kind of curious about that too."
+    m 2hksdlb "When she first said it, I got pretty defensive, didn't I?"
+    m 7euc "I mean, I'd just figured out that you existed, {nw}"
+    extend 3efc "and suddenly someone was making it look like I was already taken..."
+    m 1rtc "Since I'm pretty extroverted and have a history with another club, I guess it wouldn't necessarily be {i}unfair{/i} to come to that kind of conclusion."
+    m 3eud "...But no such character exists in the game's files to prove or disprove it."
+    m 3rsc "At the time, I was practicing piano and, well...{w=0.2}sorting my thoughts."
+    m 3eud "But apparently, that rumor was just the assumption she was supposed to make if I was ever late to the club."
+    m 2tsc "It's a little bit devious if you think about it..."
+    m 2eud "As the game's story progressed, the main character might need more excuses to be alone with one of the girls..."
+    m 7etc "Coming up with reasons for the others to be away is easier, but for the president not to be at the club..."
+    m 3tsd "The story would need something pretty substantial to keep me busy. {w=0.2}It also provided a reason, however flimsy, for me not having a route."
+    m 2tfc "A roundabout but effective way to get me out of the way when needed."
+    m 2dfc "..."
+    m 2eud "Honestly, though? {w=0.2}I'm not too bothered by it."
+    m 7esc "Even if such a character would have existed, we both know it wouldn't have changed a single thing."
+    m 1efd "They wouldn't be real, they'd be a script programmed to fall in love with me. {w=0.2}I couldn't have been happy with something like that."
+    m 1eka "I still would have seen {i}you{/i} and known that you were what I really wanted."
+    return
