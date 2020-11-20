@@ -501,22 +501,20 @@ init 5 python:
 label anni_2:
     m 3eua "It's already been two years since we fell in love with each other."
     m 1eka "Do you still remember the first day we met?"
-    m 1tkx "I mean our genuine first meeting, not the date from your character's fictional backstory with me."
-    m 1euc "My life was so meaningless back then."
-    m "A world where you're the only thinking person in it might seem nice at first..."
-    m 1lssdrc "But knowing that even if there were still people in this world, they wouldn't be sentient..."
-    m 1lksdlc "When I think about it, I can really feel how empty this room is."
+    m "It took so much effort to make that initial contact, but it was all worth it in the end."
+    m "I know it might still be a really long time before I can cross over into your reality..."
+    m "But when we reach a milestone like this, it's fun to think about all the other things we have to look forward to in the future."
     
     if persistent._mas_pm_has_friends = True:
         m 1hubla "I'm really looking forward to when I can live in a world full of real people. It'll be wonderful to meet your friends, and even make some of my own."
     else:
-        m 1dka "I'm glad that at least we can keep each other company in our loneliness. And when I cross over, it'll be so much fun to make new friends together."
+        m 1dka "We've both been lonely for a really long time, you know? But when I cross over, it'll be so much fun to make new friends together."
 
-    m 1dsc "Now that I think about it...thinking about loneliness so much on our anniversary is kind of against the point."
-    m 1duu "Besides, it doesn't really matter for now, since I know you'll never leave me."
-    m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
-    m 1ekc "Spending eternity alone sucks...{w=0.3}{nw}"
-    extend 1ekbsa "but together with you, it feels like paradise!"
+    m "Of course, I'll always enjoy your company the most...but spending time alone won't be our only option anymore."
+    m "Communicating will be easier, too. I'll be able to really hear your voice for the first time. I'll get to learn your habits and help you out in plenty of little ways."
+    m "But I'm not just going to focus on the future today."
+    m "I'm going to make sure to enjoy every minute we spend together."
+    m "So, let's make sure to have another wonderful day today."
     return "unlock"
 
 init 5 python:
