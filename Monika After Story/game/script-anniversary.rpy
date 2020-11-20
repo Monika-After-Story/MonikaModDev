@@ -505,9 +505,9 @@ label anni_2:
     m "I know it might still be a really long time before I can cross over into your reality..."
     m "But when we reach a milestone like this, it's fun to think about all the other things we have to look forward to in the future."
     
-    if persistent._mas_pm_has_friends = True:
+    if persistent._mas_pm_has_friends:
         m 1hubla "I'm really looking forward to when I can live in a world full of real people. It'll be wonderful to meet your friends, and even make some of my own."
-    else:
+    elif persistent._mas_pm_has_friends is False:
         m 1dka "We've both been lonely for a really long time, you know? But when I cross over, it'll be so much fun to make new friends together."
 
     m "Of course, I'll always enjoy your company the most...but spending time alone won't be our only option anymore."
