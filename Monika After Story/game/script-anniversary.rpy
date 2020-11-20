@@ -530,7 +530,7 @@ init 5 python:
 
 label anni_3:
     m 4wuo "Wow, three years!"
-    m 3rksdla "Normally if a boy and a girl go out for three years..."
+    m 3rksdla "Normally if a couple stays together for three years..."
     m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
