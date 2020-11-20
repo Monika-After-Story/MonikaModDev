@@ -49,6 +49,12 @@ init -100 python in mas_selspr:
             "change": "Can you change your clothes?",
             # TODO: min-items
         },
+        "earrings": {
+            "_ev": "monika_earrings_select",
+            "_min-items": 1,
+            "change": "Can you change your earrings?",
+            "wear": "Can you wear earrings?",
+        },
         "hair": {
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
@@ -603,6 +609,7 @@ init -10 python in mas_selspr:
 
     GRP_TOPIC_LIST = [
         "choker",
+        "earrings",
         "hat",
         "left-hair-clip",
         "left-hair-flower",
@@ -3826,5 +3833,26 @@ label monika_hat_select:
 
 #### end hat
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_earrings_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("earrings", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_earrings_select:
+    call mas_selector_generic_sidebar_select_acs("earrings")
+    return
+
+#### end earrings
 
 ############### END SELECTOR TOPICS ###########################################
