@@ -18,13 +18,15 @@ default mas_full_scares = False
 # dict storing the last date we saw a new story of normal and scary type
 default persistent._mas_last_seen_new_story = {"normal": None, "scary": None}
 
+#Flag to mark if the setup for scary stories has been done
+define mas_scary_story_setup_done = False
 
 # store containing stories-related things
 init -1 python in mas_stories:
     import store
     import datetime
 
-    UNLOCK_NEW = "mas_unlock_new_story"
+    UNLOCK_NEW = "unlock_new"
 
     # TYPES:
     TYPE_NORMAL = "normal"
@@ -44,14 +46,6 @@ init -1 python in mas_stories:
         TYPE_NORMAL: "mas_story_tyrant"
     }
 
-    STORY_FILTER_KWARGS = {
-        TYPE_SCARY: {
-            "category": (True, [TYPE_SCARY])
-        },
-        TYPE_NORMAL: {
-            "excl_cat": list()
-        }
-    }
     #Override maps to have special conditionals for specific story types
     NEW_STORY_CONDITIONAL_OVERRIDE = {
         TYPE_SCARY: "mas_isO31() or mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
@@ -229,7 +223,7 @@ label monika_short_stories_menu:
         if _return == "monika_short_stories_menu":
             # NOTE: this is not scalable.
             if story_type == mas_stories.TYPE_SCARY:
-                $ story_type = None
+                $ story_type = mas_stories.TYPE_NORMAL
             else:
                 $ story_type = mas_stories.TYPE_SCARY
 
@@ -255,8 +249,9 @@ label monika_short_stories_menu:
                     python:
                         persistent._mas_last_seen_new_story[story_type] = datetime.date.today()
                         story_to_push = mas_stories.get_and_unlock_random_story(story_type)
-                        #Then push
-                        pushEvent(story_to_push, skipeval=True)
+
+            #Then push
+            $ pushEvent(story_to_push, skipeval=True)
 
             show monika at t11
 
@@ -279,6 +274,84 @@ label mas_story_begin:
     $ mas_gainAffection(modifier=0.2)
     m 3eua "[story_begin_quip]"
     m 1duu "Ahem."
+    return
+
+
+label mas_scary_story_setup:
+    if mas_scary_story_setup_done:
+        return
+
+    $ mas_scary_story_setup_done = True
+    show monika 1dsc
+    $ mas_temp_r_flag = mas_current_weather
+    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
+    $ are_masks_changing = mas_current_weather != mas_weather_rain
+    $ mas_is_raining = True
+
+    $ play_song(None, fadeout=1.0)
+    pause 1.0
+
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    $ mas_changeBackground(mas_background_def)
+
+    #If we're in O31 mode, it's already raining and the room is also already set up
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_weather_rain)
+        $ store.mas_globals.show_vignette = True
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+
+    play music "mod_assets/bgm/happy_story_telling.ogg" loop
+
+
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
+
+    python:
+        story_begin_quips = [
+            _("Alright let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin."),
+            _("Are you ready?")
+        ]
+        story_begin_quip=renpy.random.choice(story_begin_quips)
+
+    m 3eua "[story_begin_quip]"
+    m 1duu "Ahem."
+    return
+
+label mas_scary_story_cleanup:
+
+    python:
+        story_end_quips = [
+            _("Scared, [player]?"),
+            _("Did I scare you, [player]?"),
+            _("How was it?"),
+            _("Well?"),
+            _("So...{w=0.5}did I scare you?")
+        ]
+        story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
+
+    m 3eua "[story_end_quip]"
+    show monika 1dsc
+    pause 1.0
+
+    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_temp_r_flag)
+        $ store.mas_globals.show_vignette = False
+        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+        hide vignette
+
+    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
+
+    $ play_song(None, 1.0)
+    m 1eua "I hope you liked it, [player]~"
+    $ mas_DropShield_core()
+    $ HKBShowButtons()
+    $ mas_scary_story_setup_done = False
     return
 
 init 5 python:
@@ -895,85 +968,8 @@ label mas_story_friend:
     m 1hua "I hope you enjoyed it, [player]!"
     return
 
-#START: Scary Stories
-define mas_scary_story_setup_done = False
 
-# Scary stories start here
-label mas_scary_story_setup:
-    if mas_scary_story_setup_done:
-        return
-
-    $ mas_scary_story_setup_done = True
-    show monika 1dsc
-    $ mas_temp_r_flag = mas_current_weather
-    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
-    $ are_masks_changing = mas_current_weather != mas_weather_rain
-    $ mas_is_raining = True
-
-    $ play_song(None, fadeout=1.0)
-    pause 1.0
-
-    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    $ mas_changeBackground(mas_background_def)
-
-    #If we're in O31 mode, it's already raining and the room is also already set up
-    if not persistent._mas_o31_in_o31_mode:
-        $ mas_changeWeather(mas_weather_rain)
-        $ store.mas_globals.show_vignette = True
-        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
-
-    play music "mod_assets/bgm/happy_story_telling.ogg" loop
-
-
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-
-    python:
-        story_begin_quips = [
-            _("Alright let's start the story."),
-            _("Ready to hear the story?"),
-            _("Ready for story time?"),
-            _("Let's begin."),
-            _("Are you ready?")
-        ]
-        story_begin_quip=renpy.random.choice(story_begin_quips)
-    m 3eua "[story_begin_quip]"
-    m 1duu "Ahem."
-    return
-
-label mas_scary_story_cleanup:
-
-    python:
-        story_end_quips = [
-            _("Scared, [player]?"),
-            _("Did I scare you, [player]?"),
-            _("How was it?"),
-            _("Well?"),
-            _("So...{w=0.5}did I scare you?")
-        ]
-        story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
-
-    m 3eua "[story_end_quip]"
-    show monika 1dsc
-    pause 1.0
-
-    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
-    if not persistent._mas_o31_in_o31_mode:
-        $ mas_changeWeather(mas_temp_r_flag)
-        $ store.mas_globals.show_vignette = False
-        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
-        hide vignette
-        call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
-
-    $ play_song(None, 1.0)
-    m 1eua "I hope you liked it, [player]~"
-    $ mas_DropShield_core()
-    $ HKBShowButtons()
-    $ mas_scary_story_setup_done = False
-    return
-
+#START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
     category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
