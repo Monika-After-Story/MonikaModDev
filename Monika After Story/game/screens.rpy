@@ -477,16 +477,19 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
         if use_return_button:
-            textbutton return_button_prompt:
-                style "choice_button"
-                align (0.5, 0.5)
-                ypos -263
-                action Return(return_button_value)
+            hbox:
+                style_prefix "quick"
+
+                xalign 0.5
+                yalign 0.995
+
+                textbutton return_button_prompt:
+                    action Return(return_button_value)
 
         vbox:
             align (0.5, 0.5)
