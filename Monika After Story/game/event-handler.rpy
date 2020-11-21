@@ -1426,8 +1426,22 @@ init -1 python in evhand:
         "unlock_prompt",
     ]
 
-    # Used to catch "idle_exp: EXP, DURATION" or "idle_exp: TAG"
-    RET_KEY_PATTERN_IDLE_EXP = re.compile(r"(?:(?<=\|)|(?<=^))\s*idle_exp\s*:\s*(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d+)|(?P<tag>\w+))\s*(?:(?=\|)|(?=$))")
+    # A base for search patterns that expect a string of the "key: value" kind
+    # Use the key and value named indexes for substitution accordingly
+    RET_KEY_PATTERN_BASE = (
+        r"(?:(?<=\|)|(?<=^))\s*"# Start
+        r"{key}"# Key
+        r"\s*:\s*"# Separator
+        r"{value}"# Value
+        r"\s*(?:(?=\|)|(?=$))"# End
+    )
+    # Used to catch "idle_exp: EXP, DURATION" or "idle_exp: TAG" where DURATION is an int (seconds) and TAG is a string
+    RET_KEY_PATTERN_IDLE_EXP = re.compile(
+        RET_KEY_PATTERN_BASE.format(
+            key=r"idle_exp",
+            value=r"(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d+)|(?P<tag>\w+))"
+        )
+    )
 
     # as well as special functions
     def addIfNew(items, pool):
