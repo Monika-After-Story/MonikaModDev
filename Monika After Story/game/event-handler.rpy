@@ -1374,6 +1374,7 @@ default persistent._mas_ev_yearset_blacklist = {}
 # special store to contain scrollable menu constants
 init -1 python in evhand:
     import store
+    import re
 
     # this is the event database
     event_database = dict()
@@ -1424,6 +1425,9 @@ init -1 python in evhand:
     IDLE_WHITELIST = [
         "unlock_prompt",
     ]
+
+    # Used to catch "pause: DURATION" where DURATION is an int (seconds)
+    RET_KEY_PATTERN_PAUSE = re.compile(r"(?:(?<=\|)|(?<=^))\s*pause\s*:\s*(?P<duration>\w+)\s*(?:(?=\|)|(?=$))")
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -2119,37 +2123,44 @@ init python:
         if len(persistent.event_list) == 0:
             return None, None
 
-        if store.mas_globals.in_idle_mode:
-            # idle requires us to loop over the list and find the first
-            # event available in idle
-            ev_found = None
+        now_dt = datetime.datetime.now()
+        is_paused = False
 
-            for index in range(len(persistent.event_list)):
-                ev_label, notify = persistent.event_list[index]
-                ev_found = mas_getEV(ev_label)
+        if mas_globals.event_unpause_dt is not None:
+            if mas_globals.event_unpause_dt > now_dt:
+                is_paused = True
 
-                if (
-                        (ev_found is not None and ev_found.show_in_idle)
-                        or ev_label in evhand.IDLE_WHITELIST
+            # We can reset the dt here
+            else:
+                mas_globals.event_unpause_dt = None
+
+        for id in range(len(persistent.event_list)-1, -1, -1):
+            ev_data = persistent.event_list[id]
+
+            if (
+                not is_paused
+                or mas_inRulesEVL(ev_data[0], "skip_pause")
+            ):
+                if mas_globals.in_idle_mode:
+                    if (
+                        mas_getEVLPropValue(ev_data[0], "show_in_idle", False)
+                        or ev_data[0] in evhand.IDLE_WHITELIST
                     ):
+                        if remove:
+                            persistent.event_list.pop(id)
 
+                        persistent.current_monikatopic = ev_data[0]
+                        return ev_data
+
+                else:
                     if remove:
-                        mas_rmEVL(ev_label)
+                        persistent.event_list.pop(id)
+                        persistent.current_monikatopic = ev_data[0]
 
-                    persistent.current_monikatopic = ev_label
-                    return ev_label, notify
+                    return ev_data
 
-            # we did not find an idle event
-            return None, None
-
-        elif remove:
-            ev_data = persistent.event_list.pop()
-            persistent.current_monikatopic = ev_data[0]
-        else:
-            ev_data = persistent.event_list[-1]
-
-        return ev_data
-
+        # We did not find an appropriate event
+        return None, None
 
     def seen_event(event_label):
         """
@@ -2536,6 +2547,12 @@ label call_next_event:
                 $ mas_clearNotifs()
                 jump _quit
 
+            if "pause" in _return:
+                python:
+                    _match = re.search(evhand.RET_KEY_PATTERN_PAUSE, _return)
+                    if _match is not None and _match.group("duration") is not None:
+                        mas_globals.event_unpause_dt = datetime.datetime.now() + datetime.timedelta(seconds=int(_match.group("duration")))
+
             if "prompt" in ret_items:
                 show monika idle
                 jump prompt_menu
@@ -2676,11 +2693,11 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",skipeval=True)
+        $ pushEvent("monika_love", skipeval=True)
         $ _return = True
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",skipeval=True)
+        $ pushEvent("monika_love_too", skipeval=True)
         $ _return = True
 
     elif madechoice == "moods":
@@ -2690,7 +2707,7 @@ label prompt_menu:
         call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
-        $_return = None
+        $ _return = None
 
     # check explicitly for False here due to how farewells return
     if _return is False:
@@ -2722,6 +2739,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
+        $ mas_globals.event_unpause_dt = None
         $ pushEvent(_return)
 
     return _return
@@ -2881,6 +2899,7 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
+                $ mas_globals.event_unpause_dt = None
                 $ pushEvent(_return)
 
     return _return
@@ -2950,6 +2969,7 @@ label mas_bookmarks_loop:
     else:
         # got label, let's push
         show monika at t11
+        $ mas_globals.event_unpause_dt = None
         $ pushEvent(topic_choice, skipeval=True)
         return True
 

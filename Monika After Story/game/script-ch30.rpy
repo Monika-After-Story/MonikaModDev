@@ -86,6 +86,9 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
+    # A datetime object when the pause between events ends. None if there's no pause currently.
+    event_unpause_dt = None
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
