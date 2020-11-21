@@ -2136,14 +2136,18 @@ init python:
 
         for id in range(len(persistent.event_list)-1, -1, -1):
             ev_data = persistent.event_list[id]
+            ev = mas_getEV(ev_data[0])
 
             if (
                 not is_paused
-                or mas_inRulesEVL(ev_data[0], "skip_pause")
+                or (
+                    ev is None# This is to allow triggering non-event labels
+                    or "skip_pause" in ev.rules
+                )
             ):
                 if mas_globals.in_idle_mode:
                     if (
-                        mas_getEVLPropValue(ev_data[0], "show_in_idle", False)
+                        (ev is not None and ev.show_in_idle)
                         or ev_data[0] in evhand.IDLE_WHITELIST
                     ):
                         if remove:
