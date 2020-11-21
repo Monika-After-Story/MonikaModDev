@@ -7399,6 +7399,10 @@ python early:
             fallback - (MASMoniIdleExp) fallback exp. Must ALWAYS be available
             required_st - (int) required shown timebase to switch to the next exp
             current_st - (float) current shown timebase
+            duration - (float) duration (in seconds) for the current exp
+                (basically the difference between required_st and current_st)
+            forced_mode - (boolean) indicates that we've forced an expression
+            group_mode - (boolean) - indicates that we're handling a group of expressions
         """
         # eyes codes whose transforms we manually reset
         EYES_EXP_CODES = ("k", "n")
@@ -7431,11 +7435,15 @@ python early:
             self.forced_exps = list()
             self.exp_groups = list()
 
+            self.forced_mode = False
+            self.group_mode = False
+            self._predicted_modes = {"forced_mode": None, "group_mode": None}
+
             if fallback is None:
                 fallback = MASMoniIdleExp("1esa", duration=10, tag="fallback", add_to_tag_map=False)
             self.fallback = fallback
             self.current_exp = fallback
-            self.predicted_exp = None
+            self._predicted_exp = None
 
             self.__last_st = 0.0
             self.required_st = 0
@@ -7447,8 +7455,19 @@ python early:
             """
             return "<MASMoniIdleDisp: (curr exp: {0}, next exp in: {1} sec)>".format(
                 self.current_exp,
-                round(self.required_st - self.current_st, 1)
+                self.duration
             )
+
+        @property
+        def duration(self):
+            """
+            Prop for the current exp duration
+            NOTE: we round the value
+
+            OUT:
+                float - duration of the current exp in seconds
+            """
+            return round(self.required_st - self.current_st, 1)
 
         def update(self):
             """
@@ -7522,20 +7541,24 @@ python early:
                 redraw - whether or not we're forcing a redraw
                     (Default: False)
             """
+            need_redraw = self.current_exp is exp
+
             for exp_list in self.exp_map.itervalues():
                 if exp in exp_list:
                     exp_list.remove(exp)
+                    need_redraw = True
 
             if (
                 isinstance(exp, MASMoniIdleExpGroup)
                 and exp in self.exp_groups
             ):
-                self.exp_groups.remove(exp)
+                self.exp_groups[:] = list()
+                need_redraw = True
 
-            if self.predicted_exp is exp:
-                self.predicted_exp = None
+            if self._predicted_exp is exp:
+                self._predicted_exp = None
 
-            if redraw:
+            if redraw and need_redraw:
                 self.update()
 
         def remove_by_tag(self, tag, redraw=False):
@@ -7547,17 +7570,24 @@ python early:
                 redraw - whether or not we're forcing a redraw
                     (Default: False)
             """
-            flt = lambda exp: exp.tag != tag
+            need_redraw = self.current_exp.tag == tag
+
+            for group in self.exp_groups:
+                if group.tag == tag:
+                    self.exp_groups[:] = list()
+                    need_redraw = True
+                    break
 
             for exp_list in self.exp_map.itervalues():
-                exp_list[:] = filter(flt, exp_list)
+                for exp_id in range(len(exp_list)-1, -1, -1):
+                    if exp_list[exp_id].tag == tag:
+                        exp_list.pop(exp_id)
+                        need_redraw = True
 
-            self.exp_groups[:] = filter(flt, self.exp_groups)
+            if self._predicted_exp is not None and self._predicted_exp.tag == tag:
+                self._predicted_exp = None
 
-            if self.predicted_exp is not None and self.predicted_exp.tag == tag:
-                self.predicted_exp = None
-
-            if redraw:
+            if redraw and need_redraw:
                 self.update()
 
         def force(self, exps, clear=True, redraw=True):
@@ -7585,7 +7615,7 @@ python early:
                 self.forced_exps += exps
 
             if clear:
-                self.predicted_exp = None
+                self._predicted_exp = None
 
             if redraw:
                 self.update()
@@ -7631,23 +7661,33 @@ python early:
 
         def unforce(self, exp, redraw=True):
             """
-            Removes forced a exp by insance
+            Removes forced exp by insance
 
             IN:
                 exp - MASMoniIdleExp / MASMoniIdleExpGroup object
                 redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
+
+            need_redraw = self.current_exp is exp
+
             if exp in self.forced_exps:
                 self.forced_exps.remove(exp)
+                need_redraw = True
 
             if (
                 isinstance(exp, MASMoniIdleExpGroup)
                 and exp in self.exp_groups
             ):
-                self.exp_groups.remove(exp)
+                self.exp_groups[:] = list()
+                need_redraw = True
 
-            if redraw:
+            if self._predicted_exp is exp:
+                self._predicted_exp = None
+
+            if redraw and need_redraw:
                 self.update()
 
         def unforce_by_tag(self, tag, redraw=True):
@@ -7659,17 +7699,26 @@ python early:
                 redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
-            for group in list(self.exp_groups):
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
+
+            need_redraw = self.current_exp.tag == tag
+
+            for group in self.exp_groups:
                 if group.tag == tag:
-                    self.exp_groups.remove(group)
+                    self.exp_groups[:] = list()
+                    need_redraw = True
+                    break
 
-            flt = lambda exp: exp.tag != tag
-            self.forced_exps[:] = filter(flt, self.forced_exps)
+            for f_exp_id in range(len(self.forced_exps)-1, -1, -1):
+                if self.forced_exps[f_exp_id].tag == tag:
+                    self.forced_exps.pop(f_exp_id)
+                    need_redraw = True
 
-            if self.predicted_exp is not None and self.predicted_exp.tag == tag:
-                self.predicted_exp = None
+            if self._predicted_exp is not None and self._predicted_exp.tag == tag:
+                self._predicted_exp = None
 
-            if redraw:
+            if redraw and need_redraw:
                 self.update()
 
         def unforce_all(self, redraw=True):
@@ -7680,15 +7729,16 @@ python early:
                 redraw - whether or not we're forcing a redraw
                     (Default: True)
             """
-            for f_exp in self.forced_exps:
-                if (
-                    isinstance(f_exp, MASMoniIdleExpGroup)
-                    and f_exp in self.exp_groups
-                ):
-                    self.exp_groups.remove(f_exp)
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
 
-            if self.predicted_exp in self.forced_exps:
-                self.predicted_exp = None
+            if (
+                (self.forced_mode and self.group_mode)
+                or (self._predicted_modes["forced_mode"] and self._predicted_modes["group_mode"])
+            ):
+                self.exp_groups[:] = list()
+
+            self._predicted_exp = None
 
             self.forced_exps[:] = list()
 
@@ -7743,11 +7793,11 @@ python early:
             """
             exp = None
             exp_id = None
-            group_mode = False
+            chose_group = False
 
             # If we're currently using a group, then we continue
             while exp is None and self.exp_groups:
-                group_mode = True
+                chose_group = True
 
                 group = self.exp_groups[-1]
                 # We need to check the group in case of aff/cond changes
@@ -7763,12 +7813,15 @@ python early:
 
             # Otherwise try to select one of forced exps
             while exp is None and self.forced_exps:
+                self._predicted_modes["forced_mode"] = True
                 exp = self.forced_exps.pop(0)
                 if not exp.check_aff() or not exp.check_conditional():
                     exp = None
 
             # If we still haven't chosen anything, select one of base exps
             if exp is None:
+                self._predicted_modes["group_mode"] = False
+                self._predicted_modes["forced_mode"] = False
                 exp_list = self.exp_map[mas_curr_affection]
                 if exp_list:
                     choices = list()
@@ -7800,15 +7853,17 @@ python early:
 
             # Handle inner groups
             while isinstance(exp, MASMoniIdleExpGroup):
-                group_mode = True
+                self._predicted_modes["group_mode"] = True
+                chose_group = True
                 exp = self.__handle_group(exp, add_to_list=True)
 
             # If we STILL haven't chosen anything, we use the fallback
             if exp is None:
+                self._predicted_modes["group_mode"] = False
                 exp = self.fallback
 
             # Otherwise check if we should remove this exp
-            elif not group_mode and not exp.repeatable:
+            elif not chose_group and not exp.repeatable:
                 self.remove(exp)
 
             return exp
@@ -7822,16 +7877,18 @@ python early:
                 MASMoniIdleExp
             """
             if (
-                self.predicted_exp is not None
-                and self.predicted_exp.check_aff()
-                and self.predicted_exp.check_conditional()
+                self._predicted_exp is not None
+                and self._predicted_exp.check_aff()
+                and self._predicted_exp.check_conditional()
             ):
-                exp = self.predicted_exp
+                exp = self._predicted_exp
 
             else:
                 exp = self.__select_exp()
 
-            self.predicted_exp = None
+            self._predicted_exp = None
+            self.forced_mode = self._predicted_modes["forced_mode"]
+            self.group_mode = self._predicted_modes["group_mode"]
 
             # We meed to reset some params for wink transforms since RenPy is dum
             if exp.code[1] in MASMoniIdleDisp.EYES_EXP_CODES:
@@ -7891,9 +7948,26 @@ python early:
             OUT:
                 list of displayables
             """
-            if self.predicted_exp is None:
-                self.predicted_exp = self.__select_exp()
-            return [self.current_exp.ref, self.predicted_exp.ref]
+            if self._predicted_exp is None:
+                self._predicted_exp = self.__select_exp()
+            return [self.current_exp.ref, self._predicted_exp.ref]
+
+        def do_after_topic_logic(self):
+            """
+            Checks if we should reset the current exp
+            since we just finished a topic, and if we should, does it
+            NOTE: this is intended to be called in call_next_event
+            """
+            if not self.forced_mode:
+                # Makes no sense to continue the group because of the topic interruption
+                if self.group_mode:
+                    self.exp_groups[:] = list()
+                    self._predicted_exp = None
+                    self.update()
+
+                # If the current exp expires soon, we just skip it to avoid unnatural exp/pose changes
+                elif self.duration < 2:
+                    self.update()
 
         @staticmethod
         def __reset_transform(transform, code):

@@ -2491,6 +2491,8 @@ label call_next_event:
         call expression event_label from _call_expression
         $ persistent.current_monikatopic = 0
         $ mas_globals.this_ev = None
+        # Handle idle exp
+        $ mas_moni_idle_disp.do_after_topic_logic()
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
@@ -2541,10 +2543,6 @@ label call_next_event:
                 $ mas_clearNotifs()
                 jump _quit
 
-            if "prompt" in ret_items:
-                show monika idle
-                jump prompt_menu
-
             # Force idle exp
             if "idle_exp" in _return:
                 python:
@@ -2565,6 +2563,10 @@ label call_next_event:
                             )
                             if _exp is not None:
                                 mas_moni_idle_disp.force(_exp)
+
+            if "prompt" in ret_items:
+                show monika idle
+                jump prompt_menu
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
