@@ -16166,15 +16166,28 @@ label monika_giving_criticism:
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
     return
 
-default persistent._mas_pm_good_at_academics = None
-default persistent._mas_pm_bad_at_academics = None
+#Is the player invested in studying?
+default persistent._mas_pm_likes_studying = None
+
+#Consts to be used for checking this
+define mas_STUDY_LIKE_YES = 1
+define mas_STUDY_LIKE_NO = 0
+define mas_STUDY_LIKE_SOMEWHAT = 2
+
+#Is the player good at studying? (regardless of if he enjoys it)
+default persistent._mas_pm_good_at_studying = None
+
+#Consts to be used for checking this
+define mas_STUDY_GOOD_YES = 1
+define mas_STUDY_GOOD_NO = 0
+define mas_STUDY_GOOD_KINDOF = 2
 
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_studying",
-            category=['school'],
+            category=['school', 'you'],
             prompt="Studying",
             random=True
         )
@@ -16185,7 +16198,7 @@ label monika_studying:
     m 3eua "It's always felt natural for me to work hard at school...{w=0.2}{nw}"
     extend 3rksdla "and it's always what's been expected of me, I guess."
     m 1huu "Not that I'm complaining, I do love a good challenge after all!"
-    m 1esd "But as I grew older, I began asking myself...{nw}{w=0.3}"
+    m 1esd "But as of late, I've started asking myself...{nw}{w=0.3}"
     extend 3etc "what was the point of all this studying?"
     m 1rssdlc "Looking back, there were so many useless assignments."
     m 1dksdlc "Stuff I'm probably never ever gonna see again in my life, {nw}"
@@ -16202,46 +16215,138 @@ label monika_studying:
     m 2dkc "So much for having a perfect, one size fits all education system, I guess."
     m 7eka "As for you, I hope for your sake you've managed to find satisfaction in your studies."
 
-    m 7esc "But just so we're on the same page...{w=0.3}{nw}"
-    extend 7eua "are you good at studying, [player]?{nw}"
+    m 7esd "But just so we're on the same page...{w=0.3}{nw}"
+    extend 7esa "do you like studying for school, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "But just so we're on the same page...are you good at studying, [player]?{fast}"
+        m "But just so we're on the same page...do like studying for school, [player]?{fast}"
         "Yes.":
-            $ persistent._mas_pm_good_at_academics = True
-            $ persistent._mas_pm_bad_at_academics = False
-            m 3hub "That's great!"
-            m 1huu "I'm glad your studies are working out for you, [mas_get_player_nickname()]."
-            m 1eub "Being comfortable with studying is sure to bring you many good things in the future!"
-            m 3eua "Beyond the feeling of personal accomplishment, having good grades opens up many possibilities for scholarships and employment."
-            m 1huu "It's so nice to be able to pick whichever path you want from any number of possibilities."
-            m 3eub "So keep working hard, [player].{w=0.3} I'm sure there's a bright future ahead of you!"
+            $ persistent._mas_pm_likes_studying = mas_STUDY_LIKE_YES
+            m 3eub "That's great!"
+            m 3hua "I'm glad you're enjoying your studies [mas_get_player_nickname()]."
+            m 3eub "Being comfortable with studying is sure to bring you many good things in the future, and I don't mean just for school."
+            m 1huu "Maybe the two of us could hold a study group together sometimes."
+
+            if mas_isMoniNormal(higher=True):
+                m 1rksdlblu "Though I get the feeling I'd keep getting distracted, studying together with my loving [bf]."
+                m 1hublb "Ehehe~"
+
+            m 1eua "By the way, does that mean you're actually good at studying, [player]?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "By the way, does that mean you're actually good at studying, [player]?{fast}"
+                "Yes.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_YES
+                    m 3huu "That's good!"
+                    m 3eub "Beyond the feeling of personal accomplishment, having good grades opens up many possibilities for scholarships and employment."
+                    m 3hua "It's so nice to be able to pick whichever path you want from any number of possibilities."
+                    m 3eublb "So keep working hard, [player]!{w=0.3} I'm sure there's a bright future ahead of you!"
+
+                "No.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_NO
+                    m 1rssdla "Oh..."
+                    m 1hksdlb "Well, don't let it get to you [player]."
+                    m 1eka "I know it can be a bit disheartening not being able to achieve everything you hoped for..."
+                    m 3ekb "But grades aren't everything, you know?"
+                    m 3rksdla "I mean, I'm definitely not saying you should give up on your grades entirely."
+                    m 3essdld "...Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
+                    m 3ekblu "But even then, you're so much more than your grades, [player]..."
+                    m 3hublb "As long as you're happy, and having fun going through each day, then that's enough to make me happy too!"
+
+                "Kind of.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_KINDOF
+                    m 1hua "It's nice to know your studies are working out for you, [mas_get_player_nickname()]."
+                    m 3eua "Having good grades isn't everything, but it opens up many possibilities for scholarships and employment."
+                    m 3eub "Keep working hard, and I'm sure you can achieve everything you aim for!"
+
+                "I don't want to talk about it.":
+                    call monika_studying_notalk
 
         "No.":
-            $ persistent._mas_pm_good_at_academics = False
-            $ persistent._mas_pm_bad_at_academics = True
+            $ persistent._mas_pm_likes_studying = mas_STUDY_LIKE_NO
             m 1esc "I see..."
-            m 1dkd "That's too bad, [player]...{w=0.3}{nw}"
-            extend 1eka "but even then I don't blame you."
-            m 3eku "Academics aren't for everybody after all, and it's totally fine if you're not comfortable with them."
-            m 3rksdlu "So long{w=0.2}--and only so long as you gave it an honest try, I mean."
-            m 4esd "Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
-            m 1duu "But outside of that, being good in school is definitely not the only way to live a fulfilling life."
+            m 1dkd "I'm sorry to hear you're feeling that way, [player]."
+            m 1rkc "It must really suck having to go through something you don't like each day."
+            m 3eku "Now, I don't mean to put you on the spot, but even if you don't like it..."
+            m 3eua "...Are you actually good at studying, [player]?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "...Are you actually good at studying, [player]?{fast}"
+                "Yes.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_YES
+                    call monika_studying_no_like_but_ok
 
-            if not persistent._mas_pm_love_yourself:
-                m 3huu "Besides, I'm sure you have plenty of other strong points already...{w=0.3}{nw}"
-                extend 3eku "even if you don't seem to be aware of them yourself."
+                "No.":
+                    call monika_studying_no_good
 
-            m 3ekblb "So don't feel bad about not fitting at school, I don't think any less of you because of it."
-            m 1dubsu "I know it may seem weird coming from an honor student, but you're so much more than just your grades, [mas_get_player_nickname()]!"
+                "Kind of.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_KINDOF
+                    call monika_studying_no_like_but_ok
 
-        "Kind of.":
-            $ persistent._mas_pm_good_at_academics = False
-            $ persistent._mas_pm_bad_at_academics = False
-            m 1huu "Ehehe, I see."
-            m 3eub "Not an honor student, but not having trouble either, right?"
-            m 3hua "Well, I'm glad your studies are working out for you, [mas_get_player_nickname()]."
-            m 3esc "Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
-            m 3eub "Keep working hard, and I'm sure lots of good things will come your way!"
+                "I don't want to talk about it.":
+                    call monika_studying_notalk
+
+        "Somewhat.":
+            $ persistent._mas_pm_likes_studying = mas_STUDY_LIKE_SOMEWHAT
+            m 1hua "I'm glad you at least found some ammount of satisfaction in your studies, [mas_get_player_nickname()]."
+            m 3eub "Being comfortable with studying is sure to bring you many good things in the future, and I don't mean just for school."
+            m 1rksdla "Now, I don't mean to put you on the spot, but whether you enjoy it or not..."
+            m 3eua "...Are you actually good at studying, [player]?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "...Are you actually good at studying, [player]?{fast}"
+                "Yes.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_YES
+                    m 1hub "That's nice!"
+                    m 3eua "Having good grades isn't everything, but it opens up many possibilities for scholarships and employment."
+                    m 1huu "It's so nice to be able to pick whichever path you want from any number of possibilities."
+                    m 3eub "So keep it up, [player]!{w=0.3} I'm sure there's a bright future ahead of you!"
+
+                "No.":
+                    call monika_studying_no_good
+
+                "Kind of.":
+                    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_KINDOF
+                    m 1eua "I see."
+                    m 1eub "Not an honor student, but not having trouble either then, right?"
+                    m 3eku "Well, I'm glad your studies are working out for you, [mas_get_player_nickname()]."
+                    m 3esd "Having good grades isn't everything, but it opens up many possibilities for scholarships and employment."
+                    m 3hua "Keep working hard, and I'm sure you can achieve everything you aim for!"
+
+                "I don't want to talk about it.":
+                    call monika_studying_notalk
 
     return "derandom"
+
+label monika_studying_no_like_but_ok:
+    m 1huu "Ehehe, that's something at least."
+    m 1eka "Even if you don't like them, I'm glad you don't don't struggle with academics, [player]."
+    m "I mean it for your sake."
+    m 3rksdld "Unfair as it is, having good grades opens up many possibilities for scholarships and employment."
+    m 3ekb "Just keep in mind your grades aren't who you who are, [player]..."
+    m 3hublu "At the end of the day, I fell in love for you as a person, and not some silly marks on a piece of paper!"
+    return
+
+label monika_studying_no_good:
+    $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_NO
+    m 1dkd "That's too bad, [player].{w=0.3} {nw}"
+    extend 1eku "But even then I don't blame you."
+    m 3eku "Academics aren't for everybody after all, and it's totally fine if you're not good with them."
+    m 3rksdlu "So long{w=0.2}--and only so long as you gave it an honest try, I mean."
+    m 1essdld "...Having good grades opens up many possibilities for scholarships and employment, which is sure to come in handy later on in life."
+    m 3eua "But outside of that, being good at studying definitely isn't the only way to live a fulfilling life either, you know?"
+
+    if not persistent._mas_pm_love_yourself:
+        m 3huu "Besides, I'm sure you have plenty of other strong points already...{w=0.3}{nw}"
+        extend 3eku "even if you don't seem to be aware of them yourself."
+
+    m 3ekblb "So don't feel bad about not fitting at school, I don't think any less of you because of it."
+    m 1dubsu "I know it may seem weird coming from an honor student, but you're so much more than just your grades, [mas_get_player_nickname()]!"
+    return
+
+label monika_studying_notalk:
+    $ persistent._mas_pm_likes_studying = None
+    m 1eka "Fair enough."
+    m 3rksdlb "I'm sorry, [player]. I didn't mean to pry."
+    m 3eua "Let's talk about something else, shall we?"
+    return
