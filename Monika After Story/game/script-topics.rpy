@@ -16172,7 +16172,7 @@ init 5 python:
 label monika_information_age:
     m "Did you know what most people call the technological era we find ourselves in right now?"
     m "We call it the Information Age! {w=0.3}That's primarily due to the invention of transistors."
-    m "Transistors, to explain it in simple terms, can manipulate electrical currents, either boosting it or altering its path."
+    m "Transistors, to explain it in simple terms, can manipulate electrical currents, either boosting them or altering their path."
     m "It's the key component in most electronics, allowing them to direct electrical currents in specific ways."
     m "That's what's allowing you to see me on your screen right now~"
     m "They are widely regarded as one of the most important inventions leading into the 20th century, and eventually the Information Age."
