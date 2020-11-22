@@ -504,6 +504,32 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_virtualpiano",
+            category='["virtual", "piano"]',
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_virtualpiano:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Awww, are you going to play for me?\nYou're so sweet~",
+            "Play something for me, [player]!"
+        ],
+        'Window Reactions'
+    )
+
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_virtualpiano')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_youtube",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
