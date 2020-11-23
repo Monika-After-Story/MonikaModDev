@@ -412,7 +412,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -444,7 +445,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -476,7 +478,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -526,7 +529,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -554,7 +558,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
-            rules={"skip alert": None},
+            rules={
+                "skip alert": None,
+                "skip_pause": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -592,7 +599,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -623,7 +631,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -663,7 +672,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -695,7 +705,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -729,7 +740,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -777,7 +789,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -809,7 +822,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -842,7 +856,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -873,7 +888,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -905,7 +921,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
