@@ -3403,6 +3403,134 @@ python early:
             """
             self.box[headline] = msg
 
+    class MASExtraPropable(object):
+        """
+        base class that supports ex_prop-based extensions.
+
+        Properties can be accessed by using `ex__` prefix.
+        Supports the following:
+
+        ACCESSING props:
+            via `<obj>.ex__<name>`
+            if no prop is found, None is returned.
+
+        SETTING PROPS:
+            via `<obj>.ex__<name> = <value>`
+
+        CHECKING FOR PROP EXISTENCE:
+            via `<name>` in <obj>
+
+        ADDING props:
+            *same as setting props
+
+        REMOVING PROPS:
+            via pop function
+
+        EQUIVALENCE:
+            No eq support, but I am open to it. Let me know.
+
+        NOTE: using this means that all of the ex_props you want to use
+            _should_ be pythonic in name. Props that are NOT pythonic in name
+            are will not be accessible via property.
+
+        PROPERTIES:
+            ex_props - direct dictionary of ex_props
+        """
+        EX_PFX = "ex__"
+        _EX_LEN = len(EX_PFX)
+
+        def __init__(self, ex_props=None):
+            """
+            Constructor.
+
+            IN:
+                ex_props - initial dict of ex props to set internal data to
+                    pass None to start with an empty dict.
+                    (Default: None)
+            """
+            if ex_props is None:
+                ex_props = {}
+
+            self.ex_props = ex_props
+
+        def __contains__(self, item):
+            return item in self.ex_props
+
+        def __len__(self):
+            return len(self.ex_props)
+
+        def __getattr__(self, key):
+            if key.startswith(self.EX_PFX):
+                return self.ex_props.get(key[self._EX_LEN:], None)
+
+            return super(MASExtraPropable, self).__getattr__(key)
+
+        def __setattr__(self, key, value):
+            if key.startswith(self.EX_PFX):
+                # the real property name is without the prefix
+                stripped_key = key[self._EX_LEN:]
+                if len(stripped_key) > 0:
+                    self.ex_props[stripped_key] = value
+
+            super(MASExtraPropable, self).__setattr__(key, value)
+
+        def ex_has(self, key):
+            """
+            Checks for existence of the given exprop in this object.
+
+            IN:
+                key - name of exprop
+
+            RETURNS: True if the key exists as an ex prop, False if not
+            """
+            return key in self
+
+        def ex_iter(self):
+            """
+            Generates generator of exprops in this object.
+
+            RETURNS: iter of ex prop names and values
+            """
+            return (item for item in self.ex_props.iteritems())
+
+        def ex_pop(self, key, default=None):
+            """
+            Pops and returns an exprop from the internal dict
+
+            IN:
+                key - key to pop/get ex_prop
+                default - default value to use if no prop found
+                    (Default: None)
+
+            RETURNS: value of the popped ex_prop, or the default if not found
+            """
+            return self.ex_props.pop(key, default)
+
+        @staticmethod
+        def repr_out(obj):
+            """
+            returns a repr string of the ex props in an object.
+
+            IN:
+                obj - object to repr ex props for
+
+            RETURNS: repr string of ex_props in object. empty string if
+                no ex_props property.
+            """
+            try:
+                ex_props = obj.ex_props
+                if ex_props is None:
+                    return "<exprops: ()>"
+
+                props = [
+                    "{0}: {1}".format(key, value)
+                    for key, value in ex_props.iteritems()
+                ]
+                return "<exprops: ({0})>".format(", ".join(props))
+                
+            except:
+                return ""
+
 init 25 python:
     class PauseDisplayable(renpy.Displayable):
         """
@@ -3691,134 +3819,6 @@ init 25 python:
             Sort key for sorting by ev's end_datetime
             """
             return ev.end_datetime
-
-    class MASExtraPropable(object):
-        """
-        base class that supports ex_prop-based extensions.
-
-        Properties can be accessed by using `ex__` prefix.
-        Supports the following:
-
-        ACCESSING props:
-            via `<obj>.ex__<name>`
-            if no prop is found, None is returned.
-
-        SETTING PROPS:
-            via `<obj>.ex__<name> = <value>`
-
-        CHECKING FOR PROP EXISTENCE:
-            via `<name>` in <obj>
-
-        ADDING props:
-            *same as setting props
-
-        REMOVING PROPS:
-            via pop function
-
-        EQUIVALENCE:
-            No eq support, but I am open to it. Let me know.
-
-        NOTE: using this means that all of the ex_props you want to use
-            _should_ be pythonic in name. Props that are NOT pythonic in name
-            are will not be accessible via property.
-
-        PROPERTIES:
-            ex_props - direct dictionary of ex_props
-        """
-        EX_PFX = "ex__"
-        _EX_LEN = len(EX_PFX)
-
-        def __init__(self, ex_props=None):
-            """
-            Constructor.
-
-            IN:
-                ex_props - initial dict of ex props to set internal data to
-                    pass None to start with an empty dict.
-                    (Default: None)
-            """
-            if ex_props is None:
-                ex_props = {}
-
-            self.ex_props = ex_props
-
-        def __contains__(self, item):
-            return item in self.ex_props
-
-        def __len__(self):
-            return len(self.ex_props)
-
-        def __getattr__(self, key):
-            if key.startswith(self.EX_PFX):
-                return self.ex_props.get(key[self._EX_LEN:], None)
-
-            return super(MASExtraPropable, self).__getattr__(key)
-
-        def __setattr__(self, key, value):
-            if key.startswith(self.EX_PFX):
-                # the real property name is without the prefix
-                stripped_key = key[self._EX_LEN:]
-                if len(stripped_key) > 0:
-                    self.ex_props[stripped_key] = value
-
-            super(MASExtraPropable, self).__setattr__(key, value)
-
-        def ex_has(self, key):
-            """
-            Checks for existence of the given exprop in this object.
-
-            IN:
-                key - name of exprop
-
-            RETURNS: True if the key exists as an ex prop, False if not
-            """
-            return key in self
-
-        def ex_iter(self):
-            """
-            Generates generator of exprops in this object.
-
-            RETURNS: iter of ex prop names and values
-            """
-            return (item for item in self.ex_props.iteritems())
-
-        def ex_pop(self, key, default=None):
-            """
-            Pops and returns an exprop from the internal dict
-
-            IN:
-                key - key to pop/get ex_prop
-                default - default value to use if no prop found
-                    (Default: None)
-
-            RETURNS: value of the popped ex_prop, or the default if not found
-            """
-            return self.ex_props.pop(key, default)
-
-        @staticmethod
-        def repr_out(obj):
-            """
-            returns a repr string of the ex props in an object.
-
-            IN:
-                obj - object to repr ex props for
-
-            RETURNS: repr string of ex_props in object. empty string if
-                no ex_props property.
-            """
-            try:
-                ex_props = obj.ex_props
-                if ex_props is None:
-                    return "<exprops: ()>"
-
-                props = [
-                    "{0}: {1}".format(key, value)
-                    for key, value in ex_props.iteritems()
-                ]
-                return "<exprops: ({0})>".format(", ".join(props))
-                
-            except:
-                return ""
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:

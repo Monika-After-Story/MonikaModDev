@@ -2351,8 +2351,8 @@ label monika_holdme_start:
         holdme_disp = PauseDisplayableWithEvents(events=holdme_events)
         holdme_disp.start()
 
-        del[holdme_events]
-        del[holdme_disp]
+        del holdme_events
+        del holdme_disp
 
         # renable ui and hotkeys
         store.songs.enabled = True
@@ -2685,7 +2685,7 @@ init 5 python:
             flags=flags
         )
     )
-    del[flags]
+    del flags
 
 label monika_holdrequest:
     #TODO: if we add a mood system, path this based on current mood
