@@ -291,7 +291,7 @@ init -100 python in mas_sprites:
 
     EXP_H_EXCLCP = "excluded-clothes-props"
     # v: list of strings
-    # marks that a hair style requires clothes with none of hte value'd props
+    # marks that a hair style requires clothes with none of the value'd props
     # to be worn
 
     EXP_H_TS = "tiedstrand"
@@ -301,6 +301,10 @@ init -100 python in mas_sprites:
     EXP_H_NT = "no-tails"
     # v: ignored
     # marks that a hair style has no tails. By default we assume ponytail.
+
+    EXP_H_TB = "twinbraid"
+    #v: ignored
+    #marks the hair as a twinbraid hairstyle
 
     # ---- CLOTHES ----
 

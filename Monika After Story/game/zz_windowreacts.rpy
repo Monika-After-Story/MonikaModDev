@@ -75,40 +75,27 @@ init python:
             tip.hwnd = None
 
     elif renpy.linux:
-        # wayland check
-        if "WAYLAND_DISPLAY" in os.environ:
-            persistent._mas_windowreacts_windowreacts_enabled = False
-            store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog(
-                "[WARNING]: Window reacts do not work on Wayland\n"
-            )
+        #Get session type
+        session_type = os.environ.get("XDG_SESSION_TYPE")
 
-            # NOTE: it is possible for WAYLAND_DISPLAY to be unset on a wayland
-            # desktop. This is not ideal but is handled with try catch block
+        #Wayland is not supported, disable wrs
+        if session_type == "wayland":
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
+            store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
+
+        #X11 however is fine
+        elif session_type == "x11":
+            try:
+                import Xlib
+
+            except ImportError:
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_windowreacts.can_do_windowreacts = False
+                store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
 
         else:
-            import subprocess
-
-            # notify send check
-            try:
-                subprocess.call(['notify-send', '--version'])
-
-            except OSError as e:
-                #Command wasn't found
-                store.mas_windowreacts.can_show_notifs = False
-                store.mas_utils.writelog(
-                    "[WARNING]: notify-send not found, disabling notifications.\n"
-                )
-
-            # xdotool check
-            try:
-                subprocess.call(["xdotool", "--version"])
-
-            except OSError:
-                #Command not found
-                persistent._mas_windowreacts_windowreacts_enabled = False
-                store.mas_windowreacts.can_do_windowreacts = False
-                store.mas_utils.writelog("[WARNING]: xdotool not found, disabling windowreacts.\n")
+            store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -153,41 +140,56 @@ init python:
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
-        if (
-            renpy.windows
-            and mas_windowreacts.can_show_notifs
-            and mas_canCheckActiveWindow()
-        ):
-            from win32gui import GetWindowText, GetForegroundWindow
+        if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
+            if renpy.windows:
+                from win32gui import GetWindowText, GetForegroundWindow
 
-            window_handle = GetWindowText(GetForegroundWindow())
-            if friendly:
-                return window_handle
+                window_handle = GetWindowText(GetForegroundWindow())
+                if friendly:
+                    return window_handle
+                else:
+                    return window_handle.lower().replace(" ","")
+
+            elif renpy.linux:
+                from Xlib.display import Display
+                from Xlib.error import BadWindow
+
+                display = Display()
+                root = display.screen().root
+
+                NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
+                NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
+
+                # Perform nullchecks on property getters, just in case.
+                active_winid_prop = root.get_full_property(NET_ACTIVE_WINDOW, 0)
+                if active_winid_prop is not None:
+                    active_winid = active_winid_prop.value[0]
+                else:
+                    return ""
+
+                active_winobj = display.create_resource_object("window", active_winid)
+                try:
+                    # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
+                    active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
+                    if active_winname_prop is not None:
+                        active_winname = unicode(active_winname_prop.value)
+                        if friendly:
+                            return active_winname.replace("\n", "")
+                        else:
+                            return active_winname.lower().replace(" ", "").replace("\n", "")
+                    else:
+                        return ""
+                except BadWindow:
+                    return ""
+                finally:
+                    # Release resources to prevent memory leak.
+                    display.flush()
+                    display.close()
+
             else:
-                return window_handle.lower().replace(" ","")
-
-        elif (
-            renpy.linux
-            and mas_windowreacts.can_show_notifs
-            and mas_canCheckActiveWindow()
-        ):
-            #Try except this in the case of a non-zero exit code
-            try:
-                window_handle = subprocess.check_output(["xdotool", "getwindowfocus", "getwindowname"])
-            except:
-                store.mas_utils.writelog("[ERROR]: xdotool exited with a non-zero exit code.\n")
+                #TODO: Mac vers (if possible)
+                #NOTE: We return "" so this doesn't rule out notifications
                 return ""
-
-            #If we have a window handle, let's just process it as friendly/unfriendly and return it
-            if friendly:
-                return window_handle.replace("\n", "")
-            else:
-                return window_handle.lower().replace(" ","").replace("\n", "")
-
-        else:
-            #TODO: Mac vers (if possible)
-            #NOTE: We return "" so this doesn't rule out notifications
-            return ""
 
     def mas_isFocused():
         """
@@ -338,7 +340,7 @@ init python:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
@@ -484,9 +486,12 @@ label mas_wrs_wikipedia:
             #If we're still here, we didn't value error
             #Now we get the article
             wiki_article = wind_name[:cutoff_index]
+
+            # May contain clarification in trailing parentheses
+            wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
             wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
 
-        except:
+        except ValueError:
             pass
 
     $ wrs_success = display_notif(

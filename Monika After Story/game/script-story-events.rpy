@@ -232,7 +232,7 @@ init 3 python:
         "annoying",
         "anus",
         "arrogant",
-        "ass",
+        "(?<![blmprs])ass(?!i)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,7 +244,7 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "butt(?!er|on)",
         "cheater",
         "cock",
         "conceited",
@@ -320,7 +320,6 @@ init 3 python:
         "nigga",
         "nigger",
         "nuts",
-        "pad",
         "panti",
         "pantsu",
         "panty",
@@ -333,13 +332,12 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
         "rump",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
@@ -407,7 +405,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -504,14 +502,14 @@ label mas_player_name_enter_name_loop(input_prompt):
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            allow=name_characters_only,
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -540,7 +538,7 @@ label mas_player_name_enter_name_loop(input_prompt):
 
         else:
             #Sayori name check
-            if tempname.lower() == "sayori":
+            if lowername == "sayori":
                 call sayori_name_scare
 
             elif (
@@ -2094,15 +2092,8 @@ label mas_notification_windowreact:
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
 
-        $ dlg_line = "And"
-        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
-        if not store.mas_windowreacts.can_do_windowreacts:
-            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
-            extend 3eub "which would allow me to see your active window!"
-            $ dlg_line = "Of course, you don't have to install the second one, but"
-
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
+        m 5eka "...And I'd really appreciate it, [player]."
 
     else:
         m 3eub "Would you like to see how they work?{nw}"
@@ -2126,11 +2117,7 @@ label mas_notification_windowreact:
 
 
         elif renpy.linux:
-            if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
-            else:
-                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
-                extend 3hua "I'll be able to know what your active window is!"
+            m 3rksdla "Also, since you're using Linux...I now know how to check what your active window is."
 
         if not renpy.macintosh:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
