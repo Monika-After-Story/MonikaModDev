@@ -5081,6 +5081,24 @@ init -1 python:
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
         )
 
+    def mas_isInTimeRange(lower_bound, upper_bound, _time=None):
+        """
+        Checks if the given time within the given bounds
+
+        IN:
+            lower_bound - datetime.time object, lower bound
+            upper_bound - datetime.time object, upper bound
+                NOTE: NOT inclusive
+            _time - time to check, if None uses the current time
+                (Default: None)
+
+        OUT:
+            boolean whether or not we're within the bounds
+        """
+        if _time is None:
+            _time = datetime.datetime.now().time()
+
+        return lower_bound <= _time < upper_bound
 
     def mas_cvToHM(mins):
         """

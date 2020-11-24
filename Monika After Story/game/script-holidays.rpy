@@ -124,7 +124,7 @@ init -10 python:
         return _date == datetime.date(_date.year,4,1)
 
 # Global labels
-label mas_lingerie_intro(holiday_str,lingerie_choice):
+label mas_lingerie_intro(holiday_str, lingerie_choice):
     m 1ekbfa "..."
     m "Also, [player]..."
     m 3ekbfsdla "There's...{w=1}s-something I want to show you."
@@ -145,7 +145,7 @@ label mas_lingerie_intro(holiday_str,lingerie_choice):
         m 3hkbfb "Ahaha, what am I saying, you've seen me in a bikini before, which is essentially the same thing..."
         m 2rkbfa "...Though for some reason this just feels...{w=0.5}{i}different{/i}."
 
-    m 2ekbfa "Anyway, something about being with you on [holiday_str] seems really romantic, you know?"
+    m 2ekbfa "Anyway, something about being with you [holiday_str] seems really romantic, you know?"
     m "It just felt like the perfect time for the next step in our relationship."
     m 2rkbfsdlu "Now I know that we can't really--{nw}"
     m 3hubfb "Ah! Nevermind, ahaha!"
@@ -3045,9 +3045,12 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
-            conditional="persistent._mas_d25_in_d25_mode",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and mas_isInTimeRange(datetime.time(hour=20), datetime.time(hour=0))"
+            ),
             action=EV_ACT_PUSH,
-            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+            start_date=mas_d25e - datetime.timedelta(days=4),
             end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None),
@@ -3056,6 +3059,8 @@ init 5 python:
     )
 
 label mas_d25_monika_christmas_eve:
+    $ is_d25eve = datetime.datetime.today().day == mas_d25e.day
+
     m 3hua "[player]!"
     m 3hub "Can you believe it...?{w=1} It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
@@ -3065,7 +3070,13 @@ label mas_d25_monika_christmas_eve:
     #Were there last Christmas
     if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
         m "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
-        m 5hkbsa "I can't wait for tomorrow!"
+
+        if is_d25eve:
+            $ _day_var = "tomorrow"
+        else:
+            $ _day_var = "it"
+
+        m 5hkbsa "I can't wait for [_day_var!"
 
     #Weren't there last Christmas
     elif mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
@@ -3088,7 +3099,8 @@ label mas_d25_monika_christmas_eve:
         else:
             m 5ekbfa "..."
             show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            call mas_lingerie_intro(holiday_str="Christmas Eve",lingerie_choice=mas_clothes_santa_lingerie)
+            $ holiday_str = "on Christmas Eve" if is_d25eve else "tonight"
+            call mas_lingerie_intro(holiday_str=holiday_str, lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
     return
@@ -5415,7 +5427,7 @@ label mas_f14_monika_valentines_intro:
 
         # first time seeing any lingerie
         if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_hasUnlockedClothesWithExprop("lingerie"):
-            call mas_lingerie_intro(holiday_str="Valentine's Day",lingerie_choice=mas_clothes_vday_lingerie)
+            call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress or non-first time seeing lingerie
         elif (

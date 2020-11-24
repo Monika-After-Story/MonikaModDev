@@ -375,7 +375,15 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.7
 label v0_11_7(version="v0_11_7"):
     python:
-        pass
+        # Give more time (20th-24th of December) to get the "surprise" from Monika
+        mas_setEVLPropValues(
+            "mas_d25_monika_christmas_eve",
+            start_date=(mas_d25e - datetime.timedelta(days=4)),
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and mas_isInTimeRange(datetime.time(hour=20), datetime.time(hour=0))"
+            )
+        )
     return
 
 # 0.11.6
