@@ -246,7 +246,7 @@ init python in mas_chess:
         level = store.persistent._mas_chess_difficulty.keys()[0]
         sublevel = store.persistent._mas_chess_difficulty.values()[0]
 
-        if sublevel == 1 and level < 0:
+        if sublevel == 1 and level > 0:
             level -= 1
             sublevel = 5
 
@@ -314,7 +314,7 @@ init python in mas_chess:
         #Setup total points for this row
         total_row_points = 0
 
-        row = ""
+        row = list()
         for ind in range(0, 8):
             if ind == king_pos:
                 piece_to_add = king_char
@@ -329,9 +329,9 @@ init python in mas_chess:
                 if white:
                     piece_to_add = piece_to_add.capitalize()
 
-            row += row.join(piece_to_add)
+            row.append(piece_to_add)
 
-        return row, (max_piece_value - total_row_points if max_piece_value is not None else None)
+        return "".join(row), (max_piece_value - total_row_points if max_piece_value is not None else None)
 
     def gen_front_row(white=True, max_piece_value=None):
         """
@@ -343,7 +343,7 @@ init python in mas_chess:
         OUT:
             string representing a random assortment of pieces for the front row
         """
-        row = ""
+        row = list()
 
         total_row_points = 0
 
@@ -355,9 +355,9 @@ init python in mas_chess:
             if white:
                 piece_to_add = piece_to_add.capitalize()
 
-            row += row.join(piece_to_add)
+            row.append(piece_to_add)
 
-        return row, (max_piece_value - total_row_points if max_piece_value is not None else None)
+        return "".join(row), (max_piece_value - total_row_points if max_piece_value is not None else None)
 
     def generate_fen(is_player_white=True):
         """
@@ -633,7 +633,12 @@ label game_chess:
         python:
             is_player_white = mas_chess._get_player_color(loaded_game)
 
-            practice_mode = loaded_game.headers.get("Practice", False)
+            #These are automatically loaded with the pgn when we start the game, we'll default these to False
+            practice_mode = False
+            casual_rules = False
+
+            #Since we're not generating new, this is fine to set to anything
+            do_really_bad_chess = False
 
         jump .start_chess
 
@@ -649,8 +654,12 @@ label game_chess:
         "Normal chess.":
             $ do_really_bad_chess = False
 
-        "Really bad chess.":
+        "Randomized chess.":
             $ do_really_bad_chess = True
+
+    label .casual_rules_ask:
+        show monika 1eua
+        pass
 
     m "Casual rules or traditional rules?{nw}"
     $ _history_list.pop()
@@ -662,6 +671,11 @@ label game_chess:
 
         "Traditional.":
             $ casual_rules = False
+
+        "What's the difference?":
+            m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
+            extend 3eub "Essentially, the player who is not trapped is declared the winner."
+            jump casual_rules_ask
 
     m 3eua "Would you like to practice or play against me?{nw}"
     $ _history_list.pop()
@@ -1792,8 +1806,13 @@ init python:
 
             #If we're basing off an existing pgn, let's load the relevant data
             if pgn_game:
-                # load this game into the board, push turns
-                self.board = pgn_game.board()
+                #Casual rules
+                self.casual_rules = eval(pgn_game.headers.get("CasualRules", "False"))
+
+                #Load this game into the board, push turns
+                self.board = MASBoard.from_board(pgn_game.board(), self.casual_rules)
+
+                #Now push all the moves
                 for move in pgn_game.main_line():
                     self.board.push(move)
 
@@ -1818,9 +1837,6 @@ init python:
 
                 #Move history
                 self.move_history = eval(pgn_game.headers.get("MoveHist", "[]"))
-
-                #Casual rules
-                self.casual_rules = eval(pgn_game.headers.get("CasualRules", "False"))
 
                 #And finally, the fullmove number
                 self.num_turns = self.board.fullmove_number
@@ -2697,6 +2713,20 @@ init python:
             #Flag for needing to request a redraw for the board
             self.request_redraw = False
             self.casual_rules = casual_rules
+
+        @staticmethod
+        def from_board(Board, casual_rules=False):
+            """
+            Initializes a MASBoard from a chess.Board
+
+            IN:
+                Board - chess.Board to convert
+                casual_rules - Whether or not we're using casual rules
+
+            OUT:
+                MASBoard object representing the given Board.
+            """
+            return MASBoard(Board.fen(), Board.chess960, casual_rules)
 
         def push(self, move):
             """
