@@ -1774,6 +1774,7 @@ label mas_song_strawberry:
     extend 3hub "{w=0.3}{cps=26} Would be like saying that a strawberry is sweet~{/cps}"
     m 3eub "{cps=26}Because a strawberry has secret{w=0.1} flavors.{nw}"
     extend 2dkbsa "{w=0.3} That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep...{/cps}"
+    show monika 2dkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hsbsb "{cps=26}And I would love to find you...{/cps}"
     extend 5lsbsb "{cps=26} Growing wild out by the woods~{/cps}"
     show monika 5lsbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
