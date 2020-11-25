@@ -1817,6 +1817,7 @@ label mas_song_strawberry_long:
     m 2tsbfu "{cps=26}{i}And I want to explore you...{/i}{w=0.3}{nw}{/cps}"
     extend 3hubsa "{cps=26}With my tennis shoes off!~{/cps}"
     m 5rsbfb "{cps=26}Standing ankle{w=0.3} deep in a tide pool...{/cps}"
+    show monika 5rsbfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     extend 3hubsb "{cps=26}With my khaki pants rolled up~{/cps}"
     m 1esb "{cps=26}And to say that you are funny...{/cps}"
     m 3eub "{cps=26}Would be like saying that the night sky is black...{/cps}"
