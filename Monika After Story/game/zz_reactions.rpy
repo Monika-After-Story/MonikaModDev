@@ -2702,7 +2702,7 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
 label mas_reaction_gift_acs_raven_earrings_diamond:
     python:
         sprite_data = mas_getSpriteObjInfo(
-            (store.mas_sprites.SP_ACS, "RaVen_earrings_diamond")
+            (store.mas_sprites.SP_ACS, "raven_earrings_diamond")
         )
         sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
 
