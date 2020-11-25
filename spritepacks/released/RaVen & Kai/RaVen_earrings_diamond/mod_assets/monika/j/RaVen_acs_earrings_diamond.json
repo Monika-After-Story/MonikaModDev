@@ -5,8 +5,8 @@
     ],
     "version": 3,
     "type": 0,
-    "name": "RaVen_earrings_diamond",
-    "img_sit": "RaVen_earrings_diamond",
+    "name": "raven_earrings_diamond",
+    "img_sit": "raven_earrings_diamond",
     "pose_map": {
         "default": "0",
         "l_default": "5"
