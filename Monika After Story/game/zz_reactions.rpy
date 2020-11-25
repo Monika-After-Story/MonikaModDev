@@ -2699,7 +2699,7 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
         $ store.mas_filereacts.delete_file(giftname)
     return
 
-label mas_reaction_gift_acs_RaVen_earrings_diamond:
+label mas_reaction_gift_acs_raven_earrings_diamond:
     python:
         sprite_data = mas_getSpriteObjInfo(
             (store.mas_sprites.SP_ACS, "RaVen_earrings_diamond")
