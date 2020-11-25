@@ -1822,6 +1822,7 @@ label mas_song_strawberry_long:
     extend 1ekbfa "{cps=26} {i}and I see all kinds of things when I look at you.~{/i}{/cps}"
     m 2tsbfu "{cps=26}{i}And I want to explore you...{/i}{w=0.3}{nw}{/cps}"
     extend 3hubsa "{cps=26}With my tennis shoes off!~{/cps}"
+    show monika 3hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rsbfb "{cps=26}Standing ankle{w=0.3} deep in a tide pool...{/cps}"
     show monika 5rsbfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     extend 3hubsb "{cps=26}With my khaki pants rolled up~{/cps}"
