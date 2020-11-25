@@ -1776,6 +1776,7 @@ label mas_song_strawberry:
     extend 2dkbsa "{w=0.3} That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep...{/cps}"
     m 5hsbsb "{cps=26}And I would love to find you...{/cps}"
     extend 5lsbsb "{cps=26} Growing wild out by the woods~{/cps}"
+    show monika 5lsbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 2dsbsb "{cps=28}I would make a bas{w=0.1}ket with the front {w=0.3} of my t-shirt,{/cps}"
     extend 2esbsb "{cps=26} and take home {/cps}{cps=22}as many of you as I could~{/cps}"
     m 2hsbsu "..."
