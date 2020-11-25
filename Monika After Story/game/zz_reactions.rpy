@@ -2017,3 +2017,25 @@ label mas_reaction_gift_clothes_velius94_shirt_pink:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_acs_RaVen_earrings_diamond:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, "RaVen_earrings_diamond")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(1)
+
+    m 3sua "Oh!{w=0.5} Earrings!"
+    m 1ekbsa "You're always so sweet~"
+    m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
+    $ monika_chr.wear_acs(sprite_object)
+    m 1hua "Ehehe~"
+    m 1hub "Thanks, [player]!"
+    m 1hua "I appreciate it."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
