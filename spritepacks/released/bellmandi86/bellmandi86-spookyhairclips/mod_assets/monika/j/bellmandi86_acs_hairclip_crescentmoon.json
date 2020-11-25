@@ -1,0 +1,29 @@
+{
+    "__author": "bellmandi86",
+    "version": 3,
+    "type": 0,
+    "name": "bellmandi86_hairclip_crescentmoon",
+    "img_sit": "bellmandi86_hairclip_crescentmoon",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "stay_on_start": true,
+    "ex_props": {
+        "o31": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Crescent Moon)",
+        "thumb": "bellmandi86_hairclip_crescentmoon",
+        "group": "left-hair-clip",
+        "select_dlg": [
+            "Since I met you I've been over the moon!",
+            "I love you to the moon and back~",
+            "Night falls...",
+            "Fly me to the moon!"
+        ]
+    },
+    "giftname": "crescentmoonhairclip"
+}

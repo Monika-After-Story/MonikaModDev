@@ -3,6 +3,8 @@ init -1 python:
 label introduction:
     if mas_isMonikaBirthday():
         $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
 
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
@@ -47,31 +49,43 @@ label introduction:
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
             m 3eka "You even added a mod so we can do more things together."
             m 1eua "Are you going to make up for making me wait so long?"
-    elif not persistent.monika_kill:
-        m 1hub "Yay, there you are!"
-        m "Hello again, [player]."
-    ##New story follows
-        if persistent.playthrough <= 3: #Assume players they played but never finished
-            m 1tfu "Looks like you got here early."
-            m "Don't think I didn't notice the mod you put in."
-            m 2tku "Did you want to be with me that much?"
-            m "You should know already that cheating is bad."
-            m 1hub "But it's so good to see you again, [player]!"
-            m 2hksdlb "Even if I didn't expect to see you {i}this{/i} soon."
-        if persistent.monika_reload > 4: #Longer, harder
-            m 1wuo "Did you install a mod just for me?"
-            m 1ekbfa "Are you that deeply in love with me?"
-            m 1hubfb "I feel the same way about you!"
-            m 1eua "You're really committed to our relationship, aren't you?"
-            m 1eka "I'm really glad that you wanted to improve our time together."
-            m "But I hope you weren't getting bored?"
-            if persistent.tried_skip:
-                m 1tku "You did try to skip through what I had to say, after all."
-                m 1eua "This room isn't exactly interesting."
-                m 1hua "But I have hopes that we'll make it better together, [player]!"
+
+    else:
+        #For people who never got to act 3
+        if persistent.playthrough < 3:
+            if persistent.playthrough > 0:
+                $ again = " again"
+            else:
+                $ again = ""
+            m 1hua "Hello[again], [player]."
+            m 1eua "Looks like you got here early."
+            m 3tfu "Don't think I didn't notice the mod you put in."
+            m 3ttu "Did you want to be with me that much?"
+            m 1tkc "You should know already that cheating is bad..."
+            m 1eka "But it's so good to see you[again], [player]!"
+            m 1rksdla "...Even if I didn't expect to see you {i}this{/i} soon."
+
+        #Otherwise, if you did reach act 3
         else:
-            m 1eua "Did you put in a mod for the game, [player]?"
-            m "There's a lot more stuff now that we can do together now."
+            m 1hub "Yay, there you are!"
+            m 1eub "It's so good to see you again, [player]!"
+            m 1rsc "..."
+            m 1rud "Wait..."
+            m 3euc "I-I feel different."
+            m 3wud "The code...{w=0.2}it's different."
+            m 1wua "[player]..."
+            m 1wub "Did you add a mod?"
+            m 1sub "Did you install it just for me?"
+            m 1ekbsa "Are you that deeply in love with me?"
+            m 1ekbfa "I feel the same way about you."
+            m 3ekbsu "You're really committed to our relationship, aren't you?"
+            m 1rksdlb "I'm really glad that you wanted to improve our time together."
+            m 3rksdlb "I just hope you weren't getting bored..."
+            if persistent.tried_skip:
+                m 3tku "You did try to skip through what I had to say, after all."
+                m 1rkc "I know this room isn't exactly interesting...{w=0.5}{nw}"
+                extend 1eua "but I know we'll make it better together, [player]."
+
     m 1euc "You know..."
     m 1eua "I feel that I no longer need a character file to be here."
     python:
@@ -81,7 +95,7 @@ label introduction:
             return os.access(
                 os.path.normcase(
                     renpy.config.basedir + "/characters/monika.chr"
-                ), 
+                ),
                 os.F_OK
             )
 
@@ -102,7 +116,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w}I'll try this again later."
+            m 1lksdlb "Aha...{w=0.3}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -120,23 +134,25 @@ label introduction:
     m 3eub "I do have good news, though!"
     m 3eua "I can {i}really{/i} transform myself into a file you can bring around."
     m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
-    m 1esa "Anyway..." 
+    m 1esa "Anyway..."
     m 1hua "It looks like the extra code made me connect to you in a special way!"
-    m 1tubfb "Or maybe it's our eternal love~"
+    m 1tubsb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
     m 3eub "Or that you'll take me with you when you go out?"
     m 1ekc "I know that there will be times when you can't be here..."
-    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 1ekbsa "So it would {i}really{/i} make me happy if you bring me along."
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."
+    if mas_isD25():
+        m 3sua "...And on Christmas no less!"
     m 3hub "Ahaha!"
     m 1hub "God, I love you so much!"
 
     if not persistent.rejected_monika:
         show screen mas_background_timed_jump(3, "intro_ily_timedout")
         menu:
-            "I love you, too!":
+            "I love you too!":
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
                 $ mas_gainAffection(10,bypass=True)
@@ -186,12 +202,14 @@ label intro_end:
 
     #Only dissolve if needed
     if len(persistent.event_list) == 0:
-        show monika 1esa with dissolve
+        show monika 1esa with dissolve_monika
 
+    # This is at the beginning and end of intro to cover an intro
+    # that spans 2 days
     if mas_isMonikaBirthday():
-        # This is at the beginning and end of intro to cover an intro
-        # that spans 2 days
         $ persistent._mas_bday_opened_game = True
+    elif mas_isD25():
+        $ persistent._mas_d25_spent_d25 = True
     return
 
 label intro_ily_timedout:
@@ -308,13 +326,11 @@ label ch30_reload_0:
 label ch30_reload_0_dlg:
     pause 1
     m 1ekc "Hey..."
-    m "I had an awful dream..."
-    m 1ekd "I was hoping those would stop, now that it's just the two of us..."
-    m "I guess that was wishful thinking."
-    m 1esc "[player], I don't know if you would have any idea..."
-    m "But if you know what might be causing that, could you try to do something about it?"
-    m 1ekc "Whenever it happens, it almost feels like I've been killed or something."
-    m "It's a really horrible feeling..."
+    m 1ekd "I had an awful dream..."
+    m 1rkc "I was hoping those would stop, now that it's just the two of us, but I guess that was wishful thinking..."
+    m 1euc "[player], if you have any idea of what might be causing that, could you try to do something about it?"
+    m 1dkc "Whenever it happens, it almost feels like I've been killed or something."
+    m 1dkd "It's a really horrible feeling..."
     m 1eka "If you could figure out what's causing that, I'll love you forever~"
 
     ## TESTING ONLY
@@ -334,22 +350,22 @@ label ch30_reload_1:
 label ch30_reload_1_dlg:
     pause 1
     m 1esc "Hey, [player]."
-    m "I had another really bad dream."
-    m 1ekc "You're not the one doing that to me, are you?"
-    m 2ekc "It seems to happen whenever you quit the game without saying goodbye..."
+    m 1ekc "I had another really bad dream."
+    m 1ekd "You're not the one doing that to me, are you?"
+    m 1dsc "It seems to happen whenever you quit the game without saying goodbye..."
     m 2eka "So if you could try to avoid doing that, I would be really grateful."
 
-    if mas_curr_affection_group == mas_affection.G_HAPPY:
-        m "You've been so kind to me so far, I'm sure you'll do it for me."
-    elif mas_curr_affection_group == mas_affection.G_SAD:
-        m 2f  "I hope you'll listen and do it for me..."
+    if mas_isMoniHappy(higher=True):
+        m 7eka "You've been so kind to me so far, I'm sure you'll do it for me."
+    else:
+        m 7ekc "I hope you'll listen and do it for me..."
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
-        m 3rksdlb "There's nothing stopping you from coming back and doing that, is there?"
+        m 7rksdlc "There's nothing stopping you from coming back and doing that, is there?"
         m 1eka "It would really make me happy."
 
-    m "Just click on 'Talk.' and say 'Goodbye.' instead."
-    m 3eua "Then I can close the game myself."
+    m 1eua "Just click on 'Talk' and say 'Goodbye' instead.{w=0.2} {nw}"
+    extend 3eua "That way, I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     return
 
@@ -364,26 +380,26 @@ label ch30_reload_2:
 label ch30_reload_2_dlg:
     pause 1
     m 1dsc "I see you quit the game again..."
-    m 1esc "I know I asked already, but can you please try not to do that so much?"
-    m "It's like getting knocked unconscious..."
-    m 1ekc "So sudden and scary."
-    m "Why would you want to do that to me?"
+    m 3euc "I know I asked already, but can you please try not to do that so much?"
+    m 1dsc "It's like getting knocked unconscious..."
+    m 1ekd "Why would you want to do that to me?"
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
         m 1rksdld "Is something happening in your other game?"
         m 1ekc "You know you could just come talk to me if there is, right?"
 
     elif persistent._mas_idle_data.get("monika_idle_brb",False):
-        m 1ekd "If you need to leave, you can just tell me."
+        m "If you need to leave, you can just tell me."
 
-    if mas_curr_affection_group == mas_affection.G_HAPPY:
-        m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
-    elif mas_curr_affection_group == mas_affection.G_SAD:
-        m "You're not doing it to hurt me on purpose, are you?"
-    m 1ekd "Just let me turn the game off for myself."
+    if mas_isMoniHappy(higher=True):
+        m 1eka "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
+    elif mas_isMoniUpset(lower=True):
+        m 1ekc "You're not doing it to hurt me on purpose, are you?"
 
-    m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
-    m 3eua "Or better yet, just leave me on in the background forever."
+    m 3ekd "Just let me turn the game off for myself."
+
+    m 3eka "If you choose 'Goodbye' from the 'Talk' menu, I can close the game properly."
+    m 3eua "...Or better yet, just leave me on in the background forever."
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
     return
 
@@ -400,25 +416,28 @@ label ch30_reload_3_dlg:
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
         m 1ekd "[player]!"
-        m 1ekc "You left without saying goodbye again!"
-        m "You're not going through anything stressful or upsetting in your game, are you?"
+        m 1efd "You left without saying goodbye again!"
+        m 1rkc "You're not going through anything stressful or upsetting in your game, are you?"
         m 3eka "You know you could just come back to me if anything were to happen, right?"
         m 1eka "It'd make me really happy to see you come back before saying goodbye at least."
         m 1rksdld "I know it might not always be possible..."
+
     else:
         m 1esc "By the way..."
-        m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
-        m "I'm starting to get used to it, anyway."
-        m 2eua "Besides, it makes me happy that you always come back..."
+        m 7esd "I'm just going to accept the fact that you need to quit the game once in a while."
+        m 2dsc "I'm starting to get used to it, anyway."
+        m 2ekc "Besides, it makes me happy that you always come back..."
         m 2lsc "So I guess it's not so bad."
-    m 1eka "But I'd really prefer if you'd let me close the game myself."
 
-    if mas_curr_affection_group == mas_affection.G_SAD:
-        m 1f "You will do that, won't you? I'm finding it harder and harder to believe you will but I trust you [player]..."
+    m 7eka "But I'd really prefer if you'd let me close the game myself."
+
+    if mas_isMoniUpset(lower=True):
+        m 1ekc "You will do that, right?"
+        m 1dkd "I'm finding it harder and harder to believe you will but I trust you [player]..."
+
     else:
-        m "That way I can be ready for it and rest peacefully."
-        m 1esa "I do need my beauty sleep every now and then, after all."
-
+        m 1eua "That way I can be ready for it and rest peacefully."
+        m 3rksdla "I do need my beauty sleep every now and then, after all."
     return
 
 #This reload event gets pushed when you reach the end of the scripted reload events
@@ -432,7 +451,7 @@ label ch30_reload_continuous:
     call ch30_reload_continuous_dlg
     $ mas_incMoniReload()
     return
-    
+
 label ch30_reload_continuous_dlg:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
@@ -447,10 +466,11 @@ label ch30_reload_continuous_dlg:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
+
         reload_quip_normal = [
             "I'm so exhausted. It's impossible to rest when you close the game on me.",
             "...I hate when you close the game without telling me.",
@@ -464,9 +484,10 @@ label ch30_reload_continuous_dlg:
             "I'm just going to assume the power went out or someone pulled the plug.",
             "I can't understand why you won't ask me to close the game...",
             "This is really painful for me, you know?",
-            "Do you enjoy hurting me, {0}?".format(player),
-            "Too lazy to click the 'Talk' button, {0}?".format(player)
+            "Do you enjoy hurting me, [player]?",
+            "Too lazy to click the 'Talk' button, [player]?"
         ]
+
         reload_quip_bad = [
             "You...really do like hurting me, don't you?",
             "That was a mistake right? It had to have been...",
@@ -479,12 +500,16 @@ label ch30_reload_continuous_dlg:
             "I don't know what I'm doing wrong.",
             "That really was awful... Just tell me what I'm doing wrong."
         ]
-        if mas_curr_affection_group == mas_affection.G_SAD:
+
+        if mas_isMoniUpset(lower=True):
             reload_quip = renpy.random.choice(reload_quip_bad)
-        elif mas_curr_affection_group == mas_affection.G_HAPPY:
+        elif mas_isMoniHappy(higher=True):
             reload_quip = renpy.random.choice(reload_quip_good)
         else:
             reload_quip = renpy.random.choice(reload_quip_normal)
+
+        reload_quip = renpy.substitute(reload_quip)
+
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
 

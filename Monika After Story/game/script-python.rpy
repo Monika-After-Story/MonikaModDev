@@ -11,7 +11,7 @@
 #
 # META: Python things to talk about:
 # DONE:
-#   0 - intro 
+#   0 - intro
 #   1 - what is python?
 #   --- sugestion python compared to other languages/ how does it work
 #   --- suggestion mention syntax and probably how to get python maybe separate each part
@@ -41,6 +41,7 @@
 #   14 - String operations
 #   15 - start talking about renpy
 #
+#   Implement advanced python tips for users who have some experience (persistent._mas_advanced_py_tips)
 #
 # Also what about Renpy?
 #
@@ -88,17 +89,10 @@ init 4 python in mas_ptod:
             None
         )
 
-        if tip_ev is None:
-            return False
-
-        # otherwise, unlocked date is our key
-        if tip_ev.unlock_date is None or tip_ev.shown_count == 0:
-            return False
-
-        # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date() 
-            >= datetime.timedelta(days=1)
+            tip_ev is not None
+            and tip_ev.last_seen is not None
+            and tip_ev.timePassedSinceLastSeen_d(datetime.timedelta(days=1))
         )
 
     def has_day_past_tips(*tip_nums):
@@ -127,27 +121,25 @@ init 5 python:
             eventlabel="monika_ptod_tip000",
             category=["python tips"],
             prompt="Can you teach me about Python?",
-            pool=True
+            pool=True,
+            rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
     )
 
 label monika_ptod_tip000:
     m 3eub "You want to learn about Python?"
     m 3hub "I'm so happy you asked me!"
-    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I'll try my best to explain."
     m 1esa "Let's start with what Python even is."
 
+    # hide the intro topic after viewing
     $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
-    $ import datetime
-    $ tip_ev = mas_getEV("monika_ptod_tip001")
-    $ tip_ev.pool = True
-    $ tip_ev.unlocked = True
-    $ tip_ev.unlock_date = datetime.datetime.now()
-    $ tip_ev.shown_count = 1
-
-    jump monika_ptod_tip001
+    $ tip_label = "monika_ptod_tip001"
+    $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
+    $ pushEvent(tip_label,skipeval=True)
+    return
 
 ###############################################################################
 init 5 python:
@@ -161,19 +153,17 @@ init 5 python:
     )
 
 label monika_ptod_tip001:
-    
+
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
-    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w} which is built off of Python."
+    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
-    show monika 5eua with dissolve
-    m "Wouldn't that be great, [player]?"
-    
-    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
+    m 1hua "Wouldn't that be great, [mas_get_player_nickname()]?"
+    m 3eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this caused a rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
-    m 3eub "I'll tell you about those differences in another lesson."
+    m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m 1eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
     m 1hua "But I'll mention it when it's appropriate."
@@ -190,16 +180,18 @@ init 5 python:
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
             prompt="Types",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(3)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
 # PREREQS:
 #   interpreted language (tip 3)
 label monika_ptod_tip002:
-    $ tip_ev = mas_getEV("monika_ptod_tip002")
-    if tip_ev.last_seen is None:
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip002") is None
+    if last_seen_is_none:
         m 1eua "In most programming languages, data that can be changed or modified by the program has a {i}type{/i} associated with it."
         m 3eua "For example, if some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
         m "There are many types in Python, but today we'll talk about the more basic, or primitive ones."
@@ -210,7 +202,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:{w} {i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w=0.3} {i}integers{/i}, or {b}ints{/b},{w=0.3} and {i}floats{/i}."
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -233,12 +225,12 @@ label monika_ptod_tip002:
     m "Anything surrounded in single quotes (') or double quotes (\") are strings."
     m 3eub "For example:"
     show monika 3eua
-    
+
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
     m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it's basically the same thing."
-    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
+    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w=0.2} I'll talk about them another day."
 
     ### booleans
     m "Booleans are special types that represent {b}True{/b} or {b}False{/b} values."
@@ -248,7 +240,7 @@ label monika_ptod_tip002:
     m 1eua "I'll go into more detail about what booleans are and what they are used for in another lesson."
 
     ### Nones
-    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
+    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w=0.2} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
     m "The keyword {i}None{/i} represents NoneTypes in Python."
     show monika 1eua
@@ -257,7 +249,7 @@ label monika_ptod_tip002:
 
     m 1eua "All the types I mentioned here are known as {i}primitive{/i} data types."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m "Python uses a variety of other types as well, but I think these ones are enough for today."
 
     $ store.mas_ptod.ex_cn()
@@ -275,16 +267,16 @@ init 5 python:
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
             prompt="An Interpreted Language",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(1)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
 # PREREQS:
 #   What is python (tip 1)
 label monika_ptod_tip003:
-    $ tip_ev = mas_getEV("monika_ptod_tip003")
-
     m 1eua "Programming languages are usually either compiled or interpreted."
     m "Compiled languages require their code to be converted to a machine-readable format before being executed."
     m 3eub "C and Java are two very popular compiled languages."
@@ -310,13 +302,13 @@ label monika_ptod_tip003:
     call mas_wx_cmd("121 / 11", local_ctx)
     # NOTE: add more commands as the user goes thru the tips
 
-    if tip_ev.last_seen is None:
+    if mas_getEVL_last_seen("monika_ptod_tip003") is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
         m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this.{w} Sorry..." 
+        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..."
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
@@ -339,8 +331,10 @@ label monika_ptod_tip003:
 #            eventlabel="monika_ptod_tip004",
 #            category=["python tips"],
 #            prompt="What does python code look like?",
+#            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(3)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no_unlock":None}
 #        )
 #    )
 
@@ -352,7 +346,7 @@ label monika_ptod_tip004:
     # as this will talk about indentaiton. However, we could probably
     # have this after the first wave of lessons
     #
-    # Python code is incredibly simple to write. 
+    # Python code is incredibly simple to write.
 
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
@@ -360,7 +354,7 @@ label monika_ptod_tip004:
     show screen mas_py_console_teaching
 
     # [Show this once]
-    # Hopefully 
+    # Hopefully
     # [end]
     #
     # Oh well this may be a bit hard to explain here but I'll do my best for you [player]
@@ -382,8 +376,10 @@ init 5 python:
             eventlabel="monika_ptod_tip005",
             category=["python tips"],
             prompt="Comparisons and Booleans",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -393,16 +389,16 @@ label monika_ptod_tip005:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip005")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip005") is None
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "Remember when I was describing different Python types and mentioned booleans?"
         m 1eub "Well, today I'm going into more detail about booleans and how they relate to making comparisons between values."
 
     m 1eua "Booleans are commonly used in deciding what code to run or setting a flag to note if something happened or not."
     m "When we do comparisons, each expression is evaluated to a boolean."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eksdlb "This probably makes no sense right now, so I'll pull up the console and show you some examples."
 
     show monika at t22
@@ -433,12 +429,12 @@ label monika_ptod_tip005:
     call mas_wx_cmd("a >= c")
     call mas_wx_cmd("a <= c")
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "You may have noticed that every comparison returned {b}True{/b} or {b}False{/b}."
         m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
 
     m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
-    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
+    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w=0.3} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
     m 1hua "Let's go through some examples."
 
     $ val_a = local_ctx["a"]
@@ -470,7 +466,7 @@ label monika_ptod_tip005:
 
     m 1eub "Again, when using the {b}and{/b} operator, the result is {b}True{/b} if and only if both comparisons evaluate to {b}True{/b}."
 
-    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
+    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w=0.3} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
     m 3eua "Let's go through some examples."
 
     call mas_w_cmd("a == b or a == c")
@@ -508,9 +504,9 @@ label monika_ptod_tip005:
     m "Note that I'm using parentheses to group the comparisons together. The code in the parentheses is evaluated first, then the result of that comparison is inverted with {b}not{/b}."
     m 1eua "If I drop the parentheses:"
     call mas_wx_cmd("not a == b and a == c")
-    m 3eua "We get a different result!{w} This is because the {b}not{/b} gets applied to the 'a == b' comparison before being linked to the second comparison by the {b}and{/b}."
+    m 3eua "We get a different result!{w=0.2} This is because the {b}not{/b} gets applied to the 'a == b' comparison before being linked to the second comparison by the {b}and{/b}."
 
-    m 3eka "Earlier I mentioned that the exclamation point is used as the logical 'not' operator in other programming languages.{w} Python, however, uses the word 'not' instead for easier readability."
+    m 3eka "Earlier I mentioned that the exclamation point is used as the logical 'not' operator in other programming languages.{w=0.2} Python, however, uses the word 'not' instead for easier readability."
 
     m 1eua "Lastly, since the comparisons get evaluated to booleans, we can store the result of a comparison in a variable."
     call mas_wx_cmd("d = a == b and a >= c")
@@ -537,7 +533,7 @@ label monika_ptod_tip005:
     m 1hua "If you ever decide to do programming for a living, you'll find that a lot of your code is just checking if some comparisons are true so you can make your programs do the {i}right{/i} thing."
     m 1eksdla "And even if coding isn't part of your career path, we'll be doing lots of comparisons in future lessons, so be prepared!"
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "I think that's enough for today."
 
     $ store.mas_ptod.ex_cn()
@@ -554,8 +550,10 @@ init 5 python:
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
             prompt="Variables and Assignment",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(2)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -566,9 +564,9 @@ label monika_ptod_tip006:
     $ local_ctx = dict()
     $ num_store = "922"
     $ b_num_store = "323"
-    $ tip_ev = mas_getEV("monika_ptod_tip006")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip006") is None
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eub "Now that you know about types, I can teach you about variables."
 
     # variable intro
@@ -594,14 +592,14 @@ label monika_ptod_tip006:
     m 1eub "That is called assignment, where we take whatever is on the left of the equals sign and point it to, or {i}assign{/i} it, the value of whatever is on the right."
 
     # b_number
-    m 1eua "Assignment is executed in right-to-left order.{w} To illustrate this, let's create a new variable, 'b_number'."
+    m 1eua "Assignment is executed in right-to-left order.{w=0.3} To illustrate this, let's create a new variable, 'b_number'."
     call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
-    m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
+    m "In assignment, the right side of the equal sign is evaluated first,{w=0.2} then its data type is inferred and an appropriate amount of memory is reserved."
     m "That memory is linked to the symbol on the left via a lookup table."
-    m 1eub "When Python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
+    m 1eub "When Python encounters a symbol,{w=0.2} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w=0.2} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     show monika 3eua
     call mas_x_cmd(local_ctx)
 
@@ -619,7 +617,7 @@ label monika_ptod_tip006:
     call mas_wx_cmd("c_number", local_ctx)
 
     m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
-    
+
     m 1eua "The variables we created are all {i}integer{/i} types."
     m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
@@ -627,8 +625,8 @@ label monika_ptod_tip006:
     m "Dynamic typing enables variables in Python to change types during execution,"
     m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
-    if tip_ev.last_seen is None:
-        m 1eud "Whew!{w} That was a mouthful!"
+    if last_seen_is_none:
+        m 1eud "Whew!{w=0.2} That was a mouthful!"
 
     m "Did you understand all that?{nw}"
     $ _history_list.pop()
@@ -638,7 +636,7 @@ label monika_ptod_tip006:
             m 1hua "Yay!"
 
         "I'm a bit confused.":
-            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
+            m 1eksdla "That's okay.{w=0.3} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
             m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
             m 1eua "Just knowing how to work with variables is enough for future lessons."
             m "Anyway..."
@@ -647,7 +645,7 @@ label monika_ptod_tip006:
     hide screen mas_py_console_teaching
     show monika at t11
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "I think that's enough Python for today."
 
     m 1hua "Thanks for listening!"
@@ -662,8 +660,10 @@ label monika_ptod_tip006:
 #            eventlabel="monika_ptod_tip007",
 #            category=["python tips"],
 #            prompt="Variable Sizes",
+#            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(6)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no_unlock":None}
 #        )
 #    )
 
@@ -696,8 +696,10 @@ init 5 python:
             eventlabel="monika_ptod_tip008",
             category=["python tips"],
             prompt="Literals",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -707,7 +709,7 @@ label monika_ptod_tip008:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip008")
+    $ last_seen_is_none = mas_getEVL_last_seen("monika_ptod_tip008") is None
 
     m 1eua "Remember when I showed you how to make variables and assign them values?"
     m 1dsa "Imagine if we dropped the notion of variables and focused on using the values directly in code."
@@ -747,7 +749,7 @@ label monika_ptod_tip008:
 
     # TODO: lists, dicts
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1eua "There are more literals for other types, but I'll mention them when I talk about those types."
 
     m 1eua "Literals can be used in place of variables when writing code. For example:"
@@ -761,7 +763,7 @@ label monika_ptod_tip008:
     m "We can also use literals alongside variables."
     m 1eub "Additionally, literals are great for creating and using data on-the-fly without the overhead of creating unnecessary variables."
 
-    if tip_ev.last_seen is None:
+    if last_seen_is_none:
         m 1kua "Alright, that's about all I can {i}literally{/i} say about literals."
 
     $ store.mas_ptod.ex_cn()
@@ -779,8 +781,10 @@ init 5 python:
             eventlabel="monika_ptod_tip009",
             category=["python tips"],
             prompt="Truth Values",
+            pool=True,
             conditional="store.mas_ptod.has_day_past_tip(5)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -790,9 +794,8 @@ label monika_ptod_tip009:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
     $ store.mas_ptod.set_local_context(local_ctx)
-    $ tip_ev = mas_getEV("monika_ptod_tip009")
 
-    if tip_ev.last_seen is None:
+    if mas_getEVL_last_seen("monika_ptod_tip009") is None:
         m 1eua "When we talked about comparisons and booleans, we used integers as the basis for our comparisons."
         m 1dsa "But..."
         m 3eua "Did you know that every type has its own truth value associated with it?"
@@ -866,7 +869,8 @@ label monika_ptod_tip009:
 #            prompt="Evaluation Order and Short Circuiting",
 # TODO: this should be after if statements.
 #            conditional="store.mas_ptod.has_day_past_tip(2)",
-#            action=EV_ACT_POOL
+#            action=EV_ACT_UNLOCK,
+#            rules={"no_unlock":None}
 #        )
 #    )
 
@@ -971,7 +975,7 @@ init -1 python in mas_ptod:
         """
         clear_console()
 
-    
+
     def ex_cn():
         """
         SEE exit_console
@@ -1027,7 +1031,7 @@ init -1 python in mas_ptod:
 
         if state == STATE_MULTI:
             # this is bad! You should execute the previous command first!
-            # in this case, we will clear your current command and reset 
+            # in this case, we will clear your current command and reset
             # state back to SINGLE
             cn_cmd = ""
             cn_line = ""
@@ -1115,7 +1119,7 @@ init -1 python in mas_ptod:
         # clear the console and add the 2 new lines
         clear_console()
         _update_console_history_list(start_lines)
-        
+
         # turn the console on
         state = STATE_SINGLE
 
@@ -1288,7 +1292,7 @@ init -1 python in mas_ptod:
 
         else:
             result = ""
-        
+
         ################### console history update #########################
 
         if block_mode and empty_line:
@@ -1344,7 +1348,7 @@ init -1 python in mas_ptod:
     def get_last_line():
         """
         Retrieves the last line from the console history
-        
+
         RETURNS:
             last line from console history as a string
         """
@@ -1374,7 +1378,7 @@ init -1 python in mas_ptod:
         global stack_level
         stack_level += 1
         indent_stack.append(indent_level)
-   
+
 
     def __popi():
         """
@@ -1497,7 +1501,7 @@ init -1 python in mas_ptod:
 
 
 screen mas_py_console_teaching():
-    
+
     frame:
         xanchor 0
         yanchor 0
@@ -1539,7 +1543,7 @@ screen mas_py_console_teaching():
             else:
                 # multi line statement, dont have the sym at all
                 $ cn_l_x = 5
-            
+
             # current line
             if len(store.mas_ptod.cn_line) > 0:
                 text "[store.mas_ptod.cn_line]":
@@ -1548,7 +1552,7 @@ screen mas_py_console_teaching():
                     xpos cn_l_x
                     ypos 433
 
-# does a write command and waits 
+# does a write command and waits
 label mas_w_cmd(cmd, wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
     $ renpy.pause(wait, hard=True)

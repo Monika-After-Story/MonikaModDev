@@ -9,6 +9,8 @@ import menutils
 
 import spritepuller as spull
 
+import sprite as spr_module
+
 from sprite import StaticSprite
 
 # state vars
@@ -158,7 +160,7 @@ class FilterSprite(StaticSprite):
     def build_menu(category):
         """
         Builds a menu based on the given category
-        :param category: one of the class constants 
+        :param category: one of the class constants
         :returns: menu list usable by menutils. May return None if could not
             build list
         """
@@ -259,7 +261,7 @@ class FilterSprite(StaticSprite):
 
     def _status(self,
             useheader,
-            headerstring, 
+            headerstring,
             shownose,
             showemote
     ):
@@ -288,7 +290,7 @@ class FilterSprite(StaticSprite):
             position = StaticSprite.lean_tostring(self.position)
             is_lean = True
         else:
-            position = self.position 
+            position = self.position
             is_lean = self.is_lean
 
         # now add each filter piece
@@ -507,7 +509,7 @@ def gen_sprite_files(
         skip_continue=True
 ):
     """
-    Generates sprite files. 
+    Generates sprite files.
 
     IN:
         sprites - the list of sprite objects to generate stuff for
@@ -619,7 +621,7 @@ def make_sprite(sprite_db, sprite_db_keys):
         (FilterSprite.BLH, True),
         (FilterSprite.TRS, True),
         (FilterSprite.SWD, True),
-        # NOTE: emote skipped 
+        # NOTE: emote skipped
 #        FilterSprite.EMO,
         (FilterSprite.MTH, False),
     )
@@ -847,6 +849,20 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
         quiet - supresses menus and stdout
         sp_per_file - max number of sprites allowed per file
     """
+    # ask for draw function to use
+    if not quiet:
+        df_choice = True
+        while df_choice is not None:
+            df_choice = menutils.menu(menu_sdf, defindex=1)
+
+            # if no choice was made here (or we aborted), then quit
+            if df_choice is None:
+                return
+
+            # otherwise set and quit loop
+            spr_module.draw_function = df_choice
+            df_choice = None
+
     # ask if okay to overwrite files
     if not quiet:
         print("\n" + MSG_OVERWRITE.format(
@@ -911,7 +927,7 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
 
 def run_mkspr(sprite_db, sprite_db_keys):
     """
-    Makes a sprite. 
+    Makes a sprite.
 
     Returns an updated sprite_db_keys, or None if no changes
     """
@@ -1002,7 +1018,7 @@ def run_lstc_setfilter(sprite_db, sprite_db_keys, ss_filter):
             category_menu = FilterSprite.build_menu(choice)
             if category_menu is not None:
                 code = menutils.menu(category_menu)
-                
+
                 # set if not none
                 if code is not None:
                     ss_filter.set_filter(choice, code)
@@ -1023,6 +1039,18 @@ menu_lstc = [
     ("Show List", run_lstc_show),
     ("Show Filters", run_lstc_showfilter),
     ("Set Filter", run_lstc_setfilter),
+]
+
+menu_sdf = [
+    ("Set Draw Function", "Option: "),
+    (
+        "Image Manipulators (" + spr_module.DRAW_MONIKA_IM + ")",
+        spr_module.DRAW_MONIKA_IM
+    ),
+    (
+        "Sprite Strings (" + spr_module.DRAW_MONIKA + ")",
+        spr_module.DRAW_MONIKA
+    ),
 ]
 
 # strings
@@ -1081,5 +1109,9 @@ def _load_sprites():
         # otherwise add
         sprite_db[sprite_code] = sprite_obj
 
-    return sprite_db
+        # make as atl if possible
+        atl_sprite = sprite_obj.make_atl()
+        if atl_sprite is not None:
+            sprite_db[atl_sprite.spcode] = atl_sprite
 
+    return sprite_db

@@ -12,12 +12,16 @@ import gamedir as GDIR
 import menutils
 
 from collections import namedtuple
+from sprite import StaticSprite
 
 # every line of applicable dialogue starts with m and a space
 DLG_START = "m "
 
 # every show line starts with show monika
 SHW_START = "show monika"
+
+#Every extend line starts with extend
+EXT_START = "extend "
 
 # special key words that are unique to show lines
 SHW_KEY = [
@@ -39,7 +43,8 @@ SpriteMismatch = namedtuple(
     "code line filename"
 )
 
-def check_sprites(inc_dev=False):
+
+def check_sprites(inc_dev=False, dynamic=False):
     """
     Goes through every rpy file and checks dialogue and show lines.
 
@@ -48,6 +53,8 @@ def check_sprites(inc_dev=False):
     IN:
         inc_dev - if True, we will check dev files as well
             (Defualt: False)
+        dynamic - True means some sprites are generated dynamically
+            (Default: False)
 
     RETURNS:
         list of SpriteMismatch's
@@ -62,18 +69,20 @@ def check_sprites(inc_dev=False):
     # go through each rpy and get sprite mms
     bad_codes = list()
     for rpy in rpys:
-        bad_codes.extend(check_file(rpy, sp_dict))
+        bad_codes.extend(check_file(rpy, sp_dict, dynamic))
 
     return bad_codes
 
 
-def check_file(fpath, sp_dict):
+def check_file(fpath, sp_dict, gen_if_missing):
     """
     Checks the given file for sprite code correctness
 
     IN:
         fpath - filepath of the fie to check
         sp_dict - dict of currently available sprite codes
+        gen_if_missing - True will attempt to generate the sprite if it is
+            missing.
 
     RETURNS:
         list of SpriteMismatches, one for every sprite code that was bad
@@ -84,20 +93,27 @@ def check_file(fpath, sp_dict):
     with open(fpath, "r") as rpy_file:
         for line in rpy_file:
 
-            # clean the line first
-            cl_line = line.strip()
-
-            # check what kind of line this is
-            # first, lets try dialogue
-            _code = extract_code_if_dlg(cl_line)
-
-            if _code is None:
-                # okay, then try show line
-                _code = extract_code_if_shw(cl_line)
+            _code = try_extract_code(line.strip())
 
             if _code and _code not in sp_dict:
                 # we have a code but its not in the dict?!
-                sp_mismatches.append(SpriteMismatch(_code, ln_count, fpath))
+                if  gen_if_missing:
+                    # attempt to generate if possible
+
+                    gen_spr = StaticSprite(_code)
+
+                    if gen_spr.invalid:
+                        sp_mismatches.append(
+                            SpriteMismatch(_code, ln_count, fpath)
+                        )
+
+                    else:
+                        sp_dict[_code] = gen_spr
+                   
+                else:
+                    sp_mismatches.append(
+                        SpriteMismatch(_code, ln_count, fpath)
+                    )
 
             ln_count += 1
 
@@ -107,7 +123,7 @@ def check_file(fpath, sp_dict):
 def extract_dlg_code(line):
     """
     Extracts the sprite code from the given line
-    Assumes the line is a dlg line
+    Assumes the line is a dlg line or extend line
 
     IN:
         line - line to get sprite code
@@ -179,6 +195,27 @@ def extract_code_if_shw(line):
 
     return None
 
+def extract_code_if_ext(line):
+    """
+    Does both checking and extractiong of a code from a potential extend line
+
+    IN:
+        line - line to check and get srpite code
+
+    RETURNS:
+        the extracted sprite code, or None if no sprite found
+    """
+    if line.startswith(EXT_START):
+        # line is an extend line
+
+        code = extract_dlg_code(line)
+        if code.startswith('"') or code.startswith("'"):
+            return None
+
+        # otherwise we have a dlg code
+        return code
+
+    return None
 
 def get_rpy_paths(inc_dev=False):
     """
@@ -215,6 +252,30 @@ def get_rpy_paths(inc_dev=False):
     return fp_list
 
 
+def try_extract_code(cl_line):
+    """
+    Attempts to extract a code from a line, using all known ways
+
+    IN:
+        cl_line - already cleaned line to extract code from
+
+    RETURNS: extracted code line, or None if could not extract anything
+    """
+    # check what kind of line this is
+    # first, lets try dialogue
+    _code = extract_code_if_dlg(cl_line)
+
+    if _code is None:
+        # okay, then try show line
+        _code = extract_code_if_shw(cl_line)
+
+    #Otherwise it may be an extend line. Let's try that
+    if _code is None:
+        _code = extract_code_if_ext(cl_line)
+
+    return _code
+
+
 def write_bad_codes(bad_list):
     """
     Writes out the bad codes to file
@@ -243,7 +304,7 @@ def run():
     run_chk(False)
 
 
-def run_chk(quiet=False, inc_dev=False):
+def run_chk(quiet=False, inc_dev=False, use_dyn=False):
     """
     Main sprite checker workflow
 
@@ -252,12 +313,17 @@ def run_chk(quiet=False, inc_dev=False):
         inc_dev - True will include dev files in check, False will not
     """
     if not quiet:
-        inc_dev = menutils.menu(menu_inc_dev)
+        inc_dev = menutils.menu(menu_inc_dev, 2)
 
         if inc_dev is None:
             return
 
-    bad_codes = check_sprites(inc_dev=inc_dev)
+        use_dyn = menutils.menu(menu_are_dyn, 1)
+        
+        if use_dyn is None:
+            return
+
+    bad_codes = check_sprites(inc_dev=inc_dev, dynamic=use_dyn)
 
     if len(bad_codes) == 0:
         # no bad codes
@@ -281,5 +347,10 @@ def run_chk(quiet=False, inc_dev=False):
 menu_inc_dev = [
     ("Include Dev?","Option: "),
     ("Yes", True),
-    ("No", False)
+    ("No", False),
+]
+menu_are_dyn = [
+    ("Are sprites dynamically generated?", "Option: "),
+    ("Yes", True),
+    ("No", False),
 ]

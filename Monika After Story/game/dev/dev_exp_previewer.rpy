@@ -1,4 +1,4 @@
-# special module that contains a screen dedicated to expression prevewing. 
+# special module that contains a screen dedicated to expression prevewing.
 # we really needed this lol.
 
 init 5 python:
@@ -19,12 +19,12 @@ label dev_exp_previewer:
     window hide
 
     $ HKBHideButtons()
-    $ prev_mflag = morning_flag
+    $ prev_flt = store.mas_sprites.get_filter()
+    #$ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
     $ prev_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
     $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
-    $ morning_flag = True
 
     $ ui.add(MASExpPreviewer())
     $ result = ui.interact()
@@ -33,7 +33,7 @@ label dev_exp_previewer:
     $ monika_chr.load_state(prev_moni_state)
     $ store.mas_sprites.zoom_level = prev_zoom
     $ store.mas_sprites.adjust_zoom()
-    $ morning_flag = prev_mflag
+    $ store.mas_sprites.set_filter(prev_flt)
     $ HKBShowButtons()
 
     show monika at i11
@@ -94,10 +94,9 @@ init 999 python:
         ROWS = 13
 
         SPR_FOUND = "#ffe6f4"
-        SPR_MISS = "#ff0000"
 
         MONI_X = -240
-        MONI_Y = -107
+        MONI_Y = 20
 
         # STATES for which monika to show
 
@@ -197,10 +196,12 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-                "rin": "Neko Costume",
+#                "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -279,8 +280,8 @@ init 999 python:
 #                "g": "Disgust",
             },
             "time": {
-                0: "Day",
-                1: "Night"
+                "day": "Day",
+                "night": "Night"
             }
         }
 
@@ -299,10 +300,10 @@ init 999 python:
             "Sweat: ",
             "Emote: ",
             "Mouth: ",
-            "Time: "
+            "Filter: "
         ]
 
-    
+
         ### button retvals
         SQ_BUTTON_RETVALS = [
             "torso",
@@ -326,10 +327,12 @@ init 999 python:
         SC_MAP = {
             "torso": [
                 "def",
+                "blazerless",
                 "marisa",
-                "rin",
+                #"rin",
                 "santa",
                 "sundress_white",
+                "blackdress",
             ],
             "arms": [
                 1,
@@ -412,9 +415,9 @@ init 999 python:
                 "t",
 #                "g",
             ],
-            "time": [
-                0,
-                1
+            "time": [ # actually means Filter now
+                "day",
+                "night",
             ]
         }
 
@@ -440,7 +443,7 @@ init 999 python:
                 ),
             },
         }
-                
+
 
         # list of keys that matter for a sprite code
         SC_PARTS = [
@@ -474,7 +477,7 @@ init 999 python:
             "time": 12
         }
 
-            
+
 
 
         # pygame stuff
@@ -491,6 +494,15 @@ init 999 python:
             Creates the Expression previewer displayable
             """
             super(renpy.Displayable, self).__init__()
+
+            # update torsos with spritepacked sprites
+            torso_map = self.SEL_TX_MAP["torso"]
+            torso_list = self.SC_MAP["torso"]
+            for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
+                spr = sel.get_sprobj()
+                if spr.is_custom and spr.name not in torso_map:
+                    torso_map[spr.name] = sel.display_name
+                    torso_list.append(spr.name)
 
             # background tile
             self.background = Solid(
@@ -630,7 +642,7 @@ init 999 python:
                 color="#fa9",
                 outlines=[]
             )
-    
+
             self.button_done = MASButtonDisplayable(
                 button_text_done_idle,
                 button_text_done_hover,
@@ -709,7 +721,7 @@ init 999 python:
                 "nose": 0,
                 "sweat": 0,
                 "tears": 0,
-                "time": 0,
+                "time": 0 if store.mas_current_background.isFltDay() else 1,
                 "torso": 0
             }
 
@@ -725,16 +737,11 @@ init 999 python:
             # sprite as  atransform
             self.spr_tran = self._create_sprite()
 
-            # does this sprite xist?
-            self.sprite_exist = (
-                getCharacterImage("monika", self.curr_spr_code) is not None
-            )
-
             # need to check which render state we should be in
             if self.spr_tran is None:
                # dont need to change anything here
                 self.state = self.STATE_MONI_SHOW
-                
+
 
             else:
                 # blit mode needs some adjustments
@@ -775,7 +782,7 @@ init 999 python:
             img_eyes = self._get_img_name("eyes")
 
             try:
-                trn, rfr = mas_drawmonika(0, 0, monika_chr,
+                trn, rfr = mas_drawmonika_rk(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
                     img_eyes,
                     self._get_img_name("nose"),
@@ -792,7 +799,7 @@ init 999 python:
                     emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
-                return Transform(trn, 
+                return Transform(trn,
                     zoom=0.80*1.00,
                     alpha=1.00
                 )
@@ -801,7 +808,7 @@ init 999 python:
                 # the eval failed because we didnt have an image
                 return None
 
-           
+
         def _xcenter(self, v_width, width):
             """
             Returns the appropriate X location to center an object with the
@@ -822,7 +829,7 @@ init 999 python:
             Returns appropraite X location to center the selection text object
             with the given width.
 
-            NOTE: This is soley meant for use with selection text 
+            NOTE: This is soley meant for use with selection text
 
             IN:
                 with - width of the selection text
@@ -907,7 +914,7 @@ init 999 python:
         # If the direct is positive, selection is moved right.
         # otherwise, direct is moved left
 
-        def _sel_arms(self, direct): 
+        def _sel_arms(self, direct):
             self._adj_sel(direct, "arms")
             self._update_spr_code()
             self._update_sel_tx("arms")
@@ -974,14 +981,12 @@ init 999 python:
             self._adj_sel(direct, "tears")
             self._update_spr_code()
             self._update_sel_tx("tears")
-       
+
 
         def _sel_time(self, direct):
             self._adj_sel(direct, "time")
             self._update_sel_tx("time")
-            global morning_flag
-            morning_flag = self.curr_sel["time"] == 0
-
+            self.mas_sprites.set_filter(self._get_spr_code("time"))
 
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")
@@ -1009,8 +1014,8 @@ init 999 python:
 
 
         ############################# selection text functions ###############
-       
-    
+
+
         def _build_sel_tx(self, key):
             """
             Builds a Text object using the given key
@@ -1097,7 +1102,7 @@ init 999 python:
             Get sprite code for a given sprite key
 
             IN:
-                key - what sprite code do we need 
+                key - what sprite code do we need
                 nose - set to True to do special handling for the nose
                     (effectilye make the default nose work with sprite code),
                     False will retrive it raw
@@ -1149,7 +1154,7 @@ init 999 python:
             IN:
                 key - what image name do we need
                 eyes - current eyes as img name
-            
+
             REUTRNS the image name we need
             """
             tears_name = self._get_img_name(key)
@@ -1204,26 +1209,23 @@ init 999 python:
 
                 # selected text
                 _r_sel_tx = renpy.render(
-                    self.curr_sel_txts[x], 
-                    width, 
-                    height, 
-                    st, 
+                    self.curr_sel_txts[x],
+                    width,
+                    height,
+                    st,
                     at
                 )
 
                 rst_w, rst_h = _r_sel_tx.get_size()
-                
+
                 r_sel_txts.append((
                     _r_sel_tx,
                     (self._seltx_xcenter(rst_w), self.lbl_y_list[x])
                 ))
 
 
-            # sprite code 
-            if self.sprite_exist:
-                spr_clr = self.SPR_FOUND
-            else:
-                spr_clr = self.SPR_MISS
+            #All sprites exist. no need for miss codes
+            spr_clr = self.SPR_FOUND
 
             spr_txt = Text(
                 "Sprite Code: " + self.curr_spr_code,
@@ -1242,7 +1244,7 @@ init 999 python:
                     )
                     self.sprite_changed = False
                 except:
-                    # this failed to render 
+                    # this failed to render
                     self.state = self.STATE_MONI_SHOW
 
             # and blit
@@ -1291,12 +1293,6 @@ init 999 python:
 
                     # if this is None, we just dont render it
                     self.spr_tran = self._create_sprite()
-
-                    # check for sprite code existence
-                    self.sprite_exist = (
-                        getCharacterImage("monika", self.curr_spr_code) 
-                        is not None
-                    )
 
                     if self.spr_tran is None:
                         self.state = self.STATE_MONI_SHOW

@@ -1,0 +1,34 @@
+{
+    "__author": "multimokia",
+    "version": 3,
+    "type": 0,
+    "name": "multimokia_bow_black",
+    "img_sit": "multimokia_bow_black",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "bow",
+    "mux_type": [
+        "ribbon",
+        "bow"
+    ],
+    "stay_on_start": true,
+    "giftname": "blackbow",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "dlg_desc": "black bow",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Bow (Black)",
+        "thumb": "multimokia_bow_black",
+        "group": "ribbon",
+        "select_dlg": [
+            "Great choice, [player]!",
+            "Very formal!",
+            "Are we going somewhere special?"
+        ]
+    }
+}

@@ -30,11 +30,8 @@ label start:
     #Jump to the space room.
     if persistent.autoload:
         #Stop the title screen music
-        if persistent.current_track:
-            $ mas_startup_song()
-        else:
-            stop music
-        jump ch30_preloop_visualsetup
+        stop music
+        jump ch30_preloop
     jump ch30_main
 
 label endgame(pause_length=4.0):

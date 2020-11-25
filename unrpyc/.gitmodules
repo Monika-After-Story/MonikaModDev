@@ -1,4 +1,0 @@
-[submodule "un.rpyc/picklemagic"]
-	path = un.rpyc/picklemagic
-	url = https://github.com/CensoredUsername/picklemagic
-	branch = master

@@ -46,12 +46,62 @@ init -900 python in mas_ics:
 
     # rain with frame
     islands_rwf = (
-        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
     )
 
     # rain without frame
     islands_rwof = (
-        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
+    )
+
+    # night rain with frame
+    islands_nrwf = (
+        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
+    )
+
+    # night rain without frame
+    islands_nrwof = (
+        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
+    )
+
+    # overcast with frame
+    islands_owf = (
+        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
+    )
+
+    # overcast without frame
+    islands_owof = (
+        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
+    )
+
+    # night overcast with frame
+    islands_nowf = (
+        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
+    )
+
+    # night overcast without frame
+    islands_nowof = (
+        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
+    )
+
+    # snow with frame
+    islands_swf = (
+        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
+    )
+
+    # snow without frame
+    islands_swof = (
+        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
+    )
+
+    # night snow with frame
+    islands_nswf = (
+        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
+    )
+
+    # night snow without frame
+    islands_nswof = (
+        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
     )
 
     # islands dict to map filenames to checksums and real filenames
@@ -64,31 +114,18 @@ init -900 python in mas_ics:
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof),
-#        "rwf": ("rain_with_frame.png", islands_rwf),
-#        "rwof": ("rain_without_frame.png", islands_rwof)
-    }
-
-    ########################## SURPRISE BDAY PARTY ############################
-    # cake
-    sbp_cake = (
-        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
-    )
-
-    # banners
-    sbp_banners = (
-        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
-    )
-
-    # balloons
-    sbp_balloons = (
-        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
-    )
-
-    # surprise bday party dicts to map filenames to checksums
-    sbp_map = {
-        "cake": sbp_cake,
-        "banners": sbp_banners,
-        "balloons": sbp_balloons
+        "rwf": ("rain_with_frame.png", islands_rwf),
+        "rwof": ("rain_without_frame.png", islands_rwof),
+        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
+        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
+        "owf": ("overcast_with_frame.png", islands_owf),
+        "owof": ("overcast_without_frame.png", islands_owof),
+        "nowf": ("night_overcast_with_frame.png", islands_nowf),
+        "nowof": ("night_overcast_without_frame.png", islands_nowof),
+        "swf": ("snow_with_frame.png", islands_swf),
+        "swof": ("snow_without_frame.png", islands_swof),
+        "nswf": ("night_snow_with_frame.png", islands_nswf),
+        "nswof": ("night_snow_without_frame.png", islands_nswof)
     }
 
     #################################### O31 ##################################
@@ -162,6 +199,7 @@ init -45 python:
         ERR_SEND = "Failure sending package '{0}'."
         ERR_SIGN = "Failure to request signature for package '{0}'."
         ERR_SIGNP = "Package '{0}' does not match checksum."
+        ERR_CREATE = "Failed to create directory '{0}'"
 
         ## constants returned from smartUnpack (status constants)
         ## these are bit-based
@@ -202,21 +240,18 @@ init -45 python:
                 try:
                     os.makedirs(self.station)
                 except Exception as e:
-                   mas_utils.writelog(self.ERR.format(
+                   store.mas_utils.writelog(self.ERR.format(
                        self.ERR_CREATE.format(self.station),
                        str(self),
                        repr(e)
                    ))
                    self.enabled = False
 
-
-
         def __str__(self):
             """
             toString
             """
             return "DS: [{0}]".format(self.station)
-
 
         def checkForPackage(self, package_name, check_read=True):
             """
@@ -309,6 +344,7 @@ init -45 python:
         def getPackageList(self, ext_filter=""):
             """
             Gets a list of the packages in the docking station.
+            We also ensure that the item retrieved is not a folder.
 
             IN:
                 ext_filter - extension filter to use when getting list.
@@ -329,10 +365,11 @@ init -45 python:
                 package
                 for package in os.listdir(self.station)
                 if package.endswith(ext_filter)
+                and not os.path.isdir(self._trackPackage(package))
             ]
 
 
-        def getPackage(self, package_name):
+        def getPackage(self, package_name, log=None):
             """
             Gets a package from the docking station
 
@@ -340,6 +377,9 @@ init -45 python:
 
             IN:
                 package_name - The filename we are looking for
+                log - log to write messages to, if needed
+                    If None, we use mas_log
+                    (Default: None)
 
             RETURNS:
                 open file descriptor to the package (READ BYTES mode)
@@ -360,11 +400,17 @@ init -45 python:
                 package = open(package_path, "rb")
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
+                msg = self.ERR.format(
                     self.ERR_OPEN.format(package_name),
                     str(self),
                     repr(e)
-                ))
+                )
+
+                if log is None:
+                    mas_utils.writelog(msg)
+                else:
+                    log.write(msg)
+
                 if package is not None:
                     package.close()
                 return None
@@ -585,7 +631,8 @@ init -45 python:
                     contents=None,
                     lines=0,
                     b64=True,
-                    bs=None
+                    bs=None,
+                    log=None
             ):
             """
             Combines parts of signForPackage and _unpack in a way that is very
@@ -611,6 +658,9 @@ init -45 python:
                 b64 - True means the package is encoded in base64
                     (Default: True)
                 bs - blocksize to use. By default, we use B64_READ_SIZE
+                    (Default: None)
+                log - log to write messages to, if needed.
+                    If None, we use mas_log
                     (Default: None)
 
             RETURNS: tuple of the following format
@@ -702,11 +752,16 @@ init -45 python:
 
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
+                msg = self.ERR.format(
                     self.ERR_READ.format(package_name),
                     str(self),
                     repr(e)
-                ))
+                )
+
+                if log is None:
+                    mas_utils.writelog(msg)
+                else:
+                    log.write(msg)
 
                 if contents is None:
                     # only close our internal contents if we made it
@@ -718,8 +773,16 @@ init -45 python:
                 # always close package after this
                 package.close()
 
-            # now to check checksums
-            if checklist.hexdigest() != pkg_slip:
+            # get checksum and log
+            chk = checklist.hexdigest()
+            msg = "chk: {0}\n".format(chk)
+            if log is None:
+                mas_utils.writelog(msg)
+            else:
+                log.write(msg)
+
+            # now check checksum
+            if chk != pkg_slip:
                 # no match? uh oh, lets return stuff anyway
                 return (ret_val | self.PKG_C, _contents)
 
@@ -962,10 +1025,10 @@ init -45 python:
 
             return None
 
-
         def __check_access(self, package_path, check_read):
             """
-            Checks access of the file at package_path
+            Checks access of the file at package_path.
+            Also ensures that the file is not actually is folder.
 
             NOTE:
                 will log exceptions
@@ -987,6 +1050,7 @@ init -45 python:
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
+                not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
@@ -999,17 +1063,12 @@ init -45 python:
                 return self.__bad_check_read(check_read)
 
             if check_read:
-                if not (file_ok and read_ok):
+                if not (file_ok and read_ok and not_dir):
                     return None
 
-            else:
-                if not file_ok:
-                    return False
+            return file_ok and not_dir
 
-            return True
-
-
-        def __bad_check_read(check_read):
+        def __bad_check_read(self, check_read):
             """
             Returns an appropriate failure value givne the check_read value
 
@@ -1264,6 +1323,9 @@ init 200 python in mas_dockstat:
     import random
     import datetime
 
+    cr_log_path = "log/mfgen"
+    rd_log_path = "log/mfread"
+
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
@@ -1313,7 +1375,7 @@ init 200 python in mas_dockstat:
         ]) + END_DELIM)
 
 
-    def _buildMetaDataPer(_outbuffer):
+    def _buildMetaDataPer(_outbuffer, log):
         """
         Writes out the persistent's data into the given buffer
 
@@ -1321,6 +1383,7 @@ init 200 python in mas_dockstat:
 
         OUT:
             _outbuffer - buffer to write persistent data to
+            log - log to write messages to, if needed
 
         RETURNS:
             True on success, False if failed
@@ -1334,7 +1397,7 @@ init 200 python in mas_dockstat:
             return True
 
         except Exception as e:
-            mas_utils.writelog(
+            log.write(
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
             )
             return False
@@ -1484,34 +1547,7 @@ init 200 python in mas_dockstat:
 
         return on_fail
 
-
-# NOTE: actually we dont need this
-#    def o31ShowVignette(moni_chksum):
-#        """
-#        Sets vignette flag to appropriate value depending on whether or not
-#        user returns monika from an overnight outing.
-#
-#        IN:
-#            moni_chksum - checksum created when taking monika out
-#        """
-#        # not in o31? no show vignette
-#        if not store.mas_isO31():
-#            store.mas_globals.show_vignette = False
-#            return
-#
-#        # we already setup o31 mode? keep showing the vignette
-#        if store.persistent._mas_o31_in_o31_mode:
-#            store.mas_globals.show_vignette = True
-#            return
-#
-#        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check
-#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
-#
-#        if
-
-
-    def generateMonika(dockstat):
+    def generateMonika(dockstat, logpath):
         """
         Generates / writes a monika blob file.
 
@@ -1520,6 +1556,7 @@ init 200 python in mas_dockstat:
 
         IN:
             dockstat - the docking station to generate Monika in
+            logpath - path of log to write messagse to
 
         RETURNS:
             checksum of monika
@@ -1530,9 +1567,13 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
+        cr_log = store.mas_utils.logcreate(logpath, flush=True)
+
+        cr_log.write("\n\nCreating Monika in: {0}\n".format(dockstat.station))
+
         # sanity check regarding the filepath
         if "temp" in dockstat.station.lower():
-            mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
+            cr_log.write("[ERROR] temp directory found, aborting.\n")
             return False
 
         ### other stuff we need
@@ -1544,7 +1585,7 @@ init 200 python in mas_dockstat:
         NUM_DELIM = "|num|"
 
         ### write metadata
-        if not _buildMetaDataPer(moni_buffer):
+        if not _buildMetaDataPer(moni_buffer, cr_log):
             # if we failed to do this via persistent, then we'll use the old
             # style instead
             _buildMetaDataList(moni_buffer)
@@ -1560,7 +1601,7 @@ init 200 python in mas_dockstat:
             moni_buffer.write(moni_chr.read())
 
         except Exception as e:
-            mas_utils.writelog("[ERROR] mbase copy failed | {0}".format(
+            cr_log.write("[ERROR] mbase copy failed | {0}\n".format(
                 repr(e)
             ))
             moni_buffer.close()
@@ -1685,7 +1726,7 @@ init 200 python in mas_dockstat:
             moni_sum = checklist.hexdigest()
 
         except Exception as e:
-            mas_utils.writelog("[ERROR] monibuffer write failed | {0}".format(
+            cr_log.write("[ERROR] monibuffer write failed | {0}\n".format(
                 repr(e)
             ))
 
@@ -1720,7 +1761,7 @@ init 200 python in mas_dockstat:
         moni_pkg = dockstat.getPackage("monika")
         if moni_pkg is None:
             # ALERT ALERT HOW DID WE FAIL
-            mas_utils.writelog("[ERROR] monika not found.")
+            cr_log.write("[ERROR] monika not found.\n")
             mas_utils.trydel(moni_path)
             return False
 
@@ -1728,19 +1769,20 @@ init 200 python in mas_dockstat:
         moni_slip = dockstat.createPackageSlip(moni_pkg, blocksize)
         if moni_slip is None:
             # ALERT ALERT WE FAILED AGAIN
-            mas_utils.writelog("[ERROR] monika could not be validated.")
+            cr_log.write("[ERROR] monika could not be validated.\n")
             mas_utils.trydel(moni_path)
             return False
 
         if moni_slip != moni_sum:
             # WOW SRS THIS IS BAD
-            mas_utils.writelog(
-                "[ERROR] monisums didn't match, did we have write failure?"
+            cr_log.write(
+                "[ERROR] monisums didn't match, did we have write failure?\n"
             )
             mas_utils.trydel(moni_path)
             return -1
 
         # otherwise, we managed to create a monika! Congrats!
+        cr_log.write("chk: {0}\n".format(moni_sum))
         return moni_sum
 
 
@@ -1754,21 +1796,31 @@ init 200 python in mas_dockstat:
         global retmoni_status, retmoni_data
 
         # try to find this monika
-        retmoni_status, retmoni_data = findMonika(dockstat)
+        retmoni_status, retmoni_data = findMonika(dockstat, rd_log_path, True)
 
 
-    def findMonika(dockstat):
+    def findMonika(dockstat, logpath, at_init):
         """
         Attempts to find monika in the giving docking station
 
         IN:
             dockstat - MASDockingStation to use
+            logpath - path of log to write messages to
+            at_init - True if we are in init, False if not
 
         RETURNS: tuple of the following format:
             [0]: MAS_PKG_* constants depending on the state of monika
             [1]: either list of data or persistent object of data. Will be
                 None if no data or errors occured
         """
+        rd_log = store.mas_utils.logcreate(
+            logpath,
+            append=not at_init,
+            flush=True
+        )
+
+        rd_log.write("\n\nFinding Monika in: {0}\n".format(dockstat.station))
+
         END_DELIM = "|||"
         PER_DELIM = "per|"
         ret_code = 0
@@ -1777,7 +1829,8 @@ init 200 python in mas_dockstat:
             "monika",
             store.persistent._mas_moni_chksum,
             lines=-1,
-            bs=b64_blocksize
+            bs=b64_blocksize,
+            log=rd_log
         )
 
         if (status & (dockstat.PKG_E | dockstat.PKG_N)) > 0:
@@ -1800,7 +1853,7 @@ init 200 python in mas_dockstat:
 
         # because the console may have shit, we should just attempt to parse
         # the data as persistent first, and then as a backup, try non-persist.
-        per_data = parseMoniDataPer(real_data)
+        per_data = parseMoniDataPer(real_data, rd_log)
 
         if per_data is None:
             # this isn't a persistent. Let's try backup strats
@@ -1827,7 +1880,7 @@ init 200 python in mas_dockstat:
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            mas_utils.writelog(
+            rd_log.write(
                 "[!] I found a corrupt monika! {0}\n".format(status)
             )
             return (ret_code | MAS_PKG_FO, real_data)
@@ -1836,7 +1889,7 @@ init 200 python in mas_dockstat:
         return (ret_code | MAS_PKG_F, real_data)
 
 
-    def parseMoniData(data_line):
+    def parseMoniData(data_line, log):
         """
         Parses monika data into its components
 
@@ -1844,6 +1897,7 @@ init 200 python in mas_dockstat:
 
         IN:
             data_line - PIPE delimeted data line
+            log - log to write messages to, if needed
 
         RETURNS: list of the following format:
             [0]: datetime of first sessin
@@ -1868,13 +1922,13 @@ init 200 python in mas_dockstat:
             return data_list[:6]
 
         except Exception as e:
-            mas_utils.writelog("[ERROR]: Moni Data parse fail: {0}\n".format(
+            log.write("[ERROR]: Moni Data parse fail: {0}\n".format(
                 repr(e)
             ))
             return None
 
 
-    def parseMoniDataPer(data_line):
+    def parseMoniDataPer(data_line, log):
         """
         Parses persitent data into a persitent object.
 
@@ -1882,6 +1936,7 @@ init 200 python in mas_dockstat:
 
         IN:
             data_line - the data portion that may contain a persitent
+            log - log to write messages to, if needed
 
         RETURNS: a persistent object, or None if failure
         """
@@ -1894,7 +1949,7 @@ init 200 python in mas_dockstat:
             return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
-            mas_utils.writelog(
+            log.write(
                 "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
             )
             return None
@@ -2104,13 +2159,13 @@ init 205 python in mas_dockstat:
     # runs monika file generation
     monikagen_promise = mas_threading.MASAsyncWrapper(
         generateMonika,
-        [store.mas_docking_station]
+        [store.mas_docking_station, cr_log_path]
     )
 
     # runs monika file check
     monikafind_promise = mas_threading.MASAsyncWrapper(
         findMonika,
-        [store.mas_docking_station]
+        [store.mas_docking_station, rd_log_path, False]
     )
 
     # other important vars for this
@@ -2146,8 +2201,6 @@ init 205 python in mas_dockstat:
 #   true if moni can leave
 #   false otherwise
 label mas_dockstat_ready_to_go(moni_chksum):
-    show monika 2dsc
-
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
@@ -2155,10 +2208,19 @@ label mas_dockstat_ready_to_go(moni_chksum):
     if can_moni_leave:
         # file successfully made
         # monika can leave
+
+        #We'll do our actual getting ready here since this saves us needing to do it multiple times later
+        python:
+            #If we should take drink with, we do that now
+            mas_useThermos()
+
+            #NOTE: Do clothes changes here once we want to have Monika change as she's getting ready
+            renpy.pause(1.0, hard=True)
+
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-            and not mas_SELisUnlocked(mas_clothes_blackdress)
+            and not persistent._mas_bday_has_done_bd_outro
         ):
             if len(persistent._mas_dockstat_checkout_log) == 0:
                 #We change Moni's outfit here because she just got ready
@@ -2170,14 +2232,15 @@ label mas_dockstat_ready_to_go(moni_chksum):
             call mas_dockstat_first_time_goers
 
         else:
-            m 1eua "Alright."
+            m "Alright."
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
         # NOTE: callers must handle dialogue for this
 
     else:
-        $ persistent._mas_dockstat_going_to_leave = False
+        #Let's handle potential date var issues
+        call mas_dockstat_decrement_date_counts
         # we failed to generate file somehow
         # NOTE: callers must handle the dialogue for this
 
@@ -2185,100 +2248,130 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 
 label mas_dockstat_first_time_goers:
+    call mas_transition_from_emptydesk("monika 3eua")
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
-
     m 1eua "And lastly..."
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
     return
 
+label mas_dockstat_abort_post_show:
+    #Call this label to re-set anything needed when aborting dockstat farewells (error or by user)
+    #After Monika has returned to her desk
+    python:
+        #Restore the drink and make sure it's kept on desk again
+        _curr_drink = MASConsumable._getCurrentDrink()
+        if _curr_drink and _curr_drink.portable:
+            _curr_drink.acs.keep_on_desk = True
+
+    return
+
 label mas_dockstat_abort_gen:
     # call this label to abort monika gen promise
-
-    # we are not leaving
-    $ persistent._mas_dockstat_going_to_leave = False
-
     # we should abort the promise (this lets spaceroom idle abort, as well)
-    $ store.mas_dockstat.abort_gen_promise = True
+    python:
+        store.mas_dockstat.abort_gen_promise = True
 
-    # attempt to abort the promise
-    $ store.mas_dockstat.abortGenPromise()
+        #Attempt to abort the promise
+        store.mas_dockstat.abortGenPromise()
 
-    # we are not leaving and need to reset these
-    if persistent._mas_player_bday_left_on_bday:
-        $ persistent._mas_player_bday_left_on_bday = False
-        $ persistent._mas_player_bday_date -= 1
+    #FALL THROUGH
 
-    if persistent._mas_f14_on_date:
-        $ persistent._mas_f14_on_date = False
-        $ persistent._mas_f14_date -= 1
+#Call this label to reset the date vars
+label mas_dockstat_decrement_date_counts:
+    python:
+        #We are not leaving
+        persistent._mas_dockstat_going_to_leave = False
 
-    if persistent._mas_bday_on_date:
-        $ persistent._mas_bday_on_date = False
-        $ persistent._mas_bday_date_count -= 1
+        # we are not leaving and need to reset these
+        if persistent._mas_player_bday_left_on_bday:
+            persistent._mas_player_bday_left_on_bday = False
+            persistent._mas_player_bday_date -= 1
+
+        if persistent._mas_f14_on_date:
+            persistent._mas_f14_on_date = False
+            persistent._mas_f14_date_count -= 1
+
+        if persistent._mas_bday_on_date:
+            persistent._mas_bday_on_date = False
+            persistent._mas_bday_date_count -= 1
     return
 
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
+    python:
+        #Make sure O31 effects show
+        if persistent._mas_o31_in_o31_mode:
+            mas_globals.show_vignette = True
+            #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
+            if mas_current_weather != mas_weather_thunder:
+                mas_changeWeather(mas_weather_thunder, True)
+
+        else:
+            #Now setup weather
+            mas_startupWeather()
+            skip_setting_weather = True
+
+        # reset zoom before showing spaceroom
+        store.mas_sprites.reset_zoom()
+
     call spaceroom(hide_monika=True, scene_change=True)
-    $ mas_from_empty = True
 
-    # empty desk should be a zorder lower so we can pop monika over it
-    $ ed_zorder = MAS_MONIKA_Z - 1
-    $ store.mas_sprites.reset_zoom()
-    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    show emptydesk zorder ed_zorder at i11
+    python:
+        mas_from_empty = True
 
-    if mas_isD25Season() and persistent._mas_d25_deco_active:
-        $ store.mas_d25_event.showD25Visuals()
+        checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ renpy.show("mas_roses", zorder=10)
+        if mas_isD25Season() and persistent._mas_d25_deco_active:
+            store.mas_d25ShowVisuals()
 
-    if mas_confirmedParty() and mas_isMonikaBirthday():
-        $ persistent._mas_bday_visuals = True
-        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+        if mas_confirmedParty() and mas_isMonikaBirthday():
+            persistent._mas_bday_visuals = True
+            store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    #NOTE: elif'd so we don't try and show two types of visuals here
-    elif persistent._mas_player_bday_decor:
-        $ store.mas_surpriseBdayShowVisuals()
+        #NOTE: elif'd so we don't try and show two types of visuals here
+        elif persistent._mas_player_bday_decor:
+            store.mas_surpriseBdayShowVisuals()
 
+    #FALL THROUGH
 
 label mas_dockstat_empty_desk_preloop:
+    python:
+        import store.mas_dockstat as mas_dockstat
 
-    # setup ui hiding
-    $ import store.mas_dockstat as mas_dockstat
-    $ mas_OVLHide()
-    $ mas_calRaiseOverlayShield()
-    $ mas_calShowOverlay()
-    $ disable_esc()
-    $ mas_enable_quit()
-    $ promise = mas_dockstat.monikafind_promise
+        #Setup ui hiding
+        mas_OVLHide()
+        mas_calRaiseOverlayShield()
+        mas_calShowOverlay()
+        disable_esc()
+        mas_enable_quit()
+        promise = mas_dockstat.monikafind_promise
 
 label mas_dockstat_empty_desk_from_empty:
 
-    # begin the find thread
-    if promise.ready:
-        $ promise.start()
+    python:
+        #Begin the find thread
+        if promise.ready:
+            promise.start()
 
-    # wait 1 seconds before checking again
-    $ renpy.pause(1.0, hard=True)
+        #wait 1 seconds before checking again
+        renpy.pause(1.0, hard=True)
 
-    # check for surprise visuals
-    if mas_confirmedParty() and mas_isMonikaBirthday():
-        $ persistent._mas_bday_visuals = True
-        $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+        #Check for surprise visuals
+        if mas_confirmedParty() and mas_isMonikaBirthday():
+            persistent._mas_bday_visuals = True
+            store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # check for monika
-    if promise.done():
-        # we have a result! lets get and then check if we found anything.
-        $ _status, _data_line = promise.get()
-        $ mas_dockstat.retmoni_status = _status
-        $ mas_dockstat.retmoni_data = _data_line
-        $ mas_dockstat.triageMonika(True)
+        #Check for monika
+        if promise.done():
+            # we have a result! lets get and then check if we found anything.
+            _status, _data_line = promise.get()
+            mas_dockstat.retmoni_status = _status
+            mas_dockstat.retmoni_data = _data_line
+            mas_dockstat.triageMonika(True)
 
     # otherwise we still havent' found monika, so lets just continue
     # the loop
@@ -2323,11 +2416,9 @@ label mas_dockstat_different_monika:
     $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
-    show monika 1ekd zorder MAS_MONIKA_Z at t11
+    call mas_transition_from_emptydesk("monika 1ekd")
 
-    # 1 line of dialgoue before we remove the empty desk
     m "[player]?"
-    hide emptydesk
 
     m "Wait, you're not [player]."
 
@@ -2341,10 +2432,8 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    $ renpy.hide("mas_roses")
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs(mas_acs_roses)
-    hide emptydesk
 
     # dont want users using our promises
     $ promise = None
@@ -2353,7 +2442,6 @@ label mas_dockstat_found_monika_from_empty:
 
 # found our monika
 label mas_dockstat_found_monika:
-
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
@@ -2382,19 +2470,229 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-        # o31 re-entry checks
-        if mas_isO31() and persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+    if persistent._mas_o31_in_o31_mode:
+        $ store.mas_globals.show_vignette = True
+        #Force progressive to disabled for o31
+        $ mas_changeWeather(mas_weather_thunder, True)
 
-            # setup thunder
-            if persistent._mas_likes_rain:
-                mas_weather_thunder.unlocked = True
-                store.mas_weather.saveMWData()
-            mas_changeWeather(mas_weather_thunder)
-
-        # d25 re-entry checks
-        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
-            #mas_is_snowing = True
-            pass
+    elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
+        call mas_d25_season_exit
 
     jump ch30_post_exp_check
+
+#START: GENERALIZED MONIKA IO LABELS
+
+#IOSTART LABEL
+#Use this to begin monika file generation
+#REQUIRES THE FOLLOWING GLOBAL VARIABLE TO BE SET TO ALLOW CUSTOM FLOWS
+# - mas_farewells.dockstat_iowait_label
+#   If not set, the generic iowait label is assumed
+label mas_dockstat_iostart:
+    show monika 2dsc
+    python:
+        persistent._mas_dockstat_going_to_leave = True
+        first_pass = True
+
+        # launch I/O thread
+        promise = store.mas_dockstat.monikagen_promise
+        promise.start()
+
+    #Jump to the iowait label
+    if renpy.has_label(mas_farewells.dockstat_iowait_label):
+        jump expression mas_farewells.dockstat_iowait_label
+    #If the one passed in wasn't valid, then we'll use the generic iowait
+    jump mas_dockstat_generic_iowait
+
+
+#GENERIC IOWAIT LABEL
+##NOTE: REQUIRES THE FOLLOWING GLOBAL VARIABLES FOR CUSTOM FLOWS
+# - mas_farewells.dockstat_rtg_label
+# - mas_farewells.dockstat_cancel_dlg_label
+# - mas_farewells.dockstat_wait_menu_label
+#NOTE: If any of these are None (as they default), generic labels are assumed
+label mas_dockstat_generic_iowait:
+    hide screen mas_background_timed_jump
+
+    # we want to display the menu first to give users a chance to quit
+    if first_pass:
+        $ first_pass = False
+        m 1eua "Give me a second to get ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+        #Prepare the current drink to be removed if needed
+        python:
+            current_drink = MASConsumable._getCurrentDrink()
+            if current_drink and current_drink.portable:
+                current_drink.acs.keep_on_desk = False
+
+        #Get Moni off screen
+        call mas_transition_to_emptydesk
+
+    elif promise.done():
+        # i/o thread is done!
+        #We're ready to go. Let's jump to the rtg label
+        if renpy.has_label(mas_farewells.dockstat_rtg_label):
+            jump expression mas_farewells.dockstat_rtg_label
+        #Otherwise, we don't have a valid label and need to jump to a generic ready to go
+        jump mas_dockstat_generic_rtg
+
+    # display menu options
+    # 4 seconds seems decent enough for waiting.
+    show screen mas_background_timed_jump(4, "mas_dockstat_generic_iowait")
+    menu:
+        "Hold on a second!":
+            hide screen mas_background_timed_jump
+            $ persistent._mas_dockstat_cm_wait_count += 1
+
+    # fall thru to the wait wait flow
+    if renpy.has_label(mas_farewells.dockstat_wait_menu_label):
+        call expression mas_farewells.dockstat_wait_menu_label
+    else:
+        #Otherwise fallback to this label
+        call mas_dockstat_generic_wait_label
+
+    #If we returned True, that means we cancelled
+    if _return:
+        #We need to clear all the vars in case we go dockstat again
+        $ mas_farewells.resetDockstatFlowVars()
+
+        #And now, we return what the generic label would have returned, that is if it's a string.
+        if isinstance(_return, basestring):
+            return _return
+        #This means we got a boolean and we can't return it because the event handler requires strings
+        return
+
+    # by default, continue looping
+    jump mas_dockstat_generic_iowait
+
+
+#GENERIC WAIT LABEL
+label mas_dockstat_generic_wait_label:
+    menu:
+        m "What is it?"
+        "Actually, I can't take you right now.":
+            call mas_dockstat_abort_gen
+
+            #Show Monika again
+            call mas_transition_from_emptydesk("monika 1ekc")
+            call mas_dockstat_abort_post_show
+
+            if renpy.has_label(mas_farewells.dockstat_cancel_dlg_label):
+                jump expression mas_farewells.dockstat_cancel_dlg_label
+
+            #Fallback to generic cancel
+            jump mas_dockstat_generic_cancel
+
+        "Nothing.":
+            # if we get here, we should jump back to the top so we can
+            # continue waiting
+            m 2hub "Oh, good! Let me finish getting ready."
+            return
+
+
+#GENERIC RTG LABEL
+#FOR CUSTOM FLOWS, REQUIRES THE FOLLOWING GLOBAL VARIABLE:
+# - mas_farewells.dockstat_failed_io_still_going_ask_label
+#If not set, the generic label will be used
+label mas_dockstat_generic_rtg:
+    # io thread should be done by now
+    $ moni_chksum = promise.get()
+    $ promise = None # clear promise so we dont have any issues elsewhere
+    call mas_dockstat_ready_to_go(moni_chksum)
+    if _return:
+        python:
+            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+                store.mas_greetings.TYPE_GENERIC_RET
+            )
+
+        call mas_transition_from_emptydesk("monika 1eua")
+
+        #Otherwise we just use the normal outro
+        m 1eua "I'm ready to go."
+        return "quit"
+    call mas_transition_from_emptydesk("monika 1ekc")
+    call mas_dockstat_abort_post_show
+    # otherwise, we failed, so monika should tell player
+    m 1ekc "Oh no..."
+    m 1lksdlb "I wasn't able to turn myself into a file."
+    m "I think you'll have to go on without me this time."
+    m 1ekc "Sorry, [player]."
+
+    if renpy.has_label(mas_farewells.dockstat_failed_io_still_going_ask_label):
+        # NOTE: we assume that this label will reset the docstat vars
+        jump expression mas_farewells.dockstat_failed_io_still_going_ask_label
+    #Use generic to fallback
+    jump mas_dockstat_generic_failed_io_still_going_ask
+
+
+#GENERIC DOCKSTAT CANCEL LABEL
+#Used when the player tells Monika they can't take her out
+#REQUIRES THE FOLLOWING GLOBAL VARIABLE TO BE ASSIGNED IF YOU WANT CUSTOM FLOWS:
+# - mas_farewells.dockstat_cancelled_still_going_ask_label
+label mas_dockstat_generic_cancel:
+    if mas_isMoniDis(lower=True):
+        m 1tkc "..."
+        m 1tkd "I knew it.{nw}"
+        $ _history_list.pop()
+        m 1lksdld "That's okay, I guess."
+
+    elif mas_isMoniHappy(lower=True):
+        m 1ekd "Oh,{w=0.3} all right. Maybe next time?"
+
+    else:
+        # otherwise affection and higher:
+        m 2ekp "Aw..."
+        m 1hub "Fine, but you better take me next time!"
+
+    if renpy.has_label(mas_farewells.dockstat_cancelled_still_going_ask_label):
+        jump expression mas_farewells.dockstat_cancelled_still_going_ask_label
+    #Otherwise we use the generic still going ask as a fallback
+    jump mas_dockstat_generic_cancelled_still_going_ask
+
+#GENERIC CANCELLED STILL GOING ASK
+#Used when we cancel dockstat, this is where Monika asks you if you're still going
+label mas_dockstat_generic_cancelled_still_going_ask:
+    m 1euc "Are you still going to go?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you still going to go?{fast}"
+        "Yes.":
+            if mas_isMoniNormal(higher=True):
+                m 2eka "All right. I'll be right here waiting for you, as usual..."
+                m 2hub "So hurry back! I love you, [player]!"
+
+            else:
+                # otherwise, upset and below
+                m 2tfd "...Fine."
+
+            return "quit"
+
+        "No.":
+            if mas_isMoniNormal(higher=True):
+                m 2eka "...Thank you."
+                m "It means a lot that you're going to spend more time with me since I can't come along."
+                m 3ekb "Please just go about your day whenever you need to, though. I wouldn't want to make you late!"
+
+            else:
+                # otherwise, upset and below
+                m 2lud "All right, then..."
+            return True
+
+#GENERIC FAILED IO STILL GOING ASK
+#Used when Monika fails to turn herself into a file. This is where Monika asks you if you're still going
+label mas_dockstat_generic_failed_io_still_going_ask:
+    #We need to clear all the vars in case we go dockstat again
+    $ mas_farewells.resetDockstatFlowVars()
+    m "Are you still going to go?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you still going to go?{fast}"
+        "Yes.":
+            m 2eka "I understand. You have things to do, after all..."
+            m 2hub "Be safe out there! I'll be right here waiting for you!"
+            return "quit"
+
+        "No.":
+            m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
+            m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
+            $ mas_gainAffection()
+            return

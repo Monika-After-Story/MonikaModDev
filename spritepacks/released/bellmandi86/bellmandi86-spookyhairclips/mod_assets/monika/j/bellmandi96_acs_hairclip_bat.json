@@ -1,0 +1,28 @@
+{
+    "__author": "bellmandi86",
+    "version": 3,
+    "type": 0,
+    "name": "bellmandi86_hairclip_bat",
+    "img_sit": "bellmandi86_hairclip_bat",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "stay_on_start": true,
+    "ex_props": {
+        "o31": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Bat)",
+        "thumb": "bellmandi86_hairclip_bat",
+        "group": "left-hair-clip",
+        "select_dlg": [
+            "A bat in my hair? That's a lot of people's worst nightmare!",
+            "I hope you don't have chiroptophobia, [player]~",
+            "I hope it doesn't get tangled!"
+        ]
+    },
+    "giftname": "bathairclip"
+}

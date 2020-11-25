@@ -10,32 +10,32 @@ define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 # IMAGES-----------
 # hangman
 image hm_6 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_6.png",
-    "True", "mod_assets/hangman/hm_6.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_6.png",
+    "True", "mod_assets/games/hangman/hm_6.png"
 )
 image hm_5 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_5.png",
-    "True", "mod_assets/hangman/hm_5.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_5.png",
+    "True", "mod_assets/games/hangman/hm_5.png"
 )
 image hm_4 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_4.png",
-    "True", "mod_assets/hangman/hm_4.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_4.png",
+    "True", "mod_assets/games/hangman/hm_4.png"
 )
 image hm_3 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_3.png",
-    "True", "mod_assets/hangman/hm_3.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_3.png",
+    "True", "mod_assets/games/hangman/hm_3.png"
 )
 image hm_2 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_2.png",
-    "True", "mod_assets/hangman/hm_2.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_2.png",
+    "True", "mod_assets/games/hangman/hm_2.png"
 )
 image hm_1 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_1.png",
-    "True", "mod_assets/hangman/hm_1.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_1.png",
+    "True", "mod_assets/games/hangman/hm_1.png"
 )
 image hm_0 = ConditionSwitch(
-    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_0.png",
-    "True", "mod_assets/hangman/hm_0.png"
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_0.png",
+    "True", "mod_assets/games/hangman/hm_0.png"
 )
 
 # sayori
@@ -45,9 +45,9 @@ image hm_s:
         # this block handles images
         block:
             choice:
-                "mod_assets/hangman/hm_s1.png"
+                "mod_assets/games/hangman/hm_s1.png"
             choice:
-                "mod_assets/hangman/hm_s2.png"
+                "mod_assets/games/hangman/hm_s2.png"
 
         # this block makes the image flicker
         # the numbers are times to display
@@ -73,12 +73,12 @@ image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horiz
 image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
 image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
-#image hm_s1 = "mod_assets/hangman/hm_s1.png"
-#image hm_s2 = "mod_assets/hangman/hm_s2.png"
+#image hm_s1 = "mod_assets/games/hangman/hm_s1.png"
+#image hm_s2 = "mod_assets/games/hangman/hm_s2.png"
 
 # frame
-image hm_frame = "mod_assets/hangman/hm_frame.png"
-image hm_frame_dark = "mod_assets/hangman/hm_frame_d.png"
+image hm_frame = "mod_assets/games/hangman/hm_frame.png"
+image hm_frame_dark = "mod_assets/games/hangman/hm_frame_d.png"
 
 # TRANSFORMS
 transform hangman_board:
@@ -213,8 +213,8 @@ init -1 python in mas_hangman:
 
 
     # file names
-    NORMAL_LIST = "mod_assets/MASpoemwords.txt"
-    HARD_LIST = "mod_assets/1000poemwords.txt"
+    NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
+    HARD_LIST = "mod_assets/games/hangman/1000poemwords.txt"
 
     # hangman game text
     game_name = "Hangman"
@@ -408,7 +408,7 @@ label mas_hangman_game_select_diff:
 label mas_hangman_game_preloop:
 
     # setup positions
-    show monika at hangman_monika
+    show monika at t21
     if store.mas_globals.dark_mode:
         show hm_frame_dark at hangman_board zorder 13
     else:
@@ -502,6 +502,7 @@ label mas_hangman_game_loop:
     $ guesses = 0
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
+    $ give_up = False
 
     if persistent._mas_sensitive_mode:
         $ avail_letters.remove("?")
@@ -555,7 +556,7 @@ label mas_hangman_game_loop:
 
                 # hide monika and display glitch version
                 hide monika
-                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at hangman_monika_i(z=1.0)
+                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at i21
 
                 # hide window sayori and display glitch version
                 show hm_s_win_0 as window_sayori
@@ -582,12 +583,12 @@ label mas_hangman_game_loop:
                 hide mbg
                 hide window_sayori
                 hide hm_s
-                show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
+                show monika 1esa zorder MAS_MONIKA_Z at i21
                 $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
-                $ mas_MUMUDropShield()
+                $ mas_MUINDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
@@ -630,7 +631,10 @@ label mas_hangman_game_loop:
             elif guess == "!": # give up dialogue
                 if is_window_sayori_visible:
                     show hm_s_win_fail as window_sayori at hangman_sayori_i3
+
+                $ give_up = True
                 $ done = True
+
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
@@ -639,6 +643,7 @@ label mas_hangman_game_loop:
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
+
                 elif chances == 5:
                     m 1ekc "Don't give up so easily."
                     m 3eka "That was only your first wrong letter!"
@@ -646,8 +651,10 @@ label mas_hangman_game_loop:
                         m 1eka "You still had [chances] more lives left."
                     else:
                         m 1eka "You still had [chances] more life left."
+
                     m 1hua "I know you can do it!"
                     m 1eka "It would really mean a lot to me if you just tried a bit harder."
+
                 else:
                     m "You should at least play to the end..."
                     m 1ekc "Giving up so easily is a sign of poor resolve."
@@ -655,7 +662,9 @@ label mas_hangman_game_loop:
                         m "I mean, you'd have to miss [chances] more letters to actually lose."
                     else:
                         m "I mean, you'd have to miss [chances] more letter to actually lose."
+
                 m 1eka "Can you play to the end next time, [player]? For me?"
+
             else:
                 $ guesses += 1
                 python:
@@ -690,10 +699,14 @@ label mas_hangman_game_loop:
 
         m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
+
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
-            $ grant_xp(xp.WIN_GAME)
         #TODO: grant a really tiny amount of affection?
+
+    #Give up just ends
+    if give_up:
+        jump mas_hangman_game_end
 
     # try again?
     m "Would you like to play again?{nw}"
@@ -701,9 +714,18 @@ label mas_hangman_game_loop:
     menu:
         m "Would you like to play again?{fast}"
         "Yes.":
+            $ hang_ev = mas_getEV("mas_hang")
+            if hang_ev:
+                # each game counts as a game played
+                $ hang_ev.shown_count += 1
+
+            show monika at t21
             jump mas_hangman_game_loop
+
         "No.":
-            jump mas_hangman_game_end
+            pass
+
+            #FALL THROUGH
 
     # RETURN AT END
 
@@ -744,5 +766,10 @@ label mas_hangman_dlg_game_end_long:
 
 # short form of ending dialogue
 label mas_hangman_dlg_game_end_short:
-    m 1eua "Okay. Let's play again soon!"
+    if give_up:
+        $ dlg_line = "Let's play again soon, okay?"
+    else:
+        $ dlg_line = "Okay. Let's play again soon!"
+
+    m 1eua "[dlg_line]"
     return

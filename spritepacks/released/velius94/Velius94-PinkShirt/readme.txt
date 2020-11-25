@@ -1,2 +1,0 @@
-# clothes
-Pink Shirt - pinkshirt

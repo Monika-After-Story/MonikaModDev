@@ -1,3 +1,4 @@
+#TODO: Fix label names. It's difficult to follow
 
 # we now will keep track of player wins / losses/ draws/ whatever
 default persistent._mas_chess_stats = {"wins": 0, "losses": 0, "draws": 0}
@@ -29,6 +30,7 @@ define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
 init 1 python in mas_chess:
     import os
     import chess.pgn
+    import store.mas_ui as mas_ui
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -37,16 +39,16 @@ init 1 python in mas_chess:
     REL_DIR = "chess_games/"
 
     # other mas constants (menu related)
-    CHESS_MENU_X = 680
-    CHESS_MENU_Y = 40
-    CHESS_MENU_W = 560
-    CHESS_MENU_H = 640
-    CHESS_MENU_XALIGN = -0.05
+    CHESS_MENU_X = mas_ui.SCROLLABLE_MENU_X
+    CHESS_MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    CHESS_MENU_W = mas_ui.SCROLLABLE_MENU_W
+    CHESS_MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    CHESS_MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     CHESS_MENU_AREA = (CHESS_MENU_X, CHESS_MENU_Y, CHESS_MENU_W, CHESS_MENU_H)
 
     CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"
     CHESS_MENU_NEW_GAME_ITEM = (
-        "Play New Game",
+        _("Play New Game"),
         CHESS_MENU_NEW_GAME_VALUE,
         True,
         False
@@ -54,7 +56,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_FINAL_VALUE = "NONE"
     CHESS_MENU_FINAL_ITEM = (
-        "Nevermind",
+        _("Nevermind"),
         CHESS_MENU_FINAL_VALUE,
         False,
         False,
@@ -63,7 +65,7 @@ init 1 python in mas_chess:
 
     CHESS_MENU_WAIT_VALUE = "MATTE"
     CHESS_MENU_WAIT_ITEM = (
-        "I can't make this decision right now...",
+        _("I can't make this decision right now..."),
         CHESS_MENU_WAIT_VALUE,
         False,
         False,
@@ -142,15 +144,15 @@ init 1 python in mas_chess:
 
     # ofcnot
     DLG_QF_LOST_OFCN_ENABLE = True
-    DLG_QF_LOST_OFCN_CHOICE = "Of course not!"
+    DLG_QF_LOST_OFCN_CHOICE = _("Of course not!")
 
     # maybe
     DLG_QF_LOST_MAY_ENABLE = True
-    DLG_QF_LOST_MAY_CHOICE = "Maybe..."
+    DLG_QF_LOST_MAY_CHOICE = _("Maybe...")
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
-    DLG_QF_LOST_ACDNT_CHOICE = "It was an accident!"
+    DLG_QF_LOST_ACDNT_CHOICE = _("It was an accident!")
 
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
@@ -172,14 +174,14 @@ init 1 python in mas_chess:
     # first, lets take all the text based ones and group them
     # 1q
     _monika_loses_line_quips = (
-        "Hmph.{w} You were just lucky today.",
-        "...{w}I'm just having an off day.",
-        "Ah, so you {i}are{/i} capable of winning...",
-        "I guess you're not {i}entirely{/i} terrible.",
-        "Tch-",
-        "Winning isn't everything, you know...",
-        "Ahaha,{w} I was just letting you win since you keep losing so much.",
-        "Oh, you won.{w} I should have taken this game seriously, then."
+        _("Hmph.{w=0.3} You were just lucky today."),
+        _("...{w=0.3}I'm just having an off day."),
+        _("Ah, so you {i}are{/i} capable of winning..."),
+        _("I guess you're not {i}entirely{/i} terrible."),
+        _("Tch-"),
+        _("Winning isn't everything, you know..."),
+        _("Ahaha,{w=0.3} I was just letting you win since you keep losing so much."),
+        _("Oh, you won.{w=0.3} I should have taken this game seriously, then.")
         # TODO: look into more of these
     )
 
@@ -195,8 +197,8 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     # 1k expressions
     _monika_wins_line_quips = (
-        "Ahaha, do you even know how to play chess?", # use this for surrenders too
-        "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
+        _("Ahaha, do you even know how to play chess?"), # use this for surrenders too
+        _("Are you {i}that{/i} bad? I wasn't even taking this game seriously.")
     )
 
     # generate label quips
@@ -211,10 +213,7 @@ init 1 python in mas_chess:
     # first, lets generate line quips
     _monika_wins_surr_line_quips = (
         _monika_wins_line_quips[0],
-        (
-            "Figures you'd give up. You're not one to see things all the " +
-            "way through."
-        ),
+        _("Figures you'd give up. You're not one to see things all the way through."),
     )
 
     # generate label quips
@@ -420,14 +419,6 @@ init:
         class ArchitectureError(RuntimeError):
             pass
 
-        def is_platform_good_for_chess():
-            import platform
-            import sys
-            if sys.maxsize > 2**32:
-                return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-            else:
-                return platform.system() == 'Windows'
-
         def get_mouse_pos():
             vw = config.screen_width * 10000
             vh = config.screen_height * 10000
@@ -463,7 +454,7 @@ init:
                 return self.msg
 
         # only add chess folder if we can even do chess
-        if is_platform_good_for_chess():
+        if mas_games.is_platform_good_for_chess():
             # first create the folder for this
             try:
                 file_path = os.path.normcase(
@@ -502,15 +493,15 @@ init:
                 renpy.Displayable.__init__(self)
 
                 # Some displayables we use.
-                self.pieces_image = Image("mod_assets/chess_pieces.png")
-                self.board_image = Image("mod_assets/chess_board.png")
-                self.piece_highlight_red_image = Image("mod_assets/piece_highlight_red.png")
-                self.piece_highlight_green_image = Image("mod_assets/piece_highlight_green.png")
-                self.piece_highlight_yellow_image = Image("mod_assets/piece_highlight_yellow.png")
-                self.piece_highlight_magenta_image = Image("mod_assets/piece_highlight_magenta.png")
-                self.move_indicator_player = Image("mod_assets/move_indicator_player.png")
-                self.move_indicator_monika = Image("mod_assets/move_indicator_monika.png")
-                self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
+                self.pieces_image = Image("mod_assets/games/chess/chess_pieces.png")
+                self.board_image = Image("mod_assets/games/chess/chess_board.png")
+                self.piece_highlight_red_image = Image("mod_assets/games/chess/piece_highlight_red.png")
+                self.piece_highlight_green_image = Image("mod_assets/games/chess/piece_highlight_green.png")
+                self.piece_highlight_yellow_image = Image("mod_assets/games/chess/piece_highlight_yellow.png")
+                self.piece_highlight_magenta_image = Image("mod_assets/games/chess/piece_highlight_magenta.png")
+                self.move_indicator_player = Image("mod_assets/games/chess/move_indicator_player.png")
+                self.move_indicator_monika = Image("mod_assets/games/chess/move_indicator_monika.png")
+                self.player_move_prompt = Text(_("It's your turn, [mas_get_player_nickname()]!"), size=36)
                 self.num_turns = 0
                 self.surrendered = False
 
@@ -536,58 +527,6 @@ init:
                 self.BUTTON_X_SPACING = 10
                 self.BUTTON_Y_SPACING = 10
 
-                # hotkey button displayables
-                button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-                button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-                button_no = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-                # hotkey button text
-                # idle style/ disabled style:
-                button_text_save_idle = Text(
-                    "Save",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_giveup_idle = Text(
-                    "Give Up",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-                button_text_done_idle = Text(
-                    "Done",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_idle_color,
-                    outlines=[]
-                )
-
-                # hover style
-                button_text_save_hover = Text(
-                    "Save",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_giveup_hover = Text(
-                    "Give Up",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-                button_text_done_hover = Text(
-                    "Done",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color=mas_globals.button_text_hover_color,
-                    outlines=[]
-                )
-
                 # calculate positions
                 self.drawn_board_x = int((1280 - self.BOARD_WIDTH) / 2)
                 self.drawn_board_y=  int((720 - self.BOARD_HEIGHT) / 2)
@@ -606,13 +545,9 @@ init:
                 )
 
                 # now the actual 3 buttons
-                self._button_save = MASButtonDisplayable(
-                    button_text_save_idle,
-                    button_text_save_hover,
-                    button_text_save_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_save = MASButtonDisplayable.create_stb(
+                    _("Save"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_top,
                     self.BUTTON_WIDTH,
@@ -620,13 +555,9 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_giveup = MASButtonDisplayable(
-                    button_text_giveup_idle,
-                    button_text_giveup_hover,
-                    button_text_giveup_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_giveup = MASButtonDisplayable.create_stb(
+                    _("Give Up"),
+                    True,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
@@ -634,18 +565,14 @@ init:
                     hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
-                self._button_done = MASButtonDisplayable(
-                    button_text_done_idle,
-                    button_text_done_hover,
-                    button_text_done_idle,
-                    button_idle,
-                    button_hover,
-                    button_no,
+                self._button_done = MASButtonDisplayable.create_stb(
+                    _("Done"),
+                    False,
                     drawn_button_x,
                     drawn_button_y_bot,
                     self.BUTTON_WIDTH,
                     self.BUTTON_HEIGHT,
-                    hover_sound=gui.activate_sound,
+                    hover_sound=gui.hover_sound,
                     activate_sound=gui.activate_sound
                 )
 
@@ -661,7 +588,7 @@ init:
 
                 # Stockfish engine provides AI for the game.
                 # Launch the appropriate version based on the architecture and OS.
-                if not is_platform_good_for_chess():
+                if not mas_games.is_platform_good_for_chess():
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
@@ -673,15 +600,17 @@ init:
                     startupinfo = subprocess.STARTUPINFO()
                     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     if is_64_bit:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe',startupinfo)
+                        self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x64.exe',startupinfo)
                     else:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
+                        self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_windows_x32.exe',startupinfo)
+
                 elif platform.system() == 'Linux' and is_64_bit:
-                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_linux_x64',0755)
-                    self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
+                    os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_linux_x64',0755)
+                    self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_linux_x64')
+
                 elif platform.system() == 'Darwin' and is_64_bit:
-                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_macosx_x64',0755)
-                    self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
+                    os.chmod(config.basedir + '/game/mod_assets/games/chess/stockfish_8_macosx_x64',0755)
+                    self.stockfish = open_stockfish('mod_assets/games/chess/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters
                 self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (persistent.chess_strength))
@@ -1585,7 +1514,6 @@ label mas_chess_game_start:
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
-            $grant_xp(xp.WIN_GAME)
 
         # main dialogue
         call mas_chess_dlg_game_monika_lose from _mas_chess_dlggml
@@ -1618,6 +1546,11 @@ label mas_chess_playagain:
         m "Do you want to play again?{fast}"
 
         "Yes.":
+            $ chess_ev = mas_getEV("mas_chess")
+            if chess_ev:
+                # each game counts as a game played
+                $ chess_ev.shown_count += 1
+
             jump mas_chess_new_game_start
         "No.":
             pass
@@ -1692,16 +1625,22 @@ label mas_chess_save_migration:
         # only show this if we even have multiple pgn games
         if game_count > 1:
             if renpy.seen_label("mas_chess_save_multi_dlg"):
-                $ pick_text = "You still need to pick a game to keep."
+                $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
-                    m 1m "So I've been thinking, [player]..."
+                    # TODO: i am removing expressions on these lines, 
+                    # so travis will pass, assuming that the chess PR will be
+                    # in prior to launch.
+                    # reagrdless, even if the chess PR doest make it, this is
+                    # an incredibly rare case that its fine to not have
+                    # expressions
+                    m "So I've been thinking, [player]..."
                     m "Most people who leave in the middle of a chess game don't come back to start a new one."
-                    m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
-                    m 1p "And since we have [game_count] games in progress..."
-                    m 1g "I have to ask you to pick only one to keep.{w} Sorry, [player]."
-                    $ pick_text = "Pick a game you'd like to keep."
-            show monika 1e at t21
+                    m "It makes no sense for me to keep track of more than one unfinished game between us."
+                    m "And since we have [game_count] games in progress..."
+                    m "I have to ask you to pick only one to keep.{w=0.2} Sorry, [player]."
+                    $ pick_text = _("Pick a game you'd like to keep.")
+            show monika 1eua at t21 # TODO: also this line was just set to 1eua
             $ renpy.say(m, pick_text, interact=False)
 
             call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
@@ -1814,9 +1753,10 @@ label mas_chess_savegame:
             m "You can open this file in PGN viewers."
 
             if game_result == "*": # ongoing game
-                m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
+                m 1lksdlb "It's possible to edit this file and change the outcome of the game...{w=0.5} {nw}"
+                extend 1tsu "but I'm sure you wouldn't do that."
 
-                m 1eka "Right, [player]?{nw}"
+                m 1tku "Right, [player]?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Right, [player]?{fast}"
@@ -1859,7 +1799,7 @@ label mas_chess_dlg_qs_lost:
 
 # quicksave lost start
 label mas_chess_dlg_qs_lost_start:
-    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game, and now I can't open it anymore."
+    m 2lksdlb "Uh, [player]...{w=0.5} It seems I messed up in saving our last game, and now I can't open it anymore."
     return
 
 # generic quicksave lost statement
@@ -1880,7 +1820,7 @@ label mas_chess_dlg_qs_lost_2:
 
 # 3rd time quicksave lost statement
 label mas_chess_dlg_qs_lost_3:
-    m 1lksdlc "I'm so clumsy, [player]...{w} I'm sorry."
+    m 1lksdlc "I'm so clumsy, [player]...{w=0.3} I'm sorry."
     m 3eksdla "Let's start a new game instead."
     return
 
@@ -1922,7 +1862,7 @@ label mas_chess_dlg_qf_lost:
 
 # intro to quickfile lost
 label mas_chess_dlg_qf_lost_start:
-    m 2lksdla "Well,{w} this is embarrassing."
+    m 2lksdla "Well,{w=0.3} this is embarrassing."
     m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
 
@@ -1962,7 +1902,7 @@ label mas_chess_dlg_qf_lost_ofcn_gen:
 # 3rd time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_3:
     m 2esc "..."
-    m "[player],{w} did you..."
+    m "[player],{w=0.2} did you..."
     m 2dsc "Nevermind."
     m 1esc "Let's play a new game."
     return
@@ -1975,12 +1915,12 @@ label mas_chess_dlg_qf_lost_ofcn_4:
 label mas_chess_dlg_qf_lost_ofcn_5:
     $ mas_loseAffection()
     m 2esc "..."
-    m "[player],{w} this is happening way too much."
+    m "[player],{w=0.2} this is happening way too much."
     m 2dsc "I really don't believe you this time."
     pause 2.0
     m 2esc "I hope you're not messing with me."
     m "..."
-    m 1esc "Whatever.{w} Let's just play a new game."
+    m 1esc "Whatever.{w=0.5} Let's just play a new game."
     return
 
 # 6th time you ofcn monika
@@ -1991,13 +1931,15 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # TODO: this makes sense compared to the go_ham event since
     # its just throwing away stuff instead of cheating
     # disable chess forever!
-    $ mas_loseAffection(modifier=10)
-    $ persistent.game_unlocks["chess"] = False
-    # workaround to deal with peeople who havent seen the unlock chess label
-    $ persistent._seen_ever["unlock_chess"] = True
+    python:
+        mas_loseAffection(modifier=10)
+        #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
+        mas_stripEVL("mas_unlock_chess")
+        #Workaround to deal with peeople who havent seen the unlock chess label
+        persistent._seen_ever["mas_unlock_chess"] = True
 
     m 2dfc "..."
-    m 2efc "[player],{w} I don't believe you."
+    m 2efc "[player],{w=0.3} I don't believe you."
     m 2efd "If you're just going to throw away our chess games like that..."
     m 6wfw "Then I don't want to play chess with you anymore!"
     return True
@@ -2023,19 +1965,19 @@ label mas_chess_dlg_qf_lost_may_start:
 # generic maybe monika
 # NOTE: we do a check for the file every line
 label mas_chess_dlg_qf_lost_may_gen:
-    m 2ekd "[player]!{w} I should have known you were just messing with me!"
+    m 2ekd "[player]!{w=0.2} I should have known you were just messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # generic maybe monika, found file
 label mas_chess_dlg_qf_lost_may_gen_found:
     m 2eua "Oh!"
-    m 1hua "There's the save.{w} Thanks for putting it back, [player]."
+    m 1hua "There's the save.{w=0.2} Thanks for putting it back, [player]."
     m 1eua "Now we can continue our game."
     return store.mas_chess.CHESS_GAME_CONT
 
 # 2nd time maybe monika
 label mas_chess_dlg_qf_lost_may_2:
-    m 2ekd "[player]!{w} Stop messing with me!"
+    m 2ekd "[player]!{w=0.2} Stop messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # 2nd time maybe monika, found file
@@ -2070,7 +2012,7 @@ label mas_chess_dlg_qf_lost_may_filechecker:
                 seconds += 1
 
     if file_found:
-        m 1hua "Yay!{w} Thanks for putting it back, [player]."
+        m 1hua "Yay!{w=0.2} Thanks for putting it back, [player]."
         m "Now we can continue our game."
         show monika 1eua
         return mas_chess.CHESS_GAME_CONT
@@ -2096,9 +2038,9 @@ label mas_chess_dlg_qf_lost_may_3:
 
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
-    $ import datetime
-    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
-    $ mas_loseAffection(modifier=0.5)
+    python:
+        persistent._mas_chess_timed_disable = datetime.datetime.now()
+        mas_loseAffection(modifier=0.5)
 
     m 2wfw "[player]!"
     m 2wfx "You removed the save again."
@@ -2127,7 +2069,7 @@ label mas_chess_dlg_qf_lost_acdnt_start:
 # generic accident monika
 label mas_chess_dlg_qf_lost_acdnt_gen:
     m 1eka "[player]..."
-    m "That's okay.{w} Accidents happen."
+    m "That's okay.{w=0.3} Accidents happen."
     m 1eua "Let's play a new game instead."
     return
 
@@ -2215,7 +2157,6 @@ label mas_chess_dlg_qf_edit_y_1:
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection(modifier=0.5)
 
@@ -2280,7 +2221,7 @@ label mas_chess_dlg_qf_edit_n_2:
 label mas_chess_dlg_qf_edit_n_3:
     $ mas_loseAffection(modifier=3)
     m 2dfc "[player]..."
-    m 2dftdc "I kept a backup of our game.{w} I know you edited the save file."
+    m 2dftdc "I kept a backup of our game.{w=0.5} I know you edited the save file."
     m 2dftsc "I just-"
     $ _history_list.pop()
     m 6ektsc "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
@@ -2321,7 +2262,6 @@ label mas_chess_dlg_qf_edit_n_3_s:
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
     python:
-        import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
         mas_loseAffection()
 

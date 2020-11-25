@@ -10,6 +10,7 @@
 #
 # TOC:
 # EXM010 - ZOOM stuff
+# EXM020 - BOOP stuff
 # EXM900 - EXTRA menu stuff
 
 
@@ -115,7 +116,6 @@ label mas_extra_menu_close:
 
 label mas_idle_loop:
     pause 10.0
-    $ renpy.not_infinite_loop(60)
     jump mas_idle_loop
 
 default persistent._mas_opened_extra_menu = False
@@ -140,10 +140,11 @@ label mas_extra_menu_firsttime:
     if not persistent._mas_opened_extra_menu:
         m 1hua "Look forward to some neat things in this menu!"
 
-    python:
-        this_ev = mas_getEV("mas_extra_menu_firsttime")
-        this_ev.unlocked = True
-        this_ev.pool = True
+    $ mas_setEVLPropValues(
+        "mas_extra_menu_firsttime",
+        unlocked=True,
+        pool=True
+    )
 
     # explaining different features here
     call mas_extra_menu_zoom_intro
@@ -220,34 +221,37 @@ label mas_extra_menu_zoom_in_max_first_time:
     m 6hubfa "Warm..."
     return
 
+
+################################# BOOP STUFF ##################################
+# [EX020]
+
+label mas_extra_menu_boop_intro:
+    m 1eua "boop intro"
+    return
+
+default persistent._mas_pm_boop_stats = {}
+# key - boop key/clickzone key
+# value - number of boops
+
+
 ################################# EXTRA MENU STUFF ############################
 # [EXM900]
 
 
 
-style mas_mbs_vbox is vbox
-style mas_mbs_button is button
-style mas_mbs_button_text is button_text
-
-style mas_mbs_vbox:
+# FIXME: the following styles cannot be checked because of the commented code
+style mas_mbs_vbox is vbox:
     spacing 0
 
-style mas_mbs_button is default:
-#    width 35
-#    height 35
-#    tile False
-    idle_background  "mod_assets/buttons/squares/square_idle.png"
-    hover_background "mod_assets/buttons/squares/square_hover.png"
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style mas_mbs_button is generic_button_light
+#    xysize (35, 35)
 
-style mas_mbs_button_text is default:
-    font gui.default_font
-    size gui.text_size
-    xalign 0.5
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
-    outlines []
+style mas_mbs_button_dark is generic_button_dark
+#    xysize (35, 35)
+
+style mas_mbs_button_text is generic_button_text_light
+
+style mas_mbs_button_text_dark is generic_button_text_dark
 
 #screen mas_modebar_toggle():
 #    zorder 50
@@ -311,28 +315,37 @@ style mas_mbs_button_text is default:
 #            textbutton _("not") action NullAction()
 #            textbutton _("not3") action NullAction()
 
+style mas_extra_menu_frame:
+    background Frame("mod_assets/frames/trans_pink2pxborder100.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+
+style mas_extra_menu_frame_dark:
+    background Frame("mod_assets/frames/trans_pink2pxborder100_d.png", Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+
+style mas_extra_menu_label_text is hkb_button_text:
+    color "#FFFFFF"
+
+style mas_extra_menu_label_text_dark is hkb_button_text_dark:
+    color "#FD5BA2"
+
 style mas_adjust_vbar:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
     thumb "gui/slider/horizontal_hover_thumb.png"
     bar_vertical True
 
-style mas_adjustable_button is default:
-    idle_background Frame("mod_assets/buttons/squares/square_idle.png", left=3, top=3)
-    hover_background Frame("mod_assets/buttons/squares/square_hover.png", left=3, top=3)
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style mas_adjustable_button is generic_button_light:
+    xysize (None, None)
+    padding (3, 3, 3, 3)
 
-style mas_adjustable_button_text is default:
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
-    outlines []
+style mas_adjustable_button_dark is generic_button_dark:
+    xysize (None, None)
+    padding (3, 3, 3, 3)
+
+style mas_adjustable_button_text is generic_button_text_light:
     kerning 0.2
-    xalign 0.5
-    yalign 0.5
-    font gui.default_font
-    size gui.text_size
 
+style mas_adjustable_button_text_dark is generic_button_text_dark:
+    kerning 0.2
 
 screen mas_extramenu_area():
     zorder 52
@@ -346,21 +359,24 @@ screen mas_extramenu_area():
 
         # close button
         textbutton _("Close"):
-            area (61, 594, 120, 35)
-            style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            area (60, 596, 120, 35)
+            style "hkb_button"
             action Jump("mas_extra_menu_close")
 
         # zoom control
         frame:
             area (195, 450, 80, 255)
-            background Frame(mas_getTimeFile("mod_assets/frames/trans_pink2pxborder100.png"), left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+            style "mas_extra_menu_frame"
             vbox:
                 spacing 2
                 label "Zoom":
-                    style ("hkb_button_text" if not mas_globals.dark_mode else "hkb_dark_button_text")
+                    text_style "mas_extra_menu_label_text"
+                    xalign 0.5
+
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
+                    selected False
                     xsize 72
                     ysize 35
                     xalign 0.3
@@ -371,3 +387,16 @@ screen mas_extramenu_area():
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
+
+        # TODO: frame for nose boop control
+        # TODO: only have available if certain affection +
+        #   (Definitely not below normal)
+#        frame:
+#            area (280, 450, 80, 120)
+#            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+#
+#            vbox:
+#                spacing 2
+#
+#                label "Boop":
+#                    style "hkb_button_text"
