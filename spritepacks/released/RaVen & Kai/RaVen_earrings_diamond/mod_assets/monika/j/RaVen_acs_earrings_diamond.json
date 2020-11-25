@@ -17,7 +17,7 @@
     "dlg_plural": true,
     "select_info": {
         "display_name": "Earrings (Diamond)",
-        "thumb": "RaVen_earrings_diamond",
+        "thumb": "raven_earrings_diamond",
         "group": "earrings"
     },
     "giftname": "diamondearrings"
