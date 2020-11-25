@@ -1779,6 +1779,7 @@ label mas_song_strawberry:
     m 2dsbsb "{cps=28}I would make a bas{w=0.1}ket with the front {w=0.3} of my t-shirt,{/cps}"
     extend 2esbsb "{cps=26} and take home {/cps}{cps=22}as many of you as I could~{/cps}"
     m 2hsbsu "..."
+    show monika 2hsbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsu "I can't wait till the day I can finally be with you, [player]."
     m 5dkbsa "But for now{w=0.3} I guess I can just continue to daydream about all the adventures we'll have together one day."
     m 5esbsb "I can't wait to be with you..."
