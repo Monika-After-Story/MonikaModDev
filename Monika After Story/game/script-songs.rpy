@@ -1823,6 +1823,7 @@ label mas_song_strawberry_long:
     m 2ssb "{cps=26}Because the night sky is filled with stars{w=0.1} and comets {nw}{/cps}"
     extend 2sub "{cps=26}and planets that no {w=0.1}one has seen yet~{/cps}"
     m 2dubsb "{cps=26}And I want to look at you...{/cps}"
+    show monika 2dubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rsbsa "{cps=26}Lying down on my front lawn...{/cps}"
     m 5dsbsb "{cps=26}I'll try to take you all in at once{/cps}"
     m 5dsbsb "{cps=26}But you just go {i}on and on and on~{/i}{/cps}"
