@@ -1826,6 +1826,7 @@ label mas_song_strawberry_long:
     m 5rsbsa "{cps=26}Lying down on my front lawn...{/cps}"
     m 5dsbsb "{cps=26}I'll try to take you all in at once{/cps}"
     m 5dsbsb "{cps=26}But you just go {i}on and on and on~{/i}{/cps}"
+    show monika 5dsbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 2hsbsu "..."
     if persistent._mas_gender == 'M':
         m 3eua "This song was written by a guy for a girl,{nw}"
