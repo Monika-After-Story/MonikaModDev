@@ -1494,17 +1494,16 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="mas_song_swing_lifeaway_short",
+            eventlabel="mas_song_swing_lifeaway",
             prompt="Swing Life Away",
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
-            unlocked=True,
-            aff_range=(mas_aff.NORMAL,None)
+            aff_range=(mas_aff.NORMAL, None)
          ),
         code="SNG"
     )
 
-label mas_song_swing_lifeaway_short:
+label mas_song_swing_lifeaway(from_long=False):
     m "{i}~Am I loud and clear,{/i}{w=0.2}{nw}"
     extend "{i} or am I breaking up?~{/i}"
     m "{i}~Am I still your charm,{/i}{w=0.2}{nw}"
@@ -1518,11 +1517,12 @@ label mas_song_swing_lifeaway_short:
     m "{i}~Let's unwrite these pages,{/i}{w=0.2}{nw}"
     extend "{i} and replace them with our own words~{/i}"
 
+    if not from_long:
     m "Being vulnerable and showing the scars of your past can be daunting to say the least..."
     m "There are so many ways what you have been through could be interpreted and used to hurt you."
-    m "But just know that I will never hold your past over your head, no matter what."
-    m "We should just write our own story together, and accept our scars as necessary components of shaping us."
-    m "No matter how lost we get, when we're together, we write on nothing but blank pages~"
+    m "But just know that I will never hold your past against you, no matter what."
+    m "We should just write our own story together, and accept that our scars are necessary to shape who we are."
+    m "No matter how lost we can be, when we're together, we write on nothing but blank pages~"
     return
 
 init 5 python:
@@ -1541,18 +1541,6 @@ init 5 python:
 
 label mas_song_swing_lifeaway_long:
     call mas_song_swing_lifeaway_long(from_long=True)
-    m "{i}~Am I loud and clear,{/i}{w=0.2}{nw}"
-    extend "{i} or am I breaking up?~{/i}"
-    m "{i}~Am I still your charm,{/i}{w=0.2}{nw}"
-    extend "{i} or am I just bad luck?~{/i}"
-    m "{i}~Are we getting closer,{/i}{w=0.2}{nw}"
-    extend "{i} or are we just getting more lost?~{/i}"
-    m "{i}~I'll show you mine,{/i}{w=0.2}{nw}"
-    extend "{i} if you show me yours first~{/i}"
-    m "{i}~Let's compare scars,{/i}{w=0.2}{nw}"
-    extend "{i} I'll tell you whose is worse~{/i}"
-    m "{i}~Let's unwrite these pages,{/i}{w=0.2}{nw}"
-    extend "{i} and replace them with our own words~{/i}"
 
     m "{i}~We live on front porches and swing life away~{/i}"
     m "{i}~We get by just fine here on minimum wage~{/i}"
