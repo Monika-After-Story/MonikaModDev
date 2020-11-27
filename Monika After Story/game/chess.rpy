@@ -675,7 +675,7 @@ label game_chess:
         "What's the difference?":
             m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
             extend 3eub "Essentially, the player who is not trapped is declared the winner."
-            jump casual_rules_ask
+            jump .casual_rules_ask
 
     m 3eua "Would you like to practice or play against me?{nw}"
     $ _history_list.pop()
