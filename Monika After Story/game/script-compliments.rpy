@@ -852,3 +852,49 @@ label mas_compliment_spending_time_2:
             m 2lksdlb "Well, I'm glad that you're entertained..."
             m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_outfit",
+            prompt="I love your outfit!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_outfit:
+    if not renpy.seen_label("mas_compliment_outfit_2"):
+        call mas_compliment_outfit_2
+    else:
+        call mas_compliment_outfit_3
+    return
+
+label mas_compliment_outfit_2:
+    m 1wubsd "Oh, [player]..."
+    m 3hubsb "I'm really glad you like how I look!"
+    m 3hubfb "You always make my heart jump~"
+    menu:
+        "You look beautiful in everything you wear!":
+            $ mas_gainAffection(5,bypass=True)
+            m 2wubfo "[player]...!"
+            m 5hubfb "I'm really happy that you think so!"
+            m 5hubsa "I would love to see how you look~"
+
+        "You look really cute.":
+            $ mas_gainAffection(1,bypass=True)
+            m 1hubfa "Ahaha~"
+            m 3hubfb "Thanks, [player]!"
+
+        "It's acceptable at least.":
+            $ mas_gainAffection(0.5,bypass=True) # at least you tried
+            m 2lkb "Thanks, I guess..."
+    return
+
+label mas_compliment_outfit_3:
+    m 1hubsb "[mas_compliments.thanks_quip]"
+    m 2hubsb "I'm sure you look good, too!"
+    return
