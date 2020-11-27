@@ -331,6 +331,12 @@ init -100 python in mas_sprites:
 
     # --- default mux types ---
 
+    DEF_MUX_AHOGE = [
+        "ahoge",
+        "hat",
+    ]
+    # default mux type for ahoges
+
     DEF_MUX_RB = [
         "ribbon",
         "bow",
@@ -381,6 +387,7 @@ init -100 python in mas_sprites:
     # default mux types for left-desk related items (namely foods)
 
     DEF_MUX_HAT = [
+        "ahoge",
         "hat",
         "bow",
         "bunny-scrunchie",
@@ -398,6 +405,10 @@ init -100 python in mas_sprites:
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
+        "ahoge": ACSTemplate(
+            "ahoge",
+            mux_type=DEF_MUX_AHOGE,
+        ),
         "bow": ACSTemplate(
             "bow",
             mux_type=DEF_MUX_RB,
@@ -1062,6 +1073,35 @@ init -5 python in mas_sprites:
         init_acs(remover_acs)
         return remover_acs
 
+
+    def get_acs(acs_name):
+        """
+        Gets the ACS object for a given name from the ACS map
+
+        IN:
+            acs_name - name of the ACS to get
+
+        RETURNS: ACS object, or None if no acs object with the given name
+        """
+        return ACS_MAP.get(acs_name, None)
+
+
+    def get_acs_of_type(acs_type):
+        """
+        Gets all ACS objects for a given ACS type.
+
+        IN:
+            acs_type - type of ACS to get
+
+        RETURNS: list of ACS objects with the given type. list may be empty
+            if no ACS of the given type
+        """
+        return [
+            acs for acs in ACS_MAP.itervalues()
+            if acs.acs_type == acs_type
+        ]
+
+
     def init_acs(mas_acs):
         """
         Initlializes the given MAS accessory into a dictionary map setting
@@ -1294,6 +1334,7 @@ init -5 python in mas_sprites:
         # abort if current hair not compatible wtih CAS
         if not is_hairacs_compatible(moni_chr.hair, new_acs):
             temp_space["abort"] = True
+            return
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
