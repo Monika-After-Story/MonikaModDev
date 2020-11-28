@@ -901,7 +901,7 @@ label mas_compliment_outfit_2:
             m 3hubfb "Thank you so much!"
             m 1hubsa "You always make me feel so special."
             show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m "I love you, [mas_get_player_nickname()]!"
+            m 5hubsa "I love you, [mas_get_player_nickname()]!"
             m 5hubsb "I would love to see how you look~"
             $ mas_ILY()
 
@@ -910,7 +910,7 @@ label mas_compliment_outfit_2:
             m 1hubfa "Ahaha~"
             m 3hubfb "Thanks, [mas_get_player_nickname()]!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m "I really appreciate you saying so."
+            m 5hubfb "I really appreciate you saying so."
 
         "It's acceptable at least.":
             $ mas_gainAffection(0.5,bypass=True) # She looks beautiful, what are you talking about?!
@@ -921,12 +921,12 @@ label mas_compliment_outfit_3:
     if monika_chr.clothes == mas_clothes_def:
         m 1hubsa "[mas_compliments.thanks_quip]"
         show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m "If you want me to wear something else just ask!"
+        m 5hubsa "If you want me to wear something else just ask!"
     
     elif monika_chr.is_wearing_clothes_with_exprop("cosplay"):
         m 1hubsa "[mas_compliments.thanks_quip]"
         show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m "I will always love cosplaying for you!"
+        m 5hubsa "I will always love cosplaying for you!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("costume"):
         m 1hubsa "[mas_compliments.thanks_quip]"
@@ -936,7 +936,7 @@ label mas_compliment_outfit_3:
         m 1hubsa "[mas_compliments.thanks_quip]"
         m 2tubsu "Glad that you like what you see~"
         show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m "Ahaha!"
+        m 5hublb "Ahaha!"
     else:
         m 1hubsb "[mas_compliments.thanks_quip]"
         m 2hubsb "I'm sure you look good, too!"
