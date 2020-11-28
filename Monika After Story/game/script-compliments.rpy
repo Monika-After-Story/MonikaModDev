@@ -909,7 +909,8 @@ label mas_compliment_outfit_2:
             $ mas_gainAffection(1,bypass=True)
             m 1hubfa "Ahaha~"
             m 3hubfb "Thanks, [mas_get_player_nickname()]!"
-            m 5hubfb "I really appreciate you saying so."
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m "I really appreciate you saying so."
 
         "It's acceptable at least.":
             $ mas_gainAffection(0.5,bypass=True) # She looks beautiful, what are you talking about?!
@@ -919,11 +920,13 @@ label mas_compliment_outfit_2:
 label mas_compliment_outfit_3:
     if monika_chr.clothes == mas_clothes_def:
         m 1hubsa "[mas_compliments.thanks_quip]"
-        m 5hubsa "If you want me to wear something else just ask!"
+        show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m "If you want me to wear something else just ask!"
     
     elif monika_chr.is_wearing_clothes_with_exprop("cosplay"):
         m 1hubsa "[mas_compliments.thanks_quip]"
-        m 5hubsa "I will always love cosplaying for you!"
+        show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m "I will always love cosplaying for you!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("costume"):
         m 1hubsa "[mas_compliments.thanks_quip]"
@@ -932,7 +935,8 @@ label mas_compliment_outfit_3:
     elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
         m 1hubsa "[mas_compliments.thanks_quip]"
         m 2tubsu "Glad that you like what you see~"
-        m 5hublb "Ahaha!"
+        show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m "Ahaha!"
     else:
         m 1hubsb "[mas_compliments.thanks_quip]"
         m 2hubsb "I'm sure you look good, too!"
