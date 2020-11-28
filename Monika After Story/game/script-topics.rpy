@@ -16203,26 +16203,24 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_brainstorming",
-            category=["Misc"],
-            conditional="mas_seenLabels(['monika_debate'])",
-            prompt="Brainstorming"
+            category=["advice"],
+            prompt="Brainstorming",
+            random=True
         )
     )
 
 label monika_brainstorming:
-    m 1eua "[player], have you ever heard of brainstorming?"
-    m 3esb "It's an interesting technique of making up new brilliant ideas with just anything that comes to your mind, and it's really simple."
-    m 2esa "This technique is really popular among designers, inventors and writers - anyone who need fresh ideas sometimes."
-    m 2esa "Brainstorming is usually practiced in groups or teams, so we tried it in debate club once."
-    m 3rssdlb "Of course, it doesn't mean that it can't be done by one person, you can try this on your own, too."
-    m 1dsc "You need to focus on what you want to create, {w=0.5}{nw}"
-    extend 1eub "and bring up everything that comes into your head."
-    m 1esb "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if you are working in team."
-    m 3eua "When you think you're done, it's time to recycle suggestions and turn them into actual ideas."
-    m 3esa "You can combine them with other suggestions, think them through once again, and so on - {w=0.5}{nw}"
-    extend 3eub "eventually they'll become something that you'd call a good idea."
-    m 2hub "This is exactly where you can let your mind go wild, and that's what I like about this technique the most!"
-    m 2tkc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, and brainstorming could help one bypass this inner barrier."
-    m 3ekb "The beauty of thoughts can be expressed in so many different ways."
-    m 3esa "They are only ideas in transit, you're the one who give them the road."
+    m 1esd "[player], have you ever heard of brainstorming?"
+    m 1eua "It's an interesting technique of coming up with new ideas by just thinking of anything that comes to your mind."
+    m 3eud "This technique is really popular among designers, inventors, and writers--anyone who needs fresh ideas."
+    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the literature club when deciding what to do for the festival."
+    m 1dtc "You need to focus on what you want to create and bring up anything and everything that comes into your head."
+    m 1eud "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if working in teams."
+    m 1eua "When you're done, go back through all the suggestions and turn them into actual ideas."
+    m 1euc "You can combine them with other suggestions, think them through once again, and so on."
+    m 3eub "...Eventually they'll become something that you'd call a good idea!"
+    m 3hub "This is exactly where you can let your mind go wild, and that's what I like about this technique the most!"
+    m 1esc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, but brainstorming can help pass this inner barrier."
+    m 3eka "The beauty of thoughts can be expressed in so many different ways..."
+    m 3duu "They are only ideas in transit, you're the one who gives them the road."
     return
