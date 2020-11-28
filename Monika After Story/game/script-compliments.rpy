@@ -853,8 +853,6 @@ label mas_compliment_spending_time_2:
             m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
 
-
-
 init 5 python:
     addEvent(
         Event(
@@ -874,27 +872,68 @@ label mas_compliment_outfit:
     return
 
 label mas_compliment_outfit_2:
-    m 1wubsd "Oh, [player]..."
-    m 3hubsb "I'm really glad you like how I look!"
-    m 3hubfb "You always make my heart jump~"
+    if monika_chr.clothes == mas_clothes_def:
+        m 1hubfa "Thank you, [mas_get_player_nickname()]!"
+        m 1hubsa "Even if it's just my school uniform, I'm really glad you like how I look!"
+        m 3hubsb "I would love to wear other clothes for you~"
+
+    elif monika_chr.is_wearing_clothes_with_exprop("cosplay"):
+        m 1hubfa "Thank you, [mas_get_player_nickname()]!"
+        m 3hubsa "I'm really glad you like how I look!"
+        m 3hubfb "Even if it's a cosplay if so nice of you to say~"
+
+    elif monika_chr.is_wearing_clothes_with_exprop("costume"):
+        m 1hubfa "Thank you, [mas_get_player_nickname()]!"
+        m 3hubsa "I'm really glad you like how I look with this!"
+        m 3hubsb "It was a hard decision, since there are so many costumes."
+
+    elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
+        m 1hubfa "Thank you, [mas_get_player_nickname()]!"
+        m 2lkbsb "It was a hard decision when I first chose this."
+        m 3hubfb "So I'm really glad you like it!"
+    else:
+        m 1hubfb "Thank you, [mas_get_player_nickname()]!"
+        m 1hubfa "I always wanted to wear other clothes for you, so I'm very happy that you think so!"
     menu:
-        "You look beautiful in everything you wear!":
+        "You look beautiful on everything you wear!":
             $ mas_gainAffection(5,bypass=True)
-            m 2wubfo "[player]...!"
-            m 5hubfb "I'm really happy that you think so!"
-            m 5hubsa "I would love to see how you look~"
+            m 2wubsd "[player]...!"
+            m 3hubfb "Thank you so much!"
+            m 1hubsa "You always make me feel so special."
+            show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m "I love you, [mas_get_player_nickname()]!"
+            m 5hubsb "I would love to see how you look~"
+            $ mas_ILY()
 
         "You look really cute.":
             $ mas_gainAffection(1,bypass=True)
             m 1hubfa "Ahaha~"
-            m 3hubfb "Thanks, [player]!"
+            m 3hubfb "Thanks, [mas_get_player_nickname()]!"
+            m 5hubfb "I really appreciate you saying so."
 
         "It's acceptable at least.":
-            $ mas_gainAffection(0.5,bypass=True) # at least you tried
+            $ mas_gainAffection(0.5,bypass=True) # She looks beautiful, what are you talking about?!
             m 2lkb "Thanks, I guess..."
     return
 
 label mas_compliment_outfit_3:
-    m 1hubsb "[mas_compliments.thanks_quip]"
-    m 2hubsb "I'm sure you look good, too!"
+    if monika_chr.clothes == mas_clothes_def:
+        m 1hubsa "[mas_compliments.thanks_quip]"
+        m 5hubsa "If you want me to wear something else just ask!"
+    
+    elif monika_chr.is_wearing_clothes_with_exprop("cosplay"):
+        m 1hubsa "[mas_compliments.thanks_quip]"
+        m 5hubsa "I will always love cosplaying for you!"
+
+    elif monika_chr.is_wearing_clothes_with_exprop("costume"):
+        m 1hubsa "[mas_compliments.thanks_quip]"
+        m 2hubsa "I'm glad you like how I look with this!"
+
+    elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
+        m 1hubsa "[mas_compliments.thanks_quip]"
+        m 2tubsu "Glad that you like what you see~"
+        m 5hublb "Ahaha!"
+    else:
+        m 1hubsb "[mas_compliments.thanks_quip]"
+        m 2hubsb "I'm sure you look good, too!"
     return
