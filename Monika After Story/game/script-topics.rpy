@@ -16223,6 +16223,6 @@ label monika_brainstorming:
     m 1euc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, {w=0.1}{nw}"
     extend 1eua "but brainstorming can help pass this inner barrier."
     m 3eka "The beauty of thoughts can be expressed in so many different ways..."
-    m 3duu "They're only ideas in transit, {nw}"
+    m 3duu "They're only ideas in transit, {w=0.1}{nw}"
     extend 3euu "you're the one who gives them the road."
     return
