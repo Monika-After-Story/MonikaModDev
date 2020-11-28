@@ -12974,8 +12974,9 @@ init 5 python:
 
 label monika_load_custom_music:
     m 1hua "Sure!"
-    m 1dsc "Give me a moment to check the folder..."
+    m 1dsc "Give me a moment to check the folder.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
     python:
+        # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
         store.songs.initMusicChoices(
             persistent.playername.lower() == "sayori"
@@ -13000,7 +13001,8 @@ label monika_load_custom_music:
         menu:
             m "Do you remember how to add custom music?{fast}"
             "Yes.":
-                m "Okay, but make sure you did it correctly before asking me to check for custom music."
+                m "Okay, make sure you did it correctly."
+
             "No.":
                 $ pushEvent("monika_add_custom_music",True)
     return
