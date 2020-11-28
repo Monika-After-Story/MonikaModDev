@@ -124,6 +124,9 @@ default persistent._mas_force_clothes = False
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
 
+default persistent._mas_last_ahoge_dt = None
+# set to the dt of when we last set the ahoge
+
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
@@ -2271,6 +2274,17 @@ init -3 python:
             #   of highlights
             self.tablechair = MASTableChair("def", "def")
 
+            # set to the ahoge we had set during this session
+            self.last_ahoge = None
+
+            # special mapping of ACS with acs types
+            # this is a dual key map. Use this for quick removal of acs types
+            # key: acs type
+            # value: dict of the following format:
+            #   key: acs name
+            #   value: acs object
+            self._acs_type_map = {}
+
         def __repr__(self):
             """
             this is lengthy and will contain all objects
@@ -2316,6 +2330,61 @@ init -3 python:
                 accessory list, or None if the given acs_type is not valid
             """
             return self.acs.get(acs_type, None)
+
+        def ahoge(self, force_change=False):
+            """
+            Applies a random ahoge to Monika.
+
+            IN:
+                force_change - True will force an ahoge to be set, even if
+                    one is currently available.
+                    (Deafult: False)
+
+            RETURNS: True if we set the ahoge, False if not
+            """
+            # dont wear one if this ahoge was already set today, unless
+            # we are doing a force change.
+            if (
+                    persistent._mas_last_ahoge_dt is not None
+                    and not force_change:
+                    and datetime.datetime.now().date() 
+                        == persistent._mas_last_ahoge_dt.date()
+            ):
+                    # we already set the ahoge today so dont set it again.
+                    return False
+
+            # random select an ahoge
+            self._set_ahoge(
+                random.choice(store.mas_sprites.get_acs_of_type("ahoge"))
+            )
+            return True
+
+        def _set_ahoge(self, ahoge_acs, force_wear=False):
+            """
+            Sets the ahoge for Monika, also setting the appropriate last 
+            ahoge and everything.
+
+            IN:
+                ahoge_acs - the ACS object for the ahoge to wear
+                    NOTE: pass in None to clear the ahoge.
+                force_wear - pass True to wear the ahoge even if we are wearing
+                    a hat.
+                    (Default: False)
+            """
+            if ahoge_acs is None:
+                # clear the ahoge, if we are wearing it.
+                if self.last_ahoge is not None:
+                    self.remove_acs(self.last_ahoge)
+                return
+
+            # set the last ahoge to the given acs
+            self.last_ahoge = ahoge_acs
+            persistent._mas_last_ahoge_dt = datetime.datetime.now()
+
+            if self.get_acs_of_type("hat") is not None and not force_wear:
+                return
+
+            self.wear_acs(ahoge_acs)
 
         def _determine_poses(self, lean, arms):
             """
@@ -3173,7 +3242,6 @@ init -3 python:
                 self.acs_list_map.get(accessory.name, None)
             )
 
-
         def remove_acs_exprop(self, exprop):
             """
             Removes all ACS of given exprop.
@@ -3186,7 +3254,6 @@ init -3 python:
                 if _acs and _acs.hasprop(exprop):
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
 
-
         def remove_acs_mux(self, mux_types):
             """
             Removes all ACS with a mux type in the given list.
@@ -3194,11 +3261,10 @@ init -3 python:
             IN:
                 mux_types - list of acs_types to remove from acs
             """
-            for acs_name in self.acs_list_map.keys():
-                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
-                if _acs and _acs.acs_type in mux_types:
-                    self.remove_acs_in(_acs, self.acs_list_map[acs_name])
-
+            for mux_type in mux_types:
+                acs_with_mux = self._acs_type_map.get(mux_type, {})
+                for acs_name, acs in acs_with_mux:
+                    self.remove_acs_in(acs, acs.acs_type)
 
         def remove_acs_in(self, accessory, acs_type):
             """
@@ -3248,6 +3314,11 @@ init -3 python:
                 # cleanup mapping
                 if accessory.name in self.acs_list_map:
                     self.acs_list_map.pop(accessory.name)
+
+                # cleanup type mapping
+                type_map = self._acs_type_map.get(accessory.acs_type, {})
+                if accessory.name in type_map:
+                    type_map.pop(accessory.name)
 
                 # now remove
                 acs_list.remove(accessory)
@@ -3566,8 +3637,12 @@ init -3 python:
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
-                # add to mapping
+                # add to mappings
                 self.acs_list_map[accessory.name] = acs_type
+
+                if acs_type not in self._acs_type_map:
+                    self._acs_type_map[acs_type] = {}
+                self._acs_type_map[acs_type][accessory.name] = accessory
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
