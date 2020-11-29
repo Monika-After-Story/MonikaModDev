@@ -3045,22 +3045,15 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-                "and mas_isInTimeRange(datetime.time(hour=20), datetime.time(hour=0))"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_PUSH,
-            start_date=mas_d25e - datetime.timedelta(days=4),
+            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
             end_date=mas_d25,
             years=[],
-            aff_range=(mas_aff.NORMAL, None),
-        ),
-        skipCalendar=True
+            aff_range=(mas_aff.NORMAL, None)
     )
 
 label mas_d25_monika_christmas_eve:
-    $ is_d25eve = datetime.datetime.today().day == mas_d25e.day
-
     m 3hua "[player]!"
     m 3hub "Can you believe it...?{w=1} It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
@@ -3070,13 +3063,7 @@ label mas_d25_monika_christmas_eve:
     #Were there last Christmas
     if mas_HistVerifyLastYear_k(True, "d25.actions.spent_d25"):
         m "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
-
-        if is_d25eve:
-            $ _day_var = "tomorrow"
-        else:
-            $ _day_var = "it"
-
-        m 5hkbsa "I can't wait for [_day_var!"
+        m 5hkbsa "I can't wait for tomorrow!"
 
     #Weren't there last Christmas
     elif mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
@@ -3099,8 +3086,7 @@ label mas_d25_monika_christmas_eve:
         else:
             m 5ekbfa "..."
             show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            $ holiday_str = "on Christmas Eve" if is_d25eve else "tonight"
-            call mas_lingerie_intro(holiday_str=holiday_str, lingerie_choice=mas_clothes_santa_lingerie)
+            call mas_lingerie_intro(holiday_str="Christmas Eve", lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
     return
