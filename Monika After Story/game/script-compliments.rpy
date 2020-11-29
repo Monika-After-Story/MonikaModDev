@@ -889,7 +889,7 @@ label mas_compliment_outfit_2:
 
     elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
         m 1hubfa "Thank you, [mas_get_player_nickname()]!"
-        m 2lkbsb "I was really nervous to show you at first."
+        m 2lkbsb "I was really nervous to show you at first..."
         m 3hubfb "So I'm really glad you like it!"
     else:
         m 1hubfb "Thank you, [mas_get_player_nickname()]!"
