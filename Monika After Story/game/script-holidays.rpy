@@ -203,6 +203,13 @@ image mas_o31_deco = ConditionSwitch(
     "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
 )
 
+init 501 python:
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_deco",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
 init python:
     MAS_O31_COSTUME_CG_MAP = {
         mas_clothes_marisa: "o31mcg",
@@ -233,13 +240,13 @@ init -10 python:
         """
         Shows o31 visuals
         """
-        renpy.show("mas_o31_deco", zorder=7)
+        mas_showDecoTag("mas_o31_deco")
 
     def mas_o31HideVisuals():
         """
         Hides o31 visuals + vignette
         """
-        renpy.hide("mas_o31_deco")
+        mas_hideDecoTag("mas_o31_deco")
         renpy.hide("vignette")
         #Also going to stop vignette from showing on subsequent spaceroom calls
         store.mas_globals.show_vignette = False
@@ -1454,21 +1461,21 @@ init -10 python:
         """
         Shows d25 visuals.
         """
-        renpy.show("mas_d25_banners", zorder=7)
-        renpy.show("mas_d25_tree", zorder=8)
-        renpy.show("mas_d25_garlands", zorder=7)
-        renpy.show("mas_d25_lights", zorder=7)
-        renpy.show("mas_d25_gifts", zorder=9)
+        mas_showDecoTag("mas_d25_banners")
+        mas_showDecoTag("mas_d25_tree")
+        mas_showDecoTag("mas_d25_garlands")
+        mas_showDecoTag("mas_d25_lights")
+        mas_showDecoTag("mas_d25_gifts")
 
     def mas_d25HideVisuals():
         """
         Hides d25 visuals
         """
-        renpy.hide("mas_d25_banners")
-        renpy.hide("mas_d25_tree")
-        renpy.hide("mas_d25_garlands")
-        renpy.hide("mas_d25_lights")
-        renpy.hide("mas_d25_gifts")
+        mas_hideDecoTag("mas_d25_banners")
+        mas_hideDecoTag("mas_d25_tree")
+        mas_hideDecoTag("mas_d25_garlands")
+        mas_hideDecoTag("mas_d25_lights")
+        mas_hideDecoTag("mas_d25_gifts")
 
     def mas_d25ReactToGifts():
         """
@@ -1775,6 +1782,37 @@ image mas_d25_gifts_2 = MASFilterSwitch(
 image mas_d25_gifts_3 = MASFilterSwitch(
     "mod_assets/location/spaceroom/d25/gifts_3.png"
 )
+
+init 501 python:
+    MASImageTagDecoDefinition.register_img(
+        "mas_d25_banners",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_d25_garlands",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_d25_tree",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=6)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_d25_gifts",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=7)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_d25_lights",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=7)
+    )
 
 #autoload starter check
 label mas_holiday_d25c_autoload_check:
