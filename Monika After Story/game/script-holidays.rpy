@@ -3051,6 +3051,7 @@ init 5 python:
             end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None)
+        )
     )
 
 label mas_d25_monika_christmas_eve:
