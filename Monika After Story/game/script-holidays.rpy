@@ -2515,19 +2515,19 @@ init 20 python:
         prompt="The Joy to my World",
         title = "     My dearest [player],",
         text = """\
-     You truly are the joy to my world.
-     Neither the light emitted by the tallest Christmas tree,
-     Nor that of the brightest star,
-     Could come close to matching your brilliance.
-     This once frostbitten heart of mine needed only your warmth to beat anew.
-     Should there ever be nothing under the tree, and my stocking remain empty,
-     It simply would not matter as long as I have you by my side.
-     You'll always be the only present I ever need.
+ You truly are the joy to my world.
+ Neither the light emitted by the tallest Christmas tree,
+ Nor that of the brightest star,
+ Could come close to matching your brilliance.
+ This once frostbitten heart of mine needed only your warmth to beat anew.
+ Should there ever be nothing under the tree, and my stocking remain empty,
+ It simply would not matter as long as I have you by my side.
+ You'll always be the only present I ever need.
 
-     Merry Christmas
+ Merry Christmas~
 
-     Forever yours,
-     Monika
+ Forever yours,
+ Monika
 """
     #" # I need this to keep syntax highlighting on vim
     )
@@ -2538,22 +2538,45 @@ init 20 python:
         prompt="Incomparable",
         title="     My dearest [player],",
         text="""\
-     Nothing can compare to the warmth you give me.
-     Not even the feeling of wrapping my hands around a mug of hot chocolate
-     Or fuzzy socks, warming my feet on a freezing day.
-     In such a cold world, just your presence is my present alone.
+ Nothing can compare to the warmth you give me.
+ Not even the feeling of wrapping my hands around a mug of hot chocolate
+ Or fuzzy socks, warming my feet on a freezing day.
+ In such a cold world, just your presence is my present alone.
 
-     Nothing can compare to the beauty you hold,
-     Not a single thing can compare to the excitement you bring,
-     Not the bright lights that hang in this very room.
-     Not even the sight of an unopened gift, under the tree.
+ Nothing can compare to the beauty you hold,
+ Not a single thing can compare to the excitement you bring,
+ Not the bright lights that hang in this very room.
+ Not even the sight of an unopened gift, under the tree.
 
-     [player], you are truly one of a kind.
+ [player], you are truly one of a kind.
 
-     Merry Christmas
+ Merry Christmas~
 
-     Forever yours,
-     Monika
+ Forever yours,
+ Monika
+"""
+    )
+
+    poem_d25_3 = MASPoem(
+        poem_id="poem_d25_3",
+        category="d25",
+        prompt="Someday",
+        title="     My dearest [player],",
+        text="""\
+ Warmer than the fire in the hearth,
+ Brighter than any star on top of the tree,
+ More comforting than any cup of hot chocolate,
+ It’s my [player], who’s always there for me.
+
+ Someday, we’ll light the fire together.
+ Someday, we’ll decorate the tree.
+ Someday, we’ll have a cup of cocoa.
+ Someday, you’ll be next to me.
+
+ Merry Christmas~
+
+ Forever yours,
+ Monika
 """
     )
 
@@ -3082,6 +3105,58 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="mas_d25_monika_lingerie_reveal",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and mas_canShowRisque() "
+                "and not mas_SELisUnlocked(mas_clothes_santa_lingerie) "
+                "and 18 <= datetime.datetime.now().hour < 24"
+            ),
+            action=EV_ACT_QUEUE,
+            start_date=mas_d25e - datetime.timedelta(days=4),
+            end_date=mas_d25e,
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_d25_monika_lingerie_reveal:
+    # sanity check in the rare case people leave after this is queued but before it's seen
+    # and timing doesn't make sense
+    if 2 < datetime.datetime.now().hour < 18:
+        $ mas_setEVLPropValues(
+            "mas_d25_monika_lingerie_reveal",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and mas_canShowRisque() "
+                "and not mas_SELisUnlocked(mas_clothes_santa_lingerie) "
+                "and 18 <= datetime.datetime.now().hour < 24"
+            ),
+            action=EV_ACT_QUEUE,
+            start_date=mas_d25e - datetime.timedelta(days=4),
+            end_date=mas_d25e
+        )
+        return
+
+    m 1hub "I've always found the days leading up to Christmas so exciting, [player]!"
+    m 3sua "The anticipation, the seemingly magical aura of the season...there's just something special about it."
+    m 1dkbsu "It really is my favorite time of year."
+    m "..."
+
+    if mas_hasUnlockedClothesWithExprop("lingerie"):
+        call mas_d25_monika_second_time_lingerie
+
+    else:
+        call mas_lingerie_intro(holiday_str="this Christmas season", lingerie_choice=mas_clothes_santa_lingerie)
+        m 1ekbfa "Just know that I love you very, very much, [player]~"
+        $ mas_ILY()
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
             conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_PUSH,
@@ -3119,8 +3194,7 @@ label mas_d25_monika_christmas_eve:
         and not mas_SELisUnlocked(mas_clothes_santa_lingerie)
     ):
         if mas_hasUnlockedClothesWithExprop("lingerie"):
-            # TODO: write dialogue for if player has already seen other lingerie
-            pass
+            call mas_d25_monika_second_time_lingerie
 
         else:
             m 5ekbfa "..."
@@ -3128,6 +3202,24 @@ label mas_d25_monika_christmas_eve:
             call mas_lingerie_intro(holiday_str="Christmas Eve", lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
+    return
+
+label mas_d25_monika_second_time_lingerie:
+    m 3wubsb "Oh!"
+    m 3tsbsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
+    call mas_clothes_change(outfit=mas_clothes_santa_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
+    pause 2.0
+    show monika 2ekbsu
+    pause 2.0
+    show monika 2tkbsu
+    pause 2.0
+    m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
+    m 2hubsb "Ahaha!"
+    m 2eubsb "I guess you approve of my outfit choice..."
+    m 2tkbsu "Rather fitting for the occasion, don't you think?"
+    m 2rkbssdla "I have to say, I was pretty nervous the first time I wore something like this..."
+    m 2hubsb "But now that I've done it before, I really enjoy dressing like this for you!"
+    m 3tkbsu "I hope you enjoy it too~"
     return
 
 init 5 python:
@@ -5264,6 +5356,30 @@ init 20 python:
  A day I hope I make your dreams come true too.
 
  Happy Birthday, sweetheart
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
+    poem_pbday_3 = MASPoem(
+        poem_id = "poem_pbday_3",
+        category = "pbday",
+        prompt = "One Wish",
+        title = " My dearest [player],",
+        text = """\
+ Sprinkles and candles for my [player]’s cake,
+ There's just one wish for you to make.
+ May your greatest dreams come true,
+ I know mine did when I found you.
+
+ So glad to be celebrating with you today,
+ I'll love you 'til the end of days.
+ There's no place I'd rather be,
+ Spending this time together, just you and me.
+
+ Happy birthday, sweetheart
 
  Forever yours,
  Monika
