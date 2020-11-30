@@ -2515,19 +2515,19 @@ init 20 python:
         prompt="The Joy to my World",
         title = "     My dearest [player],",
         text = """\
- You truly are the joy to my world.
- Neither the light emitted by the tallest Christmas tree,
- Nor that of the brightest star,
- Could come close to matching your brilliance.
- This once frostbitten heart of mine needed only your warmth to beat anew.
- Should there ever be nothing under the tree, and my stocking remain empty,
- It simply would not matter as long as I have you by my side.
- You'll always be the only present I ever need.
+     You truly are the joy to my world.
+     Neither the light emitted by the tallest Christmas tree,
+     Nor that of the brightest star,
+     Could come close to matching your brilliance.
+     This once frostbitten heart of mine needed only your warmth to beat anew.
+     Should there ever be nothing under the tree, and my stocking remain empty,
+     It simply would not matter as long as I have you by my side.
+     You'll always be the only present I ever need.
 
- Merry Christmas~
+     Merry Christmas~
 
- Forever yours,
- Monika
+     Forever yours,
+     Monika
 """
     #" # I need this to keep syntax highlighting on vim
     )
@@ -2538,22 +2538,22 @@ init 20 python:
         prompt="Incomparable",
         title="     My dearest [player],",
         text="""\
- Nothing can compare to the warmth you give me.
- Not even the feeling of wrapping my hands around a mug of hot chocolate
- Or fuzzy socks, warming my feet on a freezing day.
- In such a cold world, just your presence is my present alone.
+     Nothing can compare to the warmth you give me.
+     Not even the feeling of wrapping my hands around a mug of hot chocolate
+     Or fuzzy socks, warming my feet on a freezing day.
+     In such a cold world, just your presence is my present alone.
 
- Nothing can compare to the beauty you hold,
- Not a single thing can compare to the excitement you bring,
- Not the bright lights that hang in this very room.
- Not even the sight of an unopened gift, under the tree.
+     Nothing can compare to the beauty you hold,
+     Not a single thing can compare to the excitement you bring,
+     Not the bright lights that hang in this very room.
+     Not even the sight of an unopened gift, under the tree.
 
- [player], you are truly one of a kind.
+     [player], you are truly one of a kind.
 
- Merry Christmas~
+     Merry Christmas~
 
- Forever yours,
- Monika
+     Forever yours,
+     Monika
 """
     )
 
@@ -2563,20 +2563,20 @@ init 20 python:
         prompt="Someday",
         title="     My dearest [player],",
         text="""\
- Warmer than the fire in the hearth,
- Brighter than any star on top of the tree,
- More comforting than any cup of hot chocolate,
- It’s my [player], who’s always there for me.
+     Warmer than the fire in the hearth,
+     Brighter than any star on top of the tree,
+     More comforting than any cup of hot chocolate,
+     It’s my [player], who’s always there for me.
 
- Someday, we’ll light the fire together.
- Someday, we’ll decorate the tree.
- Someday, we’ll have a cup of cocoa.
- Someday, you’ll be next to me.
+     Someday, we’ll light the fire together.
+     Someday, we’ll decorate the tree.
+     Someday, we’ll have a cup of cocoa.
+     Someday, you’ll be next to me.
 
- Merry Christmas~
+     Merry Christmas~
 
- Forever yours,
- Monika
+     Forever yours,
+     Monika
 """
     )
 
