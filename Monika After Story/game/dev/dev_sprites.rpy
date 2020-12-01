@@ -387,7 +387,7 @@ label dev_ahoge_test:
     $ ahoges = store.mas_sprites.get_acs_of_type("ahoge")
     $ index = 0
     while index < len(ahoges):
-        $ monika_chr.wear_acs(ahoges[index])
+        $ monika_chr._set_ahoge(ahoges[index], force_wear=True)
         $ ahoge_name = ahoges[index].name
         m 6nkd "this is [ahoge_name]{w=1}{nw}"
         $ index += 1
