@@ -2346,7 +2346,7 @@ init -3 python:
             # we are doing a force change.
             if (
                     persistent._mas_last_ahoge_dt is not None
-                    and not force_change:
+                    and not force_change
                     and datetime.datetime.now().date() 
                         == persistent._mas_last_ahoge_dt.date()
             ):
@@ -2637,6 +2637,9 @@ init -3 python:
             self._load_acs(_acs_afh_names, self.AFH_ACS)
             self._load_acs(_acs_mid_names, self.MID_ACS)
             self._load_acs(_acs_pst_names, self.PST_ACS)
+
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
 
         def _load_acs(self, per_acs, acs_type):
             """
@@ -3216,6 +3219,9 @@ init -3 python:
             for index, rec_layer in enumerate(self.REC_LAYERS):
                 self._load_acs_obj(_data[index+2], rec_layer)
 
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
+
         def reset_all(self, by_user=None):
             """
             Resets all of monika
@@ -3263,8 +3269,8 @@ init -3 python:
             """
             for mux_type in mux_types:
                 acs_with_mux = self._acs_type_map.get(mux_type, {})
-                for acs_name, acs in acs_with_mux:
-                    self.remove_acs_in(acs, acs.acs_type)
+                for acs_name in acs_with_mux.keys():
+                    self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
         def remove_acs_in(self, accessory, acs_type):
             """
@@ -3330,19 +3336,19 @@ init -3 python:
             for rec_layer in self.REC_LAYERS:
                 self.remove_all_acs_in(rec_layer)
 
-        def remove_all_acs_in(self, acs_type):
+        def remove_all_acs_in(self, acs_layer):
             """
-            Removes all accessories from the given accessory type
+            Removes all accessories from the given accessory layer
 
             IN:
-                acs_type - ACS type to remove all
+                acs_layer - ACS layer to remove acs from
             """
             if self.lock_acs:
                 return
 
-            if acs_type in self.acs:
+            if acs_layer in self.acs:
                 # need to clear blacklisted
-                for acs in self.acs[acs_type]:
+                for acs in self.acs[acs_layer]:
                     # run programming point
                     acs.exit(self)
 
@@ -3354,8 +3360,7 @@ init -3 python:
                     if acs.name in self.acs_list_map:
                         self.acs_list_map.pop(acs.name)
 
-                self.acs[acs_type] = list()
-
+                self.acs[acs_layer] = list()
 
         def reset_clothes(self, by_user=None):
             """
@@ -3569,7 +3574,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, acs.get_rec_layer())
 
-        def wear_acs_in(self, accessory, acs_type):
+        def wear_acs_in(self, accessory, acs_layer):
             """
             Wears the given accessory
 
@@ -3578,7 +3583,7 @@ init -3 python:
 
             IN:
                 accessory - accessory to wear
-                acs_type - layer to wear the acs in.
+                acs_layer - layer to wear the acs in.
             """
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
@@ -3587,15 +3592,15 @@ init -3 python:
             # if the given layer does not match rec layer, force the correct
             # layer unless override
             if (
-                    acs_type != accessory.get_rec_layer()
+                    acs_layer != accessory.get_rec_layer()
                     and not self._override_rec_layer
             ):
-                acs_type = accessory.get_rec_layer()
+                acs_layer = accessory.get_rec_layer()
 
             # verify aso_type is valid for the desired acs layer
             # unless override
             if not self._override_rec_layer:
-                if acs_type in (self.BSE_ACS, self.ASE_ACS):
+                if acs_layer in (self.BSE_ACS, self.ASE_ACS):
                     valid_aso_type = MASAccessoryBase.ASO_SPLIT
                 else:
                     valid_aso_type = MASAccessoryBase.ASO_REG
@@ -3603,7 +3608,7 @@ init -3 python:
                 if accessory.aso_type != valid_aso_type:
                     return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3615,7 +3620,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort wearing if we were told to abort
@@ -3631,15 +3636,16 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
                 # add to mappings
-                self.acs_list_map[accessory.name] = acs_type
+                self.acs_list_map[accessory.name] = acs_layer
 
+                acs_type = accessory.acs_type
                 if acs_type not in self._acs_type_map:
                     self._acs_type_map[acs_type] = {}
                 self._acs_type_map[acs_type][accessory.name] = accessory
@@ -3652,7 +3658,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # run programming point for acs
@@ -3663,7 +3669,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
         def wear_acs_pre(self, acs):

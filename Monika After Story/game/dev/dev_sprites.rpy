@@ -363,6 +363,10 @@ init -2 python in mas_sprites:
     def _acs__testingxcp_exit(_moni_chr, **kwargs):
         raise Exception("ACS EXIT")
 
+init python:
+    if persistent._mas_dev_ahoge is None:
+        persistent._mas_dev_ahoge = config.developer
+
 init 5 python:
     addEvent(
         Event(

@@ -1352,6 +1352,8 @@ init -1 python:
     ### AHOGE SWOOP
     ## ahoge_swoop
     # A swooping ahoge
+    # NOTE: this one juts out in front so it should be rendered later than
+    #   the others.
     # thanks Briar Young
     store.mas_sprites.init_acs(MASAccessory(
         "ahoge_swoop",
@@ -1363,7 +1365,7 @@ init -1 python:
         stay_on_start=True,
         acs_type="ahoge",
         rec_layer=MASMonika.AFH_ACS,
-        priority=7,
+        priority=13,
     ))
 
     ### AHOGE TWISTY
