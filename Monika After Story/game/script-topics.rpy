@@ -9197,8 +9197,17 @@ label monika_attractiveness:
     if mas_isMoniNormal(higher=True):
         m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
         m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise, and keep myself clean...among other things."
-        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
-        m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
+
+        if mas_isMoniEnamored(higher=True):
+            $ first_line_var = "when"
+            $ second_line_end = "whenever it'll happen"
+
+        else:
+            $ first_line_var = "maybe"
+            $ second_line_end = "if it'll ever happen"
+
+        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows [first_line_var] I'll be able to cross over into your reality and have a normal body like you."
+        m 1hua "It won't hurt to make sure I'll be ready for that transition [second_line_end]."
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'll always love you no matter how you look."
