@@ -2308,7 +2308,7 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
             _minutes = random.randint(25, 40)
         else:
             _minutes = random.randint(35, 50)
-        holdme_slep_timer = datetime.timedelta(minutes=_minutes)
+        holdme_sleep_timer = datetime.timedelta(minutes=_minutes)
 
         # Stop the music
         if stop_music:
@@ -2319,7 +2319,7 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
             if songs.current_track is None:
                 holdme_events.append(
                     PauseDisplayableEvent(
-                        holdme_slep_timer,
+                        holdme_sleep_timer,
                         (
                             renpy.partial(renpy.music.stop, fadeout=5.0),
                             renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=5.0)
@@ -2365,13 +2365,13 @@ label monika_holdme_reactions:
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
 
     # Reset these var if needed
-    if elapsed_time <= holdme_slep_timer:
+    if elapsed_time <= holdme_sleep_timer:
         if songs.current_track == songs.FP_MONIKA_LULLABY:
             $ songs.current_track = songs.FP_NO_SONG
         if songs.selected_track == songs.FP_MONIKA_LULLABY:
             $ songs.selected_track = songs.FP_NO_SONG
 
-    if elapsed_time > holdme_slep_timer:
+    if elapsed_time > holdme_sleep_timer:
         call monika_holdme_long
 
     elif elapsed_time > datetime.timedelta(minutes=10):
