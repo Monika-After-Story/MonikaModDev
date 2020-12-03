@@ -36,6 +36,9 @@ init -1 python in mas_stories:
     STORY_RETURN = "Nevermind"
     story_database = dict()
 
+    #Time between story unlocks of the same type (in hours). Changes over sessions, but also changes after the next story unlocks
+    TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
+
     #TODO: Build functions to 'register' story types. This will add all related info to the map
     #saving the manual additions to each part
 
@@ -59,6 +62,8 @@ init -1 python in mas_stories:
             story_type - story type to check if we can unlock a new one
                 (Default: TYPE_NORMAL)
         """
+        global TIME_BETWEEN_UNLOCKS
+
         new_story_ls = store.persistent._mas_last_seen_new_story.get(story_type, None)
 
         #Get the first story of this type
@@ -68,16 +73,16 @@ init -1 python in mas_stories:
         if not first_story:
             return False
 
-        return (
-            seen_event(first_story)
-            if new_story_ls is None
-            else (
-                new_story_ls != store.mas_getCurrSeshStart().date()
-                #To account for users who run MAS constantly
-                #we'll also allow them to unlock if it's been at least 24 hours in the same session
-                or store.mas_timePastSince(new_story_ls, datetime.timedelta(days=1))
-            )
+        can_show_new_story = (
+            store.seen_event(first_story) if new_story_ls is None
+            else store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
         )
+
+        #If we're showing a new story, randomize the time between unlocks again
+        if can_show_new_story:
+            TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
+
+        return can_show_new_story
 
     def _unlock_everything():
         """
