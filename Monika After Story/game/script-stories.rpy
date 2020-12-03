@@ -73,9 +73,20 @@ init -1 python in mas_stories:
         if not first_story:
             return False
 
-        can_show_new_story = (
-            store.seen_event(first_story) if new_story_ls is None
-            else store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
+        can_show_new_story = ((
+                store.seen_event(first_story) if new_story_ls is None
+                else store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
+            )
+            and len(
+                store.Event.filterEvents(
+                    story_database,
+                    pool=False,
+                    aff=store.mas_curr_affection,
+                    unlocked=False,
+                    flag_ban=store.EV_FLAG_HFM,
+                    category=(True, [story_type])
+                )
+            ) > 0
         )
 
         #If we're showing a new story, randomize the time between unlocks again
@@ -99,27 +110,14 @@ init -1 python in mas_stories:
             story_type - Type of story to unlock.
                 (Default: TYPE_NORMAL)
         """
-        #Prep the args that never change so we can easily pass these into the following funcs
-        static_kwargs = {
-            "pool": False,
-            "aff": store.mas_curr_affection,
-            "category": (True, [story_type])
-        }
-
         #Get locked stories
         stories = store.Event.filterEvents(
             story_database,
             unlocked=False,
-            **static_kwargs
+            pool=False,
+            aff=store.mas_curr_affection,
+            category=(True, [story_type])
         )
-
-        #If we somehow have no stories, we'll pick randomly from the unlocked group for this type
-        if not len(stories):
-            stories = store.Event.filterEvents(
-                story_database,
-                unlocked=True,
-                **static_kwargs
-            )
 
         #Grab one of the stories
         story = renpy.random.choice(stories.values())
