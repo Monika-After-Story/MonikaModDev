@@ -592,6 +592,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_simple",
             prompt="The Simple Genie",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
