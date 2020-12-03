@@ -1324,6 +1324,21 @@ init -5 python in mas_sprites:
             store.mas_selspr.set_prompt(rm_acs.acs_type, "wear")
 
 
+    def acs_rm_exit_pst_removal(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs after the ACS is removed
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc - acs location the ACS was removed from
+        """
+        # if removing hat, wear ahoge if we have any
+        if rm_acs.acs_type == "hat" and moni_chr.last_ahoge is not None:
+            moni_chr.wear_acs(moni_chr.last_ahoge)
+
+
     def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
         """
         Runs before mux type acs are removed
@@ -2375,6 +2390,7 @@ init -3 python:
                 # clear the ahoge, if we are wearing it.
                 if self.last_ahoge is not None:
                     self.remove_acs(self.last_ahoge)
+                    self.last_ahoge = None
                 return
 
             # set the last ahoge to the given acs
@@ -3272,18 +3288,18 @@ init -3 python:
                 for acs_name in acs_with_mux.keys():
                     self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
-        def remove_acs_in(self, accessory, acs_type):
+        def remove_acs_in(self, accessory, acs_layer):
             """
-            Removes the given accessory from the given accessory list type
+            Removes the given accessory from the given accessory list layer
 
             IN:
                 accessory - accessory to remove
-                acs_type - ACS type
+                acs_layer - ACS layer to remove from
             """
             if self.lock_acs:
                 return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3295,7 +3311,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort removal if we were told to abort
@@ -3310,7 +3326,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # cleanup blacklist
@@ -3328,6 +3344,14 @@ init -3 python:
 
                 # now remove
                 acs_list.remove(accessory)
+
+                # finally post removal code
+                store.mas_sprites.acs_rm_exit_pst_removal(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_layer
+                )
 
         def remove_all_acs(self):
             """
