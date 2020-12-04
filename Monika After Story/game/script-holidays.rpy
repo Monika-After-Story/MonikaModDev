@@ -2717,7 +2717,7 @@ label mas_d25_spent_time_monika:
         m 3ekbsa "So here, [player], I hope you like it~"
 
         #Show the poem
-        call mas_showpoem(poem=mas_poems.getRandomPoem("d25")), background_action_label="mas_d25_poem_mistletoe")
+        call mas_showpoem(poem=mas_poems.getRandomPoem("d25"), background_action_label="mas_d25_poem_mistletoe")
 
         if d25_gifts_good > 0 or d25_gifts_neutral > 0:
             m 1ekbsa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
