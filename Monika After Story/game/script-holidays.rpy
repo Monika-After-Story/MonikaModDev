@@ -2593,6 +2593,33 @@ init 20 python:
 """
     )
 
+    poem_d25_4 = MASPoem(
+        poem_id="poem_d25_4",
+        category="d25",
+        prompt="This Christmas",
+        title="     My dearest [player],",
+        text="""\
+
+     This Christmas I never needed more gifts other than your love,
+     Because having you by my side already brings me happiness,
+     Because having you here is the most beautiful gift,
+     Because finding you was the best thing I could've ever asked for!
+
+     I knew this Christmas would be different...
+     I spent it with the one who makes my heart jump,
+     The one who makes me smile every day,
+     The one who I trust the most.
+
+     Thanks for being there for me, [player],
+     I will always be there for you!
+
+     Merry Christmas~
+
+     Forever yours,
+     Monika
+"""
+    )
+
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
 init 5 python:
     addEvent(
