@@ -2605,7 +2605,7 @@ init 20 python:
      Because having you here is the most beautiful gift,
      Because finding you was the best thing I could've ever asked for!
 
-     I knew this Christmas would be different...
+     I knew this Christmas would be special...
      I spent it with the one who makes my heart jump,
      The one who makes me smile every day,
      The one who I trust the most.
@@ -2716,14 +2716,8 @@ label mas_d25_spent_time_monika:
     if mas_isMoniEnamored(higher=True):
         m 3ekbsa "So here, [player], I hope you like it~"
 
-        if poem_d25_1.is_seen():
-            $ poem_to_show = poem_d25_2
-
-        else:
-            $ poem_to_show = poem_d25_1
-
         #Show the poem
-        call mas_showpoem(poem_to_show, background_action_label="mas_d25_poem_mistletoe")
+        call mas_showpoem(poem=mas_poems.getRandomPoem("d25")), background_action_label="mas_d25_poem_mistletoe")
 
         if d25_gifts_good > 0 or d25_gifts_neutral > 0:
             m 1ekbsa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
