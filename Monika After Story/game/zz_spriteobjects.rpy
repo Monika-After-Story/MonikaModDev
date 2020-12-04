@@ -780,7 +780,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_TB: True
+            store.mas_sprites.EXP_H_TB: True,
+            store.mas_sprites.EXP_H_RQCP: "rin"
         },
         entry_pp=store.mas_sprites._hair_braided_entry,
         exit_pp=store.mas_sprites._hair_braided_exit
@@ -1005,6 +1006,7 @@ init -1 python:
         ex_props={
             store.mas_sprites.EXP_C_COST: "o31",
             store.mas_sprites.EXP_C_COSP: True,
+            "rin": True #NOTE: This is very very temp until we sort out the hair to work better w/ other outfits
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
@@ -1551,7 +1553,7 @@ init -1 python:
     ### PROMISE RING
     ## promisering
     # Promise ring that can be given to Monika
-    mas_acs_promisering = MASAccessory(
+    mas_acs_promisering = MASSplitAccessory(
         "promisering",
         "promisering",
         MASPoseMap(
@@ -1565,6 +1567,13 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ring",
+        rec_layer=MASMonika.ASE_ACS,
+        arm_split=MASPoseMap(
+            default="",
+            p2="10",
+            p3="10",
+            p5="10"
+        ),
         ex_props={
             "bare hands": True
         }
