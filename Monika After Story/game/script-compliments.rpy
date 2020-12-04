@@ -905,7 +905,8 @@ label mas_compliment_outfit_2:
             m 5eubfu "I'm glad you like what you see~"
 
         "Wearing different clothes really helps.":
-            m 2lkd "Uh, thanks..."
+            $ mas_loseAffection()
+            m 2ltd "Uh, thanks..."
 
     return
 
