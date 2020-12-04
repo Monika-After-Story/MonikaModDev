@@ -315,8 +315,19 @@ init -2 python in mas_sprites:
             _moni_chr.change_hair(store.mas_hair_def)
             _moni_chr.wear_acs(store.mas_acs_ribbon_def)
 
+        mas_lockEVL("mas_compliment_outfit", "CMP")
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
+
+
+    def _clothes_def_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for def clothes
+        """
+
+        mas_unlockEVL("mas_compliment_outfit", "CMP")
+
 
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
@@ -840,7 +851,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_def_entry
+        entry_pp=store.mas_sprites._clothes_def_entry,
+        exit_pp=store.mas_sprites._clothes_def_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
     store.mas_selspr.init_selectable_clothes(
