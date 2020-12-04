@@ -1827,6 +1827,7 @@ label mas_holiday_d25c_autoload_check:
         not persistent._mas_d25_in_d25_mode
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
+        and persistent._mas_current_background == store.mas_background.MBG_DEF
     ):
         #Firstly, we need to see if we need to run playerbday before all of this
         python:
@@ -2035,6 +2036,10 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
+    $ changed_bg = False
+    if mas_current_background != mas_background_def:
+        $ changed_bg = True
+
     if not persistent._mas_d25_deco_active:
         if mas_isplayer_bday():
             window hide
@@ -2085,9 +2090,14 @@ label mas_d25_monika_holiday_intro:
             #if you've been with her for over a year, you really should be at Love by now
             m 3hua "Time really flies when I'm with you~"
 
-    m 3eua "Do you like what I've done with the room?"
+    m 3eua "Do you like what I've done with the place?"
     m 1hua "I must say that I'm pretty proud of it."
-    m "Christmas time has always been one of my favorite occasions of the year..."
+
+    if changed_bg:
+        m 3rksdla "I only had enough decorations for one room, so I decided on the classroom...{w=0.2}I hope that's okay."
+        m "But anyway..."
+
+    m 3eua "Christmas time has always been one of my favorite occasions of the year..."
 
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
@@ -2195,6 +2205,9 @@ label mas_d25_monika_holiday_intro_deco:
 
         #Enable deco
         persistent._mas_d25_deco_active = True
+
+        # change to spaceroom
+        mas_changeBackground(mas_background_def, set_persistent=True)
 
     # now we can do spacroom call
     call spaceroom(scene_change=True, dissolve_all=True)
@@ -3199,7 +3212,7 @@ label mas_d25_monika_christmas_eve:
         else:
             m 5ekbfa "..."
             show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            call mas_lingerie_intro(holiday_str="Christmas Eve", lingerie_choice=mas_clothes_santa_lingerie)
+            call mas_lingerie_intro(holiday_str="on Christmas Eve", lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
     return
