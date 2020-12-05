@@ -16258,10 +16258,10 @@ label monika_gmos:
     m 2eud "Personally, I think that GMOs have a lot of potential to do good, but only if they continue to be heavily researched and tested."
     m 4dkc "Major issues such as herbicide usage and gene flow {i}need{/i} to be fixed as well...{w=0.2}{nw}"
     extend 4efc "biodiversity is already at enough risk as is from climate change and deforestation."
-    m 2esd "As long as we're careful, GMOs will be fine... {w=0.2}Recklessness and carelessness pose the biggest threat."
+    m 2esd "As long as we're careful, GMOs will be fine...{w=0.2}recklessness and carelessness pose the biggest threat."
     m 2dsc "..."
-    m 7eua "So what do you think, [player]?"
-    extend 1ttu "Quite the {i}promising field{/i}, wouldn't you say? {w=0.2}Ehehe~"
+    m 7eua "So what do you think, [player]? {w=0.2}{nw}"
+    extend 7ttu "Quite the {i}promising field{/i}, wouldn't you say? {w=0.2}Ehehe~"
     m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
     m 1eua "I think that's enough for now, thanks for listening~"
     return
