@@ -377,6 +377,7 @@ label v0_11_7(version="v0_11_7"):
     python:
         mas_setEVLPropValues(
             'mas_d25_spent_time_monika',
+            conditional="persistent._mas_d25_in_d25_mode",
             start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
             end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=3))
         )

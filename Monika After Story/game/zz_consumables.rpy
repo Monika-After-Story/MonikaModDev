@@ -1223,7 +1223,7 @@ init 6 python:
         late_entry_list=[13, 19],
         max_re_serve=2,
         should_restock_warn=False,
-        max_stock_amount=20,
+        max_stock_amount=18,
         prep_low=None
     )
 

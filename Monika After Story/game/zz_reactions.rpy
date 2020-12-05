@@ -1819,6 +1819,7 @@ init 5 python:
 label mas_reaction_candycane:
     $ candycane = mas_getConsumable("candycane")
     $ mas_giftCapGainAff(1)
+    $ is_having_food = bool(MASConsumable._getCurrentFood())
 
     if candycane.isMaxedStock():
         m 1eksdla "[player], I think I have enough candy canes for now."
@@ -1830,20 +1831,35 @@ label mas_reaction_candycane:
             m 3hub "Thanks [player]!"
 
         else:
-            $ candycane.have(skip_leadin=True)
+            if not is_having_food:
+                if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                    $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+                $ candycane.have(skip_leadin=True)
+
             m 3wub "Candy canes!"
+
             if store.seen_event("monika_icecream"):
                 m 1hub "You know how much I love mint!"
             else:
                 m 1hub "I just love the flavor of mint!"
-            m 1eua "Thanks, [player]~"
 
-            python:
-                #Enable the gift
-                candycane.enable()
-                #Restock
-                candycane.restock(10)
+            if is_having_food:
+                m 1eua "I'll be sure to try some later~"
 
+            elif monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me take this plushie away."
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+                call mas_transition_to_emptydesk
+                pause 3.0
+                call mas_transition_from_emptydesk
+
+            m 1eua "Thanks again, [player]~"
+
+            #Enable the gift
+            $ candycane.enable()
+
+        #Restock
+        $ candycane.restock(9)
 
     $ mas_receivedGift("mas_reaction_candycane")
     $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candycane", "category")
