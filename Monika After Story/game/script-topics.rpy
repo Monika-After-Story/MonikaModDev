@@ -14026,7 +14026,7 @@ label monika_life_skills:
     m 3euc "I've been reflecting on what I got out of high school."
     m 2rksdlb "With all the things I had going for me, you'd think I'd be pretty set for the future..."
     m 1euc "But despite all that, I'm not sure how many life skills I actually learned."
-    m 3eka "Sure, I was on top of all my classes, and I guess I learned a lot of interesting things..."
+    m 3eka "Sure, I was on top of all my classes, and I guess I learned a lot of things on many subjects..."
     m 1euc "But how much of that am I really going to use later in life?"
     m 3esd "I feel like schools don't do a good job teaching some of the really important things, like life skills."
     m 3ekc "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
@@ -16229,7 +16229,7 @@ label monika_studying:
 
             if mas_isMoniNormal(higher=True):
                 m 1rksdlblu "Though I get the feeling I'd keep getting distracted, studying together with my loving [bf]."
-                m 1hublb "Ehehe~"
+                m 1hublu "Ehehe~"
 
             m 1eua "By the way, does that mean you're actually good at studying, [player]?{nw}"
             $ _history_list.pop()
@@ -16237,7 +16237,7 @@ label monika_studying:
                 m "By the way, does that mean you're actually good at studying, [player]?{fast}"
                 "Yes.":
                     $ persistent._mas_pm_good_at_studying = mas_STUDY_GOOD_YES
-                    m 3huu "That's good!"
+                    m 3huu "That's wonderful!"
                     m 3eub "Beyond the feeling of personal accomplishment, having good grades opens up many possibilities for scholarships and employment."
                     m 3hua "It's so nice to be able to pick whichever path you want from any number of possibilities."
                     m 3eublb "So keep working hard, [player]!{w=0.3} I'm sure there's a bright future ahead of you!"
@@ -16288,7 +16288,7 @@ label monika_studying:
 
         "Somewhat.":
             $ persistent._mas_pm_likes_studying = mas_STUDY_LIKE_SOMEWHAT
-            m 1hua "I'm glad you at least found some ammount of satisfaction in your studies, [mas_get_player_nickname()]."
+            m 1hua "I'm glad you at least found some amount of satisfaction in your studies, [mas_get_player_nickname()]."
             m 3eub "Being comfortable with studying is sure to bring you many good things in the future, and I don't mean just for school."
             m 1rksdla "Now, I don't mean to put you on the spot, but whether you enjoy it or not..."
             m 3eua "...Are you actually good at studying, [player]?{nw}"
