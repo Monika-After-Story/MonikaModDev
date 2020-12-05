@@ -388,7 +388,7 @@ label v0_11_7(version="v0_11_7"):
             end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23))
         )
 
-       mas_setEVLPropValues(
+        mas_setEVLPropValues(
             'mas_nye_monika_nye_dress_intro',
             conditional=(
                 "persistent._mas_d25_in_d25_mode "

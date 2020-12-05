@@ -2628,9 +2628,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_spent_time_monika",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL,None),
             start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
