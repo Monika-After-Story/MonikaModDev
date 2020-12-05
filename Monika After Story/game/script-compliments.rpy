@@ -853,6 +853,7 @@ label mas_compliment_spending_time_2:
             m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
 
+# this compliment's lock/unlock is controlled by the def outfit pp
 init 5 python:
     addEvent(
         Event(
