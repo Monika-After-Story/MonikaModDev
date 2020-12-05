@@ -15,18 +15,18 @@
         "bow"
     ],
     "stay_on_start": true,
-    "giftname": "8bitbow",
+    "giftname": "8whitebow",
     "ex_props": {
         "ribbon-like": true
     },
-    "dlg_desc": "classic bow",
+    "dlg_desc": "8-bit bow",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "NES-Style",
+        "display_name": "8-bit White",
         "thumb": "retro_bow_normal",
         "group": "ribbon",
         "select_dlg": [
-            "Back to the classics!"   
+            "How nostalgic!"
         ]
     }
 }

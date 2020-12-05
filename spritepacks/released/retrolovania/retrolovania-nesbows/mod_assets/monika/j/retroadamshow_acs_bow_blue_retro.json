@@ -19,14 +19,14 @@
     "ex_props": {
         "ribbon-like": true
     },
-    "dlg_desc": "classic blue bow",
+    "dlg_desc": "8-bit blue bow",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "NES-Style Blue",
+        "display_name": "8-bit Blue",
         "thumb": "retro_bow_blue",
         "group": "ribbon",
         "select_dlg": [
-            "Back to the classics!"   
+            "How nostalgic!"
         ]
     }
 }
