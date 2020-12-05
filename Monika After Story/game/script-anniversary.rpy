@@ -529,8 +529,9 @@ init 5 python:
     )
 
 label anni_3:
-    m 4wuo "Wow, three years!"
-    m 3rksdla "Normally if a couple stays together for three years..."
+    m 4wuo "Is it really our third anniversary already?"
+    m 2hubsb "Wow... the time really has flown by, hasn't it?"
+    m 3rksdla "You know, normally if a couple stays together for three years..."
     m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
