@@ -1210,6 +1210,23 @@ init 6 python:
         max_re_serve=3
     )
 
+    MASConsumable(
+        consumable_id="candycane",
+        consumable_type=store.mas_consumables.TYPE_FOOD,
+        disp_name="candycane",
+        dlg_props={
+            mas_consumables.PROP_PLUR: True
+        },
+        start_end_tuple_list=[(11,14), (16, 20)],
+        acs=mas_acs_candycane,
+        split_list=[12, 18],
+        late_entry_list=[13, 19],
+        max_re_serve=2,
+        should_restock_warn=False,
+        max_stock_amount=20,
+        prep_low=None
+    )
+
 #START: Finished brewing/drinking evs
 ##Finished brewing
 init 5 python:

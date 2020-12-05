@@ -1210,6 +1210,25 @@ init -1 python:
     # General description of what the object is, where it is located
 
     # TODO: this should be sorted by alpha, using the ID
+
+    ### HEART-SHAPED DESK CHOCOLATES
+    ## heartchoc
+    # heart-shaped chocolate box to be placed on Monika's desk
+    # Thanks JMO
+    mas_acs_candycane = MASAccessory(
+        "candycane",
+        "candycane",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_candycane)
+
     ### COFFEE MUG
     ## mug
     # Coffee mug that sits on Monika's desk
