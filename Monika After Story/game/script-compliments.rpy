@@ -914,17 +914,17 @@ label mas_compliment_outfit_3:
     m 1hubsb "[mas_compliments.thanks_quip]!"
 
     if monika_chr.is_wearing_clothes_with_exprop("cosplay"):
-        m 3hubsb "I will always love cosplaying for you!"
+        m 3hubsb "I'll always love cosplaying for you!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("costume"):
         m 3hubsb "I'm glad you like how I look with this!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
-        m 2tubsu "Glad you like what you see~"
+        m 2kubsu "Glad you like what you see~"
         show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hublb "Ahaha!"
 
     else:
-        m 2hubsb "I'm sure you look good, too!"
+        m 2hubsb "I'm sure you look good too!"
 
     return
