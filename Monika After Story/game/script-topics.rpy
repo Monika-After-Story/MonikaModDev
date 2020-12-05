@@ -16449,3 +16449,4 @@ label monika_studying_notalk:
     m 1eka "Fair enough."
     m 3rksdlb "I'm sorry, [player]. I didn't mean to pry."
     m 3eua "Let's talk about something else, shall we?"
+    return
