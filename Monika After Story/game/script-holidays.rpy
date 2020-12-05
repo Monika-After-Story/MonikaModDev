@@ -477,6 +477,8 @@ label mas_o31_autoload_check:
             #TODO: Replace this with generic room deco framework for event deco
             store.mas_lockEVL("monika_change_background", "EVE")
             #force to spaceroom
+            # NOTE: need to make sure we pass the change info to the next 
+            #   spaceroom call.
             mas_changeBackground(mas_background_def, set_persistent=True)
 
             #NOTE: We do not do O31 deco/amb on first sesh day
@@ -2207,10 +2209,10 @@ label mas_d25_monika_holiday_intro_deco:
         persistent._mas_d25_deco_active = True
 
         # change to spaceroom
-        mas_changeBackground(mas_background_def, set_persistent=True)
+        change_info = mas_changeBackground(mas_background_def, set_persistent=True)
 
     # now we can do spacroom call
-    call spaceroom(scene_change=True, dissolve_all=True)
+    call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
 
     return
 
