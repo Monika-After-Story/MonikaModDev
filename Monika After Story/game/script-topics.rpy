@@ -2297,18 +2297,33 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
+# Some constants to describe the behaviour
 init python:
     MAS_HOLDME_NO_LULLABY = 0
     MAS_HOLDME_PLAY_LULLABY = 1
     MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC = 2
+
 label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_music=False, disable_music_menu=False):
     python:
         holdme_events = list()
+
         if mas_timePastSince(persistent._mas_last_hold, datetime.timedelta(hours=12)):
             _minutes = random.randint(25, 40)
         else:
             _minutes = random.randint(35, 50)
         holdme_sleep_timer = datetime.timedelta(minutes=_minutes)
+
+        def __holdme_play_lullaby():
+            """
+            Local method to play the lullaby. Ensures we have no music playing before starting it.
+            """
+            if (
+                # The user has not canceled the lullaby
+                store.songs.current_track == store.songs.FP_MONIKA_LULLABY
+                # The user has not started another track
+                and not renpy.music.is_playing(channel="music")
+            ):
+                store.play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
 
         # Stop the music
         if stop_music:
@@ -2320,14 +2335,11 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
                 holdme_events.append(
                     PauseDisplayableEvent(
                         holdme_sleep_timer,
-                        (
-                            renpy.partial(renpy.music.stop, fadeout=5.0),
-                            renpy.partial(store.play_song, store.songs.FP_MONIKA_LULLABY, fadein=5.0)
-                        )
+                        __holdme_play_lullaby
                     )
                 )
-                # this doesn't interfere with the timer and allows us to stop the lullaby
-                # from the music menu after the 30 minute mark
+                # This doesn't interfere with the timer
+                # and allows the user to stop the lullaby
                 songs.current_track = songs.FP_MONIKA_LULLABY
                 songs.selected_track = songs.FP_MONIKA_LULLABY
 
@@ -2345,7 +2357,7 @@ label monika_holdme_start:
     show monika 6dubsa with dissolve_monika
     window hide
     python:
-        #Start the timer vv
+        # Start the timer
         start_time = datetime.datetime.now()
 
         holdme_disp = PauseDisplayableWithEvents(events=holdme_events)
@@ -2354,7 +2366,7 @@ label monika_holdme_start:
         del holdme_events
         del holdme_disp
 
-        # renable ui and hotkeys
+        # Renable ui and hotkeys
         store.songs.enabled = True
         HKBShowButtons()
     window auto
@@ -2364,7 +2376,7 @@ label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
 
-    # Reset these var if needed
+    # Reset these vars if needed
     if elapsed_time <= holdme_sleep_timer:
         if songs.current_track == songs.FP_MONIKA_LULLABY:
             $ songs.current_track = songs.FP_NO_SONG
@@ -2387,7 +2399,7 @@ label monika_holdme_reactions:
             m 5tubfu "Ehehe~"
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
-            if renpy.random.randint(1,4) == 1:
+            if renpy.random.randint(1, 4) == 1:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
@@ -2587,7 +2599,10 @@ label monika_holdme_long:
     window auto
     menu:
         "{i}Wake Monika up.{/i}":
-            $ play_song(None, fadeout=5.0)
+            # Only fadeout if we're playing the lullaby
+            if songs.current_track == songs.FP_MONIKA_LULLABY:
+                $ play_song(None, fadeout=5.0)
+
             if mas_isMoniLove():
                 m 6dubsa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"

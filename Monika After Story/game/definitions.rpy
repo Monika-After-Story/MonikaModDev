@@ -3542,7 +3542,7 @@ init 25 python:
 
         def render(self, width, height, st, at):
             # dont actually render anything
-            return renpy.Render(width, height)
+            return renpy.Render(0, 0)
 
         def event(self, ev, x, y, st):
             if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
@@ -3614,7 +3614,7 @@ init 25 python:
         Advanced pause displayable that supports hotkeys and can run events during pause
         """
         # The keysims that are allowed during pause
-        __RESPECTED_KEYSIMS = {
+        _RESPECTED_KEYSIMS = {
             "screenshot": renpy.store._screenshot,
             "toggle_fullscreen": renpy.toggle_fullscreen,
             "mas_hide_windows": renpy.store._mas_hide_windows,
@@ -3624,6 +3624,13 @@ init 25 python:
             "dec_musicvol": renpy.store._mas_hk_dec_musicvol,
             "inc_musicvol": renpy.store._mas_hk_inc_musicvol
         }
+
+        # An attempt to fix renpy's memory leak
+        CRUTCH_EVENT =  PauseDisplayableEvent(
+            datetime.timedelta(minutes=5),
+            renpy.restart_interaction,
+            repeatable=True
+        )
 
         def __init__(self, events=None, respected_keysims=None):
             """
@@ -3639,18 +3646,25 @@ init 25 python:
             """
             super(renpy.Displayable, self).__init__()
 
-            if events is not None:
-                if not isinstance(events, (tuple, list)):
-                    self.events = [events]
+            if events is None:
+                events = [PauseDisplayableWithEvents.CRUTCH_EVENT]
 
-                else:
-                    self.events = sorted(events, key=self.__sort_key_td)
+            elif isinstance(events, tuple):
+                events = list(events)
+                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
 
+            elif isinstance(events, list):
+                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
+
+            # Assuming it's a single PauseDisplayableEvent
             else:
-                self.events = list()
+                events = [events, PauseDisplayableWithEvents.CRUTCH_EVENT]
 
-            self.__all_events = list(self.events)
-            self.respected_keysims = respected_keysims or self.__RESPECTED_KEYSIMS
+            events.sort(key=PauseDisplayableWithEvents.__sort_key_td)
+
+            self.events = events
+            self.__events = list(events)
+            self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
             self.__abort_events = False
 
         def __repr__(self):
@@ -3671,7 +3685,7 @@ init 25 python:
             """
             Resets events state
             """
-            self.events = self.__all_events[:]
+            self.events = self.__events[:]
             for ev in self.events:
                 ev.set_end_datetime(None)
 
@@ -3778,7 +3792,7 @@ init 25 python:
                         event()
                         if event.repeatable:
                             event.set_end_datetime(datetime.datetime.now() + event.timedelta)
-                            store.mas_utils.insert_sort(self.events, event, self.__sort_key_dt)
+                            store.mas_utils.insert_sort(self.events, event, PauseDisplayableWithEvents.__sort_key_dt)
 
                     # If we aborted, we need to quit asap
                     else:
