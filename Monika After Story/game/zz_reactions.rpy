@@ -2687,7 +2687,7 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
 
         mas_giftCapGainAff(1)
 
-    m 3sua "Oh!{w=0.5} What a cute little flower!"
+    m 3sub "Oh!{w=0.5} What a cute little flower!"
     m 1ekbsa "Thanks [player], you're so sweet~"
     m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
     $ monika_chr.wear_acs(sprite_object)
@@ -2708,13 +2708,13 @@ label mas_reaction_gift_acs_raven_earrings_diamond:
 
         mas_giftCapGainAff(1)
 
-    m 3sua "Oh!{w=0.5} Earrings!"
+    m 3sub "Oh!{w=0.5} Earrings!"
     m 1ekbsa "You're always so sweet~"
     m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
     $ monika_chr.wear_acs(sprite_object)
     m 1hua "Ehehe~"
-    m 1hub "Thanks, [player]!"
-    m 1hua "I appreciate it."
+    m 1euu "Thanks [player], I really appreciate it~"
+
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
