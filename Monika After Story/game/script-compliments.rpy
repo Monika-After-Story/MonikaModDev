@@ -886,7 +886,7 @@ label mas_compliment_outfit_2:
         m 7tubsu "But I'm glad I did, you seem to really like it~"
 
     else:
-        m 1hubsa "I always wanted to wear other clothes for you, so I'm very happy that you think so!"
+        m 1hubsa "I've always wanted to wear other clothes for you, so I'm very happy that you think so!"
 
     menu:
         "You look beautiful in anything you wear!":
@@ -912,7 +912,7 @@ label mas_compliment_outfit_2:
     return
 
 label mas_compliment_outfit_3:
-    m 1hubsb "[mas_compliments.thanks_quip]!"
+    m 1hubsb "[mas_compliments.thanks_quip]"
 
     if monika_chr.is_wearing_clothes_with_exprop("cosplay"):
         m 3hubsb "I'll always love cosplaying for you!"
