@@ -477,7 +477,7 @@ label mas_o31_autoload_check:
             #TODO: Replace this with generic room deco framework for event deco
             store.mas_lockEVL("monika_change_background", "EVE")
             #force to spaceroom
-            # NOTE: need to make sure we pass the change info to the next 
+            # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
             mas_changeBackground(mas_background_def, set_persistent=True)
 
@@ -2257,7 +2257,7 @@ init 5 python:
                 "persistent._mas_d25_in_d25_mode "
                 "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
             ),
-            action=store.EV_ACT_PUSH,
+            action=EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
             years=[],
@@ -2633,8 +2633,8 @@ init 5 python:
             ),
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL,None),
-            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=20)),
-            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1)),
+            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=3)),
             years=[]
         ),
         skipCalendar=True
@@ -4037,8 +4037,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_nye_year_review",
-            action=store.EV_ACT_PUSH,
-            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
+            action=EV_ACT_QUEUE,
+            start_date=mas_nye,
             end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
             years=[],
             aff_range=(mas_aff.NORMAL, None)
@@ -4230,7 +4230,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_nye_monika_nye_dress_intro",
-            conditional="persistent._mas_d25_in_d25_mode",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
+            ),
             start_date=mas_nye,
             end_date=mas_nye + datetime.timedelta(days=1),
             action=EV_ACT_QUEUE,
