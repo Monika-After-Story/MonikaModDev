@@ -16244,7 +16244,7 @@ label monika_gmos:
     m 1esd "Scientists create GMOs by identifying a desirable gene from one organism, copying it, and inserting the copied gene into another organism."
     m 3esc "It's important to note that the addition of the copied gene does {i}not{/i} change other existing genes."
     m 3eua "Think of it like flipping through a long book and changing a single word...{w=0.2}the word is different, but the rest of the book stays the same."
-    m 3esd "GMOs can be plants, animals, microorganisms etc, but we'll focus on genetically modified plants."
+    m 3esd "GMOs can be plants, animals, microorganisms, etc.,{w=0.1} but we'll focus on genetically modified plants."
     m 2esc "Plants can be modified in a myriad of ways, from resisting pests and herbicides to having a higher nutrition value and longer shelf life."
     m 4wud "This is huge. {w=0.2}Imagine crops that can produce double their normal yield, tolerate climate change, and fend off drug-resistant superbugs. {w=0.2}So many problems could be solved!"
     m 2dsc "Unfortunately, it's not that simple. {w=0.2}GMOs require several years of research, development, and testing before they can be distributed. {w=0.2}On top of this, they come with several concerns."
@@ -16261,7 +16261,7 @@ label monika_gmos:
     m 2esd "As long as we're careful, GMOs will be fine...{w=0.2}recklessness and carelessness pose the biggest threat."
     m 2dsc "..."
     m 7eua "So what do you think, [player]? {w=0.2}{nw}"
-    extend 7ttu "Quite the {i}promising field{/i}, wouldn't you say? {w=0.2}Ehehe~"
+    extend 7euu "Quite the promising field, wouldn't you say?"
     m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
     m 1eua "I think that's enough for now, thanks for listening~"
     return
