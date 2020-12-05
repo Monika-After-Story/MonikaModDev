@@ -879,7 +879,7 @@ label mas_compliment_outfit_2:
         m 3hubsb "It's always fun cosplaying!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("costume"):
-        m 3hubsb "It's always fun wearing costumes!'"
+        m 3hubsb "It's always fun wearing costumes!"
 
     elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
         m 2lkbsb "I was really nervous showing you this at first..."
