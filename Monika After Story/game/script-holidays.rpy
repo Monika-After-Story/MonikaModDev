@@ -2918,7 +2918,6 @@ init 5 python:
     )
 
 label monika_merry_christmas_baby:
-    #TODO: Alt leadin for having seen this before
     # set dates for the other song to start a day after this one
     $ d25_kiss_song = mas_getEV('monika_this_christmas_kiss')
     if d25_kiss_song:
@@ -2929,16 +2928,26 @@ label monika_merry_christmas_baby:
             $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
             $ d25_kiss_song.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
 
-    m 1eua "Hey, [player]..."
-    m 3eub "I just thought of another Christmas song that I really want to share with you!"
-    m 3eka "I don't have any music prepared this time, but I hope you'll enjoy hearing me sing it all the same."
-    m 1hua ".{w=0.5}.{w=0.5}.{nw}"
+    if not renpy.seen_label('monika_merry_christmas_baby'):
+        m 1eua "Hey, [player]..."
+        m 3eub "I just thought of another Christmas song that I really want to share with you!"
+        m 3eka "I don't have any music prepared this time, but I hope you'll enjoy hearing me sing it all the same."
+        m 1hua ".{w=0.5}.{w=0.5}.{nw}"
 
-    call mas_song_merry_christmas_baby
+        call mas_song_merry_christmas_baby
 
-    m 1hua "Ehehe..."
-    m 3eka "I hope you liked it~"
-    $ mas_unlockEVL("mas_song_merry_christmas_baby", "SNG")
+        m 1hua "Ehehe..."
+        m 3eka "I hope you liked it~"
+        $ mas_unlockEVL("mas_song_merry_christmas_baby", "SNG")
+
+    else:
+        m 3euu "I think it's time for another Christmas song, ehehe~"
+        m 1hua ".{w=0.5}.{w=0.5}.{nw}"
+
+        call mas_song_merry_christmas_baby
+
+        m 1huu "Merry Christmas, baby~"
+
     return "no_unlock"
 
 init 5 python:
@@ -2955,17 +2964,21 @@ init 5 python:
     )
 
 label monika_this_christmas_kiss:
-    #TODO: Alt leadin for having seen this before
-    m 2rubsa "Um, [player]..."
-    m 2lubsa "I found this song...{w=0.4}and...{w=0.4}I was just thinking about us when I heard it."
-    m 7ekbsu "I mean, you've been so sweet to me all this time..."
-    m 3eubsb "And...{w=0.2}oh gosh, I just want to share it with you, if that's alright."
-    m 1hubsa "Just give me a second{nw}"
-    extend 1dubsa ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    if not renpy.seen_label('monika_this_christmas_kiss'):
+        m 2rubsa "Um, [player]..."
+        m 2lubsa "I found this song...{w=0.4}and...{w=0.4}I was just thinking about us when I heard it."
+        m 7ekbsu "I mean, you've been so sweet to me all this time..."
+        m 3eubsb "And...{w=0.2}oh gosh, I just want to share it with you, if that's alright."
+        m 1hubsa "Just give me a second{nw}"
+        extend 1dubsa ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    else:
+        m 3euu "I think it's time to sing another Christmas song, ehehe~"
+        m 1hua ".{w=0.5}.{w=0.5}.{nw}"
 
     call mas_song_this_christmas_kiss
-    m 1dubsa "..."
 
+    m 1dubsa "..."
     m 1rtbsu "Hmm.{w=0.5}.{w=0.5}.{w=0.5}{nw}"
     window hide
     show monika 6tkbsa
