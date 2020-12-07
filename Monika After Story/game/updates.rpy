@@ -396,6 +396,8 @@ label v0_11_7(version="v0_11_7"):
                 "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
             )
         )
+
+        safeDel("_mas_d25_gifted_cookies")
     return
 
 # 0.11.6

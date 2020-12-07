@@ -1238,9 +1238,6 @@ default persistent._mas_d25_gifts_given = list()
 #Stores if we were on a date with Monika over the full d25 day
 default persistent._mas_d25_gone_over_d25 = None
 
-#Stores if we've given Moni christmas cookies this year
-default persistent._mas_d25_gifted_cookies = False
-
 # christmas
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 
@@ -1275,9 +1272,6 @@ init -810 python:
             "_mas_d25_second_chance_upset": "d25s.monika.upset_after_2ndchance",
 
             "_mas_d25_intro_seen": "d25s.saw_an_intro",
-
-            #For the christmascookies gift
-            "_mas_d25_gifted_cookies": "d25.actions.gifted_cookies",
 
             #D25 dates
             "_mas_d25_d25e_date_count": "d25s.d25e.went_out_count",
