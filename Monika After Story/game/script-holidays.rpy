@@ -1467,11 +1467,11 @@ init -10 python:
         """
         Hides d25 visuals
         """
-        mas_hideDecoTag("mas_d25_banners")
-        mas_hideDecoTag("mas_d25_tree")
-        mas_hideDecoTag("mas_d25_garlands")
-        mas_hideDecoTag("mas_d25_lights")
-        mas_hideDecoTag("mas_d25_gifts")
+        mas_hideDecoTag("mas_d25_banners", hide_now=True)
+        mas_hideDecoTag("mas_d25_tree", hide_now=True)
+        mas_hideDecoTag("mas_d25_garlands", hide_now=True)
+        mas_hideDecoTag("mas_d25_lights", hide_now=True)
+        mas_hideDecoTag("mas_d25_gifts", hide_now=True)
 
     def mas_d25ReactToGifts():
         """
