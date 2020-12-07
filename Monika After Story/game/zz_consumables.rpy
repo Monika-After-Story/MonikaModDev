@@ -215,7 +215,7 @@ init 5 python:
                 finish_prep_evl - evl to use when finished prepping. If None, a generic is assumed
                     (Default: None)
 
-                finish_cons_evl - evl to use when finished prepping. If None, a generic is assumed
+                finish_cons_evl - evl to use when finished consuming. If None, a generic is assumed
                     (Default: None)
             """
             if (
@@ -1225,7 +1225,9 @@ init 6 python:
         should_restock_warn=False,
         max_stock_amount=18,
         prep_low=None,
-        cons_high=15*60 #15 minute max
+        cons_high=15*60, #15 minute max
+        # TODO: this is temp, we need to generalize cons w/o finishig dlg
+        finish_cons_evl="mas_consumables_candycane_finish_having"
     )
 
     MASConsumable(
@@ -1729,4 +1731,61 @@ label mas_consumables_remove_thermos:
 
     else:
         m "Okay, what else should we do today?"
+    return
+
+### Special labels for consumables
+label mas_consumables_candycane_finish_having:
+    #Some prep
+    python:
+        candycane = mas_getConsumable("candycane")
+        candycane.acs.keep_on_desk = False
+        get_more = candycane.shouldHave() and candycane.hasServing()
+
+    if not get_more:
+        # If we don't want more, then just clean things up
+        python:
+            #Reset the current type's vars
+            MASConsumable._reset(candycane.consumable_type)
+            candycane.acs.keep_on_desk = True
+            #And set up a time when we can have this drink again
+            candycane.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
+
+    else:
+        if not store.mas_globals.in_idle_mode and (not mas_canCheckActiveWindow() or mas_isFocused()):
+            m 1eua "I'm going to get some more candy canes."
+            m 3eua "Hold on a moment."
+
+        elif store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+            m 1esd "Oh, I've eaten my candy canes.{w=1}{nw}"
+            m 1eua "I'm going to get some more. I'll be right back.{w=1}{nw}"
+
+        #Monika is off screen
+        call mas_transition_to_emptydesk
+
+        #Wrap these statemetns so we can properly add / remove the acs
+        python:
+            renpy.pause(1.0, hard=True)
+
+            candycane.have()
+            candycane.re_serve()
+            #Non-prepables are per refill, so they'll run out a bit faster
+            candycane.use()
+
+            renpy.pause(4.0, hard=True)
+
+        call mas_transition_from_emptydesk("monika 1eua")
+        $ candycane.acs.keep_on_desk = True
+
+        if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+            m 1hua "Back!{w=1.5}{nw}"
+            #Let's queue this weekly if we've got something we're low on
+            if (
+                not mas_inEVL("mas_consumables_generic_queued_running_out")
+                and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
+                and len(MASConsumable._getLowCons()) > 0
+            ):
+                $ queueEvent("mas_consumables_generic_queued_running_out")
+
+        else:
+            m 1eua "Okay, what else should we do today?"
     return
