@@ -1891,6 +1891,8 @@ label mas_holiday_d25c_autoload_check:
     ):
         $ monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
 
+    if persistent._mas_d25_deco_active:
+        $ mas_d25ShowVisuals()
 
     #And then run pbday checks
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:

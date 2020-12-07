@@ -899,15 +899,13 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
+    # TODO: move this to o31 autoload
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_o31ShowVisuals()
-
-    # d25 seasonal
-    elif persistent._mas_d25_deco_active:
-        $ store.mas_d25ShowVisuals()
     # ----------- end date-based events
 
     # player bday
+    # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
@@ -1159,9 +1157,6 @@ label mas_ch30_post_retmoni_check:
 
 label mas_ch30_post_holiday_check:
     # post holiday checks
-
-    # works here
-    # $ mas_d25ShowVisuals()
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
