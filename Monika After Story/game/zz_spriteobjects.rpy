@@ -1211,10 +1211,10 @@ init -1 python:
 
     # TODO: this should be sorted by alpha, using the ID
 
-    ### HEART-SHAPED DESK CHOCOLATES
-    ## heartchoc
-    # heart-shaped chocolate box to be placed on Monika's desk
-    # Thanks JMO
+    ### Candy canes
+    ## candycane
+    # candycane consumable, available to gift before d25
+    # Thanks Briar
     mas_acs_candycane = MASAccessory(
         "candycane",
         "candycane",
@@ -1228,6 +1228,24 @@ init -1 python:
         keep_on_desk=False
     )
     store.mas_sprites.init_acs(mas_acs_candycane)
+
+    ### Christmascookies
+    ## christmas_cookies
+    # christmascookies consumable, available to gift before d25
+    # Thanks JMO
+    mas_acs_christmascookies = MASAccessory(
+        "christmas_cookies",
+        "christmas_cookies",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_christmascookies)
 
     ### COFFEE MUG
     ## mug

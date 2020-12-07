@@ -1782,32 +1782,55 @@ init 5 python:
         addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
-    $ times_cookies_given = mas_getGiftStatsForDate("mas_reaction_christmascookies")
+    $ christmascookies = mas_getConsumable("christmascookies")
+    $ mas_giftCapGainAff(1)
+    $ is_having_food = bool(MASConsumable._getCurrentFood())
 
-    #First time cookies gifted this year
-    if times_cookies_given == 0 and not persistent._mas_d25_gifted_cookies:
-        $ persistent._mas_d25_gifted_cookies = True
-        $ mas_giftCapGainAff(3)
-        m 3hua "Christmas cookies!"
-        m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
-        m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
-        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
-        m 3hua "Thank you, [player]~"
-
-    elif times_cookies_given == 1 or (times_cookies_given == 0 and persistent._mas_d25_gifted_cookies):
-        m 1wuo "...another batch of Christmas cookies!"
-        m 3wuo "That's a whole lot of cookies, [player]!"
-        m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
-
-    else:
+    if christmascookies.isMaxedStock():
         m 3wuo "...even more Christmas cookies?"
         m 3rksdla "I still haven't finished the last batch, [player]!"
         m 3eksdla "You can give me more after I finish these, okay?"
 
+    else:
+        if christmascookies.enabled():
+            m 1wuo "...another batch of Christmas cookies!"
+            m 3wuo "That's a whole lot of cookies, [player]!"
+            m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
+
+        else:
+            if not is_having_food:
+                if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                    $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+                $ christmascookies.have(skip_leadin=True)
+
+            $ mas_giftCapGainAff(3)
+            m 3hua "Christmas cookies!"
+            m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
+            m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
+            m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
+
+            if is_having_food:
+                m 1eua "I'll be sure to try some later~"
+
+            elif monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me take this plushie away."
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+                call mas_transition_to_emptydesk
+                pause 3.0
+                call mas_transition_from_emptydesk
+
+            m 1eua "Thanks again, [player]~"
+
+            #Enable the gift
+            $ christmascookies.enable()
+
+        #Restock
+        $ christmascookies.restock(9)
+
     $ mas_receivedGift("mas_reaction_christmascookies")
     $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_christmascookies", "category")
     $ store.mas_filereacts.delete_file(gift_ev_cat)
-    # allow multi gifts
+    #weird not to have her see the gift file that's in the characters folder.
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 

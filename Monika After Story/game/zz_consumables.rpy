@@ -1224,7 +1224,27 @@ init 6 python:
         max_re_serve=2,
         should_restock_warn=False,
         max_stock_amount=18,
-        prep_low=None
+        prep_low=None,
+        cons_high=15*60 #15 minute max
+    )
+
+    MASConsumable(
+        consumable_id="christmascookies",
+        consumable_type=store.mas_consumables.TYPE_FOOD,
+        disp_name="Christmas cookie",
+        dlg_props={
+            mas_consumables.PROP_OBJ_REF: "plate",
+            mas_consumables.PROP_PLUR: True
+        },
+        start_end_tuple_list=[(11,14), (16, 22)],
+        acs=mas_acs_christmascookies,
+        split_list=[12, 18],
+        late_entry_list=[13, 19],
+        max_re_serve=2,
+        should_restock_warn=False,
+        max_stock_amount=10,
+        prep_low=None,
+        cons_high=30*60 #30 minute max
     )
 
 #START: Finished brewing/drinking evs
@@ -1439,7 +1459,7 @@ label mas_consumables_generic_finish_having(consumable):
             line_starter = renpy.substitute(dlg_map["else"][get_more])
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1eud "I finished my [consumable.disp_name].{w=0.2} {nw}"
+        m 1eud "I finished my [consumable.disp_name][plur].{w=0.2} {nw}"
         extend 1eua "[line_starter]"
         m 3eua "Hold on a moment."
 
