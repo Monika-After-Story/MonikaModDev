@@ -2201,8 +2201,9 @@ label mas_d25_monika_holiday_intro_deco:
         #We'll also rmallEVL the auroras topic because it ends up immediately after
         mas_rmallEVL("monika_auroras")
 
-        #Enable deco
+        #Enable and show deco
         persistent._mas_d25_deco_active = True
+        mas_d25ShowVisuals()
 
         # change to spaceroom
         change_info = mas_changeBackground(mas_background_def, set_persistent=True)
@@ -2924,7 +2925,7 @@ label monika_merry_christmas_baby:
             $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
             $ d25_kiss_song.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
 
-    if not renpy.seen_label('monika_merry_christmas_baby'):
+    if not renpy.seen_label('mas_song_merry_christmas_baby'):
         m 1eua "Hey, [player]..."
         m 3eub "I just thought of another Christmas song that I really want to share with you!"
         m 3eka "I don't have any music prepared this time, but I hope you'll enjoy hearing me sing it all the same."
@@ -2942,7 +2943,7 @@ label monika_merry_christmas_baby:
 
         call mas_song_merry_christmas_baby
 
-        m 1huu "Merry Christmas, baby~"
+        m 1huu "Ehehe... {w=0.2}Merry Christmas, baby~"
 
     return "no_unlock"
 
@@ -2960,7 +2961,7 @@ init 5 python:
     )
 
 label monika_this_christmas_kiss:
-    if not renpy.seen_label('monika_this_christmas_kiss'):
+    if not renpy.seen_label('mas_song_this_christmas_kiss'):
         m 2rubsa "Um, [player]..."
         m 2lubsa "I found this song...{w=0.4}and...{w=0.4}I was just thinking about us when I heard it."
         m 7ekbsu "I mean, you've been so sweet to me all this time..."
