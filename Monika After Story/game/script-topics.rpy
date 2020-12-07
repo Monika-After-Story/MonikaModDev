@@ -16301,18 +16301,18 @@ label monika_curse_words:
             $ persistent._mas_pm_swear_frequency = SF_NEVER
             m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}since I don't either."
             m 2rtd "But, you know, maybe swearing isn't actually so bad?"
-            m 3euc "I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+            m 3euc "I once heard of some studies stating that using stronger language helps ease the pain if you, say, hurt yourself."
 
-    m 1eta "It's called the analgesic response, which makes your body more impervous to pain."
+    m 1eta "It's called the analgesic response, which makes your body more impervious to pain."
     m 2esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
     m 2efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
     m 3rksdlb "But there's also such a thing as too much swearing, {w=0.2}I'd say."
-    m 2eud "Swearing can actually reveal a lot about our way of behaving in company of others."
+    m 2eud "Swearing can actually reveal a lot about our way of behaving in the company of others."
     m 3eub "For instance, {w=0.2}people are much less likely to swear in front of family than with friends, {w=0.2}and the more people you address at once, {w=0.2}the more eloquently you try to phrase yourself."
     m 1hksdlb "Of course, {w=0.2}not everyone cares what other people think of the way they speak."
     m 7eud "Personally, {w=0.2}I prefer soft language over swearing in most situations.{w=0.3}{nw} "
     extend 2etb "I feel it contributes to a more positive atmosphere overall, {w=0.2}and you don't have to adjust your speech as much depending on who you're talking to."
-    m 2ttb "And you know how certain people love atmosphere, {w=0.2}don't you [player]?"
+    m 2tub "And you know how certain people love atmosphere, {w=0.2}don't you [player]?"
     m 3dkb "I think our language has so many graceful ways of expressing how you feel about this world, {w=0.2}and even the worst things could be spoken of with a bit of style and respect."
     m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.3}{nw}"
     extend 1hksdlb "of course not..."
@@ -16321,9 +16321,9 @@ label monika_curse_words:
     if persistent._mas_pm_swear_frequency != SF_NEVER:
         m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
         m 2tka "Think you could do that for me?"
-        m 2hub "I'd be very happy if you did, {w=0.2}ehehe."
+        m 2hua "I'd be very happy if you did, {w=0.2}ehehe."
     else:
-        m 2hub "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
+        m 2hua "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
 
     m 7hua "Thanks for listening~"
     return "derandom"
