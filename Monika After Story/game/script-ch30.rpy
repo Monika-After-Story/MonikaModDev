@@ -872,6 +872,13 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 if not hide_calendar:
                     mas_calShowOverlay()
 
+        # always generate bg change info if scene is changing.
+        #   NOTE: generally, this will just show all deco that is appropraite
+        #   for this background.
+        if scene_change and bg_change_info is None:
+            bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._entry_deco(None, bg_change_info)
+
         # add show/hide statements for decos
         if bg_change_info is not None:
             if not scene_change:
@@ -1153,6 +1160,8 @@ label mas_ch30_post_retmoni_check:
 label mas_ch30_post_holiday_check:
     # post holiday checks
 
+    # works here
+    # $ mas_d25ShowVisuals()
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
