@@ -2809,15 +2809,20 @@ init 5 python:
     )
 
 label monika_aiwfc:
-    # set dates for the other song to start a day after this one
-    $ d25_baby = mas_getEV('monika_merry_christmas_baby')
-    if d25_baby:
-        if not mas_isD25():
-            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
-            $ d25_baby.end_date = mas_d25p
-        else:
-            $ d25_baby.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
-            $ d25_baby.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
+    # set dates for the next song to start a day after this one
+    if not mas_isD25():
+        $ mas_setEVLPropValues(
+            'monika_merry_christmas_baby',
+            start_date=datetime.datetime.now() + datetime.timedelta(days=1),
+            end_date=mas_d25p
+        )
+
+    else:
+        $ mas_setEVLPropValues(
+            'monika_merry_christmas_baby',
+            start_date=datetime.datetime.now() + datetime.timedelta(hours=1),
+            end_date=datetime.datetime.now() + datetime.timedelta(hours=5)
+        )
 
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
@@ -2915,15 +2920,20 @@ init 5 python:
     )
 
 label monika_merry_christmas_baby:
-    # set dates for the other song to start a day after this one
-    $ d25_kiss_song = mas_getEV('monika_this_christmas_kiss')
-    if d25_kiss_song:
-        if not mas_isD25():
-            $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(days=1)
-            $ d25_kiss_song.end_date = mas_d25p
-        else:
-            $ d25_kiss_song.start_date = datetime.datetime.now() + datetime.timedelta(hours=1)
-            $ d25_kiss_song.end_date = datetime.datetime.now() + datetime.timedelta(hours=5)
+    # set dates for the next song to start a day after this one
+    if not mas_isD25():
+        $ mas_setEVLPropValues(
+            'monika_this_christmas_kiss',
+            start_date=datetime.datetime.now() + datetime.timedelta(days=1),
+            end_date=mas_d25p
+        )
+
+    else:
+        $ mas_setEVLPropValues(
+            'monika_this_christmas_kiss',
+            start_date=datetime.datetime.now() + datetime.timedelta(hours=1),
+            end_date=datetime.datetime.now() + datetime.timedelta(hours=5)
+        )
 
     if not renpy.seen_label('mas_song_merry_christmas_baby'):
         m 1eua "Hey, [player]..."
