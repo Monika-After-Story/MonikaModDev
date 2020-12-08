@@ -2578,12 +2578,12 @@ init 20 python:
      Warmer than the fire in the hearth,
      Brighter than any star on top of the tree,
      More comforting than any cup of hot chocolate,
-     It’s my [player], who’s always there for me.
+     It's my [player], who's always there for me.
 
-     Someday, we’ll light the fire together.
-     Someday, we’ll decorate the tree.
-     Someday, we’ll have a cup of cocoa.
-     Someday, you’ll be next to me.
+     Someday, we'll light the fire together.
+     Someday, we'll decorate the tree.
+     Someday, we'll have a cup of cocoa.
+     Someday, you'll be next to me.
 
      Merry Christmas~
 
@@ -5388,7 +5388,7 @@ init 20 python:
  I hope your day is as special as you make every day for me.
  Thank you so much for being you.
 
- Happy Birthday, sweetheart
+ Happy Birthday, sweetheart~
 
  Forever yours,
  Monika
@@ -5412,7 +5412,7 @@ init 20 python:
  A day I can appreciate you even more for what you do.
  A day I hope I make your dreams come true too.
 
- Happy Birthday, sweetheart
+ Happy Birthday, sweetheart~
 
  Forever yours,
  Monika
@@ -5436,7 +5436,7 @@ init 20 python:
  There's no place I'd rather be,
  Spending this time together, just you and me.
 
- Happy birthday, sweetheart
+ Happy birthday, sweetheart~
 
  Forever yours,
  Monika
@@ -6205,7 +6205,7 @@ init 20 python:
  Everything.
 
 
- Happy Valentine's Day
+ Happy Valentine's Day~
 
  Forever yours,
  Monika
