@@ -2296,7 +2296,7 @@ label mas_d25_monika_christmas:
             m 1lksdla "...{cps=*2}Yet~{/cps}{nw}"
             $ _history_list.pop()
 
-        m 1lksdlb "Ehehe..."
+        m 1lksdlu "Ehehe..."
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
         m 1eua "Don't get me wrong, I knew that you would be here with me."

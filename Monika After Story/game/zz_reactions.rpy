@@ -1778,7 +1778,7 @@ label mas_reaction_fudge:
 
 
 init 5 python:
-    if store.mas_isD25Pre():
+    if store.mas_isD25Season():
         addReaction("mas_reaction_christmascookies", "christmascookies", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_christmascookies:
@@ -1836,7 +1836,7 @@ label mas_reaction_christmascookies:
 
 #TODO: Remove the seasonal handling and just write alt dialogue for the not d25s path
 init 5 python:
-    if store.mas_isD25Pre():
+    if store.mas_isD25Season():
         addReaction("mas_reaction_candycane", "candycane", is_good=True, exclude_on=["d25g"])
 
 label mas_reaction_candycane:
