@@ -315,8 +315,19 @@ init -2 python in mas_sprites:
             _moni_chr.change_hair(store.mas_hair_def)
             _moni_chr.wear_acs(store.mas_acs_ribbon_def)
 
+        store.mas_lockEVL("mas_compliment_outfit", "CMP")
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
+
+
+    def _clothes_def_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for def clothes
+        """
+
+        store.mas_unlockEVL("mas_compliment_outfit", "CMP")
+
 
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
@@ -769,7 +780,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_TB: True
+            store.mas_sprites.EXP_H_TB: True,
+            store.mas_sprites.EXP_H_RQCP: "rin"
         },
         entry_pp=store.mas_sprites._hair_braided_entry,
         exit_pp=store.mas_sprites._hair_braided_exit
@@ -840,7 +852,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_def_entry
+        entry_pp=store.mas_sprites._clothes_def_entry,
+        exit_pp=store.mas_sprites._clothes_def_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
     store.mas_selspr.init_selectable_clothes(
@@ -993,6 +1006,7 @@ init -1 python:
         ex_props={
             store.mas_sprites.EXP_C_COST: "o31",
             store.mas_sprites.EXP_C_COSP: True,
+            "rin": True #NOTE: This is very very temp until we sort out the hair to work better w/ other outfits
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
@@ -1208,6 +1222,43 @@ init -1 python:
     # General description of what the object is, where it is located
 
     # TODO: this should be sorted by alpha, using the ID
+
+    ### Candy canes
+    ## candycane
+    # candycane consumable, available to gift before d25
+    # Thanks Briar
+    mas_acs_candycane = MASAccessory(
+        "candycane",
+        "candycane",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_candycane)
+
+    ### Christmascookies
+    ## christmas_cookies
+    # christmascookies consumable, available to gift before d25
+    # Thanks JMO
+    mas_acs_christmascookies = MASAccessory(
+        "christmas_cookies",
+        "christmas_cookies",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_christmascookies)
+
     ### COFFEE MUG
     ## mug
     # Coffee mug that sits on Monika's desk
@@ -1539,7 +1590,7 @@ init -1 python:
     ### PROMISE RING
     ## promisering
     # Promise ring that can be given to Monika
-    mas_acs_promisering = MASAccessory(
+    mas_acs_promisering = MASSplitAccessory(
         "promisering",
         "promisering",
         MASPoseMap(
@@ -1553,6 +1604,13 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ring",
+        rec_layer=MASMonika.ASE_ACS,
+        arm_split=MASPoseMap(
+            default="",
+            p2="10",
+            p3="10",
+            p5="10"
+        ),
         ex_props={
             "bare hands": True
         }

@@ -789,7 +789,12 @@ init python:
 #   progress_filter - True will progress the filter. False will not
 #       NOTE: use this if you explicity set the filter
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
+#   bg_change_info - MASBackgroundChangeInfo object to use when transitioning.
+#       NOTE: this should ONLY be used by mas_background_change.
+#       This will make sure that when the background changes, associated
+#       images will be hidden / shown following the appropriate transition.
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True, bg_change_info=None):
 
     with None
 
@@ -867,6 +872,21 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 if not hide_calendar:
                     mas_calShowOverlay()
 
+        # always generate bg change info if scene is changing.
+        #   NOTE: generally, this will just show all deco that is appropraite
+        #   for this background.
+        if scene_change and bg_change_info is None:
+            bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._entry_deco(None, bg_change_info)
+
+        # add show/hide statements for decos
+        if bg_change_info is not None:
+            if not scene_change:
+                for h_adf in bg_change_info.hides.itervalues():
+                    h_adf.hide()
+
+            for s_tag, s_adf in bg_change_info.shows.iteritems():
+                s_adf.show(s_tag)
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -879,15 +899,13 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
+    # TODO: move this to o31 autoload
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_o31ShowVisuals()
-
-    # d25 seasonal
-    elif persistent._mas_d25_deco_active:
-        $ store.mas_d25ShowVisuals()
     # ----------- end date-based events
 
     # player bday
+    # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
@@ -1139,7 +1157,6 @@ label mas_ch30_post_retmoni_check:
 
 label mas_ch30_post_holiday_check:
     # post holiday checks
-
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):

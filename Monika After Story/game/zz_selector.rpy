@@ -49,6 +49,12 @@ init -100 python in mas_selspr:
             "change": "Can you change your clothes?",
             # TODO: min-items
         },
+        "earrings": {
+            "_ev": "monika_earrings_select",
+            "_min-items": 1,
+            "change": "Can you change your earrings?",
+            "wear": "Can you wear earrings?",
+        },
         "hair": {
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
@@ -603,6 +609,7 @@ init -10 python in mas_selspr:
 
     GRP_TOPIC_LIST = [
         "choker",
+        "earrings",
         "hat",
         "left-hair-clip",
         "left-hair-flower",
@@ -2071,8 +2078,8 @@ init -1 python:
 
             # text objects
             # NOTE: we build these on first render
-            self.item_name = None
-            self.item_name_hover = None
+            self.item_name = []
+            self.item_name_hover = []
 #            self.item_name = self._display_name(False, self.selectable.display_name)
 #            self.item_name_hover = self._display_name(True, self.selectable.display_name)
 
@@ -2102,9 +2109,6 @@ init -1 python:
 
             # top frame sizes
             self.top_frame_height = self.TOP_FRAME_HEIGHT
-
-            # cached renders
-            self.render_cache = {}
 
             # locked mode
             self.locked = not self.selectable.unlocked
@@ -2148,7 +2152,6 @@ init -1 python:
                 )
                 line_index += 1
 
-
         def _check_display_name(self, _display_name_text, st, at):
             """
             Checks the given display name to see if it fits within the frame
@@ -2162,13 +2165,7 @@ init -1 python:
             """
             # render the text object we want to test
             _disp_text = self._display_name(False, _display_name_text)
-            _render = renpy.render(
-                _disp_text,
-                1000,
-                self.TOP_FRAME_CHUNK,
-                st,
-                at
-            )
+            _render = self._render_display_name_test(_disp_text, st, at)
             dtw, dth = _render.get_size()
 
             # check width
@@ -2176,7 +2173,6 @@ init -1 python:
                 return None
 
             return _render
-
 
         def _check_render_split(self, line, lines_list, st, at):
             """
@@ -2357,7 +2353,6 @@ init -1 python:
 
             return _renders
 
-
         def _render_bottom_frame_piece(self, piece, st, at):
             """
             Renders a single bottom frame piece and returns it
@@ -2370,7 +2365,6 @@ init -1 python:
                 at
             )
 
-
         def _render_display_name(self, hover, _text, st, at):
             """
             Renders display name
@@ -2381,14 +2375,45 @@ init -1 python:
                 st - st for renpy render
                 at - at for renpy render
 
+            RETURNS: rendered display name
+            """
+            return self._render_display_name_raw(
+                self._display_name(hover, _text),
+                st,
+                at
+            )
+
+        def _render_display_name_raw(self, disp_text, st, at):
+            """
+            Renders display name, given a text object
+
+            IN:
+                disp_text - text object to display
+                st - st for renpy render
+                at - at for renpy render
+
+            RETURNS: rendered display name
             """
             return renpy.render(
-                self._display_name(hover, _text),
+                disp_text,
                 self.WIDTH,
                 self.TOP_FRAME_CHUNK,
                 st,
                 at
             )
+
+        def _render_display_name_test(self, disp_text, st, at):
+            """
+            Renders display name using testing width. (1000)
+
+            IN:
+                disp_text - the text to show
+                st - st for renpy render
+                at - at for renpy render
+
+            RETURNS: rendered display name 
+            """
+            return renpy.render(disp_text, 1000, self.TOP_FRAME_CHUNK, st, at)
 
         def _render_top_frame(self, hover, st, at):
             """
@@ -2578,8 +2603,8 @@ init -1 python:
 
         def _setup_display_name(self, st, at):
             """
-            Sets up item_name and item_name_hover with list of renders, ready
-            for bliting.
+            Sets up item_name and item_name_hover with list of text display
+            objects, ready for render.
 
             IN:
                 st - st for renpy render
@@ -2593,27 +2618,27 @@ init -1 python:
             )
 
             if _render:
-                self.item_name = [_render]
+                self.item_name = [
+                    self._display_name(False, self.selectable.display_name)
+                ]
                 self.item_name_hover = [
-                    self._render_display_name(
-                        True,
-                        self.selectable.display_name,
-                        st,
-                        at
-                    )
+                    self._display_name(True, self.selectable.display_name)
                 ]
                 return
 
             # if we got a None, the text is too long.
-            # prepare item_name for renders
-            self.item_name = []
             _lines = self._split_render(self.selectable.display_name, st, at)
+            # NOTE: rather than rewriting split_render, decided to just
+            # use the returned lines and overwrite the render list
+            self.item_name = [
+                self._display_name(False, line) for line in _lines
+            ]
 
-            # render the hover variants
+            # get displaynames for the hover variants
             # and calculate total height
 #            top_height = 0
             self.item_name_hover = [
-                self._render_display_name(True, line, st, at)
+                self._display_name(True, line)
                 for line in _lines
             ]
 #            top_height += (_render.get_size()[1] + self.TOP_FRAME_SPACER)
@@ -2781,83 +2806,73 @@ init -1 python:
             Render. we want the button here.
             """
             if self.first_render:
-                # on first render, we do the rendering.
-                # this is so we can just blit later instead of rendering each
-                # time.
-
-                # setup the display name
+                # render and determine if name is split or not
                 self._setup_display_name(st, at)
-
-                # now save the render cache
-                if self.locked or self.disabled:
-                    if self.locked:
-                        thumb_render = self._render_bottom_frame_piece(
-                            self.locked_thumb,
-                            st,
-                            at
-                        ),
-                    else:
-                        # disabled
-                        thumb_render = self._render_bottom_frame_piece(
-                            self.thumb,
-                            st,
-                            at
-                        )
-
-                    # otherwise, locked and disabled is basically the same
-                    _locked_bot_renders = [
-                        thumb_render,
-                        self._render_bottom_frame_piece(
-                            self.thumb_overlay_locked,
-                            st,
-                            at
-                        )
-                    ]
-                    _locked_top_renders = [
-                        self._render_top_frame_piece(
-                            self.top_frame_locked,
-                            st,
-                            at
-                        )
-                    ]
-
-                    self.render_cache = {
-                        "bottom": _locked_bot_renders,
-                        "bottom_hover": _locked_bot_renders,
-                        "top": _locked_top_renders,
-                        "top_hover": _locked_top_renders,
-                        "disp_name": self.item_name,
-                        "disp_name_hover": self.item_name
-                    }
-
-                else:
-                    self.render_cache = {
-                        "bottom": self._render_bottom_frame(False, st, at),
-                        "bottom_hover": self._render_bottom_frame(True, st, at),
-                        "top": self._render_top_frame(False, st, at),
-                        "top_hover": self._render_top_frame(True, st, at),
-                        "disp_name": self.item_name,
-                        "disp_name_hover": self.item_name_hover
-                    }
 
                 # setup the hiehg tof this displyaable
                 self.real_height = self.top_frame_height + self.SELECTOR_HEIGHT
                 self.hover_height = self.real_height
 
-                # now that we have cached renders, no need to render again
                 self.first_render = False
 
-            # now which renders are we going to select
-            if self.locked or self.disabled:
-                _suffix = ""
-            elif self.hovered or self.selected:
-                _suffix = "_hover"
-            else:
-                _suffix = ""
+            # each selector consists of its bottom, top, and disp name
+            _bottom_renders = []
+            _top_renders = []
+            _disp_name = None
 
-            _bottom_renders = self.render_cache["bottom" + _suffix]
-            _top_renders = self.render_cache["top" + _suffix]
-            _disp_name = self.render_cache["disp_name" + _suffix]
+            if self.locked or self.disabled:
+
+                # determine the thumbnail
+                if self.locked:
+                    thumb_render = self._render_bottom_frame_piece(
+                        self.locked_thumb,
+                        st,
+                        at
+                    ),
+                else:
+                    # disabled
+                    thumb_render = self._render_bottom_frame_piece(
+                        self.thumb,
+                        st,
+                        at
+                    )
+
+                # otherwise, locked and disabled is basically the same
+                _bottom_renders = [
+                    thumb_render,
+                    self._render_bottom_frame_piece(
+                        self.thumb_overlay_locked,
+                        st,
+                        at
+                    )
+                ]
+                _top_renders = [
+                    self._render_top_frame_piece(
+                        self.top_frame_locked,
+                        st,
+                        at
+                    )
+                ]
+                _disp_name = [
+                    self._render_display_name_raw(txt_obj, st, at)
+                    for txt_obj in self.item_name
+                ]
+
+            else:
+                hov_sel = self.hovered or self.selected
+
+                _bottom_renders = self._render_bottom_frame(hov_sel, st, at)
+                _top_renders = self._render_top_frame(hov_sel, st, at)
+
+                if hov_sel:
+                    _disp_name = self.item_name_hover
+                else:
+                    _disp_name = self.item_name
+
+                _disp_name = [
+                    self._render_display_name_raw(txt_obj, st, at)
+                    for txt_obj in _disp_name
+                ]
 
             # now blit
             r = renpy.Render(self.WIDTH, self.real_height)
@@ -3816,5 +3831,26 @@ label monika_hat_select:
 
 #### end hat
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_earrings_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("earrings", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_earrings_select:
+    call mas_selector_generic_sidebar_select_acs("earrings")
+    return
+
+#### end earrings
 
 ############### END SELECTOR TOPICS ###########################################
