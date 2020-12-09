@@ -1877,10 +1877,13 @@ label mas_holiday_d25c_autoload_check:
 
     #This is D25 itself (NOT FIRST LOAD IN FOR D25S)
     elif mas_isD25() and not mas_isFirstSeshDay() and persistent._mas_d25_deco_active:
-        #Force Santa and snow on D25 if deco active and not first sesh day
+        #Force Santa, spaceroom, and snow on D25 if deco active and not first sesh day
         python:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
+            # NOTE: need to make sure we pass the change info to the next
+            #   spaceroom call.
+            mas_changeBackground(mas_background_def, set_persistent=True)
 
     #If we are at normal and we've not gifted another outfit, change back to Santa next load
     if (
