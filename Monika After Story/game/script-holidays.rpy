@@ -2473,7 +2473,7 @@ init 5 python:
             conditional=(
                 "persistent._mas_pm_hangs_d25_lights is None "
                 "and persistent._mas_d25_deco_active "
-                "and not persistent._mas_pm_live_south_hemisphere"
+                "and not persistent._mas_pm_live_south_hemisphere "
                 "and mas_isDecoTagVisible('mas_d25_lights')"
             ),
             action=EV_ACT_RANDOM,
