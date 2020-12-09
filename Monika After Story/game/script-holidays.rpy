@@ -2284,10 +2284,20 @@ label mas_d25_monika_christmas:
         m 1dku "..."
 
         if mas_is_snowing:
-            m 1lkbsa "Maybe it's just the snow, or the decorations..."
+            if mas_isDecoTagVisible("mas_d25_lights"):
+                $ dlg_var = ", or the decorations"
+            else:
+                $ dlg_var = ""
+
+            m 1lkbsa "Maybe it's just the snow[dlg_var]..."
 
         else:
-            m 1lkbsa "Maybe it's the decorations, or just the holiday season..."
+            if mas_isDecoTagVisible("mas_d25_lights"):
+                $ dlg_var = "the decorations, or "
+            else:
+                $ dlg_var = ""
+
+            m 1lkbsa "Maybe it's [dlg_var]just the holiday season..."
 
         m "...or even the mistletoe getting to me."
         m 3hksdlb "Just kidding, I didn't hang one up."
@@ -2464,6 +2474,7 @@ init 5 python:
                 "persistent._mas_pm_hangs_d25_lights is None "
                 "and persistent._mas_d25_deco_active "
                 "and not persistent._mas_pm_live_south_hemisphere"
+                "and mas_isDecoTagVisible('mas_d25_lights')"
             ),
             action=EV_ACT_RANDOM,
             years=[]
