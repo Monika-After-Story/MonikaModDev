@@ -1441,23 +1441,23 @@ label monika_okayeveryone:
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eka "You're too much of a sweetheart to do that, aren't you?"
     m 5hub "Ahaha~"
-    return
+    return "no_unlock"
 
 init 5 python:
-    if not persistent.clearall:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_whispers",
-                category=['ddlc','club members'],
-                prompt="Others still lingering",
-                random=True,
-                rules={
-                    "derandom_override_label": "mas_bad_derand_topic",
-                    "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
-                }
-            )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_whispers",
+            category=['ddlc','club members'],
+            prompt="Others still lingering",
+            conditional="not persistent.clearall",
+            action=EV_ACT_RANDOM,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
+    )
 
 label monika_whispers:
     m 2euc "You know what's kind of creepy?"
@@ -1476,7 +1476,7 @@ label monika_whispers:
     m 2hua "I believe in you, [player]!"
     if store.mas_anni.pastOneMonth() and not persistent._mas_pm_cares_about_dokis:
         #derandom after a month if player doesn't care about the others, she wouldn't feel guilty and hear the voices forever
-        return "derandom"
+        $ mas_hideEVL("monika_whispers", "EVE", lock=True, derandom=True)
     return
 
 init 5 python:
@@ -2837,8 +2837,8 @@ label monika_debate:
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
     m 1eka "Ahaha! That sounds a little silly. Thanks for listening, though."
-    $ mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
-    $ mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+    $ mas_protectedShowEVL('monika_taking_criticism', 'EVE', _random=True)
+    $ mas_protectedShowEVL('monika_giving_criticism', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -14890,7 +14890,7 @@ label monika_movie_adaptations:
     m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
     m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
     m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
-    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_striped_pajamas", "EVE", _random=True)
     return
 
 init 5 python:

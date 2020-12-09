@@ -375,7 +375,22 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.7
 label v0_11_7(version="v0_11_7"):
     python:
-        pass
+        with MAS_EVL("monika_whispers") as whispers_ev:
+            if (
+                not persistent.clearall
+                and store.mas_anni.pastOneMonth()
+                and not persistent._mas_pm_cares_about_dokis
+            ):
+                whispers_ev.conditional = None
+                whispers_ev.action = None
+
+            else:
+                whispers_ev.conditional = "not persistent.clearall"
+                whispers_ev.action = EV_ACT_RANDOM
+
+            whispers_ev.random = False
+            whispers_ev.unlocked = False
+
     return
 
 # 0.11.6
