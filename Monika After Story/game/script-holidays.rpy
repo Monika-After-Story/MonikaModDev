@@ -1823,7 +1823,12 @@ label mas_holiday_d25c_autoload_check:
         not persistent._mas_d25_in_d25_mode
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
-        and persistent._mas_current_background == store.mas_background.MBG_DEF
+        and (
+            persistent._mas_current_background == store.mas_background.MBG_DEF
+            # If it's d25 and we still didn't setup d25 stuff, we should do it now
+            # (we'll force spaceroom if needed)
+            or mas_isD25()
+        )
     ):
         #Firstly, we need to see if we need to run playerbday before all of this
         python:
@@ -1857,13 +1862,12 @@ label mas_holiday_d25c_autoload_check:
                 #If we're loading in for the first time on D25, then we're gonna make it snow
                 if mas_isD25():
                     mas_changeWeather(mas_weather_snow, by_user=True)
-
+                    mas_changeBackground(mas_background_def, set_persistent=True)
 
     #This is d25 SEASON exit
     elif mas_run_d25s_exit or mas_isMoniDis(lower=True):
         #NOTE: We can run this early via mas_d25_monika_d25_mode_exit
         call mas_d25_season_exit
-
 
     #This is D25 Exit
     elif (
