@@ -1810,22 +1810,22 @@ label mas_reaction_christmascookies:
             m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
 
             if is_having_food:
-                m 1eua "I'll be sure to try some later~"
+                m 3hua "I'll be sure to try some later~"
 
-            elif monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
-                m 3eua "Let me take this plushie away."
-                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+            m 1eua "Thanks, [player]~"
+
+            if not is_having_food and monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me put this plushie away."
                 call mas_transition_to_emptydesk
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
                 pause 3.0
                 call mas_transition_from_emptydesk
-
-            m 1eua "Thanks again, [player]~"
 
             #Enable the gift
             $ christmascookies.enable()
 
         #Restock
-        $ christmascookies.restock(9)
+        $ christmascookies.restock(10)
 
     $ mas_receivedGift("mas_reaction_christmascookies")
     $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_christmascookies", "category")
@@ -1859,6 +1859,7 @@ label mas_reaction_candycane:
                     $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
                 $ candycane.have(skip_leadin=True)
 
+            $ mas_giftCapGainAff(3)
             m 3wub "Candy canes!"
 
             if store.seen_event("monika_icecream"):

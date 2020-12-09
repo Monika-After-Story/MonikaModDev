@@ -1244,7 +1244,7 @@ init 6 python:
         late_entry_list=[13, 19],
         max_re_serve=2,
         should_restock_warn=False,
-        max_stock_amount=10,
+        max_stock_amount=20,
         prep_low=None,
         cons_high=30*60 #30 minute max
     )
