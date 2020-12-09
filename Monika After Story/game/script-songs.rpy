@@ -589,6 +589,33 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_everything_is_alright",
+            prompt="Everything's Alright",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_everything_is_alright:
+    m 1dso "{i}~When this world is no more~{/i}"
+    m 4dud "{i}~The moon is all we'll see~{/i}"
+    m 4dua "{i}~I'll ask you to fly away with me~{/i}"
+    m 3duo "{i}~Until the stars all fall down~{/i}"
+    m "{i}~They empty from the sky~{i}"
+    m 1dua "{i}~But I don't mind~{i}"
+    m 1hua "{i}~If you're with me, then everything's alright~{i}"
+    m 3ekbla "If things ever get so dark, {w=0.3}{nw}"
+    extend 3ekbsa "just look up to the moon and remember me~"
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubsb "I love you, [player]!"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_your_song",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Your Song",
