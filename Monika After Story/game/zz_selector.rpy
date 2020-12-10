@@ -3467,8 +3467,6 @@ init 5 python:
         markSeen=True
     )
 
-    #Selectors shouldn't be in unseen
-    persistent._seen_ever
 default persistent._mas_setting_ocb = False
 # Outfit CheckBox setting
 

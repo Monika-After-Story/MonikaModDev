@@ -1519,7 +1519,7 @@ label mas_song_wonderwall:
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
 
     if mas_isMoniEnamored(higher=True):
-        m 1dubsa  "...And with you by my side, there's no way I could be afraid."
+        m 1dubsa "...But with you by my side, there's no way I could be afraid."
         m 1ekbsa "I know the place it leads to will be worth it.{w=0.3} {nw}"
         extend 3ekbsu "After all, you're my wonderwall~"
 

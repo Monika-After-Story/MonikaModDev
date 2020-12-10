@@ -1599,7 +1599,13 @@ label mas_consumables_generic_running_out(consumable):
             else:
                 line_ender = renpy.substitute("[consumable.disp_name][plur] left.")
 
-        m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
+            if amt_left > 2:
+                about = "about "
+
+            else:
+                about = ""
+
+        m 3eud "I just wanted to let you know I only have [about][amt_left] [line_ender]"
 
         if not renpy.seen_label("mas_consumables_refill_explain"):
             call mas_consumables_refill_explain
