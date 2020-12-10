@@ -62,7 +62,7 @@ init python:
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
 
-        except ImportError:
+        except:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
@@ -168,8 +168,8 @@ init python:
 
                 if active_winid_prop is None:
                     return ""
-                else:
-                    active_winid = active_winid_prop.value[0]
+
+                active_winid = active_winid_prop.value[0]
 
                 active_winobj = display.create_resource_object("window", active_winid)
                 try:
@@ -230,11 +230,10 @@ init python:
         #Otherwise, let's get the active window
         active_window = mas_getActiveWindow()
 
-        return (
-            (len([s for s in keywords if s.lower() in active_window]) > 0)
-            if non_inclusive else
-            (len([s for s in keywords if s.lower() not in active_window]) == 0)
-        )
+        if non_inclusive:
+            return len([s for s in keywords if s.lower() in active_window]) > 0
+        else:
+            return len([s for s in keywords if s.lower() not in active_window]) == 0
 
     def mas_clearNotifs():
         """
