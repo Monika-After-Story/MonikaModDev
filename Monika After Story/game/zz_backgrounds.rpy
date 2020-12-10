@@ -2646,6 +2646,11 @@ init -20 python in mas_background:
             self.hides = hides
             self.shows = shows
 
+        def __repr__(self):
+            """
+            Returns description of this object
+            """
+            return "<BackgroundChangeInfo: (hides: {0}, shows: {1})>".format(self.hides, self.shows)
 
     def build():
         """
