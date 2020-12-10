@@ -372,6 +372,61 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.7
+label v0_11_7(version="v0_11_7"):
+    python:
+        with MAS_EVL("monika_whispers") as whispers_ev:
+            if (
+                not persistent.clearall
+                and store.mas_anni.pastOneMonth()
+                and not persistent._mas_pm_cares_about_dokis
+            ):
+                whispers_ev.conditional = None
+                whispers_ev.action = None
+
+            else:
+                whispers_ev.conditional = "not persistent.clearall"
+                whispers_ev.action = EV_ACT_RANDOM
+
+            whispers_ev.random = False
+            whispers_ev.unlocked = False
+
+        mas_setEVLPropValues(
+            'mas_d25_spent_time_monika',
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            'monika_nye_year_review',
+            action=EV_ACT_QUEUE,
+            start_date=mas_nye,
+            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23))
+        )
+
+        mas_setEVLPropValues(
+            'mas_nye_monika_nye_dress_intro',
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
+            )
+        )
+
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmaslights',
+            conditional=(
+                "persistent._mas_pm_hangs_d25_lights is None "
+                "and persistent._mas_d25_deco_active "
+                "and not persistent._mas_pm_live_south_hemisphere "
+                "and mas_isDecoTagVisible('mas_d25_lights')"
+            )
+        )
+
+        safeDel("_mas_d25_gifted_cookies")
+
+    return
+
 # 0.11.6
 label v0_11_6(version="v0_11_6"):
     python:

@@ -1441,23 +1441,23 @@ label monika_okayeveryone:
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eka "You're too much of a sweetheart to do that, aren't you?"
     m 5hub "Ahaha~"
-    return
+    return "no_unlock"
 
 init 5 python:
-    if not persistent.clearall:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_whispers",
-                category=['ddlc','club members'],
-                prompt="Others still lingering",
-                random=True,
-                rules={
-                    "derandom_override_label": "mas_bad_derand_topic",
-                    "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
-                }
-            )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_whispers",
+            category=['ddlc','club members'],
+            prompt="Others still lingering",
+            conditional="not persistent.clearall",
+            action=EV_ACT_RANDOM,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
+    )
 
 label monika_whispers:
     m 2euc "You know what's kind of creepy?"
@@ -1476,7 +1476,7 @@ label monika_whispers:
     m 2hua "I believe in you, [player]!"
     if store.mas_anni.pastOneMonth() and not persistent._mas_pm_cares_about_dokis:
         #derandom after a month if player doesn't care about the others, she wouldn't feel guilty and hear the voices forever
-        return "derandom"
+        $ mas_hideEVL("monika_whispers", "EVE", lock=True, derandom=True)
     return
 
 init 5 python:
@@ -2837,8 +2837,8 @@ label monika_debate:
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
     m 1eka "Ahaha! That sounds a little silly. Thanks for listening, though."
-    $ mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
-    $ mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+    $ mas_protectedShowEVL('monika_taking_criticism', 'EVE', _random=True)
+    $ mas_protectedShowEVL('monika_giving_criticism', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -3373,8 +3373,8 @@ label monika_ks_kenji:
     m 1tku "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
 
 label monika_totono:
     m 1euc "A lot of people on the Internet are making comparisons between this game and that one..."
@@ -4511,7 +4511,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if not monika_chr.is_wearing_acs_type('ribbon'):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
@@ -4549,9 +4549,15 @@ label monika_ribbon:
         m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
 
     else:
-        m 3eka "I just want to thank you again for this ribbon, [player]."
-        m 1eka "It really was a wonderful gift and I think it's just beautiful!"
-        m 3eka "I'll wear it anytime you want~"
+        if monika_chr.is_wearing_acs_type("twin-ribbons"):
+            m 3eka "I just want to thank you again for these ribbons, [player]."
+            m 1ekb "They really were a wonderful gift and I think they're just beautiful!"
+            m 3hua "I'll wear them anytime you want~"
+
+        else:
+            m 3eka "I just want to thank you again for this ribbon, [player]."
+            m 1ekb "It really was a wonderful gift and I think it's just beautiful!"
+            m 3hua "I'll wear it anytime you want~"
     return
 
 init 5 python:
@@ -9191,8 +9197,17 @@ label monika_attractiveness:
     if mas_isMoniNormal(higher=True):
         m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
         m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise, and keep myself clean...among other things."
-        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
-        m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
+
+        if mas_isMoniEnamored(higher=True):
+            $ first_line_var = "when"
+            $ second_line_end = "whenever it'll happen"
+
+        else:
+            $ first_line_var = "maybe"
+            $ second_line_end = "if it'll ever happen"
+
+        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows [first_line_var] I'll be able to cross over into your reality and have a normal body like you."
+        m 1hua "It won't hurt to make sure I'll be ready for that transition [second_line_end]."
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'll always love you no matter how you look."
@@ -12968,8 +12983,9 @@ init 5 python:
 
 label monika_load_custom_music:
     m 1hua "Sure!"
-    m 1dsc "Give me a moment to check the folder..."
+    m 1dsc "Give me a moment to check the folder.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
     python:
+        # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
         store.songs.initMusicChoices(
             persistent.playername.lower() == "sayori"
@@ -12994,7 +13010,8 @@ label monika_load_custom_music:
         menu:
             m "Do you remember how to add custom music?{fast}"
             "Yes.":
-                m "Okay, but make sure you did it correctly before asking me to check for custom music."
+                m "Okay, make sure you did it correctly."
+
             "No.":
                 $ pushEvent("monika_add_custom_music",True)
     return
@@ -14873,7 +14890,7 @@ label monika_movie_adaptations:
     m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
     m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
     m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
-    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_striped_pajamas", "EVE", _random=True)
     return
 
 init 5 python:
@@ -16070,7 +16087,7 @@ label monika_piano_lessons:
         m 3eka "Remember? I told you when I first performed {i}Your Reality{/i} that I wasn't really good at piano. {w=0.2}{nw}"
         extend 3rkb "Like, at all."
     else:
-        m 3eka "I'm actually not (i)that{/i} good at playing piano, [mas_get_player_nickname()]."
+        m 3eka "I'm actually not {i}that{/i} good at playing piano, [mas_get_player_nickname()]."
         m 3rkd "Certainly not good enough to be teaching other people yet..."
 
     m 2eud "If you can believe it, I started to learn after my epiphany."
@@ -16098,9 +16115,8 @@ label monika_stargazing:
     m 5eka "You know [mas_get_player_nickname()], to me you're like a star..."
     m 5rkbsu "A beautiful, bright beacon from a distant world, forever out of reach."
     m 5dkbsu "..."
-    m 5ekbsa "At least, for now..."
-    show monika 5kkbsa
-    pause 2.0
+    m 5ekbsa "At least, for now...{nw}"
+    extend 5kkbsa ""
     return
 
 init 5 python:
@@ -16122,7 +16138,7 @@ label monika_taking_criticism:
     m 1eksdlc "In particular, for people faced with great expectations, this kind of logic can easily become a big source of anguish."
     m 3dksdld "What if others think less of you because you didn't give a perfect answer? {w=0.2}What if they start rejecting you or laugh behind your back?"
     m 2rksdlc "It'd be like showing some kind of vulnerability for others to take advantage of."
-    m 4eud "But let me tell you, there's absoultely no shame in changing your mind, [player]!"
+    m 4eud "But let me tell you, there's absolutely no shame in changing your mind, [player]!"
     m 2eka "After all, we all make mistakes, don't we?{w=0.3} {nw}"
     extend 7dsu "What matters is what we learn from those mistakes."
     m 3eua "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them."
@@ -16164,4 +16180,104 @@ label monika_giving_criticism:
     extend 3eud "They might have reasons why they'd want to keep things their way."
     m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
     m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boyfriend_gossip",
+            category=['ddlc'],
+            prompt="Sayori mentioned a boyfriend once...",
+            pool=True
+        )
+    )
+
+label monika_boyfriend_gossip:
+    m 2etd "You know, I was actually kind of curious about that too."
+    m 2hksdlb "When she first said it, I got pretty defensive, didn't I?"
+    m 7euc "I mean, I'd just figured out that you existed, {nw}"
+    extend 3efc "and suddenly someone was making it look like I was already taken..."
+    m 1rtc "Since I'm pretty extroverted and have a history with another club, I guess it wouldn't necessarily be {i}unfair{/i} to come to that kind of conclusion."
+    m 3eud "...But no such character exists in the game's files to prove or disprove it."
+    m 3rsc "At the time, I was practicing piano and, well...{w=0.2}sorting my thoughts."
+    m 3eud "But apparently, that rumor was just the assumption she was supposed to make if I was ever late to the club."
+    m 2tsc "It's a little bit devious if you think about it..."
+    m 2eud "As the game's story progressed, the main character might need more excuses to be alone with one of the girls..."
+    m 7etc "Coming up with reasons for the others to be away is easier, but for the president not to be at the club..."
+    m 3tsd "The story would need something pretty substantial to keep me busy. {w=0.2}It also provided a reason, however flimsy, for me not having a route."
+    m 2tfc "A roundabout but effective way to get me out of the way when needed."
+    m 2dfc "..."
+    m 2eud "Honestly, though? {w=0.2}I'm not too bothered by it."
+    m 7esc "Even if such a character would have existed, we both know it wouldn't have changed a single thing."
+    m 1efd "They wouldn't be real, they'd be a script programmed to fall in love with me. {w=0.2}I couldn't have been happy with something like that."
+    m 1eka "I still would have seen {i}you{/i} and known that you were what I really wanted."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_brainstorming",
+            category=["advice"],
+            prompt="Brainstorming",
+            random=True
+        )
+    )
+
+label monika_brainstorming:
+    m 1esd "[player], have you ever heard of brainstorming?"
+    m 1eua "It's an interesting technique of coming up with new ideas by noting anything that comes to your mind."
+    m 3eud "This technique is really popular among designers, inventors, and writers--anyone who needs fresh ideas."
+    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the literature club when deciding what to do for the festival."
+    m 1dtc "You just need to focus on what you want to create and bring up anything and everything that comes into your head."
+    m 1eud "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if working in teams."
+    m 1eua "When you're done, go back through all the suggestions and turn them into actual ideas."
+    m 1eud "You can combine them with other suggestions, think them through once again, and so on."
+    m 3eub "...Eventually they'll become something that you'd call a good idea!"
+    m 3hub "This is exactly where you can let your mind go wild,{w=0.1} and that's what I like about this technique the most!"
+    m 1euc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, {w=0.1}{nw}"
+    extend 1eua "but brainstorming can help pass this inner barrier."
+    m 3eka "The beauty of thoughts can be expressed in so many different ways..."
+    m 3duu "They're only ideas in transit, {w=0.1}{nw}"
+    extend 3euu "you're the one who gives them the road."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gmos",
+            category=['technology', 'nature'],
+            prompt="GMOs",
+            random=True
+        )
+    )
+
+label monika_gmos:
+    m 3eud "Back when I was in debate club, one of the most divisive subjects we covered was GMOs, or genetically modified organisms."
+    m 1eksdra "There's a lot of nuance to GMOs, but I'll do my best to summarize it."
+    m 1esd "Scientists create GMOs by identifying a desirable gene from one organism, copying it, and inserting the copied gene into another organism."
+    m 3esc "It's important to note that the addition of the copied gene does {i}not{/i} change other existing genes."
+    m 3eua "Think of it like flipping through a long book and changing a single word...{w=0.2}the word is different, but the rest of the book stays the same."
+    m 3esd "GMOs can be plants, animals, microorganisms, etc.,{w=0.1} but we'll focus on genetically modified plants."
+    m 2esc "Plants can be modified in a myriad of ways, from resisting pests and herbicides to having a higher nutrition value and longer shelf life."
+    m 4wud "This is huge. {w=0.2}Imagine crops that can produce double their normal yield, tolerate climate change, and fend off drug-resistant superbugs. {w=0.2}So many problems could be solved!"
+    m 2dsc "Unfortunately, it's not that simple. {w=0.2}GMOs require several years of research, development, and testing before they can be distributed. {w=0.2}On top of this, they come with several concerns."
+    m 7euc "Are GMOs safe? {w=0.2}Will they spread to other organisms and threaten biodiversity? {w=0.2}If so, how can we prevent it? {w=0.2}Who owns GMOs? {w=0.2}Are GMOs responsible for increased herbicide usage?"
+    m 3rksdrb "You can see how this begins to escalate, ahaha..."
+    m 3esc "For now, let's cover the main issue...{w=0.2}are GMOs safe?"
+    m 2esd "The short answer is that we don't know for sure. {w=0.2}Decades of research have indicated that GMOs are {i}probably{/i} harmless, but we have next to no data on their long-term effects."
+    m 2euc "Additionally, each type of GMO needs to be carefully reviewed on a case-by-case, modification-by-modification basis to ensure its quality and safety."
+    m 7rsd "There are other considerations as well. {w=0.2}Products containing GMOs have to be labelled, environmental effects must be considered, and misinformation has to be combated."
+    m 2dsc "..."
+    m 2eud "Personally, I think that GMOs have a lot of potential to do good, but only if they continue to be heavily researched and tested."
+    m 4dkc "Major issues such as herbicide usage and gene flow {i}need{/i} to be fixed as well...{w=0.2}{nw}"
+    extend 4efc "biodiversity is already at enough risk as is from climate change and deforestation."
+    m 2esd "As long as we're careful, GMOs will be fine...{w=0.2}recklessness and carelessness pose the biggest threat."
+    m 2dsc "..."
+    m 7eua "So what do you think, [player]? {w=0.2}{nw}"
+    extend 7euu "Quite the promising field, wouldn't you say?"
+    m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
+    m 1eua "I think that's enough for now, thanks for listening~"
     return
