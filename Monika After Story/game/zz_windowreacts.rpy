@@ -57,10 +57,10 @@ init python:
             import balloontip
 
             #Now we initialize the notification class
-            tip = balloontip.WindowsBalloonTip()
+            __tip = balloontip.WindowsBalloonTip()
 
             #Now we set the hwnd of this temporarily
-            tip.hwnd = None
+            __tip.hwnd = None
 
         except:
             #If we fail to import, then we're going to have to make sure nothing can run.
@@ -394,10 +394,10 @@ init python:
             #Now we make the notif
             if (renpy.windows):
                 # The Windows way, notif_success is adjusted if need be
-                notif_success = tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+                notif_success = __tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
                 #We need the IDs of the notifs to delete them from the tray
-                destroy_list.append(tip.hwnd)
+                destroy_list.append(__tip.hwnd)
 
             elif (renpy.macintosh):
                 # The macOS way
@@ -415,6 +415,14 @@ init python:
             return notif_success
         return False
 
+    def mas_prepForReload():
+        """
+        Handles clearing wrs notifs and unregistering the wndclass to allow 'reload' to work properly
+
+        NOTE: WINDOWS ONLY
+        """
+        store.mas_clearNotifs()
+        win32gui.UnregisterClass(__tip.classAtom, __tip.hinst)
 
 #START: Window Reacts
 init 5 python:
