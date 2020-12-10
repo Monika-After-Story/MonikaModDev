@@ -882,9 +882,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # add show/hide statements for decos
         if bg_change_info is not None:
             if not scene_change:
+                mas_current_background._exit_deco(None, bg_change_info)
+
                 for h_adf in bg_change_info.hides.itervalues():
                     h_adf.hide()
 
+            mas_current_background._entry_deco(None, bg_change_info)
             for s_tag, s_adf in bg_change_info.shows.iteritems():
                 s_adf.show(s_tag)
 
