@@ -4249,7 +4249,7 @@ label monika_nye_year_review:
                 call monika_kissing_motion_short
                 m 1ekbfa "I love you, [player]."
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5hubfb "Let's make this year better than the last."
+                m 5hubfb "Let's make this year even better than the last."
 
         else:
             m "Let's make this year the best we can, [player]. I love you~"
