@@ -875,7 +875,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
         #   for this background.
-        if scene_change and bg_change_info is None:
+        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
             bg_change_info = store.mas_background.MASBackgroundChangeInfo()
             mas_current_background._entry_deco(None, bg_change_info)
 

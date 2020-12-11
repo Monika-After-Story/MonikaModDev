@@ -2646,6 +2646,8 @@ init -20 python in mas_background:
             self.hides = hides
             self.shows = shows
 
+        def __len__(self):
+            return len(self.hides) + len(self.shows)
 
     def build():
         """
