@@ -15676,3 +15676,39 @@ label monika_eating_meat:
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_takeyouwithchange",
+            category=['misc'],
+            prompt="Can we change when I take you out?",
+            pool=True,
+        )
+    )
+
+label monika_takeyouwithchange:
+    m "Oh?"
+    # Todo: Dialogue reflecting current choice, especially if LEAVE_MONI
+    # Could tell her we got a flash drive or something if we told her we didn't have one
+    m "Sure, what would you rather I do for now?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Sure, what would you rather I do for now?{fast}"
+        "I want you to always come with me."
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
+            m "Oh, okay!"
+            m "I'll make sure to get ready whenever you're heading out."
+            m "Remember, if you ever need to leave in a hurry, you can always just say 'Goodbye.'"
+        "I'd like you to ask each time."
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
+            m "Alright, no problem!"
+            m "I'll let you decide each time then."
+            m "Remember, if you ever need to leave in a hurry, you can always just say 'Goodbye.'"
+        "I'd like you to stay here for now."
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
+            m "Ah, alright."
+            m "That's okay, I understand!"
+            m "Just make sure to let me know when you can, okay?"
+    return
