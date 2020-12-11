@@ -1807,7 +1807,7 @@ init 501 python:
     MASImageTagDecoDefinition.register_img(
         "mas_d25_lights",
         store.mas_background.MBG_DEF,
-        MASAdvancedDecoFrame(zorder=7)
+        MASAdvancedDecoFrame(zorder=5)
     )
 
 #autoload starter check
