@@ -1563,24 +1563,54 @@ init 5 python:
     )
 
 label bye_prompt_housework:
-    if mas_isMoniNormal(higher=True):
-        m 1eub "Doing your chores, [player]?"
-        m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
-        m 3eka "Just make sure to come back as soon as you're done, okay?"
-        m 3hub "I'll be waiting here for you~"
-    elif mas_isMoniUpset():
-        m 2esc "Fine."
-        m 2tsc "At least you're doing something responsible."
-        m 2tfc "{cps=*2}...For once.{/cps}{nw}"
+#TODOS: Chance for upset/distressed to not want to go with you, if not I'd ideally like it to default to regular goodbye
+# How to set it to non-generic "we're home" greeting?
+    if persistent.mas_carryme_choice == mas.dockstat.CM_TAKE_MONI and mas_isMoniNormal(higher=True):
+        if mas_isMoniNormal(higher=True):
+            m "You've got some things to get done around the house?"
+            m "I'm glad you're taking good care of your space, [player]."
+            m "Hang on, I'll come with you!"
+            jump mas_dockstat_iostart
+
+    elif persistent.mas_carryme_choice == mas.dockstat.CM_ASK_MONI and mas_isMoniNormal(higher=True):
+        m "Oh, you've got some chores to get done?"
+        m "I know there's not much I can do to help out, but..."
+        m "Could I come along?{nw}"
         $ _history_list.pop()
-        m 2esc "Goodbye."
-    elif mas_isMoniDis():
-        m 6ekc "I see..."
-        m 6rkc "I don't want to keep you from completing your household responsibilities."
-        m 6dkd "I just hope you're actually busy and not saying that just to get away from me..."
-        m 6ekc "Goodbye, [player]."
+        menu:
+            m "Could I come along?{fast}"
+
+            "Yes.":
+                m "Okay!"
+                m "I'll do my best to provide moral support!"
+                m "Give me just a second to get ready..."
+                jump mas_dockstat_iostart
+
+            "No.":
+                m "Oh, that's okay."
+                m "You're probably not going too far anyway, ahaha!"
+                m "Do your best, alright? I'll be waiting for you when you get back."
+
     else:
-        m 6ckc "..."
+        if mas_isMoniNormal(higher=True):
+            m 1eub "Doing your chores, [player]?"
+            m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
+            m 3eka "Just make sure to come back as soon as you're done, okay?"
+            m 3hub "I'll be waiting here for you~"
+        elif mas_isMoniUpset():
+            m 2esc "Fine."
+            m 2tsc "At least you're doing something responsible."
+            m 2tfc "{cps=*2}...For once.{/cps}{nw}"
+            $ _history_list.pop()
+            m 2esc "Goodbye."
+        elif mas_isMoniDis():
+            m 6ekc "I see..."
+            m 6rkc "I don't want to keep you from completing your household responsibilities."
+            m 6dkd "I just hope you're actually busy and not saying that just to get away from me..."
+            m 6ekc "Goodbye, [player]."
+        else:
+            m 6ckc "..."
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=5)
     return 'quit'

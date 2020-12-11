@@ -2770,44 +2770,48 @@ label monika_carryme:
 #        "Yes.":
 #            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
 #            m 1hua "Yay!"
-            # TODO: something about monika generating her character file
-            # when you say an appropriate goodbye
-            # + affection
+#            m "Then I'll make myself into a character file whenever you're going somewhere specific."
+#            m "If you ever need to leave in a hurry, though, you can always just say 'Goodbye' and I'll stay here."
+#            m "I'll be waiting for our next outing then, [player]!"
+            # TODO: + affection
 
 #        "Not all the time...":
 #            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
-#            m 1eka "TODO: Okay I'll ask u when you leave."
-            # TODO: something about monika saying she'll ask u when you leave
-            # if she can come with u
-            # + affection
+#            m 1eka "Oh, okay. I understand."
+#            m "You might not always be able to carry around a flash drive or something, right?"
+#            m "I'm happy to give you some personal space sometimes, ahaha~"
+#            m "I'll make sure to ask if I can come with when you're leaving from now on, then."
+#            m "If you ever need to leave in a hurry, though, you can always just say 'Goodbye' and I'll stay here."
+            # TODO: + affection
 
-#        "Not yet.":
+#        "Not right now.":
 #            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
-#            m 1eka "TODO: Okay i understand. Let me know when you can take me places"
-            # TODO: something about monika saying she understands and to let
-            # her know when you can take her places
-            # + affection
+#            m 1eka "Oh, that's alright."
+#            m "I understand, life can get in the way sometimes."
+#            m "Promise you'll let me know if things change, okay?"
+#            m "Until then, I'm happy to wait here for you, [player]."
+            # TODO: + affection
 
 #        "No.":
 #            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
-            # TODO: monika understands, you must have ur reasons
-            # give choices:
-            #   - its dangerous out there
-            #       -> + affection
-            #   - I dont have the means to take you
-            #       -> no change in affection
-            #   - I just dont want to
-            #       -> - affection
 #            m 1eka "Oh? Why is that?"
 #            menu:
 #                "It's dangerous out there!":
                     # TODO: gain affection
-#                    m 1eka "TODO: what really? thanks for looking out for me player."
+#                    m 1eka "Oh, really...?"
+#                    m "Although, I suppose I can see why you'd say that."
+#                    m "A lot of things could happen. The device you're keeping me on could get damaged."
+#                    m "There's also the possibility that I could be stolen or lost."
+#                    m "If that happened, you could restore a backup, but...it would still be frightening for both of us."
+#                    m "Thank you for looking out for my safety, [player]."
 #                "I don't have the means to take you.":
-#                    m 1eka "TODO: oh thats fine, let me know when you can then!"
+#                    m 1eka "Oh! I see."
+#                    m "That's okay. I don't want you to have to rush out and buy something just for this."
+#                    m "Just promise you'll let me know right away if you do get one, okay?"
 #                "I just don't want to.":
                     # TODO: lose affection
-#                    m 1eka "TODO: oh okay I become sad."
+#                    m 1eka "Oh...but..."
+#                    m "That's...alright, I guess."
 
     m 1ekbsa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return "derandom"
