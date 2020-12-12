@@ -1359,7 +1359,7 @@ label mas_reaction_hotchocolate:
 
         elif hotchoc.enabled() and not hotchoc.hasServing():
             $ mas_giftCapGainAff(0.5)
-            m 3rksdla "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
+            m 3rksdlu "I'm actually out of hot chocolate, ahaha...{w=0.5} {nw}"
             extend 3eub "So getting more from you now is amazing!"
             m 1hua "Thanks again, [player]~"
 
@@ -2464,7 +2464,8 @@ label mas_reaction_gift_chocolates:
                 $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             m 1eka "More chocolates, [player]?"
-            m 3tku "You really love to spoil me don't you, ahaha!"
+            m 3tku "You really love to spoil me don't you,{w=0.2} {nw}"
+            extend 3tub "ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
             m 1hub "...but I'm not complaining!"
 
@@ -2663,7 +2664,7 @@ label mas_reaction_gift_clothes_finale_jacket_brown:
     m 1sub "Oh!{w=0.5} A winter jacket!"
     m 1suo "And it even comes with a scarf!"
     if mas_isSummer():
-        m 3rksdla "...Though I'm getting a little hot just by looking at it, ahaha..."
+        m 3rksdlu "...Though I'm getting a little hot just by looking at it, ahaha..."
         m 3eksdla "Perhaps summer isn't the best time to wear this, [player]."
         m 3eka "I do appreciate the thought, and I'll be glad to wear it in a few months."
 
@@ -2707,7 +2708,7 @@ label mas_reaction_gift_clothes_orcaramelo_sweater_shoulderless:
 
     m 2dkbsu "It's so...{w=1}comfy. I feel as snug as a bug in a rug. Ehehe~"
     m 1ekbsa "Thank you, [player]. I love it!"
-    m 3hubsa "Now whenever I wear it I'll think of your warmth. Ahaha~"
+    m 3hubsb "Now whenever I wear it I'll think of your warmth. Ahaha~"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:

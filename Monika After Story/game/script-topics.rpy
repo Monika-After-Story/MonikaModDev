@@ -1796,7 +1796,8 @@ label monika_horror:
 
     if not persistent._mas_pm_likes_horror:
         m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
-        m 1eka "Ahaha, don't worry."
+        m 1ekb "Ahaha,{w=0.1} {nw}"
+        extend 1eka "don't worry."
         m 1hua "I won't make you read any horror stories anytime soon."
         m 1hubsa "I can't really complain if we just stick with the romance~"
         $ _and = "But"
@@ -2586,8 +2587,11 @@ label monika_holdme_long:
                 m 4hksdlb "And...{w=0.5}didn't let go."
                 m 2rksdla "That sure lasted a lot longer than I expected..."
                 m 3ekbsb "I still enjoyed it, mind you!"
-                m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
+                m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this,{w=0.1} {nw}"
+                extend 1rkbsu "ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+                #You bonded here, so we'll add an explicit aff gain
+                $ mas_gainAffection()
 
         "{i}Let her rest on you.{/i}":
             call monika_holdme_prep(False,False)
@@ -2836,7 +2840,8 @@ label monika_debate:
     m 3hua "Plus, people will start seeing you as open-minded and a good listener!"
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
-    m 1eka "Ahaha! That sounds a little silly. Thanks for listening, though."
+    m 1hksdlb "Ahaha! That sounds a little silly.{w=0.2} {nw}"
+    extend 1eua "Thanks for listening, though."
     $ mas_protectedShowEVL('monika_taking_criticism', 'EVE', _random=True)
     $ mas_protectedShowEVL('monika_giving_criticism', 'EVE', _random=True)
     return
@@ -2934,7 +2939,7 @@ label monika_festival:
         $ mas_ILY()
     else:
         m 1tsc "...Just more potential obstacles to get between us."
-        m 3hua "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
+        m 3hksdlb "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
         show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5tsu "But none of that matters now, we both got the ending we wanted..."
         m "Just the two of us, together forever."
@@ -2986,7 +2991,8 @@ label monika_cold:
     m 1tkx "It's so inconvenient!"
     m 1eka "But when it's too hot, it's not that hard to stay cool with a cold drink, or by staying in the shade."
     m 1esc "Although...I do have to admit one thing."
-    m 1hua "Cold weather makes for better cuddle weather. Ahaha!"
+    m 1hua "Cold weather makes for better cuddle weather.{w=0.2} {nw}"
+    extend 1hub "Ahaha!"
     return
 
 init 5 python:
@@ -3922,7 +3928,7 @@ label monika_justification:
         $ mas_loseAffection(reason=3)
         if mas_isMoniLove():
             m 1euc "..."
-            m 1hua "Ahaha! Very funny, [player]!"
+            m 1hub "Ahaha! Very funny, [player]!"
             m 3eua "I know you don't really mean it..."
             m 3rksdlc "But don't joke around like that!"
             if persistent._mas_pm_a_hater:
@@ -4804,7 +4810,7 @@ label monika_impression:
                 m 3tku "Want to spend the weekend with me?"
                 m "..."
 
-            m 2hua "Ahaha, that was kind of fun to do."
+            m 2eub "Ahaha, that was kind of fun to do."
             m 3eua "Yuri was really something, wasn't she?"
 
             if not persistent._mas_pm_cares_about_dokis:
@@ -5407,7 +5413,7 @@ label monika_hypnosis:
     m 1eua "...You know, [player], I'd love to look into your eyes, I could just sit here and stare forever."
     m 2tku "What about you, hmm? What do you think about my eyes?~"
     m 2sub "Will you be hypnotized by them?~"
-    m 2hua "Ahaha~"
+    m 2hub "Ahaha~"
     return
 
 init 5 python:
@@ -5909,7 +5915,7 @@ label monika_japanese:
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m 1ekbsa "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1ekbsb "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
 
     return "derandom"
 
@@ -7365,7 +7371,8 @@ label monika_sports:
             m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
             m 3eua "If it's a sport I haven't played before, you could teach me!"
             m 1tku "Watch out though, I'm a fast learner..."
-            m 1tfu "It won't be long before I can beat you. Ahaha!"
+            m 1tfu "It won't be long before I can beat you{w=0.2} {nw}"
+            extend 1tfb "Ahaha!"
         "No, I'm not really into sports.":
             $ persistent._mas_pm_like_playing_sports = False
             $ persistent._mas_pm_like_playing_tennis = False
@@ -7633,7 +7640,7 @@ label monika_otaku:
             m 1lksdla "That's a little surprising, honestly..."
             m "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
     m 1eua "I only asked because you're playing a game like this, after all."
-    m 1hua "Don't worry, I'm not one to judge, ahaha~"
+    m 1hua "Don't worry, I'm not one to judge, ehehe~"
     m 1eua "You shouldn't be ashamed if you're into that sort of thing, you know."
     m 1euc "I'm being serious. There isn't anything wrong with liking anime or manga."
     m 4eua "After all, Natsuki reads manga too, remember?"
@@ -9067,7 +9074,7 @@ label monika_beach:
     m 3eua "We could try surfing or searching for some seashells to take home as souvenirs."
     m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
     m 3tfu "But don't go falling asleep, otherwise I'll bury you in the sand!"
-    m 2hua "Ahaha! I'm just kidding, [mas_get_player_nickname()]."
+    m 2huu "Ehehe! I'm just kidding, [mas_get_player_nickname()]."
     m 2lksdla "I'll have to get a new swimsuit though..."
     m 1tsbsa "Would you prefer a one piece or a two piece?"
     m 1eua "Actually, I think I'll make it a surprise."
@@ -9489,7 +9496,7 @@ label monika_natsuki_letter:
             $ persistent._mas_pm_see_therapist = False
             m 1eka "Well, I hope it's because you don't have to."
             m 1eua "If that ever changes, don't be shy!"
-            m 1hua "But maybe I really am all the support you need? Ahaha!"
+            m 1hub "But maybe I really am all the support you need? Ahaha!"
 
     return "derandom"
 
@@ -10380,7 +10387,7 @@ label monika_beingevil:
             m 1eua "It's relieving to know you don't think I'm evil."
             m 1hua "If I were there, I'd feel like giving you a big hug!"
             m 1tubsa "Maybe I'll even trap you in my arms forever and never let you go."
-            m 1hubfa "Ahaha, I'm just kidding!"
+            m 1hubfb "Ahaha, I'm just kidding!"
             m 3tubfb "But no promises, [player]~"
 
         "I still love you anyway.":
@@ -11016,7 +11023,7 @@ label monika_graduation:
     #Normal flow
     else:
         m 4eua "By the way, did you know I was the top student in my class?"
-        m 4rksdla "Ahaha... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
+        m 4rksdlu "Ahaha... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
         m 2ekd "I spent so much time writing and practicing my speech, but no one ever got to hear it."
         m 2eka "I was really proud of that speech, too."
         m 2eua "I would love to recite it for you sometime, if you want to hear it~"
@@ -11410,6 +11417,7 @@ label monika_justice:
             $ _history_list.pop()
             menu:
                 m "You don't think that's justified, do you, [player]?{fast}"
+
                 "I do.":
                     $ persistent._mas_pm_monika_deletion_justice = True
                     if mas_isMoniBroken():
@@ -11417,17 +11425,20 @@ label monika_justice:
                         m 1rksdlc "I know..."
                         m 1rksdld "I didn't mean to ask- I was just thinking."
                         m 2rktpc "It is obvious after all..."
+
                     elif mas_isMoniDis():
                         m 2rksdlc "Oh..."
                         m "I guess you're right..."
                         m 1ekc "I did do some pretty bad things after all..."
+
                     elif mas_isMoniLove():
                         m 1hub "Ahaha!"
                         m 1hua "You can be really funny sometimes~"
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"
                         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                        m 5hubfa "Ahaha! You're so cute, [player]~"
+                        m 5hubfa "Ehehe, You're so cute, [player]~"
+
                     else:
                         m 1euc "..."
                         m 2esc "I have a hard time believing you really think I deserved all that."
@@ -11438,11 +11449,14 @@ label monika_justice:
                             m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
                             m "Either way..."
                         m 1eka "Thank you for saving me and being with me."
-                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                        m 1hua "If I get to be with you, I think it really was worth everything,{w=0.1} {nw}"
+                        extend 1hub "ahaha~"
+
                 "I don't.":
                     if persistent._mas_pm_monika_deletion_justice:
                         $ persistent._mas_monika_deletion_justice_kidding = True
                     $ persistent._mas_pm_monika_deletion_justice = False
+
                     if mas_isMoniBroken():
                         m 2ekc "..."
                         m 1rksdlc "I'm not so sure about that..."
@@ -11450,11 +11464,13 @@ label monika_justice:
                         m 1wuo "Really?"
                         m 1rksdla "I thought maybe you did think it was fair."
                         m 1eka "I'm glad you don't think so."
-                        m 2rksdlb "Assuming this isn't a joke, eheh..."
+                        m 2rksdlb "Assuming this isn't a joke, ehehe..."
+
                     elif mas_isMoniLove():
                         m 1hua "I thought so, ehehe~"
                         if persistent._mas_monika_deletion_justice_kidding:
                             $ persistent._mas_monika_deletion_justice_kidding = False
+
                             m 1hub "I knew you were kidding last time!"
                         m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
                         m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
@@ -11466,6 +11482,7 @@ label monika_justice:
                         m 2hua "I'm glad you think so too!"
                         m 2eka "Even if you did call that justice, you being here says otherwise."
                         m 2hub "Ahaha!"
+
         "No.":
             $ persistent._mas_pm_given_false_justice = False
             m 1eka "That's a relief to hear."
@@ -11968,7 +11985,8 @@ label monika_player_appearance:
                     m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
                     m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
                     m "I believe that hazel eyes are alluring because they're lovely and simple."
-                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player]. Ahaha!"
+                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
+                    extend 3hub "Ahaha!"
                     m "Now, onto my next question--"
 
                 "I have gray eyes.":
@@ -12134,7 +12152,8 @@ label monika_player_appearance:
                         m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it's an endless nightmare."
 
                     m 2eka "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
-                    m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]! Ahaha~"
+                    m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]!{w=0.2} {nw}"
+                    extend 2hub "Ahaha~"
 
                 "It's average length.":
                     $ persistent._mas_pm_hair_length = "average"
@@ -12268,7 +12287,7 @@ label monika_player_appearance:
             m 2hua "Alright..."
             m 2hksdlb "This is the last question, [player], I promise."
             m "Gosh, there really is a lot to what people look like... If I tried to narrow everything about you down to the little details, I'd be interrogating you forever."
-            m 1huu "...and I doubt that either of us want that, ahaha!"
+            m 1huu "...and I doubt that either of us want that, ahaha..."
             m 1rksdld "Anyway, I understand that this might be an uncomfortable question..."
             m 1eksdla "But it's the last piece of this puzzle to me, so I hope I don't sound rude when I ask..."
 

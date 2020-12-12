@@ -861,7 +861,8 @@ label greeting_o31_generic:
     call spaceroom(scene_change=True, dissolve_all=True)
 
     m 3hub "Trick or treat!"
-    m 3eua "Ahaha, I'm just kidding, [player]."
+    m 3eub "Ahaha,{w=0.1} {nw}"
+    extend 3eua "I'm just kidding, [player]."
     m 1hua "Welcome back...{w=0.5}{nw}"
     extend 3hub "and Happy Halloween!"
 
@@ -969,7 +970,7 @@ label bye_trick_or_treat:
 
             "Actually, it {i}is{/i} a bit late...":
                 if persistent._mas_o31_tt_count:
-                    m 1hua "Ahaha~"
+                    m 1hub "Ahaha~"
                     m "I told you."
                     m 1eua "We'll have to wait until next year to go again."
 
@@ -1010,7 +1011,7 @@ label bye_trick_or_treat_wait_wait:
 
             if persistent._mas_o31_tt_count:
                 call mas_transition_from_emptydesk(exp="monika 1hua")
-                m 1hua "Ahaha~"
+                m 1hub "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
 
@@ -2462,7 +2463,7 @@ label mas_d25_monika_mistletoe:
     if not persistent._mas_pm_d25_mistletoe_kiss:
         m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
         m 1tku "...Maybe I can even add one in here!"
-        m 1hub "Ehehe~"
+        m 1kuu "Ehehe~"
     return "derandom"
 
 #Stores whether or not the player hangs christmas lights
@@ -4103,7 +4104,7 @@ label monika_nye_year_review:
 
     elif store.mas_anni.pastThreeMonths():
         m 2eka "You know [player], we've been through quite a bit over the short time we've spent together last year."
-        m 2eksdla "It's all gone by so fast, ahaha..."
+        m 2eksdlu "It's all gone by so fast, ahaha..."
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
@@ -5678,7 +5679,7 @@ label mas_f14_monika_valentines_intro:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
-                m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
+                m 2rksdlu "Ahaha...{w=1}it's not polite to stare, [player]..."
                 m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
                 call mas_f14_sun_dress_outro
 
