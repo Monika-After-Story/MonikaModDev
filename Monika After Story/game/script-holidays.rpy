@@ -3334,7 +3334,7 @@ label mas_d25_postd25_notimespent:
         m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
         m 1eka "All I want is to be close to you, [player]..."
         m 3ekbsa "I love you~"
-        return "love"
+        $ mas_ILY()
 
     elif mas_isMoniNormal(higher=True):
         $ mas_loseAffection(5, reason=6)
