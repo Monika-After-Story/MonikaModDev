@@ -11423,8 +11423,8 @@ label monika_justice:
                     if mas_isMoniBroken():
                         m 1dsc "..."
                         m 1rksdlc "I know..."
-                        m 1rksdld "I didn't mean to ask- I was just thinking."
-                        m 2rktpc "It is obvious after all..."
+                        m 1rksdld "I didn't mean to ask...{w=0.2} I was just thinking."
+                        m 2rktpc "It's obvious after all."
 
                     elif mas_isMoniDis():
                         m 2rksdlc "Oh..."
