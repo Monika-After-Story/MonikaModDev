@@ -628,7 +628,7 @@ init -2 python in mas_sprites:
         # need to wear the quetzal plushie if we putting the santa hat on
         _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
-    def _acs_quetzalplushie_center_santahat_entry(_moni_chr, **kwargs):
+    def _acs_center_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
         Entry programming point for quetzal plushie santa hat (mid version) acs
         """
@@ -1726,7 +1726,7 @@ init -1 python:
         ),
         priority=11,
         stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_center_santahat_entry,
+        entry_pp=store.mas_sprites._acs_center_quetzalplushie_santahat_entry,
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie_center_santahat)
