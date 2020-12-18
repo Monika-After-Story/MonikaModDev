@@ -3059,7 +3059,7 @@ label mas_d25_spider_tinsel:
     m 1eua "...And I found this really interesting folk story from Ukraine regarding the origin of why tinsel is often used to decorate Christmas trees."
     m 1eka "I thought it was a really nice story and wanted to share it with you."
     m 1dka "..."
-    m 3esa "There once was a widow (let's call her Amy) who lived in a cramped old hut with her children."
+    m 3esa "There once was a widow--let's call her Amy--who lived in a cramped old hut with her children."
     m 3eud "Outside of their home was a tall pine tree, and from the tree dropped a pinecone that soon started to grow from the soil."
     m 3eua "The children were excited about the idea of having a Christmas tree, so they tended to it until it became tall enough to take inside their home."
     m 2ekd "Unfortunately, the family was poor and even though they had the Christmas tree, they couldn't afford any ornaments to decorate it."
