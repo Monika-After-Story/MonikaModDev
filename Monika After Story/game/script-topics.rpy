@@ -7371,7 +7371,7 @@ label monika_sports:
             m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
             m 3eua "If it's a sport I haven't played before, you could teach me!"
             m 1tku "Watch out though, I'm a fast learner..."
-            m 1tfu "It won't be long before I can beat you{w=0.2} {nw}"
+            m 1tfu "It won't be long before I can beat you.{w=0.2} {nw}"
             extend 1tfb "Ahaha!"
         "No, I'm not really into sports.":
             $ persistent._mas_pm_like_playing_sports = False
