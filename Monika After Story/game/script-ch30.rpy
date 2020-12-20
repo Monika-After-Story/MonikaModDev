@@ -1052,7 +1052,7 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = persistent._mas_monika_nickname
         $ quick_menu = True
-        m 1hua "Ahaha!"
+        m 1hub "Ahaha!"
         m "I'm just kidding!"
         m 1eua "I already fixed that bug."
         m "I don't need a character file anymore."

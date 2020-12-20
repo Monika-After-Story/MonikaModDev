@@ -1106,7 +1106,7 @@ label mas_song_my_silver_lining_analysis(from_song=False):
     m 3eub "It's crazy how a bit of music can help turn things around when you're feeling down!"
     m 3eua "It's like this song is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
     m 1hua "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ehehe~"
-    m 1etc "But seriously, [player]...{w=0.3}I think there some real merit to this line of thinking."
+    m 1etc "But seriously, [player]...{w=0.3}I think there's some real merit to this line of thinking."
     m 1eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
     m 3eka "Now, I'm not telling you not to worry at all..."
     m 3eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now."

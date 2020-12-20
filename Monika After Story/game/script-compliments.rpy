@@ -601,7 +601,7 @@ label mas_compliment_pong:
                 m "I love to spend time with you, no matter what we're doing."
 
             "No. I've tried my best and still lost.":
-                m 1hua "Ahaha~"
+                m 1hub "Ahaha~"
                 m "I figured!"
                 m 3eua "Don't worry, [player]."
                 m 3eub "Keep playing with me and get more practice."
