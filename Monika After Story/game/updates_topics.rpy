@@ -127,8 +127,8 @@ label vv_updates_topics:
         # some version changes skip some numbers because no major updates
         #NOTE: If a version does not have and update script, its version still must be documented and point to the next update
         #script available
-        #updates.version_updates[vv0_11_8] = vv0_11_9
-        #updates.version_updates[vv0_11_7] = vv0_11_9
+        updates.version_updates[vv0_11_8] = vv0_11_9
+        updates.version_updates[vv0_11_7] = vv0_11_9
         updates.version_updates[vv0_11_6] = vv0_11_7
         updates.version_updates[vv0_11_5] = vv0_11_6
         updates.version_updates[vv0_11_4] = vv0_11_5
