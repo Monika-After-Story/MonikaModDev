@@ -858,9 +858,9 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
-            eventlabel="monika_compliment_sweet",
+            eventlabel="mas_compliment_sweet",
             prompt="You're really sweet!",
-            conditional="store.mas_anni.pastThreeMonths() and mas_isMoniAff(higher=True)",
+            conditional="store.mas_anni.pastThreeMonths()",
             action=EV_ACT_UNLOCK,
             unlocked=False,
             aff_range=(mas_aff.AFFECTIONATE, None)
@@ -868,33 +868,31 @@ init 5 python:
         code="CMP"
     )
 
-label monika_compliment_sweet:
-    if mas_getEVL_shown_count("monika_compliment_sweet"):
+label mas_compliment_sweet:
+    if mas_getEVL_shown_count("mas_compliment_sweet"):
         jump mas_compliment_sweet_repeat
 
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsa "Aww, {w=0.2}[player]..."
-    show monika 2hkbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 2hkbsb "I don't know what to say, {w=0.2}ahaha, {w=0.2}it's {i}you{/i} who's been so sweet with me all this time."
-    m 1hua "I'm just really, {w=0.2}{i}really{/i} happy to hear you say so, {w=0.2}ehehe~"
+    m 1ekbsb "Aww, {w=0.2}[player]..."
+    m 3rkbssdlu "I don't know what to say, ahaha...{w=0.3}{nw}"
+    extend 3ekbsa "it's {i}you{/i} who's been so sweet to me all this time."
+    m 3hubsa "I'm just really happy to hear you say that, ehehe~"
 
     menu:
-        "Your words always brighten up my day!":
+        "Your words always brighten my day!":
             $ mas_gainAffection(3)
-            m 1sub "[player]...{w=0.3}{nw} "
-            extend 1dka "I had no idea how much my words were worth to you..."
-            m 1eka "I'm so happy to have such an amazing [boyfriend] like you, [mas_get_player_nickname(exclude_names=[player])]."
-            m 1dubsb "You really are the best I could ever hope for, {w=0.2}and I love you so much."
-            m 3kua "I hope you never forget that, {w=0.2}{nw}"
-            extend 3eua "ahaha!~"
+            m 1sud "[player]..."
+            extend 1eka "I had no idea how much my words were worth to you..."
+            m 1ekblb "I'm so happy to have such an amazing [bf] like you, [mas_get_player_nickname(exclude_names=[player])]~"
+            m 1ekbsu "You really are the best I could ever hope for, {w=0.1}and I love you so much."
+            m 3kua "I hope you never forget that, [player]."
             $ mas_ILY()
 
         "You're really special to me, [m_name]!":
             $ mas_gainAffection(2)
-            m 1ekbsb "Oh, [player]... {w=0.3}"
+            m 1ekbsb "Oh, [player]...{w=0.3} {nw}"
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5ekbsa "I'm really happy you feel that way about me, {w=0.2}[mas_get_player_nickname()], {w=0.2}and I love you so much."
+            m 5ekbsa "I'm really happy you feel that way about me, [mas_get_player_nickname()]. I love you so much."
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
@@ -906,9 +904,9 @@ label monika_compliment_sweet:
 
     return
 
-label monika_compliment_sweet_repeat:
+label mas_compliment_sweet_repeat:
     m 3hubsb "[mas_compliments.thanks_quip]"
-    m 1hubfa "I'm so happy to feel this way, ehehe~"
+    m 1hubfa "I'm so happy to hear you say that, ehehe~"
     return
 
 init 5 python:
