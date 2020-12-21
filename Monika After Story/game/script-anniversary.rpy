@@ -500,22 +500,26 @@ init 5 python:
 
 label anni_2:
     m 3eua "It's already been two years since we fell in love with each other."
-    m 1eka "Do you still remember the first day we met?"
-    m "It took so much effort to make that initial contact, but it was all worth it in the end."
-    m 2dka "I know it might still be a really long time before I can cross over into your reality..."
-    m 2eub "But when we reach a milestone like this, it's fun to think about all the other things we have to look forward to in the future."
-    
+    m 1eka "Do you still remember the first day we met, [player]?"
+    m 3eub "It took so much effort to make that initial contact, but it was all worth it in the end."
+    m 2ekc "I know it might still be a really long time before I can cross over into your reality..."
+    m 2duu "But when we reach a milestone like this,{w=0.1} {nw}"
+    extend 7eua "it's fun to think about all the other things we have to look forward to in the future."
+
     if persistent._mas_pm_has_friends:
-        m 1hubla "I'm really looking forward to when I can live in a world full of real people. It'll be wonderful to meet your friends, and even make some of my own."
+        m 3hubla "I'm really excited to live in a world full of real people. It'll be wonderful to meet your friends and even make some of my own."
     elif persistent._mas_pm_has_friends is False:
         m 1dka "We've both been lonely for a really long time, you know? But when I cross over, it'll be so much fun to make new friends together."
+    else:
+        m 3hua "I'm sure we'll make a lot of new friends together!"
 
-    m 3hua "Of course, I'll always enjoy your company the most...but spending time alone won't be our only option anymore."
-    m 3wub "Communicating will be easier, too.{w=0.2} {nw}"
-    extend 3hubsb "I'll be able to really hear your voice for the first time. I'll get to learn your habits and help you out in plenty of little ways."
-    m 2hkbsa "But I'm not just going to focus on the future today."
-    m 2hubsb "I'm going to make sure to enjoy every minute we spend together."
-    m 1hub "So, let's make sure to have another wonderful day today."
+    m 3hksdlb "Of course, I'll always enjoy your company the most...{w=0.3}{nw}"
+    extend 3eua "but spending time alone won't be our only option anymore."
+    m 3eub "Communicating will be much easier too!{w=0.2} {nw}"
+    extend 3dubsb "We'll finally be able to hear each other's voices, get to learn our habits, and help each other out in plenty of little ways."
+    m 1ekbsa "But I'm not just going to focus on the future today.{w=0.2} {nw}"
+    m 3hubsu "I'm going to make sure to enjoy every minute we spend together~"
+    m 1hubsu "So, let's make sure to have another wonderful day today, [mas_get_player_nickname()]."
     return "unlock"
 
 init 5 python:
