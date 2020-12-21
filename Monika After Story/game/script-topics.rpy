@@ -16312,53 +16312,47 @@ init 5 python:
         )
     )
 
+##Player swear frequency
+#Swears often
 define SF_OFTEN = 2
+#Swears sometimes
 define SF_SOMETIMES = 1
+#Swears never
 define SF_NEVER = 0
+#Holds the swear freq of the player
 default persistent._mas_pm_swear_frequency = None
 
 label monika_curse_words:
-    m 3etd "Say, {w=0.2}[player], {w=0.2}do you swear often?{nw}"
+    m 3etc "Say [player], do you swear often?{nw}"
     menu:
         m "Say, [player], do you swear often?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_swear_frequency = SF_OFTEN
-            m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
-            m 3euc "I even heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+            m 1hub "Ahaha, I can understand that, [player]."
+            m 3rksdlb "It's much easier to swear to get frustration or anger out of your system..."
 
         "I do sometimes.":
             $ persistent._mas_pm_swear_frequency = SF_SOMETIMES
-            m 1hksdlb "Ahaha, {w=0,2}I mean, {w=0,2}it's totally fine, {w=0.2}a lot of people do, after all."
-            m 1eua "And I'm really glad you don't forget about the clean language either."
-            m 3euc "By the way, I once heard of some studies stating that using stronger language helps easing the pain if you, say, hurt yourself."
+            m 3eua "Ah, I'm the same way myself."
 
         "No, I don't swear at all.":
             $ persistent._mas_pm_swear_frequency = SF_NEVER
-            m 1hub "Ahaha, {w=0.2}I'm really glad then, {w=0.2}since I don't either."
-            m 2rtd "But, you know, maybe swearing isn't actually so bad?"
-            m 3euc "I once heard of some studies stating that using stronger language helps ease the pain if you, say, hurt yourself."
+            m 1euc "I see."
 
-    m 1eta "It's called the analgesic response, which makes your body more impervious to pain."
-    m 2esc "I know some people have it as a natural part of their speech patterns, {w=0.2}and that your vocabulary is formed by society and those around you."
-    m 2efb "These expressions can make a talk feel a lot more casual, {w=0.2}and even help spice up certain conversations..."
-    m 3rksdlb "But there's also such a thing as too much swearing, {w=0.2}I'd say."
-    m 2eud "Swearing can actually reveal a lot about our way of behaving in the company of others."
-    m 3eub "For instance, {w=0.2}people are much less likely to swear in front of family than with friends, {w=0.2}and the more people you address at once, {w=0.2}the more eloquently you try to phrase yourself."
-    m 1hksdlb "Of course, {w=0.2}not everyone cares what other people think of the way they speak."
-    m 7eud "Personally, {w=0.2}I prefer soft language over swearing in most situations.{w=0.3}{nw} "
-    extend 2etb "I feel it contributes to a more positive atmosphere overall, {w=0.2}and you don't have to adjust your speech as much depending on who you're talking to."
-    m 2tub "And you know how certain people love atmosphere, {w=0.2}don't you [player]?"
-    m 3dkb "I think our language has so many graceful ways of expressing how you feel about this world, {w=0.2}and even the worst things could be spoken of with a bit of style and respect."
-    m 1eka "I'm not saying you always have to sound poetic when you speak, {w=0.3}{nw}"
-    extend 1hksdlb "of course not..."
-    m 3hksdlb "I'm just trying to say that I really like when people keep their more... {w=0.3}colorful language varied."
-
-    if persistent._mas_pm_swear_frequency != SF_NEVER:
-        m 2eub "So [player], {w=0.2}I'd really like if we kept the language clean when we're together, {w=0.2}or at least tried to~"
-        m 2tka "Think you could do that for me?"
-        m 2hua "I'd be very happy if you did, {w=0.2}ehehe."
-    else:
-        m 2hua "So [player], {w=0.2}I'm really happy that we both try to keep the language clean, ehehe."
-
-    m 7hua "Thanks for listening~"
+    m 1eua "Personally I try to avoid swearing where I can, but I'll still do it occasionally."
+    m 3eud "Swearing tends to have a pretty bad rap, but I've been thinking it over after looking at some studies..."
+    m 1esa "Honestly, I don't think swearing is actually as bad as we make it out to be after all."
+    m 3eua "In fact, it seems that stating that using stronger language helps ease the pain if you hurt yourself, and shows that you're more intelligent and honest."
+    m 1eud "Not to mention, swearing in conversations can make them feel both,{w=0.1} a lot more casual {nw}"
+    extend 3eub "and also more interesing!"
+    m 3rksdlc "That said, I think it's possible to swear {i}too much{/i}..."
+    m 3esd "There's a time and place for everything.{w=0.2} Swearing should be kept to more casual conversations and not put in after ever word."
+    m 1hksdlb "If they start to become frequent in more professional environments, I think you might be overdoing it, ahaha..."
+    m 1eua "On that topic, I think it's pretty interesting how our language naturally shifts depending on who we're talking to."
+    m 4eua "For example,{w=0.2} people are much less likely to swear in front of family than with friends."
+    m 4eub "Also, if you pay attention when you're talking to a crowd, you'll notice that you instinctively phrase your sentences more formally!"
+    m 1esa "But anyway, I prefer to keep my profanity to when I'm really frustrated or upset."
+    m 3esd "Given the status I had, I felt like I always had to be professional and level headed, so I always made it a point to keep it to a minimum."
+    m 3hksdlb "But I guess it doesn't really hurt when used appropriately, ahaha!"
     return "derandom"
