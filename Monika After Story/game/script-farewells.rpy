@@ -1353,7 +1353,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_prompt_eat",
             unlocked=True,
-            prompt="I'm going to go eat...",
+            prompt="I'm going to go eat.",
             pool=True
         ),
         code="BYE"
