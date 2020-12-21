@@ -1283,9 +1283,18 @@ label mas_reaction_gift_coffee:
         extend 3hub "Coffee!"
 
         if coffee.enabled() and coffee.hasServing():
-            $ mas_giftCapGainAff(0.5)
-            m 1wuo "It's a flavor I haven't had before."
-            m 1hua "I can't wait to try it!"
+            python:
+                mas_giftCapGainAff(0.5)
+                branch_n = random.randint(0, 4);
+            if branch_n == 0:
+                m 1wuo "It's a flavor I haven't had before."
+                m 1hua "I can't wait to try it!"
+            elif branch_n == 1:
+                m "Yay, {w=0.2}it's a flavor I like the most!"
+                m "You sure do like spoiling me, {w=0.2}don't you, {w=0.2}[mas_get_player_nickname()]?"
+                m "Ahaha~"
+            else:
+                m "You {i}really{/i} do know what gifts I like the most, {w=0.2}[mas_get_player_nickname()], ahaha~"
             m "Thank you so much, [player]!"
 
         elif coffee.enabled() and not coffee.hasServing():
