@@ -1946,7 +1946,8 @@ init -10 python:
             unlocked=False,
             entry_pp=None,
             exit_pp=None,
-            ex_props=None
+            ex_props=None,
+            deco_man=None,
         ):
             """
             Constructor for background objects
@@ -1996,6 +1997,10 @@ init -10 python:
                 ex_props:
                     Extra properties for backgrounds. If None, an empty dict is assigned
                     (Default: None)
+
+                deco_man:
+                    MASDecoManager to use
+                    (Default: None)
             """
             # sanity checks
             if background_id in self.mas_background.BACKGROUND_MAP:
@@ -2013,10 +2018,14 @@ init -10 python:
                     )
                 )
 
+            if deco_man is None:
+                deco_man = MASDecoManager()
+
             self.background_id = background_id
             self.prompt = prompt
             self.image_map = image_map
             self._flt_man = filter_man
+            self._deco_man = deco_man
 
             # internal mapping of filters to their latest image.
             # see MASBackgroundFilterManager.backmap for explanation.
@@ -2123,19 +2132,106 @@ init -10 python:
                     )
                 )
 
+        def _deco_add(self, deco=None, tag=None):
+            """
+            Adds deco object to the background. 
+            NOTE: do NOT use this. This should only be used by the public
+            show/hide deco functions as well as other internal stuff.
+
+            NOTE: currently only supports advanceed deco frames
+
+            IN:
+                deco - TODO
+                tag - ImageTag of the deco to add - This must have an image
+                    tag definition for this to work.
+            """
+            if tag is not None:
+                adv_frame = self.get_deco_adf(tag)
+                deco = store.mas_deco.get_deco(tag)
+                if adv_frame is not None and deco is not None:
+                    self._deco_man._adv_add_deco(deco, adv_frame)
+
+        def _deco_rm(self, name):
+            """
+            Removes deco object from this background.
+            NOTE: do NOT use this. This should only be used by the public 
+            show/hide deco functions as well as other internal stuff
+
+            IN:
+                name - tag, either deco name or image tag, of the deco object
+                    to remove.
+            """
+            self._deco_man.rm_deco(name)
+
         def entry(self, old_background, **kwargs):
             """
             Run the entry programming point
             """
+            # populate deco images to show
+            change_info = kwargs.get("_change_info", None)
+            if change_info is not None:
+                self._entry_deco(old_background, change_info)
+
             if self.entry_pp is not None:
                 self.entry_pp(old_background, **kwargs)
+
+        def _entry_deco(self, old_bg, change_info):
+            """
+            Entry code for deco
+
+            IN:
+                old_bg - BG object being changed from
+                change_info - MASBackgroundChangeInfo object
+
+            OUT:
+                change_info - MASBackgroundChangeInfo object with shows 
+                    populated.
+            """
+            for vis_tag in store.mas_deco.vis_store:
+                # show all deco objects that are currently visible.
+                # and do not have equivalent deco frames.
+
+                new_adf = self.get_deco_adf(vis_tag)
+                if new_adf is not None:
+                    change_info.shows[vis_tag] = new_adf
+                    self._deco_add(tag=vis_tag)
 
         def exit(self, new_background, **kwargs):
             """
             Run the exit programming point
             """
+            change_info = kwargs.get("_change_info", None)
+            if change_info is not None:
+                self._exit_deco(new_background, change_info)
+
             if self.exit_pp is not None:
                 self.exit_pp(new_background, **kwargs)
+
+        def _exit_deco(self, new_bg, change_info):
+            """
+            Exit code for deco
+
+            IN:
+                new_bg - BG object being changed to
+                change_info - MASBackgroundChangeInfo object
+
+            OUT:
+                change_info - MASBackgroundChangeInfo object with hides
+                    populated.
+            """
+            for deco_obj, adv_df in self._deco_man.deco_iter_adv():
+
+                new_adf = new_bg.get_deco_adf(deco_obj.name)
+                if (
+                        not mas_isDecoTagVisible(deco_obj.name)
+                        or new_adf is None
+                        or new_adf != adv_df
+                ):
+                    # hide all deco objects that do not have a definition
+                    # in the new bg OR have a differing deco frame OR are not in
+                    # the vis_store
+                    change_info.hides[deco_obj.name] = adv_df
+                    self._deco_rm(deco_obj.name)
 
         def fromTuple(self, data_tuple):
             """
@@ -2155,6 +2251,17 @@ init -10 python:
                 [0]: unlocked property
             """
             return (self.unlocked,)
+
+        def get_deco_adf(self, tag):
+            """
+            Gets MASAdvancedDecoFrame associatd with this tag, if one exists.
+
+            IN:
+                tag - tag to get deco frame for
+
+            RETURNS: MASAdvancedDecoFrame object, or None if none exists
+            """
+            return MASImageTagDecoDefinition.get_adf(self.background_id, tag)
 
         def getRoom(self, flt, weather=None):
             """
@@ -2409,6 +2516,25 @@ init -10 python:
 
             return store.mas_sprites.FLT_DAY # should exist for every sprite
 
+        def register_deco_tag(self, tag, adv_deco_frame):
+            """
+            Registers an advanced deco frame for the given tag. Analogous to
+            MASImageTagDecoDefinition.register_img, except bg_id is provided
+            by this BG object.
+
+            NOTE: this is NOT required if you already used 
+                MASImageTagDefinition to define the associated tags.
+
+            IN:
+                tag - tag to register
+                adv_deco_frame - the MASAdvancedDecoFrame to register
+            """
+            MASImageTagDecoDefinition.register_img(
+                tag,
+                self.background_id,
+                adv_deco_frame
+            )
+
         def update(self, curr_time=None):
             """
             Updates the internal indexes.
@@ -2488,6 +2614,40 @@ init -20 python in mas_background:
     DBG_MSG_C = "\nCurrent: {0} | {1}\n"
     DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}\n"
     DBG_MSG_NU = "\nNew: {0} | {1}\n"
+
+
+    class MASBackgroundChangeInfo(object):
+        """
+        Encapsulation class that knows the information needed for a bg change
+        to go smoothly.
+
+        PROPERTIES:
+            hides - dict of image tags and MASAdvancedDecoFrames to hide
+            shows - dict of image tags and MASAdvancedDecoFrames to show
+        """
+
+        def __init__(self, hides=None, shows=None):
+            """
+            Constructor
+
+            IN:
+                hides - dict of image tags and MASAdvancedDecoFrames to 
+                    hide in the dissolve
+                    (Default: None)
+                shows - dict of image tags and MASAdvancedDecoFrames to 
+                    show in the dissolve
+                    (Default: None)
+            """
+            if hides is None:
+                hides = {}
+            if shows is None:
+                shows = {}
+
+            self.hides = hides
+            self.shows = shows
+
+        def __len__(self):
+            return len(self.hides) + len(self.shows)
 
     def build():
         """
@@ -2658,6 +2818,7 @@ init 800 python:
             mas_current_background = _background
             mas_current_background.entry(old_background, **kwargs)
 
+
     def mas_changeBackground(new_background, by_user=None, set_persistent=False, **kwargs):
         """
         changes the background w/o any scene changes. Will not run progpoints
@@ -2676,6 +2837,8 @@ init 800 python:
 
             **kwargs:
                 Additional kwargs to send to the prog points
+
+        RETURNS: MASBackgroundChangeInfo object of the changes that occured.
         """
         if by_user is not None:
             mas_background.force_background = bool(by_user)
@@ -2683,12 +2846,18 @@ init 800 python:
         if set_persistent:
             persistent._mas_current_background = new_background.background_id
 
+        change_info = store.mas_background.MASBackgroundChangeInfo()
+        kwargs["_change_info"] = change_info
+
         if new_background != mas_current_background:
             mas_current_background.exit(new_background, **kwargs)
             new_background.update() # NOTE: do not put this in setBackground.
             mas_setBackground(new_background, **kwargs)
 
         store.mas_is_indoors = store.mas_background.EXP_TYPE_OUTDOOR not in new_background.ex_props
+
+        return change_info
+
 
     def mas_startupBackground():
         """
@@ -2855,6 +3024,13 @@ init -2 python in mas_background:
             store.mas_lockEVL("monika_change_weather", "EVE")
 
 
+init -20 python in mas_background:
+    
+    # background ID definitions 
+    # NOTE: you do NOT need to define ids here. Assigning IDs here just
+    #   makes it easier for MASImageTagDefintions
+    MBG_DEF = "spaceroom"
+
 
 #START: bg defs
 init -1 python:
@@ -2863,7 +3039,7 @@ init -1 python:
     #Default spaceroom
     mas_background_def = MASFilterableBackground(
         # ID
-        "spaceroom",
+        store.mas_background.MBG_DEF,
         "Spaceroom",
 
         # mapping of filters to MASWeatherMaps
@@ -3086,10 +3262,10 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
             mas_lockEVL("monika_change_weather", "EVE")
 
         #Finally, change the background
-        mas_changeBackground(new_bg)
+        change_info = mas_changeBackground(new_bg)
 
     #Now redraw the room
-    call spaceroom(scene_change=True, dissolve_all=True)
+    call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
 
     if not skip_outro:
         m 1eua "Here we are!"
