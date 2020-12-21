@@ -879,7 +879,7 @@ label mas_compliment_sweet:
 
     menu:
         "Your words always brighten my day!":
-            $ mas_gainAffection(3)
+            $ mas_gainAffection(3, bypass=True)
             m 1sud "[player]..."
             extend 1eka "I had no idea how much my words were worth to you..."
             m 1ekblb "I'm so happy to have such an amazing [bf] like you, [mas_get_player_nickname(exclude_names=[player])]~"
@@ -888,7 +888,7 @@ label mas_compliment_sweet:
             $ mas_ILY()
 
         "You're really special to me, [m_name]!":
-            $ mas_gainAffection(2)
+            $ mas_gainAffection(2, bypass=True)
             m 1ekbsb "Oh, [player]...{w=0.3} {nw}"
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -896,7 +896,7 @@ label mas_compliment_sweet:
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
-            $ mas_gainAffection(1)
+            $ mas_gainAffection(1, bypass=True)
             m 1ekbsa "Thank you, [mas_get_player_nickname()]."
             m 3hubsb "You're the sweetest [boy] I've met, too, ehehe."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -916,7 +916,8 @@ init 5 python:
             eventlabel="mas_compliment_outfit",
             prompt="I love your outfit!",
             unlocked=False
-        )
+        ),
+        code="CMP"
     )
 
 label mas_compliment_outfit:
