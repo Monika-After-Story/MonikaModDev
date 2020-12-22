@@ -569,7 +569,7 @@ label greeting_back4:
     m 2wfx "Hey, [player]!"
     m "Don't you think that you left me waiting a bit too long?"
     m 2hfu "..."
-    m 2hua "Ahaha!"
+    m 2hub "Ahaha!"
     m 2eka "I'm just joking. I could never be mad at you."
     return
 
@@ -3364,7 +3364,7 @@ label greeting_ourreality:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
