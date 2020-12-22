@@ -16325,7 +16325,7 @@ default persistent._mas_pm_swear_frequency = None
 label monika_curse_words:
     m 3etc "Say [player], do you swear often?{nw}"
     menu:
-        m "Say, [player], do you swear often?{fast}"
+        m "Say [player], do you swear often?{fast}"
 
         "Yes.":
             $ persistent._mas_pm_swear_frequency = SF_OFTEN
@@ -16343,9 +16343,9 @@ label monika_curse_words:
     m 1eua "Personally I try to avoid swearing where I can, but I'll still do it occasionally."
     m 3eud "Swearing tends to have a pretty bad rap, but I've been thinking it over after looking at some studies..."
     m 1esa "Honestly, I don't think swearing is actually as bad as we make it out to be after all."
-    m 3eua "In fact, it seems that stating that using stronger language helps ease the pain if you hurt yourself, and shows that you're more intelligent and honest."
-    m 1eud "Not to mention, swearing in conversations can make them feel both,{w=0.1} a lot more casual {nw}"
-    extend 3eub "and also more interesing!"
+    m 3eua "In fact, it seems that using stronger language helps ease the pain if you hurt yourself, and can also show that you're more intelligent and honest."
+    m 1eud "Not to mention, swearing in conversations can make them feel both{w=0.1} a lot more casual {w=0.1}{nw}"
+    extend 3eub "and also more interesting!"
     m 3rksdlc "That said, I think it's possible to swear {i}too much{/i}..."
     m 3esd "There's a time and place for everything.{w=0.2} Swearing should be kept to more casual conversations and not put in after ever word."
     m 1hksdlb "If they start to become frequent in more professional environments, I think you might be overdoing it, ahaha..."
