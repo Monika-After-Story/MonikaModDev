@@ -978,6 +978,7 @@ init -810 python:
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
             "_mas_pm_is_trans": "pm.lifestyle.is_trans",
             "_mas_pm_social_personality": "pm.lifestyle.social_personality",
+            "_mas_pm_swear_frequency": "pm.lifestyle.swear_frequency",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
