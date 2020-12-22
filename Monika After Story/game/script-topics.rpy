@@ -16347,7 +16347,7 @@ label monika_curse_words:
     m 1eud "Not to mention, swearing in conversations can make them feel both{w=0.1} a lot more casual {w=0.1}{nw}"
     extend 3eub "and also more interesting!"
     m 3rksdlc "That said, I think it's possible to swear {i}too much{/i}..."
-    m 3esd "There's a time and place for everything.{w=0.2} Swearing should be kept to more casual conversations and not put in after ever word."
+    m 3esd "There's a time and place for everything.{w=0.2} Swearing should be kept to more casual conversations and not put in after every word."
     m 1hksdlb "If they start to become frequent in more professional environments, I think you might be overdoing it, ahaha..."
     m 1eua "On that topic, I think it's pretty interesting how our language naturally shifts depending on who we're talking to."
     m 4eua "For example,{w=0.2} people are much less likely to swear in front of family than with friends."
