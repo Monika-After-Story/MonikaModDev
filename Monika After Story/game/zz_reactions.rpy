@@ -1290,11 +1290,11 @@ label mas_reaction_gift_coffee:
                 m 1wuo "It's a flavor I haven't had before."
                 m 1hua "I can't wait to try it!"
             elif branch_n == 1:
-                m "Yay, {w=0.2}it's a flavor I like the most!"
-                m "You sure do like spoiling me, {w=0.2}don't you, {w=0.2}[mas_get_player_nickname()]?"
+                m "Yay, it's a flavor I like the most!"
+                m "You sure do like spoiling me, don't you, [mas_get_player_nickname()]?"
                 m "Ahaha~"
             else:
-                m "You {i}really{/i} do know what gifts I like the most, {w=0.2}[mas_get_player_nickname()], ahaha~"
+                m "You {i}really{/i} do know what gifts I like the most, [mas_get_player_nickname()], ahaha~"
             m "Thank you so much, [player]!"
 
         elif coffee.enabled() and not coffee.hasServing():
