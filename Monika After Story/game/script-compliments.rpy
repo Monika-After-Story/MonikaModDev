@@ -853,7 +853,6 @@ label mas_compliment_spending_time_2:
             m 2ekd "...but that's not {i}quite{/i} what I had in mind."
     return
 
-# this compliment's lock/unlock is controlled by the def outfit pp
 init 5 python:
     addEvent(
         Event(
@@ -872,7 +871,7 @@ label mas_compliment_sweet:
     if mas_getEVL_shown_count("mas_compliment_sweet"):
         jump mas_compliment_sweet_repeat
 
-    m 1ekbsb "Aww, {w=0.2}[player]..."
+    m 1ekbsb "Aww, [player]..."
     m 3rkbssdlu "I don't know what to say, ahaha...{w=0.3}{nw}"
     extend 3ekbsa "it's {i}you{/i} who's been so sweet to me all this time."
     m 3hubsa "I'm just really happy to hear you say that, ehehe~"
@@ -881,14 +880,14 @@ label mas_compliment_sweet:
         "Your words always brighten my day!":
             $ mas_gainAffection(3, bypass=True)
             m 1sud "[player]..."
-            extend 1eka "I had no idea how much my words were worth to you..."
+            extend 1eka "I had no idea how much my words meant to you..."
             m 1ekblb "I'm so happy to have such an amazing [bf] like you, [mas_get_player_nickname(exclude_names=[player])]~"
-            m 1ekbsu "You really are the best I could ever hope for, {w=0.1}and I love you so much."
+            m 1ekbsu "You really are the best I could ever hope for...{w=0.2}I just love you so much."
             m 3kua "I hope you never forget that, [player]."
             $ mas_ILY()
 
         "You're really special to me, [m_name]!":
-            $ mas_gainAffection(2, bypass=True)
+            $ mas_gainAffection(3, bypass=True)
             m 1ekbsb "Oh, [player]...{w=0.3} {nw}"
             extend 3hubsa "Just you spending your time here with me makes me feel so happy and loved!"
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -896,9 +895,9 @@ label mas_compliment_sweet:
             $ mas_ILY()
 
         "You're the sweetest girl I've ever met!":
-            $ mas_gainAffection(1, bypass=True)
+            $ mas_gainAffection(2, bypass=True)
             m 1ekbsa "Thank you, [mas_get_player_nickname()]."
-            m 3hubsb "You're the sweetest [boy] I've met, too, ehehe."
+            m 3hubsb "You're the sweetest [boy] I've met, ehehe."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I'm really lucky to be with you~"
 
@@ -909,6 +908,7 @@ label mas_compliment_sweet_repeat:
     m 1hubfa "I'm so happy to hear you say that, ehehe~"
     return
 
+# this compliment's lock/unlock is controlled by the def outfit pp
 init 5 python:
     addEvent(
         Event(
