@@ -16034,53 +16034,56 @@ init 5 python:
             category=['nature', 'you'],
             prompt="The outdoors",
             random=True
-        ) 
+        )
     )
-    
+
 label monika_nature:
     m 2esd "Hey, [player]..."
-    m "Do you like nature{nw}?"
+    m 7eua "Do you like nature?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like nature{fast}?"
-        "Yes.":
+        m "Do you like nature?{fast}"
+
+        "I do.":
             $ persistent._mas_pm_likes_nature = True
             m 2sub "Really? That's wonderful!"
-            m 3wub "You know, I think nature is something we should cherish."
-            m 3eua "Not only is it beautiful, but it also helps humanity out."
-            m 7eub "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
-            m 3esb "Most of all, autotrophs such as plants and algae produce food and oxygen; without them, most life on Earth wouldn't exist!"
-            m 1esa "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
+            m 3eua "You know, I think nature is something we should cherish."
+            m 3eub "Not only is it beautiful, but it also helps humanity out!"
+            m 7eud "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 3eub "And most of all, organisms such as plants, algae, and some bacteria produce food and oxygen. Without them, most life on Earth wouldn't even exist!"
+            m 3hua "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
             m 7hub "So, here's Monika's Green Tip of the Day!"
-            m 7ruc "Sometimes, people hesitate to go green because they're worried that it's too expensive."
-            m 4esd "That's partially true. Electric vehicles, smart homes, and solar roofs can all cost a fortune."
-            m 3wuo "However, you can make a difference and {i}save{/i} money just by making a few simple choices each day!"
-            m 4eub "Turning off appliances, taking shorter showers, buying a reusable water bottle, commuting by public transport..."
+            m 7rksdlc "Sometimes, people hesitate to go green because they're worried that it's too expensive..."
+            m 3eud "But that's only partially true.{w=0.2} {nw}"
+            extend 3eua "While electric vehicles, smart homes, and solar roofs can all cost a fortune..."
+            m 3hub "You can make a difference and {i}save{/i} money just by making a few simple choices each day!"
+            m 4eua "Just turning off appliances, taking shorter showers, buying a reusable water bottle, and commuting by public transport all help to be more green."
             m 4hua "You could even buy a houseplant or grow your own garden!"
-            m 7eub "Engaging in your local community can go a long way as well; if you take the initiative, others are sure to follow."
-            m 3esa "The important thing is to make a habit of thinking sustainably. If you can do that, you'll reduce your ecological footprint in no time."
-            m 3esa "Who knows, maybe you'll even become happier and healthier on the way."
-            m 4esa "After all, a sustainable life is a satisfying life."
-            m 3rua "For me, at least."
+            m 7eub "Engaging in your local community can go a long way as well!{w=0.2} {nw}"
+            extend 3eua "If you take the initiative, others are sure to follow in your footsteps."
+            m 3esa "The important thing is to make a habit of thinking sustainably.{w=0.2} {nw}"
+            extend 3eua "If you can do that, you'll reduce your ecological footprint in no time."
+            m 1eua "Who knows, maybe you'll even become happier and healthier the more you do these things too."
+            m 4hua "After all, a sustainable life is a satisfying life.{w=0.2} {nw}"
+            extend 3hksdla "For me, at least."
             m 3eub "That's my advice for today!"
-            m 2hua "Thanks for listening, [mas_get_player_nickname()]~"
+            m 3hua "Thanks for listening, [mas_get_player_nickname()]~"
 
-        "No.":
+        "Not really.":
             $ persistent._mas_pm_likes_nature = False
-            m 1eka "That's okay, [player]."
-            m 3esa "Not everyone enjoys the outdoors."
-            m 3eud "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
-            m 1euc "Honestly, I can understand where they're coming from."
-            m 3esd "I spend most of my time reading, writing, coding, and being with you; all of that is easier to do indoors."
-            m 4ekc "Others have allergies or medical conditions that prevent them from staying out for too long, lest they get sick or hurt."
+            m 3eka "That's okay, [player]. Not everyone enjoys the outdoors after all."
+            m 3eua "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
+            m 1eud "Honestly, I can understand where they're coming from."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you...{w=0.3}all of that is easier to do indoors."
+            m 3rksdlc "Others have allergies or medical conditions that prevent them from staying out for too long, otherwise they can get sick or hurt."
             m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another, and that's fine."
-            m 1hkb "Even I have things that I dislike about it."
-            m 2tfd "For instance, I don't mind most insects, but some are just downright obnoxious."
-            m 3tkx "Constantly buzzing around your head, getting in your face, landing on your food...some mosquitos and ticks even carry nasty diseases."
-            m 2rud "Storms can be problematic too; anyone outside is at risk of getting poured on, and then there are power outages..."
-            m 1eka "Well, as long as I'm with you I'm fine if you'd prefer to be indoors."
-            m 2tfu "Don't expect me to let you stay inside all the time, though."
-            m 2hua "Ehehe~"
+            m 1hksdlb "Even I have things that I dislike about it, ahaha!"
+            m 2tfc "For instance, I don't mind most insects, but some are just downright obnoxious."
+            m 3tkx "Constantly buzzing around your head, getting in your face, landing on your food...{w=0.3}some mosquitos and ticks even carry nasty diseases."
+            m 2rud "Storms can be problematic too...{w=0.3} {nw}"
+            extend 2rkd "anyone outside is at risk of getting poured on, and then there are power outages..."
+            m 1eka "But as long as I'm with you I'm fine if you'd prefer to be indoors."
+            m 2tfu "Just don't expect me to let you stay inside all the time, though~"
     return "derandom"
 
 init 5 python:
