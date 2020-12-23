@@ -45,15 +45,12 @@ jobs:
           mv renpy-6.99.12.4-sdk renpy
           
       # download base mas
-      - name: Download base MAS
+      - name: Download base MAS + copy files over
         run: |
           wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
           mkdir mas0105
           unzip mas.zip -d mas0105
-      
-      # copy over gh files to base
-      - name: copy gh files to base
-        run: cp -Rf Monika\ After\ Story/* mas0105/
+          cp -Rf Monika\ After\ Story/* mas0105/
         
       # run sprite checkers
       - name: check sprites
@@ -62,11 +59,14 @@ jobs:
       # lint renpy
       - name: rpy lint
         run: |
-          ./renpy/renpy.sh "mas0105/" lint > renpy_output
-          #python tools/renpy_lint_parser.py
-          #cat renpy_output_clean
+          cd renpy
+          ./renpy.sh "../mas0105/" lint > renpy_output
+          python ../tools/renpy_lint_parser.py
+          cat renpy_output_clean
 
       # distribute
       - name: rpy distribute
-        run: ./renpy/renpy.sh launcher distribute "mas0105/"
+        run: |
+          cd renpy
+          ./renpy.sh launcher distribute "../mas0105/"
         
