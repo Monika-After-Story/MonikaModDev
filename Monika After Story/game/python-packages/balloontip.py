@@ -59,4 +59,4 @@ class WindowsBalloonTip:
         PostQuitMessage(0) # Terminate the app.
 
 def balloon_tip(title, msg):
-    w=WindowsBalloonTip(msg, title)
+    w = WindowsBalloonTip().showWindow(title, msg)
