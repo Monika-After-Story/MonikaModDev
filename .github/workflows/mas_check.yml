@@ -57,7 +57,7 @@ jobs:
         
       # run sprite checkers
       - name: check sprites
-        run: python tools/travis.py
+        run: python tools/ghactions.py
 
       # lint renpy
       - name: rpy lint
