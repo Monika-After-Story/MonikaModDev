@@ -1628,7 +1628,7 @@ label mas_chess_save_migration:
                 $ pick_text = _("You still need to pick a game to keep.")
             else:
                 label mas_chess_save_multi_dlg:
-                    # TODO: i am removing expressions on these lines, 
+                    # TODO: i am removing expressions on these lines,
                     # so travis will pass, assuming that the chess PR will be
                     # in prior to launch.
                     # reagrdless, even if the chess PR doest make it, this is
