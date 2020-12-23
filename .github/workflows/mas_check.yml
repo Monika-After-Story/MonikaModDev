@@ -68,5 +68,5 @@ jobs:
       - name: rpy distribute
         run: |
           cd renpy
-          ./renpy.sh launcher distribute "../mas0105/"
+          ./renpy.sh launcher distribute "../mas0105/" --package Mod
         
