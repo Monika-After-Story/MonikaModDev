@@ -54,7 +54,7 @@ jobs:
 
       # touch file for unstable so it doesn't raise exceptions for some things
       - run: touch mas0105/trb
-        if: github.ref == "refs/heads/unstable"
+        if: github.ref == 'refs/heads/unstable'
         
       # run sprite checkers
       - name: check sprites
