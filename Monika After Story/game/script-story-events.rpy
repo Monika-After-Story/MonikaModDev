@@ -2024,7 +2024,7 @@ label mas_text_speed_enabler:
         m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
-        m 3hua "Ahaha~"
+        m 3hub "Ahaha~"
 
     else:
         m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
