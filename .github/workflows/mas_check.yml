@@ -34,7 +34,7 @@ jobs:
         uses: actions/setup-python@v2.2.1
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 2.7 # optional, default is 3.x
+          python-version: 2.7.18 # optional, default is 3.x
           # The target architecture (x86, x64) of the Python interpreter.
           architecture: x86 # optional
 
