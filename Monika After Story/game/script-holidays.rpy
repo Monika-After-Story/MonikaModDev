@@ -1850,6 +1850,7 @@ label mas_holiday_d25c_autoload_check:
                 #Unlock and wear santa/wine ribbon + holly hairclip
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                store.mas_selspr.save_selectables()
 
                 #Change into santa. Outfit mode forces ponytail
                 monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
