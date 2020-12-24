@@ -2318,9 +2318,6 @@ label mas_dockstat_empty_desk:
         # reset zoom before showing spaceroom
         store.mas_sprites.reset_zoom()
 
-    call spaceroom(hide_monika=True, scene_change=True)
-
-    python:
         mas_from_empty = True
 
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
@@ -2335,6 +2332,8 @@ label mas_dockstat_empty_desk:
         #NOTE: elif'd so we don't try and show two types of visuals here
         elif persistent._mas_player_bday_decor:
             store.mas_surpriseBdayShowVisuals()
+
+    call spaceroom(hide_monika=True, scene_change=True)
 
     #FALL THROUGH
 
@@ -2477,6 +2476,9 @@ label mas_dockstat_found_monika:
 
     elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
         call mas_d25_season_exit
+
+    elif mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
 
     jump ch30_post_exp_check
 
