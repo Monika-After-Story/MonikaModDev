@@ -16023,6 +16023,67 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
 
+# Do you like nature?
+default persistent._mas_pm_likes_nature = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nature",
+            category=['nature', 'you'],
+            prompt="The outdoors",
+            random=True
+        )
+    )
+
+label monika_nature:
+    m 2esd "Hey, [player]..."
+    m 7eua "Do you like nature?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you like nature?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_likes_nature = True
+            m 3sub "Really? That's wonderful!"
+            m 1eua "You know, I think nature is something we should cherish."
+            m 1eub "Not only is it beautiful, but it also helps humanity out!"
+            m 3eud "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 3euc "And most of all, organisms such as plants, algae, and some bacteria produce food and oxygen. {w=0.2}{nw}"
+            extend 3wud "Without them, most life on Earth wouldn't even exist!"
+            m 1eua "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
+            m 4hub "So, here's Monika's Green Tip of the Day!"
+            m 4rksdlc "Sometimes, people hesitate to go green because they're worried that it's too expensive..."
+            m 2eud "But that's only partially true.{w=0.2} {nw}"
+            extend 7eua "While electric vehicles, smart homes, and solar roofs can all cost a fortune..."
+            m 3hub "You can make a difference and {i}save{/i} money just by making a few simple choices each day!"
+            m 4eua "Just turning off appliances, taking shorter showers, buying a reusable water bottle, and commuting by public transport all help to be more green."
+            m 4hub "You could even buy a houseplant or grow your own garden!"
+            m 2eub "Engaging in your local community can go a long way as well!{w=0.2} {nw}"
+            extend 7eua "If you take the initiative, others are sure to follow in your footsteps."
+            m 3esa "The important thing is to make a habit of thinking sustainably.{w=0.2} {nw}"
+            extend 3eua "If you can do that, you'll reduce your ecological footprint in no time."
+            m 1eua "Who knows, maybe you'll even become happier and healthier the more you do these things too."
+            m 3hua "After all, a sustainable life is a satisfying life."
+            m 3eub "That's my advice for today!"
+            m 1hua "Thanks for listening, [mas_get_player_nickname()]~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_nature = False
+            m 3eka "That's okay, [player]. Not everyone enjoys the outdoors after all."
+            m 3eua "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
+            m 1eud "Honestly, I can understand where they're coming from."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you...{w=0.3}all of that is easier to do indoors."
+            m 3rksdlc "Others have allergies or medical conditions that prevent them from staying out for too long, otherwise they can get sick or hurt."
+            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another, and that's fine."
+            m 1hksdlb "Even I have things that I dislike about it, ahaha!"
+            m 2tfc "For instance, I don't mind most insects, but some are just downright obnoxious."
+            m 7tkx "Constantly buzzing around your head, getting in your face, landing on your food...{w=0.3}some mosquitos and ticks even carry nasty diseases."
+            m 3eka "But as long as I'm with you, I'm fine if you'd prefer to be indoors."
+            m 1tfu "Just don't expect me to let you stay inside all the time~"
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
