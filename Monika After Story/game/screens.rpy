@@ -477,16 +477,19 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
         if use_return_button:
-            textbutton return_button_prompt:
-                style "choice_button"
-                align (0.5, 0.5)
-                ypos -263
-                action Return(return_button_value)
+            hbox:
+                style_prefix "quick"
+
+                xalign 0.5
+                yalign 0.995
+
+                textbutton return_button_prompt:
+                    action Return(return_button_value)
 
         vbox:
             align (0.5, 0.5)
@@ -761,7 +764,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if mas_ui.has_submod_settings:
+        if store.mas_submod_utils.submod_map:
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -829,7 +832,7 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
-        textbutton _("Hotkeys") action [ShowMenu("hot_keys")]
+        textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
         #textbutton _("About") action ShowMenu("about")
 
@@ -2834,8 +2837,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done.",
-    default_button_prompt="Nevermind.",
+    selected_button_prompt="Done",
+    default_button_prompt="Nevermind",
     return_all=False
 ):
     default buttons_data = {
@@ -3003,17 +3006,26 @@ screen submods():
                         xfill True
                         xmaximum 1000
 
-                        label submod.name yanchor 0 xalign 0
+                        label submod.name:
+                            yanchor 0
+                            xalign 0
+                            text_text_align 0.0
 
-                        hbox:
-                            spacing 20
-                            xmaximum 1000
+                        if submod.coauthors:
+                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
-                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
-                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
+                        else:
+                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+
+                        text "[authors]":
+                            yanchor 0
+                            xalign 0
+                            text_align 0.0
+                            layout "greedy"
+                            style "main_menu_version"
 
                         if submod.description:
-                            text submod.description
+                            text submod.description text_align 0.0
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))

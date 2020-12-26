@@ -134,7 +134,7 @@ label mas_mood_hungry:
     m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
+    m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
     m 1hua "Which means more time for us to spend together!~"
     return
@@ -172,12 +172,12 @@ label mas_mood_sad:
                             m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
                             m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out."
-                            m 1hubfa "Never forget that you're wonderful and I will always love you~"
+                            m 1hubsa "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
                             m 1ekc "Well, it was worth a shot."
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
-                            m 1ekbfa "I love you, [player], and I always will~"
+                            m 1ekbsa "I love you, [player], and I always will~"
     return "love"
 
 init 5 python:
@@ -455,7 +455,7 @@ label mas_mood_scared:
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn't {i}always{/i} bad, you know?"
     m 2esc "Besides..."
-    m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+    m 2ekbsa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
@@ -477,11 +477,11 @@ label mas_mood_inadequate:
         m "You took time out of your schedule to be with me on Christmas..."
 
     if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
-        m 1ekbfa "On Valentine's Day..."
+        m 1ekbsa "On Valentine's Day..."
 
     #TODO: change this back to not no_recognize once we change those defaults.
     if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
-        m 1ekbfb "You even made the time to celebrate my birthday with me."
+        m 1ekbsb "You even made the time to celebrate my birthday with me!"
 
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
@@ -498,10 +498,9 @@ label mas_mood_inadequate:
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
-    m 4eua "You just need to exist, have fun, and get through each day..."
-    m 1hua "Finding meaning in the people who matter."
+    m 4eua "You just need to exist, have fun and get through each day, {w=0.2}finding meaning in the people that matter most to you."
     m 1eka "Please don't forget that, okay?"
-    m 1ekbfa "I love you, [player]~"
+    m 1ekbsa "I love you, [player]~"
     return "love"
 
 init 5 python:
@@ -534,7 +533,7 @@ label mas_mood_lazy:
             extend 1dkbsa "Especially if I woke up next to you~"
 
             if mas_isMoniLove():
-                m 1dkbfa "{i}Then I'd never want to get up~{/i}"
+                m 1dkbsa "{i}Then I'd never want to get up~{/i}"
                 m 1dsbfu "I hope you don't mind being 'stuck', [player]..."
                 m 1hubfa "Ehehe~"
 
@@ -744,7 +743,7 @@ label mas_mood_uok:
     m 1ekd "So if you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
-        m "So If you need to talk about something, I'm right here.{fast}"
+        m "So if you need to talk about something, I'm right here.{fast}"
 
         "I'd like to vent.":
             m 3eka "Go ahead, [player]."
