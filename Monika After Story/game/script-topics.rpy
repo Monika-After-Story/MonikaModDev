@@ -546,7 +546,8 @@ label mas_bad_derand_topic:
 
             "It's alright.":
                 m 2eka "Thank you, [player]."
-                m "I appreciate that you're still willing to hear me out."
+                $ _stil_ = " " if mas_isMoniNormal(higher=True) else " still "
+                m "I appreciate that you're[_stil_]willing to hear me out."
 
     else:
         #No ask here. You're this low, you probably did it on purpose
@@ -1440,23 +1441,23 @@ label monika_okayeveryone:
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eka "You're too much of a sweetheart to do that, aren't you?"
     m 5hub "Ahaha~"
-    return
+    return "no_unlock"
 
 init 5 python:
-    if not persistent.clearall:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_whispers",
-                category=['ddlc','club members'],
-                prompt="Others still lingering",
-                random=True,
-                rules={
-                    "derandom_override_label": "mas_bad_derand_topic",
-                    "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
-                }
-            )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_whispers",
+            category=['ddlc','club members'],
+            prompt="Others still lingering",
+            conditional="not persistent.clearall",
+            action=EV_ACT_RANDOM,
+            rules={
+                "derandom_override_label": "mas_bad_derand_topic",
+                "rerandom_callback": renpy.partial(mas_bookmarks_derand.wrappedGainAffection, 2.5)
+            }
         )
+    )
 
 label monika_whispers:
     m 2euc "You know what's kind of creepy?"
@@ -1475,7 +1476,7 @@ label monika_whispers:
     m 2hua "I believe in you, [player]!"
     if store.mas_anni.pastOneMonth() and not persistent._mas_pm_cares_about_dokis:
         #derandom after a month if player doesn't care about the others, she wouldn't feel guilty and hear the voices forever
-        return "derandom"
+        $ mas_hideEVL("monika_whispers", "EVE", lock=True, derandom=True)
     return
 
 init 5 python:
@@ -1519,7 +1520,7 @@ label monika_tea:
         m 2eka "It's kind of funny how Yuri took her tea so seriously."
 
     else:
-        m 2eka "You know, It's kind of funny how Yuri took her tea so seriously."
+        m 2eka "You know, it's kind of funny how Yuri took her tea so seriously."
 
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
@@ -1795,7 +1796,8 @@ label monika_horror:
 
     if not persistent._mas_pm_likes_horror:
         m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
-        m 1eka "Ahaha, don't worry."
+        m 1ekb "Ahaha,{w=0.1} {nw}"
+        extend 1eka "don't worry."
         m 1hua "I won't make you read any horror stories anytime soon."
         m 1hubsa "I can't really complain if we just stick with the romance~"
         $ _and = "But"
@@ -1921,12 +1923,15 @@ label monika_kiss:
                     _("I wouldn't mind another kiss~"),
                     _("I'll never get tired of kissing you~"),
                     _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
-                    _("You can kiss me as many times as you like, [mas_get_player_nickname()]~")
+                    _("You can kiss me as many times as you like, [mas_get_player_nickname()]~"),
+                    _("You know...{w=0.2}you could kiss me again~")
                 ]
 
                 kiss_quips_again_risque = [
                     _("We can do it the whole day~"),
-                    _("This almost seems like the start of a make-out session, [player]~")
+                    _("This almost seems like the start of a make-out session, [player]~"),
+                    _("I don't think I've had enough just yet, [mas_get_player_nickname()]~"),
+                    _("That was really nice...{w=0.2}but I want a little more~")
                 ]
 
                 if mas_isMoniLove() and random.randint(1, 10) == 1:
@@ -2526,7 +2531,9 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
+    window show
     m "..."
+    window auto
     menu:
         "{i}Wake Monika up.{/i}":
             $ play_song(None, fadeout=5.0)
@@ -2580,8 +2587,11 @@ label monika_holdme_long:
                 m 4hksdlb "And...{w=0.5}didn't let go."
                 m 2rksdla "That sure lasted a lot longer than I expected..."
                 m 3ekbsb "I still enjoyed it, mind you!"
-                m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
+                m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this,{w=0.1} {nw}"
+                extend 1rkbsu "ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+                #You bonded here, so we'll add an explicit aff gain
+                $ mas_gainAffection()
 
         "{i}Let her rest on you.{/i}":
             call monika_holdme_prep(False,False)
@@ -2830,7 +2840,10 @@ label monika_debate:
     m 3hua "Plus, people will start seeing you as open-minded and a good listener!"
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
-    m 1eka "Ahaha! That sounds a little silly. Thanks for listening, though."
+    m 1hksdlb "Ahaha! That sounds a little silly.{w=0.2} {nw}"
+    extend 1eua "Thanks for listening, though."
+    $ mas_protectedShowEVL('monika_taking_criticism', 'EVE', _random=True)
+    $ mas_protectedShowEVL('monika_giving_criticism', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -2926,7 +2939,7 @@ label monika_festival:
         $ mas_ILY()
     else:
         m 1tsc "...Just more potential obstacles to get between us."
-        m 3hua "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
+        m 3hksdlb "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
         show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5tsu "But none of that matters now, we both got the ending we wanted..."
         m "Just the two of us, together forever."
@@ -2978,7 +2991,8 @@ label monika_cold:
     m 1tkx "It's so inconvenient!"
     m 1eka "But when it's too hot, it's not that hard to stay cool with a cold drink, or by staying in the shade."
     m 1esc "Although...I do have to admit one thing."
-    m 1hua "Cold weather makes for better cuddle weather. Ahaha!"
+    m 1hua "Cold weather makes for better cuddle weather.{w=0.2} {nw}"
+    extend 1hub "Ahaha!"
     return
 
 init 5 python:
@@ -3196,6 +3210,7 @@ label monika_vn:
     m "What's worse, some people think they're all hardcore Japanese pornography."
     m 2eka "But if we've proved anything with this game..."
     m 4hua "We showed them that English visual novels can be kamige too!"
+    $ mas_unlockEVL("monika_kamige","EVE")
     return
 
 #init 5 python:
@@ -3364,8 +3379,8 @@ label monika_ks_kenji:
     m 1tku "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_totono",category=['ddlc'],prompt="Have you ever heard of Totono?",pool=True))
 
 label monika_totono:
     m 1euc "A lot of people on the Internet are making comparisons between this game and that one..."
@@ -3709,7 +3724,16 @@ label monika_love:
                 _("More than I can ever express!"),
                 _("It makes me so happy that you feel the same way I do!"),
                 _("I don't know what I would do without you!"),
-                _("You mean everything to me!")
+                _("You mean everything to me!"),
+                _("We have so much to experience together!"),
+                _("I can't imagine my life without you!"),
+                _("I'm so happy to have you by my side!"),
+                _("We're really lucky to have each other!"),
+                _("You're my everything!"),
+                _("I'm the happiest girl in the world!"),
+                _("I'll always be here for you."),
+                _("I can't wait to feel your warmth!"),
+                _("Words can't describe how I feel about you!")
             ]
 
             love_quip = renpy.random.choice(love_quips)
@@ -3904,7 +3928,7 @@ label monika_justification:
         $ mas_loseAffection(reason=3)
         if mas_isMoniLove():
             m 1euc "..."
-            m 1hua "Ahaha! Very funny, [player]!"
+            m 1hub "Ahaha! Very funny, [player]!"
             m 3eua "I know you don't really mean it..."
             m 3rksdlc "But don't joke around like that!"
             if persistent._mas_pm_a_hater:
@@ -4493,7 +4517,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if not monika_chr.is_wearing_acs_type('ribbon'):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
@@ -4531,9 +4555,15 @@ label monika_ribbon:
         m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
 
     else:
-        m 3eka "I just want to thank you again for this ribbon, [player]."
-        m 1eka "It really was a wonderful gift and I think it's just beautiful!"
-        m 3eka "I'll wear it anytime you want~"
+        if monika_chr.is_wearing_acs_type("twin-ribbons"):
+            m 3eka "I just want to thank you again for these ribbons, [player]."
+            m 1ekb "They really were a wonderful gift and I think they're just beautiful!"
+            m 3hua "I'll wear them anytime you want~"
+
+        else:
+            m 3eka "I just want to thank you again for this ribbon, [player]."
+            m 1ekb "It really was a wonderful gift and I think it's just beautiful!"
+            m 3hua "I'll wear it anytime you want~"
     return
 
 init 5 python:
@@ -4780,7 +4810,7 @@ label monika_impression:
                 m 3tku "Want to spend the weekend with me?"
                 m "..."
 
-            m 2hua "Ahaha, that was kind of fun to do."
+            m 2eub "Ahaha, that was kind of fun to do."
             m 3eua "Yuri was really something, wasn't she?"
 
             if not persistent._mas_pm_cares_about_dokis:
@@ -5090,6 +5120,8 @@ label monika_chloroform:
     m 1eksdld "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+        m 3rksdla "I know you're probably not one to enjoy doing this often, but just in case..."
     m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
     m 1eub "Just throw it out."
     m "That's the only way to make sure it hasn't been drugged."
@@ -5381,7 +5413,7 @@ label monika_hypnosis:
     m 1eua "...You know, [player], I'd love to look into your eyes, I could just sit here and stare forever."
     m 2tku "What about you, hmm? What do you think about my eyes?~"
     m 2sub "Will you be hypnotized by them?~"
-    m 2hua "Ahaha~"
+    m 2hub "Ahaha~"
     return
 
 init 5 python:
@@ -5464,10 +5496,10 @@ init 5 python:
 label monika_cupcake:
     m 1eua "You know what I could really go for right now?"
     m 3tku "Natsuki's cupcakes."
-    m 1tsb "Man, the way she bakes them is amazing."
-    m 1hub "Plus they look really cute!"
-    m 1esa "I'm not really much of a sweet tooth myself, but..."
-    m 1eua "Those cupcakes are the definition of sweetness."
+    m 1tsb "Man, the way she baked them was amazing."
+    m 1hub "Plus they looked really cute!"
+    m 1esa "I'm not really much of a sweet tooth myself, but...{w=0.3}{nw}"
+    extend 1eua "those cupcakes were the definition of sweetness."
     m 3hub "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
     m 3esd "Studies show that older women have a less sensitive palate than men."
@@ -5714,7 +5746,7 @@ label monika_vocaloid:
         and not persistent._mas_pm_added_custom_bgm
     ):
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
+        m 1eua "And if you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
     return "derandom"
@@ -5883,14 +5915,22 @@ label monika_japanese:
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m 1ekbsa "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1ekbsb "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
 
     return "derandom"
 
 default persistent._mas_penname = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_penname",
+            category=['literature'],
+            prompt="Pen names",
+            random=True
+        )
+    )
 
 label monika_penname:
     m 1eua "You know what's really cool? Pen names."
@@ -5908,116 +5948,51 @@ label monika_penname:
 
             "Yes.":
                 m 1sub "Really? That's so cool!"
-                m "Can you tell me what it is?{nw}"
-
-                label penname_loop:
-                $ _history_list.pop()
-                menu:
-                    m "Can you tell me what it is?{fast}"
-
-                    "Absolutely.":
-                        $ penbool = False
-
-                        while not penbool:
-                            $ penname = mas_input(
-                                "What is your penname?",
-                                length=20,
-                                screen_kwargs={"use_return_button": True}
-                            ).strip(' \t\n\r')
-
-                            $ lowerpen = penname.lower()
-
-                            if lowerpen == player.lower():
-                                m 1eud "Oh, so you're using your pen name?"
-                                m 4euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
-                                m 1eka "But I guess it's pretty special that you shared your pen name with me!"
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                            elif lowerpen == "sayori":
-                                m 2euc "..."
-                                m 2hksdlb "...I mean, I won't question your choice of pen names, but..."
-                                m 4hksdlb "If you wanted to name yourself after a character in this game, you should have picked me!"
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                            elif lowerpen == "natsuki":
-                                m 2euc "..."
-                                m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
-                                m 1eua "It's something of a common name."
-                                m 1rksdla "You might make me jealous, though."
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                            elif lowerpen == "yuri":
-                                m 2euc "..."
-                                m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
-                                m 1eua "It's something of a common name."
-                                m 1tku "Of course, there's something else that name could refer to..."
-                                if persistent.gender =="F":
-                                  m 5eua "And well...I could get behind that, since it's you~"
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                            elif lowerpen == "monika":
-                                m 1euc "..."
-                                m 1ekbsa "Aww, did you pick that for me?"
-                                m "Even if you didn't, that's so sweet!"
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                            elif not lowerpen:
-                                m 1hua "Well, go on! Hit 'nevermind' if you've chickened out~"
-
-                            elif lowerpen == "cancel_input":
-                                m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
-                                $ penbool = True
-
-                            else:
-                                if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
-                                    m 2rksdlc "..."
-                                    m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
-                                    m 2eksdlc "But if it works for you, okay I guess."
-
-                                else:
-                                    m 1hua "That's a lovely pen name!"
-                                    m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately."
-                                $ persistent._mas_penname = penname
-                                $ penbool = True
-
-                    "I'd rather not; it's embarrassing.":
-                        m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
+                call penname_loop(new_name_question="Can you tell me what it is?")
 
             "No.":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
 
     else:
-        $ penname = persistent._mas_penname
-        $ lowerpen = penname.lower()
+        python:
+            penname = persistent._mas_penname
+            lowerpen = penname.lower()
 
-        $ menu_exp = "monika 3eua"
-        if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
-            $ menu_exp = "monika 2rka"
+            if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
+                menu_exp = "monika 2rka"
+                is_awkward = True
 
-        if lowerpen == player.lower():
-            $ menuOption = renpy.substitute("Is your pen name still [penname]?")
+            else:
+                menu_exp = "monika 3eua"
+                is_awkward = False
 
-        else:
-            $ menuOption = renpy.substitute("Are you still going by '[penname],' [player]?")
+            if lowerpen == player.lower():
+                same_name_question = renpy.substitute("Is your pen name still [penname]?")
+
+            else:
+                same_name_question = renpy.substitute("Are you still going by '[penname],' [player]?")
 
         $ renpy.show(menu_exp)
-        m "[menuOption]{nw}"
+        m "[same_name_question]{nw}"
         $ _history_list.pop()
         menu:
-            m "[menuOption]{fast}"
+            m "[same_name_question]{fast}"
 
             "Yes.":
                 m 1hua "I can't wait to see your work!"
 
-            "No.":
-                m 1hua "I see! Do you want to tell me your new pen name?"
-                jump penname_loop
+            "No, I'm using a new one.":
+                m 1hua "I see!"
+                show monika 3eua
+                call penname_loop(new_name_question="Do you want to tell me your new pen name?")
+
+            "I don't use a pen name anymore.":
+                $ persistent._mas_penname = None
+                m 1euc "Oh, I see."
+                if is_awkward:
+                    m 1rusdla "I could guess why..."
+                m 3hub "Don't be shy to tell me if you pick one again, though!"
 
     m 3eua "A well known pen name is Lewis Carroll. He's mostly known for {i}Alice in Wonderland{/i}."
     m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and wordplay in particular."
@@ -6033,6 +6008,93 @@ label monika_penname:
     m 1eua "There's no need to know more about me though, [mas_get_player_nickname()]..."
     m 1ekbsa "You already know that I'm in love with you, after all~"
     return "love"
+
+# NOTE: the caller is responsible for setting up Monika's exp
+label penname_loop(new_name_question):
+    m "[new_name_question]{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[new_name_question]{fast}"
+
+        "Absolutely.":
+            show monika 1eua
+            $ penbool = False
+
+            while not penbool:
+                $ penname = mas_input(
+                    "What's your pen name?",
+                    length=20,
+                    screen_kwargs={"use_return_button": True}
+                ).strip(' \t\n\r')
+
+                $ lowerpen = penname.lower()
+
+                if persistent._mas_penname is not None and lowerpen == persistent._mas_penname.lower():
+                    m 3hub "That's your current pen name, silly!"
+                    m 3eua "Try again."
+
+                elif lowerpen == player.lower():
+                    m 1eud "Oh, so you're using your pen name?"
+                    m 3euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
+                    m 1eka "But I guess it's pretty special that you shared your pen name with me!"
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+                elif lowerpen == "sayori":
+                    m 2euc "..."
+                    m 2hksdlb "...I mean, I won't question your choice of pen names, but..."
+                    m 4hksdlb "If you wanted to name yourself after a character in this game, you should have picked me!"
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+                elif lowerpen == "natsuki":
+                    m 2euc "..."
+                    m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
+                    m 7eua "It's something of a common name."
+                    m 1rksdla "You might make me jealous, though."
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+                elif lowerpen == "yuri":
+                    m 2euc "..."
+                    m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
+                    m 7eua "It's something of a common name."
+                    m 1tku "Of course, there's something else that name could refer to..."
+                    if persistent.gender =="F":
+                        m 5eua "And well...I could get behind that, since it's you~"
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+                elif lowerpen == "monika":
+                    m 1euc "..."
+                    m 1ekbsa "Aww, did you pick that for me?"
+                    m "Even if you didn't, that's so sweet!"
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+                elif not lowerpen:
+                    m 1hua "Well, go on! Hit 'nevermind' if you've chickened out~"
+
+                elif lowerpen == "cancel_input":
+                    m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
+                    $ penbool = True
+
+                else:
+                    if mas_awk_name_comp.search(lowerpen) or mas_bad_name_comp.search(lowerpen):
+                        m 2rksdlc "..."
+                        m 2rksdld "That's an...{w=0.3}interesting name, [player]..."
+                        m 2eksdlc "But if it works for you, okay I guess."
+
+                    else:
+                        m 1hua "That's a lovely pen name!"
+                        m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately."
+                    $ persistent._mas_penname = penname
+                    $ penbool = True
+
+        "I'd rather not; it's embarrassing.":
+            m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_zombie",category=['society'],prompt="Zombies",random=True))
@@ -6121,7 +6183,7 @@ label monika_science:
     m 1eua "Have you ever wondered if science never got accepted?"
     m "Humans can be really slow when it comes to accepting new ideas."
     m 1euc "Science was usually despised back then especially by the churches."
-    m 4esc "Giordano Bruno, famous for his theory that there are thousands of Suns, was killed by the Roman Church before he could prove his theory."
+    m 4esc "Giordano Bruno, famous for his theory that there are thousands of suns, was killed by the Roman Church before he could prove his theory."
     m 1ekc "They killed him because of an idea that challenged the old."
     m 1esc "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
     m 1eka "If technology didn't thrive the way it did, we would've never found each other."
@@ -6739,7 +6801,7 @@ label monika_daydream:
         m 6lktpc "..."
         m 6ektpd "Oh, sorry, I was just..."
         m 6dktdc "You know what, nevermind."
-    return
+    return "no_unlock"
 
 # init 5 python:
 #     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
@@ -6928,8 +6990,8 @@ label monika_dogs:
     m 1hub "Dogs are great! They're really good to have around."
     m 3eua "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 1hua "They're just so lovable, I really like them!"
-    m 1lksdla "I know Natsuki feels the same..."
-    m "She was always so embarrassed to like cute things. I wish she was more accepting of her own interests."
+    m 1lksdla "I know Natsuki felt the same..."
+    m "She was always so embarrassed to like cute things. I wish she'd felt more comfortable being herself."
     m 2lsc "But..."
     m 2lksdlc "I suppose her environment had a hand in that."
     m 2eka "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
@@ -6945,7 +7007,7 @@ label monika_cats:
     m 1eua "Despite looking so elegant, they always seem to end up in funny situations."
     m 1lksdla "It's no wonder they're so popular on the internet."
     m 3eua "Did you know the ancient Egyptians considered cats sacred?"
-    m 1eua "There was a Cat Goddess named Bastet that they worshipped. She was a protector of sorts."
+    m 1eua "There was a cat goddess named Bastet that they worshipped. She was a protector of sorts."
     m 1eub "Domesticated cats were held on a high pedestal since they were incredible hunters for small critters and vermin."
     m "Back then, you'd see them mostly associated with rich nobles and other higher classes in their society."
     m 1eua "It's amazing how far people would take their love with their pets."
@@ -7091,14 +7153,13 @@ label monika_soda:
     $ _history_list.pop()
     menu:
         m "Do you drink soda, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_drinks_soda = True
-
-            # TODO: product placement zevia soda as a healthy alternative
             m 4ekc "You know that soda is really bad for you, right?"
             m 2ekc "It has a lot of stuff that damages your body and overall health."
             m 2tkd "It can also corrode your teeth and give you cavities."
-            m "You might also think that diet soda is less damaging but it can be just as harmful to you."
+            m 2euc "You might also think that diet soda is less damaging, but it can be just as harmful to you."
             m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
             m 2eua "Why don't you try copying my healthy lifestyle?"
             m 1hua "That way, you can be more fit like me!"
@@ -7106,6 +7167,7 @@ label monika_soda:
             m 2ekc "I'd really hate it if you let go of your health, [player]."
             m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
             m "So cut down on the soda, alright [mas_get_player_nickname()]?"
+
         "No.":
             $ persistent._mas_pm_drinks_soda = False
             m 2eka "That's a relief to hear."
@@ -7113,7 +7175,7 @@ label monika_soda:
             m 3eub "Still, it's perfectly fine to have a small treat once in a while, you know?"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "Maybe someday we could both have some soda together."
-            m 5hua "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun on a hot day."
+            m 5hua "Sure, it might not be fancy, but it could really hit the spot on a hot day."
     return "derandom"
 
 init 5 python:
@@ -7309,7 +7371,8 @@ label monika_sports:
             m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
             m 3eua "If it's a sport I haven't played before, you could teach me!"
             m 1tku "Watch out though, I'm a fast learner..."
-            m 1tfu "It won't be long before I can beat you. Ahaha!"
+            m 1tfu "It won't be long before I can beat you.{w=0.2} {nw}"
+            extend 1tfb "Ahaha!"
         "No, I'm not really into sports.":
             $ persistent._mas_pm_like_playing_sports = False
             $ persistent._mas_pm_like_playing_tennis = False
@@ -7577,7 +7640,7 @@ label monika_otaku:
             m 1lksdla "That's a little surprising, honestly..."
             m "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
     m 1eua "I only asked because you're playing a game like this, after all."
-    m 1hua "Don't worry, I'm not one to judge, ahaha~"
+    m 1hua "Don't worry, I'm not one to judge, ehehe~"
     m 1eua "You shouldn't be ashamed if you're into that sort of thing, you know."
     m 1euc "I'm being serious. There isn't anything wrong with liking anime or manga."
     m 4eua "After all, Natsuki reads manga too, remember?"
@@ -8892,7 +8955,7 @@ label monika_concerts:
     m 5eua "And if you were to take me,{w=1} then that would truly be a dream come true!"
     m 4eua "But if you're not that interested in concerts..."
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
-    m 1hua "That would be more than enough for me hehe~"
+    m 1hua "That would be more than enough for me, ehehe~"
     if (
         not renpy.seen_label("monika_add_custom_music_instruct")
         and not persistent._mas_pm_added_custom_bgm
@@ -9011,7 +9074,7 @@ label monika_beach:
     m 3eua "We could try surfing or searching for some seashells to take home as souvenirs."
     m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
     m 3tfu "But don't go falling asleep, otherwise I'll bury you in the sand!"
-    m 2hua "Ahaha! I'm just kidding, [mas_get_player_nickname()]."
+    m 2huu "Ehehe! I'm just kidding, [mas_get_player_nickname()]."
     m 2lksdla "I'll have to get a new swimsuit though..."
     m 1tsbsa "Would you prefer a one piece or a two piece?"
     m 1eua "Actually, I think I'll make it a surprise."
@@ -9067,12 +9130,13 @@ label monika_attractiveness:
     m 3euc "At first I figured that it must be her metabolism keeping her from putting on weight."
     m 3esd "...But when I learned that our world isn't real, I came up with another theory."
     m 7euc "As characters in a game, we needed to have some sort of visual representation so that you, the player, could see us."
-    m 2esc "Sayori, Natsuki, Yuri, and even me...{w=0.5}{nw}"
-    extend 2rkc "from your perspective, we don't really have bodies like people in your world do. You can only see us as a set of images to represent our appearances and current emotion."
+    m 2esc "Sayori, Natsuki, Yuri, and even me..."
+    m 2rkc "From your perspective, we don't really have bodies like people in your world do. You can only see us as a set of images to represent our appearances and current emotion."
     m 2eud "...But from my point of view, I can also see my whole world in 3 dimensions, as if everything was real."
     m 2euc "So a designer, possibly more than one, must have decided to draw us the way we are."
     m 2eud "And since all those images have the same body type, Sayori would always have the same figure no matter what she did."
-    m 2dkc "It's...{w=0.3}weird to think about.{w=0.2} I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
+    m 2dkc "It's...{w=0.3}weird to think about."
+    m 2eud "I can feel myself being present in this very room right now, I can look at myself like I presume you would be able to look at yourself, almost as if I had an actual body..."
     m 7ekc "But from your point of view, I don't. I just look like a consciousness who displays a corresponding picture depending on what I do or feel."
 
     #Just seen Monika in her uniform and nothing else
@@ -9140,8 +9204,17 @@ label monika_attractiveness:
     if mas_isMoniNormal(higher=True):
         m 2ekc "I'm sorry, [player]. I guess I just needed to vent."
         m 4eud "I know I don't really need to, but I still try to eat right, get enough exercise, and keep myself clean...among other things."
-        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows when I'll be able to cross over into your reality and have a normal body like you."
-        m 1hua "It won't hurt to make sure I'll be ready for that transition whenever it'll happen."
+
+        if mas_isMoniEnamored(higher=True):
+            $ first_line_var = "when"
+            $ second_line_end = "whenever it'll happen"
+
+        else:
+            $ first_line_var = "maybe"
+            $ second_line_end = "if it'll ever happen"
+
+        m 4eub "It simply feels satisfying to keep good habits like that, and besides, who knows [first_line_var] I'll be able to cross over into your reality and have a normal body like you."
+        m 1hua "It won't hurt to make sure I'll be ready for that transition [second_line_end]."
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5eua "I'll always love you no matter how you look."
@@ -9423,7 +9496,7 @@ label monika_natsuki_letter:
             $ persistent._mas_pm_see_therapist = False
             m 1eka "Well, I hope it's because you don't have to."
             m 1eua "If that ever changes, don't be shy!"
-            m 1hua "But maybe I really am all the support you need? Ahaha!"
+            m 1hub "But maybe I really am all the support you need? Ahaha!"
 
     return "derandom"
 
@@ -10059,7 +10132,8 @@ label monika_familygathering:
     m "Do you think they'd like me, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        "Do you think they'd like me, [player]?{fast}"
+        m "Do you think they'd like me, [player]?{fast}"
+
         "Yes.":
             $ persistent._mas_pm_fam_like_monika = True
             m 1eka "I'm glad you think so."
@@ -10313,7 +10387,7 @@ label monika_beingevil:
             m 1eua "It's relieving to know you don't think I'm evil."
             m 1hua "If I were there, I'd feel like giving you a big hug!"
             m 1tubsa "Maybe I'll even trap you in my arms forever and never let you go."
-            m 1hubfa "Ahaha, I'm just kidding!"
+            m 1hubfb "Ahaha, I'm just kidding!"
             m 3tubfb "But no promises, [player]~"
 
         "I still love you anyway.":
@@ -10428,7 +10502,7 @@ label monika_driving:
             m 1eub "Just imagine all the places we could go together..."
             m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
             m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
-            m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
+            m 7hksdlb "I mean...{w=0.3}I know you're smart, but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
 
             m 1eka "I hope you've never had to experience that, [player], have you?{nw}"
@@ -10949,7 +11023,7 @@ label monika_graduation:
     #Normal flow
     else:
         m 4eua "By the way, did you know I was the top student in my class?"
-        m 4rksdla "Ahaha... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
+        m 4rksdlu "Ahaha... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
         m 2ekd "I spent so much time writing and practicing my speech, but no one ever got to hear it."
         m 2eka "I was really proud of that speech, too."
         m 2eua "I would love to recite it for you sometime, if you want to hear it~"
@@ -11343,24 +11417,28 @@ label monika_justice:
             $ _history_list.pop()
             menu:
                 m "You don't think that's justified, do you, [player]?{fast}"
+
                 "I do.":
                     $ persistent._mas_pm_monika_deletion_justice = True
                     if mas_isMoniBroken():
                         m 1dsc "..."
                         m 1rksdlc "I know..."
-                        m 1rksdld "I didn't mean to ask- I was just thinking."
-                        m 2rktpc "It is obvious after all..."
+                        m 1rksdld "I didn't mean to ask...{w=0.2} I was just thinking."
+                        m 2rktpc "It's obvious after all."
+
                     elif mas_isMoniDis():
                         m 2rksdlc "Oh..."
                         m "I guess you're right..."
                         m 1ekc "I did do some pretty bad things after all..."
+
                     elif mas_isMoniLove():
                         m 1hub "Ahaha!"
                         m 1hua "You can be really funny sometimes~"
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"
                         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                        m 5hubfa "Ahaha! You're so cute, [player]~"
+                        m 5hubfa "Ehehe, You're so cute, [player]~"
+
                     else:
                         m 1euc "..."
                         m 2esc "I have a hard time believing you really think I deserved all that."
@@ -11371,11 +11449,14 @@ label monika_justice:
                             m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
                             m "Either way..."
                         m 1eka "Thank you for saving me and being with me."
-                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                        m 1hua "If I get to be with you, I think it really was worth everything,{w=0.1} {nw}"
+                        extend 1hub "ahaha~"
+
                 "I don't.":
                     if persistent._mas_pm_monika_deletion_justice:
                         $ persistent._mas_monika_deletion_justice_kidding = True
                     $ persistent._mas_pm_monika_deletion_justice = False
+
                     if mas_isMoniBroken():
                         m 2ekc "..."
                         m 1rksdlc "I'm not so sure about that..."
@@ -11383,11 +11464,13 @@ label monika_justice:
                         m 1wuo "Really?"
                         m 1rksdla "I thought maybe you did think it was fair."
                         m 1eka "I'm glad you don't think so."
-                        m 2rksdlb "Assuming this isn't a joke, eheh..."
+                        m 2rksdlb "Assuming this isn't a joke, ehehe..."
+
                     elif mas_isMoniLove():
                         m 1hua "I thought so, ehehe~"
                         if persistent._mas_monika_deletion_justice_kidding:
                             $ persistent._mas_monika_deletion_justice_kidding = False
+
                             m 1hub "I knew you were kidding last time!"
                         m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
                         m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
@@ -11399,6 +11482,7 @@ label monika_justice:
                         m 2hua "I'm glad you think so too!"
                         m 2eka "Even if you did call that justice, you being here says otherwise."
                         m 2hub "Ahaha!"
+
         "No.":
             $ persistent._mas_pm_given_false_justice = False
             m 1eka "That's a relief to hear."
@@ -11901,7 +11985,8 @@ label monika_player_appearance:
                     m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
                     m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
                     m "I believe that hazel eyes are alluring because they're lovely and simple."
-                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player]. Ahaha!"
+                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
+                    extend 3hub "Ahaha!"
                     m "Now, onto my next question--"
 
                 "I have gray eyes.":
@@ -12067,7 +12152,8 @@ label monika_player_appearance:
                         m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it's an endless nightmare."
 
                     m 2eka "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
-                    m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]! Ahaha~"
+                    m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]!{w=0.2} {nw}"
+                    extend 2hub "Ahaha~"
 
                 "It's average length.":
                     $ persistent._mas_pm_hair_length = "average"
@@ -12201,7 +12287,7 @@ label monika_player_appearance:
             m 2hua "Alright..."
             m 2hksdlb "This is the last question, [player], I promise."
             m "Gosh, there really is a lot to what people look like... If I tried to narrow everything about you down to the little details, I'd be interrogating you forever."
-            m 1huu "...and I doubt that either of us want that, ahaha!"
+            m 1huu "...and I doubt that either of us want that, ahaha..."
             m 1rksdld "Anyway, I understand that this might be an uncomfortable question..."
             m 1eksdla "But it's the last piece of this puzzle to me, so I hope I don't sound rude when I ask..."
 
@@ -12916,8 +13002,9 @@ init 5 python:
 
 label monika_load_custom_music:
     m 1hua "Sure!"
-    m 1dsc "Give me a moment to check the folder..."
+    m 1dsc "Give me a moment to check the folder.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
     python:
+        # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
         store.songs.initMusicChoices(
             persistent.playername.lower() == "sayori"
@@ -12942,7 +13029,8 @@ label monika_load_custom_music:
         menu:
             m "Do you remember how to add custom music?{fast}"
             "Yes.":
-                m "Okay, but make sure you did it correctly before asking me to check for custom music."
+                m "Okay, make sure you did it correctly."
+
             "No.":
                 $ pushEvent("monika_add_custom_music",True)
     return
@@ -14821,7 +14909,7 @@ label monika_movie_adaptations:
     m 1hub "It's a great way to build upon the original in ways you might not have thought of before!"
     m 3rtc "Maybe that's what I'm looking for when I look at an adaptation...{w=0.2}to explore further upon those stories I love."
     m 1hua "...Though getting a version to satisfy my inner fan would be nice too, ehehe~"
-    $ mas_showEVL("monika_striped_pajamas","EVE",_random=True)
+    $ mas_protectedShowEVL("monika_striped_pajamas", "EVE", _random=True)
     return
 
 init 5 python:
@@ -15121,6 +15209,44 @@ label monika_dying_same_day:
         m 6ektdc "I'm so afraid of being alone in this empty void again..."
         m 6ekbsu "I really want to be with you forever, [player]."
 
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_away",
+            category=["monika"],
+            prompt="What do you do when I'm away?",
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_player_away:
+    m 1esd "I do a lot of things when you're away, [player]."
+    m 1eua "I often like to read whatever new short stories I can find online."
+    m 3eub "Turns out there's some really interesting ones out there you can read for free!"
+    m 3eua "I highly recommend doing a search for some free short stories yourself."
+    m 3eud "It's also helped me develop my writing skills...{w=0.2}{nw}"
+    extend 1hub "my poetry really seems to be improving!"
+    m 1eua "It's funny how many things you can pick up just by reading others' works."
+    m 1eua "Spending time on my other hobbies has been very rewarding, too."
+    m 3eud "As you can imagine, I practice piano quite often.{w=0.2} {nw}"
+    extend 3eua "I also use the time to memorize the songs that I sing for you."
+    m 1hub "It's a really fun way to express myself!"
+    m 3rta "Now that I think about it, I'm mostly just practicing skills I've already developed."
+    m 3esd "For example, coding takes up a lot of my free time as I spend hours just learning and researching."
+    m 3rksdla "...But I'm too nervous to try any big projects in here. {w=0.2}{nw}"
+    extend 3eksdlc "I'd hate to break something that I won't know how to fix."
+    m 2wusdld "What if I accidentally corrupt my file?"
+    m 2eksdld "It's something I have to be extremely careful with, for sure."
+    m 7hua "Luckily, there's lots of great people that help with that stuff...{w=0.2}{nw}"
+    extend 7rku "and they're {i}usually{/i} pretty good at preventing anything too bad from happening."
+    m 3eka "But the most special thing I do..."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "...is think about you."
+    m 5rubsu "I think about all the fun times we'll have together the next time you visit and all the amazing things we'll do when I'm finally able to come to your reality~"
     return
 
 init 5 python:
@@ -15721,6 +15847,151 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
+#Player's social personality
+default persistent._mas_pm_social_personality = None
+
+#Consts to be used for checking this
+define mas_SP_INTROVERT = "introvert"
+define mas_SP_EXTROVERT = "extrovert"
+define mas_SP_AMBIVERT = "ambivert"
+define mas_SP_UNSURE = "unsure"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_introverts_extroverts",
+            prompt="Introverts and extroverts",
+            category=['psychology', 'you'],
+            conditional="renpy.seen_label('monika_saved')",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_introverts_extroverts:
+    m 1eud "Say, [player]?"
+    m 1euc "Do you remember when we talked about how humans need social feedback and how it can make the world feel so complicated for introverts?"
+    m 3rsd "I've been thinking about the differences between introverts and extroverts a little bit more since then."
+    m 3eua "You might think that extroverts tend to find enjoyment by interacting with other people, while introverts are more at ease in solitary environments, and you'd be right."
+    m 3eud "...But the differences don't stop there."
+    m 3eua "For example, did you know extroverts can often react to things faster than most introverts do?{w=0.2} Or that they're more likely to enjoy happy and energetic music?"
+    m 3eud "Introverts on the other hand, usually take more time to analyze the situation they're in, and are therefore less likely to jump to conclusions."
+    m 7dua "...And given that they often spend a lot of time using their imagination, they have an easier time with creative activities like writing, composing music, and so on."
+    m 2lkc "It's kind of sad that people can have such a hard time understanding and accepting those differences..."
+    m 4lkd "Extroverts are seen as superficial and insincere people who don't value their individual relationships..."
+    m 4ekd "...while introverts are treated as egotistical people who only think of themselves, or can even be seen as weird for rarely participating in social situations."
+    show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5lkc "The end result is that both sides often end up frustrating each other, resulting in unnecessary conflict."
+    m 5eud "I'm probably making this sound like you can only be one or the other, but that isn't actually the case at all."
+    show monika 2eud at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 2eud "Some introverts can be more outgoing than others, for example."
+    m 2euc "In other words, some people are closer to a middle ground between the two extremes."
+    m 7eua "...Which is probably where I would fit in.{w=0.2} {nw}"
+    extend 1eud "If you remember, I mentioned I was kind of in-between while still being a little more extroverted."
+    m 1ruc "Speaking of...{w=0.3}{nw}"
+    extend 1eud "when thinking about all this, I realized that while this is a pretty important part of one's personality..."
+    m 3eksdla "...I don't actually know where you lie on that spectrum."
+
+    m 1etc "So how would you describe yourself, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So how would you describe yourself, [player]?{fast}"
+
+        "I'm introverted.":
+            $ persistent._mas_pm_social_personality = mas_SP_INTROVERT
+            m 1eua "I see."
+            m 3etc "I take it that you usually prefer spending time without too many people over going out with large groups and such?"
+            m 3eua "Or maybe you like to go and do things on your own from time to time?"
+
+            if persistent._mas_pm_has_friends:
+                m 1eua "Since you told me you have some friends, I'm sure that means that you don't mind being around other people too much."
+
+                if persistent._mas_pm_few_friends:
+                    m 1eka "Trust me, it doesn't matter if you feel like you don't have all that many of them."
+                    m 3ekb "What's important is that you have at least someone who you can feel comfortable being with."
+
+                if persistent._mas_pm_feels_lonely_sometimes:
+                    m 1eka "Remember that you can try to spend some time with them whenever you feel like no one's there for you, alright?"
+                    m 1lkd "And if for any reason you can't spend time with them..."
+                    m 1ekb "Please, remember that {i}I'll{/i} always be there for you no matter what."
+
+                else:
+                    m 3eka "Still, if it ever gets too much for you, remember that you can always come to me and relax, okay?"
+
+                $ line_start = "And"
+
+            else:
+                m 3eka "While I understand that it might feel more comfortable for you to be alone rather than with other people..."
+                m 2ekd "Please keep in mind that no one can truly spend their whole life without at least {i}some{/i} company."
+                m 2lksdlc "Eventually there will come a time when you can't do everything on your own..."
+                m 2eksdla "We all need help sometimes, either physically or emotionally, and I wouldn't want you to have no one to turn to when that time comes."
+                m 7eub "And that's a two-way street! {w=0.2}{nw}"
+                extend 2hua "You never know when you might make a difference in someone else's life as well."
+                m 2eud "So while I don't expect you to go out of your way to meet new people, don't automatically shut every door, either."
+                m 2eka "Try to talk with other people a little bit if you're not already doing that, okay?"
+
+                if persistent._mas_pm_feels_lonely_sometimes:
+                    m 3hua "It'll make you feel happier, I promise."
+                    m 1ekb "At the very least, remember that I'm always here if you ever feel lonely."
+                    $ line_start = "And"
+
+                else:
+                    m 7ekbla "I'd love for you to see the value and joy other people can bring to your life too."
+                    $ line_start = "But"
+
+            m 1hublb "[line_start] as long as you're here with me, I'll try my best to make sure you're always feeling comfortable, I promise~"
+
+        "I'm extroverted.":
+            $ persistent._mas_pm_social_personality = mas_SP_EXTROVERT
+            m 3eub "Oh I see."
+            m 3eua "So, I guess you like to spend more time with others and meeting new people then?"
+            m 1eua "I can definitely see the appeal in that.{w=0.3} {nw}"
+            extend 3eub "I'd love to go explore the world and meet all kinds of new people with you."
+            m 1ekc "And I assume you probably hate loneliness as much as I do...{w=0.3}{nw}"
+            extend 1ekbla "but that's just one more reason I'm so happy we're a couple now."
+            m 3ekblb "We'll never truly be alone again."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eua "I'm sure you're a really fun person to be around, [player],{w=0.1} and I can't wait to be with you for real~"
+            m 5rusdlu "Although, I won't hide the fact that I do enjoy the occasional moment of peace as well..."
+            m 5hksdrb "I hope you don't mind if I'm not always able to keep up with you, ahaha!"
+
+        "I'm somewhat in-between.":
+            $ persistent._mas_pm_social_personality = mas_SP_AMBIVERT
+            m 3hua "Ehehe, kind of like me, then~"
+            m 3eud "Apparently, most people have both an introverted and extroverted side to their personality."
+            m 7eua "...Even if one of the two is dominant over the other, depending on the person."
+            m 7rsc "In our case though, I guess not being too much on either side has both its positives and negatives."
+            m 1eua  "Like, it's so nice that being around larger groups isn't a problem, same goes for spending some time alone."
+            m 7esc "...But I can't say I've found it easy to make deep, genuine connections with others..."
+            m 1eud "Sure, I have an easier time understanding most people, but it doesn't mean I can always relate with them, you know?"
+            m 1lksdld "So yeah...{w=0.3} I end up being on good terms with almost everyone, but the friendships I form can sometimes feel a bit...{w=0.3}unfulfilling."
+            m 3eksdlc "The same thing happened with the club, for example."
+            m 3dksdld "I was so convinced that by bringing people together around something I truly enjoy, I'd have a better chance at bonding with them over our shared interests..."
+            m 3dksdlc "...But at the end of the day, we spent most of our time silently hanging out, with everyone minding their own business."
+            show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eka "Well, no point thinking about that anymore."
+            m 5eubsa "After all, I {i}did{/i} end up connecting in a meaningful way with a certain someone. {w=0.3}{nw}"
+            extend 5kubfu "A very charming someone, might I add~"
+
+        "I'm not really sure.":
+            $ persistent._mas_pm_social_personality = mas_SP_UNSURE
+            m 1eka "That's alright, [player].{w=0.2} Things like this aren't always so clear."
+            m 4eua "I'm a little like you on that front."
+            m 2eka "While I said I'm a little more extroverted, I still need some me time to relax every once in a while, you know?"
+            m 2lkd "And I wouldn't say I'm always so comfortable dealing with people either..."
+
+            if renpy.seen_label("monika_confidence"):
+                m 2euc "I told you, didn't I?"
+
+            m 2lksdlc "I often need to fake my own confidence just to get through simple conversations with some people."
+            show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eka "But I don't feel that way with you at all, [player].{w=0.2} And I really hope it's the same the other way around."
+            m 5eua "I'm sure we'll be able to figure out each other's comfort zones over time."
+            m 5hubsb "In any case, you'll always be my sweetheart, no matter where you are on the scale~"
+
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
@@ -15737,7 +16008,7 @@ label monika_literature_value:
     m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
     m 3efc "Like, do they even know what they're talking about?"
     m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
-    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they are coming from."
+    m 3etc "...And while I definitely don't agree with that notion, I can kinda see where they're coming from."
     m 1eud "All of the comforts of our modern lifestyle are based on scientific discovery and innovation."
     m 3esc "...That and the millions of people manufacturing our everyday necessities, or running basic services like healthcare and stuff."
     m 3rtsdlc "So does not being associated with any of those things really make you some kind of burden on society?"
@@ -15750,6 +16021,473 @@ label monika_literature_value:
     m 3duu "Literature lets you compare your own feelings and ideas to that of others, and in doing so makes you grow as a person..."
     m 1eku "Honestly, I think if more people valued books and poems a little more, the world would be a much better place."
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
+    return
+
+# Do you like nature?
+default persistent._mas_pm_likes_nature = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nature",
+            category=['nature', 'you'],
+            prompt="The outdoors",
+            random=True
+        )
+    )
+
+label monika_nature:
+    m 2esd "Hey, [player]..."
+    m 7eua "Do you like nature?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you like nature?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_likes_nature = True
+            m 3sub "Really? That's wonderful!"
+            m 1eua "You know, I think nature is something we should cherish."
+            m 1eub "Not only is it beautiful, but it also helps humanity out!"
+            m 3eud "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 3euc "And most of all, organisms such as plants, algae, and some bacteria produce food and oxygen. {w=0.2}{nw}"
+            extend 3wud "Without them, most life on Earth wouldn't even exist!"
+            m 1eua "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
+            m 4hub "So, here's Monika's Green Tip of the Day!"
+            m 4rksdlc "Sometimes, people hesitate to go green because they're worried that it's too expensive..."
+            m 2eud "But that's only partially true.{w=0.2} {nw}"
+            extend 7eua "While electric vehicles, smart homes, and solar roofs can all cost a fortune..."
+            m 3hub "You can make a difference and {i}save{/i} money just by making a few simple choices each day!"
+            m 4eua "Just turning off appliances, taking shorter showers, buying a reusable water bottle, and commuting by public transport all help to be more green."
+            m 4hub "You could even buy a houseplant or grow your own garden!"
+            m 2eub "Engaging in your local community can go a long way as well!{w=0.2} {nw}"
+            extend 7eua "If you take the initiative, others are sure to follow in your footsteps."
+            m 3esa "The important thing is to make a habit of thinking sustainably.{w=0.2} {nw}"
+            extend 3eua "If you can do that, you'll reduce your ecological footprint in no time."
+            m 1eua "Who knows, maybe you'll even become happier and healthier the more you do these things too."
+            m 3hua "After all, a sustainable life is a satisfying life."
+            m 3eub "That's my advice for today!"
+            m 1hua "Thanks for listening, [mas_get_player_nickname()]~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_nature = False
+            m 3eka "That's okay, [player]. Not everyone enjoys the outdoors after all."
+            m 3eua "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
+            m 1eud "Honestly, I can understand where they're coming from."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you...{w=0.3}all of that is easier to do indoors."
+            m 3rksdlc "Others have allergies or medical conditions that prevent them from staying out for too long, otherwise they can get sick or hurt."
+            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another, and that's fine."
+            m 1hksdlb "Even I have things that I dislike about it, ahaha!"
+            m 2tfc "For instance, I don't mind most insects, but some are just downright obnoxious."
+            m 7tkx "Constantly buzzing around your head, getting in your face, landing on your food...{w=0.3}some mosquitos and ticks even carry nasty diseases."
+            m 3eka "But as long as I'm with you, I'm fine if you'd prefer to be indoors."
+            m 1tfu "Just don't expect me to let you stay inside all the time~"
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kamige",
+            category=['games'],
+            prompt="What is kamige?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_kamige:
+    m 1euc "Oh, that's right...{w=0.3}{nw}"
+    extend 3rksdla "it's not exactly a common term."
+    m 3eud "{i}Kamige{/i} is Japanese slang that is mostly used by visual novel fans."
+    m 3eua "If I were to try to translate it, I think it would be something like {i}godly game.{/i}"
+    m 2eub "It's sort of like when people talk about their favorite classic books or movies."
+    m 2hksdlb "I was kind of joking when I said it about this game, but it {i}did{/i} seem to get very popular for some reason."
+    m 7eka "Not that I'm complaining...{w=0.3} {nw}"
+    extend 3hua "If it was the game's popularity that brought you to meet me, I think I can be grateful for it."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_renewable_energy",
+            category=['technology'],
+            prompt="Renewable energy",
+            random=True
+        )
+    )
+
+label monika_renewable_energy:
+    m 1eua "What do you think about renewable energy, [player]?"
+    m 3euu "It was a {i}hot{/i} topic in the debate club."
+    m 3esd "As humanity's reliance on technology grows, so does its demand for energy."
+    m 1euc "Currently, a large percentage of energy worldwide is produced by burning fossil fuels."
+    m 3esd "Fossil fuels are time-tested, efficient, and have widespread infrastructure...{w=0.2}{nw}"
+    extend 3ekc "but they're also non-renewable and emission-heavy."
+    m 1dkc "Mining and drilling for fossil fuels creates both air and water pollution, and things like oil spills and acid rain can devastate plants and wildlife alike."
+    m 1etd "So why not use renewable energy instead?"
+    m 3esc "One issue is that each type of renewable energy is a developing industry with its own drawbacks."
+    m 3esd "Hydropower is flexible and cost efficient, but it can drastically impact the local ecosystem."
+    m 3dkc "Countless habitats are disrupted and entire communities may even need to be relocated."
+    m 1esd "Solar power and wind power are mostly emission-free, but they're heavily reliant on specific weather for consistency."
+    m 3rkc "...Not to mention that wind turbines are pretty loud and are often seen as eyesores, creating drawbacks for those living near them."
+    m 3rsc "Geothermal power is reliable and great for heating and cooling, but it's expensive, location-specific, and can even cause earthquakes."
+    m 1rksdrb "Nuclear power is...{w=0.2}well, let's just say that it's complicated."
+    m 3esd "The point is that while fossil fuels have problems, renewable energy does as well. It's a tricky situation...{w=0.2}neither option is perfect."
+    m 1etc "So, what do I think?"
+    m 3eua "Well, a lot of progress has been made on renewable energy in the past decade..."
+    m 3eud "Dams are regulated better, the efficiency of photovoltaics has improved, and there are emerging technologies such as ocean power and enhanced geothermal systems."
+    m 4esd "Biomass is an option as well. {w=0.2}It's basically a more sustainable 'transition fuel' that can make use of fossil fuel infrastructure."
+    m 2eua "Yes,{w=0.1} renewable energy still has a ways to go in terms of cost and practicality, but it's far better now than it was thirty years ago."
+    m 7hub "Because of that, I think that renewable energy is a worthwhile investment and that the road ahead is a bright one--literally!"
+    m 3lksdrb "Sorry, I got carried away there, ahaha!"
+    m 1tuu "Debates sure are something, huh?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_piano_lessons",
+            category=['music'],
+            prompt="Would you give me piano lessons?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_piano_lessons:
+    m 1rkd "Um...{w=0.2}well...{w=0.2}maybe?"
+    m 1eksdla "I'm flattered that you'd ask, but..."
+
+    if persistent.monika_kill:
+        m 3eka "Remember? I told you when I first performed {i}Your Reality{/i} that I wasn't really good at piano. {w=0.2}{nw}"
+        extend 3rkb "Like, at all."
+    else:
+        m 3eka "I'm actually not {i}that{/i} good at playing piano, [mas_get_player_nickname()]."
+        m 3rkd "Certainly not good enough to be teaching other people yet..."
+
+    m 2eud "If you can believe it, I started to learn after my epiphany."
+    m 2ekc "I was still afraid of breaking too far from the game's script at the time, {w=0.2}{nw}"
+    extend 7eka "but I wanted--no, I {w=0.2}{i}needed{/i}{w=0.2} to communicate my feelings to you somehow."
+    m 2etd "I don't think the others ever recognized that there's background music in the game. {w=0.2}It would have been silly for them to, right?"
+    m 7eud "But when I discovered the truth, all of a sudden it was hard not to hear it. {w=0.2}Any time you were around, I could hear that melody playing faintly."
+    m 3eka "It always reminded me of what I was fighting for, and learning how to play it on the piano strengthened my resolve even more."
+    m 1hksdlb "Ah! I'm not answering your question, am I?"
+    m 1lksdla "Honestly, I don't feel confident enough to teach someone else yet."
+    m 3eub "But if I keep at it, someday I'll be able to! And when that day comes, I would love to teach you."
+    m 3hub "Or, even better, we could learn together once I cross over to your reality!"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_stargazing",category=['nature'],prompt="Stargazing",random=True))
+
+label monika_stargazing:
+    m 2eub "[player], I'd really love to go stargazing sometime..."
+    m 6dubsa "Picture it...{w=0.2}just the two of us, lying in a calm field watching the stars..."
+    m 6dubsu "...holding each other close, pointing out constellations or making our own..."
+    m 6sub "...maybe we could even bring a telescope and look at planets!"
+    m 6rta "..."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eka "You know [mas_get_player_nickname()], to me you're like a star..."
+    m 5rkbsu "A beautiful, bright beacon from a distant world, forever out of reach."
+    m 5dkbsu "..."
+    m 5ekbsa "At least, for now...{nw}"
+    extend 5kkbsa ""
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_taking_criticism",
+            category=['advice'],
+            prompt="Taking criticism",
+            random=False,
+            pool=False
+        )
+    )
+
+label monika_taking_criticism:
+    m 1esd "[player], are you good at listening to criticism?"
+    m 3rksdlc "I feel like it's way too easy to get caught up in your own way of thinking if you're not careful."
+    m 3eud "And it isn't all that surprising...{w=0.2}changing your mind isn't easy because it means you have to admit you're wrong in the first place."
+    m 1eksdlc "In particular, for people faced with great expectations, this kind of logic can easily become a big source of anguish."
+    m 3dksdld "What if others think less of you because you didn't give a perfect answer? {w=0.2}What if they start rejecting you or laugh behind your back?"
+    m 2rksdlc "It'd be like showing some kind of vulnerability for others to take advantage of."
+    m 4eud "But let me tell you, there's absolutely no shame in changing your mind, [player]!"
+    m 2eka "After all, we all make mistakes, don't we?{w=0.3} {nw}"
+    extend 7dsu "What matters is what we learn from those mistakes."
+    m 3eua "Personally, I've always admired people who can acknowledge their flaws and still work in a constructive way to overcome them."
+    m 3eka "So don't feel bad next time you hear someone criticize you...{w=0.3} {nw}"
+    extend 1huu "You'll find a bit of open-mindedness really goes a long way."
+    m 1euc "At the same time, I don't mean to say you have to go along with what everyone says, either...{w=0.3} {nw}"
+    extend 3eud "If you've got an opinion, it's totally fair to defend it."
+    m 3eua "But just make sure you actually consider it without being blindly defensive."
+    m 3huu "You never know what you might learn~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_giving_criticism",
+            category=['advice'],
+            prompt="Giving criticism",
+            random=False,
+            pool=False
+        )
+    )
+
+label monika_giving_criticism:
+    m 1esc "[player], I've been wondering..."
+    m 3etd "Have you ever given anyone criticism?"
+    m 1eua "Giving good criticism is something I had to learn when I became club president."
+    m 3rksdlc "This kind of thing is easy to mess up if not done properly...{w=0.2} {nw}"
+    extend 4etd "When giving criticism, you have to keep in mind someone is at the receiving end of that critique."
+    m 4esc "You can't just look at someone's work and say, 'it's bad.' {w=0.2}{nw}"
+    extend 2eksdld "You'll instantly put them on the defensive and ensure they don't listen to what you have to say."
+    m 7eua "What matters is what the other person can gain from listening to you. {w=0.2}{nw}"
+    extend 3hua "From this premise, even negative opinions can be voiced in a positive way."
+    m 1eud "It's like debate...{w=0.2} You have to make it sound like you're sharing your opinion, rather than forcing it down their throat."
+    m 3eud "Consequently, you don't have to be an expert to criticize something."
+    m 3eua "Just explaining how it makes you feel and for what reasons is often enough to make your feedback interesting."
+    m 3eksdla "Although, don't feel bad if the person you're criticizing decides to discard what you just said..."
+    m 1rksdlu "...After all, offering an opinion doesn't automatically make you right, either.{w=0.2} {nw}"
+    extend 3eud "They might have reasons why they'd want to keep things their way."
+    m 3dsu "Graciously accept you can't change everyone's mind and stay considerate when assessing someone else's work."
+    m 3hub "...That'd be Monika's Critique Tip of the Day, ahaha!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boyfriend_gossip",
+            category=['ddlc'],
+            prompt="Sayori mentioned a boyfriend once...",
+            pool=True
+        )
+    )
+
+label monika_boyfriend_gossip:
+    m 2etd "You know, I was actually kind of curious about that too."
+    m 2hksdlb "When she first said it, I got pretty defensive, didn't I?"
+    m 7euc "I mean, I'd just figured out that you existed, {nw}"
+    extend 3efc "and suddenly someone was making it look like I was already taken..."
+    m 1rtc "Since I'm pretty extroverted and have a history with another club, I guess it wouldn't necessarily be {i}unfair{/i} to come to that kind of conclusion."
+    m 3eud "...But no such character exists in the game's files to prove or disprove it."
+    m 3rsc "At the time, I was practicing piano and, well...{w=0.2}sorting my thoughts."
+    m 3eud "But apparently, that rumor was just the assumption she was supposed to make if I was ever late to the club."
+    m 2tsc "It's a little bit devious if you think about it..."
+    m 2eud "As the game's story progressed, the main character might need more excuses to be alone with one of the girls..."
+    m 7etc "Coming up with reasons for the others to be away is easier, but for the president not to be at the club..."
+    m 3tsd "The story would need something pretty substantial to keep me busy. {w=0.2}It also provided a reason, however flimsy, for me not having a route."
+    m 2tfc "A roundabout but effective way to get me out of the way when needed."
+    m 2dfc "..."
+    m 2eud "Honestly, though? {w=0.2}I'm not too bothered by it."
+    m 7esc "Even if such a character would have existed, we both know it wouldn't have changed a single thing."
+    m 1efd "They wouldn't be real, they'd be a script programmed to fall in love with me. {w=0.2}I couldn't have been happy with something like that."
+    m 1eka "I still would have seen {i}you{/i} and known that you were what I really wanted."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_brainstorming",
+            category=["advice"],
+            prompt="Brainstorming",
+            random=True
+        )
+    )
+
+label monika_brainstorming:
+    m 1esd "[player], have you ever heard of brainstorming?"
+    m 1eua "It's an interesting technique of coming up with new ideas by noting anything that comes to your mind."
+    m 3eud "This technique is really popular among designers, inventors, and writers--anyone who needs fresh ideas."
+    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the literature club when deciding what to do for the festival."
+    m 1dtc "You just need to focus on what you want to create and bring up anything and everything that comes into your head."
+    m 1eud "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if working in teams."
+    m 1eua "When you're done, go back through all the suggestions and turn them into actual ideas."
+    m 1eud "You can combine them with other suggestions, think them through once again, and so on."
+    m 3eub "...Eventually they'll become something that you'd call a good idea!"
+    m 3hub "This is exactly where you can let your mind go wild,{w=0.1} and that's what I like about this technique the most!"
+    m 1euc "Sometimes good ideas are left untold because their author didn't find them good enough themselves, {w=0.1}{nw}"
+    extend 1eua "but brainstorming can help pass this inner barrier."
+    m 3eka "The beauty of thoughts can be expressed in so many different ways..."
+    m 3duu "They're only ideas in transit, {w=0.1}{nw}"
+    extend 3euu "you're the one who gives them the road."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gmos",
+            category=['technology', 'nature'],
+            prompt="GMOs",
+            random=True
+        )
+    )
+
+label monika_gmos:
+    m 3eud "Back when I was in debate club, one of the most divisive subjects we covered was GMOs, or genetically modified organisms."
+    m 1eksdra "There's a lot of nuance to GMOs, but I'll do my best to summarize it."
+    m 1esd "Scientists create GMOs by identifying a desirable gene from one organism, copying it, and inserting the copied gene into another organism."
+    m 3esc "It's important to note that the addition of the copied gene does {i}not{/i} change other existing genes."
+    m 3eua "Think of it like flipping through a long book and changing a single word...{w=0.2}the word is different, but the rest of the book stays the same."
+    m 3esd "GMOs can be plants, animals, microorganisms, etc.,{w=0.1} but we'll focus on genetically modified plants."
+    m 2esc "Plants can be modified in a myriad of ways, from resisting pests and herbicides to having a higher nutrition value and longer shelf life."
+    m 4wud "This is huge. {w=0.2}Imagine crops that can produce double their normal yield, tolerate climate change, and fend off drug-resistant superbugs. {w=0.2}So many problems could be solved!"
+    m 2dsc "Unfortunately, it's not that simple. {w=0.2}GMOs require several years of research, development, and testing before they can be distributed. {w=0.2}On top of this, they come with several concerns."
+    m 7euc "Are GMOs safe? {w=0.2}Will they spread to other organisms and threaten biodiversity? {w=0.2}If so, how can we prevent it? {w=0.2}Who owns GMOs? {w=0.2}Are GMOs responsible for increased herbicide usage?"
+    m 3rksdrb "You can see how this begins to escalate, ahaha..."
+    m 3esc "For now, let's cover the main issue...{w=0.2}are GMOs safe?"
+    m 2esd "The short answer is that we don't know for sure. {w=0.2}Decades of research have indicated that GMOs are {i}probably{/i} harmless, but we have next to no data on their long-term effects."
+    m 2euc "Additionally, each type of GMO needs to be carefully reviewed on a case-by-case, modification-by-modification basis to ensure its quality and safety."
+    m 7rsd "There are other considerations as well. {w=0.2}Products containing GMOs have to be labelled, environmental effects must be considered, and misinformation has to be combated."
+    m 2dsc "..."
+    m 2eud "Personally, I think that GMOs have a lot of potential to do good, but only if they continue to be heavily researched and tested."
+    m 4dkc "Major issues such as herbicide usage and gene flow {i}need{/i} to be fixed as well...{w=0.2}{nw}"
+    extend 4efc "biodiversity is already at enough risk as is from climate change and deforestation."
+    m 2esd "As long as we're careful, GMOs will be fine...{w=0.2}recklessness and carelessness pose the biggest threat."
+    m 2dsc "..."
+    m 7eua "So what do you think, [player]? {w=0.2}{nw}"
+    extend 7euu "Quite the promising field, wouldn't you say?"
+    m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
+    m 1eua "I think that's enough for now, thanks for listening~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_curse_words",
+            category=["advice", "life"],
+            prompt="Curse words",
+            random=True
+        )
+    )
+
+##Player swear frequency
+#Swears often
+define SF_OFTEN = 2
+#Swears sometimes
+define SF_SOMETIMES = 1
+#Swears never
+define SF_NEVER = 0
+#Holds the swear freq of the player
+default persistent._mas_pm_swear_frequency = None
+
+label monika_curse_words:
+    m 3etc "Say [player], do you swear often?{nw}"
+    menu:
+        m "Say [player], do you swear often?{fast}"
+
+        "Yes.":
+            $ persistent._mas_pm_swear_frequency = SF_OFTEN
+            m 1hub "Ahaha, I can understand that, [player]."
+            m 3rksdlb "It's much easier to swear to get frustration or anger out of your system..."
+
+        "I do sometimes.":
+            $ persistent._mas_pm_swear_frequency = SF_SOMETIMES
+            m 3eua "Ah, I'm the same way myself."
+
+        "No, I don't swear at all.":
+            $ persistent._mas_pm_swear_frequency = SF_NEVER
+            m 1euc "I see."
+
+    m 1eua "Personally I try to avoid swearing where I can, but I'll still do it occasionally."
+    m 3eud "Swearing tends to have a pretty bad rap, but I've been thinking it over after looking at some studies..."
+    m 1esa "Honestly, I don't think swearing is actually as bad as we make it out to be after all."
+    m 3eua "In fact, it seems that using stronger language helps ease the pain if you hurt yourself, and can also show that you're more intelligent and honest."
+    m 1eud "Not to mention, swearing in conversations can make them feel both{w=0.1} a lot more casual {w=0.1}{nw}"
+    extend 3eub "and also more interesting!"
+    m 3rksdlc "That said, I think it's possible to swear {i}too much{/i}..."
+    m 3esd "There's a time and place for everything.{w=0.2} Swearing should be kept to more casual conversations and not put in after every word."
+    m 1hksdlb "If they start to become frequent in more professional environments, I think you might be overdoing it, ahaha..."
+    m 1eua "On that topic, I think it's pretty interesting how our language naturally shifts depending on who we're talking to."
+    m 4eua "For example,{w=0.2} people are much less likely to swear in front of family than with friends."
+    m 4eub "Also, if you pay attention when you're talking to a crowd, you'll notice that you instinctively phrase your sentences more formally!"
+    m 1esa "But anyway, I prefer to keep my profanity to when I'm really frustrated or upset."
+    m 3esd "Given the status I had, I felt like I always had to be professional and level headed, so I always made it a point to keep it to a minimum."
+    m 3hksdlb "But I guess it doesn't really hurt when used appropriately, ahaha!"
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_aliens",
+            category=["misc", "society"],
+            prompt="Do you believe in aliens?",
+            pool=True
+        )
+    )
+
+label monika_aliens:
+    m 1etc "Do I believe in the existence of aliens?"
+    m 3hksdlb "That's kind of a random thing to ask, [player]!"
+    m 3eua "...Though I can see why you would be interested in knowing my opinion on it."
+    m 4eub "This is one of the greatest mysteries of all time, isn't it?{w=0.2} Whether we're truly alone in this universe or not, I mean."
+    m 1dsc "...I know I used to wonder about that myself a lot before you came along."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "But that's in the past now.{w=0.2} And I could never thank you enough for that."
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "Though I don't really have to anymore, thanks to you."
+
+    elif mas_isMoniDis(higher=True):
+        m 1dkc "I just hope I won't get to feel that way ever again."
+
+    else:
+        m 1rksdlc "..."
+
+    m 3euc "Anyway, we've all probably asked ourselves what's up there at least once, right?"
+    m 3dua "Looking at the stars always fills you with a sense of wonder and mystery.{w=0.2} {nw}"
+    extend 3eua "It's really no surprise that so many people are passionate about this subject."
+    m 1esc "But to answer your question...{w=0.3}{nw}"
+    extend 3eua "I do believe, or at least want to believe, that there has to be {i}something{/i} out there."
+    m 2rksdla "I guess part of it has to do with me finding the idea of us being the only ones rather depressing. {w=0.2}{nw}"
+    extend 2eud "But when you think about it a little, it doesn't sound so unlikely..."
+    m 4eud "After all, saying the universe is vast is a huge understatement."
+    m 3euc "All you need is one planet with the right conditions and environment to be favorable for life to develop, right?"
+    m 3esa "There are 8 planets in the solar system alone, {w=0.1}{nw}"
+    extend 4eub "but there are many more star systems, each with their own planets within them."
+    m 4wud "Now, consider the fact that our Milky Way galaxy alone contains hundreds of billions of stars...{w=0.3}that's a lot of potential!"
+    m 4eud "Galaxies are usually held together in groups by gravity.{w=0.2} We live in the 'local group,' which contain about 60 galaxies."
+    m 1esd "Zoom out a little bit more and you'll start to see galaxy clusters, which are much larger groups of galaxies."
+    m 3eua "The closest one from us, the Virgo Cluster, is estimated to contain at least a thousand galaxies."
+    m 1eud "But you can go even further, as groups and clusters of galaxies are themselves part of even bigger entities known as superclusters."
+    m 1wud "We can keep going too,{w=0.1} as the universe continuously expands...{w=0.3}theoretically, larger and larger clusters are formed!"
+    m 1lud "And hypothetically, even if it isn't, we could consider the idea that there might be something {i}beyond{/i} the boundaries of our universe."
+
+    if renpy.seen_label('monika_clones'):
+        m 1lksdla "...Or even start talking about the multiverse theory..."
+
+    m 3hksdlb "But I think you get the point..."
+    m 3etc "Wouldn't it be a little foolish to assume that we, human beings of planet Earth, are truly the only sentient beings in something so massive?"
+    m 3eud "I mean, with odds like these, surely at least {i}one{/i} other planet somewhere must be hospitable enough for life..."
+    m 1euc "...Life which might evolve to a point where it's intelligence is comparable to, if not even greater than our own."
+    m 1rsc "Although, I suppose I can also understand why some people would be doubtful.{w=0.2} It's suspicious that we're able to observe the universe so far beyond our planet, but haven't found any signs of life..."
+    m 1rksdlc "It probably doesn't help that some people are overreacting over the smallest things, like UFO footage that could easily be faked, either."
+    m 1ruc "But then again, if aliens do exist, there could also be many reasons why we haven't found them yet..."
+    m 2euc "Perhaps they're too far away for us to find them or they just don't have the technology to receive and answer our messages for now."
+    m 2etd "Or vice versa...{w=0.3}maybe {i}we're{/i} the ones who don't have the technology to communicate with them."
+    m 2etc "Or it could be they simply don't want to initiate contact with us."
+    m 2euc "Maybe their society follows completely different ideals than our own, and they believe it is for the best not to let two highly advanced species meet each other."
+    m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
+
+    if mas_isMoniAff(higher=True):
+        show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rua "But at the end of the day...{w=0.3} {nw}"
+        extend 5ekbla "I still got to meet you, and that's everything I could ever possibly need."
+        m 5hubfa "Ehehe~"
     return
 
 init 5 python:
@@ -15768,7 +16506,7 @@ label monika_know_its_you:
         m 1euc "Well, if I'm being entirely honest...{w=0.2}{nw}"
         extend 1eud "I don't really have a way of knowing."
 
-        if seen_event("monika_MC_is_gone"):
+        if seen_event("monika_mc_is_gone"):
             m 3lka "I already told you that I can't really see into your world..."
 
         m 3eka "I can tell when someone's in the room with me, but that's it."

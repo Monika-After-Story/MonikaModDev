@@ -65,6 +65,11 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_11_10 = "v0_11_10"
+        vv0_11_9 = "v0_11_9"
+        vv0_11_8 = "v0_11_8"
+        vv0_11_7 = "v0_11_7"
+        vv0_11_6 = "v0_11_6"
         vv0_11_5 = "v0_11_5"
         vv0_11_4 = "v0_11_4"
         vv0_11_3 = "v0_11_3"
@@ -123,6 +128,11 @@ label vv_updates_topics:
         # some version changes skip some numbers because no major updates
         #NOTE: If a version does not have and update script, its version still must be documented and point to the next update
         #script available
+        #updates.version_updates[vv0_11_9] = vv0_11_10
+        updates.version_updates[vv0_11_8] = vv0_11_9
+        updates.version_updates[vv0_11_7] = vv0_11_9
+        updates.version_updates[vv0_11_6] = vv0_11_7
+        updates.version_updates[vv0_11_5] = vv0_11_6
         updates.version_updates[vv0_11_4] = vv0_11_5
         updates.version_updates[vv0_11_3] = vv0_11_4
         updates.version_updates[vv0_11_2] = vv0_11_3
