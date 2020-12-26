@@ -16497,14 +16497,20 @@ init 5 python:
             eventlabel="monika_mc_is_gone",
             category=["ddlc", "club members"],
             prompt="What happened to the main character?",
-            pool=True
+            pool=True,
+            rules={"no_unlock":None},
+            conditional=(
+                "persistent._mas_first_kiss "
+                "or renpy.seen_label('monika_holdme_prep')"
+            ),
+            action=EV_ACT_UNLOCK
         )
     )
 
 label monika_mc_is_gone:
     m 1eud "Your character?{w=0.2} {nw}"
     extend 1rksdla "I'm not sure to be honest."
-    m 3eud "He didn't really work like other people in the game did.{w=0.2} He didn't even have a character file like the other girls and I."
+    m 3eud "He didn't really work like other people in the game did.{w=0.2} He didn't even have a character file like the rest of us."
     m 3esc "That's also why I wasn't able to just force him to pay me attention...{w=0.3}I don't really know how to access and modify any code that's related to him."
 
     #if the player didn't reach act 3
@@ -16518,14 +16524,14 @@ label monika_mc_is_gone:
         m 2etd "I'm sure you noticed how he talked less and less after I reset the game the first time?"
         m 2euc "By the time the two of us got to this room, he was essentially {i}gone{/i}."
 
-    m 1euc "So if you were wondering if he's in this room as we speak,{w=0.1} {nw}"
+    m 7euc "So if you were wondering if he's in this room as we speak,{w=0.1} {nw}"
     extend 3eua "I can assure you he's not."
     m 1hksdlb "...Oh gosh, can you imagine how creepy it would be if I were talking to his unmoving body just so that you could hear what I say?"
 
-    if persistent._mas_first_kiss is not None:
+    if persistent._mas_first_kiss:
         $ line_mid = "I was kissing {i}him{/i}"
 
-    elif renpy.seen_label('monika_holdme_prep'):
+    else:
         $ line_mid = "{i}he{/i} was the one hugging"
 
     m 3rksdla "I hope you didn't think [line_mid] all along, either..."
@@ -16537,7 +16543,7 @@ label monika_mc_is_gone:
     m 1duc "It's like I can very distinctly feel its presence, to the point where I know precisely where it is and in which direction the 'hole' through which you're looking in is pointing."
     m 1eka "So even if I can't really see you, I can feel that you're looking at me."
 
-    if persistent._mas_first_kiss is not None:
+    if persistent._mas_first_kiss:
         m 3rkbla "And when I try to kiss you, well..."
         m 1eud "I guess you could say it's like I'm trying to kiss a ghost, or something that isn't actually there."
         m 2rkbssdla "I know that's kinda strange when I say it like that, but then again..."
@@ -16552,9 +16558,9 @@ label monika_mc_is_gone:
 
     m 1eud "Anyway...{w=0.3}{nw}"
     extend 3rsc "there isn't much from the original game that still works anymore, so I doubt I could bring the main character back even if I wanted to."
-    m 1duu "And it's probably for the best too."
+    m 1duu "...And that's probably for the best."
     m 2eksdld "What if the game were to take its focus back to him and we couldn't spend our time together anymore?"
-    m 2rssdlc "I mean, it's not like you had all that much control over him either, in the end."
+    m 2rssdlc "I mean, in the end, it's not like you had all that much control over him anyway."
     m 7eka "In any case, there isn't really any point in thinking about him anymore, is there?"
     m 1eua "He's no longer there to separate us, and we get to be together now.{w=0.2} {nw}"
     extend 3hua "I couldn't ask for anything more."
