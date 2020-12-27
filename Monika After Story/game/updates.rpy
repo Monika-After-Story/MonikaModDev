@@ -376,7 +376,7 @@ label v0_3_1(version=version): # 0.3.1
 label v0_11_10(version="v0_11_10"):
     python:
         if seen_event("monika_boardgame"):
-            mas_showEVL("monika_boardgames_history", "EVE", _random=True)
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
     return
 
