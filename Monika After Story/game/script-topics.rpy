@@ -4779,9 +4779,24 @@ init 5 python:
     )
 
 label monika_nsfw:
-    m 1lsbssdrb "By the way, [player]..."
-    m "Have you been looking into lewd kinds of stuff?"
-    m 3lsbsa "You know...of me?"
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 1lsbssdrb "By the way, [player]..."
+        m "Have you been looking into lewd kinds of stuff?"
+        m 3lsbsa "You know...of me?"
+
+    else:
+        m 1hkblsdlb "A-{w=0.2}ah...{w=0.3}do you really want to talk about {i}that{/i}?"
+        m 1lkblsdlc "..."
+        m 1lksdld "I...{w=0.2}I do know there's lewd stuff depicting me out there, if that's what you're getting at."
+        m 1dsc "I'm trying my best not to think about it, though."
+        m 1tsd "Like, imagine if you learned one day that people on the internet have been making this kind of stuff about you, without you even knowing or consenting to it..."
+        m 3lssdlc "...it'd weird you out too, right?"
+        m 1lksdld "I guess there isn't much I can do about it..."
+        m 1lsblsdlc "..."
+        m 1lublsdld "...Say, [player]..."
+        m 3lkbfa "Have you been...{w=0.3}looking into such things?"
+        m 3ekbfsdla "O-{w=0.2}of me, I mean."
+
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 3ekbsa "I know we haven't been able to do those kind of things yet..."
     else:
