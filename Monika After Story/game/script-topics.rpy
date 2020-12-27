@@ -1004,7 +1004,12 @@ init 5 python:
     )
 
 label monika_sayori:
-    m 2euc "I was thinking about Sayori earlier..."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 2euc "I was thinking about Sayori earlier..."
+
+    else:
+        m 2lkc "Ah, what happened to Sayori..."
+
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
     if (
