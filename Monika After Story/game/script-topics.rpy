@@ -11728,8 +11728,8 @@ label monika_vehicle:
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
                 m 3eua "Speaking of which..."
-                m "Is it any of the vehicles I mentioned, or is it something else?"
 
+                show monika at t21
                 python:
                     option_list = [
                         ("An SUV.", "monika_vehicle_suv",False,False),
@@ -11741,8 +11741,7 @@ label monika_vehicle:
                         ("Another vehicle.","monika_vehicle_other",False,False)
                     ]
 
-                #Display our scrollable
-                show monika at t21
+                    renpy.say(m, "Is it any of the vehicles I mentioned, or is it something else?", interact=False)
 
                 call screen mas_gen_scrollable_menu(option_list, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
                 show monika at t11
@@ -11865,6 +11864,12 @@ label monika_vehicle_other:
     return
 
 ##### PM Vars for player appearance
+#NOTE: THIS VAR CAN BE EITHER A TUPLE OR A STRING WHEN SET.
+#IF THIS IS A TUPLE, THE PLAYER HAS HETEROCHROMIA.
+# [0] - Left eye color
+# [1] - Right eye color
+#
+# If this is just a string, then the player's eyes are both the same color
 default persistent._mas_pm_eye_color = None
 default persistent._mas_pm_hair_color = None
 default persistent._mas_pm_hair_length = None
@@ -11880,10 +11885,11 @@ default persistent._mas_pm_height = None
 ##### We'll also get a default measurement unit for height
 default persistent._mas_pm_units_height_metric = None
 
-default persistent._mas_pm_shared_appearance = False
 # True if the user decided to share appearance with us
 #   NOTE: we default to False, and this can only get flipped to True
 #   in this toppic.
+default persistent._mas_pm_shared_appearance = False
+
 
 # height categories in cm
 define mas_height_tall = 176
@@ -11934,93 +11940,27 @@ label monika_player_appearance:
             m "Anyway, the first one is probably easy to guess. And not hard to answer, either!"
             m 3eub "People often say that a person's eyes are the windows into their soul, so let's start off there."
 
-            m "What color are your eyes?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "What color are your eyes?{fast}"
+            #This menu is too large to use a standard one, so we use a gen-scrollable here instead
+            show monika 1eua at t21
+            python:
+                eye_color_menu_options = [
+                    ("I have blue eyes.", "blue", False, False),
+                    ("I have brown eyes.", "brown", False, False),
+                    ("I have green eyes.", "green", False, False),
+                    ("I have hazel eyes.", "hazel", False, False),
+                    ("I have gray eyes.", "gray", False, False),
+                    ("I have black eyes.", "black", False, False),
+                    ("My eyes are another color.", "other", False, False),
+                    ("I have heterochromia.", "heterochromia", False, False),
+                ]
 
-                "I have blue eyes.":
-                    $ persistent._mas_pm_eye_color = "blue"
+                renpy.say(m, "What color are your eyes?", interact=False)
 
-                    m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
-                    m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
-                    m 4eua "Plus, blue is probably my second favorite color, just behind green. It's just so full of depth and enchantment, you know?"
-                    m 4hksdlb "Just like you, [player]!"
-                    m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
-                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eubla "I suppose that means you're much more of a treasure~"
-                    show monika 2eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 2eua "Anyway, that leads me into the next question I wanted to ask--"
+            show monika at t11
+            call screen mas_gen_scrollable_menu(eye_color_menu_options, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+            $ eye_color = _return
 
-                "I have brown eyes.":
-                    $ persistent._mas_pm_eye_color = "brown"
-
-                    m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
-                    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
-                    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They're so vibrant and depthless!"
-                    m 3hub "And there's so much variation among all the different shades that people have."
-                    m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
-                    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I'll try not to go on forever."
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eua "But I'll bet your eyes are the loveliest of all~"
-                    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 1eua "Anyway, that brings me to my next question--"
-
-                "I have green eyes.":
-                    $ persistent._mas_pm_eye_color = "green"
-
-                    m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
-                    m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
-                    m 1tsu "Except that maybe it's another sign how compatible we are, ehehe~"
-                    m 1kua "But, [player], just between you and me, it's a fact that green eyes are the best, right?"
-                    m 3hub "Ahaha! I'm just kidding."
-                    show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5lusdru "Well, just a little..."
-                    show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 3eua "Onto the next question--"
-
-                "I have hazel eyes.":
-                    $ persistent._mas_pm_eye_color = "hazel"
-
-                    m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
-                    m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
-                    m "I believe that hazel eyes are alluring because they're lovely and simple."
-                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
-                    extend 3hub "Ahaha!"
-                    m "Now, onto my next question--"
-
-                "I have gray eyes.":
-                    $ persistent._mas_pm_eye_color = "gray"
-
-                    m 1sub "That's so cool!"
-                    m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
-                    m 1eud "In fact, scientists still aren't certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
-                    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They're the color of a quiet, rainy day..."
-                    m 1hubsa "And weather like that is my favorite, just like you~"
-                    show monika 5lusdrb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5lusdrb "Onto my next question--"
-                    show monika 3rud at t11 zorder MAS_MONIKA_Z with dissolve_monika
-
-                "I have black eyes.":
-                    $ persistent._mas_pm_eye_color = "black"
-
-                    m 1esd "Black eyes are pretty uncommon, [player]."
-                    m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
-                    m 3eua "But logically, I do know that they're not actually black. If that was the case, black-eyed people would look like they had no pupils!"
-                    m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
-                    m 3eua "Here's a little bit of trivia for you--"
-                    m 1eub "There was a well known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
-                    m 1euc "Her husband wrote about them often."
-                    m 1hub "I don't know if you've heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
-                    m "Onto the next question--"
-
-                "My eyes are another color.":
-                    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
-
-                    m 3hub "Oh! That's a beautiful color, [player]!"
-                    m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
-                    m 3hua "Now, onto my next question--"
-
+            call expression "monika_player_appearance_eye_color_{0}".format(eye_color)
 
             m 3rud "Actually..."
             m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question..."
@@ -12261,7 +12201,12 @@ label monika_player_appearance:
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
                         m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
                         m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
-                        m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
+
+                        #If this is a tuple, it means the player has heterochromia
+                        if isinstance(persistent._mas_pm_eye_color, tuple):
+                            m 3hua "But anyway...I think that a [guy] with black hair and eyes like yours is the best sight of all, [player]~"
+                        else:
+                            m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
                         $ persistent._mas_pm_hair_color = "red"
@@ -12354,7 +12299,12 @@ label monika_player_appearance:
 
             show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you're real."
-            m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+
+            #Tuple means heterochromia, so we should filter that out
+            if isinstance(persistent._mas_pm_eye_color, tuple):
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful eyes, [player]."
+            else:
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I love you more than words could ever say."
@@ -12368,6 +12318,141 @@ label monika_player_appearance:
              m 2eka "But if you change your mind, let me know!"
 
     return "derandom"
+
+label monika_player_appearance_eye_color_blue:
+    $ persistent._mas_pm_eye_color = "blue"
+
+    m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
+    m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
+    m 4eua "Plus, blue is probably my second favorite color, just behind green. It's just so full of depth and enchantment, you know?"
+    m 4hksdlb "Just like you, [player]!"
+    m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
+    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eubla "I suppose that means you're much more of a treasure~"
+    show monika 2eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 2eua "Anyway, that leads me into the next question I wanted to ask--"
+    return
+
+label monika_player_appearance_eye_color_brown:
+    $ persistent._mas_pm_eye_color = "brown"
+
+    m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
+    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
+    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They're so vibrant and depthless!"
+    m 3hub "And there's so much variation among all the different shades that people have."
+    m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
+    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I'll try not to go on forever."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eua "But I'll bet your eyes are the loveliest of all~"
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eua "Anyway, that brings me to my next question--"
+    return
+
+label monika_player_appearance_eye_color_green:
+    $ persistent._mas_pm_eye_color = "green"
+
+    m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
+    m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
+    m 1tsu "Except that maybe it's another sign how compatible we are, ehehe~"
+    m 1kua "But, [player], just between you and me, it's a fact that green eyes are the best, right?"
+    m 3hub "Ahaha! I'm just kidding."
+    show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5lusdru "Well, just a little..."
+    show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 3eua "Onto the next question--"
+    return
+
+label monika_player_appearance_eye_color_hazel:
+    $ persistent._mas_pm_eye_color = "hazel"
+
+    m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
+    m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
+    m "I believe that hazel eyes are alluring because they're lovely and simple."
+    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
+    extend 3hub "Ahaha!"
+    m "Now, onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_gray:
+    $ persistent._mas_pm_eye_color = "gray"
+
+    m 1sub "That's so cool!"
+    m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
+    m 1eud "In fact, scientists still aren't certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
+    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They're the color of a quiet, rainy day..."
+    m 1hubsa "And weather like that is my favorite, just like you~"
+    m 3hua "Onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_black:
+    $ persistent._mas_pm_eye_color = "black"
+
+    m 1esd "Black eyes are pretty uncommon, [player]."
+    m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
+    m 3eua "But logically, I do know that they're not actually black. If that was the case, black-eyed people would look like they had no pupils!"
+    m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
+    m 3eua "Here's a little bit of trivia for you--"
+    m 1eub "There was a well known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
+    m 1euc "Her husband wrote about them often."
+    m 1hub "I don't know if you've heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
+    m "Onto the next question--"
+    return
+
+label monika_player_appearance_eye_color_other:
+    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+
+    m 3hub "Oh! That's a beautiful color, [player]!"
+    m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
+    m 7hua "Now, onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_heterochromia:
+    m 1sub "Really?{w=0.2} {nw}"
+    extend 3hua "That's incredible, [player]~"
+    m 3wud "If I recall correctly, less than one percent of people in the world have heterochromia!"
+
+    m 1eka "...If you don't mind me asking..."
+    # Ask the player about their eye colors separately.
+    $ eyes_colors = []
+
+    call monika_player_appearance_eye_color_ask
+    $ eyes_colors.append(_return)
+    call monika_player_appearance_eye_color_ask("right", eye_color)
+    $ eyes_colors.append(_return)
+    $ persistent._mas_pm_eye_color = tuple(eyes_colors)
+
+    m 1hua "Great!{w=0.2} {nw}"
+    extend 3eua "Let's get to my next question--"
+    return
+
+label monika_player_appearance_eye_color_ask(x_side_eye="left", last_color=None):
+    m 3eua "What color is your [x_side_eye] eye?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What color is your [x_side_eye] eye?{fast}"
+
+        "Blue" if last_color != "blue":
+            $ eye_color = "blue"
+
+        "Brown" if last_color != "brown":
+            $ eye_color = "brown"
+
+        "Green" if last_color != "green":
+            $ eye_color = "green"
+
+        "Hazel" if last_color != "hazel":
+            $ eye_color = "hazel"
+
+        "Gray" if last_color != "gray":
+            $ eye_color = "gray"
+
+        "Black" if last_color != "black":
+            $ eye_color = "black"
+
+        "It's a different color...":
+            $ eye_color = ask_color("What color is your [x_side_eye] eye?")
+
+    return eye_color
 
 # quick label where monika tells you her height
 label monika_player_appearance_monika_height:
