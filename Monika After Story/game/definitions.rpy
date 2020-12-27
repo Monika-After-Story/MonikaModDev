@@ -3,15 +3,25 @@ define persistent.demo = False
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
-##R7+ Config Var adjustments
-#Fixes spaceroom masks from restarting every interaction
-define config.replay_movie_sprites = False
+###R7+ Config Var adjustments
+##7.3.3
+#Only devs need this
+define config.report_extraneous_attributes = False
+##7.3.0
+define config.keyword_after_python = True
+##7.1.1
 #Fix menu textbox issues
 define config.menu_showed_window = True
 #Fix textbox sometimes disappearing
 define config.window_auto_show = ["say"]
 #Fix textbox flickering
 define config.window_auto_hide = ["scene", "call screen"]
+##7.0
+#Fixes spaceroom masks from restarting every interaction
+define config.replay_movie_sprites = False
+##6.99.13
+define config.atl_one_frame = False
+
 
 python early:
     import singleton
