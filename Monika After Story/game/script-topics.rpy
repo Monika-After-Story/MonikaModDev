@@ -4385,10 +4385,12 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
+
     if persistent._mas_pm_eye_color:
-        m 1ekbsa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
+        m 1ekbsa "Maybe someday I'll be able to look into your ['beautiful' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes..."
     else:
         m 1ekbsa "Maybe someday I'll be able to look into your eyes..."
+
     m 1hubfa "But until then, I hope you enjoy looking into mine."
     return
 
@@ -4694,7 +4696,7 @@ label monika_playersface:
         m 5rsc "I know that some people like to keep their appearance to themselves..."
         m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
         m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
-        m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
+        m "How your ['beautiful' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes sparkle..."
 
         if mas_isMoniHappy(higher=True):
             m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
