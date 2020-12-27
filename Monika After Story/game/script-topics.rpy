@@ -16503,7 +16503,7 @@ init 5 python:
 
 label monika_know_its_you:
     if mas_isMoniEnamored(higher=True):
-        m 1euc "Well, if I'm being totally honest...{w=0.2}{nw}"
+        m 1euc "Well, if I'm being totally honest...{w=0.3}{nw}"
         extend 1eud "I don't really have a way of knowing."
 
         if seen_event("monika_mc_is_gone"):
@@ -16535,4 +16535,5 @@ label monika_know_its_you:
         m 2dksdlc "...{w=0.3}I don't."
         m 2tkd "The best thing I can do is try to trust you, but..."
         m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
+
     return
