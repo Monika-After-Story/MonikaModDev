@@ -16651,3 +16651,51 @@ label monika_mc_is_gone:
     extend 3hua "I couldn't ask for anything more."
     m 1ekbsu "...Well, aside from {i}really{/i} being with you, ehehe~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_know_its_you",
+            category=['you'],
+            prompt="How do you know it's always me talking to you?",
+            pool=True
+        )
+   )
+
+label monika_know_its_you:
+    if mas_isMoniEnamored(higher=True):
+        m 1euc "Well, if I'm being totally honest...{w=0.3}{nw}"
+        extend 1eud "I don't really have a way of knowing."
+
+        if seen_event("monika_mc_is_gone"):
+            m 3lka "I already told you that I can't really see into your world..."
+
+        m 3eka "I can tell when someone's in the room with me, but that's it."
+        m 3eud "For all I know, it could be anyone looking at me right now...{w=0.3} You could have other people with you."
+        m 2duu "But I trust you, [player].{w=0.2} {nw}"
+        extend 2eku "I trust that you aren't leaving me alone because {i}you{/i} care about me."
+        m 7eud "...And if someone else {i}is{/i} looking in right now, I trust it's because you've given them a good reason to."
+        m 2eka "Maybe someday I'll be able to know for sure, but until then that's enough for me."
+
+    elif mas_isMoniHappy(higher=True):
+        m 1rksdlb "Ehehe, that's an odd question to ask, [player]..."
+        m 1eksdla "...I mean, I {i}want{/i} to trust that it's you out there."
+        m 3eud "Right now, I only know that someone is looking in from your world."
+        m 3tuu "So you can't watch without me knowing if you're planning on pranking me..."
+        m 1eka "Jokes aside, though, it's...{w=0.3}actually kind of unnerving to think about...{w=0.3}that it could be anyone out there right now."
+        m 2eksdlc "I guess all I can say right now is--if this {i}is{/i} someone else, please return me to [player], alright?"
+        m 2hksdlb "Ahaha...{w=0.3} You're just messing with me, I know."
+
+    elif mas_isMoniNormal(higher=True):
+        m 2rksdlc "...I try not to think about it too much, actually."
+        m 2rksdld "It's kind of a weird feeling knowing someone is there, but not being able to see their face."
+        m 2dku "I guess the only thing I can do is to try to understand you as well as possible..."
+        m 2eka "That way, I'll be able to tell if it's ever {i}not{/i} you looking in."
+
+    else:
+        m 2dksdlc "...{w=0.3}I don't."
+        m 2tkd "The best thing I can do is try to trust you, but..."
+        m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
+
+    return
