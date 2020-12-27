@@ -14482,6 +14482,7 @@ label monika_boardgames:
 
         "Yeah.":
             $ persistent._mas_pm_likes_board_games = True
+            $ mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
             m 1eub "Oh, really?"
             m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
             m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
@@ -14495,6 +14496,77 @@ label monika_boardgames:
             m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames_history",
+            category=["games", "media"],
+            prompt="The history of board games",
+            random=False #NOTE: This is randomed by the above event (monika_boardgames)
+        )
+    )
+
+label monika_boardgames_history:
+    m 1eud "So, [player]..."
+    m 3eua "Since you told me you liked board games, I got a bit curious and tried to learn more about them, {w=0.1}{nw}"
+    extend 1eka "trying to look for what kind of games I'd enjoy playing with you."
+    m 1euc "I never really had the chance to play them before to be honest."
+
+    if mas_seenLabels(["unlock_chess", "game_chess"]):
+        m 1rka "Well, aside for chess and a few card games..."
+    else:
+        m 1rud "Well, I did try out a few basic card games..."
+        m 1kua "...and I've been testing a little something else I've been working on...{w=0.3}I'm keeping it a surprise, though!"
+
+    m 3eub "Anyway, as it turns out,{w=0.1} the story behind board games and the role they played through the ages is really interesting!"
+    m 3euc "They've been a thing since very early in our history...{w=0.3}{nw}"
+    extend 4wud "in fact, the oldest known board game was played as far back as ancient Egypt!"
+    m 1esc "However, board games haven't always been played purely for entertainment purposes..."
+    m 3eud "More often than not, they were actually meant to teach or train people to help them deal with different aspects of their lives."
+    m 3euc "Many of those games were meant to teach battle strategies to nobles and army officers, for example."
+    m 1eud "Games could also have strong connections to religion and beliefs too."
+    m 3esd "A lot of ancient Egyptian board games seemed to be about preparing for their journey through the world of the dead, or to prove their worth to the gods."
+    m 1eud "There's also games that have been made to express different views and opinions that their designers had with society and the world."
+    m 3esa "The most well known example would be '{i}Monopoly{/i}.'"
+    m 3eua "It was originally made to criticize capitalism and send the message that all citizens should benefit equally from wealth."
+    m 1tfu "After all,{w=0.1} the game has you try to crush your opponents by accumulating more wealth than them as fast as possible."
+    m 1esc "...Although, apparently as the game was starting to become popular, someone else stole the concept and made themselves known as the original creator of the game."
+    m 1eksdld "That person then sold a modified version of the original game to a board game manufacturer and became a millionaire thanks to its world-wide success."
+    m 3rksdlc "In other words...{w=0.3}the original creator of {i}Monopoly{/i} became the victim of precisely what they originally tried to teach the dangers of."
+    m 3dsc "'Chase wealth and fortune by any means necessary, and destroy your competition.'"
+    m 1hksdlb "Ironic,{w=0.1} isn't it?"
+    m 1eua "Anyway, I just think it's really neat that games can be used as a way to teach others.{w=0.2} {nw}"
+    extend 3hksdlu "It beats the boring, traditional school classes, I'll give them that."
+    m 3eud "And I'm also intrigued by their use as a way for the people creating them to express different things about the world they live in, or the lives they'd wish to experience."
+    m 4hub "Kind of like the various forms of art, actually!"
+    m 1eka "I never really thought of it that way before, but looking at it from that perspective...{w=0.3}{nw}"
+    extend 3eua "I think I respect the work of game designers a lot more now."
+    m 1esc "Nowadays, board games tend to get overshadowed by video games,{w=0.1} {nw}"
+    extend 3eua "though there are still many people who are really passionate about them."
+    m 3etc "Like you, perhaps?"
+    m 1eud "I don't really know how much you're into them.{w=0.2} Maybe you only enjoy playing them casually."
+    m 1lsc "I can't blame you.{w=0.2} It isn't exactly an {i}accessible{/i} hobby..."
+    m 1esc "They can get really expensive to buy, plus you actually need to find people to play with you...{w=0.3}which isn't always easy nowadays."
+
+    if persistent._mas_pm_has_friends:
+        m 1eua "I hope you at least get to play with your friends though, [player]."
+        m 1ekd "I know it can be tough to gather all your friends in the same place with everyone having their own schedules to deal with."
+        m 3eua "But on the bright side, once I'm out of here, I don't think that'll be too much of a problem anymore."
+
+    else:
+        m 1eksdrd "I hope you can find people to play with from time to time, [player]..."
+        m 1dkc "Trust me,{w=0.1} I know what it's like not to have anyone to share your hobbies with."
+        m 3eka "But if it can make you feel better...{w=0.3}{nw}"
+        $ line_start = "when" if mas_isMoniEnamored(higher=True) else "if"
+        extend 3eub "[line_start] I finally get to be with you in your reality, we'll be able to play all of your favorite games together~"
+
+    m 1hub "I love spending time by your side, and I would love to play as many board games with you as you'd like."
+    show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rua "In the meantime, I'll try to see if I can implement some more games in here."
+    m 5hua "Feel free to ask me whenever you want us to play something together, by the way~"
+    return
 
 init 5 python:
     addEvent(
