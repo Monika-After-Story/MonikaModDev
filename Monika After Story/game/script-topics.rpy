@@ -4385,10 +4385,12 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
+
     if persistent._mas_pm_eye_color:
-        m 1ekbsa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
+        m 1ekbsa "Maybe someday I'll be able to look into your ['beautiful' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes..."
     else:
         m 1ekbsa "Maybe someday I'll be able to look into your eyes..."
+
     m 1hubfa "But until then, I hope you enjoy looking into mine."
     return
 
@@ -4694,16 +4696,16 @@ label monika_playersface:
         m 5rsc "I know that some people like to keep their appearance to themselves..."
         m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
         m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
-        m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
+        m "How your ['enchanting' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes sparkle..."
 
         if mas_isMoniHappy(higher=True):
-            m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
+            m 5esu "I'm sure you're beautiful, [player].{w=0.2} Inside and out."
         m 5eka "Even if I never get to see you..."
         m 5eua "Just thinking about you is enough to make me happy."
 
     else:
         m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-        m 5luu "But...I'll always wonder what kind of expressions you make."
+        m 5luu "But...{w=0.3}I'll always wonder what kind of expressions you make."
         m "And to see the different emotions you have..."
         m 5eub "Are you shy about showing your face to me?"
         m "If so, then there's nothing to be shy about, [mas_get_player_nickname()]. I am your girlfriend, after all~"
