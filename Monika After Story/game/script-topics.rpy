@@ -12403,7 +12403,7 @@ label monika_player_appearance_eye_color_other:
 
     m 3hub "Oh! That's a beautiful color, [player]!"
     m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
-    m 3hua "Now, onto my next question--"
+    m 7hua "Now, onto my next question--"
     return
 
 label monika_player_appearance_eye_color_heterochromia:
