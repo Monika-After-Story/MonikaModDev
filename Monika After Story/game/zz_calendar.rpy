@@ -690,6 +690,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                                 size=note_text_size,
                                 color=note_color,
                                 outlines=[],
+                                xsize=110,
                                 pos=(8, note_ystart + k * 17)
                             )
                             text_container.add(note_text)
