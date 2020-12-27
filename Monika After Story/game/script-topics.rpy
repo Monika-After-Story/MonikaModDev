@@ -14419,8 +14419,7 @@ init 5 python:
             eventlabel="monika_boardgames_history",
             category=["games", "media"],
             prompt="The history of board games",
-            random=False,
-            pool=False
+            random=False #NOTE: This is randomed by the above event (monika_boardgames)
         )
     )
 
