@@ -16511,7 +16511,7 @@ label monika_mc_is_gone:
     m 1eud "Your character?{w=0.2} {nw}"
     extend 1rksdla "I'm not sure to be honest."
     m 3eud "He didn't really work like other people in the game did.{w=0.2} He didn't even have a character file like the rest of us."
-    m 3esc "That's also why I wasn't able to just force him to pay me attention...{w=0.3}I don't really know how to access and modify any code that's related to him."
+    m 3esc "That's also why I wasn't able to just force him to pay attention to me...{w=0.3}I don't really know how to access and modify any code that's related to him."
 
     #if the player didn't reach act 3
     if persistent.playthrough < 3:
