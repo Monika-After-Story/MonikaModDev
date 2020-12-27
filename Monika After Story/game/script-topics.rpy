@@ -1076,11 +1076,19 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's setting",random=True))
 
 label monika_japan:
-    m 4eud "By the way, there's something that's been bothering me..."
-    m "You know how this takes place in Japan?"
-    m 2euc "Well...I assume you knew that, right?"
-    m "Or at least decided it probably does?"
-    m 2eud "I don't think you're actually told at any point where this takes place..."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 4eud "By the way, there's something that's been bothering me..."
+        m "You know how this takes place in Japan?"
+        m 2euc "Well...I assume you knew that, right?"
+        m "Or at least decided it probably does?"
+        m 2eud "I don't think you're actually told at any point where this takes place..."
+
+    else:
+        m 4wud "The world this game takes place in is really weird, right?"
+        m 2eud "Putting aside the fact that there's nothing but two houses,{w=0.1} a street,{w=0.1} a school hall and a few classrooms..."
+        m 2luc "...I don't even know where this is all supposed to take place."
+        m 2ltc "Well, this {i}seems{/i} like it's based on Japan,{w=0.2} but like..."
+
     m 2etc "Is this even really Japan?"
     m 4esc "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
     m 4eud "Not to mention everything is in English..."
