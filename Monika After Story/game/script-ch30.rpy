@@ -381,7 +381,6 @@ init python:
         """
         Draws the appropriate masks according to the current state of the
         game.
-
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)

@@ -1,7 +1,6 @@
 ## dumps file for unstablers
 
 init 999 python:
-
     def mas_eventDataDump():
         """
         Data dump for purely events stats
@@ -78,7 +77,6 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -102,7 +100,6 @@ init 999 python:
                     self.most_seen_ev = ev
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
-
 
             def inDB(self, ev):
                 """
@@ -140,7 +137,6 @@ init 999 python:
                     self.seen_count += 1
 
                 return _seen
-
 
             def __str__(self):
                 """
@@ -290,7 +286,6 @@ init 999 python:
         )
 
         return outstr.format(*output)
-
 
     def mas_varDataDump():
         """

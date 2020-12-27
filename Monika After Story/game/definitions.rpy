@@ -3,6 +3,16 @@ define persistent.demo = False
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
+##R7+ Config Var adjustments
+#Fixes spaceroom masks from restarting every interaction
+define config.replay_movie_sprites = False
+#Fix menu textbox issues
+define config.menu_showed_window = True
+#Fix textbox sometimes disappearing
+define config.window_auto_show = ["say"]
+#Fix textbox flickering
+define config.window_auto_hide = ["scene", "call screen"]
+
 python early:
     import singleton
     me = singleton.SingleInstance()
@@ -4307,7 +4317,7 @@ init -995 python in mas_utils:
             return False
 
     # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
+    if store.persistent._mas_unstable_mode or store.mas_r7_mode:
         mas_log = getMASLog("log/mas_log", append=True, flush=True)
     else:
         mas_log = getMASLog("log/mas_log")
