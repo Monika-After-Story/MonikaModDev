@@ -931,19 +931,24 @@ label monika_death:
         m 1lksdlc "But I think I've actually learned what it feels like."
 
     else:
-        m 1lsd "I actually used to think about that subject a lot..."
+        m 1esd "I actually used to think about this subject a lot..."
         m 1lksdla "I mean...{w=0.3}{nw}"
-        extend 3eksdlb "I don't want to die,{w=0.2} of course,{w=0.2} {nw}"
-        extend 3lksdla "but I guess there's nothing wrong with wondering about what happens during and after death, right?"
-        m 1luc "I'm sure I'm not the only one who ever had that kind of...{w=0.4}{nw}"
-        extend 1hksdlb "well,{w=0.1} I guess {i}morbid curiosity{/i} is what we could call it."
-        m 1hksdla "..."
-        m 4rksdlb "Ahaha, sorry.{w=0.2} I may or may not have been waiting for the right occasion to make that pun."
-        m 4ruc "Anyway, yeah...{w=0.3}the fact that we have no way to prove for sure what death is like makes it quite fascinating."
-        m 2eud "Especially since we'll probably never get a definitive answer as long as we're alive..."
-        m 2eua "After all, dead people usually aren't very talkative. {w=0.3}{nw}"
-        extend 2hua "Ehehe~"
-        m 1lksdlc "Although, believe it or not...{w=0.4}I think I might actually have a good idea of what it's like."
+        extend 3eksdlb "of course I don't want to die, {w=0.4}{nw}"
+        extend 3lksdla "but I guess there's nothing wrong with wondering about what happens after death, right?"
+
+        if mas_isMoniNormal(higher=True) and random.randint(0, 2) == 2:
+            m 1luc "I'm sure I'm not the only one who ever had that kind of...{w=0.4}{nw}"
+            extend 1hksdlb "well, I guess {i}morbid curiosity{/i} is what we could call it."
+            m 1hksdla "..."
+            m 3rksdlb "Ahaha, sorry.{w=0.2} I may or may not have been waiting for the right occasion to make that pun."
+
+        else:
+            m 1luc "I'm sure I'm not the only one who ever had that kind of thought."
+            m 3euc "After all, afterlife is a concept of many religions."
+
+        m 1eua "Anyway, the fact that we have no way to prove for sure what death is like makes it interesting to think about."
+        m 3eud "Especially since we'll probably never get a definitive answer as long as we're alive."
+        m 1lksdlc "Although, I think I might have an idea of what it's like here, in my world."
 
     m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...it feels like I'm instantly put to sleep, left with nothing but my thoughts."
