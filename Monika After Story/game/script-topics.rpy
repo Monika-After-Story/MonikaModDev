@@ -666,7 +666,7 @@ init python in mas_bookmarks_derand:
         #Firstly, let's get our derandom keys
         derand_keys = [
             label_prefix_data["derand_persist_key"]
-            for label_prefix_data in label_prefix_map()
+            for label_prefix_data in label_prefix_map.values()
             if "derand_persist_key" in label_prefix_data
         ]
 
