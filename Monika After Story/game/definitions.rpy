@@ -1,3 +1,4 @@
+rpy python 3
 define persistent.demo = False
 
 define config.developer = False #This is the flag for Developer tools

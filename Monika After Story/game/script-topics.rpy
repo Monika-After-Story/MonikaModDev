@@ -1,3 +1,4 @@
+rpy python 3
 #This file contains all of monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional

@@ -1,3 +1,4 @@
+rpy python 3
 # Module for turning json formats into sprite objects
 # NOTE: This DEPENDS on sprite-chart.rpy and sprite-chart-matrix.rpy
 #
@@ -2138,7 +2139,7 @@ init 189 python in mas_sprites_json:
             dry_run = True
 
         # get rid of __keys
-        for jkey in jobj.keys():
+        for jkey in tuple(jobj.keys()):
             if jkey.startswith("__"):
                 jobj.pop(jkey)
 
@@ -2555,7 +2556,7 @@ init 189 python in mas_sprites_json:
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
 
-        for giftname in frs_gifts.keys():
+        for giftname in tuple(frs_gifts.keys()):
             if giftname in giftname_map:
                 # overwrite the gift data if in here
                 frs_gifts[giftname] = giftname_map[giftname]

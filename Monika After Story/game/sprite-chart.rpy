@@ -1,3 +1,4 @@
+rpy python 3
 # Monika's sprites!
 # To add new images, use the sprite adder tool in MonikaModDev/tools/toolsmenu
 #
@@ -3140,7 +3141,7 @@ init -3 python:
             IN:
                 exprop - exprop to check for
             """
-            for acs_name in self.acs_list_map.keys():
+            for acs_name in tuple(self.acs_list_map.keys()):
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs and _acs.hasprop(exprop):
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
@@ -3153,7 +3154,7 @@ init -3 python:
             IN:
                 mux_types - list of acs_types to remove from acs
             """
-            for acs_name in self.acs_list_map.keys():
+            for acs_name in tuple(self.acs_list_map.keys()):
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs and _acs.acs_type in mux_types:
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
@@ -3881,7 +3882,7 @@ init -3 python:
                         vhl_data,
                         msg_log,
                         ind_lvl,
-                        layer_map.keys()
+                        list(layer_map.keys())
                 ):
                     # success
                     hl_data = vhl_data.get("hl_data", None)
@@ -3952,7 +3953,7 @@ init -3 python:
             IN:
                 mapping - mapping to clean
             """
-            for map_key in mapping.keys():
+            for map_key in tuple(mapping.keys()):
                 if map_key not in self.__MPA_KEYS:
                     mapping.pop(map_key)
 
@@ -4155,7 +4156,7 @@ init -3 python:
                 arm_data - cleaned arm data
             """
             # first validate the arm data
-            for arm_key in arm_data.keys():
+            for arm_key in tuple(arm_data.keys()):
 
                 # then check
                 if arm_key in store.mas_sprites.NUM_ARMS:
@@ -5161,7 +5162,7 @@ init -3 python:
             if self.hl_map is None:
                 return []
 
-            return self.hl_map.keys()
+            return list(self.hl_map.keys())
 
         def rmprop(self, prop):
             """

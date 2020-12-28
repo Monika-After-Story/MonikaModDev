@@ -1,3 +1,4 @@
+rpy python 3
 # Module that defines static classes used to create the rule tuples used in the
 # Event class.
 # The static classes are the ones used to manipulate the rule tuples
@@ -937,7 +938,7 @@ init python:
 
             NOTE: uses mas_getEV
             """
-            for ev_label in persistent._mas_undo_action_rules.keys():
+            for ev_label in tuple(persistent._mas_undo_action_rules.keys()):
                 ev = mas_getEV(ev_label)
                 #Since we can have differing returns, we store this to use later
                 should_undo = MASUndoActionRule.evaluate_rule(ev)

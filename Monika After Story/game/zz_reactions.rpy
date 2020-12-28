@@ -1,3 +1,4 @@
+rpy python 3
 # FileReactions framework.
 # not too different from events
 
@@ -557,7 +558,7 @@ init -11 python in mas_filereacts:
 
         # otherwise check for random deletion
         if _filename is None:
-            _filename = random.choice(_map.keys())
+            _filename = random.choice(tuple(_map.keys()))
 
         file_to_delete = _map.get(_filename, None)
         if file_to_delete is None:
@@ -669,7 +670,7 @@ init -11 python in mas_filereacts:
         IN:
             _map - map to delete all
         """
-        _map_keys = _map.keys()
+        _map_keys = tuple(_map.keys())
         for _key in _map_keys:
             _core_delete(_key, _map)
 
@@ -832,7 +833,7 @@ init python:
                 return (None, None, None, None, None)
 
         elif len(persistent._mas_filereacts_sprite_reacted) > 0:
-            sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
+            sp_data = tuple(persistent._mas_filereacts_sprite_reacted.keys())[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
 
         else:

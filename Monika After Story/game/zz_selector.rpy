@@ -1,3 +1,4 @@
+rpy python 3
 ## module that contains a workable selection screen?
 #
 # NOTE: i have no idea how generic this can get.
@@ -1167,7 +1168,7 @@ init -10 python in mas_selspr:
         OUT:
             select_map - select map cleaned of non-selectd items
         """
-        for item_name in select_map.keys():
+        for item_name in tuple(select_map.keys()):
             if force or not select_map[item_name].selected:
                 item = select_map.pop(item_name)
                 item.selected = False # force deselection
@@ -2411,7 +2412,7 @@ init -1 python:
                 st - st for renpy render
                 at - at for renpy render
 
-            RETURNS: rendered display name 
+            RETURNS: rendered display name
             """
             return renpy.render(disp_text, 1000, self.TOP_FRAME_CHUNK, st, at)
 
@@ -3284,7 +3285,7 @@ label mas_selector_sidebar_select_confirm:
             monika_chr.restore(prev_moni_state)
 
         # If monika is wearing a remover ACS, remove it.
-        for item_name in select_map.keys():
+        for item_name in tuple(select_map.keys()):
             sel_obj = select_map[item_name].selectable
             if sel_obj.remover:
                 spr_obj = sel_obj.get_sprobj()

@@ -1,3 +1,4 @@
+rpy python 3
 # Module that provides an interface for loading / saving files that we interact with
 #
 # NOTE: this is meant purely for reading / writing files into base64 with
@@ -1175,7 +1176,7 @@ init -11 python in mas_dockstat:
         Returns TRUE upon success, False otherwise
         """
         if len(selective) == 0:
-            selective = image_dict.keys()
+            selective = list(image_dict.keys())
 
         for b64_name in selective:
             real_name, chksum = image_dict[b64_name]
@@ -1262,7 +1263,7 @@ init -11 python in mas_dockstat:
         AKA quitting
         """
         if len(selective) == 0:
-            selective = image_dict.keys()
+            selective = list(image_dict.keys())
 
         for b64_name in selective:
             real_name, chksum = image_dict[b64_name]

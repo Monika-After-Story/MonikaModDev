@@ -1,3 +1,4 @@
+rpy python 3
 #TODO: Fix label names. It's difficult to follow
 
 # we now will keep track of player wins / losses/ draws/ whatever

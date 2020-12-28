@@ -1,3 +1,4 @@
+rpy python 3
 #NOTE: This ONLY works for Windows atm
 
 #Whether Monika can use notifications or not
@@ -671,7 +672,7 @@ label mas_wrs_twitter:
             "Anything interesting to share, [player]?": False,
             "280 characters? I only need [temp_len]...\n[temp_line]": True
         }
-        quip = renpy.random.choice(ily_quips_map.keys())
+        quip = renpy.random.choice(tuple(ily_quips_map.keys()))
 
         wrs_success = display_notif(
             m_name,

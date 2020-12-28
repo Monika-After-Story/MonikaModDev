@@ -1,3 +1,4 @@
+rpy python 3
 #Here's where we store our background data
 default persistent._mas_background_MBGdata = {}
 
@@ -847,7 +848,7 @@ init -10 python:
             for sl_data in self._slices:
                 filters[sl_data.flt_slice.name] = None
 
-            return filters.keys()
+            return list(filters.keys())
 
         def first_flt(self):
             """
@@ -1231,11 +1232,11 @@ init -10 python:
         def __repr__(self):
             day_f = self._day_filters
             if day_f is not None:
-                day_f = day_f.keys()
+                day_f = list(day_f.keys())
 
             night_f = self._night_filters
             if night_f is not None:
-                night_f = night_f.keys()
+                night_f = list(night_f.keys())
 
             return (
                 "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
@@ -1566,7 +1567,7 @@ init -10 python:
             both = {}
             both.update(self._day_filters)
             both.update(self._night_filters)
-            return both.keys()
+            return list(both.keys())
 
         def filters_day(self):
             """
@@ -1575,7 +1576,7 @@ init -10 python:
                 (list of stirngs)
                 NOTE: does not contain duplicates
             """
-            return self._day_filters.keys()
+            return list(self._day_filters.keys())
 
         def filters_night(self):
             """
@@ -1584,7 +1585,7 @@ init -10 python:
                 (list of strings)
                 NOTE: does not contain duplicates
             """
-            return self._night_filters.keys()
+            return list(self._night_filters.keys())
 
         def is_flt_day(self, flt):
             """
@@ -2134,7 +2135,7 @@ init -10 python:
 
         def _deco_add(self, deco=None, tag=None):
             """
-            Adds deco object to the background. 
+            Adds deco object to the background.
             NOTE: do NOT use this. This should only be used by the public
             show/hide deco functions as well as other internal stuff.
 
@@ -2154,7 +2155,7 @@ init -10 python:
         def _deco_rm(self, name):
             """
             Removes deco object from this background.
-            NOTE: do NOT use this. This should only be used by the public 
+            NOTE: do NOT use this. This should only be used by the public
             show/hide deco functions as well as other internal stuff
 
             IN:
@@ -2184,7 +2185,7 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object
 
             OUT:
-                change_info - MASBackgroundChangeInfo object with shows 
+                change_info - MASBackgroundChangeInfo object with shows
                     populated.
             """
             for vis_tag in store.mas_deco.vis_store:
@@ -2522,7 +2523,7 @@ init -10 python:
             MASImageTagDecoDefinition.register_img, except bg_id is provided
             by this BG object.
 
-            NOTE: this is NOT required if you already used 
+            NOTE: this is NOT required if you already used
                 MASImageTagDefinition to define the associated tags.
 
             IN:
@@ -2577,8 +2578,8 @@ init -10 python:
             Assumed to be called at least at init level 0
             """
             self._flt_man.verify()
-            self._verify_img_flts(self._flt_man._day_filters.keys())
-            self._verify_img_flts(self._flt_man._night_filters.keys())
+            self._verify_img_flts(list(self._flt_man._day_filters.keys()))
+            self._verify_img_flts(list(self._flt_man._night_filters.keys()))
 
         def _verify_img_flts(self, flts):
             """
@@ -2631,10 +2632,10 @@ init -20 python in mas_background:
             Constructor
 
             IN:
-                hides - dict of image tags and MASAdvancedDecoFrames to 
+                hides - dict of image tags and MASAdvancedDecoFrames to
                     hide in the dissolve
                     (Default: None)
-                shows - dict of image tags and MASAdvancedDecoFrames to 
+                shows - dict of image tags and MASAdvancedDecoFrames to
                     show in the dissolve
                     (Default: None)
             """
@@ -3025,8 +3026,8 @@ init -2 python in mas_background:
 
 
 init -20 python in mas_background:
-    
-    # background ID definitions 
+
+    # background ID definitions
     # NOTE: you do NOT need to define ids here. Assigning IDs here just
     #   makes it easier for MASImageTagDefintions
     MBG_DEF = "spaceroom"

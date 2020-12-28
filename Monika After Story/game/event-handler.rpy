@@ -1,3 +1,4 @@
+rpy python 3
 # Module that defines functions for story event handling
 # Assumes:
 #   persistent.event_list
@@ -255,7 +256,7 @@ init -950 python in mas_ev_data_ver:
         if per_db is None:
             return
 
-        for ev_label in per_db.keys():
+        for ev_label in tuple(per_db.keys()):
             # pull out the data
             ev_line = per_db[ev_label]
 
@@ -392,7 +393,7 @@ init 6 python:
         """
         Context manager wrapper for Event objects via event labels.
         This has handling for when an eventlabel doesn't return an actual
-        event object via mas_getEV. 
+        event object via mas_getEV.
 
         Use as follows:
             with MASev('some event label') as ev:
@@ -401,7 +402,7 @@ init 6 python:
 
         property names should be same as used on Event object.
         functions can also be used.
-        additionally, the resulting context object can be compared with 
+        additionally, the resulting context object can be compared with
         other event objects like normal.
 
         In cases where the Event does not exist, the following occurs:
@@ -457,7 +458,7 @@ init 6 python:
 
         def __getattr__(self, name):
             if self._ev is None:
-                
+
                 # event props
                 if name in MAS_EVL._default_values:
                     return MAS_EVL._default_values.get(name)
@@ -1645,7 +1646,7 @@ init -1 python in evhand:
         Goes through the year setblacklist and removes expired entries
         """
         now_dt = datetime.datetime.now()
-        for evl in store.persistent._mas_ev_yearset_blacklist.keys():
+        for evl in tuple(store.persistent._mas_ev_yearset_blacklist.keys()):
             if store.persistent._mas_ev_yearset_blacklist[evl] <= now_dt:
                 store.persistent._mas_ev_yearset_blacklist.pop(evl)
 

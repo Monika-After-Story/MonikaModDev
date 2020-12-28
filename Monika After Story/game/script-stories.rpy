@@ -312,7 +312,7 @@ label mas_story_unlock_random_cat(scary=False):
                     )
 
         # select one story randomly
-        story = stories[renpy.random.choice(stories.keys())]
+        story = stories[renpy.random.choice(tuple(stories.keys()))]
 
         # unlock the story
         story.unlocked = True

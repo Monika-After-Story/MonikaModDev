@@ -1,3 +1,4 @@
+rpy python 3
 default persistent.monika_reload = 0
 default persistent.tried_skip = False
 default persistent.monika_kill = True #Assume non-merging players killed monika.

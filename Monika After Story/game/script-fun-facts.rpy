@@ -25,7 +25,7 @@ init -10 python in mas_fun_facts:
         OUT:
             List of all fun fact eventlabels
         """
-        return fun_fact_db.keys()
+        return list(fun_fact_db.keys())
 
 
 #Whether or not the last fun fact seen was a good fact

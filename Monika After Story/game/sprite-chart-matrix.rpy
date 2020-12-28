@@ -1,3 +1,4 @@
+rpy python 3
 # sprite generation using matrix for night sprites
 # TODO: look at adding a highlight option to ACS/Clothes/Hair
 
@@ -1028,10 +1029,10 @@ init -4 python in mas_sprites:
         Clears all caches
         """
         for cid, cache in CACHE_TABLE.iteritems():
-            for key in cache.keys():
+            for key in tuple(cache.keys()):
                 cache.pop(key)
 
-        for key in MFM_CACHE.keys():
+        for key in tuple(MFM_CACHE.keys()):
             MFM_CACHE.pop(key)
 
 
@@ -2962,7 +2963,7 @@ init -10 python:
 
             RETURNS: list of all filter names in this map
             """
-            return self.__mfm.map.keys()
+            return list(self.__mfm.map.keys())
 
         def get(self, flt, defval=None):
             """

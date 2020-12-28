@@ -1,3 +1,4 @@
+rpy python 3
 # AFF010 is progpoints
 #
 # Affection module:
@@ -2215,7 +2216,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
 
     python:
         done = False
-        acceptable_nicknames = _return.keys()
+        acceptable_nicknames = list(_return.keys())
 
         if acceptable_nicknames:
             dlg_line = "Is there anything else you'd like me to call you?"

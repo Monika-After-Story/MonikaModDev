@@ -1,3 +1,4 @@
+rpy python 3
 # Module that handles updates between versions
 # Assumes:
 #   updates.topics
@@ -331,7 +332,7 @@ init 10 python:
         ]
 
         renpy.call_in_new_context("vv_updates_topics")
-        ver_list = store.updates.version_updates.keys()
+        ver_list = list(store.updates.version_updates.keys())
 
         if "-" in config.version:
             working_version = config.version[:config.version.index("-")]
@@ -1492,10 +1493,10 @@ label v0_10_3(version="v0_10_3"):
     python:
         #Convert fav/derand dicts to lists based on their keys if needed
         if isinstance(persistent._mas_player_bookmarked, dict):
-            persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+            persistent._mas_player_bookmarked = list(persistent._mas_player_bookmarked.keys())
 
         if isinstance(persistent._mas_player_derandomed, dict):
-            persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+            persistent._mas_player_derandomed = list(persistent._mas_player_derandomed.keys())
 
     return
 
