@@ -1,3 +1,4 @@
+rpy python 3
 ## special functions to check integrity of systems
 
 init python:
@@ -6,7 +7,7 @@ init python:
         if val is not None and not isinstance(val, bool):
             report.extend([delim, "bad ", name, " {0}".format(val)])
 
-    
+
     def _mas_check_ev_type_dict(val, name, report, delim=" | ", str_rep=True):
         if val is not None and not isinstance(val, dict):
             report.extend([delim, "bad ", name, " {0}".format(val)])
@@ -29,7 +30,7 @@ init python:
 
     def _mas_check_ev_type_str(val, name, report, delim=" | ", str_rep=True):
         if (
-                val is not None 
+                val is not None
                 and not (isinstance(val, str) or isinstance(val, unicode))
             ):
             report.extend([delim, "bad ", name, " {0}".format(val)])
@@ -37,7 +38,7 @@ init python:
 
     def _mas_check_ev_type_tuli(val, name, report, delim=" | ", str_rep=True):
         if (
-                val is not None 
+                val is not None
                 and not (
                     isinstance(val, list)
                     or isinstance(val, tuple)
@@ -132,7 +133,7 @@ init python:
 
     def mas_check_event_types(per_db, str_buffer=None, str_rep=True):
         """
-        Goes through given persistent database for events and double checks 
+        Goes through given persistent database for events and double checks
         types. Returns a string report.
 
         IN:
@@ -147,8 +148,8 @@ init python:
         # NOTE: we assume lots of things about the given per_db.
         if str_buffer is None:
             return
-        
-        for ev_label, ev_line in per_db.iteritems():
+
+        for ev_label, ev_line in per_db.items():
             str_buffer.write("".join(_mas_check_ev_type_per(ev_line)))
 
     def mas_largest_persistent_item():
@@ -187,7 +188,7 @@ init python:
             mas_per_dump_list(item_key)
         # NOTE: ignore others for now
 
-    
+
     def mas_per_dump_dict(dkey):
         """
         Dumps an output of a persistent dict

@@ -27,7 +27,7 @@ label dev_change_weather:
         # build other weather list
         other_weathers = [
             (mw_obj.prompt, mw_obj, False, False)
-            for mw_id, mw_obj in mas_weather.WEATHER_MAP.iteritems()
+            for mw_id, mw_obj in mas_weather.WEATHER_MAP.items()
             if mw_id != "def"
         ]
 
@@ -99,7 +99,7 @@ label dev_weather_sampler:
         for count in range(sample_size):
             got_weather = mas_shouldRain()
             totals += 1
-            
+
             if got_weather is None:
                 results["default"] += 1
 
@@ -111,7 +111,7 @@ label dev_weather_sampler:
 
         # done with sampling, output results
         with open(renpy.config.basedir + "/weather_sample", "w") as outdata:
-            for weather_name, count in results.iteritems():
+            for weather_name, count in results.items():
                 outdata.write("{0},{1} -> {2}\n".format(
                     weather_name,
                     count,
@@ -120,4 +120,3 @@ label dev_weather_sampler:
 
     m "check files for 'weather_sample' for more info."
     return
-

@@ -230,7 +230,7 @@ init -1 python in mas_greetings:
             check_time = datetime.datetime.now()
 
         # now filter
-        for ev_label, ev in gre_db.iteritems():
+        for ev_label, ev in gre_db.items():
             if _filterGreeting(
                     ev,
                     curr_priority,

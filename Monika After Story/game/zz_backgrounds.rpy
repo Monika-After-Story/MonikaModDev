@@ -2654,7 +2654,7 @@ init -20 python in mas_background:
         """
         Builds all background objects using current time settings.
         """
-        for flt_bg in BACKGROUND_MAP.itervalues():
+        for flt_bg in BACKGROUND_MAP.values():
             flt_bg.build()
 
 
@@ -2713,7 +2713,7 @@ init -20 python in mas_background:
         if store.persistent._mas_background_MBGdata is None:
             return
 
-        for mbg_id, mbg_data in store.persistent._mas_background_MBGdata.iteritems():
+        for mbg_id, mbg_data in store.persistent._mas_background_MBGdata.items():
             mbg_obj = BACKGROUND_MAP.get(mbg_id, None)
             if mbg_obj is not None:
                 mbg_obj.fromTuple(mbg_data)
@@ -2722,7 +2722,7 @@ init -20 python in mas_background:
         """
         Saves MASBackground data from weather map into persistent
         """
-        for mbg_id, mbg_obj in BACKGROUND_MAP.iteritems():
+        for mbg_id, mbg_obj in BACKGROUND_MAP.items():
             store.persistent._mas_background_MBGdata[mbg_id] = mbg_obj.toTuple()
 
     def getUnlockedBGCount():
@@ -2730,7 +2730,7 @@ init -20 python in mas_background:
         Gets the number of unlocked backgrounds
         """
         unlocked_count = 0
-        for mbg_obj in BACKGROUND_MAP.itervalues():
+        for mbg_obj in BACKGROUND_MAP.values():
             unlocked_count += int(mbg_obj.unlocked)
 
         return unlocked_count
@@ -2745,7 +2745,7 @@ init -20 python in mas_background:
             True if we have at least min_amt_unlocked BGs unlocked, False otherwise
         """
         unlocked_count = 0
-        for mbg_obj in BACKGROUND_MAP.itervalues():
+        for mbg_obj in BACKGROUND_MAP.values():
             unlocked_count += int(mbg_obj.unlocked)
 
             #Now check if we've surpassed the minimum
@@ -3115,7 +3115,7 @@ init -1 python:
 init 1 python in mas_background:
 
     # verify all backgrounds
-    for flt_bg in BACKGROUND_MAP.itervalues():
+    for flt_bg in BACKGROUND_MAP.values():
         flt_bg.verify()
 
 #START: Image definitions
@@ -3179,7 +3179,7 @@ label monika_change_background_loop:
             # build other backgrounds list
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.items()
                 if mbg_id != "spaceroom" and mbg_obj.unlocked
             ]
 

@@ -94,7 +94,7 @@ label monika_playerapologizes:
     python:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
-            for ev_label, ev in store.mas_apology.apology_db.iteritems()
+            for ev_label, ev in store.mas_apology.apology_db.items()
             if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
         ]
 

@@ -1,3 +1,4 @@
+rpy python 3
 # Module for Monika story telling
 #
 # Stories will get unlocked one at by session
@@ -34,7 +35,7 @@ init -1 python in mas_stories:
             renpy.store.mas_stories.story_database,
             unlocked=False
         )
-        for _, story in stories.iteritems():
+        for story in stories.values():
             story.unlocked = True
 
 

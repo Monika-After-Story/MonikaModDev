@@ -638,7 +638,7 @@ label mas_mood_bored:
     python:
         unlockedgames = [
             game_ev.prompt.lower()
-            for game_ev in mas_games.game_db.itervalues()
+            for game_ev in mas_games.game_db.values()
             if mas_isGameUnlocked(game_ev.prompt)
         ]
 

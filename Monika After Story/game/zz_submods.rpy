@@ -11,7 +11,7 @@ init -989 python:
         store.mas_submod_utils.writeLog(
             "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
-                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.values()]
                 )
             )
         )
@@ -226,7 +226,7 @@ init -991 python in mas_submod_utils:
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in submod_map.itervalues():
+            for submod in submod_map.values():
                 #If it has updated, we need to call their update scripts and adjust the version data value
                 if submod.hasUpdated():
                     submod.updateFrom(
@@ -259,8 +259,8 @@ init -991 python in mas_submod_utils:
                 """
                 return map(int, version.split('.'))
 
-            for submod in submod_map.itervalues():
-                for dependency, minmax_version_tuple in submod.dependencies.iteritems():
+            for submod in submod_map.values():
+                for dependency, minmax_version_tuple in submod.dependencies.items():
                     dependency_submod = Submod._getSubmod(dependency)
 
                     if dependency_submod is not None:
@@ -560,7 +560,7 @@ init -980 python in mas_submod_utils:
         #First, we need to convert the functions into a list of tuples
         func_list = [
             (_function, data_tuple)
-            for _function, data_tuple in function_plugins[_label].iteritems()
+            for _function, data_tuple in function_plugins[_label].items()
         ]
 
         return sorted(func_list, key=PRIORITY_SORT_KEY)
@@ -613,5 +613,5 @@ init 999 python:
         Populates a lookup dict for all label overrides which are in effect
         """
         #Let's loop here to update our label overrides map
-        for overridden_label, label_override in config.label_overrides.iteritems():
+        for overridden_label, label_override in config.label_overrides.items():
             _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label

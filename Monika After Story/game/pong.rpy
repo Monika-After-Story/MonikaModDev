@@ -1,3 +1,4 @@
+rpy python 3
 # pong difficulty changes on win / loss. Determines monika's paddle-movement-cap, the ball's start-speed, max-speed and acceleration.
 default persistent._mas_pong_difficulty = 10
 # increases the pong difficulty for the next game by the value this is set to. Resets after a finished match.

@@ -1416,7 +1416,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 # figure out the winner
                 largest = ""
                 largestVal = 0
-                for girl,points in points.iteritems():
+                for girl,points in points.items():
                     if points > largestVal:
                         largest = girl
                         largestVal = points

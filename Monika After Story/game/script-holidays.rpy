@@ -1,3 +1,4 @@
+rpy python 3
 ## holiday info goes here
 #
 # TOC
@@ -1657,7 +1658,7 @@ init -10 python in mas_d25_utils:
 
         # save remaining d25 gifts and delete the packages
         # they will be reacted to later
-        for c_gift_name, gift_name in d25_map.iteritems():
+        for c_gift_name, gift_name in d25_map.items():
             #Only add if the gift isn't already stored under the tree
             if c_gift_name not in store.persistent._mas_d25_gifts_given:
                 store.persistent._mas_d25_gifts_given.append(c_gift_name)
@@ -1666,7 +1667,7 @@ init -10 python in mas_d25_utils:
             store.mas_docking_station.destroyPackage(gift_name)
 
         # set all excluded and generic gifts to react now
-        for c_gift_name, mas_gift in found_map.iteritems():
+        for c_gift_name, mas_gift in found_map.items():
             store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         # register these gifts

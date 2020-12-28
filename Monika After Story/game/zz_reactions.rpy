@@ -304,7 +304,7 @@ init -11 python in mas_filereacts:
         """
         return [
             giftname
-            for giftname, react_ev in filereact_map.iteritems()
+            for giftname, react_ev in filereact_map.items()
             if _key in react_ev.rules
         ]
 
@@ -472,7 +472,7 @@ init -11 python in mas_filereacts:
             return []
 
         # put the gifts in the reacted map
-        for c_gift_name, mas_gift in found_map.iteritems():
+        for c_gift_name, mas_gift in found_map.items():
             store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         found_gifts.sort()
@@ -913,7 +913,7 @@ init python:
         """
         return sorted([
             _date
-            for _date, giftstat in persistent._mas_filereacts_historic.iteritems()
+            for _date, giftstat in persistent._mas_filereacts_historic.items()
             if giftlabel in giftstat
         ])
 

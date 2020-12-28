@@ -383,7 +383,7 @@ init 6 python:
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
-    for code,ev_db in mas_all_ev_db_map.iteritems():
+    for code,ev_db in mas_all_ev_db_map.items():
         mas_all_ev_db.update(ev_db)
 
     del code, ev_db
@@ -571,7 +571,7 @@ init 6 python:
         if ev is None:
             return False
 
-        for attr, new_value in kwargs.iteritems():
+        for attr, new_value in kwargs.items():
             setattr(ev, attr, new_value)
 
         return True
@@ -2349,7 +2349,7 @@ init python:
         # get locked pool topics that are not banned from unlocking
         pool_evs = [
             ev
-            for ev in evhand.event_database.itervalues()
+            for ev in evhand.event_database.values()
             if (
                 Event._filterEvent(ev, unlocked=False, pool=True)
                 and "no_unlock" not in ev.rules
@@ -3025,7 +3025,7 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     # sanity check that the user selected something
     if bookmarks_to_remove:
         python:
-            for ev_label in bookmarks_to_remove.iterkeys():
+            for ev_label in bookmarks_to_remove.keys():
                 # remove the bookmark from persist (if in it)
                 if ev_label in persistent._mas_player_bookmarked:
                     persistent._mas_player_bookmarked.remove(ev_label)

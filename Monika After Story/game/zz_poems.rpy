@@ -59,14 +59,14 @@ init 11 python in mas_poems:
         if unseen:
             return [
                 poem
-                for poem in poem_map.itervalues()
+                for poem in poem_map.values()
                 if not poem.is_seen() and poem.category == category
             ]
 
         #Otherwise we just get all
         return [
             poem
-            for poem in poem_map.itervalues()
+            for poem in poem_map.values()
             if poem.category == category
         ]
 
@@ -76,7 +76,7 @@ init 11 python in mas_poems:
         """
         return sorted([
             poem
-            for poem in poem_map.itervalues()
+            for poem in poem_map.values()
             if poem.is_seen()
         ], key=poem_sort_key)
 
@@ -86,7 +86,7 @@ init 11 python in mas_poems:
         """
         return sorted([
             poem
-            for poem in poem_map.itervalues()
+            for poem in poem_map.values()
             if not poem.is_seen()
         ], key=poem_sort_key)
 
@@ -112,7 +112,7 @@ init 11 python in mas_poems:
         """
         return sorted([
             (poem.prompt, poem, False, False)
-            for poem in poem_map.itervalues()
+            for poem in poem_map.values()
             if poem.is_seen()
         ], key=poem_menu_sort_key)
 

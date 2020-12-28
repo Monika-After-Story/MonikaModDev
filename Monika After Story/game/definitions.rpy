@@ -125,7 +125,7 @@ python early:
                     if object_name in scope:
                         stores_names_list = [
                             store_module_name
-                            for store_module_name, store_module in sys.modules.iteritems()
+                            for store_module_name, store_module in sys.modules.items()
                             if store_module and store_module.__dict__ is scope
                         ]
                         if stores_names_list:
@@ -694,8 +694,7 @@ python early:
 
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
-                    for name,index in Event.T_EVENT_NAMES.iteritems():
-
+                    for name,index in Event.T_EVENT_NAMES.items():
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
@@ -1463,7 +1462,7 @@ python early:
             filt_ev_dict = dict()
 
             # python 2
-            for k,v in events.iteritems():
+            for k,v in events.items():
                 # time to apply filtering rules
                 if Event._filterEvent(v, **flt_args):
                     filt_ev_dict[k] = v
@@ -1547,7 +1546,7 @@ python early:
 
             _now = datetime.datetime.now()
 
-            for ev_label,ev in events.iteritems():
+            for ev_label,ev in events.items():
                 # TODO: honestly, we should index events with conditionals
                 #   so we only check what needs to be checked. Its a bit of an
                 #   annoyance to check all of these properties once per minute.
@@ -1715,7 +1714,7 @@ python early:
 
             _now = datetime.datetime.now()
 
-            for ev_label,ev in ev_dict.iteritems():
+            for ev_label,ev in ev_dict.items():
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
 
@@ -1803,7 +1802,7 @@ python early:
             available_events = dict()
 
             # iterate over each event in the given events dict
-            for label, event in events.iteritems():
+            for label, event in events.items():
                 if Event._checkRepeatRule(event, check_time, defval=False):
 
                     if event.monikaWantsThisFirst():
@@ -1852,7 +1851,7 @@ python early:
             available_events = dict()
 
             # iterate over each event in the given events dict
-            for label, event in events.iteritems():
+            for label, event in events.items():
 
                 # check if the event contains a MASFarewellRule and evaluate it
                 if Event._checkFarewellRule(event):
@@ -1906,7 +1905,7 @@ python early:
             available_events = dict()
 
             # iterate over each event in the given events dict
-            for label, event in events.iteritems():
+            for label, event in events.items():
 
                 # check if the event contains a MASAffectionRule and evaluate it
                 if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
@@ -3513,7 +3512,7 @@ python early:
 
             RETURNS: iter of ex prop names and values
             """
-            return (item for item in self.ex_props.iteritems())
+            return (item for item in self.ex_props.items())
 
         def ex_pop(self, key, default=None):
             """
@@ -3546,7 +3545,7 @@ python early:
 
                 props = [
                     "{0}: {1}".format(key, value)
-                    for key, value in ex_props.iteritems()
+                    for key, value in ex_props.items()
                 ]
                 return "<exprops: ({0})>".format(", ".join(props))
 
@@ -3812,7 +3811,7 @@ init -995 python in mas_utils:
         """
         # check dicts
         if data is not None:
-            for value in data.itervalues():
+            for value in data.values():
                 if value is not None:
                     return False
 

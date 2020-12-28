@@ -882,10 +882,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # add show/hide statements for decos
         if bg_change_info is not None:
             if not scene_change:
-                for h_adf in bg_change_info.hides.itervalues():
+                for h_adf in bg_change_info.hides.values():
                     h_adf.hide()
 
-            for s_tag, s_adf in bg_change_info.shows.iteritems():
+            for s_tag, s_adf in bg_change_info.shows.items():
                 s_adf.show(s_tag)
 
     # vignette
@@ -1799,7 +1799,7 @@ label ch30_reset:
         }
         mas_unlockGame("pong") # always unlock pong
 
-        for game_name, game_startlabel in game_unlock_db.iteritems():
+        for game_name, game_startlabel in game_unlock_db.items():
             # unlock if we've seen the label
             if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)

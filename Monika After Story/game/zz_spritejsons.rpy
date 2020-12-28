@@ -1268,7 +1268,7 @@ init 189 python in mas_sprites_json:
         allow_none = not required
         is_bad = False
 
-        for param_name, verifier_info in param_dict.iteritems():
+        for param_name, verifier_info in param_dict.items():
             if param_name in jobj:
                 param_val = jobj.pop(param_name)
                 desired_type, verifier = verifier_info
@@ -1698,7 +1698,7 @@ init 189 python in mas_sprites_json:
             hair_map = obj_based.pop("hair_map")
             is_bad = False
 
-            for hair_key,hair_value in hair_map.iteritems():
+            for hair_key,hair_value in hair_map.items():
                 # start with type validations
 
                 # key
@@ -1840,7 +1840,7 @@ init 189 python in mas_sprites_json:
         ex_props = obj_based.pop("ex_props")
 
         isbad = False
-        for ep_key,ep_val in ex_props.iteritems():
+        for ep_key,ep_val in ex_props.items():
             if not _verify_str(ep_key):
                 msg_log.append((
                     MSG_ERR_T,

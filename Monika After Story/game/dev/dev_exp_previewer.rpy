@@ -498,7 +498,7 @@ init 999 python:
             # update torsos with spritepacked sprites
             torso_map = self.SEL_TX_MAP["torso"]
             torso_list = self.SC_MAP["torso"]
-            for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
+            for sel in store.mas_selspr.CLOTH_SEL_MAP.values():
                 spr = sel.get_sprobj()
                 if spr.is_custom and spr.name not in torso_map:
                     torso_map[spr.name] = sel.display_name

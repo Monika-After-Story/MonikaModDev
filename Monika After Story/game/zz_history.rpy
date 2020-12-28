@@ -187,7 +187,7 @@ init -860 python in mas_history:
         found_data = lookup_otl(key, years_list)
         years_found = []
 
-        for year, data_tuple in found_data.iteritems():
+        for year, data_tuple in found_data.items():
             status, _data = data_tuple
 
             if status == L_FOUND and _data == _verify:
@@ -220,7 +220,7 @@ init -860 python in mas_history:
 
         ASSUMES: the mhs database is already filled
         """
-        for mhs_id, mhs_data in store.persistent._mas_history_mhs_data.iteritems():
+        for mhs_id, mhs_data in store.persistent._mas_history_mhs_data.items():
             mhs = mhs_db.get(mhs_id, None)
             if mhs is not None:
                 mhs.fromTuple(mhs_data)
@@ -233,7 +233,7 @@ init -860 python in mas_history:
         """
         Saves MASHistorySaver data from mhs_db into persistent
         """
-        for mhs_id, mhs in mhs_db.iteritems():
+        for mhs_id, mhs in mhs_db.items():
             store.persistent._mas_history_mhs_data[mhs_id] = mhs.toTuple()
 
 
@@ -780,7 +780,7 @@ init -850 python:
                 save_year -= 1
 
             # go through mapping and save data
-            for p_key, data_key in self.mapping.iteritems():
+            for p_key, data_key in self.mapping.items():
 
                 # retrieve and save
                 dest._store(source.get(p_key, None), data_key, save_year)
@@ -834,7 +834,7 @@ init -800 python in mas_history:
         # is past today.
         _now = datetime.datetime.now()
 
-#        for mhs in mhs_db.itervalues():
+#        for mhs in mhs_db.values():
         for mhs in mhs_sorted_list:
             # trigger rules:
             #   current date must be past trigger

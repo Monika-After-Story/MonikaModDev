@@ -14,7 +14,7 @@ init -10 python in mas_fun_facts:
         """
         return [
             fun_fact_evl
-            for fun_fact_evl, ev in fun_fact_db.iteritems()
+            for fun_fact_evl, ev in fun_fact_db.items()
             if not ev.unlocked
         ]
 

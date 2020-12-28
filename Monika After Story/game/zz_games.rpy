@@ -32,7 +32,7 @@ init 1 python in mas_games:
         global game_db
 
         total_shown_count = 0
-        for ev in game_db.itervalues():
+        for ev in game_db.values():
             if ev.eventlabel not in exclude_list:
                 total_shown_count += ev.shown_count
 
@@ -55,7 +55,7 @@ init 7 python in mas_games:
         gamename = gamename.lower()
 
         #Now search
-        for ev in game_db.itervalues():
+        for ev in game_db.values():
             if renpy.substitute(ev.prompt).lower() == gamename:
                 return ev
         return None
@@ -186,7 +186,7 @@ label mas_pick_a_game:
         #Now let's get all of the unlocked games at the aff level
         game_menuitems = sorted([
             (ev.prompt, ev.eventlabel, False, False)
-            for ev in mas_games.game_db.itervalues()
+            for ev in mas_games.game_db.values()
             if mas_isGameUnlocked(renpy.substitute(ev.prompt))
         ], key=lambda x:renpy.substitute(x[0]))
 

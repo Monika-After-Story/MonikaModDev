@@ -666,7 +666,7 @@ init python in mas_bookmarks_derand:
         #Firstly, let's get our derandom keys
         derand_keys = [
             label_prefix_data["derand_persist_key"]
-            for label_prefix_data in label_prefix_map.itervalues()
+            for label_prefix_data in label_prefix_map()
             if "derand_persist_key" in label_prefix_data
         ]
 
@@ -732,7 +732,7 @@ label mas_rerandom:
 
     show monika at t11
     python:
-        for ev_label in topics_to_rerandom.iterkeys():
+        for ev_label in topics_to_rerandom.keys():
             #Get the ev
             rerand_ev = mas_getEV(ev_label)
 

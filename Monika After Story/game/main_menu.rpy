@@ -1,3 +1,4 @@
+rpy python 3
 screen main_menu():
 
     # This ensures that any other menu screen is replaced.

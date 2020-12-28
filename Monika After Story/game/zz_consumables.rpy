@@ -700,7 +700,7 @@ init 5 python:
                 list of all consumables Monika is low on (or critical on)
             """
             low_cons = []
-            for _type in store.mas_consumables.consumable_map.iterkeys():
+            for _type in store.mas_consumables.consumable_map.keys():
                 low_cons += MASConsumable._getLowConsType(_type, critical)
 
             return low_cons
@@ -718,7 +718,7 @@ init 5 python:
                 list of all consumables Monika
             """
             low_cons = []
-            for _type in store.mas_consumables.consumable_map.iterkeys():
+            for _type in store.mas_consumables.consumable_map.keys():
                 low_cons += MASConsumable._getLowConsType(_type, critical, exclude_restock_warned=True)
 
             return low_cons
@@ -745,14 +745,14 @@ init 5 python:
                 if exclude_restock_warned:
                     return [
                         cons
-                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        for cons in store.mas_consumables.consumable_map[_type].values()
                         if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow() and not cons.hasRestockWarned()
                     ]
 
                 else:
                     return [
                         cons
-                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        for cons in store.mas_consumables.consumable_map[_type].values()
                         if cons.enabled() and cons.should_restock_warn and cons.isCriticalLow()
                     ]
 
@@ -760,14 +760,14 @@ init 5 python:
                 if exclude_restock_warned:
                     return [
                         cons
-                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        for cons in store.mas_consumables.consumable_map[_type].values()
                         if cons.enabled() and cons.should_restock_warn and cons.isLow() and not cons.hasRestockWarned()
                     ]
 
                 else:
                     return [
                         cons
-                        for cons in store.mas_consumables.consumable_map[_type].itervalues()
+                        for cons in store.mas_consumables.consumable_map[_type].values()
                         if cons.enabled() and cons.should_restock_warn and cons.isLow()
                     ]
 
@@ -912,7 +912,7 @@ init 5 python:
 
             return [
                 cons
-                for cons in mas_consumables.consumable_map[_type].itervalues()
+                for cons in mas_consumables.consumable_map[_type].values()
                 if cons.enabled() and cons.hasServing() and cons.checkCanHave() and cons.isConsTime()
             ]
 

@@ -165,7 +165,7 @@ init python:
         # FIXME: could be done on startup for some speedup
         new_aliases = {}
 
-        for style_tuple, style_ptr in renpy.style.styles.iteritems():
+        for style_tuple, style_ptr in renpy.style.styles.items():
             style_name = style_tuple[0]
             if mas_isTextDarkStyle(style_name):
                 text_dark_suffix = "_text" + mas_ui.dark_suffix
@@ -174,7 +174,7 @@ init python:
                 if not style.exists(alias_name):
                     new_aliases[alias_name] = style_ptr
 
-        for alias_name, alias_style_ptr in new_aliases.iteritems():
+        for alias_name, alias_style_ptr in new_aliases.items():
             setattr(style, alias_name, alias_style_ptr)
 
         # Automagically switch every style which has a dark variant
@@ -370,7 +370,7 @@ init -10 python in mas_ui:
         OUT:
             dict of key-value pairs
         """
-        return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+        return {item[0]: item[1]["return_value"] for item in buttons_data.items() if item[1]["return_value"] == item[1]["true_value"] or return_all}
 
     def check_scr_menu_choose_prompt(buttons_data, selected_prompt, default_prompt):
         """
@@ -384,7 +384,7 @@ init -10 python in mas_ui:
         OUT:
             string with prompt
         """
-        for data in buttons_data.itervalues():
+        for data in buttons_data.values():
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
         return default_prompt

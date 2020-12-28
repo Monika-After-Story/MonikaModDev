@@ -944,7 +944,7 @@ init -5 python in mas_sprites:
 
     # reverse map for eaiser lookup
     ARMS_LEAN = {}
-    for lean, values in LEAN_ARMS.iteritems():
+    for lean, values in LEAN_ARMS.items():
         for value in values:
             ARMS_LEAN[value] = lean
 
@@ -4238,7 +4238,7 @@ init -3 python:
 
             # loop over valid arm data
             isbad = False
-            for arm_id, arm_sid in store.mas_sprites.NUM_ARMS.iteritems():
+            for arm_id, arm_sid in store.mas_sprites.NUM_ARMS.items():
                 if arm_sid in json_obj:
                     arm_obj = json_obj.pop(arm_sid)
 
@@ -4861,13 +4861,13 @@ init -3 python:
             """
             try:
                 values = []
-                for value in self.__all_map.itervalues():
+                for value in self.__all_map.values():
                     if value is not None and value not in values:
                         values.append(value)
 
                 return values
             except:
-                return self.values()
+                return list(self.values())
 
         def values(self):
             """
@@ -4877,7 +4877,7 @@ init -3 python:
             """
             return [
                 value
-                for value in self.__all_map.itervalues()
+                for value in self.__all_map.values()
                 if value is not None
             ]
 

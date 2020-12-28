@@ -341,7 +341,7 @@ init -20 python in mas_weather:
         if store.persistent._mas_weather_MWdata is None:
             return
 
-        for mw_id, mw_data in store.persistent._mas_weather_MWdata.iteritems():
+        for mw_id, mw_data in store.persistent._mas_weather_MWdata.items():
             mw_obj = WEATHER_MAP.get(mw_id, None)
             if mw_obj is not None:
                 mw_obj.fromTuple(mw_data)
@@ -351,7 +351,7 @@ init -20 python in mas_weather:
         """
         Saves MASWeather data from weather map into persistent
         """
-        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+        for mw_id, mw_obj in WEATHER_MAP.items():
             store.persistent._mas_weather_MWdata[mw_id] = mw_obj.toTuple()
 
 
@@ -360,7 +360,7 @@ init -20 python in mas_weather:
         Returns number of unlocked weather items
         """
         count = 0
-        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+        for mw_id, mw_obj in WEATHER_MAP.items():
             if mw_obj.unlocked:
                 count += 1
 
@@ -806,7 +806,7 @@ init -10 python:
                     ignored. Values should be MASWeatherMap objects.
             """
             # validate MASWeatherMap objects
-            for wmap in filter_pairs.itervalues():
+            for wmap in filter_pairs.values():
                 if not isinstance(wmap, MASWeatherMap):
                     raise TypeError(
                         "Expected MASWeatherMap object, not {0}".format(
@@ -1162,7 +1162,7 @@ label monika_change_weather:
         # build other weather list
         other_weathers = [
             (mw_obj.prompt, mw_obj, False, False)
-            for mw_id, mw_obj in mas_weather.WEATHER_MAP.iteritems()
+            for mw_id, mw_obj in mas_weather.WEATHER_MAP.items()
             if mw_id != "def" and mw_obj.unlocked
         ]
 

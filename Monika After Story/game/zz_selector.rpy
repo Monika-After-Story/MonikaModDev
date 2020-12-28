@@ -1000,7 +1000,7 @@ init -10 python in mas_selspr:
                 )
 
             # then readd everything that was previous
-            for item in add_map.itervalues():
+            for item in add_map.values():
                 moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
@@ -1013,7 +1013,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.itervalues():
+            for item in select_map.values():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
                     new_hair = item.selectable.get_sprobj()
@@ -1041,7 +1041,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.itervalues():
+            for item in select_map.values():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
                     new_cloth = item.selectable.get_sprobj()
@@ -1224,7 +1224,7 @@ init -10 python in mas_selspr:
             source - source data to read
             dest - data place to save
         """
-        for item_name, item in source.iteritems():
+        for item_name, item in source.items():
             dest[item_name] = item.toTuple()
 
 
@@ -1251,7 +1251,7 @@ init -10 python in mas_selspr:
             source - source data to load from
             dest - data to save the loaded data into
         """
-        for item_name, item_tuple in source.iteritems():
+        for item_name, item_tuple in source.items():
             if item_name in dest:
                 dest[item_name].fromTuple(item_tuple)
 
@@ -2484,7 +2484,7 @@ init -1 python:
 
             if not self.multi_select:
                 # must clean select map
-                for item in self.select_map.itervalues():
+                for item in self.select_map.values():
                     # setting to False will queue for removal of item
                     # NOTE: the caller must handle teh removal
                     item.selected = False

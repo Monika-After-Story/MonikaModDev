@@ -225,7 +225,7 @@ python early:
             img = renpy.substitute(img)
 
         args = []
-        for flt in store.mas_sprites.FILTERS.iterkeys():
+        for flt in store.mas_sprites.FILTERS.keys():
 
             # condition
             args.append("store.mas_sprites.get_filter() == '{0}'".format(flt))
@@ -292,7 +292,7 @@ python early:
         if filterize_def:
 
             # default should be filterized
-            for flt in store.mas_sprites.FILTERS.iterkeys():
+            for flt in store.mas_sprites.FILTERS.keys():
 
                 # only use the filtesr we have not already added
                 if flt not in flt_pairs:
@@ -529,7 +529,7 @@ init 1 python in mas_sprites:
 
         Raises all errors.
         """
-        for mfwm_id, mfwm in FW_DB.iteritems():
+        for mfwm_id, mfwm in FW_DB.items():
             _verify_mfwm(mfwm_id, mfwm)
 
 
@@ -1028,7 +1028,7 @@ init -4 python in mas_sprites:
         """
         Clears all caches
         """
-        for cid, cache in CACHE_TABLE.iteritems():
+        for cid, cache in CACHE_TABLE.items():
             for key in tuple(cache.keys()):
                 cache.pop(key)
 

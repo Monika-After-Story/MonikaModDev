@@ -253,7 +253,7 @@ init python:
         if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_show_notifs:
             return
 
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
                 and mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules)
@@ -280,7 +280,7 @@ init python:
         IN:
             List of ev_labels to exclude from being unlocked
         """
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if ev_label not in excluded:
                 ev.unlocked=True
 

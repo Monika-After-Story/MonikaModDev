@@ -15,7 +15,7 @@ init python:
 
         fo = open(dumppath, "w")
 
-        for key in sorted(dumped_persistent.iterkeys()):
+        for key in sorted(dumped_persistent.keys()):
             fo.write(str(key) + ' - ' + str(type(dumped_persistent[key])) + ' >>> '+ str(dumped_persistent[key]) + '\n\n')
 
         fo.close()

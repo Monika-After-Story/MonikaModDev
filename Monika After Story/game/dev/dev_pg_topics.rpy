@@ -18,7 +18,7 @@ label zz_mas_poemgame_actone:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "I hope that was fun!"
@@ -43,7 +43,7 @@ label zz_mas_poemgame_acttwo:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "I hope that was fun!"
@@ -119,7 +119,7 @@ label zz_mas_poemgame_actonept:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "And you selected these words:"
@@ -279,7 +279,7 @@ label zz_mas_poemgame_oneg:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
 
@@ -325,7 +325,7 @@ label zz_mas_poemgame_oc:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
     m "you selected these words:"
     python:
@@ -364,7 +364,7 @@ label zz_mas_pg_tb_grid_t1:
             "three",
             "four"
         ]
-        
+
         # area/positiong of grid
         xywh = (640, 10, 600, 400)
         row_info = (4, None)
@@ -388,7 +388,7 @@ label zz_mas_pg_tb_grid_t1:
     m 1a "You picked '[picked]'"
     show monika at t11
     return
-    
+
 # this label tests out the grid with bg
 label zz_mas_pg_tb_grid_t2:
     show monika at t22
@@ -414,7 +414,7 @@ label zz_mas_pg_tb_grid_t2:
         xywh = (10, 10, 400, 500)
 
         # using NOne for spacing should auto calc the spacing
-        row_info = (6, 50) 
+        row_info = (6, 50)
         col_info = (2, 250)
 
         # generate the word:returnvalue tuples
@@ -436,4 +436,4 @@ label zz_mas_pg_tb_grid_t2:
     $ picked = _return
     m 1a "You picked '[picked]'"
     show monika at t11
-    return 
+    return

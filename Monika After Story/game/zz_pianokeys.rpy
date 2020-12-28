@@ -2850,7 +2850,7 @@ init 810 python:
             self.live_keymap = dict(mas_piano_keys.KEYMAP)
 
             # now apply adjustments
-            for key,real_key in persistent._mas_piano_keymaps.iteritems():
+            for key,real_key in persistent._mas_piano_keymaps.items():
                 if (
                         real_key in self.live_keymap
                         and real_key == self.live_keymap[real_key]

@@ -142,7 +142,7 @@ init -1 python in mas_farewells:
             check_time = datetime.datetime.now()
 
         # now filter
-        for ev_label, ev in fare_db.iteritems():
+        for ev_label, ev in fare_db.items():
             if _filterFarewell(
                 ev,
                 curr_priority,
@@ -198,7 +198,7 @@ label mas_farewell_start:
             # build a prompt list
             bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
-                for k,ev in bye_pool_events.iteritems()
+                for k,ev in bye_pool_events.items()
             ])
 
             most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
