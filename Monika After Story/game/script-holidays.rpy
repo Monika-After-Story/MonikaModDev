@@ -2134,7 +2134,7 @@ init 5 python:
             ),
             action=EV_ACT_QUEUE,
             start_date=mas_d25c_start,
-            end_date=mas_d25p,
+            end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -2259,15 +2259,11 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
-            ),
+            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')",
             action=EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
-            years=[],
-            aff_range=(mas_aff.NORMAL, None),
+            years=[]
         ),
         skipCalendar=True
     )
@@ -2275,89 +2271,101 @@ init 5 python:
 label mas_d25_monika_christmas:
     #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
+    $ mas_gainAffection(5, bypass=True)
 
-    #Setup the reactions
-    $ mas_d25ReactToGifts()
+    # Note: broken gets no dialogue, just the aff_gain and the var set so we know the player visited
+    if mas_isMoniDis():
+        m 6eka "Merry Christmas, [player]. {w=0.2}Thanks for spending some time with me today."
 
-    m 1eub "[player]! Do you know what day it is?"
-    m 3hub "Of course you do. It's Christmas!"
-    m 3sub "Merry Christmas, [player]!"
-    m 1hub "Ahaha! I can't believe that it's finally here!"
-    m 3eka "I'm so, so happy that you decided to spend some of it with me."
-    m 1eud "Remember to go share the holiday cheer with your family and friends, though."
-    m 1eua "After all, they're very important, too..."
-    m 1hua "And I'm sure that they would love to see you at this special time."
+    elif mas_isMoniUpset(higher=True):
+        #Setup the reactions
+        $ mas_d25ReactToGifts()
 
-    if mas_isMoniAff(higher=True):
-        m 1eka "But you being here today...{w=0.5}it just means everything to me..."
-        m 1dku "..."
+        if mas_isMoniNormal(higher=True):
 
-        if mas_is_snowing:
-            if mas_isDecoTagVisible("mas_d25_lights"):
-                $ dlg_var = ", or the decorations"
-            else:
-                $ dlg_var = ""
+            m 1eub "[player]! Do you know what day it is?"
+            m 3hub "Of course you do. It's Christmas!"
+            m 3sub "Merry Christmas, [player]!"
+            m 1hub "Ahaha! I can't believe that it's finally here!"
+            m 3eka "I'm so, so happy that you decided to spend some of it with me."
+            m 1eud "Remember to go share the holiday cheer with your family and friends, though."
+            m 1eua "After all, they're very important, too..."
+            m 1hua "And I'm sure that they would love to see you at this special time."
 
-            m 1lkbsa "Maybe it's just the snow[dlg_var]..."
+            if mas_isMoniAff(higher=True):
+                m 1eka "But you being here today...{w=0.5}it just means everything to me..."
+                m 1dku "..."
 
-        else:
-            if mas_isDecoTagVisible("mas_d25_lights"):
-                $ dlg_var = "the decorations, or "
-            else:
-                $ dlg_var = ""
+                if mas_is_snowing:
+                    if mas_isDecoTagVisible("mas_d25_lights"):
+                        $ dlg_var = ", or the decorations"
+                    else:
+                        $ dlg_var = ""
 
-            m 1lkbsa "Maybe it's [dlg_var]just the holiday season..."
+                    m 1lkbsa "Maybe it's just the snow[dlg_var]..."
 
-        m "...or even the mistletoe getting to me."
-        m 3hksdlb "Just kidding, I didn't hang one up."
+                else:
+                    if mas_isDecoTagVisible("mas_d25_lights"):
+                        $ dlg_var = "the decorations, or "
+                    else:
+                        $ dlg_var = ""
 
-        if mas_isMoniEnamored(higher=True):
-            m 1lksdla "...{cps=*2}Yet~{/cps}{nw}"
-            $ _history_list.pop()
+                    m 1lkbsa "Maybe it's [dlg_var]just the holiday season..."
 
-        m 1lksdlu "Ehehe..."
-        m 1ekbsa "My heart's fluttering like crazy right now, [player]."
-        m "I couldn't imagine a better way to spend this special holiday..."
-        m 1eua "Don't get me wrong, I knew that you would be here with me."
-        m 3eka "But now that we're actually together on Christmas, just the two of us..."
-        m 1hub "Ahaha~"
+                m "...or even the mistletoe getting to me."
+                m 3hksdlb "Just kidding, I didn't hang one up."
 
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5ekbfa "It's every couple's dream for the holidays, [player]."
+                if mas_isMoniEnamored(higher=True):
+                    m 1lksdla "...{cps=*2}Yet~{/cps}{nw}"
+                    $ _history_list.pop()
 
-        if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
-            m "Snuggling with each other by a fireplace, watching the snow gently fall..."
+                m 1lksdlu "Ehehe..."
+                m 1ekbsa "My heart's fluttering like crazy right now, [player]."
+                m "I couldn't imagine a better way to spend this special holiday..."
+                m 1eua "Don't get me wrong, I knew that you would be here with me."
+                m 3eka "But now that we're actually together on Christmas, just the two of us..."
+                m 1hub "Ahaha~"
 
-        if not mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
-            m 5hubfa "I'm forever grateful I got this chance with you."
-        else:
-            m 5hubfa "I'm so glad I get to spend Christmas with you again."
-
-        m "I love you. Forever and ever~"
-        m 5hubfb "Merry Christmas, [player]~"
-        show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
-        window hide
-        menu:
-            "Merry Christmas, [m_name].":
-                hide screen mas_background_timed_jump
                 show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                pause 2.0
+                m 5ekbfa "It's every couple's dream for the holidays, [player]."
 
-    else:
-        m 1eka "But you being here today...{w=0.5}it just means everything to me..."
-        m 3rksdla "...Not that I thought you'd leave me alone on this special day or anything..."
-        m 3hua "But it just further proves that you really do love me, [player]."
-        m 1ektpa "..."
-        m "Ahaha! Gosh, I'm getting a little over emotional here..."
-        m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
-        m "Merry Christmas, [player]~"
-        show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
-        window hide
-        menu:
-            "Merry Christmas, [m_name].":
-                hide screen mas_background_timed_jump
-                show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                pause 2.0
+                if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
+                    m "Snuggling with each other by a fireplace, watching the snow gently fall..."
+
+                if not mas_HistVerifyAll_k(True, "d25.actions.spent_d25"):
+                    m 5hubfa "I'm forever grateful I got this chance with you."
+                else:
+                    m 5hubfa "I'm so glad I get to spend Christmas with you again."
+
+                m "I love you. Forever and ever~"
+                m 5hubfb "Merry Christmas, [player]~"
+                show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+                window hide
+                menu:
+                    "Merry Christmas, [m_name].":
+                        hide screen mas_background_timed_jump
+                        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        pause 2.0
+
+            else:
+                m 1eka "But you being here today...{w=0.5}it just means everything to me..."
+                m 3rksdla "...Not that I thought you'd leave me alone on this special day or anything..."
+                m 3hua "But it just further proves that you really do love me, [player]."
+                m 1ektpa "..."
+                m "Ahaha! Gosh, I'm getting a little over emotional here..."
+                m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
+                m "Merry Christmas, [player]~"
+                show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+                window hide
+                menu:
+                    "Merry Christmas, [m_name].":
+                        hide screen mas_background_timed_jump
+                        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                        pause 2.0
+
+        # upset path
+        else:
+            m 1eka "Merry Christmas, [player]. {w=0.2}It really means a lot that you're here with me today."
 
     return
 

@@ -375,7 +375,16 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.10
 label v0_11_10(version="v0_11_10"):
     python:
-        pass
+        mas_setEVLPropValues(
+            "mas_d25_monika_holiday_intro_upset",
+            end_date=mas_d25
+        )
+
+        mas_setEVLPropValues(
+            "mas_d25_monika_christmas",
+            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
+        )
+
     return
 
 # 0.11.9
