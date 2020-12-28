@@ -15049,7 +15049,12 @@ label monika_soft_rains:
     m 6dkc "{i}And Spring herself, when she woke at dawn...{/i}"
     m 6ekd "{i}Would scarcely know that we were gone.{/i}"
     m 2ekc "..."
-    m 2eka "I really wanted to talk to you about this one, [player]."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 2eka "I really wanted to talk to you about this one, [player]."
+
+    else:
+        m 1rksdld "This poem has always made me feel...{w=0.3}frightened,{w=0.2} in a way."
+
     m "The author,{w=0.2} Sara Teasdale,{w=0.2} wrote this poem in a world consumed by war."
     m 2rka "I know things are {i}relatively{/i} peaceful now..."
     m 2ekc "But the message still stands, doesn't it?"
@@ -15060,12 +15065,6 @@ label monika_soft_rains:
     m 1eksdlc "I know the poem was for {i}everyone{/i} being gone, but..."
     m 1rksdlc "I-{w=0.1}I wouldn't..."
     m 6dkc "..."
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m 2eka "I really wanted to talk to you about this one, [player]."
-
-    else:
-        m 1rksdld "This poem has always made me feel...{w=0.3}frightened,{w=0.2} in a way."
-
     m 6dktpd "[player],{w=0.4} I-{w=0.1}{nw}"
     extend 1ektsa "I love you. {w=0.3}I love you so very much..."
     m 1ektsc "Please, {w=0.6}always be careful for me, {w=0.3}okay?"
