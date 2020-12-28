@@ -562,21 +562,19 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_topic_rerandom",
-            category=['you'],
-            prompt="I'm okay with talking about...",
-            pool=True,
-            unlocked=False,
-            rules={"no_unlock":None}
+            eventlabel="monika_xyz",
+            category=["one category", "another category"],
+            prompt="Example topic",
+            random=True
         )
     )
 
-label mas_topic_rerandom:
-    python:
-        mas_bookmarks_derand.initial_ask_text_multiple = "Which topic are you okay with talking about again?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you're sure it's alright to talk about this again, just select the topic, [player]."
-        mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
-        mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
+label monika_xyz:
+    m 1eua "This is an example topic."
+    m 1hub "I hope this helps show you how you should format your topics!"
+    m 1ekbsa "Thanks for helping me come closer to your reality, [player]. I love you~"
+    return "love"
+       
 
     call mas_rerandom
     return _return
@@ -776,7 +774,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_hide_unseen",
+            eventlabel="monika_xyz",
             unlocked=False,
             rules={"no_unlock":None}
         )
