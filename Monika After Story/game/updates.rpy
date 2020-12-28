@@ -372,11 +372,123 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.10
+label v0_11_10(version="v0_11_10"):
+    python:
+        if seen_event("monika_boardgames"):
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
+
+    return
+
+# 0.11.9
+label v0_11_9(version="v0_11_9"):
+    python:
+        # Try to delele our old dropfixes
+        dropfixes = (
+            "zz_delactfix",
+            "zz_dropfix",
+            "ev_dropfix",
+            "bookderanddropfix",
+            "christmas_gifts_drop"
+        )
+        extensions = (
+            ".rpy",
+            ".rpyc"
+        )
+
+        for df in dropfixes:
+            for ext in extensions:
+                mas_utils.trydel(
+                    os.path.join(config.gamedir, df+ext).replace("\\", "/")
+                )
+    return
+
+# 0.11.7
+label v0_11_7(version="v0_11_7"):
+    python:
+        with MAS_EVL("monika_whispers") as whispers_ev:
+            if (
+                not persistent.clearall
+                and store.mas_anni.pastOneMonth()
+                and not persistent._mas_pm_cares_about_dokis
+            ):
+                whispers_ev.conditional = None
+                whispers_ev.action = None
+
+            else:
+                whispers_ev.conditional = "not persistent.clearall"
+                whispers_ev.action = EV_ACT_RANDOM
+
+            whispers_ev.random = False
+            whispers_ev.unlocked = False
+
+        mas_setEVLPropValues(
+            'mas_d25_spent_time_monika',
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            'monika_nye_year_review',
+            action=EV_ACT_QUEUE,
+            start_date=mas_nye,
+            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23))
+        )
+
+        mas_setEVLPropValues(
+            'mas_nye_monika_nye_dress_intro',
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
+            )
+        )
+
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmaslights',
+            conditional=(
+                "persistent._mas_pm_hangs_d25_lights is None "
+                "and persistent._mas_d25_deco_active "
+                "and not persistent._mas_pm_live_south_hemisphere "
+                "and mas_isDecoTagVisible('mas_d25_lights')"
+            )
+        )
+
+        safeDel("_mas_d25_gifted_cookies")
+
+    return
+
 # 0.11.6
 label v0_11_6(version="v0_11_6"):
     python:
-        # Add update scripts here
-        pass
+        #Lock daydream topic
+        mas_lockEVL("monika_daydream", "EVE")
+
+        #Unlock piano lessons pool topic
+        if mas_seenLabels(["mas_monika_plays_yr", "mas_monika_plays_or"]):
+            mas_unlockEVL("monika_piano_lessons", "EVE")
+
+        #Random criticism topics
+        if seen_event("monika_debate"):
+            mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
+            mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+
+        if seen_event("monika_vn"):
+            mas_unlockEVL("monika_kamige","EVE")
+
+        #Remove these files if we still have them. They are not needed since 0.11.4 and they can cause issues.
+        filenames_to_delete = [
+            "sprite-chart-00.rpyc",
+            "sprite-chart-01.rpyc",
+            "sprite-chart-02.rpyc",
+            "sprite-chart-10.rpyc",
+            "sprite-chart-20.rpyc",
+            "sprite-chart-21.rpyc"
+        ]
+
+        for fn in filenames_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fn))
+
     return
 
 # 0.11.5
