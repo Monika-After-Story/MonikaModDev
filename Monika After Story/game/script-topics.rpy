@@ -11547,7 +11547,7 @@ label monika_justice:
                             m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
                             m 1hubfb "I love you, [player]~"
                             m 1hubfa "I'm glad I have you by my side."
-                            return "derandom|love"
+                            $ mas_ILY()
 
                         else:
                             m 2hua "I'm glad you think so too!"
