@@ -1,3 +1,4 @@
+rpy python 3
 # module that handles the mood system
 #
 

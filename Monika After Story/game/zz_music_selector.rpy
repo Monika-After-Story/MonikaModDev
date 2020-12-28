@@ -1,3 +1,4 @@
+rpy python 3
 # Module that handles the music selection screen
 # we start with zz to ensure this loads LAST
 #

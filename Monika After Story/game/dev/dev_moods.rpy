@@ -1,3 +1,4 @@
+rpy python 3
 ## dev mode eggs
 
 #dev mode easter eggs

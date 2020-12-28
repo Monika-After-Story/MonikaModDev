@@ -1,3 +1,4 @@
+rpy python 3
 # just resetting the d25 events
 
 init 998 python:
@@ -44,5 +45,3 @@ init 998 python:
             "mas_nye_monika_nye",
             "mas_nye_monika_nyd"
         )
-
-        

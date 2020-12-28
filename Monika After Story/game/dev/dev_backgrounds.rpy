@@ -1,3 +1,4 @@
+rpy python 3
 # test module for backgrounds
 
 init 100 python:
@@ -17,7 +18,7 @@ init 100 python:
             mx_max
     ):
         """
-        Generates a MASBackgroundFilterManager using sample number of slice 
+        Generates a MASBackgroundFilterManager using sample number of slice
         sizes.
 
         NOTE: verify is NOT called
@@ -138,7 +139,7 @@ init 100 python:
             mx_min - min maxlength time to use in seconds
             mx_max - max maxlength time ot use in seconds
 
-        RETURNS: list of created slices. 
+        RETURNS: list of created slices.
         """
         flt_str = flt_pfx + "_{0}"
 
@@ -162,7 +163,7 @@ init 100 python:
 
         return slices
 
-    
+
     def _mas_build_random_fake_slice(
             flt,
             ml_min,
@@ -325,7 +326,7 @@ init 100 python:
                     ))
                     c_off = new_off
 
-            else: 
+            else:
                 abc._mn_sr._expand_once(inc_amts)
             logout.write(str(abc))
 
@@ -348,7 +349,7 @@ init 100 python:
                     ))
                     c_off = new_off
 
-            else: 
+            else:
                 abc._mn_sr._expand_once(inc_amts)
             logout.write(str(abc))
 
@@ -391,7 +392,3 @@ init 100 python:
                 logout.write("\n\n\n")
             logout.write(str(abc))
             logout.flush()
-
-
-
-

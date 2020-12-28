@@ -1,7 +1,8 @@
+rpy python 3
 # selector testing
 
 init -100 python:
-    
+
     def dev_mas_unlock_all_sprites():
         for sel_obj in store.mas_selspr.ACS_SEL_SL:
             sel_obj.unlocked = True
@@ -113,7 +114,7 @@ label dev_selector_test:
     return
 
     # TODO: this needs to be called, so we need to redo the jump logic.,
-#    jump mas_selector_sidebar_select(start_test_items, "dev_selector_test_confirm", "dev_selector_test_cancel", 
+#    jump mas_selector_sidebar_select(start_test_items, "dev_selector_test_confirm", "dev_selector_test_cancel",
 
 label dev_selector_test_confirm:
     hide screen mas_selector_sidebar
@@ -161,7 +162,7 @@ label dev_selector_hair_test:
 
     call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
 
-    # undo the unlocks 
+    # undo the unlocks
     python:
         for item in sorted_hair:
             item.unlocked = unlock_map[item.name]
@@ -201,7 +202,7 @@ label dev_selector_clothes_test:
 
     call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
 
-    # undo the unlocks 
+    # undo the unlocks
     python:
         for item in sorted_clothes:
             item.unlocked = unlock_map[item.name]
@@ -248,7 +249,7 @@ label dev_selector_acs_ribbons_test:
 
     call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
 
-    # undo the unlocks 
+    # undo the unlocks
     python:
         for item in use_acs:
             item.unlocked = unlock_map[item.name]

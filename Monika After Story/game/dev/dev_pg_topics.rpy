@@ -1,3 +1,4 @@
+rpy python 3
 # This file sets up special topics for testing the mas poem minigame
 # configuration
 

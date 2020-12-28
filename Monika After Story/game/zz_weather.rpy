@@ -1,3 +1,4 @@
+rpy python 3
 #Stores the last weather the player had chosen
 #Default: "auto"
 default persistent._mas_current_weather = "auto"

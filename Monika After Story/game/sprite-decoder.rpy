@@ -1,3 +1,4 @@
+rpy python 3
 #Runtime code equivalent of our spritemaker tool
 init python in mas_sprite_decoder:
     import store

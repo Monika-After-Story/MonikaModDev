@@ -1,3 +1,4 @@
+rpy python 3
 init -2 python in mas_anni: #needed to lower this in order to get isAnni() working for special day usage
     import store.evhand as evhand
     import store.mas_calendar as mas_cal

@@ -1,3 +1,4 @@
+rpy python 3
 # module for ptod related stuff (dev only
 
 init 10 python:

@@ -1,3 +1,4 @@
+rpy python 3
 # All Sprite objects belong here
 #
 # For documentation on classes, see sprite-chart

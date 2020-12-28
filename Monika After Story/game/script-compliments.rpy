@@ -1,3 +1,4 @@
+rpy python 3
 # Module for complimenting Monika
 #
 # Compliments work by using the "unlocked" logic.

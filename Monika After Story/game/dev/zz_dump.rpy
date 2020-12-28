@@ -1,3 +1,4 @@
+rpy python 3
 # emergency dumping file
 
 init 999 python:
@@ -15,4 +16,3 @@ init 999 python:
 #        )
 #    )
 #    del outtext
-

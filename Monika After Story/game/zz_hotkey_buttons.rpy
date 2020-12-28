@@ -1,3 +1,4 @@
+rpy python 3
 # Module that handles hotkey button screen
 #
 

@@ -1,3 +1,4 @@
+rpy python 3
 ##This file contains all of the variations of goodbye that monika can give.
 ## This also contains a store with a utility function to select an appropriate
 ## farewell

@@ -1,3 +1,4 @@
+rpy python 3
 init python in mas_sprites:
     #START: main funcs
 

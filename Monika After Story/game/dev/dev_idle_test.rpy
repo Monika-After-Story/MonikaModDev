@@ -1,3 +1,4 @@
+rpy python 3
 # testing module ofr idle
 
 init 5 python:
@@ -30,6 +31,3 @@ label dev_idle_test:
 label dev_idle_test_cb:
     m 1hua "done with idle!"
     return
-
-
-

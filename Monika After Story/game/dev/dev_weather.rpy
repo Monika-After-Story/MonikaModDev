@@ -1,3 +1,4 @@
+rpy python 3
 # testin gweather
 init 5 python:
     # available only if moni affection is normal+

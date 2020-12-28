@@ -1,7 +1,8 @@
+rpy python 3
 # basic dev tool stuff
 
 init 800 python:
-    
+
     def mas_remove_event(*labels):
         """
         Removes an event from the persistent database and lock DB
@@ -23,7 +24,7 @@ init 800 python:
 
             if label in Event.INIT_LOCKDB:
                 Event.INIT_LOCKDB.pop(label)
-           
+
         persistent.closed_self = True
         persistent._mas_game_crashed = False
         renpy.save_persistent()

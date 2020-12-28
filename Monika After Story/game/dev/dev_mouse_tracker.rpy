@@ -1,3 +1,4 @@
+rpy python 3
 # module that adds a tiny mouse tracker overlay
 
 init -1 python:
@@ -242,17 +243,17 @@ init python:
             self.cz_man.set_disabled(self.mib.ZONE_CHEST_1_L, True)
 
             self.quick_add(self.mib.ZONE_HEAD)
-            
+
             self.quick_add(self.mib.ZONE_NOSE)
 
         def build_zone_actions(self):
             return {
                 self.mib.ZONE_CHEST: MASZoomableInteractable.ZONE_ACTION_NONE,
-                self.mib.ZONE_CHEST_1_R: 
+                self.mib.ZONE_CHEST_1_R:
                     MASZoomableInteractable.ZONE_ACTION_NONE,
-                self.mib.ZONE_CHEST_1_M: 
+                self.mib.ZONE_CHEST_1_M:
                     MASZoomableInteractable.ZONE_ACTION_NONE,
-                self.mib.ZONE_CHEST_1_L: 
+                self.mib.ZONE_CHEST_1_L:
                     MASZoomableInteractable.ZONE_ACTION_NONE,
                 self.mib.ZONE_HEAD: MASZoomableInteractable.ZONE_ACTION_NONE,
                 self.mib.ZONE_NOSE: MASZoomableInteractable.ZONE_ACTION_NONE,

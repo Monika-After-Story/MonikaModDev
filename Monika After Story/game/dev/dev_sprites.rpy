@@ -1,3 +1,4 @@
+rpy python 3
 # sprite testing code
 
 init 100 python:
@@ -229,7 +230,7 @@ label dev_sp_obj_pp_test:
     m "but side effects may occur."
 
 label dev_sp_obj_pp_test_top:
-    
+
     call screen mas_gen_scrollable_menu(top_level_menu, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, returner)
 
     if _return is False:

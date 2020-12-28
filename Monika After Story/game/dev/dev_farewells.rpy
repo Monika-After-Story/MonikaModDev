@@ -1,3 +1,4 @@
+rpy python 3
 # dev related farewells
 
 init python:
