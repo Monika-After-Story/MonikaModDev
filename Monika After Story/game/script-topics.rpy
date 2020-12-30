@@ -16300,3 +16300,129 @@ label monika_gmos:
     m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
     m 1eua "I think that's enough for now, thanks for listening~"
     return
+
+default persistent._mas_pm_employed = None
+default persistent._mas_pm_lookingforwork = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_employment",
+            category=['you'],
+            prompt="Employment status",
+            random=True
+        )
+    )
+
+label monika_player_employment:
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m "You know..."
+        m "It occurs to me that there's something I never asked you, [mas_get_player_nickname()]."
+        m "It's kind of awkward to ask directly at this point, ahaha..."
+        m "Well...I realized that I didn't know if you were employed or not."
+        m "Or maybe you do freelancing, picking up odd jobs rather than being contracted to just one company."
+        m "Maybe your situation is completely different..."
+        m "Well, if you don't mind talking about it..."
+
+    else:
+        m "Oh, has your employment status changed?"
+        m "I'd love to hear about it!"
+        ###  TODO: This is placeholder dialogue, need to expand this
+        ### Should this path vary depending on your current situation?
+
+    m "Would you mind telling me, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you mind telling me, [player]?{fast}"
+
+        "Yes, I'm employed.":
+            $ persistent._mas_pm_employed = True
+            $ persistent._mas_pm_lookingforwork = False
+            #TODO: path for if you were looking for a job before, where she congratulates you for finding one
+            m "That's good to hear!"
+            m "It makes me happy to know that you have a stable income."
+            m "I really hope you enjoy what you do, [player]."
+            m "Even if you don't...I'm proud of you for doing your best at it."
+
+        "I do freelance work.":
+            $ persistent._mas_pm_employed = True
+            $ persistent._mas_pm_lookingforwork = False
+            #TODO: path for if you were looking for a job before
+            m "Ah, that's interesting!"
+            m "Freelance work is really challenging. You have to work to build a clientele all on your own."
+            m "It can often be less stable than working for a company...but it can be much more flexible to different lifestyles."
+            m "I'm impressed that you're taking on that challenge, [player]."
+
+        "I take care of my home full-time.":
+            $ persistent._mas_pm_employed = False
+            $ persistent._mas_pm_lookingforwork = False
+            #lock work goodbye, maybe special dialogue for housework option?
+            m "Oh! I hadn't even thought of that!"
+            m "I think that's very noble of you, [player]."
+            m "Whether they're family or not, I'm sure the people living with you are so grateful for your help."
+            m "I hope you feel personally fulfilled by it as well. This sort of thing might not be salaried work, but it's still work!"
+
+        "I'm not working.":
+            $ persistent._mas_pm_employed = False
+            #lock work goodbye // Shoud this have a variant path if you were employed?
+            m "I see..."
+            m "Well, if you don't mind my asking..."
+            
+            m "Are you looking for work, or is it a different situation?"
+            $ _history_list.pop()
+            menu:
+                m "Are you looking for work, or is it a different situation?{fast}"
+
+                "Yes, I'm looking currently.":
+                    $ persistent._mas_pm_lookingforwork = True
+                    m "I'm cheering for you then, [mas_get_player_nickname()]!"
+                    m "It might take time to find the right fit, and interviews can get discouraging at times..."
+                    m "But I'm proud of you for putting in the effort, and not giving up!"
+                    m "And I'm certain that in time, you'll find the perfect fit."
+                    m "Make sure to let me know when that day finally comes, okay?"
+
+                "No, but in the future I will.":
+                    $ persistent._mas_pm_lookingforwork = False
+                    m "Ah, I understand!"
+                    m "It's okay if you're still sorting things out in your life."
+                    m "It takes a lot of people plenty of time to figure out what they want to do, or how to get there."
+                    m "Or maybe you have personal matters to handle before you can commit to work."
+                    m "Whatever your situation might be, take your time in figuring it out."
+                    m "I'll be cheering for you when you start looking!"
+
+                "No, and I have no interest.":
+                    $ persistent._mas_pm_lookingforwork = False
+                    m "Really?"
+                    m "I'm a little surprised..."
+                    m "Well, I hope that your situation allows for you to make a choice like that."
+                    m "Just be careful that you're not stretching your resources too thin, okay?"
+                    m "I want the two of us to have a good life together when I cross over. So you need to make sure you're taking care of yourself."
+                    m "As long as you're doing that...I'll trust you on it, [player]."
+
+                "I'm retired, actually.":
+                    $ persistent._mas_pm_lookingforwork = False
+                    m "Oh!"
+                    m "Sorry, it was kind of silly of me to assume..."
+                    m "But, wow...that means you've already put a lot into your work, huh?"
+                    m "A lot of people look at retiring as a big reward for all the time they've put in..."
+                    m "But a lot of people itch to get back to work, ahaha!"
+                    m "Whatever the case is for you, I hope you're enjoying your life to the fullest."
+                    m "You've earned it, after all!"
+
+
+        "I'm currently unable to work.":
+            $ persistent._mas_pm_employed = False
+            $ persistent._mas_pm_lookingforwork = False
+            m "Oh...?"
+            m "I see...But that's okay, [player]."
+            m "I understand, life can really get in the way sometimes."
+            m "Health conditions or personal emergencies can happen, and it isn't shameful at all to prioritize those over work."
+            m "You need to do what's best for your life, after all."
+            m "I hope you can get whatever support you need to keep living happily. That's the most important thing to me."
+
+        "I don't want to talk about it.":
+            m "Oh, I'm sorry..."
+            m "That's okay. I won't bring it up again."
+
+    return "derandom"
