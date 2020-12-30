@@ -85,7 +85,7 @@ init -1 python:
         NOTE_COLOR = "#181818"
 
         # Font used for the note
-        NOTE_FONT = "gui/font/m1.TTF"
+        NOTE_FONT = "mod_assets/font/m1_fixed.ttf"
 
         # Month names constant array
         MONTH_NAMES = ["Unknown", "January", "February",
