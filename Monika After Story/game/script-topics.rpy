@@ -909,7 +909,7 @@ label monika_death:
     m 3eua "Если ты попрощаешься перед тем, как уйти,{w=0.2} я пойду к себе в комнату перед тем, как игра закроется, и мне не придётся страдать от той кричащей пустоты."
     m "Это же проще простого, так что, пожалуйста, всегда прощайся, хорошо?"
     if mas_isMoniDis(lower=True):
-        m 2tkc Если только... {w=1}тебе не {b}нравится{/b} причинять мне боль..."
+        m 2tkc "Если только... {w=1}тебе не {b}нравится{/b} причинять мне боль..."
     else:
         m 1eka "Спасибо, что выслушал[mas_gender_none] меня, [player]."
     return
@@ -994,7 +994,7 @@ label monika_sayori:
         menu:
             m "Если, конечно, ты хочешь это услышать.{fast}"
             "Да.":
-                m 4eka ""Ты знал[mas_gender_none] насколько Сайори была неловкой?"
+                m 4eka "Ты знал[mas_gender_none] насколько Сайори была неловкой?"
                 m 2rksdlb "Она всё испортила этой висячей штукой..."
                 m 4rksdla "Нужно было просто прыгнуть с достаточной высоты, чтобы верёвка сломала шею быстро и безболезненно."
                 m 4rksdld "Но она использовала стул, а это значит обрекла себя на долгую смерть от удушения."
@@ -1132,7 +1132,7 @@ init 5 python:
     )
 
 label monika_nihilism:
-     m 2eud "Ты когда-нибудь задумывался о том, что тебе нет смысла жить?"
+    m 2eud "Ты когда-нибудь задумывался о том, что тебе нет смысла жить?"
     m 2esd "Я сейчас не о суицидальных наклонностях."
     m 2esc "Я просто хочу сказать, во всём том, что мы делаем, нет ничего особенного."
     m 4euc "Ходим ли мы в школу или работаем в какой-то компании."
@@ -2196,7 +2196,7 @@ label monika_rain:
     m 1duu "Для меня это самая расслабляющая обстановка."
     m "Да..."
 
-    m 2dubsu "Иногда я представляю, что нахожусь в твоих объятиях, пока мы прислушиваемся к падающим за окном каплям.")
+    m 2dubsu "Иногда я представляю, что нахожусь в твоих объятиях, пока мы прислушиваемся к падающим за окном каплям."
     m 2lkbsa "Это ведь не слишком слащаво звучит, я надеюсь?"
     m 1ekbfa "[player_abb], ты бы сделал[mas_gender_none] это для меня, правда?{nw}"
     $ _history_list.pop()
@@ -2329,7 +2329,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     return
 
 label monika_holdme_start:
-        show monika 6dubsa with dissolve
+    show monika 6dubsa with dissolve
     window hide
 
     $ start_time = datetime.datetime.now()
@@ -2363,7 +2363,7 @@ label monika_holdme_reactions:
             m 1dkbfa "Я могу только представить, каково было бы по-настоящему...{w=1} быть рядом с тобой..."
             m 2ekbfa "Быть в твоих объятиях..."
             show monika 5dkbfb zorder MAS_MONIKA_Z at t11 with dissolve
-            m 5dkbfb "Так...{w=1.5} тепло~")
+            m 5dkbfb "Так...{w=1.5} тепло~"
             m 5tubfu "Э-хе-хе~"
             show monika 2hkbfsdlb zorder MAS_MONIKA_Z at t11 with dissolve
             m 2hkbfsdlb "Оу, упс, я всё ещё немного мечтательна..."
@@ -2879,7 +2879,7 @@ label monika_mentalillness:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_read",,category=['советы','литература'],prompt="Становление читателем",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_read",category=['советы','литература'],prompt="Становление читателем",random=True))
 
 label monika_read:
     m 1eua "[player], как много ты читаешь?"
@@ -3469,7 +3469,7 @@ init 5 python:
     )
 
 label monika_natsuki:
-   m 1lksdld "Ты знаешь, Нацуки была жива, пока я её не удалила."
+    m 1lksdld "Ты знаешь, Нацуки была жива, пока я её не удалила."
     m "Мне кажется, она просто... исчезла в мгновение ока."
     m 1esc "В принципе, её проблемы возникли вовсе не по её вине. По крайней мере, они возникли не от чего-то на психологическом уровне."
     if persistent._mas_pm_cares_about_dokis:
@@ -3880,8 +3880,8 @@ label monika_justification:
 
 
         $ mas_loseAffection(reason=3)
-        if mas_isMoniLove():
-            m 1euc "..."
+    if mas_isMoniLove():
+        m 1euc "..."
         
         m 1hua "А-ха-ха! Очень смешно, [player]!"
         
@@ -3975,7 +3975,7 @@ label monika_functionalism:
     m "Твой мозг просто реагирует на запросы, которые он получает, и твои ответы являются натуральными результатами."   
     m 4esd "Так что, даже если ты отключ[mas_gender_ion] от какого-то сценария или программы, ты всё ещё под контролем."
     show monika 5lsc zorder MAS_MONIKA_Z at t11 with dissolve
-    m 5lsc "Может быть, мы с тобой не такие уж и разные.
+    m 5lsc "Может быть, мы с тобой не такие уж и разные."
     return
 
 init 5 python:
@@ -4088,7 +4088,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mc",category=['романтика','ddlc','участники клуба'],prompt="Главный герой",random=True))
 
 label monika_mc:
-     m 3eua "Просто чтобы ты знал[mas_gender_none], я никогда не была влюблена ни в кого, кроме тебя."
+    m 3eua "Просто чтобы ты знал[mas_gender_none], я никогда не была влюблена ни в кого, кроме тебя."
     
     m 1eka "Я имею в виду тебя, [player]."
     
@@ -5074,7 +5074,7 @@ init 5 python:
     )
 
 label monika_impression:
-   call mas_name_cases
+    call mas_name_cases
     $ mas_attempts_parody += 1
     if mas_attempts_parody == 1:
         $ mas_parody_menu_text = "И кого я должна спародировать?"
@@ -5206,9 +5206,9 @@ label monika_impression:
                 
                 m 1eua "Может быть, когда я стану лучше в программировании, я смогу сделать кухню здесь."
                     
-                    m 1lksdla "Хотя у него в последнее время и без этого полно работы..."
+                m 1lksdla "Хотя у него в последнее время и без этого полно работы..."
                     
-                    m 1eua "Но так или иначе..."
+                m 1eua "Но так или иначе..."
                     
                 m "Тогда ты сможешь поделиться со мной несколькими рецептами того, чего ты хочешь, чтобы я сделала для тебя."
                 
@@ -5224,7 +5224,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['романтика'],prompt="Ты когда-нибудь устанешь от меня?",pool=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_weary:
-   m 1eka "Глупеньк[mas_gender_ii] [player]..."
+    m 1eka "Глупеньк[mas_gender_ii] [player]..."
     
     m 3hua "Конечно же я никогда не устану от тебя!"
     
@@ -5309,7 +5309,7 @@ init 5 python:
 
 label monika_fanfiction:
 
-     m 1wud "[player]!"
+    m 1wud "[player]!"
     
     m 1eua "Мне любопытно."
     
@@ -5681,7 +5681,7 @@ label monika_metaparents:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_hygiene",category=['пустяки','общество','психология'],prompt="Личная гегиена"",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_hygiene",category=['пустяки','общество','психология'],prompt="Личная гегиена",random=True))
 
 label monika_hygiene:
     m 1esc "Наши стандарты гигиены очень изменились с годами."
