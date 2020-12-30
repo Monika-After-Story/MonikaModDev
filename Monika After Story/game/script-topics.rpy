@@ -16422,8 +16422,6 @@ label monika_player_employment:
             m "I hope you can get whatever support you need to keep living happily. That's the most important thing to me."
 
         "I don't want to talk about it.":
-            $ persistent._mas_pm_employed = False
-            $ persistent._mas_pm_lookingforwork = False
             m "Oh, I'm sorry..."
             m "That's okay. I won't bring it up again."
 
