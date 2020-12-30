@@ -16375,7 +16375,7 @@ label monika_player_employment:
                 m "Are you looking for work, or is it a different situation?{fast}"
 
                 "Yes, I'm looking currently.":
-                    $ persistent._mas_pm_lookingforwork = False
+                    $ persistent._mas_pm_lookingforwork = True
                     m "I'm cheering for you then, [mas_get_player_nickname()]!"
                     m "It might take time to find the right fit, and interviews can get discouraging at times..."
                     m "But I'm proud of you for putting in the effort, and not giving up!"
