@@ -57,7 +57,7 @@ init 501 python:
         MASAdvancedDecoFrame(zorder=6)
     )
 
-    # fake bg 1 
+    # fake bg 1
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_1",
@@ -69,7 +69,7 @@ init 501 python:
         MASAdvancedDecoFrame(at_list=[i31], zorder=6)
     )
 
-    # fake bg 2 
+    # fake bg 2
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_2",
