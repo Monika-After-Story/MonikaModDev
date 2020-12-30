@@ -72,7 +72,29 @@ init 5 python:
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
         m 1eua "Alright, [player]."
-        m 1hub "Hurry back, I'll be waiting here for you~"
+
+        show monika 1eta at t21
+        python:
+            #For options that can basically be an extension of generics and don't need much specification
+            brb_reason_options = [
+                (_("I'm going to get something."), True, False, False),
+                (_("I'm going to do something."), True, False, False),
+                (_("I'm going to make something."), True, False, False),
+                (_("I have to check something."), True, False, False),
+                (_("Someone's at the door."), True, False, False),
+                (_("Nothing."), None, False, False),
+            ]
+
+            renpy.say(m, "Doing anything specific?", interact=False)
+        call screen mas_gen_scrollable_menu(brb_reason_options, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+        show monika at t11
+
+        if _return:
+            m 1eua "Oh alright.{w=0.2} {nw}"
+            extend 3hub "Hurry back, I'll be waiting here for you~"
+
+        else:
+            m 1hub "Hurry back, I'll be waiting here for you~"
 
     elif mas_isMoniNormal(higher=True):
         m 1hub "Hurry back, [player]!"
