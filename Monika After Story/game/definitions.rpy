@@ -7893,15 +7893,24 @@ init python:
 
         return (check_time - persistent._mas_last_monika_ily) <= pass_time
 
-    def mas_ILY(set_time=None):
+    def mas_ILY(set_time=None, prompt=None):
         """
         Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
         IN:
             set_time - the time we want to set persistent._mas_last_monika_ily to
                 defaults to datetime.datetime.now()
+
+            prompt - a string that will be the prompt for monika_love_too which the talk
+                    menu will use in the "I love you" slot
         """
         if set_time is None:
             set_time = datetime.datetime.now()
+
+        if prompt is None:
+            mas_love_too_ev.prompt = "I love you too!"
+        else:
+            mas_love_too_ev.prompt = prompt
+
         persistent._mas_last_monika_ily = set_time
 
     def mas_shouldKiss(chance, cooldown=datetime.timedelta(hours=1), special_day_bypass=False):

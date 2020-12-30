@@ -3898,7 +3898,8 @@ label monika_ilym_fight_loop:
 
 default persistent._mas_last_monika_ily = None
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no_unlock": None}))
+    mas_love_too_ev = Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no_unlock": None})
+    addEvent(mas_love_too_ev)
 
 label monika_love_too:
     window hide
@@ -14333,8 +14334,14 @@ label monika_brave_new_world:
         m 3esc "An unchallenging world, limited in humanity and emotion..."
 
         if mas_isMoniHappy(higher=True):
-            m 1ekbsa "And I could never give up loving you~"
+            if random.randint(1, 100) == 1:
+                m 1tkbu "And I'm {cps=*2}never gonna give you up!{/cps}{nw}"
+                $ _history_list.pop()
+                m 1ekbsa "And I{fast} could never give up loving you~"
+            else:
+                m 1ekbsa "And I could never give up loving you~"
             m 1hubfu "Ehehe~"
+            $ mas_ILY(prompt="I'll always love you!")
 
         else:
             m 1eka "Now that I've seen what else is out there...{w=0.3}I just can't go back to such a sad, empty world, like the one you found me in."
