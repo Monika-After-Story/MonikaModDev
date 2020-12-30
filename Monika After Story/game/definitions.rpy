@@ -3666,6 +3666,7 @@ init 25 python:
             self.__events = list(events)
             self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
             self.__abort_events = False
+            self.should_enable_afm = None
 
         def __repr__(self):
             """
@@ -3693,6 +3694,7 @@ init 25 python:
             """
             Starts this displayable
             """
+            self.should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
             ui.interact()
@@ -3703,6 +3705,7 @@ init 25 python:
             """
             ui.remove(self)
             self.__abort_events = True
+            self.should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3714,6 +3717,7 @@ init 25 python:
             ui.remove(self)
             self.__reset_events()
             self.__abort_events = False
+            self.should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3805,6 +3809,9 @@ init 25 python:
             elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 self.__abort_events = True
                 ui.remove(self)
+                if self.should_enable_afm:
+                    self.should_enable_afm = None
+                    store._preferences.afm_enable = True
                 return True
 
             # Other kind of event? Check our keysims
