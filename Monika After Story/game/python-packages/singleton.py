@@ -44,7 +44,7 @@ class SingleInstance:
                 if e.errno in (13, 17):
                     # logger.error("Another instance is already running, quitting.")
                     raise SingleInstanceException(
-                        "Another instance is already running, quitting. If the issue persist, restart your computer or manually delete '{0}'".format(
+                        "Another instance is already running, quitting. If the issue persists, restart your computer or manually delete '{0}'".format(
                             self.lockfile
                         )
                     )
@@ -62,7 +62,7 @@ class SingleInstance:
             except IOError:
                 # logger.warning("Another instance is already running, quitting.")
                 raise SingleInstanceException(
-                    "Another instance is already running, quitting. If the issue persist, restart your computer or manually delete '{0}'".format(
+                    "Another instance is already running, quitting. If the issue persists, restart your computer or manually delete '{0}'".format(
                         self.lockfile
                     )
                 )
