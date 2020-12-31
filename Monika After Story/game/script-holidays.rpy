@@ -4412,7 +4412,7 @@ label greeting_nye_aff_gain:
     jump greeting_returned_home_morethan5mins_cleanup
 
 label mas_gone_over_nye_check:
-    if mas_checkOverDate(mas_nye):
+    if mas_checkOverDate(mas_nyd - datetime.timedelta(days=1)):
         $ persistent._mas_nye_spent_nye = True
         $ persistent._mas_nye_nye_date_count += 1
     return
