@@ -385,6 +385,12 @@ label v0_11_10(version="v0_11_10"):
             conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
         )
 
+        mas_setEVLPropValues(
+            "mas_nye_monika_nye_dress_intro",
+            conditional="persistent._mas_d25_in_d25_mode",
+            action=EV_ACT_PUSH
+        )
+
     return
 
 # 0.11.9

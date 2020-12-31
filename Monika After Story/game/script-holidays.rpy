@@ -4276,13 +4276,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_nye_monika_nye_dress_intro",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-                "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_nye,
             end_date=mas_nye + datetime.timedelta(days=1),
-            action=EV_ACT_QUEUE,
+            action=EV_ACT_PUSH,
             aff_range=(mas_aff.NORMAL,None),
             years=[]
         ),
@@ -4290,45 +4287,66 @@ init 5 python:
     )
 
 label mas_nye_monika_nye_dress_intro:
-    m 3hub "Hey [player], I have something in store for you this year~"
-    m 3eua "Just let me go change.{w=0.5}.{w=0.5}.{nw}"
+    # need to grab dates here in case this topic spans nye and nyd
+    $ curr_date = datetime.date.today()
+    $ curr_year = curr_date.year
 
-    # change into dress
-    call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True, unlock=True)
-    $ mas_addClothesToHolidayMap(mas_clothes_dress_newyears)
+    if curr_date.day != 31:
+        $ curr_year = curr_year - 1
+        $ curr_date = datetime.date(curr_year, 12, 31)
 
-    m 2rkbssdla "..."
-    m 2rkbssdlb "My eyes are up here, [player]..."
-    if mas_isMoniAff(higher=True):
-        m 2tubsu "..."
-        m 3hubsb "Ahaha! Just teasing you~"
-        m 3eua "I'm glad you like my dress. {nw}"
+    if mas_SELisUnlocked(mas_clothes_dress_newyears) and mas_isMoniEnamored(lower=True):
+        m 3hub "Hey [player], can you believe it's New Year's again?!"
+        m 1tuu "I think it's time to dust off one of my favorite outfits.{w=0.5}.{w=0.5}.{nw}"
 
-    else:
+        call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True)
+
+        m 3hub "And there we go, I just love this dress! {w=0.2}{nw}"
+        extend 3eua "It's always nice to dress up now and then."
+        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [curr_year+1]!"
+
+    elif not mas_SELisUnlocked(mas_clothes_dress_newyears):
+        m 3hub "Hey [player], I have something in store for you this year~"
+        m 3eua "Just let me go change.{w=0.5}.{w=0.5}.{nw}"
+
+        # change into dress
+        call mas_clothes_change(mas_clothes_dress_newyears, outfit_mode=True, unlock=True)
+
         m 2rkbssdla "..."
-        m "I'm...{w=1}glad you like my dress. {nw}"
+        m 2rkbssdlb "My eyes are up here, [player]..."
 
-    extend 3eua "It was really hard to get right!"
-    m 3rka "The flower crown kept falling off..."
-    m 1hua "I went for the 'Greek goddess' look, I hope it shows."
-    m 3eud "But this outfit has a bit more depth to it, you know?"
+        if mas_isMoniAff(higher=True):
+            m 2tubsu "..."
+            m 2hubsb "Ahaha! Just teasing you~"
+            m 2eua "I'm glad you like my dress. {nw}"
 
-    if seen_event("mas_f14_monika_vday_colors"):
-        m 3eua "Maybe you remember when we talked about roses and the feelings their colors convey."
-    else:
-        m 3eua "Maybe you guessed it already, but it's because of the color choice."
+        else:
+            m 2rkbssdla "..."
+            m "I'm...{w=1}glad you like my dress. {nw}"
 
-    m "White represents a lot of positive feelings, like goodness, purity, safety..."
-    m 3eub "However, what I wanted this outfit to highlight was a successful beginning."
+        extend 7eua "It was really hard to get right!"
+        m 3rka "The flower crown kept falling off..."
+        m 1hua "I went for the 'Greek goddess' look, I hope it shows."
+        m 3eud "But this outfit has a bit more depth to it, you know?"
 
-    #If we fresh started last year
-    if mas_HistWasFirstValueIn(True, datetime.date.today().year - 1, "pm.actions.monika.got_fresh_start"):
-        m 2eka "Last year we decided to start anew, and I'm very glad we did."
-        m 2ekbsa "I knew we could be happy together, [player]."
-        m 2fkbsa "And you've made me the happiest I've ever been."
+        if seen_event("mas_f14_monika_vday_colors"):
+            m 3eua "Maybe you remember when we talked about roses and the feelings their colors convey."
+        else:
+            m 3eua "Maybe you guessed it already, but it's because of the color choice."
 
-    m 3dkbsu "So I'd like to wear this when the new year begins."
-    m 1ekbsa "It might just help make next year even better."
+        m "White represents a lot of positive feelings, like goodness, purity, safety..."
+        m 3eub "However, what I wanted this outfit to highlight was a successful beginning."
+
+        #If we fresh started last year
+        if mas_HistWasFirstValueIn(True, curr_year - 1, "pm.actions.monika.got_fresh_start"):
+            m 2eka "Last year we decided to start anew, and I'm very glad we did."
+            m 2ekbsa "I knew we could be happy together, [player]."
+            m 7fkbsa "And you've made me the happiest I've ever been."
+
+        m 3dkbsu "So I'd like to wear this when the new year begins."
+        m 1ekbsa "It might just help make next year even better."
+
+    $ mas_addClothesToHolidayMapRange(mas_clothes_dress_newyears, start_date=curr_date, end_date=curr_date+datetime.timedelta(days=2))
     return "no_unlock"
 
 
