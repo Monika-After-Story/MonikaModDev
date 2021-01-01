@@ -16785,7 +16785,7 @@ label monika_know_its_you:
         )
     )
 
-label monika_example:
+label monika_overton:
     m 1a "This is an example topic."
     m 1eub "Have you heard anything about the Overton Window?"
     m 3esd "The Overton Window is a political science concept that reflects the value structure of a society."
