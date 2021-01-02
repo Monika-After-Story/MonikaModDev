@@ -558,11 +558,11 @@ init 5 python:
     )
 
 label mas_song_burning_love:
-    m 2hubsb "{i}~Your kisses lift me higher~{/i}"
-    m 3rublb "{i}Like the sweet song of a choir{/i}"
-    m 1dubsb "{i}~You light my morning sky~{/i}"
+    m 1hubsb "{i}~Your kisses lift me higher~{/i}"
+    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 1dubsu "{i}~You light my morning sky~{/i}"
     m 1hubfb "{i}~With burning love~{/i}"
-    m 1hub "Ahaha~"
+    m 1hubsb "Ahaha~"
     m 1ekbsa "You always make my day brighter, [player]!"
     return
 
