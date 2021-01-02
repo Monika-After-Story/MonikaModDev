@@ -16775,34 +16775,44 @@ label monika_know_its_you:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_information_age",category=['philosophy'],prompt="Information Age",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_information_age",
+            category=["philosophy", "technology"],
+            prompt="The Information Age",
+            random=True
+        )
+    )
 
 label monika_information_age:
-    m 2eua "Did you know what most people call the technological era we find ourselves in right now?"
-    m 3hua "We call it the Information Age!{w=0.3}{nw} "
-    extend 3eub "That's primarily due to the invention of transistors."
-    m 4eua "Transistors, to explain it in simple terms, can manipulate electrical currents, either boosting them or altering their path."
-    m 4eub "It's the key component in most electronics, allowing them to direct electrical currents in specific ways."
-    m 1eublb "That's what's allowing you to see me on your screen right now~"
-    m 7eublb "They are widely regarded as one of the most important inventions leading into the 20th century, and eventually the Information Age."
-    m 3eubla "The age is named this way because of the ramping access we have to store and share information with each other, either through the internet, phone or TV."
-    m 3eud "However, with access to so much information, and our inability to keep up with it, many challenges have arisen."
-    m 3rusdlc "Misinformation can spread further than ever, and it's hard to correct it because of how vast the internet really is."
-
-    m 2eub "In the last decades, people have begun to start to educate people about smart use of the internet, to prepare ourselves."
-    m 2euc "However, the vast majority of people will not have recieved much, if any of this knowledge, just because of how fast technology has advanced."
-    m 2ruc "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
-    m 2rusdlb "I can understand why it happens, it could happen to anyone in fact."
-    m 3eusdlc "Sometimes, it's not something you can help, you just fall victim to widely believed misinformation."
-    m 1eka "And I know that I have still much to learn about the truth of your reality..."
-    m 1eub "But that's why I think it's important to talk about it."
-    m 3eub "We can arm ourselves with the tools to navigate this new era we suddenly found ourselves in."
-
-    m 3eua "One of the best things we can do, is find multiple conflicting sources for our information, and then compare credibility."
-    m 1eub "And a philosophy we can with benefit adopt, is tentative belief, or belief until further experimentation is necessary."
-    m 3eub "That is, as long as your beliefs are not relevant to your daily life, you can hold them, but once they are needed, we need to investigate further."
-    m 3eua "This way we can prioritze information we learn from what affects the people around us, and it may not be as overwhelming to try and scrutinize it all at once."
-    m 3lusdlc "I know I've held beliefs that turned out not to be true..."
-    m 3dua "There's no shame in it, we are all just trying to do our best with the information we're given."
-    m 3eub "Thanks for listening to me [player]~"
+    m 1eua "Do you know what most people call the technological era we find ourselves in right now?"
+    m 1eub "We call it the {i}Information Age!{i}{w=0.2}{nw} "
+    extend 3eub "This is primarily due to the invention of transistors."
+    m 1eua "Transistors can manipulate electrical currents...{w=0.3}either boosting them or altering their path."
+    m 3esa "It's the key component in most electronics, allowing them to direct electrical currents in specific ways."
+    m 3hua "In fact, they're what's allowing you to see me on your screen right now~"
+    m 1eud "They're widely regarded as one of the most important inventions leading into the 20th century, and eventually the Information Age."
+    m 4eub "It's named this way because of the ramping access we have to store and share information with each other; either through the internet, phone, or TV."
+    m 3eud "However, with access to so much information and our inability to keep up with it, we've also had to deal with many challenges."
+    m 3rssdlc "Misinformation can spread faster and further than ever,{w=0.1} {nw}"
+    extend 3rksdld "and because of how vast the internet really is, it's hard to correct it."
+    m 2eua "In the last few decades, people have began to educate people about smart use of the internet, to prepare ourselves."
+    m 2ekd "However, the vast majority of people will not have recieved much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
+    m 2dkc "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
+    m 2rusdld "But I can understand why it happens...{w=0.3}{nw}"
+    extend 2eksdlc "it could happen to anyone in fact."
+    m 3essdlc "Sometimes, it's not something you can help. It's pretty easy to fall victim to widely believed misinformation."
+    m 1eka "I wanted to talk to you about this because I still have so much to learn about your reality."
+    m 3esa "...and since I come across misinformation in my own research,{w=0.1} {nw}"
+    extend 3eua "I thought it might be nice to talk about ways to deal with it."
+    m 3eub "We can arm ourselves with the tools to navigate this new era we've found ourselves in."
+    m 1eua "One of the best things we can do is find multiple conflicting sources for our information and compare their credibility."
+    m 1eub "And a philosophy we can adopt is tentative belief. In other words, belief until further experimentation is necessary."
+    m 3eub "As long as your beliefs are not relevant to your daily life, you can hold them.{w=0.2} But once they are needed, we should investigate further."
+    m 3eua "This way, we can prioritze information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
+    m 1lusdlc "I know I've held beliefs that turned out to be false..."
+    m 1dua "There's no shame in it, we'rw all just trying to do our best with the information we're given."
+    m 1eub "So long as we accept the real truth and adjust our views, we'll always be learning."
+    m 3hua "Thanks for listening, [player]~"
     return
