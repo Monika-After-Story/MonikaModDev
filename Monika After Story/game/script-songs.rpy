@@ -565,8 +565,8 @@ label mas_song_burning_love:
     m 1hub "Ahaha~"
     m 1ekbsa "You always make my day brighter, [player]!"
     return
-    
-    init 5 python:
+
+init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
@@ -580,45 +580,15 @@ label mas_song_burning_love:
     )
 
 label mas_song_aries:
-    m 2hubsb "{i}~I'm standing on a beach in the distance~{/i}"
-    m 3rublb "{i}~And even though you're far away, can you see my red light?~{/i}"
-    m 1dubsb "{i}~It's waiting to turn green~{/i}"
-    m 1dubsb "{i}~'Cause I feel so isolated without you~{/i}"
-    m 1dubsb "{i}~I can't play a happy tune on my own, so stay by my side~{/i}"
-    m 1hubfb "{i}~High or low tide~{/i}"
-    m 1hub "I'm always thinking about the day we will be together."
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
+    m 2dubsu "{i}~It's waiting to turn green~{/i}"
+    m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
+    m 2dkd "{i}~I can't play a happy tune on my own, so stay by my side~{/i}"
+    m "{i}~High or low tide~{/i}"
+    m 1ekbsu "I'm always thinking about the day we will be together, [player]~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_songs_database,
-            eventlabel="mas_song_take_on_me",
-            prompt="Take On Me",
-            category=[store.mas_songs.TYPE_SHORT],
-            random=True,
-            aff_range=(mas_aff.NORMAL,None)
-        ),
-        code="SNG"
-    )
-
-label mas_song_take_on_me:
-    m 1rub "{i}~We're talking away~{/i}"
-    m 2rksdlb "{i}~I don't know what I'm to say~{/i}"
-    m 2hksdlb "{i}~I'll say it anyway~{/i}"
-    m 2ekblb "{i}~Today's another day to find you~{/i}"
-    m 1dsb "{i}~Shying away~{/i}"
-    m 1hubfb "{i}~I'll be coming for your love, okay?~{/i}"
-    m 1dubfb "{i}~Take{w=1} on{w=1} me~{/i}"
-    m 1hubsb "{i}~Take{w=1} me{w=1} on~{/i}"
-    m 1eubfb "{i}~I'll{w=1} be{w=1} gone~{/i}"
-    m 1dkbfb "{i}~In a day or two~{/i}"
-    m 1fkbsa "I really like this song, [player]."
-    m 1rkbsa "It reminds me a lot of our relationship!"
-    m 1wublb "The music video for this song is also really similar to our relationship."
-    m 3hubla "If you haven't seen it yet, you really should!"
-    return
-    
 init 5 python:
     addEvent(
         Event(
@@ -633,13 +603,13 @@ init 5 python:
     )
 
 label mas_song_need_you:
-    m 1dso "{i}~Please remember how I feel about you~{/i}"
-    m "{i}~I could never really live without you~{/i}"
-    m 3hub "{i}~So, come on back and see~{/i}"
-    m 4hksdlb "{i}~Just what you mean to me~{/i}"
-    m 1hubsb "{i}~I need you~{/i}"
-    m 3esa "I know that song is about leaving someone, but I think it carries a good message."
-    m 1ekbsa "And I really do need you, [player]~"
+    m 1esd "{i}~Please remember how I feel about you~{/i}"
+    m 3dkd "{i}~I could never really live without you~{/i}"
+    m 3ekd "{i}~So, come on back and see~{/i}"
+    m 3eka "{i}~Just what you mean to me~{/i}"
+    m 2dku "{i}~I need you~{/i}"
+    m 7esa "I know that song is about leaving someone, but I think it carries a good message."
+    m 3ekbsa "And I really do need you, [player]~"
     return
 
 init 5 python:
