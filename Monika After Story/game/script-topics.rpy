@@ -15390,13 +15390,13 @@ label monika_soft_rains:
         m 2rkc "..."
         m 2ekc "Hey [player],{w=0.5} I ran across a poem recently that I need to share with you..."
         m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
+        m 1dsc ".{w=0.3}.{w=0.3}."
 
     else:
-        m 3eka "Would you like to hear me recite that poem again, [mas_get_player_nickname]?"
+        m 3eka "Would you like to hear me recite that poem again, [mas_get_player_nickname()]?"
         m 1dua "Just give me a second."
-        m 1dsd "Ahem..."
+        m 1dsd "Ahem.{w=0.3}.{w=0.3}."
 
-    m 1dsc "..."
     m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.3}and swallows circling with their shimmering sound.{/i}"
     m 1dsc "{i}And frogs in the pools singing at night, {w=0.3}and wild plum trees in tremulous white.{/i}"
     m 3dsd "{i}Robins will wear their feathery fire, {w=0.3}whistling their whims on a low fence-wire.{/i}"
