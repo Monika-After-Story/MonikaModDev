@@ -15386,10 +15386,17 @@ init 5 python:
     )
 
 label monika_soft_rains:
-    m 2rkc "..."
-    m 2ekc "Hey [player],{w=0.5} I ran across a poem recently that I need to share with you..."
-    m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
-    m 1dsc "..."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 2rkc "..."
+        m 2ekc "Hey [player]...{w=0.5}I ran across a poem recently that I need to share with you..."
+        m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
+        m 1dsc ".{w=0.3}.{w=0.3}."
+
+    else:
+        m 3eka "Would you like to hear me recite that poem again, [mas_get_player_nickname()]?"
+        m 1dua "Just give me a second."
+        m 1dsd "Ahem.{w=0.3}.{w=0.3}."
+
     m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.3}and swallows circling with their shimmering sound.{/i}"
     m 1dsc "{i}And frogs in the pools singing at night, {w=0.3}and wild plum trees in tremulous white.{/i}"
     m 3dsd "{i}Robins will wear their feathery fire, {w=0.3}whistling their whims on a low fence-wire.{/i}"
@@ -15398,7 +15405,12 @@ label monika_soft_rains:
     m 6dkc "{i}And Spring herself, when she woke at dawn...{/i}"
     m 6ekd "{i}Would scarcely know that we were gone.{/i}"
     m 2ekc "..."
-    m 2eka "I really wanted to talk to you about this one, [player]."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 2eka "I really wanted to talk to you about this one, [player]."
+
+    else:
+        m 1rksdld "This poem has always made me feel...{w=0.3}frightened,{w=0.2} in a way."
+
     m "The author,{w=0.2} Sara Teasdale,{w=0.2} wrote this poem in a world consumed by war."
     m 2rka "I know things are {i}relatively{/i} peaceful now..."
     m 2ekc "But the message still stands, doesn't it?"
