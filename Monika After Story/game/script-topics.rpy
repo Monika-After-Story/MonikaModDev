@@ -933,11 +933,34 @@ label monika_death:
     if mas_event_mailbox.is_post_interruption_mode():
         m 1eua "Anyway...{w=0.3} {nw}"
         extend 1esc "Have you ever wondered what it feels like to die?"
-    else:
-        m 1euc "[player], have you ever wondered what it feels like to die?"
+        m 1lsc "It's something I used to think about pretty often..."
+        m 1lksdlc "But I think I've actually learned what it feels like."
 
-    m 1lsc "It's something I used to think about pretty often..."
-    m 1lksdlc "But I think I've actually learned what it feels like."
+    elif mas_event_mailbox.is_monika_initiated_mode():
+        m 1euc "[player], have you ever wondered what it feels like to die?"
+        m 1lsc "It's something I used to think about pretty often..."
+        m 1lksdlc "But I think I've actually learned what it feels like."
+
+    else:
+        m 1esd "I actually used to think about this a lot..."
+        m 1lksdla "I mean...{w=0.3}{nw}"
+        extend 3eksdld "of course I don't want to die,{w=0.1} {nw}"
+        extend 3lksdla "but I guess there's nothing wrong with wondering about what happens after death, right?"
+
+        if mas_isMoniNormal(higher=True) and random.randint(0, 2) == 2:
+            m 1luc "I'm sure I'm not the only one who ever had that kind of...{w=0.4}{nw}"
+            extend 1hksdlb "well, I guess {i}morbid curiosity{/i} is what we could call it."
+            m 1hksdla "..."
+            m 3rksdlb "Ahaha, sorry.{w=0.2} I may or may not have been waiting for the right occasion to make that pun."
+
+        else:
+            m 1luc "I'm sure I'm not the only one who's ever had that kind of thought."
+            m 3euc "After all, afterlife is a concept in many religions."
+
+        m 1eua "Anyway, the fact that we have no way to prove for sure what death is like makes it interesting to think about."
+        m 3eud "Especially since we'll probably never get a definitive answer as long as we're alive."
+        m 1lksdlc "Although, I think I might have an idea of what it's like here, in my world."
+
     m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...it feels like I'm instantly put to sleep, left with nothing but my thoughts."
     m 1dkd "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
