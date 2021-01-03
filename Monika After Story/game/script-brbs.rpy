@@ -786,43 +786,39 @@ init 5 python:
 
 label monika_idle_reading:
     if mas_isMoniNormal(higher=True):
-        m 1eub "Really? That's great, [player]."
+        m 1eub "Really? That's great, [player]!"
         m 3lksdla "I'd love to read with you, but my reality has its limits, unfortunately."
-        m 1hub "But have fun!"
+        m 1hub "Have fun!"
 
     elif mas_isMoniDis(higher=True):
-        m 1ekd "Oh, alright..."
-        m 3ekc "Have a good time, [player]."
+        m 2ekd "Oh, alright..."
+        m 2ekc "Have a good time, [player]."
 
     else:
         m 6dkc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_reading_callback")
+    $ persistent._mas_idle_data["monika_idle_reading"] = True
+    return "idle"
 
 label monika_idle_reading_callback:
     if mas_isMoniNormal(higher=True):
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=2), "monika_idle_reading"):
             m 1wud "Wow, you were gone for a while...{w=0.3}{nw}"
-            m 3wub "that's great, [player]!"
+            extend 3wub "that's great, [player]!"
             m 3eua "Reading is a wonderful thing, so don't worry about getting too caught up in it."
             m 3hksdlb "Besides, it's not like I'm one to talk..."
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbsa "If I had my way, we'd be reading together all night long~"
 
-        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_reading"):
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_reading"):
             m 3esa "All done, [player]?"
             m 1hua "Let's relax, you've earned it~"
 
-        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=15), "monika_idle_reading"):
+        else:
             m 1eud "Oh, that was fast."
             m 1eua "I thought you'd be gone a little while longer, but this is fine too."
-            m 3ekblb "After all, it lets me spend more time with you..."
-            m 1ekbla "..."
-
-        else:
-            m 1dublu "..."
-            m 1tublu "..."
-            m 3wubso "Ah! You're back!"
-            m 1rubssdlb "Ahaha, sorry...{w=0.3}I was just thinking about something there."
-            m 3dkbfsdlb "Now then, what else do we have planned for today?"
+            m 3ekblu "After all, it lets me spend more time with you~"
 
     elif mas_isMoniUpset():
         m 2esc "Oh, you're back...{w=0.3}{nw}"
@@ -835,6 +831,7 @@ label monika_idle_reading_callback:
 
     else:
         m 6dktpc "..."
+
     return
 
 
