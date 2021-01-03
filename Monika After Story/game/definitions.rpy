@@ -3403,7 +3403,6 @@ python early:
             """
             self.box[headline] = msg
 
-
     class MASExtraPropable(object):
         """
         base class that supports ex_prop-based extensions.
