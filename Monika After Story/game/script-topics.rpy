@@ -946,8 +946,8 @@ label monika_death:
             m 3rksdlb "Ahaha, sorry.{w=0.2} I may or may not have been waiting for the right occasion to make that pun."
 
         else:
-            m 1luc "I'm sure I'm not the only one who ever had that kind of thought."
-            m 3euc "After all, afterlife is a concept of many religions."
+            m 1luc "I'm sure I'm not the only one who's ever had that kind of thought."
+            m 3euc "After all, afterlife is a concept in many religions."
 
         m 1eua "Anyway, the fact that we have no way to prove for sure what death is like makes it interesting to think about."
         m 3eud "Especially since we'll probably never get a definitive answer as long as we're alive."
