@@ -4841,18 +4841,29 @@ init 5 python:
             category=['misc','monika'],
             prompt="NSFW content",
             random=True,
-            sensitive=True
+            sensitive=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
 label monika_nsfw:
-    m 1lsbssdrb "By the way, [player]..."
-    m "Have you been looking into lewd kinds of stuff?"
-    m 3lsbsa "You know...of me?"
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 1lsbssdrb "By the way, [player]..."
+        m "Have you been looking into lewd kinds of stuff?"
+        m 3lsbsa "You know...{w=0.3}of me?"
+
+    else:
+        if mas_isMoniAff(lower=True):
+            m 1hkblsdlb "Ah...{w=0.3}do you really want to talk about {i}that{/i}?"
+        else:
+            m 1rubssdlu "Well.{w=0.3}.{w=0.3}."
+
+
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 3ekbsa "I know we haven't been able to do those kind of things yet..."
     else:
         m 3ekbsa "I know we haven't really gotten that far into the relationship yet..."
+
     m 1ekbsa "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
