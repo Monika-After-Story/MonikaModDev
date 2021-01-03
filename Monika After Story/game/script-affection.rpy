@@ -2228,6 +2228,9 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
         else:
             dlg_line = "Is there something else you'd like me to call you instead?"
 
+        lowerplayer = player.lower()
+        cute_nickname_pattern = "(?:{0}|{1})\\w?y".format(lowerplayer, lowerplayer[0:-1])
+
     show monika at t11
     while not done:
         m 1eua "[dlg_line]{nw}"
@@ -2248,6 +2251,8 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
                         screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
                     ).strip(' \t\n\r').lower()
 
+                    is_cute_nickname = bool(re.search(cute_nickname_pattern, lowername))
+
                 #Now validate
                 if lowername == "nevermind":
                     $ done = True
@@ -2258,19 +2263,19 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
                     m 1eua "Try again~"
                     jump .name_enter_skip_loop
 
-                elif lowername == player.lower():
+                elif lowername == lowerplayer:
                     m 2hua "..."
                     m 4hksdlb "That's the same name you have right now, silly!"
                     m 1eua "Try again~"
                     jump .name_enter_skip_loop
 
-                elif mas_awk_name_comp.search(lowername):
+                elif not is_cute_nickname and mas_awk_name_comp.search(lowername):
                     $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
                     m 1rksdlb "[awkward_quip]"
                     m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
                     jump .name_enter_skip_loop
 
-                elif mas_bad_name_comp.search(lowername):
+                elif not is_cute_nickname and mas_bad_name_comp.search(lowername):
                     $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
                     m 1ekd "[bad_quip]"
                     m 3eka "Please pick a nicer name for yourself, okay?"
