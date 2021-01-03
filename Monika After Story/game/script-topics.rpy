@@ -934,9 +934,9 @@ label monika_death:
         m 1lksdlc "But I think I've actually learned what it feels like."
 
     else:
-        m 1esd "I actually used to think about this subject a lot..."
+        m 1esd "I actually used to think about this a lot..."
         m 1lksdla "I mean...{w=0.3}{nw}"
-        extend 3eksdlb "of course I don't want to die, {w=0.4}{nw}"
+        extend 3eksdld "of course I don't want to die,{w=0.1} {nw}"
         extend 3lksdla "but I guess there's nothing wrong with wondering about what happens after death, right?"
 
         if mas_isMoniNormal(higher=True) and random.randint(0, 2) == 2:
