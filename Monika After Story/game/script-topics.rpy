@@ -860,8 +860,6 @@ label monika_god:
         m 1lksdla "I don't think I really questioned it as a kid..."
 
     m 1lsc "But the more I grew up, the more I learned about the world, and the more I questioned it."
-    m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
-    m 1lsc "But as I grew up, the more I learned about the world, the more I would question it."
     m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
     m 1tfd "...when there are children who live their lives being sold as sex slaves?"
     m 4tfc "Or the eight hundred million people who are too poor to even eat."
@@ -948,7 +946,7 @@ label monika_death:
         extend 3lksdla "but I guess there's nothing wrong with wondering about what happens after death, right?"
 
         if mas_isMoniNormal(higher=True) and random.randint(0, 2) == 2:
-            m 1luc "I'm sure I'm not the only one who ever had that kind of...{w=0.4}{nw}"
+            m 1luc "I'm sure I'm not the only one who's ever had that kind of...{w=0.4}{nw}"
             extend 1hksdlb "well, I guess {i}morbid curiosity{/i} is what we could call it."
             m 1hksdla "..."
             m 3rksdlb "Ahaha, sorry.{w=0.2} I may or may not have been waiting for the right occasion to make that pun."
