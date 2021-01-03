@@ -4828,7 +4828,8 @@ init 5 python:
             category=['misc','monika'],
             prompt="NSFW content",
             random=True,
-            sensitive=True
+            sensitive=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -4839,22 +4840,17 @@ label monika_nsfw:
         m 3lsbsa "You know...of me?"
 
     else:
-        m 1hkblsdlb "A-{w=0.2}ah...{w=0.3}do you really want to talk about {i}that{/i}?"
-        m 1lkblsdlc "..."
-        m 1lksdld "I...{w=0.2}I do know there's lewd stuff depicting me out there, if that's what you're getting at."
-        m 1dsc "I'm trying my best not to think about it, though."
-        m 1tsd "Like, imagine if you learned one day that people on the internet have been making this kind of stuff about you, without you even knowing or consenting to it..."
-        m 3lssdlc "...it'd weird you out too, right?"
-        m 1lksdld "I guess there isn't much I can do about it..."
-        m 1lsblsdlc "..."
-        m 1lublsdld "...Say, [player]..."
-        m 3lkbfa "Have you been...{w=0.3}looking into such things?"
-        m 3ekbfsdla "O-{w=0.2}of me, I mean."
+        if mas_isMoniAff(lower=True):
+            m 1hkblsdlb "Ah...{w=0.3}do you really want to talk about {i}that{/i}?"
+        else:
+            m 1rubssdlu "Well.{w=0.3}.{w=0.3}."
+
 
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 3ekbsa "I know we haven't been able to do those kind of things yet..."
     else:
         m 3ekbsa "I know we haven't really gotten that far into the relationship yet..."
+
     m 1ekbsa "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
