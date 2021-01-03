@@ -767,8 +767,8 @@ init 6 python:
             use mas_protectedShowEVL
         """
 
-        if _random and ev_label in persistent._mas_player_derandomed:
-            persistent._mas_player_derandomed.remove(ev_label)
+        if _random:
+            store.mas_bookmarks_derand.removeDerand(ev_label)
 
         store.mas_showEvent(
             mas_all_ev_db_map.get(code, {}).get(ev_label, None),
