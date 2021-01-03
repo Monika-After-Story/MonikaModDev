@@ -250,7 +250,7 @@ label monika_short_stories_menu:
 
                 else:
                     python:
-                        persistent._mas_last_seen_new_story[story_type] = datetime.date.today()
+                        persistent._mas_last_seen_new_story[story_type] = datetime.datetime.now()
                         story_to_push = mas_stories.get_and_unlock_random_story(story_type)
 
             #Then push
