@@ -4837,7 +4837,7 @@ label monika_nsfw:
     if mas_event_mailbox.is_monika_initiated_mode():
         m 1lsbssdrb "By the way, [player]..."
         m "Have you been looking into lewd kinds of stuff?"
-        m 3lsbsa "You know...of me?"
+        m 3lsbsa "You know...{w=0.3}of me?"
 
     else:
         if mas_isMoniAff(lower=True):
