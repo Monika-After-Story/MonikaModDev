@@ -1259,9 +1259,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_veggies",category=['monika'],prompt="Being a vegetarian",random=True))
 
 label monika_veggies:
-    m 1eub "Hey, did you know I'm vegetarian?"
-    m 1hksdlb "Ah...I don't mean that like I'm bragging or anything!"
-    m 1lksdla "I just thought you'd enjoy a fun fact about me."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 1eub "Hey, did you know I'm vegetarian?"
+        m 1hksdlb "Ah...I don't mean that like I'm bragging or anything!"
+        m 1lksdla "I just thought you'd enjoy a fun fact about me."
+
+    else:
+        m 1eua "Are you curious about why I became a vegetarian, [player]?"
+
     m 3esa "I decided to start a couple years ago after learning more about Earth's climate..."
     m 1wud "The carbon footprint of cultivating livestock is just unbelievable!"
     m 3eua "Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess."
