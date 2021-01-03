@@ -784,53 +784,53 @@ init 5 python:
         markSeen=True
     )
 
-label monika_idle_reading: 
+label monika_idle_reading:
     if mas_isMoniNormal(higher=True):
-        m 2eub "Really? That's great, [player]."
-        m 3lksdla "I'd love to be there reading with you, but my reality has its limits."
-        m 1hub "Anyway, have fun!"
+        m 1eub "Really? That's great, [player]."
+        m 3lksdla "I'd love to read with you, but my reality has its limits, unfortunately."
+        m 1hub "But have fun!"
 
     elif mas_isMoniDis(higher=True):
         m 1ekd "Oh, alright..."
         m 3ekc "Have a good time, [player]."
 
-    else: 
+    else:
         m 6dkc "..."
 
 label monika_idle_reading_callback:
     if mas_isMoniNormal(higher=True):
-        if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=3), "monika_idle_reading"):
-            m 7wsd "Wow, you were reading for a while..."
-            m 4wub "That's awesome, [player]!"
-            m 2eua "Reading is a wonderful thing, so don't worry about getting too caught up in it."
-            m 2rksdlb "Besides, it's not like I'm one to talk..."
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=2), "monika_idle_reading"):
+            m 1wud "Wow, you were gone for a while...{w=0.3}{nw}"
+            m 3wub "that's great, [player]!"
+            m 3eua "Reading is a wonderful thing, so don't worry about getting too caught up in it."
+            m 3hksdlb "Besides, it's not like I'm one to talk..."
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbsa "If I had my way, we'd be reading together all night long~"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=1), "monika_idle_reading"):
-            m 3esb "All done, [player]?"
-            m 1hsa "Then let's relax, you've earned it."
+            m 3esa "All done, [player]?"
+            m 1hua "Let's relax, you've earned it~"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=15), "monika_idle_reading"):
             m 1eud "Oh, that was fast."
-            m 2eub "I thought you'd take longer, but this is fine too."
+            m 1eua "I thought you'd be gone a little while longer, but this is fine too."
             m 3ekblb "After all, it lets me spend more time with you..."
             m 1ekbla "..."
 
-        else: 
-            m 2dublu "..."
-            m 2tublu "..."
+        else:
+            m 1dublu "..."
+            m 1tublu "..."
             m 3wubso "Ah! You're back!"
-            m 1rubfsdlb "Ahaha, sorry; I was...thinking about something there."
+            m 1rubssdlb "Ahaha, sorry...{w=0.3}I was just thinking about something there."
             m 3dkbfsdlb "Now then, what else do we have planned for today?"
 
     elif mas_isMoniUpset():
-        m 2esc "Oh, you're back...{w=0.5}{nw}"
-        extend 2lkd "good..." 
+        m 2esc "Oh, you're back...{w=0.3}{nw}"
+        extend 2lkd "good..."
 
     elif mas_isMoniDis():
         m 6dkc "..."
-        m 6ekd "Oh, sorry; I didn't see you there."
+        m 6ekd "Oh, sorry...{w=0.3}I didn't see you there."
         m 6rkc "...welcome back."
 
     else:
