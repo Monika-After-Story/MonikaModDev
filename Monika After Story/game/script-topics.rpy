@@ -15388,7 +15388,7 @@ init 5 python:
 label monika_soft_rains:
     if mas_event_mailbox.is_monika_initiated_mode():
         m 2rkc "..."
-        m 2ekc "Hey [player],{w=0.5} I ran across a poem recently that I need to share with you..."
+        m 2ekc "Hey [player]...{w=0.5}I ran across a poem recently that I need to share with you..."
         m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
         m 1dsc ".{w=0.3}.{w=0.3}."
 
