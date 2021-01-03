@@ -366,7 +366,8 @@ init 5 python:
     )
 
 label bye_leaving_already_2:
-    m 1ekc "Aww, leaving already?"
+    if mas_getSessionLength() <= datetime.timedelta(minutes=30):
+        m 1ekc "Aww, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3hubsa "I love you so much, [player]!"
     show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -671,7 +672,8 @@ label bye_prompt_sleep:
             m 1eua "Taking an afternoon nap, I see."
             # TODO: monika says she'll join you, use sleep sprite here
             # and setup code for napping
-            m 1hua "Ahaha~ Have a good nap, [player]."
+            m 1hub "Ahaha~{w=0.1} {nw}"
+            extend 1hua "Have a good nap, [player]."
 
         elif mas_isMoniUpset():
             m 2esc "Taking a nap, [player]?"
@@ -782,10 +784,25 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
     return None
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database, eventlabel="bye_illseeyou", unlocked=True, aff_range=(mas_aff.HAPPY, None)), code="BYE")
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_illseeyou",
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        code="BYE"
+    )
 
 label bye_illseeyou:
-    m 1eua "I'll see you tomorrow, [player]."
+    # TODO: update this when TC-O comes out
+    if mas_globals.time_of_day_3state == "evening":
+        $ dlg_var = "tomorrow"
+
+    else:
+        $ dlg_var = "later"
+
+    m 1eua "I'll see you [dlg_var], [player]."
     m 3kua "Don't forget about me, okay?~"
     return 'quit'
 
@@ -1306,7 +1323,7 @@ label bye_prompt_game:
         m 2euc "Again?"
         m 2eud "Alright then. Goodbye, [player]."
 
-    elif renpy.random.randint(1,10) == 1:
+    elif mas_getSessionLength() < datetime.timedelta(minutes=30) and renpy.random.randint(1,10) == 1:
         m 1ekc "You're leaving to play another game?"
         m 3efc "Don't you think you should be spending a little more time with me?"
         m 2efc "..."
