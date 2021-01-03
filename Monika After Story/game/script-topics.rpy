@@ -850,14 +850,14 @@ init 5 python:
     )
 
 label monika_god:
-    if mas_event_mailbox.is_monika_initiated_mode():
+    if store.mas_globals.from_prompt_menu:
+        m 1eud "Do I believe in God, [player]?{w=0.2} Personally I'm not too sure about it."
+        m 1lksdla "I don't think I really questioned it as a kid..."
+
+    else:
         m 1eua "[player], do you believe in God?"
         m 1eka "I was never too sure, myself."
         m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
-
-    else:
-        m 1eud "Do I believe in God, [player]?{w=0.2} Personally I'm not too sure about it."
-        m 1lksdla "I don't think I really questioned it as a kid..."
 
     m 1lsc "But the more I grew up, the more I learned about the world, and the more I questioned it."
     m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
@@ -881,7 +881,7 @@ label monika_god:
     m 3euc "So, from that perspective..."
     m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_religious is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_religious is None:
         m 1eua "Anyway, do you worship any god, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -928,18 +928,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
-    if mas_event_mailbox.is_post_interruption_mode():
-        m 1eua "Anyway...{w=0.3} {nw}"
-        extend 1esc "Have you ever wondered what it feels like to die?"
-        m 1lsc "It's something I used to think about pretty often..."
-        m 1lksdlc "But I think I've actually learned what it feels like."
-
-    elif mas_event_mailbox.is_monika_initiated_mode():
-        m 1euc "[player], have you ever wondered what it feels like to die?"
-        m 1lsc "It's something I used to think about pretty often..."
-        m 1lksdlc "But I think I've actually learned what it feels like."
-
-    else:
+    if store.mas_globals.from_prompt_menu:
         m 1esd "I actually used to think about this a lot..."
         m 1lksdla "I mean...{w=0.3}{nw}"
         extend 3eksdld "of course I don't want to die,{w=0.1} {nw}"
@@ -958,6 +947,11 @@ label monika_death:
         m 1eua "Anyway, the fact that we have no way to prove for sure what death is like makes it interesting to think about."
         m 3eud "Especially since we'll probably never get a definitive answer as long as we're alive."
         m 1lksdlc "Although, I think I might have an idea of what it's like here, in my world."
+
+    else:
+        m 1euc "[player], have you ever wondered what it feels like to die?"
+        m 1lsc "It's something I used to think about pretty often..."
+        m 1lksdlc "But I think I've actually learned what it feels like."
 
     m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...it feels like I'm instantly put to sleep, left with nothing but my thoughts."
@@ -1037,11 +1031,11 @@ init 5 python:
     )
 
 label monika_sayori:
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m 2euc "I was thinking about Sayori earlier..."
+    if store.mas_globals.from_prompt_menu:
+        m 2lkc "Ah, what happened to Sayori..."
 
     else:
-        m 2lkc "Ah, what happened to Sayori..."
+        m 2euc "I was thinking about Sayori earlier..."
 
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
@@ -1114,7 +1108,13 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's setting",random=True))
 
 label monika_japan:
-    if mas_event_mailbox.is_monika_initiated_mode():
+    if store.mas_globals.from_prompt_menu:
+        m 4wud "The world this game takes place in is weird, isn't it?"
+        m 2luc "...I don't even know where this is all supposed to take place."
+        m 2ltc "Well, this {i}seems{/i} like it's based on Japan,{w=0.1} but like..."
+        $ line_start = "A"
+
+    else:
         m 1eud "By the way, there's something that's been bothering me..."
         m 3rud "You know how this takes place in Japan?"
         m 2euc "Well...{w=0.3}I assume you knew that, right?"
@@ -1122,12 +1122,6 @@ label monika_japan:
         m 2eud "I don't think you're actually told at any point where this takes place..."
         m 2etc "Is this even really Japan?"
         $ line_start = "I mean, a"
-
-    else:
-        m 4wud "The world this game takes place in is weird, isn't it?"
-        m 2luc "...I don't even know where this is all supposed to take place."
-        m 2ltc "Well, this {i}seems{/i} like it's based on Japan,{w=0.1} but like..."
-        $ line_start = "A"
 
     m 4esc "[line_start]ren't the classrooms and stuff kind of weird for a Japanese school?"
     m 4eud "Not to mention everything is in English..."
@@ -1294,13 +1288,13 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_veggies",category=['monika'],prompt="Being a vegetarian",random=True))
 
 label monika_veggies:
-    if mas_event_mailbox.is_monika_initiated_mode():
+    if store.mas_globals.from_prompt_menu:
+        m 1eua "Are you curious about why I became a vegetarian, [player]?"
+
+    else:
         m 1eub "Hey, did you know I'm vegetarian?"
         m 1hksdlb "Ah...I don't mean that like I'm bragging or anything!"
         m 1lksdla "I just thought you'd enjoy a fun fact about me."
-
-    else:
-        m 1eua "Are you curious about why I became a vegetarian, [player]?"
 
     m 3esa "I decided to start a couple years ago after learning more about Earth's climate..."
     m 1wud "The carbon footprint of cultivating livestock is just unbelievable!"
@@ -1917,7 +1911,7 @@ label monika_rap:
     m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would have been interesting to see what they came up with."
     m 1eub "It could've been a neat learning experience!"
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_rap is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_like_rap is None:
         $ p_nickname = mas_get_player_nickname()
         m 1eua "Do you listen to rap music, [p_nickname]?{nw}"
         $ _history_list.pop()
@@ -4749,7 +4743,7 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_would_like_mt_peak is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_would_like_mt_peak is None:
         m 5eka "Wouldn't you like that too, [player]?"
         $ _history_list.pop()
         menu:
@@ -4882,17 +4876,16 @@ init 5 python:
     )
 
 label monika_nsfw:
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m 1lsbssdrb "By the way, [player]..."
-        m "Have you been looking into lewd kinds of stuff?"
-        m 3lsbsa "You know...{w=0.3}of me?"
-
-    else:
+    if store.mas_globals.from_prompt_menu:
         if mas_isMoniAff(lower=True):
             m 1hkblsdlb "Ah...{w=0.3}do you really want to talk about {i}that{/i}?"
         else:
             m 1rubssdlu "Well.{w=0.3}.{w=0.3}."
 
+    else:
+        m 1lsbssdrb "By the way, [player]..."
+        m "Have you been looking into lewd kinds of stuff?"
+        m 3lsbsa "You know...{w=0.3}of me?"
 
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 3ekbsa "I know we haven't been able to do those kind of things yet..."
@@ -5225,7 +5218,7 @@ label monika_cities:
     m 3rksdlc "Then again, if people live close together, that leaves more room for open wilderness."
     m 3etc "Maybe it's not as simple as it seems."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_live_in_city is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_live_in_city is None:
         m 1esd "[player], do you live in a city?{nw}"
         $ _history_list.pop()
         menu:
@@ -5856,7 +5849,7 @@ label monika_vocaloid:
     m 1eua "Hey, [mas_get_player_nickname(exclude_names=['my love'])]?"
     m "You like listening to music, right?"
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_vocaloids is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_like_vocaloids is None:
         m 3eub "Do you by chance like 'virtual idols?'{nw}"
         $ _history_list.pop()
         menu:
@@ -7258,7 +7251,7 @@ label monika_rock:
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_rock_n_roll is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_like_rock_n_roll is None:
         m 3eua "Do you listen to rock and roll, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -7533,7 +7526,7 @@ label monika_sports:
     m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
     m 3eua "Plus, it's a great sport for two people!"
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_like_playing_sports is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_like_playing_sports is None:
         m "Do you play tennis, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -7629,7 +7622,7 @@ label monika_meditation:
     m 1eua "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_meditates is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_meditates is None:
         m 1eka "[player], do you ever take time to meditate?{nw}"
         $ _history_list.pop()
         menu:
@@ -9290,7 +9283,7 @@ label monika_beach:
     m "I rarely had a chance to do so after all."
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_live_near_beach is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_live_near_beach is None:
         m "Do you live near a beach, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -10953,7 +10946,7 @@ label monika_bullying:
     m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
 
-    if mas_event_mailbox.is_player_initiated_mode() or (persistent._mas_pm_is_bullying_victim is None and persistent._mas_pm_currently_bullied is None):
+    if store.mas_globals.from_prompt_menu or (persistent._mas_pm_is_bullying_victim is None and persistent._mas_pm_currently_bullied is None):
         m 2ekc "Have you ever been a victim of bullying, [player]?{nw}"
         $ _history_list.pop()
         menu:
@@ -11661,7 +11654,7 @@ label monika_justice:
     m "While the other person is now a hero for putting an end to their 'crimes.'"
     m 3rksdld "Can you really call that justice?"
 
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_monika_deletion_justice is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_monika_deletion_justice is None:
         m 2dsc "..."
 
         m 2euc "Have you ever been delivered what you thought to be false justice?{nw}"
@@ -15205,7 +15198,7 @@ init 5 python:
     )
 
 label monika_working_out:
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_works_out is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_works_out is None:
         m 1euc "Hey [player], I was just wondering..."
 
         m 1eua "Do you work out much?{nw}"
@@ -15445,16 +15438,16 @@ init 5 python:
     )
 
 label monika_soft_rains:
-    if mas_event_mailbox.is_monika_initiated_mode():
+    if store.mas_globals.from_prompt_menu:
+        m 3eka "Would you like to hear me recite that poem again, [mas_get_player_nickname()]?"
+        m 1dua "Just give me a second."
+        m 1dsd "Ahem.{w=0.3}.{w=0.3}."
+
+    else:
         m 2rkc "..."
         m 2ekc "Hey [player]...{w=0.5}I ran across a poem recently that I need to share with you..."
         m 7ekd "It's called {i}There Will Come Soft Rains{/i} and it's really had me thinking."
         m 1dsc ".{w=0.3}.{w=0.3}."
-
-    else:
-        m 3eka "Would you like to hear me recite that poem again, [mas_get_player_nickname()]?"
-        m 1dua "Just give me a second."
-        m 1dsd "Ahem.{w=0.3}.{w=0.3}."
 
     m 1dsd "{i}There will come soft rains and the smell of the ground, {w=0.3}and swallows circling with their shimmering sound.{/i}"
     m 1dsc "{i}And frogs in the pools singing at night, {w=0.3}and wild plum trees in tremulous white.{/i}"
@@ -15464,11 +15457,12 @@ label monika_soft_rains:
     m 6dkc "{i}And Spring herself, when she woke at dawn...{/i}"
     m 6ekd "{i}Would scarcely know that we were gone.{/i}"
     m 2ekc "..."
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m 2eka "I really wanted to talk to you about this one, [player]."
+
+    if store.mas_globals.from_prompt_menu:
+        m 1rksdld "This poem has always made me feel...{w=0.3}frightened,{w=0.2} in a way."
 
     else:
-        m 1rksdld "This poem has always made me feel...{w=0.3}frightened,{w=0.2} in a way."
+        m 2eka "I really wanted to talk to you about this one, [player]."
 
     m "The author,{w=0.2} Sara Teasdale,{w=0.2} wrote this poem in a world consumed by war."
     m 2rka "I know things are {i}relatively{/i} peaceful now..."
@@ -15629,17 +15623,18 @@ init 5 python:
     )
 
 label monika_dying_same_day:
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
-        m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
-        m 3rfd "Before I met you, I thought the idea was completely absurd!"
-    else:
+    if store.mas_globals.from_prompt_menu:
         m 1eud "You know, I was really skeptical about this idea before, {w=0.2}{nw}"
         extend 1rkc "thinking that it would be such an irrational decision to follow your beloved in death."
 
+    else:
+        m 1euc "[player], have you ever heard of couples wishing to die on the same day?"
+        m 3rksdla "...Gosh, that sounds kinda dark, doesn't it?"
+        m 3rfd "Before I met you, I thought the idea was completely absurd!"
+
     m 1etc "Why would someone give up on living a long and happy life just because their partner's life was dramatically cut short?"
 
-    if mas_event_mailbox.is_monika_initiated_mode():
+    if not store.mas_globals.from_prompt_menu:
         m 3rfd "It would be irrational and impulsive to do so!"
 
     if mas_isMoniEnamored(higher=True):
@@ -16844,7 +16839,7 @@ define SF_NEVER = 0
 default persistent._mas_pm_swear_frequency = None
 
 label monika_curse_words:
-    if mas_event_mailbox.is_player_initiated_mode() or persistent._mas_pm_swear_frequency is None:
+    if store.mas_globals.from_prompt_menu or persistent._mas_pm_swear_frequency is None:
         m 3etc "Say [player], do you swear often?{nw}"
         menu:
             m "Say [player], do you swear often?{fast}"

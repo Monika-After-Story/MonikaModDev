@@ -1686,17 +1686,6 @@ init python:
             topic_mode - current topic mode
             discussed_topics - ordered dict of discussed topics
         """
-        # Consts for pushing events
-        TM_DEFAULT = "def"
-        # Monika brought up this topic on her own
-        TM_MONIKA_INITIATED = "monika_initiated"
-        # The player's initiated this topic
-        TM_PLAYER_INITIATED = "player_initiated"
-        # The player let Monika continue her topic
-        TM_POST_INTERRUPTION = "post_interruption"
-        # Monika started this topic right after finishing another one
-        TM_CHAIN = "chain"
-
         # Consts for ev messages
         # NOTE: Add more as needed
 
@@ -1737,7 +1726,6 @@ init python:
             Constructor for the mailbox
             """
             super(MASEventMailbox, self).__init__()
-            self._topic_mode = self.TM_DEFAULT
             self.discussed_topics = OrderedDict()
 
         def __repr__(self):
@@ -1886,73 +1874,6 @@ init python:
             """
             if ev_label in self.discussed_topics:
                 self.discussed_topics.pop(ev_label)
-
-        def _set_topic_mode(self, value):
-            """
-            Sets topic mode to the given value
-            NOTE: this assumes the value is one of MASEventMailbox's constants
-            """
-            self._topic_mode = value
-
-        def set_default_mode(self):
-            """
-            Resets topic mode to default value
-            """
-            self._set_topic_mode(self.TM_DEFAULT)
-
-        def set_monika_initiated_mode(self):
-            """
-            Sets topic mode to monika_initiated (aka random)
-            """
-            self._set_topic_mode(self.TM_MONIKA_INITIATED)
-
-        def set_player_initiated_mode(self):
-            """
-            Sets topic mode to player_initiated (aka the player started current topic)
-            """
-            self._set_topic_mode(self.TM_PLAYER_INITIATED)
-
-        def set_post_interruption_mode(self):
-            """
-            Sets topic mode to post_interruption (aka after the player interrupted Monika)
-            """
-            self._set_topic_mode(self.TM_POST_INTERRUPTION)
-
-        def set_chain_mode(self):
-            """
-            Sets topic mode to chain (aka Monika starts a new topic right after another one)
-            """
-            self._set_topic_mode(self.TM_CHAIN)
-
-        def get_topic_mode(self):
-            """
-            Returns current topic mode
-            """
-            return self._topic_mode
-
-        def is_monika_initiated_mode(self):
-            """
-            Checks if the current topic mode is monika_initiated
-            """
-            return self.get_topic_mode() == self.TM_MONIKA_INITIATED
-
-        def is_player_initiated_mode(self):
-            """
-            Checks if the current topic mode is player_initiated
-            """
-            return self.get_topic_mode() == self.TM_PLAYER_INITIATED
-
-        def is_post_interruption_mode(self):
-            """
-            Checks if the current topic mode is post_interruption
-            """
-            return self.get_topic_mode() == self.TM_POST_INTERRUPTION
-
-        def is_chain_mode(self):
-            """
-            Checks if the current topic mode is chain
-            """
-            return self.get_topic_mode() == self.TM_CHAIN
 
     mas_event_mailbox = MASEventMailbox()
 
@@ -2771,16 +2692,14 @@ label call_next_event:
         python:
             persistent.current_monikatopic = None
             mas_globals.this_ev = None
+            # We always reset this flag as you can start only one topic
+            mas_globals.from_prompt_menu = False
+            # We assume you keep attention between topics,
+            # and reset this only when Monika's done
+            if not persistent.event_list:
+                mas_globals.has_attention = False
             # Add to the list of discussed topics
             mas_event_mailbox.add_topic(event_label)
-            # Reset topic mode if we have no more topics,
-            # or to chain if Monika has more to discuss
-            if not persistent.event_list:
-                mas_event_mailbox.set_default_mode()
-
-            else:
-                # NOTE: this does NOT account for song delegate and similar events
-                mas_event_mailbox.set_chain_mode()
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
@@ -2869,7 +2788,8 @@ label prompt_menu:
 
             "It's alright, go ahead [m_name].":
                 m 1hua "Ahaha, thank you [player]~"
-                $ mas_event_mailbox.set_post_interruption_mode()
+                # You're 100% here
+                $ store.mas_globals.has_attention = True
                 jump pick_random_topic
 
             "Okay, thanks!":
@@ -3034,8 +2954,10 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
-        $ mas_event_mailbox.set_player_initiated_mode()
-        $ pushEvent(_return)
+        python:
+            store.mas_globals.from_prompt_menu = True
+            store.mas_globals.has_attention = True
+            pushEvent(_return)
 
     return _return
 
@@ -3194,8 +3116,10 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ mas_event_mailbox.set_player_initiated_mode()
-                $ pushEvent(_return, skipeval=True)
+                python:
+                    store.mas_globals.from_prompt_menu = True
+                    store.mas_globals.has_attention = True
+                    pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -3264,8 +3188,10 @@ label mas_bookmarks_loop:
     else:
         # got label, let's push
         show monika at t11
-        $ mas_event_mailbox.set_player_initiated_mode()
-        $ pushEvent(topic_choice, skipeval=True)
+        python:
+            store.mas_globals.from_prompt_menu = True
+            store.mas_globals.has_attention = True
+            pushEvent(topic_choice, skipeval=True)
         return True
 
     jump mas_bookmarks_loop

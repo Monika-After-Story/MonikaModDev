@@ -86,6 +86,12 @@ init -1 python in mas_globals:
     # The current topic, but as event object. may be None.
     this_ev = None
 
+    # Was the current topic initiated from the talk menu?
+    from_prompt_menu = False
+
+    # Does Monika have player attention?
+    has_attention = False
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -1536,7 +1542,7 @@ label ch30_post_mid_loop_eval:
 #        if persistent.random_seen < random_seen_limit:
 
         # Set random mode since Monika will pick this topic
-        $ mas_event_mailbox.set_monika_initiated_mode()
+        $ store.mas_globals.has_attention = False
 
     # FALL THROUGH
 
