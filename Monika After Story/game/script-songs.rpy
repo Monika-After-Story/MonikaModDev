@@ -497,6 +497,35 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_this_christmas_kiss",
+            prompt="This Christmas Kiss",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_this_christmas_kiss:
+    m 1dud "{i}~Every year{w=0.2}, I go home in December~{/i}"
+    m 1hub "{i}~Dancing with you, {w=0.2}making nights to remember~{/i}"
+    m 1rub "{i}~The snow falling down,{w=0.2}{nw}{/i}"
+    extend 3rub "{i} I'm just loving this weather~{/i}"
+    m 3tub "{i}~A blanket for two,{w=0.2} feels more warmer together~{/i}"
+    m 1hub "{i}~Two turtle doves,{w=0.2} they call us~{/i}"
+    m 1duo "{i}~We fall in love,{w=0.2} in looove~{/i}"
+    m 3hub "{i}~This is my favorite Christmaaas~{/i}"
+    m 3duu "{i}~This Christmas,{w=0.2} I just can't resist {w=0.2}something like this~{/i}"
+    m 1sub "{i}~I can't resist this Christmas kiss~{/i}"
+    m 3hub "{i}~'Cause I'm falling{w=0.2} buried on your lips~{/i}"
+    m 1hub "{i}~Something like this,{w=0.2}{nw}{/i}"
+    extend 1subsb "{i} I can't resist this Christmas kiss~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_lover_boy",
             prompt="Old Fashioned Lover Boy",
             category=[store.mas_songs.TYPE_SHORT],
@@ -519,6 +548,51 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_burning_love",
+            prompt="Burning Love",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_burning_love:
+    m 1hubsb "{i}~Your kisses lift me higher~{/i}"
+    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 1dubsu "{i}~You light my morning sky~{/i}"
+    m 1hubfb "{i}~With burning love~{/i}"
+    m 1hubsb "Ahaha~"
+    m 1ekbsa "You always make my day brighter, [player]!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_aries",
+            prompt="Aries",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_aries:
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
+    m 2dubsu "{i}~It's waiting to turn green~{/i}"
+    m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
+    m 2dkd "{i}~I can't play a happy tune on my own, so stay by my side~{/i}"
+    m "{i}~High or low tide~{/i}"
+    m 1ekbsu "I'm always thinking about the day we will be together, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_need_you",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="I Need You",
@@ -529,13 +603,13 @@ init 5 python:
     )
 
 label mas_song_need_you:
-    m 1dso "{i}~Please remember how I feel about you~{/i}"
-    m "{i}~I could never really live without you~{/i}"
-    m 3hub "{i}~So, come on back and see~{/i}"
-    m 4hksdlb "{i}~Just what you mean to me~{/i}"
-    m 1hubsb "{i}~I need you~{/i}"
-    m 3esa "I know that song is about leaving someone, but I think it carries a good message."
-    m 1ekbsa "And I really do need you, [player]~"
+    m 1esd "{i}~Please remember how I feel about you~{/i}"
+    m 3dkd "{i}~I could never really live without you~{/i}"
+    m 3ekd "{i}~So, come on back and see~{/i}"
+    m 3eka "{i}~Just what you mean to me~{/i}"
+    m 2dku "{i}~I need you~{/i}"
+    m 7esa "I know that song is about leaving someone, but I think it carries a good message."
+    m 3ekbsa "And I really do need you, [player]~"
     return
 
 init 5 python:
@@ -1077,7 +1151,7 @@ label mas_song_my_silver_lining_analysis(from_song=False):
     m 3eub "It's crazy how a bit of music can help turn things around when you're feeling down!"
     m 3eua "It's like this song is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
     m 1hua "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ehehe~"
-    m 1etc "But seriously, [player]...{w=0.3}I think there some real merit to this line of thinking."
+    m 1etc "But seriously, [player]...{w=0.3}I think there's some real merit to this line of thinking."
     m 1eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
     m 3eka "Now, I'm not telling you not to worry at all..."
     m 3eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now."
@@ -1490,7 +1564,7 @@ label mas_song_wonderwall:
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
 
     if mas_isMoniEnamored(higher=True):
-        m 1dubsa  "...And with you by my side, there's no way I could be afraid."
+        m 1dubsa "...But with you by my side, there's no way I could be afraid."
         m 1ekbsa "I know the place it leads to will be worth it.{w=0.3} {nw}"
         extend 3ekbsu "After all, you're my wonderwall~"
 
