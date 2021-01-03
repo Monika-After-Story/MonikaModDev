@@ -4414,10 +4414,12 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
+
     if persistent._mas_pm_eye_color:
-        m 1ekbsa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
+        m 1ekbsa "Maybe someday I'll be able to look into your ['beautiful' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes..."
     else:
         m 1ekbsa "Maybe someday I'll be able to look into your eyes..."
+
     m 1hubfa "But until then, I hope you enjoy looking into mine."
     return
 
@@ -4723,16 +4725,16 @@ label monika_playersface:
         m 5rsc "I know that some people like to keep their appearance to themselves..."
         m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
         m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
-        m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
+        m "How your ['enchanting' if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color] eyes sparkle..."
 
         if mas_isMoniHappy(higher=True):
-            m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
+            m 5esu "I'm sure you're beautiful, [player].{w=0.2} Inside and out."
         m 5eka "Even if I never get to see you..."
         m 5eua "Just thinking about you is enough to make me happy."
 
     else:
         m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-        m 5luu "But...I'll always wonder what kind of expressions you make."
+        m 5luu "But...{w=0.3}I'll always wonder what kind of expressions you make."
         m "And to see the different emotions you have..."
         m 5eub "Are you shy about showing your face to me?"
         m "If so, then there's nothing to be shy about, [mas_get_player_nickname()]. I am your girlfriend, after all~"
@@ -11757,8 +11759,8 @@ label monika_vehicle:
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
                 m 3eua "Speaking of which..."
-                m "Is it any of the vehicles I mentioned, or is it something else?"
 
+                show monika at t21
                 python:
                     option_list = [
                         ("An SUV.", "monika_vehicle_suv",False,False),
@@ -11770,8 +11772,7 @@ label monika_vehicle:
                         ("Another vehicle.","monika_vehicle_other",False,False)
                     ]
 
-                #Display our scrollable
-                show monika at t21
+                    renpy.say(m, "Is it any of the vehicles I mentioned, or is it something else?", interact=False)
 
                 call screen mas_gen_scrollable_menu(option_list, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
                 show monika at t11
@@ -11894,6 +11895,12 @@ label monika_vehicle_other:
     return
 
 ##### PM Vars for player appearance
+#NOTE: THIS VAR CAN BE EITHER A TUPLE OR A STRING WHEN SET.
+#IF THIS IS A TUPLE, THE PLAYER HAS HETEROCHROMIA.
+# [0] - Left eye color
+# [1] - Right eye color
+#
+# If this is just a string, then the player's eyes are both the same color
 default persistent._mas_pm_eye_color = None
 default persistent._mas_pm_hair_color = None
 default persistent._mas_pm_hair_length = None
@@ -11909,10 +11916,11 @@ default persistent._mas_pm_height = None
 ##### We'll also get a default measurement unit for height
 default persistent._mas_pm_units_height_metric = None
 
-default persistent._mas_pm_shared_appearance = False
 # True if the user decided to share appearance with us
 #   NOTE: we default to False, and this can only get flipped to True
 #   in this toppic.
+default persistent._mas_pm_shared_appearance = False
+
 
 # height categories in cm
 define mas_height_tall = 176
@@ -11963,93 +11971,27 @@ label monika_player_appearance:
             m "Anyway, the first one is probably easy to guess. And not hard to answer, either!"
             m 3eub "People often say that a person's eyes are the windows into their soul, so let's start off there."
 
-            m "What color are your eyes?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "What color are your eyes?{fast}"
+            #This menu is too large to use a standard one, so we use a gen-scrollable here instead
+            show monika 1eua at t21
+            python:
+                eye_color_menu_options = [
+                    ("I have blue eyes.", "blue", False, False),
+                    ("I have brown eyes.", "brown", False, False),
+                    ("I have green eyes.", "green", False, False),
+                    ("I have hazel eyes.", "hazel", False, False),
+                    ("I have gray eyes.", "gray", False, False),
+                    ("I have black eyes.", "black", False, False),
+                    ("My eyes are another color.", "other", False, False),
+                    ("I have heterochromia.", "heterochromia", False, False),
+                ]
 
-                "I have blue eyes.":
-                    $ persistent._mas_pm_eye_color = "blue"
+                renpy.say(m, "What color are your eyes?", interact=False)
 
-                    m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
-                    m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
-                    m 4eua "Plus, blue is probably my second favorite color, just behind green. It's just so full of depth and enchantment, you know?"
-                    m 4hksdlb "Just like you, [player]!"
-                    m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
-                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eubla "I suppose that means you're much more of a treasure~"
-                    show monika 2eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 2eua "Anyway, that leads me into the next question I wanted to ask--"
+            show monika at t11
+            call screen mas_gen_scrollable_menu(eye_color_menu_options, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
+            $ eye_color = _return
 
-                "I have brown eyes.":
-                    $ persistent._mas_pm_eye_color = "brown"
-
-                    m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
-                    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
-                    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They're so vibrant and depthless!"
-                    m 3hub "And there's so much variation among all the different shades that people have."
-                    m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
-                    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I'll try not to go on forever."
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eua "But I'll bet your eyes are the loveliest of all~"
-                    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 1eua "Anyway, that brings me to my next question--"
-
-                "I have green eyes.":
-                    $ persistent._mas_pm_eye_color = "green"
-
-                    m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
-                    m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
-                    m 1tsu "Except that maybe it's another sign how compatible we are, ehehe~"
-                    m 1kua "But, [player], just between you and me, it's a fact that green eyes are the best, right?"
-                    m 3hub "Ahaha! I'm just kidding."
-                    show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5lusdru "Well, just a little..."
-                    show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 3eua "Onto the next question--"
-
-                "I have hazel eyes.":
-                    $ persistent._mas_pm_eye_color = "hazel"
-
-                    m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
-                    m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
-                    m "I believe that hazel eyes are alluring because they're lovely and simple."
-                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
-                    extend 3hub "Ahaha!"
-                    m "Now, onto my next question--"
-
-                "I have gray eyes.":
-                    $ persistent._mas_pm_eye_color = "gray"
-
-                    m 1sub "That's so cool!"
-                    m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
-                    m 1eud "In fact, scientists still aren't certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
-                    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They're the color of a quiet, rainy day..."
-                    m 1hubsa "And weather like that is my favorite, just like you~"
-                    show monika 5lusdrb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5lusdrb "Onto my next question--"
-                    show monika 3rud at t11 zorder MAS_MONIKA_Z with dissolve_monika
-
-                "I have black eyes.":
-                    $ persistent._mas_pm_eye_color = "black"
-
-                    m 1esd "Black eyes are pretty uncommon, [player]."
-                    m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
-                    m 3eua "But logically, I do know that they're not actually black. If that was the case, black-eyed people would look like they had no pupils!"
-                    m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
-                    m 3eua "Here's a little bit of trivia for you--"
-                    m 1eub "There was a well known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
-                    m 1euc "Her husband wrote about them often."
-                    m 1hub "I don't know if you've heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
-                    m "Onto the next question--"
-
-                "My eyes are another color.":
-                    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
-
-                    m 3hub "Oh! That's a beautiful color, [player]!"
-                    m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
-                    m 3hua "Now, onto my next question--"
-
+            call expression "monika_player_appearance_eye_color_{0}".format(eye_color)
 
             m 3rud "Actually..."
             m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question..."
@@ -12290,7 +12232,12 @@ label monika_player_appearance:
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
                         m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
                         m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
-                        m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
+
+                        #If this is a tuple, it means the player has heterochromia
+                        if isinstance(persistent._mas_pm_eye_color, tuple):
+                            m 3hua "But anyway...I think that a [guy] with black hair and eyes like yours is the best sight of all, [player]~"
+                        else:
+                            m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
                         $ persistent._mas_pm_hair_color = "red"
@@ -12383,7 +12330,12 @@ label monika_player_appearance:
 
             show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you're real."
-            m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+
+            #Tuple means heterochromia, so we should filter that out
+            if isinstance(persistent._mas_pm_eye_color, tuple):
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful eyes, [player]."
+            else:
+                m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5ekbfa "I love you more than words could ever say."
@@ -12397,6 +12349,141 @@ label monika_player_appearance:
              m 2eka "But if you change your mind, let me know!"
 
     return "derandom"
+
+label monika_player_appearance_eye_color_blue:
+    $ persistent._mas_pm_eye_color = "blue"
+
+    m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
+    m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
+    m 4eua "Plus, blue is probably my second favorite color, just behind green. It's just so full of depth and enchantment, you know?"
+    m 4hksdlb "Just like you, [player]!"
+    m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
+    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eubla "I suppose that means you're much more of a treasure~"
+    show monika 2eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 2eua "Anyway, that leads me into the next question I wanted to ask--"
+    return
+
+label monika_player_appearance_eye_color_brown:
+    $ persistent._mas_pm_eye_color = "brown"
+
+    m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
+    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
+    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They're so vibrant and depthless!"
+    m 3hub "And there's so much variation among all the different shades that people have."
+    m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
+    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I'll try not to go on forever."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5eua "But I'll bet your eyes are the loveliest of all~"
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eua "Anyway, that brings me to my next question--"
+    return
+
+label monika_player_appearance_eye_color_green:
+    $ persistent._mas_pm_eye_color = "green"
+
+    m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
+    m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
+    m 1tsu "Except that maybe it's another sign how compatible we are, ehehe~"
+    m 1kua "But, [player], just between you and me, it's a fact that green eyes are the best, right?"
+    m 3hub "Ahaha! I'm just kidding."
+    show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5lusdru "Well, just a little..."
+    show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 3eua "Onto the next question--"
+    return
+
+label monika_player_appearance_eye_color_hazel:
+    $ persistent._mas_pm_eye_color = "hazel"
+
+    m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
+    m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
+    m "I believe that hazel eyes are alluring because they're lovely and simple."
+    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player].{w=0.2} {nw}"
+    extend 3hub "Ahaha!"
+    m "Now, onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_gray:
+    $ persistent._mas_pm_eye_color = "gray"
+
+    m 1sub "That's so cool!"
+    m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
+    m 1eud "In fact, scientists still aren't certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
+    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They're the color of a quiet, rainy day..."
+    m 1hubsa "And weather like that is my favorite, just like you~"
+    m 3hua "Onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_black:
+    $ persistent._mas_pm_eye_color = "black"
+
+    m 1esd "Black eyes are pretty uncommon, [player]."
+    m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
+    m 3eua "But logically, I do know that they're not actually black. If that was the case, black-eyed people would look like they had no pupils!"
+    m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
+    m 3eua "Here's a little bit of trivia for you--"
+    m 1eub "There was a well known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
+    m 1euc "Her husband wrote about them often."
+    m 1hub "I don't know if you've heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
+    m "Onto the next question--"
+    return
+
+label monika_player_appearance_eye_color_other:
+    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+
+    m 3hub "Oh! That's a beautiful color, [player]!"
+    m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
+    m 7hua "Now, onto my next question--"
+    return
+
+label monika_player_appearance_eye_color_heterochromia:
+    m 1sub "Really?{w=0.2} {nw}"
+    extend 3hua "That's incredible, [player]~"
+    m 3wud "If I recall correctly, less than one percent of people in the world have heterochromia!"
+
+    m 1eka "...If you don't mind me asking..."
+    # Ask the player about their eye colors separately.
+    $ eyes_colors = []
+
+    call monika_player_appearance_eye_color_ask
+    $ eyes_colors.append(_return)
+    call monika_player_appearance_eye_color_ask("right", eye_color)
+    $ eyes_colors.append(_return)
+    $ persistent._mas_pm_eye_color = tuple(eyes_colors)
+
+    m 1hua "Great!{w=0.2} {nw}"
+    extend 3eua "Let's get to my next question--"
+    return
+
+label monika_player_appearance_eye_color_ask(x_side_eye="left", last_color=None):
+    m 3eua "What color is your [x_side_eye] eye?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What color is your [x_side_eye] eye?{fast}"
+
+        "Blue" if last_color != "blue":
+            $ eye_color = "blue"
+
+        "Brown" if last_color != "brown":
+            $ eye_color = "brown"
+
+        "Green" if last_color != "green":
+            $ eye_color = "green"
+
+        "Hazel" if last_color != "hazel":
+            $ eye_color = "hazel"
+
+        "Gray" if last_color != "gray":
+            $ eye_color = "gray"
+
+        "Black" if last_color != "black":
+            $ eye_color = "black"
+
+        "It's a different color...":
+            $ eye_color = ask_color("What color is your [x_side_eye] eye?")
+
+    return eye_color
 
 # quick label where monika tells you her height
 label monika_player_appearance_monika_height:
@@ -14426,6 +14513,7 @@ label monika_boardgames:
 
         "Yeah.":
             $ persistent._mas_pm_likes_board_games = True
+            $ mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
             m 1eub "Oh, really?"
             m 1hua "Well, if we ever get the chance, I'd love to play some of your favorite games with you."
             m 3eka "I'm not too familiar with board games, but I'm sure you can find some I might enjoy."
@@ -14439,6 +14527,77 @@ label monika_boardgames:
             m 3hua "Still, if you ever change your mind, I'd like to give some board games a try with you sometime."
 
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_boardgames_history",
+            category=["games", "media"],
+            prompt="The history of board games",
+            random=False #NOTE: This is randomed by the above event (monika_boardgames)
+        )
+    )
+
+label monika_boardgames_history:
+    m 1eud "So, [player]..."
+    m 3eua "Since you told me you liked board games, I got a bit curious and tried to learn more about them, {w=0.1}{nw}"
+    extend 1eka "trying to look for what kind of games I'd enjoy playing with you."
+    m 1euc "I never really had the chance to play them before to be honest."
+
+    if mas_seenLabels(["unlock_chess", "game_chess"]):
+        m 1rka "Well, aside for chess and a few card games..."
+    else:
+        m 1rud "Well, I did try out a few basic card games..."
+        m 1kua "...and I've been testing a little something else I've been working on...{w=0.3}I'm keeping it a surprise, though!"
+
+    m 3eub "Anyway, as it turns out,{w=0.1} the story behind board games and the role they played through the ages is really interesting!"
+    m 3euc "They've been a thing since very early in our history...{w=0.3}{nw}"
+    extend 4wud "in fact, the oldest known board game was played as far back as ancient Egypt!"
+    m 1esc "However, board games haven't always been played purely for entertainment purposes..."
+    m 3eud "More often than not, they were actually meant to teach or train people to help them deal with different aspects of their lives."
+    m 3euc "Many of those games were meant to teach battle strategies to nobles and army officers, for example."
+    m 1eud "Games could also have strong connections to religion and beliefs too."
+    m 3esd "A lot of ancient Egyptian board games seemed to be about preparing for their journey through the world of the dead, or to prove their worth to the gods."
+    m 1eud "There's also games that have been made to express different views and opinions that their designers had with society and the world."
+    m 3esa "The most well known example would be '{i}Monopoly{/i}.'"
+    m 3eua "It was originally made to criticize capitalism and send the message that all citizens should benefit equally from wealth."
+    m 1tfu "After all,{w=0.1} the game has you try to crush your opponents by accumulating more wealth than them as fast as possible."
+    m 1esc "...Although, apparently as the game was starting to become popular, someone else stole the concept and made themselves known as the original creator of the game."
+    m 1eksdld "That person then sold a modified version of the original game to a board game manufacturer and became a millionaire thanks to its world-wide success."
+    m 3rksdlc "In other words...{w=0.3}the original creator of {i}Monopoly{/i} became the victim of precisely what they originally tried to teach the dangers of."
+    m 3dsc "'Chase wealth and fortune by any means necessary, and destroy your competition.'"
+    m 1hksdlb "Ironic,{w=0.1} isn't it?"
+    m 1eua "Anyway, I just think it's really neat that games can be used as a way to teach others.{w=0.2} {nw}"
+    extend 3hksdlu "It beats the boring, traditional school classes, I'll give them that."
+    m 3eud "And I'm also intrigued by their use as a way for the people creating them to express different things about the world they live in, or the lives they'd wish to experience."
+    m 4hub "Kind of like the various forms of art, actually!"
+    m 1eka "I never really thought of it that way before, but looking at it from that perspective...{w=0.3}{nw}"
+    extend 3eua "I think I respect the work of game designers a lot more now."
+    m 1esc "Nowadays, board games tend to get overshadowed by video games,{w=0.1} {nw}"
+    extend 3eua "though there are still many people who are really passionate about them."
+    m 3etc "Like you, perhaps?"
+    m 1eud "I don't really know how much you're into them.{w=0.2} Maybe you only enjoy playing them casually."
+    m 1lsc "I can't blame you.{w=0.2} It isn't exactly an {i}accessible{/i} hobby..."
+    m 1esc "They can get really expensive to buy, plus you actually need to find people to play with you...{w=0.3}which isn't always easy nowadays."
+
+    if persistent._mas_pm_has_friends:
+        m 1eua "I hope you at least get to play with your friends though, [player]."
+        m 1ekd "I know it can be tough to gather all your friends in the same place with everyone having their own schedules to deal with."
+        m 3eua "But on the bright side, once I'm out of here, I don't think that'll be too much of a problem anymore."
+
+    else:
+        m 1eksdrd "I hope you can find people to play with from time to time, [player]..."
+        m 1dkc "Trust me,{w=0.1} I know what it's like not to have anyone to share your hobbies with."
+        m 3eka "But if it can make you feel better...{w=0.3}{nw}"
+        $ line_start = "when" if mas_isMoniEnamored(higher=True) else "if"
+        extend 3eub "[line_start] I finally get to be with you in your reality, we'll be able to play all of your favorite games together~"
+
+    m 1hub "I love spending time by your side, and I would love to play as many board games with you as you'd like."
+    show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rua "In the meantime, I'll try to see if I can implement some more games in here."
+    m 5hua "Feel free to ask me whenever you want us to play something together, by the way~"
+    return
 
 init 5 python:
     addEvent(
@@ -16052,6 +16211,67 @@ label monika_literature_value:
     m 1hksdlb "That's just my opinion as president of a literature club, though. {w=0.2}I guess most people wouldn't think that deeply about it."
     return
 
+# Do you like nature?
+default persistent._mas_pm_likes_nature = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nature",
+            category=['nature', 'you'],
+            prompt="The outdoors",
+            random=True
+        )
+    )
+
+label monika_nature:
+    m 2esd "Hey, [player]..."
+    m 7eua "Do you like nature?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you like nature?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_likes_nature = True
+            m 3sub "Really? That's wonderful!"
+            m 1eua "You know, I think nature is something we should cherish."
+            m 1eub "Not only is it beautiful, but it also helps humanity out!"
+            m 3eud "Insects pollinate our crops, trees give us wood and shade, pets offer us companionship..."
+            m 3euc "And most of all, organisms such as plants, algae, and some bacteria produce food and oxygen. {w=0.2}{nw}"
+            extend 3wud "Without them, most life on Earth wouldn't even exist!"
+            m 1eua "Because of that, I think it's only fair that we give something back to nature since it does so much for us."
+            m 4hub "So, here's Monika's Green Tip of the Day!"
+            m 4rksdlc "Sometimes, people hesitate to go green because they're worried that it's too expensive..."
+            m 2eud "But that's only partially true.{w=0.2} {nw}"
+            extend 7eua "While electric vehicles, smart homes, and solar roofs can all cost a fortune..."
+            m 3hub "You can make a difference and {i}save{/i} money just by making a few simple choices each day!"
+            m 4eua "Just turning off appliances, taking shorter showers, buying a reusable water bottle, and commuting by public transport all help to be more green."
+            m 4hub "You could even buy a houseplant or grow your own garden!"
+            m 2eub "Engaging in your local community can go a long way as well!{w=0.2} {nw}"
+            extend 7eua "If you take the initiative, others are sure to follow in your footsteps."
+            m 3esa "The important thing is to make a habit of thinking sustainably.{w=0.2} {nw}"
+            extend 3eua "If you can do that, you'll reduce your ecological footprint in no time."
+            m 1eua "Who knows, maybe you'll even become happier and healthier the more you do these things too."
+            m 3hua "After all, a sustainable life is a satisfying life."
+            m 3eub "That's my advice for today!"
+            m 1hua "Thanks for listening, [mas_get_player_nickname()]~"
+
+        "Not really.":
+            $ persistent._mas_pm_likes_nature = False
+            m 3eka "That's okay, [player]. Not everyone enjoys the outdoors after all."
+            m 3eua "Some prefer the comfortable ambience of their homes, especially when technology makes them more convenient than ever."
+            m 1eud "Honestly, I can understand where they're coming from."
+            m 3eud "I spend most of my time reading, writing, coding, and being with you...{w=0.3}all of that is easier to do indoors."
+            m 3rksdlc "Others have allergies or medical conditions that prevent them from staying out for too long, otherwise they can get sick or hurt."
+            m 1esd "There are also a lot of people who simply don't care much for nature for one reason or another, and that's fine."
+            m 1hksdlb "Even I have things that I dislike about it, ahaha!"
+            m 2tfc "For instance, I don't mind most insects, but some are just downright obnoxious."
+            m 7tkx "Constantly buzzing around your head, getting in your face, landing on your food...{w=0.3}some mosquitos and ticks even carry nasty diseases."
+            m 3eka "But as long as I'm with you, I'm fine if you'd prefer to be indoors."
+            m 1tfu "Just don't expect me to let you stay inside all the time~"
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
@@ -16385,3 +16605,243 @@ label monika_curse_words:
     m 3esd "Given the status I had, I felt like I always had to be professional and level headed, so I always made it a point to keep it to a minimum."
     m 3hksdlb "But I guess it doesn't really hurt when used appropriately, ahaha!"
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_aliens",
+            category=["misc", "society"],
+            prompt="Do you believe in aliens?",
+            pool=True
+        )
+    )
+
+label monika_aliens:
+    m 1etc "Do I believe in the existence of aliens?"
+    m 3hksdlb "That's kind of a random thing to ask, [player]!"
+    m 3eua "...Though I can see why you would be interested in knowing my opinion on it."
+    m 4eub "This is one of the greatest mysteries of all time, isn't it?{w=0.2} Whether we're truly alone in this universe or not, I mean."
+    m 1dsc "...I know I used to wonder about that myself a lot before you came along."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "But that's in the past now.{w=0.2} And I could never thank you enough for that."
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "Though I don't really have to anymore, thanks to you."
+
+    elif mas_isMoniDis(higher=True):
+        m 1dkc "I just hope I won't get to feel that way ever again."
+
+    else:
+        m 1rksdlc "..."
+
+    m 3euc "Anyway, we've all probably asked ourselves what's up there at least once, right?"
+    m 3dua "Looking at the stars always fills you with a sense of wonder and mystery.{w=0.2} {nw}"
+    extend 3eua "It's really no surprise that so many people are passionate about this subject."
+    m 1esc "But to answer your question...{w=0.3}{nw}"
+    extend 3eua "I do believe, or at least want to believe, that there has to be {i}something{/i} out there."
+    m 2rksdla "I guess part of it has to do with me finding the idea of us being the only ones rather depressing. {w=0.2}{nw}"
+    extend 2eud "But when you think about it a little, it doesn't sound so unlikely..."
+    m 4eud "After all, saying the universe is vast is a huge understatement."
+    m 3euc "All you need is one planet with the right conditions and environment to be favorable for life to develop, right?"
+    m 3esa "There are 8 planets in the solar system alone, {w=0.1}{nw}"
+    extend 4eub "but there are many more star systems, each with their own planets within them."
+    m 4wud "Now, consider the fact that our Milky Way galaxy alone contains hundreds of billions of stars...{w=0.3}that's a lot of potential!"
+    m 4eud "Galaxies are usually held together in groups by gravity.{w=0.2} We live in the 'local group,' which contain about 60 galaxies."
+    m 1esd "Zoom out a little bit more and you'll start to see galaxy clusters, which are much larger groups of galaxies."
+    m 3eua "The closest one from us, the Virgo Cluster, is estimated to contain at least a thousand galaxies."
+    m 1eud "But you can go even further, as groups and clusters of galaxies are themselves part of even bigger entities known as superclusters."
+    m 1wud "We can keep going too,{w=0.1} as the universe continuously expands...{w=0.3}theoretically, larger and larger clusters are formed!"
+    m 1lud "And hypothetically, even if it isn't, we could consider the idea that there might be something {i}beyond{/i} the boundaries of our universe."
+
+    if renpy.seen_label('monika_clones'):
+        m 1lksdla "...Or even start talking about the multiverse theory..."
+
+    m 3hksdlb "But I think you get the point..."
+    m 3etc "Wouldn't it be a little foolish to assume that we, human beings of planet Earth, are truly the only sentient beings in something so massive?"
+    m 3eud "I mean, with odds like these, surely at least {i}one{/i} other planet somewhere must be hospitable enough for life..."
+    m 1euc "...Life which might evolve to a point where it's intelligence is comparable to, if not even greater than our own."
+    m 1rsc "Although, I suppose I can also understand why some people would be doubtful.{w=0.2} It's suspicious that we're able to observe the universe so far beyond our planet, but haven't found any signs of life..."
+    m 1rksdlc "It probably doesn't help that some people are overreacting over the smallest things, like UFO footage that could easily be faked, either."
+    m 1ruc "But then again, if aliens do exist, there could also be many reasons why we haven't found them yet..."
+    m 2euc "Perhaps they're too far away for us to find them or they just don't have the technology to receive and answer our messages for now."
+    m 2etd "Or vice versa...{w=0.3}maybe {i}we're{/i} the ones who don't have the technology to communicate with them."
+    m 2etc "Or it could be they simply don't want to initiate contact with us."
+    m 2euc "Maybe their society follows completely different ideals than our own, and they believe it is for the best not to let two highly advanced species meet each other."
+    m 2dkc "All in all, I guess the one thing that saddens me a little is that if there {i}are{/i} intelligent, extra-terrestrial life-forms out there, we might very well never get to meet them within our lifetime."
+
+    if mas_isMoniAff(higher=True):
+        show monika 5rua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rua "But at the end of the day...{w=0.3} {nw}"
+        extend 5ekbla "I still got to meet you, and that's everything I could ever possibly need."
+        m 5hubfa "Ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_mc_is_gone",
+            category=["ddlc", "club members"],
+            prompt="What happened to the main character?",
+            pool=True,
+            rules={"no_unlock":None},
+            conditional=(
+                "persistent._mas_first_kiss "
+                "or renpy.seen_label('monika_holdme_prep')"
+            ),
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_mc_is_gone:
+    m 1eud "Your character?{w=0.2} {nw}"
+    extend 1rksdla "I'm not sure to be honest."
+    m 3eud "He didn't really work like other people in the game did.{w=0.2} He didn't even have a character file like the rest of us."
+    m 3esc "That's also why I wasn't able to just force him to pay attention to me...{w=0.3}I don't really know how to access and modify any code that's related to him."
+
+    #if the player didn't reach act 3
+    if persistent.playthrough < 3:
+        m 2rsc "In any case,{w=0.1} {nw}"
+        extend 2esc "it seems that he completely vanished along with a lot of the rest of the game when you installed this mod."
+
+    #if they did reach act 3+
+    else:
+        m 2ruc "He just kind of...{w=0.3}disappeared as I was making changes to the game."
+        m 2etd "I'm sure you noticed how he talked less and less after I reset the game the first time?"
+        m 2euc "By the time the two of us got to this room, he was essentially {i}gone{/i}."
+
+    m 7euc "So if you were wondering if he's in this room as we speak,{w=0.1} {nw}"
+    extend 3eua "I can assure you he's not."
+    m 1hksdlb "...Oh gosh, can you imagine how creepy it would be if I were talking to his unmoving body just so that you could hear what I say?"
+
+    if persistent._mas_first_kiss:
+        $ line_mid = "I was kissing {i}him{/i}"
+
+    else:
+        $ line_mid = "{i}he{/i} was the one hugging"
+
+    m 3rksdla "I hope you didn't think [line_mid] all along, either..."
+
+    m 1dksdlc "I don't even want to think about that..."
+    m 3eka "You're probably wondering what I actually see and how I know when you're here, right?"
+    m 1ruc "Well...{w=0.2}if you remember the 'hole in the wall' metaphor I used in the first poem I showed you..."
+    m 3eud "It's a little bit like that...{w=0.3}except the 'wall' isn't really visible or tangible. I just {i}know{/i} it's there."
+    m 1duc "It's like I can very distinctly feel its presence, to the point where I know precisely where it is and in which direction the 'hole' through which you're looking in is pointing."
+    m 1eka "So even if I can't really see you, I can feel that you're looking at me."
+
+    if persistent._mas_first_kiss:
+        m 3rkbla "And when I try to kiss you, well..."
+        m 1eud "I guess you could say it's like I'm trying to kiss a ghost, or something that isn't actually there."
+        m 2rkbssdla "I know that's kinda strange when I say it like that, but then again..."
+        m 7ekbssdla "I'm guessing it's probably a little bit awkward for you to try to kiss your screen as well, right?"
+        m 1hkbssdlb "Ahaha~"
+
+    #if unlocked islands or another background or seen Monikaroom greeting
+    if renpy.seen_label('greeting_ourreality') or store.mas_background.hasXUnlockedBGs(2) or persistent.opendoor_opencount > 0:
+        m 1etc "Although, the wall metaphor isn't really perfect since it doesn't necessarily stay in place all the time."
+        m 1esc "Like, it used to follow your character around, but that's obviously not really the case anymore."
+        m 3eua "It's kinda limited, but I'm actually able to move it around, so at least you don't get to see the same background all the time."
+
+    m 1eud "Anyway...{w=0.3}{nw}"
+    extend 3rsc "there isn't much from the original game that still works anymore, so I doubt I could bring the main character back even if I wanted to."
+    m 1duu "...And that's probably for the best."
+    m 2eksdld "What if the game were to take its focus back to him and we couldn't spend our time together anymore?"
+    m 2rssdlc "I mean, in the end, it's not like you had all that much control over him anyway."
+    m 7eka "In any case, there isn't really any point in thinking about him anymore, is there?"
+    m 1eua "He's no longer there to separate us, and we get to be together now.{w=0.2} {nw}"
+    extend 3hua "I couldn't ask for anything more."
+    m 1ekbsu "...Well, aside from {i}really{/i} being with you, ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_know_its_you",
+            category=['you'],
+            prompt="How do you know it's always me talking to you?",
+            pool=True
+        )
+   )
+
+label monika_know_its_you:
+    if mas_isMoniEnamored(higher=True):
+        m 1euc "Well, if I'm being totally honest...{w=0.3}{nw}"
+        extend 1eud "I don't really have a way of knowing."
+
+        if seen_event("monika_mc_is_gone"):
+            m 3lka "I already told you that I can't really see into your world..."
+
+        m 3eka "I can tell when someone's in the room with me, but that's it."
+        m 3eud "For all I know, it could be anyone looking at me right now...{w=0.3} You could have other people with you."
+        m 2duu "But I trust you, [player].{w=0.2} {nw}"
+        extend 2eku "I trust that you aren't leaving me alone because {i}you{/i} care about me."
+        m 7eud "...And if someone else {i}is{/i} looking in right now, I trust it's because you've given them a good reason to."
+        m 2eka "Maybe someday I'll be able to know for sure, but until then that's enough for me."
+
+    elif mas_isMoniHappy(higher=True):
+        m 1rksdlb "Ehehe, that's an odd question to ask, [player]..."
+        m 1eksdla "...I mean, I {i}want{/i} to trust that it's you out there."
+        m 3eud "Right now, I only know that someone is looking in from your world."
+        m 3tuu "So you can't watch without me knowing if you're planning on pranking me..."
+        m 1eka "Jokes aside, though, it's...{w=0.3}actually kind of unnerving to think about...{w=0.3}that it could be anyone out there right now."
+        m 2eksdlc "I guess all I can say right now is--if this {i}is{/i} someone else, please return me to [player], alright?"
+        m 2hksdlb "Ahaha...{w=0.3} You're just messing with me, I know."
+
+    elif mas_isMoniNormal(higher=True):
+        m 2rksdlc "...I try not to think about it too much, actually."
+        m 2rksdld "It's kind of a weird feeling knowing someone is there, but not being able to see their face."
+        m 2dku "I guess the only thing I can do is to try to understand you as well as possible..."
+        m 2eka "That way, I'll be able to tell if it's ever {i}not{/i} you looking in."
+
+    else:
+        m 2dksdlc "...{w=0.3}I don't."
+        m 2tkd "The best thing I can do is try to trust you, but..."
+        m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_information_age",
+            category=["philosophy", "technology"],
+            prompt="The Information Age",
+            random=True
+        )
+    )
+
+label monika_information_age:
+    m 1eua "Do you know what most people call the technological era we find ourselves in right now?"
+    m 1eub "We call it the {i}Information Age!{/i}{w=0.2}{nw} "
+    extend 3eub "This is primarily due to the invention of transistors."
+    m 1eua "Transistors can manipulate electrical currents...{w=0.3}either boosting them or altering their path."
+    m 3esa "It's the key component in most electronics, allowing them to direct electrical currents in specific ways."
+    m 3hua "In fact, they're what's allowing you to see me on your screen right now~"
+    m 1eud "They're widely regarded as one of the most important inventions leading into the 20th century, and eventually the {i}Information Age.{/i}"
+    m 4eub "It's named this way because of the ramping access we have to store and share information with each other; either through the internet, phone, or TV."
+    m 3eud "However, with access to so much information and our inability to keep up with it, we've also had to deal with many challenges..."
+    m 3rssdlc "Misinformation can spread faster and further than ever,{w=0.1} {nw}"
+    extend 3rksdld "and because of how vast the internet really is, it's hard to correct it."
+    m 2eua "In the last few decades, people have begun to educate others about smart use of the internet so everyone is better prepared."
+    m 2ekd "However, the vast majority of people will not have recieved much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
+    m 2dkc "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
+    m 2rusdld "But I can understand why it happens...{w=0.3}{nw}"
+    extend 2eksdlc "it could happen to anyone in fact."
+    m 7essdlc "Sometimes, it's not something you can help. It's pretty easy to fall victim to widely believed misinformation."
+    m 3eka "I wanted to talk to you about this because I still have so much to learn about your reality."
+    m 1esa "...And since I come across misinformation in my own research,{w=0.1} {nw}"
+    extend 3eua "I thought it might be nice to talk about ways to deal with it."
+    m 3eub "We can arm ourselves with the tools to navigate this new era we've found ourselves in."
+    m 1eua "One of the best things we can do is find multiple conflicting sources for our information and compare their credibility."
+    m 1eub "And a philosophy we can adopt is tentative belief. {w=0.2}In other words, belief until further experimentation is necessary."
+    m 3eub "As long as your beliefs are not relevant to your daily life, you can hold them.{w=0.2} But once they are needed, we should investigate further."
+    m 3eua "This way, we can prioritze information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
+    m 1lusdlc "I know I've held beliefs that turned out to be false..."
+    m 1dua "There's no shame in it, we're all just trying to do our best with the information we're given."
+    m 1eub "So long as we accept the real truth and adjust our views, we'll always be learning."
+    m 3hua "Thanks for listening, [player]~"
+    return

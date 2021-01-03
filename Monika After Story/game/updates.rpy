@@ -386,6 +386,9 @@ label v0_11_10(version="v0_11_10"):
             action=EV_ACT_RANDOM
         )
 
+        if seen_event("monika_boardgames"):
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
+
     return
 
 # 0.11.9
