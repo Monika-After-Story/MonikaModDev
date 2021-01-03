@@ -850,8 +850,16 @@ init 5 python:
     )
 
 label monika_god:
-    m 1eua "[player], do you believe in God?"
-    m 1eka "I was never too sure, myself."
+    if mas_event_mailbox.is_monika_initiated_mode():
+        m 1eua "[player], do you believe in God?"
+        m 1eka "I was never too sure, myself."
+        m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
+
+    else:
+        m 1eud "Do I believe in God, [player]?{w=0.2} Personally I'm not too sure about it."
+        m 1lksdla "I don't think I really questioned it as a kid..."
+
+    m 1lsc "But the more I grew up, the more I learned about the world, and the more I questioned it."
     m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
     m 1lsc "But as I grew up, the more I learned about the world, the more I would question it."
     m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
