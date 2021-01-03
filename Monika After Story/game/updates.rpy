@@ -372,6 +372,37 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.10
+label v0_11_10(version="v0_11_10"):
+    python:
+        if seen_event("monika_boardgames"):
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
+
+    return
+
+# 0.11.9
+label v0_11_9(version="v0_11_9"):
+    python:
+        # Try to delele our old dropfixes
+        dropfixes = (
+            "zz_delactfix",
+            "zz_dropfix",
+            "ev_dropfix",
+            "bookderanddropfix",
+            "christmas_gifts_drop"
+        )
+        extensions = (
+            ".rpy",
+            ".rpyc"
+        )
+
+        for df in dropfixes:
+            for ext in extensions:
+                mas_utils.trydel(
+                    os.path.join(config.gamedir, df+ext).replace("\\", "/")
+                )
+    return
+
 # 0.11.7
 label v0_11_7(version="v0_11_7"):
     python:

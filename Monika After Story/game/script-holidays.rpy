@@ -861,7 +861,8 @@ label greeting_o31_generic:
     call spaceroom(scene_change=True, dissolve_all=True)
 
     m 3hub "Trick or treat!"
-    m 3eua "Ahaha, I'm just kidding, [player]."
+    m 3eub "Ahaha,{w=0.1} {nw}"
+    extend 3eua "I'm just kidding, [player]."
     m 1hua "Welcome back...{w=0.5}{nw}"
     extend 3hub "and Happy Halloween!"
 
@@ -969,7 +970,7 @@ label bye_trick_or_treat:
 
             "Actually, it {i}is{/i} a bit late...":
                 if persistent._mas_o31_tt_count:
-                    m 1hua "Ahaha~"
+                    m 1hub "Ahaha~"
                     m "I told you."
                     m 1eua "We'll have to wait until next year to go again."
 
@@ -1010,7 +1011,7 @@ label bye_trick_or_treat_wait_wait:
 
             if persistent._mas_o31_tt_count:
                 call mas_transition_from_emptydesk(exp="monika 1hua")
-                m 1hua "Ahaha~"
+                m 1hub "Ahaha~"
                 m "I told you."
                 m 1eua "We'll have to wait until next year to go again."
 
@@ -1807,7 +1808,7 @@ init 501 python:
     MASImageTagDecoDefinition.register_img(
         "mas_d25_lights",
         store.mas_background.MBG_DEF,
-        MASAdvancedDecoFrame(zorder=7)
+        MASAdvancedDecoFrame(zorder=5)
     )
 
 #autoload starter check
@@ -2462,7 +2463,7 @@ label mas_d25_monika_mistletoe:
     if not persistent._mas_pm_d25_mistletoe_kiss:
         m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
         m 1tku "...Maybe I can even add one in here!"
-        m 1hub "Ehehe~"
+        m 1kuu "Ehehe~"
     return "derandom"
 
 #Stores whether or not the player hangs christmas lights
@@ -3058,7 +3059,7 @@ label mas_d25_spider_tinsel:
     m 1eua "...And I found this really interesting folk story from Ukraine regarding the origin of why tinsel is often used to decorate Christmas trees."
     m 1eka "I thought it was a really nice story and wanted to share it with you."
     m 1dka "..."
-    m 3esa "There once was a widow (let's call her Amy) who lived in a cramped old hut with her children."
+    m 3esa "There once was a widow--let's call her Amy--who lived in a cramped old hut with her children."
     m 3eud "Outside of their home was a tall pine tree, and from the tree dropped a pinecone that soon started to grow from the soil."
     m 3eua "The children were excited about the idea of having a Christmas tree, so they tended to it until it became tall enough to take inside their home."
     m 2ekd "Unfortunately, the family was poor and even though they had the Christmas tree, they couldn't afford any ornaments to decorate it."
@@ -3333,7 +3334,7 @@ label mas_d25_postd25_notimespent:
         m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
         m 1eka "All I want is to be close to you, [player]..."
         m 3ekbsa "I love you~"
-        return "love"
+        $ mas_ILY()
 
     elif mas_isMoniNormal(higher=True):
         $ mas_loseAffection(5, reason=6)
@@ -4103,7 +4104,7 @@ label monika_nye_year_review:
 
     elif store.mas_anni.pastThreeMonths():
         m 2eka "You know [player], we've been through quite a bit over the short time we've spent together last year."
-        m 2eksdla "It's all gone by so fast, ahaha..."
+        m 2eksdlu "It's all gone by so fast, ahaha..."
 
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
@@ -4249,7 +4250,7 @@ label monika_nye_year_review:
                 call monika_kissing_motion_short
                 m 1ekbfa "I love you, [player]."
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5hubfb "Let's make this year better than the last."
+                m 5hubfb "Let's make this year even better than the last."
 
         else:
             m "Let's make this year the best we can, [player]. I love you~"
@@ -5678,7 +5679,7 @@ label mas_f14_monika_valentines_intro:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
-                m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
+                m 2rksdlu "Ahaha...{w=1}it's not polite to stare, [player]..."
                 m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
                 call mas_f14_sun_dress_outro
 

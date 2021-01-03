@@ -211,12 +211,15 @@ init 5 python:
 
                 get_cons_evl - evl to use for getting the consumable. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
 
                 finish_prep_evl - evl to use when finished prepping. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
 
                 finish_cons_evl - evl to use when finished consuming. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
             """
             if (
                 consumable_type in store.mas_consumables.consumable_map
@@ -1270,7 +1273,7 @@ label mas_finished_brewing:
 
 ###Drinking done
 init 5 python:
-    #Like finshed_brewing, this event gets its params from
+    #Like finshed_brewing, this event gets its params from consumable logic
     addEvent(
         Event(
             persistent.event_database,
@@ -1307,7 +1310,7 @@ label mas_get_drink:
 
 #START: Generic food evs
 init 5 python:
-    #This event gets its params via _startupDrinkLogic()
+    #This event gets its params via consumable logic
     addEvent(
         Event(
             persistent.event_database,
@@ -1324,7 +1327,7 @@ label mas_finished_prepping:
     return
 
 
-###Drinking done
+###Eating done
 init 5 python:
     #Like finshed_brewing, this event gets its params from
     addEvent(
@@ -1740,6 +1743,17 @@ label mas_consumables_remove_thermos:
     return
 
 ### Special labels for consumables
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_consumables_candycane_finish_having",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        ),
+        restartBlacklist=True
+    )
+
 label mas_consumables_candycane_finish_having:
     #Some prep
     python:

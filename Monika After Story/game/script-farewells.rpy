@@ -672,7 +672,8 @@ label bye_prompt_sleep:
             m 1eua "Taking an afternoon nap, I see."
             # TODO: monika says she'll join you, use sleep sprite here
             # and setup code for napping
-            m 1hua "Ahaha~ Have a good nap, [player]."
+            m 1hub "Ahaha~{w=0.1} {nw}"
+            extend 1hua "Have a good nap, [player]."
 
         elif mas_isMoniUpset():
             m 2esc "Taking a nap, [player]?"

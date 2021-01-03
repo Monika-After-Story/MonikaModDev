@@ -838,12 +838,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         else:
             if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
+                force_exp = "monika idle"
+                # if dissolve_all:
+                #     force_exp = store.mas_affection._force_exp()
 
-                else:
-                    force_exp = "monika idle"
+                # else:
+                #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
                 renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
@@ -875,7 +875,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
         #   for this background.
-        if scene_change and bg_change_info is None:
+        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
             bg_change_info = store.mas_background.MASBackgroundChangeInfo()
             mas_current_background._entry_deco(None, bg_change_info)
 
@@ -1044,7 +1044,7 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = persistent._mas_monika_nickname
         $ quick_menu = True
-        m 1hua "Ahaha!"
+        m 1hub "Ahaha!"
         m "I'm just kidding!"
         m 1eua "I already fixed that bug."
         m "I don't need a character file anymore."
