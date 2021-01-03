@@ -1,4 +1,5 @@
 define persistent.demo = False
+
 define config.developer = False #This is the flag for Developer tools
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
@@ -3402,7 +3403,133 @@ python early:
             """
             self.box[headline] = msg
 
+    class MASExtraPropable(object):
+        """
+        base class that supports ex_prop-based extensions.
 
+        Properties can be accessed by using `ex__` prefix.
+        Supports the following:
+
+        ACCESSING props:
+            via `<obj>.ex__<name>`
+            if no prop is found, None is returned.
+
+        SETTING PROPS:
+            via `<obj>.ex__<name> = <value>`
+
+        CHECKING FOR PROP EXISTENCE:
+            via `<name>` in <obj>
+
+        ADDING props:
+            *same as setting props
+
+        REMOVING PROPS:
+            via pop function
+
+        EQUIVALENCE:
+            No eq support, but I am open to it. Let me know.
+
+        NOTE: using this means that all of the ex_props you want to use
+            _should_ be pythonic in name. Props that are NOT pythonic in name
+            are will not be accessible via property.
+
+        PROPERTIES:
+            ex_props - direct dictionary of ex_props
+        """
+        EX_PFX = "ex__"
+        _EX_LEN = len(EX_PFX)
+
+        def __init__(self, ex_props=None):
+            """
+            Constructor.
+
+            IN:
+                ex_props - initial dict of ex props to set internal data to
+                    pass None to start with an empty dict.
+                    (Default: None)
+            """
+            if ex_props is None:
+                ex_props = {}
+
+            self.ex_props = ex_props
+
+        def __contains__(self, item):
+            return item in self.ex_props
+
+        def __len__(self):
+            return len(self.ex_props)
+
+        def __getattr__(self, key):
+            if key.startswith(self.EX_PFX):
+                return self.ex_props.get(key[self._EX_LEN:], None)
+
+            return super(MASExtraPropable, self).__getattr__(key)
+
+        def __setattr__(self, key, value):
+            if key.startswith(self.EX_PFX):
+                # the real property name is without the prefix
+                stripped_key = key[self._EX_LEN:]
+                if len(stripped_key) > 0:
+                    self.ex_props[stripped_key] = value
+
+            super(MASExtraPropable, self).__setattr__(key, value)
+
+        def ex_has(self, key):
+            """
+            Checks for existence of the given exprop in this object.
+
+            IN:
+                key - name of exprop
+
+            RETURNS: True if the key exists as an ex prop, False if not
+            """
+            return key in self
+
+        def ex_iter(self):
+            """
+            Generates generator of exprops in this object.
+
+            RETURNS: iter of ex prop names and values
+            """
+            return (item for item in self.ex_props.iteritems())
+
+        def ex_pop(self, key, default=None):
+            """
+            Pops and returns an exprop from the internal dict
+
+            IN:
+                key - key to pop/get ex_prop
+                default - default value to use if no prop found
+                    (Default: None)
+
+            RETURNS: value of the popped ex_prop, or the default if not found
+            """
+            return self.ex_props.pop(key, default)
+
+        @staticmethod
+        def repr_out(obj):
+            """
+            returns a repr string of the ex props in an object.
+
+            IN:
+                obj - object to repr ex props for
+
+            RETURNS: repr string of ex_props in object. empty string if
+                no ex_props property.
+            """
+            try:
+                ex_props = obj.ex_props
+                if ex_props is None:
+                    return "<exprops: ()>"
+
+                props = [
+                    "{0}: {1}".format(key, value)
+                    for key, value in ex_props.iteritems()
+                ]
+                return "<exprops: ({0})>".format(", ".join(props))
+
+            except:
+                return ""
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
@@ -3567,61 +3694,6 @@ init -999 python:
         _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
 init -995 python in mas_utils:
-    def compareVersionLists(curr_vers, comparative_vers):
-        """
-        Generic version number checker
-
-        IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
-        """
-
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-
-        #Now, let's do some work.
-        #First, we check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #The lists are not the same, which means we need to do a bit of work.
-        #Before we do that, let's verify that the lists are the same length
-        if len(comparative_vers) > len(curr_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #We've found a number which was greater, let's return 1 as we know this version is greater
-                return 1
-
-        #If we're here, we never found something greater. Let's return -1
-        return -1
-
-init -991 python in mas_utils:
     import store
     import os
     import stat
@@ -3649,6 +3721,61 @@ init -991 python in mas_utils:
         "[": "[["
     }
 
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+                return 1
+
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
     def all_none(data=None, lata=None):
         """
         Checks if a dict and/or list is all None
@@ -3675,7 +3802,6 @@ init -991 python in mas_utils:
 
         return True
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -3690,7 +3816,6 @@ init -991 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
-
 
     def eqfloat(left, right, places=6):
         """
@@ -3711,10 +3836,42 @@ init -991 python in mas_utils:
         return abs(left-right) < acc
 
 
+    def truncround(value, places=6):
+        """
+        Does "truncated rounding" for floats. This is done via a floatsplit_i
+        that reassembles into a float.
+
+        IN:
+            value - float to round
+            places - number of decimal places to truncate round to
+                (Default: 6)
+
+        RETURNS: truncate-rounded float
+        """
+        return floatcombine_i(floatsplit_i(value, places), places)
+
+
+    def floatcombine_i(value, places=6):
+        """
+        Combines output of floatsplit_i back into a float
+
+        IN:
+            value - tuple of the following format:
+                [0]: integer part of the float
+                [1]: float part of the float as integer
+            places - number of places to apply to the float part
+                (Default: 6)
+
+        RETURNS: float
+        """
+        return value[0] + (value[1] / (10.0**places))
+
+
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
-        returns two ints)
+        returns three ints, or floatsplit_i which returns two ints with
+        rounding)
 
         IN:
             value - float to split
@@ -3725,6 +3882,25 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
+
+
+    def floatsplit_i(value, places=6):
+        """
+        Similar to floatsplit, but converts the float portion into an int
+
+        IN:
+            value - float to split
+            places - number of decimal places to keep when converting the
+                float to an int
+                (Default: 6)
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float
+            [1] - float portion of float, multiplied by 10^places
+        """
+        int_part, float_part = floatsplit(value)
+        scale = 10**places
+        return int_part, int(float_part * scale)
 
 
     def pdget(key, table, validator=None, defval=None):
@@ -3753,7 +3929,6 @@ init -991 python in mas_utils:
 
         return defval
 
-
     def td2hr(duration):
         """
         Converts a timedetla to hours (fractional)
@@ -3764,7 +3939,6 @@ init -991 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
-
 
     def tryparseint(value, default=0):
         """
@@ -3783,7 +3957,6 @@ init -991 python in mas_utils:
             return int(value)
         except:
             return default
-
 
     def copyfile(oldpath, newpath):
         """
@@ -3807,7 +3980,6 @@ init -991 python in mas_utils:
             writelog(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
 
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -3824,7 +3996,6 @@ init -991 python in mas_utils:
         finally:
             sys.stdout = oldout
 
-
     def writelog(msg):
         """
         Writes to the mas log if it is open
@@ -3835,13 +4006,21 @@ init -991 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+    def wtf(msg):
+        """
+        Wow That Failed
+        For logging stuff that should never happen
+
+        IN:
+            msg - message to log
+        """
+        writelog(msg)
 
     def writestack():
         """
         Prints current stack to log
         """
         writelog("".join(traceback.format_stack()))
-
 
     def trydel(f_path, log=False):
         """
@@ -3854,7 +4033,6 @@ init -991 python in mas_utils:
         except Exception as e:
             if log:
                 writelog("[exp] {0}\n".format(repr(e)))
-
 
     def trywrite(f_path, msg, log=False, mode="w"):
         """
@@ -3880,7 +4058,6 @@ init -991 python in mas_utils:
         finally:
             if outfile is not None:
                 outfile.close()
-
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
@@ -3908,7 +4085,6 @@ init -991 python in mas_utils:
                 store.persistent.version_number
             ))
         return new_log
-
 
     def logrotate(logpath, filename):
         """
@@ -3968,7 +4144,6 @@ init -991 python in mas_utils:
 
         # and delete the current file
         trydel(old_path)
-
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -4098,7 +4273,6 @@ init -991 python in mas_utils:
             except:
                 self.file = False
                 return False
-
 
     # A map from the log name to a log object.
     mas_mac_log_cache = { }
@@ -5086,7 +5260,6 @@ init -1 python:
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
         )
 
-
     def mas_cvToHM(mins):
         """
         Converts the given minutes into hour / minutes
@@ -5859,7 +6032,7 @@ init 2 python:
             not persistent._mas_sensitive_mode
             and persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and _mas_getAffection() >= aff_thresh
+            and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
@@ -7446,6 +7619,9 @@ default persistent._mas_sensitive_mode = False
 default persistent._mas_ddlc_reload_count = 0
 
 define startup_check = False
+
+# define temp zoom to default level in case of crash
+define mas_temp_zoom_level = store.mas_sprites.default_zoom_level
 
 define his = "his"
 define he = "he"
