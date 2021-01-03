@@ -3403,7 +3403,6 @@ python early:
             """
             self.box[headline] = msg
 
-
     class MASExtraPropable(object):
         """
         base class that supports ex_prop-based extensions.
@@ -3528,7 +3527,7 @@ python early:
                     for key, value in ex_props.iteritems()
                 ]
                 return "<exprops: ({0})>".format(", ".join(props))
-                
+
             except:
                 return ""
 
@@ -3896,7 +3895,7 @@ init -995 python in mas_utils:
                 (Default: 6)
 
         RETURNS: tuple of the following format:
-            [0] - integer portion of float 
+            [0] - integer portion of float
             [1] - float portion of float, multiplied by 10^places
         """
         int_part, float_part = floatsplit(value)
@@ -5261,7 +5260,6 @@ init -1 python:
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
         )
 
-
     def mas_cvToHM(mins):
         """
         Converts the given minutes into hour / minutes
@@ -6034,7 +6032,7 @@ init 2 python:
             not persistent._mas_sensitive_mode
             and persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and _mas_getAffection() >= aff_thresh
+            and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
