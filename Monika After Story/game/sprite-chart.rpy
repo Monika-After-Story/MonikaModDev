@@ -40,6 +40,8 @@
 #   k - left eye wink (winkleft)
 #   n - right eye wink (winkright)
 #   f - soft eyes (soft)
+#   m - left smug (smugleft)
+#   g - right smug (smugright)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
