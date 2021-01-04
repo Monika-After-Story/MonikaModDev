@@ -506,7 +506,7 @@ label mas_hangman_game_loop:
 
         def getCorrectGuesses(guesses, chances, max_chances=6):
             """
-            Get the amount of correct guesses, i.e. the amount of guesses 
+            Get the amount of correct guesses, i.e. the amount of guesses
             that actually exposed letters in the word.
 
             IN:
@@ -525,9 +525,9 @@ label mas_hangman_game_loop:
             """
             Get the ratio of so-called 'last chance guesses' (correct guesses
             made on the last chance remaining) to the total amount of guesses
-            (depending on 'useCorrect' parameter, this may be either both 
+            (depending on 'useCorrect' parameter, this may be either both
             correct and incorrent amount, or just amount of correct guesses.)
-            
+
             IN:
                 guesses - amount of guesses (including incorrect) made
                     by the player
@@ -637,7 +637,7 @@ label mas_hangman_game_loop:
 
         if chances == 0:
             $ done = True
-            
+
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -664,7 +664,7 @@ label mas_hangman_game_loop:
 
                 $ give_up = True
                 $ done = True
-                
+
                 call mas_hangman_game_give_up(guesses, chances, last_chance_guesses)
             else:
                 $ guesses += 1
@@ -692,7 +692,7 @@ label mas_hangman_game_loop:
 
     # post loop
     if win:
-        call mas_hangman_game_win(guesses, chances, last_chance_guesses)      
+        call mas_hangman_game_win(guesses, chances, last_chance_guesses)
 
     #Give up just ends
     elif give_up:
@@ -703,8 +703,9 @@ label mas_hangman_game_loop:
     $ _history_list.pop()
     menu:
         m "Would you like to play again?{fast}"
+
         "Yes.":
-            $ hang_ev = mas_getEV("mas_hang")
+            $ hang_ev = mas_getEV("mas_hangman")
             if hang_ev:
                 # each game counts as a game played
                 $ hang_ev.shown_count += 1
@@ -714,6 +715,7 @@ label mas_hangman_game_loop:
 
         "No.":
             pass
+
     jump mas_hangman_game_end
 
 label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
@@ -724,30 +726,29 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
         $ the_word = "your name"
     else:
         $ the_word = "the word"
-        
+
     if chances == 6:
         m 1sud "Wow, [player]..."
         if not player_word:
             m 1hua "You didn't miss a single letter!"
             m 3eub "You must have a really good vocabulary, ahaha."
             m 1tsa "...Or maybe you just lucked out, hmm?"
+
         else:
             m 1hkb "You just guessed your own name flawlessly, ahaha."
-    elif chances == 1 and getLastChanceGuessesRatio(guesses, chances, 
-            last_chance_guesses, True) > 0.5:
+
+    elif chances == 1 and getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, True) > 0.5:
         # More than 50% of the correct guesses were made on last chance.
         m 1hub "Wow, [player], you must be {i}really{/i} lucky, ahaha~"
         m 1tsb "...Or maybe you're just biding your time to show me how good you are, hmm?"
 
         # Make her mention previous episode of giving up on last chance just once.
-        if (
-            mas_seenLabels(["mas_hangman_give_up_last_chance"]) and
-            not mas_seenLabels(["mas_hangman_give_up_last_chance_ref"])
-        ):
+        if renpy.seen_label("mas_hangman_give_up_last_chance") and not renpy.seen_label("mas_hangman_give_up_last_chance_ref"):
             call mas_hangman_give_up_last_chance_ref
+
     else:
         m 1hua "Wow, you guessed [the_word] correctly!"
-        m "Good job, [player]!"
+        m 3hub "Good job, [player]!"
 
     if not persistent.ever_won['hangman']:
         $ persistent.ever_won['hangman'] = True
@@ -755,65 +756,81 @@ label mas_hangman_game_win(guesses=0, chances=0, last_chance_guesses=0):
     return
 
 label mas_hangman_game_loss(guesses=0, chances=0, last_chance_guesses=0):
-    if guesses > 0:
+    if guesses:
         if player_word:
-             m 1eka "[player]..."
-             m 1hksdlb "You couldn't guess your own name?"
+            m 1eka "[player]..."
+            m 1hksdlb "You couldn't guess your own name?"
+
         elif getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, True) > 0.5:
-             if not (persistent._mas_pm_cares_about_dokis or persistent._mas_sensitive_mode):
-                 m 1tsa "You were {i}hanging{/i} in there really well{w=0.5}{nw}, "
-                 extend 1hub "[player], ahaha."
-             else:
-                 m 1eua "You were doing really great, [player]!"
+            if not persistent._mas_pm_cares_about_dokis:
+                m 1tsa "You were {i}hanging{/i} in there really well,{w=0.1} {nw}"
+                extend 1hub "[player], ahaha."
+
+            else:
+                m 1eua "You were doing really well, [player]!"
+
         m 1hua "Better luck next time~"
+
     else:
         m 1ekc "[player]..."
-        m "You didn't guess even a single letter..."
-        m 1eka "I really hope you'll do better next time."
+
         if mas_isMoniAff(higher=True):
             m 1hksdlb "Did I pick a word that was too difficult for you, [mas_get_player_nickname()]?~"
+
+        m 1eksdld "You didn't guess even a single letter..."
+        m 1eka "I really hope you'll play next time."
+
     return
 
 label mas_hangman_game_give_up(guesses=0, chances=0, last_chance_guesses=0):
     #hide hmg_hanging_man
     #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
     m 1lksdlb "[player]..."
+
     if guesses == 0:
-        m "I thought you said you wanted to play [store.mas_hangman.game_name]."
+        m 1eksdld "I thought you said you wanted to play [store.mas_hangman.game_name]."
         m 1lksdlc "You didn't even guess a single letter."
-        m "..."
-        m 1ekc "I really enjoy playing with you, you know."
+        m 1dksdlc "..."
+        m 1eka "I really enjoy playing with you, you know."
+        m 1eka "Can you play to the end next time, [player]?{w=0.2} For me?"
+
     elif chances == 1:
         call mas_hangman_game_give_up_last_chance(guesses, last_chance_guesses)
+
     elif chances == 5:
         m 1ekc "Don't give up so easily."
         m 3eka "That was just your first wrong letter!"
         m 1eka "You still had [chances] more lives left."
         m 1hua "I know you can do it!"
         m 1eka "It would really mean a lot to me if you just tried a bit harder."
+
     else:
-        m "You should at least play to the end..."
-        m 1ekc "Giving up so easily is a sign of poor resolve."         
+        m 3eksdla "You should at least play to the end..."
+
         if chances >= 2:
-            m "I mean, you'd have to miss [chances] more letters to actually lose."
+            m 3rksdla "I mean, you'd still have to miss [chances] more letters to actually lose."
         else:
-            m "I mean, you'd have to miss one more letter to actually lose."
-        m 1eka "Can you play to the end next time, [player]? For me?"
+            m 3rksdla "I mean, you still had one more miss before you lost..."
+
+        m 1eka "Can you play to the end next time, [player]?{w=0.2} For me?"
     return
 
 label mas_hangman_game_give_up_last_chance(guesses=0, last_chance_guesses=0):
     if getLastChanceGuessesRatio(guesses, chances, last_chance_guesses, False) > 0.5:
         m 3eka "You were really lucky to hold on your last chance for so long..."
-        m "And you almost figured the entire word correctly."
+        m "...and you almost figured the entire word correctly."
+
     m 1dkc "You shouldn't give up on your last chance, no matter how dire things seem to be..."
-    m 1eka "Please, play until the very end next time."
+    m 1eka "Just play until the very end next time, please?"
+
     if mas_isMoniAff(higher=True):
         m 1ekbsa "Would you do that for me?~"
     return
 
 label mas_hangman_game_give_up_last_chance_ref:
-    m 3eua "Remember how you gave up on last chance previously?"
+    m 3eua "Remember how you gave up on last chance before?"
     m 1hub "This time you actually made it, just take a look!"
+
     if mas_isMoniAff(higher=True):
         m 1eubsa "I'm really proud of you, [player]~"
     return
@@ -836,9 +853,9 @@ label mas_hangman_game_end:
     $ mas_hmg.removePlayername(hangman_mode)
 
     if renpy.seen_label("mas_hangman_dlg_game_end_long"):
-        call mas_hangman_dlg_game_end_short from _mas_hangman_dges
+        call mas_hangman_dlg_game_end_short
     else:
-        call mas_hangman_dlg_game_end_long from _mas_hangman_dgel
+        call mas_hangman_dlg_game_end_long
 
     $ enable_esc()
 
@@ -854,11 +871,11 @@ label mas_hangman_dlg_game_end_long:
     return
 
 # short form of ending dialogue
+#No dialogue on giveup instantly since it kinda leads out cleanly already
 label mas_hangman_dlg_game_end_short:
     if give_up:
-        $ dlg_line = "Let's play again soon, okay?"
-    else:
-        $ dlg_line = "Okay. Let's play again soon!"
+        return
 
+    $ dlg_line = "Okay. Let's play again soon!"
     m 1eua "[dlg_line]"
     return
