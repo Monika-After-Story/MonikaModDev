@@ -825,6 +825,50 @@ label monika_idle_reading_callback:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_drink",
+            prompt="I'm going to get a drink",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_drink:
+    if mas_isMoniNormal(higher=True):
+        m 1eub "Alright, [mas_get_player_nickname()]."
+        if random.randint(1,3) == 1:
+            m 3hub "Hydration is key~"
+
+    elif mas_isMoniDis(higher=True):
+        m 2ekc "Okay, [player]."
+
+    else:
+        m 6dkc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_drink_callback")
+    $ persistent._mas_idle_data["monika_idle_drink"] = True
+    return "idle"
+
+label monika_idle_drink_callback:
+    if mas_isMoniNormal(higher=True):
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_drink"):
+            m 1wub "You're back!"
+            m 1eua "I didn't think it would take so long to grab a drink. "
+            extend 3eub "Did you make some food too perhaps?"
+            m 1hub "I'm glad you're taking care of yourself~"
+
+        else:
+            m 1eub "Welcome back [mas_get_player_nickname()]!"
+
+    else:
+        call mas_brb_generic_low_aff_callback
+
+    return
 
 #Rai's og game idle
 #label monika_idle_game:
