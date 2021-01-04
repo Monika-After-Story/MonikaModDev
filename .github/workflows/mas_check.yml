@@ -39,7 +39,7 @@ jobs:
       # dl renpy src
       - name: Download rpy source
         run: |
-          wget https://www.renpy.org/dl/7.4.0/renpy-7.4.0-sdk.tar.bz2
+          wget https://nightly.renpy.org/current/renpy-nightly-2021-01-04-a2dd40035-sdk.tar.bz2
           tar xf renpy-7.4.0-sdk.tar.bz2
           rm renpy-7.4.0-sdk.tar.bz2
           mv renpy-7.4.0-sdk renpy
