@@ -42,7 +42,7 @@ jobs:
           wget https://nightly.renpy.org/current/renpy-nightly-2021-01-04-a2dd40035-sdk.tar.bz2
           tar xf renpy-nightly-2021-01-04-a2dd40035-sdk.tar.bz2
           rm renpy-nightly-2021-01-04-a2dd40035-sdk.tar.bz2
-          mv renpy-nightly-2021-01-04-a2dd40035-sdk
+          mv renpy-nightly-2021-01-04-a2dd40035-sdk renpy
 
       # download base mas
       - name: Download base MAS + copy files over
