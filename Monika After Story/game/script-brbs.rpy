@@ -55,6 +55,26 @@ label mas_brb_back_to_idle:
 
     return "idle"
 
+# label for generic reactions for low affection callback paths
+# to be used if a specific reaction isn't needed or provided
+label mas_brb_generic_low_aff_callback:
+    if mas_isMoniDis(higher=True):
+        python:
+            cb_line = renpy.substitute(renpy.random.choice([
+                _("Oh...{w=0.3}you're back."),
+                _("Oh...{w=0.3}welcome back."),
+                _("All done?"),
+                _("Welcome back."),
+                _("Oh...{w=0.3}there you are."),
+            ]))
+
+        m 2ekc "[cb_line]"
+
+    else:
+        m 6ckc "..."
+
+    return
+
 
 init 5 python:
     addEvent(
@@ -122,11 +142,9 @@ label monika_brb_idle_callback:
         m 1hub "Welcome back, [player]!"
         m 1eua "[wb_quip]"
 
-    elif mas_isMoniDis(higher=True):
-        m 2esc "Oh, back already?"
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 init 5 python:
@@ -184,14 +202,9 @@ label monika_writing_idle_callback:
         m 1eua "Done writing, [player]?"
         m 1eub "[wb_quip]"
 
-    elif mas_isMoniUpset():
-        m 2esc "Done? Welcome back, [player]."
-
-    elif mas_isMoniDis():
-        m 6ekc "Oh...{w=0.5} You're back..."
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 init 5 python:
@@ -281,13 +294,11 @@ label monika_idle_shower_callback:
                 m 1hub "Ahaha!"
 
     elif mas_isMoniUpset():
-        m 2esc "I hope you enjoyed your shower. Welcome back, [player]."
-
-    elif mas_isMoniDis():
-        m 6ekc "Oh, it's nice to see you again..."
+        m 2esc "I hope you enjoyed your shower. {w=0.2}Welcome back, [player]."
 
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 label bye_brb_shower_timeout:
@@ -361,6 +372,7 @@ label monika_idle_game_callback:
 
     else:
         m 6ckc "..."
+
     return
 
 init 5 python:
@@ -419,14 +431,9 @@ label monika_idle_coding_callback:
 
         m 3eub "[wb_quip]"
 
-    elif mas_isMoniUpset():
-        m 2esc "Welcome back."
-
-    elif mas_isMoniDis():
-        m 6ekc "Oh, you're back."
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 
@@ -513,11 +520,9 @@ label monika_idle_workout_callback:
     elif mas_isMoniUpset():
         m 2euc "Done with your workout, [player]?"
 
-    elif mas_isMoniDis():
-        m 6ekc "Oh, you came back."
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 init 5 python:
@@ -556,6 +561,7 @@ label monika_idle_nap:
 
 label monika_idle_nap_callback:
     if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=5), "monika_idle_nap"):
             m 2hksdlb "Oh, [player]! You're finally awake!"
             m 7rksdlb "When you said you were going to take a nap, I was expecting you take maybe an hour or two..."
@@ -567,12 +573,12 @@ label monika_idle_nap_callback:
             m 1hua "Welcome back, [player]!"
             m 1eua "Did you have a nice nap?"
             m 3hua "You were out for some time, so I hope you're feeling rested~"
-            m 1eua "Is there anything else you wanted to do today?"
+            m 1eua "[wb_quip]"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_nap"):
             m 1hua "Welcome back, [player]~"
             m 1eub "I hope you had a nice little nap."
-            m 3eua "What else would you like to do today?"
+            m 3eua "[wb_quip]"
 
         else:
             m 1eud "Oh, back already?"
@@ -583,11 +589,9 @@ label monika_idle_nap_callback:
     elif mas_isMoniUpset():
         m 2euc "Done with your nap, [player]?"
 
-    elif mas_isMoniDis():
-        m 6ekc "Oh, you're back."
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
+
     return
 
 init 5 python:
@@ -639,6 +643,7 @@ label monika_idle_homework_callback:
 
     else:
         m 6ckc "..."
+
     return
 
 init 5 python:
@@ -691,6 +696,7 @@ label monika_idle_working_callback:
 
     else:
         m 6ckc "..."
+
     return
 
 init 5 python:
@@ -760,14 +766,8 @@ label monika_idle_screen_break_callback:
 
         m 1eua "[wb_quip]"
 
-    elif mas_isMoniUpset():
-        m 2esc "Welcome back."
-
-    elif mas_isMoniDis():
-        m 6ekc "Oh...{w=0.5} You're back."
-
     else:
-        m 6ckc "..."
+        call mas_brb_generic_low_aff_callback
 
     return
 
@@ -820,17 +820,8 @@ label monika_idle_reading_callback:
             m 1eua "I thought you'd be gone a little while longer, but this is fine too."
             m 3ekblu "After all, it lets me spend more time with you~"
 
-    elif mas_isMoniUpset():
-        m 2esc "Oh, you're back...{w=0.3}{nw}"
-        extend 2lkd "good..."
-
-    elif mas_isMoniDis():
-        m 6dkc "..."
-        m 6ekd "Oh, sorry...{w=0.3}I didn't see you there."
-        m 6rkc "...welcome back."
-
     else:
-        m 6dktpc "..."
+        call mas_brb_generic_low_aff_callback
 
     return
 
