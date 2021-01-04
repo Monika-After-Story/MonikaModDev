@@ -4327,7 +4327,7 @@ init -995 python in mas_utils:
             return False
 
     # unstable should never delete logs
-    if store.persistent._mas_unstable_mode or store.mas_r7_mode:
+    if store.persistent._mas_unstable_mode:
         mas_log = getMASLog("log/mas_log", append=True, flush=True)
     else:
         mas_log = getMASLog("log/mas_log")

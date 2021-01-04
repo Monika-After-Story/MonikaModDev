@@ -447,7 +447,7 @@ init -1 python:
                 return
 
             # old version check
-            if mas_r7_mode:
+            if persistent._mas_unstable_mode:
                 # rpartion the ., the last item should be build number
                 lv_build_number = store.mas_utils.tryparseint(
                     latest_version.rpartition(".")[2],
@@ -668,10 +668,7 @@ init python in mas_updater:
 
         curr_time = time.time()
 
-        if store.mas_r7_mode:
-            update_link = r7
-
-        elif renpy.game.persistent._mas_unstable_mode:
+        if renpy.game.persistent._mas_unstable_mode:
             update_link = unstable
 
         else:
