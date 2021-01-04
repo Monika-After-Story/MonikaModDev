@@ -124,6 +124,9 @@ default persistent._mas_force_clothes = False
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
 
+default persistent._mas_last_ahoge_dt = None
+# set to the dt of when we last set the ahoge
+
 define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
@@ -331,6 +334,12 @@ init -100 python in mas_sprites:
 
     # --- default mux types ---
 
+    DEF_MUX_AHOGE = [
+        "ahoge",
+        "hat",
+    ]
+    # default mux type for ahoges
+
     DEF_MUX_RB = [
         "ribbon",
         "bow",
@@ -381,6 +390,7 @@ init -100 python in mas_sprites:
     # default mux types for left-desk related items (namely foods)
 
     DEF_MUX_HAT = [
+        "ahoge",
         "hat",
         "bow",
         "bunny-scrunchie",
@@ -398,6 +408,10 @@ init -100 python in mas_sprites:
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
+        "ahoge": ACSTemplate(
+            "ahoge",
+            mux_type=DEF_MUX_AHOGE,
+        ),
         "bow": ACSTemplate(
             "bow",
             mux_type=DEF_MUX_RB,
@@ -1062,6 +1076,35 @@ init -5 python in mas_sprites:
         init_acs(remover_acs)
         return remover_acs
 
+
+    def get_acs(acs_name):
+        """
+        Gets the ACS object for a given name from the ACS map
+
+        IN:
+            acs_name - name of the ACS to get
+
+        RETURNS: ACS object, or None if no acs object with the given name
+        """
+        return ACS_MAP.get(acs_name, None)
+
+
+    def get_acs_of_type(acs_type):
+        """
+        Gets all ACS objects for a given ACS type.
+
+        IN:
+            acs_type - type of ACS to get
+
+        RETURNS: list of ACS objects with the given type. list may be empty
+            if no ACS of the given type
+        """
+        return [
+            acs for acs in ACS_MAP.itervalues()
+            if acs.acs_type == acs_type
+        ]
+
+
     def init_acs(mas_acs):
         """
         Initlializes the given MAS accessory into a dictionary map setting
@@ -1281,6 +1324,21 @@ init -5 python in mas_sprites:
             store.mas_selspr.set_prompt(rm_acs.acs_type, "wear")
 
 
+    def acs_rm_exit_pst_removal(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs after the ACS is removed
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc - acs location the ACS was removed from
+        """
+        # if removing hat, wear ahoge if we have any
+        if rm_acs.acs_type == "hat" and moni_chr.last_ahoge is not None:
+            moni_chr.wear_acs(moni_chr.last_ahoge)
+
+
     def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
         """
         Runs before mux type acs are removed
@@ -1294,6 +1352,7 @@ init -5 python in mas_sprites:
         # abort if current hair not compatible wtih CAS
         if not is_hairacs_compatible(moni_chr.hair, new_acs):
             temp_space["abort"] = True
+            return
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -2230,6 +2289,17 @@ init -3 python:
             #   of highlights
             self.tablechair = MASTableChair("def", "def")
 
+            # set to the ahoge we had set during this session
+            self.last_ahoge = None
+
+            # special mapping of ACS with acs types
+            # this is a dual key map. Use this for quick removal of acs types
+            # key: acs type
+            # value: dict of the following format:
+            #   key: acs name
+            #   value: acs object
+            self._acs_type_map = {}
+
         def __repr__(self):
             """
             this is lengthy and will contain all objects
@@ -2275,6 +2345,62 @@ init -3 python:
                 accessory list, or None if the given acs_type is not valid
             """
             return self.acs.get(acs_type, None)
+
+        def ahoge(self, force_change=False):
+            """
+            Applies a random ahoge to Monika.
+
+            IN:
+                force_change - True will force an ahoge to be set, even if
+                    one is currently available.
+                    (Deafult: False)
+
+            RETURNS: True if we set the ahoge, False if not
+            """
+            # dont wear one if this ahoge was already set today, unless
+            # we are doing a force change.
+            if (
+                    persistent._mas_last_ahoge_dt is not None
+                    and not force_change
+                    and datetime.datetime.now().date() 
+                        == persistent._mas_last_ahoge_dt.date()
+            ):
+                    # we already set the ahoge today so dont set it again.
+                    return False
+
+            # random select an ahoge
+            self._set_ahoge(
+                random.choice(store.mas_sprites.get_acs_of_type("ahoge"))
+            )
+            return True
+
+        def _set_ahoge(self, ahoge_acs, force_wear=False):
+            """
+            Sets the ahoge for Monika, also setting the appropriate last 
+            ahoge and everything.
+
+            IN:
+                ahoge_acs - the ACS object for the ahoge to wear
+                    NOTE: pass in None to clear the ahoge.
+                force_wear - pass True to wear the ahoge even if we are wearing
+                    a hat.
+                    (Default: False)
+            """
+            if ahoge_acs is None:
+                # clear the ahoge, if we are wearing it.
+                if self.last_ahoge is not None:
+                    self.remove_acs(self.last_ahoge)
+                    self.last_ahoge = None
+                return
+
+            # set the last ahoge to the given acs
+            self.last_ahoge = ahoge_acs
+            persistent._mas_last_ahoge_dt = datetime.datetime.now()
+
+            if self.get_acs_of_type("hat") is not None and not force_wear:
+                return
+
+            self.wear_acs(ahoge_acs)
 
         def _determine_poses(self, lean, arms):
             """
@@ -2527,6 +2653,9 @@ init -3 python:
             self._load_acs(_acs_afh_names, self.AFH_ACS)
             self._load_acs(_acs_mid_names, self.MID_ACS)
             self._load_acs(_acs_pst_names, self.PST_ACS)
+
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
 
         def _load_acs(self, per_acs, acs_type):
             """
@@ -3106,6 +3235,9 @@ init -3 python:
             for index, rec_layer in enumerate(self.REC_LAYERS):
                 self._load_acs_obj(_data[index+2], rec_layer)
 
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
+
         def reset_all(self, by_user=None):
             """
             Resets all of monika
@@ -3132,7 +3264,6 @@ init -3 python:
                 self.acs_list_map.get(accessory.name, None)
             )
 
-
         def remove_acs_exprop(self, exprop):
             """
             Removes all ACS of given exprop.
@@ -3145,7 +3276,6 @@ init -3 python:
                 if _acs and _acs.hasprop(exprop):
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
 
-
         def remove_acs_mux(self, mux_types):
             """
             Removes all ACS with a mux type in the given list.
@@ -3153,24 +3283,23 @@ init -3 python:
             IN:
                 mux_types - list of acs_types to remove from acs
             """
-            for acs_name in self.acs_list_map.keys():
-                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
-                if _acs and _acs.acs_type in mux_types:
-                    self.remove_acs_in(_acs, self.acs_list_map[acs_name])
+            for mux_type in mux_types:
+                acs_with_mux = self._acs_type_map.get(mux_type, {})
+                for acs_name in acs_with_mux.keys():
+                    self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
-
-        def remove_acs_in(self, accessory, acs_type):
+        def remove_acs_in(self, accessory, acs_layer):
             """
-            Removes the given accessory from the given accessory list type
+            Removes the given accessory from the given accessory list layer
 
             IN:
                 accessory - accessory to remove
-                acs_type - ACS type
+                acs_layer - ACS layer to remove from
             """
             if self.lock_acs:
                 return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3182,7 +3311,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort removal if we were told to abort
@@ -3197,7 +3326,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # cleanup blacklist
@@ -3208,8 +3337,21 @@ init -3 python:
                 if accessory.name in self.acs_list_map:
                     self.acs_list_map.pop(accessory.name)
 
+                # cleanup type mapping
+                type_map = self._acs_type_map.get(accessory.acs_type, {})
+                if accessory.name in type_map:
+                    type_map.pop(accessory.name)
+
                 # now remove
                 acs_list.remove(accessory)
+
+                # finally post removal code
+                store.mas_sprites.acs_rm_exit_pst_removal(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_layer
+                )
 
         def remove_all_acs(self):
             """
@@ -3218,19 +3360,19 @@ init -3 python:
             for rec_layer in self.REC_LAYERS:
                 self.remove_all_acs_in(rec_layer)
 
-        def remove_all_acs_in(self, acs_type):
+        def remove_all_acs_in(self, acs_layer):
             """
-            Removes all accessories from the given accessory type
+            Removes all accessories from the given accessory layer
 
             IN:
-                acs_type - ACS type to remove all
+                acs_layer - ACS layer to remove acs from
             """
             if self.lock_acs:
                 return
 
-            if acs_type in self.acs:
+            if acs_layer in self.acs:
                 # need to clear blacklisted
-                for acs in self.acs[acs_type]:
+                for acs in self.acs[acs_layer]:
                     # run programming point
                     acs.exit(self)
 
@@ -3242,8 +3384,7 @@ init -3 python:
                     if acs.name in self.acs_list_map:
                         self.acs_list_map.pop(acs.name)
 
-                self.acs[acs_type] = list()
-
+                self.acs[acs_layer] = list()
 
         def reset_clothes(self, by_user=None):
             """
@@ -3457,7 +3598,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, acs.get_rec_layer())
 
-        def wear_acs_in(self, accessory, acs_type):
+        def wear_acs_in(self, accessory, acs_layer):
             """
             Wears the given accessory
 
@@ -3466,7 +3607,7 @@ init -3 python:
 
             IN:
                 accessory - accessory to wear
-                acs_type - layer to wear the acs in.
+                acs_layer - layer to wear the acs in.
             """
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
@@ -3475,15 +3616,15 @@ init -3 python:
             # if the given layer does not match rec layer, force the correct
             # layer unless override
             if (
-                    acs_type != accessory.get_rec_layer()
+                    acs_layer != accessory.get_rec_layer()
                     and not self._override_rec_layer
             ):
-                acs_type = accessory.get_rec_layer()
+                acs_layer = accessory.get_rec_layer()
 
             # verify aso_type is valid for the desired acs layer
             # unless override
             if not self._override_rec_layer:
-                if acs_type in (self.BSE_ACS, self.ASE_ACS):
+                if acs_layer in (self.BSE_ACS, self.ASE_ACS):
                     valid_aso_type = MASAccessoryBase.ASO_SPLIT
                 else:
                     valid_aso_type = MASAccessoryBase.ASO_REG
@@ -3491,7 +3632,7 @@ init -3 python:
                 if accessory.aso_type != valid_aso_type:
                     return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3503,7 +3644,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort wearing if we were told to abort
@@ -3519,14 +3660,19 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
-                # add to mapping
-                self.acs_list_map[accessory.name] = acs_type
+                # add to mappings
+                self.acs_list_map[accessory.name] = acs_layer
+
+                acs_type = accessory.acs_type
+                if acs_type not in self._acs_type_map:
+                    self._acs_type_map[acs_type] = {}
+                self._acs_type_map[acs_type][accessory.name] = accessory
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -3536,7 +3682,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # run programming point for acs
@@ -3547,7 +3693,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
         def wear_acs_pre(self, acs):
