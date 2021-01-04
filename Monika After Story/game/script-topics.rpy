@@ -5040,54 +5040,57 @@ init 5 python:
 
 label monika_fanfiction:
     m 1euc "You know, I think fanfiction is pretty interesting."
-    m "Have you heard of fanfiction, [player]?{nw}"
+    m "Have you heard of fanfiction before, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you heard of fanfiction, [player]?{fast}"
+        m "Have you heard of fanfiction before, [player]?{fast}"
         "Yes.":
-            m 3esb "Ah, that's good."
-            m 2tuu "I hope you haven't been reading anything too questionable, [player]..."
-            m 2hub "Ahaha~"
+            m 3esb "Ah, I see."
+            m 2tuu "I hope you haven't been reading anything {i}too{/i} questionable, [player]..."
+            m 2hub "Haha~"
 
         "No.":
-            m 2esa "That's okay, I'd be happy to tell you about it!"
-            m 3eub "Fanfiction is a popular writing form, especially with casual writers."
-            m 4esa "With fanfiction, writers create stories for some of their favorite novels, shows, games, and more."
-            m 7eub "Fanfictions aren't canon — they're stories made by fans, so they're 'fanon' — but they can still be really well made!"
-    m 3eud "With fanfiction, there's plenty of freedom, it's easy to get into, and it enables writers to explore countless possibilities that the original source material couldn't!"
+            m 2esa "That's fine, I'd be happy to tell you about it."
+            m 3eub "Fanfiction is a popular writing form which writers can use to create original stories for some of their favorite novels, shows, games, and more."
+            m 7eub "Fanfictions aren't 'canon' per say — they're stories made by fans, so they're 'fanon' — but they can still be high quality works!"
+    m 3eud "As a writing style, fanfiction is open-ended, easy to get into, and highly imaginative. You can explore all kinds of ideas with the source material as a guide."
     m 1rsc "Of course, that also allows for some...{w=0.5}{nw}"
     extend 1rksdla "{i}interesting{/i} stories."
-    m 1euc "[player], I'm curious."
-    m 1esc "Has there been fanfiction...written about me?"
-    m 4eua "I'm curious as to what people have come up with."
-    m 3lksdrb "I know I could look for some myself, but I feel like that would be kind of awkward."
+    m 1euc "[player], I'm curious. Has there been fanfiction written about me?"
+    m 4eua "I'm...{w=0.7}kind of curious what people have come up with."
+    m 3lksdrb "I know I could look for some myself, but that would feel awkward."
     m 1hua "Maybe you could read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1lkbfa "Just wholesome ones, though. Let's save that for another time!~"
+        m 1lkbfa "Just wholesome ones, though. Let's save the more...{w=0.5}{i}suggestive{/i} stories for later."
     else:
-        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
+        m 1lkbsa "I'd prefer if we kept it wholesome, though. We're not that far in our relationship yet!~"
     return
 
 label monika_fanfiction_expansion:
-    m "Have you written any fanfiction before, [mas_get_player_nickname()]?{nw}"
+    m "Have you written any fanfiction before, [player]?{nw}"
     $ _history_list.pop()
     show monika 1eua
     menu:
-        m "Have you written any fanfiction before, [mas_get_player_nickname()]?{fast}"
+        m "Have you written any fanfiction before, [player]?{fast}"
         "Yes.":
-            m 1euc "Really? That's great!"
-            m 1euc "I'd love to read what you've written, [player]."
-            m 1euc "As long as it's not too explicit, of course."
+            m 3eub "Really? That's great!"
+            m 1eka "I'd love to read what you've written, [mas_get_player_nickname()]."
+            m 1lkblsdrb "As long as it's not {i}too{/i} explicit, of course."
 
         "No.":
-            m 1euc "Ah, okay; that's fine."
-            m 1euc "Fanfiction is a hobby inside a hobby, so I'm not surprised that you haven't written any."
-            m 1euc "Still, it might be interesting to give it a try sometime!"
-    m 1euc "I'd love it if we could write a fanfiction together."
-    m 1euc "It wouldn't have to be very long -- a one-shot is fine -- and you could pick the topic."
-    m 1euc "The idea is just to spend time together, telling a story from both of our hearts."
-    m 1euc "Your words with mine, our voices singing onto the page in perfect harmony..."
-    m 1euc "I'd really like that, [mas_get_player_nickname()]. It would make my day!"
+            m 1esa "That's fine, [player]."
+            m 2esb "Fanfiction is like a hobby inside of a hobby, so I'm not surprised that you haven't written any."
+            m 2esa "Still, you might want to give it a try sometime.{nw}"
+            extend 3etb "Who knows, you may love it!"
+    m 7eua "It'd be nice if we could write a fanfiction together, [mas_get_player_nickname()]."
+    m 4eua "It wouldn't have to be very long, and you could pick the topic."
+    m 1eka "The idea is just to spend time together, crafting a story from our memories and hearts."
+    m 1dsa "Your words with mine with fingers intertwined...{w=0.3}our thoughts singing in perfect harmony..."
+    m 1lud "Come to think of it, aren't we doing that already by being together?"
+    m 1lsc "..."
+    m 1lkbla "..."
+    show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbla "If that's the case, then this is one chapter I never want to end."
     return
 
 init 5 python:
