@@ -1225,7 +1225,7 @@ init -1 python:
     #
     # NAMING SCHEME:
     # mas_acs_<accessory name>
-    # NOTE: creating an object reference is optional, EXCEPt if you need to 
+    # NOTE: creating an object reference is optional, EXCEPt if you need to
     #   build a selector object.
     #
     # <accessory name> MUST BE UNIQUE
@@ -1777,9 +1777,9 @@ init -1 python:
             p5="5"
         ),
         acs_type="front-hair-flower-crown",
-        priority=20,
+        priority=12,
         stay_on_start=True,
-        rec_layer=MASMonika.PST_ACS,
+        rec_layer=MASMonika.AFH_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_flower_crown)
 
