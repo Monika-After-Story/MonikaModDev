@@ -212,3 +212,15 @@ transform streaming_tears_transform(open_eyes_img, closed_eyes_img):
         closed_eyes_img
         0.15
         repeat
+
+#TODO: Add up/down images too
+transform follow_transform(eyes_forward_img, look_left_img, look_right_img):
+    animation
+    block:
+        ConditionSwitch(
+            "store.mas_windowutils.isCursorLeftOfMASWindow()", look_left_img,
+            "store.mas_windowutils.isCursorRightOfMASWindow()", look_right_img,
+            "True", eyes_forward_img
+        )
+        0.1
+        repeat
