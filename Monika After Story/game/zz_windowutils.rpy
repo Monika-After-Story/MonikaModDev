@@ -254,7 +254,7 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - notification body
+            body - list of possible notification body quips
 
         OUT:
             bool. True if the notification was successfully sent, False otherwise
@@ -273,7 +273,7 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - notification body
+            body - list of possible notification body quips
 
         OUT:
             bool - True, representing the notification's success
@@ -283,7 +283,7 @@ init python in mas_windowutils:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title, renpy.substitute(renpy.random.choice(body))))
         return True
 
     def _tryShowNotification_OSX(title, body):
@@ -293,12 +293,12 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - notification body
+            body - list of possible notification body quips
 
         OUT:
             bool - True, representing the notification's success
         """
-        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
+        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(renpy.random.choice(body)), title))
         return True
 
     #Mouse Position related funcs
