@@ -36,7 +36,7 @@ init -10 python in mas_windowreacts:
         "Window Reactions",
     ]
 
-init python in mas_windowreacts:
+init python in mas_windowutils:
     import os
     import store
     #The initial setup
@@ -68,8 +68,8 @@ init python in mas_windowreacts:
 
         except:
             #If we fail to import, then we're going to have to make sure nothing can run.
-            can_show_notifs = False
-            can_do_windowreacts = False
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
             store.mas_utils.writelog("[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n")
@@ -80,8 +80,8 @@ init python in mas_windowreacts:
 
         #Wayland is not supported, disable wrs
         if session_type == "wayland":
-            can_show_notifs = False
-            can_do_windowreacts = False
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
             store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
 
         #X11 however is fine
@@ -93,25 +93,93 @@ init python in mas_windowreacts:
                 from Xlib.error import BadWindow
 
                 __display = Display()
-                __root = display.screen().root
+                __root = __display.screen().root
 
             except ImportError:
-                can_show_notifs = False
-                can_do_windowreacts = False
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_windowreacts.can_do_windowreacts = False
 
                 store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
 
         else:
-            can_show_notifs = False
-            can_do_windowreacts = False
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
 
             store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
 
     else:
-        can_do_windowreacts = False
+        store.mas_windowreacts.can_do_windowreacts = False
 
 
-    #Now, we start defining OS specific functions which we can swap out
+    ##Now, we start defining OS specific functions which we can set to a var for proper cross platform on a single func
+    #Firstly, the internal helper functions
+    def __getActiveWindowObj_Linux():
+        """
+        Gets the active window object
+
+        OUT:
+            Xlib.display.Window, or None if errors occurr
+        """
+        NET_ACTIVE_WINDOW = __display.intern_atom("_NET_ACTIVE_WINDOW")
+
+        # Perform nullchecks on property getters, just in case.
+        active_winid_prop = __root.get_full_property(NET_ACTIVE_WINDOW, 0)
+
+        if active_winid_prop is None:
+            return None
+
+        active_winid = active_winid_prop.value[0]
+
+        try:
+            return __display.create_resource_object("window", active_winid)
+        except Xlib.error.XError:
+            return None
+
+    def __getMASWindowHWND():
+        """
+        Gets the hWnd of the MAS window
+
+        NOTE: Windows ONLY
+
+        OUT:
+            int - represents the hWnd of the MAS window
+        """
+        def checkMASWindow(hwnd, lParam):
+            """
+            Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
+            """
+            if renpy.config.window_title in store.win32gui.GetWindowText(hwnd):
+                raise Exception(hwnd)
+
+        try:
+            store.win32gui.EnumWindows(checkMASWindow, None)
+        except Exception as e:
+            return e.message
+
+    def __getAbsoluteGeometry(win):
+        """
+        Returns the (x, y, height, width) of a window relative to the top-left
+        of the screen.
+
+        IN:
+            win - Xlib.display.Window object representing the window we wish to get absolute geometry of
+
+        OUT:
+            tuple, (x, y, width, height)
+        """
+        geom = win.get_geometry()
+        (x, y) = (geom.x, geom.y)
+        while True:
+            parent = win.query_tree().parent
+            pgeom = parent.get_geometry()
+            x += pgeom.x
+            y += pgeom.y
+            if parent.id == __root.id:
+                break
+            win = parent
+        return (x, y, geom.width, geom.height)
+
+    #Next, the active window handle getters
     def _getActiveWindow_Windows(friendly):
         """
         Funtion to get the active window on Windows systems
@@ -143,17 +211,11 @@ init python in mas_windowreacts:
         ASSUMES: OS IS LINUX (renpy.linux)
         """
         NET_WM_NAME = __display.intern_atom("_NET_WM_NAME")
-        NET_ACTIVE_WINDOW = __display.intern_atom("_NET_ACTIVE_WINDOW")
+        active_winobj = __getActiveWindowObj_Linux()
 
-        # Perform nullchecks on property getters, just in case.
-        active_winid_prop = __root.get_full_property(NET_ACTIVE_WINDOW, 0)
-
-        if active_winid_prop is None:
+        if active_winobj is None:
             return ""
 
-        active_winid = active_winid_prop.value[0]
-
-        active_winobj = display.create_resource_object("window", active_winid)
         try:
             # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
             active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
@@ -184,6 +246,7 @@ init python in mas_windowreacts:
         """
         return ""
 
+    #Notif show internals
     def _tryShowNotification_Windows(title, body):
         """
         Tries to push a notification to the notification center on Windows.
@@ -238,6 +301,7 @@ init python in mas_windowreacts:
         os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
         return True
 
+    #Mouse Position related funcs
     def _getAbsoluteMousePos_Windows():
         """
         Returns an (x, y) co-ord tuple for the mouse position
@@ -257,51 +321,171 @@ init python in mas_windowreacts:
 
         return cur_pos
 
-    def getMASWindowHWND():
+    def _getAbsoluteMousePos_Linux():
         """
-        Gets the hWnd of the MAS window
-
-        NOTE: Windows ONLY
-
-        OUT:
-            int - represents the hWnd of the MAS window
+        Returns an (x, y) co-ord tuple represening the absolute mouse position
         """
-        def checkMASWindow(hwnd, lParam):
-            """
-            Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
-            """
-            if renpy.config.window_title in store.win32gui.GetWindowText(hwnd):
-                raise Exception(hwnd)
+        mouse_data = __root.query_pointer()._data
+        return (mouse_data["root_x"], mouse_data["root_y"])
 
-        try:
-            store.win32gui.EnumWindows(checkMASWindow, None)
-        except Exception as e:
-            return e.message
-
-    def getMASWindowPosWin():
+    #Window position related
+    def _getMASWindowPos_Windows():
         """
         Gets the window position for MAS as a tuple of (left, top, right, bottom)
 
         OUT:
             tuple representing window geometry or None if the window's hWnd could not be found
         """
-        hwnd = getMASWindowHWND()
+        hwnd = __getMASWindowHWND()
 
         if hwnd is None:
             return None
 
         return store.win32gui.GetWindowRect(hwnd)
 
+    def _getMASWindowPos_Linux():
+        """
+        Returns (x1, y1, x2, y2) relative to the top-left of the screen.
+        """
+        geom = __getAbsoluteGeometry(__getActiveWindowObj_Linux())
+        x1 = geom[0]
+        y1 = geom[1]
+        x2 = x1 + geom[2]
+        y2 = y1 + geom[3]
+        return (x1, y1, x2, y2)
+
+    def isCursorInMASWindow():
+        """
+        Checks if the cursor is within the MAS window
+
+        OUT:
+            True if cursor is within the mas window (within x/y), False otherwise
+            Also returns True if we cannot get window position
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return True
+
+        left, top, right, bottom = pos_tuple
+
+        cur_x, cur_y = getMousePos()
+
+        if not (left <= cur_x <= right):
+            return False
+
+        if not (top <= cur_y <= bottom):
+            return False
+        return True
+
+    def isCursorLeftOfMASWindow():
+        """
+        Checks if the cursor is to the left of the MAS window (must be explicitly to the left of the left window bound)
+
+        OUT:
+            True if cursor is to the left of the window, False otherwise
+            Also returns False if we cannot get window position
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return False
+
+        left, top, right, bottom = pos_tuple
+
+        cur_x, cur_y = getMousePos()
+
+        if cur_x < left:
+            return True
+        return False
+
+    def isCursorRightOfMASWindow():
+        """
+        Checks if the cursor is to the right of the MAS window (must be explicitly to the right of the right window bound)
+
+        OUT:
+            True if cursor is to the right of the window, False otherwise
+            Also returns False if we cannot get window position
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return False
+
+        left, top, right, bottom = pos_tuple
+
+        cur_x, cur_y = getMousePos()
+
+        if cur_x > right:
+            return True
+        return False
+
+    def isCursorAboveMASWindow():
+        """
+        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
+
+        OUT:
+            True if cursor is above the window, False otherwise
+            False as well if we're unable to get a window position
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return False
+
+        left, top, right, bottom = pos_tuple
+
+        cur_x, cur_y = getMousePos()
+
+        if cur_y < top:
+            return True
+        return False
+
+    def isCursorBelowMASWindow():
+        """
+        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
+
+        OUT:
+            True if cursor is above the window, False otherwise
+            False as well if we're unable to get a window position
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return False
+
+        left, top, right, bottom = pos_tuple
+
+        cur_x, cur_y = getMousePos()
+
+        if cur_y > bottom:
+            return True
+        return False
+
+
     #Finally, we set vars accordingly to use the appropriate functions without needing to run constant runtime checks
     if renpy.windows:
-        __window_get = _getActiveWindow_Windows
-    else:
-        __window_get = _getActiveWindow_Linux if renpy.linux else: _getActiveWindow_Mac
+        _window_get = _getActiveWindow_Windows
+        _tryShowNotif = _tryShowNotification_Windows
+        getMASWindowPos = _getMASWindowPos_Windows
+        getMousePos = _getAbsoluteMousePos_Windows
 
-    if renpy.windows:
-        __tryShowNotif = _tryShowNotification_Windows
     else:
-        __window_get = _tryShowNotification_Linux if renpy.linux else: _tryShowNotification_OSX
+        if renpy.linux:
+            _window_get = _getActiveWindow_Linux
+            _tryShowNotif = _tryShowNotification_Linux
+            getMASWindowPos = _getMASWindowPos_Linux
+            getMousePos = _getAbsoluteMousePos_Linux
+
+
+        else:
+            _window_get = _getActiveWindow_OSX
+            _tryShowNotif = _tryShowNotification_OSX
+
+            #Because we have no method of testing on Mac, we'll use the dummy function for these
+            getMASWindowPos = store.dummy
+            getMousePos = dummy
+
 
 init python:
     #List of notif quips (used for topic alerts)
@@ -350,7 +534,7 @@ init python:
         NOTE: THIS SHOULD NEVER RETURN NONE
         """
         if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
-            return store.mas_windowreacts.__window_get(friendly)
+            return store.mas_windowutils._window_get(friendly)
         return ""
 
     def mas_display_notif(title, body, group=None, skip_checks=False):
@@ -389,7 +573,7 @@ init python:
             )
         ):
             #Now we make the notif
-            notif_success = mas_windowreacts.__tryShowNotif(
+            notif_success = mas_windowutils._tryShowNotif(
                 renpy.substitute(title),
                 renpy.substitute(renpy.random.choice(body))
             )
