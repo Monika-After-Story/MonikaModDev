@@ -278,6 +278,19 @@ init python in mas_windowreacts:
         except Exception as e:
             return e.message
 
+    def getMASWindowPosWin():
+        """
+        Gets the window position for MAS as a tuple of (left, top, right, bottom)
+
+        OUT:
+            tuple representing window geometry or None if the window's hWnd could not be found
+        """
+        hwnd = getMASWindowHWND()
+
+        if hwnd is None:
+            return None
+
+        return store.win32gui.GetWindowRect(hwnd)
 
     #Finally, we set vars accordingly to use the appropriate functions without needing to run constant runtime checks
     if renpy.windows:
