@@ -263,7 +263,7 @@ init python in mas_windowutils:
         notif_success = __tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
         #We need the IDs of the notifs to delete them from the tray
-        destroy_list.append(__tip.hwnd)
+        store.destroy_list.append(__tip.hwnd)
         return notif_success
 
     def _tryShowNotification_Linux(title, body):
