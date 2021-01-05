@@ -2493,9 +2493,9 @@ label call_next_event:
         ):
             #Create a new notif
             if renpy.windows:
-                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
