@@ -575,7 +575,7 @@ init python:
             #Now we make the notif
             notif_success = mas_windowutils._tryShowNotif(
                 renpy.substitute(title),
-                renpy.substitute(renpy.random.choice(body))
+                body
             )
 
             #Play the notif sound if we have that enabled and notif was successful
