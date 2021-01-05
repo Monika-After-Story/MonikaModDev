@@ -254,13 +254,13 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - list of possible notification body quips
+            body - notification body
 
         OUT:
             bool. True if the notification was successfully sent, False otherwise
         """
         # The Windows way, notif_success is adjusted if need be
-        notif_success = __tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+        notif_success = __tip.showWindow(title, body))
 
         #We need the IDs of the notifs to delete them from the tray
         store.destroy_list.append(__tip.hwnd)
@@ -273,7 +273,7 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - list of possible notification body quips
+            body - notification body
 
         OUT:
             bool - True, representing the notification's success
@@ -283,7 +283,7 @@ init python in mas_windowutils:
         # we have to close the quotation, insert a literal single quote and reopen the quotation.
         body  = body.replace("'", "'\\''")
         title = title.replace("'", "'\\''") # better safe than sorry
-        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title, renpy.substitute(renpy.random.choice(body))))
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title, body))
         return True
 
     def _tryShowNotification_OSX(title, body):
@@ -293,12 +293,12 @@ init python in mas_windowutils:
 
         IN:
             title - notification title
-            body - list of possible notification body quips
+            body - notification body
 
         OUT:
             bool - True, representing the notification's success
         """
-        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(renpy.random.choice(body)), title))
+        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(body, title))
         return True
 
     #Mouse Position related funcs
@@ -575,7 +575,7 @@ init python:
             #Now we make the notif
             notif_success = mas_windowutils._tryShowNotif(
                 renpy.substitute(title),
-                body
+                renpy.substitute(renpy.random.choice(body))
             )
 
             #Play the notif sound if we have that enabled and notif was successful
