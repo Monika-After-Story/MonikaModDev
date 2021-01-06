@@ -260,7 +260,7 @@ init python in mas_windowutils:
             bool. True if the notification was successfully sent, False otherwise
         """
         # The Windows way, notif_success is adjusted if need be
-        notif_success = __tip.showWindow(title, body))
+        notif_success = __tip.showWindow(title, body)
 
         #We need the IDs of the notifs to delete them from the tray
         store.destroy_list.append(__tip.hwnd)
@@ -298,7 +298,7 @@ init python in mas_windowutils:
         OUT:
             bool - True, representing the notification's success
         """
-        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(body, title))
+        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(body, title)))
         return True
 
     #Mouse Position related funcs
