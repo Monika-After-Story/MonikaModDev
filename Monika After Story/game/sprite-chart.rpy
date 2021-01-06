@@ -2364,7 +2364,7 @@ init -3 python:
             if (
                     persistent._mas_last_ahoge_dt is not None
                     and not force_change
-                    and datetime.datetime.now().date() 
+                    and datetime.datetime.now().date()
                         == persistent._mas_last_ahoge_dt.date()
             ):
                     # we already set the ahoge today so dont set it again.
@@ -2378,7 +2378,7 @@ init -3 python:
 
         def _set_ahoge(self, ahoge_acs, force_wear=False):
             """
-            Sets the ahoge for Monika, also setting the appropriate last 
+            Sets the ahoge for Monika, also setting the appropriate last
             ahoge and everything.
 
             IN:
@@ -8847,20 +8847,27 @@ init 499 python:
                 tag="idle_wink"
             ),
             MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
+            MASMoniIdleExp("1eua_follow", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=30, tag="aff_exps"),
             MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
             # Enamored
             MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_startup_exps"),
             MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
+            MASMoniIdleExp("1eua_follow", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=50, tag="enam_exps"),
             MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
+            MASMoniIdleExp("5esu_follow", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
             # Love
             MASMoniIdleExp("1eua", aff_range=(mas_aff.LOVE, None), weight=50, tag="love_exps"),
+            MASMoniIdleExp("1eua_follow", aff_range=(mas_aff.LOVE, None), weight=60, tag="love_exps"),
             MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
+            MASMoniIdleExp("5esu_follow", aff_range=(mas_aff.LOVE, None), weight=30, tag="love_exps"),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
             MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps"),
-            MASMoniIdleExp("5eubsa", aff_range=(mas_aff.LOVE, None), weight=2, tag="love_exps")
+            MASMoniIdleExp("5eubla_follow", aff_range=(mas_aff.LOVE, None), weight=7, tag="love_exps"),
+            MASMoniIdleExp("5eubsa", aff_range=(mas_aff.LOVE, None), weight=2, tag="love_exps"),
+            MASMoniIdleExp("5eubsa_follow", aff_range=(mas_aff.LOVE, None), weight=3, tag="love_exps")
         )
     )
 image monika idle = mas_moni_idle_disp
