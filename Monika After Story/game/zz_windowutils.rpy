@@ -467,6 +467,18 @@ init python in mas_windowutils:
             return True
         return False
 
+    #Fallback functions because Mac
+    def return_true():
+        """
+        Literally returns True
+        """
+        return True
+
+    def return_false():
+        """
+        Literally returns False
+        """
+        return False
 
     #Finally, we set vars accordingly to use the appropriate functions without needing to run constant runtime checks
     if renpy.windows:
@@ -491,6 +503,12 @@ init python in mas_windowutils:
             getMASWindowPos = store.dummy
             getMousePos = dummy
 
+            #Now make sure we don't use these functions so long as we can't validate Mac
+            isCursorAboveMASWindow = return_false
+            isCursorBelowMASWindow = return_false
+            isCursorLeftOfMASWindow = return_false
+            isCursorRightOfMASWindow = return_false
+            isCursorInMASWindow = return_true
 
 init python:
     #List of notif quips (used for topic alerts)
