@@ -8895,7 +8895,6 @@ label mas_transition_to_emptydesk(hide_dlg_box=True):
 label mas_transition_from_emptydesk(exp="monika 1eua", show_dlg_box=True):
     if show_dlg_box:
         window auto
-    $ renpy.show(exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
-    $ renpy.with_statement(dissolve_monika)
+    show expression exp as monika at i11 zorder MAS_MONIKA_Z with dissolve_monika
     hide emptydesk
     return
