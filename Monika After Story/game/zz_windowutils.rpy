@@ -346,13 +346,18 @@ init python in mas_windowutils:
     def _getMASWindowPos_Linux():
         """
         Returns (x1, y1, x2, y2) relative to the top-left of the screen.
+
+        OUT:
+            tuple representing (left, top, right, bottom) of the window bounds
         """
         geom = __getAbsoluteGeometry(__getActiveWindowObj_Linux())
-        x1 = geom[0]
-        y1 = geom[1]
-        x2 = x1 + geom[2]
-        y2 = y1 + geom[3]
-        return (x1, y1, x2, y2)
+
+        return (
+            geom[0],
+            geom[1],
+            geom[0] + geom[2],
+            geom[1] + geom[3]
+        )
 
     def isCursorInMASWindow():
         """
