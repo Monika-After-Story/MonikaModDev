@@ -501,7 +501,7 @@ init python in mas_windowutils:
 
             #Because we have no method of testing on Mac, we'll use the dummy function for these
             getMASWindowPos = store.dummy
-            getMousePos = dummy
+            getMousePos = store.dummy
 
             #Now make sure we don't use these functions so long as we can't validate Mac
             isCursorAboveMASWindow = return_false
