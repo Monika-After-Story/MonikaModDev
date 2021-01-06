@@ -392,7 +392,7 @@ init 6 python:
         """
         Context manager wrapper for Event objects via event labels.
         This has handling for when an eventlabel doesn't return an actual
-        event object via mas_getEV. 
+        event object via mas_getEV.
 
         Use as follows:
             with MASev('some event label') as ev:
@@ -401,7 +401,7 @@ init 6 python:
 
         property names should be same as used on Event object.
         functions can also be used.
-        additionally, the resulting context object can be compared with 
+        additionally, the resulting context object can be compared with
         other event objects like normal.
 
         In cases where the Event does not exist, the following occurs:
@@ -457,7 +457,7 @@ init 6 python:
 
         def __getattr__(self, name):
             if self._ev is None:
-                
+
                 # event props
                 if name in MAS_EVL._default_values:
                     return MAS_EVL._default_values.get(name)
@@ -1374,6 +1374,7 @@ default persistent._mas_ev_yearset_blacklist = {}
 # special store to contain scrollable menu constants
 init -1 python in evhand:
     import store
+    import re
 
     # this is the event database
     event_database = dict()
@@ -1424,6 +1425,23 @@ init -1 python in evhand:
     IDLE_WHITELIST = [
         "unlock_prompt",
     ]
+
+    # A base for search patterns that expect a string of the "key: value" kind
+    # Use the key and value named indexes for substitution accordingly
+    RET_KEY_PATTERN_BASE = (
+        r"(?:(?<=\|)|(?<=^))\s*"# Start
+        r"{key}"# Key
+        r"\s*:\s*"# Separator
+        r"{value}"# Value
+        r"\s*(?:(?=\|)|(?=$))"# End
+    )
+    # Used to catch "idle_exp: EXP, DURATION" or "idle_exp: TAG" where DURATION is an int (seconds) and TAG is a string
+    RET_KEY_PATTERN_IDLE_EXP = re.compile(
+        RET_KEY_PATTERN_BASE.format(
+            key=r"idle_exp",
+            value=r"(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d+)|(?P<tag>\w+))"
+        )
+    )
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -2383,7 +2401,6 @@ init 1 python in evhand:
     import store
     import datetime
 
-
     def actionPush(ev, **kwargs):
         """
         Runs Push Event action for the given event
@@ -2454,13 +2471,11 @@ init 1 python in evhand:
 # event called or None if the list is empty or the label is invalid
 #
 label call_next_event:
-
     python:
         event_label, notify = popEvent()
         renpy.save_persistent()# Save persistent here in case of a crash
 
     if event_label and renpy.has_label(event_label):
-
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
@@ -2482,10 +2497,16 @@ label call_next_event:
             else:
                 $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
+        #Also check here and reset the forced idle exp if necessary
+        if ev is not None and "keep_idle_exp" not in ev.rules:
+            $ mas_moni_idle_disp.unforce_all()
+
         $ mas_globals.this_ev = ev
         call expression event_label from _call_expression
         $ persistent.current_monikatopic = 0
         $ mas_globals.this_ev = None
+        # Handle idle exp
+        $ mas_moni_idle_disp.do_after_topic_logic()
 
         #if this is a random topic, make sure it's unlocked for prompts
         $ ev = evhand.event_database.get(event_label, None)
@@ -2535,6 +2556,27 @@ label call_next_event:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
                 jump _quit
+
+            # Force idle exp
+            if "idle_exp" in _return:
+                python:
+                    _match = re.search(evhand.RET_KEY_PATTERN_IDLE_EXP, _return)
+                    if _match is not None:
+                        if _match.group("exp") is not None and _match.group("duration") is not None:
+                            mas_moni_idle_disp.force_by_code(
+                                _match.group("exp"),
+                                duration=int(_match.group("duration"))
+                            )
+
+                        elif _match.group("tag") is not None:
+                            _exp = MASMoniIdleExp.weighted_choice(
+                                MASMoniIdleExp.exp_tags_map.get(
+                                    _match.group("tag"),
+                                    tuple()
+                                )
+                            )
+                            if _exp is not None:
+                                mas_moni_idle_disp.force(_exp)
 
             if "prompt" in ret_items:
                 show monika idle

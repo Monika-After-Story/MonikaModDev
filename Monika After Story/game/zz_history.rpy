@@ -1102,6 +1102,7 @@ init -810 python:
             "_mas_pm_likes_travelling": "pm.likes.travelling",
             "_mas_pm_likes_poetry" : "pm.likes.poetry",
             "_mas_pm_likes_board_games": "pm.likes.board_games",
+            "_mas_pm_likes_nature": "pm.likes.nature",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1152,6 +1153,7 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
+            "_mas_pm_has_heterochromia": "pm.looks.eyes.heterochromia",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",

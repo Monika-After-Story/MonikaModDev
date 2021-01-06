@@ -390,6 +390,8 @@ label v0_11_10(version="v0_11_10"):
             conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_PUSH
         )
+        if seen_event("monika_boardgames"):
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
     return
 

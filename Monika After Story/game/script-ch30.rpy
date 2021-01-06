@@ -838,12 +838,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         else:
             if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
+                force_exp = "monika idle"
+                # if dissolve_all:
+                #     force_exp = store.mas_affection._force_exp()
 
-                else:
-                    force_exp = "monika idle"
+                # else:
+                #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
                 renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
@@ -1684,6 +1684,11 @@ label ch30_hour:
     #Runtime checks to see if we should have a consumable
     $ MASConsumable._checkConsumables()
 
+    # clear ahoges if past noon
+    $ now_t = datetime.datetime.now().time()
+    if mas_isNtoSS(now_t) or mas_isSStoMN(now_t):
+        $ monika_chr._set_ahoge(None)
+
     # xp calc
     $ store.mas_xp.grant()
 
@@ -1828,6 +1833,32 @@ label ch30_reset:
 
     if not mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
+
+    # set ahoge if appropraite
+    $ now = datetime.datetime.now()
+    if (
+            persistent._mas_dev_ahoge
+            or mas_isMNtoSR(now.time())
+            or mas_isSRtoN(now.time())
+    ):
+        # its morning/middle of night, and Monika MIGHT ahoge
+
+        # NOTE: the random check and the absence length check must be here.
+        #   we don't want to clear the ahoge if the user reopens the mod
+        #   during the same morning.
+        if (
+                persistent._mas_dev_ahoge
+                or (
+                    mas_getAbsenceLength() >= datetime.timedelta(minutes=30)
+                    and random.randint(1, 2) == 1
+                )
+        ):
+            # NOTE: the ahoge function takes last dt into account.
+            $ monika_chr.ahoge()
+
+    else:
+        # out of applicable ahoge time. Do not ahoge. Remove any existing.
+        $ monika_chr._set_ahoge(None)
 
     #### END SPRITES
 

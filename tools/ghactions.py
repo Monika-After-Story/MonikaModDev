@@ -5,7 +5,7 @@
 is_dynamic = True
 
 import gamedir as GDIR
-GDIR.REL_PATH_GAME = "MonikaModDev/Monika After Story/game/"
+GDIR.REL_PATH_GAME = "Monika After Story/game/"
 
 import spritechecker as spc
 #import spritemaker as spm
