@@ -298,7 +298,7 @@ init python in mas_windowutils:
         OUT:
             bool - True, representing the notification's success
         """
-        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(renpy.substitute(body, title)))
+        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body, title))
         return True
 
     #Mouse Position related funcs
