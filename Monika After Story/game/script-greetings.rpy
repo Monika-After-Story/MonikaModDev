@@ -2911,7 +2911,7 @@ label greeting_back_from_school:
 
             "Good.":
                 m 1hub "Aww, that's nice!"
-                m 1eua "I can't help but feel happy when you do~"
+                m 1eua "I can't help but feel happy when you're in a good mood coming home~"
                 m "I hope you learned something useful."
                 m 1hua "Ehehe~"
                 return
