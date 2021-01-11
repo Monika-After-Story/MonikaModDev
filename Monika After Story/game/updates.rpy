@@ -375,6 +375,15 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.10
 label v0_11_10(version="v0_11_10"):
     python:
+        mas_bookmarks_derand.removeDerand("monika_twitter")
+
+        mas_setEVLPropValues(
+            "monika_twitter",
+            random=False,
+            conditional="renpy.seen_label('monika_clones')",
+            action=EV_ACT_RANDOM
+        )
+
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 

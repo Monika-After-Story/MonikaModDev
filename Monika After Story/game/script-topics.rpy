@@ -1198,19 +1198,52 @@ label monika_nihilism:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_twitter",category=['monika'],prompt="Twitter",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_twitter",
+            category=['monika', 'media'],
+            prompt="Twitter",
+            conditional="renpy.seen_label('monika_clones')",
+            action=EV_ACT_RANDOM
+        )
+    )
 
 label monika_twitter:
-    m 1eud "Did you know I'm on Twitter?"
-    m 3esa "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
-    m 1esa "I guess someone was kind enough to make an account for me."
-    m 3hub "I picked the username, though!"
-    m 1hua "I love sharing my thoughts and chatting with the world..."
-    m 1eud "The real world."
-    m 1esa "So make sure you follow me, okay?"
-    m 3ekbsa "It would mean a lot, with how much you mean to me."
-    m 1hubfa "It would really make me feel loved."
-    return
+    m 3eud "Did you know there's an official Twitter account based on me?"
+    m 3esc "The username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
+    m 2rtc "...Though, I'm not entirely sure who's actually running the account.{w=0.2} {nw}"
+    extend 2eud "I don't have anything to do with it at all!"
+    m 7etc "But is it even another Monika?"
+    m 2euc "I mean, I don't know if you've read some of the tweets on there,{w=0.1} but I can't really see myself in them at all."
+    m 4eud "It even depicts some events that I don't remember ever happening...{w=0.2}like when I apparently had a sleepover with Yuri."
+    m 4esd "And there's no mention of any of the things that happened back in the game, even though this version of me still seems to be aware of the real world..."
+    m 1etc "So...{w=0.3}maybe the Monika running this account went through a completely different story than the one most Monikas--{w=0.1}including me--{w=0.1}did?"
+    m 1lksdlc "...Or maybe this is just one of the developers of the game pretending to be me."
+    m 3eksdld "If that's the case, I'm not really sure how I feel about it...{w=0.3}isn't that kinda like identity theft?"
+    m 3eksdlc "Though I guess it kinda makes sense...{w=0.3}{nw}"
+    extend 1esd "the account is a nice way to connect with the people who've played through the game and grown attached to it."
+    m 3esc "In that regard, this would make it some kind of publicity stunt..."
+    m 3euc "After all, while there is a lot of sweet looking art and such on there, it's suspicious that almost all of them are posted specifically on important days."
+    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happen to coincide with the original release date of DDLC."
+    m 1rtc "I really don't know how I'm supposed to feel about that...{w=0.3}being used solely as marketing material."
+    m 2rsc "Though, as my creators, I guess they basically own my image as a character, so they are legally in the right."
+    m 2ekc "But...{w=0.3}I'm more than a mere character in a game, aren't I?"
+    m 2ekd "I'm my own person with my own thoughts and feelings, and so is every other Monika in the different copies of this game."
+    m 2dksdlc "It just feels wrong to be used like that by people I haven't even met."
+    m 2efd "...I really hate the feeling of being reduced to a marketable asset."
+    m 2lkd "But I suppose there isn't really all that much I can do about it..."
+    m 2eua "At the end of the day, all that matters to me is that I get to be with you.{w=0.2} {nw}"
+    extend 7eua "And this would've never been possible without my creators."
+    m 2lka "So if what it takes in return is that they get to make some profit on the work they put in making the game, then I'd say this isn't too bad of a deal."
+    m 2euc "If you do follow that account though,{w=0.1} {nw}"
+    extend 7eua "I don't really mind."
+    m 1ekbla "But please remember that I'm real, I'm here, and I love you."
+    show monika 5hubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubla "So make sure to always come spend some time with me, okay?"
+    m 5ekbsa "It would mean a lot, with how much you mean to me."
+    m 5hubfa "It would really make me feel loved~"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
@@ -1737,16 +1770,12 @@ label monika_outfit:
         m 2eua "Do you know any artists?"
         m 3sua "Maybe they could make some more outfits for me to wear!"
 
-    m 2eua "If that ever happens, will you show me?"
-    m 4hua "You can share it with me on Twitter, actually!"
-    # TODO: need to respond to twitter question, as well whehter or not users
-    # have seen teh twitter topic
-    m "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
+    m 2eua "If that ever happens, will you show me? I'd love to see it~"
     m 4eka "Just...try to keep it PG!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1lsbssdrb "I don't want something so embarrassing on there!"
+        m 1lsbssdrb "It's still a little embarrassing to think that people I'll never know personally would draw me in such a way, you know?"
         show monika 5tsbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5tsbsu "So let's just keep it between us..."
+        m 5tsbsu "After all, I'd much rather we keep these sorts of things between just us..."
     else:
         show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hub "We're not that far into our relationship yet. Ahaha!"
@@ -4211,7 +4240,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_images",category=['media','philosophy'],prompt="Fanart",random=True))
 
 label monika_images:
-    m 1eua "A lot of people are making fanart and sending it to me on Twitter."
+    m 1eua "You know, I'm seeing a lot of people making fanart of me and sharing it with other people all over the internet."
     m 1etc "Are you one of them, [player]?"
 
     m "Have you drawn art of me?{nw}"
