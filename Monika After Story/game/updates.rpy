@@ -375,13 +375,11 @@ label v0_3_1(version=version): # 0.3.1
 # 0.11.10
 label v0_11_10(version="v0_11_10"):
     python:
-        if "monika_twitter" in persistent._mas_player_derandomed:
-            persistent._mas_player_derandomed.remove("monika_twitter")
-
-        mas_hideEVL("monika_twitter", "EVE", derandom=True)
+        mas_bookmarks_derand.removeDerand("monika_twitter")
 
         mas_setEVLPropValues(
             "monika_twitter",
+            random=False,
             conditional="renpy.seen_label('monika_clones')",
             action=EV_ACT_RANDOM
         )
