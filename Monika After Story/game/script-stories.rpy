@@ -95,13 +95,6 @@ init -1 python in mas_stories:
 
         return can_show_new_story
 
-    def _unlock_everything():
-        """
-        Dev function, unlocks all stories
-        """
-        for story in story_database.itervalues():
-            story.unlocked=True
-
     def get_and_unlock_random_story(story_type=TYPE_NORMAL):
         """
         Unlocks and returns a random story of the provided type
