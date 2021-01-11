@@ -999,8 +999,10 @@ init -10 python in mas_selspr:
                 )
 
             # then readd everything that was previous
+            # EXCEPT removers
             for item in add_map.itervalues():
-                moni_chr.wear_acs(item.selectable.get_sprobj())
+                if not item.selectable.remover:
+                    moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
 
@@ -1088,9 +1090,6 @@ init -10 python in mas_selspr:
                 if moni_chr.is_wearing_acs(acs_obj):
                     select_map[item.selectable.name] = item
                     item.selected = True
-                    found_item = True
-
-                elif moni_chr.is_wearing_acs_with_mux(acs_obj.acs_type):
                     found_item = True
 
                 # NOTE: cannot quit early because multiple accessories
