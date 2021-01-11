@@ -381,6 +381,7 @@ label v0_11_10(version="v0_11_10"):
         mas_utils.trydel(os.path.join(renpy.config.gamedir, "zz_windowreacts.rpy").replace('\\', '/'))
         #Try to remove the submod as it conflicts
         mas_utils.trydel(os.path.join(renpy.config.gamedir, "Submods/Enhanced Idle/enhanced idle.rpy").replace('\\', '/'))
+        mas_utils.trydel(os.path.join(renpy.config.gamedir, "Submods/Enhanced Idle/enhanced idle.rpyc").replace('\\', '/'))
     return
 
 # 0.11.9
