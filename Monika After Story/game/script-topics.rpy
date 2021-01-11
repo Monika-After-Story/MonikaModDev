@@ -701,6 +701,22 @@ init python in mas_bookmarks_derand:
         """
         store.mas_gainAffection(amount, modifier, bypass)
 
+    def removeDerand(eventlabel):
+        """
+        Removes a derandomed eventlabel from ALL derandom dbs
+
+        IN:
+            eventlabel - Eventlabel to remove
+        """
+        derand_dbs = [
+            label_prefix_data["derand_persist_key"]
+            for label_prefix_data in label_prefix_map.itervalues()
+            if "derand_persist_key" in label_prefix_data
+        ]
+
+        for derand_db in derand_dbs:
+            if eventlabel in derand_db:
+                persistent.__dict__[derand_db].remove(eventlabel)
 
 ##Generic rerandom work label
 #IN:
