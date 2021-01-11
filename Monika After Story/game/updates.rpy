@@ -379,6 +379,8 @@ label v0_11_10(version="v0_11_10"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
         mas_utils.trydel(os.path.join(renpy.config.gamedir, "zz_windowreacts.rpy").replace('\\', '/'))
+        #Try to remove the submod as it conflicts
+        mas_utils.trydel(os.path.join(renpy.config.gamedir, "Submods/Enhanced Idle/enhanced idle.rpy").replace('\\', '/'))
     return
 
 # 0.11.9
