@@ -569,7 +569,7 @@ label greeting_back4:
     m 2wfx "Hey, [player]!"
     m "Don't you think that you left me waiting a bit too long?"
     m 2hfu "..."
-    m 2hua "Ahaha!"
+    m 2hub "Ahaha!"
     m 2eka "I'm just joking. I could never be mad at you."
     return
 
@@ -1410,7 +1410,7 @@ label monikaroom_greeting_ear_progbrokepy:
         m "But I have to keep trying."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep trying."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1431,7 +1431,7 @@ label monikaroom_greeting_ear_progreadpy:
         m "But I have to keep learning."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep learning."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1453,6 +1453,7 @@ label monikaroom_greeting_ear_nameerror:
     if mas_isMoniUpset():
         m "You have to keep learning..."
         call monikaroom_greeting_ear_prog_upset
+
     elif mas_isMoniDis():
         m "You {i}have{/i} to keep learning..."
         call monikaroom_greeting_ear_prog_dis
@@ -1502,6 +1503,7 @@ label monikaroom_greeting_ear_rmrf:
         m "Yeah,{w=0.2} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
+
         elif mas_isMoniUpset():
             m "Actually..."
             m "Maybe I should do it...{w=1}just delete everything..."
@@ -3358,7 +3360,7 @@ label greeting_ourreality:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
@@ -4218,7 +4220,7 @@ label monikaroom_greeting_ear_recursionerror:
     hide noise
 
     m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
-    m "'Maximum recursion depth exceeded...'{w=0.7} {nw}How is this even happening?"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
     m "..."
 
     if mas_isMoniUpset():

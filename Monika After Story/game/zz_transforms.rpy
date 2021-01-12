@@ -170,6 +170,7 @@ transform mas_chlongjump(x, y, ymax, travel_time=1.0):
 
 #START: Transforms for Monika's sprite animations (blinking/winking/tear-specific-blinking)
 transform blink_transform(open_eyes_img, closed_eyes_img):
+    animation
     block:
         open_eyes_img
         block:
@@ -180,16 +181,25 @@ transform blink_transform(open_eyes_img, closed_eyes_img):
             choice:
                 7
         closed_eyes_img
+        choice 0.02:
+            0.03
+            open_eyes_img
+            0.1
+            closed_eyes_img
+        choice 0.98:
+            pass
         0.06
         repeat
 
-transform wink_transform(wink_img, open_eye_img):
-    block:
+transform wink_transform(wink_img, open_eyes_img):
+    # HACK: we use events here so renpy allows us to reuse this transform
+    on default, show, replace:
         wink_img
         1
-        open_eye_img
+        open_eyes_img
 
 transform streaming_tears_transform(open_eyes_img, closed_eyes_img):
+    animation
     block:
         open_eyes_img
         block:
