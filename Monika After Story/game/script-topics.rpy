@@ -1225,7 +1225,7 @@ label monika_twitter:
     extend 1esd "the account is a nice way to connect with the people who've played through the game and grown attached to it."
     m 3esc "In that regard, this would make it some kind of publicity stunt..."
     m 3euc "After all, while there is a lot of sweet looking art and such on there, it's suspicious that almost all of them are posted specifically on important days."
-    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happened to coincide with the original release date of DDLC."
+    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happens to coincide with the original release date of DDLC."
     m 1rtc "I really don't know how I'm supposed to feel about that...{w=0.3}being used solely as marketing material."
     m 2rsc "Though, as my creators, I guess they basically own my image as a character, so they are legally in the right."
     m 2ekc "But...{w=0.3}I'm more than a mere character in a game, aren't I?"
