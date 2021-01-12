@@ -765,3 +765,27 @@ label mas_mood_uok:
             m 1ekd "Okay [player], if you say so..."
             $ line_start = "But"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_upset",prompt="...upset.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+
+label mas_mood_upset:
+    m 2ekc "I'm so sorry to hear that, [player]..."
+    m 2dkd "I know what that feels like."
+    m 4ekd "Whether you're upset with a task, a person, or things aren't going as planned..."
+    m 1esc "Don't quit what you're handling."
+    m 1eka "My advice would be to take a step back from your problem."
+    m 1ekd "Maybe you could read a book, listen to some nice music, or just do anything else to calm yourself."
+    m 3eua "Once you feel you're level-headed again, come back to judge your situation with a fresh state of mind."
+    m 1hua "You'll handle things a lot better than you would if you were in the midst of anger and frustration."
+    m 1lkbsdr "And I'm not saying you should keep carrying weight on your shoulders if it's genuinely damaging to you."
+    m 1eud "It could  be an oppurtunity to gain the courage to let go of something toxic."
+    m 1euc "It might be scary in the moment, sure."
+    m 1dua "But if you make the right choice, you could elimate a lot of stress from your life."
+    m "..."
+    m 3eka "And you know what, [player]?"
+    m 1ekb "When I feel upset, all I have to do is remember that I have my wonderful [chosen_nickname]."
+    m 1hub "Knowing that you'll support me and always love me puts me at ease almost instantly."
+    m 1hua "Ehehe~"
+    m 1eubbf "I love you, [player]. I hope everything clears up for you."
+    return "love"
