@@ -378,10 +378,14 @@ label v0_11_10(version="v0_11_10"):
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
-        mas_utils.trydel(os.path.join(renpy.config.gamedir, "zz_windowreacts.rpy").replace('\\', '/'))
-        #Try to remove the submod as it conflicts
-        mas_utils.trydel(os.path.join(renpy.config.gamedir, "Submods/Enhanced Idle/enhanced idle.rpy").replace('\\', '/'))
-        mas_utils.trydel(os.path.join(renpy.config.gamedir, "Submods/Enhanced Idle/enhanced idle.rpyc").replace('\\', '/'))
+        fps_to_delete = [
+            "zz_windowreacts.rpy",
+            "Submods/Enhanced Idle/enhanced idle.rpy"
+        ]
+
+        for fp in fps_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
     return
 
 # 0.11.9

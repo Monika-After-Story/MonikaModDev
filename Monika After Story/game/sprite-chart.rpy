@@ -8928,7 +8928,7 @@ init 499 python:
                 aff_range=(mas_aff.LOVE, None),
                 weight=5,
                 tag="love_exps"
-            ),```
+            ),
             MASMoniIdleExpRngGroup(
                 [
                     MASMoniIdleExp("5eubsa", weight=30),
@@ -8941,6 +8941,7 @@ init 499 python:
             )
         )
     )
+
 image monika idle = mas_moni_idle_disp
 
 ### [IMG100]
