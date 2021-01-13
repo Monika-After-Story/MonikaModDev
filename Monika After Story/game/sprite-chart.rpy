@@ -8918,7 +8918,6 @@ init 499 python:
             ),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
-            MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps"),
             MASMoniIdleExpRngGroup(
                 [
                     MASMoniIdleExp("5eubla", weight=30),
