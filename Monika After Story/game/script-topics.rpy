@@ -1957,7 +1957,71 @@ init 5 python:
     )
 
 label monika_kiss:
-    if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
+    if mas_isMoniLove and persistent._mas_first_kiss is not None:
+        if (
+            persistent._mas_last_kiss is not None
+            and not mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(minutes=1))
+        ):
+            python:
+                # these don't use ILY
+                kiss_quips_again = [
+                    _("I wouldn't mind another makeout session~"),
+                    _("I'll never get tired of kissing you~"),
+                    _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
+                    _("You can kiss me as many times as you like, [mas_get_player_nickname()]~"),
+                    _("You know...{w=0.2}you could kiss me again~")
+                ]
+
+                kiss_quips_again_risque = [
+                    _("We can do it the whole day~"),
+                    _("This almost seems like the start of an extended make-out session, [player]~"),
+                    _("I don't think I've had enough just yet, [mas_get_player_nickname()]~"),
+                    _("That was really nice...{w=0.2}but I want a little more~")
+                    _("You don't have to stop on my account, [mas_get_player_nickname()]~")
+                ]
+
+                if mas_isMoniLove() and random.randint(1, 10) == 1:
+                    kiss_quip = renpy.random.choice(kiss_quips_again_risque)
+
+                else:
+                    kiss_quip = renpy.random.choice(kiss_quips_again)
+
+            show monika 6ttbsu
+            pause 2.0
+
+            # like monika_kissing_motion_short, but with diff exps
+            call monika_kissing_motion_makeout(transition=4.0, duration=10.0, hide_ui=True,
+        initial_exp="6ttbsu", mid_exp="6tkbfu", final_exp="6ttbsu", fade_duration=1.0)
+
+            $ renpy.say(m, kiss_quip)
+
+        else:
+            python:
+                # these use ILY
+                kiss_quips_after = [
+                    _("I love you, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
+                    _("I love you so much, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
+                    _("I love you more than you'll ever know, [mas_get_player_nickname(exclude_names=['my love', 'love'])]~"),
+                    _("I love you so much, [player]. You mean everything to me~"),
+                    _("No words can describe how deeply I'm in love with you, [player]~"),
+                    _("I'm so in love with you, [player]~")
+                ]
+                kiss_quip = renpy.random.choice(kiss_quips_after)
+
+            if renpy.random.randint(1, 50) == 1:
+                call monika_kiss_tease
+
+            else:
+                show monika 2eka
+                pause 2.0
+
+            call monika_kissing_motion_short
+
+            show monika 6ekbfa
+            $ renpy.say(m, kiss_quip)
+            $ mas_ILY()
+
+    elif mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         if (
             persistent._mas_last_kiss is not None
             and not mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(minutes=1))

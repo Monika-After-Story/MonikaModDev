@@ -243,6 +243,74 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
     window auto
     return
 
+label monika_kissing_motion_makeout(transition=4.0, duration=10.0, hide_ui=True,
+        initial_exp="6ttbsu", mid_exp="6tkbfu", final_exp="6ttbsu", fade_duration=1.0):
+    # Note: the hardcoded constants work to give the focus on lips
+    # effect these were calculated based on max/min values of the zoom
+
+    if persistent._mas_first_kiss is None:
+        $ persistent._mas_first_kiss = datetime.datetime.now()
+
+    $ persistent._mas_last_kiss = datetime.datetime.now()
+
+    window hide
+    if hide_ui:
+        # hide everything
+        $ HKBHideButtons()
+        $ mas_RaiseShield_core()
+    # reset position to i11
+    show monika at i11
+    # do the appropriate calculations
+    $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
+    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
+    $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
+
+    # start the kiss animation
+    $ renpy.show("monika {}".format(initial_exp), [mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)])
+    # show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    # wait until we're done with the animation
+    $ renpy.pause(transition)
+    # show black scene
+    show black zorder 100 at fade_in(fade_duration)
+    # wait half the time to play the sound effect
+    $ renpy.pause(duration/7.4)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    window auto
+    "Mahh~{fast}{w=1}{nw}"
+    $ renpy.pause(duration/5.8)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    "Ahh~{fast}{w=1}{nw}"
+    $ renpy.pause(duration/6.2)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    "Mmm~{fast}{w=1}{nw}"
+    $ renpy.pause(duration/7)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    "Aha~{fast}{w=1}{nw}"
+    $ renpy.pause(duration/4.9)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    "Lovee~{w=0.5}{nw} "
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    extend "you~{fast}{w=1}{nw}"
+    $ renpy.pause(duration/5)
+    window hide
+    $ renpy.pause(duration/5)
+    # hide the black scene
+    hide black
+    # trasition back which is the best time for non slow back off
+    $ renpy.show("monika {}".format(mid_exp),[mas_back_from_kissing(transition,_mas_kiss_y2)])
+    pause transition
+    $ renpy.show("monika {}".format(final_exp),[i11()])
+    show monika with dissolve_monika
+    if hide_ui:
+        if store.mas_globals.dlg_workflow:
+            $ mas_MUINDropShield()
+            $ enable_esc()
+        else:
+            $ mas_DropShield_core()
+        $ HKBShowButtons()
+    window auto
+    return
+
 # short kiss version
 label monika_kissing_motion_short:
     call monika_kissing_motion(duration=0.5, initial_exp="6hua", fade_duration=0.5)
