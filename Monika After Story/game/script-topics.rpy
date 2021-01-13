@@ -1957,7 +1957,8 @@ init 5 python:
     )
 
 label monika_kiss:
-    if mas_isMoniLove and persistent._mas_first_kiss is not None:
+label monika_kiss:
+    if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         if (
             persistent._mas_last_kiss is not None
             and not mas_timePastSince(persistent._mas_last_kiss, datetime.timedelta(minutes=1))
@@ -1965,34 +1966,44 @@ label monika_kiss:
             python:
                 # these don't use ILY
                 kiss_quips_again = [
-                    _("I wouldn't mind another makeout session~"),
+                    _("I wouldn't mind another kiss~"),
                     _("I'll never get tired of kissing you~"),
                     _("I could do that again...{w=0.2}and again...{w=0.7}and again~"),
-                    _("You can kiss me as many times as you like, [mas_get_player_nickname()]~"),
-                    _("You know...{w=0.2}you could kiss me again~")
+                    _("You can kiss me as many times as you like, [mas_get_player_nickname()]~")
                 ]
 
                 kiss_quips_again_risque = [
                     _("We can do it the whole day~"),
-                    _("This almost seems like the start of an extended make-out session, [player]~"),
-                    _("I don't think I've had enough just yet, [mas_get_player_nickname()]~"),
-                    _("That was really nice...{w=0.2}but I want a little more~")
-                    _("You don't have to stop on my account, [mas_get_player_nickname()]~")
+                    _("This almost seems like the start of a make-out session, [player]~")
                 ]
 
-                if mas_isMoniLove() and random.randint(1, 10) == 1:
-                    kiss_quip = renpy.random.choice(kiss_quips_again_risque)
+                kiss_quips_again_makeout = [
+                    _("Heheh, did I get your computer screen wet?"),
+                    _("I wish we could do that all day long~"),
+                    _("There's nothing like making out with you, [mas_get_player_nickname()]~"),
+                    _("You don't have to stop on my account~")
+                ]
 
+                if mas_isMoniLove():
+                    kiss_quip = renpy.random.choice(kiss_quips_again_makeout)
+
+                elif random.randint(1, 10) == 1:
+                    kiss_quip = renpy.random.choice(kiss_quips_again_risque)
                 else:
                     kiss_quip = renpy.random.choice(kiss_quips_again)
 
-            show monika 6ttbsu
+            show monika 2tkbsu
             pause 2.0
 
             # like monika_kissing_motion_short, but with diff exps
-            call monika_kissing_motion_makeout(transition=4.0, duration=10.0, hide_ui=True,
-        initial_exp="6ttbsu", mid_exp="6tkbfu", final_exp="6ttbsu", fade_duration=1.0)
+            if mas_isMoniLove():
+                call monika_kissing_motion_makeout(transition=4.0, duration=10.0, hide_ui=True,
+                initial_exp="6ttbsu", mid_exp="6tkbfu", final_exp="6ttbsu", fade_duration=1.0)
 
+            else:
+                call monika_kissing_motion(duration=0.5, initial_exp="6hubsa", final_exp="6tkbfu", fade_duration=0.5)
+
+            show monika 6tkbfu
             $ renpy.say(m, kiss_quip)
 
         else:
