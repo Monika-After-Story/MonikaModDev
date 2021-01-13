@@ -118,7 +118,11 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_virtualpiano",
             category=["virtual", "piano"],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None
+            },
             show_in_idle=True
         ),
         code="WRS"
