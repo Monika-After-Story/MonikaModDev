@@ -1957,7 +1957,6 @@ init 5 python:
     )
 
 label monika_kiss:
-label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         if (
             persistent._mas_last_kiss is not None
