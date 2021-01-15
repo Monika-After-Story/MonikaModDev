@@ -298,13 +298,16 @@ init python in mas_chess:
         else:
             return piece_to_add
 
-    def gen_final_row(white=True, max_piece_value=None):
+    def gen_row(white=True, max_piece_value=None, is_edge_row=False):
         """
         Generates the final rows of pieces
 
         IN:
             white - whether or not we should generate for white
-
+                (Default: True)
+            max_piece_value - The current upper limit for piece selection
+            is_edge_row - Whether or not this is a row that should contain a king (outside of the board)
+                (Default: False)
         OUT:
             string representing a random assortment of pieces with a single king for the back row
         """
@@ -316,7 +319,7 @@ init python in mas_chess:
 
         row = list()
         for ind in range(0, 8):
-            if ind == king_pos:
+            if is_edge_row and ind == king_pos:
                 piece_to_add = king_char
 
             else:
@@ -333,32 +336,6 @@ init python in mas_chess:
 
         return "".join(row), (max_piece_value - total_row_points if max_piece_value is not None else None)
 
-    def gen_front_row(white=True, max_piece_value=None):
-        """
-        Generates the front row of pieces
-
-        IN:
-            white - whether or not we should generate for white
-
-        OUT:
-            string representing a random assortment of pieces for the front row
-        """
-        row = list()
-
-        total_row_points = 0
-
-        for ind in range(0, 8):
-            piece_to_add = random.choice(random_piece_pool)
-
-            piece_to_add = check_piece_points(piece_to_add, max_piece_value, total_row_points)
-
-            if white:
-                piece_to_add = piece_to_add.capitalize()
-
-            row.append(piece_to_add)
-
-        return "".join(row), (max_piece_value - total_row_points if max_piece_value is not None else None)
-
     def generate_fen(is_player_white=True):
         """
         Generates a random fen
@@ -368,19 +345,18 @@ init python in mas_chess:
         """
         #Setup max piece value for the player
         max_piece_value = (
-            (HIGHEST_SIDE_WORTH - LOWEST_SIDE_WORTH) /
-            (store.persistent._mas_chess_difficulty.keys()[0] + store.persistent._mas_chess_difficulty.values()[0])
+            HIGHEST_SIDE_WORTH - LOWEST_SIDE_WORTH - store.persistent._mas_chess_difficulty.keys()[0] - store.persistent._mas_chess_difficulty.values()[0]
         )
 
         #Now the inverse from the max of that should be Monika's piece value
         #(lower player value, higher monika value, vice versa)
         monika_max_piece_value = HIGHEST_SIDE_WORTH - max_piece_value
 
-        player_row_front, max_piece_value = gen_front_row(is_player_white, max_piece_value)
-        player_row_back, max_piece_value = gen_final_row(is_player_white, max_piece_value)
+        player_row_front, max_piece_value = gen_row(is_player_white, max_piece_value)
+        player_row_back, max_piece_value = gen_row(is_player_white, max_piece_value, is_edge_row=True)
 
-        monika_row_back, monika_max_piece_value = gen_final_row(not is_player_white, monika_max_piece_value)
-        monika_row_front, monika_max_piece_value = gen_front_row(not is_player_white, monika_max_piece_value)
+        monika_row_back, monika_max_piece_value = gen_row(not is_player_white, monika_max_piece_value, is_edge_row=True)
+        monika_row_front, monika_max_piece_value = gen_row(not is_player_white, monika_max_piece_value)
 
 
         #Now place things correctly
