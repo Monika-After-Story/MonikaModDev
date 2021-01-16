@@ -274,7 +274,7 @@ init python in mas_chess:
             return store.chess.BLACK
         return store.chess.WHITE
 
-    def select_piece(remaining_points=None):
+    def select_piece(remaining_points):
         """
         Selects a piece according to random
 
@@ -286,20 +286,19 @@ init python in mas_chess:
         """
         piece_pool = ['p']
 
-        if remaining_points:
-            if remaining_points < 1:
-                return "1"
+        if remaining_points < 1:
+            return "1"
 
-            if remaining_points > 3:
-                piece_pool.extend(['b', 'n'])
+        if remaining_points >= 3:
+            piece_pool.extend(['b', 'n'])
 
-                if remaining_points > 9:
+            if remaining_points >= 5:
+                piece_pool.append('r')
+
+                if remaining_points >= 9:
                     piece_pool.append('q')
 
-            return random.choice(piece_pool)
-
-        else:
-            return random.choice(random_piece_pool)
+        return random.choice(piece_pool)
 
     def gen_side(white=True, max_side_value=None):
         """
@@ -346,15 +345,23 @@ init python in mas_chess:
         if not white:
             back_row, front_row = front_row, back_row
 
-        unsanitized_side = "{0}/{1}".format("".join(front_row), "".join(back_row))
-
-        consecutive_spaces = sorted(re.findall(r"1{2,}", unsanitized_side), key=len, reverse=True)
+        string = "{0}/{1}".format("".join(front_row), "".join(back_row))
 
         #Now sanitize
-        for num_cluster in consecutive_spaces:
-            unsanitized_side = unsanitized_side.replace(num_cluster, str(len(num_cluster)))
+        found_space = False
+        for id in range(len(string) - 1, -1, -1):
+            char = string[id]
+            if char == "1":
+                if not found_space:
+                    found_space = True
 
-        return unsanitized_side
+                else:
+                    string = string[:id] + str(int(string[id + 1]) + 1) + string[id + 2:]
+
+            else:
+                found_space = False
+
+        return string
 
     def generate_fen(is_player_white=True):
         """
@@ -384,14 +391,14 @@ init python in mas_chess:
 
         delta = abs(p_value_adj)
 
-        base_piece_value = random.randint(HIGHEST_SIDE_WORTH - delta, LOWEST_SIDE_WORTH + delta)
+        base_piece_value = random.randint(LOWEST_SIDE_WORTH, HIGHEST_SIDE_WORTH)
 
         #Setup max piece value for the player
-        max_piece_value = base_piece_value + p_value_adj
+        max_piece_value = max(min(base_piece_value + p_value_adj, HIGHEST_SIDE_WORTH), LOWEST_SIDE_WORTH)
 
         #Now the inverse from the max of that should be Monika's piece value
         #(lower player value, higher monika value, vice versa)
-        monika_max_piece_value = base_piece_value + m_value_adj
+        monika_max_piece_value =  max(min(base_piece_value + m_value_adj, HIGHEST_SIDE_WORTH), LOWEST_SIDE_WORTH)
 
         player_side = gen_side(is_player_white, max_piece_value)
 
