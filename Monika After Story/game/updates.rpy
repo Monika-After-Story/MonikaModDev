@@ -387,6 +387,9 @@ label v0_11_10(version="v0_11_10"):
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
+        # We don't use this var anymore
+        safeDel("chess_strength")
+
     return
 
 # 0.11.9

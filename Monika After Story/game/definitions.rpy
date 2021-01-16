@@ -3620,10 +3620,13 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_stats = {
             "wins": 0,
             "losses": 0,
-            "draws": 0
+            "draws": 0,
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
-        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_difficulty = (0, 1)
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
@@ -7582,7 +7585,6 @@ default persistent._mas_apology_database = dict()
 default persistent._mas_undo_action_rules = dict()
 default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
-default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False

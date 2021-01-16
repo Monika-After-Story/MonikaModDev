@@ -11,7 +11,7 @@ default persistent._mas_chess_stats = {
 #Stores the chess difficulty, this is managed via levels and sublevels
 #Key is the level (0-8) - corresponds to stockfish difficulty
 #Value is the sublevel (1-5) - corresponds to stockfish depth
-default persistent._mas_chess_difficulty = {0: 1}
+default persistent._mas_chess_difficulty = (0, 1)
 
 # pgn as a string
 default persistent._mas_chess_quicksave = ""
@@ -76,11 +76,6 @@ init python in mas_chess:
         "zz_pianokeys.rpyc",
         "zz_music_selector.rpyc"
     )
-
-    # temporary var for holding chess strength
-    # [0]: True if this is set, False if not
-    # [1]: value of the chess strength
-    chess_strength = (False, 0)
 
     #Marker for ongoing game
     IS_ONGOING = '*'
@@ -225,8 +220,8 @@ init python in mas_chess:
         """
         Increments chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty.keys()[0]
-        sublevel = store.persistent._mas_chess_difficulty.values()[0]
+        level = store.persistent._mas_chess_difficulty[0]
+        sublevel = store.persistent._mas_chess_difficulty[1]
 
         if sublevel == 5 and level < 9:
             level += 1
@@ -238,14 +233,14 @@ init python in mas_chess:
         else:
             return
 
-        store.persistent._mas_chess_difficulty = {level:sublevel}
+        store.persistent._mas_chess_difficulty = (level, sublevel)
 
     def _decrement_chess_difficulty():
         """
         Decrements chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty.keys()[0]
-        sublevel = store.persistent._mas_chess_difficulty.values()[0]
+        level = store.persistent._mas_chess_difficulty[0]
+        sublevel = store.persistent._mas_chess_difficulty[1]
 
         if sublevel == 1 and level > 0:
             level -= 1
@@ -257,7 +252,7 @@ init python in mas_chess:
         else:
             return
 
-        store.persistent._mas_chess_difficulty = {level: sublevel}
+        store.persistent._mas_chess_difficulty = (level, sublevel)
 
     def _get_player_color(loaded_game):
         """
@@ -370,7 +365,7 @@ init python in mas_chess:
             is_player_white - whether or not the player is playing white this game
         """
         # We need to multiply by 6 (max subvalue is 5) to get correct difficulty from value and subvalue
-        difficulty = store.persistent._mas_chess_difficulty.keys()[0] * 6 + store.persistent._mas_chess_difficulty.values()[0]
+        difficulty = store.persistent._mas_chess_difficulty[0] * 6 + store.persistent._mas_chess_difficulty[1]
         # Use a cubic function to adjust players' points
         p_value_adj = int(round(-((float(difficulty) - 27)**3) / 984))
         m_value_adj = -p_value_adj
@@ -1045,7 +1040,7 @@ label mas_chess_dlg_game_monika_wins_sometimes:
     m 3hua "I bet if you keep practicing, you'll be even better than me someday!"
 
     #If the difficulty is above base level, we'll mention lowering it
-    if persistent._mas_chess_difficulty != {0:1}:
+    if persistent._mas_chess_difficulty != (0, 1):
         m 3eua "Until then though, I'll try and go a little easier on you."
     return
 
@@ -3059,7 +3054,7 @@ init python:
             Starts Monika's analysis of the board
             """
             self.stockfish.stdin.write("position fen {0}\n".format(self.board.fen()))
-            self.stockfish.stdin.write("go depth {0}\n".format(persistent._mas_chess_difficulty.values()[0]))
+            self.stockfish.stdin.write("go depth {0}\n".format(persistent._mas_chess_difficulty[1]))
             self.stockfish.stdin.write("go movetime {0}\n".format(self.MONIKA_WAITTIME))
 
         def additional_setup(self):
@@ -3111,7 +3106,7 @@ init python:
                 self.stockfish = open_stockfish(fp)
 
             #Set Monika's parameters
-            self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(persistent._mas_chess_difficulty.keys()[0]))
+            self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(persistent._mas_chess_difficulty[0]))
             self.stockfish.stdin.write("setoption name Contempt value {0}\n".format(self.MONIKA_OPTIMISM))
             self.stockfish.stdin.write("setoption name Ponder value False\n")
 
