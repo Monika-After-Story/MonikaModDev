@@ -1860,9 +1860,7 @@ init python:
 
             else:
                 #Start off with traditional board, or initialize with the starting fen if using a custom scenario
-                self.board = (
-                    MASBoard(fen=starting_fen, casual_rules=casual_rules) if starting_fen is not None else MASBoard(casual_rules)
-                )
+                self.board = MASBoard(fen=starting_fen, casual_rules=casual_rules)
 
                 #Stuff we need to save to the board
                 self.today_date = datetime.date.today().strftime("%Y.%m.%d")
@@ -2714,7 +2712,7 @@ init python:
         """
         Extension class for the chess.Board class
         """
-        def __init__(self, fen=chess.STARTING_FEN, chess960=False, casual_rules=False):
+        def __init__(self, fen=None, chess960=False, casual_rules=False):
             """
             MASBoard constructor
 
@@ -2725,6 +2723,9 @@ init python:
 
             Same as chess.Board constructor, adds two properties
             """
+            if fen is None:
+                fen = chess.STARTING_FEN
+
             super(MASBoard, self).__init__(fen, chess960)
 
             #Flag for needing to request a redraw for the board
@@ -2839,7 +2840,7 @@ init python:
             castling = piece_type == chess.KING and self.occupied_co[self.turn] & to_bb
 
             if castling:
-                a_side = square_file(move.to_square) < square_file(move.from_square)
+                a_side = chess.square_file(move.to_square) < chess.square_file(move.from_square)
 
                 self._remove_piece_at(move.from_square)
                 self._remove_piece_at(move.to_square)
