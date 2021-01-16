@@ -5608,14 +5608,17 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
+    #Set the spent flag to True
+    $ persistent._mas_f14_spent_f14 = True
+
     #Prevent nts stuff for upset- since they don't get the rest of the event.
     if mas_isMoniUpset(lower=True):
-        $ persistent._mas_f14_spent_f14 = True
         if not mas_isMoniBroken():
             m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
             m "Thanks for visiting me, I hope you have a good day."
         return
 
+    $ lingerie_eligible = mas_canShowRisque() and not mas_SELisUnlocked(mas_clothes_vday_lingerie) and mas_SELisUnlocked(mas_clothes_sundress_white)
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -5639,27 +5642,20 @@ label mas_f14_monika_valentines_intro:
         m "I'm really happy I'm your girlfriend, [player]."
 
     # returning from a date or getting lingerie
-    if not persistent._mas_f14_in_f14_mode or mas_canShowRisque():
+    if not persistent._mas_f14_in_f14_mode or lingerie_eligible:
         $ persistent._mas_f14_in_f14_mode = True
 
         # first time seeing any lingerie
-        if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_hasUnlockedClothesWithExprop("lingerie"):
+        if lingerie_eligible and not mas_hasUnlockedClothesWithExprop("lingerie"):
             call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress or non-first time seeing lingerie
-        elif (
-            not mas_SELisUnlocked(mas_clothes_sundress_white)
-            or (mas_canShowRisque() and mas_hasLockedClothesWithExprop("lingerie",True))
-        ):
+        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or lingerie_eligible:
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
             # lingerie
-            if (
-                mas_SELisUnlocked(mas_clothes_sundress_white)
-                and mas_canShowRisque()
-                and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
-            ):
+            if mas_SELisUnlocked(mas_clothes_sundress_white):
                 call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
                 pause 2.0
                 show monika 2ekbsu
@@ -5675,7 +5671,7 @@ label mas_f14_monika_valentines_intro:
                 m 3tkbsu "I hope you enjoy it too~"
 
             # sundress
-            elif not mas_SELisUnlocked(mas_clothes_sundress_white):
+            else:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
@@ -5709,7 +5705,7 @@ label mas_f14_monika_valentines_intro:
             # no change of clothes path
             else:
                 # not wearing sundress
-                if not monika_chr.clothes == mas_clothes_sundress_white:
+                if monika_chr.clothes != mas_clothes_sundress_white:
                     m 1wud "Oh..."
                     m 1eka "Do you want me to change into my white sundress, [player]?"
                     m 3hua "I've always kinda considered that my Valentine's Day outfit."
@@ -5755,8 +5751,6 @@ label mas_f14_monika_valentines_intro:
 
     m 1fkbsu "I love you so much."
     m 1hubfb "Happy Valentine's Day, [player]~"
-    #Set the spent flag to True
-    $ persistent._mas_f14_spent_f14 = True
 
     return "rebuild_ev|love"
 
