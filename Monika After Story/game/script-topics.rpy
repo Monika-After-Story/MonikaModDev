@@ -5969,11 +5969,13 @@ label monika_japanese:
                     m 1eua "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 2hubsa "Ehehe~"
                     m 1ekbfa "That means I love you, [player]-[player_suffix]."
+                    $ mas_ILY()
         "No.":
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m 1ekbsb "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
+            $ mas_ILY()
 
     return "derandom"
 
