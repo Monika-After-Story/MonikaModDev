@@ -363,20 +363,39 @@ init python in mas_chess:
         IN:
             is_player_white - whether or not the player is playing white this game
         """
+        difficulty = store.persistent._mas_chess_difficulty.keys()[0] + store.persistent._mas_chess_difficulty.values()[0]
+
+        #Player isn't very good at chess
+        #Moni gets less free points, player gets more
+        if difficulty in (1, 5):
+            p_value_adj = int(round(20.0 / difficulty))
+            m_value_adj = -p_value_adj
+
+        #Player is a grandmaster
+        #Moni gets more free points, player gets less
+        elif difficulty in (9, 13):
+            m_value_adj = int(round(20.0 / (6 - (difficulty - 8))))
+            p_value_adj = -m_value_adj
+
+        #Otherwise it's in between of 6-8, fair game
+        else:
+            p_value_adj = 0
+            m_value_adj = 0
+
+        delta = abs(p_value_adj)
+
+        base_piece_value = random.randint(HIGHEST_SIDE_WORTH - delta, LOWEST_SIDE_WORTH + delta)
+
         #Setup max piece value for the player
-        max_piece_value = (
-            HIGHEST_SIDE_WORTH - LOWEST_SIDE_WORTH - store.persistent._mas_chess_difficulty.keys()[0] - store.persistent._mas_chess_difficulty.values()[0]
-        )
+        max_piece_value = base_piece_value + p_value_adj
 
         #Now the inverse from the max of that should be Monika's piece value
         #(lower player value, higher monika value, vice versa)
-        monika_max_piece_value = HIGHEST_SIDE_WORTH - max_piece_value
+        monika_max_piece_value = base_piece_value + m_value_adj
 
         player_side = gen_side(is_player_white, max_piece_value)
 
-
         monika_side = gen_side(not is_player_white, monika_max_piece_value)
-
 
         #Now place things correctly
         if is_player_white:
