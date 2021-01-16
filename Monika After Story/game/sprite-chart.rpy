@@ -330,6 +330,12 @@ init -100 python in mas_sprites:
     # marks that a clothing item has bare shoulders
     # this is auto-added if both left/right bare shoulders are added
 
+    EXP_C_C_DTS = "compat-downtiedstrand"
+    # v: ignored
+    # compatibilty exprop saying that these clothes work with the 
+    # downtiedstrand hair style
+    # NOTE: THIS IS AN EXCEPTION. We should not be doing exprops like this.
+
     EXP_C_COST = "costume"
     # v: costume type as string (o31, d25, etc..)
     # marks that a clothing item is a costume
@@ -6934,6 +6940,10 @@ init -3 python:
                     and self.hasprop(store.mas_sprites.EXP_C_BRS)
             ):
                 self.addprop(store.mas_sprites.EXP_C_BS)
+
+            # default DTS compat if BRS is set
+            if self.hasprop(store.mas_sprites.EXP_C_BRS):
+                self.addprop(store.mas_sprites.EXP_C_C_DTS)
 
         def determine_arms(self, leanpose):
             """

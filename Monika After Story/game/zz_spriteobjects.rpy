@@ -773,7 +773,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
+            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_C_DTS,
             store.mas_sprites.EXP_H_TS: True,
             store.mas_sprites.EXP_H_NT: True,
         }
@@ -934,7 +934,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True
+            store.mas_sprites.EXP_C_C_DTS: True
         },
         pose_arms=MASPoseArms(
             {
@@ -993,7 +993,7 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_marisa_entry,
         exit_pp=store.mas_sprites._clothes_marisa_exit,
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_C_DTS: True,
             store.mas_sprites.EXP_C_COST: "o31",
             store.mas_sprites.EXP_C_COSP: True,
         }
@@ -1169,8 +1169,8 @@ init -1 python:
         exit_pp=store.mas_sprites._clothes_sundress_white_exit,
         pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
             store.mas_sprites.EXP_C_BLS: True,
+            store.mas_sprites.EXP_C_BRS: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
