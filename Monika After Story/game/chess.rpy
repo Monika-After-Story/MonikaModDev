@@ -43,7 +43,6 @@ init python in mas_chess:
     import store.mas_ui as mas_ui
     import store
     import random
-    import re
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -370,24 +369,11 @@ init python in mas_chess:
         IN:
             is_player_white - whether or not the player is playing white this game
         """
-        difficulty = store.persistent._mas_chess_difficulty.keys()[0] + store.persistent._mas_chess_difficulty.values()[0]
-
-        #Player isn't very good at chess
-        #Moni gets less free points, player gets more
-        if difficulty in (1, 5):
-            p_value_adj = int(round(20.0 / difficulty))
-            m_value_adj = -p_value_adj
-
-        #Player is a grandmaster
-        #Moni gets more free points, player gets less
-        elif difficulty in (9, 13):
-            m_value_adj = int(round(20.0 / (6 - (difficulty - 8))))
-            p_value_adj = -m_value_adj
-
-        #Otherwise it's in between of 6-8, fair game
-        else:
-            p_value_adj = 0
-            m_value_adj = 0
+        # We need to multiply by 6 (max subvalue is 5) to get correct difficulty from value and subvalue
+        difficulty = store.persistent._mas_chess_difficulty.keys()[0] * 6 + store.persistent._mas_chess_difficulty.values()[0]
+        # Use a cubic function to adjust players' points
+        p_value_adj = int(round(-((float(difficulty) - 27)**3) / 984))
+        m_value_adj = -p_value_adj
 
         delta = abs(p_value_adj)
 
