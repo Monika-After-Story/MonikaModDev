@@ -261,8 +261,9 @@ init -100 python in mas_sprites:
     # marks that an ACS is located at the left hair strand, eye level
 
     EXP_A_RQHP = "required-hair-prop"
-    # v: string
-    # marks that an ACS requires a hairstyle with the value'd prop to be worn
+    # v: string/list
+    # marks that an ACS requires a hairstyle with the value'd prop(s) to be
+    # worn
 
     EXP_A_LD = "left-desk-acs"
     # v: ignored
@@ -291,8 +292,9 @@ init -100 python in mas_sprites:
     # marks that a hair style is a twintails style
 
     EXP_H_RQCP = "required-clothes-prop"
-    # v: string
-    # marks that a hair style requires clothes with the value'd prop to be worn
+    # v: string/list
+    # marks that a hair style requires clothes with the value'd prop(s) to be
+    # worn
 
     EXP_H_EXCLCP = "excluded-clothes-props"
     # v: list of strings
@@ -313,9 +315,20 @@ init -100 python in mas_sprites:
 
     # ---- CLOTHES ----
 
+    EXP_C_BLS = "bare-left-shoulder"
+    # v: ignored
+    # marks that a clothing item has a bare left shoulder
+    # this is auto-added if bare-shoulders is added
+
     EXP_C_BRS = "bare-right-shoulder"
     # v: ignored
     # marks that a clothing item has a bare right shoulder
+    # this is auto-added if bare-shoulders is added
+
+    EXP_C_BS = "bare-shoulders"
+    # v: ignored
+    # marks that a clothing item has bare shoulders
+    # this is auto-added if both left/right bare shoulders are added
 
     EXP_C_COST = "costume"
     # v: costume type as string (o31, d25, etc..)
@@ -528,7 +541,7 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_TWRB: True,
                 EXP_A_RBL: True,
-                EXP_A_RQHP: EXP_H_TT,
+                EXP_A_RQHP: [EXP_H_TT],
             }
         ),
         "wrist-bracelet": ACSTemplate(
@@ -1603,9 +1616,11 @@ init -5 python in mas_sprites:
         RETURNS: True if hair+acs is compatible, False if not
         """
         # first check for required hair prop
-        req_hair_prop = acs.getprop(EXP_A_RQHP, None)
-        if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
-            return False
+        req_hair_props = acs.getprop(EXP_A_RQHP, None)
+        if req_hair_props is not None:
+            for req_hair_prop in req_hair_props:
+                if not hair.hasprop(req_hair_prop):
+                    return False
 
         # then check exclusions
         excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
@@ -1628,9 +1643,11 @@ init -5 python in mas_sprites:
         RETURNS: True if clothes+hair is comaptible, False if not
         """
         # first check for required clothes prop
-        req_cloth_prop = hair.getprop(EXP_H_RQCP, None)
-        if req_cloth_prop is not None and not clothes.hasprop(req_cloth_prop):
-            return False
+        req_cloth_props = hair.getprop(EXP_H_RQCP, None)
+        if req_cloth_props is not None:
+            for req_cloth_prop in req_cloth_props:
+                if not clothes.hasprop(req_cloth_prop):
+                    return False
 
         # then check exclusions
         excl_cloth_props = hair.getprop(EXP_H_EXCLCP, None)
@@ -5159,6 +5176,10 @@ init -3 python:
             else:
                 self.ex_props = ex_props
 
+            # setup exprop related material
+            self.default_exprops()
+            self.format_exprops()
+
             # setup highlight map
             self.__setup_hl_map(full_hl_data)
 
@@ -5230,6 +5251,18 @@ init -3 python:
             """
             raise NotImplementedError
 
+        def default_exprops(self):
+            """
+            Called after sprite creation in the base class. This should be
+            implemented by sprite object classes as appropraite.
+
+            the only things that should happen in here are defaulting of
+            exprops as a result of other exprops.
+
+            All code in here should be safe to call more than once.
+            """
+            pass
+
         def entry(self, _monika_chr, **kwargs):
             """
             Calls the entry programming point if it exists
@@ -5251,6 +5284,19 @@ init -3 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+        def format_exprops(self):
+            """
+            Called after sprite creation in the base class, after exprops
+            have been defaulted in. This should be implemented by sprite object
+            classes as appropriate.
+
+            The only things that should happen here are adjusting formats
+            of exprops so they are valid/uniform/as expected by consuming code
+
+            All code in here should be safe to call more than once.
+            """
+            pass
 
         def gethlc(self, *args, **kwargs):
             """
@@ -5634,6 +5680,18 @@ init -3 python:
 
             # now generate the hl data
             return (hl_keys, hl_def, hl_mapping)
+
+        def format_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASAccessoryBase, self).format_exprops()
+
+            # format required-hair-prop into list if itsnt
+            # NOTE: no handilng for non-string types
+            req_hair_prop = self.getprop(store.mas_sprites.EXP_A_RQHP)
+            if store.mas_sprites_json._verify_str(req_hair_prop, False):
+                self.ex_props[store.mas_sprites.EXP_A_RQHP] = [req_hair_prop]
 
         @staticmethod
         def get_priority(acs):
@@ -6566,6 +6624,18 @@ init -3 python:
 
             return loadstrs
 
+        def format_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASHair, self).format_exprops()
+
+            # format required-clothes-prop into list if it isn't.
+            # NOTE: no handling for non-string types
+            req_cloth_prop = self.getprop(store.mas_sprites.EXP_H_RQCP)
+            if store.mas_sprites_json._verify_str(req_cloth_prop, False):
+                self.ex_props[store.mas_sprites.EXP_H_RQCP] = [req_cloth_prop]
+
         def gethlc(self, hair_key, lean, flt, defval=None):
             """
             Gets highlight code
@@ -6848,6 +6918,22 @@ init -3 python:
             loadstrs.extend(pose_arms.build_loadstrs(c_prefix))
 
             return loadstrs
+
+        def default_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASClothes, self).default_exprops()
+
+            # default bare shoulder exprops
+            if self.hasprop(store.mas_sprites.EXP_C_BS):
+                self.addprop(store.mas_sprites.EXP_C_BLS)
+                self.addprop(store.mas_sprites.EXP_C_BRS)
+            elif (
+                    self.hasprop(store.mas_sprites.EXP_C_BLS)
+                    and self.hasprop(store.mas_sprites.EXP_C_BRS)
+            ):
+                self.addprop(store.mas_sprites.EXP_C_BS)
 
         def determine_arms(self, leanpose):
             """
