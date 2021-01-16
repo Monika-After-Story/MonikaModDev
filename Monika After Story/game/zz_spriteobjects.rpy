@@ -905,7 +905,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_BS: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_blackdress)
@@ -1093,7 +1093,7 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_BS: True,
             "lingerie": "d25"
         },
         entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
@@ -1135,7 +1135,7 @@ init -1 python:
         stay_on_start=True,
         pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_BS: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_dress_newyears)
@@ -1170,6 +1170,7 @@ init -1 python:
         pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
             store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_BLS: True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
@@ -1200,7 +1201,7 @@ init -1 python:
         stay_on_start=True,
         ex_props={
             store.mas_sprites.EXP_C_LING: True,
-            store.mas_sprites.EXP_C_BRS: True
+            store.mas_sprites.EXP_C_BS: True,
         },
         pose_arms=MASPoseArms({}, def_base=False)
     )
