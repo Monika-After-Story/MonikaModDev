@@ -276,7 +276,7 @@ init python in mas_chess:
             remaining_points - amount of points left to be allocated
 
         OUT:
-            a chess piece (str) based on available, unallocated points
+            a chess piece (str) based on available
         """
         piece_pool = ['p']
 
@@ -3266,13 +3266,18 @@ init python:
                 else:
                     self._button_draw.disable()
 
-                #At least one move, so we can give up, save, and undo if in practice mode
-                if self.board.fullmove_number > 1:
+                #Can give up from the get go
+                if self.board.fullmove_number > 0:
                     self._button_giveup.enable()
-                    self._button_save.enable()
 
                 else:
                     self._button_giveup.disable()
+
+                #At least one move, so we can give up, save, and undo if in practice mode
+                if self.board.fullmove_number > 1:
+                    self._button_save.enable()
+
+                else:
                     self._button_save.disable()
 
                 #Game isn't over, but since we could undo from a checkmate, we'll disable the done button
