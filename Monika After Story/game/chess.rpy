@@ -43,6 +43,7 @@ init python in mas_chess:
     import store.mas_ui as mas_ui
     import store
     import random
+    import re
 
     # if this is true, we quit game (workaround for confirm screen)
     quit_game = False
@@ -133,9 +134,10 @@ init python in mas_chess:
     random_piece_pool = ['r', 'n', 'p', 'q', 'b']
 
     #Base chess FEN format
-    BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
+    BASE_FEN = "{black_side}/8/8/8/8/{white_side} w - - 0 1"
 
     PIECE_POINT_MAP = {
+        "1": 0,
         "p": 1,
         "n": 3,
         "b": 3,
@@ -272,69 +274,87 @@ init python in mas_chess:
             return store.chess.BLACK
         return store.chess.WHITE
 
-    def check_piece_points(piece_to_add, max_piece_value, total_row_points):
+    def select_piece(remaining_points=None):
         """
-        Verifies if the piece selected can be used according to the max points
+        Selects a piece according to random
 
         IN:
-            piece_to_add - piece to check
-            max_piece_value - max points a piece can have
-            total_row_points - total points of the row
+            remaining_points - amount of points left to be allocated
 
         OUT:
-            the piece given if valid, otherwise a random piece below the max points thresh
+            a chess piece (str) based on available, unallocated points
         """
         piece_pool = ['p']
 
-        if max_piece_value and total_row_points + PIECE_POINT_MAP[piece_to_add] > max_piece_value:
-            if max_piece_value > 3:
+        if remaining_points:
+            if remaining_points < 1:
+                return "1"
+
+            if remaining_points > 3:
                 piece_pool.extend(['b', 'n'])
 
-                if max_piece_value > 9:
+                if remaining_points > 9:
                     piece_pool.append('q')
 
             return random.choice(piece_pool)
 
         else:
-            return piece_to_add
+            return random.choice(random_piece_pool)
 
-    def gen_row(white=True, max_piece_value=None, is_edge_row=False):
+    def gen_side(white=True, max_side_value=None):
         """
-        Generates the final rows of pieces
+        Generates a player's side
 
         IN:
             white - whether or not we should generate for white
                 (Default: True)
-            max_piece_value - The current upper limit for piece selection
-            is_edge_row - Whether or not this is a row that should contain a king (outside of the board)
-                (Default: False)
+            max_side_value - The current upper limit for piece selection
+
         OUT:
             string representing a random assortment of pieces with a single king for the back row
         """
-        king_char = 'K' if white else 'k'
+        king_char = 'k'
         king_pos = random.randint(0, 7)
 
-        #Setup total points for this row
-        total_row_points = 0
+        back_row = list()
+        front_row = list()
 
-        row = list()
-        for ind in range(0, 8):
-            if is_edge_row and ind == king_pos:
+        side_indeces = range(0, 16)
+        random.shuffle(side_indeces)
+
+        for ind in side_indeces:
+            if ind == king_pos:
                 piece_to_add = king_char
 
             else:
-                piece_to_add = random.choice(random_piece_pool)
+                piece_to_add = select_piece(max_side_value)
 
-                piece_to_add = check_piece_points(piece_to_add, max_piece_value, total_row_points)
+                max_side_value -= PIECE_POINT_MAP[piece_to_add]
 
-                total_row_points += PIECE_POINT_MAP[piece_to_add]
+            #Capitalize if necessary
+            if white:
+                piece_to_add = piece_to_add.capitalize()
 
-                if white:
-                    piece_to_add = piece_to_add.capitalize()
+            #Add to the appropriate list
+            if ind < 8:
+                back_row.append(piece_to_add)
+            else:
+                front_row.append(piece_to_add)
 
-            row.append(piece_to_add)
 
-        return "".join(row), (max_piece_value - total_row_points if max_piece_value is not None else None)
+        #Reorder if needed
+        if not white:
+            back_row, front_row = front_row, back_row
+
+        unsanitized_side = "{0}/{1}".format("".join(front_row), "".join(back_row))
+
+        consecutive_spaces = sorted(re.findall(r"1{2,}", unsanitized_side), key=len, reverse=True)
+
+        #Now sanitize
+        for num_cluster in consecutive_spaces:
+            unsanitized_side = unsanitized_side.replace(num_cluster, str(len(num_cluster)))
+
+        return unsanitized_side
 
     def generate_fen(is_player_white=True):
         """
@@ -352,28 +372,23 @@ init python in mas_chess:
         #(lower player value, higher monika value, vice versa)
         monika_max_piece_value = HIGHEST_SIDE_WORTH - max_piece_value
 
-        player_row_front, max_piece_value = gen_row(is_player_white, max_piece_value)
-        player_row_back, max_piece_value = gen_row(is_player_white, max_piece_value, is_edge_row=True)
+        player_side = gen_side(is_player_white, max_piece_value)
 
-        monika_row_back, monika_max_piece_value = gen_row(not is_player_white, monika_max_piece_value, is_edge_row=True)
-        monika_row_front, monika_max_piece_value = gen_row(not is_player_white, monika_max_piece_value)
+
+        monika_side = gen_side(not is_player_white, monika_max_piece_value)
 
 
         #Now place things correctly
         if is_player_white:
             return BASE_FEN.format(
-                black_pieces_back=monika_row_back,
-                black_pieces_front=monika_row_front,
-                white_pieces_front=player_row_front,
-                white_pieces_back=player_row_back
+                black_side=monika_side,
+                white_side=player_side
             )
 
         else:
             return BASE_FEN.format(
-                black_pieces_back=player_row_back,
-                black_pieces_front=player_row_front,
-                white_pieces_front=monika_row_front,
-                white_pieces_back=monika_row_back
+                black_side=player_side,
+                white_side=monika_side
             )
 
     def enqueue_output(out, queue, lock):
