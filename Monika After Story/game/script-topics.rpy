@@ -1749,7 +1749,16 @@ label monika_middleschool:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika','clothes'],prompt="Wearing other clothes",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_outfit",
+            category=['monika','clothes'],
+            prompt="Wearing other clothes",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
 
 label monika_outfit:
     if len(store.mas_selspr.filter_clothes(True)) == 1:
@@ -4786,6 +4795,7 @@ init 5 python:
             eventlabel="monika_nsfw",
             category=['misc','monika'],
             prompt="NSFW content",
+            aff_range=(mas_aff.NORMAL, None),
             random=True,
             sensitive=True
         )
@@ -4959,7 +4969,7 @@ label monika_fanfiction:
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
-    else:
+    elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
 
@@ -5691,6 +5701,7 @@ init 5 python:
             eventlabel="monika_pleasure",
             category=['you'],
             prompt="Pleasuring yourself",
+            aff_range=(mas_aff.AFFECTIONATE, None),
             random=True,
             sensitive=True
         )
