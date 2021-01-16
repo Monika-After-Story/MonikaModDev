@@ -280,9 +280,6 @@ init python in mas_chess:
         """
         piece_pool = ['p']
 
-        if remaining_points < 1:
-            return "1"
-
         if remaining_points >= 3:
             piece_pool.extend(['b', 'n'])
 
@@ -292,7 +289,10 @@ init python in mas_chess:
                 if remaining_points >= 9:
                     piece_pool.append('q')
 
-        return random.choice(piece_pool)
+            return random.choice(piece_pool)
+
+        # If we have less than 3 points, we just give a pawn
+        return 'p'
 
     def gen_side(white=True, max_side_value=None):
         """
@@ -306,7 +306,6 @@ init python in mas_chess:
         OUT:
             string representing a random assortment of pieces with a single king for the back row
         """
-        king_char = 'k'
         king_pos = random.randint(0, 7)
 
         back_row = list()
@@ -314,15 +313,18 @@ init python in mas_chess:
 
         side_indeces = range(0, 16)
         random.shuffle(side_indeces)
+        # Subtract points worth 14 pawns
+        # (skip one pawn to get some free points for replacement)
+        max_side_value -= 14
 
         for ind in side_indeces:
             if ind == king_pos:
-                piece_to_add = king_char
+                piece_to_add = 'k'
 
             else:
                 piece_to_add = select_piece(max_side_value)
-
-                max_side_value -= PIECE_POINT_MAP[piece_to_add]
+                # Subtract points for this piece, add back points for the pawn we replaced
+                max_side_value -= PIECE_POINT_MAP[piece_to_add] - 1
 
             #Capitalize if necessary
             if white:
@@ -342,18 +344,18 @@ init python in mas_chess:
         string = "{0}/{1}".format("".join(front_row), "".join(back_row))
 
         #Now sanitize
-        found_space = False
-        for id in range(len(string) - 1, -1, -1):
-            char = string[id]
-            if char == "1":
-                if not found_space:
-                    found_space = True
+        # found_space = False
+        # for id in range(len(string) - 1, -1, -1):
+        #     char = string[id]
+        #     if char == "1":
+        #         if not found_space:
+        #             found_space = True
 
-                else:
-                    string = string[:id] + str(int(string[id + 1]) + 1) + string[id + 2:]
+        #         else:
+        #             string = string[:id] + str(int(string[id + 1]) + 1) + string[id + 2:]
 
-            else:
-                found_space = False
+        #     else:
+        #         found_space = False
 
         return string
 
