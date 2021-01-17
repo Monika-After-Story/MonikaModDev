@@ -2905,7 +2905,7 @@ init python:
 
                 elif move.to_square == ep_square and abs(diff) in [7, 9] and not captured_piece_type:
                     #Remove pawns captured en passant
-                    down = -8 if self.turn == WHITE else 8
+                    down = -8 if self.turn == chess.WHITE else 8
                     capture_square = ep_square + down
                     captured_piece_type = self._remove_piece_at(capture_square)
 
@@ -2927,12 +2927,12 @@ init python:
                 self._remove_piece_at(move.to_square)
 
                 if a_side:
-                    self._set_piece_at(C1 if self.turn == chess.WHITE else chess.C8, chess.KING, self.turn)
-                    self._set_piece_at(D1 if self.turn == chess.WHITE else chess.D8, chess.ROOK, self.turn)
+                    self._set_piece_at(chess.C1 if self.turn == chess.WHITE else chess.C8, chess.KING, self.turn)
+                    self._set_piece_at(chess.D1 if self.turn == chess.WHITE else chess.D8, chess.ROOK, self.turn)
 
                 else:
-                    self._set_piece_at(G1 if self.turn == chess.WHITE else chess.G8, chess.KING, self.turn)
-                    self._set_piece_at(F1 if self.turn == chess.WHITE else chess.F8, chess.ROOK, self.turn)
+                    self._set_piece_at(chess.G1 if self.turn == chess.WHITE else chess.G8, chess.KING, self.turn)
+                    self._set_piece_at(chess.F1 if self.turn == chess.WHITE else chess.F8, chess.ROOK, self.turn)
 
                 #MASPiece needs to redraw, ASAP
                 self.request_redraw = True
