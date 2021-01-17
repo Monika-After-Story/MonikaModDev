@@ -1700,16 +1700,8 @@ label ch30_hour:
         with MAS_EVL("monika_holdrequest") as holdme_ev:
             # See if we flagged the ev
             if holdme_ev.allflags(EV_FLAG_HFRS):
-                # Get time in hours the player has spent with Monika
-                hours_spent_this_sesh = int(round(float(mas_getSessionLength().total_seconds()) / 3600))
-                # Base chance to get this is 1/5
-                base_chance = 5
-                # Now calculate the chance the player got
-                chance = base_chance - hours_spent_this_sesh
-                if (
-                    chance <= 1
-                    or random.randint(1, chance) == 1
-                ):
+                chance = max(mas_getSessionLength().total_seconds() / (4*3600.0), 0.2)
+                if chance >= 1 or random.random() < chance:
                     holdme_ev.unflag(EV_FLAG_HFRS)
 
     return
