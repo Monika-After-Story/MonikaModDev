@@ -391,26 +391,54 @@ init python in mas_chess:
                 or (
                     king_id > 0
                     and enemy_front[king_id - 1].lower() == queen
-                    )
+                )
                 or (
                     king_id < 7
                     and enemy_front[king_id + 1].lower() == queen
                 )
                 or (
                     king_id == 0
-                    and enemy_front[6].lower() in queen_or_bishop
+                    and (
+                        enemy_front[5].lower() in queen_or_bishop
+                        or enemy_front[6].lower() in queen_or_bishop
+                    )
                 )
                 or (
                     king_id == 1
-                    and enemy_front[7].lower() in queen_or_bishop
+                    and (
+                        enemy_front[5].lower() in queen_or_bishop
+                        or enemy_front[6].lower() in queen_or_bishop
+                        or enemy_front[7].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 3
+                    and (
+                        enemy_front[6].lower() in queen_or_bishop
+                        or enemy_front[7].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 5
+                    and (
+                        enemy_front[0].lower() in queen_or_bishop
+                        or enemy_front[1].lower() in queen_or_bishop
+                    )
                 )
                 or (
                     king_id == 6
-                    and enemy_front[0].lower() in queen_or_bishop
+                    and (
+                        enemy_front[0].lower() in queen_or_bishop
+                        or enemy_front[1].lower() in queen_or_bishop
+                        or enemy_front[2].lower() in queen_or_bishop
+                    )
                 )
                 or (
                     king_id == 7
-                    and enemy_front[1].lower() in queen_or_bishop
+                    and (
+                        enemy_front[1].lower() in queen_or_bishop
+                        or enemy_front[2].lower() in queen_or_bishop
+                    )
                 )
             ):
                 return False
