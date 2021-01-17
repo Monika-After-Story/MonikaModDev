@@ -378,10 +378,11 @@ label v0_11_10(version="v0_11_10"):
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
-        for story_type, story_last_seen in persistent._mas_last_seen_new_story.itervalues():
-            persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
-                story_last_seen, datetime.time()
-            )
+        for story_type, story_last_seen in persistent._mas_last_seen_new_story.iteritems():
+            if story_last_seen is not None:
+                persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
+                    story_last_seen, datetime.time()
+                )
     return
 
 # 0.11.9
