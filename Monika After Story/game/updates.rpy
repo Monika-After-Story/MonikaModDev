@@ -378,8 +378,6 @@ label v0_11_10(version="v0_11_10"):
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
 
-        if persistent._mas_last_hold is not None:
-            persistent._mas_last_hold = datetime.datetime.combine(persistent._mas_last_hold, datetime.time(0, 0))
     return
 
 # 0.11.9
