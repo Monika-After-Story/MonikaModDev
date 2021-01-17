@@ -359,6 +359,71 @@ init python in mas_chess:
 
         return string
 
+    def _validate_sides(white_front, white_back, black_front, black_back):
+        """
+        Validates sides for really bad chess
+        so we don't end up in a check/check mate after the first turn
+
+        IN:
+            white_front - front row for white
+            white_back - back row for white
+            black_front - front row for black
+            black_back - back row for black
+
+        OUT:
+            boolean, whether or not both sides are good to go
+        """
+        def validate(king_id, enemy_front):
+            """
+            Hardcoded validator, can't really think about something better
+
+            IN:
+                king_id - id of the king
+                enemy_front - opposide to king front row
+
+            OUT:
+                boolead, whether or not this king is safe *for now*
+            """
+            queen = "q"
+            queen_or_bishop = ("q", "b")
+            if (
+                enemy_front[king_id].lower() in (queen, "r")
+                or (
+                    king_id > 0
+                    and enemy_front[king_id - 1].lower() == queen
+                    )
+                or (
+                    king_id < 7
+                    and enemy_front[king_id + 1].lower() == queen
+                )
+                or (
+                    king_id == 0
+                    and enemy_front[6].lower() in queen_or_bishop
+                )
+                or (
+                    king_id == 1
+                    and enemy_front[7].lower() in queen_or_bishop
+                )
+                or (
+                    king_id == 6
+                    and enemy_front[0].lower() in queen_or_bishop
+                )
+                or (
+                    king_id == 7
+                    and enemy_front[1].lower() in queen_or_bishop
+                )
+            ):
+                return False
+            return True
+
+        white_king_id = white_back.index("K")
+        white_is_good = validate(white_king_id, black_front)
+
+        black_king_id = black_back.index("k")
+        black_is_good = validate(black_king_id, white_front)
+
+        return white_is_good and black_is_good
+
     def generate_fen(is_player_white=True):
         """
         Generates a random fen
@@ -383,9 +448,31 @@ init python in mas_chess:
         #(lower player value, higher monika value, vice versa)
         monika_max_piece_value =  max(min(base_piece_value + m_value_adj, HIGHEST_SIDE_WORTH), LOWEST_SIDE_WORTH)
 
-        player_side = gen_side(is_player_white, max_piece_value)
+        good_to_go = False
+        attempts = 0
+        while (
+            not good_to_go
+            # NOTE: Really, we should be safe here, but I don't want to create potential inf loops lol
+            and attempts < 10
+        ):
+            player_side = gen_side(is_player_white, max_piece_value)
+            player_first_row, player_second_row = player_side.split("/")
+            monika_side = gen_side(not is_player_white, monika_max_piece_value)
+            monika_first_row, monika_second_row = monika_side.split("/")
 
-        monika_side = gen_side(not is_player_white, monika_max_piece_value)
+            if is_player_white:
+                white_front = player_first_row
+                white_back = player_second_row
+                black_front = monika_second_row
+                black_back = monika_first_row
+
+            else:
+                white_front = monika_first_row
+                white_back = monika_second_row
+                black_front = player_second_row
+                black_back = player_first_row
+
+            good_to_go = _validate_sides(white_front, white_back, black_front, black_back)
 
         #Now place things correctly
         if is_player_white:
@@ -2302,7 +2389,7 @@ init python:
                     and ix_orig == self.selected_piece[0]
                     and iy_orig == self.selected_piece[1]
                 ):
-                    renderer.blit(highlight_green, (x, y))
+                    renderer.blit(highlight_yellow, (x, y))
                     continue
 
                 piece = self.get_piece_at(ix_orig, iy_orig)
