@@ -128,7 +128,7 @@ init python in mas_chess:
     random_piece_pool = ['r', 'n', 'p', 'q', 'b']
 
     #Base chess FEN format
-    BASE_FEN = "{black_side}/8/8/8/8/{white_side} w - - 0 1"
+    BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
 
     PIECE_POINT_MAP = {
         "1": 0,
@@ -301,7 +301,7 @@ init python in mas_chess:
             max_side_value - The current upper limit for piece selection
 
         OUT:
-            string representing a random assortment of pieces with a single king for the back row
+            2 strings representing a random assortment of pieces (front row and back row)
         """
         king_pos = random.randint(0, 7)
 
@@ -338,23 +338,7 @@ init python in mas_chess:
         if not white:
             back_row, front_row = front_row, back_row
 
-        string = "{0}/{1}".format("".join(front_row), "".join(back_row))
-
-        #Now sanitize
-        # found_space = False
-        # for id in range(len(string) - 1, -1, -1):
-        #     char = string[id]
-        #     if char == "1":
-        #         if not found_space:
-        #             found_space = True
-
-        #         else:
-        #             string = string[:id] + str(int(string[id + 1]) + 1) + string[id + 2:]
-
-        #     else:
-        #         found_space = False
-
-        return string
+        return "".join(front_row), "".join(back_row)
 
     def _validate_sides(white_front, white_back, black_front, black_back):
         """
@@ -372,7 +356,7 @@ init python in mas_chess:
         """
         def validate(king_id, enemy_front):
             """
-            Hardcoded validator, can't really think about something better
+            Hardcoded validator, can't really think about anything better
 
             IN:
                 king_id - id of the king
@@ -480,10 +464,8 @@ init python in mas_chess:
             # NOTE: Really, we should be safe here, but I don't want to create potential inf loops lol
             and attempts < 10
         ):
-            player_side = gen_side(is_player_white, max_piece_value)
-            player_first_row, player_second_row = player_side.split("/")
-            monika_side = gen_side(not is_player_white, monika_max_piece_value)
-            monika_first_row, monika_second_row = monika_side.split("/")
+            player_first_row, player_second_row = gen_side(is_player_white, max_piece_value)
+            monika_first_row, monika_second_row = gen_side(not is_player_white, monika_max_piece_value)
 
             if is_player_white:
                 white_front = player_first_row
@@ -502,14 +484,18 @@ init python in mas_chess:
         #Now place things correctly
         if is_player_white:
             return BASE_FEN.format(
-                black_side=monika_side,
-                white_side=player_side
+                black_pieces_back=monika_first_row,
+                black_pieces_front=monika_second_row,
+                white_pieces_front=player_first_row,
+                white_pieces_back=player_second_row
             )
 
         else:
             return BASE_FEN.format(
-                black_side=player_side,
-                white_side=monika_side
+                black_pieces_back=player_first_row,
+                black_pieces_front=player_second_row,
+                white_pieces_front=monika_first_row,
+                white_pieces_back=monika_second_row
             )
 
     def enqueue_output(out, queue, lock):
