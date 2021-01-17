@@ -3179,6 +3179,14 @@ init python:
             self.board.move_stack = old_board.move_stack
             self.board.stack = old_board.stack
             self.board.fullmove_number = old_board.fullmove_number - 1
+            #Restore the last move if we can
+            if self.board.move_stack:
+                last_move_uci = self.board.move_stack[-1].uci()
+                self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move_uci)
+
+            else:
+                self.last_move_src = None
+                self.last_move_dst = None
 
             #Adjust MASPieces
             self.update_pieces()
