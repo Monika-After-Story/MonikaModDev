@@ -128,7 +128,7 @@ init python in mas_chess:
     random_piece_pool = ['r', 'n', 'p', 'q', 'b']
 
     #Base chess FEN format
-    BASE_FEN = "{black_side}/8/8/8/8/{white_side} w - - 0 1"
+    BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
 
     PIECE_POINT_MAP = {
         "1": 0,
@@ -220,8 +220,7 @@ init python in mas_chess:
         """
         Increments chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty[0]
-        sublevel = store.persistent._mas_chess_difficulty[1]
+        level, sublevel = store.persistent._mas_chess_difficulty
 
         if sublevel == 5 and level < 9:
             level += 1
@@ -239,9 +238,7 @@ init python in mas_chess:
         """
         Decrements chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty[0]
-        sublevel = store.persistent._mas_chess_difficulty[1]
-
+        level, sublevel = store.persistent._mas_chess_difficulty
         if sublevel == 1 and level > 0:
             level -= 1
             sublevel = 5
@@ -304,7 +301,7 @@ init python in mas_chess:
             max_side_value - The current upper limit for piece selection
 
         OUT:
-            string representing a random assortment of pieces with a single king for the back row
+            2 strings representing a random assortment of pieces (front row and back row)
         """
         king_pos = random.randint(0, 7)
 
@@ -341,23 +338,100 @@ init python in mas_chess:
         if not white:
             back_row, front_row = front_row, back_row
 
-        string = "{0}/{1}".format("".join(front_row), "".join(back_row))
+        return "".join(front_row), "".join(back_row)
 
-        #Now sanitize
-        # found_space = False
-        # for id in range(len(string) - 1, -1, -1):
-        #     char = string[id]
-        #     if char == "1":
-        #         if not found_space:
-        #             found_space = True
+    def _validate_sides(white_front, white_back, black_front, black_back):
+        """
+        Validates sides for really bad chess
+        so we don't end up in a check/check mate after the first turn
 
-        #         else:
-        #             string = string[:id] + str(int(string[id + 1]) + 1) + string[id + 2:]
+        IN:
+            white_front - front row for white
+            white_back - back row for white
+            black_front - front row for black
+            black_back - back row for black
 
-        #     else:
-        #         found_space = False
+        OUT:
+            boolean, whether or not both sides are good to go
+        """
+        def validate(king_id, enemy_front):
+            """
+            Hardcoded validator, can't really think about anything better
 
-        return string
+            IN:
+                king_id - id of the king
+                enemy_front - opposide to king front row
+
+            OUT:
+                boolead, whether or not this king is safe *for now*
+            """
+            queen = "q"
+            queen_or_bishop = ("q", "b")
+            if (
+                enemy_front[king_id].lower() in (queen, "r")
+                or (
+                    king_id > 0
+                    and enemy_front[king_id - 1].lower() == queen
+                )
+                or (
+                    king_id < 7
+                    and enemy_front[king_id + 1].lower() == queen
+                )
+                or (
+                    king_id == 0
+                    and (
+                        enemy_front[5].lower() in queen_or_bishop
+                        or enemy_front[6].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 1
+                    and (
+                        enemy_front[5].lower() in queen_or_bishop
+                        or enemy_front[6].lower() in queen_or_bishop
+                        or enemy_front[7].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 3
+                    and (
+                        enemy_front[6].lower() in queen_or_bishop
+                        or enemy_front[7].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 5
+                    and (
+                        enemy_front[0].lower() in queen_or_bishop
+                        or enemy_front[1].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 6
+                    and (
+                        enemy_front[0].lower() in queen_or_bishop
+                        or enemy_front[1].lower() in queen_or_bishop
+                        or enemy_front[2].lower() in queen_or_bishop
+                    )
+                )
+                or (
+                    king_id == 7
+                    and (
+                        enemy_front[1].lower() in queen_or_bishop
+                        or enemy_front[2].lower() in queen_or_bishop
+                    )
+                )
+            ):
+                return False
+            return True
+
+        white_king_id = white_back.index("K")
+        white_is_good = validate(white_king_id, black_front)
+
+        black_king_id = black_back.index("k")
+        black_is_good = validate(black_king_id, white_front)
+
+        return white_is_good and black_is_good
 
     def generate_fen(is_player_white=True):
         """
@@ -383,21 +457,45 @@ init python in mas_chess:
         #(lower player value, higher monika value, vice versa)
         monika_max_piece_value =  max(min(base_piece_value + m_value_adj, HIGHEST_SIDE_WORTH), LOWEST_SIDE_WORTH)
 
-        player_side = gen_side(is_player_white, max_piece_value)
+        good_to_go = False
+        attempts = 0
+        while (
+            not good_to_go
+            # NOTE: Really, we should be safe here, but I don't want to create potential inf loops lol
+            and attempts < 10
+        ):
+            player_first_row, player_second_row = gen_side(is_player_white, max_piece_value)
+            monika_first_row, monika_second_row = gen_side(not is_player_white, monika_max_piece_value)
 
-        monika_side = gen_side(not is_player_white, monika_max_piece_value)
+            if is_player_white:
+                white_front = player_first_row
+                white_back = player_second_row
+                black_front = monika_second_row
+                black_back = monika_first_row
+
+            else:
+                white_front = monika_first_row
+                white_back = monika_second_row
+                black_front = player_second_row
+                black_back = player_first_row
+
+            good_to_go = _validate_sides(white_front, white_back, black_front, black_back)
 
         #Now place things correctly
         if is_player_white:
             return BASE_FEN.format(
-                black_side=monika_side,
-                white_side=player_side
+                black_pieces_back=monika_first_row,
+                black_pieces_front=monika_second_row,
+                white_pieces_front=player_first_row,
+                white_pieces_back=player_second_row
             )
 
         else:
             return BASE_FEN.format(
-                black_side=player_side,
-                white_side=monika_side
+                black_pieces_back=player_first_row,
+                black_pieces_front=player_second_row,
+                white_pieces_front=monika_first_row,
+                white_pieces_back=monika_second_row
             )
 
     def enqueue_output(out, queue, lock):
@@ -2302,7 +2400,7 @@ init python:
                     and ix_orig == self.selected_piece[0]
                     and iy_orig == self.selected_piece[1]
                 ):
-                    renderer.blit(highlight_green, (x, y))
+                    renderer.blit(highlight_yellow, (x, y))
                     continue
 
                 piece = self.get_piece_at(ix_orig, iy_orig)
@@ -2807,7 +2905,7 @@ init python:
 
                 elif move.to_square == ep_square and abs(diff) in [7, 9] and not captured_piece_type:
                     #Remove pawns captured en passant
-                    down = -8 if self.turn == WHITE else 8
+                    down = -8 if self.turn == chess.WHITE else 8
                     capture_square = ep_square + down
                     captured_piece_type = self._remove_piece_at(capture_square)
 
@@ -2829,12 +2927,12 @@ init python:
                 self._remove_piece_at(move.to_square)
 
                 if a_side:
-                    self._set_piece_at(C1 if self.turn == chess.WHITE else chess.C8, chess.KING, self.turn)
-                    self._set_piece_at(D1 if self.turn == chess.WHITE else chess.D8, chess.ROOK, self.turn)
+                    self._set_piece_at(chess.C1 if self.turn == chess.WHITE else chess.C8, chess.KING, self.turn)
+                    self._set_piece_at(chess.D1 if self.turn == chess.WHITE else chess.D8, chess.ROOK, self.turn)
 
                 else:
-                    self._set_piece_at(G1 if self.turn == chess.WHITE else chess.G8, chess.KING, self.turn)
-                    self._set_piece_at(F1 if self.turn == chess.WHITE else chess.F8, chess.ROOK, self.turn)
+                    self._set_piece_at(chess.G1 if self.turn == chess.WHITE else chess.G8, chess.KING, self.turn)
+                    self._set_piece_at(chess.F1 if self.turn == chess.WHITE else chess.F8, chess.ROOK, self.turn)
 
                 #MASPiece needs to redraw, ASAP
                 self.request_redraw = True
@@ -3179,6 +3277,14 @@ init python:
             self.board.move_stack = old_board.move_stack
             self.board.stack = old_board.stack
             self.board.fullmove_number = old_board.fullmove_number - 1
+            #Restore the last move if we can
+            if self.board.move_stack:
+                last_move_uci = self.board.move_stack[-1].uci()
+                self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move_uci)
+
+            else:
+                self.last_move_src = None
+                self.last_move_dst = None
 
             #Adjust MASPieces
             self.update_pieces()
