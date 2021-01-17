@@ -220,8 +220,7 @@ init python in mas_chess:
         """
         Increments chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty[0]
-        sublevel = store.persistent._mas_chess_difficulty[1]
+        level, sublevel = store.persistent._mas_chess_difficulty
 
         if sublevel == 5 and level < 9:
             level += 1
@@ -239,9 +238,7 @@ init python in mas_chess:
         """
         Decrements chess difficulty
         """
-        level = store.persistent._mas_chess_difficulty[0]
-        sublevel = store.persistent._mas_chess_difficulty[1]
-
+        level, sublevel = store.persistent._mas_chess_difficulty
         if sublevel == 1 and level > 0:
             level -= 1
             sublevel = 5
