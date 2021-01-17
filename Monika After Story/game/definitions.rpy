@@ -3930,10 +3930,13 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_stats = {
             "wins": 0,
             "losses": 0,
-            "draws": 0
+            "draws": 0,
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
-        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_difficulty = (0, 1)
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
@@ -6632,6 +6635,50 @@ init 21 python:
 
         return rv
 
+    def mas_getMousePos():
+        """
+        Gets the mouse position in terms of physical screen size
+
+        OUT:
+            tuple, (x, y) coordinates representing the mouse position
+        """
+        virtual_width = config.screen_width * 10000
+        virtual_height = config.screen_height * 10000
+        physical_width, physical_height = renpy.get_physical_size()
+        dw, dh = pygame.display.get_surface().get_size()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        #Converts the mouse coordinates from pygame's relative screen size coords (based on config vars) to physical size
+        #NOTE: THIS IS NEEDED FOR UI SCALING OTHER THAN 100%
+        mouse_x = (mouse_x * physical_width) / dw
+        mouse_y = (mouse_y * physical_height) / dh
+
+        r = None
+        #This part calculates the "true" position, it can handle weirdly sized screens
+        if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
+            r = virtual_width / physical_width
+            mouse_y -= (physical_height - virtual_height / r) / 2
+        else:
+            r = virtual_height / physical_height
+            mouse_x -= (physical_width - virtual_width / r) / 2
+
+        newx = (mouse_x * r) / 10000
+        newy = (mouse_y * r) / 10000
+
+        return (newx, newy)
+
+    def mas_quipExp(exp_code):
+        """
+        Allows expressions to be inserted into quips directly via function substitution
+
+        (This is effectively a renpy.show that returns '' instead of None)
+
+        IN:
+            exp_code - code of the expression as str (ex: '1hua')
+        """
+        renpy.show("monika " + exp_code)
+        return ""
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
@@ -7848,7 +7895,6 @@ default persistent._mas_apology_database = dict()
 default persistent._mas_undo_action_rules = dict()
 default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
-default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
