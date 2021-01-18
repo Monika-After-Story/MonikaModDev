@@ -15847,6 +15847,7 @@ label monika_asimov_three_laws:
     m 1eua "The laws were never meant to be actually implemented, they're just plot devices."
     m 3eua "In fact, a good amount of Asimov's stories show just how badly things could turn out if they were applied."
     m 3hksdlb "So I guess they aren't really something we need to worry about. Ahaha~"
+    $ mas_protectedShowEVL('monika_foundation', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -16951,28 +16952,28 @@ init 5 python:
             eventlabel="monika_foundation",
             category=['literature'],
             prompt="Foundation",
-            conditional="renpy.seen_label('monika_asimov_three_laws')",
-            action=EV_ACT_RANDOM
+            random=False
         )
     )
 
 label monika_foundation:
-    m 3eua "Say [player], have you ever heard of a book series called 'Foundation'?"
-    m 3eub "It's one of Asimov's most celebrated piece of literature!{w=0.3} {nw}"
+    m 1eud "Say [player], have you ever heard of a book series called 'Foundation'?"
+    m 3eub "It's one of Asimov's most celebrated pieces of literature!{w=0.3} {nw}"
     extend 3eua "I got back into it after we discussed his '{i}Three Laws of Robotics{/i}.'"
     m 4esd "The story is set in a distant future, where humanity has spread across the stars in an all-powerful galactic empire."
-    m 4esa "Hari Seldon, a genius scientist, perfects the fictional science of psychohistory, which can predict the future of large groups of people through mathematical equations."
-    m 7wud "Applying his theory to the galaxy, Seldon finds the empire is about to collapse, leading to a dark age of thirty thousand years!"
-    m 3esb "To stop this, he and fellow colonists settle on a faraway planet with a plan to turn it into the next galactic empire, shortening the dark age to a single millennium instead."
-    m 1huu "From this premise, we follow the story of the young colony as it transforms through the ages."
-    m 3eub "It's a pretty good read if you're ever in a sci-fi mood...{w=0.3} {nw}"
-    extend 3eua "The series explores the themes of society, fate, and the impact of individuals on the grand scheme of things."
-    m 3etc "What intrigues me the most is the concept of psychohistory, and how it translates to the real world."
-    m 1rtc "I mean, at its core, it's nothing but a mix of psychology, sociology, and mathematical probabilities, right?{w=0.3} {nw}"
+    m 4eua "Hari Seldon, a genius scientist, perfects the fictional science of psychohistory, which can predict the future of large groups of people through mathematical equations."
+    m 4wud "Applying his theory to the galaxy, Seldon finds the empire is about to collapse, leading to a dark age of thirty thousand years!"
+    m 2eua "To stop this, he and fellow colonists settle on a faraway planet with a plan to turn it into the next galactic empire, {w=0.1}shortening the dark age to a single millennium instead."
+    m 7eud "From this premise, we follow the story of the young colony as it transforms through the ages."
+    m 3eua "It's a pretty good read if you're ever in a sci-fi mood...{w=0.3} {nw}"
+    extend 1eud "The series explores the themes of society, fate, and the impact of individuals on the grand scheme of things."
+    m 3eud "What intrigues me the most is the concept of psychohistory and how it translates to the real world."
+    m 1rtc "I mean, at its core, it's nothing but a mix of psychology, sociology, and mathematical probabilities, right? {w=0.3}{nw}"
     extend 3esd "All of which made huge progress since Asimov's time."
-    m 1esc "And with the help of modern technologies, we're now able to understand human behaviors better than ever..."
-    m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory, one day?"
-    m 1dkc "Not that it'd necessarily be a good thing.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
-    m 3eksdld "If someone had this much power, what could possibly stop them from owning the whole world?"
-    m 1rksdlc "I really hope we won't ever have to find out..."
+    m 3esc "...And with the help of modern technologies, we're now able to understand human behaviors better than ever."
+    m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory one day?"
+    m 4eud "Just think if it were possible to predict the global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
+    m 2rksdlc "Not that it'd automatically be a good thing, however.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
+    m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
+    m 3eua "But despite its potential drawbacks, it's still very interesting to think about, don't you think [player]?"
     return
