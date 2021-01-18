@@ -4300,7 +4300,9 @@ init -995 python in mas_utils:
             configured correctly, the given datetime is returend with no
             tzinfo attached.
         """
-        return local_dt.replace(tzinfo=get_localzone()).astimezone(pytz.utc).replace(tzinfo=None)
+        local_tz = get_localzone()
+        local_dt = local_tz.localize(local_dt)
+        return local_dt.astimezone(pytz.utc).replace(tzinfo=None)
 
 
     def utc_to_local(utc_dt):
@@ -4319,7 +4321,8 @@ init -995 python in mas_utils:
             NOTE: if a time issue occurs because user's system timezone is not
                 configured correctly, UTC is returned
         """
-        return utc_dt.replace(tzinfo=pytz.utc).astimezone(get_localzone())
+        utc_dt = pytz.utc.localize(utc_dt)
+        return utc_dt.astimezone(get_localzone())
 
 
     def tryparseint(value, default=0):

@@ -375,7 +375,7 @@ class _CountryTimezoneDict(LazyDict):
 
     def _fill(self):
         data = {}
-        zone_tab = open_resource('zone.tab')
+        zone_tab = open_resource('zone.tab', _zdir)
         try:
             for line in zone_tab:
                 line = line.decode('UTF-8')
@@ -404,7 +404,7 @@ class _CountryNameDict(LazyDict):
     '''
     def _fill(self):
         data = {}
-        zone_tab = open_resource('iso3166.tab')
+        zone_tab = open_resource('iso3166.tab', _zdir)
         try:
             for line in zone_tab.readlines():
                 line = line.decode('UTF-8')
