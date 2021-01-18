@@ -945,6 +945,10 @@ label game_chess:
                 m 1wuo "You didn't undo a single move!{w=0.2} {nw}"
                 extend 3hub "That's amazing!"
 
+            elif undo_count == 1:
+                m 1hua "You only undid once. {w=0.2}{nw}"
+                extend 3hub "Great job!"
+
             elif undo_count <= 5:
                 m 1hua "You only undid [undo_count] times too, great job."
 
