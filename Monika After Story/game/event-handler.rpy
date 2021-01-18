@@ -758,7 +758,18 @@ init 6 python:
                 (Default: False)
             _pool - True if we want to random thsi event
                 (Default: False)
+
+        NOTE:
+            if using this to random, it does not protect labels that are in persistent._mas_player_derandomed
+            and thus will remove the label from that list if present.
+
+            if the label should not be randomed if it's in persistent._mas_player_derandomed
+            use mas_protectedShowEVL
         """
+
+        if _random:
+            store.mas_bookmarks_derand.removeDerand(ev_label)
+
         store.mas_showEvent(
             mas_all_ev_db_map.get(code, {}).get(ev_label, None),
             unlock=unlock,
