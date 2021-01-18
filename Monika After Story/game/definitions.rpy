@@ -3975,6 +3975,7 @@ init -1 python in _mas_root:
 
 init -999 python:
     import os
+    import pytz
 
     _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
 
@@ -3984,6 +3985,16 @@ init -999 python:
             os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
         except:
             pass
+
+    # load timezone info
+    # NOTE: this is needed since initialzation of pytz will not include find
+    #   timezones if they are included locally
+    # NOTE: this means that tz info is not guaranteed until this call.
+    pytz.load_resources(os.path.join(
+        renpy.config.gamedir,
+        "python-packages",
+        "pytz",
+    ))
 
     def mas_override_label(label_to_override, override_label):
         """

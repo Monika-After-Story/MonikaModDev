@@ -75,7 +75,7 @@ else:  # Python 2.x
         return s.encode('ASCII')
 
 
-def open_resource(name):
+def open_resource(name, zdir=""):
     """Open a resource from the zoneinfo subdir for reading.
 
     Uses the pkg_resources module if available and no standard file
@@ -83,6 +83,9 @@ def open_resource(name):
 
     It is possible to specify different location for zoneinfo
     subdir by using the PYTZ_TZDATADIR environment variable.
+
+    IN:
+        zdir - used by MAS to force correct loading
     """
     name_parts = name.lstrip('/').split('/')
     for part in name_parts:
@@ -92,8 +95,11 @@ def open_resource(name):
     if zoneinfo_dir is not None:
         filename = os.path.join(zoneinfo_dir, *name_parts)
     else:
-        filename = os.path.join(os.path.dirname(__file__),
-                                'zoneinfo', *name_parts)
+        # NOTE: patch for MAS to use proivided zoneinfo files. 
+        #   this is setup in a way where user's zoneinfo can still be used via env
+#        filename = os.path.join(os.path.dirname(__file__),
+#                                'zoneinfo', *name_parts)
+        filename = os.path.join(zdir, "zoneinfo", *name_parts)
         if not os.path.exists(filename):
             # http://bugs.launchpad.net/bugs/383171 - we avoid using this
             # unless absolutely necessary to help when a broken version of
@@ -108,7 +114,7 @@ def open_resource(name):
     return open(filename, 'rb')
 
 
-def resource_exists(name):
+def resource_exists(name, zdir=""):
     """Return true if the given resource exists"""
     try:
         if os.environ.get('PYTZ_SKIPEXISTSCHECK', ''):
@@ -118,12 +124,33 @@ def resource_exists(name):
             # PYTZ_SKIPEXISTSCHECK flag to skip checking
             # for the presence of the resource file on disk.
             return True
-        open_resource(name).close()
+        open_resource(name, zdir=zdir).close()
         return True
     except IOError:
         return False
 
 
+def load_resources(zdir):
+    """
+    Loads all resources, setting all appropriate tz lists
+    """
+    global all_timezones, all_timezones_set
+    global common_timezones, common_timezones_set
+    global _zdir
+
+    _zdir = zdir
+
+    all_timezones = LazyList(
+        tz for tz in all_timezones if resource_exists(tz, zdir)
+    )
+    all_timezones_set = LazySet(all_timezones)
+
+    common_timezones = LazyList(
+        tz for tz in common_timezones if tz in all_timezones
+    )
+    common_timezones_set = LazySet(common_timezones)
+
+_zdir = ""
 _tzinfo_cache = {}
 
 
@@ -179,7 +206,7 @@ def timezone(zone):
     zone = _case_insensitive_zone_lookup(_unmunge_zone(zone))
     if zone not in _tzinfo_cache:
         if zone in all_timezones_set:  # noqa
-            fp = open_resource(zone)
+            fp = open_resource(zone, _zdir)
             try:
                 _tzinfo_cache[zone] = build_tzinfo(zone, fp)
             finally:
@@ -1108,8 +1135,8 @@ all_timezones = \
  'W-SU',
  'WET',
  'Zulu']
-all_timezones = LazyList(
-        tz for tz in all_timezones if resource_exists(tz))
+#all_timezones = LazyList(
+#        tz for tz in all_timezones if resource_exists(tz))
         
 all_timezones_set = LazySet(all_timezones)
 common_timezones = \
@@ -1552,7 +1579,7 @@ common_timezones = \
  'US/Mountain',
  'US/Pacific',
  'UTC']
-common_timezones = LazyList(
-            tz for tz in common_timezones if tz in all_timezones)
+#common_timezones = LazyList(
+#            tz for tz in common_timezones if tz in all_timezones)
         
 common_timezones_set = LazySet(common_timezones)
