@@ -3704,6 +3704,8 @@ init -995 python in mas_utils:
     import time
     import traceback
     import sys
+    import pytz
+    import tzlocal
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -3939,6 +3941,62 @@ init -995 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
+
+
+    def get_localzone():
+        """
+        Wrapper around tzlocal.get_localzone() that won't raise exceptions
+
+        RETURNS: pytz tzinfo object of the local time zone. 
+            if system timezone info is configured wrong, then UTC is returned
+        """
+        try:
+            return tzlocal.get_localzone()
+        except:
+            return pytz.utc
+
+
+    def local_to_utc(local_dt):
+        """
+        Converts the given local datetime into a UTC datetime.
+
+        NOTE: you shouldn't be using this. UTC time should be where you do 
+        dt manipulations and use utc_to_local to get a localized dt for human
+        reading. datetime has a utcnow() function so use that to get started
+        instead of now()
+
+        IN:
+            local_dt - datetime to convert, this is treated as localtime even 
+                if it has a tzinfo attached or not.
+
+        RETURNS: 
+            UTC-based naive datetime (no tzinfo).
+            This is safe for pickling/saving to persistent.
+            If a time issue occurs because user's system timezone is not
+            configured correctly, the given datetime is returend with no
+            tzinfo attached.
+        """
+        return local_dt.replace(tzinfo=get_localzone()).astimezone(pytz.utc).replace(tzinfo=None)
+
+
+    def utc_to_local(utc_dt):
+        """
+        Converts the given UTC datetime into a local datetime
+
+        IN:
+            dt_value - datetime to convert, this is treated as UTC even if it
+                has a tzinfo attached or not.
+
+        RETURNS: 
+            localized datetime with tzinfo of this zone (see pytz docs)
+            NOTE: DO NOT PICKLE THIS or SAVE TO PERSISTENT. While pytz can
+                safely pickle, we do not want to force a dependency on the
+                persistent.
+            NOTE: if a time issue occurs because user's system timezone is not
+                configured correctly, UTC is returned
+        """
+        return utc_dt.replace(tzinfo=pytz.utc).astimezone(get_localzone())
+
 
     def tryparseint(value, default=0):
         """
