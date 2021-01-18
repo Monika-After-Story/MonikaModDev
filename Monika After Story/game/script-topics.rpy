@@ -2279,21 +2279,13 @@ label monika_rain:
             if not mas_is_raining:
                 call mas_change_weather(mas_weather_rain, by_user=False)
 
-            call monika_holdme_prep(False,True)
+            call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
 
             m 1hua "Then hold me, [player]..."
-            show monika 6dubsa with dissolve_monika
-            window hide
 
-            $ mas_gainAffection()
-            $ ui.add(PauseDisplayable())
-            $ ui.interact()
-
-            # renable ui and hotkeys
-            $ store.songs.enabled = True
-            $ HKBShowButtons()
+            call monika_holdme_start
             call monika_holdme_end
-            window auto
+            $ mas_gainAffection()
 
             if mas_isMoniAff(higher=True):
                 m 1eua "If you want the rain to stop, just ask me, okay?"
@@ -2360,49 +2352,78 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep(lullaby=True, no_music=True):
+# Some constants to describe the behaviour
+init python:
+    MAS_HOLDME_NO_LULLABY = 0
+    MAS_HOLDME_PLAY_LULLABY = 1
+    MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC = 2
 
-    # start the lullaby timer
-    if lullaby and no_music:
-        if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
-            play music store.songs.FP_THIRTY_MIN_OF_SILENCE
-            queue music store.songs.FP_MONIKA_LULLABY
-            # this doesn't interfere with the timer and allows us to stop the lullaby
-            # from the music menu after the 30 minute mark
-            $ songs.current_track = store.songs.FP_MONIKA_LULLABY
-            $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_music=False, disable_music_menu=False):
+    python:
+        holdme_events = list()
 
-    # stop the music without starting the timer
-    elif not lullaby and no_music:
-        $ play_song(None, fadeout=1.0)
+        if mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12)):
+            _minutes = random.randint(25, 40)
+        else:
+            _minutes = random.randint(35, 50)
+        holdme_sleep_timer = datetime.timedelta(minutes=_minutes)
 
-    # just play the lullaby
-    elif lullaby and not no_music:
-        $ play_song(store.songs.FP_MONIKA_LULLABY)
+        def __holdme_play_lullaby():
+            """
+            Local method to play the lullaby. Ensures we have no music playing before starting it.
+            """
+            if (
+                # The user has not canceled the lullaby
+                store.songs.current_track == store.songs.FP_MONIKA_LULLABY
+                # The user has not started another track
+                and not renpy.music.is_playing(channel="music")
+            ):
+                store.play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
 
-    # stop music when a song other than lullaby is playing but don't clear selected track
-    # this way the lullaby will play only if the user has clicked the no music button
-    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
-        $ play_song(None, fadeout=1.0)
+        # Stop the music
+        if stop_music:
+            play_song(None, fadeout=5.0)
 
-    # hide ui and disable hotkeys
-    $ HKBHideButtons()
-    $ store.songs.enabled = False
+        # Queue the lullaby
+        if lullaby == MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC:
+            if songs.current_track is None:
+                holdme_events.append(
+                    PauseDisplayableEvent(
+                        holdme_sleep_timer,
+                        __holdme_play_lullaby
+                    )
+                )
+                # This doesn't interfere with the timer
+                # and allows the user to stop the lullaby
+                songs.current_track = songs.FP_MONIKA_LULLABY
+                songs.selected_track = songs.FP_MONIKA_LULLABY
+
+        # Just play the lullaby
+        elif lullaby == MAS_HOLDME_PLAY_LULLABY:
+            play_song(store.songs.FP_MONIKA_LULLABY)
+
+        # Hide ui and disable hotkeys
+        HKBHideButtons()
+        store.songs.enabled = not disable_music_menu
 
     return
 
 label monika_holdme_start:
     show monika 6dubsa with dissolve_monika
     window hide
-    #Start the timer vv
-    $ start_time = datetime.datetime.now()
+    python:
+        # Start the timer
+        start_time = datetime.datetime.now()
 
-    $ ui.add(PauseDisplayable())
-    $ ui.interact()
+        holdme_disp = PauseDisplayableWithEvents(events=holdme_events)
+        holdme_disp.start()
 
-    # renable ui and hotkeys
-    $ store.songs.enabled = True
-    $ HKBShowButtons()
+        del holdme_events
+        del holdme_disp
+
+        # Renable ui and hotkeys
+        store.songs.enabled = True
+        HKBShowButtons()
     window auto
     return
 
@@ -2410,11 +2431,14 @@ label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
 
-    # stop the timer if the holding time is less than 30 minutes
-    if elapsed_time <= datetime.timedelta(minutes=30):
-        $ play_song(None, fadeout=1.0)
+    # Reset these vars if needed
+    if elapsed_time <= holdme_sleep_timer:
+        if songs.current_track == songs.FP_MONIKA_LULLABY:
+            $ songs.current_track = songs.FP_NO_SONG
+        if songs.selected_track == songs.FP_MONIKA_LULLABY:
+            $ songs.selected_track = songs.FP_NO_SONG
 
-    if elapsed_time > datetime.timedelta(minutes=30):
+    if elapsed_time > holdme_sleep_timer:
         call monika_holdme_long
 
     elif elapsed_time > datetime.timedelta(minutes=10):
@@ -2430,17 +2454,19 @@ label monika_holdme_reactions:
             m 5tubfu "Ehehe~"
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
-            if renpy.random.randint(1,4) == 1:
+            if renpy.random.randint(1, 4) == 1:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
             m 1hubfu "Ehehe~"
+
         elif mas_isMoniEnamored():
             m 6dubsa "Mmm~"
             m 6tsbsa "..."
             m 1hkbfsdlb "Oh!"
             m 1hubfa "That was so comfortable, I almost fell asleep!"
             m 3hubfb "We should do this more often, ahaha!"
+
         elif mas_isMoniAff():
             m 6dubsa "Mm..."
             m 6eud "Oh?"
@@ -2448,6 +2474,7 @@ label monika_holdme_reactions:
             m 3tubfu "I {i}guess{/i} that was long enough, ehehe~"
             m 1rkbfb "I wouldn't mind another hug..."
             m 1hubfa "But I'm sure you're saving one for later, aren't you?"
+
         #happy
         else:
             m 6dubsa "Hm?"
@@ -2468,6 +2495,7 @@ label monika_holdme_reactions:
             show monika 5tubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5tubfb "Maybe we could even hug a bit more for good measure?"
             m 5tubfu "Ehehe~"
+
         elif mas_isMoniEnamored():
             m 1dkbsa "That was really nice~"
             m 1rkbsa "Not too short--"
@@ -2477,6 +2505,7 @@ label monika_holdme_reactions:
             m 1hubfa "I'm sure I'll get another opportunity to be held by you..."
             show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5tsbfu "You {i}do{/i} plan on doing that again, right, [mas_get_player_nickname()]? Ehehe~"
+
         elif mas_isMoniAff():
             m 2hubsa "Mmm~"
             m 1ekbfb "That was really nice, [mas_get_player_nickname()]."
@@ -2484,6 +2513,7 @@ label monika_holdme_reactions:
             m 1ekbfb "Even if you weren't stressed, I hope you're feeling better after that."
             m 3hubfa "I know I sure am~"
             m 1hubfb "Ahaha!"
+
         #happy
         else:
             m 1hksdlb "That was nice while it lasted."
@@ -2500,6 +2530,7 @@ label monika_holdme_reactions:
             m 3hubsb "You could always hold me again, ahaha!"
             m 1hkbfsdlb "Actually...{w=0.5}you can hold me again either way~"
             m 1ekbfa "Just let me know when you want to~"
+
         elif mas_isMoniEnamored():
             m 1hubsa "Mmm~"
             m 1hub "Much better."
@@ -2508,6 +2539,7 @@ label monika_holdme_reactions:
             m 3rubfb "Hugs that are thirty seconds or longer are supposed to be good for you."
             m 1hubfa "I don't know about you, but I sure feel better~"
             m 1hubfb "Maybe next time, we can try an even longer one and see if it scales! Ahaha~"
+
         elif mas_isMoniAff():
             m 1hubsa "Mmm~"
             m 1hubfb "I can almost feel your warmth, even from here."
@@ -2516,6 +2548,7 @@ label monika_holdme_reactions:
             m 1eud "Oh, wait, did I say thirty seconds?"
             show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eubfu "Sorry, I meant {i}at least{/i} thirty seconds, ehehe~"
+
         #happy
         else:
             m 1hubsa "Ehehe~"
@@ -2525,63 +2558,94 @@ label monika_holdme_reactions:
 
     else:
         #under 30 seconds
-        $ mas_MUMURaiseShield()
         if mas_isMoniLove():
-            m 2ekc "Aww, are we done already?"
-            m 3eka "Could you hold me for just a bit longer?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Could you hold me for just a bit longer?{fast}"
-                "Yes.":
-                    m 1hua "Ehehe~"
-                    $ mas_MUMUDropShield()
-                    call monika_holdme_prep
-                    m 1hub "You're so sweet, [player]~"
-                    call monika_holdme_start
-                    call monika_holdme_reactions
-                "No.":
-                    m 2ekc "Aww..."
-                    m 2rksdlc "..."
-                    m 1eka "Please?{nw}"
-                    $ _history_list.pop()
-                    menu:
-                        m "Please?{fast}"
-                        "Yes.":
-                            m 1hub "Yay~"
-                            $ mas_MUMUDropShield()
-                            call monika_holdme_prep
-                            m 2ekbsb "Thanks, [player]~"
-                            call monika_holdme_start
-                            call monika_holdme_reactions
-                        "No.":
-                            m 2hksdlb "Alright, fine."
-                            m 3tsbsa "But you owe me next time, okay, [player]?"
+            # TODO: when we get TMA, multiple teases in a short amount of time should reduce the chance to trigger this again
+            if mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12)):
+                $ _chance = 1
+            else:
+                $ _chance = 2
+
+            if random.randint(0, _chance) == 0:
+                m 2ekc "Aww, are we done already?"
+                m 3eka "Could you hold me for just a bit longer?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Could you hold me for just a bit longer?{fast}"
+                    "Yes.":
+                        m 1hua "Ehehe~"
+                        call monika_holdme_prep
+                        m 1hub "You're so sweet, [player]~"
+                        call monika_holdme_start
+                        call monika_holdme_reactions
+
+                    "No.":
+                        if random.randint(0, _chance) == 0:
+                            m 2ekc "Aww..."
+                            m 2rksdlc "..."
+                            m 1eka "Please?{nw}"
+                            $ _history_list.pop()
+                            menu:
+                                m "Please?{fast}"
+                                "Yes.":
+                                    m 1hub "Yay~"
+                                    call monika_holdme_prep
+                                    m 2ekbsb "Thanks, [player]~"
+                                    call monika_holdme_start
+                                    call monika_holdme_reactions
+
+                                "No.":
+                                    m 2hksdlb "Alright, fine."
+                                    m 3tsbsa "But you owe me next time, okay, [player]?"
+
+                        else:
+                            m 2hksdlb "Ahaha~ Alright!"
+                            m 2tsbsb "But you better to make it up next time, [player]~"
+
+            else:
+                m 2ekc "Aww..."
+                m 2rsp "I was hoping for a longer hug..."
+                m 2tsbsu "When I'm in your reality, I won't let you go so easily~"
+                show monika 1hubsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 1hubsu "Ehehe~"
+
         elif mas_isMoniEnamored():
+            if mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12)):
+                $ _chance = 1
+            else:
+                $ _chance = 2
+
             m 1ekc "Aww, is that all?"
-            m 1rksdla "I kind of wanted it to last longer than that..."
-            m 2ekbsa "Could you...{w=0.7}hold me for a bit longer?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Could you...hold me for a bit longer?{fast}"
-                "Yes.":
-                    m 1hubfb "Yay!"
-                    $ mas_MUMUDropShield()
-                    call monika_holdme_prep
-                    m 2ekbfb "Thanks, [player]~"
-                    call monika_holdme_start
-                    call monika_holdme_reactions
-                "No.":
-                    m 2ekc "Aw."
-                    m 1eka "Alright, then."
-                    m 3hub "I'll just have to wait until next time, ahaha!"
+            if random.randint(0, _chance) == 0:
+                m 1rksdla "I kind of wanted it to last longer than that..."
+                m 2ekbsa "Could you...{w=0.7}hold me for a bit longer?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Could you...hold me for a bit longer?{fast}"
+                    "Yes.":
+                        m 1hubfb "Yay!"
+                        call monika_holdme_prep
+                        m 2ekbfb "Thanks, [player]~"
+                        call monika_holdme_start
+                        call monika_holdme_reactions
+
+                    "No.":
+                        m 2ekc "Aw."
+                        m 1eka "Alright, then."
+                        m 3hub "I'll just have to wait until next time, ahaha!"
+
+            else:
+                show monika 1rkbssdla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 1rkbssdla "It still was very nice...{w=0.6}{nw}"
+                extend 1hkbfsdlb "but maybe next time it'll last a bit longer~"
+
         elif mas_isMoniAff():
             m 1ekc "Aw, done holding me already, [player]?"
             m 1rksdla "I was kind of hoping for it to last a little bit longer..."
             m 1hubsa "I'm sure that won't be the last time you hold me though, so I'll look forward to next time!"
+
         #happy
         else:
             m 1hua "That was a bit short, but still nice~"
-    $ mas_MUMUDropShield()
     return
 
 label monika_holdme_long:
@@ -2590,7 +2654,10 @@ label monika_holdme_long:
     window auto
     menu:
         "{i}Wake Monika up.{/i}":
-            $ play_song(None, fadeout=5.0)
+            # Only fadeout if we're playing the lullaby
+            if songs.current_track == songs.FP_MONIKA_LULLABY:
+                $ play_song(None, fadeout=5.0)
+
             if mas_isMoniLove():
                 m 6dubsa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2648,7 +2715,7 @@ label monika_holdme_long:
                 $ mas_gainAffection()
 
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep(False,False)
+            call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY)
             if mas_isMoniLove():
                 m 6dubsd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -2668,23 +2735,36 @@ label monika_holdme_long:
     return
 
 # when did we last hold monika
+# TODO: deprecate _mas_last_hold
 default persistent._mas_last_hold = None
+default persistent._mas_last_hold_dt = (
+    datetime.datetime.combine(persistent._mas_last_hold, datetime.time(0, 0))
+    if persistent._mas_last_hold is not None
+    else None
+)
 
 init 5 python:
     # random chance per session Monika can ask for a hold
-    if renpy.random.randint(1,3) == 1:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_holdrequest",
-                conditional=(
-                    "renpy.seen_label('monika_holdme_prep') "
-                    "and persistent._mas_last_hold != datetime.date.today()"
-                ),
-                action=EV_ACT_RANDOM,
-                aff_range=(mas_aff.ENAMORED, None)
-            )
+    if renpy.random.randint(1, 5) != 1:
+        flags = EV_FLAG_HFRS
+
+    else:
+        flags = 0
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_holdrequest",
+            conditional=(
+                "renpy.seen_label('monika_holdme_prep') "
+                "and mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12))"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+            flags=flags
         )
+    )
+    del flags
 
 label monika_holdrequest:
     #TODO: if we add a mood system, path this based on current mood
@@ -2694,7 +2774,7 @@ label monika_holdrequest:
     menu:
         m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
         "Come here, [m_name].":
-            $ mas_gainAffection(modifier=1.5,bypass=True)
+            $ mas_gainAffection(modifier=1.5, bypass=True)
             call monika_holdme_prep
 
             call monika_holdme_start
@@ -2707,22 +2787,24 @@ label monika_holdrequest:
             m 2dkc "Oh...{w=1} Okay."
             m 3eka "If you have time later, you know where to find me."
 
+    $ mas_flagEVL("monika_holdrequest", "EVE", EV_FLAG_HFRS)
+
     return "no_unlock"
 
 # label to set the last time held and reset the _holdrequest params
 label monika_holdme_end:
     # set the last time held at the end of the hold to prevent a possible
     # hold request right after a hold that ends after midnight
-    $ persistent._mas_last_hold = datetime.date.today()
-    $ holdme_ev = mas_getEV('monika_holdrequest')
-    if holdme_ev is not None:
-        $ holdme_ev.random = False
-        $ holdme_ev.conditional = (
-            "renpy.seen_label('monika_holdme_prep') "
-            "and persistent._mas_last_hold != datetime.date.today()"
-        )
-        $ holdme_ev.action = EV_ACT_RANDOM
-        $ mas_rebuildEventLists()
+    python:
+        persistent._mas_last_hold_dt = datetime.datetime.now()
+        with MAS_EVL("monika_holdrequest") as holdme_ev:
+            holdme_ev.random = False
+            holdme_ev.conditional = (
+                "renpy.seen_label('monika_holdme_prep') "
+                "and mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12))"
+            )
+            holdme_ev.action = EV_ACT_RANDOM
+        mas_rebuildEventLists()
     return
 
 init 5 python:
@@ -5032,7 +5114,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep(False,True)
+                call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
                 call monika_holdme_start
                 call monika_holdme_end
 
