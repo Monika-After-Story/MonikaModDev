@@ -95,7 +95,7 @@ init python in mas_windowutils:
                 __display = Display()
                 __root = __display.screen().root
 
-            except ImportError:
+            except:
                 store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
 
@@ -110,6 +110,18 @@ init python in mas_windowutils:
     else:
         store.mas_windowreacts.can_do_windowreacts = False
 
+
+    class MASWindowFoundException(Exception):
+        """
+        Custom exception class to flag a window found during a window enum
+
+        Has the hwnd as a property
+        """
+        def __init__(self, hwnd):
+            self.hwnd = hwnd
+
+        def __str__(self):
+            return self.hwnd
 
     ##Now, we start defining OS specific functions which we can set to a var for proper cross platform on a single func
     #Firstly, the internal helper functions
@@ -148,13 +160,14 @@ init python in mas_windowutils:
             """
             Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
             """
-            if renpy.config.window_title in store.win32gui.GetWindowText(hwnd):
-                raise Exception(hwnd)
+            if renpy.config.window_title in win32gui.GetWindowText(hwnd):
+                raise MASWindowFoundException(hwnd)
 
         try:
-            store.win32gui.EnumWindows(checkMASWindow, None)
-        except Exception as e:
-            return e.message
+            win32gui.EnumWindows(checkMASWindow, None)
+
+        except MASWindowFoundException as e:
+            return e.hwnd
 
     def __getAbsoluteGeometry(win):
         """
@@ -312,7 +325,7 @@ init python in mas_windowutils:
         if store.mas_windowreacts.can_do_windowreacts:
             #Try except here because we may not have permissions to do so
             try:
-                cur_pos = store.win32gui.GetCursorPos()
+                cur_pos = win32gui.GetCursorPos()
             except:
                 cur_pos = DEF_MOUSE_POS_RETURN
 
@@ -341,7 +354,7 @@ init python in mas_windowutils:
         if hwnd is None:
             return None
 
-        return store.win32gui.GetWindowRect(hwnd)
+        return win32gui.GetWindowRect(hwnd)
 
     def _getMASWindowPos_Linux():
         """
@@ -646,7 +659,7 @@ init python:
         """
         if renpy.windows and store.mas_windowreacts.can_show_notifs:
             for index in range(len(destroy_list)-1,-1,-1):
-                win32gui.DestroyWindow(destroy_list[index])
+                store.mas_windowutils.win32gui.DestroyWindow(destroy_list[index])
                 destroy_list.pop(index)
 
     def mas_checkForWindowReacts():
@@ -743,4 +756,4 @@ init python:
         ASSUMES: renpy.windows
         """
         store.mas_clearNotifs()
-        win32gui.UnregisterClass(__tip.classAtom, __tip.hinst)
+        store.mas_windowutils.win32gui.UnregisterClass(__tip.classAtom, __tip.hinst)
