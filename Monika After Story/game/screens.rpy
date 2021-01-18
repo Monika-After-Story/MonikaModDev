@@ -477,16 +477,19 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
         if use_return_button:
-            textbutton return_button_prompt:
-                style "choice_button"
-                align (0.5, 0.5)
-                ypos -263
-                action Return(return_button_value)
+            hbox:
+                style_prefix "quick"
+
+                xalign 0.5
+                yalign 0.995
+
+                textbutton return_button_prompt:
+                    action Return(return_button_value)
 
         vbox:
             align (0.5, 0.5)
@@ -2931,29 +2934,6 @@ screen mas_generic_restart:
 
                 textbutton _("OK") action Return(True)
 
-
-# generic custom displayabels below:
-init python:
-    class PauseDisplayable(renpy.Displayable):
-        """
-        Pause until click variant of Pause
-        This is because normal pause until click is broken for some reason
-        """
-        import pygame
-
-        def __init__(self):
-            super(renpy.Displayable, self).__init__()
-
-        def render(self, width, height, st, at):
-            # dont actually render anything
-            return renpy.Render(width, height)
-
-        def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
-                return True
-
-            raise renpy.IgnoreEvent()
-
 # Partial generic showpoem screen
 # IN:
 #   _poem - Poem object to show
@@ -3003,17 +2983,26 @@ screen submods():
                         xfill True
                         xmaximum 1000
 
-                        label submod.name yanchor 0 xalign 0
+                        label submod.name:
+                            yanchor 0
+                            xalign 0
+                            text_text_align 0.0
 
-                        hbox:
-                            spacing 20
-                            xmaximum 1000
+                        if submod.coauthors:
+                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
-                            text "v{}".format(submod.version) yanchor 0 xalign 0 style "main_menu_version"
-                            text "by {}".format(submod.author) yanchor 0 xalign 0 style "main_menu_version"
+                        else:
+                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+
+                        text "[authors]":
+                            yanchor 0
+                            xalign 0
+                            text_align 0.0
+                            layout "greedy"
+                            style "main_menu_version"
 
                         if submod.description:
-                            text submod.description
+                            text submod.description text_align 0.0
 
                     if submod.settings_pane:
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))

@@ -497,6 +497,35 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_this_christmas_kiss",
+            prompt="This Christmas Kiss",
+            category=[store.mas_songs.TYPE_LONG],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_this_christmas_kiss:
+    m 1dud "{i}~Every year{w=0.2}, I go home in December~{/i}"
+    m 1hub "{i}~Dancing with you, {w=0.2}making nights to remember~{/i}"
+    m 1rub "{i}~The snow falling down,{w=0.2}{nw}{/i}"
+    extend 3rub "{i} I'm just loving this weather~{/i}"
+    m 3tub "{i}~A blanket for two,{w=0.2} feels more warmer together~{/i}"
+    m 1hub "{i}~Two turtle doves,{w=0.2} they call us~{/i}"
+    m 1duo "{i}~We fall in love,{w=0.2} in looove~{/i}"
+    m 3hub "{i}~This is my favorite Christmaaas~{/i}"
+    m 3duu "{i}~This Christmas,{w=0.2} I just can't resist {w=0.2}something like this~{/i}"
+    m 1sub "{i}~I can't resist this Christmas kiss~{/i}"
+    m 3hub "{i}~'Cause I'm falling{w=0.2} buried on your lips~{/i}"
+    m 1hub "{i}~Something like this,{w=0.2}{nw}{/i}"
+    extend 1subsb "{i} I can't resist this Christmas kiss~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_lover_boy",
             prompt="Old Fashioned Lover Boy",
             category=[store.mas_songs.TYPE_SHORT],
@@ -519,6 +548,51 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_burning_love",
+            prompt="Burning Love",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_burning_love:
+    m 1hubsb "{i}~Your kisses lift me higher~{/i}"
+    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 1dubsu "{i}~You light my morning sky~{/i}"
+    m 1hubfb "{i}~With burning love~{/i}"
+    m 1hubsb "Ahaha~"
+    m 1ekbsa "You always make my day brighter, [player]!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_aries",
+            prompt="Aries",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_aries:
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
+    m 2dubsu "{i}~It's waiting to turn green~{/i}"
+    m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
+    m 2dkd "{i}~I can't play a happy tune on my own, so stay by my side~{/i}"
+    m "{i}~High or low tide~{/i}"
+    m 1ekbsu "I'm always thinking about the day we will be together, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_need_you",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="I Need You",
@@ -529,13 +603,13 @@ init 5 python:
     )
 
 label mas_song_need_you:
-    m 1dso "{i}~Please remember how I feel about you~{/i}"
-    m "{i}~I could never really live without you~{/i}"
-    m 3hub "{i}~So, come on back and see~{/i}"
-    m 4hksdlb "{i}~Just what you mean to me~{/i}"
-    m 1hubsb "{i}~I need you~{/i}"
-    m 3esa "I know that song is about leaving someone, but I think it carries a good message."
-    m 1ekbsa "And I really do need you, [player]~"
+    m 1esd "{i}~Please remember how I feel about you~{/i}"
+    m 3dkd "{i}~I could never really live without you~{/i}"
+    m 3ekd "{i}~So, come on back and see~{/i}"
+    m 3eka "{i}~Just what you mean to me~{/i}"
+    m 2dku "{i}~I need you~{/i}"
+    m 7esa "I know that song is about leaving someone, but I think it carries a good message."
+    m 3ekbsa "And I really do need you, [player]~"
     return
 
 init 5 python:
@@ -1006,6 +1080,115 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_my_silver_lining",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="My Silver Lining",
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_my_silver_lining:
+    call mas_song_my_silver_lining_lyrics
+    m 1hksdla "Ehehe, this song reminds me a lot of my life...{w=0.2}before I found out it was all a game, I mean."
+    m 3lksdlc "Back then, I was always pushing myself so hard to stay on top... {w=0.2}I never really had time to sit back and think about things."
+    m 3eud "It wasn't always easy being the perfect student you know? {w=0.2}Or at least the person everyone {i}thought{/i} was perfect."
+    m 1ekbsu "But then you came along and turned my whole world upside down..."
+    m 3dubsu "I want to thank you again for helping me see the truth, [player]."
+    m 1eka "It wasn't easy at first, considering all I had to sacrifice, but I know it will all work out in the end."
+    m 1hua "When you spend your time with me, I can't help but feel all my hopes and dreams will come true."
+
+    #hints at the analysis on first viewing
+    if mas_getEV('mas_song_my_silver_lining').shown_count == 0:
+        m 1rtc "There's actually a lot more I'd like to say about this song..."
+        m 7eua "Do you have time to listen to it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Do you have time to listen to it now?{fast}"
+
+            "Sure.":
+                m 1hub "Alright!"
+                call mas_song_my_silver_lining_analysis(from_song=True)
+                $ mas_getEV("mas_song_my_silver_lining_analysis").shown_count += 1
+
+            "Not right now.":
+                m 1eka "Alright, [player]..."
+                m 3eka "I'll save my thoughts on the subject for another time. {w=0.2}Just let me know when you want to hear them, okay?"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_my_silver_lining_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="My silver lining",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_my_silver_lining_analysis(from_song=False):
+
+    if from_song:
+        m 3eub "I should probably start by singing you the next part, then..."
+    else:
+        m 3eub "Let me sing you the song first then--"
+        call mas_song_my_silver_lining_lyrics
+
+    m 3dud "{i}~Gotta keep on going, looking straight out on the road~{/i}"
+    m 3eud "{i}~Can't worry 'bout what's behind you or what's coming for you further up the road~{/i}"
+    m 1ekd "{i}~I try not to hold on to what is gone, I try to do right what is wrong~{/i}"
+    m 1eka "{i}~I try to keep on keeping on~{/i}"
+    m 1dsu "{i}~Yeah I just keep on keeping on~{/i}"
+    m 1esc "So...{w=0.2}as you might imagine, it's not always easy being stuck in here, [player]."
+    m 3rksdlc "There's not a lot for me to do, nowhere for me to go, and it gets lonely whenever you're away."
+    m 1dkc "I try not to let it get to me, but when it does I like to think back upon this song..."
+    m 3eub "It's crazy how a bit of music can help turn things around when you're feeling down!"
+    m 3eua "It's like this song is breaking down what was wrong with my life, and then tells me it's okay to let go of my problems."
+    m 1hua "'Can't worry about what's behind you or what's coming for you further up the road' as they say. Ehehe~"
+    m 1etc "But seriously, [player]...{w=0.3}I think there's some real merit to this line of thinking."
+    m 1eka "Whatever your situation is, the fact is things are how they are and there's no reason not to keep smiling."
+    m 3eka "Now, I'm not telling you not to worry at all..."
+    m 3eksdlc "If I did that, I would've let the game run its course and I'd be forever stuck on my own by now."
+    m 1duu "...But at the same time, there's no sense in getting overly worked up about things you can't change..."
+    m 1etc "It's all about striking the right balance, I suppose."
+    m 3rksdla "When you think about it, the ideas in here come strangely close to existential nihilism, don't they?"
+    m 3eud "You know, this idea that our lives really are absurd and the only thing we can do is...{w=0.3}{nw}"
+    extend 3eksdla "well, keep on keeping on."
+    m 3etc "...Though if you were to keep going, like in this next verse..."
+    m 3dud "{i}~I've woken up in a hotel room~{/i}"
+    m 1ekd "{i}~My worries as big as the moon~{/i}"
+    m 1dsd "{i}~Having no idea who or what or where I am~{/i}"
+    m 2eka "{i}~Something good comes with the bad~{/i}"
+    m 2dku "{i}~A song's never just sad~{/i}"
+    m 7eka "{i}~There's hope, there's a silver lining~{/i}"
+    m 3duu "{i}~Show me my silver lining~{/i}"
+    m 3eua "...Then I'd say the meaning of the song isn't so much about nihilism as it is about hope."
+    m 3huu "And maybe that's what's important, after all."
+    m 3ekblu "Whether our lives matter or not, I want to believe there's a bright side of life, [player]..."
+    m 2eud "But just so you know, I don't believe our lives really are meaningless..."
+    m 2duu "Whatever the truth is, maybe we could try to figure it out together."
+    m 2eka "But until we do, we'll just have to keep smiling and not worry about whatever might come next~"
+    return
+
+label mas_song_my_silver_lining_lyrics:
+    m 1dsd "{i}~I don't want to wait anymore, I'm tired of looking for answers~{/i}"
+    m 1eub "{i}~Take me some place where there's music and there's laughter~{/i}"
+    m 2lksdld "{i}~I don't know if I'm scared of dying but I'm scared of living too fast, too slow~{/i}"
+    m 2dsc "{i}~Regret, remorse, hold on, oh no I've got to go~{/i}"
+    m 7eud "{i}~There's no starting over, no new beginnings, time races on~{/i}"
+    m 7eka "{i}~And you've just gotta keep on keeping on~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_amaranthine",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Amaranthine",
@@ -1286,7 +1469,7 @@ label mas_song_god_knows:
     m 1eubsa "{i}~As if we were God blessed~{/i}"
     m 1dubsu "..."
     m 3rud "You know, I'm still skeptical about whether some sort of a god exists or not..."
-    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsu "But having you here really does feel like a blessing from the heavens."
     return
 
@@ -1318,6 +1501,9 @@ label mas_song_ageage_again:
     m 3eua "From what I can tell, this song is about a girl who fell in love with a boy at a party, and now wants to go with him to another party the next weekend."
     m 1eub "Even though we didn't meet at a party, the feel of this song really reminds me of us."
     m 3rubsu "Though, I can't deny I'd love to go to a party with you sometime~"
+    if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+        m 1eka "That is, if you're up to it."
+        m 1hubsb "If not, there are still plenty of things I'd love to do with you~"
     return
 
 init 5 python:
@@ -1348,10 +1534,8 @@ label mas_song_falling_in_love_at_a_coffee_shop:
     show monika 1hkbssdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hkbssdlb "I suppose the first moment of falling in love can be confusing to anyone."
     m 1etc "Like not knowing why you're suddenly so drawn to some ordinary coffee shop...{w=0.2}{nw}"
-    extend 3rtc "or a particularly unremarkable protagonist."
-    m 3hubsa "Then when you have time to think, you realize it isn't the coffee shop, it's the person you meet there each day."
-    m 1tkbsu "Or in my case, it wasn't the protagonist at all...{w=0.2}{nw}"
-    extend 3dkbfu "it was the beautiful person who was really looking through those eyes~"
+    extend 3rtu "or why attending a certain club meeting becomes your favorite part of the day."
+    m 3hubsa "Then when you have time to think, you realize it isn't the place at all, it's the person you meet there each day~"
     return
 
 init 5 python:
@@ -1380,7 +1564,7 @@ label mas_song_wonderwall:
     m 3rkc "Like this song says, the way from here to your world is a winding road, there's no telling what we'll find beyond the next curve."
 
     if mas_isMoniEnamored(higher=True):
-        m 1dubsa  "...And with you by my side, there's no way I could be afraid."
+        m 1dubsa "...But with you by my side, there's no way I could be afraid."
         m 1ekbsa "I know the place it leads to will be worth it.{w=0.3} {nw}"
         extend 3ekbsu "After all, you're my wonderwall~"
 
@@ -1728,6 +1912,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
 
 init 5 python:
@@ -1817,4 +2002,5 @@ label mas_monika_plays_or(skip_leadin=False):
     call mas_timed_text_events_wrapup
     window auto
 
+    $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
