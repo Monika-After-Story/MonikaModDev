@@ -559,7 +559,7 @@ init 5 python:
 
 label mas_song_burning_love:
     m 1hubsb "{i}~Your kisses lift me higher~{/i}"
-    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 3rubsb "{i}~Like the sweet song of a choir~{/i}"
     m 1dubsu "{i}~You light my morning sky~{/i}"
     m 1hubfb "{i}~With burning love~{/i}"
     m 1hubsb "Ahaha~"
@@ -580,7 +580,7 @@ init 5 python:
     )
 
 label mas_song_aries:
-    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
     m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
     m 2dubsu "{i}~It's waiting to turn green~{/i}"
     m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
