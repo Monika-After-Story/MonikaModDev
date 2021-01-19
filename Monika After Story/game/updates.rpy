@@ -397,7 +397,7 @@ label v0_11_10(version="v0_11_10"):
                 )
 
         if seen_event("monika_asimov_three_laws"):
-            mas_showEVL("monika_foundation", "EVE", _random=True)
+            mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
 
     return
 
