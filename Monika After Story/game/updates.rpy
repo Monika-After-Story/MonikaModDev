@@ -395,6 +395,10 @@ label v0_11_10(version="v0_11_10"):
                 persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
                     story_last_seen, datetime.time()
                 )
+
+        if seen_event("monika_asimov_three_laws"):
+            mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
+
     return
 
 # 0.11.9
