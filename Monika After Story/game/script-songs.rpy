@@ -1792,7 +1792,7 @@ label mas_song_when_you_say_nothing_at_all_long:
 
     m 3dud "{i}{cps=18}~All day long I can hear people talking out loud~{/cps}{/i}"
     m 3dubsd "{i}{cps=18}~But when you hold me near{w=0.2} you can drown out the crowd~{/cps}{/i}"
-    m 1dud "{i}{cps=18}~Old Mister Webste could never define~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~Old Mister Webster could never define~{/cps}{/i}"
     m 1dubso "{i}{cps=18}~What's being said between your heart and mine~{/cps}{/i}"
 
     call mas_song_when_you_say_nothing_at_all(from_long=True)
