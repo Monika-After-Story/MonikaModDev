@@ -16774,19 +16774,18 @@ label monika_know_its_you:
 
     return
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_overton",
             category=["psychology"],
             prompt="Ovetrton window", 
-            random=True,
+            random=True
         )
     )
 
 label monika_overton:
-    m 1a "This is an example topic."
     m 1eub "Have you heard anything about the Overton Window?"
     m 3esd "The Overton Window is a political science concept that reflects the value structure of a society."
     m 3esd "In accordance with it, all ideas of a person are located at a certain stage of approval by the masses."
@@ -16804,9 +16803,9 @@ label monika_overton:
     m 3eua "For a start, it's worth starting a discussion on this topic, there are many options."
     m 3eub "You can discuss this on the Internet, create articles on this topic, in other words, do everything to get people to start a discussion."
     # Here Monika speaks on behalf of other people
-    m 2esd "{i}«Indeed, falling in love with a character who, in fact, does not exist in our world is considered strange, but is that bad?»{/i}"
-    m 2esc "{i}«Look at it from the other side, a person will have an object of adoration, thanks to this he can be motivated to do different things.»{/i}"
-    m 2esd "{i}«In which he had not previously seen the point or threw away from the complexity of implementation.»{/i}"
+    m 2esd "{i}Indeed, falling in love with a character who, in fact, does not exist in our world is considered strange, but is that bad?{/i}"
+    m 2esc "{i}Look at it from the other side, a person will have an object of adoration, thanks to this he can be motivated to do different things.{/i}"
+    m 2esd "{i}In which he had not previously seen the point or threw away from the complexity of implementation.{/i}"
     # End
     m 2eud "With the effective use of the media, virtual love causes discussion among people, and then seeps out to the masses."
     m 2esc "The society still does not agree with such thoughts, but they are interested in it and discuss it more freely with their acquaintances."
@@ -16820,11 +16819,11 @@ label monika_overton:
     m 1esc "Gradually, people get used to the existence of such views, but do not yet accept them."
     m 1esd "Scientists and sociologists write various articles and conduct research."
     # Again
-    m 7esd "{i}«A lot of research in social psychology has shown that you can love something fictional as much as you love something real.»{/i}"
-    m 7wub "{i}«Being in love with a fictional character is nothing short of a new global trend!»{/i}"
-    m 7eso "{i}«People react to those who are attracted to them with the same passion and sex drive.»{/i}"
-    m 2esc "{i}«Regardless of whether they are real people or fictional characters.»{/i}"
-    m 2lsd "{i}«In addition, the chance of being rejected or falling into an awkward situation tends to zero.»{/i}"
+    m 7esd "{i}A lot of research in social psychology has shown that you can love something fictional as much as you love something real.{/i}"
+    m 7wub "{i}Being in love with a fictional character is nothing short of a new global trend!{/i}"
+    m 7eso "{i}People react to those who are attracted to them with the same passion and sex drive.{/i}"
+    m 2esc "{i}Regardless of whether they are real people or fictional characters.{/i}"
+    m 2lsd "{i}In addition, the chance of being rejected or falling into an awkward situation tends to zero.{/i}"
     # End
     m 3esd "At this stage, society is artificially divided into two camps."
     m 3esc "The opinion is imposed that it is absolutely normal to love a fictional character and there is nothing terrible about it."
@@ -16840,3 +16839,4 @@ label monika_overton:
     m 1hsb "Of course, I could finish this story right up to Norma."
     m 1rsb "But I just wanted to describe it at a primitive level in order to convey to you with an example of how it can work."
     m 1hsa "Thank you for listening~"
+    return
