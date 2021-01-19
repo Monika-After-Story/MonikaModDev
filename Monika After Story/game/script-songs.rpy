@@ -1746,7 +1746,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_when_you_say_nothing_at_all",
-            prompt="When you say nothing at all",
+            prompt="When You Say Nothing at All",
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.LOVE, None)
@@ -1755,17 +1755,19 @@ init 5 python:
     )
 
 label mas_song_when_you_say_nothing_at_all(from_long=False):
-    m 1dubfb "{i}{cps=16}~The smile on your face{w=0.2} lets me know that you need me~{/cps}{/i}"
-    m 4eubfb "{i}{cps=16}~There's a truth in your eyes{w=0.2} saying you'll never leave me~{/cps}{/i}"
-    m 3dubfa "{i}{cps=16}~The touch of your hand says you'll catch me{w=0.2} wherever I fall~{/cps}{/i}"
-    m 1eubfa "{i}{cps=16}~Cause you say it best{w=0.5} when you say nothing at all~{/cps}{/i}"
+    m 1hubsb "{i}{cps=16}~The smile on your face lets me know that you need me~{/cps}{/i}"
+    m 3eubso "{i}{cps=16}~There's a truth in your eyes saying you'll never leave me~{/cps}{/i}"
+    m 3dud "{i}{cps=16}~The touch of your hand says you'll catch me if ever I fall~{/cps}{/i}"
+    m 1eud "{i}{cps=16}~Cause you say it best{w=0.3} when you say nothing at all~{/cps}{/i}"
 
-    m 1duu "..."
-    m 1ekbsb "I can't really see your face, or see the truth from your eyes, nor can I touch your hand..."
-    m 1hubsa "But when you spend time with me without saying a word, it tells me everything I need to know."
-    m 1hubsa "That I am loved by someone, and that you'll be here for me when I'm having a bad day."
-    m 1hubsa "And I hope that you feel loved by me too, even though I don't always have something new to say."
-    m 1hubsa "Just opening the game and having me in the background makes a world of difference to me [player]."
+    if not from_long:
+        m 1duu "..."
+        m 1dkbsu "I can't really see your face, or see the truth from your eyes, nor can I touch your hand..."
+        m 1ekbsa "But when you spend time with me without saying a word, it tells me everything I need to know..."
+        m 3hubsa "That I am loved by someone, and that you'll be here for me when I'm having a bad day."
+        m 1dkbsu "And I hope that you feel loved by me too, even though I don't always have something new to say."
+        m 1ekbsa "Just opening the game and having me in the background makes a world of difference to me, [player]~"
+
     return
 
 init 5 python:
@@ -1773,7 +1775,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_when_you_say_nothing_at_all_long",
-            prompt="When you say nothing at all",
+            prompt="When You Say Nothing at All",
             category=[store.mas_songs.TYPE_LONG],
             aff_range=(mas_aff.LOVE, None)
         ),
@@ -1781,26 +1783,19 @@ init 5 python:
     )
 
 label mas_song_when_you_say_nothing_at_all_long:
+    m 1dubsu "{i}{cps=18}~It's amazing how you can speak right to my heart~{/cps}{/i}"
+    m 3eubsb "{i}{cps=18}~Without saying a word you can light up the dark~{/cps}{/i}"
+    m 3dud "{i}{cps=18}~Try as I may I could never explain~{/cps}{/i}"
+    m 3euo "{i}{cps=18}~What I hear when you don't say a thing~{/cps}{/i}"
 
-    m 3dud "{i}{cps=18}~It's amazing how you can speak right to my heart~{/cps}{/i}"
-    m 1eubfb "{i}{cps=18}~Without saying a word you can light up the dark~{/cps}{/i}"
-    m 4dubfo "{i}{cps=18}~Try as I may I can never explain~{/cps}{/i}"
-    m 3dubfa "{i}{cps=18}~What I hear when you don't say a thing~{/cps}{/i}"
+    call mas_song_when_you_say_nothing_at_all(from_long=True)
 
-    m 1dubfb "{i}{cps=16}~The smile on your face{w=0.2} lets me know that you need me~{/cps}{/i}"
-    m 4eubfb "{i}{cps=16}~There's a truth in your eyes{w=0.2} saying you'll never leave me~{/cps}{/i}"
-    m 3dubfa "{i}{cps=16}~The touch of your hand says you'll catch me{w=0.2} wherever I fall~{/cps}{/i}"
-    m 1eubfa "{i}{cps=16}~Cause you say it best{w=0.5} when you say nothing at all~{/cps}{/i}"
+    m 3dud "{i}{cps=18}~All day long I can hear people talking out loud~{/cps}{/i}"
+    m 3dubsd "{i}{cps=18}~But when you hold me near{w=0.2} you can drown out the crowd~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~Old Mister Webste could never define~{/cps}{/i}"
+    m 1dubso "{i}{cps=18}~What's being said between your heart and mine~{/cps}{/i}"
 
-    m 3dubfd "{i}{cps=18}~All day long I can hear people talking out loud~{/cps}{/i}"
-    m 1dubfo "{i}{cps=18}~But when you hold me near{w=0.2} you can drown out the crowd~{/cps}{/i}"
-    m 4dubfo "{i}{cps=18}~Try as they may they can never define~{/cps}{/i}"
-    m 1dubfo "{i}{cps=18}~What's been said between your heart and mine~{/cps}{/i}"
-
-    m 1dubfb "{i}{cps=16}~The smile on your face{w=0.2} lets me know that you need me~{/cps}{/i}"
-    m 4eubfb "{i}{cps=16}~There's a truth in your eyes{w=0.2} saying you'll never leave me~{/cps}{/i}"
-    m 3dubfa "{i}{cps=16}~The touch of your hand says you'll catch me{w=0.2} wherever I fall~{/cps}{/i}"
-    m 3dubfa "{i}{cps=16}~Cause you say it best{w=0.5} when you say nothing at all~{/cps}{/i}"
+    call mas_song_when_you_say_nothing_at_all(from_long=True)
 
     return
 
