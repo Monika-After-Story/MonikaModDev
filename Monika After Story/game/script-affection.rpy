@@ -971,7 +971,7 @@ init 15 python in mas_affection:
             _("What now?"),
             _("What is it?"),
             _("Go on then."),
-            _("Let's hear it.")
+            _("Let's hear it."),
             _("Is this really what you want?"),
             _("Don't make fun of me."),
             _("This better be important."),
@@ -1037,8 +1037,8 @@ init 15 python in mas_affection:
             _("Ask away, [mas_get_player_nickname()]~"),
             _("I'm all ears, [mas_get_player_nickname()]~"),
             _("We can talk about whatever you'd like, [mas_get_player_nickname()]."),
-            _("Take all the time you need, [mas_get_player_nickname()].")
-            _("I'm all yours, [mas_get_player_nickname()]~.")
+            _("Take all the time you need, [mas_get_player_nickname()]."),
+            _("I'm all yours, [mas_get_player_nickname()]~."),
         ]
         save_quips(LOVE, quips)
 
@@ -1079,7 +1079,7 @@ init 15 python in mas_affection:
             _("...Really?"),
             _("...Fine."),
             _("Whatever."),
-            _("This isn't the time to be having fun...")
+            _("This isn't the time to be having fun..."),
         ]
         save_quips(UPSET, quips)
 
