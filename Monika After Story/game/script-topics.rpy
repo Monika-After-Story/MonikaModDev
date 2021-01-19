@@ -16976,5 +16976,5 @@ label monika_foundation:
     m 2rksdlc "Not that it'd automatically be a good thing, however.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
     m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
     m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"
-    extend 3eub "What do you think [player]?"
+    extend 3eub "What do you think, [player]?"
     return
