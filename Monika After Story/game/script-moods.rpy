@@ -783,7 +783,7 @@ label mas_mood_upset:
     extend 3ekd "but if you make the right choice, you could elimate a lot of stress from your life."
     m 3eua "And you know what, [player]?"
     m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(exclude_names=['my love'])]."
-    m 1hub "Knowing that you'll support me and always love me puts me at ease almost instantly!"
+    m 1hub "Knowing that you'll always support and love me puts me at ease almost instantly!"
     m 3euu "I can only help I provide the same comfort for you, [player]~"
     m 1eubsa "I love you and I hope everything clears up for you~"
     return "love"
