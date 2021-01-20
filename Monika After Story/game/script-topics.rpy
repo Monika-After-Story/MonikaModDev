@@ -16300,3 +16300,30 @@ label monika_gmos:
     m 3esd "Like I said before, GMOs are a complex topic. {w=0.2}If you want to learn more, make sure that your sources are reliable and that you're able to see the discussion from both sides."
     m 1eua "I think that's enough for now, thanks for listening~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_favchocolate",
+            category=['misc'],
+            prompt="What's your favorite kind of chocolate?",
+            pool=True,
+        )
+    )
+
+label monika_favchocolate:
+    m 2hkb "Ooh, that's a tough question!"
+    m 2euu "I think if I had to pick, it would be dark chocolate."
+    m 3eub "It contains very little or no milk, so it has a less creamy texture, but a nice bittersweet taste."
+    m 3hub "Not to mention, it's rich in antioxidants and can even give some cardiovascular benefits! {w=0.3}{nw}"
+    extend 3hksdlb "...In moderation, of course."
+    m 1hubla "The taste kind of reminds me of a mocha coffee. Maybe the similarity in flavors is why I like it most."
+    m 1eud "Speaking of coffee, though...if I were drinking some, I think I might prefer milk or white chocolate for balance."
+    m 3eub "White chocolate is especially sweet and soft, containing no cocoa solids at all; just the cocoa butter, milk, and sugar."
+    m 3hub "I think it would make a nice contrast to an especially bitter drink, like espresso."
+    m 1etc "Hmm... {w=0.3}{nw}"
+    extend 1wud "but I haven't even thought about chocolate with fillings, like caramel or fruit!"
+    m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
+    m 2hublb "Maybe we could share a big variety box someday. I think it would be fun to compare our top picks, ahaha!"
+    return
