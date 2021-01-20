@@ -947,16 +947,15 @@ init 15 python in mas_affection:
         ## DISTRESSED quips
         quips = [
             _("..."),
-            _("...Yes?"),
-            _("...Hm?"),
+            _("Yes?"),
             _("Oh..."),
             _("Huh..."),
-            _("...We can talk."),
+            _("I guess we can talk."),
             _("...Go ahead."),
-            _("...Okay."),
             _("Are you sure you want to talk to me?"),
             _("You actually want to talk to me?"),
             _("Alright...if that's what you want."),
+            _("Is this really what you want?"),
         ]
         save_quips(DISTRESSED, quips)
 
@@ -970,8 +969,6 @@ init 15 python in mas_affection:
             _("What now?"),
             _("What is it?"),
             _("Go on then."),
-            _("Let's hear it."),
-            _("Is this really what you want?"),
             _("I hope this is important."),
         ]
         save_quips(UPSET, quips)
@@ -979,6 +976,7 @@ init 15 python in mas_affection:
         ## NORMAL quips
         quips = [
             _("What would you like to talk about?"),
+            _("What are you thinking of?"),
             _("Is there something you'd like to talk about?"),
             _("Something on your mind?"),
             _("Yes, [player]?"),
@@ -988,6 +986,7 @@ init 15 python in mas_affection:
         ## HAPPY quips
         quips = [
             _("What would you like to talk about?"),
+            _("What are you thinking of?"),
             _("Is there something you'd like to talk about?"),
             _("Something on your mind?"),
             _("Yes, [player]?"),
@@ -1000,6 +999,7 @@ init 15 python in mas_affection:
         quips = [
             _("What would you like to talk about?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("What are you thinking of?"),
             _("Is there something you'd like to talk about,[mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
@@ -1014,6 +1014,7 @@ init 15 python in mas_affection:
         quips = [
             _("What would you like to talk about?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("What are you thinking of?"),
             _("Is there something you'd like to talk about,[mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
@@ -1028,6 +1029,7 @@ init 15 python in mas_affection:
         quips = [
             _("What would you like to talk about?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("What are you thinking of?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Yes, [mas_get_player_nickname()]?"),
@@ -1062,19 +1064,18 @@ init 15 python in mas_affection:
         ## DISTRESSED quips
         quips = [
             _("..."),
-            _("...Alright."),
-            _("...Okay."),
-            _("I guess we can play."),
             _("If that's what you want..."),
             _("I suppose a game would be fine."),
-            _("...{w=0.5}alright, let's play."),
+            _("...{w=0.5}alright."),
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
             _("..."),
+            _("I guess we can play."),
             _("...Really?"),
+            _("Oh, okay..."),
             _("...Fine."),
             _("Whatever."),
         ]
@@ -1106,17 +1107,22 @@ init 15 python in mas_affection:
             _("Let's do this!"),
             _("Bring it on, [player]."),
             _("Ready to lose, [player]?"),
+            _("I'm ready when you are, [player]!"),
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             _("What would you like to play? <3"),
+            _("Pick a game, any game~"),
             _("Choose anything you like, [mas_get_player_nickname()]."),
             _("Pick anything you like, [mas_get_player_nickname()]."),
             _("I hope you're ready, [mas_get_player_nickname()]~"),
             _("Let's have some fun, [mas_get_player_nickname()]."),
             _("Don't expect me to go easy on you, [mas_get_player_nickname()]~"),
+            _("Bring it on, [player]."),
+            _("Ready to lose, [player]?"),
+            _("I'm ready when you are, [player]!"),
         ]
         save_quips(ENAMORED, quips)
 
@@ -1133,6 +1139,8 @@ init 15 python in mas_affection:
             _("Pick a game, any game~"),
             _("Throwing down the gauntlet, are we?"),
             _("Let's duel!"),
+            _("Challenge accepted! Haha~"),
+            _("I'm ready when you are, [mas_get_player_nickname()]!"),
             _("I'd love to play something with you!"),
             _("I'd love to play with you!"),
             _("I'll always be up to play with you, [mas_get_player_nickname()]~"),
