@@ -1078,7 +1078,6 @@ init 15 python in mas_affection:
             _("...Really?"),
             _("...Fine."),
             _("Whatever."),
-            _("This isn't the time to be having fun..."),
         ]
         save_quips(UPSET, quips)
 
