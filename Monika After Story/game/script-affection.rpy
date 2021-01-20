@@ -1063,7 +1063,7 @@ init 15 python in mas_affection:
         ## DISTRESSED quips
         quips = [
             _("..."),
-            _("...alright."),
+            _("...Alright."),
             _("...okay."),
             _("I guess we can play."),
             _("If that's what you want..."),
