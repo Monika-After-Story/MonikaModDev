@@ -185,6 +185,7 @@ init -1 python in mas_greetings:
                 and store.MASNumericalRepeatRule.evaluate_rule(
                     check_time, ev, defval=True)
                 and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+                and store.MASTimedeltaRepeatRule.evaluate_rule(ev)
             ):
             return False
 
@@ -1570,6 +1571,39 @@ label monikaroom_greeting_ear_renpy_docs:
     elif mas_isMoniDis():
         m "...I {i}have{/i} to figure this out."
         call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
+
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+
+label monikaroom_greeting_ear_recursionerror:
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
+
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
+
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    stop sound
+    hide noise
+
+    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
+    m "..."
+
+    if mas_isMoniUpset():
+        m "...Keep going, Monika, you'll figure this out."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
+        call monikaroom_greeting_ear_prog_dis
+    else:
+        m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
 
@@ -4202,34 +4236,107 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
-    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=20,
+            override_type=True
+        )
+    )
+    ev_rules.update(
+        MASTimedeltaRepeatRule.create_rule(
+            datetime.timedelta(days=3)
+        )
+    )
 
-label monikaroom_greeting_ear_recursionerror:
-    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
-    m "Wait, no. Gosh, how did I forget..."
-    m "This has to be called right here."
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_after_bath",
+            conditional=(
+                "mas_getAbsenceLength() >= datetime.timedelta(hours=6) "
+                "and not mas_isSpecialDay()"
+            ),
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
 
+    del ev_rules
+
+default persistent._mas_after_bath_cleanup_dt = None
+default persistent._mas_previous_clothes = mas_clothes_def
+
+label greeting_after_bath:
     python:
-        for loop_count in range(random.randint(2, 3)):
-            renpy.say(m, "Great! Alright, let's see...")
+        # Some preperations
+        mas_RaiseShield_core()
+        mas_startupWeather()
+        # Let Moni get a towel
+        persistent._mas_previous_clothes = monika_chr.clothes
+        # This will handle the acs and the hair too
+        monika_chr.change_clothes(
+            mas_clothes_bath_towel_white,
+            by_user=False,
+            outfit_mode=True
+        )
+        # Temporary hide these
+        mas_flagEVL("monika_clothes_select", "EVE", EV_FLAG_HFM)
+        mas_flagEVL("monika_event_clothes_select", "EVE", EV_FLAG_HFM)
+        mas_flagEVL("monika_hair_select", "EVE", EV_FLAG_HFM)
 
-    show noise
-    play sound "sfx/s_kill_glitch1.ogg"
-    pause 0.1
-    stop sound
-    hide noise
+    # Now show everything
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp="monika 1huu_static")
 
-    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
-    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
-    m "..."
+    m "I wish you could've joined me there~"
+    return
 
-    if mas_isMoniUpset():
-        m "...Keep going, Monika, you'll figure this out."
-        call monikaroom_greeting_ear_prog_upset
-    elif mas_isMoniDis():
-        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
-        call monikaroom_greeting_ear_prog_dis
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_after_bath_cleanup",
+            conditional=(
+                "persistent._mas_after_bath_cleanup_dt is not None "
+                "and persistent._mas_after_bath_cleanup_dt >= datetime.datetime.now()"
+            ),
+            action=EV_ACT_QUEUE,
+        )
+    )
+
+label mas_after_bath_cleanup:
+    python:
+        persistent._mas_after_bath_cleanup_dt = None
+        # Reset the conditional and action
+        mas_setEVLPropValues(
+            "mas_after_bath_cleanup",
+            conditional=(
+                "persistent._mas_after_bath_cleanup_dt is not None "
+                "and persistent._mas_after_bath_cleanup_dt >= datetime.datetime.now()"
+            ),
+            action=EV_ACT_QUEUE
+        )
+        # Unflag the selectors
+        mas_unflagEVL("monika_clothes_select", "EVE", EV_FLAG_HFM)
+        mas_unflagEVL("monika_event_clothes_select", "EVE", EV_FLAG_HFM)
+        mas_unflagEVL("monika_hair_select", "EVE", EV_FLAG_HFM)
+
+    # Sanity check
+    if not monika_chr.is_wearing_clothes_with_exprop(store.mas_sprites.EXP_C_BATH):
+        return
+
+    if mas_isMoniLove(higher=True):
+        m 3hub "Time to take my towel off!"
+
     else:
-        m "Phew, at least everything else is fine."
+        m 1eua "I'm going to wear something more appropriate."
 
-    jump monikaroom_greeting_choice
+    $ monika_chr.change_clothes(
+        persistent._mas_previous_clothes or mas_clothes_def,
+        by_user=False,
+        outfit_mode=True
+    )
+
+    return

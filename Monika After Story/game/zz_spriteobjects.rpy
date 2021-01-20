@@ -587,6 +587,10 @@ init -2 python in mas_sprites:
         """
         Entry prog point for bath towel
         """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_wet)
         # Always add water drops, otherwise why would you wear a towel
         _moni_chr.wear_acs(store.mas_acs_water_drops)
 
@@ -1271,7 +1275,8 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            store.mas_sprites.EXP_C_BRS: True
+            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_BATH: True
         },
         entry_pp=store.mas_sprites._clothes_bath_towel_white_entry,
         exit_pp=store.mas_sprites._clothes_bath_towel_white_exit,

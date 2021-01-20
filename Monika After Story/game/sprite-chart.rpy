@@ -329,6 +329,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a clothing item is lingerie
 
+    # Value: ignored
+    # Marks that a clothing item is appropriate for a bath/shower
+    EXP_C_BATH = "bath"
+
     # --- default exprops ---
 
     DEF_EXP_TT_EXCL = [EXP_H_TT]
@@ -2364,7 +2368,7 @@ init -3 python:
             if (
                     persistent._mas_last_ahoge_dt is not None
                     and not force_change
-                    and datetime.datetime.now().date() 
+                    and datetime.datetime.now().date()
                         == persistent._mas_last_ahoge_dt.date()
             ):
                     # we already set the ahoge today so dont set it again.
@@ -2378,7 +2382,7 @@ init -3 python:
 
         def _set_ahoge(self, ahoge_acs, force_wear=False):
             """
-            Sets the ahoge for Monika, also setting the appropriate last 
+            Sets the ahoge for Monika, also setting the appropriate last
             ahoge and everything.
 
             IN:
