@@ -4300,9 +4300,7 @@ init -995 python in mas_utils:
             UTC-based naive datetime (no tzinfo).
             This is safe for pickling/saving to persistent.
         """
-        local_tz = get_localzone()
-        local_dt = local_tz.localize(local_dt)
-        return local_dt.astimezone(pytz.utc).replace(tzinfo=None)
+        return get_localzone().localize(local_dt).astimezone(pytz.utc).replace(tzinfo=None)
 
 
     def utc_to_local(utc_dt):
@@ -4319,8 +4317,7 @@ init -995 python in mas_utils:
                 safely pickle, we do not want to force a dependency on the
                 persistent.
         """
-        utc_dt = pytz.utc.localize(utc_dt)
-        return utc_dt.astimezone(get_localzone())
+        return pytz.utc.localize(utc_dt).astimezone(get_localzone())
 
 
     def tryparseint(value, default=0):
