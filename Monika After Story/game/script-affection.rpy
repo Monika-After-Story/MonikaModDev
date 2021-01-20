@@ -1063,7 +1063,7 @@ init 15 python in mas_affection:
         quips = [
             _("..."),
             _("...Alright."),
-            _("...okay."),
+            _("...Okay."),
             _("I guess we can play."),
             _("If that's what you want..."),
             _("I suppose a game would be fine."),
