@@ -4299,9 +4299,6 @@ init -995 python in mas_utils:
         RETURNS: 
             UTC-based naive datetime (no tzinfo).
             This is safe for pickling/saving to persistent.
-            If a time issue occurs because user's system timezone is not
-            configured correctly, the given datetime is returend with no
-            tzinfo attached.
         """
         local_tz = get_localzone()
         local_dt = local_tz.localize(local_dt)
@@ -4321,8 +4318,6 @@ init -995 python in mas_utils:
             NOTE: DO NOT PICKLE THIS or SAVE TO PERSISTENT. While pytz can
                 safely pickle, we do not want to force a dependency on the
                 persistent.
-            NOTE: if a time issue occurs because user's system timezone is not
-                configured correctly, UTC is returned
         """
         utc_dt = pytz.utc.localize(utc_dt)
         return utc_dt.astimezone(get_localzone())
