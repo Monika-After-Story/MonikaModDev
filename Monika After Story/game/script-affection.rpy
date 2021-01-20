@@ -952,7 +952,7 @@ init 15 python in mas_affection:
             _("Oh..."),
             _("Huh..."),
             _("...We can talk."),
-            _("...go ahead."),
+            _("...Go ahead."),
             _("...okay."),
             _("Are you sure you want to talk to me?"),
             _("You actually want to talk to me?"),
