@@ -4272,12 +4272,15 @@ init -995 python in mas_utils:
         Wrapper around tzlocal.get_localzone() that won't raise exceptions
 
         RETURNS: pytz tzinfo object of the local time zone. 
-            if system timezone info is configured wrong, then UTC is returned
+            if system timezone info is configured wrong, then a special-MAS
+            version of a timezone is returned instead. This version works 
+            like a static, unchanging timezone, using the time.timezone/altzone
+            values.
         """
         try:
             return tzlocal.get_localzone()
         except:
-            return pytz.utc
+            return store.MASLocalTz.create()
 
 
     def local_to_utc(local_dt):
