@@ -1004,7 +1004,7 @@ init 15 python in mas_affection:
             _("What would you like to talk about?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
             _("What are you thinking of?"),
-            _("Is there something you'd like to talk about,[mas_get_player_nickname()]?"),
+            _("Is there something you'd like to talk about, [mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Up to chat, [player]?"),
@@ -1022,7 +1022,7 @@ init 15 python in mas_affection:
             _("What would you like to talk about?"),
             _("What would you like to talk about, [mas_get_player_nickname()]?"),
             _("What are you thinking of?"),
-            _("Is there something you'd like to talk about,[mas_get_player_nickname()]?"),
+            _("Is there something you'd like to talk about, [mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Up to chat, I see~."),
@@ -1053,8 +1053,8 @@ init 15 python in mas_affection:
             _("Of course we can talk, [mas_get_player_nickname()~."),
             _("Take all the time you need, [mas_get_player_nickname()]."),
             _("I'm all yours, [mas_get_player_nickname()]~."),
-            _("Oh? Something...{i}important{/i} on your mind, [mas_get_player_nickname()]~.")
-            _("You don't have to blush when talking to me, [mas_get_player_nickname()]. Unless...{w=1.0}just kidding! Haha~")
+            _("Oh? Something...{i}important{/i} on your mind, [mas_get_player_nickname()]~."),
+            _("You don't have to blush when talking to me, [mas_get_player_nickname()]. Unless...{w=1.0}just kidding! Haha~"),
         ]
         save_quips(LOVE, quips)
 
@@ -1122,7 +1122,7 @@ init 15 python in mas_affection:
 
         ## AFFECTIONATE quips
         quips = [
-            _("What would you like to play? <3"),
+            _("What would you like to play?"),
             _("Choose anything you like, [player]."),
             _("What should we play today, [player]?"),
             _("Sure, I'm up for a game!"),
