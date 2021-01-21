@@ -2857,6 +2857,7 @@ label mas_reaction_gift_clothes_velius94_dress_whitenavyblue:
     return
 
 init 5 python:
+    # TODO: Add a way to generalize this
     if not renpy.seen_label("mas_reaction_gift_carddeck"):
         addReaction("mas_reaction_gift_carddeck", "carddeck", is_good=True)
 
