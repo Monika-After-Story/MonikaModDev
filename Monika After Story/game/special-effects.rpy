@@ -161,10 +161,12 @@ transform mas_kissing(_zoom, _y,time=2.0):
 transform mas_back_from_kissing(time, y):
     linear time xcenter 640 yoffset (y) zoom 0.80
 
-
-default persistent._mas_first_kiss = None
 # contains datetime of users's first kiss with monika
 # NOTE: need to add this to calendar
+default persistent._mas_first_kiss = None
+
+# contains datetime of users's last kiss with monika
+default persistent._mas_last_kiss = None
 
 # mas_kissing_motion_base label
 # Used to do the kiss motion, it takes care of setting persistent._mas_first_kiss
@@ -195,6 +197,8 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
 
     if persistent._mas_first_kiss is None:
         $ persistent._mas_first_kiss = datetime.datetime.now()
+
+    $ persistent._mas_last_kiss = datetime.datetime.now()
 
     window hide
     if hide_ui:
@@ -228,10 +232,10 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
     $ renpy.show("monika {}".format(mid_exp),[mas_back_from_kissing(transition,_mas_kiss_y2)])
     pause transition
     $ renpy.show("monika {}".format(final_exp),[i11()])
-    show monika with dissolve
+    show monika with dissolve_monika
     if hide_ui:
         if store.mas_globals.dlg_workflow:
-            $ mas_MUMUDropShield()
+            $ mas_MUINDropShield()
             $ enable_esc()
         else:
             $ mas_DropShield_core()
@@ -429,3 +433,45 @@ init python:
 transform mas_smooth_transition:
     i11 # this one may not be needed but I keep it just in case
     function zoom_smoothly
+
+# labels to handle the prep and wrap up for timed text events
+label mas_timed_text_events_prep:
+    python:
+        renpy.pause(0.5)
+
+        # raise shield
+        mas_RaiseShield_timedtext()
+
+        # store/stop current music and background/sounds
+        curr_song = songs.current_track
+        play_song(None, 1.0)
+        amb_vol = songs.getVolume("backsound")
+        renpy.music.set_volume(0.0, 1.0, "background")
+        renpy.music.set_volume(0.0, 1.0, "backsound")
+
+        # store and disable auto-forward pref
+        afm_pref = renpy.game.preferences.afm_enable
+        renpy.game.preferences.afm_enable = False
+
+    return
+
+label mas_timed_text_events_wrapup:
+    python:
+        renpy.pause(0.5)
+
+        # drop shield
+        mas_DropShield_timedtext()
+
+        # restart song/sounds that were playing before event
+        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+            play_song(curr_song, 1.0)
+        else:
+            play_song(None, 1.0)
+
+        renpy.music.set_volume(amb_vol, 1.0, "background")
+        renpy.music.set_volume(amb_vol, 1.0, "backsound")
+
+        # restor auto-forward pref
+        renpy.game.preferences.afm_enable = afm_pref
+
+    return

@@ -1,0 +1,25 @@
+{
+    "__author": "Velius94",
+    "version": 3,
+    "type": 0,
+    "name": "velius94_bunnyscrunchie_blue",
+    "img_sit": "velius94_bunnyscrunchie_blue",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "bunny-scrunchie",
+    "stay_on_start": true,
+    "giftname": "bluebunnyscrunchie",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "dlg_desc": "blue bunny scrunchie",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Bunny Scrunchie (Blue)",
+        "thumb": "velius94_bunnyscrunchie_blue",
+        "group": "ribbon" 
+    }
+}

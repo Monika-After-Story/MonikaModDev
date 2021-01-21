@@ -1,0 +1,26 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 0,
+    "name": "orcaramelo_twinribbon_pink",
+    "img_sit": "orcaramelo_twinribbon_pink",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "twin-ribbons",
+    "stay_on_start": true,
+    "dlg_desc": "pink twin ribbons",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Twin Ribbon (Pink)",
+        "thumb": "orcaramelo_twinribbon_pink",
+        "group": "ribbon",
+        "select_dlg": [
+            "Pink looks pretty cute on me, right?",
+            "I love this color, [player]."
+        ]
+    },
+    "giftname": "pinktwinribbon"
+}

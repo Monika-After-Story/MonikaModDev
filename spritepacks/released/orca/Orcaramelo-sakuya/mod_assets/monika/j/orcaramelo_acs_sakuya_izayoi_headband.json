@@ -1,0 +1,17 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 0,
+    "name": "orcaramelo_sakuya_izayoi_headband",
+    "img_sit": "orcaramelo_sakuya_izayoi_headband",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "headband",
+    "ex_props": {
+        "required-hair-prop": "bunbraid"
+    },
+    "stay_on_start": true
+}

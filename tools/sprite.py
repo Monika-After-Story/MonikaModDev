@@ -1,12 +1,16 @@
 # definitions of sprite objects
 
+DRAW_MONIKA = "mas_drawmonika"
+DRAW_MONIKA_IM = "mas_drawmonika_rk"
+
+draw_function = DRAW_MONIKA_IM
 
 class StaticSprite(object):
     """
     A static sprite is a sprite that knows its sprite codes and more
-    
+
     PROPERTIES:
-        invalid - True if this sprite object should be treated as invalid, 
+        invalid - True if this sprite object should be treated as invalid,
             False otherwise
     """
     _sprite_map = {
@@ -164,7 +168,7 @@ class StaticSprite(object):
     _dbl_tab = " " * 8
     _tri_tab = " " * 12
     _for_tab = " " * 16
-    
+
     _img_monika = "image monika "
     _q_monika_static = '"monika {0}_static"'
     _q_monika = '"monika {0}"'
@@ -216,7 +220,7 @@ class StaticSprite(object):
             self.spcode,
             "_static = DynamicDisplayable(\n",
             self._tab,
-            "mas_drawmonika",
+            draw_function,
             cnl,
 
             self._tab,
@@ -244,7 +248,7 @@ class StaticSprite(object):
             '"',
         ]
 
-        # now for the position lines 
+        # now for the position lines
         if self.is_lean:
             # leaning uses both arms and lean, as well as single
             lean, arms = self.position
@@ -356,7 +360,7 @@ class StaticSprite(object):
 
     def alias_static(self):
         """
-        returns a string where this sprite's sprite code just aliases its 
+        returns a string where this sprite's sprite code just aliases its
         static version.
         """
         return 'image monika {0} = "{1}"'.format(self.spcode, self.scstr())
@@ -369,6 +373,9 @@ class StaticSprite(object):
         """
         if self.is_wink_eyes():
             return self.__atlify_wink()
+
+        if self.is_tear_spr() and not self.is_closed_eyes():
+            return self.__atlify_tears()
 
         return self.__atlify_closed()
 
@@ -390,18 +397,27 @@ class StaticSprite(object):
         """
         return self.eyes in self._wink_eyes
 
+    def is_tear_spr(self):
+        """
+        Returns true if this is a tear sprite. False if not
+        """
+        return (
+            self.tears in self._mod_map["tears"]
+            and self.tears not in ["pooled", "dried"]
+        )
+
     def make_atl(self):
         """
-        MAKES atl version of this sprite. 
+        MAKES atl version of this sprite.
 
-        RETURNS: the atl STaticSprite, or None if we didnt need to make one
+        RETURNS: the atl StaticSprite, or None if we didnt need to make one
         """
         if self.is_normal_eyes():
             # normal eyes require cloesd sad
             return StaticSprite(self.__swap_eyes("d"))
 
         if self.is_wink_eyes():
-            # wink eyes require normal 
+            # wink eyes require normal
             return StaticSprite(self.__swap_eyes("e"))
 
         return None
@@ -496,6 +512,13 @@ class StaticSprite(object):
         """
         return ss_obj.is_wink_eyes()
 
+    @staticmethod
+    def as_is_tear_spr(ss_obj):
+        """
+        static method version of is_tear_spr
+        """
+        return ss_obj.is_tear_spr()
+
     def _get_smap(self, mainkey, code, defval):
         """
         Gets a value from the sprite map
@@ -539,8 +562,8 @@ class StaticSprite(object):
         #   [-1] - the mouth
         #
         # all the remaining parts are in a specific order, but each has
-        #   a specific prefix. 
-        # NOTE: we are retiring eyebag codes (eb_) there is no reason for 
+        #   a specific prefix.
+        # NOTE: we are retiring eyebag codes (eb_) there is no reason for
         #   these.
         # (e) will be saved for emotes
 
@@ -614,7 +637,7 @@ class StaticSprite(object):
                     )
                 except Exception as e:
                     # any sort of exception is a bad state
-                    # TODO Chnage 
+                    # TODO Chnage
                     self.invalid = False
                     return
 
@@ -714,6 +737,44 @@ class StaticSprite(object):
 
             self._dbl_tab,
             self._q_monika.format(self.__swap_eyes("e"))
+        ])
+
+    def __atlify_tears(self):
+        """
+        Creates a tears version of an ATL.
+        """
+        return "".join([
+            self._img_monika,
+            self.spcode,
+            self._onl,
+
+            self._tab,
+            self._block,
+            self._onl,
+
+            self._dbl_tab,
+            self._q_monika_static.format(self.spcode),
+            "\n",
+
+            self._dbl_tab,
+            self._block,
+            self._onl,
+
+            self.__build_choice(self._tri_tab, self._for_tab, 9),
+
+            self.__build_choice(self._tri_tab, self._for_tab, 11),
+
+            self.__build_choice(self._tri_tab, self._for_tab, 12),
+
+            self._dbl_tab,
+            self._q_monika_static.format(self.__swap_eyes("d")),
+            "\n",
+
+            self._dbl_tab,
+            "0.15\n",
+
+            self._dbl_tab,
+            self._repeat,
         ])
 
     def __build_choice(self, first_indent, sec_indent, num):
@@ -894,7 +955,7 @@ class StaticSprite(object):
         tears = self._get_smap("tears", "".join(fullcode), None)
         if tears is None:
             return False, 0
-    
+
         # otherwise ok
         self.tears = tears
         sorder.append(("".join(prefixes), "".join(fullcode)))

@@ -1,6 +1,6 @@
 {
     "__author": "Orcaramelo",
-    "version": 2,
+    "version": 3,
     "type": 1,
     "name": "orcaramelo_ponytailbraid",
     "img_sit": "orcaramelo_ponytailbraid",
@@ -11,7 +11,8 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "ribbon": true
+        "ribbon": true,
+        "braidstrand": true
     },
     "select_info": {
         "display_name": "Ponytail with Braid",

@@ -40,6 +40,9 @@ init -1 python in mas_hotkeys:
     # False means they will not
     mu_stop_enabled = True
 
+    # True means music controlling hotkeys are enabled, False means not
+    mu_ctrl_enabled = True
+
     # True means dont allow windows to be hidden
     no_window_hiding = False
 
@@ -48,7 +51,23 @@ init python:
 
     def mas_HKRaiseShield():
         """RUNTIME ONLY
-        Disables the main hotkeys
+        Disables main hotkeys and music controller keys
+        """
+        mas_HKRaiseShield_main()
+        store.mas_hotkeys.mu_ctrl_enabled = False
+
+
+    def mas_HKDropShield():
+        """RUNTIME ONLY
+        Enables the main hotkeys and music controller keys
+        """
+        mas_HKDropShield_main()
+        store.mas_hotkeys.mu_ctrl_enabled = True
+
+
+    def mas_HKRaiseShield_main():
+        """RUNTIME ONLY
+        Disables main hotkeys
         """
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.extra_enabled = False
@@ -56,9 +75,9 @@ init python:
         store.mas_hotkeys.play_enabled = False
 
 
-    def mas_HKDropShield():
+    def mas_HKDropShield_main():
         """RUNTIME ONLY
-        Enables the main hotkeys
+        Enables main hotkeys
         """
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.extra_enabled = True
@@ -83,7 +102,7 @@ init python:
         RETURNS: True if we can lower or stop the music, False if not
         """
         return (
-            store.mas_hotkeys.music_enabled
+            store.mas_hotkeys.mu_ctrl_enabled
             and store.mas_hotkeys.mu_stop_enabled
         )
 
@@ -112,7 +131,7 @@ init python:
         """
         hotkey specific muting / unmuting music channel
         """
-        if store.mas_hotkeys.music_enabled and not _windows_hidden:
+        if store.mas_hotkeys.mu_ctrl_enabled and not _windows_hidden:
             mute_music(store.mas_hotkeys.mu_stop_enabled)
 
 
@@ -120,7 +139,7 @@ init python:
         """
         hotkey specific music volume increasing
         """
-        if store.mas_hotkeys.music_enabled and not _windows_hidden:
+        if store.mas_hotkeys.mu_ctrl_enabled and not _windows_hidden:
             inc_musicvol()
 
 
@@ -179,17 +198,54 @@ init python:
         if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
             mas_bookmark_topic()
 
+
+    def _mas_game_menu_start(scope):
+        """
+        Runs code prior to opening the game menu in any way.
+
+        OUT:
+            scope - use this dict as temp space
+        """
+        scope["disb_ani"] = persistent._mas_disable_animations
+        scope["sr_time"] = store.mas_suntime.sunrise
+        scope["ss_time"] = store.mas_suntime.sunset
+
+
+    def _mas_game_menu_end(scope):
+        """
+        Runs code after exiting the game menu in any way.
+
+        IN:
+            scope - temp space used in `_mas_game_menu_start`
+        """
+        # call backs for the game menu
+
+        # if we are changing animation state, re-draw spaceroom masks
+        if scope.get("disb_ani") != persistent._mas_disable_animations:
+            mas_drawSpaceroomMasks(dissolve_masks=False)
+
+        # always clean current suntimes so they are not invalid
+        store.mas_validate_suntimes()
+
+        # rebuild backgrounds if the suntime has changed
+        if (
+                scope.get("sr_time") != store.mas_suntime.sunrise
+                or scope.get("ss_time") != store.mas_suntime.sunset
+        ):
+            store.mas_background.buildupdate()
+
+
     def _mas_game_menu():
         """
         Wrapper aound _invoke_game_menu that follows additional ui rules
         """
         if not _windows_hidden:
-            prev_disable_animations = persistent._mas_disable_animations
+            temp_space = {}
+            _mas_game_menu_start(temp_space)
+
             _invoke_game_menu()
 
-            # call backs for the game menu
-            if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks(dissolve_masks=False)
+            _mas_game_menu_end(temp_space)
 
 
     def _mas_quick_menu_cb(screen_name):
@@ -198,15 +254,15 @@ init python:
         NOTE: no checks are done here, please do not fuck this.
         """
         if not _windows_hidden:
-            prev_disable_animations = persistent._mas_disable_animations
+            temp_space = {}
+            _mas_game_menu_start(temp_space)
+
             renpy.call_in_new_context(
-                "_game_menu", 
+                "_game_menu",
                 _game_menu_screen=screen_name
             )
 
-            # call backs for the game menu
-            if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks(dissolve_masks=False)
+            _mas_game_menu_end(temp_space)
 
 
     def _mas_hide_windows():
@@ -264,6 +320,3 @@ init python:
         config.underlay.append(renpy.Keymap(mas_hide_windows=_mas_hide_windows))
         config.underlay.append(renpy.Keymap(derandom_topic=_mas_hk_derandom_topic))
         config.underlay.append(renpy.Keymap(bookmark_topic=_mas_hk_bookmark_topic))
-
-        # finally enable those buttons
-        mas_HKDropShield()

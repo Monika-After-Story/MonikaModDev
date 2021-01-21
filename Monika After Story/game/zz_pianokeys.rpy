@@ -3,7 +3,7 @@
 # Adding custom Piano Songs:
 # Piano songs can be added by creating a json file in the piano_songs
 # folder. Stock piano songs (which are shipped in official release) should be
-# in mod_assets/piano/songs/
+# in mod_assets/games/piano/songs/
 #
 # NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
 #  gameplay will not crash even if piano note matches are formatted
@@ -191,7 +191,6 @@ label mas_piano_setupstart:
     # you are good player
     if full_combo and not persistent.ever_won['piano']:
         $persistent.ever_won['piano']=True
-        $ grant_xp(xp.WIN_GAME)
 
     # call the post label
     call expression post_piano from _zzpk_ppel
@@ -376,18 +375,20 @@ label mas_piano_yr_prac:
 
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
+    import store
     import pygame # we need this for keymaps
     import os
-    log = renpy.store.mas_utils.getMASLog("log/pnm")
+    log = store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
+    import store.mas_ui as mas_ui
 
     # directory setup
     pnml_basedir = os.path.normcase(
         renpy.config.basedir + "/piano_songs/"
     )
     stock_pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+        renpy.config.basedir + "/game/mod_assets/games/piano/songs/"
     )
     no_pnml_basedir = False
     try:
@@ -397,18 +398,18 @@ init -3 python in mas_piano_keys:
         no_pnml_basedir = True
 
     # menu constants
-    MENU_X = 680
-    MENU_Y = 40
-    MENU_W = 560
-    MENU_H = 640
-    MENU_XALIGN = -0.05
+    MENU_X = mas_ui.SCROLLABLE_MENU_X
+    MENU_Y = mas_ui.SCROLLABLE_MENU_Y
+    MENU_W = mas_ui.SCROLLABLE_MENU_W
+    MENU_H = mas_ui.SCROLLABLE_MENU_MEDIUM_H
+    MENU_XALIGN = mas_ui.SCROLLABLE_MENU_XALIGN
     MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
 
     # Log constants
     MISS_KEY = "key '{0}' is missing."
     NOTE_BAD = "bad note list."
     PNOTE_BAD = "bad post note list."
-    EXP_BAD = "expression '{0}' not found."
+    EXP_BAD = "expression '{0}' is invalid."
     EVT_BAD = "ev timeout '{0}' is invalid."
     VIST_BAD = "vis timeout '{0}' is invalid."
     VERSE_BAD = "verse '{0}' is invalid."
@@ -807,7 +808,7 @@ init -3 python in mas_piano_keys:
             return
 
         _exp = jobj.pop(key)
-        if not renpy.image_exists("monika " + _exp):
+        if not store.mas_sprite_decoder.isValidSpritecode(_exp):
             _warns.append(warn_msg.format(_exp))
             return
 
@@ -989,10 +990,10 @@ init -3 python in mas_piano_keys:
                 raise PianoException("copyntoes must be positive number")
             if type(say) is not renpy.text.text.Text:
                 raise PianoException("say must be of type Text")
-            if not renpy.image_exists("monika " + express):
-                raise PianoException("Given expression does not exist")
-            if not renpy.image_exists("monika " + postexpress):
-                raise PianoException("Given post expression does not exist")
+            if not store.mas_sprite_decoder.isValidSpritecode(express):
+                store.mas_utils.writelog("Given expression '{0}' is invalid.\n".format(express))
+            if not store.mas_sprite_decoder.isValidSpritecode(postexpress):
+                store.mas_utils.writelog("Given expression '{0}' is invalid.\n".format(postexpress))
 #            if (
 #                    ev_timeout is not None
 #                    and vis_timeout is not None
@@ -2018,11 +2019,11 @@ init 810 python:
         TEXT_AT_LIST = [mas_piano_lyric_label]
 
         # expressions
-        DEFAULT = "monika 1a"
-        AWKWARD = "monika 1l"
-        HAPPY = "monika 1j"
-        FAILED = "monika 1m"
-        CONFIGGING = "monika 3a"
+        DEFAULT = "monika 1eua"
+        AWKWARD = "monika 1hksdlb"
+        HAPPY = "monika 1hua"
+        FAILED = "monika 1lksdla"
+        CONFIGGING = "monika 3eua"
 #        CONFIG_CHANGE = "monika 3a"
 
         # Text related
@@ -2251,20 +2252,20 @@ init 810 python:
         ZZFP_C6 = "mod_assets/sounds/piano_keys/C6.ogg"
 
         # piano images
-        ZZPK_IMG_BACK = "mod_assets/piano/board.png"
-        ZZPK_IMG_KEYS = "mod_assets/piano/piano.png"
+        ZZPK_IMG_BACK = "mod_assets/games/piano/board.png"
+        ZZPK_IMG_KEYS = "mod_assets/games/piano/piano.png"
 
         # lyrical bar
-        ZZPK_LYR_BAR = "mod_assets/piano/lyrical_bar.png"
+        ZZPK_LYR_BAR = "mod_assets/games/piano/lyrical_bar.png"
 
         # overlay, white
-        ZZPK_W_OVL_LEFT = "mod_assets/piano/ovl/ivory_left.png"
-        ZZPK_W_OVL_RIGHT = "mod_assets/piano/ovl/ivory_right.png"
-        ZZPK_W_OVL_CENTER = "mod_assets/piano/ovl/ivory_center.png"
-        ZZPK_W_OVL_PLAIN = "mod_assets/piano/ovl/ivory_plain.png"
+        ZZPK_W_OVL_LEFT = "mod_assets/games/piano/ovl/ivory_left.png"
+        ZZPK_W_OVL_RIGHT = "mod_assets/games/piano/ovl/ivory_right.png"
+        ZZPK_W_OVL_CENTER = "mod_assets/games/piano/ovl/ivory_center.png"
+        ZZPK_W_OVL_PLAIN = "mod_assets/games/piano/ovl/ivory_plain.png"
 
         # overlay black
-        ZZPK_B_OVL_PLAIN = "mod_assets/piano/ovl/ebony.png"
+        ZZPK_B_OVL_PLAIN = "mod_assets/games/piano/ovl/ebony.png"
 
         # offsets for rendering
         ZZPK_IMG_BACK_X = 5
@@ -2345,97 +2346,6 @@ init 810 python:
             # lyric bar
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
-            # button shit
-            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-            # button text
-            button_done_text_idle = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_done_text_hover = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_cancel_text_idle = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_cancel_text_hover = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_reset_text_idle = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_reset_text_hover = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_resetall_text_idle = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_resetall_text_hover = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_config_text_idle = Text(
-                "Config",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_config_text_hover = Text(
-                "Config",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-            button_quit_text_idle = Text(
-                "Quit",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_quit_text_hover = Text(
-                "Quit",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
             # calculate button locations
             # buttons should be spaced by BUTTONS_SPACING
             cbutton_x_start = (
@@ -2456,13 +2366,9 @@ init 810 python:
             pbutton_y_start = cbutton_y_start
 
             # the 4 config buttons we have
-            self._button_done = MASButtonDisplayable(
-                button_done_text_idle,
-                button_done_text_hover,
-                button_done_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_done = MASButtonDisplayable.create_stb(
+                _("Done"),
+                True,
                 cbutton_x_start,
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2470,13 +2376,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_cancel = MASButtonDisplayable(
-                button_cancel_text_idle,
-                button_cancel_text_hover,
-                button_cancel_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_cancel = MASButtonDisplayable.create_stb(
+                _("Cancel"),
+                True,
                 cbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2484,13 +2386,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_reset = MASButtonDisplayable(
-                button_reset_text_idle,
-                button_reset_text_hover,
-                button_reset_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_reset = MASButtonDisplayable.create_stb(
+                _("Reset"),
+                True,
                 cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2498,13 +2396,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_resetall = MASButtonDisplayable(
-                button_resetall_text_idle,
-                button_resetall_text_hover,
-                button_resetall_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_resetall = MASButtonDisplayable.create_stb(
+                _("Reset All"),
+                True,
                 cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
                 cbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2514,13 +2408,9 @@ init 810 python:
             )
 
             # the config button
-            self._button_config = MASButtonDisplayable(
-                button_config_text_idle,
-                button_config_text_hover,
-                button_config_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_config = MASButtonDisplayable.create_stb(
+                _("Config"),
+                True,
                 pbutton_x_start,
                 pbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2528,13 +2418,9 @@ init 810 python:
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound
             )
-            self._button_quit = MASButtonDisplayable(
-                button_quit_text_idle,
-                button_quit_text_hover,
-                button_quit_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_quit = MASButtonDisplayable.create_stb(
+                _("Quit"),
+                False,
                 pbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 pbutton_y_start,
                 self.BUTTON_WIDTH,
@@ -2555,14 +2441,14 @@ init 810 python:
 
             # config help text
             self._config_wait_help = Text(
-                "Click on a pink area to change the keymap for that piano key",
+                _("Click on a pink area to change the keymap for that piano key"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#fff",
                 outlines=[]
             )
             self._config_change_help = Text(
-                "Press the key you'd like to set this piano key to",
+                _("Press the key you'd like to set this piano key to"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#fff",

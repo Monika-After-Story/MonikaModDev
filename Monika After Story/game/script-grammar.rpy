@@ -38,17 +38,10 @@ init 4 python in mas_gtod:
             None
         )
 
-        if tip_ev is None:
-            return False
-
-        # otherwise, unlocked date is our key
-        if tip_ev.unlock_date is None or tip_ev.shown_count == 0:
-            return False
-
-        # now check the actual day
         return (
-            datetime.date.today() - tip_ev.unlock_date.date() 
-            >= datetime.timedelta(days=1)
+            tip_ev is not None
+            and tip_ev.last_seen is not None
+            and tip_ev.timePassedSinceLastSeen_d(datetime.timedelta(days=1))
         )
 
 # gtod intro topic
@@ -59,7 +52,8 @@ init 5 python:
             eventlabel="monika_gtod_tip000",
             category=["grammar tips"],
             prompt="Can you teach me about grammar?",
-            pool=True
+            pool=True,
+            rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
     )
 
@@ -72,21 +66,17 @@ label monika_gtod_tip000:
     m 3eksdld "...Maybe you think of strict teachers, or stuck-up editors..."
     m 3eka "But I think that there's a certain beauty in mastering how you write and eloquently delivering your message."
     m 1eub "So...{w=0.5}starting today, I'll be sharing Monika's Grammar Tip of the Day!"
-    m 1hua "Let's improve our writing together, my love~"
+    m 1hua "Let's improve our writing together, [mas_get_player_nickname()]~"
     m 3eub "We'll start with clauses, the basic building blocks of sentences!"
 
     # hide the intro topic after viewing
     $ mas_hideEVL("monika_gtod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
-    $ import datetime
-    $ tip_ev = mas_getEV("monika_gtod_tip001")
-    $ tip_ev.pool = True
-    $ tip_ev.unlocked = True
-    $ tip_ev.unlock_date = datetime.datetime.now()
-    $ tip_ev.shown_count = 1
-
-    jump monika_gtod_tip001
+    $ tip_label = "monika_gtod_tip001"
+    $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
+    $ pushEvent(tip_label,skipeval=True)
+    return
 
 ##############################################################################
 # Actual tips start here
@@ -118,8 +108,10 @@ init 5 python:
             eventlabel="monika_gtod_tip002",
             category=["grammar tips"],
             prompt="Comma Splices and Run-ons",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(1)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -148,8 +140,10 @@ init 5 python:
             eventlabel="monika_gtod_tip003",
             category=["grammar tips"],
             prompt="Conjunctions",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(2)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -189,8 +183,10 @@ init 5 python:
             eventlabel="monika_gtod_tip004",
             category=["grammar tips"],
             prompt="Semicolons",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(3)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -222,8 +218,10 @@ init 5 python:
             eventlabel="monika_gtod_tip005",
             category=["grammar tips"],
             prompt="Subjects and Objects",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(4)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -251,8 +249,10 @@ init 5 python:
             eventlabel="monika_gtod_tip006",
             category=["grammar tips"],
             prompt="Active and Passive Voices",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(5)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -279,8 +279,10 @@ init 5 python:
             eventlabel="monika_gtod_tip007",
             category=["grammar tips"],
             prompt="Who vs. Whom",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -308,8 +310,10 @@ init 5 python:
             eventlabel="monika_gtod_tip008",
             category=["grammar tips"],
             prompt="And I vs. And me",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(7)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -340,8 +344,10 @@ init 5 python:
             eventlabel="monika_gtod_tip009",
             category=["grammar tips"],
             prompt="Apostrophes",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(8)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 
@@ -378,8 +384,10 @@ init 5 python:
             eventlabel="monika_gtod_tip010",
             category=["grammar tips"],
             prompt="The Oxford Comma",
+            pool=True,
             conditional="store.mas_gtod.has_day_past_tip(9)",
-            action=EV_ACT_POOL
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
         )
     )
 

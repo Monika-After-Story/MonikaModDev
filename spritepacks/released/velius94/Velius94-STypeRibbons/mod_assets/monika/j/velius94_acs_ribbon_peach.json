@@ -1,0 +1,23 @@
+{
+    "__author": "Velius94",
+    "version": 3,
+    "type": 0,
+    "name": "velius94_ribbon_peach",
+    "img_sit": "velius94_ribbon_peach",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "s-type-ribbon",
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Ribbon (Peach, s-type)",
+        "thumb": "velius94_ribbon_peach",
+        "group": "ribbon",
+        "select_dlg": [
+            "Just like autumn leaves..."
+        ]
+    },
+    "giftname": "stypepeachribbon"
+}

@@ -1,7 +1,7 @@
 # Historical data module
 #
 # How this works:
-#   Historical data is persistent data over time. 
+#   Historical data is persistent data over time.
 #
 # ORGANIZED:
 #   dicts of dicts:
@@ -21,16 +21,16 @@
 #       d25 - chms
 #       922 - monika bday
 #       player_bday - player bday
-#       pm - player model 
+#       pm - player model
 #       and so on
 #   sub category - fine tuned category if needed
 #   sub sub category - even more fine tuned category if needed
 #   ...
 #   name - variable name. this should be pretty descriptive
-#   
+#
 #   You don't need to use the sub categories if you dont need them.
 #   However, topic category is REQUIRED
-#       
+#
 # MAPPING
 #   Data saving is done by mapping a persistent variable name (as string) to
 #   the data key (as string).
@@ -38,7 +38,7 @@
 #       event that we wnat to save a non-persistent variable.
 #
 # MAPPING STORAGE
-#   New class called MASHistorySaver, contains a datetime and a mapping, 
+#   New class called MASHistorySaver, contains a datetime and a mapping,
 #   as well as the callbacks/programming points for a mapping.
 #   Also contains an ID for uniqueness. We use that ID in saving data.
 #
@@ -53,7 +53,7 @@
 #   points. Not sure if this is really helpful but we'll see.
 #
 # RUN:
-#   All MASHistorySaver objects are checked at init -800. This is designed to 
+#   All MASHistorySaver objects are checked at init -800. This is designed to
 #   be run after persistent backup system is run, but before lots of other
 #   things.
 #   The datetimes of each object are checked and if the current date is
@@ -69,7 +69,7 @@
 #
 #   MASHistorySaver object data is stored in `persistent._mas_history_mhs_data`
 #   NEVER ACCESS THIS IN RUNTIME
-#   
+#
 #   MASHistorySaver objects are created on start and stored in `mhs_db`
 #   Access is given via public functions. DO NOT ACCESS DIRECTLY
 #
@@ -126,7 +126,7 @@ init -860 python in mas_history:
             year - year to look up data
 
         RETURNS: a tuple of the following format:
-            [0]: Lookup constant 
+            [0]: Lookup constant
             [1]: retrieved data (which may be None). This is always None if
                 we could not find year or key
         """
@@ -189,7 +189,7 @@ init -860 python in mas_history:
 
         for year, data_tuple in found_data.iteritems():
             status, _data = data_tuple
-            
+
             if status == L_FOUND and _data == _verify:
                 years_found.append(year)
 
@@ -244,7 +244,7 @@ init -860 python in mas_history:
 
         IN:
             mhs - MASHistorySaver object to add
-        
+
         ASSUMES that the given mhs does not conflict with existing
         """
         mhs_db[mhs.id] = mhs
@@ -369,9 +369,74 @@ init -850 python:
         """
         return store.mas_history.verify(".".join(keys), _verify, years_list)
 
+    def mas_HistWasFirstValueIn(_verify, year, *keys):
+        """
+        Checks if the first year that _verify was found for the keys provided in history
+        matches the year provided
+
+        IN:
+            _verify - Value to check for
+            year - year to match
+            *keys - string pieces to make a key for history
+
+        OUT:
+            boolean:
+                - True if the first year matches the year provided
+                - False otherwise
+        """
+        return mas_HistGetFirstYearOfValue(_verify, *keys) == year
+
+    def mas_HistGetFirstYearOfValue(_verify, *keys):
+        """
+        Gets the first year which has the entry of _verify in the keys provided
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            If there's a point where the value we're checking for is found, we return the first year that is met.
+            If not found, we return None
+        """
+        archive_value = mas_HistVerify_k([],_verify, *keys)
+
+        #If we actually have the value we're looking for, we get the first year
+        if archive_value[0]:
+            return archive_value[1][0]
+        return None
+
+    def mas_HistVerifyAll_k(_verify, *keys):
+        """
+        Checks if the value of _verify for the keys is in history at any point
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces at all
+                - False otherwise
+        """
+        return mas_HistVerify_k([],_verify, *keys)[0]
+
+    def mas_HistVerifyLastYear_k(_verify, *keys):
+        """
+        Checks history for the value of _verify in the key provided last year
+
+        IN:
+            _verify - value to check for
+            *keys - string pieces of a key to search for
+
+        OUT:
+            boolean:
+                - True if _verify is in the key built by the provided pieces last year
+                - False otherwise
+        """
+        return mas_HistVerify_k([datetime.date.today().year-1], _verify, *keys)[0]
 
     ## MASHistorySaver stuff
-    
+
     class MASHistorySaver(object):
         """
         Class designed to represent mapping of historial data that we need to
@@ -388,7 +453,7 @@ init -850 python:
                 keys
             use_year_before - True means that when saving data, we should use
                 trigger.year - 1 as the year to determine where to save
-                historical data. This is mainly for year-end events like 
+                historical data. This is mainly for year-end events like
                 d31 and new years
             dont_reset - True means we do NOT reset the persistent var
                 when doing the save.
@@ -406,7 +471,7 @@ init -850 python:
         # also setup first session as a static variable
         first_sesh = -1
 
-        def __init__(self, 
+        def __init__(self,
                 mhs_id,
                 trigger,
                 mapping,
@@ -433,10 +498,10 @@ init -850 python:
                     NOTE: this is changed every time we execute the saveing
                         routine
                     NOTE: trigger.year is used when saving historical data
-                mapping - mapping of the persistent variable names to 
+                mapping - mapping of the persistent variable names to
                     historical data keys
                 use_year_before - True will use trigger.year-1 when saving
-                    historical data instead of trigger.year. 
+                    historical data instead of trigger.year.
                     (Default: False)
                 dont_reset - True will NOT reset the persistent var after
                     saving.
@@ -448,7 +513,7 @@ init -850 python:
                     self is passed to this
                     (Default: None)
                 trigger_pp - if not None, this pp is called with the current
-                    trigger when updating trigger, and the returned datetime 
+                    trigger when updating trigger, and the returned datetime
                     is used as the new trigger.
                     (Default: None)
                 start_dt - datetime that this MHs starts covering
@@ -482,21 +547,20 @@ init -850 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
-
+            self._was_triggered = False
 
         @staticmethod
         def getSortKey(_mhs):
             """
             Gets the sort key for this MASHistorySaver
 
-            IN: 
+            IN:
                 _mhs - MASHistorSaver to get sort key
 
             RETURNS the sort key, which is trigger datetime
             """
             return _mhs.trigger
 
-       
         @staticmethod
         def correctTriggerYear(_trigger):
             """
@@ -512,7 +576,7 @@ init -850 python:
             RETURNS: _trigger with the correct year
             """
             _now = datetime.datetime.now()
-            _temp_trigger = _trigger.replace(year=_now.year) 
+            _temp_trigger = _trigger.replace(year=_now.year)
 
             if _now > _temp_trigger:
                 # trigger has already past, set the trigger for next year
@@ -528,7 +592,7 @@ init -850 python:
             IN:
                 data_tuple - tuple of the following format:
                     [0]: datetime to set the trigger property
-                    [1]: use_year_before 
+                    [1]: use_year_before
                         - check for existence before loading
             """
             # this should be ahead since setTrigger uses this now
@@ -546,7 +610,7 @@ init -850 python:
                 to be changed
 
             IN:
-                check_dt - dateime to check 
+                check_dt - dateime to check
 
             RETURNS: True if in range, False if not
             """
@@ -558,11 +622,11 @@ init -850 python:
                     (self.start_dt.replace(year=check_dt.year) <= check_dt)
                     or (check_dt < self.end_dt.replace(year=check_dt.year))
                 )
-           
+
             # else check regular range
             return (
                 self.start_dt.replace(year=check_dt.year)
-                <= check_dt 
+                <= check_dt
                 < self.end_dt.replace(year=check_dt.year)
             )
 
@@ -656,7 +720,7 @@ init -850 python:
             trigger_year_ahead = _trigger.year - _now.year > 1
             tt_happen_mhs_future = (
                 mas_TTDetected()
-                and not self.isContinuous() 
+                and not self.isContinuous()
                 and (self.isFuture(_now) or self.isActive(_now))
             )
             impossible_trigger = _trigger <= first_sesh
@@ -678,7 +742,7 @@ init -850 python:
                 # then we should move it into the future
 
                 # but we need to determine if the trigger has already happend
-                # in teh current year or will happen this year so we can 
+                # in teh current year or will happen this year so we can
                 # both prevent overwrites and save data when we need to.
                 self.trigger = MASHistorySaver.correctTriggerYear(_trigger)
 
@@ -735,6 +799,8 @@ init -850 python:
             if self.exit_pp is not None:
                 self.exit_pp(self)
 
+            # mark that we ran
+            self._was_triggered = True
 
         def toTuple(self):
             """
@@ -747,6 +813,12 @@ init -850 python:
             """
             return (self.trigger, self.use_year_before)
 
+        def was_triggered(self):
+            """
+            RETURNS: True if this MHS was triggered during this session
+            """
+            return self._was_triggered
+
 
 init -800 python in mas_history:
     # and now we run the MASHistorySaver algorithms
@@ -756,12 +828,12 @@ init -800 python in mas_history:
         Runs the historical data saving algorithm
 
         ASSUMES:
-            - mhs_db is filled with MASHistorySaver objects 
+            - mhs_db is filled with MASHistorySaver objects
         """
         # now we go through the mhs_db and run their save algs if their trigger
         # is past today.
         _now = datetime.datetime.now()
-    
+
 #        for mhs in mhs_db.itervalues():
         for mhs in mhs_sorted_list:
             # trigger rules:
@@ -795,7 +867,7 @@ init -800 python in mas_history:
         for mhs in mhs_sorted_list:
             if not mhs.isContinuous():
                 reset = False
-                
+
                 if same_cal_year:
                     reset = mhs.isActiveWithin(now_dt, lse)
 
@@ -836,7 +908,7 @@ init -815 python in mas_history:
 
     # BDAY
     def _bday_exit_pp(mhs):
-        # this PP will just add the appropriate delayed action IDs to the 
+        # this PP will just add the appropriate delayed action IDs to the
         # persistent delayed action list.
         #_MDA_safeadd(3, 4, 5, 6, 7)
         #_MDA_safeadd(3, 4)
@@ -846,7 +918,7 @@ init -815 python in mas_history:
     # generic pm functions
     def _pm_holdme_adj_times(elapsed):
         """
-        Sets the appropraite persistent vars according to the elasped time 
+        Sets the appropraite persistent vars according to the elasped time
         for the hold me topic
         """
         # never been set before
@@ -864,7 +936,7 @@ init -815 python in mas_history:
 
 
 init -810 python:
-    ## Add MASHistorySaver objects here. 
+    ## Add MASHistorySaver objects here.
     ## NOTE: If you've declared all the persistent variables you want to use
     ##  in one file, its better to create your MASHistorySaver object there.
     ##
@@ -872,14 +944,15 @@ init -810 python:
     ## locations
 
     # PLAYER MODEL
-    # NOTE: because player model variables are used basically everywhere, 
-    #   rather than make a ton of player model MHS objects, lets just make a 
+    # NOTE: because player model variables are used basically everywhere,
+    #   rather than make a ton of player model MHS objects, lets just make a
     #   generic one that runs on jan 1 of every year.
     #
     # Sub cats:
     #   lifestyle - what you do
     #   emotions - emotional/mental states
     #   family - family related stuff
+    #   friends - friend related stuff
     #   actions - what you have done
     #   location - location-based stuff
     #   likes - likes/wants
@@ -903,23 +976,35 @@ init -810 python:
             "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
+            "_mas_pm_is_trans": "pm.lifestyle.is_trans",
+            "_mas_pm_social_personality": "pm.lifestyle.social_personality",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
 
             # lifestyle / music
+            "_mas_pm_plays_instrument": "pm.lifestyle.play_instrument",
             "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
 
             # lifestyle / smoking
             "_mas_pm_do_smoke": "pm.lifestyle.smoking.smokes",
             "_mas_pm_do_smoke_quit": "pm.lifestyle.smoking.trying_to_quit",
+            "_mas_pm_do_smoke_quit_succeeded_before": "pm.lifestyle.smoking.successfully_quit_before",
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
             "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
+            # lifestyle / exercise
+            "_mas_pm_works_out": "pm.lifestyle.works_out",
+
+            # lifestyle / dating
+            "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
+            "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
+            "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
 
             # family
             "_mas_pm_have_fam": "pm.family.have_family",
@@ -930,11 +1015,21 @@ init -810 python:
             "_mas_pm_no_talk_fam": "pm.family.no_talk_about",
             "_mas_pm_fam_like_monika": "pm.family.likes_monika",
 
+            # friends
+            "_mas_pm_has_friends": "pm.friends.has_friends",
+            "_mas_pm_few_friends": "pm.friends.few_friends",
+
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
+            "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
+
+            # actions / d25
+            "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
+
+            # actions / nye-nyd
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -952,6 +1047,9 @@ init -810 python:
             "_mas_pm_longest_held_monika": "pm.actions.monika.longest_held_time",
             "_mas_pm_total_held_monika": "pm.actions.monika.total_held_time",
             "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
+            "_mas_pm_got_a_fresh_start": "pm.actions.monika.got_fresh_start",
+            "_mas_pm_failed_fresh_start": "pm.actions.monika.failed_fresh_start",
+            "_mas_pm_called_moni_a_bad_name": "pm.actions.monika.called_bad_name",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -999,6 +1097,10 @@ init -810 python:
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
             "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
+            "_mas_pm_likes_rain": "pm.likes.rain",
+            "_mas_pm_likes_travelling": "pm.likes.travelling",
+            "_mas_pm_likes_poetry" : "pm.likes.poetry",
+            "_mas_pm_likes_board_games": "pm.likes.board_games",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1035,6 +1137,7 @@ init -810 python:
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
             "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
             "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
+            "_mas_pm_has_code_experience": "pm.exp.code_experience",
 
             # op (opinions)
             # op / monika
@@ -1081,6 +1184,6 @@ init -810 python:
         {
             "_mas_aff_before_fresh_start": "aff.before_fresh_start"
         },
-        use_year_before=True
+        use_year_before=True,
+        dont_reset=True
     ))
-

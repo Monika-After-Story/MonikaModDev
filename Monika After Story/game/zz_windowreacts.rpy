@@ -22,6 +22,9 @@ init -10 python in mas_windowreacts:
     #We need this in case we cannot get access to the libs, so everything can still run
     can_show_notifs = True
 
+    #If we don't have access to the required libs to do windowreact related things
+    can_do_windowreacts = True
+
     #The windowreacts db
     windowreact_db = {}
 
@@ -50,28 +53,54 @@ init python:
             #Import win32api so we know if we can or cannot use notifs
             import win32api
 
-        except ImportError:
-            #If we fail to import, then we're going to have to make sure nothing can run.
-            store.mas_windowreacts.can_show_notifs = False
-
-            #Log this
-            store.mas_utils.writelog(
-                "[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n"
-            )
-
-        #NOTE: This is part of the try/catch block. We only run this if there was no error in the try
-        #Ensures that the game does not crash if we cannot load win32api or win32gui.
-        else:
+            #Since importing the required libs was successful, we can move onto importing and initializing a balloontip
             import balloontip
 
             #Now we initialize the notification class
-            tip = balloontip.WindowsBalloonTip()
+            __tip = balloontip.WindowsBalloonTip()
 
             #Now we set the hwnd of this temporarily
-            tip.hwnd = None
+            __tip.hwnd = None
+
+        except:
+            #If we fail to import, then we're going to have to make sure nothing can run.
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
+
+            #Log this
+            store.mas_utils.writelog("[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n")
+
+    elif renpy.linux:
+        #Get session type
+        session_type = os.environ.get("XDG_SESSION_TYPE")
+
+        #Wayland is not supported, disable wrs
+        if session_type == "wayland":
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
+            store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
+
+        #X11 however is fine
+        elif session_type == "x11":
+            try: import Xlib
+
+            except ImportError:
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_windowreacts.can_do_windowreacts = False
+                store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
+
+        else:
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_windowreacts.can_do_windowreacts = False
+
+            store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
+
+    else:
+        store.mas_windowreacts.can_do_windowreacts = False
+
 
     #List of notif quips (used for topic alerts)
-    #Windows
+    #Windows/Linux
     mas_win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
@@ -82,7 +111,7 @@ init python:
         "I've got something to talk about, [player]!",
     ]
 
-    #OSX/Linux
+    #OSX, since no active window detection
     mas_other_notif_quips = [
         "I've got something to talk about, [player]!",
         "I have something to tell you, [player]!",
@@ -98,36 +127,89 @@ init python:
         """
         Checks if we can check the active window (simplifies conditionals)
         """
-        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+        return (
+            store.mas_windowreacts.can_do_windowreacts
+            and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+        )
 
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
-        """
-        if (
-                renpy.windows
-                and mas_windowreacts.can_show_notifs
-                and mas_canCheckActiveWindow()
-            ):
-            from win32gui import GetWindowText, GetForegroundWindow
 
-            if not friendly:
-                return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
+        OUT:
+            The active window handle if found. If it is not possible to get, we return an empty string
+
+        NOTE: THIS SHOULD NEVER RETURN NONE
+        """
+        if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
+            if renpy.windows:
+                from win32gui import GetWindowText, GetForegroundWindow
+
+                window_handle = GetWindowText(GetForegroundWindow())
+                if friendly:
+                    return window_handle
+                else:
+                    return window_handle.lower().replace(" ","")
+
+            elif renpy.linux:
+                from Xlib.display import Display
+                from Xlib.error import BadWindow
+
+                display = Display()
+                root = display.screen().root
+
+                NET_WM_NAME = display.intern_atom("_NET_WM_NAME")
+                NET_ACTIVE_WINDOW = display.intern_atom("_NET_ACTIVE_WINDOW")
+
+                # Perform nullchecks on property getters, just in case.
+                active_winid_prop = root.get_full_property(NET_ACTIVE_WINDOW, 0)
+
+                if active_winid_prop is None:
+                    return ""
+
+                active_winid = active_winid_prop.value[0]
+
+                active_winobj = display.create_resource_object("window", active_winid)
+                try:
+                    # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
+                    active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
+
+                    if active_winname_prop is not None:
+                        active_winname = unicode(active_winname_prop.value)
+                        return (
+                            active_winname.replace("\n", "")
+                            if friendly
+                            else active_winname.lower().replace(" ", "").replace("\n", "")
+                        )
+
+                    else:
+                        return ""
+
+                except BadWindow:
+                    return ""
+
+                finally:
+                    # Release resources to prevent memory leak.
+                    display.flush()
+                    display.close()
+
             else:
-                return GetWindowText(GetForegroundWindow())
-        else:
-            #TODO: Mac vers (if possible)
-            #NOTE: We return "" so this doesn't rule out notifications
-            return ""
+                #TODO: Mac vers (if possible)
+                #NOTE: For now, until we get an implementation (if ever)
+                #We return "" so this doesn't rule out notifications
+                return ""
+
+        #Fallback for not being able to check active window. This should NEVER return None
+        return ""
 
     def mas_isFocused():
         """
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.window_title
 
     def mas_isInActiveWindow(keywords, non_inclusive=False):
         """
@@ -172,10 +254,11 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                    (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
-                    and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
-                    and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
-                ):
+                Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
+                and mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules)
+                and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
+            ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
                     queueEvent(ev_label)
@@ -187,7 +270,7 @@ init python:
                     ev.unlocked=False
 
                 #Add the blacklist
-                if "no unlock" in ev.rules:
+                if "no_unlock" in ev.rules:
                     mas_addBlacklistReact(ev_label)
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
@@ -242,10 +325,10 @@ init python:
             ev_label: eventlabel of the wrs
         """
         if (
-                ev_label
-                and renpy.has_label(ev_label)
-                and ev_label not in persistent._mas_windowreacts_no_unlock_list
-            ):
+            ev_label
+            and renpy.has_label(ev_label)
+            and ev_label not in persistent._mas_windowreacts_no_unlock_list
+        ):
             mas_unlockEVL(ev_label,"WRS")
 
     def mas_tryShowNotificationOSX(title, body):
@@ -266,7 +349,12 @@ init python:
             title: notification title
             body: notification body
         """
-        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
+        # Single quotes have to be escaped.
+        # Since single quoting in POSIX shell doesn't allow escaping,
+        # we have to close the quotation, insert a literal single quote and reopen the quotation.
+        body  = body.replace("'", "'\\''")
+        title = title.replace("'", "'\\''") # better safe than sorry
+        os.system("notify-send '{0}' '{1}' -a 'Monika' -u low".format(title,body))
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
@@ -292,13 +380,13 @@ init python:
             persistent._mas_windowreacts_notif_filters[group] = False
 
         if (
-                (
-                    mas_windowreacts.can_show_notifs
-                    and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
-                    and mas_notifsEnabledForGroup(group)
-                )
-                or skip_checks
-            ):
+            skip_checks
+            or (
+                mas_windowreacts.can_show_notifs
+                and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
+                and mas_notifsEnabledForGroup(group)
+            )
+        ):
 
             #We keep this flag so we know whether or not the notif was sent successfully (NOTE: weassume True because only windows can 'fail')
             notif_success = True
@@ -306,10 +394,10 @@ init python:
             #Now we make the notif
             if (renpy.windows):
                 # The Windows way, notif_success is adjusted if need be
-                notif_success = tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+                notif_success = __tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
                 #We need the IDs of the notifs to delete them from the tray
-                destroy_list.append(tip.hwnd)
+                destroy_list.append(__tip.hwnd)
 
             elif (renpy.macintosh):
                 # The macOS way
@@ -327,6 +415,14 @@ init python:
             return notif_success
         return False
 
+    def mas_prepForReload():
+        """
+        Handles clearing wrs notifs and unregistering the wndclass to allow 'reload' to work properly
+
+        NOTE: WINDOWS ONLY
+        """
+        store.mas_clearNotifs()
+        win32gui.UnregisterClass(__tip.classAtom, __tip.hinst)
 
 #START: Window Reacts
 init 5 python:
@@ -412,9 +508,12 @@ label mas_wrs_wikipedia:
             #If we're still here, we didn't value error
             #Now we get the article
             wiki_article = wind_name[:cutoff_index]
+
+            # May contain clarification in trailing parentheses
+            wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
             wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
 
-        except:
+        except ValueError:
             pass
 
     $ wrs_success = display_notif(
@@ -444,8 +543,8 @@ label mas_wrs_youtube:
     $ wrs_success = display_notif(
         m_name,
         [
-            "What are you watching, [player]?",
-            "Watching anything interesting, [player]?"
+            "What are you watching, [mas_get_player_nickname()]?",
+            "Watching anything interesting, [mas_get_player_nickname()]?"
         ],
         'Window Reactions'
     )
@@ -530,23 +629,28 @@ init 5 python:
     )
 
 label mas_wrs_twitter:
-    $ temp_line = renpy.substitute("I love you, [player].")
-    $ temp_len = len(temp_line)
+    python:
+        temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
+        temp_len = len(temp_line)
 
-    $ wrs_success = display_notif(
-        m_name,
-        [
-            "See anything you want to share with me, [player]?",
-            "Anything interesting to share, [player]?",
-            "280 characters? I only need [temp_len]...\n[temp_line]"
-        ],
-        'Window Reactions'
-    )
+        # quip: is_ily
+        ily_quips_map = {
+            "See anything you want to share with me, [player]?": False,
+            "Anything interesting to share, [player]?": False,
+            "280 characters? I only need [temp_len]...\n[temp_line]": True
+        }
+        quip = renpy.random.choice(ily_quips_map.keys())
+
+        wrs_success = display_notif(
+            m_name,
+            [quip],
+            'Window Reactions'
+        )
 
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
-    return
+    return "love" if ily_quips_map[quip] else None
 
 init 5 python:
     addEvent(
@@ -676,4 +780,116 @@ label mas_wrs_reddit:
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_reddit')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_mal",
+            category=['myanimelist'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_mal:
+    python:
+        myanimelist_quips = [
+            "Maybe we could watch anime together someday, [player]~",
+        ]
+
+        if persistent._mas_pm_watch_mangime is None:
+            myanimelist_quips.append("So you like anime and manga, [player]?")
+
+        wrs_success = display_notif(m_name, myanimelist_quips, 'Window Reactions')
+
+        #Unlock again if we failed
+        if not wrs_success:
+            mas_unlockFailedWRS('mas_wrs_mal')
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_deviantart",
+            category=['deviantart'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_deviantart:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "There's so much talent here!",
+            "I'd love to learn how to draw someday...",
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_deviantart')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_netflix",
+            category=['netflix'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_netflix:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "I'd love to watch a romance movie with you [player]!",
+            "What are we watching today, [player]?",
+            "What are you going to watch [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_netflix')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_twitch",
+            category=['-twitch'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_twitch:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Watching a stream, [player]?",
+            "Do you mind if I watch with you?",
+            "What are we watching today, [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_twitch')
     return

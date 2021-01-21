@@ -1,0 +1,25 @@
+{
+    "__author": "anonymioo",
+    "version": 3,
+    "type": 0,
+    "name": "anonymioo_ribbon_starsky_black",
+    "img_sit": "anonymioo_ribbon_starsky_black",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "night-sky-themed ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Starry Black Sky)",
+        "thumb": "anonymioo_ribbon_starsky_black",
+        "group": "ribbon",
+        "select_dlg": [
+            "A glimpse of the cosmos..."
+        ]
+    },
+    "giftname": "starryblackskyribbon"
+}

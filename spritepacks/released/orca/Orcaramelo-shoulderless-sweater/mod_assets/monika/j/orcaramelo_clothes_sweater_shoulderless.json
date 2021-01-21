@@ -1,0 +1,70 @@
+{
+    "__author": "Orcaramelo & moniking",
+    "version": 3,
+    "type": 2,
+    "name": "orcaramelo_sweater_shoulderless",
+    "img_sit": "orcaramelo_sweater_shoulderless",
+    "pose_map": {
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "bare-right-shoulder": true
+    },
+    "select_info": {
+        "display_name": "Sweater (Shoulderless)",
+        "thumb": "orcaramelo_sweater_shoulderless",
+        "group": "clothes",
+        "select_dlg": [
+            "Feels cozy~",
+            "Fitting for a winter day!",
+            "It's very warm..."
+        ]
+    },
+    "giftname": "shoulderlesssweater",
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5^10"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
+        }
+    }
+}

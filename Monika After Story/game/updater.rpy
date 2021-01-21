@@ -23,7 +23,12 @@ transform mas_updater_slide:
     time 10.0
     linear 1.0 ypos -35 yanchor 0
 
-image mas_update_available = "mod_assets/updateavailable.png"
+image mas_update_available = ConditionSwitch(
+    "not mas_globals.dark_mode",
+    "mod_assets/updateavailable.png",
+    "mas_globals.dark_mode",
+    "mod_assets/updateavailable_d.png"
+)
 
 init -1 python:
 
@@ -122,75 +127,6 @@ init -1 python:
                 ysize=self.FRAME_HEIGHT
             )
 
-            # button backs
-            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
-            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
-            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
-
-            # ok button text
-            button_text_ok_idle = Text(
-                "Ok",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_ok_hover = Text(
-                "Ok",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # cancel button text
-            button_text_cancel_idle = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_cancel_hover = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # update button text
-            button_text_update_idle = Text(
-                "Update",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_update_hover = Text(
-                "Update",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
-            # retry button text
-            button_text_retry_idle = Text(
-                "Retry",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_idle_color,
-                outlines=[]
-            )
-            button_text_retry_hover = Text(
-                "Retry",
-                font=gui.default_font,
-                size=gui.text_size,
-                color=mas_globals.button_text_hover_color,
-                outlines=[]
-            )
-
             # calculate positions
             # top left x, y
             self._confirm_x = int((self.VIEW_WIDTH - self.FRAME_WIDTH) / 2)
@@ -222,13 +158,9 @@ init -1 python:
             button_left_y = button_center_y
 
             # create the buttons
-            self._button_ok = MASButtonDisplayable(
-                button_text_ok_idle,
-                button_text_ok_hover,
-                button_text_ok_idle,
-                button_idle,
-                button_hover,
-                button_idle,
+            self._button_ok = MASButtonDisplayable.create_stb(
+                _("Ok"),
+                False,
                 button_center_x,
                 button_center_y,
                 self.BUTTON_WIDTH,
@@ -237,13 +169,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_cancel = MASButtonDisplayable(
-                button_text_cancel_idle,
-                button_text_cancel_hover,
-                button_text_cancel_idle,
-                button_idle,
-                button_hover,
-                button_idle,
+            self._button_cancel = MASButtonDisplayable.create_stb(
+                _("Cancel"),
+                False,
                 button_left_x + self.BUTTON_WIDTH + self.BUTTON_SPACING,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -252,13 +180,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_update = MASButtonDisplayable(
-                button_text_update_idle,
-                button_text_update_hover,
-                button_text_update_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_update = MASButtonDisplayable.create_stb(
+                _("Update"),
+                True,
                 button_left_x,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -267,13 +191,9 @@ init -1 python:
                 activate_sound=gui.activate_sound
             )
 
-            self._button_retry = MASButtonDisplayable(
-                button_text_retry_idle,
-                button_text_retry_hover,
-                button_text_retry_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            self._button_retry = MASButtonDisplayable.create_stb(
+                _("Retry"),
+                True,
                 button_left_x,
                 button_left_y,
                 self.BUTTON_WIDTH,
@@ -284,42 +204,42 @@ init -1 python:
 
             # confirm text
             self._text_checking = Text(
-                "Checking for updates...",
+                _("Checking for updates..."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_update = Text(
-                "New update available!",
+                _("New update available!"),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_noupdate = Text(
-                "No update found.",
+                _("No update found."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_timeout = Text(
-                "Connection timed out.",
+                _("Connection timed out."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badresponse = Text(
-                "Server returned bad response.",
+                _("Server returned bad response."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
                 outlines=[]
             )
             self._text_badjson = Text(
-                "Server returned bad JSON.",
+                _("Server returned bad JSON."),
                 font=gui.default_font,
                 size=gui.text_size,
                 color="#ffe6f4",
@@ -391,10 +311,8 @@ init -1 python:
         def _handleRedirect(new_url):
             """
             Attempts to connect to the redircted url
-
             IN:
                 new_url - the redirect we want to connect to
-
             Returns read_json if we got a connection, Nnone otherwise
             """
             import httplib
@@ -436,7 +354,6 @@ init -1 python:
             """
             Sends out the http request and returns a response and stuff
             NOTE: designed to be called as a background thread
-
             ASSUMES:
                 _thread_result
                     appends appropriate state for use
@@ -527,9 +444,31 @@ init -1 python:
                 thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
                 return
 
+            # old version check
+            if persistent._mas_unstable_mode:
+                # rpartion the ., the last item should be build number
+                lv_build_number = store.mas_utils.tryparseint(
+                    latest_version.rpartition(".")[2],
+                    default=None
+                )
+                build_number = store.mas_utils.tryparseint(
+                    config.version.rpartition(".")[2],
+                    default=None
+                )
+                if lv_build_number is None or build_number is None:
+                    thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                    return
+
+                lv_is_old = lv_build_number <= build_number
+
+            else:
+                # just replcae dots with underscores, prefix v
+                parsed_version = "v" + latest_version.replace(".", "_")
+                lv_is_old = parsed_version in store.updates.version_updates
+
             # okay we have a latest version, compare to the current version
-            if latest_version == config.version:
-                # same version
+            if latest_version == config.version or lv_is_old:
+                # same version (or version on server is older)
                 thread_result.append(MASUpdaterDisplayable.STATE_UPDATED)
 
             else:
@@ -858,20 +797,60 @@ init -894 python:
 
 
 label mas_updater_steam_issue:
-#    show monika at t11
-    m 1eub "[player]!{w} I see you're using Steam."
+    show monika at t11
+    m 1eub "[player]!{w=0.2} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w=0.2} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
+label mas_updater_rpy_issue:
+    show monika at t11
+    m 2eksdla "[player]...I see you have some rpy files in your game directory."
+    if renpy.seen_label("monika_rpy_files"):
+        m 2rksdlc "I'm sure you remember when I mentioned that those files can cause problems when you update..."
+    else:
+        m 2rksdlc "Those files can cause some problems when you update..."
+
+    m 3rksdlb "So I can't run the updater while those are in there."
+    m 1eua "I can delete those for you and run the updater if you want though!"
+
+    m 1eua "Would you like me to delete them?{nw}"
+    #NOTE: no history_list.pop() here because for some reason this doesn't end up in history
+    menu:
+        m "Would you like me to delete them?{fast}"
+
+        "Yes, please.":
+            m 1hua "Sure!"
+
+            #Delete files
+            call mas_rpy_file_delete
+
+            m 3hub "There we go!"
+            #Hide screen
+            hide screen mas_py_console_teaching
+            show monika at t11
+
+            #Also going to rmallEVL here
+            $ mas_rmallEVL("monika_rpy_files")
+
+            m 2dsc "Now let me just run the updater.{w=0.5}.{w=0.5}.{nw}"
+            window hide
+
+            #Run the updater
+            jump update_now
+
+        "No thanks.":
+            m 3eka "Alright [player]. If you delete them and then try to update again, I'll run the updater for you."
+
+    return
 
 label forced_update_now:
     $ mas_updater.force = True
 
     # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
+    if store.mas_globals.is_steam and not persistent._mas_unstable_mode:
 
         $ mas_RaiseShield_core()
 
@@ -881,20 +860,36 @@ label forced_update_now:
             # current in dialogue workflow, we should only enable the escape
             # and music stuff
             $ enable_esc()
-            $ mas_MUMUDropShield()
+            $ mas_MUINDropShield()
 
         else:
             # otherwise, reenable core interactions
             $ mas_DropShield_core()
+        return
 
+    #Rpy file check
+    elif mas_hasRPYFiles():
+        $ mas_RaiseShield_core()
+
+        call mas_updater_rpy_issue
+
+        if store.mas_globals.dlg_workflow:
+            # current in dialogue workflow, we should only enable the escape
+            # and music stuff
+            $ enable_esc()
+            $ mas_MUINDropShield()
+
+        else:
+            # otherwise, reenable core interactions
+            $ mas_DropShield_core()
         return
 
 #This file goes through the actions for updating Monika After story
 label update_now:
-    $import time #this instance of time can stay
+    $ import time #this instance of time can stay
 
     # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
+    if store.mas_globals.is_steam and not persistent._mas_unstable_mode:
         return
 
     # screen check
