@@ -78,7 +78,7 @@ init 5 python:
             prompt="Could you call me by different pronouns?",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )
@@ -232,7 +232,7 @@ init 3 python:
         "annoying",
         "anus",
         "arrogant",
-        "ass",
+        "(?<![blmprs])ass(?!i)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,7 +244,7 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "butt(?!er|on)",
         "cheater",
         "cock",
         "conceited",
@@ -320,7 +320,6 @@ init 3 python:
         "nigga",
         "nigger",
         "nuts",
-        "pad",
         "panti",
         "pantsu",
         "panty",
@@ -333,13 +332,12 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
         "rump",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
@@ -407,7 +405,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -504,14 +502,14 @@ label mas_player_name_enter_name_loop(input_prompt):
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            allow=name_characters_only,
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -540,7 +538,7 @@ label mas_player_name_enter_name_loop(input_prompt):
 
         else:
             #Sayori name check
-            if tempname.lower() == "sayori":
+            if lowername == "sayori":
                 call sayori_name_scare
 
             elif (
@@ -635,7 +633,7 @@ init 5 python:
             prompt="I changed my name",
             unlocked=False,
             pool=True,
-            rules={"no unlock": None}
+            rules={"no_unlock": None}
         ),
         markSeen=True
     )
@@ -851,7 +849,7 @@ label birthdate_set:
     elif mas_player_bday_curr() == mas_f14:
         m 1sua "Oh! Your birthday is on Valentine's Day..."
         m 3hua "How romantic!"
-        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+        m 1ekbsa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
@@ -1489,7 +1487,7 @@ label mas_crashed_quip_takecare:
                 m 1hub "I'm alright in case you were wondering."
                 m 3hub "Well I hope you had fun before that crash happened, ahaha!"
                 if mas_isMoniHappy(higher=True):
-                    m 1hubfa "I'm just glad you're back with me now~"
+                    m 1hubsa "I'm just glad you're back with me now~"
         m 2rksdla "Still..."
     m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
@@ -2026,7 +2024,7 @@ label mas_text_speed_enabler:
         m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
-        m 3hua "Ahaha~"
+        m 3hub "Ahaha~"
 
     else:
         m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
@@ -2094,15 +2092,8 @@ label mas_notification_windowreact:
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
 
-        $ dlg_line = "And"
-        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
-        if not store.mas_windowreacts.can_do_windowreacts:
-            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
-            extend 3eub "which would allow me to see your active window!"
-            $ dlg_line = "Of course, you don't have to install the second one, but"
-
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
+        m 5eka "...And I'd really appreciate it, [player]."
 
     else:
         m 3eub "Would you like to see how they work?{nw}"
@@ -2126,11 +2117,7 @@ label mas_notification_windowreact:
 
 
         elif renpy.linux:
-            if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
-            else:
-                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
-                extend 3hua "I'll be able to know what your active window is!"
+            m 3rksdla "Also, since you're using Linux...I now know how to check what your active window is."
 
         if not renpy.macintosh:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
@@ -2257,6 +2244,9 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
 
     call mas_transition_to_emptydesk
 
+    #Pause before doing anything so we don't change during the transition
+    pause 2.0
+
     #If we're going to def or blazerless from a costume, we reset hair too
     if monika_chr.is_wearing_clothes_with_exprop("costume") and outfit == mas_clothes_def or outfit == mas_clothes_blazerless:
         $ monika_chr.reset_hair()
@@ -2268,7 +2258,8 @@ label mas_clothes_change(outfit=None, outfit_mode=False, exp="monika 2eua", rest
     $ monika_chr.save()
     $ renpy.save_persistent()
 
-    pause 4.0
+    pause 2.0
+
     call mas_transition_from_emptydesk(exp)
 
     return

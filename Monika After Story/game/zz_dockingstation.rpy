@@ -2220,7 +2220,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-            and not mas_SELisUnlocked(mas_clothes_blackdress)
+            and not persistent._mas_bday_has_done_bd_outro
         ):
             if len(persistent._mas_dockstat_checkout_log) == 0:
                 #We change Moni's outfit here because she just got ready
@@ -2318,9 +2318,6 @@ label mas_dockstat_empty_desk:
         # reset zoom before showing spaceroom
         store.mas_sprites.reset_zoom()
 
-    call spaceroom(hide_monika=True, scene_change=True)
-
-    python:
         mas_from_empty = True
 
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
@@ -2335,6 +2332,8 @@ label mas_dockstat_empty_desk:
         #NOTE: elif'd so we don't try and show two types of visuals here
         elif persistent._mas_player_bday_decor:
             store.mas_surpriseBdayShowVisuals()
+
+    call spaceroom(hide_monika=True, scene_change=True)
 
     #FALL THROUGH
 
@@ -2478,6 +2477,9 @@ label mas_dockstat_found_monika:
     elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
         call mas_d25_season_exit
 
+    elif mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
+
     jump ch30_post_exp_check
 
 #START: GENERALIZED MONIKA IO LABELS
@@ -2516,7 +2518,7 @@ label mas_dockstat_generic_iowait:
     # we want to display the menu first to give users a chance to quit
     if first_pass:
         $ first_pass = False
-        m 1eua "Give me a second to get ready."
+        m 1eua "Give me a second to get ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
         #Prepare the current drink to be removed if needed
         python:

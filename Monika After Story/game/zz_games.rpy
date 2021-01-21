@@ -206,7 +206,7 @@ label mas_pick_a_game:
             if mas_isGameUnlocked(renpy.substitute(ev.prompt))
         ], key=lambda x:renpy.substitute(x[0]))
 
-        ret_back = ("Nevermind.", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
 
     #Move Moni left
     show monika 1eua at t21

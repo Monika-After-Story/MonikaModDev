@@ -378,7 +378,6 @@ init -20 python in mas_weather:
 
         # dont need to change anything if we are switching from thunder
         if _old != store.mas_weather_thunder:
-
             # set global flag
             store.mas_is_raining = True
 
@@ -391,6 +390,8 @@ init -20 python in mas_weather:
                 if_changed=True
             )
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_rain_exit(_new):
         """
@@ -405,6 +406,8 @@ init -20 python in mas_weather:
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
     def _weather_snow_entry(_old):
         """
@@ -461,13 +464,15 @@ init -20 python in mas_weather:
         """
         Overcast entry programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
 
 init -10 python:
@@ -1024,7 +1029,7 @@ init 799 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather, by_user=None, set_persistent=False):
+    def mas_changeWeather(new_weather, by_user=None, set_persistent=False, new_bg=None):
         """
         Changes weather without doing scene changes
 
@@ -1034,10 +1039,16 @@ init 799 python:
             new_weather - weather to change to
             by_user - flag for if user changes weather or not
             set_persistent - whether or not we want to make this weather persistent
+            new_bg - MASFilterableBackground which will be switched to along with weather change.
+                If none, mas_current_background is used.
+                (Default: None)
         """
+        if new_bg is None:
+            new_bg = store.mas_current_background
+
         #If the current background doesn't support weather, we set to def weather instead
         #Since it has no sfx or anything
-        if store.mas_current_background.disable_progressive:
+        if new_bg.disable_progressive and new_bg.hide_masks:
             new_weather = store.mas_weather_def
 
         if by_user is not None:
@@ -1129,7 +1140,7 @@ init 5 python:
             prompt="Can you change the weather?",
             pool=True,
             unlocked=True,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )

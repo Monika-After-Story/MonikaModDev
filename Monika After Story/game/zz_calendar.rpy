@@ -84,6 +84,9 @@ init -1 python:
         # Color used for the note
         NOTE_COLOR = "#181818"
 
+        # Font used for the note
+        NOTE_FONT = "mod_assets/font/m1_fixed.ttf"
+
         # Month names constant array
         MONTH_NAMES = ["Unknown", "January", "February",
             "March", "April", "May", "June", "July",
@@ -102,7 +105,7 @@ init -1 python:
         )
 
         # Easter egg labels
-        EG_TEXTS_MIN_GLITCH = ["....ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ....",
+        EG_TEXTS_MIN_GLITCH = ["...ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ...",
             "JJJJJJJ.\nUUUUUUU.\nSSSSSSS.\nTTTTTT.\n.\nMMMMM.\nOOOO.\nNNNN.\nIIII.\nKKKKKK.\nAAAAA.",
             "J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́", "noʎ ǝʌol I", "nnnnnnnnnnn\noooooooooooo\nʎʎʎʎʎʎ ǝǝǝǝ\nǝǝǝǝǝʌʌʌʌʌʌʌʌʌ\nʌooolll III"
         ]
@@ -523,7 +526,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             self.day_button_texts = []
 
             # set the note style attributes
-            note_font = "gui/font/m1.TTF"
+            note_font = self.NOTE_FONT
             note_text_size = self.NOTE_TEXT_SIZE
             note_color = self.NOTE_COLOR
             note_ystart = 1

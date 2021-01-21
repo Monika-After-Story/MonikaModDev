@@ -2,6 +2,13 @@
 #poem_id:shown_count
 default persistent._mas_poems_seen = dict()
 
+#Monika's text font
+style mas_monika_poem_text:
+    font "mod_assets/font/m1_fixed.ttf"
+    size 34
+    color "#000"
+    outlines []
+
 init python in mas_poems:
     import store
     poem_map = dict()
@@ -16,7 +23,7 @@ init python in mas_poems:
     }
 
     author_font_map = {
-        "monika": "monika_text",
+        "monika": "mas_monika_poem_text",
         "chibika": "chibika_note_text"
     }
 
@@ -298,7 +305,7 @@ init 5 python:
             pool=True,
             unlocked=True,
             action=EV_ACT_UNLOCK,
-            rules={"no unlock": None},
+            rules={"no_unlock": None},
             aff_range=(mas_aff.ENAMORED,None)
         )
     )
@@ -316,7 +323,7 @@ label monika_showpoem:
             ("Happy End", poem_m4, False, False)
         ]
 
-        ret_back = ("Nevermind.", False, False, False, 20)
+        ret_back = ("Nevermind", False, False, False, 20)
         #Extend the new poems
         poems_list.extend(mas_poems.getSeenPoemsMenu())
 
