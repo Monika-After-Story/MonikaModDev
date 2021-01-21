@@ -14,7 +14,7 @@ python early:
         """
         import time
         _is_dst = False
-        _tz_cache = []
+        _tz_cache = None
 
         def __repr__(self):
             return "<MASLocalTz {0}>".format(self._utcoffset.total_seconds())
@@ -42,11 +42,13 @@ python early:
             Generates an instance of this class that is prepared to localize
             a time or whatever.
 
+            NOTE: this caches the timezone
+
             RETURNS:
                 instance of MASLocalTz ready for usage
             """
-            if len(cls._tz_cache) > 0:
-                return cls._tz_cache[0]
+            if cls._tz_cache is not None:
+                return cls._tz_cache
 
             # in general, assume timezone is correct when loading from time
             tz_offset = 0
@@ -69,7 +71,17 @@ python early:
             tz_obj.zone = "MAS"
             tz_obj._is_dst = is_dst
 
-            if len(cls._tz_cache) < 1:
-                cls._tz_cache.append(tz_obj)
+            if cls._tz_cache is None:
+                cls._tz_cache = tz_obj
 
             return tz_obj
+
+        @classmethod
+        def reload(cls):
+            """
+            Reloads the cached localzone
+
+            RETURNS: instance of MASLocalTz ready for usage
+            """
+            cls._tz_cache = None
+            return MASLocalTz.create()

@@ -4047,6 +4047,9 @@ init -995 python in mas_utils:
         "[": "[["
     }
 
+    # timezone cache
+    _tz_cache = None
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker
@@ -4271,16 +4274,39 @@ init -995 python in mas_utils:
         """
         Wrapper around tzlocal.get_localzone() that won't raise exceptions
 
+        NOTE: this caches the timezone. Call reload_localzone() to gurantee 
+        timezone is updated.
+
         RETURNS: pytz tzinfo object of the local time zone. 
             if system timezone info is configured wrong, then a special-MAS
             version of a timezone is returned instead. This version works 
             like a static, unchanging timezone, using the time.timezone/altzone
             values.
         """
+        global _tz_cache
+        if _tz_cache is not None:
+            return _tz_cache
+
         try:
-            return tzlocal.get_localzone()
+            _tz_cache = tzlocal.get_localzone()
         except:
-            return store.MASLocalTz.create()
+            _tz_cache = store.MASLocalTz.create()
+
+        return _tz_cache
+
+
+    def reload_localzone():
+        """
+        Reloads the cached localzone.
+
+        RETURNS: see get_localzone()
+        """
+        try:
+            _tz_cache = tzlocal.reload_localzone()
+        except:
+            _tz_cache = store.MASLocalTz.reload()
+
+        return _tz_cache
 
 
     def local_to_utc(local_dt):
