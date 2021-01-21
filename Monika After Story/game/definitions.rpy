@@ -7350,6 +7350,7 @@ default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
+#TODO: Add a couple functions to register new items to this and check safely. Assuming the key not being present is a False ever won.
 default persistent.ever_won = {
     "pong": False,
     "chess": False,

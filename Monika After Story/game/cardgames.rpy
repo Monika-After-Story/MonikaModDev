@@ -396,15 +396,15 @@ init 5 python in mas_nou:
         REACTIONS_MAP_PLAYER_REFLECTED_CARD = {
             0: [
                 (_("Aww, I wasn't expecting this!"),),
-                (_("Just once, [player]... Just once!~"),)
+                (_("Just once, [player]...just once!~"),)
             ],
             1: [
-                (_("Alright,{w=0.2} this time you won..."),),
-                (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3} But just this time!"),),
-                (_("You're very lucky!"),)
+                (_("Alright,{w=0.1} this time you won..."),),
+                (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3}but just this time!"),),
+                (_("You're pretty lucky!"),)
             ],
             2: [
-                (_("You...{w=0.5}could go a bit easier on your girlfriend~"), _("Ahaha~"))
+                (_("You...{w=0.3}could go a bit easier on your girlfriend~"), _("Ahaha~"))
             ]
         }
 
@@ -412,7 +412,7 @@ init 5 python in mas_nou:
         REACTIONS_MAP_PLAYER_REFLECTED_ACT = {
             0: [
                 (_("Aww, what a shame!"),),
-                (_("This's unlucky!"),)
+                (_("That's unlucky!"),)
             ],
             1: [
                 (_("Jeez, I can't believe you had another card!"),),
@@ -420,8 +420,8 @@ init 5 python in mas_nou:
                 (_("Can't let it go, huh?"),)
             ],
             2: [
-                (_("Oh my gosh! How much of these do you have?!"),),
-                (_("Ehehe, I thought this's a simple game between lovers, not a competition..."), _("Guess I was wrong~"))
+                (_("Oh my gosh!{w=0.2} How many of these do you have?!"),),
+                (_("Ehehe~ I thought this was a simple game between lovers, not a competition..."), _("Guess I was wrong~"))
             ]
         }
 
@@ -432,7 +432,7 @@ init 5 python in mas_nou:
             ],
             1: [
                 (_("Alright, alright!~"), _("{i}This{/i} time you won~")),
-                (_("Alright...{w=0.2}{i}this{/i} time you choose the color~"),)
+                (_("Alright...{w=0.2}this time {i}you{/i} choose the color~"),)
             ],
             2: [
                 (_("Oh jeez!"),)
@@ -442,14 +442,14 @@ init 5 python in mas_nou:
         REACTIONS_MAP_PLAYER_REFLECTED_WD4 = {
             0: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[0]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[0]) + [
                 (_("Hmm, I wasn't prepared for this!"),),
-                (_("Gosh! How much of these do you have?!"),)
+                (_("Jeez!{w=0.2} How many of these do you have?!"),)
             ],
             1: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[1]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[1]) + [
-                (_("I will remember this~"), _("Watch out, [player]!~")),
-                (_("Man, you got a lot of plus 2's!"),)
+                (_("I'll remember this~"), _("Watch out, [player]!~")),
+                (_("Man, you've got a lot of plus 2's!"),)
             ],
             2: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[2]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[2]) + [
-                (_("[player]...{w=0.2}How do you do that?"), _("If you keep playing like that, I won't have a chance to win!"))
+                (_("...{w=0.3}How did you do that?"), _("If you keep playing like that, I won't have a chance to win!"))
             ]
         }
 
@@ -946,11 +946,11 @@ init 5 python in mas_nou:
 
             if player.isAI:
                 winner = "Monika"
-                persistent._mas_game_nou_wins[winner] += 1
 
             else:
                 winner = "Player"
-                persistent._mas_game_nou_wins[winner] += 1
+
+            persistent._mas_game_nou_wins[winner] += 1
 
             renpy.pause(2, hard=True)
             renpy.jump("mas_nou_game_end")
@@ -989,7 +989,7 @@ init 5 python in mas_nou:
 
             # "Attack rules"
             if not player.should_skip_turn:
-                if (
+                return (
                     card.label == "Wild"
                     or (
                         card.label == "Wild Draw Four"
@@ -1000,14 +1000,11 @@ init 5 python in mas_nou:
                     )
                     or card.colour == self.discardpile[-1].colour
                     or card.label == self.discardpile[-1].label
-                ):
-                    return True
-                else:
-                    return False
+                )
 
             # "Defence rules"
             else:
-                if (
+                return (
                     (
                         self.discardpile[-1].label == "Wild Draw Four"
                         and card.label == "Draw Two"
@@ -1026,10 +1023,7 @@ init 5 python in mas_nou:
                         self.discardpile[-1].label == "Reverse"
                         and card.label == "Reverse"
                     )
-                ):
-                    return True
-                else:
-                    return False
+                )
 
         def play_card(self, current_player, next_player, card):
             """
@@ -2324,7 +2318,7 @@ init 5 python in mas_nou:
                                 # so ew can get in the same flow anyway
 
                             # if so, can we play something else?
-                            if (
+                            want_try_another_colour = (
                                 (
                                     next_colour_value is None# even if we can't choose a better colour to play, we'll still use the same logic to decide if we want to play a card at all
                                     or (
@@ -2338,8 +2332,7 @@ init 5 python in mas_nou:
                                     this_colour != self.game.discardpile[-1].colour# no reason not to play it if this's the current colour
                                     or renpy.random.randint(1, 5) == 1# 1/5 to take the risk and draw a card in hope it'll worth it
                                 )
-                            ):
-                                want_try_another_colour = True
+                            )
 
                         # try to play something
                         for id in sorted_cards_data[colour_id][1]["ids"]:
@@ -2828,7 +2821,7 @@ init 5 python in mas_nou:
                         "shown": False
                     }
 
-                    # DON'T DELETE THIS
+                    # NOTE: DON'T DELETE THIS
                     # turns = 8
                     # if sum(reaction["type"] == self.game.MONIKA_REFLECTED_WDF and reaction["turn"] >= self.game.current_turn - 2 * turns for reaction in self.reactions[-turns:]):
                     #     reaction["seen_count"] = 1
@@ -2990,7 +2983,7 @@ init 5 python in mas_nou:
                         persistent._mas_game_nou_house_rules
                         persistent._mas_game_nou_points['Player']
                     """
-                    if (
+                    return (
                         (
                             (
                                 persistent._mas_game_nou_abandoned > 2
@@ -3007,9 +3000,7 @@ init 5 python in mas_nou:
                             and renpy.random.randint(1, 100) <= self.HIGHT_MISSING_NOU_CHANCE
                         )
                         or renpy.random.randint(1, 100) <= self.LOW_MISSING_NOU_CHANCE
-                    ):
-                        return True
-                    return False
+                    )
 
                 # Predefine as False
                 has_yelled_nou = False
