@@ -848,7 +848,7 @@ init -10 python in mas_selspr:
             remover
         )
         ACS_SEL_MAP[acs.name] = new_sel_acs
-        store.mas_insertSort(ACS_SEL_SL, new_sel_acs, selectable_key)
+        store.mas_utils.insert_sort(ACS_SEL_SL, new_sel_acs, selectable_key)
 
 
     def init_selectable_clothes(
@@ -897,7 +897,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
-        store.mas_insertSort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
+        store.mas_utils.insert_sort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
 
 
     def init_selectable_hair(
@@ -944,7 +944,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         HAIR_SEL_MAP[hair.name] = new_sel_hair
-        store.mas_insertSort(HAIR_SEL_SL, new_sel_hair, selectable_key)
+        store.mas_utils.insert_sort(HAIR_SEL_SL, new_sel_hair, selectable_key)
 
 
     ## adjust an aspect of monika.
@@ -2410,7 +2410,7 @@ init -1 python:
                 st - st for renpy render
                 at - at for renpy render
 
-            RETURNS: rendered display name 
+            RETURNS: rendered display name
             """
             return renpy.render(disp_text, 1000, self.TOP_FRAME_CHUNK, st, at)
 
