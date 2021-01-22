@@ -590,7 +590,7 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_wet)
+            _moni_chr.change_hair(store.mas_hair_wet, by_user=False)
         # Always add water drops, otherwise why would you wear a towel
         _moni_chr.wear_acs(store.mas_acs_water_drops)
 
@@ -857,7 +857,8 @@ init -1 python:
         ),
         ex_props={
             store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
-            store.mas_sprites.EXP_H_NT: None
+            store.mas_sprites.EXP_H_NT: None,
+            store.mas_sprites.EXP_H_WET: True
         },
         entry_pp=store.mas_sprites._hair_wet_entry
     )
