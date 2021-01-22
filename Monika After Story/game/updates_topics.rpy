@@ -39,7 +39,7 @@ init -1 python:
 
 
 init 9 python:
-
+    store.mas_versions.init()
 
 # NOTE: these are now just ptrs to the actual store values.
 # NOTE: DO NOT CHANGE THE init LEVEL of THESE LINES
@@ -48,6 +48,8 @@ define updates.topics = mas_versions.topics
 
 
 init -2 python in mas_versions:
+    import store
+    import store.mas_utils as mas_utils
 
     # start by initalization version update dict
     version_updates = {}
@@ -67,6 +69,35 @@ init -2 python in mas_versions:
             from_vers - any number of tuples of ints that form the versions to
                 update from.
         """
+        to_ver_str = _vstr(to_ver)
+        for from_ver in from_vers:
+            version_updates[_vstr(from_ver)] = to_ver_str
+
+
+    def add_steps_inc(to_ver, from_start_ver):
+        """
+        Adds multiple version steps, assuming incremental, 1 version steps, 
+        from the start ver to the to ver.
+
+        NOTE: the rightmost number of the to ver must be larger than the
+        right most number of the start ver. this will quit early if that is
+        not true.
+
+        IN:
+            to_ver - tuple of ints that form the version to update to
+            from_start_ver - tuple of ints that form the version to start
+                incremental updates from
+        """
+        if len(to_ver) != len(from_start_ver):
+            return
+
+        target_num = to_ver[-1]
+        if target_num <= from_start_ver[-1]:
+            return
+
+        for vnum in range(from_start_ver[-1], target_num):
+            ver_pfx = from_start_ver[:-1]
+            add_step(ver_pfx + (vnum + 1,), ver_pfx + (vnum,))
 
 
     def clear():
@@ -76,131 +107,44 @@ init -2 python in mas_versions:
         version_updates.clear()
         topics.clear()
 
+
     def init():
         """
         Initializes the update data structures
         """
-        # versions
-        # use the v#_#_# notation so we can work with labels
-        vv0_11_10 = "v0_11_10"
-        vv0_11_9 = "v0_11_9"
-        vv0_11_8 = "v0_11_8"
-        vv0_11_7 = "v0_11_7"
-        vv0_11_6 = "v0_11_6"
-        vv0_11_5 = "v0_11_5"
-        vv0_11_4 = "v0_11_4"
-        vv0_11_3 = "v0_11_3"
-        vv0_11_2 = "v0_11_2"
-        vv0_11_1 = "v0_11_1"
-        vv0_11_0 = "v0_11_0"
-        vv0_10_7 = "v0_10_7"
-        vv0_10_6 = "v0_10_6"
-        vv0_10_5 = "v0_10_5"
-        vv0_10_4 = "v0_10_4"
-        vv0_10_3 = "v0_10_3"
-        vv0_10_2 = "v0_10_2"
-        vv0_10_1 = "v0_10_1"
-        vv0_10_0 = "v0_10_0"
-        vv0_9_5 = "v0_9_5"
-        vv0_9_4 = "v0_9_4"
-        vv0_9_3 = "v0_9_3"
-        vv0_9_2 = "v0_9_2"
-        vv0_9_1 = "v0_9_1"
-        vv0_9_0 = "v0_9_0"
-        vv0_8_14 = "v0_8_14"
-        vv0_8_13 = "v0_8_13"
-        vv0_8_12 = "v0_8_12"
-        vv0_8_11 = "v0_8_11"
-        vv0_8_10 = "v0_8_10"
-        vv0_8_9 = "v0_8_9"
-        vv0_8_8 = "v0_8_8"
-        vv0_8_7 = "v0_8_7"
-        vv0_8_6 = "v0_8_6"
-        vv0_8_5 = "v0_8_5"
-        vv0_8_4 = "v0_8_4"
-        vv0_8_3 = "v0_8_3"
-        vv0_8_2 = "v0_8_2"
-        vv0_8_1 = "v0_8_1"
-        vv0_8_0 = "v0_8_0"
-        vv0_7_4 = "v0_7_4"
-        vv0_7_3 = "v0_7_3"
-        vv0_7_2 = "v0_7_2"
-        vv0_7_1 = "v0_7_1"
-        vv0_7_0 = "v0_7_0"
-        vv0_6_3 = "v0_6_3"
-        vv0_6_2 = "v0_6_1"
-        vv0_6_1 = "v0_6_1"
-        vv0_6_0 = "v0_6_0"
-        vv0_5_1 = "v0_5_1"
-        vv0_5_0 = "v0_5_0"
-        vv0_4_0 = "v0_4_0"
-        vv0_3_3 = "v0_3_3"
-        vv0_3_2 = "v0_3_2"
-        vv0_3_1 = "v0_3_1"
-        vv0_3_0 = "v0_3_0"
-        vv0_2_2 = "v0_2_2"
+        # add a new step for every new update script
+        # first param is the target version, rest are versions that update to
+        # the target version.
+        #add_step((0, 11, 10), (0, 11, 9))
+        add_step((0, 11, 9), (0, 11, 8), (0, 11, 7))
+        add_steps_inc((0, 11, 7), (0, 11, 3))
+        add_step((0, 11, 3), (0, 11, 2), (0, 11, 1))
+        add_step((0, 11, 1), (0, 11, 0))
 
-        # update this dict accordingly to every new version
-        # k:old version number -> v:new version number
-        # some version changes skip some numbers because no major updates
-        #NOTE: If a version does not have and update script, its version still must be documented and point to the next update
-        #script available
-        #updates.version_updates[vv0_11_9] = vv0_11_10
-        updates.version_updates[vv0_11_8] = vv0_11_9
-        updates.version_updates[vv0_11_7] = vv0_11_9
-        updates.version_updates[vv0_11_6] = vv0_11_7
-        updates.version_updates[vv0_11_5] = vv0_11_6
-        updates.version_updates[vv0_11_4] = vv0_11_5
-        updates.version_updates[vv0_11_3] = vv0_11_4
-        updates.version_updates[vv0_11_2] = vv0_11_3
-        updates.version_updates[vv0_11_1] = vv0_11_3
-        updates.version_updates[vv0_11_0] = vv0_11_1
-        updates.version_updates[vv0_10_7] = vv0_11_0
-        updates.version_updates[vv0_10_6] = vv0_10_7
-        updates.version_updates[vv0_10_5] = vv0_10_6
-        updates.version_updates[vv0_10_4] = vv0_10_5
-        updates.version_updates[vv0_10_3] = vv0_10_4
-        updates.version_updates[vv0_10_2] = vv0_10_3
-        updates.version_updates[vv0_10_1] = vv0_10_2
-        updates.version_updates[vv0_10_0] = vv0_10_1
-        updates.version_updates[vv0_9_5] = vv0_10_0
-        updates.version_updates[vv0_9_4] = vv0_9_5
-        updates.version_updates[vv0_9_3] = vv0_9_4
-        updates.version_updates[vv0_9_2] = vv0_9_4
-        updates.version_updates[vv0_9_1] = vv0_9_2
-        updates.version_updates[vv0_9_0] = vv0_9_1
-        updates.version_updates[vv0_8_14] = vv0_9_0
-        updates.version_updates[vv0_8_13] = vv0_8_14
-        updates.version_updates[vv0_8_12] = vv0_8_13
-        updates.version_updates[vv0_8_11] = vv0_8_13
-        updates.version_updates[vv0_8_10] = vv0_8_11
-        updates.version_updates[vv0_8_9] = vv0_8_10
-        updates.version_updates[vv0_8_8] = vv0_8_9
-        updates.version_updates[vv0_8_7] = vv0_8_9
-        updates.version_updates[vv0_8_6] = vv0_8_9
-        updates.version_updates[vv0_8_5] = vv0_8_6
-        updates.version_updates[vv0_8_4] = vv0_8_6
-        updates.version_updates[vv0_8_3] = vv0_8_4
-        updates.version_updates[vv0_8_2] = vv0_8_3
-        updates.version_updates[vv0_8_1] = vv0_8_2
-        updates.version_updates[vv0_8_0] = vv0_8_1
-        updates.version_updates[vv0_7_4] = vv0_8_0
-        updates.version_updates[vv0_7_3] = vv0_7_4
-        updates.version_updates[vv0_7_2] = vv0_7_4
-        updates.version_updates[vv0_7_1] = vv0_7_2
-        updates.version_updates[vv0_7_0] = vv0_7_1
-        updates.version_updates[vv0_6_3] = vv0_7_0
-        updates.version_updates[vv0_6_2] = vv0_7_0
-        updates.version_updates[vv0_6_1] = vv0_7_0
-        updates.version_updates[vv0_6_0] = vv0_6_1
-        updates.version_updates[vv0_5_1] = vv0_6_1
-        updates.version_updates[vv0_5_0] = vv0_5_1
-        updates.version_updates[vv0_4_0] = vv0_5_1
-        updates.version_updates[vv0_3_3] = vv0_5_1
-        updates.version_updates[vv0_3_2] = vv0_3_3
-        updates.version_updates[vv0_3_1] = vv0_3_2
-        updates.version_updates[vv0_3_0] = vv0_3_1
-        updates.version_updates[vv0_2_2] = vv0_3_0
+        add_step((0, 11, 0), (0, 10, 7))
+        add_steps_inc((0, 10, 7), (0, 10, 0))
+
+        add_step((0, 10, 0), (0, 9, 5))
+        add_step((0, 9, 5), (0, 9, 4))
+        add_step((0, 9, 4), (0, 9, 3), (0, 9, 2))
+        add_steps_inc((0, 9, 2), (0, 9, 0))
+
+        add_step((0, 9, 0), (0, 8, 14))
+        add_step((0, 8, 14), (0, 8, 13))
+        add_step((0, 8, 13), (0, 8, 12), (0, 8, 11))
+        add_steps_inc((0, 8, 11), (0, 8, 9))
+        add_step((0, 8, 9), (0, 8, 8), (0, 8, 7), (0, 8, 6))
+        add_step((0, 8, 6), (0, 8, 5), (0, 8, 4))
+        add_steps_inc((0, 8, 4), (0, 8, 0))
+
+        add_step((0, 8, 0), (0, 7, 4))
+        add_step((0, 7, 4), (0, 7, 3), (0, 7, 2))
+
+        add_step((0, 7, 0), (0, 6, 3), (0, 6, 2), (0, 6, 1))
+        add_step((0, 6, 1), (0, 6, 0), (0, 5, 1))
+        add_step((0, 5, 1), (0, 5, 0), (0, 4, 0), (0, 3, 3))
+        add_steps_inc((0, 3, 3), (0, 3, 0))
+        add_step((0, 3, 0), (0, 2, 2))
 
         # NOTE: we are no longer going to use this:
         #
@@ -215,9 +159,10 @@ init -2 python in mas_versions:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+        updates = store.updates
 
         # (0.8.4 - 0.8.10) -> 0.8.11
-        updates.topics[vv0_8_11] = {
+        updates.topics[_vstr((0, 8, 11))] = {
             "monika_snowman": None,
             "monika_relax": None,
             "monika_hypothermia": None,
@@ -225,24 +170,24 @@ init -2 python in mas_versions:
         }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
-        updates.topics[vv0_8_4] = {
+        updates.topics[_vstr((0, 8, 4))] = {
             "monika_bestgirl": "mas_compliment_bestgirl"
         }
 
         # 0.8.0 -> 0.8.1
-        updates.topics[vv0_8_1] = {
+        updates.topics[_vstr((0, 8, 1))] = {
             "monika_write": "monika_writingtip3",
             "mas_random_ask": None,
             "monika_ravel": "mas_story_ravel"
         }
 
         # 0.7.4 -> 0.8.0
-        updates.topics[vv0_8_0] = {
+        updates.topics[_vstr((0, 8, 0))] = {
             "monika_love2": None
         }
 
         # (0.7.0 - 0.7.3) -> 0.7.4
-        updates.topics[vv0_7_4] = {
+        updates.topics[_vstr((0, 7, 4))] = {
             "monika_playerhappy": None,
             "monika_bad_day": None
         }
@@ -258,13 +203,13 @@ init -2 python in mas_versions:
             "monika_goodbye": None,
             "monika_night": None
         }
-        updates.topics[vv0_7_0] = changedIDs
+        updates.topics[_vstr((0, 7, 0))] = changedIDs
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {
             "monika_piano": None
         }
-        updates.topics[vv0_6_1] = changedIDs
+        updates.topics[_vstr((0, 6, 1))] = changedIDs
 
         # (0.3.3 - 0.5.0) -> 0.5.1
         changedIDs = dict()
@@ -280,17 +225,17 @@ init -2 python in mas_versions:
         changedIDs["monika_kyon"] = None
         changedIDs["monika_water"] = None
         changedIDs["monika_computer"] = None
-        updates.topics[vv0_5_1] = changedIDs
+        updates.topics[_vstr((0, 5, 1))] = changedIDs
 
         # 0.3.1 -> 0.3.2
         changedIDs = dict()
         changedIDs["monika_monika"] = None
-        updates.topics[vv0_3_2] = changedIDs
+        updates.topics[_vstr((0, 3, 2))] = changedIDs
 
         # 0.3.0 -> 0.3.1
         changedIDs = dict()
         changedIDs["monika_ghosts"] = "monika_whispers"
-        updates.topics[vv0_3_1] = changedIDs
+        updates.topics[_vstr((0, 3, 1))] = changedIDs
 
         # 0.2.2 -> 0.3.0
         # this is a long list...
@@ -407,7 +352,41 @@ init -2 python in mas_versions:
             # changedIDs dict (these must be handled in updates.rpy)
             # monika_piano
             # monika_college was pointing to ch30_31 (monika_middleschool)
-        updates.topics[vv0_3_0] = changedIDs
+        updates.topics[_vstr((0, 3, 0))] = changedIDs
 
         # ensuring no refs to old dicts
         changedIDs = None
+
+
+    def _vstr(version_tuple, delim="_"):
+        """
+        Converts a version tuple to a vstring
+
+        IN:
+            version_tuple - vresion tuple to convert
+            delim - delimiter to use between the version numbers
+                (Default: "_")
+
+        RETURNS: v#_#_#_#... string
+        """
+        return "v" + delim.join([str(num) for num in version_tuple])
+
+
+    def _vtup(version_str, delim="_"):
+        """
+        Converts a version string to a vtuple
+
+        NOTE: to prevent version update issues, this will crash if an invalid
+        string is used.
+
+        IN:
+            version_str - version string to convert (v#_#_#...)
+            delim - delimiter used between version numbers.
+                (Default: "_")
+
+        RETURNS: version tuple
+        """
+        return tuple([
+            int(ver_num)
+            for ver_num in version_str.partition("v")[2].split(delim)
+        ])
