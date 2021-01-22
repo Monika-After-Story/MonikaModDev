@@ -330,7 +330,7 @@ init 10 python:
             "v0_8_10"
         ]
 
-        renpy.call_in_new_context("vv_updates_topics")
+        store.mas_versions.init()
         ver_list = store.updates.version_updates.keys()
 
         if "-" in config.version:
