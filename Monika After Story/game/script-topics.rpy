@@ -16316,20 +16316,13 @@ init 5 python:
     )
 
 label monika_player_employment:
-    if mas_event_mailbox.is_monika_initiated_mode():
-        m "You know..."
-        m "It occurs to me that there's something I never asked you, [mas_get_player_nickname()]."
-        m "It's kind of awkward to ask directly at this point, ahaha..."
-        m "Well...I realized that I didn't know if you were employed or not."
-        m "Or maybe you do freelancing, picking up odd jobs rather than being contracted to just one company."
-        m "Maybe your situation is completely different..."
-        m "Well, if you don't mind talking about it..."
-
-    else:
-        m "Oh, has your employment status changed?"
-        m "I'd love to hear about it!"
-        ###  TODO: This is placeholder dialogue, need to expand this
-        ### Should this path vary depending on your current situation?
+    m 1esc "You know..."
+    m 1eud "It occurs to me that there's something I never asked you, [mas_get_player_nickname()]."
+    m 1lksdlb "It's kind of awkward to ask directly at this point, ahaha..."
+    m 3euc "Well...{w=0.2}I realized that I didn't know if you were employed or not."
+    m 3etb "Or maybe you do freelancing, picking up odd jobs rather than being contracted to just one company."
+    m "Maybe your situation is completely different..."
+    m 1eub "Well, if you don't mind talking about it..."
 
     m "Would you mind telling me, [player]?{nw}"
     $ _history_list.pop()
@@ -16340,34 +16333,35 @@ label monika_player_employment:
             $ persistent._mas_pm_employed = True
             $ persistent._mas_pm_lookingforwork = False
             #TODO: path for if you were looking for a job before, where she congratulates you for finding one
-            m "That's good to hear!"
-            m "It makes me happy to know that you have a stable income."
-            m "I really hope you enjoy what you do, [player]."
-            m "Even if you don't...I'm proud of you for doing your best at it."
+            m 1hub "That's good to hear!"
+            m 1hua "It makes me happy to know that you have a stable income."
+            m 2eua "I really hope you enjoy what you do, [player]."
+            m 2eka "Even if you don't...I'm proud of you for doing your best at it."
 
         "I do freelance work.":
             $ persistent._mas_pm_employed = True
             $ persistent._mas_pm_lookingforwork = False
             #TODO: path for if you were looking for a job before
-            m "Ah, that's interesting!"
-            m "Freelance work is really challenging. You have to work to build a clientele all on your own."
-            m "It can often be less stable than working for a company...but it can be much more flexible to different lifestyles."
-            m "I'm impressed that you're taking on that challenge, [player]."
+            m 1hub "Ah, that's interesting!"
+            m 3eub "Freelance work is really challenging. You have to work to build a clientele all on your own."
+            m 3luc "It can often be less stable than working for a company...{w=0.3}{nw}"
+            extend 3hua "but it can be much more flexible to different lifestyles."
+            m 1hublb "I'm impressed that you're taking on that challenge, [player]."
 
         "I take care of my home full-time.":
             $ persistent._mas_pm_employed = False
             $ persistent._mas_pm_lookingforwork = False
             #lock work goodbye, maybe special dialogue for housework option?
-            m "Oh! I hadn't even thought of that!"
-            m "I think that's very noble of you, [player]."
-            m "Whether they're family or not, I'm sure the people living with you are so grateful for your help."
-            m "I hope you feel personally fulfilled by it as well. This sort of thing might not be salaried work, but it's still work!"
+            m 1wuo "Oh! I hadn't even thought of that!"
+            m 1hublb "I think that's very noble of you, [player]."
+            m 3hua "Whether they're family or not, I'm sure the people living with you are so grateful for your help."
+            m 3eub "I hope you feel personally fulfilled by it as well. This sort of thing might not be salaried work, but it's still work!"
 
         "I'm not working.":
             $ persistent._mas_pm_employed = False
             #lock work goodbye // Shoud this have a variant path if you were employed?
-            m "I see..."
-            m "Well, if you don't mind my asking..."
+            m 1euc "I see..."
+            m 1eka "Well, if you don't mind my asking..."
             
             m "Are you looking for work, or is it a different situation?"
             $ _history_list.pop()
