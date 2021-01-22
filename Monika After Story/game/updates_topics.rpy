@@ -112,9 +112,9 @@ init -2 python in mas_versions:
         """
         Initializes the update data structures
         """
-        # add a new step for every new update script
-        # first param is the target version, rest are versions that update to
-        # the target version.
+        # use add_step when multiple versions update to one version
+        # use add_steps_inc when multiple single-version updates happen in a row
+
         #add_step((0, 11, 10), (0, 11, 9))
         add_step((0, 11, 9), (0, 11, 8), (0, 11, 7))
         add_steps_inc((0, 11, 7), (0, 11, 3))
