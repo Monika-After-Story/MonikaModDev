@@ -954,7 +954,7 @@ init 15 python in mas_affection:
             _("...Go ahead."),
             _("Are you sure you want to talk to me?"),
             _("You actually want to talk to me?"),
-            _("Alright...if that's what you want."),
+            _("Alright...{w=0.3}if that's what you want."),
             _("Is this really what you want?"),
         ]
         save_quips(DISTRESSED, quips)
@@ -1142,8 +1142,8 @@ init 15 python in mas_affection:
             _("Pick anything you like, [mas_get_player_nickname()]."),
             _("I hope you're ready, [mas_get_player_nickname()]~."),
             _("Let's have some fun, [mas_get_player_nickname()]."),
-            _("Don't expect me to go easy on you, [mas_get_player_nickname()]~!"),
-            _("Let's do this, [mas_get_player_nickname()]~!"),
+            _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
+            _("Let's do this, [mas_get_player_nickname()]!~"),
             _("Bring it on, [player]."),
             _("Ready to lose, [player]?"),
             _("I'm ready when you are, [player]!"),
@@ -1160,7 +1160,7 @@ init 15 python in mas_affection:
             _("Ready to lose, [mas_get_player_nickname()]?"),
             _("I hope you're ready, [mas_get_player_nickname()]~."),
             _("Let's have some fun, [mas_get_player_nickname()]."),
-            _("Don't expect me to go easy on you, [mas_get_player_nickname()]~!"),
+            _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
             _("Pick a game, any game~"),
             _("Throwing down the gauntlet, are we?"),
             _("It's time to duel!"),
