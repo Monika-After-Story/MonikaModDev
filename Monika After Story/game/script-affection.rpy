@@ -1011,8 +1011,8 @@ init 15 python in mas_affection:
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's up, [player]?"),
             _("Ask away, [player]."),
-            _("Don't be shy, [player].~"),
-            _("I'm all ears, [player].~"),
+            _("Don't be shy, [player]~"),
+            _("I'm all ears, [player]~"),
             _("Of course we can talk, [player]."),
         ]
         save_quips(AFFECTIONATE, quips)
@@ -1028,9 +1028,9 @@ init 15 python in mas_affection:
             _("Up to chat, I see.~"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's up, [player]?"),
-            _("Ask away, [mas_get_player_nickname()].~"),
-            _("I'm all ears, [mas_get_player_nickname()].~"),
-            _("Of course we can talk, [mas_get_player_nickname().~"),
+            _("Ask away, [mas_get_player_nickname()]~"),
+            _("I'm all ears, [mas_get_player_nickname()]~"),
+            _("Of course we can talk, [mas_get_player_nickname()]~"),
             _("Take all the time you need, [player]."),
             _("We can talk about whatever you'd like, [mas_get_player_nickname()]."),
         ]
@@ -1043,18 +1043,18 @@ init 15 python in mas_affection:
             _("What are you thinking of?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
-            _("Up to chat, I see.~"),
+            _("Up to chat, I see~"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("<3"),
             _("What's up, [mas_get_player_nickname()]?"),
-            _("Ask away, [mas_get_player_nickname()].~"),
-            _("I'm all ears, [mas_get_player_nickname()].~"),
+            _("Ask away, [mas_get_player_nickname()]~"),
+            _("I'm all ears, [mas_get_player_nickname()]~"),
             _("We can talk about whatever you'd like, [mas_get_player_nickname()]."),
-            _("Of course we can talk, [mas_get_player_nickname().~"),
-            _("Take all the time you need, [mas_get_player_nickname()]."),
-            _("I'm all yours, [mas_get_player_nickname()].~"),
+            _("Of course we can talk, [mas_get_player_nickname()]~"),
+            _("Take all the time you need, [mas_get_player_nickname()]~"),
+            _("I'm all yours, [mas_get_player_nickname()]~"),
             _("Oh? Something...{i}important{/i} on your mind, [mas_get_player_nickname()]?~"),
-            _("You don't have to blush when talking to me, [mas_get_player_nickname()]. Unless...{w=1.0}just kidding! Haha~"),
+            _("You don't have to blush when talking to me, [mas_get_player_nickname()]. Unless...{w=1.0}just kidding! Ehehe~"),
         ]
         save_quips(LOVE, quips)
 
@@ -1137,10 +1137,10 @@ init 15 python in mas_affection:
         ## ENAMORED quips
         quips = [
             _("What would you like to play? <3"),
-            _("Pick a game, any game~."),
+            _("Pick a game, any game~"),
             _("Choose anything you like, [mas_get_player_nickname()]."),
             _("Pick anything you like, [mas_get_player_nickname()]."),
-            _("I hope you're ready, [mas_get_player_nickname()].~"),
+            _("I hope you're ready, [mas_get_player_nickname()]~"),
             _("Let's have some fun, [mas_get_player_nickname()]."),
             _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
             _("Let's do this, [mas_get_player_nickname()]!~"),
@@ -1158,7 +1158,7 @@ init 15 python in mas_affection:
             _("Let's do this, [mas_get_player_nickname()]!~"),
             _("Bring it on, [mas_get_player_nickname()]."),
             _("Ready to lose, [mas_get_player_nickname()]?~"),
-            _("I hope you're ready, [mas_get_player_nickname()].~"),
+            _("I hope you're ready, [mas_get_player_nickname()]~"),
             _("Let's have some fun, [mas_get_player_nickname()]."),
             _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
             _("Pick a game, any game.~"),
@@ -1166,9 +1166,9 @@ init 15 python in mas_affection:
             _("It's time to duel!"),
             _("Challenge accepted!"),
             _("I'm ready when you are, [mas_get_player_nickname()]!"),
-            _("I'd love to play something with you, [mas_get_player_nickname()].~"),
+            _("I'd love to play something with you, [mas_get_player_nickname()]~"),
             _("Sure, I'd love to play with you!"),
-            _("I'll always be up to play with you, [mas_get_player_nickname()].~"),
+            _("I'll always be up to play with you, [mas_get_player_nickname()]~"),
         ]
         save_quips(LOVE, quips)
 
