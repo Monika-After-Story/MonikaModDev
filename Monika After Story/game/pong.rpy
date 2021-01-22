@@ -702,7 +702,7 @@ label mas_pong_dlg_winner:
     #Monika wins a game after the player let her win on purpose at least three times
     elif instant_loss_streak_counter_before >= 3 and player_lets_monika_win_on_purpose:
         m 3hub "Nice try [player],{w=0.1} {nw}"
-        extend m 3tsu "but I can win by myself!"
+        extend 3tsu "but I can win by myself!"
 
     #Monika wins after telling the player she would win the next game
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
