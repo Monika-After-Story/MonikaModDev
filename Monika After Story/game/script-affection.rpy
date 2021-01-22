@@ -1027,7 +1027,7 @@ init 15 python in mas_affection:
             _("Is there something you'd like to talk about, [mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
-            _("Up to chat, I see.~"),
+            _("Up to chat, I see~"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's on your mind, [mas_get_player_nickname()]?"),
             _("What's up, [player]?"),
