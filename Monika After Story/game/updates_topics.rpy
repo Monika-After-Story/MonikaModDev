@@ -1,14 +1,6 @@
 # Module that defines changed topics between versions
 # this should run before updates.rpy
 
-# start by initalization version update dict
-define updates.version_updates = None
-
-# key:version number -> v:changedIDs
-# changedIDs structure:
-#   k:oldId -> v:newId
-define updates.topics = None
-
 init -1 python in mas_db_merging:
     import store
 
@@ -40,29 +32,54 @@ init -1 python in mas_db_merging:
 # preeerything
 init -1 python:
     def clearUpdateStructs():
-        #
-        # Clears a bunch of uneeded stuff
-
-        updates.topics.clear()
-        updates.topics = None
-        #updates.version_updates.clear()
-        #updates.version_updates = None
-        # TODO
-        # is there a way to delete a renpy storemodule?
+        """DEPRECATED
+        Use mas_versions.clear instead
+        """
+        store.mas_versions.clear()
 
 
-# runs before updates.rpy
 init 9 python:
-    renpy.call_in_new_context("vv_updates_topics")
 
-# init label for updats_topics
-label vv_updates_topics:
-    python:
 
-        # init these dicts
-        updates.version_updates = {}
-        updates.topics = {}
+# NOTE: these are now just ptrs to the actual store values.
+# NOTE: DO NOT CHANGE THE init LEVEL of THESE LINES
+define updates.version_updates = mas_versions.version_updates
+define updates.topics = mas_versions.topics
 
+
+init -2 python in mas_versions:
+
+    # start by initalization version update dict
+    version_updates = {}
+
+    # key:version number -> v:changedIDs
+    # changedIDs structure:
+    #   k:oldId -> v:newId
+    topics = {}
+
+    def add_step(to_ver, *from_vers):
+        """
+        Adds a version step, aka, which version to update to from
+        other versions.
+
+        IN:
+            to_ver - tuple of ints that form the version to update to
+            from_vers - any number of tuples of ints that form the versions to
+                update from.
+        """
+
+
+    def clear():
+        """
+        Clears the update data structures
+        """
+        version_updates.clear()
+        topics.clear()
+
+    def init():
+        """
+        Initializes the update data structures
+        """
         # versions
         # use the v#_#_# notation so we can work with labels
         vv0_11_10 = "v0_11_10"
