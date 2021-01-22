@@ -993,6 +993,7 @@ init 15 python in mas_affection:
             _("Something on your mind?"),
             _("Up to chat, [player]?"),
             _("Yes, [player]?"),
+            _("What's on your mind, [player]?"),
             _("What's up, [player]?"),
             _("Ask away, [player]."),
             _("Don't be shy, [player]."),
@@ -1009,6 +1010,7 @@ init 15 python in mas_affection:
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Up to chat, [player]?"),
             _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("What's up, [player]?"),
             _("Ask away, [player]."),
             _("Don't be shy, [player]~"),
@@ -1019,14 +1021,15 @@ init 15 python in mas_affection:
 
         ## ENAMORED quips
         quips = [
-            _("What would you like to talk about?"),
-            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("What would you like to talk about? <3"),
+            _("What would you like to talk about, [mas_get_player_nickname()]? <3"),
             _("What are you thinking of?"),
             _("Is there something you'd like to talk about, [mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Up to chat, I see.~"),
             _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("What's up, [player]?"),
             _("Ask away, [mas_get_player_nickname()]~"),
             _("I'm all ears, [mas_get_player_nickname()]~"),
@@ -1038,13 +1041,14 @@ init 15 python in mas_affection:
 
         ## LOVE quips
         quips = [
-            _("What would you like to talk about?"),
-            _("What would you like to talk about, [mas_get_player_nickname()]?"),
+            _("What would you like to talk about? <3"),
+            _("What would you like to talk about, [mas_get_player_nickname()]? <3"),
             _("What are you thinking of?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
             _("Up to chat, I see~"),
             _("Yes, [mas_get_player_nickname()]?"),
+            _("What's on your mind, [mas_get_player_nickname()]?"),
             _("<3"),
             _("What's up, [mas_get_player_nickname()]?"),
             _("Ask away, [mas_get_player_nickname()]~"),
