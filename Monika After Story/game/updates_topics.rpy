@@ -50,6 +50,7 @@ define updates.topics = mas_versions.topics
 init -2 python in mas_versions:
     import store
     import store.mas_utils as mas_utils
+    from store.mas_ev_data_ver import _verify_str
 
     # start by initalization version update dict
     version_updates = {}
@@ -59,45 +60,24 @@ init -2 python in mas_versions:
     #   k:oldId -> v:newId
     topics = {}
 
-    def add_step(to_ver, *from_vers):
+
+    def add_steps(version_struct):
         """
-        Adds a version step, aka, which version to update to from
-        other versions.
+        Adds versions to the version updates dict.
 
         IN:
-            to_ver - tuple of ints that form the version to update to
-            from_vers - any number of tuples of ints that form the versions to
-                update from.
+            version_struct - dict with versions in special version notation.
+                Keys: version to update to, as string
+                Vals: versions to update from, as string or tuple of strings
         """
-        to_ver_str = _vstr(to_ver)
-        for from_ver in from_vers:
-            version_updates[_vstr(from_ver)] = to_ver_str
-
-
-    def add_steps_inc(to_ver, from_start_ver):
-        """
-        Adds multiple version steps, assuming incremental, 1 version steps, 
-        from the start ver to the to ver.
-
-        NOTE: the rightmost number of the to ver must be larger than the
-        right most number of the start ver. this will quit early if that is
-        not true.
-
-        IN:
-            to_ver - tuple of ints that form the version to update to
-            from_start_ver - tuple of ints that form the version to start
-                incremental updates from
-        """
-        if len(to_ver) != len(from_start_ver):
-            return
-
-        target_num = to_ver[-1]
-        if target_num <= from_start_ver[-1]:
-            return
-
-        for vnum in range(from_start_ver[-1], target_num):
-            ver_pfx = from_start_ver[:-1]
-            add_step(ver_pfx + (vnum + 1,), ver_pfx + (vnum,))
+        for to_ver, from_vers in version_struct.items(): # using items for py3
+            to_ver_str = _vdot2vstr(to_ver)
+            if _verify_str(from_vers, False):
+                version_updates[_vdot2vstr(from_vers)] = to_ver_str
+            else:
+                # must be tuple
+                for from_ver in from_vers:
+                    version_updates[_vdot2vstr(from_ver)] = to_ver_str
 
 
     def clear():
@@ -112,39 +92,62 @@ init -2 python in mas_versions:
         """
         Initializes the update data structures
         """
-        # use add_step when multiple versions update to one version
-        # use add_steps_inc when multiple single-version updates happen in a row
+        # use the notation:
+        #   new version: old version
+        # OR
+        #   new version: (old version 1, old version 2, ...)
+        #
+        # use dot notation to separate the parts of a version
 
-        #add_step((0, 11, 10), (0, 11, 9))
-        add_step((0, 11, 9), (0, 11, 8), (0, 11, 7))
-        add_steps_inc((0, 11, 7), (0, 11, 3))
-        add_step((0, 11, 3), (0, 11, 2), (0, 11, 1))
-        add_step((0, 11, 1), (0, 11, 0))
+        add_steps({
+            "0.11.10": "0.11.9",
+            "0.11.9": ("0.11.8", "0.11.7"),
+            "0.11.7": "0.11.6",
+            "0.11.6": "0.11.5",
+            "0.11.5": "0.11.4",
+            "0.11.4": "0.11.3",
+            "0.11.3": ("0.11.2", "0.11.1"),
+            "0.11.1": "0.11.0",
+            "0.11.0": "0.10.7",
 
-        add_step((0, 11, 0), (0, 10, 7))
-        add_steps_inc((0, 10, 7), (0, 10, 0))
+            "0.10.7": "0.10.6",
+            "0.10.6": "0.10.5",
+            "0.10.5": "0.10.4",
+            "0.10.4": "0.10.3",
+            "0.10.3": "0.10.2",
+            "0.10.2": "0.10.1",
+            "0.10.1": "0.10.0",
+            "0.10.0": "0.9.5",
 
-        add_step((0, 10, 0), (0, 9, 5))
-        add_step((0, 9, 5), (0, 9, 4))
-        add_step((0, 9, 4), (0, 9, 3), (0, 9, 2))
-        add_steps_inc((0, 9, 2), (0, 9, 0))
+            "0.9.5": "0.9.4",
+            "0.9.4": ("0.9.3", "0.9.2"),
+            "0.9.2": "0.9.1",
+            "0.9.1": "0.9.0",
+            "0.9.0": "0.8.14",
 
-        add_step((0, 9, 0), (0, 8, 14))
-        add_step((0, 8, 14), (0, 8, 13))
-        add_step((0, 8, 13), (0, 8, 12), (0, 8, 11))
-        add_steps_inc((0, 8, 11), (0, 8, 9))
-        add_step((0, 8, 9), (0, 8, 8), (0, 8, 7), (0, 8, 6))
-        add_step((0, 8, 6), (0, 8, 5), (0, 8, 4))
-        add_steps_inc((0, 8, 4), (0, 8, 0))
+            "0.8.14": "0.8.13",
+            "0.8.13": ("0.8.12", "0.8.11"),
+            "0.8.11": "0.8.10",
+            "0.8.10": "0.8.9",
+            "0.8.9": ("0.8.8", "0.8.7", "0.8.6"),
+            "0.8.6": ("0.8.5", "0.8.4"),
+            "0.8.4": "0.8.3",
+            "0.8.3": "0.8.2",
+            "0.8.2": "0.8.1",
+            "0.8.1": "0.8.0",
+            "0.8.0": "0.7.4",
 
-        add_step((0, 8, 0), (0, 7, 4))
-        add_step((0, 7, 4), (0, 7, 3), (0, 7, 2))
-
-        add_step((0, 7, 0), (0, 6, 3), (0, 6, 2), (0, 6, 1))
-        add_step((0, 6, 1), (0, 6, 0), (0, 5, 1))
-        add_step((0, 5, 1), (0, 5, 0), (0, 4, 0), (0, 3, 3))
-        add_steps_inc((0, 3, 3), (0, 3, 0))
-        add_step((0, 3, 0), (0, 2, 2))
+            "0.7.4": ("0.7.3", "0.7.2"),
+            "0.7.2": "0.7.1",
+            "0.7.1": "0.7.0",
+            "0.7.0": ("0.6.3", "0.6.2", "0.6.1"),
+            "0.6.1": ("0.6.0", "0.5.1"),
+            "0.5.1": ("0.5.0", "0.4.0", "0.3.3"),
+            "0.3.3": "0.3.2",
+            "0.3.2": "0.3.1",
+            "0.3.1": "0.3.0",
+            "0.3.0": "0.2.2",
+        })
 
         # NOTE: we are no longer going to use this:
         #
@@ -162,7 +165,7 @@ init -2 python in mas_versions:
         updates = store.updates
 
         # (0.8.4 - 0.8.10) -> 0.8.11
-        updates.topics[_vstr((0, 8, 11))] = {
+        updates.topics[_vdot2vstr("0.8.11")] = {
             "monika_snowman": None,
             "monika_relax": None,
             "monika_hypothermia": None,
@@ -170,24 +173,24 @@ init -2 python in mas_versions:
         }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
-        updates.topics[_vstr((0, 8, 4))] = {
+        updates.topics[_vdot2vstr("0.8.4")] = {
             "monika_bestgirl": "mas_compliment_bestgirl"
         }
 
         # 0.8.0 -> 0.8.1
-        updates.topics[_vstr((0, 8, 1))] = {
+        updates.topics[_vdot2vstr("0.8.1")] = {
             "monika_write": "monika_writingtip3",
             "mas_random_ask": None,
             "monika_ravel": "mas_story_ravel"
         }
 
         # 0.7.4 -> 0.8.0
-        updates.topics[_vstr((0, 8, 0))] = {
+        updates.topics[_vdot2vstr("0.8.0")] = {
             "monika_love2": None
         }
 
         # (0.7.0 - 0.7.3) -> 0.7.4
-        updates.topics[_vstr((0, 7, 4))] = {
+        updates.topics[_vdot2vstr("0.7.4")] = {
             "monika_playerhappy": None,
             "monika_bad_day": None
         }
@@ -203,13 +206,13 @@ init -2 python in mas_versions:
             "monika_goodbye": None,
             "monika_night": None
         }
-        updates.topics[_vstr((0, 7, 0))] = changedIDs
+        updates.topics[_vdot2vstr("0.7.0")] = changedIDs
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {
             "monika_piano": None
         }
-        updates.topics[_vstr((0, 6, 1))] = changedIDs
+        updates.topics[_vdot2vstr("0.6.1")] = changedIDs
 
         # (0.3.3 - 0.5.0) -> 0.5.1
         changedIDs = dict()
@@ -225,17 +228,17 @@ init -2 python in mas_versions:
         changedIDs["monika_kyon"] = None
         changedIDs["monika_water"] = None
         changedIDs["monika_computer"] = None
-        updates.topics[_vstr((0, 5, 1))] = changedIDs
+        updates.topics[_vdot2vstr("0.5.1")] = changedIDs
 
         # 0.3.1 -> 0.3.2
         changedIDs = dict()
         changedIDs["monika_monika"] = None
-        updates.topics[_vstr((0, 3, 2))] = changedIDs
+        updates.topics[_vdot2vstr("0.3.2")] = changedIDs
 
         # 0.3.0 -> 0.3.1
         changedIDs = dict()
         changedIDs["monika_ghosts"] = "monika_whispers"
-        updates.topics[_vstr((0, 3, 1))] = changedIDs
+        updates.topics[_vdot2vstr("0.3.1")] = changedIDs
 
         # 0.2.2 -> 0.3.0
         # this is a long list...
@@ -352,41 +355,20 @@ init -2 python in mas_versions:
             # changedIDs dict (these must be handled in updates.rpy)
             # monika_piano
             # monika_college was pointing to ch30_31 (monika_middleschool)
-        updates.topics[_vstr((0, 3, 0))] = changedIDs
+        updates.topics[_vdot2vstr("0.3.0")] = changedIDs
 
         # ensuring no refs to old dicts
         changedIDs = None
 
 
-    def _vstr(version_tuple, delim="_"):
+    def _vdot2vstr(version_str):
         """
-        Converts a version tuple to a vstring
+        Converts a version string that uses dots to the v#_#_# notation
 
         IN:
-            version_tuple - vresion tuple to convert
-            delim - delimiter to use between the version numbers
-                (Default: "_")
+            version_str - version string with dots #.#.#.#
 
-        RETURNS: v#_#_#_#... string
+        RETURNS: version string in the standard version notation:
+            v#_#_#_#
         """
-        return "v" + delim.join([str(num) for num in version_tuple])
-
-
-    def _vtup(version_str, delim="_"):
-        """
-        Converts a version string to a vtuple
-
-        NOTE: to prevent version update issues, this will crash if an invalid
-        string is used.
-
-        IN:
-            version_str - version string to convert (v#_#_#...)
-            delim - delimiter used between version numbers.
-                (Default: "_")
-
-        RETURNS: version tuple
-        """
-        return tuple([
-            int(ver_num)
-            for ver_num in version_str.partition("v")[2].split(delim)
-        ])
+        return "v" + "_".join(version_str.split("."))
