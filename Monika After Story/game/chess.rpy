@@ -125,7 +125,7 @@ init python in mas_chess:
     QF_EDIT_NO = 5
 
     #Randomly selectable pieces
-    random_piece_pool = ['r', 'n', 'p', 'q', 'b']
+    PIECE_POOL = ('r', 'n', 'p', 'q', 'k', 'b')
 
     #Base chess FEN format
     BASE_FEN = "{black_pieces_back}/{black_pieces_front}/8/8/8/8/{white_pieces_front}/{white_pieces_back} w - - 0 1"
@@ -1666,7 +1666,7 @@ screen mas_chess_confirm():
                 textbutton _("No") action Return(False)
 
 # promotion screen for chess
-screen mas_chess_promote:
+screen mas_chess_promote(q, r, n, b):
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1691,24 +1691,21 @@ screen mas_chess_promote:
                 xalign 0.5
                 spacing 10
 
-                imagebutton idle PROMO_QUEEN action Return('q')
-                imagebutton idle PROMO_ROOK action Return('r')
-                imagebutton idle PROMO_KNIGHT action Return('n')
-                imagebutton idle PROMO_BISHOP action Return('b')
+                imagebutton idle q action Return('q')
+                imagebutton idle r action Return('r')
+                imagebutton idle n action Return('n')
+                imagebutton idle b action Return('b')
 
 label mas_chess_promote_context(is_player_white):
-    python:
-        #Define some images here
-        clr_str = MASPiece.FP_COLOR_LOOKUP[is_player_white]
-        PROMO_QUEEN = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "Q" if is_player_white else "q"))
-        PROMO_ROOK = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "R" if is_player_white else "r"))
-        PROMO_KNIGHT = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "N" if is_player_white else "n"))
-        PROMO_BISHOP = Image(MASPiece.DEF_PIECE_FP_BASE.format(clr_str, "B" if is_player_white else "b"))
+    $ _return = renpy.call_screen(
+        "mas_chess_promote",
+        q=MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[is_player_white] + ("Q" if is_player_white else "q")],
+        r=MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[is_player_white] + ("R" if is_player_white else "r")],
+        n=MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[is_player_white] + ("N" if is_player_white else "n")],
+        b=MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[is_player_white] + ("B" if is_player_white else "b")]
+    )
 
-
-    call screen mas_chess_promote
-    $ store.mas_chess.promote = _return
-    return
+    return _return
 
 #START: Chess related functions
 init python:
@@ -1716,15 +1713,12 @@ init python:
     import chess.pgn
     import collections
     import subprocess
-    import platform
+    # import platform
     import random
     import pygame
     import threading
     import StringIO
     import os
-
-    #For the buttons
-    import store.mas_ui as mas_ui
 
     #Only add the chess_games folder if we can even do chess
     if mas_games.is_platform_good_for_chess():
@@ -1754,12 +1748,11 @@ init python:
 
         #Put the static vars up here
         MONIKA_WAITTIME = 50
-        MONIKA_DEPTH = 1
+        # MONIKA_DEPTH = 1
         MONIKA_OPTIMISM = 33
-        MONIKA_THREADS = 1
+        # MONIKA_THREADS = 1
 
         START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-        PIECES_IMAGE = Image("mod_assets/games/chess/chess_pieces.png")
         BOARD_IMAGE = Image("mod_assets/games/chess/chess_board.png")
         PIECE_HIGHLIGHT_RED_IMAGE = Image("mod_assets/games/chess/piece_highlight_red.png")
         PIECE_HIGHLIGHT_GREEN_IMAGE = Image("mod_assets/games/chess/piece_highlight_green.png")
@@ -1767,15 +1760,6 @@ init python:
         PIECE_HIGHLIGHT_MAGENTA_IMAGE = Image("mod_assets/games/chess/piece_highlight_magenta.png")
         MOVE_INDICATOR_PLAYER = Image("mod_assets/games/chess/move_indicator_player.png")
         MOVE_INDICATOR_MONIKA = Image("mod_assets/games/chess/move_indicator_monika.png")
-
-        VECTOR_PIECE_POS = {
-            'K': 0,
-            'Q': 1,
-            'R': 2,
-            'B': 3,
-            'N': 4,
-            'P': 5
-        }
 
         #The sizes of the images.
         BOARD_BORDER_WIDTH = 15
@@ -1823,8 +1807,6 @@ init python:
         #Win states
         STATE_BLACK_WIN = "0-1"
         STATE_WHITE_WIN = "1-0"
-
-        PROMOLIST = ["q","r","n","b","r","k"]
 
         #Reflect over x, reflect over y tuples
         COORD_REFLECT_MAP = {
@@ -2659,6 +2641,12 @@ init python:
             False: "b"
         }
 
+        IMG_MAP = {
+            color + (symbol.upper() if color == "w" else symbol): Image("mod_assets/games/chess/pieces/{0}{1}.png".format(color, (symbol.upper() if color == "w" else symbol)))
+            for color in FP_COLOR_LOOKUP.itervalues()
+            for symbol in mas_chess.PIECE_POOL
+        }
+
         def __init__(
             self,
             is_white,
@@ -2684,7 +2672,7 @@ init python:
             self.piece_map = piece_map
 
             #Store the internal reference to this piece's image fp for use in rendering
-            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[is_white], symbol))
+            self.__piece_image = MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[is_white] + symbol]
 
             #Internal reference to the position
             self.x_pos = posX
@@ -2756,7 +2744,7 @@ init python:
             """
             self.symbol = promoted_piece_symbol.upper() if self.is_white else promoted_piece_symbol
             #Update the piece image
-            self.__piece_image = Image(MASPiece.DEF_PIECE_FP_BASE.format(MASPiece.FP_COLOR_LOOKUP[self.is_white], self.symbol))
+            self.__piece_image = MASPiece.IMG_MAP[MASPiece.FP_COLOR_LOOKUP[self.is_white] + self.symbol]
 
         def move(self, new_x, new_y):
             """
@@ -3326,8 +3314,8 @@ init python:
                     self.selected_piece = None
 
                     #Now call the promotion screen
-                    renpy.call_in_new_context("mas_chess_promote_context", self.is_player_white)
-                    move_str += store.mas_chess.promote
+                    promote = renpy.call_in_new_context("mas_chess_promote_context", self.is_player_white)
+                    move_str += promote
 
             if move_str is None:
                 return
