@@ -734,12 +734,10 @@ label game_chess:
         python:
             is_player_white = mas_chess._get_player_color(loaded_game)
 
-            #These are automatically loaded with the pgn when we start the game, we'll default these to False
-            practice_mode = False
-            casual_rules = False
-
-            #Since we're not generating new, this is fine to set to anything
-            do_really_bad_chess = False
+            #Always read these values back so if we play again, the same game rules are maintained
+            practice_mode = eval(loaded_game.headers.get("Practice", "False"))
+            casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
+            do_really_bad_chess = loaded_game.headers["FEN"] == MASChessDisplayableBase.START_FEN
 
         jump .start_chess
 
@@ -1891,6 +1889,9 @@ init python:
             if pgn_game:
                 #Casual rules
                 self.casual_rules = eval(pgn_game.headers.get("CasualRules", "False"))
+
+                #Correct the starting FEN
+                self.starting_fen = pgn_game.headers.get("FEN", "None")
 
                 #Load this game into the board, push turns
                 self.board = MASBoard.from_board(pgn_game.board(), self.casual_rules)
@@ -3458,6 +3459,7 @@ init python:
 
             #Hist related to undo + practice mode
             new_pgn.headers["Practice"] = self.practice_mode
+            new_pgn.headers["CasualRules"] = self.casual_rules
             new_pgn.headers["MoveHist"] = self.move_history
             new_pgn.headers["UndoCount"] = self.undo_count
 
