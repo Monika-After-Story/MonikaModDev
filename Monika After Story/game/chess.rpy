@@ -665,7 +665,7 @@ label game_chess:
             # do we have a backup
             elif _return == mas_chess.CHESS_GAME_BACKUP:
                 $ loaded_game = quicksaved_game
-                jump mas_chess_game_load_check
+                jump .load_check
 
             # otherwise we are contiuing or quitting
             else:
@@ -694,12 +694,12 @@ label game_chess:
             # do we use backup
             if _return == mas_chess.CHESS_GAME_BACKUP:
                 $ loaded_game = quicksaved_game
-                jump mas_chess_game_load_check
+                jump .load_check
 
             # or maybe the file
             elif _return == mas_chess.CHESS_GAME_FILE:
                 $ loaded_game = quicksaved_file
-                jump mas_chess_game_load_check
+                jump .load_check
 
             # kill the quicksaves
             python:
@@ -724,6 +724,9 @@ label game_chess:
                 # we successfully loaded the unfinished game and player did not
                 # cheat
                 m 1eua "We still have an unfinished game in progress."
+
+            label .load_check:
+                pass
 
             m 1efb "Get ready!"
 
