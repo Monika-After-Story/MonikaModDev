@@ -6248,6 +6248,33 @@ init 20 python:
 """
     )
 
+    poem_vday_4 = MASPoem(
+        poem_id="poem_f14_4",
+        category="f14",
+        prompt="You", #TODO: needs title
+        title=" My dearest [player],",
+        text="""\
+ All the roses in the world,
+ They grow and bloom into something beautiful.
+ Just as our relationship will.
+ Every day,
+ We grow ever closer,
+ Ever stronger,
+ Ever more beautiful~
+
+ And though roses have thorns,
+ They don’t undermine their loveliness,
+ They defend them,
+ They make them stronger.
+ And of all the roses in the world,
+ Even on this most romantic holiday,
+ None could ever replace my special flower~
+
+ Forever your Valentine,
+ Monika
+"""
+    )
+
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:
