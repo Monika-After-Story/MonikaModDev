@@ -265,7 +265,22 @@ init python in mas_chess:
             return store.chess.BLACK
         return store.chess.WHITE
 
-    def select_piece(remaining_points):
+    def _get_piece_chance(piece_type, selected_pieces_count_dict):
+        """
+        Gets the piece chance and returns the piece and weight in tuple form for a `mas_utils.weightedChoice` selection
+
+        IN:
+            piece_type - type of the piece ('b', 'r', 'n', 'q')
+
+        OUT:
+            tuple - (piece_type, weight) of the piece
+        """
+        return (
+            piece_type,
+            PIECE_POINT_MAP[piece_type] / (1.0 + selected_pieces_count_dict[piece_type])
+        )
+
+    def select_piece(remaining_points, selected_pieces_count_dict):
         """
         Selects a piece according to random
 
@@ -275,23 +290,30 @@ init python in mas_chess:
         OUT:
             a chess piece (str) based on available
         """
-        piece_pool = ['p']
+        #Generate the random chances
+        piece_pool = list()
 
         if remaining_points >= 3:
-            piece_pool.extend(['b', 'n'])
+            piece_pool.extend([
+                _get_piece_chance('b', selected_pieces_count_dict),
+                _get_piece_chance('n', selected_pieces_count_dict)
+            ])
 
             if remaining_points >= 5:
-                piece_pool.append('r')
+                piece_pool.append(_get_piece_chance('r', selected_pieces_count_dict))
 
                 if remaining_points >= 9:
-                    piece_pool.append('q')
+                    piece_pool.append(_get_piece_chance('q', selected_pieces_count_dict))
 
-            return random.choice(piece_pool)
+            #Get our piece and update the dict
+            selected_piece = store.mas_utils.weightedChoice(piece_pool)
+            selected_pieces_count_dict[selected_piece] += 1
 
-        # If we have less than 3 points, we just give a pawn
+            return selected_piece
+        #Otherwise, since we can't afford to expend more, we just get pawns
         return 'p'
 
-    def gen_side(white=True, max_side_value=None):
+    def gen_side(white=True, max_side_value=14):
         """
         Generates a player's side
 
@@ -299,6 +321,7 @@ init python in mas_chess:
             white - whether or not we should generate for white
                 (Default: True)
             max_side_value - The current upper limit for piece selection
+                (Default: 14 -- minimum weight, most pieces are pawns)
 
         OUT:
             2 strings representing a random assortment of pieces (front row and back row)
@@ -307,6 +330,14 @@ init python in mas_chess:
 
         back_row = list()
         front_row = list()
+
+        #Counts how many pieces of the types we've picked
+        selected_pieces_count = {
+            'q': 0,
+            'r': 0,
+            'n': 0,
+            'b': 0
+        }
 
         side_indeces = range(0, 16)
         random.shuffle(side_indeces)
@@ -319,7 +350,7 @@ init python in mas_chess:
                 piece_to_add = 'k'
 
             else:
-                piece_to_add = select_piece(max_side_value)
+                piece_to_add = select_piece(max_side_value, selected_pieces_count)
                 # Subtract points for this piece, add back points for the pawn we replaced
                 max_side_value -= PIECE_POINT_MAP[piece_to_add] - 1
 
@@ -333,6 +364,9 @@ init python in mas_chess:
             else:
                 front_row.append(piece_to_add)
 
+        #Shuffle the rows
+        random.shuffle(front_row)
+        random.shuffle(back_row)
 
         #Reorder if needed
         if not white:
