@@ -643,7 +643,7 @@ label mas_pong_dlg_winner:
 
         #Thrice
         elif instant_loss_streak_counter == 3:
-            m 2tfd "[mas_get_player_nickname(regex_replace_with_nullstr='my ')]!"
+            m 2tfd "[player]!"
 
             if persistent._mas_pm_ever_let_monika_win_on_purpose:
                 $ menu_response = _("Are you letting me win on purpose again?")
@@ -679,7 +679,7 @@ label mas_pong_dlg_winner:
                                 call mas_pong_dlg_sorry_assuming
 
                             "No":
-                                m 1rfu "[mas_get_player_nickname(regex_replace_with_nullstr='my ')]!"
+                                m 1rfu "[player]!"
                                 m 2hksdlb "Stop teasing me!"
                                 $ player_lets_monika_win_on_purpose = True
                                 $ lose_on_purpose = True
@@ -924,9 +924,9 @@ label mas_pong_dlg_loser:
 
     #Monika loses after saying she would win this time
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
-        m 2wuo "Wow...{w=0.3} {nw}"
-        extend 3wuo "I was really trying that time!"
-        m 1hub "Way to go, [player]!"
+        m 2wuo "Wow...{w=0.3}{nw}"
+        extend 7wuo "I was really trying that time!"
+        m 3hub "Way to go, [player]!"
 
     #Monika loses after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
@@ -1022,9 +1022,9 @@ label mas_pong_dlg_loser:
                 m 1hub "Keep it up~"
             else:
                 if win_streak_counter > 1:
-                    m 1hub "You won again! Well done~"
+                    m 1hub "You won again! {w=0.2}Well done~"
                 else:
-                    m 1eua "You won! Not bad."
+                    m 1eua "You won! {w=0.2}Not bad."
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME
 
@@ -1035,9 +1035,9 @@ label mas_pong_dlg_loser:
                 m 4eua "Great job, [player]."
             else:
                 if win_streak_counter > 1:
-                    m 2hub "You won again! Congrats!"
+                    m 2hub "You won again! {w=0.2}Congrats!"
                 else:
-                    m 2hua "You won! Congratulations!"
+                    m 2hua "You won! {w=0.2}Congratulations!"
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_HARD_GAME
 
@@ -1049,9 +1049,9 @@ label mas_pong_dlg_loser:
                 m 3hub "Ahaha!"
             else:
                 if win_streak_counter > 1:
-                    m 4hub "You won again! Nice work!"
+                    m 4hub "You won again! {w=0.2}Nice work!"
                 else:
-                    m 4hub "You won! Impressive!"
+                    m 4hub "You won! {w=0.2}Impressive!"
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME
 
