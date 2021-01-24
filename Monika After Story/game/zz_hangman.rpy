@@ -390,9 +390,6 @@ label game_hangman:
             instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
             store.mas_hangman.game_name = "Hangman"
 
-    m 2eub "You want to play [store.mas_hangman.game_name]? Okay!"
-
-
 label mas_hangman_game_select_diff:
     m "Choose a difficulty.{nw}"
     $ _history_list.pop()

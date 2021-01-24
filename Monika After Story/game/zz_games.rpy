@@ -205,6 +205,45 @@ label mas_pick_a_game:
 
     if selected_game:
         show monika at t11
+        if selected_game != "mas_piano":
+            python:
+                if mas_isMoniUpset(lower=True):
+                    begin_quips = [
+                        _("Okay, let's play."),
+                        _("I guess we can play that."),
+                        _("Let's begin."),
+                        _("Sure."),
+                        _("Fine."),
+                        _("Alright."),
+                    ]
+
+                else:
+                    name = player if mas_isMoniAff(lower=True) else mas_get_player_nickname()
+                    begin_quips = [
+                        _("Let's do this!"),
+                        _("Bring it on, [name]!"),
+                        _("Ready to lose, [name]?"),
+                        _("I'm ready when you are, [name]!"),
+                        _("I hope you're ready, [name]~"),
+                        _("Let's have some fun, [name]!"),
+                        _("Don't expect me to go easy on you, [name]!~"),
+                        _("Throwing down the gauntlet, are we?"),
+                        _("It's time to duel!"),
+                        _("Challenge accepted!"),
+                    ]
+
+                game_quip = renpy.substitute(renpy.random.choice(begin_quips))
+
+
+            if mas_isMoniBroken():
+                m 6ckc "..."
+
+            elif mas_isMoniUpset(lower=True):
+                m 2ekd "[game_quip]"
+
+            else:
+                m 3hub "[game_quip]"
+
         $ pushEvent(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
