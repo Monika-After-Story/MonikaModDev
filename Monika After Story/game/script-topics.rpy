@@ -13439,7 +13439,7 @@ label monika_full_name:
         m "Could you tell me what it is?{fast}"
         "Yes.":
             m 1hubsb "Yay! Thank you [player], I'm so excited!"
-            m 3esa "Okay, so what's your last name."
+            m 3esa "Okay, so what's your last name?"
             call monika_change_last_name
 
             call monika_change_middle_name(question="Do you have a middle name?")
