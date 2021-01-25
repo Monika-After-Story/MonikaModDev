@@ -265,7 +265,7 @@ init python in mas_chess:
             return store.chess.BLACK
         return store.chess.WHITE
 
-    def _get_piece_chance(piece_type, selected_pieces_count_dict):
+    def _get_piece_chance(piece_type, selected_pieces_count_dict, available_points):
         """
         Gets the piece chance and returns the piece and weight in tuple form for a `mas_utils.weightedChoice` selection
 
@@ -275,9 +275,11 @@ init python in mas_chess:
         OUT:
             tuple - (piece_type, weight) of the piece
         """
+        prelim_value = (float(available_points) / PIECE_POINT_MAP[piece_type]) - selected_pieces_count_dict[piece_type]
+
         return (
             piece_type,
-            PIECE_POINT_MAP[piece_type] / (1.0 + selected_pieces_count_dict[piece_type])
+            prelim_value if prelim_value > 0 else 1
         )
 
     def select_piece(remaining_points, selected_pieces_count_dict):
@@ -295,15 +297,15 @@ init python in mas_chess:
 
         if remaining_points >= 3:
             piece_pool.extend([
-                _get_piece_chance('b', selected_pieces_count_dict),
-                _get_piece_chance('n', selected_pieces_count_dict)
+                _get_piece_chance('b', selected_pieces_count_dict, remaining_points),
+                _get_piece_chance('n', selected_pieces_count_dict, remaining_points)
             ])
 
             if remaining_points >= 5:
-                piece_pool.append(_get_piece_chance('r', selected_pieces_count_dict))
+                piece_pool.append(_get_piece_chance('r', selected_pieces_count_dict, remaining_points))
 
                 if remaining_points >= 9:
-                    piece_pool.append(_get_piece_chance('q', selected_pieces_count_dict))
+                    piece_pool.append(_get_piece_chance('q', selected_pieces_count_dict, remaining_points))
 
             #Get our piece and update the dict
             selected_piece = store.mas_utils.weightedChoice(piece_pool)
