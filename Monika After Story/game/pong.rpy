@@ -487,7 +487,6 @@ label game_pong:
             m 1hua "You want to play pong again?"
             m 3eub "I'm ready when you are~"
     else:
-        m 1eua "You wanna play a game of Pong? Okay!"
         $ played_pong_this_session = True
 
     $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
