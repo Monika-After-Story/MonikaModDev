@@ -330,7 +330,7 @@ init 10 python:
             "v0_8_10"
         ]
 
-        renpy.call_in_new_context("vv_updates_topics")
+        store.mas_versions.init()
         ver_list = store.updates.version_updates.keys()
 
         if "-" in config.version:
@@ -372,8 +372,8 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-# 0.11.10
-label v0_11_10(version="v0_11_10"):
+# 0.11.9.1
+label v0_11_9_1(version="v0_11_9_1"):
     python:
         mas_setEVLPropValues(
             "mas_d25_monika_holiday_intro_upset",
