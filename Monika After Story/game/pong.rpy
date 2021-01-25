@@ -658,7 +658,7 @@ label mas_pong_dlg_winner:
                     m 1hua "Ehehe!~"
                     m 1eka "Thank you, [player]~"
                     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eka "But you know,{w0.1} I don't mind losing to you every now and then."
+                    m 5eka "But you know,{w=0.1} I don't mind losing to you every now and then."
 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 5eua "I like to see you win just as much as you like to see me win~"
