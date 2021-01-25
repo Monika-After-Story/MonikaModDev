@@ -1058,8 +1058,7 @@ init 15 python in mas_affection:
             _("Of course we can talk, [mas_get_player_nickname()]~"),
             _("Take all the time you need, [mas_get_player_nickname()]~"),
             _("I'm all yours, [mas_get_player_nickname()]~"),
-            _("Oh? Something...{i}important{/i} on your mind, [mas_get_player_nickname()]?~"),
-            _("You don't have to blush when talking to me, [mas_get_player_nickname()]. Unless...{w=1.0}just kidding! Ehehe~"),
+            _("Oh? Something...{w=0.3}{i}important{/i} on your mind, [mas_get_player_nickname()]?~"),
         ]
         save_quips(LOVE, quips)
 
