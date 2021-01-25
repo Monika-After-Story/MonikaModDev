@@ -654,11 +654,11 @@ label mas_pong_dlg_winner:
             menu:
                 m "[menu_response]{fast}"
 
-                "...Maybe":
+                "...Maybe.":
                     m 1hua "Ehehe!~"
                     m 1eka "Thank you, [player]~"
                     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                    m 5eka "But I don't mind losing to you every now and then."
+                    m 5eka "But you know,{w0.1} I don't mind losing to you every now and then."
 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 5eua "I like to see you win just as much as you like to see me win~"
@@ -702,6 +702,7 @@ label mas_pong_dlg_winner:
     elif instant_loss_streak_counter_before >= 3 and player_lets_monika_win_on_purpose:
         m 3hub "Nice try [player],{w=0.1} {nw}"
         extend 3tsu "but I can win by myself!"
+        m 3hub "Ahaha!"
 
     #Monika wins after telling the player she would win the next game
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
@@ -740,7 +741,8 @@ label mas_pong_dlg_winner:
     #Monika wins after the player got a 3+ winstreak
     elif win_streak_counter_before >= 3:
         m 1hub "Ahaha!"
-        m 2tfu "Sorry [mas_get_player_nickname(regex_replace_with_nullstr='my ')], but your luck's run out."
+        m 2tfu "Sorry [mas_get_player_nickname(regex_replace_with_nullstr='my ')], {w=0.3}{nw}"
+        extend 2tub "but it looks like your luck's run out."
         m 2hub "Now it's my time to shine~"
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
@@ -749,7 +751,7 @@ label mas_pong_dlg_winner:
     elif pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES:
         m 1hua "Ehehe!"
         m 1tub "Keep up, [player]!{w=0.3} {nw}"
-        extend 2tfu "Your streak is over!"
+        extend 2tfu "It looks like your streak is over!"
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
 
@@ -1097,7 +1099,5 @@ label mas_pong_dlg_winner_end:
     m 4tku "I can't really get excited for a game this simple..."
     m 1eua "But at least it's still fun to play."
     m 1ekbsa "Especially with you, [player]."
-    m 1hubfb "Ahaha!"
-    m 1tku "Then again, only elementary schoolers seriously lose at Pong, right?"
-    m 1hua "Ehehe~"
+    m 1hubfa "Ehehe~"
     return
