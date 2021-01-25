@@ -741,7 +741,7 @@ label mas_pong_dlg_winner:
     #Monika wins after the player got a 3+ winstreak
     elif win_streak_counter_before >= 3:
         m 1hub "Ahaha!"
-        m 2tfu "Sorry [mas_get_player_nickname(regex_replace_with_nullstr='my ')], {w=0.3}{nw}"
+        m 2tfu "Sorry [mas_get_player_nickname(regex_replace_with_nullstr='my ')],{w=0.1} {nw}"
         extend 2tub "but it looks like your luck's run out."
         m 2hub "Now it's my time to shine~"
 
