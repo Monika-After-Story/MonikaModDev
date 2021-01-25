@@ -2758,7 +2758,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
             xsize right_area[0] - left_area[0] + right_area[2] - 10
             ysize 40
             xalign 0.0
-            allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
+            allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _#"
             pixel_width right_area[0] - left_area[0] + right_area[2] - 10
             changed store.mas_ui.twopane_menu_search_callback
 

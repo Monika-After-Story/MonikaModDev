@@ -394,7 +394,7 @@ init -10 python in mas_ui:
     TRANSLATED_CHARS = "_-~`'\":;,.!?"
 
     # Methods for twopane_scrollable_menu
-    def _twopane_menu_filter_events(ev, search_query, search_kws):
+    def _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen):
         """
         A method to use as the filter for events in the twopane menu
 
@@ -417,6 +417,12 @@ init -10 python in mas_ui:
             # and (ev.pool or ev.random)
             and not ev.anyflags(store.EV_FLAG_HFNAS)
             and ev.checkAffection(store.mas_curr_affection)
+            and (
+                (not only_pool or ev.pool)
+                and (not only_random or ev.random)
+                and (not only_unseen or ev.shown_count == 0)
+                and (not only_seen or ev.shown_count > 0)
+            )
             and (
                 search_query == ev_prompt
                 or search_query == ev_label
@@ -472,7 +478,7 @@ init -10 python in mas_ui:
     MAX_TWOPANE_MENU_FLT_ITEMS = 50
 
     @lfu_cache.create_lfu_cache(limit=2048)
-    def _twopane_menu_search_event(search_query):
+    def _twopane_menu_search_events(search_query):
         """
         The actual method that does filtering and searching for the twopane menu.
         NOTE: won't return more than MAX_TWOPANE_MENU_FLT_ITEMS events
@@ -487,9 +493,30 @@ init -10 python in mas_ui:
             return None
 
         search_query = search_query.lower()
+
+        only_pool = False
+        if "#pool" in search_query:
+            search_query = search_query.replace("#pool", "")
+            only_pool = True
+
+        only_random = False
+        if "#random" in search_query:
+            search_query = search_query.replace("#random", "")
+            only_random = True
+
+        only_unseen = False
+        if "#unseen" in search_query:
+            search_query = search_query.replace("#unseen", "")
+            only_unseen = True
+
+        only_seen = False
+        if "#seen" in search_query:
+            search_query = search_query.replace("#seen", "")
+            only_seen = True
+
         search_kws = search_query.split()
         flt_evs = filter(
-            lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws),
+            lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen),
             store.mas_all_ev_db.itervalues()
         )
         flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
@@ -508,6 +535,6 @@ init -10 python in mas_ui:
         scr = renpy.get_screen("twopane_scrollable_menu")
         if scr is not None:
             # Search
-            scr.scope["flt_evs"] = _twopane_menu_search_event(search_query)
+            scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
         # Update the screen
         renpy.restart_interaction()
