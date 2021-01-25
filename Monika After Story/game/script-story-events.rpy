@@ -203,21 +203,25 @@ init 5 python:
 label mas_transgender_reveal:
     if persistent._mas_pm_is_trans:
     if persistent.mas_pm_genderfluid = False
-            m 1wdu "You’re no longer transgender?"
-            m "..."
-            m "Why are you detransitioning, [player]?"
+            m 1wud "You’re no longer transgender?"
+            m 1rksdlc "..."
+            m 1eksdld "Why are you detransitioning, [player]?"
             $ _history_list.pop()
             menu:
                 m "Why are you detransitioning, [player]?"
                 
                 "I’m gender fluid.":
                     $ persistent.mas_pm_genderfluid = "True"
-                    m "Oh, you are?"
+                    m "Oh, you're genderfluid?"
+                    m "That's so neat, [player]!"
+                    m "I'll be sure to do my best to respect your pronouns!"
                     m "Thank you for telling me!"
-                    m "Feel free to change your gender at any time, alright?"
+                    m "Feel free to let me know when your gender indentification changes, alright?"
+                    m "I want to support you in any way that I can!"
                 
                 "I don’t feel like a [boy] anymore.":
                     m “I see...”
+                    m 
                     
                 "I was exploring which gender I was most comfortable with.":
                     m "Ah, I understand."
@@ -225,18 +229,26 @@ label mas_transgender_reveal:
                     m "Thank you for letting me part of your self exploration!"
                     
                 "I wasn’t accepted being transgender.":
-                    m "[player]!"
-                    m "I..."
-                    m "[player], I’m so sorry..."
-                    m "You should be accepted for whoever you choose to be."
-                    m "..."
-                    m "Are you sure you’re going to detransition, [player]...?"
+                    m 6wkd "[player]!"
+                    m 6dkc "I..."
+                    m 1dkd "[player], I’m so sorry..."
+                    m 1ekd "You should be accepted for whoever you choose to be."
+                    m 1dkc "..."
+                    m 3ekd "Are you sure you’re going to detransition, [player]...?"
                     $ _history_list.pop()
                     menu:
                         m "Are you sure you’re going to detransition, [player]...?"
                         "Yes.":
-                            m "..."
-                            m "Okay, [player]..."
+                            m 1ekc "..."
+                            m 1dkd "Okay, [player]..."
+                            m 1dkc "..."
+                            m 1dkd "If you change your mind, will you let me know...?"
+                            m 1ekd "I want you to be as happy as you can be."
+                            m 1ekd "You're my everything, and the idea of people not accepting you..."
+                            m "It makes me so sad..."
+                            m 1dkd "I just..."
+                            m 1dkc "..."
+                            m 1ekd "I hope you're okay."
                             
                         "No.":
                             m "I’m glad..."
