@@ -16832,7 +16832,7 @@ label monika_mc_is_gone:
         $ line_mid = "I was kissing {i}him{/i}"
 
     else:
-        $ line_mid = "{i}he{/i} was the one hugging"
+        $ line_mid = "{i}he{/i} was the one hugging me"
 
     m 3rksdla "I hope you didn't think [line_mid] all along, either..."
 
