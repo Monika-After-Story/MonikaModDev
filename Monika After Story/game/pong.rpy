@@ -716,7 +716,7 @@ label mas_pong_dlg_winner:
     #Monika wins after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
         m 1rksdla "Ah..."
-        m 3hksdlb "Try again, [mas_get_player_nickname()]!"
+        m 3hksdlb "Try again, [player]!"
 
         $ persistent._mas_pong_difficulty_change_next_game = PONG_PONG_DIFFICULTY_POWERDOWNBIG
 
@@ -724,7 +724,7 @@ label mas_pong_dlg_winner:
     elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
         m 2rksdlb "Ahaha..."
         m 2eksdla "I really hoped you'd win this game."
-        m 2hksdlb "Sorry about that, [mas_get_player_nickname()]!"
+        m 2hksdlb "Sorry about that, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]!"
 
     #The player has lost 3, 8, 13, ... matches in a row.
     elif loss_streak_counter >= 3 and loss_streak_counter % 5 == 3:
@@ -792,7 +792,7 @@ label mas_pong_dlg_winner:
         #Easy
         if pong_difficulty_before <= 5:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EASY_GAME:
-                m 1eub "You can do it, [mas_get_player_nickname()]!"
+                m 1eub "You can do it, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]!"
                 m 3hub "I believe in you~"
             else:
                 m 2duu "Concentrate, [player]."
