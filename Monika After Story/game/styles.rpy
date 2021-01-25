@@ -391,8 +391,6 @@ init -10 python in mas_ui:
                 return selected_prompt
         return default_prompt
 
-    TRANSLATED_CHARS = "_-~`'\":;,.!?"
-
     # Methods for twopane_scrollable_menu
     def _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen):
         """
@@ -407,12 +405,11 @@ init -10 python in mas_ui:
             boolean whether or not the event pass the criteria
         """
         ev_label = ev.eventlabel.lower()
-        ev_prompt_og = ev.prompt.lower()
-        ev_prompt = ev_prompt_og.translate({ord(c): None for c in TRANSLATED_CHARS})
+        ev_prompt = ev.prompt.lower()
         ev_prompt_kws = ev_prompt.split()
 
         return (
-            ev_prompt_og != ev_label
+            ev_prompt != ev_label
             and ev.unlocked
             # and (ev.pool or ev.random)
             and not ev.anyflags(store.EV_FLAG_HFNAS)
@@ -454,7 +451,7 @@ init -10 python in mas_ui:
         """
         ev_label = ev.eventlabel.lower()
         ev_label_kws = ev_label.split("_")
-        ev_prompt = ev.prompt.lower().translate({ord(c): None for c in TRANSLATED_CHARS})
+        ev_prompt = ev.prompt.lower()
         ev_prompt_kws = ev_prompt.split()
 
         rv = list()
