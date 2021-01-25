@@ -330,7 +330,7 @@ init 10 python:
             "v0_8_10"
         ]
 
-        renpy.call_in_new_context("vv_updates_topics")
+        store.mas_versions.init()
         ver_list = store.updates.version_updates.keys()
 
         if "-" in config.version:
@@ -372,8 +372,8 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-# 0.11.10
-label v0_11_10(version="v0_11_10"):
+# 0.11.9.1
+label v0_11_9_1(version="v0_11_9_1"):
     python:
         mas_bookmarks_derand.removeDerand("monika_twitter")
 
@@ -386,6 +386,18 @@ label v0_11_10(version="v0_11_10"):
 
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
+
+        # We don't use this var anymore
+        safeDel("chess_strength")
+
+        for story_type, story_last_seen in persistent._mas_last_seen_new_story.iteritems():
+            if story_last_seen is not None:
+                persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
+                    story_last_seen, datetime.time()
+                )
+
+        if seen_event("monika_asimov_three_laws"):
+            mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
 
     return
 
