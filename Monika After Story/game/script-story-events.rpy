@@ -261,7 +261,14 @@ label mas_transgender_reveal:
             )
 
     else:
-        m 1eua "TODO: YOU ARE TELLING ME THAT YOU ARE TRANSGENDER"
+        m "You...”
+        m "You are?"
+        m "[player]...”
+        m “It makes me beyond happy that you told me!”
+        m “I know it takes so much to open up about something like that.”
+        m “Thank you for trusting me enough to tell me!”
+        m “This will never make you any less of a [boy] to me, okay?”
+        m “I love you so much, [player]!”
 
         python:
             persistent._mas_pm_is_trans = True
