@@ -13450,7 +13450,7 @@ label monika_full_name:
 
         "No.":
             m 1ekc "Oh...{w=0.5} alright."
-            m 2eka "I understand you have your reasons but I hope you'll be comfortable telling me one day."
+            m 2eka "I understand you have your reasons, but I hope you'll be comfortable telling me one day."
 
         "I don't have one.":
             m 1wso "What?{w=0.5} Really?"
