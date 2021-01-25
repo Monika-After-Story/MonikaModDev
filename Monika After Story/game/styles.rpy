@@ -358,6 +358,8 @@ init -1 python in mas_ui:
 
 # START: Helper methods that we use inside screens
 init -10 python in mas_ui:
+    import lfu_cache
+
     # Methods for mas_check_scrollable_menu
     def check_scr_menu_return_values(buttons_data, return_all):
         """
@@ -388,3 +390,124 @@ init -10 python in mas_ui:
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
         return default_prompt
+
+    TRANSLATED_CHARS = "_-~`'\":;,.!?"
+
+    # Methods for twopane_scrollable_menu
+    def _twopane_menu_filter_events(ev, search_query, search_kws):
+        """
+        A method to use as the filter for events in the twopane menu
+
+        IN:
+            ev - event object
+            search_query - search query to filter by
+            search_kws - search_query splitted using spaces
+
+        OUT:
+            boolean whether or not the event pass the criteria
+        """
+        ev_label = ev.eventlabel.lower()
+        ev_prompt_og = ev.prompt.lower()
+        ev_prompt = ev_prompt_og.translate({ord(c): None for c in TRANSLATED_CHARS})
+        ev_prompt_kws = ev_prompt.split()
+
+        return (
+            ev_prompt_og != ev_label
+            and ev.unlocked
+            # and (ev.pool or ev.random)
+            and not ev.anyflags(store.EV_FLAG_HFNAS)
+            and ev.checkAffection(store.mas_curr_affection)
+            and (
+                search_query == ev_prompt
+                or search_query == ev_label
+                or search_query in ev_prompt
+                or search_query in ev_label
+                or (ev.category and search_query in ev.category)
+                or all(
+                    [
+                        search_kw in ev_prompt
+                        or search_kw in ev_label
+                        or (ev.category and search_kw in ev.category)
+                        for search_kw in search_kws
+                    ]
+                )
+            )
+        )
+
+    def _twopane_menu_sort_events(ev, search_query, search_kws):
+        """
+        A method to use as the sortkey for events in the twopane menu.
+
+        IN:
+            ev - event object
+            search_query - search query to filter by
+            search_kws - search_query splitted using spaces
+
+        OUT:
+            list of booleans for sorting
+        """
+        ev_label = ev.eventlabel.lower()
+        ev_label_kws = ev_label.split("_")
+        ev_prompt = ev.prompt.lower().translate({ord(c): None for c in TRANSLATED_CHARS})
+        ev_prompt_kws = ev_prompt.split()
+
+        rv = list()
+
+        rv.append(search_query == ev_prompt or search_query == ev_label)
+        rv.append(search_query in ev_prompt)
+        rv.append(search_query in ev_label)
+
+        for search_kw in search_kws:
+            rv.append(search_kw in ev_prompt_kws)
+
+        for search_kw in search_kws:
+            rv.append(search_kw in ev_label_kws)
+
+        if ev.category:
+            for search_kw in search_kws:
+                rv.append(search_kw in ev.category)
+
+        return rv
+
+    MAX_TWOPANE_MENU_FLT_ITEMS = 50
+
+    @lfu_cache.create_lfu_cache(limit=2048)
+    def _twopane_menu_search_event(search_query):
+        """
+        The actual method that does filtering and searching for the twopane menu.
+        NOTE: won't return more than MAX_TWOPANE_MENU_FLT_ITEMS events
+
+        IN:
+            search_query - search query to filter and sort by
+
+        OUT:
+            list of event objects or None if empty query was given
+        """
+        if not search_query:
+            return None
+
+        search_query = search_query.lower()
+        search_kws = search_query.split()
+        flt_evs = filter(
+            lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws),
+            store.mas_all_ev_db.itervalues()
+        )
+        flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
+
+        return flt_evs[0:MAX_TWOPANE_MENU_FLT_ITEMS]
+
+    def twopane_menu_search_callback(search_query):
+        """
+        The callback the input calls when the user enters anything.
+        Updates flt_evs of the twopane menu and causes RenPy to update the screen.
+
+        IN:
+            search_query - search query to filter and sort by
+        """
+        # Get the screen to pass events into
+        scr = renpy.get_screen("twopane_scrollable_menu")
+        if scr is not None:
+            # Search
+            scr.scope["flt_evs"] = _twopane_menu_search_event(search_query)
+        # Update the screen
+        renpy.restart_interaction()

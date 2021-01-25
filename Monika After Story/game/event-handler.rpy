@@ -1404,7 +1404,7 @@ init -1 python in evhand:
 #    PREV_X = 30
     RIGHT_X = 1020
 #    PREV_Y = 10
-    RIGHT_Y = 40
+    RIGHT_Y = 15 + 55
 #    PREV_W = 300
     RIGHT_W = 250
     RIGHT_H = 572
