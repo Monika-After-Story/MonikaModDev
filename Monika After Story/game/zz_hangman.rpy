@@ -711,7 +711,7 @@ label mas_hangman_game_loop:
     menu:
         m "Would you like to play again?{fast}"
         "Yes.":
-            $ hang_ev = mas_getEV("mas_hang")
+            $ hang_ev = mas_getEV("mas_hangman")
             if hang_ev:
                 # each game counts as a game played
                 $ hang_ev.shown_count += 1

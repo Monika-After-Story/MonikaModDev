@@ -1009,14 +1009,14 @@ init 15 python in mas_affection:
             _("Is there something you'd like to talk about, [mas_get_player_nickname()]?"),
             _("Something on your mind?"),
             _("Something on your mind, [mas_get_player_nickname()]?"),
-            _("Up to chat, [player]?"),
+            _("Up to chat, [mas_get_player_nickname()]?"),
             _("Yes, [mas_get_player_nickname()]?"),
             _("What's on your mind, [mas_get_player_nickname()]?"),
-            _("What's up, [player]?"),
-            _("Ask away, [player]."),
-            _("Don't be shy, [player]~"),
-            _("I'm all ears, [player]~"),
-            _("Of course we can talk, [player]."),
+            _("What's up, [mas_get_player_nickname()]?"),
+            _("Ask away, [mas_get_player_nickname()]."),
+            _("Don't be shy, [mas_get_player_nickname()]~"),
+            _("I'm all ears, [mas_get_player_nickname()]~"),
+            _("Of course we can talk, [mas_get_player_nickname()]."),
         ]
         save_quips(AFFECTIONATE, quips)
 
@@ -1123,8 +1123,8 @@ init 15 python in mas_affection:
         ## AFFECTIONATE quips
         quips = [
             _("What would you like to play?"),
-            _("Choose anything you like, [player]."),
-            _("What should we play today, [player]?"),
+            _("Choose anything you like, [mas_get_player_nickname()]."),
+            _("What should we play today, [mas_get_player_nickname()]?"),
             _("Sure, I'm up for a game!"),
             _("Pick anything you like."),
         ]

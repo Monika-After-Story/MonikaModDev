@@ -218,15 +218,14 @@ label mas_pick_a_game:
                     ]
 
                 else:
-                    name = player if mas_isMoniAff(lower=True) else mas_get_player_nickname()
                     begin_quips = [
                         _("Let's do this!"),
-                        _("Bring it on, [name]!"),
-                        _("Ready to lose, [name]?"),
-                        _("I'm ready when you are, [name]!"),
-                        _("I hope you're ready, [name]~"),
-                        _("Let's have some fun, [name]!"),
-                        _("Don't expect me to go easy on you, [name]!~"),
+                        _("Bring it on, [mas_get_player_nickname()]!"),
+                        _("Ready to lose, [mas_get_player_nickname()]?"),
+                        _("I'm ready when you are, [mas_get_player_nickname()]!"),
+                        _("I hope you're ready, [mas_get_player_nickname()]~"),
+                        _("Let's have some fun, [mas_get_player_nickname()]!"),
+                        _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
                         _("Throwing down the gauntlet, are we?"),
                         _("It's time to duel!"),
                         _("Challenge accepted!"),
