@@ -204,55 +204,57 @@ label mas_transgender_reveal:
     if persistent._mas_pm_is_trans:
     if persistent.mas_pm_genderfluid = False
             m 1wdu "You’re no longer transgender?"
-            m “...”
-            m “Why are you detransitioning, [player]?”
+            m "..."
+            m "Why are you detransitioning, [player]?"
             $ _history_list.pop()
             menu:
-                m “Why are you detransitioning, [player]?”
+                m "Why are you detransitioning, [player]?"
                 
-                ”I’m gender fluid.”:
-                    $ persistent.mas_pm_genderfluid = “True”
-                    m “Oh, you are?”
-                    m “Thank you for telling me!"
+                "I’m gender fluid.":
+                    $ persistent.mas_pm_genderfluid = "True"
+                    m "Oh, you are?"
+                    m "Thank you for telling me!"
                     m "Feel free to change your gender at any time, alright?"
                 
-                “I don’t feel like a [boy] anymore.”:
+                "I don’t feel like a [boy] anymore.":
                     m “I see...”
                     
-                ”I was exploring which gender I was most comfortable with.”:
-                    m “Ah, I understand.”
-                    m “I hope you managed to learn something new about yourself.”
+                "I was exploring which gender I was most comfortable with.":
+                    m "Ah, I understand."
+                    m "I hope you managed to learn something new about yourself."
+                    m "Thank you for letting me part of your self exploration!"
                     
-                “I wasn’t accepted being transgender.”:
-                    m “[player]!”
-                    m “I...”
-                    m “[player], I’m so sorry...”
-                    m “You should be accepted for whoever you choose to be.”
-                    m “...”
-                    m “Are you sure you’re going to detransition, [player]...?”
+                "I wasn’t accepted being transgender.":
+                    m "[player]!"
+                    m "I..."
+                    m "[player], I’m so sorry..."
+                    m "You should be accepted for whoever you choose to be."
+                    m "..."
+                    m "Are you sure you’re going to detransition, [player]...?"
                     $ _history_list.pop()
                     menu:
-                        m “Are you sure you’re going to detransition, [player]...?”
-                        “Yes.”:
-                            m “...”
-                            m “Okay, [player].”       
+                        m "Are you sure you’re going to detransition, [player]...?"
+                        "Yes.":
+                            m "..."
+                            m "Okay, [player]..."
                             
-                        ”No.”:
-                            m “I’m glad...”
-                            m “I hope you can give yourself more time to think about this.”
-                            m “Please don’t let others keep you from your happiness.”
+                        "No.":
+                            m "I’m glad..."
+                            m "I hope you can give yourself more time to think about this."
+                            m "Please don’t let others keep you from your happiness."
+                            m "It's always important to be yourself."
                 
-                    m “Remember that I’ll always love and accept you no matter what, okay?”
+                    m "Remember that I’ll always love and accept you no matter what, okay?"
                     
-                ”I don’t want to talk about it.”:
-                    m “Alright, [player]...”
-                    m “Just know I’ll always accept you for who you are, okay?”
-                    m “You’re everything to me~”
+                "I don’t want to talk about it.":
+                    m "Alright, [player]..."
+                    m "Just know I’ll always accept you for who you are, okay?"
+                    m "You’re everything to me~"
                 
             else:
-            m “You’re detransitioning again?”
-            m “Alright, [player].”
-            m “I’m happy you get to express yourself this way~”
+            m "You’re detransitioning again?"
+            m "Alright, [player]."
+            m "I’m happy you get to express yourself this way~"
 
         python:
             persistent._mas_pm_is_trans = False
@@ -261,14 +263,14 @@ label mas_transgender_reveal:
             )
 
     else:
-        m "You...”
+        m "You..."
         m "You are?"
-        m "[player]...”
-        m “It makes me beyond happy that you told me!”
-        m “I know it takes so much to open up about something like that.”
-        m “Thank you for trusting me enough to tell me!”
-        m “This will never make you any less of a [boy] to me, okay?”
-        m “I love you so much, [player]!”
+        m "[player]..."
+        m "It makes me beyond happy that you told me!"
+        m "I know it takes so much to open up about something like that."
+        m "Thank you for trusting me enough to tell me!"
+        m "This will never make you any less of a [boy] to me, okay?"
+        m "I love you so much, [player]!"
 
         python:
             persistent._mas_pm_is_trans = True
