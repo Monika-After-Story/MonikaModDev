@@ -580,7 +580,7 @@ label mas_holiday_o31_returned_home_relaunch:
     m 1eua "After that you can reopen it."
     m 1hubsa "I have something special in store for you, ehehe~"
     $ persistent._mas_o31_relaunch = True
-    return "quit"
+    return {"quit": None}
 
 ### o31 images
 image mas_o31_marisa_cg = "mod_assets/monika/cg/o31_marisa_cg.png"
@@ -1055,7 +1055,7 @@ label bye_trick_or_treat_rtg:
 
         #Increment T/T counter
         $ persistent._mas_o31_tt_count += 1
-        return "quit"
+        return {"quit": None}
 
     # otherwise, failure in generation
     #Fix tt count
@@ -2423,7 +2423,7 @@ label mas_d25_monika_carolling:
             m 1eua "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
             m 3hua "Sing with me sometime, okay?"
 
-    return "derandom"
+    return {"derandom": None}
 
 
 init 5 python:
@@ -2464,7 +2464,7 @@ label mas_d25_monika_mistletoe:
         m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
         m 1tku "...Maybe I can even add one in here!"
         m 1kuu "Ehehe~"
-    return "derandom"
+    return {"derandom": None}
 
 #Stores whether or not the player hangs christmas lights
 default persistent._mas_pm_hangs_d25_lights = None
@@ -2536,7 +2536,7 @@ label mas_d25_monika_christmaslights:
             m 1rkbfb "Yeah, that sounds really nice."
             m 3hubsa "But, when we have our own house, I may hang some up myself, {nw}"
             extend 3hubsb "ahaha~"
-    return "derandom"
+    return {"derandom": None}
 
 init 20 python:
 
@@ -2798,7 +2798,7 @@ label mas_d25_spent_time_monika:
     # Normal and happy
     else:
         m 1hubfa "I love you, [player]~"
-    return "love"
+    return {"love": None}
 
 label mas_d25_poem_mistletoe:
     $ pause(1)
@@ -2881,7 +2881,7 @@ label monika_aiwfc:
 
     #Unlock the song
     $ mas_unlockEVL("mas_song_aiwfc", "SNG")
-    return "no_unlock|love"
+    return {"no_unlock": None, "love": None}
 
 
 label monika_aiwfc_song:
@@ -2974,7 +2974,7 @@ label monika_merry_christmas_baby:
 
         m 1huu "Ehehe... {w=0.2}Merry Christmas, baby~"
 
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -3018,7 +3018,7 @@ label monika_this_christmas_kiss:
     m 6ekbfa "One of these days I'll kiss you for real, [player]."
     m 1dubfu "...And when that day comes, my heart will leap out of my chest with joy~"
     $ mas_unlockEVL("mas_song_this_christmas_kiss", "SNG")
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -3079,7 +3079,7 @@ label mas_d25_spider_tinsel:
     m "I think it's a really interesting take on why tinsel is used as decoration on Christmas trees."
     m 3eud "I also read that Ukrainians often decorate their Christmas tree with spider web ornaments, believing they will bring them good fortune for the upcoming year."
     m 3eub "So I guess if you ever find a spider living in your Christmas tree, don't kill it and maybe it'll bring you good luck in the future!"
-    return "derandom|no_unlock"
+    return {"derandom": None, "no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -3888,7 +3888,7 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
 
     m "Happy New Year~"
-    return "love"
+    return {"love": None}
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
@@ -4260,7 +4260,7 @@ label monika_nye_year_review:
         m "Let's make this year great for each other."
         m 1ekbsa "I love you."
 
-    return "no_unlock|love"
+    return {"no_unlock": None, "love": None}
 
 init 5 python:
     addEvent(
@@ -4320,7 +4320,7 @@ label mas_nye_monika_nye_dress_intro:
 
     m 3dkbsu "So I'd like to wear this when the new year begins."
     m 1ekbsa "It might just help make next year even better."
-    return "no_unlock"
+    return {"no_unlock": None}
 
 
 init 5 python:
@@ -4480,7 +4480,7 @@ label greeting_nye_prefw:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbfa "I love you, [player]."
-    return "love"
+    return {"love": None}
 
 label greeting_nye_infw:
     #if within firework time:
@@ -4489,7 +4489,7 @@ label greeting_nye_infw:
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
-    return "love"
+    return {"love": None}
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
 
@@ -5590,7 +5590,7 @@ label mas_pf14_monika_lovey_dovey:
     m 1rkbsd "Without you, I don't know where I'd be..."
     m 1ekbsa "So I want to thank you for being there for me..."
     m 1hkbsu "And for being so wonderfully you~"
-    return "derandom|no_unlock|love"
+    return {"derandom": None, "no_unlock": None, "love": None}
 
 #######################[HOL050] INTRO:
 
@@ -5758,7 +5758,7 @@ label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
-    return "rebuild_ev|love"
+    return {"rebuild_ev": None, "love": None}
 
 # common flow for first time sundress
 label mas_f14_sun_dress_outro:
@@ -6007,7 +6007,7 @@ label mas_f14_monika_spent_time_with:
         m 1ekbfa "Thank you for always being by my side."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
-        return "love"
+        return {"love": None}
 
     else:
         m 1eka "Thank you for being by my side."
@@ -6666,7 +6666,7 @@ P.S: Don't tell her about me.
 
     #Flag this so it doesn't get shown again
     $ persistent._mas_monika_bday_surprise_hint_seen = True
-    return "derandom|no_unlock"
+    return {"derandom": None, "no_unlock": None}
 
 
 ################## [HOL060] HAPPY BDAY TOPICS
@@ -6761,7 +6761,7 @@ label mas_bday_pool_happy_belated_bday:
         m 3rka "I wish I could've seen all the amazing places we went..."
         m 1hua "But knowing we were together, well it makes it the best birthday I could ever hope for!"
         m 3ekbsa "I love you so much, [player]~"
-        return "love"
+        return {"love": None}
     else:
         m 3eka "So you {i}did{/i} take me out for a long trip for my birthday..."
         m 3rkd "That's so thoughtful of you, I was kind of wondering--"
@@ -6995,7 +6995,7 @@ label mas_bday_spent_time_with_wrapup:
             m 6hubfa "I've thought about our first kiss for so long, and to finally experience it..."
             m 6ekbfa "I will never forget this moment, [player]~"
         else:
-            return "love"
+            return {"love": None}
 
     else:
         m 1eka "I can't even find the right words to express how happy you've made me today."
@@ -7006,7 +7006,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
         m 1ekbfb "I love you so much, [player]."
         m 1ekbfa "Let's continue making each other happy~"
-        return "love"
+        return {"love": None}
     return
 
 ############## [HOL060] GONE OVER CHECK

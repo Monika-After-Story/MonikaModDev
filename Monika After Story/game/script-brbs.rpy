@@ -1,7 +1,7 @@
 ## This script file holds all of the brb topics
 # Some conventions:
 #   - All brbs should have their markSeen set to True so they don't show up in unseen
-#   - Brbs should return "idle" to move into idle mode
+#   - Brbs should return {"idle": None} to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
 init 10 python in mas_brbs:
@@ -53,7 +53,7 @@ label mas_brb_back_to_idle:
         renpy.save_persistent()
         mas_dlgToIdleShield()
 
-    return "idle"
+    return {"idle": None}
 
 # label for generic reactions for low affection callback paths
 # to be used if a specific reaction isn't needed or provided
@@ -129,7 +129,7 @@ label monika_brb_idle:
     $ mas_idle_mailbox.send_idle_cb("monika_brb_idle_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_brb"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_brb_idle_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
@@ -193,7 +193,7 @@ label monika_writing_idle:
     $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_writing"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_writing_idle_callback:
 
@@ -271,7 +271,7 @@ label monika_idle_shower:
     $ mas_idle_mailbox.send_idle_cb("monika_idle_shower_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_shower"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
@@ -312,7 +312,7 @@ label bye_brb_shower_timeout:
     $ mas_idle_mailbox.send_idle_cb("monika_idle_shower_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_shower"] = True
-    return "idle"
+    return {"idle": None}
 
 init 5 python:
     addEvent(
@@ -356,7 +356,7 @@ label monika_idle_game:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_game_callback")
     $ persistent._mas_idle_data["monika_idle_game"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_game_callback:
     if mas_isMoniNormal(higher=True):
@@ -419,7 +419,7 @@ label monika_idle_coding:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_coding_callback")
     $ persistent._mas_idle_data["monika_idle_coding"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
@@ -477,7 +477,7 @@ label monika_idle_workout:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
     $ persistent._mas_idle_data["monika_idle_workout"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_workout_callback:
     if mas_isMoniNormal(higher=True):
@@ -557,7 +557,7 @@ label monika_idle_nap:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_nap_callback")
     $ persistent._mas_idle_data["monika_idle_nap"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_nap_callback:
     if mas_isMoniNormal(higher=True):
@@ -625,7 +625,7 @@ label monika_idle_homework:
     $ mas_idle_mailbox.send_idle_cb("monika_idle_homework_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_homework"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_homework_callback:
     if mas_isMoniDis(higher=True):
@@ -682,7 +682,7 @@ label monika_idle_working:
     $ mas_idle_mailbox.send_idle_cb("monika_idle_working_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_working"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
@@ -751,7 +751,7 @@ label monika_idle_screen_break:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_screen_break_callback")
     $ persistent._mas_idle_data["monika_idle_screen_break"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_screen_break_callback:
     if mas_isMoniNormal(higher=True):
@@ -799,7 +799,7 @@ label monika_idle_reading:
 
     $ mas_idle_mailbox.send_idle_cb("monika_idle_reading_callback")
     $ persistent._mas_idle_data["monika_idle_reading"] = True
-    return "idle"
+    return {"idle": None}
 
 label monika_idle_reading_callback:
     if mas_isMoniNormal(higher=True):
@@ -883,7 +883,7 @@ label monika_idle_reading_callback:
 #    # set idle data
 #    $ persistent._mas_idle_data["monika_idle_game"] = True
 #    # return idle to notify event system to switch to idle
-#    return "idle"
+#    return {"idle": None}
 #
 #label monika_idle_game_competetive_callback:
 #    m 1esa "Welcome back, [player]!"

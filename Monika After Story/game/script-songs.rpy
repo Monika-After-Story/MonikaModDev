@@ -286,7 +286,7 @@ label monika_sing_song_pool_menu:
             m 3hub "Alright!"
 
     else:
-        return "prompt"
+        return {"prompt": None}
 
     return
 
@@ -329,7 +329,7 @@ label monika_sing_song_analysis:
         m 3hub "Alright!"
 
     else:
-        return "prompt"
+        return {"prompt": None}
     return
 
 #Rerandom song delegate
@@ -430,8 +430,8 @@ label monika_sing_song_random:
     #We have no songs! let's pull back the shown count for this and derandom
     else:
         $ mas_assignModifyEVLPropValue("monika_sing_song_random", "shown_count", "-=", 1)
-        return "derandom|no_unlock"
-    return "no_unlock"
+        return {"derandom": None, "no_unlock": None}
+    return {"no_unlock": None}
 
 
 #START: Song defs
@@ -793,7 +793,7 @@ label mas_song_nobody_makes_sense:
     m 1hub "Ahaha!"
     m 3ekbsa "No matter what happens or how long we wait, I'll always love you."
     m 1ekbfb "I really hope I can keep on smiling with you forever~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -939,7 +939,7 @@ label mas_song_rewrite_the_stars:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "The world really feels like it's ours when I'm with you, [player]~"
     m 5ekbfu "I love you so much."
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -1215,7 +1215,7 @@ label mas_song_amaranthine:
     show monika 5ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsu "My life feels so complete with you in it, [player]."
     m 5hubfu "I love you so much~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(

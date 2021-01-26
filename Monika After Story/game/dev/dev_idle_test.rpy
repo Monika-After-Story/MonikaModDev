@@ -24,7 +24,7 @@ label dev_idle_test:
     $ mas_idle_mailbox.send_idle_cb("dev_idle_test_cb")
 
     # return idle to notify event system to switch to idle
-    return "idle"
+    return {"idle": None}
 
 
 label dev_idle_test_cb:

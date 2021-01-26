@@ -1661,7 +1661,7 @@ init 5 python:
 label mas_consumables_generic_queued_running_out:
     $ low_cons = MASConsumable._getLowCons()
     call mas_consumables_generic_queued_running_out_dlg(low_cons)
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -1674,7 +1674,7 @@ init 5 python:
 label mas_consumables_generic_running_out_absentuse:
     $ low_cons = MASConsumable._getLowConsNotWarned()
     call mas_consumables_generic_queued_running_out_dlg(low_cons)
-    return "no_unlock"
+    return {"no_unlock": None}
 
 
 label mas_consumables_generic_queued_running_out_dlg(low_cons):

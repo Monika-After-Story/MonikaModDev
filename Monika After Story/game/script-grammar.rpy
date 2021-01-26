@@ -240,7 +240,7 @@ label monika_gtod_tip005:
     m 1eua "..."
     m 1tuu "..."
     m 3hub "You!"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(

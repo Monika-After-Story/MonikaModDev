@@ -86,7 +86,7 @@ label monika_compliments:
         show monika at t11
 
     else:
-        return "prompt"
+        return {"prompt": None}
 
     return
 
@@ -410,7 +410,7 @@ label mas_compliment_thanks:
 
     if not mas_isMoniLove():
         $ mas_lockEVL("mas_compliment_thanks", "CMP")
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -476,7 +476,7 @@ label mas_compliment_hero:
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
     m 5ekbfa "I hope you never forget that, [player]~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -649,7 +649,7 @@ label mas_compliment_lookuptoyou:
     else:
         call mas_compliment_lookuptoyou_3
     #Both paths return love, so we combine that here
-    return "love"
+    return {"love": None}
 
 label mas_compliment_lookuptoyou_2:
     $ mas_gainAffection(3, bypass=True)

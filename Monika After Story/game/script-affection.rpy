@@ -2253,7 +2253,7 @@ label mas_affection_playernickname:
 
     #Now unlock the nickname change ev
     $ mas_unlockEVL("monika_change_player_nicknames", "EVE")
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -2410,7 +2410,7 @@ label mas_affection_happynotif:
     m 1ekbsa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubfu "I love you, [player]. Let's be like this forever~"
     show monika idle with dissolve_monika
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -2469,7 +2469,7 @@ label monika_every_rose:
     extend 4ekd "but I need you to show me you love me too!"
     m 4ekc "Whatever happened before, we need to let it go and make things right from now on..."
     m 2eka "Can we do that...{w=0.5}together?"
-    return "no_unlock"
+    return {"no_unlock": None}
 
 #NOTE: This event gets a start-date from greeting_tears
 init 5 python:
@@ -2538,7 +2538,7 @@ label monika_being_virtual:
     m 2dktpc "If, after all, you can't love me for who I am..."
     m 2ektpc "Then, please...{w=0.5}put an end to this..."
     m 2dktdd "Delete me..."
-    return "no_unlock"
+    return {"no_unlock": None}
 
 #START: Final Farewell stuffs
 default persistent._mas_load_in_finalfarewell_mode = False

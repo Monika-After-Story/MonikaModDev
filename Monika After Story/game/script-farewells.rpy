@@ -780,7 +780,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
 
         $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
-        return "quit"
+        return {"quit": None}
     return None
 
 init 5 python:
@@ -1242,7 +1242,7 @@ label bye_going_somewhere_leavemenu:
                 # otherwise, upset and below
                 m 2tfd "...Fine."
 
-            return "quit"
+            return {"quit": None}
 
         "No.":
             if mas_isMoniNormal(higher=True):
@@ -1740,4 +1740,4 @@ label bye_prompt_hangout:
 
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
-    return "quit"
+    return {"quit": None}

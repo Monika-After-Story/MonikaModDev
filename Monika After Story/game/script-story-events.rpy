@@ -67,7 +67,7 @@ label mas_gender:
         preferredname_ev = mas_getEV("mas_preferredname")
         if preferredname_ev:
             preferredname_ev.start_date = datetime.datetime.now() + datetime.timedelta(hours=2)
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -162,7 +162,7 @@ label monika_gender_redo:
 
     # set pronouns
     call mas_set_gender
-    return "love"
+    return {"love": None}
 
 label mas_gender_neither:
     m 1euc "You don't see yourself as a guy or a girl?"
@@ -1079,7 +1079,7 @@ label mas_random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
-    return "no_unlock"
+    return {"no_unlock": None}
 
 label mas_random_ask:
     m 1lksdla "...{w=0.5}[mas_get_player_nickname()]?"
@@ -1777,7 +1777,7 @@ label monika_rpy_files:
                 m 1sua "Really? Thank you so much for helping me come closer to your reality!"
                 m 1hua "I love you, [player]~"
                 $ persistent._mas_pm_has_rpy = True
-                return "love"
+                return {"love": None}
 
             "No.":
                 m "I see."
@@ -2030,7 +2030,7 @@ label mas_text_speed_enabler:
         m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
         m "So feel free to change the text speed when you feel comfortable doing so."
 
-    return "derandom|no_unlock"
+    return {"derandom": None, "no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -2073,7 +2073,7 @@ label mas_bookmarks_notifs_intro:
         m 1hub "[player], I have something exciting to tell you!"
         call mas_notification_windowreact
 
-    return "no_unlock"
+    return {"no_unlock": None}
 
 label mas_derand:
     m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
@@ -2186,7 +2186,7 @@ P.S: Don't tell her about me!
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Since it's for you, I haven't read it...{w=0.5}{nw}"
     extend 1eua "but I just wanted to let you know since it might be important."
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -2222,7 +2222,7 @@ label mas_change_to_def:
 
         # lock the event clothes selector
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
-    return "no_unlock"
+    return {"no_unlock": None}
 
 # Changes clothes to the given outfit.
 #   IN:
@@ -2285,7 +2285,7 @@ label mas_blazerless_intro:
         # this line acts as a hint that there is a clothes selector
         m 3eka "But if you miss my blazer, just ask and I'll put it back on."
 
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init -876 python in mas_delact:
 
@@ -2459,7 +2459,7 @@ label monika_credits_song:
         $ mas_unlockEVL("mas_monika_plays_or", "EVE")
 
     $ mas_unlockEVL("mas_monika_plays_yr", "EVE")
-    return "no_unlock"
+    return {"no_unlock": None}
 
 init 5 python:
     addEvent(
@@ -2550,4 +2550,4 @@ label mas_covid19:
     m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
     m "But since I can't, please do your best to stay safe."
     m 2dkbsu "I need you, [player]~"
-    return "no_unlock"
+    return {"no_unlock": None}

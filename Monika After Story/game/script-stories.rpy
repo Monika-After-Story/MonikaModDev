@@ -252,7 +252,7 @@ label monika_short_stories_menu:
             show monika at t11
 
     else:
-        return "prompt"
+        return {"prompt": None}
 
     return
 
@@ -449,7 +449,7 @@ label mas_story_grasshoper:
     m 3hua "The moral of this story is, there's a time for work and a time for play."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -527,7 +527,7 @@ label mas_story_gray_hair:
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -850,7 +850,7 @@ label mas_story_self_hate:
         m 1eka "You have to love yourself to be able to allow yourself to truly love someone else."
         m 3ekbsa "Just remember I'll always love you, [player]."
         m 3ekbfa "If you ever begin to doubt loving yourself, just come to me and I'll be more than happy to remind you of all your wonderful qualities~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(

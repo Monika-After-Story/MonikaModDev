@@ -141,7 +141,7 @@ label monika_playerapologizes:
                     m 6ckc "..."
                 else:
                     m 6rkc "Did you have something to say, [player]?"
-        return "prompt"
+        return {"prompt": None}
 
     show monika at t11
     #Call our apology label

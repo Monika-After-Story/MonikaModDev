@@ -178,7 +178,7 @@ label mas_mood_sad:
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
                             m 1ekbsa "I love you, [player], and I always will~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -231,7 +231,7 @@ label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer you up, [mas_get_player_nickname()]."
     m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -501,7 +501,7 @@ label mas_mood_inadequate:
     m 4eua "You just need to exist, have fun and get through each day, {w=0.2}finding meaning in the people that matter most to you."
     m 1eka "Please don't forget that, okay?"
     m 1ekbsa "I love you, [player]~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -633,7 +633,7 @@ label mas_mood_bored:
         $ mas_loseAffection()
         m 6ckc "You know [player], if I make you so miserable all of the time..."
         m "Maybe you should just go find something else to do."
-        return "quit"
+        return {"quit": None}
 
     python:
         unlockedgames = [
@@ -734,7 +734,7 @@ label mas_mood_crying:
     m 1eka "I hope it helps."
     m 3ekd "There's nothing wrong with crying, okay? {w=0.2}You can cry as much as you need to."
     m 3ekbsu "I love you, [player]. {w=0.2}You're my everything."
-    return "love"
+    return {"love": None}
 
 label mas_mood_uok:
     m 1rksdld "I know I can't really hear what you say to me..."
@@ -786,4 +786,4 @@ label mas_mood_upset:
     m 1hub "Knowing that you'll support me and always love me puts me at ease almost instantly!"
     m 3euu "I can only help I provide the same comfort for you, [player]~"
     m 1eubsa "I love you and I hope everything clears up for you~"
-    return "love"
+    return {"love": None}

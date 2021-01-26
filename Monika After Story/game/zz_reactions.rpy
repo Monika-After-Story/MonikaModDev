@@ -1548,7 +1548,7 @@ label mas_reaction_promisering:
             m 6dkbfu "More than anything else in this fleeting world~"
 
             $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_promisering", "category"))
-            return "love"
+            return {"love": None}
 
         else:
             if not persistent._mas_tried_gift_ring:

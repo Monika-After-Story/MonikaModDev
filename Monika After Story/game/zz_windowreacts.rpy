@@ -706,7 +706,7 @@ label mas_wrs_twitter:
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
-    return "love" if ily_quips_map[quip] else None
+    return {"love": None} if ily_quips_map[quip] else None
 
 init 5 python:
     addEvent(

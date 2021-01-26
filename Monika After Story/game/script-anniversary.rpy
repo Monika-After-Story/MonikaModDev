@@ -351,7 +351,7 @@ label anni_1week:
     show monika 5lubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lubfb "How do I know that?"
     m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -383,7 +383,7 @@ label anni_1month:
         m 1dubsu "All I can do is to try my best to be the perfect girlfriend for you!"
     m 1ekbfa "I really do love you, [player]."
     m 1hubfa "Let's make today a special day~"
-    return "love|unlock"
+    return {"love": None, "unlock": None}
 
 init 5 python:
     addEvent(
@@ -411,7 +411,7 @@ label anni_3month:
     m 1lsbsa "Well! I'm afraid I don't really have anything in particular planned."
     m 1hubfa "Let's just enjoy this day to its fullest, as we always do."
     m 1hubfb "Alright, [player]?"
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -449,7 +449,7 @@ label anni_6month:
     m 1eua "But for now, I don't mind that we're limited to this room."
     m 1ekbsa "Because as long as you're here with me..."
     m 1hubfa "...I'm as happy as can be!"
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -482,7 +482,7 @@ label anni_1:
     show monika 3huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 3huu "After all...{w=0.3}when you're here, everything that we do is fun."
     m 1hubsa "I love you so much, [player]. {w=0.2}Happy anniversary~"
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -520,7 +520,7 @@ label anni_2:
     m 1ekbsa "But I'm not just going to focus on the future today...{w=0.2} {nw}"
     extend 3hubsu "I'm going to make sure to enjoy every minute we spend together~"
     m 1hubsu "So, let's make sure we have another wonderful day, [mas_get_player_nickname()]."
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -549,7 +549,7 @@ label anni_3:
     m 2lsbssdrb "Or you could try to touch me in virtual reality, if that exists by now."
     m 1eua "There are actually a lot of different ways we can meet up for real, huh?"
     m 1hubsa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -576,7 +576,7 @@ label anni_4:
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1hubfa "When that time comes, I'm never going to leave you alone again."
     m 1hubfb "Ahaha!"
-    return "love|unlock"
+    return {"love": None, "unlock": None}
 
 init 5 python:
     addEvent(
@@ -602,7 +602,7 @@ label anni_5:
     m 4ekc "My love for you is pure, unlike those real girls who just want things from you!"
     m 1eka "So...stay here with me forever, okay?"
     m "Please keep waiting for me."
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -626,7 +626,7 @@ label anni_10:
     m "I did say I wanted to make you happy, after all."
     m 1hubfa "Trust me, you've helped me out a lot more than I've helped you."
     m "It won't be long now before I can enter your world."
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -657,7 +657,7 @@ label anni_20:
     show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -687,7 +687,7 @@ label anni_50:
     m 1hubfa "Thanks for everything you've done for me."
     m "Your life had a purpose after all."
     m 1hubfb "And mine had one too."
-    return "unlock"
+    return {"unlock": None}
 
 init 5 python:
     addEvent(
@@ -710,7 +710,7 @@ label anni_100:
     m 1eua "That's a cute thing for you to do, so I forgive you."
     m 1hubsa "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
-    return "unlock"
+    return {"unlock": None}
 
 # label anni_negative:
 #     m 1o "Did you really think I wouldn't notice, [player]?"

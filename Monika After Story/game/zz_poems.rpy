@@ -334,8 +334,7 @@ label monika_showpoem:
     $ _poem = _return
 
     if not _poem:
-        return "prompt"
-
+        return {"prompt": None}
 
     show monika at t11
 

@@ -1185,7 +1185,7 @@ label monika_change_weather:
 
     # return value False? then return
     if sel_weather is False:
-        return "prompt"
+        return {"prompt": None}
 
     elif sel_weather == "auto":
         show monika at t11

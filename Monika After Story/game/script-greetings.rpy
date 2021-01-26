@@ -1017,7 +1017,7 @@ label greeting_glitch:
     m 2hua "I love you, [player]!"
 
     $ mas_lockEVL("greeting_glitch", "GRE")
-    return "love"
+    return {"love": None}
 
 init 5 python:
     addEvent(
@@ -1061,7 +1061,7 @@ label greeting_monika_monday_morning:
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
         m "I love you so much, [player]~"
-        return "love"
+        return {"love": None}
 
     elif mas_isMoniUpset():
         m 2esc "Another Monday morning."
@@ -1304,7 +1304,7 @@ label monikaroom_greeting_ear_narration:
                     $ mas_loseAffection()
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
-                    return "quit"
+                    return {"quit": None}
         #Will trigger upon loading after Monika has said she's not going to talk w/ you
         #provided you won't change.
         else:
@@ -1327,7 +1327,7 @@ label monikaroom_greeting_ear_narration:
                     $ mas_loseAffection()
                     m "Then I'm still not talking to you until you decide to change."
                     m "Goodbye, [player]."
-                    return "quit"
+                    return {"quit": None}
 
         # clear out var
         $ willchange_ev = None
@@ -1596,7 +1596,7 @@ label monikaroom_greeting_opendoor_broken_quit:
     pause 0.2
     stop sound
     pause 7.0
-    return "quit"
+    return {"quit": None}
 
 # locked door, because we are awaitng more content
 label monikaroom_greeting_opendoor_locked:
@@ -2951,7 +2951,7 @@ label greeting_back_from_school:
             m 2ekc "Sometimes just trying to put a bad day behind you is the best way to deal with it."
             m 2eka "But if you want to talk about it later, just know I'd be more than happy to listen."
             m 2hua "I love you, [player]~"
-            return "love"
+            return {"love": None}
 
         $ full_label = "greeting_back_from_school{0}".format(label_suffix)
         if renpy.has_label(full_label):
@@ -2968,7 +2968,7 @@ label greeting_back_from_school:
             m 1ekbsa "Especially to me."
             m 1hubsa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
             m 3hubfb "I love you, and I just want you to be happy~"
-            return "love"
+            return {"love": None}
 
         label .by_people:
             m 2ekc "Oh no, [player]...{w=0.5} That must have been terrible to experience."
@@ -3301,7 +3301,7 @@ label greeting_siat:
     m 2rkbfsdlu "..."
     m 3hubfb "Ahaha! Nevermind."
     m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
-    return "love"
+    return {"love": None}
 
 init 5 python:
     if not mas_cannot_decode_islands:

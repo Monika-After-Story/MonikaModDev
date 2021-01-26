@@ -3206,7 +3206,7 @@ label monika_change_background_loop:
 
     # return value False? then return
     if sel_background is False:
-        return "prompt"
+        return {"prompt": None}
 
     if sel_background == mas_current_background:
         m 1hua "We're here right now, silly."

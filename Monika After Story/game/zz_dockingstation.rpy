@@ -2610,7 +2610,7 @@ label mas_dockstat_generic_rtg:
 
         #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
-        return "quit"
+        return {"quit": None}
     call mas_transition_from_emptydesk("monika 1ekc")
     call mas_dockstat_abort_post_show
     # otherwise, we failed, so monika should tell player
@@ -2666,7 +2666,7 @@ label mas_dockstat_generic_cancelled_still_going_ask:
                 # otherwise, upset and below
                 m 2tfd "...Fine."
 
-            return "quit"
+            return {"quit": None}
 
         "No.":
             if mas_isMoniNormal(higher=True):
@@ -2691,7 +2691,7 @@ label mas_dockstat_generic_failed_io_still_going_ask:
         "Yes.":
             m 2eka "I understand. You have things to do, after all..."
             m 2hub "Be safe out there! I'll be right here waiting for you!"
-            return "quit"
+            return {"quit": None}
 
         "No.":
             m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
