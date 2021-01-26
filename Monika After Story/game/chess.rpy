@@ -44,9 +44,6 @@ init python in mas_chess:
     import store
     import random
 
-    # if this is true, we quit game (workaround for confirm screen)
-    quit_game = False
-
     # relative chess directory
     REL_DIR = "chess_games/"
 
@@ -500,6 +497,7 @@ init python in mas_chess:
             # NOTE: Really, we should be safe here, but I don't want to create potential inf loops lol
             and attempts < 10
         ):
+            attempts += 1
             player_first_row, player_second_row = gen_side(is_player_white, max_piece_value)
             monika_first_row, monika_second_row = gen_side(not is_player_white, monika_max_piece_value)
 
@@ -1008,7 +1006,8 @@ label game_chess:
 
     #Always save in progress games unless they're over
     elif game_result == mas_chess.IS_ONGOING:
-        jump mas_chess_savegame
+        call mas_chess_savegame(allow_return=False)
+        return
 
     #Stalemate
     elif game_result == "1/2-1/2":
@@ -1107,11 +1106,7 @@ label game_chess:
         m "Would you like to play again?{fast}"
 
         "Yes.":
-            $ chess_ev = mas_getEV("mas_chess")
-            if chess_ev:
-                # each game counts as a game played
-                $ chess_ev.shown_count += 1
-
+            $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
             if drew_lots:
                 if random.randint(0, 1) == 0:
                     $ is_player_white = chess.WHITE
@@ -1130,7 +1125,9 @@ label game_chess:
             pass
     return
 
-label mas_chess_savegame(silent=False):
+label mas_chess_savegame(silent=False, allow_return=True):
+    label .save_start:
+        pass
     if loaded_game: # previous game exists
         python:
             new_pgn_game.headers["Event"] = loaded_game.headers["Event"]
@@ -1154,7 +1151,7 @@ label mas_chess_savegame(silent=False):
                     "Enter a name for this game:",
                     allow=mas_chess.CHESS_SAVE_NAME,
                     length=15,
-                    screen_kwargs={"use_return_button": True}
+                    screen_kwargs={"use_return_button": allow_return}
                 )
 
         #Check if we should return
@@ -1187,7 +1184,7 @@ label mas_chess_savegame(silent=False):
                     pass
 
                 "No.":
-                    jump mas_chess_savegame
+                    jump .save_start
 
     python:
         with open(file_path, "w") as pgn_file:
@@ -1266,10 +1263,9 @@ label mas_chess_dlg_game_monika_wins_sometimes:
     return
 
 # label for new context for confirm screen
-label mas_chess_confirm_context:
-    call screen mas_chess_confirm
-    $ store.mas_chess.quit_game = _return
-    return
+label mas_chess_confirm_context(prompt):
+    call screen mas_chess_confirm(prompt)
+    return _return
 
 # label for chess save migration
 label mas_chess_save_migration:
@@ -1759,7 +1755,7 @@ label mas_chess_go_ham_and_delete_everything:
 #### end dialogue blocks ######################################################
 
 # confirmation screen for chess
-screen mas_chess_confirm():
+screen mas_chess_confirm(prompt):
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
@@ -1774,7 +1770,7 @@ screen mas_chess_confirm():
             yalign .5
             spacing 30
 
-            label _("Are you sure you want to give up?"):
+            label prompt:
                 style "confirm_prompt"
                 text_color mas_globals.button_text_idle_color
                 xalign 0.5
@@ -3346,9 +3342,11 @@ init python:
             # inital check for buttons
             elif self.is_player_turn():
                 if self._button_save.event(ev, x, y, st):
-                    #Iser wants to save this game
-                    self.quit_game = True
-                    return self._quitPGN()
+                    wants_save = renpy.call_in_new_context("mas_chess_confirm_context", prompt=_("You'd like to continue later?"))
+                    if wants_save:
+                        #User wants to save this game
+                        self.quit_game = True
+                        return self._quitPGN()
 
                 elif self._button_draw.event(ev, x, y, st):
                     #User wants to request a draw
@@ -3359,8 +3357,8 @@ init python:
                     return self.undo_move()
 
                 elif self._button_giveup.event(ev, x, y, st):
-                    renpy.call_in_new_context("mas_chess_confirm_context")
-                    if mas_chess.quit_game:
+                    wants_quit = renpy.call_in_new_context("mas_chess_confirm_context", prompt=_("Are you sure you want to give up?"))
+                    if wants_quit:
                         #User wishes to surrender
                         self.quit_game = True
                         return self._quitPGN(1)
