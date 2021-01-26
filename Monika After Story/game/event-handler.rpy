@@ -2597,7 +2597,7 @@ label call_next_event:
                     # return {"idle_exp": "5hubsu"}
                     if "idle_exp" in ret_items:
                         items = ret_items["idle_exp"]
-                        if not isinstance(items, (tuple, list)):
+                        if not isinstance(items, (tuple, list)) or (len(items) > 1 and isinstance(items[1], dict)):
                             items = (items,)
 
                         should_reset = True
