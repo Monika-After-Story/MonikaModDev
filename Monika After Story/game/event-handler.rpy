@@ -2616,7 +2616,7 @@ label call_next_event:
                                 exp_code = item[0]
 
                             else:
-                                exp_code = exp
+                                exp_code = item
                                 exp_kwargs = dict()
 
                             mas_moni_idle_disp.force_by_code(exp_code, clear=should_reset, redraw=should_reset, **exp_kwargs)
