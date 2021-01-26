@@ -547,8 +547,6 @@ label game_chess:
     if persistent._mas_chess_timed_disable is not None:
         jump mas_chess_locked_no_play
 
-    m 1eub "You want to play chess? Alright~"
-
     python:
         #Do some var setup
         loaded_game = None
