@@ -653,7 +653,7 @@ label game_chess:
                     #These also override the base settings as to play a continuation
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-                    do_really_bad_chess = loaded_game.headers["FEN"] == MASChessDisplayableBase.START_FEN
+                    do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
                 jump .start_chess
 
         # otherwise, read the game from file
