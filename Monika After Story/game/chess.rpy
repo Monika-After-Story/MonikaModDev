@@ -561,6 +561,7 @@ label game_chess:
         is_player_white = 0
         menu_category = "gamemode_select"
         loopback = False
+        drew_lots = False
 
     if not renpy.seen_label("mas_chess_save_selected"):
         call mas_chess_save_migration
@@ -645,7 +646,14 @@ label game_chess:
             m "Let's continue our unfinished game."
 
             if loaded_game:
-                $ is_player_white = mas_chess._get_player_color(loaded_game)
+                python:
+                    is_player_white = mas_chess._get_player_color(loaded_game)
+
+                    #Always read these values back so if we play again, the same game rules are maintained
+                    #These also override the base settings as to play a continuation
+                    practice_mode = eval(loaded_game.headers.get("Practice", "False"))
+                    casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
+                    do_really_bad_chess = loaded_game.headers["FEN"] == MASChessDisplayableBase.START_FEN
                 jump .start_chess
 
         # otherwise, read the game from file
@@ -783,7 +791,7 @@ label game_chess:
             #These also override the base settings as to play a continuation
             practice_mode = eval(loaded_game.headers.get("Practice", "False"))
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-            do_really_bad_chess = loaded_game.headers["FEN"] == MASChessDisplayableBase.START_FEN
+            do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
         jump .start_chess
 
@@ -898,16 +906,19 @@ label game_chess:
 
         #Black/White/Draw Lots
         elif menu_category == "color_select":
-            if _return == 0:
+            if _return is 0:
+                $ drew_lots = True
                 show monika at t11
-                $ choice = random.randint(0, 1) == 0
-                if choice:
+
+                if random.randint(0, 1) == 0:
                     $ is_player_white = chess.WHITE
                     m 2eua "Oh look, I drew black!"
                 else:
                     $ is_player_white = chess.BLACK
                     m 2eua "Oh look, I drew white!"
+
             else:
+                $ drew_lots = False
                 $ is_player_white = _return
 
         jump .remenu
@@ -1102,6 +1113,14 @@ label game_chess:
             if chess_ev:
                 # each game counts as a game played
                 $ chess_ev.shown_count += 1
+
+            if drew_lots:
+                if random.randint(0, 1) == 0:
+                    $ is_player_white = chess.WHITE
+                    m 2eua "Oh look, I drew black!{w=0.2} Let's begin."
+                else:
+                    $ is_player_white = chess.BLACK
+                    m 2eua "Oh look, I drew white!{w=0.2} Let's begin."
 
             jump .start_chess
 
