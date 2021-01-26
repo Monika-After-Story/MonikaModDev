@@ -2493,105 +2493,147 @@ label call_next_event:
         #if not seen_event(event_label):
         #    # give whatver the hourly rate is for unseens
         #    $ store.mas_xp._grant_xp(store.mas_xp.xp_rate)
+        python:
+            mas_RaiseShield_dlg()
 
-        $ mas_RaiseShield_dlg()
+            ev = mas_getEV(event_label)
 
-        $ ev = mas_getEV(event_label)
+            if (
+                notify
+                and (ev is None or ("skip alert" not in ev.rules))
+            ):
+                #Create a new notif
+                if renpy.windows:
+                    display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                else:
+                    display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
-        if (
-            notify
-            and (ev is None or ("skip alert" not in ev.rules))
-        ):
-            #Create a new notif
-            if renpy.windows:
-                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
-            else:
-                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+            #Also check here and reset the forced idle exp if necessary
+            if ev is not None and "keep_idle_exp" not in ev.rules:
+                mas_moni_idle_disp.unforce_all()
 
-        #Also check here and reset the forced idle exp if necessary
-        if ev is not None and "keep_idle_exp" not in ev.rules:
-            $ mas_moni_idle_disp.unforce_all()
+            mas_globals.this_ev = ev
 
-        $ mas_globals.this_ev = ev
-        call expression event_label from _call_expression
-        $ persistent.current_monikatopic = 0
-        $ mas_globals.this_ev = None
-        # Handle idle exp
-        $ mas_moni_idle_disp.do_after_topic_logic()
+        call expression event_label
 
-        #if this is a random topic, make sure it's unlocked for prompts
-        $ ev = evhand.event_database.get(event_label, None)
-        if ev is not None:
-            if ev.random and not ev.unlocked:
-                python:
+        python:
+            persistent.current_monikatopic = 0
+            mas_globals.this_ev = None
+            # Handle idle exp
+            mas_moni_idle_disp.do_after_topic_logic()
+
+            #if this is a random topic, make sure it's unlocked for prompts
+            ev = evhand.event_database.get(event_label, None)
+            if ev is not None:
+                if ev.random and not ev.unlocked:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
-        else:
-            # othrewise, pull an ev from the all event database
-            # so we can log some data
-            $ ev = mas_getEV(event_label)
+            else:
+                # othrewise, pull an ev from the all event database
+                # so we can log some data
+                ev = mas_getEV(event_label)
 
-        if ev is not None:
-            # increment shown count
-            $ ev.shown_count += 1
-            $ ev.last_seen = datetime.datetime.now()
+            if ev is not None:
+                # increment shown count
+                ev.shown_count += 1
+                ev.last_seen = datetime.datetime.now()
 
-        if _return is not None:
-            $ ret_items = _return.split("|")
+            # Now process return keys
+            if _return is not None:
+                # TODO: deprecate the old return keys after a couple of releases
+                if isinstance(_return, basestring):
+                    ret_items = dict.fromkeys(_return.split("|"), None)
 
-            if "derandom" in ret_items:
-                $ ev.random = False
+                else:
+                    ret_items = _return
 
-            if "no_unlock" in ret_items:
-                $ ev.unlocked = False
-                $ ev.unlock_date = None
+                if "derandom" in ret_items:
+                    ev.random = False
 
-            if "unlock" in ret_items:
-                $ ev.unlocked = True
-                if ev.unlock_date is None:
-                    $ ev.unlock_date = ev.last_seen
+                if "no_unlock" in ret_items:
+                    ev.unlocked = False
+                    ev.unlock_date = None
 
-            if "rebuild_ev" in ret_items:
-                $ mas_rebuildEventLists()
+                if "unlock" in ret_items:
+                    ev.unlocked = True
+                    if ev.unlock_date is None:
+                        ev.unlock_date = ev.last_seen
 
-            if "idle" in ret_items:
-                $ store.mas_globals.in_idle_mode = True
-                $ persistent._mas_in_idle_mode = True
-                $ renpy.save_persistent()
+                if "rebuild_ev" in ret_items:
+                    mas_rebuildEventLists()
 
-            if "love" in ret_items:
-                $ mas_ILY()
+                if "idle" in ret_items:
+                    store.mas_globals.in_idle_mode = True
+                    persistent._mas_in_idle_mode = True
+                    renpy.save_persistent()
 
-            if "quit" in ret_items:
-                $ persistent.closed_self = True #Monika happily closes herself
-                $ mas_clearNotifs()
-                jump _quit
+                if "love" in ret_items:
+                    mas_ILY()
 
-            # Force idle exp
-            if "idle_exp" in _return:
-                python:
-                    _match = re.search(evhand.RET_KEY_PATTERN_IDLE_EXP, _return)
-                    if _match is not None:
-                        if _match.group("exp") is not None and _match.group("duration") is not None:
-                            mas_moni_idle_disp.force_by_code(
-                                _match.group("exp"),
-                                duration=int(_match.group("duration"))
-                            )
-
-                        elif _match.group("tag") is not None:
-                            _exp = MASMoniIdleExp.weighted_choice(
-                                MASMoniIdleExp.exp_tags_map.get(
-                                    _match.group("tag"),
-                                    tuple()
+                # TODO: deprecate the old return keys after a couple of releases
+                if isinstance(_return, basestring):
+                    if "idle_exp" in _return:
+                        _match = re.search(evhand.RET_KEY_PATTERN_IDLE_EXP, _return)
+                        if _match is not None:
+                            if _match.group("exp") is not None and _match.group("duration") is not None:
+                                mas_moni_idle_disp.force_by_code(
+                                    _match.group("exp"),
+                                    duration=int(_match.group("duration"))
                                 )
-                            )
-                            if _exp is not None:
-                                mas_moni_idle_disp.force(_exp)
 
-            if "prompt" in ret_items:
-                show monika idle
-                jump prompt_menu
+                            elif _match.group("tag") is not None:
+                                _exp = MASMoniIdleExp.weighted_choice(
+                                    MASMoniIdleExp.exp_tags_map.get(
+                                        _match.group("tag"),
+                                        tuple()
+                                    )
+                                )
+                                if _exp is not None:
+                                    mas_moni_idle_disp.force(_exp)
+
+                else:
+                    # return {"idle_exp": (("1huu", {duration=9}), ("1euu", {duration=3}), "1eua")}
+                    # return {"idle_exp": "5hubsu"}
+                    if "idle_exp" in ret_items:
+                        items = ret_items["idle_exp"]
+                        if not isinstance(items, (tuple, list)):
+                            items = (items,)
+
+                        should_reset = True
+                        for item in items:
+                            if isinstance(item, (tuple, list)):
+                                item_len = len(item)
+                                if item_len == 0:
+                                    continue
+
+                                elif item_len > 1:
+                                    exp_kwargs = item[1]
+
+                                else:
+                                    exp_kwargs = dict()
+
+                                exp_code = item[0]
+
+                            else:
+                                exp_code = exp
+                                exp_kwargs = dict()
+
+                            mas_moni_idle_disp.force_by_code(exp_code, clear=should_reset, redraw=should_reset, **exp_kwargs)
+                            should_reset = False
+
+                    # return {"idle_exp_tag": "vibing"}
+                    elif "idle_exp_tag" in ret_items:
+                        mas_moni_idle_disp.force_by_tag(ret_items["idle_exp_tag"])
+
+                if "prompt" in ret_items:
+                    renpy.show("monika idle")
+                    renpy.jump("prompt_menu")
+
+                if "quit" in ret_items:
+                    persistent.closed_self = True
+                    mas_clearNotifs()
+                    renpy.jump("_quit")
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
