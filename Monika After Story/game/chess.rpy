@@ -549,9 +549,18 @@ label game_chess:
 
     m 1eub "You want to play chess? Alright~"
 
-    #Do some var setup
-    $ loaded_game = None
-    $ failed_to_load_save = True
+    python:
+        #Do some var setup
+        loaded_game = None
+        failed_to_load_save = True
+
+        #Prelim definitions of the rules for the menu later
+        do_really_bad_chess = False
+        casual_rules = False
+        practice_mode = False
+        is_player_white = 0
+        menu_category = "gamemode_select"
+        loopback = False
 
     if not renpy.seen_label("mas_chess_save_selected"):
         call mas_chess_save_migration
@@ -562,7 +571,7 @@ label game_chess:
 
         # if the return is no games, jump to new game
         elif _return == mas_chess.CHESS_NO_GAMES_FOUND:
-            jump .new_game_start
+            jump .remenu
 
         # otherwise user has selected a save, which is the pgn game file.
         $ loaded_game = _return
@@ -628,7 +637,7 @@ label game_chess:
                 if _return is not None:
                     return
 
-            jump .new_game_start
+            jump .remenu
 
         # if player did bad, then we dont do file checks anymore
         if persistent._mas_chess_skip_file_checks:
@@ -713,7 +722,7 @@ label game_chess:
                     return
 
                 # otherwise jump to new game
-                jump .new_game_start
+                jump .remenu
 
         python:
             # because quicksaved_file is different form isInProgress
@@ -750,7 +759,7 @@ label game_chess:
                 return
 
             # otherwise jump to a new game
-            jump .new_game_start
+            jump .remenu
 
         # otherwise we are in good hands
         else:
@@ -771,22 +780,12 @@ label game_chess:
             is_player_white = mas_chess._get_player_color(loaded_game)
 
             #Always read these values back so if we play again, the same game rules are maintained
+            #These also override the base settings as to play a continuation
             practice_mode = eval(loaded_game.headers.get("Practice", "False"))
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
             do_really_bad_chess = loaded_game.headers["FEN"] == MASChessDisplayableBase.START_FEN
 
         jump .start_chess
-
-    label .new_game_start:
-        pass
-
-    python:
-        #Prelim definitions of the rules
-        do_really_bad_chess = False
-        casual_rules = False
-        practice_mode = False
-        is_player_white = 0
-        menu_category = "gamemode_select"
 
     label .remenu:
         pass
@@ -857,7 +856,9 @@ label game_chess:
     #Now we show menu
     call screen mas_gen_scrollable_menu(menu_options, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
-    $ renpy.say(m, "How would you like to play?", interact=False)
+    $ renpy.say(m, "How would you like to play?{0}".format("{fast}" if loopback else ""), interact=False)
+
+    $ loopback = True
 
     #We're quitting out
     if _return == -1:
@@ -868,12 +869,15 @@ label game_chess:
 
     #We're changing the main group of settings we wish to change
     elif _return in menu_contents.keys():
+        $ _history_list.pop()
         $ menu_category = _return
 
         jump .remenu
 
     #We changed a rule
     elif _return not in ("confirm", None):
+        $ _history_list.pop()
+
         #Normal/Really Bad Chess selection
         if menu_category == "gamemode_select":
             $ do_really_bad_chess = _return
@@ -1103,7 +1107,7 @@ label game_chess:
 
         "Yes, but with different rules.":
             $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
-            jump .new_game_start
+            jump .remenu
 
         "No.":
             pass
