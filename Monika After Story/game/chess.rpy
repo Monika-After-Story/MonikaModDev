@@ -780,76 +780,135 @@ label game_chess:
     label .new_game_start:
         pass
 
-    #NOTE: ADD GAME MODES HERE
-    m 1eua "What game mode would you like to play?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What game mode would you like to play?{fast}"
+    python:
+        #Prelim definitions of the rules
+        do_really_bad_chess = False
+        casual_rules = False
+        practice_mode = False
+        is_player_white = 0
+        menu_category = "gamemode_select"
 
-        "Normal chess.":
-            $ do_really_bad_chess = False
-
-        "Randomized chess.":
-            $ do_really_bad_chess = True
-
-    label .casual_rules_ask:
-        show monika 1eua
+    label .remenu:
         pass
 
-    m "Casual rules or traditional rules?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Casual rules or traditional rules?{fast}"
+    python:
+        menu_contents = {
+            "gamemode_select": {
+                "options": [
+                    ("Normal Chess", False, False, not do_really_bad_chess),
+                    ("Randomized Chess", True, False, do_really_bad_chess)
+                ],
+                "final_items": [
+                    ("Ruleset", "ruleset_select", False, False, 20),
+                    ("Practice or Play", "mode_select", False, False, 0),
+                    ("Color", "color_select", False, False, 0),
+                    ("Let's play!", "confirm", False, False, 20),
+                    ("Nevermind.", -1, False, False, 0)
+                ]
+            },
+            "ruleset_select": {
+                "options": [
+                    ("Casual Rules", True, False, casual_rules),
+                    ("Traditional Rules", False, False, not casual_rules),
+                    ("What's the difference?", 0, False, False)
+                ],
+                "final_items": [
+                    ("Gamemode", "gamemode_select", False, False, 20),
+                    ("Practice or Play", "mode_select", False, False, 0),
+                    ("Color", "color_select", False, False, 0),
+                    ("Let's play!", "confirm", False, False, 20),
+                    ("Nevermind.", -1, False, False, 0)
+                ]
+            },
+            "mode_select": {
+                "options": [
+                    ("Practice", True, False, practice_mode),
+                    ("Play", False, False, not practice_mode)
+                ],
+                "final_items": [
+                    ("Gamemode", "gamemode_select", False, False, 20),
+                    ("Ruleset", "ruleset_select", False, False, 0),
+                    ("Color", "color_select", False, False, 0),
+                    ("Let's play!", "confirm", False, False, 20),
+                    ("Nevermind.", -1, False, False, 0)
+                ]
+            },
+            "color_select": {
+                "options": [
+                    ("White", True, False, is_player_white),
+                    ("Black", False, False, is_player_white is False),
+                    ("Let's draw lots!", 0, False, is_player_white is 0) #Is check here specifically for states
+                ],
+                "final_items": [
+                    ("Gamemode", "gamemode_select", False, False, 20),
+                    ("Ruleset", "ruleset_select", False, False, 0),
+                    ("Practice or Play", "mode_select", False, False, 0),
+                    ("Let's play!", "confirm", False, False, 20),
+                    ("Nevermind.", -1, False, False, 0)
+                ]
+            }
+        }
 
-        "Casual.":
-            $ casual_rules = True
+    show monika 1eua at t21
 
-        "Traditional.":
-            $ casual_rules = False
+    $ menu_options = menu_contents[menu_category]["options"]
+    $ final_items = menu_contents[menu_category]["final_items"]
 
-        "What's the difference?":
-            m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
-            extend 3eub "Essentially, the player who is not trapped is declared the winner."
-            jump .casual_rules_ask
+    #Now we show menu
+    call screen mas_gen_scrollable_menu(menu_options, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
-    m 3eua "Would you like to practice or play against me?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Would you like to practice or play against me?{fast}"
+    $ renpy.say(m, "How would you like to play?", interact=False)
 
-        "Practice.":
-            $ practice_mode = True
+    #We're quitting out
+    if _return == -1:
+        show monika at t11
+        m 1ekc "...Alright, [player].{w=0.3} I was really looking forward to playing with you."
+        m 1eka "We'll play another time though, right?"
+        return
 
-        "Play.":
-            $ practice_mode = False
+    #We're changing the main group of settings we wish to change
+    elif _return in menu_contents.keys():
+        $ menu_category = _return
 
-    label .play_again:
-        pass
+        jump .remenu
 
-    m "What color would suit you?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What color would suit you?{fast}"
+    #We changed a rule
+    elif _return not in ("confirm", None):
+        #Normal/Really Bad Chess selection
+        if menu_category == "gamemode_select":
+            $ do_really_bad_chess = _return
 
-        "White.":
-            $ is_player_white = chess.WHITE
+        #Practice/Play mode
+        elif menu_category == "ruleset_select":
+            if _return == 0:
+                show monika at t11
+                m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
+                extend 3eub "Essentially, the player who is not trapped is declared the winner."
 
-        "Black.":
-            $ is_player_white = chess.BLACK
-
-        "Let's draw lots!":
-            $ choice = random.randint(0, 1) == 0
-            if choice:
-                $ is_player_white = chess.WHITE
-                m 2eua "Oh look, I drew black! Let's begin!"
             else:
-                $ is_player_white = chess.BLACK
-                m 2eua "Oh look, I drew white! Let's begin!"
+                $ casual_rules = _return
 
-        "Nevermind.":
-            m 1ekc "...Alright, [player].{w=0.3} I was really looking forward to playing with you."
-            m 1eka "We'll play another time though, right?"
-            return
+        #Casual/Normal rules
+        elif menu_category == "mode_select":
+            $ practice_mode = _return
+
+        #Black/White/Draw Lots
+        elif menu_category == "color_select":
+            if _return == 0:
+                show monika at t11
+                $ choice = random.randint(0, 1) == 0
+                if choice:
+                    $ is_player_white = chess.WHITE
+                    m 2eua "Oh look, I drew black!"
+                else:
+                    $ is_player_white = chess.BLACK
+                    m 2eua "Oh look, I drew white!"
+            else:
+                $ is_player_white = _return
+
+        jump .remenu
+
+    #Basically a 'pass', confirmed and we're playing the game
 
     label .start_chess:
         pass
@@ -1040,7 +1099,11 @@ label game_chess:
                 # each game counts as a game played
                 $ chess_ev.shown_count += 1
 
-            jump .play_again
+            jump .start_chess
+
+        "Yes, but with different rules.":
+            $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
+            jump .new_game_start
 
         "No.":
             pass
