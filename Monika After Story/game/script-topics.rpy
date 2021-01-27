@@ -15847,6 +15847,7 @@ label monika_asimov_three_laws:
     m 1eua "The laws were never meant to be actually implemented, they're just plot devices."
     m 3eua "In fact, a good amount of Asimov's stories show just how badly things could turn out if they were applied."
     m 3hksdlb "So I guess they aren't really something we need to worry about. Ahaha~"
+    $ mas_protectedShowEVL('monika_foundation', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -16112,18 +16113,18 @@ label monika_eating_meat:
     m 3eud "If you're asking if I would do so for {i}survival{/i}, I wouldn't hesitate. {w=0.2}It's not that eating meat is distressing for me or anything."
     m 7eud "I told you before, I'm vegetarian because of the impact of the mass-production of meat on the environment...{w=0.2}{nw}"
     extend 2euc "which also includes fish farming, so I'm not a pescatarian."
-    m 2rsc "...That said, I don't consider myself vegan either. {w=0.3}{nw}"
-    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but a lot of vegan alternatives have their own issues too..."
+    m 2rsc "...However, I don't consider myself vegan either. {w=0.3}{nw}"
+    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but vegan alternatives share or have their own issues too..."
     m 4euc "These include things like importing perishable products across great distances and mass-farming in conditions that are both cruel for workers and a strain on the local ecosystem."
     m 4ekd "Take avocados, for example. {w=0.2}Their farms require massive amounts of water, to the point where some companies resort to illegally taking too much water from rivers, leaving little for drinking."
-    m 2etc "At that point, is it really a better alternative as far as the environment is concerned? {w=0.3}{nw}"
-    extend 4euc "Not to mention, I still want to have a varied and balanced diet."
+    m 4euc "Not to mention, I still want to have a varied and balanced diet with all the flavors that I like."
     m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc."
     m "Granted, there are still some options including supplements, but balancing a vegan diet takes a lot of care and thought."
     m 7eka "...So for that reason, I'm not personally against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally if possible."
     m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
     m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
     extend 3eua "So I'm okay with buying from a plain old store, if need be."
+    m "Especially since there are a lot of good substitutes for meat in supermarkets already, with way less environmental impact."
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
@@ -16942,4 +16943,38 @@ label monika_information_age:
     m 1dua "There's no shame in it, we're all just trying to do our best with the information we're given."
     m 1eub "So long as we accept the real truth and adjust our views, we'll always be learning."
     m 3hua "Thanks for listening, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_foundation",
+            category=['literature'],
+            prompt="Foundation",
+            random=False
+        )
+    )
+
+label monika_foundation:
+    m 1eud "Say [player], have you ever heard of a book series called 'Foundation'?"
+    m 3eub "It's one of Asimov's most celebrated pieces of literature!{w=0.3} {nw}"
+    extend 3eua "I got back into it after we discussed his '{i}Three Laws of Robotics{/i}.'"
+    m 4esd "The story is set in a distant future, where humanity has spread across the stars in an all-powerful galactic empire."
+    m 4eua "Hari Seldon, a genius scientist, perfects the fictional science of psychohistory, which can predict the future of large groups of people through mathematical equations."
+    m 4wud "Applying his theory to the galaxy, Seldon finds the empire is about to collapse, leading to a dark age of thirty thousand years!"
+    m 2eua "To stop this, he and fellow colonists settle on a faraway planet with a plan to turn it into the next galactic empire, {w=0.1}shortening the dark age to a single millennium instead."
+    m 7eud "From this premise, we follow the story of the young colony as it transforms through the ages."
+    m 3eua "It's a pretty good read if you're ever in a sci-fi mood...{w=0.3} {nw}"
+    extend 1eud "The series explores the themes of society, fate, and the impact of individuals on the grand scheme of things."
+    m 3eud "What intrigues me the most is the concept of psychohistory and how it translates to the real world."
+    m 1rtc "I mean, at its core, it's nothing but a mix of psychology, sociology, and mathematical probabilities, right? {w=0.3}{nw}"
+    extend 3esd "All of which made huge progress since Asimov's time."
+    m 3esc "...And with the help of modern technologies, we're now able to understand human behaviors better than ever."
+    m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory one day?"
+    m 4eud "Just think if it were possible to predict the global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
+    m 2rksdlc "Not that it'd automatically be a good thing, however.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
+    m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
+    m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"
+    extend 3eub "What do you think, [player]?"
     return
