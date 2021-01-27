@@ -622,6 +622,9 @@ init python:
             return notif_success
         return False
 
+    #Alias for depreciation
+    display_notif = mas_display_notif
+
     def mas_isFocused():
         """
         Checks if MAS is the focused window
