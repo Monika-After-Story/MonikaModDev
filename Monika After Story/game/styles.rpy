@@ -404,9 +404,9 @@ init -10 python in mas_ui:
         OUT:
             boolean whether or not the event pass the criteria
         """
-        ev_label = ev.eventlabel.lower()
         ev_prompt = ev.prompt.lower()
-        ev_prompt_kws = ev_prompt.split()
+        ev_label = ev.eventlabel.lower()
+        ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
         return (
             ev_prompt != ev_label
@@ -421,16 +421,14 @@ init -10 python in mas_ui:
                 and (not only_seen or ev.shown_count > 0)
             )
             and (
-                search_query == ev_prompt
-                or search_query == ev_label
-                or search_query in ev_prompt
+                search_query in ev_prompt
                 or search_query in ev_label
-                or (ev.category and search_query in ev.category)
+                or search_query in ev_cat_full
                 or all(
                     [
                         search_kw in ev_prompt
                         or search_kw in ev_label
-                        or (ev.category and search_kw in ev.category)
+                        or search_kw in ev_cat_full
                         for search_kw in search_kws
                     ]
                 )
@@ -449,10 +447,9 @@ init -10 python in mas_ui:
         OUT:
             list of booleans for sorting
         """
-        ev_label = ev.eventlabel.lower()
-        ev_label_kws = ev_label.split("_")
         ev_prompt = ev.prompt.lower()
-        ev_prompt_kws = ev_prompt.split()
+        ev_label = ev.eventlabel.lower()
+        ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
         rv = list()
 
@@ -461,24 +458,25 @@ init -10 python in mas_ui:
         rv.append(search_query in ev_label)
 
         for search_kw in search_kws:
-            rv.append(search_kw in ev_prompt_kws)
+            rv.append(search_kw in ev_prompt)
 
         for search_kw in search_kws:
-            rv.append(search_kw in ev_label_kws)
+            rv.append(search_kw in ev_label)
 
-        if ev.category:
+        if ev_cat_full:
             for search_kw in search_kws:
                 rv.append(search_kw in ev.category)
+                rv.append(search_kw in ev_cat_full)
 
         return rv
 
-    MAX_TWOPANE_MENU_FLT_ITEMS = 50
+    TWOPANE_MENU_MAX_FLT_ITEMS = 50
 
     @lfu_cache.create_lfu_cache(limit=2048)
     def _twopane_menu_search_events(search_query):
         """
         The actual method that does filtering and searching for the twopane menu.
-        NOTE: won't return more than MAX_TWOPANE_MENU_FLT_ITEMS events
+        NOTE: won't return more than TWOPANE_MENU_MAX_FLT_ITEMS events
 
         IN:
             search_query - search query to filter and sort by
@@ -518,7 +516,7 @@ init -10 python in mas_ui:
         )
         flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
 
-        return flt_evs[0:MAX_TWOPANE_MENU_FLT_ITEMS]
+        return flt_evs[0:TWOPANE_MENU_MAX_FLT_ITEMS]
 
     def twopane_menu_search_callback(search_query):
         """
