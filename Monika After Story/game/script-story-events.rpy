@@ -276,6 +276,7 @@ label mas_transgender_reveal:
                     "Female.":
                     
                     "Neither.":
+                    
             else:
             m "You’re detransitioning again?"
             m "Alright, [player]."
