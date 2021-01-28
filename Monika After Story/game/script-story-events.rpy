@@ -234,6 +234,10 @@ label mas_transgender_reveal:
                     m 1dkd "[player], I’m so sorry..."
                     m 1ekd "You should be accepted for whoever you choose to be."
                     m 1dkc "..."
+                    m "You know, if you're going to stay in the closet around other people..."
+                    m "I can always still call you by your preferred pronouns."
+                    m "I love you so much, and I want you to be yourself around me."
+                    m "..."
                     m 3ekd "Are you sure you’re going to detransition, [player]...?"
                     $ _history_list.pop()
                     menu:
