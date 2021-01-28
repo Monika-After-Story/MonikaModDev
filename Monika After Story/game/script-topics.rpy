@@ -715,8 +715,8 @@ init python in mas_bookmarks_derand:
         ]
 
         for derand_db in derand_dbs:
-            if eventlabel in persistent.__dict__[derand_db]:
-                persistent.__dict__[derand_db].remove(eventlabel)
+            if eventlabel in store.persistent.__dict__[derand_db]:
+                store.persistent.__dict__[derand_db].remove(eventlabel)
 
 ##Generic rerandom work label
 #IN:
