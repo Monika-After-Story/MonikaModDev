@@ -1265,7 +1265,6 @@ init -10 python in mas_selspr:
             CLOTH_SEL_MAP
         )
 
-
     def _filter_sel_single(item, unlocked, group):
         """
         Checks if the given item matches the given criteria
@@ -1285,7 +1284,6 @@ init -10 python in mas_selspr:
             return False
 
         return True
-
 
     def _filter_sel(select_list, unlocked, group=None):
         """
@@ -2883,7 +2881,6 @@ init -1 python:
 init 200 python in mas_selspr:
     load_selectables()
 
-
 # now these tranforms are for the selector sidebar screen
 transform mas_selector_sidebar_tr_show:
     xpos 1280 xanchor 0 ypos 10 yanchor 0
@@ -2899,7 +2896,7 @@ style mas_selector_sidebar_vbar:
 #    thumb "gui/slider/horizontal_hover_thumb.png"
     thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
     bar_vertical True
-    bar_invert True
+    bar_invert True       
 
 # the selector screen sidebar version should be shown, not called.
 # note that we do tons of calls here, so just be ready to do tons of loop overs
@@ -2912,11 +2909,57 @@ style mas_selector_sidebar_vbar:
 #   cancel - label to jump to when canceling
 #   restore - label to jump to when restoring
 #   remover - remover display item, if appropriate. Can be None
-screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None):
+#   acs_list - the list of acs_types to be shown in the menu. Can be None
+screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None, acs_list=None):
     zorder 50
-#    modal True
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
+            
+    # only add menu if acs_list is provided and has more than one option
+    if acs_list and len(acs_list) > 1:
+
+        frame:
+            area (740, 10, 300, 510)
+            background None
+
+            vbox:
+                xsize 300
+                xalign 0.5
+                spacing 5
+
+                viewport id "sidebar_scroll_acs":
+                    mousewheel True
+                    yfill False
+
+                    vbox:
+                        xsize 300
+                        spacing 10
+                        null height 1
+                        
+                        textbutton _("Show All"):
+                            style "hkb_button"
+                            xysize (300, 35)
+                            xalign 0.8
+                            action [SetVariable('acs_type', None),Jump("mas_selector_sidebar_select_midloop")]  
+
+                        for acs_type_item in acs_list:
+                            $ acs_type_name = mas_acs_name_format(acs_type_item)                            
+                            textbutton _(acs_type_name):
+                                style "hkb_button"
+                                xysize (300, 35)
+                                xalign 0.8
+                                action [SetVariable('acs_type', acs_type_item),Jump("mas_selector_sidebar_select_midloop")]
+
+                        null height 1
+
+                null height 5
+
+            bar:
+                value YScrollValue("sidebar_scroll_acs")
+                style "classroom_vscrollbar"
+                xoffset -25  
+    else:
+        $ acs_type = None
 
     frame:
         area (1075, 5, 200, sel_frame_vsize)
@@ -2942,9 +2985,10 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                             xalign 0.5
 
                     for selectable in items:
-                        add selectable:
-#                            xoffset 5
-                            xalign 0.5
+                        if acs_type is None or selectable.selectable.get_sprobj().acs_type == acs_type:
+                            add selectable:
+#                                xoffset 5
+                                xalign 0.5
 
                     null height 1
 
@@ -2963,7 +3007,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         )
                     ]
                     selected ocb_checked
-
+            
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
                     style "hkb_button"
@@ -2978,7 +3022,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
-                    action Jump(restore)
+                    action [SetVariable('acs_type', None),Jump(restore)]
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -2992,6 +3036,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
+            unscrollable "hide"
             xoffset -25
 
 # GENERAL sidebar selector label
@@ -3024,15 +3069,18 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
+#   acs_list - list of acs_types to display in menu.
+#       (Defailt: None)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, acs_list=None):
 
     python:
+
         if not store.mas_selspr.valid_select_type(select_type):
             raise Exception(
                 "invalid selection constant: {0}".format(select_type)
@@ -3163,8 +3211,13 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 
         # setup prev line
         prev_line = ""
+    
+        # setup acs_type for filtering
+        acs_type = None
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item)
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, acs_list=acs_list)
+
+
 
 label mas_selector_sidebar_select_loop:
     python:
@@ -3215,7 +3268,7 @@ label mas_selector_sidebar_select_midloop:
                 _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
-
+    
     jump mas_selector_sidebar_select_loop
 
 label mas_selector_sidebar_select_restore:
@@ -3340,9 +3393,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, acs_list=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, acs_list)
 
     return _return
 
@@ -3668,6 +3721,7 @@ label monika_ribbon_select:
         # if we are not using a force ribbon hair, add a remover.
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
+        #get selected acs_types
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
         # remove non-compatible acs
@@ -3680,7 +3734,19 @@ label monika_ribbon_select:
             ):
                 use_acs.pop(index)
 
-        # make sure ot use ribbon for remover type
+        # generate acs_type_list
+        acs_type_list = []
+        for item in use_acs:
+            if ( item.get_sprobj().acs_type not in acs_type_list ) and (
+                    store.mas_sprites.is_hairacs_compatible(
+                        monika_chr.hair,
+                        item.get_sprobj()
+                    )
+                ):
+                    acs_type_list.append(item.get_sprobj().acs_type)  
+        
+
+        # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
             "ribbon",
@@ -3692,14 +3758,17 @@ label monika_ribbon_select:
         )
         sel_map = {}
 
-    m 1eua "Sure [player]!"
-
 #    if monika_chr.hair.name != mas_hair_def.name:
 #        m "But im going to change my clothes and hair back to normal."
 #        $ monika_chr.reset_outfit(False)
 
+    m 1eua "Sure [player]!"
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+    show monika at t21
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, acs_list=acs_type_list)
+
+    show monika at t11
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3708,6 +3777,7 @@ label monika_ribbon_select:
 
     return
 #### End Ribbon change topic
+
 
 #### Monika hairclips
 init 5 python:

@@ -6485,6 +6485,100 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    
+    def mas_plularize(ref_str):
+        """
+        Pluralize a word
+        IN: 
+            ref_str - the text to be pluralized
+        OUT:
+            ref_str - pluralized
+        """
+        
+        # flag if ending is already plural
+        name_plural_needed = True
+
+        """
+        Making things plural is complex, it would be best to add these as exceptions in the code below
+        https://www.grammarly.com/blog/plural-nouns/
+        In some cases, singular nouns ending in -s or -z, require that you double the -s or -z prior to adding the -es for pluralization.
+        
+        If the noun ends with ‑f or ‑fe, the f is often changed to ‑ve before adding the -s to form the plural version.
+        Exceptions:
+        roof – roofs
+        belief – beliefs
+        chef – chefs
+        chief – chiefs
+        
+        If a singular noun ends in ‑y and the letter before the -y is a consonant, change the ending to ‑ies to make the noun plural. if not, just add s
+        
+        If the singular noun ends in ‑o, add ‑es to make it plural.
+        Exceptions:
+        photo – photos
+        piano – pianos
+        halo – halos
+         
+        If the singular noun ends in ‑us, the plural ending is frequently ‑i.
+        
+        If the singular noun ends in ‑is, the plural ending is ‑es.
+        
+        If the singular noun ends in ‑on, the plural ending is ‑a.
+        """
+
+        #list of ending words that need custom endings or are already plural
+        #if already plural set the replacement to None. e.g. "ribbons":None
+        name_plural_exceptions = {
+            "ribbons": None
+        }
+
+        # set any exceptions to be marked as plural
+        for name_plural_exception in name_plural_exceptions:
+            if ref_str.endswith(name_plural_exception):
+                if name_plural_exceptions[name_plural_exception] == None:
+                    name_plural_needed = False
+                else:
+                    ref_str = ref_str[:-len(name_plural_exception)] + name_plural_exceptions[name_plural_exception]
+                    name_plural_needed = False
+
+        # if not plural make plural
+        if name_plural_needed:
+            if ref_str.endswith("s") or ref_str.endswith("sh") or ref_str.endswith("ch") or ref_str.endswith("x") or ref_str.endswith("z"):
+                ref_str += "es"
+            else:
+                ref_str += "s"
+
+        return ref_str
+
+    
+    def mas_acs_name_format(acs_name):
+        """
+        Formats acs name to be sentence case, with spaces, and pluralized
+        
+        IN: 
+            acs-name - the text to be formatted
+        OUT:
+            acs-name - formatted
+        """
+
+        # excpetions that include a "-" in the name
+        name_space_exceptions = {
+            "s-type-ribbon": "s-type ribbon"
+        }
+
+        # manually change items that include "-" else replace "-" with a space
+        if acs_name in name_space_exceptions:
+            acs_name = name_space_exceptions[acs_name]
+        else:
+            acs_name = acs_name.replace("-", " ")
+
+        # pluralize
+        acs_name = mas_plularize(acs_name)
+
+        # capitalise
+        acs_name = acs_name.capitalize()
+
+        return acs_name
+
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
         """
