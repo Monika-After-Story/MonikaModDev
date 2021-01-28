@@ -3975,6 +3975,7 @@ init -1 python in _mas_root:
 
 init -999 python:
     import os
+    import pytz
 
     _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
 
@@ -3984,6 +3985,16 @@ init -999 python:
             os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
         except:
             pass
+
+    # load timezone info
+    # NOTE: this is needed since initialzation of pytz will not include find
+    #   timezones if they are included locally
+    # NOTE: this means that tz info is not guaranteed until this call.
+    pytz.load_resources(os.path.join(
+        renpy.config.gamedir,
+        "python-packages",
+        "pytz",
+    ))
 
     def mas_override_label(label_to_override, override_label):
         """
@@ -4017,6 +4028,8 @@ init -995 python in mas_utils:
     import time
     import traceback
     import sys
+    import pytz
+    import tzlocal
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -4033,6 +4046,9 @@ init -995 python in mas_utils:
         "{": "{{",
         "[": "[["
     }
+
+    # timezone cache
+    _tz_cache = None
 
     def compareVersionLists(curr_vers, comparative_vers):
         """
@@ -4252,6 +4268,112 @@ init -995 python in mas_utils:
         RETURNS: hours as float
         """
         return (duration.days * 24) + (duration.seconds / 3600.0)
+
+
+    def get_localzone():
+        """
+        Wrapper around tzlocal.get_localzone() that won't raise exceptions
+
+        NOTE: this caches the timezone. Call reload_localzone() to gurantee 
+        timezone is updated.
+
+        RETURNS: pytz tzinfo object of the local time zone. 
+            if system timezone info is configured wrong, then a special-MAS
+            version of a timezone is returned instead. This version works 
+            like a static, unchanging timezone, using the time.timezone/altzone
+            values.
+        """
+        global _tz_cache
+        if _tz_cache is not None:
+            return _tz_cache
+
+        try:
+            _tz_cache = tzlocal.get_localzone()
+        except:
+            _tz_cache = store.MASLocalTz.create()
+
+        return _tz_cache
+
+
+    def reload_localzone():
+        """
+        Reloads the cached localzone.
+
+        RETURNS: see get_localzone()
+        """
+        try:
+            _tz_cache = tzlocal.reload_localzone()
+        except:
+            _tz_cache = store.MASLocalTz.reload()
+
+        return _tz_cache
+
+
+    def local_to_utc(local_dt, latest=True):
+        """
+        Converts the given local datetime into a UTC datetime.
+
+        NOTE: you shouldn't be using this. UTC time should be where you do 
+        dt manipulations and use utc_to_local to get a localized dt for human
+        reading. datetime has a utcnow() function so use that to get started
+        instead of now()
+
+        IN:
+            local_dt - datetime to convert, should be naive (no tzinfo)
+            latest - True will attempt to reload the local timezone before 
+                doing the conversion. If dealing with an old datetime, you
+                might want to pass False
+                (Default: True)
+
+        RETURNS: 
+            UTC-based naive datetime (no tzinfo).
+            This is safe for pickling/saving to persistent.
+        """
+        if latest:
+            local_tz = reload_localzone()
+        else:
+            local_tz = get_localzone()
+
+        return local_tz.localize(local_dt).astimezone(pytz.utc).replace(tzinfo=None)
+
+
+    def utc_to_any(utc_dt, target_tz):
+        """
+        Converts the given UTC datetime into any tz datetime
+
+        IN:
+            utc_dt - datetime to convert, should be naive (no tzinfo)
+            target_tz - pytz.tzinfo object of the timezone to convert to
+
+        RETURNS:
+            datetime converted to the target timezone.
+            NOTE: DO NOT PICKLE THIS OR SAVE TO PERSISTENT.
+        """
+        return pytz.utc.localize(utc_dt).astimezone(target_tz)
+
+
+    def utc_to_local(utc_dt, latest=True):
+        """
+        Converts the given UTC datetime into a local datetime
+
+        IN:
+            utc_dt - datetime to convert, should be naive (no tzinfo)
+            latest - True will attempt to reload the local timezone before
+                doing the conversion. If dealing with an old datetime, you
+                might want to pass False
+                (Default: True)
+
+        RETURNS: 
+            localized datetime with tzinfo of this zone (see pytz docs)
+            NOTE: DO NOT PICKLE THIS or SAVE TO PERSISTENT. While pytz can
+                safely pickle, we do not want to force a dependency on the
+                persistent.
+        """
+        if latest:
+            return utc_to_any(utc_dt, reload_localzone())
+
+        return utc_to_any(utc_dt, get_localzone())
+
 
     def tryparseint(value, default=0):
         """
