@@ -266,7 +266,16 @@ label mas_transgender_reveal:
                     m "Alright, [player]..."
                     m "Just know I’ll always accept you for who you are, okay?"
                     m "You’re everything to me~"
-                
+                m "So..."
+                m "What gender do you identify as now?"
+                $ _history_list.pop()
+                menu:
+                    m "What gender do you identify as now?"
+                    "Male.":
+                    
+                    "Female.":
+                    
+                    "Neither.":
             else:
             m "You’re detransitioning again?"
             m "Alright, [player]."
