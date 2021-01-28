@@ -230,7 +230,7 @@ label dev_sp_obj_pp_test:
 
 label dev_sp_obj_pp_test_top:
 
-    call screen mas_gen_scrollable_menu(top_level_menu, mas_ui.SCROLLABLE_MENU_MEDIUM_H, mas_ui.SCROLLABLE_MENU_XALIGN, returner)
+    call screen mas_gen_scrollable_menu(top_level_menu, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, returner)
 
     if _return is False:
         # restore state
@@ -242,7 +242,7 @@ label dev_sp_obj_pp_test_top:
 label dev_sp_obj_pp_test_sp_select:
 
     # otherwise, create menu using the given list
-    call screen mas_gen_scrollable_menu(selected_sp_list, mas_ui.SCROLLABLE_MENU_MEDIUM_H, mas_ui.SCROLLABLE_MENU_XALIGN, returner)
+    call screen mas_gen_scrollable_menu(selected_sp_list, mas_ui.SCROLLABLE_MENU_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, returner)
 
     if _return is False:
         jump dev_sp_obj_pp_test_top
