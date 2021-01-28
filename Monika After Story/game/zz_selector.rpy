@@ -3764,7 +3764,8 @@ label monika_ribbon_select:
 
     m 1eua "Sure [player]!"
 
-    show monika at t21
+    if acs_type_list and len(acs_type_list) > 1:
+        show monika at t21
 
     call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, acs_list=acs_type_list)
 
