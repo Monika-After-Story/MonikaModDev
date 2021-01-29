@@ -2957,7 +2957,7 @@ label mas_bookmarks:
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
             # only if it is not flagged to be hidden
             if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
-                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel)
 
                 #Get the suffix function
                 suffix_func = prompt_suffix_map.get(label_prefix)
