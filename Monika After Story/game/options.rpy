@@ -14,8 +14,7 @@ init -999:
     define config.name = "Monika After Story"
 
     ## The version of the game.
-    define config.version = "0.11.9-unstable.2021.01.17.134"
-    #define config.version = "0.11.9.1-unstable.2021.01.26.135"
+    define config.version = "0.11.9.1-unstable.2021.01.28.135"
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
