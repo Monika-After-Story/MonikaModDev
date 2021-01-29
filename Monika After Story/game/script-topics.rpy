@@ -16319,7 +16319,13 @@ label monika_favchocolate:
     m 3hub "Not to mention, it's rich in antioxidants and can even give some cardiovascular benefits! {w=0.3}{nw}"
     extend 3hksdlb "...In moderation, of course."
     m 1hubla "The taste kind of reminds me of a mocha coffee. Maybe the similarity in flavors is why I like it most."
-    m 1eud "Speaking of coffee, though...if I were drinking some, I think I might prefer milk or white chocolate for balance."
+    
+    if MASConsumable._getCurrentDrink() is mas_getConsumable("coffee"):
+            m 3hubla "Although, milk or white chocolate might pair better with the coffee I'm drinking. Something sweet would balance so well with the bitterness!"
+    
+    else:
+            m 1eud "Speaking of coffee, though...if I were drinking some, I think I might prefer milk or white chocolate for balance."
+    
     m 3eub "White chocolate is especially sweet and soft, containing no cocoa solids at all; just the cocoa butter, milk, and sugar."
     m 3hub "I think it would make a nice contrast to an especially bitter drink, like espresso."
     m 1etc "Hmm... {w=0.3}{nw}"
