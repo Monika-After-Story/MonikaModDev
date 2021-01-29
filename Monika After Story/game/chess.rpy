@@ -905,13 +905,7 @@ label game_chess:
             if _return is 0:
                 $ drew_lots = True
                 show monika at t11
-
-                if random.randint(0, 1) == 0:
-                    $ is_player_white = chess.WHITE
-                    m 2eua "Oh look, I drew black!"
-                else:
-                    $ is_player_white = chess.BLACK
-                    m 2eua "Oh look, I drew white!"
+                call mas_chess_draw_lots(False)
 
             else:
                 $ drew_lots = False
@@ -922,14 +916,8 @@ label game_chess:
     #To make sure we indeed draw lots as is the default, we need to run that here
     if is_player_white is 0:
         $ drew_lots = True
-        show monika at t11
+        call mas_chess_draw_lots
 
-        if random.randint(0, 1) == 0:
-            $ is_player_white = chess.WHITE
-            m 2eua "Oh look, I drew black!{w=0.2} Let's begin."
-        else:
-            $ is_player_white = chess.BLACK
-            m 2eua "Oh look, I drew white!{w=0.2} Let's begin."
 
     #Basically a 'pass', confirmed and we're playing the game
 
@@ -1120,12 +1108,7 @@ label game_chess:
         "Yes.":
             $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
             if drew_lots:
-                if random.randint(0, 1) == 0:
-                    $ is_player_white = chess.WHITE
-                    m 2eua "Oh look, I drew black!{w=0.2} Let's begin."
-                else:
-                    $ is_player_white = chess.BLACK
-                    m 2eua "Oh look, I drew white!{w=0.2} Let's begin."
+                call mas_chess_draw_lots
 
             jump .start_chess
 
@@ -1135,6 +1118,18 @@ label game_chess:
 
         "No.":
             pass
+    return
+
+label mas_chess_draw_lots(begin=True):
+    $ drew_lots = True
+    $ lets_begin = "{w=0.2} Let's begin." if begin else ""
+
+    if random.randint(0, 1) == 0:
+        $ is_player_white = chess.WHITE
+        m 2eua "Oh look, I drew black![lets_begin]"
+    else:
+        $ is_player_white = chess.BLACK
+        m 2eua "Oh look, I drew white![lets_begin]"
     return
 
 label mas_chess_savegame(silent=False, allow_return=True):
