@@ -919,6 +919,18 @@ label game_chess:
 
         jump .remenu
 
+    #To make sure we indeed draw lots as is the default, we need to run that here
+    if is_player_white is 0:
+        $ drew_lots = True
+        show monika at t11
+
+        if random.randint(0, 1) == 0:
+            $ is_player_white = chess.WHITE
+            m 2eua "Oh look, I drew black!{w=0.2} Let's begin."
+        else:
+            $ is_player_white = chess.BLACK
+            m 2eua "Oh look, I drew white!{w=0.2} Let's begin."
+
     #Basically a 'pass', confirmed and we're playing the game
 
     label .start_chess:
