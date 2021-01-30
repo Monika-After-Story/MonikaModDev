@@ -5618,7 +5618,12 @@ label mas_f14_monika_valentines_intro:
             m "Thanks for visiting me, I hope you have a good day."
         return
 
-    $ lingerie_eligible = mas_canShowRisque() and not mas_SELisUnlocked(mas_clothes_vday_lingerie) and mas_SELisUnlocked(mas_clothes_sundress_white)
+    $ lingerie_eligible = (
+        mas_canShowRisque()
+        and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+        and mas_SELisUnlocked(mas_clothes_sundress_white)
+    )
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -6251,7 +6256,7 @@ init 20 python:
     poem_vday_4 = MASPoem(
         poem_id="poem_f14_4",
         category="f14",
-        prompt="You", #TODO: needs title
+        prompt="Roses",
         title=" My dearest [player],",
         text="""\
  All the roses in the world,
@@ -6268,7 +6273,7 @@ init 20 python:
  They make them stronger.
  And of all the roses in the world,
  Even on this most romantic holiday,
- None could ever replace my special flower~
+ None could ever replace {i}my{/i} special rose~
 
  Forever your Valentine,
  Monika
