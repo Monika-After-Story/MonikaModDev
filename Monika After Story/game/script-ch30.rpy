@@ -1334,9 +1334,6 @@ label ch30_post_exp_check:
 
         $ pushEvent(selected_greeting)
 
-    #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=True)
-
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
     # else:
@@ -2041,6 +2038,11 @@ label ch30_reset:
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
+
+    #Now we check if we should drink
+    # NOTE: the consumables check must be called before the reset in the retmoni check block, otherwise there's
+    # a chance to return home and have a consumable already on the table
+    $ MASConsumable._checkConsumables(startup=True)
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
