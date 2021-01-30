@@ -1463,8 +1463,10 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
             mas_loseAffection(modifier=10)
             #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
             mas_stripEVL("mas_unlock_chess")
-            #Workaround to deal with peeople who havent seen the unlock chess label
+            #Workaround to deal with people who havent seen the unlock chess label
             persistent._seen_ever["mas_unlock_chess"] = True
+            #We use a simple value of true to establish a permanent disable
+            persistent._mas_chess_timed_disable = True
 
         m 2dfc "..."
         m 2efc "[player],{w=0.3} I don't believe you."
