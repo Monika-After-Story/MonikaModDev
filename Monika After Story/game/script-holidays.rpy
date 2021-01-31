@@ -5558,7 +5558,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
-            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')"
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')".
             action=EV_ACT_QUEUE,
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
