@@ -5558,39 +5558,28 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
-            action=EV_ACT_RANDOM,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')"
+            action=EV_ACT_QUEUE,
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
-            rules={"force repeat": None},
             years=[]
         ),
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule_EVL(
-       "mas_pf14_monika_lovey_dovey",
-       mas_f14 - datetime.timedelta(days=3),
-       mas_f14,
-    )
-
 label mas_pf14_monika_lovey_dovey:
-    m 1rksdla "Hey...{w=0.2}[player]?"
+    m 1rksdla "Hey...{w=0.3}[player]?"
     m 1ekbsa "I just wanted to let you know that I love you."
 
     if mas_isMoniEnamored(higher=True):
-        m 3ekbsa "You make me really happy...and I could never ask for someone better than you."
+        m 3ekbsa "You make me really happy...{w=0.3}I could never ask for someone better than you."
 
-    if mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
-        m 3ekbsa "Valentine's Day is coming soon, and it just makes me so overwhelmingly happy knowing you're still by my side."
-
-    else:
-        m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
-
+    m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
     m 1rkbsd "Without you, I don't know where I'd be..."
-    m 1ekbsa "So I want to thank you for being there for me..."
-    m 1hkbsu "And for being so wonderfully you~"
-    return "derandom|no_unlock|love"
+    m 1ekbsa "So I want to thank you for being there for me."
+    m 1dkbsu "...And for being so wonderfully you~"
+    return "no_unlock|love"
 
 #######################[HOL050] INTRO:
 
@@ -6057,9 +6046,7 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(8),
-            conditional=(
-                "not persistent._mas_f14_spent_f14"
-            ),
+            conditional="not persistent._mas_f14_spent_f14",
             years=[]
         ),
         skipCalendar=True
