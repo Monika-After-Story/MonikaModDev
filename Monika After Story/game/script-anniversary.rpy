@@ -253,7 +253,7 @@ init 10 python in mas_anni:
         """
         for anni in anni_db:
             ev = anni_db[anni]
-            store.mas_cal.addEvent(ev)
+            store.mas_calendar.addEvent(ev)
 
     def clean_cal_annis():
         """
@@ -261,7 +261,7 @@ init 10 python in mas_anni:
         """
         for anni in anni_db:
             ev = anni_db[anni]
-            store.mas_cal.removeEvent(ev)
+            store.mas_calendar.removeEvent(ev)
 
 
     def reset_annis(new_start_date):
@@ -283,7 +283,7 @@ init 10 python in mas_anni:
         # remove first session repeatable
         if _firstsesh_dt:
             # this exists! we can make this easy
-            store.mas_cal.removeRepeatable_dt(_firstsesh_id, _firstsesh_dt)
+            store.mas_calendar.removeRepeatable_dt(_firstsesh_id, _firstsesh_dt)
 
         # modify the anniversaries
         fullday = datetime.timedelta(days=1)
@@ -307,7 +307,7 @@ init 10 python in mas_anni:
         add_cal_annis()
 
         # re-add the repeatable to the calendar db
-        store.mas_cal.addRepeatable_dt(
+        store.mas_calendar.addRepeatable_dt(
             _firstsesh_id,
             "<3",
             new_start_date,

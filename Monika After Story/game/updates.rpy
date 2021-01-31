@@ -372,6 +372,13 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+#0.11.9.3
+label v0_11_9_3(version="v0_11_9_3"):
+    python:
+        #Reset annis as F29 based ones are on the wrong date
+        mas_anni.reset_annis()
+    return
+
 # 0.11.9.1
 label v0_11_9_1(version="v0_11_9_1"):
     python:
