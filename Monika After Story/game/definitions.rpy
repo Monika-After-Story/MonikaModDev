@@ -4879,7 +4879,7 @@ init -100 python in mas_utils:
         old_day=starting_date.day
 
         #To handle F29 consistently with add_years, we explicitly manage it
-        if months and old_month == 2 and old_day == 29:
+        if months and (months/12 + old_year) % 4 != 0 and old_month == 2 and old_day == 29:
             old_month = 3
             old_day = 1
 
