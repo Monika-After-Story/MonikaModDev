@@ -1539,7 +1539,7 @@ label mas_chess_quickfile_lost_maybe_filechecker_loop:
         hide screen mas_background_timed_jump
         jump mas_chess_dlg_quickfile_lost_maybe_filechecker_no_file
 
-    show screen mas_background_timed_jump(4, "mas_chess_dlg_quickfile_lost_maybe_filechecker_loop")
+    show screen mas_background_timed_jump(4, "mas_chess_quickfile_lost_maybe_filechecker_loop")
     $ seconds += 4
     menu:
         "I deleted the save...":
