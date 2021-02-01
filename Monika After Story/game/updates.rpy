@@ -386,6 +386,16 @@ label v0_11_9_3(version="v0_11_9_3"):
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
             )
         )
+
+        fps_to_delete = [
+            "zz_windowreacts.rpy",
+            "Submods/Enhanced Idle/enhanced idle.rpy"
+        ]
+
+        for fp in fps_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
+
     return
 
 # 0.11.9.1
