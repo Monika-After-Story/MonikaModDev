@@ -1514,7 +1514,7 @@ label mas_chess_dlg_qf_lost_may_filechecker:
     $ game_file = mas_chess.loaded_game_filename
 
     if os.access(game_file, os.F_OK):
-        jump mas_chess_dlg_qf_lost_may_gen_found
+        jump mas_chess_dlg_quickfile_lost_maybe_save_found
 
     m 1eka "Can you put the save back so we can play?"
 
@@ -1558,7 +1558,7 @@ label mas_chess_dlg_quickfile_lost_maybe_filechecker_no_file:
     return None
 
 # generic maybe monika, found file
-label mas_chess_dlg_qf_lost_may_gen_found:
+label mas_chess_dlg_quickfile_lost_maybe_save_found:
     m 2eua "Oh!"
     m 1hua "There's the save.{w=0.2} Thanks for putting it back, [player]."
     m 1eua "Now we can continue our game."
