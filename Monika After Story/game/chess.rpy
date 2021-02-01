@@ -3293,6 +3293,53 @@ init python:
                         startupinfo=startupinfo
                     )
 
+                #Catch the permission error
+                except OSError as os_err:
+                    if not renpy.windows:
+                        renpy.show("monika 1etsdlc", at_list=[t11])
+                        renpy.say(m, "Hmm, that's odd. It seems some permissions were changed and I can't get chess running on your system.")
+                        renpy.show("monika 3eua")
+                        renpy.say(m, "Hold on a second, [player]. I'm going to try something quickly.{w=0.3}.{w=0.3}.{w=0.3}{nw}")
+
+                        store.mas_ptod.rst_cn()
+                        local_ctx = {
+                            "basedir": renpy.config.basedir
+                        }
+                        renpy.show("monika", at_list=[t22])
+                        renpy.show_screen("mas_py_console_teaching")
+                        store.mas_ptod.wx_cmd("import subprocess", local_ctx)
+                        renpy.pause(1.0)
+                        store.mas_ptod.wx_cmd("import os", local_ctx)
+                        renpy.pause(1.0)
+                        store.mas_ptod.wx_cmd(
+                            "subprocess.call(['chmod','+x', os.path.normcase(basedir + '/game/mod_assets/games/chess/stockfish_8_{0}_x64')])".format(
+                                "linux" if renpy.linux else "macosx"
+                            ),
+                            local_ctx
+                        )
+                        renpy.pause(2.0)
+
+                        renpy.hide_screen("mas_py_console_teaching")
+                        #Try again
+                        try:
+                            stockfish_proc = subprocess.Popen(
+                                os.path.join(renpy.config.gamedir, path).replace('\\', '/'),
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                startupinfo=startupinfo
+                            )
+
+                            renpy.show("monika 3hua")
+                            renpy.say(m, "Yay! We should be able to play now~")
+                            return stockfish_proc
+
+                        #If it still doesn't work, just log it and fail out
+                        except Exception as ex:
+                            os_err = ex
+
+                    store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(os_err))
+                    renpy.jump("mas_chess_cannot_work_embarrassing")
+
                 #Basically a last resort jump. If this happens it pretty much means you launched MAS from commandline
                 except Exception as ex:
                     store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(ex))
