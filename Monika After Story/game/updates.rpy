@@ -372,6 +372,20 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.9.2
+label v0_11_9_2(version="v0_11_9_2"):
+    python:
+        fps_to_delete = [
+            "zz_windowreacts.rpy",
+            "Submods/Enhanced Idle/enhanced idle.rpy"
+        ]
+
+        for fp in fps_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
+
+    return
+
 # 0.11.9.1
 label v0_11_9_1(version="v0_11_9_1"):
     python:
@@ -386,15 +400,6 @@ label v0_11_9_1(version="v0_11_9_1"):
 
         if seen_event("monika_boardgames"):
             mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
-
-        fps_to_delete = [
-            "zz_windowreacts.rpy",
-            "Submods/Enhanced Idle/enhanced idle.rpy"
-        ]
-
-        for fp in fps_to_delete:
-            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
-            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
 
         # We don't use this var anymore
         safeDel("chess_strength")
