@@ -3307,6 +3307,7 @@ init python:
                         }
                         renpy.show("monika", at_list=[t22])
                         renpy.show_screen("mas_py_console_teaching")
+                        renpy.pause(1.0)
                         store.mas_ptod.wx_cmd("import subprocess", local_ctx)
                         renpy.pause(1.0)
                         store.mas_ptod.wx_cmd("import os", local_ctx)
@@ -3329,8 +3330,9 @@ init python:
                                 startupinfo=startupinfo
                             )
 
-                            renpy.show("monika 3hua")
+                            renpy.show("monika 3hua", at_list=[t11])
                             renpy.say(m, "Yay! We should be able to play now~")
+                            renpy.show("monika", at_list=[t21])
                             return stockfish_proc
 
                         #If it still doesn't work, just log it and fail out
