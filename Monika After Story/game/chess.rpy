@@ -1120,10 +1120,10 @@ label mas_chess_draw_lots(begin=True):
 
     if random.randint(0, 1) == 0:
         $ is_player_white = chess.WHITE
-        m 2eua "Oh look, I drew black![lets_begin]"
+        m 2eub "Oh look, I drew black![lets_begin]"
     else:
         $ is_player_white = chess.BLACK
-        m 2eua "Oh look, I drew white![lets_begin]"
+        m 2eub "Oh look, I drew white![lets_begin]"
     return
 
 label mas_chess_savegame(silent=False, allow_return=True):
