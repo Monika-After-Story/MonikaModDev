@@ -568,7 +568,7 @@ label game_chess:
 
         # if the return is no games, jump to new game
         elif _return == mas_chess.CHESS_NO_GAMES_FOUND:
-            jump .remenu
+            jump mas_chess_remenu
 
         # otherwise user has selected a save, which is the pgn game file.
         $ loaded_game = _return
@@ -634,7 +634,7 @@ label game_chess:
                 if _return is not None:
                     return
 
-            jump .remenu
+            jump mas_chess_remenu
 
         # if player did bad, then we dont do file checks anymore
         if persistent._mas_chess_skip_file_checks:
@@ -650,7 +650,8 @@ label game_chess:
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
                     do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
-                jump .start_chess
+
+                jump mas_chess_start_chess
 
         # otherwise, read the game from file
         python:
@@ -726,7 +727,7 @@ label game_chess:
                     return
 
                 # otherwise jump to new game
-                jump .remenu
+                jump mas_chess_remenu
 
         python:
             # because quicksaved_file is different form isInProgress
@@ -763,7 +764,7 @@ label game_chess:
                 return
 
             # otherwise jump to a new game
-            jump .remenu
+            jump mas_chess_remenu
 
         # otherwise we are in good hands
         else:
@@ -789,11 +790,11 @@ label game_chess:
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
             do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
-        jump .start_chess
+        jump mas_chess_start_chess
 
-    label .remenu:
-        pass
+    #FALL THROUGH
 
+label mas_chess_remenu:
     python:
         menu_contents = {
             "gamemode_select": {
@@ -876,7 +877,7 @@ label game_chess:
         $ _history_list.pop()
         $ menu_category = _return
 
-        jump .remenu
+        jump mas_chess_remenu
 
     #We changed a rule
     elif _return not in ("confirm", None):
@@ -911,7 +912,7 @@ label game_chess:
                 $ drew_lots = False
                 $ is_player_white = _return
 
-        jump .remenu
+        jump mas_chess_remenu
 
     #To make sure we indeed draw lots as is the default, we need to run that here
     if is_player_white is 0:
@@ -921,13 +922,11 @@ label game_chess:
 
     #Basically a 'pass', confirmed and we're playing the game
 
-    label .start_chess:
-        pass
-
+label mas_chess_start_chess:
     #Setup the chess FEN
     $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
 
-    #NOTE: This is a failsafe in case people jump to the .start_chess label
+    #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
         jump mas_chess_locked_no_play
 
@@ -957,9 +956,6 @@ label game_chess:
 
         # game result header
         game_result = new_pgn_game.headers["Result"]
-
-    label .chess_end:
-        pass
 
     show monika at t11
     $ mas_gainAffection(modifier=0.5)
@@ -1078,7 +1074,7 @@ label game_chess:
     # if you have a previous game, we are overwritting it regardless
     if loaded_game:
         call mas_chess_savegame(silent=True)
-        jump .play_again_ask
+        jump mas_chess_play_again_ask
 
     #If the player surrendered under 5 moves in, we can assume they just don't want to play anymore
     if is_surrender and num_turns < 5:
@@ -1097,9 +1093,7 @@ label game_chess:
             "No.":
                 pass
 
-    label .play_again_ask:
-        pass
-
+label mas_chess_play_again_ask:
     m 1eua "Would you like to play again?{nw}"
     $ _history_list.pop()
     menu:
@@ -1110,11 +1104,11 @@ label game_chess:
             if drew_lots:
                 call mas_chess_draw_lots
 
-            jump .start_chess
+            jump mas_chess_start_chess
 
         "Yes, but with different rules.":
             $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
-            jump .remenu
+            jump mas_chess_remenu
 
         "No.":
             pass
@@ -1133,8 +1127,10 @@ label mas_chess_draw_lots(begin=True):
     return
 
 label mas_chess_savegame(silent=False, allow_return=True):
+    #NOTE: We do this to prevent the default values from being restored here
     label .save_start:
         pass
+
     if loaded_game: # previous game exists
         python:
             new_pgn_game.headers["Event"] = loaded_game.headers["Event"]
@@ -1191,6 +1187,8 @@ label mas_chess_savegame(silent=False, allow_return=True):
                     pass
 
                 "No.":
+                    #NOTE: Since jumping back to the main label causes arg resets, we jump to a local label inside to prevent that
+                    #TODO: Jump with args
                     jump .save_start
 
     python:
