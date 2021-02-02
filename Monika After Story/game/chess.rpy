@@ -889,7 +889,7 @@ label mas_chess_remenu:
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
-            if _return == 0:
+            if _return is 0:
                 show monika at t11
                 m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
                 extend 3eub "Essentially, the player who is not trapped is declared the winner."
