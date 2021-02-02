@@ -905,7 +905,6 @@ label mas_chess_remenu:
         elif menu_category == "color_select":
             if _return is 0:
                 $ drew_lots = True
-                show monika at t11
                 call mas_chess_draw_lots(False)
 
             else:
@@ -1115,6 +1114,7 @@ label mas_chess_play_again_ask:
     return
 
 label mas_chess_draw_lots(begin=True):
+    show monika at t11
     $ drew_lots = True
     $ lets_begin = "{w=0.2} Let's begin." if begin else ""
 
@@ -1409,7 +1409,7 @@ label mas_chess_dlg_quickfile_lost:
             jump mas_chess_dlg_quickfile_lost_accident
 
         "Maybe...":
-            jump mas_chess_dlg_qf_lost_may_start
+            jump mas_chess_dlg_quickfile_lost_maybe
 
         "Of course not!":
             jump mas_chess_dlg_quickfile_lost_ofcoursenot
@@ -1483,18 +1483,18 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
 
 
 ## maybe monika flow
-label mas_chess_dlg_qf_lost_may_start:
+label mas_chess_dlg_quickfile_lost_maybe:
     python:
         persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE] += 1
         qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE]
 
     if qf_gone_count == 1:
         m 2ekd "[player]!{w=0.2} I should have known you were just messing with me!"
-        jump mas_chess_dlg_qf_lost_may_filechecker
+        jump mas_chess_quickfile_lost_filechecker
 
     if qf_gone_count == 2:
         m 2ekd "[player]!{w=0.2} Stop messing with me!"
-        jump mas_chess_dlg_qf_lost_may_filechecker
+        jump mas_chess_quickfile_lost_filechecker
 
     else:
         $ persistent._mas_chess_skip_file_checks = True
@@ -1510,7 +1510,7 @@ label mas_chess_dlg_qf_lost_may_start:
 
 
 # maybe monika file checking parts
-label mas_chess_dlg_qf_lost_may_filechecker:
+label mas_chess_quickfile_lost_filechecker:
     $ game_file = mas_chess.loaded_game_filename
 
     if os.access(game_file, os.F_OK):
