@@ -123,6 +123,9 @@ init python in mas_windowutils:
         def __str__(self):
             return self.hwnd
 
+    #Fallback Const Defintion
+    DEF_MOUSE_POS_RETURN = (0, 0)
+
     ##Now, we start defining OS specific functions which we can set to a var for proper cross platform on a single func
     #Firstly, the internal helper functions
     def __getActiveWindowObj_Linux():
