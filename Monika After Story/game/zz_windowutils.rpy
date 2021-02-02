@@ -160,6 +160,10 @@ init python in mas_windowutils:
         OUT:
             int - represents the hWnd of the MAS window
         """
+        #Verify we can actually do this before doing anything
+        if not store.mas_windowreacts.can_do_windowreacts:
+            return None
+
         def checkMASWindow(hwnd, lParam):
             """
             Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
