@@ -372,6 +372,32 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+# 0.11.9.3
+label v0_11_9_3(version="v0_11_9_3"):
+    python:
+        if renpy.seen_label('mas_chess_dlg_qf_lost_ofcn_6'):
+            persistent._mas_chess_timed_disable = True
+
+        mas_setEVLPropValues(
+            "mas_chess",
+            conditional=(
+                "persistent._mas_chess_timed_disable is not True "
+                "and mas_games.is_platform_good_for_chess() "
+                "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
+            )
+        )
+
+        fps_to_delete = [
+            "zz_windowreacts.rpy",
+            "Submods/Enhanced Idle/enhanced idle.rpy"
+        ]
+
+        for fp in fps_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
+
+    return
+
 # 0.11.9.1
 label v0_11_9_1(version="v0_11_9_1"):
     python:
