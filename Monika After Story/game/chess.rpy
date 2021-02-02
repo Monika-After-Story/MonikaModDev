@@ -1528,6 +1528,8 @@ label mas_chess_quickfile_lost_filechecker:
     #FALL THROUGH
 
 label mas_chess_quickfile_lost_maybe_filechecker_loop:
+    hide screen mas_background_timed_jump
+
     #Run filechecks...
     $ file_found = os.access(game_file, os.F_OK)
 
