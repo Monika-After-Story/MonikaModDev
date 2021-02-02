@@ -130,8 +130,12 @@ init python in mas_windowutils:
         Gets the active window object
 
         OUT:
-            Xlib.display.Window, or None if errors occurr
+            Xlib.display.Window, or None if errors occur (or not possible to get window obj)
         """
+        #If not possible to get active window, we'll just return None
+        if not store.mas_windowreacts.can_do_windowreacts:
+            return None
+
         NET_ACTIVE_WINDOW = __display.intern_atom("_NET_ACTIVE_WINDOW")
 
         # Perform nullchecks on property getters, just in case.
@@ -178,8 +182,12 @@ init python in mas_windowutils:
             win - Xlib.display.Window object representing the window we wish to get absolute geometry of
 
         OUT:
-            tuple, (x, y, width, height)
+            tuple, (x, y, width, height) if possible, otherwise None
         """
+        #If win is None, then we should just return a None here
+        if win is None:
+            return None
+
         geom = win.get_geometry()
         (x, y) = (geom.x, geom.y)
         while True:
@@ -361,16 +369,18 @@ init python in mas_windowutils:
         Returns (x1, y1, x2, y2) relative to the top-left of the screen.
 
         OUT:
-            tuple representing (left, top, right, bottom) of the window bounds
+            tuple representing (left, top, right, bottom) of the window bounds, or None if not possible to get
         """
         geom = __getAbsoluteGeometry(__getActiveWindowObj_Linux())
 
-        return (
-            geom[0],
-            geom[1],
-            geom[0] + geom[2],
-            geom[1] + geom[3]
-        )
+        if geom is not None:
+            return (
+                geom[0],
+                geom[1],
+                geom[0] + geom[2],
+                geom[1] + geom[3]
+            )
+        return None
 
     def isCursorInMASWindow():
         """
