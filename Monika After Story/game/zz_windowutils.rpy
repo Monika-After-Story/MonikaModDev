@@ -163,7 +163,7 @@ init python in mas_windowutils:
 
         ASSUMES: OS IS LINUX (renpy.linux)
         """
-        #If not possible to get active window, we'll just return None
+        #If not possible to get MAS window, we'll just return None
         if not store.mas_windowreacts.can_do_windowreacts:
             return None
 
