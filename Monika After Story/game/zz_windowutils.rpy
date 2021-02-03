@@ -163,6 +163,10 @@ init python in mas_windowutils:
 
         ASSUMES: OS IS LINUX (renpy.linux)
         """
+        #If not possible to get active window, we'll just return None
+        if not store.mas_windowreacts.can_do_windowreacts:
+            return None
+
         NET_CLIENT_LIST_ATOM = __display.intern_atom('_NET_CLIENT_LIST', False)
 
         try:
