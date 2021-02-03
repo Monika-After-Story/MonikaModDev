@@ -123,6 +123,9 @@ init python in mas_windowutils:
         def __str__(self):
             return self.hwnd
 
+    #Fallback Const Defintion
+    DEF_MOUSE_POS_RETURN = (0, 0)
+
     ##Now, we start defining OS specific functions which we can set to a var for proper cross platform on a single func
     #Firstly, the internal helper functions
     def __getActiveWindowObj_Linux():
@@ -149,6 +152,36 @@ init python in mas_windowutils:
         try:
             return __display.create_resource_object("window", active_winid)
         except Xlib.error.XError:
+            return None
+
+    def __getMASWindowLinux():
+        """
+        Funtion to get the MAS window on Linux systems
+
+        OUT:
+            Xlib.display.Window representing the MAS window
+
+        ASSUMES: OS IS LINUX (renpy.linux)
+        """
+        #If not possible to get MAS window, we'll just return None
+        if not store.mas_windowreacts.can_do_windowreacts:
+            return None
+
+        NET_CLIENT_LIST_ATOM = __display.intern_atom('_NET_CLIENT_LIST', False)
+
+        try:
+            winid_list = __root.get_full_property(NET_CLIENT_LIST_ATOM, 0).value
+
+            for winid in winid_list:
+                win = __display.create_resource_object("window", winid)
+                transient_for = win.get_wm_transient_for()
+                winname = win.get_wm_name()
+
+                #NOTE: This must be config.name as we call this during init time, where config.name is None
+                if transient_for is None and winname and renpy.config.name in winname:
+                    return win
+
+        except BadWindow:
             return None
 
     def __getMASWindowHWND():
@@ -194,15 +227,20 @@ init python in mas_windowutils:
 
         geom = win.get_geometry()
         (x, y) = (geom.x, geom.y)
-        while True:
-            parent = win.query_tree().parent
-            pgeom = parent.get_geometry()
-            x += pgeom.x
-            y += pgeom.y
-            if parent.id == __root.id:
-                break
-            win = parent
-        return (x, y, geom.width, geom.height)
+        try:
+            while True:
+                parent = win.query_tree().parent
+                pgeom = parent.get_geometry()
+                x += pgeom.x
+                y += pgeom.y
+                if parent.id == __root.id:
+                    break
+                win = parent
+
+            return (x, y, geom.width, geom.height)
+
+        except Xlib.error.BadDrawable:
+            return None
 
     #Next, the active window handle getters
     def _getActiveWindow_Windows(friendly):
@@ -375,7 +413,7 @@ init python in mas_windowutils:
         OUT:
             tuple representing (left, top, right, bottom) of the window bounds, or None if not possible to get
         """
-        geom = __getAbsoluteGeometry(__getActiveWindowObj_Linux())
+        geom = __getAbsoluteGeometry(MAS_WINDOW)
 
         if geom is not None:
             return (
@@ -406,9 +444,7 @@ init python in mas_windowutils:
         if not (left <= cur_x <= right):
             return False
 
-        if not (top <= cur_y <= bottom):
-            return False
-        return True
+        return (top <= cur_y <= bottom)
 
     def isCursorLeftOfMASWindow():
         """
@@ -427,9 +463,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_x < left:
-            return True
-        return False
+        return cur_x < left
 
     def isCursorRightOfMASWindow():
         """
@@ -448,9 +482,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_x > right:
-            return True
-        return False
+        return cur_x > right
 
     def isCursorAboveMASWindow():
         """
@@ -469,9 +501,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_y < top:
-            return True
-        return False
+        return cur_y < top
 
     def isCursorBelowMASWindow():
         """
@@ -490,9 +520,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_y > bottom:
-            return True
-        return False
+        return cur_y > bottom
 
     #Fallback functions because Mac
     def return_true():
@@ -521,7 +549,8 @@ init python in mas_windowutils:
             getMASWindowPos = _getMASWindowPos_Linux
             getMousePos = _getAbsoluteMousePos_Linux
 
-
+            #We'll store an internal ref of the mas window here
+            MAS_WINDOW = __getMASWindowLinux()
         else:
             _window_get = _getActiveWindow_OSX
             _tryShowNotif = _tryShowNotification_OSX
