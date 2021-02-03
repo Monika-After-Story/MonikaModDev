@@ -444,9 +444,7 @@ init python in mas_windowutils:
         if not (left <= cur_x <= right):
             return False
 
-        if not (top <= cur_y <= bottom):
-            return False
-        return True
+        return (top <= cur_y <= bottom)
 
     def isCursorLeftOfMASWindow():
         """
@@ -465,9 +463,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_x < left:
-            return True
-        return False
+        return cur_x < left
 
     def isCursorRightOfMASWindow():
         """
@@ -486,9 +482,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_x > right:
-            return True
-        return False
+        return cur_x > right
 
     def isCursorAboveMASWindow():
         """
@@ -507,9 +501,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_y < top:
-            return True
-        return False
+        return cur_y < top
 
     def isCursorBelowMASWindow():
         """
@@ -528,9 +520,7 @@ init python in mas_windowutils:
 
         cur_x, cur_y = getMousePos()
 
-        if cur_y > bottom:
-            return True
-        return False
+        return cur_y > bottom
 
     #Fallback functions because Mac
     def return_true():
