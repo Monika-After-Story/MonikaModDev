@@ -14454,10 +14454,58 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_we",
+            category=['literature'],
+            prompt="We",
+            conditional="mas_seenLabels(['monika_1984', 'monika_brave_new_world'], seen_all=True)",
+            random=True
+        )
+    )
+
+label monika_we:
+    m "Hmm... We have already talked about two major books of the dystopian genre, [player]."
+    m "Both {i}Nineteen Eighty-Four{/i} and {i}Brave New World{/i} are the most known works of literature world-wide when it comes to dystopias."
+    m "But this time, I'd like to talk about the book that has preceded both of them, which is a bit more obscure."
+    m "It is the book that has directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
+    m "While Aldous Huxley was even accused of plagiarizing its plot for his {i}Brave New World{/i} by Orwell and Kurt Vonnegut, something he constantly denied."
+    m "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
+    m "While it was written quite early, in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union until its twilight years."
+    m "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
+    m "The story takes place in a distant future, within an isolated, transparent glass city, named simply the One State, which is ruled by a dictator figure named the Benefactor."
+    m "The citizens of the One State are referred to as the Ciphers, who lead a highly math- and logic-oriented lifestyles."
+    m "The Benefactor believes that freedom of individuals is secondary to the welfare of the One State."
+    m "As such, Ciphers live under the oppressive, ever-watchful eye of the Guardians, members of a police force appointed by the government."
+    m "The government rips the Ciphers of their individuality, forcing them to wear identical uniforms and harshly condemning all acts of personal expression."
+    m "Their daily lives are precisely organized around a carefully controlled scheduled called the Table of Hours."
+    m "Even lovemaking is reduced to a purely logical and often emotionless activity, done on scheduled days and scheduled hours, regulated by the Pink Ticket."
+    m "The partners might also be shared between other ciphers, if they choose to do so. As the Benefactor states, 'Every Cipher has a right to any other Cipher.'"
+    m "The book itself reads as a diary written by one of the citizens of the totalitarian One State, named simply D-503."
+    m "D-503 is one of the State's mathematicians who is also the designer of One State's first space vessel, named the Integral."
+    m "The vessel is to serve as One State's means of expanding their doctrine of complete subservience to the government and logic-oriented way of living to other planets and lifeforms."
+    m "D-503 is regularly meeting his state-sanctioned partner, a woman named O-90, who delights in his presence."
+    m "One day, while on a walk during his regular Personal Hour with O-90, D-503 runs into a mysterious female Cipher named I-330."
+    m "I-330 shamelessly flirts with D-503, which is an offense against the state protocol."
+    m "Equally repulsed and intrigued by her advances, D-503 ultimately can't figure out what motivates I-330 to act so boldly."
+    m "However, despite his internal objections, he continues to meet with I-330, eventually crossing a few lines he wasn't willing to cross before."
+    m "And thanks to I-330's contacts in the Bureau of Medicine, D-503 can feign sickness, using it as a convenient excuse to skip his schedule."
+    m "Even when he is poised to report I-330 to the authorities for her subversive behavior, he ultimately chooses not to do that, and instead continues meeting her."
+    m "One day I-330 slips some alcohol to D-503's mouth, and he begins to get in touch with his repressed, animalistic side of himself, feeling passion..."
+    m "And once I-330 insinuates she has another partner, he begins to feel something he couldn't feel before... jealousy."
+    m "Despite his acknowledgment of the deterioration of relations between him, his friend R-13 and his partner, O-90, he is unable to stop loving I-330."
+    m "Later, when he goes to obtain another sick note to the Bureau, he is diagnosed with having developed a 'soul,' or imagination."
+    m "This is considered a grave condition by the One State, as it makes the Ciphers less machine-like."
+    m "Maybe you already see where I'm going with this..."
+    m "Anyway, I won't be talking about the plot any further, as I don't really want to spoil it for you."
+    return   
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_dystopias",
             category=['literature'],
             prompt="Dystopias",
-            conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)",
+            conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)",
             action=EV_ACT_RANDOM
         )
     )
@@ -14469,7 +14517,8 @@ label monika_dystopias:
     m 1etc "Do you remember when we talked about these books?"
     m 3eud "'Nineteen Eighty-Four,' about mass surveillance and oppression of free thought..."
     m 3euc "'Fahrenheit 451,' on censorship, and the indifference of most people to it..."
-    m 3eud "And 'Brave New World,' about the disappearance of individuality."
+    m 3eud "'Brave New World,' about the disappearance of individuality..."
+    m 3euc "And finally, 'We,' about dehumanization leading to emotionless subservience to authority based solely on reason, logic and cold calculation."
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
     m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
