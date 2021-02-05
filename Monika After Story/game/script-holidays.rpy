@@ -5515,16 +5515,11 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
-            #because intro topic has her wear the outfit and comment on it
-            #But we do want her to change into it if we already have it unlocked for change into lingerie
-            if (
-                not mas_SELisUnlocked(mas_clothes_sundress_white) and not mas_canShowRisque()
-                or mas_SELisUnlocked(mas_clothes_sundress_white)
-            ):
-                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-                monika_chr.save()
-                renpy.save_persistent()
+
+            #Force sundress
+            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+            monika_chr.save()
+            renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
@@ -5669,7 +5664,8 @@ label mas_f14_monika_valentines_intro:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
-                m 2rksdlu "Ahaha...{w=1}it's not polite to stare, [player]..."
+                m 2rksdlb "Ahaha...{w=1}{nw}"
+                extend 2rksdlu "it's not polite to stare, [player]..."
                 m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
                 call mas_f14_sun_dress_outro
 
