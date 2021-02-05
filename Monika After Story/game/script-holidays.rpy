@@ -5609,6 +5609,9 @@ label mas_f14_monika_valentines_intro:
     )
 
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+    #rmall this because reset runs before we've registered this outfit
+    $ mas_rmallEVL("mas_change_to_def")
+
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
