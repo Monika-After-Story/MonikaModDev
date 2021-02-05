@@ -2206,7 +2206,7 @@ label mas_change_to_def:
         mas_hasSpecialOutfit()
         and monika_chr.clothes.name == persistent.mas_event_clothes_map[datetime.date.today()]
     ):
-        return
+        return "no_unlock"
 
     # on occasion after special events we want to change out of an outfit like a costume
     # in these cases, for Happy+, change to blazerless instead
