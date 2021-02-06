@@ -376,7 +376,9 @@ label v0_3_1(version=version): # 0.3.1
 label v0_11_9_4(version="v0_11_9_4"):
     python:
         #Reset annis as F29 based ones are on the wrong date
-        mas_anni.reset_annis()
+        first_sesh = mas_getFirstSesh()
+        if first_sesh.month == 2 and first_sesh.day == 29:
+            mas_anni.reset_annis(first_sesh.date())
     return
 
 # 0.11.9.3
