@@ -391,8 +391,8 @@ label v0_11_9_4(version="v0_11_9_4"):
                     end_inclusive=True
                 )
                 # also account for today being nye
-                and not local_now.month == 12
-                and not local_now.day == 31
+                and local_now.month != 12
+                and local_now.day != 31
         ):
             persistent._mas_nye_spent_nye = False
 
