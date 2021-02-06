@@ -274,12 +274,12 @@ init 10 python in mas_anni:
             store.mas_calendar.removeEvent(ev)
 
 
-    def reset_annis(new_start_date):
+    def reset_annis(new_start_dt):
         """
         Reset the anniversaries according to the new start date.
 
         IN:
-            new_start_date - new start date to reset anniversaries
+            new_start_dt - new start datetime to reset anniversaries
         """
         _firstsesh_id = "first_session"
         _firstsesh_dt = renpy.game.persistent.sessions.get(
@@ -297,19 +297,19 @@ init 10 python in mas_anni:
 
         # modify the anniversaries
         fullday = datetime.timedelta(days=1)
-        _day_adjuster(anni_db["anni_1week"],new_start_date,7,fullday)
-        _month_adjuster(anni_db["anni_1month"], new_start_date, 1, fullday)
-        _month_adjuster(anni_db["anni_3month"], new_start_date, 3, fullday)
-        _month_adjuster(anni_db["anni_6month"], new_start_date, 6, fullday)
-        _month_adjuster(anni_db["anni_1"], new_start_date, 12, fullday)
-        _month_adjuster(anni_db["anni_2"], new_start_date, 24, fullday)
-        _month_adjuster(anni_db["anni_3"], new_start_date, 36, fullday)
-        _month_adjuster(anni_db["anni_4"], new_start_date, 48, fullday)
-        _month_adjuster(anni_db["anni_5"], new_start_date, 60, fullday)
-        _month_adjuster(anni_db["anni_10"], new_start_date, 120, fullday)
-        _month_adjuster(anni_db["anni_20"], new_start_date, 240, fullday)
-        _month_adjuster(anni_db["anni_50"], new_start_date, 600, fullday)
-        _month_adjuster(anni_db["anni_100"], new_start_date, 1200, fullday)
+        _day_adjuster(anni_db["anni_1week"],new_start_dt,7,fullday)
+        _month_adjuster(anni_db["anni_1month"], new_start_dt, 1, fullday)
+        _month_adjuster(anni_db["anni_3month"], new_start_dt, 3, fullday)
+        _month_adjuster(anni_db["anni_6month"], new_start_dt, 6, fullday)
+        _month_adjuster(anni_db["anni_1"], new_start_dt, 12, fullday)
+        _month_adjuster(anni_db["anni_2"], new_start_dt, 24, fullday)
+        _month_adjuster(anni_db["anni_3"], new_start_dt, 36, fullday)
+        _month_adjuster(anni_db["anni_4"], new_start_dt, 48, fullday)
+        _month_adjuster(anni_db["anni_5"], new_start_dt, 60, fullday)
+        _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
+        _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
+        _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
+        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
 
         unlock_past_annis()
 
@@ -320,8 +320,8 @@ init 10 python in mas_anni:
         store.mas_calendar.addRepeatable_dt(
             _firstsesh_id,
             "<3",
-            new_start_date,
-            [new_start_date.year]
+            new_start_dt,
+            [new_start_dt.year]
         )
 
 
