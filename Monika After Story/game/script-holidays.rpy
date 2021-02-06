@@ -6259,7 +6259,7 @@ init 20 python:
  They make them stronger.
  And of all the roses in the world,
  Even on this most romantic holiday,
- None could ever replace {i}my{/i} special rose~
+ None could ever replace {size=+7}my{/size} special rose~
 
  Forever your Valentine,
  Monika
