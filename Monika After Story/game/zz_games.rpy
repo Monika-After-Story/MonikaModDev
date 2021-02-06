@@ -128,7 +128,7 @@ init 5 python:
             eventlabel="mas_chess",
             prompt="Chess",
             conditional=(
-                "not renpy.seen_label('mas_chess_dlg_qf_lost_ofcn_6') "
+                "persistent._mas_chess_timed_disable is not True "
                 "and mas_games.is_platform_good_for_chess() "
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
             )
