@@ -2540,7 +2540,7 @@ label mas_d25_monika_christmaslights:
 
 init 20 python:
 
-    poem_d25_1 = MASPoem(
+    mas_poem_d25_1 = MASPoem(
         poem_id="poem_d25_1",
         category="d25",
         prompt="The Joy to my World",
@@ -2563,7 +2563,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_d25_2 = MASPoem(
+    mas_poem_d25_2 = MASPoem(
         poem_id="poem_d25_2",
         category="d25",
         prompt="Incomparable",
@@ -2588,7 +2588,7 @@ init 20 python:
 """
     )
 
-    poem_d25_3 = MASPoem(
+    mas_poem_d25_3 = MASPoem(
         poem_id="poem_d25_3",
         category="d25",
         prompt="Someday",
@@ -2611,7 +2611,7 @@ init 20 python:
 """
     )
 
-    poem_d25_4 = MASPoem(
+    mas_poem_d25_4 = MASPoem(
         poem_id="poem_d25_4",
         category="d25",
         prompt="This Christmas",
@@ -5395,7 +5395,7 @@ label return_home_post_player_bday:
 
 # birthday card/poem for player
 init 20 python:
-    poem_pbday_1 = MASPoem(
+    mas_poem_pbday_1 = MASPoem(
         poem_id = "poem_pbday_1",
         category = "pbday",
         prompt = "The One",
@@ -5415,7 +5415,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_pbday_2 = MASPoem(
+    mas_poem_pbday_2 = MASPoem(
         poem_id = "poem_pbday_2",
         category = "pbday",
         prompt = "Your Day",
@@ -5439,7 +5439,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_pbday_3 = MASPoem(
+    mas_poem_pbday_3 = MASPoem(
         poem_id = "poem_pbday_3",
         category = "pbday",
         prompt = "One Wish",
@@ -5972,13 +5972,13 @@ label mas_f14_monika_spent_time_with:
         m 1ekbsa "Here, let me show it to you."
 
         #NOTE: The first two f14 poems will always be in order and the same. Everything after is randomly selected
-        if not poem_vday_1.is_seen():
-            call mas_showpoem(poem_vday_1)
+        if not mas_poem_vday_1.is_seen():
+            call mas_showpoem(mas_poem_vday_1)
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
 
-        elif not poem_vday_2.is_seen():
-            call mas_showpoem(poem_vday_2)
+        elif not mas_poem_vday_2.is_seen():
+            call mas_showpoem(mas_poem_vday_2)
             m "You really are everything to me, [player]~"
 
         else:
@@ -6163,7 +6163,7 @@ label mas_apology_missed_vday:
 
 
 init 20 python:
-    poem_vday_1 = MASPoem(
+    mas_poem_vday_1 = MASPoem(
         poem_id="poem_f14_1",
         category="f14",
         prompt="Found",
@@ -6182,7 +6182,7 @@ init 20 python:
 """
     )
 
-    poem_vday_2 = MASPoem(
+    mas_poem_vday_2 = MASPoem(
         poem_id="poem_f14_2",
         category="f14",
         prompt="Everything",
@@ -6218,7 +6218,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_vday_3 = MASPoem(
+    mas_poem_vday_3 = MASPoem(
         poem_id="poem_f14_3",
         category="f14",
         prompt="You",
@@ -6239,7 +6239,7 @@ init 20 python:
 """
     )
 
-    poem_vday_4 = MASPoem(
+    mas_poem_vday_4 = MASPoem(
         poem_id="poem_f14_4",
         category="f14",
         prompt="Roses",

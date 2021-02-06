@@ -2204,7 +2204,7 @@ label mas_change_to_def:
     #Extra sanity check just in case. This should NEVER happen.
     if (
         mas_hasSpecialOutfit()
-        and monika_chr.clothes.name == persistent.mas_event_clothes_map[datetime.date.today()]
+        and monika_chr.clothes.name == persistent._mas_event_clothes_map[datetime.date.today()]
     ):
         return "no_unlock"
 
