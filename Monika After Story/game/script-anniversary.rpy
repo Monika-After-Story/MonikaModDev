@@ -103,13 +103,23 @@ init -2 python in mas_anni:
             compare = build_anni(months=6)
 
         elif milestone == 'any':
-            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth() or isAnni()
+            return (
+                isAnniWeek()
+                or isAnniOneMonth()
+                or isAnniThreeMonth()
+                or isAnniSixMonth()
+                or isAnni()
+            )
 
         if compare is not None:
             return compare.date() == datetime.date.today()
+
         else:
             compare = firstSesh
-            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and anniCount() > 0
+            return (
+                store.mas_utils.add_years(compare.date(), datetime.date.today().year - compare.year) == datetime.date.today()
+                and anniCount() > 0
+            )
 
     def isAnniWeek():
         return isAnni('1w')
