@@ -408,32 +408,51 @@ init -10 python in mas_ui:
         ev_label = ev.eventlabel.lower()
         ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
-        return (
-            ev_prompt != ev_label
-            and ev.unlocked
-            # and (ev.pool or ev.random)
-            and not ev.anyflags(store.EV_FLAG_HFNAS)
-            and ev.checkAffection(store.mas_curr_affection)
-            and (
-                (not only_pool or ev.pool)
-                and (not only_random or ev.random)
-                and (not only_unseen or ev.shown_count == 0)
-                and (not only_seen or ev.shown_count > 0)
-            )
-            and (
-                search_query in ev_prompt
-                or search_query in ev_label
-                or search_query in ev_cat_full
-                or all(
-                    [
-                        search_kw in ev_prompt
-                        or search_kw in ev_label
-                        or search_kw in ev_cat_full
-                        for search_kw in search_kws
-                    ]
-                )
-            )
-        )
+        # First, basic filters so we only deal with appropriate events
+        if ev_prompt == ev_label:
+            return False
+
+        if not ev.unlocked:
+            return False
+
+        if ev.anyflags(store.EV_FLAG_HFNAS):
+            return False
+
+        if not ev.checkAffection(store.mas_curr_affection):
+            return False
+
+        if only_pool and not ev.pool:
+            return False
+
+        if only_random and not ev.random:
+            return False
+
+        if only_unseen and ev.shown_count != 0:
+            return False
+
+        if only_seen and ev.shown_count == 0:
+            return False
+
+        # Now, passing any of these 3 means the event is fitting the query
+        if search_query in ev_prompt:
+            return True
+
+        if search_query in ev_label:
+            return True
+
+        if search_query in ev_cat_full:
+            return True
+
+        # This is so we can interrup the loop early
+        for search_kw in search_kws:
+            if (
+                search_kw not in ev_prompt
+                and search_kw not in ev_label
+                and search_kw not in ev_cat_full
+            ):
+                return False
+
+        return True
 
     def _twopane_menu_sort_events(ev, search_query, search_kws):
         """
@@ -445,30 +464,40 @@ init -10 python in mas_ui:
             search_kws - search_query splitted using spaces
 
         OUT:
-            list of booleans for sorting
+            weight as int
         """
         ev_prompt = ev.prompt.lower()
         ev_label = ev.eventlabel.lower()
         ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
-        rv = list()
+        weight = 0
+        base_increment = 2
+        base_power = len(search_kws) + 1
 
-        rv.append(search_query == ev_prompt or search_query == ev_label)
-        rv.append(search_query in ev_prompt)
-        rv.append(search_query in ev_label)
+        if search_query == ev_prompt or search_query == ev_label:
+            weight += base_increment**(base_power + 5)
+
+        if search_query in ev_prompt:
+            weight += base_increment**(base_power + 4)
+
+        if search_query in ev_label:
+            weight += base_increment**(base_power + 3)
 
         for search_kw in search_kws:
-            rv.append(search_kw in ev_prompt)
+            if search_kw in ev_prompt:
+                weight += base_increment**(base_power + 2)
 
-        for search_kw in search_kws:
-            rv.append(search_kw in ev_label)
+            if search_kw in ev_label:
+                weight += base_increment**(base_power + 1)
 
-        if ev_cat_full:
-            for search_kw in search_kws:
-                rv.append(search_kw in ev.category)
-                rv.append(search_kw in ev_cat_full)
+            if ev_cat_full:
+                if search_kw in ev.category:
+                    weight += base_increment**base_power
 
-        return rv
+                if search_kw in ev_cat_full:
+                    weight += base_increment
+
+        return weight
 
     TWOPANE_MENU_MAX_FLT_ITEMS = 50
 
@@ -509,6 +538,7 @@ init -10 python in mas_ui:
             search_query = search_query.replace("#seen", "")
             only_seen = True
 
+        search_query = search_query.strip()
         search_kws = search_query.split()
         flt_evs = filter(
             lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen),
