@@ -2504,9 +2504,9 @@ label call_next_event:
         ):
             #Create a new notif
             if renpy.windows:
-                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
@@ -2957,7 +2957,7 @@ label mas_bookmarks:
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
             # only if it is not flagged to be hidden
             if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
-                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel)
 
                 #Get the suffix function
                 suffix_func = prompt_suffix_map.get(label_prefix)

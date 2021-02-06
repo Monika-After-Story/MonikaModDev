@@ -1054,7 +1054,7 @@ init 5 python:
 
 label mas_random_limit_reached:
     #Notif so people don't get stuck here
-    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
     python:
         limit_quips = [
@@ -2104,7 +2104,7 @@ label mas_notification_windowreact:
             "Sure!":
                 m 1hua "Okay, [player]!"
                 m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-                $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                $ mas_display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
                 m 1hub "There it is!"
 
             "No thanks.":
