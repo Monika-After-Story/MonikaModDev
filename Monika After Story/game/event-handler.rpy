@@ -2144,7 +2144,7 @@ init python:
         if len(persistent.event_list) == 0:
             return None, None
 
-        now_dt = datetime.datetime.now()
+        now_dt = datetime.datetime.utcnow()
         is_paused = False
 
         if mas_globals.event_unpause_dt is not None:
@@ -2161,10 +2161,8 @@ init python:
 
             if (
                 not is_paused
-                or (
-                    ev is None# This is to allow triggering non-event labels
-                    or "skip_pause" in ev.rules
-                )
+                or ev is None# This is to allow triggering non-event labels
+                or "skip_pause" in ev.rules
             ):
                 if mas_globals.in_idle_mode:
                     if (
@@ -2601,7 +2599,7 @@ label call_next_event:
                 python:
                     _match = re.search(evhand.RET_KEY_PATTERN_PAUSE, _return)
                     if _match is not None and _match.group("duration") is not None:
-                        mas_globals.event_unpause_dt = datetime.datetime.now() + datetime.timedelta(seconds=int(_match.group("duration")))
+                        mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=int(_match.group("duration")))
 
             if "prompt" in ret_items:
                 show monika idle
