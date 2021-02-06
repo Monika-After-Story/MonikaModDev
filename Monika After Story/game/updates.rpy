@@ -372,8 +372,8 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-# 0.11.9.4
-label v0_11_9_4(version="v0_11_9_4"):
+# 0.12.0
+label v0_12_0(version="v0_12_0"):
     python:
         #Reset annis as F29 based ones are on the wrong date
         first_sesh = mas_getFirstSesh()
