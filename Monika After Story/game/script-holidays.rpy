@@ -5732,7 +5732,11 @@ label mas_f14_monika_valentines_intro:
 
         # first time getting sundress
         else:
-            $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            python:
+                store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+                # TODO: generalize this under one function
+                store.mas_selspr.save_selectables()
+                renpy.save_persistent()
             pause 2.0
             show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rfc "..."
