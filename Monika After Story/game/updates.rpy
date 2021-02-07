@@ -395,6 +395,15 @@ label v0_12_0(version="v0_12_0"):
             conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_PUSH
         )
+
+        mas_setEVLPropValues(
+            "mas_pf14_monika_lovey_dovey",
+            random=False,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14
+        )
     return
 
 # 0.11.9.3
@@ -449,16 +458,6 @@ label v0_11_9_1(version="v0_11_9_1"):
 
         if seen_event("monika_asimov_three_laws"):
             mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
-
-        mas_setEVLPropValues(
-            "mas_pf14_monika_lovey_dovey",
-            random=False,
-            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
-            action=EV_ACT_QUEUE,
-            start_date=mas_f14-datetime.timedelta(days=3),
-            end_date=mas_f14
-        )
-
     return
 
 # 0.11.9
