@@ -5625,6 +5625,7 @@ init 5 python:
 label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
+    $ mas_gainAffection(5, bypass=True)
 
     #Prevent nts stuff for upset- since they don't get the rest of the event.
     if mas_isMoniUpset(lower=True):
