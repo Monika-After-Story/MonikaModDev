@@ -22,7 +22,8 @@
         "thumb": "finale_shirt_resthere",
         "group": "clothes",
         "select_dlg": [
-            "Great choice, [player]! This is so comfortable~"
+            "Great choice, [player]! This is so comfortable~",
+            "I can't wait until you actually can rest your head here~"
         ]
     },
     "giftname": "resthereshirt",

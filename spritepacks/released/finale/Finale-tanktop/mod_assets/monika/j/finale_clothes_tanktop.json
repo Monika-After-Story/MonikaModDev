@@ -18,7 +18,8 @@
         "thumb": "finale_tanktop",
         "group": "clothes",
         "select_dlg": [
-            "How do I look, [player]?"
+            "How do I look, [player]?",
+            "Perfect for a hot day."
         ]
     },
     "giftname": "tanktop",
