@@ -373,12 +373,28 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 # 0.11.9.4
-label v0_11_9_4(version="v0_11_9_4"):
+label v0_12_0(version="v0_12_0"):
     python:
         #Reset annis as F29 based ones are on the wrong date
         first_sesh = mas_getFirstSesh()
         if first_sesh.month == 2 and first_sesh.day == 29:
             mas_anni.reset_annis(first_sesh)
+
+        mas_setEVLPropValues(
+            "mas_d25_monika_holiday_intro_upset",
+            end_date=mas_d25
+        )
+
+        mas_setEVLPropValues(
+            "mas_d25_monika_christmas",
+            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
+        )
+
+        mas_setEVLPropValues(
+            "mas_nye_monika_nye_dress_intro",
+            conditional="persistent._mas_d25_in_d25_mode",
+            action=EV_ACT_PUSH
+        )
     return
 
 # 0.11.9.3
@@ -410,22 +426,6 @@ label v0_11_9_3(version="v0_11_9_3"):
 # 0.11.9.1
 label v0_11_9_1(version="v0_11_9_1"):
     python:
-        mas_setEVLPropValues(
-            "mas_d25_monika_holiday_intro_upset",
-            end_date=mas_d25
-        )
-
-        mas_setEVLPropValues(
-            "mas_d25_monika_christmas",
-            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
-        )
-
-        mas_setEVLPropValues(
-            "mas_nye_monika_nye_dress_intro",
-            conditional="persistent._mas_d25_in_d25_mode",
-            action=EV_ACT_PUSH
-        )
-
         mas_bookmarks_derand.removeDerand("monika_twitter")
 
         mas_setEVLPropValues(
