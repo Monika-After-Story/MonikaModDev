@@ -372,7 +372,7 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-# 0.11.9.4
+# 0.12.0
 label v0_12_0(version="v0_12_0"):
     python:
         #Reset annis as F29 based ones are on the wrong date
@@ -449,6 +449,15 @@ label v0_11_9_1(version="v0_11_9_1"):
 
         if seen_event("monika_asimov_three_laws"):
             mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
+
+        mas_setEVLPropValues(
+            "mas_pf14_monika_lovey_dovey",
+            random=False,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14
+        )
 
     return
 

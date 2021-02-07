@@ -2549,7 +2549,7 @@ label mas_d25_monika_christmaslights:
 
 init 20 python:
 
-    poem_d25_1 = MASPoem(
+    mas_poem_d25_1 = MASPoem(
         poem_id="poem_d25_1",
         category="d25",
         prompt="The Joy to my World",
@@ -2572,7 +2572,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_d25_2 = MASPoem(
+    mas_poem_d25_2 = MASPoem(
         poem_id="poem_d25_2",
         category="d25",
         prompt="Incomparable",
@@ -2597,7 +2597,7 @@ init 20 python:
 """
     )
 
-    poem_d25_3 = MASPoem(
+    mas_poem_d25_3 = MASPoem(
         poem_id="poem_d25_3",
         category="d25",
         prompt="Someday",
@@ -2620,7 +2620,7 @@ init 20 python:
 """
     )
 
-    poem_d25_4 = MASPoem(
+    mas_poem_d25_4 = MASPoem(
         poem_id="poem_d25_4",
         category="d25",
         prompt="This Christmas",
@@ -3295,7 +3295,7 @@ label mas_d25_monika_second_time_lingerie:
     pause 2.0
     show monika 2tkbsu
     pause 2.0
-    m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
+    m 2tfbsu "[player]...{w=0.5}you're staring{w=0.3}...again."
     m 2hubsb "Ahaha!"
     m 2eubsb "I guess you approve of my outfit choice..."
     m 2tkbsu "Rather fitting for the occasion, don't you think?"
@@ -5422,7 +5422,7 @@ label return_home_post_player_bday:
 
 # birthday card/poem for player
 init 20 python:
-    poem_pbday_1 = MASPoem(
+    mas_poem_pbday_1 = MASPoem(
         poem_id = "poem_pbday_1",
         category = "pbday",
         prompt = "The One",
@@ -5442,7 +5442,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_pbday_2 = MASPoem(
+    mas_poem_pbday_2 = MASPoem(
         poem_id = "poem_pbday_2",
         category = "pbday",
         prompt = "Your Day",
@@ -5466,7 +5466,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_pbday_3 = MASPoem(
+    mas_poem_pbday_3 = MASPoem(
         poem_id = "poem_pbday_3",
         category = "pbday",
         prompt = "One Wish",
@@ -5542,16 +5542,11 @@ label mas_f14_autoload_check:
     python:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            #NOTE: Need to path this for people who haven't seen lingerie but are eligible via canshowrisque
-            #because intro topic has her wear the outfit and comment on it
-            #But we do want her to change into it if we already have it unlocked for change into lingerie
-            if (
-                not mas_SELisUnlocked(mas_clothes_sundress_white) and not mas_canShowRisque()
-                or mas_SELisUnlocked(mas_clothes_sundress_white)
-            ):
-                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
-                monika_chr.save()
-                renpy.save_persistent()
+
+            #Force sundress
+            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+            monika_chr.save()
+            renpy.save_persistent()
 
         elif not mas_isF14():
             #We want to lock all the extra topics
@@ -5585,39 +5580,28 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
-            action=EV_ACT_RANDOM,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
+            action=EV_ACT_QUEUE,
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
-            rules={"force repeat": None},
             years=[]
         ),
         skipCalendar=True
     )
 
-    MASUndoActionRule.create_rule_EVL(
-       "mas_pf14_monika_lovey_dovey",
-       mas_f14 - datetime.timedelta(days=3),
-       mas_f14,
-    )
-
 label mas_pf14_monika_lovey_dovey:
-    m 1rksdla "Hey...{w=0.2}[player]?"
+    m 1rksdla "Hey...{w=0.3}[player]?"
     m 1ekbsa "I just wanted to let you know that I love you."
 
     if mas_isMoniEnamored(higher=True):
-        m 3ekbsa "You make me really happy...and I could never ask for someone better than you."
+        m 3ekbsa "You make me really happy...{w=0.3}I could never ask for someone better than you."
 
-    if mas_HistVerifyAll_k(True, "f14.actions.spent_f14"):
-        m 3ekbsa "Valentine's Day is coming soon, and it just makes me so overwhelmingly happy knowing you're still by my side."
-
-    else:
-        m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
-
+    m 3ekbsa "Valentine's Day is coming soon, and it just gets me in a good mood because I know I have you by my side."
     m 1rkbsd "Without you, I don't know where I'd be..."
-    m 1ekbsa "So I want to thank you for being there for me..."
-    m 1hkbsu "And for being so wonderfully you~"
-    return "derandom|no_unlock|love"
+    m 1ekbsa "So I want to thank you for being there for me."
+    m 1dkbsu "...And for being so wonderfully you~"
+    return "no_unlock|love"
 
 #######################[HOL050] INTRO:
 
@@ -5635,15 +5619,26 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
+    #Set the spent flag to True
+    $ persistent._mas_f14_spent_f14 = True
+
     #Prevent nts stuff for upset- since they don't get the rest of the event.
     if mas_isMoniUpset(lower=True):
-        $ persistent._mas_f14_spent_f14 = True
         if not mas_isMoniBroken():
             m 6eka "By the way [player], I just wanted to say happy Valentine's Day."
             m "Thanks for visiting me, I hope you have a good day."
         return
 
+    $ lingerie_eligible = (
+        mas_canShowRisque()
+        and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+        and mas_SELisUnlocked(mas_clothes_sundress_white)
+    )
+
     $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+    #rmall this because reset runs before we've registered this outfit
+    $ mas_rmallEVL("mas_change_to_def")
+
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
@@ -5666,34 +5661,27 @@ label mas_f14_monika_valentines_intro:
         m "I'm really happy I'm your girlfriend, [player]."
 
     # returning from a date or getting lingerie
-    if not persistent._mas_f14_in_f14_mode or mas_canShowRisque():
+    if not persistent._mas_f14_in_f14_mode or lingerie_eligible:
         $ persistent._mas_f14_in_f14_mode = True
 
         # first time seeing any lingerie
-        if mas_SELisUnlocked(mas_clothes_sundress_white) and mas_canShowRisque() and not mas_hasUnlockedClothesWithExprop("lingerie"):
+        if lingerie_eligible and not mas_hasUnlockedClothesWithExprop("lingerie"):
             call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress or non-first time seeing lingerie
-        elif (
-            not mas_SELisUnlocked(mas_clothes_sundress_white)
-            or (mas_canShowRisque() and mas_hasLockedClothesWithExprop("lingerie",True))
-        ):
+        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or lingerie_eligible:
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
             # lingerie
-            if (
-                mas_SELisUnlocked(mas_clothes_sundress_white)
-                and mas_canShowRisque()
-                and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
-            ):
+            if mas_SELisUnlocked(mas_clothes_sundress_white):
                 call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
                 pause 2.0
                 show monika 2ekbsu
                 pause 2.0
                 show monika 2tkbsu
                 pause 2.0
-                m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
+                m 2tfbsu "[player]...{w=0.5}you're staring{w=0.3}...again."
                 m 2hubsb "Ahaha!"
                 m 2eubsb "I guess you approve of my outfit choice..."
                 m 2tkbsu "Rather fitting for a romantic holiday like Valentine's Day, don't you think?"
@@ -5702,11 +5690,12 @@ label mas_f14_monika_valentines_intro:
                 m 3tkbsu "I hope you enjoy it too~"
 
             # sundress
-            elif not mas_SELisUnlocked(mas_clothes_sundress_white):
+            else:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
                 m 2eua "..."
                 m 2eksdla "..."
-                m 2rksdlu "Ahaha...{w=1}it's not polite to stare, [player]..."
+                m 2rksdlb "Ahaha...{w=1}{nw}"
+                extend 2rksdlu "it's not polite to stare, [player]..."
                 m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
                 call mas_f14_sun_dress_outro
 
@@ -5736,7 +5725,7 @@ label mas_f14_monika_valentines_intro:
             # no change of clothes path
             else:
                 # not wearing sundress
-                if not monika_chr.clothes == mas_clothes_sundress_white:
+                if monika_chr.clothes != mas_clothes_sundress_white:
                     m 1wud "Oh..."
                     m 1eka "Do you want me to change into my white sundress, [player]?"
                     m 3hua "I've always kinda considered that my Valentine's Day outfit."
@@ -5770,7 +5759,11 @@ label mas_f14_monika_valentines_intro:
 
         # first time getting sundress
         else:
-            $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            python:
+                store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+                # TODO: generalize this under one function
+                store.mas_selspr.save_selectables()
+                renpy.save_persistent()
             pause 2.0
             show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 2rfc "..."
@@ -5782,8 +5775,6 @@ label mas_f14_monika_valentines_intro:
 
     m 1fkbsu "I love you so much."
     m 1hubfb "Happy Valentine's Day, [player]~"
-    #Set the spent flag to True
-    $ persistent._mas_f14_spent_f14 = True
 
     return "rebuild_ev|love"
 
@@ -6012,13 +6003,13 @@ label mas_f14_monika_spent_time_with:
         m 1ekbsa "Here, let me show it to you."
 
         #NOTE: The first two f14 poems will always be in order and the same. Everything after is randomly selected
-        if not poem_vday_1.is_seen():
-            call mas_showpoem(poem_vday_1)
+        if not mas_poem_vday_1.is_seen():
+            call mas_showpoem(mas_poem_vday_1)
             m "I really mean that, [player]..."
             m 3ekbsa "In you I found everything I could ever hope for~"
 
-        elif not poem_vday_2.is_seen():
-            call mas_showpoem(poem_vday_2)
+        elif not mas_poem_vday_2.is_seen():
+            call mas_showpoem(mas_poem_vday_2)
             m "You really are everything to me, [player]~"
 
         else:
@@ -6085,9 +6076,7 @@ init 5 python:
             action=EV_ACT_PUSH,
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(8),
-            conditional=(
-                "not persistent._mas_f14_spent_f14"
-            ),
+            conditional="not persistent._mas_f14_spent_f14",
             years=[]
         ),
         skipCalendar=True
@@ -6205,7 +6194,7 @@ label mas_apology_missed_vday:
 
 
 init 20 python:
-    poem_vday_1 = MASPoem(
+    mas_poem_vday_1 = MASPoem(
         poem_id="poem_f14_1",
         category="f14",
         prompt="Found",
@@ -6224,7 +6213,7 @@ init 20 python:
 """
     )
 
-    poem_vday_2 = MASPoem(
+    mas_poem_vday_2 = MASPoem(
         poem_id="poem_f14_2",
         category="f14",
         prompt="Everything",
@@ -6260,7 +6249,7 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-    poem_vday_3 = MASPoem(
+    mas_poem_vday_3 = MASPoem(
         poem_id="poem_f14_3",
         category="f14",
         prompt="You",
@@ -6275,6 +6264,33 @@ init 20 python:
  The heart worth more than all the chocolate in the world, all the roses on earth.
 
  The love I feel cannot be overstated.
+
+ Forever your Valentine,
+ Monika
+"""
+    )
+
+    mas_poem_vday_4 = MASPoem(
+        poem_id="poem_f14_4",
+        category="f14",
+        prompt="Roses",
+        title=" My dearest [player],",
+        text="""\
+ All the roses in the world,
+ They grow and bloom into something beautiful.
+ Just as our relationship will.
+ Every day,
+ We grow ever closer,
+ Ever stronger,
+ Ever more beautiful~
+
+ And though roses have thorns,
+ They don’t undermine their loveliness,
+ They defend them,
+ They make them stronger.
+ And of all the roses in the world,
+ Even on this most romantic holiday,
+ None could ever replace {size=+7}my{/size} special rose~
 
  Forever your Valentine,
  Monika
