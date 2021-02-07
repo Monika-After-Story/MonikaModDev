@@ -3483,7 +3483,7 @@ label monika_clothes_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     if mas_isMoniLove():
@@ -3630,7 +3630,7 @@ label monika_hair_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
