@@ -2273,6 +2273,10 @@ label mas_d25_monika_christmas:
     $ persistent._mas_d25_spent_d25 = True
     $ mas_gainAffection(5, bypass=True)
 
+    # this can be pushed via mas_d25_monika_holiday_intro_rh_rh and
+    # don't want it twice
+    $ mas_rmallEVL("mas_d25_monika_christmas")
+
     # Note: broken gets no dialogue, just the aff_gain and the var set so we know the player visited
     if mas_isMoniDis():
         m 6eka "Merry Christmas, [player]. {w=0.2}Thanks for spending some time with me today."
