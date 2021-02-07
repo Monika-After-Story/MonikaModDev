@@ -3286,7 +3286,7 @@ label mas_d25_monika_second_time_lingerie:
     pause 2.0
     show monika 2tkbsu
     pause 2.0
-    m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
+    m 2tfbsu "[player]...{w=0.5}you're staring{w=0.3}...again."
     m 2hubsb "Ahaha!"
     m 2eubsb "I guess you approve of my outfit choice..."
     m 2tkbsu "Rather fitting for the occasion, don't you think?"
@@ -5654,7 +5654,7 @@ label mas_f14_monika_valentines_intro:
                 pause 2.0
                 show monika 2tkbsu
                 pause 2.0
-                m 2tfbsu "[player]...{w=0.5} You're staring{w=0.5}...again."
+                m 2tfbsu "[player]...{w=0.5}you're staring{w=0.3}...again."
                 m 2hubsb "Ahaha!"
                 m 2eubsb "I guess you approve of my outfit choice..."
                 m 2tkbsu "Rather fitting for a romantic holiday like Valentine's Day, don't you think?"
