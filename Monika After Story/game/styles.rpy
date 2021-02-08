@@ -357,7 +357,7 @@ init -1 python in mas_ui:
     )
 
 # START: Helper methods that we use inside screens
-init -10 python in mas_ui:
+init 25 python in mas_ui:
     import lfu_cache
 
     # Methods for mas_check_scrollable_menu
@@ -392,6 +392,34 @@ init -10 python in mas_ui:
         return default_prompt
 
     # Methods for twopane_scrollable_menu
+    TWOPANE_MENU_MAX_FLT_ITEMS = 50
+    TWOPANE_MENU_SEARCH_DBS = (
+        store.mas_all_ev_db_map["EVE"].values()
+        + store.mas_all_ev_db_map["BYE"].values()
+        + store.mas_all_ev_db_map["STY"].values()
+        + store.mas_all_ev_db_map["CMP"].values()
+        + store.mas_all_ev_db_map["SNG"].values()
+    )
+    TWOPANE_MENU_DELEGATES_CALLBACK_MAP = {
+        "mas_compliment_": store.mas_compliments.compliment_delegate_callback
+    }
+
+    def twopane_menu_delegate_callback(ev_label):
+        """
+        A method to handle delegate logic for some of our events
+        when the user skips a delegate label using search
+        NOTE: the callback will be called before we push the event
+        TODO: add more callbacks as needed
+
+        IN:
+            ev_label - the ev_label of the event the user's selected
+        """
+        for prefix in TWOPANE_MENU_DELEGATES_CALLBACK_MAP:
+            if ev_label.startswith(prefix):
+                TWOPANE_MENU_DELEGATES_CALLBACK_MAP[prefix]()
+                return
+        return
+
     def _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen):
         """
         A method to use as the filter for events in the twopane menu
@@ -433,26 +461,16 @@ init -10 python in mas_ui:
         if only_seen and ev.shown_count == 0:
             return False
 
-        # Now, passing any of these 3 means the event is fitting the query
-        if search_query in ev_prompt:
-            return True
-
-        if search_query in ev_label:
-            return True
-
-        if search_query in ev_cat_full:
-            return True
-
         # This is so we can interrup the loop early
         for search_kw in search_kws:
             if (
-                search_kw not in ev_prompt
-                and search_kw not in ev_label
-                and search_kw not in ev_cat_full
+                search_kw in ev_prompt
+                or search_kw in ev_label
+                or search_kw in ev_cat_full
             ):
-                return False
+                return True
 
-        return True
+        return False
 
     def _twopane_menu_sort_events(ev, search_query, search_kws):
         """
@@ -472,34 +490,41 @@ init -10 python in mas_ui:
 
         weight = 0
         base_increment = 2
-        base_power = len(search_kws) + 1
+        base_modifier = len(search_kws) + 1
 
         if search_query == ev_prompt or search_query == ev_label:
-            weight += base_increment**(base_power + 5)
+            weight += base_increment * base_modifier**8
 
         if search_query in ev_prompt:
-            weight += base_increment**(base_power + 4)
+            if ev_prompt.startswith(search_query):
+                weight += base_increment * base_modifier**7
 
-        if search_query in ev_label:
-            weight += base_increment**(base_power + 3)
+            else:
+                weight += base_increment * base_modifier**6
 
-        for search_kw in search_kws:
-            if search_kw in ev_prompt:
-                weight += base_increment**(base_power + 2)
+        elif search_query in ev_label:
+            if ev_label.startswith(search_query):
+                weight += base_increment * base_modifier**5
 
-            if search_kw in ev_label:
-                weight += base_increment**(base_power + 1)
+            else:
+                weight += base_increment * base_modifier**4
 
-            if ev_cat_full:
-                if search_kw in ev.category:
-                    weight += base_increment**base_power
+        else:
+            for search_kw in search_kws:
+                if search_kw in ev_prompt:
+                    weight += base_increment * base_modifier**3
 
-                if search_kw in ev_cat_full:
-                    weight += base_increment
+                if search_kw in ev_label:
+                    weight += base_increment * base_modifier**2
+
+                if ev_cat_full:
+                    if search_kw in ev.category:
+                        weight += base_increment * base_modifier
+
+                    if search_kw in ev_cat_full:
+                        weight += base_increment
 
         return weight
-
-    TWOPANE_MENU_MAX_FLT_ITEMS = 50
 
     @lfu_cache.create_lfu_cache(limit=2048)
     def _twopane_menu_search_events(search_query):
@@ -542,7 +567,7 @@ init -10 python in mas_ui:
         search_kws = search_query.split()
         flt_evs = filter(
             lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen),
-            store.mas_all_ev_db.itervalues()
+            TWOPANE_MENU_SEARCH_DBS
         )
         flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
 

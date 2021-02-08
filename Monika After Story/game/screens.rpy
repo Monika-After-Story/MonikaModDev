@@ -2646,7 +2646,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                                 else:
                                     style "scrollable_menu_button"
                                 xsize right_area[0] - left_area[0] + right_area[2]
-                                action Return(ev.eventlabel)
+                                action [Function(mas_ui.twopane_menu_delegate_callback, ev.eventlabel), Return(ev.eventlabel)]
 
                 null height 20
 
