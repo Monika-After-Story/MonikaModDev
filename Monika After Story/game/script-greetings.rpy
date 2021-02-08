@@ -3884,6 +3884,14 @@ label greeting_dockstat_housework:
     m "I hope I could give you a little boost to your motivation, ehehe~"
     m "Now, let's relax and spend some time together."
     return
+    
+label greeting_dockstat_housework_lessthan5mins:
+    m "Hmm?"
+    m "[player], I hope you're not giving up on your chores that quickly..."
+    m "I don't mind if you'd rather I be here, but I'd appreciate if you'd try your best to work a little longer."
+    m "It doesn't have to be anything big. Just straightening a few things might make you feel a lot better."
+    m "I'll be here if you need me, okay?"
+    return
 
 init 5 python:
     addEvent(
