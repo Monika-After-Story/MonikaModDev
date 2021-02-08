@@ -327,7 +327,8 @@ init 10 python:
         late_updates = [
             "v0_8_3",
             "v0_8_4",
-            "v0_8_10"
+            "v0_8_10",
+            "v0_12_0",
         ]
 
         store.mas_versions.init()
@@ -375,11 +376,6 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.0
 label v0_12_0(version="v0_12_0"):
     python:
-        #Reset annis as F29 based ones are on the wrong date
-        first_sesh = mas_getFirstSesh()
-        if first_sesh.month == 2 and first_sesh.day == 29:
-            mas_anni.reset_annis(first_sesh)
-
         mas_setEVLPropValues(
             "mas_d25_monika_holiday_intro_upset",
             end_date=mas_d25
@@ -404,6 +400,10 @@ label v0_12_0(version="v0_12_0"):
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14
         )
+
+        # enable late updates to fix the annis again
+        persistent._mas_zz_lupd_ex_v.append(version)
+
     return
 
 # 0.11.9.3
@@ -2840,6 +2840,15 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_0:
+    python:
+        #Reset annis as F29 based ones are on the wrong date
+        first_sesh = mas_getFirstSesh()
+        if first_sesh.month == 2 and first_sesh.day == 29:
+            mas_anni.reset_annis(first_sesh)
+
+    return
+
 label mas_lupd_v0_8_10:
     python:
         import store.mas_selspr as mas_selspr
