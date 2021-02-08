@@ -358,8 +358,6 @@ init -1 python in mas_ui:
 
 # START: Helper methods that we use inside screens
 init 25 python in mas_ui:
-    import lfu_cache
-
     # Methods for mas_check_scrollable_menu
     def check_scr_menu_return_values(buttons_data, return_all):
         """
@@ -422,7 +420,7 @@ init 25 python in mas_ui:
 
     def _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen):
         """
-        A method to use as the filter for events in the twopane menu
+        The filter for events in the twopane menu
 
         IN:
             ev - event object
@@ -466,7 +464,7 @@ init 25 python in mas_ui:
             if (
                 search_kw in ev_prompt
                 or search_kw in ev_label
-                or search_kw in ev_cat_full
+                or (ev_cat_full and search_kw in ev_cat_full)
             ):
                 return True
 
@@ -474,11 +472,11 @@ init 25 python in mas_ui:
 
     def _twopane_menu_sort_events(ev, search_query, search_kws):
         """
-        A method to use as the sortkey for events in the twopane menu.
+        The sortkey for events in the twopane menu.
 
         IN:
             ev - event object
-            search_query - search query to filter by
+            search_query - search query to sort by
             search_kws - search_query splitted using spaces
 
         OUT:
@@ -495,7 +493,7 @@ init 25 python in mas_ui:
         if search_query == ev_prompt or search_query == ev_label:
             weight += base_increment * base_modifier**8
 
-        if search_query in ev_prompt:
+        elif search_query in ev_prompt:
             if ev_prompt.startswith(search_query):
                 weight += base_increment * base_modifier**7
 
@@ -514,19 +512,18 @@ init 25 python in mas_ui:
                 if search_kw in ev_prompt:
                     weight += base_increment * base_modifier**3
 
-                if search_kw in ev_label:
+                elif search_kw in ev_label:
                     weight += base_increment * base_modifier**2
 
-                if ev_cat_full:
+                elif ev_cat_full:
                     if search_kw in ev.category:
                         weight += base_increment * base_modifier
 
-                    if search_kw in ev_cat_full:
+                    elif search_kw in ev_cat_full:
                         weight += base_increment
 
         return weight
 
-    @lfu_cache.create_lfu_cache(limit=2048)
     def _twopane_menu_search_events(search_query):
         """
         The actual method that does filtering and searching for the twopane menu.
@@ -565,6 +562,7 @@ init 25 python in mas_ui:
 
         search_query = search_query.strip()
         search_kws = search_query.split()
+
         flt_evs = filter(
             lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen),
             TWOPANE_MENU_SEARCH_DBS
@@ -586,5 +584,130 @@ init 25 python in mas_ui:
         if scr is not None:
             # Search
             scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
+        # Update the screen
+        renpy.restart_interaction()
+
+    def _selector_filter_items(item, search_query, search_kws):
+        """
+        The filter key we use in the selector screen.
+
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to filter by
+            search_kws - search_query split using spaces
+
+        OUT:
+            boolean whether or not the event pass the criteria
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        for search_kw in search_kws:
+            if (
+                search_kw in name
+                or search_kw in id
+                or (acs_type and search_kw in acs_type)
+                or (ex_props and search_kw in ex_props)
+            ):
+                return True
+
+        return False
+
+    def _selector_sort_items(item, search_query, search_kws):
+        """
+        The sort key we use in the selector screen.
+
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to sort by
+            search_kws - search_query split using spaces
+
+        OUT:
+            weight as int
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        weight = 0
+        base_increment = 2
+        base_modifier = len(search_kws) + 1
+
+        if search_query == name or search_query == id:
+            weight += base_increment * base_modifier**8
+
+        elif search_query in name:
+            if name.startswith(search_query):
+                weight += base_increment * base_modifier**7
+
+            else:
+                weight += base_increment * base_modifier**6
+
+        elif search_query in id:
+            if id.startswith(search_query):
+                weight += base_increment * base_modifier**5
+
+            else:
+                weight += base_increment * base_modifier**4
+
+        else:
+            for search_kw in search_kws:
+                if search_kw in name:
+                    weight += base_increment * base_modifier**3
+
+                elif search_kw in id:
+                    weight += base_increment * base_modifier**2
+
+                elif acs_type and search_kw in acs_type:
+                    weight += base_increment * base_modifier
+
+                elif ex_props and search_kw in ex_props:
+                    weight += base_increment
+
+        return weight
+
+    def _selector_search_items(items, search_query):
+        """
+        The method for filtering and sorting items in the selector screen.
+
+        IN:
+            items - the items to search in
+            search_query - the search query to filter and sort by
+
+        OUT:
+            list of event objects or None if empty query was given
+        """
+        if not search_query:
+            return None
+
+        search_query = search_query.lower().strip()
+        search_kws = search_query.split()
+
+        flt_items = filter(
+            lambda item: _selector_filter_items(item, search_query, search_kws),
+            items
+        )
+        flt_items.sort(key=lambda item: _selector_sort_items(item, search_query, search_kws), reverse=True)
+
+        return flt_items
+
+    def selector_search_callback(search_query):
+        """
+        The selector screen input callback.
+
+        IN:
+            search_query - search query to filter and sort by
+        """
+        # Get the screen to pass events into
+        scr = renpy.get_screen("mas_selector_sidebar")
+        if scr is not None:
+            # Search
+            flt_items = _selector_search_items(scr.scope["items"], search_query)
+            scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
         # Update the screen
         renpy.restart_interaction()

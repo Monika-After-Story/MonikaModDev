@@ -2410,7 +2410,7 @@ init -1 python:
                 st - st for renpy render
                 at - at for renpy render
 
-            RETURNS: rendered display name 
+            RETURNS: rendered display name
             """
             return renpy.render(disp_text, 1000, self.TOP_FRAME_CHUNK, st, at)
 
@@ -2917,9 +2917,27 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #    modal True
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
+    default flt_items = items
+
+    # Search bar
+    frame:
+        xpos 1075
+        ypos 5
+        xsize 200
+        ysize 40
+        background Solid("#ffaa99aa")
+
+        input:
+            style_prefix "input"
+            xsize 200
+            ysize 40
+            xalign 0.0
+            # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
+            pixel_width 200
+            changed store.mas_ui.selector_search_callback
 
     frame:
-        area (1075, 5, 200, sel_frame_vsize)
+        area (1075, 50, 200, sel_frame_vsize - 45)
         background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
 
         vbox:
@@ -2941,9 +2959,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in items:
+                    for selectable in flt_items:
                         add selectable:
-#                            xoffset 5
+                            # xoffset 5
                             xalign 0.5
 
                     null height 1
@@ -2988,7 +3006,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
-#                action Function(mailbox.mas_send_return, -1)
+                # action Function(mailbox.mas_send_return, -1)
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
