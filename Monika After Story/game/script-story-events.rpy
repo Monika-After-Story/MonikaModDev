@@ -307,7 +307,7 @@ init 3 python:
         "lezbo",
         "liar",
         "loser",
-        "mad",
+        "^mad$",
         "maniac",
         "masochist",
         "milf",

@@ -4699,7 +4699,7 @@ init -995 python in mas_utils:
                     self.write("%s", platform.platform())
                 except:
                     self.write("Unknown platform.")
-                self.write("%s", renpy.version)
+                self.write("%s", renpy.version())
                 self.write("%s %s", renpy.config.name, renpy.config.version)
                 self.write("")
 

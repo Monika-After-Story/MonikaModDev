@@ -2717,30 +2717,30 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
+        call show_prompt_list(unseen_event_labels)
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
 
     elif madechoice == "prompt":
-        call prompts_categories(True) from _call_prompts_categories
+        call prompts_categories(True)
 
     elif madechoice == "repeat":
-        call prompts_categories(False) from _call_prompts_categories_1
+        call prompts_categories(False)
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",skipeval=True)
+        $ pushEvent("monika_love", skipeval=True)
         $ _return = True
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",skipeval=True)
+        $ pushEvent("monika_love_too", skipeval=True)
         $ _return = True
 
     elif madechoice == "moods":
-        call mas_mood_start from _call_mas_mood_start
+        call mas_mood_start
 
     elif madechoice == "goodbye":
-        call mas_farewell_start from _call_select_farewell
+        call mas_farewell_start
 
     else: #nevermind
         $_return = None
@@ -2753,7 +2753,7 @@ label prompt_menu_end:
 
     show monika at t11
     $ mas_DropShield_dlg()
-    jump ch30_loop
+    jump ch30_visual_skip
 
 label show_prompt_list(sorted_event_labels):
     $ import store.evhand as evhand
@@ -2775,7 +2775,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2934,7 +2934,7 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ pushEvent(_return)
+                $ pushEvent(_return, skipeval=True)
 
     return _return
 

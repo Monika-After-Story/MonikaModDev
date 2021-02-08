@@ -8959,7 +8959,9 @@ image ghost_monika:
 
 # transiton to empty desk
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
-label mas_transition_to_emptydesk:
+label mas_transition_to_emptydesk(hide_dlg_box=True):
+    if hide_dlg_box:
+        window hide
     $ store.mas_sprites.show_empty_desk()
     hide monika with dissolve_monika
     return
@@ -8968,8 +8970,9 @@ label mas_transition_to_emptydesk:
 # NOTE: to unhide a desk ACS, set that ACS to keep on desk AFTER calling this
 # IN:
 #   exp - expression to show when monika is shown
-label mas_transition_from_emptydesk(exp="monika 1eua"):
-    $ renpy.show(exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
-    $ renpy.with_statement(dissolve)
+label mas_transition_from_emptydesk(exp="monika 1eua", show_dlg_box=True):
+    if show_dlg_box:
+        window auto
+    show expression exp as monika at i11 zorder MAS_MONIKA_Z with dissolve_monika
     hide emptydesk
     return

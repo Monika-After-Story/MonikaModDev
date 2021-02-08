@@ -3446,10 +3446,10 @@ label greeting_returned_home:
     if mas_d25 < datetime.date.today() <= mas_nye:
         call mas_gone_over_d25_check
 
-    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+    if mas_nyd <= datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nye_check
 
-    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+    if mas_nyd < datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nyd_check
 
 
