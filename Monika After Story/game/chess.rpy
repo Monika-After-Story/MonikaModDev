@@ -1045,8 +1045,12 @@ label mas_chess_start_chess:
 
             $ undo_count = new_pgn_game.headers.get("UndoCount", 0)
             if not undo_count:
-                m 1wuo "You didn't undo a single move!"
-                m 3hub "That's amazing, [player]~"
+                m 1wuo "You didn't undo a single move!{w=0.2} {nw}"
+                extend 3hub "That's amazing!"
+
+            elif undo_count == 1:
+                m 1hua "You only undid once. {w=0.2}{nw}"
+                extend 3hub "Great job!"
 
             elif undo_count <= 5:
                 m 1hua "You only undid [undo_count] times too, great job."
