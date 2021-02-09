@@ -193,7 +193,7 @@ init python in mas_sprites:
             else:
                 register_image(
                     ("monika", exp),
-                    store.blink_transform(
+                    store.MASMoniBlinkTransform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )

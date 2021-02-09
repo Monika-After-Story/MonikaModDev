@@ -7560,7 +7560,7 @@ python early:
             dissolve - (Dissolve) the Dissolve transform we're currently rendering
             exp_groups - (list) MASMoniIdleExpGroup objects that are being 'itered' through
             fallback - (MASMoniIdleExp) fallback exp. Must ALWAYS be available
-            redraw_st - (int) required shown timebase to switch to the next exp
+            redraw_st - (int/float) required shown timebase to switch to the next exp
             current_st - (float) current shown timebase
             duration - (float) duration (in seconds) for the current exp
                 (basically the difference between redraw_st and current_st)
@@ -8236,6 +8236,156 @@ python early:
             og_child = renpy.display.image.ImageReference(("monika", code,))
             transform.set_child(og_child)
             transform.raw_child = og_child
+
+    class MASMoniBlinkTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes blinking possible
+        (replaces the old ATL which was quite buggy)
+        """
+        # Consts for blink steps
+        STEP_START = "start"
+        STEP_DB_START = "db_start"
+        STEP_DB_END = "db_end"
+        STEP_END = "end"
+
+        # The chance for double blink
+        DB_CHANCE = 0.01
+
+        # Blink timings (min, max)
+        STEP_START_DUR_MIN = 3
+        STEP_START_DUR_MAX = 8
+
+        STEP_END_DUR_MIN = 0.05
+        STEP_END_DUR_MAX = 0.07
+
+        STEP_END_INTO_DB_DUR_MIN = 0.02
+        STEP_END_INTO_DB_DUR_MAX = 0.04
+
+        STEP_DB_START_DUR_MIN = 0.1
+        STEP_DB_START_DUR_MAX = 0.15
+
+        STEP_DB_END_DUR_MIN = STEP_END_DUR_MIN
+        STEP_DB_END_DUR_MAX = STEP_END_DUR_MAX
+
+        # Dissolves durations
+        STEP_START_DIS_DUR = 0.05
+        STEP_END_DIS_DUR = 0.01
+        STEP_DB_START_DIS_DUR = STEP_START_DIS_DUR
+        STEP_DB_END_DIS_DUR = STEP_END_DIS_DUR
+
+        BLIT_COORDS = (0, 0)
+
+        def __init__(self, open_eyes_img, closed_eyes_img):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                open_eyes_img - FULL name of the image for open eyes
+                closed_eyes_img - FULL name of the image for closed eyes
+            """
+            super(MASMoniBlinkTransform, self).__init__(self)
+
+            self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
+            self.closed_eyes_img = renpy.display.image.ImageReference(closed_eyes_img)
+            self.current_img = self.closed_eyes_img
+            self.transform_map = {
+                MASMoniBlinkTransform.STEP_START: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_START_DIS_DUR,
+                    old_widget=self.current_img,
+                    new_widget=self.open_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_END: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_END_DIS_DUR,
+                    old_widget=self.current_img,
+                    new_widget=self.closed_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_DB_START: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_DB_START_DIS_DUR,
+                    old_widget=self.current_img,
+                    new_widget=self.open_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_DB_END: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_DB_END_DIS_DUR,
+                    old_widget=self.current_img,
+                    new_widget=self.closed_eyes_img,
+                    alpha=True
+                )
+
+            }
+            self.next_step = MASMoniBlinkTransform.STEP_START
+
+            self.last_st = 0.0
+            self.current_st = 0.0
+            self.redraw_st = 0.0
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            if st > self.last_st:
+                self.current_st += (st - self.last_st)
+
+            else:
+                self.current_st += st
+
+            self.last_st = st
+
+            if self.current_st >= self.redraw_st:
+                self.current_st = 0.0
+                self.current_img = self.transform_map[self.next_step]
+
+                # First step (open eyes)
+                if self.next_step == MASMoniBlinkTransform.STEP_START:
+                    # self.current_img = self.open_eyes_img
+                    self.redraw_st = random.randint(MASMoniBlinkTransform.STEP_START_DUR_MIN, MASMoniBlinkTransform.STEP_START_DUR_MAX)
+                    self.next_step = MASMoniBlinkTransform.STEP_END
+
+                # Last step (close eyes)
+                elif self.next_step == MASMoniBlinkTransform.STEP_END:
+                    # self.current_img = self.closed_eyes_img
+                    # Do we want a double blink?
+                    if random.random() > MASMoniBlinkTransform.DB_CHANCE:
+                        # No
+                        self.redraw_st = random.uniform(MASMoniBlinkTransform.STEP_END_DUR_MIN, MASMoniBlinkTransform.STEP_END_DUR_MAX)
+                        self.next_step = MASMoniBlinkTransform.STEP_START
+
+                    else:
+                        # Yes
+                        self.redraw_st = random.uniform(MASMoniBlinkTransform.STEP_END_INTO_DB_DUR_MIN, MASMoniBlinkTransform.STEP_END_INTO_DB_DUR_MAX)
+                        self.next_step = MASMoniBlinkTransform.STEP_DB_START
+
+                # Substep start (double blink open eyes)
+                elif self.next_step == MASMoniBlinkTransform.STEP_DB_START:
+                    # self.current_img = self.open_eyes_img
+                    self.redraw_st = random.uniform(MASMoniBlinkTransform.STEP_DB_START_DUR_MIN, MASMoniBlinkTransform.STEP_DB_START_DUR_MAX)
+                    self.next_step = MASMoniBlinkTransform.STEP_DB_END
+
+                # Substep end (double blink close eyes)
+                elif self.next_step == MASMoniBlinkTransform.STEP_DB_END:
+                    # self.current_img = self.closed_eyes_img
+                    self.redraw_st = random.uniform(MASMoniBlinkTransform.STEP_DB_END_DUR_MIN, MASMoniBlinkTransform.STEP_DB_END_DUR_MAX)
+                    self.next_step = MASMoniBlinkTransform.STEP_START
+
+            img_render = renpy.render(self.current_img, width, height, self.current_st, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniBlinkTransform.BLIT_COORDS)
+
+            renpy.redraw(self, self.redraw_st - self.current_st)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return self.transform_map.values()
 
 # # # END: Idle disp stuff
 

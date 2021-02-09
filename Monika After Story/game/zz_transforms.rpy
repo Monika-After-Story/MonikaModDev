@@ -169,6 +169,7 @@ transform mas_chlongjump(x, y, ymax, travel_time=1.0):
         easein travel_time*0.4 ypos y
 
 #START: Transforms for Monika's sprite animations (blinking/winking/tear-specific-blinking)
+# NOTE: DEPRECATED, use MASMoniBlinkTransform
 transform blink_transform(open_eyes_img, closed_eyes_img):
     animation
     block:
