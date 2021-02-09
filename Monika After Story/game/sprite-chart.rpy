@@ -7557,17 +7557,24 @@ python early:
             exp_map - (dict) map between exps and aff lvls
             forced_exps - (list) forced exps
             current_exp - (MASMoniIdleExp) currently selected exp
+            dissolve - (Dissolve) the Dissolve transform we're currently rendering
             exp_groups - (list) MASMoniIdleExpGroup objects that are being 'itered' through
             fallback - (MASMoniIdleExp) fallback exp. Must ALWAYS be available
-            required_st - (int) required shown timebase to switch to the next exp
+            redraw_st - (int) required shown timebase to switch to the next exp
             current_st - (float) current shown timebase
             duration - (float) duration (in seconds) for the current exp
-                (basically the difference between required_st and current_st)
+                (basically the difference between redraw_st and current_st)
+            dissolve_duration - (float) the duration of the current dissolve
             forced_mode - (boolean) indicates that we've forced an expression
             group_mode - (boolean) - indicates that we're handling a group of expressions
         """
         # eyes codes whose transforms we manually reset
+        # TODO: this this dum shit of renpy
         EYES_EXP_CODES = ("k", "n")
+        # Dissolve for exp changes
+        QUICK_DISSOLVE = 0.1
+        # Dissolve for pose changes
+        SLOW_DISSOLVE = 0.25
 
         def __init__(self, exps=None, fallback=None):
             """
@@ -7606,10 +7613,12 @@ python early:
             self.fallback = fallback
             self.current_exp = fallback
             self._predicted_exp = None
+            self.dissolve = None
 
-            self.__last_st = 0.0
-            self.required_st = 0
+            self._last_st = 0.0
+            self.redraw_st = 0
             self.current_st = 0.0
+            self.dissolve_duration = 0.0
 
         def __repr__(self):
             """
@@ -7629,13 +7638,15 @@ python early:
             OUT:
                 float - duration of the current exp in seconds
             """
-            return round(self.required_st - self.current_st, 1)
+            return round(self.redraw_st - self.current_st, 1)
 
         def update(self):
             """
             This causes this disp to update
             """
-            self.required_st = 0
+            self.redraw_st = 0
+            self.dissolve = None
+            self.dissolve_duration = 0.0
             renpy.redraw(self, 0)
 
         def add(self, exps, redraw=False):
@@ -8061,30 +8072,101 @@ python early:
         def render(self, width, height, st, at):
             """
             Render for this disp
+            I have no idea how this works
             """
-            if st > self.__last_st:
-                self.current_st += (st - self.__last_st)
+            if st > self._last_st:
+                self.current_st += (st - self._last_st)
 
-            self.__last_st = st
+            self._last_st = st
 
+            # Is it the time to select a new exp/stop dissolving?
             if (
-                self.required_st <= self.current_st
+                self.current_st >= self.redraw_st
                 or (
-                    not self.current_exp.check_aff()
-                    or not self.current_exp.check_conditional()
+                    self.dissolve is None
+                    and (
+                        not self.current_exp.check_aff()
+                        or not self.current_exp.check_conditional()
+                    )
                 )
             ):
-                self.current_exp = self.select_exp()
-                self.required_st = self.current_exp.select_duration()
                 self.current_st = 0.0
-                redraw_time = self.required_st + 0.1
 
+                # If we were dissolving, we just finished
+                # Set next redraw using the exp duration
+                if self.dissolve is not None:
+                    self.dissolve = None
+                    self.dissolve_duration = 0.0
+                    self.redraw_st = self.current_exp.select_duration()
+                    render_st = self.current_st
+                    redraw_time = 0
+
+                # The current exp has expired, we need to select a new one
+                else:
+                    next_exp = self.select_exp()
+
+                    # New pose? Dissolve
+                    if next_exp.code[0] != self.current_exp.code[0]:
+                        self.dissolve = renpy.display.transition.Dissolve(
+                            time=MASMoniIdleDisp.SLOW_DISSOLVE,
+                            old_widget=self.current_exp.ref,
+                            new_widget=next_exp.ref,
+                            alpha=True
+                        )
+                        self.dissolve_duration = MASMoniIdleDisp.SLOW_DISSOLVE
+                        self.redraw_st = self.current_st + MASMoniIdleDisp.SLOW_DISSOLVE
+                        render_st = 0.0# self.dissolve_duration - (self.redraw_st - self.current_st)
+                        redraw_time = 0
+
+                    # Different exp? Dissolve
+                    elif next_exp.code != self.current_exp.code:
+                        self.dissolve = renpy.display.transition.Dissolve(
+                            time=MASMoniIdleDisp.QUICK_DISSOLVE,
+                            old_widget=self.current_exp.ref,
+                            new_widget=next_exp.ref,
+                            alpha=True
+                        )
+                        self.dissolve_duration = MASMoniIdleDisp.QUICK_DISSOLVE
+                        self.redraw_st = self.current_st + MASMoniIdleDisp.QUICK_DISSOLVE
+                        render_st = 0.0# self.dissolve_duration - (self.redraw_st - self.current_st)
+                        redraw_time = 0
+
+                    # Otherwise we don't need to dissolve since the exp is the same
+                    else:
+                        self.dissolve = None
+                        self.dissolve_duration = 0.0
+                        self.redraw_st = next_exp.select_duration()
+                        render_st = self.current_st
+                        redraw_time = self.redraw_st
+
+                    # Now we can set the current exp
+                    self.current_exp = next_exp
+
+            # Otherwise we come here too early
             else:
-                redraw_time = self.required_st - self.current_st + 0.1
+                # If we're dissolving, we continue
+                if self.dissolve is not None:
+                    render_st = self.dissolve_duration - (self.redraw_st - self.current_st)
+                    redraw_time = 0
 
-            exp_render = renpy.render(self.current_exp.ref, width, height, st, at)
-            main_render = renpy.Render(exp_render.width, exp_render.height)
-            main_render.place(self.current_exp.ref, 0, 0)
+                # Otherwise wait 'til next exp
+                else:
+                    render_st = self.current_st
+                    redraw_time = self.redraw_st - self.current_st
+
+            # If we're dissolving, we render the transform
+            if self.dissolve is not None:
+                img = self.dissolve
+
+            # Otherwise render the exp image
+            else:
+                img = self.current_exp.ref
+
+            img_render = renpy.render(img, width, height, render_st, at)
+
+            main_render = renpy.Render(img_render.width, img_render.height)
+            # main_render.place(img, x=0, y=0, st=render_st)
+            main_render.blit(img_render, (0, 0))
 
             renpy.redraw(self, redraw_time)
 
