@@ -780,7 +780,7 @@ label mas_mood_upset:
     m 1eksdld "And I'm not saying you should keep carrying weight on your shoulders if it's really affecting you."
     m 3eud "It could be an opportunity to gain the courage to let go of something toxic."
     m 1euc "It might be scary in the moment, sure...{w=0.3}{nw}"
-    extend 3ekd "but if you make the right choice, you could elimate a lot of stress from your life."
+    extend 3ekd "but if you make the right choice, you could eliminate a lot of stress from your life."
     m 3eua "And you know what, [player]?"
     m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(regex_replace_with_nullstr='my ')]."
     m 1hub "Knowing that you'll always support and love me puts me at ease almost instantly!"
