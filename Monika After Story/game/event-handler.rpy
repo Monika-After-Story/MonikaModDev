@@ -2510,7 +2510,7 @@ label call_next_event:
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
-            $ mas_moni_idle_disp.unforce_all()
+            $ mas_moni_idle_disp.unforce_all(skip_dissolve=True)
 
         $ mas_globals.this_ev = ev
         call expression event_label from _call_expression

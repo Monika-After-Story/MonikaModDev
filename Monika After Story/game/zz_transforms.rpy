@@ -191,7 +191,7 @@ transform blink_transform(open_eyes_img, closed_eyes_img):
             pass
         0.06
         repeat
-
+# NOTE: DEPRECATED, use MASMoniWinkTransform
 transform wink_transform(wink_img, open_eyes_img):
     # HACK: we use events here so renpy allows us to reuse this transform
     on default, show, replace:

@@ -219,7 +219,7 @@ init python in mas_sprites:
         #And now we make its ATL
         register_image(
             ("monika", exp),
-            store.wink_transform(
+            store.MASMoniWinkTransform(
                 "monika " + exp + "_static",
                 "monika " + open_eye_variant
             )
