@@ -184,7 +184,7 @@ init python in mas_sprites:
             if needs_tear_atl(exp):
                 register_image(
                     ("monika", exp),
-                    store.streaming_tears_transform(
+                    store.MASMoniTearsTransform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )
