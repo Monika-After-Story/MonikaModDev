@@ -569,7 +569,7 @@ label greeting_back4:
     m 2wfx "Hey, [player]!"
     m "Don't you think that you left me waiting a bit too long?"
     m 2hfu "..."
-    m 2hua "Ahaha!"
+    m 2hub "Ahaha!"
     m 2eka "I'm just joking. I could never be mad at you."
     return
 
@@ -2910,10 +2910,9 @@ label greeting_back_from_school:
                 return
 
             "Good.":
-                m 1hub "Aww, that's nice!"
-                m 1eua "I can't help but feel happy when you do~"
-                m "I hope you learned something useful."
-                m 1hua "Ehehe~"
+                m 1hub "That's great...{w=0.3}{nw}"
+                extend 3eub "I can't help but feel happy when you come home in a good mood!"
+                m 3hua "I hope you learned something useful, ehehe~"
                 return
 
             "Bad.":
@@ -3360,7 +3359,7 @@ label greeting_ourreality:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
@@ -3447,10 +3446,10 @@ label greeting_returned_home:
     if mas_d25 < datetime.date.today() <= mas_nye:
         call mas_gone_over_d25_check
 
-    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+    if mas_nyd <= datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nye_check
 
-    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+    if mas_nyd < datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nyd_check
 
 
