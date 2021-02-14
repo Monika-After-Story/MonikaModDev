@@ -1533,7 +1533,13 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if store.mas_globals.in_idle_mode:
+        if (
+            store.mas_globals.in_idle_mode
+            or (
+                mas_globals.event_unpause_dt is not None
+                and mas_globals.event_unpause_dt > datetime.datetime.utcnow()
+            )
+        ):
             jump post_pick_random_topic
 
         # Pick a random Monika topic
