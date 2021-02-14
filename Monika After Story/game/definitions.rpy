@@ -6630,7 +6630,9 @@ init 2 python:
         """
         if not seconds:
             mas_globals.event_unpause_dt = None
-        mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
+
+        else:
+            mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
 
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
