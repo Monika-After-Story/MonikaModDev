@@ -102,7 +102,7 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
-        $ mas_globals.event_unpause_dt = None
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
         # and set the moods
         $ persistent._mas_mood_current = _return

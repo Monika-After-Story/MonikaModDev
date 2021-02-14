@@ -227,12 +227,12 @@ label mas_farewell_start:
             return _return
 
         if _return != -1:
-            $ mas_globals.event_unpause_dt = None
+            $ mas_setEventPause(None)
             #Push the selected event
             $ pushEvent(_return.eventlabel, skipeval=True)
             return
 
-    $ mas_globals.event_unpause_dt = None
+    $ mas_setEventPause(None)
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel, skipeval=True)

@@ -2610,7 +2610,7 @@ label call_next_event:
                 python:
                     _match = re.search(evhand.RET_KEY_PATTERN_PAUSE, _return)
                     if _match is not None and _match.group("duration") is not None:
-                        mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=int(_match.group("duration")))
+                        mas_setEventPause(int(_match.group("duration")))
 
             if "prompt" in ret_items:
                 show monika idle
@@ -2798,7 +2798,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
-        $ mas_globals.event_unpause_dt = None
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
 
     return _return
@@ -2958,7 +2958,7 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ mas_globals.event_unpause_dt = None
+                $ mas_setEventPause(None)
                 $ pushEvent(_return, skipeval=True)
 
     return _return
@@ -3028,7 +3028,7 @@ label mas_bookmarks_loop:
     else:
         # got label, let's push
         show monika at t11
-        $ mas_globals.event_unpause_dt = None
+        $ mas_setEventPause(None)
         $ pushEvent(topic_choice, skipeval=True)
         return True
 
