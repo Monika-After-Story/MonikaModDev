@@ -758,7 +758,18 @@ init 6 python:
                 (Default: False)
             _pool - True if we want to random thsi event
                 (Default: False)
+
+        NOTE:
+            if using this to random, it does not protect labels that are in persistent._mas_player_derandomed
+            and thus will remove the label from that list if present.
+
+            if the label should not be randomed if it's in persistent._mas_player_derandomed
+            use mas_protectedShowEVL
         """
+
+        if _random:
+            store.mas_bookmarks_derand.removeDerand(ev_label)
+
         store.mas_showEvent(
             mas_all_ev_db_map.get(code, {}).get(ev_label, None),
             unlock=unlock,
@@ -2509,9 +2520,9 @@ label call_next_event:
         ):
             #Create a new notif
             if renpy.windows:
-                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
@@ -2729,16 +2740,16 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
+        call show_prompt_list(unseen_event_labels)
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
 
     elif madechoice == "prompt":
-        call prompts_categories(True) from _call_prompts_categories
+        call prompts_categories(True)
 
     elif madechoice == "repeat":
-        call prompts_categories(False) from _call_prompts_categories_1
+        call prompts_categories(False)
 
     elif madechoice == "love":
         $ pushEvent("monika_love", skipeval=True)
@@ -2749,10 +2760,10 @@ label prompt_menu:
         $ _return = True
 
     elif madechoice == "moods":
-        call mas_mood_start from _call_mas_mood_start
+        call mas_mood_start
 
     elif madechoice == "goodbye":
-        call mas_farewell_start from _call_select_farewell
+        call mas_farewell_start
 
     else: #nevermind
         $ _return = None
@@ -2765,7 +2776,7 @@ label prompt_menu_end:
 
     show monika at t11
     $ mas_DropShield_dlg()
-    jump ch30_loop
+    jump ch30_visual_skip
 
 label show_prompt_list(sorted_event_labels):
     $ import store.evhand as evhand
@@ -2788,7 +2799,7 @@ label show_prompt_list(sorted_event_labels):
 
     if _return:
         $ mas_globals.event_unpause_dt = None
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2948,7 +2959,7 @@ label prompts_categories(pool=True):
             #So we don't push garbage
             if _return is not False:
                 $ mas_globals.event_unpause_dt = None
-                $ pushEvent(_return)
+                $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2971,7 +2982,7 @@ label mas_bookmarks:
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
             # only if it is not flagged to be hidden
             if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
-                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel)
 
                 #Get the suffix function
                 suffix_func = prompt_suffix_map.get(label_prefix)
