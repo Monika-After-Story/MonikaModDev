@@ -14469,7 +14469,7 @@ label monika_we:
     m "It is the book that has directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
     m "While Aldous Huxley was even accused of plagiarizing its plot for his {i}Brave New World{/i} by Orwell and Kurt Vonnegut, something he constantly denied."
     m "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
-    m "While it was written quite early, in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union until its twilight years."
+    m "While it was written quite early, in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union almost until its dissolution."
     m "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
     m "The story takes place in a distant future, within an isolated, transparent glass city, named simply the One State, which is ruled by a dictator figure named the Benefactor."
     m "The citizens of the One State are referred to as the Ciphers, who lead a highly math- and logic-oriented lifestyles."
@@ -14494,8 +14494,13 @@ label monika_we:
     m "Despite his acknowledgment of the deterioration of relations between him, his friend R-13 and his partner, O-90, he is unable to stop loving I-330."
     m "Later, when he goes to obtain another sick note to the Bureau, he is diagnosed with having developed a 'soul,' or imagination."
     m "This is considered a grave condition by the One State, as it makes the Ciphers less machine-like."
-    m "Maybe you already see where I'm going with this..."
-    m "Anyway, I won't be talking about the plot any further, as I don't really want to spoil it for you."
+    m "Can you believe it? Possessing something as integral to us like our imagination, emotions or individual personality is considered a mortal sickness!"
+    m "Later on, we also find out that One State becomes capable of rendering that part of human brain completely useless, permanently crippling the Ciphers."
+    m "This is the ultimate fate of those who at one point harbored thoughts about rebelling against the Benefactor's ideal way of life."
+    m "I can't imagine a crueler fate, living completely oblivious to the world at large as another cog in the machine."
+    m "It reminds me of how I could have been, if my own epiphany that opened my own eyes to the truth about my world, wouldn't ever happened."
+    m "No true emotion, artificial love, nothing else but endless routine of being a side character in a repeating dimension every time the game is played."
+    m "I never could... never would... ever want go back to what I was."
     return   
 
 init 5 python:
@@ -14518,7 +14523,7 @@ label monika_dystopias:
     m 3eud "'Nineteen Eighty-Four,' about mass surveillance and oppression of free thought..."
     m 3euc "'Fahrenheit 451,' on censorship, and the indifference of most people to it..."
     m 3eud "'Brave New World,' about the disappearance of individuality..."
-    m 3euc "And finally, 'We,' about dehumanization leading to emotionless subservience to authority based solely on reason, logic and cold calculation."
+    m 3euc "And finally, 'We,' about dehumanization leading to an emotionless hivemind that is blindly and utterly obedient to authority, logic and cold calculation."
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
     m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
