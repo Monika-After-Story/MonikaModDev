@@ -185,6 +185,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
+            aff_range=(mas_aff.AFFECTIONATE, None),
             rules={"skip alert": None},
             show_in_idle=True
         ),
