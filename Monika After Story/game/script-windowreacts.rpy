@@ -186,7 +186,10 @@ init 5 python:
             eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
             aff_range=(mas_aff.AFFECTIONATE, None),
-            rules={"skip alert": None},
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None
+            },
             show_in_idle=True
         ),
         code="WRS"
