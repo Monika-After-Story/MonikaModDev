@@ -1767,6 +1767,9 @@ label mas_reaction_cupcake:
     m 1rksdlb "Buuut I've yet to make a kitchen to use!"
     m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
     m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
+   
+    $ mas_receivedGift("mas_reaction_cupcake")	
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_cupcake", "category"))
     return
 
 
