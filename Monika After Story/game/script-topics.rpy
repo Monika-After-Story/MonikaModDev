@@ -349,7 +349,7 @@ init python:
             return
 
         #Get the label prefix
-        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label)
 
         #CRITERIA:
         #1. Must have an ev
@@ -401,7 +401,7 @@ init python:
             return
 
         #Get our label prefix
-        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label)
 
         #CRITERIA:
         #1. Must be normal+
@@ -599,6 +599,7 @@ init python in mas_bookmarks_derand:
     #  - push_label: "mas_topic_derandom" (This is overriden on a per event basis by the 'derandom_push_label' rule)
     #  - bookmark_persist_key: "_mas_player_bookmarked"
     #  - derand_persist_key: "_mas_player_derandomed"
+    #  - rerand_evl: None
     label_prefix_map = {
         "monika_": {
             "bookmark_text": _("Topic bookmarked."),
@@ -607,14 +608,16 @@ init python in mas_bookmarks_derand:
             "underand_text": _("Topic flag removed."),
             "push_label": "mas_topic_derandom",
             "bookmark_persist_key": "_mas_player_bookmarked",
-            "derand_persist_key": "_mas_player_derandomed"
+            "derand_persist_key": "_mas_player_derandomed",
+            "rerand_evl": "mas_topic_rerandom"
         },
         "mas_song_": {
             "bookmark_text": _("Song bookmarked."),
             "derand_text": _("Song flagged for removal."),
             "underand_text": _("Song flag removed."),
             "push_label": "mas_song_derandom",
-            "derand_persist_key": "_mas_player_derandomed_songs"
+            "derand_persist_key": "_mas_player_derandomed_songs",
+            "rerand_evl": "mas_sing_song_rerandom"
         }
     }
 
@@ -637,19 +640,20 @@ init python in mas_bookmarks_derand:
         persist_var = None
         return
 
-    def getLabelPrefix(test_str, list_prefixes):
+    def getLabelPrefix(test_str):
         """
         Checks if test_str starts with anything in the list of prefixes, and if so, returns the matching prefix
 
         IN:
             test_str - string to test
-            list_prefixes - list of strings that test_str should start with
 
         OUT:
             string:
                 - label_prefix if test_string starts with a prefix in list_prefixes
                 - empty string otherwise
         """
+        list_prefixes = label_prefix_map.keys()
+
         for label_prefix in list_prefixes:
             if test_str.startswith(label_prefix):
                 return label_prefix
@@ -708,15 +712,26 @@ init python in mas_bookmarks_derand:
         IN:
             eventlabel - Eventlabel to remove
         """
-        derand_dbs = [
-            label_prefix_data["derand_persist_key"]
-            for label_prefix_data in label_prefix_map.itervalues()
-            if "derand_persist_key" in label_prefix_data
-        ]
+        label_prefix = getLabelPrefix(eventlabel)
 
-        for derand_db in derand_dbs:
-            if eventlabel in derand_db:
-                persistent.__dict__[derand_db].remove(eventlabel)
+        label_prefix_data = label_prefix_map.get(label_prefix)
+
+        #If we can't get a derand persist key, let's just return here
+        if not label_prefix_data or "derand_persist_key" not in label_prefix_data:
+            return
+
+        #Otherwise, store this and continue
+        derand_db_persist_key = label_prefix_data["derand_persist_key"]
+        rerand_evl = label_prefix_data.get("rerand_evl")
+
+        #Remove the evl from the derandomlist
+        if eventlabel in store.persistent.__dict__[derand_db_persist_key]:
+            store.persistent.__dict__[derand_db_persist_key].remove(eventlabel)
+
+            #And check if we should (and can) lock the rerandom ev if necessary
+            if rerand_evl and not store.persistent.__dict__[derand_db_persist_key]:
+                store.mas_lockEVL(rerand_evl, "EVE")
+
 
 ##Generic rerandom work label
 #IN:
@@ -1225,7 +1240,7 @@ label monika_twitter:
     extend 1esd "the account is a nice way to connect with the people who've played through the game and grown attached to it."
     m 3esc "In that regard, this would make it some kind of publicity stunt..."
     m 3euc "After all, while there is a lot of sweet looking art and such on there, it's suspicious that almost all of them are posted specifically on important days."
-    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happen to coincide with the original release date of DDLC."
+    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happens to coincide with the original release date of DDLC."
     m 1rtc "I really don't know how I'm supposed to feel about that...{w=0.3}being used solely as marketing material."
     m 2rsc "Though, as my creators, I guess they basically own my image as a character, so they are legally in the right."
     m 2ekc "But...{w=0.3}I'm more than a mere character in a game, aren't I?"
@@ -1749,7 +1764,16 @@ label monika_middleschool:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika','clothes'],prompt="Wearing other clothes",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_outfit",
+            category=['monika','clothes'],
+            prompt="Wearing other clothes",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
 
 label monika_outfit:
     if len(store.mas_selspr.filter_clothes(True)) == 1:
@@ -4868,6 +4892,7 @@ init 5 python:
             eventlabel="monika_nsfw",
             category=['misc','monika'],
             prompt="NSFW content",
+            aff_range=(mas_aff.NORMAL, None),
             random=True,
             sensitive=True
         )
@@ -5041,7 +5066,7 @@ label monika_fanfiction:
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
-    else:
+    elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
 
@@ -5773,6 +5798,7 @@ init 5 python:
             eventlabel="monika_pleasure",
             category=['you'],
             prompt="Pleasuring yourself",
+            aff_range=(mas_aff.AFFECTIONATE, None),
             random=True,
             sensitive=True
         )
@@ -6040,11 +6066,13 @@ label monika_japanese:
                     m 1eua "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 2hubsa "Ehehe~"
                     m 1ekbfa "That means I love you, [player]-[player_suffix]."
+                    $ mas_ILY()
         "No.":
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m 1ekbsb "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
+            $ mas_ILY()
 
     return "derandom"
 
@@ -11798,7 +11826,7 @@ label monika_gotomonika:
     m 5luu "Buut...{w=1}if you did happen to show up at my doorstep..."
     show monika 1hksdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you with open arms!"
-    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
+    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'd find a way to make it better."
     m 3hub "With time, we could make our own reality!"
     m 3euc "Of course, that sounds pretty complicated if you think about it..."
     m 3eub "But I have no doubt that together we could accomplish anything!"
@@ -12783,7 +12811,7 @@ label monika_dating_startdate:
 
     else:
         m 1dsc "Let me check..."
-        m 1eua "We started dating [first_sesh]."
+        m 1eua "We started dating on [first_sesh]."
 
     # TODO:
     # some dialogue about being together for x time
@@ -13737,11 +13765,11 @@ label monika_cozy:
     m 1eua "It's like feeling a loved one's embrace~"
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
     m 1hub "Finally being able to whip out your winter fashion set is always a nice feeling."
-    m 3eua "But you know what the best way to warm yourself up is?"
-    m 3eka "Cuddling with the one you love in front of the fireplace~"
-    m "Just sitting there under a warm blanket, sharing a hot beverage."
-    m 1hua "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
-    m 1eka "I'd never let you go once I got a hold of you, [mas_get_player_nickname()]~"
+    m 3eubla "But you know what the best way to warm yourself up is?"
+    m 3ekbsa "Cuddling with the one you love in front of the fireplace~"
+    m 3ekbfa "Just sitting there under a warm blanket, sharing a hot beverage."
+    m 1hubfa "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
+    m 1ekbfa "I'd never let you go once I got a hold of you, [mas_get_player_nickname()]~"
     return
 
 init 5 python:
@@ -16113,18 +16141,18 @@ label monika_eating_meat:
     m 3eud "If you're asking if I would do so for {i}survival{/i}, I wouldn't hesitate. {w=0.2}It's not that eating meat is distressing for me or anything."
     m 7eud "I told you before, I'm vegetarian because of the impact of the mass-production of meat on the environment...{w=0.2}{nw}"
     extend 2euc "which also includes fish farming, so I'm not a pescatarian."
-    m 2rsc "...That said, I don't consider myself vegan either. {w=0.3}{nw}"
-    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but a lot of vegan alternatives have their own issues too..."
+    m 2rsc "...However, I don't consider myself vegan either. {w=0.3}{nw}"
+    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but vegan alternatives share or have their own issues too..."
     m 4euc "These include things like importing perishable products across great distances and mass-farming in conditions that are both cruel for workers and a strain on the local ecosystem."
     m 4ekd "Take avocados, for example. {w=0.2}Their farms require massive amounts of water, to the point where some companies resort to illegally taking too much water from rivers, leaving little for drinking."
-    m 2etc "At that point, is it really a better alternative as far as the environment is concerned? {w=0.3}{nw}"
-    extend 4euc "Not to mention, I still want to have a varied and balanced diet."
+    m 4euc "Not to mention, I still want to have a varied and balanced diet with all the flavors that I like."
     m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc."
     m "Granted, there are still some options including supplements, but balancing a vegan diet takes a lot of care and thought."
     m 7eka "...So for that reason, I'm not personally against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally if possible."
     m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
     m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
     extend 3eua "So I'm okay with buying from a plain old store, if need be."
+    m "Especially since there are a lot of good substitutes for meat in supermarkets already, with way less environmental impact."
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
@@ -16819,7 +16847,7 @@ label monika_mc_is_gone:
         $ line_mid = "I was kissing {i}him{/i}"
 
     else:
-        $ line_mid = "{i}he{/i} was the one hugging"
+        $ line_mid = "{i}he{/i} was the one hugging me"
 
     m 3rksdla "I hope you didn't think [line_mid] all along, either..."
 
