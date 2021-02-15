@@ -111,7 +111,7 @@ init -1 python in mas_farewells:
             return False
 
         #Conditional check (Since it's ideally least likely to be used)
-        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
+        if not ev.checkConditional():
             return False
 
         # otherwise, we passed all tests

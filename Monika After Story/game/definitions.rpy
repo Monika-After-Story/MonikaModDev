@@ -519,6 +519,11 @@ python early:
         # NOTE: action code should be callable on a given event object
         ACTION_MAP = dict()
 
+        # Conditional cache
+        # A map from conditional string to compiled code objects
+        # (speeds up event checks)
+        _conditional_cache = dict()
+
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
         def __init__(self,
@@ -707,22 +712,52 @@ python early:
             # setup lock entry
             Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
 
+            # Cache conditional
+            if self.conditional is not None and self.conditional not in Event._conditional_cache:
+                Event._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
 
-        # equality override
         def __eq__(self, other):
+            """
+            Equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             if isinstance(self, other.__class__):
                 return self.eventlabel == other.eventlabel
             return False
 
-        # equality override
         def __ne__(self, other):
+            """
+            Non-equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             return not self.__eq__(other)
 
-        # set attr overrride
         def __setattr__(self, name, value):
-            #
-            # Override of setattr so we can do cool things
-            #
+            """
+            Override of setattr so we can do cool things
+
+            IN:
+                name - the name of the prop to change (str)
+                value - the new value
+            """
+            # Special handling for the conditional property
+            if (
+                name == "conditional"
+                and value is not None
+                and value not in Event._conditional_cache
+            ):
+                Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
+
             if name in self.N_EVENT_NAMES:
                 super(Event, self).__setattr__(name, value)
 #                self.__dict__[name] = value
@@ -842,6 +877,31 @@ python early:
             # otheerwise check the range
             low, high = self.aff_range
             return store.mas_affection._betweenAff(low, aff_level, high)
+
+        def checkConditional(self, globals=None, locals=None):
+            """
+            Checks conditional of this event
+
+            IN:
+                globals - global scope for eval. If None, the base store is used.
+                    (Default: None)
+                locals - local scope for eval. If None, set to globals.
+                    (Default: None)
+
+            OUT:
+                boolean:
+                    True if passed, False if not
+            """
+            if self.conditional is None:
+                return True
+
+            if globals is None:
+                globals = renpy.store.__dict__
+
+            if locals is None:
+                locals = globals
+
+            return eval(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
 
         def canRepeat(self):
             """
@@ -972,13 +1032,34 @@ python early:
             """
             self.flags &= ~flags
 
+        @classmethod
+        def validateConditionals(cls):
+            """
+            A method to validate conditionals
+
+            ASSUMES:
+                mas_all_ev_db
+            """
+            for ev in mas_all_ev_db.itervalues():
+                if ev.conditional is not None:
+                    try:
+                        eval(cls._conditional_cache[ev.conditional], globals=renpy.store.__dict__, locals=renpy.store.__dict__)
+
+                    except Exception as e:
+                        raise EventException(
+                            "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
+                                ev.conditional,
+                                ev.eventlabel,
+                                e
+                            )
+                        )
+
         @staticmethod
         def getSortPrompt(ev):
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return renpy.substitute(ev.prompt).lower()
-
 
         @staticmethod
         def getSortShownCount(ev):
@@ -1670,7 +1751,7 @@ python early:
                 return False
 
             # now check conditional, if needed
-            if ev.conditional is not None and not eval(ev.conditional):
+            if not ev.checkConditional():
                 return False
 
             # check if valid action
