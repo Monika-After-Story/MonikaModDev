@@ -2042,6 +2042,8 @@ label ch30_reset:
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
 
+    #set MAS window global
+    $ mas_windowutils._setMASWindow()
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
