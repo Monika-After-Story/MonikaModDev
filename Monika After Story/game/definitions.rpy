@@ -358,7 +358,7 @@ python early:
         def __init__(self, _msg):
             self.msg = _msg
         def __str__(self):
-            return "EventError: " + self.msg
+            return self.msg
 
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
@@ -750,14 +750,6 @@ python early:
                 name - the name of the prop to change (str)
                 value - the new value
             """
-            # Special handling for the conditional property
-            if (
-                name == "conditional"
-                and value is not None
-                and value not in Event._conditional_cache
-            ):
-                Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
-
             if name in self.N_EVENT_NAMES:
                 super(Event, self).__setattr__(name, value)
 #                self.__dict__[name] = value
@@ -789,6 +781,14 @@ python early:
                         # nullify bad date types
                         if type(value) is not datetime.datetime:
                             value = None
+
+                    # If we are setting a conditional, we may need to compile it
+                    elif (
+                        name == "conditional"
+                        and value is not None
+                        and value not in Event._conditional_cache
+                    ):
+                        Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -895,13 +895,7 @@ python early:
             if self.conditional is None:
                 return True
 
-            if globals is None:
-                globals = renpy.store.__dict__
-
-            if locals is None:
-                locals = globals
-
-            return eval(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
+            return renpy.python.py_eval_bytecode(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
 
         def canRepeat(self):
             """
@@ -1043,14 +1037,14 @@ python early:
             for ev in mas_all_ev_db.itervalues():
                 if ev.conditional is not None:
                     try:
-                        eval(cls._conditional_cache[ev.conditional], globals=renpy.store.__dict__, locals=renpy.store.__dict__)
+                        renpy.python.py_eval_bytecode(cls._conditional_cache[ev.conditional])
 
                     except Exception as e:
                         raise EventException(
                             "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
                                 ev.conditional,
                                 ev.eventlabel,
-                                e
+                                traceback.format_exc()
                             )
                         )
 
