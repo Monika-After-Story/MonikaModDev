@@ -459,6 +459,9 @@ init 25 python in mas_ui:
         if only_seen and ev.shown_count == 0:
             return False
 
+        if not search_query:
+            return True
+
         # This is so we can interrup the loop early
         for search_kw in search_kws:
             if (
@@ -563,10 +566,11 @@ init 25 python in mas_ui:
         search_query = search_query.strip()
         search_kws = search_query.split()
 
-        flt_evs = filter(
-            lambda ev: _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen),
-            TWOPANE_MENU_SEARCH_DBS
-        )
+        flt_evs = [
+            ev
+            for ev in TWOPANE_MENU_SEARCH_DBS
+            if _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen)
+        ]
         flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
 
         return flt_evs[0:TWOPANE_MENU_MAX_FLT_ITEMS]
@@ -688,10 +692,11 @@ init 25 python in mas_ui:
         search_query = search_query.lower().strip()
         search_kws = search_query.split()
 
-        flt_items = filter(
-            lambda item: _selector_filter_items(item, search_query, search_kws),
-            items
-        )
+        flt_items = [
+            item
+            for item in items
+            if _selector_filter_items(item, search_query, search_kws)
+        ]
         flt_items.sort(key=lambda item: _selector_sort_items(item, search_query, search_kws), reverse=True)
 
         return flt_items
