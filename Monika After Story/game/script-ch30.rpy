@@ -447,8 +447,9 @@ init python:
                 show -> right before dialogue is shown
                 show_done -> right after dialogue is shown
                 slow_done -> called after text finishes showing
-                    May happen after "end"
                 end -> end of dialogue (user has interacted)
+                    NOTE: dismiss needs to be possible for end to be reached
+                        when mouse is clicked after an interaction ends.
         """
         # skip check
         # if config.skipping and not config.developer:
@@ -458,7 +459,7 @@ init python:
         #     renpy.jump("ch30_noskip")
         #     return
 
-        if event == "begin":
+        if event == "show":
             store.mas_hotkeys.allow_dismiss = False
 #            config.keymap['dismiss'] = []
 #            renpy.display.behavior.clear_keymap_cache()
