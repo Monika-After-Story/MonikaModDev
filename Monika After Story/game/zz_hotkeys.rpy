@@ -234,6 +234,17 @@ init python:
         ):
             store.mas_background.buildupdate()
 
+        # dismiss last text if ui changed
+        if (
+                store.mas_settings.ui_changed
+                and store.mas_core._last_text is not None
+        ):
+            store.mas_core._last_text.call_slow_done(0)
+
+        # reset these vars so we don't run weird shit
+        store.mas_settings.ui_changed = False
+        store.mas_core._last_text = None
+
 
     def _mas_game_menu():
         """
