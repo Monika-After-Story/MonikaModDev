@@ -459,13 +459,13 @@ init python:
         #     renpy.jump("ch30_noskip")
         #     return
 
-        if event == "show":
-            store.mas_hotkeys.allow_dismiss = False
+        if event == "show" or event == "begin":
+            store.mas_hotkeys.set_dismiss(False)
 #            config.keymap['dismiss'] = []
 #            renpy.display.behavior.clear_keymap_cache()
 
         elif event == "slow_done":
-            store.mas_hotkeys.allow_dismiss = True
+            store.mas_hotkeys.set_dismiss(True)
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
