@@ -327,7 +327,8 @@ init 10 python:
         late_updates = [
             "v0_8_3",
             "v0_8_4",
-            "v0_8_10"
+            "v0_8_10",
+            "v0_12_0",
         ]
 
         store.mas_versions.init()
@@ -372,13 +373,44 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-# 0.11.9.4
-label v0_11_9_4(version="v0_11_9_4"):
+
+# 0.12.0.1
+label v0_12_0_1(version="v0_12_0_1"):
     python:
-        #Reset annis as F29 based ones are on the wrong date
-        first_sesh = mas_getFirstSesh()
-        if first_sesh.month == 2 and first_sesh.day == 29:
-            mas_anni.reset_annis(first_sesh)
+        pass
+    return
+
+# 0.12.0
+label v0_12_0(version="v0_12_0"):
+    python:
+        mas_setEVLPropValues(
+            "mas_d25_monika_holiday_intro_upset",
+            end_date=mas_d25
+        )
+
+        mas_setEVLPropValues(
+            "mas_d25_monika_christmas",
+            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
+        )
+
+        mas_setEVLPropValues(
+            "mas_nye_monika_nye_dress_intro",
+            conditional="persistent._mas_d25_in_d25_mode",
+            action=EV_ACT_PUSH
+        )
+
+        mas_setEVLPropValues(
+            "mas_pf14_monika_lovey_dovey",
+            random=False,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14
+        )
+
+        # enable late updates to fix the annis again
+        persistent._mas_zz_lupd_ex_v.append(version)
+
     return
 
 # 0.11.9.3
@@ -433,7 +465,6 @@ label v0_11_9_1(version="v0_11_9_1"):
 
         if seen_event("monika_asimov_three_laws"):
             mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
-
     return
 
 # 0.11.9
@@ -2816,6 +2847,15 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_0:
+    python:
+        #Reset annis as F29 based ones are on the wrong date
+        first_sesh = mas_getFirstSesh()
+        if first_sesh.month == 2 and first_sesh.day == 29:
+            mas_anni.reset_annis(first_sesh)
+
+    return
+
 label mas_lupd_v0_8_10:
     python:
         import store.mas_selspr as mas_selspr

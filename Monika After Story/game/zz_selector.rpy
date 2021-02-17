@@ -848,7 +848,7 @@ init -10 python in mas_selspr:
             remover
         )
         ACS_SEL_MAP[acs.name] = new_sel_acs
-        store.mas_insertSort(ACS_SEL_SL, new_sel_acs, selectable_key)
+        store.mas_utils.insert_sort(ACS_SEL_SL, new_sel_acs, selectable_key)
 
 
     def init_selectable_clothes(
@@ -897,7 +897,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
-        store.mas_insertSort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
+        store.mas_utils.insert_sort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
 
 
     def init_selectable_hair(
@@ -944,7 +944,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         HAIR_SEL_MAP[hair.name] = new_sel_hair
-        store.mas_insertSort(HAIR_SEL_SL, new_sel_hair, selectable_key)
+        store.mas_utils.insert_sort(HAIR_SEL_SL, new_sel_hair, selectable_key)
 
 
     ## adjust an aspect of monika.
@@ -3501,7 +3501,7 @@ label monika_clothes_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     if mas_isMoniLove():
@@ -3648,7 +3648,7 @@ label monika_hair_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
