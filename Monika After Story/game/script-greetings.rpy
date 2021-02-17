@@ -4227,16 +4227,13 @@ label greeting_spacing_out:
 
         # Make the events which will change exps
         for i in range(random.randint(4, 6)):
-            # right_smug, left_smug = left_smug, right_smug
-            td = datetime.timedelta(seconds=next_event_time)
-            next_event_time += random.uniform(0.9, 1.8)
             events.append(
                 PauseDisplayableEvent(
-                    td,
-                    # (right_smug, renpy.restart_interaction)
+                    datetime.timedelta(seconds=next_event_time),
                     right_smug if use_right_smug else left_smug
                 )
             )
+            next_event_time += random.uniform(0.9, 1.8)
             use_right_smug = not use_right_smug
         # The last exp in the sequence
         events.append(
