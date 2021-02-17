@@ -243,7 +243,7 @@ init python in mas_windowutils:
             return None
 
     #Next, the active window handle getters
-    def _getActiveWindow_Windows(friendly):
+    def _getActiveWindowHandle_Windows(friendly):
         """
         Funtion to get the active window on Windows systems
 
@@ -259,9 +259,9 @@ init python in mas_windowutils:
         if friendly:
             return window_handle
         else:
-            return window_handle.lower().replace(" ","")
+            return window_handle.replace(" ","")
 
-    def _getActiveWindow_Linux(friendly):
+    def _getActiveWindowHandle_Linux(friendly):
         """
         Funtion to get the active window on Linux systems
 
@@ -288,7 +288,7 @@ init python in mas_windowutils:
                 return (
                     active_winname.replace("\n", "")
                     if friendly
-                    else active_winname.lower().replace(" ", "").replace("\n", "")
+                    else active_winname.replace(" ", "").replace("\n", "")
                 )
 
             else:
@@ -537,14 +537,14 @@ init python in mas_windowutils:
 
     #Finally, we set vars accordingly to use the appropriate functions without needing to run constant runtime checks
     if renpy.windows:
-        _window_get = _getActiveWindow_Windows
+        _window_get = _getActiveWindowHandle_Windows
         _tryShowNotif = _tryShowNotification_Windows
         getMASWindowPos = _getMASWindowPos_Windows
         getMousePos = _getAbsoluteMousePos_Windows
 
     else:
         if renpy.linux:
-            _window_get = _getActiveWindow_Linux
+            _window_get = _getActiveWindowHandle_Linux
             _tryShowNotif = _tryShowNotification_Linux
             getMASWindowPos = _getMASWindowPos_Linux
             getMousePos = _getAbsoluteMousePos_Linux
@@ -696,7 +696,7 @@ init python:
         if active_window_handle is None:
             active_window_handle = mas_getActiveWindow()
 
-        return bool(re.findall(regexp, active_window_handle))
+        return bool(re.findall(regexp, active_window_handle, re.IGNORECASE))
 
     def mas_clearNotifs():
         """
