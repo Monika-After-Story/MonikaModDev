@@ -393,10 +393,10 @@ init 25 python in mas_ui:
     TWOPANE_MENU_MAX_FLT_ITEMS = 50
     TWOPANE_MENU_SEARCH_DBS = (
         store.mas_all_ev_db_map["EVE"].values()
-        + store.mas_all_ev_db_map["BYE"].values()
-        + store.mas_all_ev_db_map["STY"].values()
+        # + store.mas_all_ev_db_map["BYE"].values()
+        # + store.mas_all_ev_db_map["STY"].values()
         + store.mas_all_ev_db_map["CMP"].values()
-        + store.mas_all_ev_db_map["SNG"].values()
+        # + store.mas_all_ev_db_map["SNG"].values()
     )
     TWOPANE_MENU_DELEGATES_CALLBACK_MAP = {
         "mas_compliment_": store.mas_compliments.compliment_delegate_callback
