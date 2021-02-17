@@ -386,9 +386,6 @@ init python:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
         """
-        # hide the existing mask
-        renpy.hide("rm")
-
         # get current weather masks
         mask = mas_current_weather.get_mask()
 
@@ -816,10 +813,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         day_mode = mas_current_background.isFltDay()
 
-    if scene_change:
-        scene black
+        if hide_mask:
+            renpy.hide("rm")
 
-    python:
+        if hide_calendar:
+            mas_calHideOverlay()
+
         monika_room = None
 
         if scene_change:
@@ -836,6 +835,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
             if show_emptydesk:
                 store.mas_sprites.show_empty_desk()
 
+            renpy.hide("monika")
+
         else:
             if force_exp is None:
                 force_exp = "monika idle"
@@ -846,7 +847,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+                renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
                     renpy.with_statement(None)

@@ -8127,8 +8127,7 @@ python early:
                     self.dissolve = None
                     self.dissolve_duration = 0.0
                     self.redraw_st = self.current_exp.select_duration()
-                    render_st = self.current_st
-                    redraw_time = 0.0
+                    redraw_time = self.redraw_st
 
                 # The current exp has expired, we need to select a new one
                 else:
@@ -8144,8 +8143,7 @@ python early:
                         )
                         self.dissolve_duration = MASMoniIdleDisp.SLOW_DISSOLVE
                         self.redraw_st = MASMoniIdleDisp.SLOW_DISSOLVE# self.current_st + MASMoniIdleDisp.SLOW_DISSOLVE
-                        render_st = 0.0# self.dissolve_duration - (self.redraw_st - self.current_st)
-                        redraw_time = 0.0
+                        redraw_time = self.redraw_st
 
                     # Different exp? Dissolve
                     elif not self._skip_dissolve and next_exp.code != self.current_exp.code:
@@ -8157,8 +8155,7 @@ python early:
                         )
                         self.dissolve_duration = MASMoniIdleDisp.QUICK_DISSOLVE
                         self.redraw_st = MASMoniIdleDisp.QUICK_DISSOLVE# self.current_st + MASMoniIdleDisp.QUICK_DISSOLVE
-                        render_st = 0.0# self.dissolve_duration - (self.redraw_st - self.current_st)
-                        redraw_time = 0.0
+                        redraw_time = self.redraw_st
 
                     # Otherwise we don't need to dissolve since the exp is the same (or we decided to skip dissolve in/out)
                     else:
@@ -8166,7 +8163,6 @@ python early:
                         self.dissolve_duration = 0.0
                         self._skip_dissolve = False
                         self.redraw_st = next_exp.select_duration()
-                        render_st = self.current_st
                         redraw_time = self.redraw_st
 
                     # Now we can set the current exp
@@ -8176,12 +8172,10 @@ python early:
             else:
                 # If we're dissolving, we continue
                 if self.dissolve is not None:
-                    render_st = self.dissolve_duration - (self.redraw_st - self.current_st)
-                    redraw_time = 0.0
+                    redraw_time = self.redraw_st - self.current_st
 
                 # Otherwise wait 'til next exp
                 else:
-                    render_st = self.current_st
                     redraw_time = self.redraw_st - self.current_st
 
             # If we're dissolving, we render the transform
@@ -8192,7 +8186,7 @@ python early:
             else:
                 img = self.current_exp.ref
 
-            img_render = renpy.render(img, width, height, render_st, at)
+            img_render = renpy.render(img, width, height, self.current_st, at)
 
             main_render = renpy.Render(img_render.width, img_render.height)
             # main_render.place(img, x=0, y=0, st=render_st)
@@ -8320,7 +8314,7 @@ python early:
 
             self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
             self.closed_eyes_img = renpy.display.image.ImageReference(closed_eyes_img)
-            self.current_img = self.closed_eyes_img
+            self.current_img = self.open_eyes_img
             self.transform_map = {
                 MASMoniBlinkTransform.STEP_START: renpy.display.transition.Dissolve(
                     time=MASMoniBlinkTransform.STEP_START_DIS_DUR,
@@ -8401,7 +8395,7 @@ python early:
                     self.redraw_st = random.uniform(MASMoniBlinkTransform.STEP_DB_END_DUR_MIN, MASMoniBlinkTransform.STEP_DB_END_DUR_MAX)
                     self.next_step = MASMoniBlinkTransform.STEP_START
 
-                redraw_time = 0.0
+                redraw_time = self.redraw_st
 
             else:
                 redraw_time = self.redraw_st - self.current_st
@@ -8590,7 +8584,7 @@ python early:
 
             self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
             self.closed_eyes_img = renpy.display.image.ImageReference(closed_eyes_img)
-            self.current_img = self.closed_eyes_img
+            self.current_img = self.open_eyes_img
             self.transform_map = {
                 MASMoniTearsTransform.STEP_START: renpy.display.transition.Dissolve(
                     time=MASMoniBlinkTransform.STEP_START_DIS_DUR,
@@ -8638,7 +8632,7 @@ python early:
                     self.redraw_st = random.uniform(MASMoniTearsTransform.STEP_END_DUR_MIN, MASMoniTearsTransform.STEP_END_DUR_MAX)
                     self.next_step = MASMoniTearsTransform.STEP_START
 
-                redraw_time = 0.0
+                redraw_time = self.redraw_st
 
             else:
                 redraw_time = self.redraw_st - self.current_st
