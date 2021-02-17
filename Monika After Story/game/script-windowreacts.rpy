@@ -86,7 +86,7 @@ label mas_wrs_wikipedia:
 
     #Items in here will get the wiki article you're looking at for reacts.
     python:
-        wind_name = mas_getActiveWindow(friendly=True)
+        wind_name = mas_getActiveWindowHandle(friendly=True)
         try:
             cutoff_index = wind_name.index(" - Wikipedia")
 

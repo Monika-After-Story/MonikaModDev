@@ -600,7 +600,7 @@ init python:
             and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
         )
 
-    def mas_getActiveWindow(friendly=False):
+    def mas_getActiveWindowHandle(friendly=False):
         """
         Gets the active window name
         IN:
@@ -615,6 +615,9 @@ init python:
         if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
             return store.mas_windowutils._window_get(friendly)
         return ""
+
+        #TODO: Remove this alias at some point
+        mas_getActiveWindow = mas_getActiveWindowHandle
 
     def mas_display_notif(title, body, group=None, skip_checks=False):
         """
@@ -665,7 +668,7 @@ init python:
             return notif_success
         return False
 
-    #Alias for depreciation
+    #TODO: Remove this at some point | Alias for depreciation
     display_notif = mas_display_notif
 
     def mas_isFocused():
@@ -673,7 +676,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.window_title
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle(True) == config.window_title
 
     def mas_isInActiveWindow(regexp, active_window_handle=None):
         """
@@ -694,7 +697,7 @@ init python:
 
         #Otherwise, let's get the active window
         if active_window_handle is None:
-            active_window_handle = mas_getActiveWindow()
+            active_window_handle = mas_getActiveWindowHandle()
 
         return bool(re.findall(regexp, active_window_handle, re.IGNORECASE))
 
@@ -715,7 +718,7 @@ init python:
         if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_show_notifs:
             return
 
-        active_window_handle = mas_getActiveWindow()
+        active_window_handle = mas_getActiveWindowHandle()
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
