@@ -3,7 +3,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pinterest",
-            category=['pinterest'],
+            category=["pinterest"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -67,7 +67,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_wikipedia",
-            category=['wikipedia'],
+            category=["wikipedia"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -117,7 +117,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_virtualpiano",
-            category=["virtual", "piano"],
+            category=["^virtualpiano"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -153,7 +153,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_youtube",
-            category=['youtube'],
+            category=["youtube"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -184,34 +184,42 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
-            category=['rule34', 'monika'],
-            rules={"skip alert": None},
+            category=["((r34|rule34).+monika)|(post[\d\w:_]+monika)"],
+            rules={"skip alert": None, "notif-group": "Window Reactions"},
             show_in_idle=True
         ),
         code="WRS"
     )
 
 label mas_wrs_r34m:
-    $ mas_display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
+    python:
+        mas_display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
-    $ choice = random.randint(1,10)
-    if choice == 1:
-        $ queueEvent('monika_nsfw')
+        choice = random.randint(1,10)
 
-    elif choice == 2:
-        $ queueEvent('monika_pleasure')
+        if choice == 1:
+            queueEvent('monika_nsfw')
 
-    elif choice < 4:
-        show monika 1rsbssdlu
-        pause 5.0
+        elif choice == 2:
+            queueEvent('monika_pleasure')
 
-    elif choice < 7:
-        show monika 2tuu
-        pause 5.0
+        else:
+            if mas_isMoniEnamored(higher=True):
+                if choice < 4:
+                    exp_to_force = "1rsbssdlu"
+                elif choice < 7:
+                    exp_to_force = "2tuu"
+                else:
+                    exp_to_force = "2ttu"
+            else:
+                if choice < 4:
+                    exp_to_force = "1rksdlc"
+                elif choice < 7:
+                    exp_to_force = "2rssdlc"
+                else:
+                    exp_to_force = "2tssdlc"
 
-    else:
-        show monika 2ttu
-        pause 5.0
+            mas_moni_idle_disp.force_by_code(exp_to_force)
     return
 
 init 5 python:
@@ -219,7 +227,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_monikamoddev",
-            category=['monikamoddev'],
+            category=["monikamoddev"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -250,7 +258,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitter",
-            category=['twitter'],
+            category=["twitter"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -289,40 +297,8 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_monikatwitter",
-            category=['twitter', 'lilmonix3'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None
-            },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_monikatwitter:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-            "Are you here to confess your love for me to the entire world, [player]?",
-            "You're not spying on me, are you?\nAhaha, just kidding~",
-            "I don't care how many followers I have as long as I have you~"
-        ],
-        'Window Reactions'
-    )
-
-    #Unlock again if we failed
-    if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_4chan",
-            category=['4chan'],
+            category=["4chan"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -356,7 +332,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pixiv",
-            category=['pixiv'],
+            category=["pixiv"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -404,7 +380,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_reddit",
-            category=['reddit'],
+            category=["reddit"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -436,7 +412,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_mal",
-            category=['myanimelist'],
+            category=["myanimelist"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -469,7 +445,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_deviantart",
-            category=['deviantart'],
+            category=["deviantart"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -500,7 +476,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_netflix",
-            category=['netflix'],
+            category=["netflix"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -532,7 +508,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitch",
-            category=['-twitch'],
+            category=["-twitch"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,

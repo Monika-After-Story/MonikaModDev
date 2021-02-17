@@ -675,16 +675,17 @@ init python:
         #TODO: Mac vers (if possible)
         return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.window_title
 
-    def mas_isInActiveWindow(keywords, non_inclusive=False):
+    def mas_isInActiveWindow(regexp, active_window_handle=None):
         """
         Checks if ALL keywords are in the active window name
         IN:
-            keywords:
-                List of keywords to check for
+            regexp:
+                Regex pattern to identify the window
 
-            non_inclusive:
-                Whether or the not the list is checked non-inclusively
-                (Default: False)
+            active_window_handle:
+                String representing the handle of the active window
+                If None, it's fetched
+                (Default: None)
         """
 
         #Don't do work if we don't have to
@@ -692,12 +693,10 @@ init python:
             return False
 
         #Otherwise, let's get the active window
-        active_window = mas_getActiveWindow()
+        if active_window_handle is None:
+            active_window_handle = mas_getActiveWindow()
 
-        if non_inclusive:
-            return len([s for s in keywords if s.lower() in active_window]) > 0
-        else:
-            return len([s for s in keywords if s.lower() not in active_window]) == 0
+        return bool(re.findall(regexp, active_window_handle))
 
     def mas_clearNotifs():
         """
@@ -716,10 +715,11 @@ init python:
         if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_show_notifs:
             return
 
+        active_window_handle = mas_getActiveWindow()
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
-                and mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules)
+                and mas_isInActiveWindow(mas_getEVLPropValue(ev_label, "category", [""])[0], active_window_handle)
                 and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
             ):

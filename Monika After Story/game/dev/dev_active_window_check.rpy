@@ -13,7 +13,7 @@ init 5 python:
 
 label monika_check_window:
     m 1hub "Okay, [player]!"
-    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}."
+    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}.{nw}"
 
     pause 2.0
 
