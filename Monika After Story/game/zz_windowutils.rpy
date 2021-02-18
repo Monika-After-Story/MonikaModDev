@@ -247,26 +247,17 @@ init python in mas_windowutils:
         """
         Funtion to get the active window on Windows systems
 
-        IN:
-            friendly - Whether or not we want the active window handle in a usable format
-
         OUT:
             string representing the active window handle
 
         ASSUMES: OS IS WINDOWS (renpy.windows)
         """
         window_handle = GetWindowText(GetForegroundWindow())
-        if friendly:
-            return window_handle
-        else:
-            return window_handle.replace(" ","")
+        return window_handle
 
-    def _getActiveWindowHandle_Linux(friendly):
+    def _getActiveWindowHandle_Linux():
         """
         Funtion to get the active window on Linux systems
-
-        IN:
-            friendly - Whether or not we want the active window handle in a usable format
 
         OUT:
             string representing the active window handle
@@ -285,11 +276,7 @@ init python in mas_windowutils:
 
             if active_winname_prop is not None:
                 active_winname = unicode(active_winname_prop.value)
-                return (
-                    active_winname.replace("\n", "")
-                    if friendly
-                    else active_winname.replace(" ", "").replace("\n", "")
-                )
+                return active_winname.replace("\n", "")
 
             else:
                 return ""
@@ -297,12 +284,9 @@ init python in mas_windowutils:
         except BadWindow:
             return ""
 
-    def _getActiveWindow_OSX(friendly):
+    def _getActiveWindowHandle_OSX():
         """
         Gets the active window on macOS
-
-        IN:
-            friendly - Whether or not we want the output in a usable state
 
         NOTE: This currently just returns an empty string, this is because we do not have active window detection
         for MacOS
@@ -552,7 +536,7 @@ init python in mas_windowutils:
             #We'll store an internal ref of the mas window here
             MAS_WINDOW = __getMASWindowLinux()
         else:
-            _window_get = _getActiveWindow_OSX
+            _window_get = _getActiveWindowHandle_OSX
             _tryShowNotif = _tryShowNotification_OSX
 
             #Because we have no method of testing on Mac, we'll use the dummy function for these
@@ -600,12 +584,9 @@ init python:
             and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
         )
 
-    def mas_getActiveWindowHandle(friendly=False):
+    def mas_getActiveWindowHandle():
         """
         Gets the active window name
-        IN:
-            friendly: whether or not the active window name is returned in a state usable by the user
-                (Default: False)
 
         OUT:
             The active window handle if found. If it is not possible to get, we return an empty string
@@ -613,7 +594,7 @@ init python:
         NOTE: THIS SHOULD NEVER RETURN NONE
         """
         if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
-            return store.mas_windowutils._window_get(friendly)
+            return store.mas_windowutils._window_get()
         return ""
 
         #TODO: Remove this alias at some point
@@ -676,7 +657,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle(True) == config.window_title
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == config.window_title
 
     def mas_isInActiveWindow(regexp, active_window_handle=None):
         """
@@ -699,7 +680,7 @@ init python:
         if active_window_handle is None:
             active_window_handle = mas_getActiveWindowHandle()
 
-        return bool(re.findall(regexp, active_window_handle, re.IGNORECASE))
+        return bool(re.findall(regexp, active_window_handle))
 
     def mas_clearNotifs():
         """
