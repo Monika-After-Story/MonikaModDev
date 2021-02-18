@@ -219,7 +219,7 @@ label mas_wrs_r34m:
                 else:
                     exp_to_force = "2tssdlc"
 
-            mas_moni_idle_disp.force_by_code(exp_to_force)
+            mas_moni_idle_disp.force_by_code(exp_to_force, duration=5)
     return
 
 init 5 python:
