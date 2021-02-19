@@ -3,6 +3,20 @@ default persistent._mas_concerns = dict()
 init python:
     class Concern:
         def __init__(self, *args):
+            """
+            Constructs a new instance of Concern.
+
+            IN:
+                _dict - dictionary or dict-like object containing object field values.
+
+                ... or ...
+
+                value - value of this concern object.
+                expire - datetime object representing the instant of this concern object expiration.
+
+            OUT:
+                Instance of Concern.
+            """
             if len(args) == 0:
                 self._value = None
                 self._expire = None
@@ -21,6 +35,12 @@ init python:
 
 
         def has_expired(self):
+            """
+            Performs a concern expiration check.
+
+            OUT:
+                True if this concern object has expired, False otherwise.
+            """
             if self._expire is not None:
                 return datetime.datetime.now() >= self._expire
             else:
@@ -28,6 +48,17 @@ init python:
 
 
         def is_concerned(self, threshold):
+            """
+            Performs a concern value check.
+
+            IN:
+                threshold - concern value greater than or equal to this value
+                    will make this concern object 'concerning.'
+
+            OUT:
+                True if this concern object has value greather than
+                    or equal to threshold, False otherwise.
+            """
             if self._value is not None:
                 return self._value >= threshold
             else:
@@ -35,10 +66,23 @@ init python:
 
 
         def to_dict(self):
+            """
+            Converts this object into a dictionary.
+
+            OUT:
+                Dictionary representation of this concern object.
+            """
             return dict(value=self._value, expire=self._expire)
 
 
     def mas_setConcern(_type, concern):
+        """
+        Saves concern object to persistent storage.
+
+        IN:
+            _type - concern type (name.)
+            concern - concern object.
+        """
         if concern is not None:
             persistent._mas_concerns[_type] = concern
         else:
@@ -46,6 +90,15 @@ init python:
 
 
     def mas_getConcern(_type):
+        """
+        Retrieves concern object from persistent storage.
+
+        IN:
+            _type - concern type (name.)
+
+        OUT:
+            Concern object with the given type.
+        """
         concern_dict = persistent._mas_concerns.get(_type)
         if concern_dict is not None:
             return Concern(concern_dict)
@@ -54,18 +107,52 @@ init python:
 
 
     def mas_clearConcern(_type):
+        """
+        Removed concern object from persistent storage.
+
+        IN:
+            _type - concern type (name.)
+        """
         mas_setConcern(_type, None)
 
 
     def mas_isConcerned(_type, threshold):
+        """
+        Checks if concern is 'concerning.'
+
+        IN:
+            _type - concern type (name.)
+            threshold - value to compare concern value with.
+
+        OUT:
+            True if concern with the given type has value greather or equal
+                to the specified threshold, False otherwise.
+        """
         return mas_getConcern(_type).is_concerned(threshold)
 
 
     def mas_hasConcernExpired(_type):
+        """
+        Checks if concern has expired.
+
+        IN:
+            _type - concern type (name.)
+
+        OUT:
+            True if concern with the given type has expired, False otherwise.
+        """
         return mas_getConcern(_type).has_expired()
 
 
     def mas_concern(_type, add=None, prolong=None):
+        """
+        Adds value to concern and/or prolongs it.
+
+        IN:
+            _type - concern type (name.)
+            add - value to add to this concern.
+            prolong - timedelta to prolong this concern by.
+        """
         concern = mas_getConcern(_type)
 
         if prolong is not None:
