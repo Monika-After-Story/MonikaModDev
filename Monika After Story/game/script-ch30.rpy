@@ -1335,7 +1335,7 @@ label ch30_post_exp_check:
         $ pushEvent(selected_greeting)
 
     #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=True)
+    $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
 
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
@@ -2042,6 +2042,8 @@ label ch30_reset:
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
 
+    #set MAS window global
+    $ mas_windowutils._setMASWindow()
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above

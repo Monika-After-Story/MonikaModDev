@@ -568,7 +568,7 @@ label game_chess:
 
         # if the return is no games, jump to new game
         elif _return == mas_chess.CHESS_NO_GAMES_FOUND:
-            jump .remenu
+            jump mas_chess_remenu
 
         # otherwise user has selected a save, which is the pgn game file.
         $ loaded_game = _return
@@ -634,7 +634,7 @@ label game_chess:
                 if _return is not None:
                     return
 
-            jump .remenu
+            jump mas_chess_remenu
 
         # if player did bad, then we dont do file checks anymore
         if persistent._mas_chess_skip_file_checks:
@@ -650,7 +650,8 @@ label game_chess:
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
                     do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
-                jump .start_chess
+
+                jump mas_chess_start_chess
 
         # otherwise, read the game from file
         python:
@@ -726,7 +727,7 @@ label game_chess:
                     return
 
                 # otherwise jump to new game
-                jump .remenu
+                jump mas_chess_remenu
 
         python:
             # because quicksaved_file is different form isInProgress
@@ -763,7 +764,7 @@ label game_chess:
                 return
 
             # otherwise jump to a new game
-            jump .remenu
+            jump mas_chess_remenu
 
         # otherwise we are in good hands
         else:
@@ -789,11 +790,11 @@ label game_chess:
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
             do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
-        jump .start_chess
+        jump mas_chess_start_chess
 
-    label .remenu:
-        pass
+    #FALL THROUGH
 
+label mas_chess_remenu:
     python:
         menu_contents = {
             "gamemode_select": {
@@ -876,7 +877,7 @@ label game_chess:
         $ _history_list.pop()
         $ menu_category = _return
 
-        jump .remenu
+        jump mas_chess_remenu
 
     #We changed a rule
     elif _return not in ("confirm", None):
@@ -888,7 +889,7 @@ label game_chess:
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
-            if _return == 0:
+            if _return is 0:
                 show monika at t11
                 m 1eua "If we play with casual rules, we just won't count stalemates as draws.{w=0.2} {nw}"
                 extend 3eub "Essentially, the player who is not trapped is declared the winner."
@@ -904,30 +905,27 @@ label game_chess:
         elif menu_category == "color_select":
             if _return is 0:
                 $ drew_lots = True
-                show monika at t11
-
-                if random.randint(0, 1) == 0:
-                    $ is_player_white = chess.WHITE
-                    m 2eua "Oh look, I drew black!"
-                else:
-                    $ is_player_white = chess.BLACK
-                    m 2eua "Oh look, I drew white!"
+                call mas_chess_draw_lots(False)
 
             else:
                 $ drew_lots = False
                 $ is_player_white = _return
 
-        jump .remenu
+        jump mas_chess_remenu
+
+    #To make sure we indeed draw lots as is the default, we need to run that here
+    if is_player_white is 0:
+        $ drew_lots = True
+        call mas_chess_draw_lots
+
 
     #Basically a 'pass', confirmed and we're playing the game
 
-    label .start_chess:
-        pass
-
+label mas_chess_start_chess:
     #Setup the chess FEN
     $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
 
-    #NOTE: This is a failsafe in case people jump to the .start_chess label
+    #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
         jump mas_chess_locked_no_play
 
@@ -957,9 +955,6 @@ label game_chess:
 
         # game result header
         game_result = new_pgn_game.headers["Result"]
-
-    label .chess_end:
-        pass
 
     show monika at t11
     $ mas_gainAffection(modifier=0.5)
@@ -1050,8 +1045,12 @@ label game_chess:
 
             $ undo_count = new_pgn_game.headers.get("UndoCount", 0)
             if not undo_count:
-                m 1wuo "You didn't undo a single move!"
-                m 3hub "That's amazing, [player]~"
+                m 1wuo "You didn't undo a single move!{w=0.2} {nw}"
+                extend 3hub "That's amazing!"
+
+            elif undo_count == 1:
+                m 1hua "You only undid once. {w=0.2}{nw}"
+                extend 3hub "Great job!"
 
             elif undo_count <= 5:
                 m 1hua "You only undid [undo_count] times too, great job."
@@ -1078,7 +1077,7 @@ label game_chess:
     # if you have a previous game, we are overwritting it regardless
     if loaded_game:
         call mas_chess_savegame(silent=True)
-        jump .play_again_ask
+        jump mas_chess_play_again_ask
 
     #If the player surrendered under 5 moves in, we can assume they just don't want to play anymore
     if is_surrender and num_turns < 5:
@@ -1097,9 +1096,7 @@ label game_chess:
             "No.":
                 pass
 
-    label .play_again_ask:
-        pass
-
+label mas_chess_play_again_ask:
     m 1eua "Would you like to play again?{nw}"
     $ _history_list.pop()
     menu:
@@ -1108,26 +1105,36 @@ label game_chess:
         "Yes.":
             $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
             if drew_lots:
-                if random.randint(0, 1) == 0:
-                    $ is_player_white = chess.WHITE
-                    m 2eua "Oh look, I drew black!{w=0.2} Let's begin."
-                else:
-                    $ is_player_white = chess.BLACK
-                    m 2eua "Oh look, I drew white!{w=0.2} Let's begin."
+                call mas_chess_draw_lots
 
-            jump .start_chess
+            jump mas_chess_start_chess
 
         "Yes, but with different rules.":
             $ mas_assignModifyEVLPropValue("mas_chess", "shown_count", "+=", 1)
-            jump .remenu
+            jump mas_chess_remenu
 
         "No.":
             pass
     return
 
+label mas_chess_draw_lots(begin=True):
+    show monika at t11
+    $ drew_lots = True
+    $ lets_begin = "{w=0.2} Let's begin." if begin else ""
+
+    if random.randint(0, 1) == 0:
+        $ is_player_white = chess.WHITE
+        m 2eub "Oh look, I drew black![lets_begin]"
+    else:
+        $ is_player_white = chess.BLACK
+        m 2eub "Oh look, I drew white![lets_begin]"
+    return
+
 label mas_chess_savegame(silent=False, allow_return=True):
+    #NOTE: We do this to prevent the default values from being restored here
     label .save_start:
         pass
+
     if loaded_game: # previous game exists
         python:
             new_pgn_game.headers["Event"] = loaded_game.headers["Event"]
@@ -1184,6 +1191,8 @@ label mas_chess_savegame(silent=False, allow_return=True):
                     pass
 
                 "No.":
+                    #NOTE: Since jumping back to the main label causes arg resets, we jump to a local label inside to prevent that
+                    #TODO: Jump with args
                     jump .save_start
 
     python:
@@ -1404,7 +1413,7 @@ label mas_chess_dlg_quickfile_lost:
             jump mas_chess_dlg_quickfile_lost_accident
 
         "Maybe...":
-            jump mas_chess_dlg_qf_lost_may_start
+            jump mas_chess_dlg_quickfile_lost_maybe
 
         "Of course not!":
             jump mas_chess_dlg_quickfile_lost_ofcoursenot
@@ -1456,8 +1465,10 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
             mas_loseAffection(modifier=10)
             #NOTE: Chess is automatically locked due to its conditional. No need to manually lock it here
             mas_stripEVL("mas_unlock_chess")
-            #Workaround to deal with peeople who havent seen the unlock chess label
+            #Workaround to deal with people who havent seen the unlock chess label
             persistent._seen_ever["mas_unlock_chess"] = True
+            #We use a simple value of true to establish a permanent disable
+            persistent._mas_chess_timed_disable = True
 
         m 2dfc "..."
         m 2efc "[player],{w=0.3} I don't believe you."
@@ -1476,18 +1487,18 @@ label mas_chess_dlg_quickfile_lost_ofcoursenot:
 
 
 ## maybe monika flow
-label mas_chess_dlg_qf_lost_may_start:
+label mas_chess_dlg_quickfile_lost_maybe:
     python:
         persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE] += 1
         qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE]
 
     if qf_gone_count == 1:
         m 2ekd "[player]!{w=0.2} I should have known you were just messing with me!"
-        jump mas_chess_dlg_qf_lost_may_filechecker
+        jump mas_chess_quickfile_lost_filechecker
 
     if qf_gone_count == 2:
         m 2ekd "[player]!{w=0.2} Stop messing with me!"
-        jump mas_chess_dlg_qf_lost_may_filechecker
+        jump mas_chess_quickfile_lost_filechecker
 
     else:
         $ persistent._mas_chess_skip_file_checks = True
@@ -1503,11 +1514,11 @@ label mas_chess_dlg_qf_lost_may_start:
 
 
 # maybe monika file checking parts
-label mas_chess_dlg_qf_lost_may_filechecker:
+label mas_chess_quickfile_lost_filechecker:
     $ game_file = mas_chess.loaded_game_filename
 
     if os.access(game_file, os.F_OK):
-        jump mas_chess_dlg_qf_lost_may_gen_found
+        jump mas_chess_dlg_quickfile_lost_maybe_save_found
 
     m 1eka "Can you put the save back so we can play?"
 
@@ -1521,6 +1532,8 @@ label mas_chess_dlg_qf_lost_may_filechecker:
     #FALL THROUGH
 
 label mas_chess_quickfile_lost_maybe_filechecker_loop:
+    hide screen mas_background_timed_jump
+
     #Run filechecks...
     $ file_found = os.access(game_file, os.F_OK)
 
@@ -1532,7 +1545,7 @@ label mas_chess_quickfile_lost_maybe_filechecker_loop:
         hide screen mas_background_timed_jump
         jump mas_chess_dlg_quickfile_lost_maybe_filechecker_no_file
 
-    show screen mas_background_timed_jump(4, "mas_chess_dlg_quickfile_lost_maybe_filechecker_loop")
+    show screen mas_background_timed_jump(4, "mas_chess_quickfile_lost_maybe_filechecker_loop")
     $ seconds += 4
     menu:
         "I deleted the save...":
@@ -1551,7 +1564,7 @@ label mas_chess_dlg_quickfile_lost_maybe_filechecker_no_file:
     return None
 
 # generic maybe monika, found file
-label mas_chess_dlg_qf_lost_may_gen_found:
+label mas_chess_dlg_quickfile_lost_maybe_save_found:
     m 2eua "Oh!"
     m 1hua "There's the save.{w=0.2} Thanks for putting it back, [player]."
     m 1eua "Now we can continue our game."
@@ -3285,6 +3298,55 @@ init python:
                         stdout=subprocess.PIPE,
                         startupinfo=startupinfo
                     )
+
+                #Catch the permission error
+                except OSError as os_err:
+                    if not renpy.windows:
+                        renpy.show("monika 1etsdlc", at_list=[t11])
+                        renpy.say(m, "Hmm, that's odd. It seems some permissions were changed and I can't get chess running on your system.")
+                        renpy.show("monika 3eua")
+                        renpy.say(m, "Hold on a second, [player]. I'm going to try something quickly.{w=0.3}.{w=0.3}.{w=0.3}{nw}")
+
+                        store.mas_ptod.rst_cn()
+                        local_ctx = {
+                            "basedir": renpy.config.basedir
+                        }
+                        renpy.show("monika", at_list=[t22])
+                        renpy.show_screen("mas_py_console_teaching")
+                        renpy.pause(1.0)
+                        store.mas_ptod.wx_cmd("import subprocess", local_ctx)
+                        renpy.pause(1.0)
+                        store.mas_ptod.wx_cmd("import os", local_ctx)
+                        renpy.pause(1.0)
+                        store.mas_ptod.wx_cmd(
+                            "subprocess.call(['chmod','+x', os.path.normcase(basedir + '/game/mod_assets/games/chess/stockfish_8_{0}_x64')])".format(
+                                "linux" if renpy.linux else "macosx"
+                            ),
+                            local_ctx
+                        )
+                        renpy.pause(2.0)
+
+                        renpy.hide_screen("mas_py_console_teaching")
+                        #Try again
+                        try:
+                            stockfish_proc = subprocess.Popen(
+                                os.path.join(renpy.config.gamedir, path).replace('\\', '/'),
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                startupinfo=startupinfo
+                            )
+
+                            renpy.show("monika 3hua", at_list=[t11])
+                            renpy.say(m, "Yay! We should be able to play now~")
+                            renpy.show("monika", at_list=[t21])
+                            return stockfish_proc
+
+                        #If it still doesn't work, just log it and fail out
+                        except Exception as ex:
+                            os_err = ex
+
+                    store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(os_err))
+                    renpy.jump("mas_chess_cannot_work_embarrassing")
 
                 #Basically a last resort jump. If this happens it pretty much means you launched MAS from commandline
                 except Exception as ex:

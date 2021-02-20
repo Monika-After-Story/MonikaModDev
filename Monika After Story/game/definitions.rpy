@@ -4274,12 +4274,12 @@ init -995 python in mas_utils:
         """
         Wrapper around tzlocal.get_localzone() that won't raise exceptions
 
-        NOTE: this caches the timezone. Call reload_localzone() to gurantee 
+        NOTE: this caches the timezone. Call reload_localzone() to gurantee
         timezone is updated.
 
-        RETURNS: pytz tzinfo object of the local time zone. 
+        RETURNS: pytz tzinfo object of the local time zone.
             if system timezone info is configured wrong, then a special-MAS
-            version of a timezone is returned instead. This version works 
+            version of a timezone is returned instead. This version works
             like a static, unchanging timezone, using the time.timezone/altzone
             values.
         """
@@ -4313,19 +4313,19 @@ init -995 python in mas_utils:
         """
         Converts the given local datetime into a UTC datetime.
 
-        NOTE: you shouldn't be using this. UTC time should be where you do 
+        NOTE: you shouldn't be using this. UTC time should be where you do
         dt manipulations and use utc_to_local to get a localized dt for human
         reading. datetime has a utcnow() function so use that to get started
         instead of now()
 
         IN:
             local_dt - datetime to convert, should be naive (no tzinfo)
-            latest - True will attempt to reload the local timezone before 
+            latest - True will attempt to reload the local timezone before
                 doing the conversion. If dealing with an old datetime, you
                 might want to pass False
                 (Default: True)
 
-        RETURNS: 
+        RETURNS:
             UTC-based naive datetime (no tzinfo).
             This is safe for pickling/saving to persistent.
         """
@@ -4363,7 +4363,7 @@ init -995 python in mas_utils:
                 might want to pass False
                 (Default: True)
 
-        RETURNS: 
+        RETURNS:
             localized datetime with tzinfo of this zone (see pytz docs)
             NOTE: DO NOT PICKLE THIS or SAVE TO PERSISTENT. While pytz can
                 safely pickle, we do not want to force a dependency on the
@@ -4699,7 +4699,7 @@ init -995 python in mas_utils:
                     self.write("%s", platform.platform())
                 except:
                     self.write("Unknown platform.")
-                self.write("%s", renpy.version)
+                self.write("%s", renpy.version())
                 self.write("%s %s", renpy.config.name, renpy.config.version)
                 self.write("")
 
@@ -4862,13 +4862,26 @@ init -100 python in mas_utils:
             return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
                                 - datetime.date(initial_date.year, 1, 1))
 
+    def add_months(starting_date, months):
+        """
+        Takes a datetime object and add a number of months
+        Handles the case where the new month doesn't have that day
 
-    #Takes a datetime object and add a number of months
-    #Handles the case where the new month doesn't have that day
-    def add_months(starting_date,months):
+        IN:
+            starting_date - date representing the date to add months to
+            months - amount of months to add
+
+        OUT:
+            datetime.date representing the inputted date with the corresponding months added
+        """
         old_month=starting_date.month
         old_year=starting_date.year
         old_day=starting_date.day
+
+        #To handle F29 consistently with add_years, we explicitly manage it
+        if months and (months/12 + old_year) % 4 != 0 and old_month == 2 and old_day == 29:
+            old_month = 3
+            old_day = 1
 
         # get the total of months
         total_months = old_month + months
