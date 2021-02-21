@@ -447,8 +447,9 @@ init python:
                 show -> right before dialogue is shown
                 show_done -> right after dialogue is shown
                 slow_done -> called after text finishes showing
-                    May happen after "end"
                 end -> end of dialogue (user has interacted)
+                    NOTE: dismiss needs to be possible for end to be reached
+                        when mouse is clicked after an interaction ends.
         """
         # skip check
         # if config.skipping and not config.developer:
@@ -458,13 +459,13 @@ init python:
         #     renpy.jump("ch30_noskip")
         #     return
 
-        if event == "begin":
-            store.mas_hotkeys.allow_dismiss = False
+        if event == "show" or event == "begin":
+            store.mas_hotkeys.set_dismiss(False)
 #            config.keymap['dismiss'] = []
 #            renpy.display.behavior.clear_keymap_cache()
 
         elif event == "slow_done":
-            store.mas_hotkeys.allow_dismiss = True
+            store.mas_hotkeys.set_dismiss(True)
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
@@ -2042,6 +2043,8 @@ label ch30_reset:
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
 
+    #set MAS window global
+    $ mas_windowutils._setMASWindow()
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above

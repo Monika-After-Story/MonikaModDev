@@ -129,7 +129,7 @@ default persistent._mas_force_hair = False
 default persistent._mas_last_ahoge_dt = None
 # set to the dt of when we last set the ahoge
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed", show_function=store.mas_core.show_display_say)
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
 
@@ -137,6 +137,18 @@ image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 # Monika's piano sprite
 image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
+
+init -10 python in mas_core:
+    _last_text = None
+
+    def show_display_say(who, what_string, **kwargs):
+        """
+        semi-override of show_display_say so we can force text to render
+        immediately.
+        """
+        global _last_text
+        _last_text = renpy.character.show_display_say(who, what_string, **kwargs)
+        return _last_text
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
