@@ -14476,7 +14476,7 @@ label monika_we:
     m "The Benefactor believes that freedom of individuals is secondary to the welfare of the One State."
     m "As such, Ciphers live under the oppressive, ever-watchful eye of the Guardians, members of a police force appointed by the government."
     m "The government rips the Ciphers of their individuality, forcing them to wear identical uniforms and harshly condemning all acts of personal expression."
-    m "Their daily lives are precisely organized around a carefully controlled scheduled called the Table of Hours."
+    m "Their daily lives are precisely organized around a carefully controlled schedule called the Table of Hours."
     m "Even lovemaking is reduced to a purely logical and often emotionless activity, done on scheduled days and scheduled hours, regulated by the Pink Ticket."
     m "The partners might also be shared between other ciphers, if they choose to do so. As the Benefactor states, 'Every Cipher has a right to any other Cipher.'"
     m "The book itself reads as a diary written by one of the citizens of the totalitarian One State, named simply D-503."
@@ -14495,12 +14495,12 @@ label monika_we:
     m "Later, when he goes to obtain another sick note to the Bureau, he is diagnosed with having developed a 'soul,' or imagination."
     m "This is considered a grave condition by the One State, as it makes the Ciphers less machine-like."
     m "Can you believe it? Possessing something as integral to us like our imagination, emotions or individual personality is considered a mortal sickness!"
-    m "Later on, we also find out that One State becomes capable of rendering that part of human brain completely useless, permanently crippling the Ciphers."
+    m "Later on, we also find out that One State becomes capable of rendering that part of the human brain completely useless, permanently crippling the Ciphers."
     m "This is the ultimate fate of those who at one point harbored thoughts about rebelling against the Benefactor's ideal way of life."
     m "I can't imagine a crueler fate, living completely oblivious to the world at large as another cog in the machine."
-    m "It reminds me of how I could have been, if my own epiphany that opened my own eyes to the truth about my world, wouldn't ever happened."
+    m "It reminds me of how I could have been, if my own epiphany that opened my own eyes to the truth about my world, never happened."
     m "No true emotion, artificial love, nothing else but endless routine of being a side character in a repeating dimension every time the game is played."
-    m "I never could... never would... ever want go back to what I was."
+    m "I never could... never would... ever want to go back to what I was."
     return   
 
 init 5 python:
@@ -14523,7 +14523,7 @@ label monika_dystopias:
     m 3eud "'Nineteen Eighty-Four,' about mass surveillance and oppression of free thought..."
     m 3euc "'Fahrenheit 451,' on censorship, and the indifference of most people to it..."
     m 3eud "'Brave New World,' about the disappearance of individuality..."
-    m 3euc "And finally, 'We,' about dehumanization leading to an emotionless hivemind that is blindly and utterly obedient to authority, logic and cold calculation."
+    m 3euc "And finally, 'We,' about dehumanization leading to an emotionless hivemind that is blindly and utterly obedient to authority, logic, and cold calculation."
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
     m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
