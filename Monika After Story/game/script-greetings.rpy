@@ -9,7 +9,6 @@
 #       MASNumericalRepeatRule - repeat every x time
 #       MASPriorityRule - priority of this event. if not given, we assume
 #           the default priority (which is also the lowest)
-
 # PRIORITY RULES:
 #   Special, moni wants/debug greetings should have negative priority.
 #   special event greetings should have priority 10-50
