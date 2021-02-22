@@ -3070,23 +3070,25 @@ label greeting_back_from_work:
             "Amazing.":
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
+
                 m 2sua "What made it such an amazing day?{nw}"
 		        menu:
-                               m "What made it such an amazing day?{fast}"
+                    m "What made it such an amazing day?{fast}"
 
-                               "I moved up!":
-                                   m 6suo "Wow! Congratulations [mas_get_player_nickname()]!"
-                                   m 1hua "I'm so proud of you!"
-                                   m 2eua "I knew you could do it."
+                    "I moved up!":
+                        m 6suo "Wow! Congratulations [mas_get_player_nickname()]!"
+                        m 1hua "I'm so proud of you!"
+                        m 2eua "I knew you could do it."
 
-                               "I got a lot done!":
-                                   m 3hub "That's great [mas_get_player_nickname()]!"
-                                   m 5eua "You're such a hard worker, keep it up and you might move up soon!"
+                    "I got a lot done!":
+                        m 3hub "That's great [mas_get_player_nickname()]!"
+                        m 5eua "You're such a hard worker, keep it up and you might move up soon!"
 
-                               "It was just an amazing day.":
-                                   m 1hua "That's good to hear."
-                                   m 4eua "Just a nice and easy day at work is refreshing in it's own right."
-                                   m 3tsb "And what better way to wrap up an amazing day with your amazing girlfriend?"
+                    "It was just an amazing day.":
+                        m 1hua "That's good to hear."
+                        m 4eua "Just a nice and easy day at work is refreshing in it's own right."
+                        m 3tsb "And what better way to wrap up an amazing day with your amazing girlfriend?"
+
                 m 3eua "I can only imagine how well you must work on days like that."
                 m 1hua "...Maybe you'll even move up a bit soon!"
                 m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
