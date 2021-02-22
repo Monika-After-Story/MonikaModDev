@@ -3072,7 +3072,7 @@ label greeting_back_from_work:
                 m 1hub "I'm really happy that you had such a great day!"
 
                 m 2sua "What made it such an amazing day?{nw}"
-		        menu:
+                menu:
                     m "What made it such an amazing day?{fast}"
 
                     "I moved up!":
