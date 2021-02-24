@@ -1899,6 +1899,9 @@ label monikaroom_greeting_cleanup:
         # 5 - the music can be restarted
         mas_startup_song()
 
+        # 6 - enable escape so we can access settings and chat box keys
+        enable_esc()
+
     return
 
 #init 5 python:

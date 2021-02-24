@@ -178,7 +178,7 @@ init python in mas_windowutils:
                 winname = win.get_wm_name()
 
                 #NOTE: This must be config.name as we call this during init time, where config.name is None
-                if transient_for is None and winname and renpy.config.name in winname:
+                if transient_for is None and winname and renpy.config.window_title in winname:
                     return win
 
         except BadWindow:
@@ -241,6 +241,15 @@ init python in mas_windowutils:
 
         except Xlib.error.BadDrawable:
             return None
+
+    def _setMASWindow():
+        """
+        Sets the MAS_WINDOW global on Linux systems
+        """
+        global MAS_WINDOW
+
+        if renpy.linux:
+            MAS_WINDOW = __getMASWindowLinux()
 
     #Next, the active window handle getters
     def _getActiveWindow_Windows(friendly):
@@ -549,8 +558,6 @@ init python in mas_windowutils:
             getMASWindowPos = _getMASWindowPos_Linux
             getMousePos = _getAbsoluteMousePos_Linux
 
-            #We'll store an internal ref of the mas window here
-            MAS_WINDOW = __getMASWindowLinux()
         else:
             _window_get = _getActiveWindow_OSX
             _tryShowNotif = _tryShowNotification_OSX
