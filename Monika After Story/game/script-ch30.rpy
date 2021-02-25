@@ -386,9 +386,6 @@ init python:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
         """
-        # hide the existing mask
-        renpy.hide("rm")
-
         # get current weather masks
         mask = mas_current_weather.get_mask()
 
@@ -754,6 +751,7 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
+#       NOTE: this will override the standard bg 
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
@@ -767,20 +765,14 @@ init python:
 #       NOTE: if dissolve_all is True, this is ignored.
 #       (Default: False)
 #   scene_change - True will prefix the draw with a scene call. scene black
-#       will always be used.
+#       will always be used. Only use this when actually starting a new scene.
 #       (Default: False)
 #   force_exp - if not None, then we use this instead of monika idle.
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-#   day_bg - the room we'll be showing during the day
-#       NOTE: must be string
-#       NOTE: if passed in, it will override the current background day_bg
-#       (Default: None)
-#   night_bg - the room we'll be showing during the night
-#       NOTE: must be string
-#       NOTE: if passed in, it will override the current background night_bg
-#       (Default: None)
+#   day_bg - IGNORED
+#   night_bg - IGNORED
 #   show_emptydesk - behavior is determined by `hide_monika`
 #       if hide_monika is True - True will show emptydesk and False will do
 #           nothing.
@@ -811,29 +803,42 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     #   but the BG has not (because BG is not inherently controleld by filter)
     python:
         if progress_filter and mas_progressFilter():
-            # NOTE: a filter change is like a scene change with all dissolve
-            scene_change = True
             dissolve_all = True
 
         day_mode = mas_current_background.isFltDay()
 
     if scene_change:
         scene black
+    else:
+        if hide_mask:
+            hide rm
+        # mask show happens later
+
+        if hide_calendar:
+            $ mas_calHideOverlay()
+        elif not mas_calIsVisible_ovl():
+            $ mas_calShowOverlay()
 
     python:
-        monika_room = None
-
-        if scene_change:
-            monika_room = mas_current_background.getCurrentRoom()
+        monika_room = mas_current_background.getCurrentRoom()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(day_mode)
+            if day_mode == mas_globals.dark_mode: 
+                # switch from dark <-> day
+                # dark_mode True means we are in dark mode
+                # day_mode True means we should NOT be in dark mode
+                mas_darkMode(day_mode)
         else:
-            mas_darkMode(not persistent._mas_dark_mode_enabled)
+            if mas_globals.dark_mode != persistent._mas_dark_mode_enabled:
+                # only run if dark mode global doesn't match 
+                # persistent setting.
+                mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
         if hide_monika:
+            renpy.hide("monika")
+
             if show_emptydesk:
                 store.mas_sprites.show_empty_desk()
 
@@ -869,9 +874,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                     tag="sp_mas_room",
                     zorder=MAS_BACKGROUND_Z
                 )
-                #Show calendar if it's supported
-                if not hide_calendar:
-                    mas_calShowOverlay()
 
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
@@ -892,15 +894,20 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
+    elif renpy.showing(vignette):
+        hide vignette
 
     #Monibday stuff
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
+    else:
+        $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
     # TODO: move this to o31 autoload
+    # NOTE: this does not expect no scene change
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_o31ShowVisuals()
     # ----------- end date-based events
@@ -909,6 +916,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
+    else:
+        $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)

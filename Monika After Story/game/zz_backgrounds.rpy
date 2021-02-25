@@ -2225,11 +2225,9 @@ init -10 python:
                 if (
                         not mas_isDecoTagVisible(deco_obj.name)
                         or new_adf is None
-                        or new_adf != adv_df
                 ):
                     # hide all deco objects that do not have a definition
-                    # in the new bg OR have a differing deco frame OR are not in
-                    # the vis_store
+                    # in the new bg OR are not in the vis_store
                     change_info.hides[deco_obj.name] = adv_df
                     self._deco_rm(deco_obj.name)
 
