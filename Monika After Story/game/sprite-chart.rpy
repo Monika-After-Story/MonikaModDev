@@ -150,7 +150,7 @@ init -10 python in mas_core:
         global _last_text
         rv = renpy.character.show_display_say(who, what_string, **kwargs)
 
-        if isinstance(rv, tuple)
+        if isinstance(rv, tuple):
             # r7-specific handling.
             # purposely not doing *rv in case tom changes stuff again
             rv = renpy.display.screen.get_widget(rv[0], rv[1], rv[2])
