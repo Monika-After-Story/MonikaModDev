@@ -1780,7 +1780,7 @@ label monikaroom_greeting_opendoor:
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
     $ mas_startupWeather()
 
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
+    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False, scene_change=True)
 
     # show this under bedroom so the masks window skit still works
     $ behind_bg = MAS_BACKGROUND_Z - 1

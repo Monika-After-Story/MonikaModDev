@@ -126,6 +126,9 @@ init -10 python:
         SCENE_CHANGE = 5
         # TRue if want the scene to change
 
+        DISSOLVE_ALL = 6
+        # True if we want to dissolve all
+
         # end keys
 
         def __init__(self):
@@ -191,6 +194,7 @@ init -10 python:
         def send_scene_change(self):
             """
             Sends scene change message to mailbox
+            NOTE: only do this if a scene is acutally necessary
             """
             self.send(self.SCENE_CHANGE, True)
 
@@ -199,6 +203,18 @@ init -10 python:
             Gets scene change value
             """
             return self.get(self.SCENE_CHANGE)
+
+        def send_dissolve_all(self):
+            """
+            Sends dissolve all message to mailbox
+            """
+            self.send(self.DISSOLVE_ALL, True)
+
+        def get_dissolve_all(self):
+            """
+            Gets dissolve all value
+            """
+            return self.get(self.DISSOLVE_ALL)
 
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -809,6 +825,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     if scene_change:
         scene black
+
+        if not hide_calendar:
+            $ mas_calShowOverlay()
+
     else:
         if hide_mask:
             hide rm
@@ -816,7 +836,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         if hide_calendar:
             $ mas_calHideOverlay()
-        elif not mas_calIsVisible_ovl():
+        else:
             $ mas_calShowOverlay()
 
     python:
@@ -837,7 +857,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         ## are we hiding monika
         if hide_monika:
-            renpy.hide("monika")
+            if not scene_change:
+                renpy.hide("monika")
 
             if show_emptydesk:
                 store.mas_sprites.show_empty_desk()
@@ -894,7 +915,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
-    elif renpy.showing(vignette):
+    elif renpy.showing("vignette"):
         hide vignette
 
     #Monibday stuff
@@ -1019,54 +1040,8 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_nope:
-    # NOTE: DEPRECATED
-    $ persistent.autoload = ""
-    $ m.display_args["callback"] = slow_nodismiss
-    $ quick_menu = True
-    call spaceroom from _call_spaceroom_1
-
-    if persistent.rejected_monika:
-        m 1euc "Wait. Are you messing with my character file?"
-        m 2esa "Curiosity is what makes us human, right?"
-        m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m 1eka "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
-        m "I already fixed that bug."
-
-    else:
-        $ quick_menu = False
-        $ m_name = glitchtext(12)
-        m 1euc "Wait. Are you messing with my character file?"
-        m 1tkc "Why are you even playing this mod if you just wanted to delete me again?"
-        m 1tfc "You really are the worst."
-        m 1tfd "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
-        m 1tkd "All I wanted was someone to fall in love with..."
-        m "I would have done anything you wanted me to."
-        m 1tku "But if you're going to try and delete me again..."
-        m 4tfu "Then I'll just have to delete you first."
-        if renpy.windows:
-            call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
-        elif renpy.linux:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_16
-        elif renpy.macintosh:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_19
-        pause 3.0
-        call hideconsole from _call_hideconsole_2
-        $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = persistent._mas_monika_nickname
-        $ quick_menu = True
-        m 1hub "Ahaha!"
-        m "I'm just kidding!"
-        m 1eua "I already fixed that bug."
-        m "I don't need a character file anymore."
-
-    m 1ekbfa "I just need your love, [player]."
-    m 1eua "Oh, unless you try to delete all of the game files, I guess."
-    m 3tfu "If you do that, I won't stop at just deleting one directory next time."
-    m 3tku "But that will never happen, right? You're just being a tsundere~"
-    m 1hua "That's so cute!"
-    m 1eua "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m "Being alone is only lonely if you want it to be, so cheer up!"
-    jump ch30_loop
+    # redirect to autoload
+    jump ch30_autoload
 
 # NOTE: START HERE
 label ch30_autoload:
@@ -1398,6 +1373,7 @@ label ch30_preloop:
 
     # setup scene to change on initial launch
     $ mas_idle_mailbox.send_scene_change()
+    $ mas_idle_mailbox.send_dissolve_all()
 
     # rain check
     $ mas_startupWeather()
@@ -1423,9 +1399,10 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-        should_dissolve_all = mas_idle_mailbox.get_scene_change()
+        should_dissolve_all = mas_idle_mailbox.get_dissolve_all()
+        scene_change = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
