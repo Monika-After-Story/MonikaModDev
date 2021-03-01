@@ -844,7 +844,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            if day_mode == mas_globals.dark_mode: 
+            if (
+                    mas_globals.dark_mode is None # covers first load
+                    or day_mode == mas_globals.dark_mode
+            ):
                 # switch from dark <-> day
                 # dark_mode True means we are in dark mode
                 # day_mode True means we should NOT be in dark mode
