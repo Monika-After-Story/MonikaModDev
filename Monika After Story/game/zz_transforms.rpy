@@ -198,7 +198,7 @@ transform wink_transform(wink_img, open_eyes_img):
         wink_img
         1
         open_eyes_img
-
+# NOTE: DEPRECATED, use MASMoniTearsTransform
 transform streaming_tears_transform(open_eyes_img, closed_eyes_img):
     animation
     block:

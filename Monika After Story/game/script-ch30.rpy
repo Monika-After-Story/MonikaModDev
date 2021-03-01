@@ -814,12 +814,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         day_mode = mas_current_background.isFltDay()
 
-        if hide_mask:
-            renpy.hide("rm")
+    if scene_change:
+        scene black
 
-        if hide_calendar:
-            mas_calHideOverlay()
-
+    python:
         monika_room = None
 
         if scene_change:
@@ -835,8 +833,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         if hide_monika:
             if show_emptydesk:
                 store.mas_sprites.show_empty_desk()
-
-            renpy.hide("monika")
 
         else:
             if force_exp is None:

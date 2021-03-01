@@ -7589,6 +7589,9 @@ python early:
 
         BLIT_COORDS = (0, 0)
 
+        # Cache the dissolves so we can reuse them
+        _transform_cache = dict()
+
         def __init__(self, exps=None, fallback=None):
             """
             Constructor for idle displayable
@@ -7626,7 +7629,7 @@ python early:
             self.fallback = fallback
             self.current_exp = fallback
             self._predicted_exp = None
-            self.dissolve = None
+            self.current_img = None
             self._skip_dissolve = False
 
             self._last_st = 0.0
@@ -7659,7 +7662,6 @@ python early:
             This causes this disp to update
             """
             self.redraw_st = 0.0
-            self.dissolve = None
             self.dissolve_duration = 0.0
             renpy.redraw(self, 0.0)
 
@@ -8124,7 +8126,7 @@ python early:
             if (
                 self.current_st >= self.redraw_st
                 or (
-                    self.dissolve is None
+                    self.dissolve_duration == 0.0
                     and (
                         not self.current_exp.check_aff()
                         or not self.current_exp.check_conditional()
@@ -8135,8 +8137,8 @@ python early:
 
                 # If we were dissolving, we just finished
                 # Set next redraw using the exp duration
-                if self.dissolve is not None:
-                    self.dissolve = None
+                if self.dissolve_duration != 0.0:
+                    self.current_img = self.current_exp.ref
                     self.dissolve_duration = 0.0
                     self.redraw_st = self.current_exp.select_duration()
                     redraw_time = self.redraw_st
@@ -8147,31 +8149,47 @@ python early:
 
                     # New pose? Dissolve
                     if not self._skip_dissolve and next_exp.code[0] != self.current_exp.code[0]:
-                        self.dissolve = renpy.display.transition.Dissolve(
-                            time=MASMoniIdleDisp.SLOW_DISSOLVE,
-                            old_widget=self.current_exp.ref,
-                            new_widget=next_exp.ref,
-                            alpha=True
-                        )
+                        key = (MASMoniIdleDisp.SLOW_DISSOLVE, self.current_exp.code, next_exp.code)
+
+                        if key not in MASMoniIdleDisp._transform_cache:
+                            self.current_img = renpy.display.transition.Dissolve(
+                                time=MASMoniIdleDisp.SLOW_DISSOLVE,
+                                old_widget=self.current_exp.ref,
+                                new_widget=next_exp.ref,
+                                alpha=True
+                            )
+                            MASMoniIdleDisp._transform_cache[key] = self.current_img
+
+                        else:
+                            self.current_img = MASMoniIdleDisp._transform_cache[key]
+
                         self.dissolve_duration = MASMoniIdleDisp.SLOW_DISSOLVE
-                        self.redraw_st = MASMoniIdleDisp.SLOW_DISSOLVE# self.current_st + MASMoniIdleDisp.SLOW_DISSOLVE
+                        self.redraw_st = MASMoniIdleDisp.SLOW_DISSOLVE
                         redraw_time = self.redraw_st
 
                     # Different exp? Dissolve
                     elif not self._skip_dissolve and next_exp.code != self.current_exp.code:
-                        self.dissolve = renpy.display.transition.Dissolve(
-                            time=MASMoniIdleDisp.QUICK_DISSOLVE,
-                            old_widget=self.current_exp.ref,
-                            new_widget=next_exp.ref,
-                            alpha=True
-                        )
+                        key = (MASMoniIdleDisp.QUICK_DISSOLVE, self.current_exp.code, next_exp.code)
+
+                        if key not in MASMoniIdleDisp._transform_cache:
+                            self.current_img = renpy.display.transition.Dissolve(
+                                time=MASMoniIdleDisp.QUICK_DISSOLVE,
+                                old_widget=self.current_exp.ref,
+                                new_widget=next_exp.ref,
+                                alpha=True
+                            )
+                            MASMoniIdleDisp._transform_cache[key] = self.current_img
+
+                        else:
+                            self.current_img = MASMoniIdleDisp._transform_cache[key]
+
                         self.dissolve_duration = MASMoniIdleDisp.QUICK_DISSOLVE
-                        self.redraw_st = MASMoniIdleDisp.QUICK_DISSOLVE# self.current_st + MASMoniIdleDisp.QUICK_DISSOLVE
+                        self.redraw_st = MASMoniIdleDisp.QUICK_DISSOLVE
                         redraw_time = self.redraw_st
 
                     # Otherwise we don't need to dissolve since the exp is the same (or we decided to skip dissolve in/out)
                     else:
-                        self.dissolve = None
+                        self.current_img = next_exp.ref
                         self.dissolve_duration = 0.0
                         self._skip_dissolve = False
                         self.redraw_st = next_exp.select_duration()
@@ -8182,23 +8200,9 @@ python early:
 
             # Otherwise we come here too early
             else:
-                # If we're dissolving, we continue
-                if self.dissolve is not None:
-                    redraw_time = self.redraw_st - self.current_st
+                redraw_time = self.redraw_st - self.current_st
 
-                # Otherwise wait 'til next exp
-                else:
-                    redraw_time = self.redraw_st - self.current_st
-
-            # If we're dissolving, we render the transform
-            if self.dissolve is not None:
-                img = self.dissolve
-
-            # Otherwise render the exp image
-            else:
-                img = self.current_exp.ref
-
-            img_render = renpy.render(img, width, height, self.current_st, at)
+            img_render = renpy.render(self.current_img, width, height, self.current_st, at)
 
             main_render = renpy.Render(img_render.width, img_render.height)
             # main_render.place(img, x=0, y=0, st=render_st)
