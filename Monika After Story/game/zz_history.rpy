@@ -1003,6 +1003,9 @@ init -810 python:
             "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
             "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
 
+            # lifestyle / work
+            "_mas_pm_got_promotion": "pm.lifestyle.got_promotion"
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
             "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
