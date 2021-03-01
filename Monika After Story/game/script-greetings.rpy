@@ -4201,23 +4201,38 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(skip_visual=True))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_spacing_out",
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=3)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.LOVE, None)
         ),
         code="GRE"
     )
 
+    del ev_rules
+
 label greeting_spacing_out:
+    # couple of things:
+    # shield ui
+    $ mas_RaiseShield_core()
+
+    # 3 - keymaps not set (default)
+    # 4 - hotkey buttons are hidden (skip visual)
+    # 5 - music is off (skip visual)
+
+    $ use_right_smug = bool(random.randint(0, 1))
+
+    # Need to do this to force the exp immediately
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp="monika 1gsbsu" if use_right_smug else "monika 1msbsu")
+
     python hide:
-        # Which smug will be first?
-        use_right_smug = bool(random.randint(0, 1))
-        # Need to show Monika here already
-        renpy.show(("monika 1gsbsu" if use_right_smug else "monika 1msbsu"))
         # Define some other things we're going to work with
         spacing_out_pause = PauseDisplayableWithEvents()
         events = list()
@@ -4262,6 +4277,20 @@ label greeting_spacing_out:
     m 1hubsb "Ahaha~"
     m 1eua "I'm very happy to see you again. {w=0.2}{nw}"
     extend 3eua "What should we do today, [player]?"
+
+    # cleanup
+    # enable music menu and music hotkeys
+    $ mas_MUINDropShield()
+
+    # 3 - set the keymaps
+    $ set_keymaps()
+
+    # 4 - hotkey buttons should be shown
+    $ HKBShowButtons()
+
+    # 5 - restart music
+    $ mas_startup_song()
+
     return
 
 init 5 python:
