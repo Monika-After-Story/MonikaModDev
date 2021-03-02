@@ -3048,10 +3048,8 @@ label greeting_back_from_school:
 
     return
 
-default persistent._mas_pm_got_promotion = (None, None)
-# tuple with the first entry being a bool set to True
-# when the player gets a promotion and the second
-# entry storing the date of that promotion
+default persistent._mas_pm_got_promotion = None
+# date when player last got promotion
 
 init 5 python:
     addEvent(
@@ -3074,10 +3072,10 @@ label greeting_back_from_work:
             m "How was work today?{fast}"
 
             "Amazing!":
-                if not persistent._mas_pm_got_promotion[1]:
+                if not persistent._mas_pm_got_promotion:
                     $ promoted_recently = False
                 else:
-                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_got_promotion[1] + datetime.timedelta(days=180)
+                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_got_promotion + datetime.timedelta(days=180)
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
 
@@ -3095,7 +3093,7 @@ label greeting_back_from_work:
                             m 3suo "Wow! Congratulations [player_nick], {w=0.1}{nw}"
                             extend 3hub "I'm so proud of you!"
                             m 1euu "I knew you could do it~"
-                        $ persistent._mas_pm_got_promotion = (True, datetime.date.today())
+                        $ persistent._mas_pm_got_promotion = datetime.date.today()
 
                     "I got a lot done!":
                         m 3hub "That's great, [mas_get_player_nickname()]!"
