@@ -1371,10 +1371,10 @@ screen preferences():
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
-                        action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
                     textbutton _("UI: D/N Cycle"):
-                        action [Function(mas_darkMode, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
@@ -2447,26 +2447,6 @@ style notify_frame is empty:
 
 style notify_text is gui_text:
     size gui.notify_text_size
-
-## This part of the code is used to create the tutorial selection screen.
-
-#Each tutorial is defined by its name (caption) and its label,
-#items is the list of caption and label of each tutorial
-#init python is necessary because items is a List, a python object
-
-init python:
-
-    items = [(_("Introduction"),"example_chapter")
-        ,(_("Route Part 1, How To Make A Mod"),"tutorial_route_p1")
-        ,(_("Route Part 2, Music"),"tutorial_route_p2")
-        ,(_("Route Part 3, Scene"),"tutorial_route_p3")
-        ,(_("Route Part 4, Dialogue"),"tutorial_route_p4")
-        ,(_("Route Part 5, Menu"),"tutorial_route_p5")
-        ,(_("Route Part 6, Logic Statement"),"tutorial_route_p6")
-        ,(_("Route Part 7, Sprite"),"tutorial_route_p7")
-        ,(_("Route Part 8, Position"),"tutorial_route_p8")
-        ,(_("Route Part 9, Ending"),"tutorial_route_p9")]
-
 
 ## Scrollable Menu ###############################################################
 ##

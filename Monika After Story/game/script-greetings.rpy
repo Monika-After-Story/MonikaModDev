@@ -1899,6 +1899,9 @@ label monikaroom_greeting_cleanup:
         # 5 - the music can be restarted
         mas_startup_song()
 
+        # 6 - enable escape so we can access settings and chat box keys
+        enable_esc()
+
     return
 
 #init 5 python:
@@ -2910,10 +2913,9 @@ label greeting_back_from_school:
                 return
 
             "Good.":
-                m 1hub "Aww, that's nice!"
-                m 1eua "I can't help but feel happy when you do~"
-                m "I hope you learned something useful."
-                m 1hua "Ehehe~"
+                m 1hub "That's great...{w=0.3}{nw}"
+                extend 3eub "I can't help but feel happy when you come home in a good mood!"
+                m 3hua "I hope you learned something useful, ehehe~"
                 return
 
             "Bad.":
@@ -3447,10 +3449,10 @@ label greeting_returned_home:
     if mas_d25 < datetime.date.today() <= mas_nye:
         call mas_gone_over_d25_check
 
-    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+    if mas_nyd <= datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nye_check
 
-    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+    if mas_nyd < datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nyd_check
 
 
