@@ -3086,7 +3086,7 @@ label greeting_back_from_work:
                     "I moved up!":
                         if promoted_recently:
                             m 3suo "Wow! Again?!"
-                            m 3sub "You just got a promotion not that long ago...{w=0.5}you must really being doing amazing work!"
+                            m 3sub "You just got a promotion not that long ago...{w=0.5}you must really be doing amazing work!"
                             m 1huu "I'm so, {w=0.3}so proud of you, [mas_get_player_nickname()]~"
                         else:
                             $ player_nick = mas_get_player_nickname()
