@@ -139,6 +139,7 @@ image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
 
 init -10 python in mas_core:
+    import renpy
     _last_text = None
 
     def show_display_say(who, what_string, **kwargs):
@@ -147,7 +148,14 @@ init -10 python in mas_core:
         immediately.
         """
         global _last_text
-        _last_text = renpy.character.show_display_say(who, what_string, **kwargs)
+        rv = renpy.character.show_display_say(who, what_string, **kwargs)
+
+        if isinstance(rv, tuple):
+            # r7-specific handling.
+            # purposely not doing *rv in case tom changes stuff again
+            rv = renpy.display.screen.get_widget(rv[0], rv[1], rv[2])
+
+        _last_text = rv
         return _last_text
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
