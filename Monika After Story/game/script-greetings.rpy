@@ -4271,6 +4271,7 @@ label greeting_spacing_out:
 
     # Small pause so people don't skip this line
     $ renpy.pause(0.1)
+    $ enable_esc()
     m 2wubfsdlo "[player]!"
     m 1rubfsdlb "You surprised me! {w=0.4}{nw}"
     extend 1eubsu "I was{w=0.2} spacing out a bit..."
@@ -4279,17 +4280,17 @@ label greeting_spacing_out:
     extend 3eua "What should we do today, [player]?"
 
     # cleanup
-    # enable music menu and music hotkeys
-    $ mas_MUINDropShield()
+    python:
+        # enable music menu and music hotkeys
+        mas_MUINDropShield()
+        # 3 - set the keymaps
+        set_keymaps()
+        # 4 - hotkey buttons should be shown
+        HKBShowButtons()
+        # 5 - restart music
+        mas_startup_song()
 
-    # 3 - set the keymaps
-    $ set_keymaps()
-
-    # 4 - hotkey buttons should be shown
-    $ HKBShowButtons()
-
-    # 5 - restart music
-    $ mas_startup_song()
+        del use_right_smug
 
     return
 
