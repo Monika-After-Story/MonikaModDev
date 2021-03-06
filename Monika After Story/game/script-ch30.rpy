@@ -1090,6 +1090,7 @@ label ch30_autoload:
 
     # set this to None for now
     $ selected_greeting = None
+    $ mas_forced_exp = None
 
     #We'll set up the background here, so other flows don't need to adjust it unless its for a specific reason
     $ mas_startupBackground()
@@ -1248,6 +1249,7 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
+            mas_forced_exp = MASGreetingRule.get_forced_exp(sel_greeting_ev)
 
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
@@ -1398,7 +1400,8 @@ label ch30_loop:
 
         should_dissolve_all = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=should_dissolve_all, force_exp=mas_forced_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    $ mas_forced_exp = None
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
