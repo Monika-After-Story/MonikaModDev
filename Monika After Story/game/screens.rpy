@@ -477,16 +477,19 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind.", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
         if use_return_button:
-            textbutton return_button_prompt:
-                style "choice_button"
-                align (0.5, 0.5)
-                ypos -263
-                action Return(return_button_value)
+            hbox:
+                style_prefix "quick"
+
+                xalign 0.5
+                yalign 0.995
+
+                textbutton return_button_prompt:
+                    action Return(return_button_value)
 
         vbox:
             align (0.5, 0.5)
@@ -1368,10 +1371,10 @@ screen preferences():
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
-                        action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
                     textbutton _("UI: D/N Cycle"):
-                        action [Function(mas_darkMode, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
@@ -2445,26 +2448,6 @@ style notify_frame is empty:
 style notify_text is gui_text:
     size gui.notify_text_size
 
-## This part of the code is used to create the tutorial selection screen.
-
-#Each tutorial is defined by its name (caption) and its label,
-#items is the list of caption and label of each tutorial
-#init python is necessary because items is a List, a python object
-
-init python:
-
-    items = [(_("Introduction"),"example_chapter")
-        ,(_("Route Part 1, How To Make A Mod"),"tutorial_route_p1")
-        ,(_("Route Part 2, Music"),"tutorial_route_p2")
-        ,(_("Route Part 3, Scene"),"tutorial_route_p3")
-        ,(_("Route Part 4, Dialogue"),"tutorial_route_p4")
-        ,(_("Route Part 5, Menu"),"tutorial_route_p5")
-        ,(_("Route Part 6, Logic Statement"),"tutorial_route_p6")
-        ,(_("Route Part 7, Sprite"),"tutorial_route_p7")
-        ,(_("Route Part 8, Position"),"tutorial_route_p8")
-        ,(_("Route Part 9, Ending"),"tutorial_route_p9")]
-
-
 ## Scrollable Menu ###############################################################
 ##
 ## This screen creates a vertically scrollable menu of prompts attached to labels
@@ -2930,29 +2913,6 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
-
-
-# generic custom displayabels below:
-init python:
-    class PauseDisplayable(renpy.Displayable):
-        """
-        Pause until click variant of Pause
-        This is because normal pause until click is broken for some reason
-        """
-        import pygame
-
-        def __init__(self):
-            super(renpy.Displayable, self).__init__()
-
-        def render(self, width, height, st, at):
-            # dont actually render anything
-            return renpy.Render(width, height)
-
-        def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
-                return True
-
-            raise renpy.IgnoreEvent()
 
 # Partial generic showpoem screen
 # IN:

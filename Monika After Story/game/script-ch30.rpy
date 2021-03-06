@@ -447,8 +447,9 @@ init python:
                 show -> right before dialogue is shown
                 show_done -> right after dialogue is shown
                 slow_done -> called after text finishes showing
-                    May happen after "end"
                 end -> end of dialogue (user has interacted)
+                    NOTE: dismiss needs to be possible for end to be reached
+                        when mouse is clicked after an interaction ends.
         """
         # skip check
         # if config.skipping and not config.developer:
@@ -458,13 +459,13 @@ init python:
         #     renpy.jump("ch30_noskip")
         #     return
 
-        if event == "begin":
-            store.mas_hotkeys.allow_dismiss = False
+        if event == "show" or event == "begin":
+            store.mas_hotkeys.set_dismiss(False)
 #            config.keymap['dismiss'] = []
 #            renpy.display.behavior.clear_keymap_cache()
 
         elif event == "slow_done":
-            store.mas_hotkeys.allow_dismiss = True
+            store.mas_hotkeys.set_dismiss(True)
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
@@ -789,7 +790,12 @@ init python:
 #   progress_filter - True will progress the filter. False will not
 #       NOTE: use this if you explicity set the filter
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
+#   bg_change_info - MASBackgroundChangeInfo object to use when transitioning.
+#       NOTE: this should ONLY be used by mas_background_change.
+#       This will make sure that when the background changes, associated
+#       images will be hidden / shown following the appropriate transition.
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True, bg_change_info=None):
 
     with None
 
@@ -833,12 +839,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
         else:
             if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
+                force_exp = "monika idle"
+                # if dissolve_all:
+                #     force_exp = store.mas_affection._force_exp()
 
-                else:
-                    force_exp = "monika idle"
+                # else:
+                #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
                 renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
@@ -867,6 +873,21 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 if not hide_calendar:
                     mas_calShowOverlay()
 
+        # always generate bg change info if scene is changing.
+        #   NOTE: generally, this will just show all deco that is appropraite
+        #   for this background.
+        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
+            bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._entry_deco(None, bg_change_info)
+
+        # add show/hide statements for decos
+        if bg_change_info is not None:
+            if not scene_change:
+                for h_adf in bg_change_info.hides.itervalues():
+                    h_adf.hide()
+
+            for s_tag, s_adf in bg_change_info.shows.iteritems():
+                s_adf.show(s_tag)
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -879,15 +900,13 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
+    # TODO: move this to o31 autoload
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_o31ShowVisuals()
-
-    # d25 seasonal
-    elif persistent._mas_d25_deco_active:
-        $ store.mas_d25ShowVisuals()
     # ----------- end date-based events
 
     # player bday
+    # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
@@ -1026,7 +1045,7 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = persistent._mas_monika_nickname
         $ quick_menu = True
-        m 1hua "Ahaha!"
+        m 1hub "Ahaha!"
         m "I'm just kidding!"
         m 1eua "I already fixed that bug."
         m "I don't need a character file anymore."
@@ -1140,7 +1159,6 @@ label mas_ch30_post_retmoni_check:
 
 label mas_ch30_post_holiday_check:
     # post holiday checks
-
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -1320,7 +1338,7 @@ label ch30_post_exp_check:
         $ pushEvent(selected_greeting)
 
     #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=True)
+    $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
 
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
@@ -1665,16 +1683,31 @@ label ch30_minute(time_since_check):
 # NOTE: it only runs when the hour changes, so don't expect this to run
 #   on start right away
 label ch30_hour:
-    $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+    python:
+        mas_runDelayedActions(MAS_FC_IDLE_HOUR)
 
-    #Runtime checks to see if we should have a consumable
-    $ MASConsumable._checkConsumables()
+        #Runtime checks to see if we should have a consumable
+        MASConsumable._checkConsumables()
 
-    # xp calc
-    $ store.mas_xp.grant()
+        # clear ahoges if past noon
+        now_t = datetime.datetime.now().time()
+        if mas_isNtoSS(now_t) or mas_isSStoMN(now_t):
+            monika_chr._set_ahoge(None)
 
-    #Set our TOD var
-    $ mas_setTODVars()
+        # xp calc
+        store.mas_xp.grant()
+
+        #Set our TOD var
+        mas_setTODVars()
+
+        # Inc the chance for hold request
+        with MAS_EVL("monika_holdrequest") as holdme_ev:
+            # See if we flagged the ev
+            if holdme_ev.allflags(EV_FLAG_HFRS):
+                chance = max(mas_getSessionLength().total_seconds() / (4*3600.0), 0.2)
+                if chance >= 1 or random.random() < chance:
+                    holdme_ev.unflag(EV_FLAG_HFRS)
+
     return
 
 # label for things that should run about once per day
@@ -1815,6 +1848,32 @@ label ch30_reset:
     if not mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
+    # set ahoge if appropraite
+    $ now = datetime.datetime.now()
+    if (
+            persistent._mas_dev_ahoge
+            or mas_isMNtoSR(now.time())
+            or mas_isSRtoN(now.time())
+    ):
+        # its morning/middle of night, and Monika MIGHT ahoge
+
+        # NOTE: the random check and the absence length check must be here.
+        #   we don't want to clear the ahoge if the user reopens the mod
+        #   during the same morning.
+        if (
+                persistent._mas_dev_ahoge
+                or (
+                    mas_getAbsenceLength() >= datetime.timedelta(minutes=30)
+                    and random.randint(1, 2) == 1
+                )
+        ):
+            # NOTE: the ahoge function takes last dt into account.
+            $ monika_chr.ahoge()
+
+    else:
+        # out of applicable ahoge time. Do not ahoge. Remove any existing.
+        $ monika_chr._set_ahoge(None)
+
     #### END SPRITES
 
     ## accessory hotfixes
@@ -1827,12 +1886,6 @@ label ch30_reset:
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
-    ## chess strength reset
-    python:
-        if persistent.chess_strength < 0:
-            persistent.chess_strength = 0
-        elif persistent.chess_strength > 20:
-            persistent.chess_strength = 20
 
     ## monika returned home reset
     python:
@@ -1993,6 +2046,8 @@ label ch30_reset:
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
 
+    #set MAS window global
+    $ mas_windowutils._setMASWindow()
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
