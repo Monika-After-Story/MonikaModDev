@@ -3269,7 +3269,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         change_info = mas_changeBackground(new_bg)
 
     #Now redraw the room
-    call spaceroom(scene_change=not skip_transition, dissolve_all=True, bg_change_info=change_info)
+    call spaceroom(scene_change=not skip_transition, dissolve_all=True, bg_change_info=change_info, force_exp="monika 1hua")
 
     if not skip_outro:
         m 1eua "Here we are!"
