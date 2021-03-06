@@ -126,6 +126,9 @@ init -10 python:
         SCENE_CHANGE = 5
         # TRue if want the scene to change
 
+        # Value is the exp to set for spaceroom render
+        FORCED_EXP = 7
+
         # end keys
 
         def __init__(self):
@@ -200,9 +203,22 @@ init -10 python:
             """
             return self.get(self.SCENE_CHANGE)
 
+        def send_forced_exp(self, exp):
+            """
+            Sends forced exp message to mailbox
+
+            IN:
+                exp - full exp code to force (None to use idle disp)
+            """
+            self.send(self.FORCED_EXP, exp)
+
+        def get_forced_exp(self):
+            """
+            Gets forced exp value
+            """
+            return self.get(self.FORCED_EXP)
 
     mas_idle_mailbox = MASIdleMailbox()
-
 
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
@@ -1109,7 +1125,6 @@ label ch30_autoload:
 
     # set this to None for now
     $ selected_greeting = None
-    $ mas_forced_exp = None
 
     #We'll set up the background here, so other flows don't need to adjust it unless its for a specific reason
     $ mas_startupBackground()
@@ -1267,7 +1282,8 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
-            mas_forced_exp = MASGreetingRule.get_forced_exp(sel_greeting_ev)
+            # Set an exp for first spaceroom render
+            mas_idle_mailbox.send_forced_exp(MASGreetingRule.get_forced_exp(sel_greeting_ev))
 
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
@@ -1417,9 +1433,9 @@ label ch30_loop:
         )
 
         should_dissolve_all = mas_idle_mailbox.get_scene_change()
+        force_exp = mas_idle_mailbox.get_forced_exp()
 
-    call spaceroom(scene_change=should_dissolve_all, force_exp=mas_forced_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-    $ mas_forced_exp = None
+    call spaceroom(scene_change=should_dissolve_all, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z

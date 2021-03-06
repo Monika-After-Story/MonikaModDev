@@ -799,15 +799,21 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 4hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_latin:
     m 4hua "Iterum obvenimus!"
