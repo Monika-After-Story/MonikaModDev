@@ -8675,7 +8675,7 @@ python early:
         A displayable which makes follow sprites possible
         (replaces conditionswitch for dissolves and optimization)
         """
-        REDRAW_PAUSE = 0.1
+        REDRAW_PAUSE = 0.2
 
         DIS_DUR = 0.1
 
@@ -8746,24 +8746,24 @@ python early:
 
             self._last_st = st
 
-            if self.current_st >= self.redraw_st:
+            if st == 0 or self.current_st >= self.redraw_st:
                 self.current_st = 0.0
                 self.redraw_st = MASMoniFollowTransform.REDRAW_PAUSE
 
-                # TODO: for even better optimization, add a generalised method to get win pos
-                if store.mas_windowutils.isCursorLeftOfMASWindow():
+                mouse_pos = store.mas_windowutils.getMousePosRelative()
+                if mouse_pos[0] < 0:
                     next_img = self.left_eyes_img
                     next_exp_code = self.left_eyes_code
 
-                elif store.mas_windowutils.isCursorRightOfMASWindow():
+                elif mouse_pos[0] > 0:
                     next_img = self.right_eyes_img
                     next_exp_code = self.right_eyes_code
 
-                # elif store.mas_windowutils.isCursorAboveMASWindow():
+                # elif mouse_pos[1] > 0:
                 #     next_img = self.up_eyes_img
                 #     next_exp_code = self.up_eyes_code
 
-                # elif store.mas_windowutils.isCursorBelowMASWindow():
+                # elif mouse_pos[1] < 0:
                 #     next_img = self.down_eyes_img
                 #     next_exp_code = self.down_eyes_code
 
@@ -8771,7 +8771,7 @@ python early:
                     next_img = self.norm_eyes_img
                     next_exp_code = self.norm_eyes_code
 
-                if self.current_exp_code != next_exp_code:
+                if st != 0 and self.current_exp_code != next_exp_code:
                     self.current_img = self.transform_map[(self.current_exp_code, next_exp_code)]
                     self.current_exp_code = next_exp_code
 
