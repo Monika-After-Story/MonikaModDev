@@ -243,7 +243,7 @@ init python in mas_windowutils:
             return None
 
     #Next, the active window handle getters
-    def _getActiveWindowHandle_Windows(friendly):
+    def _getActiveWindowHandle_Windows():
         """
         Funtion to get the active window on Windows systems
 
@@ -505,6 +505,42 @@ init python in mas_windowutils:
         cur_x, cur_y = getMousePos()
 
         return cur_y > bottom
+
+    def getMousePosRelative():
+        """
+        Gets the mouse position relative to the MAS window.
+        Returned as a set of coordinates (0, 0) being within the MAS window, (1, 0) being to the left, (0, 1) being above, etc.
+
+        OUT:
+            Tuple representing the location of the mouse relative to the MAS window in terms of coordinates
+        """
+        pos_tuple = getMASWindowPos()
+
+        if pos_tuple is None:
+            return (0, 0)
+
+        left, top, right, bottom = pos_tuple
+
+        curr_x, curr_y = getMousePos()
+
+        half_mas_window_x = (right - left)/2
+        half_mas_window_y = (bottom - top)/2
+
+        mid_mas_window_x = left + half_mas_window_x
+        mid_mas_window_y = top + half_mas_window_y
+
+        mas_window_to_cursor_x_comp = curr_x - mid_mas_window_x
+        mas_window_to_cursor_y_comp = curr_y - mid_mas_window_y
+
+        #Divide to handle the middle case
+        mas_window_to_cursor_x_comp = int(float(mas_window_to_cursor_x_comp)/half_mas_window_x)
+        mas_window_to_cursor_y_comp = -int(float(mas_window_to_cursor_y_comp)/half_mas_window_y)
+
+        #Now return the unit vector direction
+        return (
+            mas_window_to_cursor_x_comp/abs(mas_window_to_cursor_x_comp) if mas_window_to_cursor_x_comp else 0,
+            mas_window_to_cursor_y_comp/abs(mas_window_to_cursor_y_comp) if mas_window_to_cursor_y_comp else 0
+        )
 
     #Fallback functions because Mac
     def return_true():
