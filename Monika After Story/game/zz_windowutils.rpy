@@ -408,104 +408,6 @@ init python in mas_windowutils:
             )
         return None
 
-    def isCursorInMASWindow():
-        """
-        Checks if the cursor is within the MAS window
-
-        OUT:
-            True if cursor is within the mas window (within x/y), False otherwise
-            Also returns True if we cannot get window position
-        """
-        pos_tuple = getMASWindowPos()
-
-        if pos_tuple is None:
-            return True
-
-        left, top, right, bottom = pos_tuple
-
-        cur_x, cur_y = getMousePos()
-
-        if not (left <= cur_x <= right):
-            return False
-
-        return (top <= cur_y <= bottom)
-
-    def isCursorLeftOfMASWindow():
-        """
-        Checks if the cursor is to the left of the MAS window (must be explicitly to the left of the left window bound)
-
-        OUT:
-            True if cursor is to the left of the window, False otherwise
-            Also returns False if we cannot get window position
-        """
-        pos_tuple = getMASWindowPos()
-
-        if pos_tuple is None:
-            return False
-
-        left, top, right, bottom = pos_tuple
-
-        cur_x, cur_y = getMousePos()
-
-        return cur_x < left
-
-    def isCursorRightOfMASWindow():
-        """
-        Checks if the cursor is to the right of the MAS window (must be explicitly to the right of the right window bound)
-
-        OUT:
-            True if cursor is to the right of the window, False otherwise
-            Also returns False if we cannot get window position
-        """
-        pos_tuple = getMASWindowPos()
-
-        if pos_tuple is None:
-            return False
-
-        left, top, right, bottom = pos_tuple
-
-        cur_x, cur_y = getMousePos()
-
-        return cur_x > right
-
-    def isCursorAboveMASWindow():
-        """
-        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
-
-        OUT:
-            True if cursor is above the window, False otherwise
-            False as well if we're unable to get a window position
-        """
-        pos_tuple = getMASWindowPos()
-
-        if pos_tuple is None:
-            return False
-
-        left, top, right, bottom = pos_tuple
-
-        cur_x, cur_y = getMousePos()
-
-        return cur_y < top
-
-    def isCursorBelowMASWindow():
-        """
-        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
-
-        OUT:
-            True if cursor is above the window, False otherwise
-            False as well if we're unable to get a window position
-        """
-        pos_tuple = getMASWindowPos()
-
-        if pos_tuple is None:
-            return False
-
-        left, top, right, bottom = pos_tuple
-
-        cur_x, cur_y = getMousePos()
-
-        return cur_y > bottom
-
     def getMousePosRelative():
         """
         Gets the mouse position relative to the MAS window.
@@ -541,6 +443,56 @@ init python in mas_windowutils:
             mas_window_to_cursor_x_comp/abs(mas_window_to_cursor_x_comp) if mas_window_to_cursor_x_comp else 0,
             mas_window_to_cursor_y_comp/abs(mas_window_to_cursor_y_comp) if mas_window_to_cursor_y_comp else 0
         )
+
+    def isCursorInMASWindow():
+        """
+        Checks if the cursor is within the MAS window
+
+        OUT:
+            True if cursor is within the mas window (within x/y), False otherwise
+            Also returns True if we cannot get window position
+        """
+        return getMousePosRelative() == (0, 0)
+
+    def isCursorLeftOfMASWindow():
+        """
+        Checks if the cursor is to the left of the MAS window (must be explicitly to the left of the left window bound)
+
+        OUT:
+            True if cursor is to the left of the window, False otherwise
+            Also returns False if we cannot get window position
+        """
+        return getMousePosRelative()[0] == -1
+
+    def isCursorRightOfMASWindow():
+        """
+        Checks if the cursor is to the right of the MAS window (must be explicitly to the right of the right window bound)
+
+        OUT:
+            True if cursor is to the right of the window, False otherwise
+            Also returns False if we cannot get window position
+        """
+        return getMousePosRelative()[0] == 1
+
+    def isCursorAboveMASWindow():
+        """
+        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
+
+        OUT:
+            True if cursor is above the window, False otherwise
+            False as well if we're unable to get a window position
+        """
+        return getMousePosRelative()[1] == 1
+
+    def isCursorBelowMASWindow():
+        """
+        Checks if the cursor is above the MAS window (must be explicitly above the window bound)
+
+        OUT:
+            True if cursor is above the window, False otherwise
+            False as well if we're unable to get a window position
+        """
+        return getMousePosRelative()[1] == -1
 
     #Fallback functions because Mac
     def return_true():
