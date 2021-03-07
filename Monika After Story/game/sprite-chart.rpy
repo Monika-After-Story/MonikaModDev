@@ -8536,7 +8536,7 @@ python early:
             OUT:
                 list of displayables
             """
-            return [self.wink_img, self.open_eyes_img]
+            return [self.wink_img, self.wink_into_open_eyes_dis]
 
         def __reset(self):
             """
@@ -8656,6 +8656,137 @@ python early:
             img_render = renpy.render(self.current_img, width, height, self.current_st, at)
             rv = renpy.Render(img_render.width, img_render.height)
             rv.blit(img_render, MASMoniTearsTransform.BLIT_COORDS)
+
+            renpy.redraw(self, redraw_time)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return self.transform_map.values()
+
+    class MASMoniFollowTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes follow sprites possible
+        (replaces conditionswitch for dissolves and optimization)
+        """
+        REDRAW_PAUSE = 0.1
+
+        DIS_DUR = 0.1
+
+        BLIT_COORDS = (0, 0)
+
+        def __init__(self, norm_eyes_img, left_eyes_img, right_eyes_img, up_eyes_img=None, down_eyes_img=None):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                norm_eyes_img - FULL name of the image for look straight eyes
+                left_eyes_img - FULL name of the image for look left eyes
+                right_eyes_img - FULL name of the image for look right eyes
+                up_eyes_img - FULL name of the image for look up eyes
+                    NOTE: unused since we don't have the sprites yet
+                down_eyes_img - FULL name of the image for look down eyes
+                    NOTE: unused since we don't have the sprites yet
+            """
+            super(MASMoniFollowTransform, self).__init__(self)
+
+            self.norm_eyes_code = norm_eyes_img
+            self.norm_eyes_img = renpy.display.image.ImageReference(norm_eyes_img)
+            self.left_eyes_code = left_eyes_img
+            self.left_eyes_img = renpy.display.image.ImageReference(left_eyes_img)
+            self.right_eyes_code = right_eyes_img
+            self.right_eyes_img = renpy.display.image.ImageReference(right_eyes_img)
+            # self.up_eyes_code = up_eyes_img
+            # self.up_eyes_img = renpy.display.image.ImageReference(up_eyes_img)
+            # self.down_eyes_code = down_eyes_img
+            # self.down_eyes_img = renpy.display.image.ImageReference(down_eyes_img)
+
+            self.current_img = self.norm_eyes_img
+            self.current_exp_code = self.norm_eyes_code
+
+            # NOTE: keys here are tuples of strings of the current and next exp
+            self.transform_map = dict()
+            img_map = {
+                self.norm_eyes_code: self.norm_eyes_img,
+                self.left_eyes_code: self.left_eyes_img,
+                self.right_eyes_code: self.right_eyes_img,
+                # self.up_eyes_code: self.up_eyes_img,
+                # self.down_eyes_code: self.down_eyes_img
+            }
+            for first_img_code in img_map.iterkeys():
+                for second_img_code in img_map.iterkeys():
+                    if first_img_code != second_img_code:
+                        self.transform_map[(first_img_code, second_img_code)] = renpy.display.transition.Dissolve(
+                            time=MASMoniFollowTransform.DIS_DUR,
+                            old_widget=img_map[first_img_code],
+                            new_widget=img_map[second_img_code],
+                            alpha=True
+                        )
+
+            self._last_st = 0.0
+            self.current_st = 0.0
+            self.redraw_st = 0.0
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            if st > self._last_st:
+                self.current_st += (st - self._last_st)
+
+            # else:
+            #     self.current_st += st
+
+            self._last_st = st
+
+            if self.current_st >= self.redraw_st:
+                self.current_st = 0.0
+                self.redraw_st = MASMoniFollowTransform.REDRAW_PAUSE
+
+                # TODO: for even better optimization, add a generalised method to get win pos
+                if store.mas_windowutils.isCursorLeftOfMASWindow():
+                    next_img = self.left_eyes_img
+                    next_exp_code = self.left_eyes_code
+
+                elif store.mas_windowutils.isCursorRightOfMASWindow():
+                    next_img = self.right_eyes_img
+                    next_exp_code = self.right_eyes_code
+
+                # elif store.mas_windowutils.isCursorAboveMASWindow():
+                #     next_img = self.up_eyes_img
+                #     next_exp_code = self.up_eyes_code
+
+                # elif store.mas_windowutils.isCursorBelowMASWindow():
+                #     next_img = self.down_eyes_img
+                #     next_exp_code = self.down_eyes_code
+
+                else:
+                    next_img = self.norm_eyes_img
+                    next_exp_code = self.norm_eyes_code
+
+                if self.current_exp_code != next_exp_code:
+                    self.current_img = self.transform_map[(self.current_exp_code, next_exp_code)]
+                    self.current_exp_code = next_exp_code
+
+                else:
+                    self.current_img = next_img
+                    self.current_exp_code = next_exp_code
+
+                redraw_time = self.redraw_st
+
+            else:
+                redraw_time = self.redraw_st - self.current_st
+
+            img_render = renpy.render(self.current_img, width, height, self.current_st, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniFollowTransform.BLIT_COORDS)
 
             renpy.redraw(self, redraw_time)
 

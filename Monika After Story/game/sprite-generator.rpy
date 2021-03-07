@@ -112,26 +112,23 @@ init python in mas_sprites:
         exp = exp.replace("_follow", '')
         look_left_img = replace_eyes(exp, "r")
         look_right_img = replace_eyes(exp, "l")
+        m_prefix = "monika "
 
-        if not renpy.has_image("monika " + exp):
+        if not renpy.has_image(m_prefix + exp):
             generate_normal_sprite(exp)
 
-        if not renpy.has_image("monika " + look_left_img):
+        if not renpy.has_image(m_prefix + look_left_img):
             generate_normal_sprite(look_left_img)
 
-        if not renpy.has_image("monika " + look_right_img):
+        if not renpy.has_image(m_prefix + look_right_img):
             generate_normal_sprite(look_right_img)
 
-        m_prefix = "monika "
         register_image(
             ("monika", "{0}_follow".format(exp)),
-            #TODO: When we get Briar's sprites in, add a small displayable that'll handle follow sprites
-            store.ConditionSwitch(
-                "store.mas_windowutils.isCursorLeftOfMASWindow()", m_prefix + look_left_img,
-                "store.mas_windowutils.isCursorRightOfMASWindow()", m_prefix + look_right_img,
-                "True", m_prefix + exp,
-                #NOTE: This works only on r7, but does no harm on r6
-                predict_all=True
+            store.MASMoniFollowTransform(
+                norm_eyes_img=m_prefix + exp,
+                left_eyes_img=m_prefix + look_left_img,
+                right_eyes_img=m_prefix + look_right_img
             )
         )
 
