@@ -77,7 +77,7 @@ init 8 python:
         if game_ev:
             return (
                 game_ev.unlocked
-                and (not game_ev.conditional or (game_ev.conditional and eval(game_ev.conditional)))
+                and game_ev.checkConditional()
                 and game_ev.checkAffection(store.mas_curr_affection)
             )
         return False
@@ -205,7 +205,7 @@ label mas_pick_a_game:
 
     if selected_game:
         show monika at t11
-        if selected_game != "mas_piano":
+        if selected_game != "mas_piano" and not (selected_game == "mas_pong" and played_pong_this_session):
             python:
                 if mas_isMoniUpset(lower=True):
                     begin_quips = [

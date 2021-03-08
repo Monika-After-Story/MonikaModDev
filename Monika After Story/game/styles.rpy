@@ -220,6 +220,10 @@ init python:
 # START: Settings menu helpers
 init python in mas_settings:
     _persistent = renpy.game.persistent
+
+    ui_changed = False
+    dark_mode_clicked = False
+
     import store
     def _auto_mode_toggle():
         """
@@ -246,7 +250,20 @@ init python in mas_settings:
         else:
             _persistent._mas_dark_mode_enabled = True
             _persistent._mas_auto_mode_enabled = False
-        renpy.restart_interaction()
+
+        global dark_mode_clicked
+        dark_mode_clicked = True
+
+    def _ui_change_wrapper(*args):
+        """
+        Wrapper around UI changes
+
+        IN:
+            *args - values to pass to dark mode
+        """
+        global ui_changed
+        ui_changed = True
+        store.mas_darkMode(*args)
 
 
 # START: Generic button styles
