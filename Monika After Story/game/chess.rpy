@@ -1027,11 +1027,12 @@ label mas_chess_start_chess:
     else:
         python:
             player_win_quips = [
-                "I'm so proud of you, [player]!",
-                "I'm proud of you, [player]!~",
-                "Well played, [player]!",
-                "It makes me really happy to see you win~",
-                "I'm happy to see you win!"
+                _("I'm so proud of you, [player]!"),
+                _("I'm proud of you, [player]!~"),
+                _("Well played, [player]!"),
+                _("It makes me really happy to see you win~"),
+                _("I'm happy to see you win!"),
+                _("No matter the outcome, I'll always enjoy playing with you.")
             ]
             persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
 
@@ -1065,9 +1066,7 @@ label mas_chess_start_chess:
             m 3hua "[renpy.substitute(random.choice(player_win_quips))]"
 
         else:
-            m 3hub "Great job, [player], you won!"
-            m 3eua "No matter the outcome, I'll always enjoy playing with you."
-            m 1hua "Let's play again soon, alright?"
+            m 3eub "Great job, you won!"
             m 3hub "[renpy.substitute(random.choice(player_win_quips))]"
 
         m 1eua "Anyway..."
@@ -1096,6 +1095,8 @@ label mas_chess_start_chess:
             "No.":
                 pass
 
+    # FALL THROUGH
+
 label mas_chess_play_again_ask:
     m 1eua "Would you like to play again?{nw}"
     $ _history_list.pop()
@@ -1114,7 +1115,8 @@ label mas_chess_play_again_ask:
             jump mas_chess_remenu
 
         "No.":
-            pass
+            m 1eua "Alright, let's play again soon."
+
     return
 
 label mas_chess_draw_lots(begin=True):

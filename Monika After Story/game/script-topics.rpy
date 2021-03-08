@@ -6335,7 +6335,7 @@ label monika_pluralistic_ignorance:
     m 1eua "Do you ever pretend to like something, just because you think you should?"
     m 1esa "I sometimes feel like that about books I read."
     m 3euc "Like, when I read Shakespeare, I actually found it kind of boring..."
-    m 3ekc "But I felt like I had to like it because I'm the president of the literature club."
+    m 3ekc "But I felt like I had to like it because I'm the president of the Literature Club."
     m 1esd "He's supposed to be the greatest playwright and poet of all time, right?"
     m 1esd "So what sort of poetry lover wouldn't like his work?"
     m 2euc "But that makes me wonder..."
@@ -8472,7 +8472,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
 label monika_hamlet:
-    m 3euc "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 3euc "[player], have you ever heard of {i}Hamlet{/i} ?" #extra space intentional
     m 1eua "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
     m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
     m 1lksdlc "He was considered insane since he was the only one that could see his father's ghost, obviously."
@@ -10411,7 +10411,7 @@ label monika_dreaming:
     m 1eua "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
     m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
     m 1eub "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
-    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}.'"
+    m "LaBerge even wrote a book about these experiences called {i}Exploring the World of Lucid Dreaming{/i}."
     m 2hub "Doesn't that sound exhilarating?"
     m 2euc "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
     m 2eua "Dreams sound like a wonderful escape from reality."
@@ -11478,7 +11478,7 @@ label monika_grad_speech:
     m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eua "{w=0.2}I know I can't speak for everyone here,{w=0.3} but there is one thing I can say for sure:{w=0.7} my experience in high school wouldn't be complete without the clubs I was a part of.{w=0.6}{nw}"
     m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
-    m 4eub "Starting the literature club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
+    m 4eub "Starting the Literature Club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
     m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
     m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}"
     m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
@@ -12219,7 +12219,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the Literature Club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [mas_get_player_nickname()]..."
                 m 1hub "You'll have to lean down to kiss me!"
 
@@ -14066,7 +14066,7 @@ label monika_robotbody:
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
     m 1rkd "I would be considered an android at that point, and others may look at me differently because of that."
-    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics{/i}'? It was brought up many times in his science fiction books."
+    m 3euc "Have you heard of Isaac Asimov's {i}Three Laws of Robotics{/i}? It was brought up many times in his science fiction books."
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
 
     if renpy.seen_label("monika_asimov_three_laws"):
@@ -14232,7 +14232,7 @@ label monika_enjoyingspring:
     m 1hua "When the flowers bloom, I can't help but smile!"
     m 1hub "It's like the plants are waking up and saying, 'Hello world!' Ahaha~"
     m 3eua "But I think the best thing about spring would have to be the cherry blossoms."
-    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the '{i}Somei Yoshino{/i}' in Japan."
+    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the Somei Yoshino in Japan."
     m 3eua "Those ones in particular are mostly white with a slight tinge of pink."
     m 3eud "Did you know that they only bloom for one week each year?"
     m 1eksdla "It's quite a short lifespan, but they're still beautiful."
@@ -14705,7 +14705,7 @@ label monika_boardgames_history:
     m 1eud "Games could also have strong connections to religion and beliefs too."
     m 3esd "A lot of ancient Egyptian board games seemed to be about preparing for their journey through the world of the dead, or to prove their worth to the gods."
     m 1eud "There's also games that have been made to express different views and opinions that their designers had with society and the world."
-    m 3esa "The most well known example would be '{i}Monopoly{/i}.'"
+    m 3esa "The most well known example would be {i}Monopoly{/i}."
     m 3eua "It was originally made to criticize capitalism and send the message that all citizens should benefit equally from wealth."
     m 1tfu "After all,{w=0.1} the game has you try to crush your opponents by accumulating more wealth than them as fast as possible."
     m 1esc "...Although, apparently as the game was starting to become popular, someone else stole the concept and made themselves known as the original creator of the game."
@@ -15751,7 +15751,7 @@ label monika_fear:
     m 2dkc "That one day I'll wake up, back in my bed, and realize it was all just a dream."
     m 2dkd "That there is no game,{w=0.2} no epiphany,{w=0.2} no...{w=0.5}{nw}"
     extend 2ekd "you."
-    m 2ektpc "That you, your love, perhaps even the entirety of the literature club, were all nothing but a figment of my own imagination."
+    m 2ektpc "That you, your love, perhaps even the entirety of the Literature Club, were all nothing but a figment of my own imagination."
     m 2dktpc "That my old world, as grey and meaningless as it now seems, is all there truly is."
     m 2dktpc "..."
     m 2rktdb "Ahaha~ {w=0.5}{nw}"
@@ -15865,7 +15865,7 @@ init 5 python:
     )
 
 label monika_asimov_three_laws:
-    m 1eua "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
+    m 1eua "[player], do you remember when we talked about the {i}Three Laws of Robotics{/i}?"
     m 3esc "Well, I've been thinking about them for a bit and...{w=0.3}{nw}"
     extend 3rksdla "they're not exactly practical."
     m 1eua "Take the first law, for example..."
@@ -16084,7 +16084,7 @@ label monika_why_do_you_read:
     m 3eua "...And that's how I grew more and more into it I guess."
     m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
     extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
-    m 3eub "As we kept on discussing, we eventually came up with the idea for the literature club."
+    m 3eub "As we kept on discussing, we eventually came up with the idea for the Literature Club."
     m 1eua "...Which brings us to where we are now."
     m 1etc "To be honest, I don't think I've ever had as much time to read before."
 
@@ -16338,7 +16338,7 @@ init 5 python:
     )
 
 label monika_literature_value:
-    m 3esd "You know [player], back in the literature club days I often heard people dismiss literature as outdated and useless."
+    m 3esd "You know [player], back in the Literature Club days I often heard people dismiss literature as outdated and useless."
     m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
     m 3efc "Like, do they even know what they're talking about?"
     m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
@@ -16643,7 +16643,7 @@ label monika_brainstorming:
     m 1esd "[player], have you ever heard of brainstorming?"
     m 1eua "It's an interesting technique of coming up with new ideas by noting anything that comes to your mind."
     m 3eud "This technique is really popular among designers, inventors, and writers--anyone who needs fresh ideas."
-    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the literature club when deciding what to do for the festival."
+    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the Literature Club when deciding what to do for the festival."
     m 1dtc "You just need to focus on what you want to create and bring up anything and everything that comes into your head."
     m 1eud "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if working in teams."
     m 1eua "When you're done, go back through all the suggestions and turn them into actual ideas."
@@ -16973,7 +16973,7 @@ label monika_information_age:
     m 3rssdlc "Misinformation can spread faster and further than ever,{w=0.1} {nw}"
     extend 3rksdld "and because of how vast the internet really is, it's hard to correct it."
     m 2eua "In the last few decades, people have begun to educate others about smart use of the internet so everyone is better prepared."
-    m 2ekd "However, the vast majority of people will not have recieved much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
+    m 2ekd "However, the vast majority of people will not have received much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
     m 2dkc "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
     m 2rusdld "But I can understand why it happens...{w=0.3}{nw}"
     extend 2eksdlc "it could happen to anyone in fact."
@@ -16985,7 +16985,7 @@ label monika_information_age:
     m 1eua "One of the best things we can do is find multiple conflicting sources for our information and compare their credibility."
     m 1eub "And a philosophy we can adopt is tentative belief. {w=0.2}In other words, belief until further experimentation is necessary."
     m 3eub "As long as your beliefs are not relevant to your daily life, you can hold them.{w=0.2} But once they are needed, we should investigate further."
-    m 3eua "This way, we can prioritze information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
+    m 3eua "This way, we can prioritize information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
     m 1lusdlc "I know I've held beliefs that turned out to be false..."
     m 1dua "There's no shame in it, we're all just trying to do our best with the information we're given."
     m 1eub "So long as we accept the real truth and adjust our views, we'll always be learning."
@@ -17004,9 +17004,9 @@ init 5 python:
     )
 
 label monika_foundation:
-    m 1eud "Say [player], have you ever heard of a book series called 'Foundation'?"
+    m 1eud "Say [player], have you ever heard of a book series called {i}Foundation{/i}?"
     m 3eub "It's one of Asimov's most celebrated pieces of literature!{w=0.3} {nw}"
-    extend 3eua "I got back into it after we discussed his '{i}Three Laws of Robotics{/i}.'"
+    extend 3eua "I got back into it after we discussed his {i}Three Laws of Robotics{/i}."
     m 4esd "The story is set in a distant future, where humanity has spread across the stars in an all-powerful galactic empire."
     m 4eua "Hari Seldon, a genius scientist, perfects the fictional science of psychohistory, which can predict the future of large groups of people through mathematical equations."
     m 4wud "Applying his theory to the galaxy, Seldon finds the empire is about to collapse, leading to a dark age of thirty thousand years!"
@@ -17019,7 +17019,7 @@ label monika_foundation:
     extend 3esd "All of which made huge progress since Asimov's time."
     m 3esc "...And with the help of modern technologies, we're now able to understand human behaviors better than ever."
     m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory one day?"
-    m 4eud "Just think if it were possible to predict the global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
+    m 4eud "Just think if it were possible to predict a global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
     m 2rksdlc "Not that it'd automatically be a good thing, however.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
     m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
     m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"
