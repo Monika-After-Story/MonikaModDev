@@ -575,6 +575,27 @@ init 25 python in mas_ui:
 
         return flt_evs[0:TWOPANE_MENU_MAX_FLT_ITEMS]
 
+    def twopane_menu_adj_ranged_callback(adj):
+        """
+        This is called by an adjustment of the twopane menu
+        when its range is being changed (set)
+
+        IN:
+            adj - the adj object
+        """
+        widget = renpy.get_widget("twopane_scrollable_menu", "search_input", "screens")
+        caret_relative_pos = 1.0
+        if widget is not None:
+            caret_pos = widget.caret_pos
+            content_len = len(widget.content)
+
+            if content_len > 0:
+                caret_relative_pos = caret_pos / float(content_len)
+
+        # This ensures that the caret is always visible (close enough) to the user
+        # when they enter text
+        adj.change(adj.range * caret_relative_pos)
+
     def twopane_menu_search_callback(search_query):
         """
         The callback the input calls when the user enters anything.
@@ -588,131 +609,5 @@ init 25 python in mas_ui:
         if scr is not None:
             # Search
             scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
-        # Update the screen
-        renpy.restart_interaction()
-
-    def _selector_filter_items(item, search_query, search_kws):
-        """
-        The filter key we use in the selector screen.
-
-        IN:
-            item - MASSelectableImagebuttonDisplayables object
-            search_query - search query to filter by
-            search_kws - search_query split using spaces
-
-        OUT:
-            boolean whether or not the event pass the criteria
-        """
-        name = item.selectable.display_name.lower()
-        id = item.selectable.name.lower()
-        spr_obj = item.selectable.get_sprobj()
-        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
-        ex_props = " ".join(spr_obj.ex_props.keys())
-
-        for search_kw in search_kws:
-            if (
-                search_kw in name
-                or search_kw in id
-                or (acs_type and search_kw in acs_type)
-                or (ex_props and search_kw in ex_props)
-            ):
-                return True
-
-        return False
-
-    def _selector_sort_items(item, search_query, search_kws):
-        """
-        The sort key we use in the selector screen.
-
-        IN:
-            item - MASSelectableImagebuttonDisplayables object
-            search_query - search query to sort by
-            search_kws - search_query split using spaces
-
-        OUT:
-            weight as int
-        """
-        name = item.selectable.display_name.lower()
-        id = item.selectable.name.lower()
-        spr_obj = item.selectable.get_sprobj()
-        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
-        ex_props = " ".join(spr_obj.ex_props.keys())
-
-        weight = 0
-        base_increment = 2
-        base_modifier = len(search_kws) + 1
-
-        if search_query == name or search_query == id:
-            weight += base_increment * base_modifier**8
-
-        elif search_query in name:
-            if name.startswith(search_query):
-                weight += base_increment * base_modifier**7
-
-            else:
-                weight += base_increment * base_modifier**6
-
-        elif search_query in id:
-            if id.startswith(search_query):
-                weight += base_increment * base_modifier**5
-
-            else:
-                weight += base_increment * base_modifier**4
-
-        else:
-            for search_kw in search_kws:
-                if search_kw in name:
-                    weight += base_increment * base_modifier**3
-
-                elif search_kw in id:
-                    weight += base_increment * base_modifier**2
-
-                elif acs_type and search_kw in acs_type:
-                    weight += base_increment * base_modifier
-
-                elif ex_props and search_kw in ex_props:
-                    weight += base_increment
-
-        return weight
-
-    def _selector_search_items(items, search_query):
-        """
-        The method for filtering and sorting items in the selector screen.
-
-        IN:
-            items - the items to search in
-            search_query - the search query to filter and sort by
-
-        OUT:
-            list of event objects or None if empty query was given
-        """
-        if not search_query:
-            return None
-
-        search_query = search_query.lower().strip()
-        search_kws = search_query.split()
-
-        flt_items = [
-            item
-            for item in items
-            if _selector_filter_items(item, search_query, search_kws)
-        ]
-        flt_items.sort(key=lambda item: _selector_sort_items(item, search_query, search_kws), reverse=True)
-
-        return flt_items
-
-    def selector_search_callback(search_query):
-        """
-        The selector screen input callback.
-
-        IN:
-            search_query - search query to filter and sort by
-        """
-        # Get the screen to pass events into
-        scr = renpy.get_screen("mas_selector_sidebar")
-        if scr is not None:
-            # Search
-            flt_items = _selector_search_items(scr.scope["items"], search_query)
-            scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
         # Update the screen
         renpy.restart_interaction()

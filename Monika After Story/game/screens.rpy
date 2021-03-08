@@ -2733,14 +2733,28 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
         ysize 40
         background Solid("#ffaa99aa")
 
-        input:
-            style_prefix "input"
+        viewport:
+            draggable False
+            arrowkeys False
+            mousewheel "horizontal"
             xsize right_area[0] - left_area[0] + right_area[2] - 10
-            ysize 40
-            xalign 0.0
-            # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _#"
-            pixel_width right_area[0] - left_area[0] + right_area[2] - 10
-            changed store.mas_ui.twopane_menu_search_callback
+            ysize 38
+            xadjustment ui.adjustment(ranged=store.mas_ui.twopane_menu_adj_ranged_callback)
+
+            input:
+                id "search_input"
+                style_prefix "input"
+                length 50
+                xalign 0.0
+                layout "nobreak"
+                # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _#"
+                changed store.mas_ui.twopane_menu_search_callback
+
+        if flt_evs is None:
+            text "Search for a conversation...":
+                text_align 0.0
+                layout "nobreak"
+                color "#FFFFFF"
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
