@@ -197,10 +197,10 @@ label mas_wrs_r34m:
 
         choice = random.randint(1,10)
 
-        if choice == 1:
+        if choice == 1 and mas_isMoniNormal(higher=True):
             queueEvent('monika_nsfw')
 
-        elif choice == 2:
+        elif choice == 2 and mas_isMoniAff(higher=True):
             queueEvent('monika_pleasure')
 
         else:
