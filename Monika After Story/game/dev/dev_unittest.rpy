@@ -106,10 +106,10 @@ init -1 python in mas_dev_unit_tests:
                 ))
                 return False
 
-            # now check keys + values 
+            # now check keys + values
             a_keys = sorted(actual.keys())
             for e_key in expected:
-                
+
                 if e_key not in a_keys:
                     self.tests.append(MASUnitTest(
                         self.test_name,
@@ -120,12 +120,12 @@ init -1 python in mas_dev_unit_tests:
                     ))
                     return False
 
-                # pop key off 
+                # pop key off
                 a_keys.remove(e_key)
                 if not self.assertEqual(expected[e_key], actual[e_key]):
                     return False
 
-            # if any keys remain in a, then we had a mismatch 
+            # if any keys remain in a, then we had a mismatch
             if len(a_keys) > 0:
                 self.tests.append(MASUnitTest(
                     self.test_name,
@@ -379,7 +379,7 @@ label dev_unit_tests_show_pass:
 
 label dev_unit_tests_show_fail:
     m 1ektsc "!!!FAILED!!!"
-    return 
+    return
 
 label dev_unit_tests_show_msgs(msg_list, format_text=False):
     $ index = 0
@@ -494,7 +494,7 @@ label dev_unit_test_event_yearadjust:
         end_dt = now_dt - datetime.timedelta(days=380)
         expected = (add_years(start_dt, 2), add_years(end_dt, 2), True)
         actual = Event._yearAdjust(start_dt, end_dt, [])
-        eya_tester.assertEqual(expected, actual)       
+        eya_tester.assertEqual(expected, actual)
 
         eya_tester.prepareTest("ahead now, same year")
         now_dt = datetime.datetime.now()
@@ -502,7 +502,7 @@ label dev_unit_test_event_yearadjust:
         end_dt = now_dt + datetime.timedelta(days=10)
         expected = (start_dt, end_dt, False)
         actual = Event._yearAdjust(start_dt, end_dt, [])
-        eya_tester.assertEqual(expected, actual)              
+        eya_tester.assertEqual(expected, actual)
 
         eya_tester.prepareTest("ahead now, diff year")
         now_dt = datetime.datetime.now()
@@ -537,7 +537,7 @@ label dev_unit_test_json_masposemap:
             return gen_data(MASPoseArms.J_NAME_LEFT, ldata)
 
         def gen_right(rdata):
-            return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)       
+            return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)
 
         def arms_both(extra=False):
             data = gen_both(("both_pa", True, True))
@@ -1776,7 +1776,7 @@ label dev_unit_test_mhs:
         mhs_tester.assertEqual(test_data[0], test_mhs.trigger)
         mhs_tester.assertFalse(test_mhs.use_year_before)
         store.mas_globals.tt_detected = prev_data[0]
-        MASHistorySaver.first_sesh = prev_data[1]       
+        MASHistorySaver.first_sesh = prev_data[1]
 
         mhs_tester.prepareTest("isActive|continuous")
         test_mhs = gen_fresh_mhs()
@@ -2474,6 +2474,31 @@ label dev_unit_test_mhs_cpm:
         mhs_tester.prepareTest(test_name + "trigger")
         mhs_tester.assertEqual(
             datetime.datetime(test_now.year + inc_year, 1, 4),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "2-29|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(2000, 2, 29)
+        inc_year = int(mas_utils.add_years(bday, test_now.year - bday.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 1),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 3),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 3),
             test_mhs.trigger
         )
         rs_mhs(prev_data)
