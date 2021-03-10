@@ -261,8 +261,7 @@ init python in mas_windowutils:
 
         ASSUMES: OS IS WINDOWS (renpy.windows)
         """
-        window_handle = GetWindowText(GetForegroundWindow())
-        return window_handle
+        return unicode(GetWindowText(GetForegroundWindow()))
 
     def _getActiveWindowHandle_Linux():
         """
