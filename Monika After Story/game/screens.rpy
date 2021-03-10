@@ -2747,6 +2747,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 length 50
                 xalign 0.0
                 layout "nobreak"
+                first_indent (0 if flt_evs is None else 10)
                 # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _#"
                 changed store.mas_ui.twopane_menu_search_callback
 

@@ -3087,6 +3087,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 length 50
                 xalign 0.0
                 layout "nobreak"
+                first_indent (0 if flt_items is items else 10)
                 # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
                 changed store.mas_selspr.selector_search_callback
 
