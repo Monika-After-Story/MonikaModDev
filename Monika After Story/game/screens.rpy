@@ -2754,7 +2754,10 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
             text "Search for a conversation...":
                 text_align 0.0
                 layout "nobreak"
-                color "#FFFFFF"
+                color "#EEEEEEB2"
+                first_indent 10
+                line_leading 1
+                outlines []
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):

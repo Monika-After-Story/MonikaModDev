@@ -3095,7 +3095,10 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             text "Search for...":
                 text_align 0.0
                 layout "nobreak"
-                color "#FFFFFF"
+                color "#EEEEEEB2"
+                first_indent 10
+                line_leading 1
+                outlines []
 
     frame:
         area (1075, 50, 200, sel_frame_vsize - 45)
