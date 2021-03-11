@@ -2770,11 +2770,14 @@ label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
 
 init 5 python:
     # TODO: Add a way to generalize this
-    if not renpy.seen_label("mas_reaction_gift_carddeck"):
-        addReaction("mas_reaction_gift_carddeck", "carddeck", is_good=True)
+    if not renpy.seen_label("mas_reaction_gift_noudeck"):
+        addReaction("mas_reaction_gift_noudeck", "noudeck", is_good=True)
 
-label mas_reaction_gift_carddeck:
-    $ mas_giftCapGainAff(0.5)
+label mas_reaction_gift_noudeck:
+    python:
+        mas_giftCapGainAff(0.5)
+        # She keeps the deck at any aff
+        mas_unlockGame("nou")
 
     if mas_isMoniNormal(higher=True):
         m 1wub "Oh!{w=0.3} A deck of cards!"
@@ -2782,8 +2785,8 @@ label mas_reaction_gift_carddeck:
         m 1eua "Have you ever played 'NOU', [player]?{w=0.2}{nw} "
         extend 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
         m 1rssdlb "It sounds quite obvious, ahaha~"
-        m 3eub "But it really is a fun game to play with friends{w=0.4}{nw} "
-        m 1esc "I also heard it might {i}affect{/i} your relationships with people you're playing with."
+        m 3eub "But it's a really fun game to play with friends and loved ones~"
+        m 1esc "I also heard it might {i}affect{/i} your relationships with the people you're playing with."
 
         if mas_isMoniAff(higher=True):
             show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -2797,17 +2800,18 @@ label mas_reaction_gift_carddeck:
             m 1eua "I'm just kidding, [player]."
             m 3eub "Let's play soon!"
 
-    else:
+    elif mas_isMoniDis(higher=True):
         m 1euc "A deck?"
         m 1rka "Actually it might be...{nw}"
         $ _history_list.pop()
         m 1rkc "Nevermind..."
         m 1esc "I'm not in the mood to play it right now, [player]."
 
+    else:
+        m 6ckc "..."
+
     python:
-        # She keeps the deck, it's locked behind the affection anyway
-        mas_unlockGame("nou")
-        mas_receivedGift("mas_reaction_gift_carddeck")
-        gift_ev = mas_getEV("mas_reaction_gift_carddeck")
+        mas_receivedGift("mas_reaction_gift_noudeck")
+        gift_ev = mas_getEV("mas_reaction_gift_noudeck")
         if gift_ev:
             store.mas_filereacts.delete_file(gift_ev.category)

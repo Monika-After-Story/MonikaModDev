@@ -30,7 +30,7 @@ init 5 python in mas_nou:
     in_progress = False
 
     # Last winner
-    # NOTE: if this's not None, then we played in this sesh
+    # NOTE: if this isn't None, then we played in this sesh
     winner = None
 
     # we allow to press these buttons only once per turn
@@ -124,12 +124,12 @@ init 5 python in mas_nou:
             QUIPS_PLAYER_CLICKS_MONIKA_CARDS = [
                 _("[player], these are my cards!"),
                 _("I see what you're doing, [player]~"),
-                _("This's a little embarrassing~"),
+                _("This is a little embarrassing~"),
                 _("Ah?{w=0.2} What are you trying to do?~")
             ]
             if persistent._mas_affection["affection"] >= 400:
                 QUIPS_PLAYER_CLICKS_MONIKA_CARDS.append(
-                    _("With you I'd not mind doing that for real, [player]~")
+                    _("With you I wouldn't mind doing that for real, [player]~")
                 )
 
             else:
@@ -213,7 +213,7 @@ init 5 python in mas_nou:
         # Quips when Monika said NoU, but didn't play a card
         # NOTE: THIS SHOULD NEVER HAPPEN, BUT WE HAVE THIS FALLBACK JUST IN CASE
         QUIPS_MONIKA_FALSE_NOU = (
-            _("This's embarrassing...{w=0.5}I should've played a card, but forgot about it... {w=0.5}Sorry, [player]."),
+            _("This is embarrassing...{w=0.5}I should've played a card, but forgot about it... {w=0.5}Sorry, [player]."),
         )
 
         # Quips when player said nou
@@ -244,7 +244,7 @@ init 5 python in mas_nou:
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} NOU, [player]!"),
             _("You forgot to say 'NOU', [player]!"),
-            _("You thought I'd not notice?~ You should've said 'NOU'!"),
+            _("You thought I wouldn't notice?~ You should've said 'NOU'!"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
             _("I caught you! You didn't say 'NOU'!"),
@@ -279,7 +279,7 @@ init 5 python in mas_nou:
 
         # # # First, Monika's reactions
 
-        # this's general map with lines we use in all reflect reactions
+        # this is general map with lines we use in all reflect reactions
         REACTIONS_MAP_MONIKA_REFLECTED_CARD = {
             0: [
                 (_("Nope!"),),
@@ -297,7 +297,7 @@ init 5 python in mas_nou:
             ]
         }
 
-        # this's for reflecting an action card
+        # this is for reflecting an action card
         REACTIONS_MAP_MONIKA_REFLECTED_ACT = {
             0: [
                 (_("Thought you will catch me off guard with this?"), _("I knew you'll do it! Ehehe~")),
@@ -314,23 +314,23 @@ init 5 python in mas_nou:
             ]
         }
 
-        # this's for reflecting a Wild Choose Color
+        # this is for reflecting a Wild Choose Color
         REACTIONS_MAP_MONIKA_REFLECTED_WCC = {
             0: [
                 (_("Hmm...{w=0.5}I don't like this color~"),),
-                (_("Sorry, [player] but..."), _("This's not the color I want right now~")),
+                (_("Sorry, [player] but..."), _("This isn't the color I want right now~")),
                 (_("[store.mas_nou.game.discardpile[-1].color.capitalize()] isn't what I want now~"),)
             ],
             1: [
                 (_("No-no-no!"),),
-                (_("[player]...just let it me choose the right color~"),)
+                (_("[player]...just let me choose the right color~"),)
             ],
             2: [
                 (_("Ehehe~"), _("I have another in store!~"))
             ]
         }
 
-        # this's for reflecting a Wild Draw 4
+        # this is for reflecting a Wild Draw 4
         REACTIONS_MAP_MONIKA_REFLECTED_WD4 = {
             0: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[0]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[0]),
             1: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[1]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[1]) + [
@@ -346,7 +346,7 @@ init 5 python in mas_nou:
             REACTIONS_MAP_MONIKA_REFLECTED_WCC[i] += list(REACTIONS_MAP_MONIKA_REFLECTED_CARD[i])
             REACTIONS_MAP_MONIKA_REFLECTED_WD4[i] += list(REACTIONS_MAP_MONIKA_REFLECTED_CARD[i])
 
-        # This's used when she chooses a color
+        # This is used when she chooses a color
         # It has only one key - 0 - because it doesn't make sense to keep track of series of this
         REACTIONS_MAP_MONIKA_PLAYED_WILD = {
             0: [
@@ -472,7 +472,7 @@ init 5 python in mas_nou:
         }
 
         # Chances to get a reaction depend on its seen_count
-        # This's a map between seen_count and the odds
+        # This is a map between seen_count and the odds
         REACTION_CHANCES_MAP = {
             0: 33,
             1: 66,
@@ -1424,7 +1424,7 @@ init 5 python in mas_nou:
         def monika_turn_loop(self):
             """
             Monika's actions during her turn
-            Yes, I know that this's not a loop
+            Yes, I know that this isn't a loop
             """
             if not self.monika.plays_turn:
                 return
@@ -1486,7 +1486,7 @@ init 5 python in mas_nou:
             """
             total_cards = len(self.drawpile)
 
-            # NOTE: This's Just in case, in theory the drawpile will have about 47 cards in the worst scenario
+            # NOTE: This is Just in case, in theory the drawpile will have about 47 cards in the worst scenario
             if total_cards > 15:
                 # 7/10
                 k = renpy.random.randint(0, 9)
@@ -1733,7 +1733,7 @@ init 5 python in mas_nou:
                 """
                 Guesses cards' colors in the player's hand
                 NOTE: must run this before anything else
-                NOTE: this's method is quite a mess
+                NOTE: this method is quite a mess
                 """
                 # We can't assume anything if the player didn't play their 1st turn
                 if len(self.game.game_log) < 2:
@@ -2019,7 +2019,7 @@ init 5 python in mas_nou:
             def shuffle_hand(self):
                 """
                 Sorts some cards in Monika's hand
-                This's just for visuals
+                This is just for visuals
                 NOTE: Since this changes cards' ids,
                     either do this at the start of the turn (optimal),
                     or update cards data again after shuffling.
@@ -2323,7 +2323,7 @@ init 5 python in mas_nou:
                                     )
                                 )
                                 and (
-                                    this_color != self.game.discardpile[-1].color# no reason not to play it if this's the current color
+                                    this_color != self.game.discardpile[-1].color# no reason not to play it if this is the current color
                                     or renpy.random.randint(1, 5) == 1# 1/5 to take the risk and draw a card in hope it'll worth it
                                 )
                             )
@@ -2484,7 +2484,7 @@ init 5 python in mas_nou:
                         card = self.hand[id]
 
                         if self.game.__is_matching_card(self, card):
-                            # NOTE: Since this's the reflect flow, you can't play a wild card here
+                            # NOTE: Since this is the reflect flow, you can't play a wild card here
                             # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
                             # if (
                             #     should_choose_color
@@ -2676,7 +2676,7 @@ init 5 python in mas_nou:
                     and self.should_skip_turn
                     and len(self.game.game_log) > 1# see if there were enough turns
                     and self.game.game_log[-2]["played_card"] is not None# check if the player played something
-                    and next_card_to_play.label == self.game.game_log[-2]["played_card"].label# compare the labels as this's the only way to reflect an act
+                    and next_card_to_play.label == self.game.game_log[-2]["played_card"].label# compare the labels as this is the only way to reflect an act
                 ):
                     # # # Does Monika reflect a card that reflected a wd4 before?
                     # Monika played a wd4 > the player reflected > Monika reflected
@@ -2896,8 +2896,8 @@ init 5 python in mas_nou:
                 # # # The Player reflected a WCC card
                 if (
                     (
-                        next_card_to_play is None# if this's the player's reflect, then Monika either don't play anything
-                        or next_card_to_play.type != "wild"# or play a non-wild card
+                        next_card_to_play is None# if this is the player's reflect, then Monika either doesn't play anything
+                        or next_card_to_play.type != "wild"# or plays a non-wild card
                     )
                     and len(self.game.game_log) > 2
                     and self.game.game_log[-3]["played_card"] is not None# see if they reflected another card from Monika by that
@@ -3496,7 +3496,7 @@ init 5 python:
             category=["games"],
             pool=True,
             unlocked=False,
-            conditional="renpy.seen_label('mas_reaction_gift_carddeck')",
+            conditional="renpy.seen_label('mas_reaction_gift_noudeck')",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL, None)# you can play NoU only on norm+
@@ -4604,7 +4604,7 @@ init -10 python in mas_cardgames:
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
                 self.back = MASFilterSwitch(back)
 
-            # This's some kind of displayable, but not an image
+            # This is some kind of displayable, but not an image
             elif isinstance(back, renpy.display.core.Displayable):
                 self.back = back
 
@@ -5439,7 +5439,7 @@ init -10 python in mas_cardgames:
             markers - a list of marker that will be rendered over the card
             stack - the stack the card belongs to
             _offset - an object that gives the offset of this card relative to
-                where it would normally be placed. THIS'S THE PRIVATE VARIANT FOR INTERNAL USE
+                where it would normally be placed. THIS IS THE PRIVATE VARIANT FOR INTERNAL USE
             rect - the rectangle where this card was last drawn to the screen at
             hovered - whether or not the user hovered over this card
             positional_offset - the offsets which you can use to change the card positions (PUBLIC)
