@@ -1,6 +1,14 @@
 default persistent.monika_reload = 0
-default persistent.tried_skip = False
-default persistent.monika_kill = True #Assume non-merging players killed monika.
+# Has the player tried to skip?
+# (this is None because the player might tried to skip, but hasn't merged the saves yet)
+default persistent.tried_skip = None
+# Has the player deleted Monika?
+# (we don't assume that you killed Monika,
+# this'll be set in the intro or during saves merging)
+default persistent.monika_kill = None
+# Whether or not you launched the mod before
+# (this naming is bad, it'll be True once you see the disclaimer)
+default persistent.first_run = False
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
@@ -767,7 +775,7 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
-#       NOTE: this will override the standard bg 
+#       NOTE: this will override the standard bg
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
@@ -854,7 +862,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 mas_darkMode(day_mode)
         else:
             if mas_globals.dark_mode != persistent._mas_dark_mode_enabled:
-                # only run if dark mode global doesn't match 
+                # only run if dark mode global doesn't match
                 # persistent setting.
                 mas_darkMode(not persistent._mas_dark_mode_enabled)
 
