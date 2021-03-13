@@ -697,6 +697,7 @@ init python:
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
+                and ev.checkConditional()
                 and mas_isInActiveWindow(ev.category[0], active_window_handle)
                 and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
