@@ -77,7 +77,7 @@ init 8 python:
         if game_ev:
             return (
                 game_ev.unlocked
-                and (not game_ev.conditional or (game_ev.conditional and eval(game_ev.conditional)))
+                and game_ev.checkConditional()
                 and game_ev.checkAffection(store.mas_curr_affection)
             )
         return False

@@ -6542,12 +6542,15 @@ init -1 python:
         renpy.show("mas_bday_balloons", zorder=8)
 
 
-    def mas_surpriseBdayHideVisuals():
+    def mas_surpriseBdayHideVisuals(cake=False):
         """
         Hides all visuals for surprise party
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+        if cake:
+            renpy.hide("mas_bday_cake_monika")
+
 
     def mas_confirmedParty():
         """
