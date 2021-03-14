@@ -19,10 +19,19 @@ label dev_moni_disps_test:
         "Test idle disp dissolves.":
             $ test_idle_disp = MASMoniIdleDisp(
                 (
-                    MASMoniIdleExp("1eua", duration=5),
-                    MASMoniIdleExp("1hua", duration=5),
-                    MASMoniIdleExp("5eubsa", duration=5),
-                    MASMoniIdleExp("5esu", duration=5)
+                    MASMoniIdleExp("1eua", duration=3),
+                    MASMoniIdleExp("1hua", duration=3),
+                    MASMoniIdleExp("5eubsa", duration=3),
+                    MASMoniIdleExp("5esu", duration=3),
+                    MASMoniIdleExpGroup(
+                        [
+                            MASMoniIdleExp("1eua", duration=1),
+                            MASMoniIdleExp("1kua", duration=1),
+                            MASMoniIdleExp("1eua", duration=2),
+                        ]
+                    ),
+                    MASMoniIdleExp("1eua_follow", duration=3),
+                    MASMoniIdleExp("5esu_follow", duration=3)
                 )
             )
             show expression test_idle_disp as monika at i11 zorder MAS_MONIKA_Z

@@ -8479,27 +8479,12 @@ python early:
             """
             Render of this disp
             """
-            # We need this so we run through the loop only once 'til the next time we use wink
-            if (
-                (st == 0 and self.redraw_st is None)
-                or self.transform_event in MASMoniWinkTransform.RESETTING_EVS
-                # or at == 0
-            ):
-                self.__reset()
-
-                img_render = renpy.render(self.current_img, width, height, self.current_st, at)
-                rv = renpy.Render(img_render.width, img_render.height)
-                rv.blit(img_render, MASMoniWinkTransform.BLIT_COORDS)
-
-                renpy.redraw(self, 1)
-
-                return rv
-
             if st > self._last_st:
                 self.current_st += (st - self._last_st)
 
-            # else:
-            #     self.current_st += st
+            else:
+                self.__reset()
+                # self.current_st += st
 
             self._last_st = st
 
@@ -8546,7 +8531,7 @@ python early:
             self._last_st = 0.0
             self.current_st = 0.0
             self.redraw_st = 0.0
-            self.current_img = self.open_eyes_img
+            # self.current_img = self.open_eyes_img
             self.transform_event = None
 
         def _hide(self, st, at, kind):
