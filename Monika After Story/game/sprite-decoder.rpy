@@ -1,111 +1,54 @@
 #Runtime code equivalent of our spritemaker tool
 init python in mas_sprite_decoder:
+    import json
     import store
 
-    EYEBROW_MAP = {
-        "f": "furrowed",
-        "u": "up",
-        "k": "knit",
-        "s": "mid",
-        "t": "think",
-    }
-
-    EYE_MAP = {
-        "e": "normal",
-        "w": "wide",
-        "s": "sparkle",
-        "t": "smug",
-        "c": "crazy",
-        "r": "right",
-        "l": "left",
-        "h": "closedhappy",
-        "d": "closedsad",
-        "k": "winkleft",
-        "n": "winkright",
-        "f": "soft",
-        "m": "smugleft",
-        "g": "smugright",
-    }
-
-    MOUTH_MAP = {
-        "a": "smile",
-        "b": "big",
-        "c": "smirk",
-        "d": "small",
-        "o": "gasp",
-        "u": "smug",
-        "w": "wide",
-        "x": "angry",
-        "p": "pout",
-        "t": "triangle",
-    }
-
-    ARM_MAP = {
-        "1": "steepling",
-        "2": "crossed",
-        "3": "restleftpointright",
-        "4": "pointright",
-        "5": ("def", "def"),
-        "6": "down",
-        "7": "downleftpointright",
-    }
-
+    EYEBROW_MAP = dict()
+    EYE_MAP = dict()
+    MOUTH_MAP = dict()
+    ARM_MAP = dict()
     #Standing sprite parts
-    HEAD_MAP = {
-        # exact eye - eyebrow - mouth match
-        "eua": "a",
-        "eub": "b",
-        "euc": "c",
-        "eud": "d",
-        "eka": "e",
-        "ekc": "f",
-        "ekd": "g",
-        "esc": "h",
-        "esd": "i",
-        "hua": "j",
-        "hub": "k",
-        "hkb": "l", #sdl
-        "lka": "m", #sdl
-        "lkb": "n", #sdl
-        "lkc": "o", #sdl
-        "lkd": "p", #sdl
-        "dsc": "q",
-        "dsd": "r",
-    }
-
-    SIDES_MAP = {
-        "1": ("1l", "1r"),
-        "2": ("1l", "2r"),
-        "3": ("2l", "2r"),
-        "4": ("2l", "2r"),
-        "5": ("", ""),
-        "6": ("1l", "1r"),
-        "7": ("1l", "2r"),
-    }
-
+    # exact eye - eyebrow - mouth match
+    # "hkb": "l", #sdl
+    # "lka": "m", #sdl
+    # "lkb": "n", #sdl
+    # "lkc": "o", #sdl
+    # "lkd": "p", #sdl
+    HEAD_MAP = dict()
+    SIDES_MAP = dict()
     #NOTE: Everything not present here is assumed 3b
-    SINGLE_MAP = {
-        "a": "3a",
-        "u": "3a",
-    }
+    SINGLE_MAP = dict()
+    BLUSH_MAP = dict()
+    TEAR_MAP = dict()
+    SWEAT_MAP = dict()
 
-    BLUSH_MAP = {
-        "bl": "lines",
-        "bs": "shade",
-        "bf": "full"
-    }
+    def __loadSpriteMapData():
+        """
+        Loads sprite map data from the sprite map json file
+        """
+        global EYEBROW_MAP, EYE_MAP, MOUTH_MAP, ARM_MAP, HEAD_MAP
+        global SIDES_MAP, SINGLE_MAP, BLUSH_MAP, TEAR_MAP, SWEAT_MAP
 
-    TEAR_MAP = {
-        "ts": "streaming",
-        "td": "dried",
-        "tp": "pooled",
-        "tu": "up",
-    }
+        jobj = None
 
-    SWEAT_MAP = {
-        "sdl": "def",
-        "sdr": "right"
-    }
+        with open(store.os.path.join(renpy.config.gamedir, "mod_assets", "sprite_map.json"), "r") as jsonfile:
+            jobj = json.load(jsonfile)
+
+        # is file json
+        if jobj is None:
+            store.mas_utils.writelog("[ERROR]: Failed to load sprite_map json.")
+            return
+
+        EYEBROW_MAP = jobj["eyebrows"]
+        EYE_MAP = jobj["eyes"]
+        MOUTH_MAP = jobj["mouth"]
+        ARM_MAP = jobj["arms"]
+        HEAD_MAP = jobj["head"]
+        SIDES_MAP = jobj["sides"]
+        SINGLE_MAP = jobj["single"]
+        BLUSH_MAP = jobj["blush"]
+        TEAR_MAP = jobj["tears"]
+        SWEAT_MAP = jobj["sweat"]
 
     def __process_blush(spcode, index, export_dict, *prefixes):
         """
@@ -228,7 +171,7 @@ init python in mas_sprite_decoder:
 
         #Checks passed. Let's add this
         export_dict["tears"] = tears
-        return True, 1
+        return (True, 1)
 
     PROCESS_MAP = {
         "b": __process_blush,
@@ -348,3 +291,5 @@ init python in mas_sprite_decoder:
         #Otherwise this is invalid
         except:
             return False
+
+    __loadSpriteMapData()
