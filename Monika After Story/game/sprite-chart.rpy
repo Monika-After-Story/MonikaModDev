@@ -660,7 +660,7 @@ init -5 python in mas_sprites:
     LOC_WH = (1280, 850)
 
     # composite stuff
-    I_COMP = "LiveComposite"
+    I_COMP = "im.Composite"
     L_COMP = "LiveComposite"
     TRAN = "Transform"
 
