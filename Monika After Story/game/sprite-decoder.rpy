@@ -50,6 +50,12 @@ init python in mas_sprite_decoder:
         TEAR_MAP = jobj["tears"]
         SWEAT_MAP = jobj["sweat"]
 
+        #Since tuples aren't supported in json, we need to do some conversion here
+        ARM_MAP["5"] = tuple(ARM_MAP["5"])
+
+        for side_key, side_list in SIDES_MAP.iteritems():
+            SIDES_MAP[side_key] = tuple(side_list)
+
     def __process_blush(spcode, index, export_dict, *prefixes):
         """
         Processes a blush off the given sprite code at the given index
