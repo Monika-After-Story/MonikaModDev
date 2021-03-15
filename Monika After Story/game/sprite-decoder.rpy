@@ -36,7 +36,7 @@ init python in mas_sprite_decoder:
 
         # is file json
         if jobj is None:
-            store.mas_utils.writelog("[ERROR]: Failed to load sprite_map json.")
+            raise Exception("[ERROR]: Failed to load sprite_map json.")
             return
 
         EYEBROW_MAP = jobj["eyebrows"]
