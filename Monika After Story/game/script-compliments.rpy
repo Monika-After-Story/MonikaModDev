@@ -18,6 +18,8 @@ init 3 python in mas_compliments:
     compliment_database = dict()
 
 init 22 python in mas_compliments:
+    import store
+
     thanking_quips = [
         _("You're so sweet, [player]."),
         _("Thanks for saying that again, [player]!"),
@@ -30,6 +32,15 @@ init 22 python in mas_compliments:
 
     # set this here in case of a crash mid-compliment
     thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+
+    def compliment_delegate_callback():
+        """
+        A callback for the compliments delegate label
+        """
+        global thanks_quip
+
+        thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+        store.mas_gainAffection()
 
 # entry point for compliments flow
 init 5 python:
@@ -79,9 +90,8 @@ label monika_compliments:
 
     # return value? then push
     if _return:
-        $ mas_gainAffection()
+        $ mas_compliments.compliment_delegate_callback()
         $ pushEvent(_return)
-        $ mas_compliments.thanks_quip = renpy.substitute(renpy.random.choice(mas_compliments.thanking_quips))
         # move her back to center
         show monika at t11
 

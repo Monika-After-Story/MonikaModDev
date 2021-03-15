@@ -129,7 +129,7 @@ default persistent._mas_force_hair = False
 default persistent._mas_last_ahoge_dt = None
 # set to the dt of when we last set the ahoge
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed", show_function=store.mas_core.show_display_say)
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
 
@@ -137,6 +137,26 @@ image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 # Monika's piano sprite
 image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
+
+init -10 python in mas_core:
+    import renpy
+    _last_text = None
+
+    def show_display_say(who, what_string, **kwargs):
+        """
+        semi-override of show_display_say so we can force text to render
+        immediately.
+        """
+        global _last_text
+        rv = renpy.character.show_display_say(who, what_string, **kwargs)
+
+        if isinstance(rv, tuple):
+            # r7-specific handling.
+            # purposely not doing *rv in case tom changes stuff again
+            rv = renpy.display.screen.get_widget(rv[0], rv[1], rv[2])
+
+        _last_text = rv
+        return _last_text
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
@@ -640,7 +660,7 @@ init -5 python in mas_sprites:
     LOC_WH = (1280, 850)
 
     # composite stuff
-    I_COMP = "LiveComposite"
+    I_COMP = "im.Composite"
     L_COMP = "LiveComposite"
     TRAN = "Transform"
 
