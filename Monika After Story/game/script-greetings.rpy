@@ -4284,7 +4284,12 @@ label greeting_back_from_hangout:
 
 init 5 python:
     ev_rules = {}
-    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1dsbsu"))
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            random_chance=3,
+            forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
+        )
+    )
 
     addEvent(
         Event(
@@ -4340,8 +4345,7 @@ label greeting_spacing_out:
         spacing_out_pause.start()
 
     # Small pause so people don't skip this line
-    $ renpy.pause(0.1)
-    $ enable_esc()
+    $ renpy.pause(0.01)
     m 2wubfsdlo "[player]!"
     m 1rubfsdlb "You surprised me! {w=0.4}{nw}"
     extend 1eubsu "I was{w=0.2} spacing out a bit..."
