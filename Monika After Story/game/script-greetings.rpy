@@ -3048,7 +3048,7 @@ label greeting_back_from_school:
 
     return
 
-default persistent._mas_pm_got_promotion = None
+default persistent._mas_pm_last_promoted_d = None
 # date when player last got promotion
 
 init 5 python:
@@ -3072,10 +3072,11 @@ label greeting_back_from_work:
             m "How was work today?{fast}"
 
             "Amazing!":
-                if not persistent._mas_pm_got_promotion:
+                if not persistent._mas_pm_last_promoted_d:
                     $ promoted_recently = False
                 else:
-                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_got_promotion + datetime.timedelta(days=180)
+                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_last_promoted_d + datetime.timedelta(days=180)
+
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
 
@@ -3088,12 +3089,15 @@ label greeting_back_from_work:
                             m 3suo "Wow! Again?!"
                             m 3sub "You just got a promotion not that long ago...{w=0.5}you must really be doing amazing work!"
                             m 1huu "I'm so, {w=0.3}so proud of you, [mas_get_player_nickname()]~"
+
                         else:
                             $ player_nick = mas_get_player_nickname()
                             m 3suo "Wow! Congratulations [player_nick], {w=0.1}{nw}"
                             extend 3hub "I'm so proud of you!"
                             m 1euu "I knew you could do it~"
-                        $ persistent._mas_pm_got_promotion = datetime.date.today()
+                            $ promoted_recently = True
+
+                        $ persistent._mas_pm_last_promoted_d = datetime.date.today()
 
                     "I got a lot done!":
                         m 3hub "That's great, [mas_get_player_nickname()]!"
@@ -3103,7 +3107,7 @@ label greeting_back_from_work:
 
                 m 3eua "I can only imagine how well you must work on days like that."
                 if not promoted_recently:
-                    m 1hua "...Maybe you'll even move up a bit soon!"
+                    m 1hub "...Maybe you'll even move up a bit soon!"
                 m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
 
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
