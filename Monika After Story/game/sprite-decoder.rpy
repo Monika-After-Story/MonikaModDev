@@ -22,6 +22,13 @@ init python in mas_sprite_decoder:
     TEAR_MAP = dict()
     SWEAT_MAP = dict()
 
+    class MASSpriteException(Exception):
+        def __init__(self, message):
+            self.message = message
+
+        def __str__(self):
+            return self.message
+
     def __loadSpriteMapData():
         """
         Loads sprite map data from the sprite map json file
@@ -31,30 +38,30 @@ init python in mas_sprite_decoder:
 
         jobj = None
 
-        with open(store.os.path.join(renpy.config.gamedir, "mod_assets", "sprite_map.json"), "r") as jsonfile:
-            jobj = json.load(jsonfile)
+        try:
+            with open(store.os.path.join(renpy.config.gamedir, "mod_assets", "sprite_map.json"), "r") as jsonfile:
+                jobj = json.load(jsonfile)
 
-        # is file json
-        if jobj is None:
-            raise Exception("[ERROR]: Failed to load sprite_map json.")
-            return
+            EYEBROW_MAP = jobj["eyebrows"]
+            EYE_MAP = jobj["eyes"]
+            MOUTH_MAP = jobj["mouth"]
+            ARM_MAP = jobj["arms"]
+            HEAD_MAP = jobj["head"]
+            SIDES_MAP = jobj["sides"]
+            SINGLE_MAP = jobj["single"]
+            BLUSH_MAP = jobj["blush"]
+            TEAR_MAP = jobj["tears"]
+            SWEAT_MAP = jobj["sweat"]
 
-        EYEBROW_MAP = jobj["eyebrows"]
-        EYE_MAP = jobj["eyes"]
-        MOUTH_MAP = jobj["mouth"]
-        ARM_MAP = jobj["arms"]
-        HEAD_MAP = jobj["head"]
-        SIDES_MAP = jobj["sides"]
-        SINGLE_MAP = jobj["single"]
-        BLUSH_MAP = jobj["blush"]
-        TEAR_MAP = jobj["tears"]
-        SWEAT_MAP = jobj["sweat"]
+            #Since tuples aren't supported in json, we need to do some conversion here
+            ARM_MAP["5"] = tuple(ARM_MAP["5"])
 
-        #Since tuples aren't supported in json, we need to do some conversion here
-        ARM_MAP["5"] = tuple(ARM_MAP["5"])
+            for side_key, side_list in SIDES_MAP.iteritems():
+                SIDES_MAP[side_key] = tuple(side_list)
 
-        for side_key, side_list in SIDES_MAP.iteritems():
-            SIDES_MAP[side_key] = tuple(side_list)
+        #I don't really like this but it's a cleaner way of bringing up this exception once instead of multiple times
+        except Exception as e:
+            raise MASSpriteException(repr(e) + "\n\nPLEASE REINSTALL MAS TO CORRECT THIS ERROR")
 
     def __process_blush(spcode, index, export_dict, *prefixes):
         """

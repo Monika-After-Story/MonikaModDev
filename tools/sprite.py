@@ -894,12 +894,9 @@ class StaticSprite(object):
         """
         jobj = None
 
+        #NOTE: this raises its own exceptions when it encounters issues
         with open(gamedir.REL_PATH_GAME + "mod_assets/sprite_map.json", "r") as jsonfile:
             jobj = json.load(jsonfile)
-
-        # is file json
-        if jobj is None:
-            raise Exception("[ERROR]: Failed to load sprite_map json.")
 
         StaticSprite._sprite_map["position"] = jobj["arms"]
         StaticSprite._sprite_map["eyebrows"] = jobj["eyebrows"]
