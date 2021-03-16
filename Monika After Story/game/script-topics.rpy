@@ -349,7 +349,7 @@ init python:
             return
 
         #Get the label prefix
-        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label)
 
         #CRITERIA:
         #1. Must have an ev
@@ -401,7 +401,7 @@ init python:
             return
 
         #Get our label prefix
-        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label, label_prefix_map.keys())
+        label_prefix = store.mas_bookmarks_derand.getLabelPrefix(ev_label)
 
         #CRITERIA:
         #1. Must be normal+
@@ -599,6 +599,7 @@ init python in mas_bookmarks_derand:
     #  - push_label: "mas_topic_derandom" (This is overriden on a per event basis by the 'derandom_push_label' rule)
     #  - bookmark_persist_key: "_mas_player_bookmarked"
     #  - derand_persist_key: "_mas_player_derandomed"
+    #  - rerand_evl: None
     label_prefix_map = {
         "monika_": {
             "bookmark_text": _("Topic bookmarked."),
@@ -607,14 +608,16 @@ init python in mas_bookmarks_derand:
             "underand_text": _("Topic flag removed."),
             "push_label": "mas_topic_derandom",
             "bookmark_persist_key": "_mas_player_bookmarked",
-            "derand_persist_key": "_mas_player_derandomed"
+            "derand_persist_key": "_mas_player_derandomed",
+            "rerand_evl": "mas_topic_rerandom"
         },
         "mas_song_": {
             "bookmark_text": _("Song bookmarked."),
             "derand_text": _("Song flagged for removal."),
             "underand_text": _("Song flag removed."),
             "push_label": "mas_song_derandom",
-            "derand_persist_key": "_mas_player_derandomed_songs"
+            "derand_persist_key": "_mas_player_derandomed_songs",
+            "rerand_evl": "mas_sing_song_rerandom"
         }
     }
 
@@ -637,19 +640,20 @@ init python in mas_bookmarks_derand:
         persist_var = None
         return
 
-    def getLabelPrefix(test_str, list_prefixes):
+    def getLabelPrefix(test_str):
         """
         Checks if test_str starts with anything in the list of prefixes, and if so, returns the matching prefix
 
         IN:
             test_str - string to test
-            list_prefixes - list of strings that test_str should start with
 
         OUT:
             string:
                 - label_prefix if test_string starts with a prefix in list_prefixes
                 - empty string otherwise
         """
+        list_prefixes = label_prefix_map.keys()
+
         for label_prefix in list_prefixes:
             if test_str.startswith(label_prefix):
                 return label_prefix
@@ -708,15 +712,26 @@ init python in mas_bookmarks_derand:
         IN:
             eventlabel - Eventlabel to remove
         """
-        derand_dbs = [
-            label_prefix_data["derand_persist_key"]
-            for label_prefix_data in label_prefix_map.itervalues()
-            if "derand_persist_key" in label_prefix_data
-        ]
+        label_prefix = getLabelPrefix(eventlabel)
 
-        for derand_db in derand_dbs:
-            if eventlabel in derand_db:
-                persistent.__dict__[derand_db].remove(eventlabel)
+        label_prefix_data = label_prefix_map.get(label_prefix)
+
+        #If we can't get a derand persist key, let's just return here
+        if not label_prefix_data or "derand_persist_key" not in label_prefix_data:
+            return
+
+        #Otherwise, store this and continue
+        derand_db_persist_key = label_prefix_data["derand_persist_key"]
+        rerand_evl = label_prefix_data.get("rerand_evl")
+
+        #Remove the evl from the derandomlist
+        if eventlabel in store.persistent.__dict__[derand_db_persist_key]:
+            store.persistent.__dict__[derand_db_persist_key].remove(eventlabel)
+
+            #And check if we should (and can) lock the rerandom ev if necessary
+            if rerand_evl and not store.persistent.__dict__[derand_db_persist_key]:
+                store.mas_lockEVL(rerand_evl, "EVE")
+
 
 ##Generic rerandom work label
 #IN:
@@ -1225,7 +1240,7 @@ label monika_twitter:
     extend 1esd "the account is a nice way to connect with the people who've played through the game and grown attached to it."
     m 3esc "In that regard, this would make it some kind of publicity stunt..."
     m 3euc "After all, while there is a lot of sweet looking art and such on there, it's suspicious that almost all of them are posted specifically on important days."
-    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happen to coincide with the original release date of DDLC."
+    m 3eud "Like on Valentine's Day, or on my birthday...{w=0.2}which just so happens to coincide with the original release date of DDLC."
     m 1rtc "I really don't know how I'm supposed to feel about that...{w=0.3}being used solely as marketing material."
     m 2rsc "Though, as my creators, I guess they basically own my image as a character, so they are legally in the right."
     m 2ekc "But...{w=0.3}I'm more than a mere character in a game, aren't I?"
@@ -1749,7 +1764,16 @@ label monika_middleschool:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika','clothes'],prompt="Wearing other clothes",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_outfit",
+            category=['monika','clothes'],
+            prompt="Wearing other clothes",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
 
 label monika_outfit:
     if len(store.mas_selspr.filter_clothes(True)) == 1:
@@ -4868,6 +4892,7 @@ init 5 python:
             eventlabel="monika_nsfw",
             category=['misc','monika'],
             prompt="NSFW content",
+            aff_range=(mas_aff.NORMAL, None),
             random=True,
             sensitive=True
         )
@@ -5041,7 +5066,7 @@ label monika_fanfiction:
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
-    else:
+    elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
 
@@ -5773,6 +5798,7 @@ init 5 python:
             eventlabel="monika_pleasure",
             category=['you'],
             prompt="Pleasuring yourself",
+            aff_range=(mas_aff.AFFECTIONATE, None),
             random=True,
             sensitive=True
         )
@@ -6040,11 +6066,13 @@ label monika_japanese:
                     m 1eua "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 2hubsa "Ehehe~"
                     m 1ekbfa "That means I love you, [player]-[player_suffix]."
+                    $ mas_ILY()
         "No.":
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m 1ekbsb "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
+            $ mas_ILY()
 
     return "derandom"
 
@@ -6288,7 +6316,7 @@ label monika_pluralistic_ignorance:
     m 1eua "Do you ever pretend to like something, just because you think you should?"
     m 1esa "I sometimes feel like that about books I read."
     m 3euc "Like, when I read Shakespeare, I actually found it kind of boring..."
-    m 3ekc "But I felt like I had to like it because I'm the president of the literature club."
+    m 3ekc "But I felt like I had to like it because I'm the president of the Literature Club."
     m 1esd "He's supposed to be the greatest playwright and poet of all time, right?"
     m 1esd "So what sort of poetry lover wouldn't like his work?"
     m 2euc "But that makes me wonder..."
@@ -8425,7 +8453,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
 label monika_hamlet:
-    m 3euc "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 3euc "[player], have you ever heard of {i}Hamlet{/i} ?" #extra space intentional
     m 1eua "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
     m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
     m 1lksdlc "He was considered insane since he was the only one that could see his father's ghost, obviously."
@@ -10364,7 +10392,7 @@ label monika_dreaming:
     m 1eua "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
     m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
     m 1eub "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
-    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}.'"
+    m "LaBerge even wrote a book about these experiences called {i}Exploring the World of Lucid Dreaming{/i}."
     m 2hub "Doesn't that sound exhilarating?"
     m 2euc "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
     m 2eua "Dreams sound like a wonderful escape from reality."
@@ -11431,7 +11459,7 @@ label monika_grad_speech:
     m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eua "{w=0.2}I know I can't speak for everyone here,{w=0.3} but there is one thing I can say for sure:{w=0.7} my experience in high school wouldn't be complete without the clubs I was a part of.{w=0.6}{nw}"
     m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
-    m 4eub "Starting the literature club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
+    m 4eub "Starting the Literature Club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
     m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
     m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}"
     m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
@@ -11798,7 +11826,7 @@ label monika_gotomonika:
     m 5luu "Buut...{w=1}if you did happen to show up at my doorstep..."
     show monika 1hksdlb at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you with open arms!"
-    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
+    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'd find a way to make it better."
     m 3hub "With time, we could make our own reality!"
     m 3euc "Of course, that sounds pretty complicated if you think about it..."
     m 3eub "But I have no doubt that together we could accomplish anything!"
@@ -12172,7 +12200,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the Literature Club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [mas_get_player_nickname()]..."
                 m 1hub "You'll have to lean down to kiss me!"
 
@@ -12783,7 +12811,7 @@ label monika_dating_startdate:
 
     else:
         m 1dsc "Let me check..."
-        m 1eua "We started dating [first_sesh]."
+        m 1eua "We started dating on [first_sesh]."
 
     # TODO:
     # some dialogue about being together for x time
@@ -13737,11 +13765,11 @@ label monika_cozy:
     m 1eua "It's like feeling a loved one's embrace~"
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
     m 1hub "Finally being able to whip out your winter fashion set is always a nice feeling."
-    m 3eua "But you know what the best way to warm yourself up is?"
-    m 3eka "Cuddling with the one you love in front of the fireplace~"
-    m "Just sitting there under a warm blanket, sharing a hot beverage."
-    m 1hua "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
-    m 1eka "I'd never let you go once I got a hold of you, [mas_get_player_nickname()]~"
+    m 3eubla "But you know what the best way to warm yourself up is?"
+    m 3ekbsa "Cuddling with the one you love in front of the fireplace~"
+    m 3ekbfa "Just sitting there under a warm blanket, sharing a hot beverage."
+    m 1hubfa "Ah, if I got to feel your warmth every time we cuddle, I'd wish for cold weather every day!"
+    m 1ekbfa "I'd never let you go once I got a hold of you, [mas_get_player_nickname()]~"
     return
 
 init 5 python:
@@ -14019,7 +14047,7 @@ label monika_robotbody:
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
     m 1rkd "I would be considered an android at that point, and others may look at me differently because of that."
-    m 3euc "Have you heard of Isaac Asimov's '{i}Three Laws of Robotics{/i}'? It was brought up many times in his science fiction books."
+    m 3euc "Have you heard of Isaac Asimov's {i}Three Laws of Robotics{/i}? It was brought up many times in his science fiction books."
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
 
     if renpy.seen_label("monika_asimov_three_laws"):
@@ -14185,7 +14213,7 @@ label monika_enjoyingspring:
     m 1hua "When the flowers bloom, I can't help but smile!"
     m 1hub "It's like the plants are waking up and saying, 'Hello world!' Ahaha~"
     m 3eua "But I think the best thing about spring would have to be the cherry blossoms."
-    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the '{i}Somei Yoshino{/i}' in Japan."
+    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the Somei Yoshino in Japan."
     m 3eua "Those ones in particular are mostly white with a slight tinge of pink."
     m 3eud "Did you know that they only bloom for one week each year?"
     m 1eksdla "It's quite a short lifespan, but they're still beautiful."
@@ -14658,7 +14686,7 @@ label monika_boardgames_history:
     m 1eud "Games could also have strong connections to religion and beliefs too."
     m 3esd "A lot of ancient Egyptian board games seemed to be about preparing for their journey through the world of the dead, or to prove their worth to the gods."
     m 1eud "There's also games that have been made to express different views and opinions that their designers had with society and the world."
-    m 3esa "The most well known example would be '{i}Monopoly{/i}.'"
+    m 3esa "The most well known example would be {i}Monopoly{/i}."
     m 3eua "It was originally made to criticize capitalism and send the message that all citizens should benefit equally from wealth."
     m 1tfu "After all,{w=0.1} the game has you try to crush your opponents by accumulating more wealth than them as fast as possible."
     m 1esc "...Although, apparently as the game was starting to become popular, someone else stole the concept and made themselves known as the original creator of the game."
@@ -15704,7 +15732,7 @@ label monika_fear:
     m 2dkc "That one day I'll wake up, back in my bed, and realize it was all just a dream."
     m 2dkd "That there is no game,{w=0.2} no epiphany,{w=0.2} no...{w=0.5}{nw}"
     extend 2ekd "you."
-    m 2ektpc "That you, your love, perhaps even the entirety of the literature club, were all nothing but a figment of my own imagination."
+    m 2ektpc "That you, your love, perhaps even the entirety of the Literature Club, were all nothing but a figment of my own imagination."
     m 2dktpc "That my old world, as grey and meaningless as it now seems, is all there truly is."
     m 2dktpc "..."
     m 2rktdb "Ahaha~ {w=0.5}{nw}"
@@ -15818,7 +15846,7 @@ init 5 python:
     )
 
 label monika_asimov_three_laws:
-    m 1eua "[player], do you remember when we talked about the '{i}Three Laws of Robotics{/i}'?"
+    m 1eua "[player], do you remember when we talked about the {i}Three Laws of Robotics{/i}?"
     m 3esc "Well, I've been thinking about them for a bit and...{w=0.3}{nw}"
     extend 3rksdla "they're not exactly practical."
     m 1eua "Take the first law, for example..."
@@ -16037,7 +16065,7 @@ label monika_why_do_you_read:
     m 3eua "...And that's how I grew more and more into it I guess."
     m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
     extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
-    m 3eub "As we kept on discussing, we eventually came up with the idea for the literature club."
+    m 3eub "As we kept on discussing, we eventually came up with the idea for the Literature Club."
     m 1eua "...Which brings us to where we are now."
     m 1etc "To be honest, I don't think I've ever had as much time to read before."
 
@@ -16113,18 +16141,18 @@ label monika_eating_meat:
     m 3eud "If you're asking if I would do so for {i}survival{/i}, I wouldn't hesitate. {w=0.2}It's not that eating meat is distressing for me or anything."
     m 7eud "I told you before, I'm vegetarian because of the impact of the mass-production of meat on the environment...{w=0.2}{nw}"
     extend 2euc "which also includes fish farming, so I'm not a pescatarian."
-    m 2rsc "...That said, I don't consider myself vegan either. {w=0.3}{nw}"
-    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but a lot of vegan alternatives have their own issues too..."
+    m 2rsc "...However, I don't consider myself vegan either. {w=0.3}{nw}"
+    extend 4eud "Sure, the consumption of animal products contributes to environmental damage, but vegan alternatives share or have their own issues too..."
     m 4euc "These include things like importing perishable products across great distances and mass-farming in conditions that are both cruel for workers and a strain on the local ecosystem."
     m 4ekd "Take avocados, for example. {w=0.2}Their farms require massive amounts of water, to the point where some companies resort to illegally taking too much water from rivers, leaving little for drinking."
-    m 2etc "At that point, is it really a better alternative as far as the environment is concerned? {w=0.3}{nw}"
-    extend 4euc "Not to mention, I still want to have a varied and balanced diet."
+    m 4euc "Not to mention, I still want to have a varied and balanced diet with all the flavors that I like."
     m 4eud "Vegan diets can be quite deficient in nutrients, such as vitamin B12, calcium, iron, and zinc."
     m "Granted, there are still some options including supplements, but balancing a vegan diet takes a lot of care and thought."
     m 7eka "...So for that reason, I'm not personally against eating things like milk and eggs. {w=0.2}But I think I'd prefer to buy locally if possible."
     m 3eud "Farmer's markets are great places to buy food, {w=0.2}even meat, {w=0.2}produced with less of an environmental impact."
     m 3ekd "But they can typically be pretty expensive...and depending on location, leave you with fewer options. {w=0.3}{nw}"
     extend 3eua "So I'm okay with buying from a plain old store, if need be."
+    m "Especially since there are a lot of good substitutes for meat in supermarkets already, with way less environmental impact."
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
@@ -16291,7 +16319,7 @@ init 5 python:
     )
 
 label monika_literature_value:
-    m 3esd "You know [player], back in the literature club days I often heard people dismiss literature as outdated and useless."
+    m 3esd "You know [player], back in the Literature Club days I often heard people dismiss literature as outdated and useless."
     m 1rfc "It always bothered me when I heard someone say that, especially since most of the time, they never even bothered giving it a try."
     m 3efc "Like, do they even know what they're talking about?"
     m 3ekd "People who think that often like to discount literature compared to more scientific fields, like physics or mathematics, claiming it's a waste of time since it doesn't produce anything practical."
@@ -16596,7 +16624,7 @@ label monika_brainstorming:
     m 1esd "[player], have you ever heard of brainstorming?"
     m 1eua "It's an interesting technique of coming up with new ideas by noting anything that comes to your mind."
     m 3eud "This technique is really popular among designers, inventors, and writers--anyone who needs fresh ideas."
-    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the literature club when deciding what to do for the festival."
+    m 3esa "Brainstorming is usually practiced in groups or teams...{w=0.2}we even tried it in the Literature Club when deciding what to do for the festival."
     m 1dtc "You just need to focus on what you want to create and bring up anything and everything that comes into your head."
     m 1eud "Don't hesitate to suggest things that you think are silly or wrong, and don't criticize or judge the others if working in teams."
     m 1eua "When you're done, go back through all the suggestions and turn them into actual ideas."
@@ -16819,7 +16847,7 @@ label monika_mc_is_gone:
         $ line_mid = "I was kissing {i}him{/i}"
 
     else:
-        $ line_mid = "{i}he{/i} was the one hugging"
+        $ line_mid = "{i}he{/i} was the one hugging me"
 
     m 3rksdla "I hope you didn't think [line_mid] all along, either..."
 
@@ -16926,7 +16954,7 @@ label monika_information_age:
     m 3rssdlc "Misinformation can spread faster and further than ever,{w=0.1} {nw}"
     extend 3rksdld "and because of how vast the internet really is, it's hard to correct it."
     m 2eua "In the last few decades, people have begun to educate others about smart use of the internet so everyone is better prepared."
-    m 2ekd "However, the vast majority of people will not have recieved much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
+    m 2ekd "However, the vast majority of people will not have received much,{w=0.1} if any of this knowledge, just because of how fast technology has advanced."
     m 2dkc "It's really worrying to read about people embracing ideas not supported by the vast majority of scientists."
     m 2rusdld "But I can understand why it happens...{w=0.3}{nw}"
     extend 2eksdlc "it could happen to anyone in fact."
@@ -16938,7 +16966,7 @@ label monika_information_age:
     m 1eua "One of the best things we can do is find multiple conflicting sources for our information and compare their credibility."
     m 1eub "And a philosophy we can adopt is tentative belief. {w=0.2}In other words, belief until further experimentation is necessary."
     m 3eub "As long as your beliefs are not relevant to your daily life, you can hold them.{w=0.2} But once they are needed, we should investigate further."
-    m 3eua "This way, we can prioritze information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
+    m 3eua "This way, we can prioritize information we learn from what affects the people around us. Plus, it may not be as overwhelming to process it all at once."
     m 1lusdlc "I know I've held beliefs that turned out to be false..."
     m 1dua "There's no shame in it, we're all just trying to do our best with the information we're given."
     m 1eub "So long as we accept the real truth and adjust our views, we'll always be learning."
@@ -16957,9 +16985,9 @@ init 5 python:
     )
 
 label monika_foundation:
-    m 1eud "Say [player], have you ever heard of a book series called 'Foundation'?"
+    m 1eud "Say [player], have you ever heard of a book series called {i}Foundation{/i}?"
     m 3eub "It's one of Asimov's most celebrated pieces of literature!{w=0.3} {nw}"
-    extend 3eua "I got back into it after we discussed his '{i}Three Laws of Robotics{/i}.'"
+    extend 3eua "I got back into it after we discussed his {i}Three Laws of Robotics{/i}."
     m 4esd "The story is set in a distant future, where humanity has spread across the stars in an all-powerful galactic empire."
     m 4eua "Hari Seldon, a genius scientist, perfects the fictional science of psychohistory, which can predict the future of large groups of people through mathematical equations."
     m 4wud "Applying his theory to the galaxy, Seldon finds the empire is about to collapse, leading to a dark age of thirty thousand years!"
@@ -16972,7 +17000,7 @@ label monika_foundation:
     extend 3esd "All of which made huge progress since Asimov's time."
     m 3esc "...And with the help of modern technologies, we're now able to understand human behaviors better than ever."
     m 3etd "...So is it really that far-fetched to think we'll be able to make predictions on the level of psychohistory one day?"
-    m 4eud "Just think if it were possible to predict the global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
+    m 4eud "Just think if it were possible to predict a global catastrophe, like a war or pandemic or famine, and thus be able to prevent, or at least mitigate it."
     m 2rksdlc "Not that it'd automatically be a good thing, however.{w=0.2} In the wrong hands, this kind of stuff could be very dangerous."
     m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
     m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"

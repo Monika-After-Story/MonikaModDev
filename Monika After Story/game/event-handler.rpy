@@ -1404,7 +1404,7 @@ init -1 python in evhand:
 #    PREV_X = 30
     RIGHT_X = 1020
 #    PREV_Y = 10
-    RIGHT_Y = 40
+    RIGHT_Y = 15 + 55
 #    PREV_W = 300
     RIGHT_W = 250
     RIGHT_H = 572
@@ -1747,13 +1747,13 @@ init python:
             raise EventException("'" + str(event) + "' is not an Event object")
         if not renpy.has_label(event.eventlabel):
             raise EventException("'" + event.eventlabel + "' does NOT exist")
-        if event.conditional is not None:
-            eval(event.conditional)
-#            try:
-#                if eval(event.conditional, globals()):
-#                    pass
-#            except:
-#                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
+        # if event.conditional is not None:
+        #     eval(event.conditional)
+        #    try:
+        #        if eval(event.conditional, globals()):
+        #            pass
+        #    except:
+        #        raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
         # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
@@ -2504,9 +2504,9 @@ label call_next_event:
         ):
             #Create a new notif
             if renpy.windows:
-                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
@@ -2717,30 +2717,30 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_event_labels) from _call_show_prompt_list
+        call show_prompt_list(unseen_event_labels)
 
     elif madechoice == "bookmarks":
         call mas_bookmarks
 
     elif madechoice == "prompt":
-        call prompts_categories(True) from _call_prompts_categories
+        call prompts_categories(True)
 
     elif madechoice == "repeat":
-        call prompts_categories(False) from _call_prompts_categories_1
+        call prompts_categories(False)
 
     elif madechoice == "love":
-        $ pushEvent("monika_love",skipeval=True)
+        $ pushEvent("monika_love", skipeval=True)
         $ _return = True
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too",skipeval=True)
+        $ pushEvent("monika_love_too", skipeval=True)
         $ _return = True
 
     elif madechoice == "moods":
-        call mas_mood_start from _call_mas_mood_start
+        call mas_mood_start
 
     elif madechoice == "goodbye":
-        call mas_farewell_start from _call_select_farewell
+        call mas_farewell_start
 
     else: #nevermind
         $_return = None
@@ -2753,7 +2753,7 @@ label prompt_menu_end:
 
     show monika at t11
     $ mas_DropShield_dlg()
-    jump ch30_loop
+    jump ch30_visual_skip
 
 label show_prompt_list(sorted_event_labels):
     $ import store.evhand as evhand
@@ -2775,7 +2775,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
-        $ pushEvent(_return)
+        $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2934,7 +2934,7 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
-                $ pushEvent(_return)
+                $ pushEvent(_return, skipeval=True)
 
     return _return
 
@@ -2957,7 +2957,7 @@ label mas_bookmarks:
         for ev in mas_get_player_bookmarks(persistent._mas_player_bookmarked):
             # only if it is not flagged to be hidden
             if Event._filterEvent(ev, flag_ban=EV_FLAG_HFM):
-                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel, prompt_suffix_map.keys())
+                label_prefix = mas_bookmarks_derand.getLabelPrefix(ev.eventlabel)
 
                 #Get the suffix function
                 suffix_func = prompt_suffix_map.get(label_prefix)
