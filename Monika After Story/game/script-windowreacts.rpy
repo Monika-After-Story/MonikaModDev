@@ -184,7 +184,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
-            category=[r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w ]+monika)|(.*monika.*(r34|rule34)))"],
+            category=[r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w\s]+monika)|(monika.*(r34|rule\s?34)))"],
             rules={"skip alert": None, "notif-group": "Window Reactions"},
             show_in_idle=True
         ),
