@@ -3706,7 +3706,16 @@ label monika_natsuki:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_love",
+            category=['romance'],
+            prompt="I love you!",
+            rules={"skip_pause": None},
+            pool=True
+        )
+    )
 
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
@@ -4000,7 +4009,17 @@ label monika_ilym_fight_loop:
 
 default persistent._mas_last_monika_ily = None
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no_unlock": None}))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_love_too",
+            unlocked=False,
+            rules={
+                "no_unlock": None,
+                "skip_pause": None
+            }
+        )
+    )
 
 label monika_love_too:
     window hide
