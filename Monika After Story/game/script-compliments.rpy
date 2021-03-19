@@ -673,7 +673,10 @@ label mas_compliment_lookuptoyou_3:
     m 3hubfb "I'll always look up to you too!"
 
     if should_tease and persistent._mas_pm_height > mas_height_monika:
-        m 1rkbfu "{cps=*2}Just like when we kiss...{/cps}{nw}"
+        if persistent._mas_first_kiss:
+            m 1rkbfu "{cps=*2}Just like when we kiss...{/cps}{nw}"
+        else:
+            m 1rkbfu "{cps=*2}Someday literally...{/cps}{nw}"
         $ _history_list.pop()
 
     m 1ekbfa "I love you, [player]~"
