@@ -16305,31 +16305,31 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_favchocolate",
-            category=['misc'],
+            eventlabel="monika_fav_chocolate",
+            category=['monika'],
             prompt="What's your favorite kind of chocolate?",
-            pool=True,
+            pool=True
         )
     )
 
-label monika_favchocolate:
-    m 2hkb "Ooh, that's a tough question!"
-    m 2euu "I think if I had to pick, it would be dark chocolate."
-    m 3eub "It contains very little or no milk, so it has a less creamy texture, but a nice bittersweet taste."
-    m 3hub "Not to mention, it's rich in antioxidants and can even give some cardiovascular benefits! {w=0.3}{nw}"
-    extend 3hksdlb "...In moderation, of course."
-    m 1hubla "The taste kind of reminds me of a mocha coffee. Maybe the similarity in flavors is why I like it most."
-    
+label monika_fav_chocolate:
+    m 2hksdlb "Ooh, that's a tough question!"
+    m 4euu "I think if I had to pick, it would be dark chocolate."
+    m 2eub "It contains very little or no milk, so it has a less creamy texture, but a nice bittersweet taste."
+    m 7eub "Not to mention, it's rich in antioxidants and can even give some cardiovascular benefits! {w=0.3}{nw}"
+    extend 3husdla "...In moderation, of course."
+    m 1eud "The taste kind of reminds me of a mocha coffee. {w=0.2}Maybe the similarity in flavors is why I like it most."
+
     if MASConsumable._getCurrentDrink() is mas_getConsumable("coffee"):
-            m 3hubla "Although, milk or white chocolate might pair better with the coffee I'm drinking."
-    
+        m 3hubla "...Although come to think of it, milk or white chocolate might pair better with the coffee I'm drinking."
     else:
-            m 1eud "Speaking of coffee, though...if I were drinking some, I think I might prefer milk or white chocolate for balance."
-    
-    m 3eub "White chocolate is especially sweet and soft, containing no cocoa solids at all; just the cocoa butter, milk, and sugar."
-    m 3hub "I think it would make a nice contrast to an especially bitter drink, like espresso."
+        m 1eud "However if I were drinking coffee, I think I might prefer milk or white chocolate for balance."
+
+    m 3eud "White chocolate is especially sweet and soft, containing no cocoa solids at all...{w=0.3}just the cocoa butter, milk, and sugar."
+    m 3eua "I think it would make a nice contrast to an especially bitter drink, like espresso."
     m 1etc "Hmm... {w=0.3}{nw}"
     extend 1wud "but I haven't even thought about chocolate with fillings, like caramel or fruit!"
     m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
-    m 2hublb "Maybe we could share a big variety box someday. I think it would be fun to compare our top picks, ahaha!"
+    m 2eua "Maybe we could share a big variety box someday. {w=0.2}{nw}"
+    extend 4hub "I think it would be fun to compare our top picks, ahaha!"
     return
