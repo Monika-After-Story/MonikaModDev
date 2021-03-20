@@ -17046,9 +17046,9 @@ label monika_fav_chocolate:
     m 1eud "The taste kind of reminds me of a mocha coffee. {w=0.2}Maybe the similarity in flavors is why I like it most."
 
     if MASConsumable._getCurrentDrink() is mas_getConsumable("coffee"):
-        m 3hubla "...Although come to think of it, milk or white chocolate might pair better with the coffee I'm drinking."
+        m 3etc "...Although come to think of it, milk or white chocolate might pair better with the coffee I'm drinking."
     else:
-        m 1eud "However if I were drinking coffee, I think I might prefer milk or white chocolate for balance."
+        m 3etc "However if I were drinking coffee, I think I might prefer milk or white chocolate for balance."
 
     m 3eud "White chocolate is especially sweet and soft, containing no cocoa solids at all...{w=0.3}just the cocoa butter, milk, and sugar."
     m 3eua "I think it would make a nice contrast to an especially bitter drink, like espresso."
