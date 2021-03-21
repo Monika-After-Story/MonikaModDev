@@ -86,6 +86,9 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
+    # A datetime object when the pause between events ends. None if there's no pause currently.
+    event_unpause_dt = None
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -128,6 +131,9 @@ init -10 python:
 
         DISSOLVE_ALL = 6
         # True if we want to dissolve all
+
+        FORCED_EXP = 7
+        # Value is the exp to set for spaceroom render
 
         # end keys
 
@@ -216,9 +222,22 @@ init -10 python:
             """
             return self.get(self.DISSOLVE_ALL)
 
+        def send_forced_exp(self, exp):
+            """
+            Sends forced exp message to mailbox
+
+            IN:
+                exp - full exp code to force (None to use idle disp)
+            """
+            self.send(self.FORCED_EXP, exp)
+
+        def get_forced_exp(self):
+            """
+            Gets forced exp value
+            """
+            return self.get(self.FORCED_EXP)
 
     mas_idle_mailbox = MASIdleMailbox()
-
 
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
@@ -767,7 +786,7 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
-#       NOTE: this will override the standard bg 
+#       NOTE: this will override the standard bg
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
@@ -854,7 +873,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 mas_darkMode(day_mode)
         else:
             if mas_globals.dark_mode != persistent._mas_dark_mode_enabled:
-                # only run if dark mode global doesn't match 
+                # only run if dark mode global doesn't match
                 # persistent setting.
                 mas_darkMode(not persistent._mas_dark_mode_enabled)
 
@@ -1253,6 +1272,8 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
+            # Set an exp for first spaceroom render
+            mas_idle_mailbox.send_forced_exp(MASGreetingRule.get_forced_exp(sel_greeting_ev))
 
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
@@ -1402,11 +1423,11 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
+        force_exp = mas_idle_mailbox.get_forced_exp()
         should_dissolve_all = mas_idle_mailbox.get_dissolve_all()
         scene_change = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-
+    call spaceroom(scene_change=should_dissolve_all, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
@@ -1520,7 +1541,13 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if store.mas_globals.in_idle_mode:
+        if (
+            store.mas_globals.in_idle_mode
+            or (
+                mas_globals.event_unpause_dt is not None
+                and mas_globals.event_unpause_dt > datetime.datetime.utcnow()
+            )
+        ):
             jump post_pick_random_topic
 
         # Pick a random Monika topic

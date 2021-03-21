@@ -336,7 +336,7 @@ init 5 python:
     )
 
 label greeting_honey:
-    m 1hua "Welcome back, honey!"
+    m 1hub "Welcome back, honey!"
     m 1eua "I'm so happy to see you again."
     m "Let's spend some more time together, okay?"
     return
@@ -554,16 +554,22 @@ label greeting_back3:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 2wfx"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=10)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_back4:
     m 2wfx "Hey, [player]!"
@@ -627,16 +633,22 @@ label greeting_back5:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
             conditional="store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_visit4:
     if mas_getAbsenceLength() <= datetime.timedelta(minutes=30):
@@ -651,15 +663,21 @@ label greeting_visit4:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 5hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit5",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
@@ -686,15 +704,21 @@ label greeting_visit6:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1gsu"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back6",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_back6:
     m 3tku "Hey, [player]!"
@@ -716,7 +740,7 @@ init 5 python:
     )
 
 label greeting_visit7:
-    m 1hua "You're here, [player]!"
+    m 1hub "You're here, [player]!"
     m 1eua "Are you ready to spend some more time together? Ehehe~"
     return
 
@@ -732,7 +756,7 @@ init 5 python:
     )
 
 label greeting_visit8:
-    m 1hua "I'm so glad you're here, [player]!"
+    m 1hub "I'm so glad you're here, [player]!"
     m 1eua "What should we do today?"
     return
 
@@ -775,15 +799,21 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 4hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_latin:
     m 4hua "Iterum obvenimus!"
@@ -835,15 +865,21 @@ label greeting_yay:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 2eua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_youtuber",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
@@ -853,16 +889,22 @@ label greeting_youtuber:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 4dsc"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=7)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_hamlet:
     m 4dsc "'{i}To be, or not to be, that is the question...{/i}'"
@@ -890,15 +932,21 @@ label greeting_welcomeback:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_flower",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_flower:
     m 1hub "You're my beautiful flower, ehehe~"
@@ -1020,15 +1068,21 @@ label greeting_glitch:
     return "love"
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_surprised:
     m 1wuo "Oh!{w=0.5} Hello, [player]!"
@@ -1997,15 +2051,21 @@ label greeting_japan:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sunshine",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_sunshine:
     m 1hua "{i}~You are my sunshine, my only sunshine~{/i}"
@@ -2714,10 +2774,10 @@ label greeting_hairdown:
     # 5 - restart music
     $ mas_startup_song()
 
+    # 6 - enable escape so we can access settings and chat box keys
+    $ enable_esc()
 
     return
-
-
 
 init 5 python:
 
@@ -2725,6 +2785,7 @@ init 5 python:
     #   AND you have not seen this before
     ev_rules = {}
     ev_rules.update(MASPriorityRule.create_rule(15))
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1dsc"))
 
     addEvent(
         Event(
@@ -3318,15 +3379,21 @@ label greeting_back_from_sleep:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_siat",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_siat:
     m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
@@ -3973,15 +4040,21 @@ label greeting_back_housework:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised2",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_surprised2:
     m 1hua "..."
@@ -4079,15 +4152,21 @@ label greeting_code_help_outro:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_love_is_in_the_air",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_love_is_in_the_air:
     m 1hub "{i}~Love is in the air~{/i}"
@@ -4237,6 +4316,79 @@ label greeting_back_from_hangout:
 
     else:
         m 6ckc "..."
+
+    return
+
+init 5 python:
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            random_chance=3,
+            forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_spacing_out",
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=3)",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+label greeting_spacing_out:
+    python hide:
+        # Define some other things we're going to work with
+        use_right_smug = bool(random.randint(0, 1))
+        spacing_out_pause = PauseDisplayableWithEvents()
+        events = list()
+        next_event_time = 0
+        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
+        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+
+        # Make the events which will change exps
+        for i in range(random.randint(4, 6)):
+            events.append(
+                PauseDisplayableEvent(
+                    datetime.timedelta(seconds=next_event_time),
+                    right_smug if use_right_smug else left_smug
+                )
+            )
+            next_event_time += random.uniform(0.9, 1.8)
+            use_right_smug = not use_right_smug
+        # The last exp in the sequence
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+            )
+        )
+        next_event_time += 0.7
+        # This is to automatically cancel the pause after all the events
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                spacing_out_pause.stop
+            )
+        )
+        spacing_out_pause.events[:] = events
+
+        spacing_out_pause.start()
+
+    # Small pause so people don't skip this line
+    $ renpy.pause(0.01)
+    m 2wubfsdlo "[player]!"
+    m 1rubfsdlb "You surprised me! {w=0.4}{nw}"
+    extend 1eubsu "I was{w=0.2} spacing out a bit..."
+    m 1hubsb "Ahaha~"
+    m 1eua "I'm very happy to see you again. {w=0.2}{nw}"
+    extend 3eua "What should we do today, [player]?"
 
     return
 
