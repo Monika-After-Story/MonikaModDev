@@ -663,6 +663,32 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_everythings_alright",
+            prompt="Everything's Alright",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_everythings_alright:
+    m 1dkd "{i}~When this world is no more~{/i}"
+    m 4euo "{i}~The moon is all we'll see~{/i}"
+    m 4duu "{i}~I'll ask you to fly away with me~{/i}"
+    m 4dud "{i}~Until the stars all fall down~{/i}"
+    m 4duo "{i}~They empty from the sky~{i}"
+    m 3dud "{i}~But I don't mind~{i}"
+    m 1eku "{i}~If you're with me, then everything's alright~{i}"
+    m 1dku "..."
+    m 3ekd "If things ever get too dark, {w=0.1}{nw}"
+    extend 3ekbsu "just look up to the moon and remember me~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_your_song",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Your Song",
