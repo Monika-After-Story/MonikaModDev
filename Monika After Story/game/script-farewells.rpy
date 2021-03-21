@@ -227,15 +227,15 @@ label mas_farewell_start:
             return _return
 
         if _return != -1:
+            $ mas_setEventPause(None)
             #Push the selected event
-            $ pushEvent(_return.eventlabel)
+            $ pushEvent(_return.eventlabel, skipeval=True)
             return
 
+    $ mas_setEventPause(None)
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
-    $ pushEvent(farewell.eventlabel)
-    # dont evalulate the mid loop checks since we are quitting
-    $ mas_idle_mailbox.send_skipmidloopeval()
+    $ pushEvent(farewell.eventlabel, skipeval=True)
 
     return
 

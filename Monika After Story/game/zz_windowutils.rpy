@@ -225,9 +225,10 @@ init python in mas_windowutils:
         if win is None:
             return None
 
-        geom = win.get_geometry()
-        (x, y) = (geom.x, geom.y)
         try:
+            geom = win.get_geometry()
+            (x, y) = (geom.x, geom.y)
+
             while True:
                 parent = win.query_tree().parent
                 pgeom = parent.get_geometry()
@@ -240,6 +241,8 @@ init python in mas_windowutils:
             return (x, y, geom.width, geom.height)
 
         except Xlib.error.BadDrawable:
+            #In the case of a bad drawable, we'll try to re-get the MAS window to get a good one
+            _setMASWindow()
             return None
 
     def _setMASWindow():

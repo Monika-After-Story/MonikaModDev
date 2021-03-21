@@ -4283,6 +4283,79 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            random_chance=3,
+            forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_spacing_out",
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=3)",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+label greeting_spacing_out:
+    python hide:
+        # Define some other things we're going to work with
+        use_right_smug = bool(random.randint(0, 1))
+        spacing_out_pause = PauseDisplayableWithEvents()
+        events = list()
+        next_event_time = 0
+        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
+        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+
+        # Make the events which will change exps
+        for i in range(random.randint(4, 6)):
+            events.append(
+                PauseDisplayableEvent(
+                    datetime.timedelta(seconds=next_event_time),
+                    right_smug if use_right_smug else left_smug
+                )
+            )
+            next_event_time += random.uniform(0.9, 1.8)
+            use_right_smug = not use_right_smug
+        # The last exp in the sequence
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+            )
+        )
+        next_event_time += 0.7
+        # This is to automatically cancel the pause after all the events
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                spacing_out_pause.stop
+            )
+        )
+        spacing_out_pause.events[:] = events
+
+        spacing_out_pause.start()
+
+    # Small pause so people don't skip this line
+    $ renpy.pause(0.01)
+    m 2wubfsdlo "[player]!"
+    m 1rubfsdlb "You surprised me! {w=0.4}{nw}"
+    extend 1eubsu "I was{w=0.2} spacing out a bit..."
+    m 1hubsb "Ahaha~"
+    m 1eua "I'm very happy to see you again. {w=0.2}{nw}"
+    extend 3eua "What should we do today, [player]?"
+
+    return
+
+init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
 
 label monikaroom_greeting_ear_recursionerror:

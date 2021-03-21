@@ -7,7 +7,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -39,7 +40,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -71,7 +73,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -121,7 +124,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -157,7 +161,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -185,7 +190,12 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
             category=[r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w\s]+monika)|(monika.*(r34|rule\s?34)))"],
-            rules={"skip alert": None, "notif-group": "Window Reactions"},
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "skip_pause": None
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -231,7 +241,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -262,7 +273,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -297,12 +309,46 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_monikatwitter",
+            category=['twitter', 'lilmonix3'],
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            },
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_monikatwitter:
+    $ wrs_success = mas_display_notif(
+        m_name,
+        [
+            "Are you here to confess your love for me to the entire world, [player]?",
+            "You're not spying on me, are you?\nAhaha, just kidding~",
+            "I don't care how many followers I have as long as I have you~"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_4chan",
             category=["- 4chan"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -336,7 +382,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -384,7 +431,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -416,7 +464,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -449,7 +498,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -480,7 +530,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),
@@ -512,7 +563,8 @@ init 5 python:
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
-                "keep_idle_exp": None
+                "keep_idle_exp": None,
+                "skip_pause": None
             },
             show_in_idle=True
         ),

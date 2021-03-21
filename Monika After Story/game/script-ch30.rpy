@@ -86,6 +86,9 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
+    # A datetime object when the pause between events ends. None if there's no pause currently.
+    event_unpause_dt = None
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -1538,7 +1541,13 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if store.mas_globals.in_idle_mode:
+        if (
+            store.mas_globals.in_idle_mode
+            or (
+                mas_globals.event_unpause_dt is not None
+                and mas_globals.event_unpause_dt > datetime.datetime.utcnow()
+            )
+        ):
             jump post_pick_random_topic
 
         # Pick a random Monika topic
