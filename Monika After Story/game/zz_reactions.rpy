@@ -1893,6 +1893,56 @@ label mas_reaction_candycane:
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
+init 5 python:
+    addReaction("mas_reaction_gift_hanamidango", "hanamidango", is_good=True, exclude_on=["d25g"])
+
+label mas_reaction_gift_coffee:
+    #Even if we don't "accept" it, we still register it was given
+    $ mas_receivedGift("mas_reaction_gift_hanamidango")
+    $ hanamidango = mas_getConsumable("hanamidango")
+
+    #Check if we accept this
+    if hanamidango.isMaxedStock():
+        m 1rksdlb "Ahaha..."
+        m "I don't know if I'm going to be able to eat all of these dango, [player]."
+        m 1eka "Let's wait until I've gone through my stock a bit more, okay?"
+
+    else:
+        m 1wub "Oh!{w=0.2} {nw}"
+        extend 3hub "Dango!"
+
+        if hanamidango.enabled() and hanamidango.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 1hub "These make such a delicious snack!"
+            m 1hua "Thank you for getting me more of them."
+
+        elif hanamidango.enabled() and not hanamidango.hasServing():
+            $ mas_giftCapGainAff(0.5)
+            m 1eub "I didn't have any left, so thank you for stocking up!"
+
+        else:
+            $ mas_giftCapGainAff(5)
+
+            m 1eub "If you didn't know, these are a street food in Japan. This variant is especially popular during cherry blossom viewings."
+            m 3hua "Each color has a bit of a different taste, but all three have a mild sweetness."
+            m 1hubla "They remind me of being at a festival, enjoying a snack while taking in the sights."
+
+            if (
+                not hanamidango.isConsTime()
+                or bool(MASConsumable._getCurrentFood())
+            ):
+                m 3eua "I'll be sure to have some later!"
+
+            else:
+            
+                $ hanamidango.prepare()
+            $ hanamidango.enable()
+
+    $ hanamidango.restock()
+
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_hanamidango", "category"))
+    return
+
 #Ribbon stuffs
 init 5 python:
     addReaction("mas_reaction_blackribbon", "blackribbon", is_good=True)
