@@ -1896,7 +1896,7 @@ label mas_reaction_candycane:
 init 5 python:
     addReaction("mas_reaction_gift_hanamidango", "hanamidango", is_good=True, exclude_on=["d25g"])
 
-label mas_reaction_gift_coffee:
+label mas_reaction_gift_hanamidango:
     #Even if we don't "accept" it, we still register it was given
     $ mas_receivedGift("mas_reaction_gift_hanamidango")
     $ hanamidango = mas_getConsumable("hanamidango")
