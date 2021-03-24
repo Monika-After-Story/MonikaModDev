@@ -1404,7 +1404,7 @@ init -1 python in evhand:
 #    PREV_X = 30
     RIGHT_X = 1020
 #    PREV_Y = 10
-    RIGHT_Y = 40
+    RIGHT_Y = 15 + 55
 #    PREV_W = 300
     RIGHT_W = 250
     RIGHT_H = 572
@@ -1451,6 +1451,13 @@ init -1 python in evhand:
         RET_KEY_PATTERN_BASE.format(
             key=r"idle_exp",
             value=r"(?:(?P<exp>\d[a-z]{3,13})\s*,\s*(?P<duration>\d+)|(?P<tag>\w+))"
+        )
+    )
+    # Used to catch "pause: DURATION" where DURATION is an int (seconds)
+    RET_KEY_PATTERN_PAUSE = re.compile(
+        RET_KEY_PATTERN_BASE.format(
+            key=r"pause",
+            value=r"(?P<duration>\d+)"
         )
     )
 
@@ -1747,13 +1754,13 @@ init python:
             raise EventException("'" + str(event) + "' is not an Event object")
         if not renpy.has_label(event.eventlabel):
             raise EventException("'" + event.eventlabel + "' does NOT exist")
-        if event.conditional is not None:
-            eval(event.conditional)
-#            try:
-#                if eval(event.conditional, globals()):
-#                    pass
-#            except:
-#                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
+        # if event.conditional is not None:
+        #     eval(event.conditional)
+        #    try:
+        #        if eval(event.conditional, globals()):
+        #            pass
+        #    except:
+        #        raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
         # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
@@ -2148,37 +2155,46 @@ init python:
         if len(persistent.event_list) == 0:
             return None, None
 
-        if store.mas_globals.in_idle_mode:
-            # idle requires us to loop over the list and find the first
-            # event available in idle
-            ev_found = None
+        now_dt = datetime.datetime.utcnow()
+        is_paused = False
 
-            for index in range(len(persistent.event_list)):
-                ev_label, notify = persistent.event_list[index]
-                ev_found = mas_getEV(ev_label)
+        if mas_globals.event_unpause_dt is not None:
+            if mas_globals.event_unpause_dt > now_dt:
+                is_paused = True
 
-                if (
-                        (ev_found is not None and ev_found.show_in_idle)
-                        or ev_label in evhand.IDLE_WHITELIST
+            # We can reset the dt here
+            else:
+                mas_globals.event_unpause_dt = None
+
+        for id in range(len(persistent.event_list)-1, -1, -1):
+            ev_data = persistent.event_list[id]
+            ev = mas_getEV(ev_data[0])
+
+            if (
+                not is_paused
+                or ev is None# This is to allow triggering non-event labels
+                or "skip_pause" in ev.rules
+            ):
+                if mas_globals.in_idle_mode:
+                    if (
+                        (ev is not None and ev.show_in_idle)
+                        or ev_data[0] in evhand.IDLE_WHITELIST
                     ):
+                        if remove:
+                            persistent.event_list.pop(id)
 
+                        persistent.current_monikatopic = ev_data[0]
+                        return ev_data
+
+                else:
                     if remove:
-                        mas_rmEVL(ev_label)
+                        persistent.event_list.pop(id)
+                        persistent.current_monikatopic = ev_data[0]
 
-                    persistent.current_monikatopic = ev_label
-                    return ev_label, notify
+                    return ev_data
 
-            # we did not find an idle event
-            return None, None
-
-        elif remove:
-            ev_data = persistent.event_list.pop()
-            persistent.current_monikatopic = ev_data[0]
-        else:
-            ev_data = persistent.event_list[-1]
-
-        return ev_data
-
+        # We did not find an appropriate event
+        return None, None
 
     def seen_event(event_label):
         """
@@ -2589,6 +2605,13 @@ label call_next_event:
                             if _exp is not None:
                                 mas_moni_idle_disp.force(_exp)
 
+            # Set a pause if needed
+            if "pause" in _return:
+                python:
+                    _match = re.search(evhand.RET_KEY_PATTERN_PAUSE, _return)
+                    if _match is not None and _match.group("duration") is not None:
+                        mas_setEventPause(int(_match.group("duration")))
+
             if "prompt" in ret_items:
                 show monika idle
                 jump prompt_menu
@@ -2743,7 +2766,7 @@ label prompt_menu:
         call mas_farewell_start
 
     else: #nevermind
-        $_return = None
+        $ _return = None
 
     # check explicitly for False here due to how farewells return
     if _return is False:
@@ -2775,6 +2798,7 @@ label show_prompt_list(sorted_event_labels):
     call screen mas_gen_scrollable_menu(prompt_menu_items, mas_ui.SCROLLABLE_MENU_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
     if _return:
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
 
     return _return
@@ -2934,6 +2958,7 @@ label prompts_categories(pool=True):
             $ picked_event = True
             #So we don't push garbage
             if _return is not False:
+                $ mas_setEventPause(None)
                 $ pushEvent(_return, skipeval=True)
 
     return _return
@@ -3003,6 +3028,7 @@ label mas_bookmarks_loop:
     else:
         # got label, let's push
         show monika at t11
+        $ mas_setEventPause(None)
         $ pushEvent(topic_choice, skipeval=True)
         return True
 

@@ -374,10 +374,25 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.0.1
-label v0_12_0_1(version="v0_12_0_1"):
+# 0.12.1.2
+label v0_12_1_2(version="v0_12_1_2"):
     python:
         pass
+    return
+
+# 0.12.1
+label v0_12_1(version="v0_12_1"):
+    python:
+        missing_chess_persist_keys = [
+            "practice_wins",
+            "practice_losses",
+            "practice_draws"
+        ]
+
+        for missing_key in missing_chess_persist_keys:
+            if missing_key not in persistent._mas_chess_stats:
+                persistent._mas_chess_stats[missing_key] = 0
+
     return
 
 # 0.12.0

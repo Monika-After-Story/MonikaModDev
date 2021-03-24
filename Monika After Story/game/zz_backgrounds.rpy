@@ -2225,11 +2225,9 @@ init -10 python:
                 if (
                         not mas_isDecoTagVisible(deco_obj.name)
                         or new_adf is None
-                        or new_adf != adv_df
                 ):
                     # hide all deco objects that do not have a definition
-                    # in the new bg OR have a differing deco frame OR are not in
-                    # the vis_store
+                    # in the new bg OR are not in the vis_store
                     change_info.hides[deco_obj.name] = adv_df
                     self._deco_rm(deco_obj.name)
 
@@ -3271,7 +3269,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         change_info = mas_changeBackground(new_bg)
 
     #Now redraw the room
-    call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
+    call spaceroom(scene_change=not skip_transition, dissolve_all=True, bg_change_info=change_info, force_exp="monika 1hua")
 
     if not skip_outro:
         m 1eua "Here we are!"

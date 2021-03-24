@@ -6039,8 +6039,8 @@ label mas_f14_monika_spent_time_with:
 
 label mas_f14_first_kiss:
         m 1ektpu "I honestly don't know what I would do without you."
-        #NOTE: Thinking of dissolving into pose 6 here. Might look cleaner. Thoughts?
-        m 6dktuu "..."
+        show monika 6dktuu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m "..."
         window hide
         menu:
             "I love you, [m_name].":
@@ -6542,12 +6542,15 @@ init -1 python:
         renpy.show("mas_bday_balloons", zorder=8)
 
 
-    def mas_surpriseBdayHideVisuals():
+    def mas_surpriseBdayHideVisuals(cake=False):
         """
         Hides all visuals for surprise party
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+        if cake:
+            renpy.hide("mas_bday_cake_monika")
+
 
     def mas_confirmedParty():
         """
