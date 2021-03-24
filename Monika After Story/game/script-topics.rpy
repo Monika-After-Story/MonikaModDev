@@ -17045,7 +17045,7 @@ label monika_fav_chocolate:
     extend 3husdla "...In moderation, of course."
     m 1eud "The taste kind of reminds me of a mocha coffee. {w=0.2}Maybe the similarity in flavors is why I like it most."
 
-    if MASConsumable._getCurrentDrink() is mas_getConsumable("coffee"):
+    if MASConsumable._getCurrentDrink() and MASConsumable._getCurrentDrink().consumable_id == "coffee":
         m 3etc "...Although come to think of it, milk or white chocolate might pair better with the coffee I'm drinking."
     else:
         m 3etc "However if I were drinking coffee, I think I might prefer milk or white chocolate for balance."
