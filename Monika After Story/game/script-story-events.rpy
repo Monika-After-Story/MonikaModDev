@@ -543,7 +543,7 @@ label mas_player_name_enter_name_loop(input_prompt):
 
             elif (
                     persistent.playername.lower() == "sayori"
-                    and not persistent._mas_sensitive_mode
+                    and not persistent._mas_sensitive_mode # TODO
                 ):
                 $ songs.initMusicChoices()
 
@@ -964,11 +964,6 @@ init 5 python:
     )
 
 label mas_unlock_hangman:
-    if persistent._mas_sensitive_mode:
-        $ game_name = "Word Guesser"
-    else:
-        $ game_name = "Hangman"
-
     m 1eua "So, [player]..."
 
     if store.mas_games._total_games_played() > 49:
@@ -981,14 +976,14 @@ label mas_unlock_hangman:
         m 3eua "I know you haven't tried playing Pong with me, yet."
 
     m 1hua "Soooo~"
-    m 1hub "I made [game_name]!"
+    m 1hub "I made Hangman!"
 
-    if not persistent._mas_sensitive_mode:
+    if persistent._mas_pm_cares_about_dokis is False: # must be known 
         m 1lksdlb "Hopefully it's not in poor taste..."
 
     m 1eua "It was always my favorite game to play with the club."
 
-    if not persistent._mas_sensitive_mode:
+    if persistent._mas_pm_cares_about_dokis is False:
         m 1lsc "But, come to think of it..."
         m "The game is actually quite morbid."
         m 3rssdlc "You guess letters for a word to save someone's life."

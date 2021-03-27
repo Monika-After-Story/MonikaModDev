@@ -1198,7 +1198,7 @@ label mas_ch30_post_holiday_check:
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
             persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
+            and not persistent._mas_sensitive_mode # TODO
         ):
         call yuri_name_scare from _call_yuri_name_scare
 
@@ -1506,8 +1506,7 @@ label ch30_post_mid_loop_eval:
             ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    not persistent._mas_sensitive_mode
-                    and store.mas_globals.show_s_light
+                    store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1

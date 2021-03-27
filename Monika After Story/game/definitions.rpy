@@ -1503,15 +1503,6 @@ python early:
             if action and len(action) == 0:
                 flt_args[act_key] = None
 
-#            sensitive = flt_args.get(sns_key)
-#            if sensitive is None:
-#                try:
-#                    # i have no idea if this is reachable from here
-#                    if persistent._mas_sensitive_mode:
-#                        flt_args[sns_key] = False
-#                except:
-#                    pass
-
             filt_ev_dict = dict()
 
             # python 2
@@ -6550,8 +6541,7 @@ init 2 python:
         _date = datetime.date.today() + grace
 
         return (
-            not persistent._mas_sensitive_mode
-            and persistent._mas_first_kiss is not None
+            persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
             and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
