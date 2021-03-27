@@ -2217,6 +2217,7 @@ screen calendar_overlay():
 
     if (
         store.mas_calendar.enabled
+        and not store._menu
         and renpy.get_screen("mas_calendar_screen") is None
     ):
         imagebutton:
