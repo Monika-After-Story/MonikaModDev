@@ -2348,6 +2348,8 @@ screen updater:
 
             if u.can_proceed:
                 textbutton _("Proceed") action u.proceed
+                if u.state == u.DONE:
+                    textbutton _("Restart") action [me.__del__, u.proceed]
 
             if u.can_cancel:
                 textbutton _("Cancel") action Return()
