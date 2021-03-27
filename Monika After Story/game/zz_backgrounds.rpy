@@ -3216,7 +3216,13 @@ label monika_change_background_loop:
         skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
+    # UI shields
+    $ mas_RaiseShield_core()
+
     call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
+
+    $ mas_DropShield_core()
+
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
