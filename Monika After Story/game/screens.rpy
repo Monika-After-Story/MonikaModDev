@@ -2346,16 +2346,20 @@ screen updater:
         hbox:
             spacing gui._scale(25)
 
-            if u.can_proceed:
-                textbutton _("Proceed") action u.proceed
-                if u.state == u.DONE:
-                    textbutton _("Restart") action [me.__del__, u.proceed]
+            if u.state == u.DONE:
+                # We call quit here, instead of proceed, because linux works way too good and always restarts after calling proceed
+                textbutton _("Proceed") action Quit(confirm=False)
+                textbutton _("Restart") action [Function(me.__del__), Function(u.proceed)]
 
-            if u.can_cancel:
-                textbutton _("Cancel") action Return()
+            else:
+                if u.can_proceed:
+                    textbutton _("Proceed") action Function(u.proceed)
+
+                if u.can_cancel:
+                    textbutton _("Cancel") action Return()
 
     # Constantly update the screen to force the progress bar to update
-    timer 0.1 action renpy.restart_interaction repeat True
+    timer 0.1 action Function(renpy.restart_interaction) repeat True
 
 
 style updater_button is confirm_button
