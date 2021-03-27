@@ -2352,6 +2352,9 @@ screen updater:
             if u.can_cancel:
                 textbutton _("Cancel") action Return()
 
+    # Constantly update the screen to force the progress bar to update
+    timer 0.1 action renpy.restart_interaction repeat True
+
 
 style updater_button is confirm_button
 style updater_button_text is navigation_button_text
