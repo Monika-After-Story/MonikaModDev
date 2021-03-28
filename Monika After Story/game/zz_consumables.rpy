@@ -1187,7 +1187,7 @@ init 5 python:
 
 #START: consumable drink defs:
 init 6 python:
-    MASConsumable(
+    mas_consumable_coffee = MASConsumable(
         consumable_id="coffee",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="coffee",
@@ -1200,7 +1200,7 @@ init 6 python:
         max_re_serve=3
     )
 
-    MASConsumable(
+    mas_consumable_hotchocolate = MASConsumable(
         consumable_id="hotchoc",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="hot chocolate",
@@ -1213,7 +1213,7 @@ init 6 python:
         max_re_serve=3
     )
 
-    MASConsumable(
+    mas_consumable_candycane = MASConsumable(
         consumable_id="candycane",
         consumable_type=store.mas_consumables.TYPE_FOOD,
         disp_name="candycane",
@@ -1233,7 +1233,7 @@ init 6 python:
         finish_cons_evl="mas_consumables_candycane_finish_having"
     )
 
-    MASConsumable(
+    mas_consumable_christmascookies = MASConsumable(
         consumable_id="christmascookies",
         consumable_type=store.mas_consumables.TYPE_FOOD,
         disp_name="Christmas cookie",
