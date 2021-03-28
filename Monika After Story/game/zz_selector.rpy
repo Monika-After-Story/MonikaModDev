@@ -1769,6 +1769,30 @@ init -10 python in mas_selspr:
             scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
         # Update the screen
         renpy.restart_interaction()
+    def mas_item_name_format(item_name):
+        """
+        Formats acs name to be sentence case, with spaces, and pluralized
+
+        IN: 
+            item_name - the text to be formatted
+        OUT:
+            item_name - formatted
+        """
+
+        # excpetions that include a "-" in the name
+        name_space_exceptions = {
+            "s-type-ribbon": "S-type Ribbon"
+        }
+
+        # manually change items that include "-" else replace "-" with a space
+        if item_name in name_space_exceptions:
+            item_name = name_space_exceptions[item_name]
+        else:
+            item_name = item_name.replace("-", " ")
+            # capitalise
+            item_name = item_name.capitalize()
+
+        return item_name
 
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
@@ -3043,6 +3067,40 @@ style mas_selector_sidebar_vbar:
     bar_vertical True
     bar_invert True       
 
+# Filter dropdown button styles
+style filter_dropdown_down is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+
+style filter_dropdown_down_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+
+style filter_dropdown_up is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+
+style filter_dropdown_up_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+
+
 # the selector screen sidebar version should be shown, not called.
 # note that we do tons of calls here, so just be ready to do tons of loop overs
 # every couple of seconds.
@@ -3054,57 +3112,74 @@ style mas_selector_sidebar_vbar:
 #   cancel - label to jump to when canceling
 #   restore - label to jump to when restoring
 #   remover - remover display item, if appropriate. Can be None
-#   acs_list - the list of acs_types to be shown in the menu. Can be None
-screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None, acs_list=None):
+#   filter_map - the list of selectables for each category shown in the menu. Can be None
+screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None, filter_map=None):
     zorder 50
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
             
-    # only add menu if acs_list is provided and has more than one option
-    if acs_list and len(acs_list) > 1:
+    # only add menu if filter_map is provided and has more than one option
+    if filter_map and len(filter_map) > 1:
+        #filter dropdown button
+        frame:   
+            area (960, 3, 50, 40)
+            background None           
 
-        frame:
-            area (740, 10, 300, 510)
-            background None
+            button:
+                if show_filter: 
+                    style "filter_dropdown_down"
+                else:
+                    style "filter_dropdown_up"
+                action [If(show_filter == False, true=SetVariable('show_filter', True), false=SetVariable('show_filter', False)),Jump("mas_selector_sidebar_select_midloop")]  
 
-            vbox:
-                xsize 300
-                xalign 0.5
-                spacing 5
+        if show_filter:
+            # Categories Menu
+            frame:   
+                area (750, 45, 300, 500)
+                background None
 
-                viewport id "sidebar_scroll_acs":
-                    mousewheel True
-                    yfill False
+                vbox:
+                    xsize 300
+                    xalign 0.5
 
-                    vbox:
-                        xsize 300
-                        spacing 10
-                        null height 1
-                        
-                        textbutton _("Show All"):
-                            style "hkb_button"
-                            xysize (300, 35)
-                            xalign 0.8
-                            action [SetVariable('acs_type', None),Jump("mas_selector_sidebar_select_midloop")]  
+                    viewport id "sidebar_scroll_acs":
+                        mousewheel True
+                        yfill False
 
-                        for acs_type_item in acs_list:
-                            $ acs_type_name = mas_acs_name_format(acs_type_item)                            
-                            textbutton _(acs_type_name):
+                        vbox:
+                            xsize 300
+                            spacing 5
+                            first_spacing 0
+                            null height 1
+                            
+                            textbutton _("Show All"):
                                 style "hkb_button"
-                                xysize (300, 35)
-                                xalign 0.8
-                                action [SetVariable('acs_type', acs_type_item),Jump("mas_selector_sidebar_select_midloop")]
+                                xysize (300, 40)
+                                xalign 0.8 
+                                action [SetVariable('item_type', None),Jump("mas_selector_sidebar_select_midloop")]  
 
-                        null height 1
+                            # Only need keys
+                            $ filter_map_sorted=sorted(filter_map.keys())   
 
-                null height 5
+                            for item_type_name in filter_map_sorted:
+                                textbutton _(item_type_name):
+                                    style "hkb_button"
+                                    xysize (300, 40)
+                                    xalign 0.8
+                                    action [SetVariable('item_type', item_type_name),Jump("mas_selector_sidebar_select_midloop")]
 
-            bar:
-                value YScrollValue("sidebar_scroll_acs")
-                style "classroom_vscrollbar"
-                xoffset -25  
+                            null height 1
+
+                    null height 5
+
+                bar:
+                    value YScrollValue("sidebar_scroll_acs")
+                    style "classroom_vscrollbar"
+                    xoffset -25  
     else:
-        $ acs_type = None
+        $ item_type = None
+
+
     default flt_items = items
 
     # Search bar
@@ -3167,15 +3242,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in items:
-                        if acs_type is None or selectable.selectable.get_sprobj().acs_type == acs_type:
-                            add selectable:
-#                                xoffset 5
-                                xalign 0.5
                     for selectable in flt_items:
-                        add selectable:
-                            # xoffset 5
-                            xalign 0.5
+                        if (item_type is None) or (selectable.selectable in filter_map[item_type]):
+                            add selectable:
+                                # xoffset 5
+                                xalign 0.5
 
                     null height 1
 
@@ -3209,7 +3280,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
-                    action [SetVariable('acs_type', None),Jump(restore)]
+                    action [SetVariable('item_type', None),SetVariable('show_filter',False),Jump(restore)]
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -3256,7 +3327,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
-#   acs_list - list of acs_types to display in menu.
+#   filter_map - list of selectables for each category  to display in the menu.
 #       (Defailt: None)
 #
 # OUT:
@@ -3264,7 +3335,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, acs_list=None):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
     python:
 
@@ -3399,10 +3470,11 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
     
-        # setup acs_type for filtering
-        acs_type = None
+        # setup filtering
+        item_type = None
+        show_filter = False
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, acs_list=acs_list)
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
 
 
 
@@ -3580,9 +3652,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, acs_list=None):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, acs_list)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, filter_map)
 
     return _return
 
@@ -3610,6 +3682,19 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 #
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+
+    # Possible idea for clothes / hair filtering, this works but would require more meaningful ex_props to be added to all items, 
+    # and would require extra filtering to remove "internal ex_props". This could be incorporated into AOC to show what is in each category?
+    #python:
+    #    # generate filter map
+    #    mapping = {}
+    #    for item in items:
+    #        ex_props = mas_selspr.mas_item_name_format(item.get_sprobj().ex_props)
+    #        for ex_prop in ex_props:
+    #            if ex_prop in mapping:
+    #                mapping[ex_prop].append(item)
+    #            else:
+    #                mapping[ex_prop] = [item]     
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
@@ -3921,17 +4006,14 @@ label monika_ribbon_select:
             ):
                 use_acs.pop(index)
 
-        # generate acs_type_list
-        acs_type_list = []
-        for item in use_acs:
-            if ( item.get_sprobj().acs_type not in acs_type_list ) and (
-                    store.mas_sprites.is_hairacs_compatible(
-                        monika_chr.hair,
-                        item.get_sprobj()
-                    )
-                ):
-                    acs_type_list.append(item.get_sprobj().acs_type)  
-        
+        # generate filter map
+        mapping = {}
+        for acs_sel in use_acs:
+            acs_type_tc = mas_selspr.mas_item_name_format(acs_sel.get_sprobj().acs_type)
+            if acs_type_tc in mapping:
+                mapping[acs_type_tc].append(acs_sel)
+            else:
+                mapping[acs_type_tc] = [acs_sel]     
 
         # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
@@ -3951,12 +4033,7 @@ label monika_ribbon_select:
 
     m 1eua "Sure [player]!"
 
-    if acs_type_list and len(acs_type_list) > 1:
-        show monika at t21
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, acs_list=acs_type_list)
-
-    show monika at t11
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, filter_map=mapping)
 
     if not _return:
         m 1eka "Oh, alright."
