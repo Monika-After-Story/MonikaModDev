@@ -17052,7 +17052,7 @@ label monika_fav_chocolate:
 
     m 3eud "White chocolate is especially sweet and soft, containing no cocoa solids at all...{w=0.3}just the cocoa butter, milk, and sugar."
     m 3eua "I think it would make a nice contrast to an especially bitter drink, like espresso."
-    m 1etc "Hmm... {w=0.3}{nw}"
+    m 1etc "Hmm...{w=0.3}{nw}"
     extend 1wud "but I haven't even thought about chocolate with fillings, like caramel or fruit!"
     m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
     m 2eua "Maybe we could share a big variety box someday. {w=0.2}{nw}"
