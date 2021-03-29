@@ -1427,7 +1427,7 @@ label ch30_loop:
         should_dissolve_all = mas_idle_mailbox.get_dissolve_all()
         scene_change = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=should_dissolve_all, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=scene_change, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
