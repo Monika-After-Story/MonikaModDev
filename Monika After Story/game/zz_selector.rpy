@@ -849,7 +849,7 @@ init -10 python in mas_selspr:
             remover
         )
         ACS_SEL_MAP[acs.name] = new_sel_acs
-        store.mas_insertSort(ACS_SEL_SL, new_sel_acs, selectable_key)
+        store.mas_utils.insert_sort(ACS_SEL_SL, new_sel_acs, selectable_key)
 
 
     def init_selectable_clothes(
@@ -898,7 +898,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
-        store.mas_insertSort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
+        store.mas_utils.insert_sort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
 
 
     def init_selectable_hair(
@@ -945,7 +945,7 @@ init -10 python in mas_selspr:
             select_dlg
         )
         HAIR_SEL_MAP[hair.name] = new_sel_hair
-        store.mas_insertSort(HAIR_SEL_SL, new_sel_hair, selectable_key)
+        store.mas_utils.insert_sort(HAIR_SEL_SL, new_sel_hair, selectable_key)
 
 
     ## adjust an aspect of monika.
@@ -1000,8 +1000,10 @@ init -10 python in mas_selspr:
                 )
 
             # then readd everything that was previous
+            # EXCEPT removers
             for item in add_map.values():
-                moni_chr.wear_acs(item.selectable.get_sprobj())
+                if not item.selectable.remover:
+                    moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
 
@@ -1089,9 +1091,6 @@ init -10 python in mas_selspr:
                 if moni_chr.is_wearing_acs(acs_obj):
                     select_map[item.selectable.name] = item
                     item.selected = True
-                    found_item = True
-
-                elif moni_chr.is_wearing_acs_with_mux(acs_obj.acs_type):
                     found_item = True
 
                 # NOTE: cannot quit early because multiple accessories
@@ -1627,7 +1626,152 @@ init -10 python in mas_selspr:
 
                 # make sure the selector uses the right propmt
 
+    def _selector_filter_items(item, search_query, search_kws):
+        """
+        The filter key we use in the selector screen.
 
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to filter by
+            search_kws - search_query split using spaces
+
+        OUT:
+            boolean whether or not the event pass the criteria
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        for search_kw in search_kws:
+            if (
+                search_kw in name
+                or search_kw in id
+                or (acs_type and search_kw in acs_type)
+                or (ex_props and search_kw in ex_props)
+            ):
+                return True
+
+        return False
+
+    def _selector_sort_items(item, search_query, search_kws):
+        """
+        The sort key we use in the selector screen.
+
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to sort by
+            search_kws - search_query split using spaces
+
+        OUT:
+            weight as int
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        weight = 0
+        base_increment = 2
+        base_modifier = len(search_kws) + 1
+
+        if search_query == name or search_query == id:
+            weight += base_increment * base_modifier**8
+
+        elif search_query in name:
+            if name.startswith(search_query):
+                weight += base_increment * base_modifier**7
+
+            else:
+                weight += base_increment * base_modifier**6
+
+        elif search_query in id:
+            if id.startswith(search_query):
+                weight += base_increment * base_modifier**5
+
+            else:
+                weight += base_increment * base_modifier**4
+
+        else:
+            for search_kw in search_kws:
+                if search_kw in name:
+                    weight += base_increment * base_modifier**3
+
+                elif search_kw in id:
+                    weight += base_increment * base_modifier**2
+
+                elif acs_type and search_kw in acs_type:
+                    weight += base_increment * base_modifier
+
+                elif ex_props and search_kw in ex_props:
+                    weight += base_increment
+
+        return weight
+
+    def _selector_search_items(items, search_query):
+        """
+        The method for filtering and sorting items in the selector screen.
+
+        IN:
+            items - the items to search in
+            search_query - the search query to filter and sort by
+
+        OUT:
+            list of event objects or None if empty query was given
+        """
+        if not search_query:
+            return None
+
+        search_query = search_query.lower().strip()
+        search_kws = search_query.split()
+
+        flt_items = [
+            item
+            for item in items
+            if _selector_filter_items(item, search_query, search_kws)
+        ]
+        flt_items.sort(key=lambda item: _selector_sort_items(item, search_query, search_kws), reverse=True)
+
+        return flt_items
+
+    def selector_adj_ranged_callback(adj):
+        """
+        This is called by an adjustment of the twopane menu
+        when its range is being changed (set)
+
+        IN:
+            adj - the adj object
+        """
+        widget = renpy.get_widget("mas_selector_sidebar", "search_input", "screens")
+        caret_relative_pos = 1.0
+        if widget is not None:
+            caret_pos = widget.caret_pos
+            content_len = len(widget.content)
+
+            if content_len > 0:
+                caret_relative_pos = caret_pos / float(content_len)
+
+        # This ensures that the caret is always visible (close enough) to the user
+        # when they enter text
+        adj.change(adj.range * caret_relative_pos)
+
+    def selector_search_callback(search_query):
+        """
+        The selector screen input callback.
+
+        IN:
+            search_query - search query to filter and sort by
+        """
+        # Get the screen to pass events into
+        scr = renpy.get_screen("mas_selector_sidebar")
+        if scr is not None:
+            # Search
+            flt_items = _selector_search_items(scr.scope["items"], search_query)
+            scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
+        # Update the screen
+        renpy.restart_interaction()
 
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
@@ -2919,9 +3063,47 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #    modal True
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
+    default flt_items = items
+
+    # Search bar
+    frame:
+        xpos 1075
+        ypos 5
+        xsize 200
+        ysize 40
+        background Solid("#ffaa99aa")
+
+        viewport:
+            draggable False
+            arrowkeys False
+            mousewheel "horizontal"
+            # I have no idea why, but this must be 5 px shorter
+            xsize 195
+            ysize 38
+            xadjustment ui.adjustment(ranged=store.mas_selspr.selector_adj_ranged_callback)
+
+            input:
+                id "search_input"
+                style_prefix "input"
+                length 50
+                xalign 0.0
+                layout "nobreak"
+                first_indent (0 if flt_items is items else 10)
+                # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
+                changed store.mas_selspr.selector_search_callback
+
+        # NOTE: we do need an instance check here
+        if flt_items is items:
+            text "Search for...":
+                text_align 0.0
+                layout "nobreak"
+                color "#EEEEEEB2"
+                first_indent 10
+                line_leading 1
+                outlines []
 
     frame:
-        area (1075, 5, 200, sel_frame_vsize)
+        area (1075, 50, 200, sel_frame_vsize - 45)
         background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
 
         vbox:
@@ -2943,9 +3125,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in items:
+                    for selectable in flt_items:
                         add selectable:
-#                            xoffset 5
+                            # xoffset 5
                             xalign 0.5
 
                     null height 1
@@ -2990,7 +3172,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
-#                action Function(mailbox.mas_send_return, -1)
+                # action Function(mailbox.mas_send_return, -1)
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
@@ -3485,7 +3667,7 @@ label monika_clothes_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     if mas_isMoniLove():
@@ -3632,7 +3814,7 @@ label monika_hair_select:
     m 1hua "Sure!"
 
     # setup the monika expression during the selection screen
-    show monika 1eua
+    show monika 2eua
 
     # start the selection screen
     call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)

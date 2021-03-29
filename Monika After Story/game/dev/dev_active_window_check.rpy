@@ -14,14 +14,14 @@ init 5 python:
 
 label monika_check_window:
     m 1hub "Okay, [player]!"
-    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}."
+    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}.{nw}"
 
     pause 2.0
 
     if mas_isFocused():
         m 1hub "Me, yay!"
     else:
-        $ active_wind = mas_getActiveWindow(True)
+        $ active_wind = mas_getActiveWindowHandle()
         if active_wind:
             m 3eua "[active_wind]."
         else:

@@ -192,6 +192,7 @@ init python:
             - Music Menu
             - Calendar overlay
             - Window hiding
+            - dismiss
 
         Shows:
             - hotkey buttons
@@ -202,6 +203,8 @@ init python:
         mas_calDropOverlayShield()
         HKBShowButtons()
         mas_hotkeys.no_window_hiding = False
+        mas_hotkeys.lock_dismiss = False
+        mas_hotkeys.allow_dismiss = True
 
     def mas_RaiseShield_timedtext():
         """
@@ -212,6 +215,7 @@ init python:
             - Music Menu
             - Calendar overlay
             - Window hiding
+            - dismiss
 
         Hides:
             - hotkey buttons
@@ -222,6 +226,8 @@ init python:
         mas_calRaiseOverlayShield()
         HKBHideButtons()
         mas_hotkeys.no_window_hiding = True
+        mas_hotkeys.lock_dismiss = True
+        mas_hotkeys.allow_dismiss = False
 
 
 ################################## GENERALIZED ################################

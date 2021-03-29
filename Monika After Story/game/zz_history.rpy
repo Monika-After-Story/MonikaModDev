@@ -1004,6 +1004,9 @@ init -810 python:
             "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
             "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
 
+            # lifestyle / work
+            "_mas_pm_last_promoted_d": "pm.lifestyle.last_promoted",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
             "_mas_pm_feels_lonely_sometimes": "pm.emotions.lonely_sometimes",
@@ -1154,6 +1157,7 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
+            "_mas_pm_has_heterochromia": "pm.looks.eyes.heterochromia",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",

@@ -1372,10 +1372,10 @@ screen preferences():
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
-                        action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
                     textbutton _("UI: D/N Cycle"):
-                        action [Function(mas_darkMode, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
+                        action [Function(mas_settings._ui_change_wrapper, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
@@ -2449,26 +2449,6 @@ style notify_frame is empty:
 style notify_text is gui_text:
     size gui.notify_text_size
 
-## This part of the code is used to create the tutorial selection screen.
-
-#Each tutorial is defined by its name (caption) and its label,
-#items is the list of caption and label of each tutorial
-#init python is necessary because items is a List, a python object
-
-init python:
-
-    items = [(_("Introduction"),"example_chapter")
-        ,(_("Route Part 1, How To Make A Mod"),"tutorial_route_p1")
-        ,(_("Route Part 2, Music"),"tutorial_route_p2")
-        ,(_("Route Part 3, Scene"),"tutorial_route_p3")
-        ,(_("Route Part 4, Dialogue"),"tutorial_route_p4")
-        ,(_("Route Part 5, Menu"),"tutorial_route_p5")
-        ,(_("Route Part 6, Logic Statement"),"tutorial_route_p6")
-        ,(_("Route Part 7, Sprite"),"tutorial_route_p7")
-        ,(_("Route Part 8, Position"),"tutorial_route_p8")
-        ,(_("Route Part 9, Ending"),"tutorial_route_p9")]
-
-
 ## Scrollable Menu ###############################################################
 ##
 ## This screen creates a vertically scrollable menu of prompts attached to labels
@@ -2618,74 +2598,80 @@ define main_adj = ui.adjustment()
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
     on "hide" action Function(store.main_adj.change, 0)
 
+    default flt_evs = None
+
     style_prefix "twopane_scrollable_menu"
 
-    fixed:
-        anchor (0, 0)
-        pos (left_area[0], left_area[1])
-        xsize left_area[2]
-
-        if cat_length != 1:
+    # If the user used search, we show only teh results
+    if flt_evs is not None:
+        fixed:
+            pos (left_area[0], left_area[1])
+            xsize right_area[0] - left_area[0] + right_area[2]
             ysize left_area[3]
-        else:
-            ysize left_area[3] + evhand.LEFT_EXTRA_SPACE
 
-        bar:
-            adjustment prev_adj
-            style "classroom_vscrollbar"
-            xalign left_align
+            vbox:
+                pos (0, 0)
+                anchor (0, 0)
 
-        vbox:
-            ypos 0
-            yanchor 0
+                viewport:
+                    id "viewport"
+                    yfill False
+                    mousewheel True
+                    arrowkeys True
 
-            viewport:
-                yadjustment prev_adj
-                yfill False
-                mousewheel True
-                arrowkeys True
+                    vbox:
+                        for ev in flt_evs:
+                            textbutton ev.prompt:
+                                if renpy.has_label(ev.eventlabel) and not seen_event(ev.eventlabel):
+                                    style "scrollable_menu_new_button"
+                                else:
+                                    style "scrollable_menu_button"
+                                xsize right_area[0] - left_area[0] + right_area[2]
+                                action [Function(mas_ui.twopane_menu_delegate_callback, ev.eventlabel), Return(ev.eventlabel)]
 
-                vbox:
-                    for i_caption, i_label in prev_items:
-                        textbutton i_caption:
-                            if renpy.has_label(i_label) and not seen_event(i_label):
-                                style "twopane_scrollable_menu_new_button"
-
-                            elif not renpy.has_label(i_label):
-                                style "twopane_scrollable_menu_special_button"
-
-                            action Return(i_label)
-
-            if cat_length != 1:
                 null height 20
 
-                if cat_length == 0:
-                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
-
-                elif cat_length > 1:
-                    textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
-
-    if main_items:
-        fixed:
-            area right_area
+                textbutton _("Nevermind."):
+                    style "scrollable_menu_button"
+                    xsize right_area[0] - left_area[0] + right_area[2]
+                    action [Return(False), Function(store.prev_adj.change, 0)]
 
             bar:
-                adjustment main_adj
                 style "classroom_vscrollbar"
-                xalign right_align
+                value YScrollValue("viewport")
+                # RenPy is tresh, so we have to do this here
+                xalign left_align / 2 + 0.005
+
+    # Otherwise basic twopane
+    else:
+        # Left panel
+        fixed:
+            anchor (0, 0)
+            pos (left_area[0], left_area[1])
+            xsize left_area[2]
+
+            if cat_length != 1:
+                ysize left_area[3]
+            else:
+                ysize left_area[3] + evhand.LEFT_EXTRA_SPACE
+
+            bar:
+                adjustment prev_adj
+                style "classroom_vscrollbar"
+                xalign left_align
 
             vbox:
                 ypos 0
                 yanchor 0
 
                 viewport:
-                    yadjustment main_adj
+                    yadjustment prev_adj
                     yfill False
                     mousewheel True
                     arrowkeys True
 
                     vbox:
-                        for i_caption, i_label in main_items:
+                        for i_caption, i_label in prev_items:
                             textbutton i_caption:
                                 if renpy.has_label(i_label) and not seen_event(i_label):
                                     style "twopane_scrollable_menu_new_button"
@@ -2693,11 +2679,87 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                                 elif not renpy.has_label(i_label):
                                     style "twopane_scrollable_menu_special_button"
 
-                                action [Return(i_label), Function(store.prev_adj.change, 0)]
+                                action Return(i_label)
 
-                null height 20
+                if cat_length != 1:
+                    null height 20
 
-                textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+                    if cat_length == 0:
+                        textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+
+                    elif cat_length > 1:
+                        textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
+
+        # Right panel
+        if main_items:
+            fixed:
+                area right_area
+
+                bar:
+                    adjustment main_adj
+                    style "classroom_vscrollbar"
+                    xalign right_align
+
+                vbox:
+                    ypos 0
+                    yanchor 0
+
+                    viewport:
+                        yadjustment main_adj
+                        yfill False
+                        mousewheel True
+                        arrowkeys True
+
+                        vbox:
+                            for i_caption, i_label in main_items:
+                                textbutton i_caption:
+                                    if renpy.has_label(i_label) and not seen_event(i_label):
+                                        style "twopane_scrollable_menu_new_button"
+
+                                    elif not renpy.has_label(i_label):
+                                        style "twopane_scrollable_menu_special_button"
+
+                                    action [Return(i_label), Function(store.prev_adj.change, 0)]
+
+                    null height 20
+
+                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+
+    # Search bar
+    # The constants are hardcoded, but the menu looks good so just don't change them
+    frame:
+        xpos left_area[0]
+        ypos left_area[1] - 55
+        xsize right_area[0] - left_area[0] + right_area[2]# 530
+        ysize 40
+        background Solid("#ffaa99aa")
+
+        viewport:
+            draggable False
+            arrowkeys False
+            mousewheel "horizontal"
+            xsize right_area[0] - left_area[0] + right_area[2] - 10
+            ysize 38
+            xadjustment ui.adjustment(ranged=store.mas_ui.twopane_menu_adj_ranged_callback)
+
+            input:
+                id "search_input"
+                style_prefix "input"
+                length 50
+                xalign 0.0
+                layout "nobreak"
+                first_indent (0 if flt_evs is None else 10)
+                # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _#"
+                changed store.mas_ui.twopane_menu_search_callback
+
+        if flt_evs is None:
+            text "Search for a conversation...":
+                text_align 0.0
+                layout "nobreak"
+                color "#EEEEEEB2"
+                first_indent 10
+                line_leading 1
+                outlines []
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
@@ -2934,29 +2996,6 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
-
-
-# generic custom displayabels below:
-init python:
-    class PauseDisplayable(renpy.Displayable):
-        """
-        Pause until click variant of Pause
-        This is because normal pause until click is broken for some reason
-        """
-        import pygame
-
-        def __init__(self):
-            super(renpy.Displayable, self).__init__()
-
-        def render(self, width, height, st, at):
-            # dont actually render anything
-            return renpy.Render(width, height)
-
-        def event(self, ev, x, y, st):
-            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
-                return True
-
-            raise renpy.IgnoreEvent()
 
 # Partial generic showpoem screen
 # IN:

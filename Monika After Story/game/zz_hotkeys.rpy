@@ -8,11 +8,27 @@ init -10 python in mas_hotkeys:
     # True means allow Dismiss, False means do not
     allow_dismiss = True
 
+    # True will lock dismiss, False will mean dismiss can be changed
+    lock_dismiss = False
+
+
     def allowdismiss():
         """
         Justreturns current state of no_dismiss
         """
         return allow_dismiss
+
+    
+    def set_dismiss(value):
+        """
+        Sets dismiss to the given value, if it is not locked.
+
+        IN:
+            value - True will allow dismiss, False will not
+        """
+        if not lock_dismiss:
+            global allow_dismiss
+            allow_dismiss = value
 
 
 init -1 python in mas_hotkeys:
@@ -234,6 +250,21 @@ init python:
                 or scope.get("ss_time") != store.mas_suntime.sunset
         ):
             store.mas_background.buildupdate()
+
+        # dismiss last text if ui changed
+        if (
+                store.mas_settings.ui_changed
+                and store.mas_core._last_text is not None
+        ):
+                store.mas_core._last_text.call_slow_done(0)
+
+        elif store.mas_settings.dark_mode_clicked:
+            renpy.restart_interaction()
+
+        # reset these vars so we don't run weird shit
+        store.mas_settings.ui_changed = False
+        store.mas_settings.dark_mode_clicked = False
+        store.mas_core._last_text = None
 
 
     def _mas_game_menu():

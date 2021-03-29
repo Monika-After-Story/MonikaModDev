@@ -78,7 +78,7 @@ init 8 python:
         if game_ev:
             return (
                 game_ev.unlocked
-                and (not game_ev.conditional or (game_ev.conditional and eval(game_ev.conditional)))
+                and game_ev.checkConditional()
                 and game_ev.checkAffection(store.mas_curr_affection)
             )
         return False
@@ -129,7 +129,7 @@ init 5 python:
             eventlabel="mas_chess",
             prompt="Chess",
             conditional=(
-                "not renpy.seen_label('mas_chess_dlg_qf_lost_ofcn_6') "
+                "persistent._mas_chess_timed_disable is not True "
                 "and mas_games.is_platform_good_for_chess() "
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
             )
@@ -206,6 +206,44 @@ label mas_pick_a_game:
 
     if selected_game:
         show monika at t11
+        if selected_game != "mas_piano" and not (selected_game == "mas_pong" and played_pong_this_session):
+            python:
+                if mas_isMoniUpset(lower=True):
+                    begin_quips = [
+                        _("Okay, let's play."),
+                        _("I guess we can play that."),
+                        _("Let's begin."),
+                        _("Sure."),
+                        _("Fine."),
+                        _("Alright."),
+                    ]
+
+                else:
+                    begin_quips = [
+                        _("Let's do this!"),
+                        _("Bring it on, [mas_get_player_nickname()]!"),
+                        _("Ready to lose, [mas_get_player_nickname()]?"),
+                        _("I'm ready when you are, [mas_get_player_nickname()]!"),
+                        _("I hope you're ready, [mas_get_player_nickname()]~"),
+                        _("Let's have some fun, [mas_get_player_nickname()]!"),
+                        _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
+                        _("Throwing down the gauntlet, are we?"),
+                        _("It's time to duel!"),
+                        _("Challenge accepted!"),
+                    ]
+
+                game_quip = renpy.substitute(renpy.random.choice(begin_quips))
+
+
+            if mas_isMoniBroken():
+                m 6ckc "..."
+
+            elif mas_isMoniUpset(lower=True):
+                m 2ekd "[game_quip]"
+
+            else:
+                m 3hub "[game_quip]"
+
         $ pushEvent(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
