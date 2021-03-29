@@ -65,7 +65,7 @@ jobs:
       - name: rpy lint
         run: |
           cd renpy
-          ./renpy.sh "../mas0105/" lint | grep -v "^$\|Could not find image\|is not an image"
+          ./renpy.sh "../mas0105/" lint | grep -v "^$\|Could not find image\|is not an image\|The image named"
 
       # distribute
       - name: rpy distribute
