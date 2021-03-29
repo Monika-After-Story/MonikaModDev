@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -18,10 +18,10 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     name: ci_build
-    
+
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     env:
       SDL_AUDIODRIVER: dummy # handles ALSA issues
 
@@ -43,7 +43,7 @@ jobs:
           tar xf renpy-6.99.12.4-sdk.tar.bz2
           rm renpy-6.99.12.4-sdk.tar.bz2
           mv renpy-6.99.12.4-sdk renpy
-          
+
       # download base mas
       - name: Download base MAS + copy files over
         run: |
@@ -56,7 +56,7 @@ jobs:
       - name: exception skip for unstable
         run: touch mas0105/trb
         if: github.ref == 'refs/heads/unstable'
-        
+
       # run sprite checkers
       - name: check sprites
         run: python tools/ghactions.py
@@ -65,7 +65,7 @@ jobs:
       - name: rpy lint
         run: |
           cd renpy
-          ./renpy.sh "../mas0105/" lint &> renpy_output
+          ./renpy.sh "../mas0105/" lint &> >(tee renpy_output)
           python ../tools/renpy_lint_parser.py
           cat renpy_output_clean
 
@@ -74,4 +74,3 @@ jobs:
         run: |
           cd renpy
           ./renpy.sh launcher distribute "../mas0105/" --package Mod
-        
