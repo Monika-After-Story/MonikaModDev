@@ -1825,28 +1825,6 @@ label mas_song_when_you_say_nothing_at_all_long:
 
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_songs_database,
-            eventlabel="mas_song_tanabata",
-            category=[store.mas_songs.TYPE_SHORT],
-            prompt=('Tanabata song'),
-            random=False,
-            unlocked=False
-        ),
-        code="SNG"
-    )
-
-label mas_song_tanabata:
-    m 1dud "{i}~The bamboo leaves rustle{w=0.3} and sway under the eaves~{/i}"
-    m 3suu "{i}~The stars twinkle,{w=0.3} like gold and silver grains of sand~{/i}"
-    m 1dud "{i}~The five-color paper strips,{w=0.3} I have written them~{/i}"
-    m 1suu "{i}~The stars twinkle,{w=0.3} watching from above~{/i}"
-
-    m 1hua "I would love to visit Japan during Tanabata with you sometime~"
-    return
-
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)

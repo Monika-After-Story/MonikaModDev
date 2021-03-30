@@ -972,7 +972,8 @@ init 5 python:
             eventlabel="mas_story_tanabata",
             prompt="The Weaver Girl and the Cowherd",
             category=[mas_stories.TYPE_NORMAL],
-            unlocked=False
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="STY"
     )
@@ -995,7 +996,7 @@ label mas_story_tanabata:
     m 1dksdlc "I can't imagine what it must be like to be only able to meet your loved one once a year."
     m 3eua "But you know what they say, [player]...{w=0.3}love can move mountains."
     m 3hubsu "...And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
-    $ mas_protectedShowEVL("monika_tanabata", "EVE", _random=True)
+    $ mas_unlockEVL("monika_tanabata", "EVE")
     return "love"
 
 #START: SCARY STORIES

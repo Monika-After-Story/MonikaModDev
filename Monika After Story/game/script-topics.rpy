@@ -17059,45 +17059,38 @@ label monika_fav_chocolate:
     extend 4hub "I think it would be fun to compare our top picks, ahaha!"
     return
 
+#NOTE: This is unlocked by the mas_story_tanabata
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_tanabata",
+            prompt="What is Tanabata?"
             category=['misc'],
             prompt="Tanabata",
-            random=True,
-            aff_range=(mas_aff.AFFECTIONATE, None)
+            pool=True,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={"no_unlock":None}
         )
     )
 
 label monika_tanabata:
-    m 1eua "Hey [player], remember when I told you the story of {i}The Weaver Girl and the Cowherd{/i}?"
-    m 3eub "Did you know there's a festival dedicated to it called Tanabata?"
+    m 3hksdlb "Oh gosh, I hope when I was telling the story of {i}The Weaver Girl and the Cowherd{/i} you weren't lost!"
+    m 3eub "Well, there's a festival dedicated to Orihime and Hikoboshi called Tanabata."
     m 3eud "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
     m "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
     m 3euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
     m "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
     m 1eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
-    m 3eub "Even though the term was coined in Romeo and Juliet, the term 'star-crossed lovers' is really fitting here!"
-    m 3eua "Star-crossed lovers is a term describing a pair of lovers whose relationship is thwarted by outside forces."
+    m 3eub "Even though the term was coined in Romeo and Juliet, 'star-crossed lovers' is really fitting here!"
+    m 3eua "It describes a pair of lovers whose relationship is thwarted by outside forces."
     m 1eud "As the day of the festival draws closer, long narrow strips of colorful paper, known as tanzaku, vibrant ornaments, and other decorations are hung from bamboo branches."
-    m 3eua "Before they are hung, tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
+    m 3eua "Before they are hung, the tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
     m 3hub "It's really cute and heartwarming!"
     m 1eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
-    m 1hua "There's even a very cute traditional Tanabata song associated with it."
-    m 3eua "Would you like to hear it?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Would you like to hear it?{fast}"
 
-        "Sure.":
-            m 1hua "Great, let me just get the translation{w=0.3}.{w=0.3}.{w=0.3}.{nw}"
-            call mas_song_tanabata
-
-        "Not right now.":
-            m 2rup "Aw, okay."
-            m 2hua "Just let me know if you would like to hear it sometime~"
-
-    $ mas_unlockEVL('mas_song_tanabata', 'SNG')
+    if persistent._mas_pm_likes_travelling or persistent._mas_pm_likes_travelling is None:
+        m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
+    else:
+        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
