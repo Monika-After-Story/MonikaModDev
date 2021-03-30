@@ -17074,19 +17074,19 @@ init 5 python:
     )
 
 label monika_tanabata:
-    m 3hksdlb "Oh gosh, I hope when I was telling the story of {i}The Weaver Girl and the Cowherd{/i} you weren't lost!"
-    m 3eub "Well, there's a festival dedicated to Orihime and Hikoboshi called Tanabata."
-    m 3eud "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
-    m "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
-    m 3euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
-    m "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
-    m 1eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    m 2hksdlb "Oh gosh, I hope when I was telling the story of {i}The Weaver Girl and the Cowherd{/i} you weren't lost!"
+    m 7eub "Well, there's a festival dedicated to Orihime and Hikoboshi called Tanabata."
+    m 7eud "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
+    m 2eud "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
+    m 2euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
+    m 7euc "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
+    m 3eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
     m 3eub "Even though the term was coined in Romeo and Juliet, 'star-crossed lovers' is really fitting here!"
-    m 3eua "It describes a pair of lovers whose relationship is thwarted by outside forces."
+    m 1eua "It describes a pair of lovers whose relationship is thwarted by outside forces."
     m 1eud "As the day of the festival draws closer, long narrow strips of colorful paper, known as tanzaku, vibrant ornaments, and other decorations are hung from bamboo branches."
-    m 3eua "Before they are hung, the tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
+    m 1eua "Before they are hung, the tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
     m 3hub "It's really cute and heartwarming!"
-    m 1eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
+    m 3eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
 
     if persistent._mas_pm_likes_travelling is not False:
         m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
