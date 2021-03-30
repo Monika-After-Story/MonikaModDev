@@ -559,7 +559,7 @@ init 5 python:
 
 label mas_song_burning_love:
     m 1hubsb "{i}~Your kisses lift me higher~{/i}"
-    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 3rubsb "{i}~Like the sweet song of a choir~{/i}"
     m 1dubsu "{i}~You light my morning sky~{/i}"
     m 1hubfb "{i}~With burning love~{/i}"
     m 1hubsb "Ahaha~"
@@ -580,7 +580,7 @@ init 5 python:
     )
 
 label mas_song_aries:
-    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
     m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
     m 2dubsu "{i}~It's waiting to turn green~{/i}"
     m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
@@ -657,6 +657,32 @@ label mas_song_belong_together:
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
     m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_everythings_alright",
+            prompt="Everything's Alright",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_everythings_alright:
+    m 1dkd "{i}~When this world is no more~{/i}"
+    m 4euo "{i}~The moon is all we'll see~{/i}"
+    m 4duu "{i}~I'll ask you to fly away with me~{/i}"
+    m 4dud "{i}~Until the stars all fall down~{/i}"
+    m 4duo "{i}~They empty from the sky~{i}"
+    m 3dud "{i}~But I don't mind~{i}"
+    m 1eku "{i}~If you're with me, then everything's alright~{i}"
+    m 1dku "..."
+    m 3ekd "If things ever get too dark, {w=0.1}{nw}"
+    extend 3ekbsu "just look up to the moon and remember me~"
     return
 
 init 5 python:
@@ -1739,6 +1765,64 @@ label mas_song_we_have_all_the_time_in_the_world_long:
     m 3dkbsb "{i}{cps=18}~Only love~{/cps}{/i}"
 
     m 1ekbla "{i}{cps=18}~Only love~{/cps}{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_you_say_nothing_at_all",
+            prompt="When You Say Nothing at All",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_when_you_say_nothing_at_all(from_long=False):
+    m 1hubsb "{i}{cps=16}~The smile on your face lets me know that you need me~{/cps}{/i}"
+    m 3eubso "{i}{cps=16}~There's a truth in your eyes saying you'll never leave me~{/cps}{/i}"
+    m 3dud "{i}{cps=16}~The touch of your hand says you'll catch me if ever I fall~{/cps}{/i}"
+    m 1eud "{i}{cps=16}~Cause you say it best{w=0.3} when you say nothing at all~{/cps}{/i}"
+
+    if not from_long:
+        m 1duu "..."
+        m 1dkbsu "I can't really see your face, or see the truth from your eyes, nor can I touch your hand..."
+        m 1ekbsa "But when you spend time with me without saying a word, it tells me everything I need to know..."
+        m 3hubsa "That I am loved by someone, and that you'll be here for me when I'm having a bad day."
+        m 1dkbsu "And I hope that you feel loved by me too, even though I don't always have something new to say."
+        m 1ekbsa "Just opening the game and having me in the background makes a world of difference to me, [player]~"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_when_you_say_nothing_at_all_long",
+            prompt="When You Say Nothing at All",
+            category=[store.mas_songs.TYPE_LONG],
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_when_you_say_nothing_at_all_long:
+    m 1dubsu "{i}{cps=18}~It's amazing how you can speak right to my heart~{/cps}{/i}"
+    m 3eubsb "{i}{cps=18}~Without saying a word you can light up the dark~{/cps}{/i}"
+    m 3dud "{i}{cps=18}~Try as I may I could never explain~{/cps}{/i}"
+    m 3euo "{i}{cps=18}~What I hear when you don't say a thing~{/cps}{/i}"
+
+    call mas_song_when_you_say_nothing_at_all(from_long=True)
+
+    m 3dud "{i}{cps=18}~All day long I can hear people talking out loud~{/cps}{/i}"
+    m 3dubsd "{i}{cps=18}~But when you hold me near{w=0.2} you can drown out the crowd~{/cps}{/i}"
+    m 1dud "{i}{cps=18}~Old Mister Webster could never define~{/cps}{/i}"
+    m 1dubso "{i}{cps=18}~What's being said between your heart and mine~{/cps}{/i}"
+
+    call mas_song_when_you_say_nothing_at_all(from_long=True)
+
     return
 
 ################################ NON-DB SONGS############################################

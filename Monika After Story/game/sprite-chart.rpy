@@ -129,7 +129,7 @@ default persistent._mas_force_hair = False
 default persistent._mas_last_ahoge_dt = None
 # set to the dt of when we last set the ahoge
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed", show_function=store.mas_core.show_display_say)
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
 
@@ -137,6 +137,26 @@ image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 # Monika's piano sprite
 image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
+
+init -10 python in mas_core:
+    import renpy
+    _last_text = None
+
+    def show_display_say(who, what_string, **kwargs):
+        """
+        semi-override of show_display_say so we can force text to render
+        immediately.
+        """
+        global _last_text
+        rv = renpy.character.show_display_say(who, what_string, **kwargs)
+
+        if isinstance(rv, tuple):
+            # r7-specific handling.
+            # purposely not doing *rv in case tom changes stuff again
+            rv = renpy.display.screen.get_widget(rv[0], rv[1], rv[2])
+
+        _last_text = rv
+        return _last_text
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
@@ -659,7 +679,7 @@ init -5 python in mas_sprites:
     LOC_WH = (1280, 850)
 
     # composite stuff
-    I_COMP = "LiveComposite"
+    I_COMP = "im.Composite"
     L_COMP = "LiveComposite"
     TRAN = "Transform"
 
@@ -2387,7 +2407,7 @@ init -3 python:
             if (
                     persistent._mas_last_ahoge_dt is not None
                     and not force_change
-                    and datetime.datetime.now().date() 
+                    and datetime.datetime.now().date()
                         == persistent._mas_last_ahoge_dt.date()
             ):
                     # we already set the ahoge today so dont set it again.
@@ -2401,7 +2421,7 @@ init -3 python:
 
         def _set_ahoge(self, ahoge_acs, force_wear=False):
             """
-            Sets the ahoge for Monika, also setting the appropriate last 
+            Sets the ahoge for Monika, also setting the appropriate last
             ahoge and everything.
 
             IN:
@@ -7159,7 +7179,7 @@ python early:
             duration - (int/tuple) duration of this exp in seconds
             aff_range - (None/tuple) affection range for this exp
             conditional - (None/str) python condition for this exp
-            weight - (int) weight of this exp that's used in random selection
+            weight - (None/int) weight of this exp that's used in random selection
             tag - (None/str) tag for this exp
             repeatable - (boolean) boolean indicating whether or not this exp can be reused
             add_to_tag_map - (boolean) private flag whether or not this exp will be added to the tag map
@@ -7185,7 +7205,7 @@ python early:
                 conditional - string with condition, assuming it's python code. If when evaled it returns False, this exp won't be used
                     (Default: None)
                 weight - weight to use when choosing from a pool of exps. Must be between 1 and 100.
-                    NOTE: if this is 100 (max value), this exp will be FORCED among with other exps that has max weight. This is to guarantee that we'll get an exp
+                    NOTE: if this is None, this exp will be FORCED among with other exps that has None as weight. This is to guarantee that we'll get an exp
                     (Default: 50)
                 tag - tag for this exp. Used to group exps. There's no group for exps with no tag
                     (Default: None)
@@ -7248,7 +7268,7 @@ python early:
                 MASMoniIdleExp._conditional_cache[conditional] = renpy.python.py_compile(conditional, "eval")
             self.conditional = conditional
 
-            if not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
+            if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
                 raise IdleExpException(
                     "Weight must be between 0 and 100. Got {0}.".format(
                         weight
@@ -7347,9 +7367,23 @@ python early:
             ASSUMES:
                 mas_utils.weightedChoice
             """
-            return mas_utils.weightedChoice(
-                [(exp, exp.weight) for exp in exps]
-            )
+            rng_choice = list()
+            weighted_choice = list()
+
+            for exp in exps:
+                if exp.weight is None:
+                    rng_choice.append(exp)
+
+                else:
+                    weighted_choice.append((exp, exp.weight))
+
+            if rng_choice:
+                exp = random.choice(rng_choice)
+
+            else:
+                exp = mas_utils.weightedChoice(weighted_choice)
+
+            return exp
 
     class MASMoniIdleExpGroup(MASMoniIdleExp):
         """
@@ -7379,7 +7413,7 @@ python early:
                 conditional - string with condition. If this doesn't pass, no exps of this group will be shown
                     (Default: None)
                 weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
-                    NOTE: if this is 100 (max value), this group will be FORCED among with other exps/groups that has max weight.
+                    NOTE: if this is None, this group will be FORCED among with other exps/groups that has None as weight.
                         This is to guarantee that we'll get this if we want so
                     (Default: 50)
                 tag - tag for this group. Used to group groups
@@ -7564,7 +7598,7 @@ python early:
                 conditional - string with condition. If this doesn't pass, no exps of this group will be shown
                     (Default: None)
                 weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
-                    NOTE: if this is 100 (max value), this group will be FORCED among with other exps/groups that has max weight.
+                    NOTE: if this is None, this group will be FORCED among with other exps/groups that has None as weight.
                         This is to guarantee that we'll get this if we want so
                     (Default: 50)
                 tag - tag for this group. Used to group groups
@@ -8075,8 +8109,8 @@ python early:
                     for id, exp in enumerate(exp_list):
                         if exp.check_conditional():
                             has_valid_exp = True
-                            # For convinience we force exps that have max weight
-                            if exp.weight == MASMoniIdleExp.MAX_WEIGHT:
+                            # For convinience we force exps whose weight is None
+                            if exp.weight is None:
                                 forced_choices.append(id)
 
                             # Otherwise add to weighted choice
@@ -8914,7 +8948,7 @@ init 499 python:
                 tag="dist_exps"
             ),
             # Below 0 and Upset
-            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=100, repeatable=False, tag="below_zero_startup_exps"),
+            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=None, repeatable=False, tag="below_zero_startup_exps"),
             MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
             MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
             # Normal
@@ -8942,23 +8976,87 @@ init 499 python:
                 weight=2,
                 tag="idle_wink"
             ),
-            MASMoniIdleExp("1eua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=94, tag="aff_exps"),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=70),
+                    MASMoniIdleExp("1eua_follow", weight=30)# 30% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE),
+                weight=94,
+                tag="aff_exps"
+            ),
             MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
             # Enamored
-            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=100, repeatable=False, tag="enam_startup_exps"),
-            MASMoniIdleExp("1eua", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=75, tag="enam_exps"),
-            MASMoniIdleExp("5esu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=11, tag="enam_exps"),
+            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=None, repeatable=False, tag="enam_plus_startup_exps"),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=None),
+                    MASMoniIdleExp("1eua_follow", weight=None)# 50% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED),
+                weight=75,
+                tag="enam_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5esu", weight=None),
+                    MASMoniIdleExp("5esu_follow", weight=None)# 50% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED),
+                weight=11,
+                tag="enam_exps"
+            ),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
             # Love
-            MASMoniIdleExp("1eua", aff_range=(mas_aff.LOVE, None), weight=50, tag="love_exps"),
-            MASMoniIdleExp("5esu", aff_range=(mas_aff.LOVE, None), weight=26, tag="love_exps"),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=30),
+                    MASMoniIdleExp("1eua_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=50,
+                tag="love_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5esu", weight=30),
+                    MASMoniIdleExp("5esu_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=26,
+                tag="love_exps"
+            ),
             MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
             MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
-            MASMoniIdleExp("5eubla", aff_range=(mas_aff.LOVE, None), weight=5, tag="love_exps"),
-            MASMoniIdleExp("5eubsa", aff_range=(mas_aff.LOVE, None), weight=2, tag="love_exps")
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5eubla", weight=30),
+                    MASMoniIdleExp("5eubla_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=5,
+                tag="love_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5eubsa", weight=30),
+                    MASMoniIdleExp("5eubsa_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=2,
+                tag="love_exps"
+            )
         )
     )
+
 image monika idle = mas_moni_idle_disp
 
 ### [IMG100]
@@ -8977,7 +9075,9 @@ image ghost_monika:
 
 # transiton to empty desk
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
-label mas_transition_to_emptydesk:
+label mas_transition_to_emptydesk(hide_dlg_box=True):
+    if hide_dlg_box:
+        window hide
     $ store.mas_sprites.show_empty_desk()
     hide monika with dissolve_monika
     return
@@ -8986,8 +9086,10 @@ label mas_transition_to_emptydesk:
 # NOTE: to unhide a desk ACS, set that ACS to keep on desk AFTER calling this
 # IN:
 #   exp - expression to show when monika is shown
-label mas_transition_from_emptydesk(exp="monika 1eua"):
+label mas_transition_from_emptydesk(exp="monika 1eua", show_dlg_box=True):
+    if show_dlg_box:
+        window auto
     $ renpy.show(exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
-    $ renpy.with_statement(dissolve)
+    $ renpy.with_statement(dissolve_monika)
     hide emptydesk
     return
