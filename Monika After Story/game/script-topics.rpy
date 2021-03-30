@@ -17065,7 +17065,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_tanabata",
-            prompt="What is Tanabata?"
+            prompt="What is Tanabata?",
             category=['misc'],
             prompt="Tanabata",
             pool=True,
