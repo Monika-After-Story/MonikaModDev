@@ -1829,7 +1829,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
-            eventlabel="mas_song_tanabata_song",
+            eventlabel="mas_song_tanabata",
             category=[store.mas_songs.TYPE_SHORT],
             prompt=('Tanabata song'),
             random=False,
@@ -1838,18 +1838,13 @@ init 5 python:
         code="SNG"
     )
 
-label mas_song_tanabata_song(from_event=False):
-    m 1dud "{i}~The bamboo leaves rustle, {/i}{w=0.5}{nw}"
-    extend 3dud "{i}and sway under the eaves~{/i}"
-    m 3sub "{i}~The stars twinkle,{/i}{w=0.5} like gold and silver grains of sand~{/i}"
-    m 1dud "{i}~The five-color paper strips {/i}{w=0.5}{nw}"
-    extend 3duo "{i}I have written them~{/i}"
-    m 1sub "{i}~The stars twinkle, {/i}{w=0.5}{nw}"
-    extend 1suu "{i}watching from above~{/i}"
+label mas_song_tanabata:
+    m 1dud "{i}~The bamboo leaves rustle{w=0.3} and sway under the eaves~{/i}"
+    m 3suu "{i}~The stars twinkle,{w=0.3} like gold and silver grains of sand~{/i}"
+    m 1dud "{i}~The five-color paper strips,{w=0.3} I have written them~{/i}"
+    m 1suu "{i}~The stars twinkle,{w=0.3} watching from above~{/i}"
 
-    if not from_event:
-        m 1lua "Mmm, I really like this song, [player]."
-        m 1eua "I would love to visit Japan during Tanabata with you sometime~"
+    m 1hua "I would love to visit Japan during Tanabata with you sometime~"
     return
 
 ################################ NON-DB SONGS############################################
