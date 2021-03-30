@@ -17067,7 +17067,6 @@ init 5 python:
             eventlabel="monika_tanabata",
             prompt="What is Tanabata?",
             category=['misc'],
-            prompt="Tanabata",
             pool=True,
             aff_range=(mas_aff.AFFECTIONATE, None),
             rules={"no_unlock":None}
@@ -17089,7 +17088,7 @@ label monika_tanabata:
     m 3hub "It's really cute and heartwarming!"
     m 1eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
 
-    if persistent._mas_pm_likes_travelling or persistent._mas_pm_likes_travelling is None:
+    if persistent._mas_pm_likes_travelling is not False:
         m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
     else:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
