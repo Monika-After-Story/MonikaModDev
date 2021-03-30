@@ -401,9 +401,9 @@ init python in mas_windowutils:
 
         rv = win32gui.GetWindowRect(hwnd)
 
-        # win32gui may return incorrect geometry,
+        # win32gui may return incorrect geometry (-32k seems to be the limit),
         # in this case we return None
-        if rv[-1] < 0:
+        if rv[0] <= -32000 and rv[1] <= -32000:
             return None
 
         return rv
