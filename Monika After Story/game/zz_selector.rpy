@@ -1770,7 +1770,7 @@ init -10 python in mas_selspr:
         # Update the screen
         renpy.restart_interaction()
 
-    
+
     def mas_item_name_format(item_name):
         """
         Formats acs name to be sentence case, with spaces, and pluralized
@@ -1815,6 +1815,8 @@ init -10 python in mas_selspr:
             self.send_conf_enable(False)
             self.send_restore_enable(False)
             self.send_frame_vsize(SB_VIEWPORT_BOUNDS_H)
+            self.item_type = None
+            self.show_filter = False
 
         def _get(self, headline):
             """
@@ -3128,13 +3130,13 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
             background None           
 
             button:
-                if show_filter: 
+                if mailbox.show_filter: 
                     style "filter_dropdown_down"
                 else:
                     style "filter_dropdown_up"
-                action [If(show_filter == False, true=SetVariable('show_filter', True), false=SetVariable('show_filter', False)),Jump("mas_selector_sidebar_select_midloop")]  
+                action If(mailbox.show_filter == False, true=SetField(mailbox,'show_filter', True), false=SetField(mailbox,'show_filter', False))
 
-        if show_filter:
+        if mailbox.show_filter:
             # Categories Menu
             frame:   
                 area (750, 45, 300, 500)
@@ -3158,7 +3160,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                                 style "hkb_button"
                                 xysize (300, 40)
                                 xalign 0.8 
-                                action [SetVariable('item_type', None),Jump("mas_selector_sidebar_select_midloop")]  
+                                action SetField(mailbox,'item_type', None) 
 
                             # Only need keys
                             $ filter_map_sorted=sorted(filter_map.keys())   
@@ -3167,8 +3169,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                                 textbutton _(item_type_name):
                                     style "hkb_button"
                                     xysize (300, 40)
-                                    xalign 0.8
-                                    action [SetVariable('item_type', item_type_name),Jump("mas_selector_sidebar_select_midloop")]
+                                    xalign 0.8                                
+                                    action SetField(mailbox,'item_type', item_type_name)
 
                             null height 1
 
@@ -3179,7 +3181,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     style "classroom_vscrollbar"
                     xoffset -25  
     else:
-        $ item_type = None
+        $ mailbox.item_type = None
 
 
     default flt_items = items
@@ -3245,7 +3247,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                             xalign 0.5
 
                     for selectable in flt_items:
-                        if (item_type is None) or (selectable.selectable in filter_map[item_type]):
+                        if (mailbox.item_type is None) or (selectable.selectable in filter_map[mailbox.item_type]):
                             add selectable:
                                 # xoffset 5
                                 xalign 0.5
@@ -3282,7 +3284,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
-                    action [SetVariable('item_type', None),SetVariable('show_filter',False),Jump(restore)]
+                    action [SetField(mailbox,'item_type', None),SetField(mailbox,'show_filter',False),Jump(restore)]
+                    
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -3472,10 +3475,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
     
-        # setup filtering
-        item_type = None
-        show_filter = False
-
     show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
 
 
