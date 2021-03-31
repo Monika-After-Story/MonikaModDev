@@ -1769,6 +1769,8 @@ init -10 python in mas_selspr:
             scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
         # Update the screen
         renpy.restart_interaction()
+
+    
     def mas_item_name_format(item_name):
         """
         Formats acs name to be sentence case, with spaces, and pluralized
