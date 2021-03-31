@@ -111,7 +111,7 @@ init -1 python in mas_farewells:
             return False
 
         #Conditional check (Since it's ideally least likely to be used)
-        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
+        if not ev.checkConditional():
             return False
 
         # otherwise, we passed all tests
@@ -227,15 +227,15 @@ label mas_farewell_start:
             return _return
 
         if _return != -1:
+            $ mas_setEventPause(None)
             #Push the selected event
-            $ pushEvent(_return.eventlabel)
+            $ pushEvent(_return.eventlabel, skipeval=True)
             return
 
+    $ mas_setEventPause(None)
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
-    $ pushEvent(farewell.eventlabel)
-    # dont evalulate the mid loop checks since we are quitting
-    $ mas_idle_mailbox.send_skipmidloopeval()
+    $ pushEvent(farewell.eventlabel, skipeval=True)
 
     return
 

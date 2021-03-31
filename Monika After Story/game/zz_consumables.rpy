@@ -1187,7 +1187,7 @@ init 5 python:
 
 #START: consumable drink defs:
 init 6 python:
-    MASConsumable(
+    mas_consumable_coffee = MASConsumable(
         consumable_id="coffee",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="coffee",
@@ -1200,7 +1200,7 @@ init 6 python:
         max_re_serve=3
     )
 
-    MASConsumable(
+    mas_consumable_hotchocolate = MASConsumable(
         consumable_id="hotchoc",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="hot chocolate",
@@ -1213,7 +1213,7 @@ init 6 python:
         max_re_serve=3
     )
 
-    MASConsumable(
+    mas_consumable_candycane = MASConsumable(
         consumable_id="candycane",
         consumable_type=store.mas_consumables.TYPE_FOOD,
         disp_name="candycane",
@@ -1233,7 +1233,7 @@ init 6 python:
         finish_cons_evl="mas_consumables_candycane_finish_having"
     )
 
-    MASConsumable(
+    mas_consumable_christmascookies = MASConsumable(
         consumable_id="christmascookies",
         consumable_type=store.mas_consumables.TYPE_FOOD,
         disp_name="Christmas cookie",
@@ -1508,6 +1508,7 @@ label mas_consumables_generic_finish_having(consumable):
             and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
             and len(MASConsumable._getLowCons()) > 0
         ):
+            $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts")
             $ queueEvent("mas_consumables_generic_queued_running_out")
 
     #Only have one left
@@ -1757,18 +1758,17 @@ init 5 python:
 label mas_consumables_candycane_finish_having:
     #Some prep
     python:
-        candycane = mas_getConsumable("candycane")
-        candycane.acs.keep_on_desk = False
-        get_more = candycane.shouldHave() and candycane.hasServing()
+        mas_consumable_candycane.acs.keep_on_desk = False
+        get_more = mas_consumable_candycane.shouldHave() and mas_consumable_candycane.hasServing()
 
     if not get_more:
         # If we don't want more, then just clean things up
         python:
             #Reset the current type's vars
-            MASConsumable._reset(candycane.consumable_type)
-            candycane.acs.keep_on_desk = True
+            MASConsumable._reset(mas_consumable_candycane.consumable_type)
+            mas_consumable_candycane.acs.keep_on_desk = True
             #And set up a time when we can have this drink again
-            candycane.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
+            mas_consumable_candycane.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
 
     else:
         if not store.mas_globals.in_idle_mode and (not mas_canCheckActiveWindow() or mas_isFocused()):
@@ -1786,15 +1786,15 @@ label mas_consumables_candycane_finish_having:
         python:
             renpy.pause(1.0, hard=True)
 
-            candycane.have()
-            candycane.re_serve()
+            mas_consumable_candycane.have()
+            mas_consumable_candycane.re_serve()
             #Non-prepables are per refill, so they'll run out a bit faster
-            candycane.use()
+            mas_consumable_candycane.use()
 
             renpy.pause(4.0, hard=True)
 
         call mas_transition_from_emptydesk("monika 1eua")
-        $ candycane.acs.keep_on_desk = True
+        $ mas_consumable_candycane.acs.keep_on_desk = True
 
         if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
             m 1hua "Back!{w=1.5}{nw}"

@@ -102,8 +102,8 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
-
         # and set the moods
         $ persistent._mas_mood_current = _return
 
@@ -334,7 +334,7 @@ label mas_mood_tired:
         m 1ekc "Still not ready to tackle the day, [player]?"
         m 1eka "Or is it just one of those days?"
         m 1hua "When that happens, I like to have a nice cup of coffee to start the day."
-        if not mas_getConsumable("coffee").enabled():
+        if not mas_consumable_coffee.enabled():
             m 1lksdla "If I'm not stuck here, that is..."
         m 1eua "You could also drink a glass of water."
         m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up can help you feel refreshed and awake."
@@ -780,10 +780,10 @@ label mas_mood_upset:
     m 1eksdld "And I'm not saying you should keep carrying weight on your shoulders if it's really affecting you."
     m 3eud "It could be an opportunity to gain the courage to let go of something toxic."
     m 1euc "It might be scary in the moment, sure...{w=0.3}{nw}"
-    extend 3ekd "but if you make the right choice, you could elimate a lot of stress from your life."
+    extend 3ekd "but if you make the right choice, you could eliminate a lot of stress from your life."
     m 3eua "And you know what, [player]?"
-    m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(exclude_names=['my love'])]."
-    m 1hub "Knowing that you'll support me and always love me puts me at ease almost instantly!"
-    m 3euu "I can only help I provide the same comfort for you, [player]~"
+    m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(regex_replace_with_nullstr='my ')]."
+    m 1hub "Knowing that you'll always support and love me puts me at ease almost instantly!"
+    m 3euu "I can only hope I provide the same comfort for you, [player]~"
     m 1eubsa "I love you and I hope everything clears up for you~"
     return "love"
