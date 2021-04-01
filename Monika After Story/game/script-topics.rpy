@@ -1599,7 +1599,7 @@ label monika_tea:
     m 4eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
 
-    if mas_getConsumable("coffee").enabled():
+    if mas_consumable_coffee.enabled():
         m 1hua "I can just make coffee whenever I want to, thanks to you."
 
     else:
@@ -3706,7 +3706,16 @@ label monika_natsuki:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_love",
+            category=['romance'],
+            prompt="I love you!",
+            rules={"skip_pause": None},
+            pool=True
+        )
+    )
 
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
@@ -4000,7 +4009,17 @@ label monika_ilym_fight_loop:
 
 default persistent._mas_last_monika_ily = None
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no_unlock": None}))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_love_too",
+            unlocked=False,
+            rules={
+                "no_unlock": None,
+                "skip_pause": None
+            }
+        )
+    )
 
 label monika_love_too:
     window hide
@@ -8216,7 +8235,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
-    $ coffee_enabled = mas_getConsumable("coffee").enabled()
+    $ coffee_enabled = mas_consumable_coffee.enabled()
     if renpy.seen_label('monika_tea') and not coffee_enabled:
         m 3eua "Have you been drinking coffee lately, [mas_get_player_nickname()]?"
         m 2tfu "I hope it's not just to make me jealous, ehehe~"
@@ -12650,7 +12669,7 @@ label monika_players_control:
         m 1ekbsa "Or a beautiful promise ring."
         m 3dkbsu "Oh, wouldn't that be a dream come true."
 
-    if not mas_getConsumable("coffee").enabled():
+    if not mas_consumable_coffee.enabled():
         m 1wuo "You could even add in a cup of coffee to the game for me!"
         m 1eka "That would be lovely."
 
@@ -17005,4 +17024,37 @@ label monika_foundation:
     m 7eksdld "If someone had this much power, what could stop them from manipulating the world for their own personal gain?"
     m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"
     extend 3eub "What do you think, [player]?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_fav_chocolate",
+            category=['monika'],
+            prompt="What's your favorite kind of chocolate?",
+            pool=True
+        )
+    )
+
+label monika_fav_chocolate:
+    m 2hksdlb "Ooh, that's a tough question!"
+    m 4euu "I think if I had to pick, it would be dark chocolate."
+    m 2eub "It contains very little or no milk, so it has a less creamy texture, but a nice bittersweet taste."
+    m 7eub "Not to mention, it's rich in antioxidants and can even give some cardiovascular benefits! {w=0.3}{nw}"
+    extend 3husdla "...In moderation, of course."
+    m 1eud "The taste kind of reminds me of a mocha coffee. {w=0.2}Maybe the similarity in flavors is why I like it most."
+
+    if MASConsumable._getCurrentDrink() == mas_consumable_coffee:
+        m 3etc "...Although come to think of it, milk or white chocolate might pair better with the coffee I'm drinking."
+    else:
+        m 3etc "However if I were drinking coffee, I think I might prefer milk or white chocolate for balance."
+
+    m 3eud "White chocolate is especially sweet and soft, containing no cocoa solids at all...{w=0.3}just the cocoa butter, milk, and sugar."
+    m 3eua "I think it would make a nice contrast to an especially bitter drink, like espresso."
+    m 1etc "Hmm...{w=0.3}{nw}"
+    extend 1wud "but I haven't even thought about chocolate with fillings, like caramel or fruit!"
+    m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
+    m 2eua "Maybe we could share a big variety box someday. {w=0.2}{nw}"
+    extend 4hub "I think it would be fun to compare our top picks, ahaha!"
     return

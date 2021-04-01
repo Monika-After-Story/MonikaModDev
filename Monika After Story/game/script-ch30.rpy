@@ -86,6 +86,9 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
+    # A datetime object when the pause between events ends. None if there's no pause currently.
+    event_unpause_dt = None
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -892,7 +895,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+                renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
                     renpy.with_statement(None)
@@ -1424,7 +1427,7 @@ label ch30_loop:
         should_dissolve_all = mas_idle_mailbox.get_dissolve_all()
         scene_change = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=should_dissolve_all, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=scene_change, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
@@ -1538,7 +1541,13 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if store.mas_globals.in_idle_mode:
+        if (
+            store.mas_globals.in_idle_mode
+            or (
+                mas_globals.event_unpause_dt is not None
+                and mas_globals.event_unpause_dt > datetime.datetime.utcnow()
+            )
+        ):
             jump post_pick_random_topic
 
         # Pick a random Monika topic
