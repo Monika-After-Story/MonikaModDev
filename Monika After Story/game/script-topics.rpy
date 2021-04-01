@@ -15982,7 +15982,7 @@ label monika_being_herself:
     m 1euc "But you get what I mean, right?{w=0.3} I was looked at like some kind of unattainable goddess."
     m 1rfd "As if no one was 'worthy' of just treating me like a normal person."
     m 3eka "...Now though, I guess I don't have to worry about that as much."
-    m 3ekb "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
+    m "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
     m 1eka "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
     m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
     extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
@@ -17057,4 +17057,39 @@ label monika_fav_chocolate:
     m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
     m 2eua "Maybe we could share a big variety box someday. {w=0.2}{nw}"
     extend 4hub "I think it would be fun to compare our top picks, ahaha!"
+    return
+
+#NOTE: This is unlocked by the mas_story_tanabata
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tanabata",
+            prompt="What is Tanabata?",
+            category=['misc'],
+            pool=True,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_tanabata:
+    m 2hksdlb "Oh gosh, I hope when I was telling the story of {i}The Weaver Girl and the Cowherd{/i} you weren't lost!"
+    m 7eub "Well, there's a festival dedicated to Orihime and Hikoboshi called Tanabata."
+    m 7eud "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
+    m 2eud "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
+    m 2euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
+    m 7euc "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
+    m 3eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    m 3eub "Even though the term was coined in Romeo and Juliet, 'star-crossed lovers' is really fitting here!"
+    m 1eua "It describes a pair of lovers whose relationship is thwarted by outside forces."
+    m 1eud "As the day of the festival draws closer, long narrow strips of colorful paper, known as tanzaku, vibrant ornaments, and other decorations are hung from bamboo branches."
+    m 1eua "Before they are hung, the tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
+    m 3hub "It's really cute and heartwarming!"
+    m 3eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
+
+    if persistent._mas_pm_likes_travelling is not False:
+        m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
+    else:
+        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
