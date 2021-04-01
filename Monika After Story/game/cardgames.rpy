@@ -12,6 +12,11 @@ default persistent._mas_game_nou_house_rules = {
     "unrestricted_wd4": False
 }
 
+# FIXME: make persistent.ever_won a defaultdict instead
+init 10 python:
+    if "nou" not in persistent.ever_won:
+        persistent.ever_won["nou"] = False
+
 # NOU CLASS DEF
 init 5 python in mas_nou:
     from store import m, persistent, Solid
@@ -154,7 +159,7 @@ init 5 python in mas_nou:
             _("I think I'll set.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.monika.chosen_color] color!"),
             _("I want [store.mas_nou.game.monika.chosen_color] color."),
             _("I choose [store.mas_nou.game.monika.chosen_color] color."),
-            _("Hmm.{w=0.2}.{w=0.2}.{w=0.2} I choose [store.mas_nou.game.monika.chosen_color]!")
+            _("Hmm.{w=0.2}.{w=0.2}.{w=0.2}I choose [store.mas_nou.game.monika.chosen_color]!")
         )
         # Quips for when she reflects a wild card
         QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT = (
@@ -174,7 +179,7 @@ init 5 python in mas_nou:
             _("NOU, [player]~"),
             _("NOU~"),
             _("Just one card left! NOU, [player]~"),
-            _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2} U!"),
+            _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2}U!"),
             _("NOU!")
         )
         # Quips when you ask her to yell NoU, but she already did it
@@ -1291,6 +1296,8 @@ init 5 python in mas_nou:
                 else:
                     quips = self.QUIPS_PLAYER_PLAYS_TURN
 
+            renpy.pause(0.5, hard=True)
+
             # Monika says a general quip
             self.__say_quip(
                 quips
@@ -1311,12 +1318,7 @@ init 5 python in mas_nou:
             """
             Reinitialize the game so you can start another round
             """
-            del[self.monika]
-            del[self.player]
-            del[self.drawpile]
-            del[self.discardpile]
-            del[self.table]
-
+            del self.monika, self.player, self.drawpile, self.discardpile, self.table
             self.__init__()
 
         def player_turn_loop(self):
@@ -1372,8 +1374,8 @@ init 5 python in mas_nou:
                     elif event.type == "drag":
                         # Reset the offsets after hovering
                         # FIXME: ideally we should do this via queueing an unhover event
-                        card = self.table.get_card(event.card)
-                        card.set_offset(0, 0)
+                        # card = self.table.get_card(event.card)
+                        # card.set_offset(0, 0)
 
                         # Player draws a card
                         if (
@@ -1429,6 +1431,7 @@ init 5 python in mas_nou:
             if not self.monika.plays_turn:
                 return
 
+            self.monika.thonk_pause()
             self.monika.shuffle_hand()
             self.monika.thonk_pause()
 
@@ -1665,8 +1668,8 @@ init 5 python in mas_nou:
                 reactions - (list) all reactions that monika had during this game
                     (even if they didn't trigger)
             """
-            MIN_THONK_TIME = 0.3
-            MAX_THONK_TIME = 1.7
+            MIN_THONK_TIME = 0.2
+            MAX_THONK_TIME = 0.8
             SHUFFLING_CHANCE = 15
             LOW_MISSING_NOU_CHANCE = 5
             HIGHT_MISSING_NOU_CHANCE = 25
@@ -3297,9 +3300,7 @@ label monika_change_nou_house_rules:
 
         if not _return:
             m 1eua "Oh, alright."
-            python:
-                del[menu_items]
-                del[final_item]
+            $ del menu_items, final_item
             return
 
         elif _return == "victory_points":
@@ -3341,8 +3342,7 @@ label monika_change_nou_house_rules:
 
                 store.mas_nou.reset_points()
 
-                del[menu_items]
-                del[final_item]
+                del menu_items, final_item
 
             return
 
@@ -3359,9 +3359,7 @@ label monika_change_nou_house_rules:
         "No.":
             m 2eub "Then let's play together soon~"
 
-    python:
-        del[menu_items]
-        del[final_item]
+    $ del menu_items, final_item
 
     return
 
@@ -3424,8 +3422,7 @@ label .change_victory_points_loop:
             $ persistent._mas_game_nou_house_rules["victory_points"] = points_cap
             $ ready = True
 
-    $ del[ready]
-    $ del[points_cap]
+    $ del ready, points_cap
 
     return
 
@@ -3481,8 +3478,7 @@ label .change_starting_cards_loop:
             $ persistent._mas_game_nou_house_rules["starting_cards"] = starting_cards
             $ ready = True
 
-    $ del[ready]
-    $ del[starting_cards]
+    $ del ready, starting_cards
 
     return
 
@@ -3664,10 +3660,7 @@ label mas_nou_game_end:
                 "No.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            python:
-                del[dlg_choice]
-                del[_round]
-                del[store.mas_nou.game]
+            $ del dlg_choice, _round, store.mas_nou.game
             return
 
     elif store.mas_nou.winner == "Monika":
@@ -3705,10 +3698,7 @@ label mas_nou_game_end:
                 "No.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            python:
-                del[dlg_choice]
-                del[_round]
-                del[store.mas_nou.game]
+            $ del dlg_choice, _round, store.mas_nou.game
             return
 
     else:
@@ -3724,10 +3714,7 @@ label mas_nou_game_end:
         call mas_nou_reaction_player_surrenders
 
         # we don't suggest to play again if the player does't want to play
-        python:
-            del[dlg_choice]
-            del[_round]
-            del[store.mas_nou.game]
+        $ del dlg_choice, _round, store.mas_nou.game
         return
 
     m 3eua "Would you like to play another [_round!t]?{nw}"
@@ -3746,10 +3733,8 @@ label mas_nou_game_end:
         "No.":
             m 1hua "Alright, let's play again soon~"
 
-    python:
-        del[dlg_choice]
-        del[_round]
-        del[store.mas_nou.game]
+    $ del dlg_choice, _round, store.mas_nou.game
+
     return
 
 # All end game reactions labels go here
@@ -4090,7 +4075,7 @@ label mas_nou_reaction_monika_wins_round:
             if len(store.mas_nou.game.player.hand) > 4:
                 m 1tsb "Not bad, [player]."
                 m 3tub "I think you could even have won this time, {w=0.5}{nw}"
-                extend 1tuu "if not for all those cards you drew"
+                extend 1tuu "if not for all those cards you've drew"
                 m 1hub "Ahaha~"
 
             else:
@@ -4460,39 +4445,90 @@ transform nou_pen_rotate_right:
 # NOTE: This can be used in other games in the future
 image bg cardgames desk = mas_cardgames.DeskSpriteSwitch()
 
+init 10 python in mas_cardgames:
+    # All bgs should be defined, get the desk sprites for them
+    __scanDeskSprites()
+
 init -10 python in mas_cardgames:
     import pygame
-    from store import RotoZoom, ConditionSwitch, MASFilterSwitch, mas_background
+    import store
+    from store import RotoZoom, ConditionSwitch, MASFilterSwitch
 
-    # THE MAP BETWEEN BACKGROUNDS AND DESK SPRITES
-    # NOTE: It should be updated as we get more sprites for desks for each new background
-    # Let's keep all desk sprites in /mod_assets/games/nou
-    # Format: {background_id: img_file_name_no_extension}
-    DESK_SPRITES_MAP = {
-        "spaceroom": "desk_spaceroom"
-    }
+    # The path to the desk assets, place your background there to automatically load it into the map
+    # NOTE: THE FILE NAME MUST CONSIST OF THE BACKGROUND ID
+    GAME_DIR_PATH = renpy.config.gamedir.replace("\\", "/")
+    DESK_SPRITES_PATH = "/mod_assets/games/nou/desks/"
+    # The map between backgrounds and desk sprites
+    # Format: {background_id: MASFilterSwitch}
+    # NOTE: we fill the map automatically at init 10,
+    # but you can always add an img for your background yourself (we don't override)
+    DESK_SPRITES_MAP = dict()
 
-    def DeskSpriteSwitch():
+    def __scanDeskSprites():
         """
-        ConditionSwitch inside a ConditionSwitch :o
-
-        Returns ConditionSwitch with all available desk sprites.
-        NOTE: if a background doesn't have a desk sprite for board games,
-            we will use the one for spaceroom as a fallback
+        Scans the folder with the desk sprites and fills the desk sprites map
         """
-        args = list()
-        for bg_id in mas_background.BACKGROUND_MAP.iterkeys():
-            # condition
-            args.append(
-                "store.persistent._mas_current_background == '{0}'".format(bg_id)
-            )
-            # img path
-            args.append(
-                MASFilterSwitch(
-                    "mod_assets/games/nou/{0}.png".format(DESK_SPRITES_MAP.get(bg_id, "spaceroom"))
-                )
-            )
-        return ConditionSwitch(*args)
+        sprites_map = dict()
+        # Get the sprites we have
+        for file in store.MASDockingStation(GAME_DIR_PATH + DESK_SPRITES_PATH).getPackageList():
+            # Remove the extension
+            key = file.rpartition(".")[0]
+            if key:
+                sprites_map[key] = file
+
+        # Fill the map with the sprites (or use the def as a fallback)
+        for bg_id in store.mas_background.BACKGROUND_MAP.iterkeys():
+            if bg_id not in DESK_SPRITES_MAP:
+                filename = sprites_map.get(bg_id, store.mas_background.MBG_DEF)
+                DESK_SPRITES_MAP[bg_id] = MASFilterSwitch(DESK_SPRITES_PATH + filename)
+
+    class DeskSpriteSwitch(renpy.display.core.Displayable):
+        """
+        A displayable
+        """
+        BLIT_COORDS = (0, 0)
+
+        def __init__(self):
+            """
+            Constructor for desk sprite switcher
+            """
+            super(DeskSpriteSwitch, self).__init__()
+
+            self.last_bg = None
+
+        def per_interact(self):
+            """
+            Check the bg on every interaction and ask for a redraw if it's changed
+
+            ASSUMES:
+                store.mas_current_background
+            """
+            if self.last_bg != store.mas_current_background:
+                renpy.redraw(self, 0)
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+
+            ASSUMES:
+                store.mas_current_background
+            """
+            self.last_bg = store.mas_current_background
+
+            desk_render = renpy.render(DESK_SPRITES_MAP[self.last_bg.background_id], width, height, st, at)
+            main_render = renpy.Render(desk_render.width, desk_render.height)
+            main_render.blit(desk_render, DeskSpriteSwitch.BLIT_COORDS)
+
+            return main_render
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return DESK_SPRITES_MAP.values()
 
     # Drag type constants
     DRAG_NONE = 0
@@ -4904,14 +4940,13 @@ init -10 python in mas_cardgames:
             OUT:
                 list of events happened during this interaction
             """
-            evt_list = []
-
             self.st = st
 
             if not self.sensitive:
                 return
                 # raise renpy.IgnoreEvent()
 
+            evt_list = list()
             grabbed = renpy.display.focus.get_grab()
 
             if (grabbed is not None) and (grabbed is not self):
@@ -5105,7 +5140,7 @@ init -10 python in mas_cardgames:
                                         c_y_max = c_y_min + c_h
 
                             # Make an evt if we hover over this card
-                            if c_x_min <= x < c_x_max and c_y_min <= y < c_y_max and c.hovered == False:
+                            if not c.hovered and c_x_min <= x < c_x_max and c_y_min <= y < c_y_max:
                                 evt = CardEvent()
                                 evt.type = "hover"
                                 evt.table = self
@@ -5116,7 +5151,7 @@ init -10 python in mas_cardgames:
                                 evt_list.insert(0, evt)
 
                             # We don't hover over this card anymore
-                            elif (not c_x_min <= x < c_x_max or not c_y_min <= y < c_y_max) and c.hovered == True:
+                            elif c.hovered and (not c_x_min <= x < c_x_max or not c_y_min <= y < c_y_max):
                                 evt = CardEvent()
                                 evt.type = "unhover"
                                 evt.table = self
@@ -5133,23 +5168,36 @@ init -10 python in mas_cardgames:
                 evt = None
 
                 if self.dragging:
-                    if dststack is not None and self.drag_cards:
+                    if self.drag_cards:
+                        for c in self.drag_cards:
+                            if c.hovered:
+                                evt = CardEvent()
+                                evt.type = "unhover"
+                                evt.table = self
+                                evt.stack = self.click_stack
+                                evt.card = c.value
+                                evt.time = st
+                                c.hovered = False
+                                evt_list.append(evt)
 
-                        evt = CardEvent()
-                        evt.type = "drag"
-                        evt.table = self
-                        evt.stack = self.click_stack
-                        evt.card = self.click_card.value
-                        evt.drag_cards = [c.value for c in self.drag_cards]
-                        evt.drop_stack = dststack
-                        if dstcard:
-                            evt.drop_card = dstcard.value
-                        evt.time = st
+                        self.last_event = evt
+                        evt = None
+
+                        if dststack is not None:
+                            evt = CardEvent()
+                            evt.type = "drag"
+                            evt.table = self
+                            evt.stack = self.click_stack
+                            evt.card = self.click_card.value
+                            evt.drag_cards = [c.value for c in self.drag_cards]
+                            evt.drop_stack = dststack
+                            if dstcard:
+                                evt.drop_card = dstcard.value
+                            evt.time = st
 
                 else:
                     if self.click_stack is not None:
                         if self.click_stack.click:
-
                             evt = CardEvent()
                             evt.table = self
                             evt.stack = self.click_stack
