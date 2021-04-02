@@ -382,7 +382,7 @@ init 5 python in mas_nou:
         REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3 = [
             (_("{i}No, you{/i} will skip this turn~"),),
             (_("Ahaha~"), _("Nope, [player]!")),
-            (_("I think you're still gonna skip this turn~"),)
+            (_("I think you're still going to skip this turn~"),)
         ]
 
         # this modifier only works when you play with stackable cards
@@ -3565,57 +3565,48 @@ label mas_nou_game_start:
 
     $ store.mas_nou.game = store.mas_nou.NoU()
 
-    call mas_nou_game_loop
-    return
+    # FALL THROUGH
 
 label mas_nou_game_loop:
-    # preparation
-    python:
-        _window_hide()
-        if not store.mas_nou.in_progress:
-            # disable all hotkeys
-            HKBHideButtons()
-            disable_esc()
-            # show the desk
-            renpy.scene(layer="master")
-            renpy.show("bg cardgames desk", layer="master", zorder=0)
-            renpy.with_statement(Fade(0.2, 0, 0.2))
-            # show cards
-            store.mas_nou.game.set_visible(True)
-            # show the game screens
-            renpy.show_screen("nou_gui")
-            renpy.show_screen("nou_stats")
-            # deal cards and do other starting preparations
-            store.mas_nou.game.prepare_game()
-            store.mas_nou.in_progress = True
+    # Hide UI
+    window hide
+    $ HKBHideButtons()
+    $ disable_esc()
+    # Transition to the desk
+    scene bg cardgames desk onlayer master zorder 0
+    # Show cards
+    $ store.mas_nou.game.set_visible(True)
+    # Show the game screens
+    show screen nou_gui
+    show screen nou_stats
+    with Fade(0.2, 0, 0.2)
+    $ renpy.pause(0.2, hard=True)
+    # Do game preparations
+    $ store.mas_nou.game.prepare_game()
+    $ store.mas_nou.in_progress = True
 
-    # game loop
-    python:
-        while store.mas_nou.in_progress:
-            store.mas_nou.game.game_loop()
+    # Game loop
+    while store.mas_nou.in_progress:
+        $ store.mas_nou.game.game_loop()
 
-    return
+    # FALL THROUGH
 
 label mas_nou_game_end:
-    # have to split into 3 blocks because renpy is jank
-    python:
-        # we finished the game
-        store.mas_nou.in_progress = False
-        # hide cards
-        store.mas_nou.game.set_visible(False)
-        # hide the game screens
-        renpy.hide_screen("nou_stats")
-        renpy.hide_screen("nou_gui")
-    python:
-        # hide the desk and show the room and Monika
-        renpy.hide("bg cardgames desk", layer="master")
-        renpy.call("spaceroom", scene_change=True, force_exp="monika 1eua")
-    python:
-        # enable hotkeys
-        enable_esc()
-        HKBShowButtons()
-        store._window_auto = True
+    # We finished the game
+    $ store.mas_nou.in_progress = False
+    # Hide cards
+    $ store.mas_nou.game.set_visible(False)
+    # Hide the game screens
+    hide screen nou_stats
+    hide screen nou_gui
+    # Hide the desk, render spaceroom
+    call spaceroom(scene_change=True, force_exp="monika 1eua")
+    # Show UI
+    $ enable_esc()
+    $ HKBShowButtons()
+    window auto
 
+    python:
         if persistent._mas_game_nou_house_rules["victory_points"]:
             _round = _("round")
 
@@ -4427,9 +4418,10 @@ transform nou_pen_rotate_right:
 
 # # # FRAMEWORK FOR CARDGAMES
 
-# Copyright 2008-2020 Tom Rothamel <pytom@bishoujo.us>
-# This version was updated for Monika After Story,
-# please credit the project as appropriate.
+# Copyright 2008-2021 Tom Rothamel <pytom@bishoujo.us>
+#
+# This version was updated for Monika After Story, several bugs were fixed
+# and some new features were implemented, please credit the project as appropriate.
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -4477,34 +4469,18 @@ init -10 python in mas_cardgames:
                 sprites_map[key] = file
 
         # Fill the map with the sprites (or use the def as a fallback)
+        fb = sprites_map.get(store.mas_background.MBG_DEF)
         for bg_id in store.mas_background.BACKGROUND_MAP.iterkeys():
             if bg_id not in DESK_SPRITES_MAP:
-                filename = sprites_map.get(bg_id, store.mas_background.MBG_DEF)
+                filename = sprites_map.get(bg_id, fb)
                 DESK_SPRITES_MAP[bg_id] = MASFilterSwitch(DESK_SPRITES_PATH + filename)
 
     class DeskSpriteSwitch(renpy.display.core.Displayable):
         """
-        A displayable
+        This displayable represents a desk for card games;
+        It takes care of different backgrounds, too, using the map for desk sprites.
         """
         BLIT_COORDS = (0, 0)
-
-        def __init__(self):
-            """
-            Constructor for desk sprite switcher
-            """
-            super(DeskSpriteSwitch, self).__init__()
-
-            self.last_bg = None
-
-        def per_interact(self):
-            """
-            Check the bg on every interaction and ask for a redraw if it's changed
-
-            ASSUMES:
-                store.mas_current_background
-            """
-            if self.last_bg != store.mas_current_background:
-                renpy.redraw(self, 0)
 
         def render(self, width, height, st, at):
             """
@@ -4513,9 +4489,7 @@ init -10 python in mas_cardgames:
             ASSUMES:
                 store.mas_current_background
             """
-            self.last_bg = store.mas_current_background
-
-            desk_render = renpy.render(DESK_SPRITES_MAP[self.last_bg.background_id], width, height, st, at)
+            desk_render = renpy.render(DESK_SPRITES_MAP[store.mas_current_background.background_id], width, height, st, at)
             main_render = renpy.Render(desk_render.width, desk_render.height)
             main_render.blit(desk_render, DeskSpriteSwitch.BLIT_COORDS)
 
@@ -4527,8 +4501,11 @@ init -10 python in mas_cardgames:
 
             OUT:
                 list of displayables
+
+            ASSUMES:
+                store.mas_current_background
             """
-            return DESK_SPRITES_MAP.values()
+            return [DESK_SPRITES_MAP[store.mas_current_background.background_id]]
 
     # Drag type constants
     DRAG_NONE = 0
@@ -4583,7 +4560,7 @@ init -10 python in mas_cardgames:
         """
         return table.get_faceup(card)
 
-    class Table(renpy.Displayable):
+    class Table(renpy.display.core.Displayable):
         """
         Table class to represent a "table" for card games
 
@@ -4634,7 +4611,7 @@ init -10 python in mas_cardgames:
                 doubleclick - the time between clicks for the click to be considered a double-click
                     (Default: 0.33)
             """
-            super(renpy.Displayable, self).__init__(**kwargs)
+            super(Table, self).__init__(**kwargs)
 
             # We supports only these types
             if isinstance(back, (basestring, tuple, renpy.display.im.ImageBase, renpy.display.image.ImageReference)):
