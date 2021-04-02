@@ -1815,6 +1815,7 @@ init -10 python in mas_selspr:
             self.send_conf_enable(False)
             self.send_restore_enable(False)
             self.send_frame_vsize(SB_VIEWPORT_BOUNDS_H)
+            # NOTE: THESE ARE NOT SETTINGS. These are state vars for the selector screen
             self.item_type = None
             self.show_filter = False
 
