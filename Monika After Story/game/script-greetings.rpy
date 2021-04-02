@@ -4427,7 +4427,8 @@ label greeting_spacing_out:
 
 init 5 python:
     ev_rules = dict()
-    ev_rules.update(MASGreetingRule.create_rule(
+    ev_rules.update(
+        MASGreetingRule.create_rule(
             skip_visual=True,
             random_chance=20,
             override_type=True
@@ -4456,7 +4457,7 @@ init 5 python:
 
     del ev_rules
 
-# TODO: move this to change_clothes, also add a var for hair
+# TODO: move this to change_clothes, also add a similar var for hair
 default persistent._mas_previous_clothes = mas_clothes_def.name
 
 label greeting_after_bath:
@@ -4467,7 +4468,7 @@ label greeting_after_bath:
         # Let Moni get a towel
         persistent._mas_previous_clothes = monika_chr.clothes.name
         monika_chr.change_clothes(
-            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_BATH, None)),
+            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
             by_user=False,
             outfit_mode=True
         )
@@ -4480,12 +4481,10 @@ label greeting_after_bath:
         # Set the cleaup event
         mas_setEVLPropValues(
             "mas_after_bath_cleanup",
-            start_date=datetime.datetime.now() + datetime.timedelta(minutes=random.randint(30, 120)),
+            start_date=datetime.datetime.now() + datetime.timedelta(minutes=random.randint(30, 90)),
             action=EV_ACT_QUEUE
         )
-        # Temporary hide these
-        for evl in ("monika_clothes_select", "monika_event_clothes_select", "monika_hair_select"):
-            mas_flagEVL(evl, "EVE", EV_FLAG_HFM)
+        mas_startup_song()
 
     # Now show everything
     call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
@@ -4520,7 +4519,15 @@ label greeting_after_bath:
         else:
             m 1eua "I'll be getting ready for the day soon."
 
-    $ del bathing_showering
+    python:
+        # enable music menu and music hotkeys
+        mas_MUINDropShield()
+        # keymaps should be set
+        set_keymaps()
+        # show the overlays
+        mas_OVLShow()
+
+        del bathing_showering
 
     return
 
@@ -4529,13 +4536,8 @@ init 5 python:
     addEvent(Event(persistent.event_database, eventlabel="mas_after_bath_cleanup", show_in_idle=True, rules={"skip alert": None}))
 
 label mas_after_bath_cleanup:
-    python hide:
-        # Unflag the selectors
-        for evl in ("monika_clothes_select", "monika_event_clothes_select", "monika_hair_select"):
-            mas_unflagEVL(evl, "EVE", EV_FLAG_HFM)
-
-    # Sanity check
-    if not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_BATH):
+    # Sanity check (checking for towel should be enough)
+    if not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
         return
 
     if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
@@ -4550,7 +4552,7 @@ label mas_after_bath_cleanup:
 
     $ renpy.pause(1.0, hard=True)
     call mas_after_bath_cleanup_change_outfit
-    $ renpy.pause(14.0, hard=True)
+    $ renpy.pause(random.randint(10, 20), hard=True)
 
     call mas_transition_from_emptydesk("monika 3hub")
     window auto
@@ -4569,7 +4571,7 @@ label mas_after_bath_cleanup_change_outfit:
     python hide:
         prev_clothes = mas_sprites.get_sprite(mas_sprites.SP_CLOTHES, persistent._mas_previous_clothes)
         # Fallback just in case
-        if prev_clothes is None or prev_clothes.hasprop(mas_sprites.EXP_C_BATH):
+        if prev_clothes is None or prev_clothes.hasprop(mas_sprites.EXP_C_WET):
             if mas_isMoniHappy(higher=True):
                 prev_clothes = mas_clothes_blazerless
 

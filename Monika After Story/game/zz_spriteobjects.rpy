@@ -856,8 +856,9 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
-            store.mas_sprites.EXP_H_NT: None,
+            # TODO: req ex-prop store.mas_sprites.EXP_C_BRS
+            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_WET,
+            store.mas_sprites.EXP_H_NT: True,
             store.mas_sprites.EXP_H_WET: True
         },
         entry_pp=store.mas_sprites._hair_wet_entry
@@ -1276,8 +1277,9 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
+            # TODO: req ex-prop store.mas_sprites.EXP_H_WET
             store.mas_sprites.EXP_C_BRS: True,
-            store.mas_sprites.EXP_C_BATH: True
+            store.mas_sprites.EXP_C_WET: True
         },
         entry_pp=store.mas_sprites._clothes_bath_towel_white_entry,
         exit_pp=store.mas_sprites._clothes_bath_towel_white_exit,
@@ -1732,7 +1734,7 @@ init -1 python:
         # muxtype handled by defaults
         ex_props={
             store.mas_sprites.EXP_A_RQHP: store.mas_sprites.EXP_H_NT,
-            store.mas_sprites.EXP_A_EXCLHP: store.mas_sprites.EXP_H_TB
+            store.mas_sprites.EXP_A_EXCLHP: [store.mas_sprites.EXP_H_TB, store.mas_sprites.EXP_H_WET]
         },
         rec_layer=MASMonika.AFH_ACS
     )

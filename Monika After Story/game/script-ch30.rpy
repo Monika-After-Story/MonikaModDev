@@ -2075,12 +2075,6 @@ label ch30_reset:
             call mas_after_bath_cleanup_change_outfit
             $ mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
-        # Otherwise hide the selectors for a bit
-        else:
-            python hide:
-                for evl in ("monika_clothes_select", "monika_event_clothes_select", "monika_hair_select"):
-                    mas_flagEVL(evl, "EVE", EV_FLAG_HFM)
-
     #set MAS window global
     $ mas_windowutils._setMASWindow()
 
