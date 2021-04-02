@@ -3134,7 +3134,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     style "filter_dropdown_down"
                 else:
                     style "filter_dropdown_up"
-                action If(mailbox.show_filter == False, true=SetField(mailbox,'show_filter', True), false=SetField(mailbox,'show_filter', False))
+                action ToggleField(mailbox, "show_filter")
 
         if mailbox.show_filter:
             # Categories Menu
