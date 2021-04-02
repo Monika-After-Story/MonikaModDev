@@ -3222,7 +3222,7 @@ label monika_change_background_loop:
     $ mas_RaiseShield_core()
     $ HKBHideButtons()
 
-    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_transition=skip_transition, skip_outro=skip_outro, set_persistent=True)
 
     $ HKBShowButtons()
     $ mas_DropShield_core()
