@@ -601,7 +601,7 @@ label mas_compliment_cute_3:
         cute_quips = [
             _("You can be really cute a lot of the time too, you know~"),
             _("You'll always be my cutie~"),
-            _("You can be a cutie a lot of time too~"),
+            _("You can be a cutie a lot of the time too~"),
         ]
         cute_quip = random.choice(cute_quips)
 
