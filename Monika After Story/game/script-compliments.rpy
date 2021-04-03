@@ -1101,7 +1101,7 @@ label mas_compliment_outfit_repeat:
             lingerie_quips = [
                 _("Glad you like what you see~"),
                 _("Would you like a closer look?"),
-                _("Would you like to see more?"),
+                _("Would you like a little peek?~"),
             ]
             lingerie_quip = random.choice(lingerie_quips)
 
