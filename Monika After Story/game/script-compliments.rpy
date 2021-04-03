@@ -368,7 +368,7 @@ label mas_compliment_hair_3:
             ]
             hair_quip = random.choice(hair_quips)
         m 1wubsb "Thank you so much, [player]!"
-        m 1lkbfb "[hair_quip]"
+        m 1hubfb "[hair_quip]"
     else:
         python:
             ponytail_quips = [
@@ -601,7 +601,7 @@ label mas_compliment_cute_3:
         cute_quips = [
             _("You can be really cute a lot of the time too, you know~"),
             _("You'll always be my cutie~"),
-            _("You can be a cutie a lot of times too~"),
+            _("You can be a cutie a lot of time too~"),
         ]
         cute_quip = random.choice(cute_quips)
 
@@ -877,9 +877,9 @@ label mas_compliment_humor_3:
         humor_quips = [
             _("I wish I could hear your beautiful laugh~"),
             _("Just knowing that makes me happy~"),
-            _("I will always try to brighten your day~"),
+            _("I'll always try to brighten your day~"),
         ]
-        humor_quip = random.choice(humor_quips)
+        humor_quip = renpy.substitute(random.choice(humor_quips))
 
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
