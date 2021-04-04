@@ -741,12 +741,14 @@ init -5 python in mas_sprites:
     # keys
     FHAIR = "front"
     BHAIR = "back"
+    MHAIR = "mid"
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
     SHADOW_SUFFIX = ART_DLM + "s"
     FHAIR_SUFFIX  = ART_DLM + FHAIR
     BHAIR_SUFFIX = ART_DLM + BHAIR
+    MHAIR_SUFFIX = ART_DLM + MHAIR
     HLITE_SUFFIX = ART_DLM + "h"
     FILE_EXT = ".png"
 
@@ -6449,12 +6451,16 @@ init -3 python:
                 keys:
                     "front" - front hair
                     "back" - back hair
+                    "mid" - mid hair
                     "<lean>|front" - front hair for a leaning type
                         NOTE: can be multiple of this format
                     "<lean>|back" - back hair for a leaning type
                         NOTE: can be multiple of this format
+                    "<lean>|mid" - mid hair for a leaning type
+                        NOTE: can be multiple of this format
                 values:
                     MASFilterMap objects
+            has_mid - True if this hair has a mid option, False if not
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -6462,7 +6468,7 @@ init -3 python:
             Use an empty string to
         """
 
-        __MHM_KEYS = store.mas_sprites._genLK(("front", "back"))
+        __MHM_KEYS = store.mas_sprites._genLK(("front", "back", "mid"))
 
         def __init__(self,
                 name,
@@ -6475,7 +6481,12 @@ init -3 python:
                 exit_pp=None,
                 split=None,
                 ex_props=None,
-                hl_data=None
+                hl_data=None,
+                has_mid=False
+                # TODO - shoot actually, because mid is optional, this means
+                #   we need another MASPoseMap for the mid.
+                #   To prevent future issues, let's do it like
+                #   a subclass for additional hair rules
             ):
             """
             MASHair constructor
@@ -6516,6 +6527,8 @@ init -3 python:
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
+                has_mid - True if this hair has mid, False if not
+                    (Default: False)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6535,6 +6548,7 @@ init -3 python:
                 raise Exception("split MUST be PoseMap")
 
             self.split = split
+            self.has_mid = has_mid
 
         def __repr__(self):
             return "<Hair: {0}>".format(self.name)
@@ -6630,9 +6644,10 @@ init -3 python:
                     # add the tag
                     new_img.append(self.img_sit)
 
-                    # genreate back and front images
+                    # genreate back, mid, and front images
                     back_img = new_img + [store.mas_sprites.BHAIR_SUFFIX]
                     front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
+                    #mid_img = new_img + [store.mas_sprites.MHAIR_SUFFIX]
 
                     # add them to list
                     loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])

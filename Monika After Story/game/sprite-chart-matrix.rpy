@@ -2215,7 +2215,7 @@ init -4 python in mas_sprites:
         IN:
             hair - MASHair object
             flt - filter to use
-            hair_key - hair key to use (front/back)
+            hair_key - hair key to use (front/back/mid)
             lean - tyoe of lean
 
         OUT:
