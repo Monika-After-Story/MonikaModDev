@@ -2430,26 +2430,30 @@ init -4 python in mas_sprites:
         #   9. arms-base-0 - the base back part of arm
         #   10. ase-acs-0 - between base arms and clothes, back part
         #   11. arms-0 - the back part of arms
-        #   12. bat-acs - acs between Back Arms and Table
-        #   13. table - the table/desk
-        #   14. mat-acs acs between Middle Arms and Table
-        #   15. arms-base-5 - the base middle part of arm
-        #   16. ase-acs-5 - between base arms and clothes, middle part
-        #   17. arms-5 - the middle part of arms
-        #   18. mab-acs - acs between Middle Arms and Body-1
-        #   19. base-1 - the base front part of body
-        #   20. bse-acs - between base and body-1
-        #   21. body-1 - the front part of body (boobs)
-        #   22. bfh-acs - acs between Body and Front Hair
-        #   23. face-pre - pre front hair facial expressions
-        #   24. front-hair - front portion of hair (split mode)
-        #   25. afh-acs - acs betweem Arms and Front Hair
-        #   26. face - facial expressions
-        #   27. mid-acs - acs between face and front arms
-        #   28. arms-base-10 - the base front part of arms
-        #   29. ase-acs-10 - between base arms and clothes, front part
-        #   30. arms-10 - front arms
-        #   31. pst-acs - acs after everything
+        #   12. bmh-acs - acs between the Back Arms and Mid hair
+        #   13. mid-hair - mid portion of hair, behind head and above body
+        #   14. mhh-acs - acs between Mid Hair and Head
+        #   15. body-head - the head + ears
+        #   16. bat-acs - acs Before Table
+        #   17. table - the table/desk
+        #   18. mat-acs acs between Middle Arms and Table
+        #   19. arms-base-5 - the base middle part of arm
+        #   20. ase-acs-5 - between base arms and clothes, middle part
+        #   21. arms-5 - the middle part of arms
+        #   22. mab-acs - acs between Middle Arms and Body-1
+        #   23. base-1 - the base front part of body
+        #   24. bse-acs - between base and body-1
+        #   25. body-1 - the front part of body (boobs)
+        #   26. bfh-acs - acs between Body and Front Hair
+        #   27. face-pre - pre front hair facial expressions
+        #   28. front-hair - front portion of hair (split mode)
+        #   29. afh-acs - acs betweem Arms and Front Hair
+        #   30. face - facial expressions
+        #   31. mid-acs - acs between face and front arms
+        #   32. arms-base-10 - the base front part of arms
+        #   33. ase-acs-10 - between base arms and clothes, front part
+        #   34. arms-10 - front arms
+        #   35. pst-acs - acs after everything
 
         # initial values
         fpfx = face_lean_mode(lean)
