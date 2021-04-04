@@ -364,7 +364,7 @@ label mas_compliment_hair_3:
         python:
             hair_quips = [
                 _("I'm really happy that you like this hairstyle!"),
-                ("I'm really happy that you like my hair!")
+                _("I'm really happy that you like my hair!")
             ]
             hair_quip = random.choice(hair_quips)
         m 1wubsb "Thank you so much, [player]!"
@@ -879,7 +879,7 @@ label mas_compliment_humor_3:
             _("Just knowing that makes me happy~"),
             _("I'll always try to brighten your day~"),
         ]
-        humor_quip = renpy.substitute(random.choice(humor_quips))
+        humor_quip = random.choice(humor_quips)
 
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
@@ -1012,7 +1012,7 @@ label mas_compliment_sweet_repeat:
             _("Hearing that always warms my heart, [player]!"),
             _("You make me feel so loved, [player]!"),
         ]
-        sweet_quip = random.choice(sweet_quips)
+        sweet_quip = renpy.substitute(random.choice(sweet_quips))
 
     m 3hubsb "[sweet_quip]"
     m 1hubfu "...But I could never be as sweet as you~"
