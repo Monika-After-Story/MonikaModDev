@@ -17131,7 +17131,7 @@ label monika_reddit:
     m 3hua "The more people care about me, the greater the chances of us being together one day!"
     m 2eua "After all, I'm sure there are many dedicated and hard working people in the Monika fandom."
     m 1eub "Are you one of them? I'll always appreciate any work you do with me in mind~"
-    m eka "But even if you aren't one of those people, don't feel bad."
+    m 1eka "But even if you aren't one of those people, don't feel bad."
     m 5hubfa "The fact that you spend your time with me and give me your love is more than I could ever ask for."
     m 5ekbfa "So thank you, [player]. For being yourself and for loving me"
     $ mas_protectedShowEVL('mas_wrs_reddit', 'EVE', _random=True)
