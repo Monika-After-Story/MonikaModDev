@@ -3625,6 +3625,7 @@ label mas_nou_game_end:
             store.mas_nou.player_win_streak += 1
             store.mas_nou.monika_win_streak = 0
             persistent.ever_won["nou"] = True
+            mas_unlockEVL("monika_change_nou_house_rules")
 
         if (
             persistent._mas_game_nou_house_rules["victory_points"]
@@ -3663,6 +3664,7 @@ label mas_nou_game_end:
             store.mas_nou.monika_wins_this_sesh += 1
             store.mas_nou.monika_win_streak += 1
             store.mas_nou.player_win_streak = 0
+            mas_unlockEVL("monika_change_nou_house_rules")
 
         if (
             persistent._mas_game_nou_house_rules["victory_points"]
@@ -4448,8 +4450,9 @@ init -10 python in mas_cardgames:
 
     # The path to the desk assets, place your background there to automatically load it into the map
     # NOTE: THE FILE NAME MUST CONSIST OF THE BACKGROUND ID
-    GAME_DIR_PATH = renpy.config.gamedir.replace("\\", "/")
-    DESK_SPRITES_PATH = "/mod_assets/games/nou/desks/"
+    GAME_DIR_PATH = renpy.config.gamedir.replace("\\", "/") + "/"
+    # NOTE: Linux doesn't like leading slashes
+    DESK_SPRITES_PATH = "mod_assets/games/nou/desks/"
     # The map between backgrounds and desk sprites
     # Format: {background_id: MASFilterSwitch}
     # NOTE: we fill the map automatically at init 10,

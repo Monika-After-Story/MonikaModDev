@@ -2773,6 +2773,7 @@ label mas_reaction_gift_noudeck:
         mas_giftCapGainAff(0.5)
         # She keeps the deck at any aff
         mas_unlockGame("nou")
+        mas_unlockEVL("monika_explain_nou_rules", "EVE")
 
     if mas_isMoniNormal(higher=True):
         m 1wub "Oh!{w=0.3} A deck of cards!"
