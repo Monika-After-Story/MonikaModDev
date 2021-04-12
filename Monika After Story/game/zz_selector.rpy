@@ -3439,39 +3439,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 mailbox
             )
 
-        # make filter_map items MASSelectableImageButtonDisplayable
-        if filter_map:
-            filter_map_selbtn = {}
-            # only add unlock
-            if only_unlocked:
-                for filter_items in filter_map:
-                    filter_map_selbtn[filter_items] = [
-                        MASSelectableImageButtonDisplayable(
-                            item,
-                            select_map,
-                            viewport_bounds,
-                            mailbox,
-                            False, # TODO: multi-select
-                            item.disable_type
-                        )
-                        for item in filter_map[filter_items]
-                        if item.unlocked
-                    ]
-            else:
-                for filter_items in filter_map:
-                    filter_map_selbtn[filter_items] = [
-                        MASSelectableImageButtonDisplayable(
-                            item,
-                            select_map,
-                            viewport_bounds,
-                            mailbox,
-                            False, # TODO: multi-select
-                            item.disable_type
-                        )
-                        for item in filter_map[filter_items]
-                    ]
-            filter_map = filter_map_selbtn
-
         # only show unlock
         if only_unlocked:
             disp_items = [
@@ -3499,6 +3466,18 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 )
                 for item in items
             ]
+
+        # make filter_map items MASSelectableImageButtonDisplayable
+        if filter_map:
+            filter_map_selbtn = {}
+            for d_item in disp_items:
+                for filter_items in filter_map:
+                    if d_item.selectable in filter_map[filter_items]:
+                        if filter_items in filter_map_selbtn:
+                            filter_map_selbtn[filter_items].append(d_item)
+                        else:
+                            filter_map_selbtn[filter_items] = [d_item]     
+            filter_map = filter_map_selbtn
 
         # fill select map
         item_found = store.mas_selspr._fill_select_map_and_set_remover(
