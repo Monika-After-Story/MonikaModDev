@@ -941,7 +941,7 @@ init 5 python:
             eventlabel="mas_story_friend",
             prompt="Having A Best Friend",
             category=[mas_stories.TYPE_NORMAL],
-            unlocked=True
+            unlocked=False
         ),
         code="STY"
     )
@@ -961,10 +961,43 @@ label mas_story_friend:
     m 3eub "'But!'"
     m 3eua "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
     m 1hua "The moral of the story is, do not let the shadows of your past darken the doorstep of your future.{w=0.2} {nw}"
-    extend 3hua "Forgive and Forget."
+    extend 3hua "Forgive and forget."
     m 1hua "I hope you enjoyed it, [player]!"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_tanabata",
+            prompt="The Weaver Girl and the Cowherd",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="STY"
+    )
+
+label mas_story_tanabata:
+    call mas_story_begin
+    m 1eub "Orihime, the daughter of the Jade Emperor, Ruler of Heaven, wove beautiful clothes by the bank of the Amanogawa."
+    m 3eua "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
+    m 2ekd "However, Orihime was sad that because of her hard work, she could never meet and fall in love with anyone."
+    m 2eksdla "Concerned about his daughter, her father arranged for her to meet the cowherd, Hikoboshi who lived and worked on the other side of the Amanogawa."
+    m 7hub "When the two met, they instantly fell in love and married shortly after!"
+    m 2eksdld "However, once married, Orihime would no longer weave cloth and Hikoboshi would let his cows stray all over Heaven."
+    m 4wud "In anger, the emperor separated the two lovers and forbade them to meet."
+    m 2dkc "Orihime became despondent at the loss of her husband and asked her father to let them meet again."
+    m 2eksdla "Moved by his daughter's tears, he allowed the two to meet on the seventh day of the seventh month if she worked hard and finished her weaving."
+    m 2wud "The first time they tried to meet, however, they found that they could not cross the river as there was no bridge."
+    m 2dkc "Orihime cried so much that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
+    m 7ekd "It is said that if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
+    m 3eud "The rain that falls on Tanabata is fittingly called {i}The tears of Orihime and Hikoboshi.{/i}"
+    m 1dksdlc "I can't imagine what it must be like to be only able to meet your loved one once a year."
+    m 3eua "But you know what they say, [player]...{w=0.3}love can move mountains."
+    m 3hubsu "...And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
+    $ mas_unlockEVL("monika_tanabata", "EVE")
+    return "love"
 
 #START: SCARY STORIES
 init 5 python:
