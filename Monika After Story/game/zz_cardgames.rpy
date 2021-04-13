@@ -3501,9 +3501,9 @@ init 5 python:
 
 label monika_explain_nou_rules:
     m 1hua "Of cource, [player]."
-    m 7eub "Even if the game looks complicated at first, {w=0.2}{nw}"
-    extend 4eub "it's rather quite simple."
-    m 4eua "I'm sure if we play some more games, you'll get into it."
+    m 7eub "The game looks complicated at first, {w=0.1}{nw}"
+    extend 4eub "but it's actually pretty simple."
+    m 4eua "I'm sure if we play a few more games, you'll get the hang of it."
 
     if persistent._mas_game_nou_house_rules["starting_cards"] == 7:
         m 7esa "So we start the game with 7 cards."
@@ -3519,30 +3519,30 @@ label monika_explain_nou_rules:
     m 3eub "When you play your second last card, {w=0.2}{nw}"
     extend 7eub "you should yell 'NOU' so I can know that you're close to victory!"
     m 2rksdla "Well, I guess yelling won't work in our case..."
-    m 7hub "But you can press the button to let me know!"
+    m 7hub "But you can press a button to let me know!"
     m 1eua "If one of us forgot to say 'NOU,' the other can {i}remind{/i} them. That will make the unlucky person to draw 2 more cards."
-    m 3eub "Besides the Number cards, there are also special cards known as Action and Wild cards."
-    m 3eua "You can distinguish an Action card by its symbol and a Wild card by its black color."
-    m 1eua "Those cards can make your opponent skip their turn or even draw some cards."
-    m 1tsu "And by some I mean 12 cards in a row."
-    m 1eua "The Wild cards don't have a color which means they can be placed on any card."
+    m 3eub "Besides the {i}Number{/i} cards, there are also special cards known as {i}Action{/i} and {i}Wildcards{/i}."
+    m 3eua "You can distinguish an Action card by its symbol, and a wildcard by its black color."
+    m 1eua "These cards can make your opponent skip their turn or even draw more cards."
+    m 1tsu "And by some, I mean 12 cards in a row."
+    m 1eua "wildcards don't have a color which means they can be placed on any card."
 
     if not persistent._mas_game_nou_house_rules["unrestricted_wd4"]:
         m 3eua "If you have no other cards with the color of the discard pile, that is."
 
     else:
-        m 3eua "Usually there's one condition should be met to play them, but we're playing with our own house rules."
+        m 3eua "Usually, you can only play them if you have no other cards of the same color in the discard pile, but we're playing with our own rules."
 
-    m 1eua "When you play any Wild card, you should choose what color you want to set for it."
-    m "As powerful Wild and Action cards may look, you still can save yourself from them."
-    m 3eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the new color."
-    m 3eua "Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
+    m 1eua "When you play any wildcard, you should choose what color you want to set for it."
+    m "As powerful wild and action cards may look, you still can save yourself from them."
+    m 1eub "For example you can mirror a wild Draw Four by playing a Draw Two with the new color."
+    m 3eua "...Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
-    m 1eku "But I think the point of it is not winning anyway, right?"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsa "It's all about spending time together~"
-    m 5hubfa "Ehehe~"
+    m 1eku "But I don't think it's really about winning anyway."
+    show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubla "Ehehe~"
     return
+
 
 # The game handling label
 label mas_nou_game_start:
@@ -3625,7 +3625,7 @@ label mas_nou_game_end:
             store.mas_nou.player_win_streak += 1
             store.mas_nou.monika_win_streak = 0
             persistent.ever_won["nou"] = True
-            mas_unlockEVL("monika_change_nou_house_rules")
+            mas_unlockEVL("monika_change_nou_house_rules", "EVE")
 
         if (
             persistent._mas_game_nou_house_rules["victory_points"]
@@ -3664,7 +3664,7 @@ label mas_nou_game_end:
             store.mas_nou.monika_wins_this_sesh += 1
             store.mas_nou.monika_win_streak += 1
             store.mas_nou.player_win_streak = 0
-            mas_unlockEVL("monika_change_nou_house_rules")
+            mas_unlockEVL("monika_change_nou_house_rules", "EVE")
 
         if (
             persistent._mas_game_nou_house_rules["victory_points"]
