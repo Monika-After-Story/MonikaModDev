@@ -2778,23 +2778,43 @@ label mas_reaction_gift_noudeck:
     if mas_isMoniNormal(higher=True):
         m 1wub "Oh!{w=0.3} A deck of cards!"
         m 3eua "And I think I know how to play this game!"
-        m 1eua "Have you ever played 'NOU', [player]?{w=0.2}{nw} "
-        extend 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
-        m 1rssdlb "It sounds quite obvious, ahaha~"
-        m 3eub "But it's a really fun game to play with friends and loved ones~"
-        m 1esc "I also heard it might {i}affect{/i} your relationships with the people you're playing with."
+        m 1esc "I heard it might {i}affect{/i} your relationships with the people you're playing with."
 
         if mas_isMoniAff(higher=True):
             show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eubsa "But I know our relationship can stand much more than just a simple card game~"
             m 5hubsa "Ehehe~"
-            show monika 3eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 3eua "Let me know when you want to play it."
+            show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
         else:
             m 1hub "Ahaha!"
             m 1eua "I'm just kidding, [player]."
-            m 3eub "Let's play soon!"
+
+        m 1eua "Have you ever played 'NOU', [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you ever played 'NOU', [player]?{fast}"
+
+            # If you're an advanced nou'r, we unlock house rules for you from the start
+            "Yes.":
+                m 1rksdlb "Ahaha..."
+                m 1eksdla "Of course you have, you gave me the deck after all."
+                m 1eua "Then you probably already know that some people play with house rules."
+                m 3eub "And if you'd like to, we can make our own rules too."
+                m 3eua "Alternatively, if you don't remember the rules, I can always remind you, just ask."
+                python:
+                    mas_unlockEVL("monika_change_nou_house_rules", "EVE")
+                    persistent._seen_ever["monika_introduce_nou_house_rules"] = True
+                    persistent._seen_ever["monika_explain_nou_rules"] = True
+
+            "No.":
+                m 1eka "Oh, that's fine."
+                m 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
+                m 1rssdlb "That might sound quite obvious, ahaha~"
+                m 3eub "But it's a really fun game to play with friends and loved ones~"
+                m 1eua "I'll explain the basic rules for you later, just ask."
+
+        m 3hub "I can't wait to play it with you!"
 
     elif mas_isMoniDis(higher=True):
         m 1euc "A deck?"
