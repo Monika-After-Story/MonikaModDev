@@ -4035,7 +4035,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
         renpy.game.persistent._mas_game_nou_abandoned = 0
         renpy.game.persistent._mas_game_nou_house_rules = {
-            "victory_points": 200,
+            "points_to_win": 200,
             "starting_cards": 7,
             "stackable_d2": False,
             "unrestricted_wd4": False

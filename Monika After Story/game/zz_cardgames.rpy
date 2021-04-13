@@ -6,7 +6,7 @@ default persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_abandoned = 0
 default persistent._mas_game_nou_house_rules = {
-    "victory_points": 200,
+    "points_to_win": 200,
     "starting_cards": 7,
     "stackable_d2": False,
     "unrestricted_wd4": False
@@ -1983,7 +1983,7 @@ init 5 python in mas_nou:
                 # First make a sorted list of cards
                 # don't reverse for one-round games
                 # TODO: make sure this works good, otherwise just always use True
-                should_reverse = bool(persistent._mas_game_nou_house_rules["victory_points"])
+                should_reverse = bool(persistent._mas_game_nou_house_rules["points_to_win"])
 
                 sorted_cards = sorted(
                     cards,
@@ -2136,7 +2136,7 @@ init 5 python in mas_nou:
                     return color
 
                 else:
-                    if persistent._mas_game_nou_house_rules["victory_points"]:
+                    if persistent._mas_game_nou_house_rules["points_to_win"]:
                         sorted_cards_data = self.__sort_cards_data(cards_data)
 
                     else:
@@ -2171,7 +2171,7 @@ init 5 python in mas_nou:
                         )
 
                         # we use amount in games where value doesn't make sense
-                        if persistent._mas_game_nou_house_rules["victory_points"]:
+                        if persistent._mas_game_nou_house_rules["points_to_win"]:
                             srt_data_key = "value"
 
                         else:
@@ -2248,7 +2248,7 @@ init 5 python in mas_nou:
                     """
                     MAX_ID = 4
 
-                    if persistent._mas_game_nou_house_rules["victory_points"]:
+                    if persistent._mas_game_nou_house_rules["points_to_win"]:
                         data_key = "value"
 
                     else:
@@ -2467,7 +2467,7 @@ init 5 python in mas_nou:
                 # Monika has to skip turn
                 if self.should_skip_turn:
                     # Let's try to play a defensive card
-                    if persistent._mas_game_nou_house_rules["victory_points"]:
+                    if persistent._mas_game_nou_house_rules["points_to_win"]:
                         sorted_cards_data = self.__sort_cards_data(cards_data)
 
                     else:
@@ -2538,7 +2538,7 @@ init 5 python in mas_nou:
                                 return card
 
                         else:
-                            if persistent._mas_game_nou_house_rules["victory_points"]:
+                            if persistent._mas_game_nou_house_rules["points_to_win"]:
                                 sorted_cards_data = self.__sort_cards_data(cards_data)
 
                             else:
@@ -2993,12 +2993,12 @@ init 5 python in mas_nou:
                             (
                                 persistent._mas_game_nou_abandoned > 2
                                 or (
-                                    persistent._mas_game_nou_house_rules["victory_points"] > 0
+                                    persistent._mas_game_nou_house_rules["points_to_win"] > 0
                                     and get_player_points_percentage("Player") <= 0.2
                                     and get_player_points_percentage("Monika") >= 0.8
                                 )
                                 or (
-                                    persistent._mas_game_nou_house_rules["victory_points"] == 0
+                                    persistent._mas_game_nou_house_rules["points_to_win"] == 0
                                     and monika_win_streak > 2
                                 )
                             )
@@ -3215,9 +3215,9 @@ init 5 python in mas_nou:
                 float as proportion (0.0 - 1.0)
 
             ASSUMES:
-                persistent._mas_game_nou_house_rules['victory_points'] > 0
+                persistent._mas_game_nou_house_rules['points_to_win'] > 0
             """
-            return float(persistent._mas_game_nou_points[player_persist_key]) / float(persistent._mas_game_nou_house_rules["victory_points"])
+            return float(persistent._mas_game_nou_points[player_persist_key]) / float(persistent._mas_game_nou_house_rules["points_to_win"])
 
 # Our events
 init 5 python:
@@ -3254,7 +3254,7 @@ init 5 python:
 
 label monika_change_nou_house_rules:
     if (
-        persistent._mas_game_nou_house_rules["victory_points"]
+        persistent._mas_game_nou_house_rules["points_to_win"]
         and (
             persistent._mas_game_nou_points["Monika"]
             or persistent._mas_game_nou_points["Player"]
@@ -3271,7 +3271,7 @@ label monika_change_nou_house_rules:
             menu_items = [
                 (
                     _("I'd like to change the number of points required to win."),
-                    "victory_points",
+                    "points_to_win",
                     False,
                     False
                 ),
@@ -3296,7 +3296,7 @@ label monika_change_nou_house_rules:
             ]
 
             if not (
-                persistent._mas_game_nou_house_rules["victory_points"] == 200
+                persistent._mas_game_nou_house_rules["points_to_win"] == 200
                 and persistent._mas_game_nou_house_rules["starting_cards"] == 7
                 and persistent._mas_game_nou_house_rules["stackable_d2"] == False
                 and persistent._mas_game_nou_house_rules["unrestricted_wd4"] == False
@@ -3321,9 +3321,9 @@ label monika_change_nou_house_rules:
             $ del menu_items, final_items
             return
 
-        elif _return == "victory_points":
+        elif _return == "points_to_win":
             m 1eub "Alright!"
-            call monika_change_nou_house_rules.change_victory_points_loop
+            call monika_change_nou_house_rules.change_points_to_win_loop
 
         elif _return == "starting_cards":
             m 1eub "Alright!"
@@ -3353,7 +3353,7 @@ label monika_change_nou_house_rules:
             m 3eub "Okay! Then settled!"
 
             python:
-                persistent._mas_game_nou_house_rules["victory_points"] = 200
+                persistent._mas_game_nou_house_rules["points_to_win"] = 200
                 persistent._mas_game_nou_house_rules["starting_cards"] = 7
                 persistent._mas_game_nou_house_rules["stackable_d2"] = False
                 persistent._mas_game_nou_house_rules["unrestricted_wd4"] = False
@@ -3398,7 +3398,7 @@ label monika_change_nou_house_rules:
 
     return
 
-label .change_victory_points_loop:
+label .change_points_to_win_loop:
     $ ready = False
     while not ready:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
@@ -3419,7 +3419,7 @@ label .change_victory_points_loop:
         elif points_cap == 0:
             m 3eua "Oh, you just want to have quick games?"
             m 2tuu "Alright! But don't expect me to go easy on you~"
-            $ persistent._mas_game_nou_house_rules["victory_points"] = points_cap
+            $ persistent._mas_game_nou_house_rules["points_to_win"] = points_cap
             $ ready = True
 
         elif points_cap < 50:
@@ -3431,7 +3431,7 @@ label .change_victory_points_loop:
 
                 "I'd like that.":
                     m 1eub "Oh, alright!"
-                    $ persistent._mas_game_nou_house_rules["victory_points"] = 0
+                    $ persistent._mas_game_nou_house_rules["points_to_win"] = 0
                     $ ready = True
 
                 "No":
@@ -3446,7 +3446,7 @@ label .change_victory_points_loop:
 
                 "Alright.":
                     m 1eua "Settled."
-                    $ persistent._mas_game_nou_house_rules["victory_points"] = 3000
+                    $ persistent._mas_game_nou_house_rules["points_to_win"] = 3000
                     $ ready = True
 
                 "No":
@@ -3454,7 +3454,7 @@ label .change_victory_points_loop:
 
         else:
             m 3eub "Okay, from now on, whoever reaches [points_cap] points, wins!"
-            $ persistent._mas_game_nou_house_rules["victory_points"] = points_cap
+            $ persistent._mas_game_nou_house_rules["points_to_win"] = points_cap
             $ ready = True
 
     $ del ready, points_cap
@@ -3508,7 +3508,7 @@ label .change_starting_cards_loop:
                     m 3eua "Then try again."
 
         else:
-            $ _round = _("round") if persistent._mas_game_nou_house_rules["victory_points"] else _("game")
+            $ _round = _("round") if persistent._mas_game_nou_house_rules["points_to_win"] else _("game")
             m 3eub "Okay, from now on, we will start each [_round!t] with [starting_cards] cards!"
             $ persistent._mas_game_nou_house_rules["starting_cards"] = starting_cards
             $ ready = True
@@ -3550,7 +3550,17 @@ label monika_explain_nou_rules:
     m 3eub "To play a card you need to match it by the color or the text with the top card on the discard pile."
     m 3eua "If you can't play a card in your turn, you must draw one from the draw pile."
     m 1esa "You don't {i}have{/i} to play it, though."
-    m "After you played a card or skipped your turn, my turn begins. And so on until someone wins."
+
+    if persistent._mas_game_nou_house_rules["points_to_win"]:
+        m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins this round."
+        m 1eua "The winner is awarded with the points equal to the remaining cards in the opponent's hand."
+        m "Then we play more rounds until one of us reaches the goal - [persistent._mas_game_nou_house_rules[points_to_win]] points."
+        m 1esa "Such scoring makes the game more competitive and strategic."
+
+    else:
+        m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins the game."
+        m 1esa "Such scoring makes the game quicker and more casual."
+
     m 3eub "One important rule is before playing your second last card, {w=0.2}{nw}"
     extend 7eub "you should yell 'NOU' so I can know that you're close to victory!"
     m 2rksdla "Well, I guess yelling won't work in our case..."
@@ -3582,7 +3592,7 @@ label monika_explain_nou_rules:
 # The game handling label
 label mas_nou_game_start:
     if (
-        persistent._mas_game_nou_house_rules["victory_points"]
+        persistent._mas_game_nou_house_rules["points_to_win"]
         and (
             persistent._mas_game_nou_points["Monika"] > 0
             or persistent._mas_game_nou_points["Player"] > 0
@@ -3642,7 +3652,7 @@ label mas_nou_game_end:
     window auto
 
     python:
-        if persistent._mas_game_nou_house_rules["victory_points"]:
+        if persistent._mas_game_nou_house_rules["points_to_win"]:
             _round = _("round")
 
         else:
@@ -3668,8 +3678,8 @@ label mas_nou_game_end:
             persistent.ever_won["nou"] = True
 
         if (
-            persistent._mas_game_nou_house_rules["victory_points"]
-            and persistent._mas_game_nou_points["Player"] >= persistent._mas_game_nou_house_rules["victory_points"]
+            persistent._mas_game_nou_house_rules["points_to_win"]
+            and persistent._mas_game_nou_points["Player"] >= persistent._mas_game_nou_house_rules["points_to_win"]
         ):
             call mas_nou_reaction_player_wins_game
 
@@ -3706,8 +3716,8 @@ label mas_nou_game_end:
             store.mas_nou.player_win_streak = 0
 
         if (
-            persistent._mas_game_nou_house_rules["victory_points"]
-            and persistent._mas_game_nou_points["Monika"] >= persistent._mas_game_nou_house_rules["victory_points"]
+            persistent._mas_game_nou_house_rules["points_to_win"]
+            and persistent._mas_game_nou_points["Monika"] >= persistent._mas_game_nou_house_rules["points_to_win"]
         ):
             call mas_nou_reaction_monika_wins_game
 
@@ -3740,7 +3750,7 @@ label mas_nou_game_end:
             store.mas_nou.player_win_streak = 0
             # silently add points to Monika
             store.mas_nou.give_points()
-            if persistent._mas_game_nou_points["Monika"] >= persistent._mas_game_nou_house_rules["victory_points"]:
+            if persistent._mas_game_nou_points["Monika"] >= persistent._mas_game_nou_house_rules["points_to_win"]:
                 store.mas_nou.reset_points()
 
         call mas_nou_reaction_player_surrenders
@@ -3978,7 +3988,7 @@ label mas_nou_reaction_player_wins_game:
             m 1hua "That was fun!"
 
     else:
-        m 4eub "...And you're the first who reached [persistent._mas_game_nou_house_rules[victory_points]] points!"
+        m 4eub "...And you're the first who reached [persistent._mas_game_nou_house_rules[points_to_win]] points!"
         m 1hua "Congrats, [player]~"
     return
 
@@ -4165,7 +4175,7 @@ label mas_nou_reaction_monika_wins_game:
         m 1hub "Thanks for playing with me, [player]~"
 
     else:
-        m 3eub "And I'm the first who reached [persistent._mas_game_nou_house_rules[victory_points]] points!"
+        m 3eub "And I'm the first who reached [persistent._mas_game_nou_house_rules[points_to_win]] points!"
         m 1hua "I won this time~"
     return
 
@@ -4235,7 +4245,7 @@ screen nou_stats():
     text _("Our score!") pos (89, 110) anchor (0, 0.5) at nou_note_rotate_left
 
     # For one-round games we show wins
-    if store.persistent._mas_game_nou_house_rules["victory_points"] == 0:
+    if store.persistent._mas_game_nou_house_rules["points_to_win"] == 0:
         $ monika_score = store.mas_nou.monika_wins_this_sesh
         $ player_score = store.mas_nou.player_wins_this_sesh
 
