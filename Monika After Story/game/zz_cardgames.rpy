@@ -3266,7 +3266,7 @@ label monika_change_nou_house_rules:
     else:
         m 1eub "Of course."
 
-    label .selection_loop:
+    label .menu_loop:
         python:
             menu_items = [
                 (
@@ -3303,19 +3303,22 @@ label monika_change_nou_house_rules:
             ):
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
 
-            final_item = (_("Nevermind"), False, False, False, 20)
+            final_items = (
+                (_("Can you explain these house rules?"), "explain", False, False, 20),
+                (_("Nevermind"), False, False, False, 0)
+            )
 
         show monika 1eua at t21 zorder MAS_MONIKA_Z
 
         $ renpy.say(m, _("What kind of rule would you like to change?"), interact=False)
 
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         show monika 1eua at t11 zorder MAS_MONIKA_Z
 
         if not _return:
             m 1eua "Oh, alright."
-            $ del menu_items, final_item
+            $ del menu_items, final_items
             return
 
         elif _return == "victory_points":
@@ -3346,7 +3349,7 @@ label monika_change_nou_house_rules:
 
             $ persistent._mas_game_nou_house_rules["unrestricted_wd4"] = not persistent._mas_game_nou_house_rules["unrestricted_wd4"]
 
-        else:
+        elif _return == "restore":
             m 3eub "Okay! Then settled!"
 
             python:
@@ -3357,9 +3360,26 @@ label monika_change_nou_house_rules:
 
                 store.mas_nou.reset_points()
 
-                del menu_items, final_item
+                del menu_items, final_items
 
             return
+
+        else:
+            m 1eub "Sure!"
+            m 1eua "Victory points is the number of points you need to reach to win the game."
+            m 3eud "If you want to play without points, just choose '0'."
+            m 1eua "We can also start each round with different number of cards in our hands."
+            m 3esa "For example, if you want longer games, we can start with 10 cards."
+            m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a Draw 2, the cards {i}stack{/i}...{w=0.3}{nw}"
+            extend 4tsb "and the last unlucky person will have to draw all those cards."
+            m 1eua "That also applies to Wild Draw 4's, since you use Draw 2's to reflect them."
+            m 1ttu "Sounds fun, huh~"
+            m 3eud "There's also a rule in the official set that allows you to play a Draw 4 only if you have no cards of the current color."
+            m 1rtu "That...{w=0.3}sounds kinda boring, {w=0.2}{nw}"
+            extend 3eua "so we can just ignore that rule if you want."
+            m 1eua "And that's it!"
+
+            jump monika_change_nou_house_rules.menu_loop
 
     $ store.mas_nou.reset_points()
 
@@ -3369,12 +3389,12 @@ label monika_change_nou_house_rules:
         m "Is there anything else you would like to change?{fast}"
 
         "Yes.":
-            jump monika_change_nou_house_rules.selection_loop
+            jump monika_change_nou_house_rules.menu_loop
 
         "No.":
             m 2eub "Then let's play together soon~"
 
-    $ del menu_items, final_item
+    $ del menu_items, final_items
 
     return
 
