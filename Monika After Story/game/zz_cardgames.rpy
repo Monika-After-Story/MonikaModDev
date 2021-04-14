@@ -2255,16 +2255,13 @@ init 5 python in mas_nou:
                         data_key = "amount"
 
                     highest_value = float(sorted_cards_data[0][1][data_key])
-                    want_try_another_color = False
                     reserved_card = None
 
                     for color_id in range(MAX_ID):
                         # let's see if we want to play a 0
                         if sorted_cards_data[color_id][1]["amount"] > 2:
                             # get the last card as a possible 0
-                            last_card = self.hand[
-                                sorted_cards_data[color_id][1]["ids"][-1]
-                            ]
+                            last_card = self.hand[sorted_cards_data[color_id][1]["ids"][-1]]
 
                             if (
                                 last_card.label == "0"# make sure it's a 0
@@ -2293,7 +2290,7 @@ init 5 python in mas_nou:
                         # get this color name
                         this_color = sorted_cards_data[color_id][0].replace("num_", "")
                         # get total value (or amount) of cards with this color
-                        this_color_value = float(sorted_cards_data[color_id][1][data_key])
+                        # this_color_value = float(sorted_cards_data[color_id][1][data_key])
                         # get the id for the next loop
                         next_color_id = color_id + 1
 
@@ -2306,30 +2303,20 @@ init 5 python in mas_nou:
                             # next_color = None
                             next_color_value = None
 
-                        # does player has cards with this color?
-                        if this_color == self.player_cards_data["has_color"]:
-                           # if next_color_value is None:
-                                # want_reserve_next_card = True
-                                #TODO
-                                #move to this to the check below in its own condition
-                                # so ew can get in the same flow anyway
-
-                            # if so, can we play something else?
-                            want_try_another_colour = (
-                                (
-                                    next_color_value is None# even if we can't choose a better color to play, we'll still use the same logic to decide if we want to play a card at all
-                                    or (
-                                        #next_color_value is not None# we have more colors to choose from
-                                        highest_value == 0# all our cards are 0's
-                                        or (highest_value - this_color_value) / highest_value < 0.5# or the difference in values is less than 50%
-                                        or total_player_cards < 3# or the player is about to finish the game
-                                    )
-                                )
-                                and (
-                                    this_color != self.game.discardpile[-1].color# no reason not to play it if this is the current color
-                                    or renpy.random.randint(1, 5) == 1# 1/5 to take the risk and draw a card in hope it'll worth it
-                                )
+                        # Do we want to play anything else?
+                        want_try_another_color = (
+                            this_color == self.player_cards_data["has_color"]# the player has this colour
+                            and next_color_value is not None
+                            and (
+                                highest_value == 0# all our cards are 0's
+                                or (highest_value - next_color_value) / highest_value < 0.5# or the difference in values is less than 50%
+                                or total_player_cards < 4# or the player is about to finish the game
                             )
+                            and (
+                                this_color != self.game.discardpile[-1].color# no reason not to play this card if it has the current color
+                                or renpy.random.randint(1, 5) == 1# 1/5 to take the risk anyway
+                            )
+                        )
 
                         # try to play something
                         for id in sorted_cards_data[color_id][1]["ids"]:
@@ -2338,11 +2325,11 @@ init 5 python in mas_nou:
                             if self.game.__is_matching_card(self, card):
                                 if (
                                     want_try_another_color
-                                    and reserved_card is not None
+                                    and reserved_card is None
                                 ):
                                     # reserve this card
                                     reserved_card = card
-                                    # and check the next color
+                                    # check the next color
                                     break
 
                                 else:
@@ -2440,7 +2427,7 @@ init 5 python in mas_nou:
 
                 def analyse_cards(func_list):
                     """
-                    Analyses all cards we have with funcs in func_list and returns first
+                    Analyses all cards we have using funcs in func_list and returns first
                     appropriate card we want and can play in this turn
 
                     IN:
@@ -2545,7 +2532,7 @@ init 5 python in mas_nou:
                                 sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
 
                             # the player is close to victory, need to play more aggressive
-                            # TODO: use struct here when we get to py3 support
+                            # TODO: use struct here when we get py3 support
                             if (
                                 total_cards > 7
                                 or total_player_cards < 4
