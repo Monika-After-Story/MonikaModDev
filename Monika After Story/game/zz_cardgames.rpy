@@ -3383,7 +3383,7 @@ label monika_change_nou_house_rules:
 
     $ store.mas_nou.reset_points()
 
-    m 3eua "Is there anything else you would like to change?{nw}"
+    m 3eua "Is there anything else you'd like to change?{nw}"
     $ _history_list.pop()
     menu:
         m "Is there anything else you'd like to change?{fast}"
