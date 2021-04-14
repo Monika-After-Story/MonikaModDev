@@ -2817,11 +2817,11 @@ label mas_reaction_gift_noudeck:
         m 3hub "I can't wait to play it with you!"
 
     elif mas_isMoniDis(higher=True):
-        m 1euc "A deck?"
-        m 1rka "Actually it might be...{nw}"
+        m 2euc "A deck?"
+        m 2rka "Actually it might be...{nw}"
         $ _history_list.pop()
-        m 1rkc "Nevermind..."
-        m 1esc "I'm not in the mood to play it right now, [player]."
+        m 2rkc "Nevermind..."
+        m 2esc "I'm not in the mood to play it right now, [player]."
 
     else:
         m 6ckc "..."

@@ -104,7 +104,7 @@ init 5 python in mas_nou:
         QUIPS_MONIKA_WILL_REFLECT = (
             _("I prepared! Ehehe~"),
             _("No, no, no~ I'm not going to skip this turn!"),
-            _("Nope! This time you'll skip turn~"),
+            _("Nope! This time you'll skip a turn~"),
             _("Lucky me I have some good cards! Ehehe~"),
             _("I was ready~")
         )
@@ -184,11 +184,11 @@ init 5 python in mas_nou:
         )
         # Quips when you ask her to yell NoU, but she already did it
         QUIPS_MONIKA_ALREADY_YELLED_NOU = (
-            _("But, [player], I've said 'NOU'!"),
-            _("I've already said 'NOU', [player]!"),
+            _("But [player], I've said 'NOU'!"),
+            _("I've already said 'NOU,' [player]!"),
             _("Silly, I already did that!~"),
-            _("[player]... How did you miss that? I already said 'NOU'!"),
-            _("Uh, [player]...{w=0.3} I already said 'NOU'!")
+            _("[player]... How did you miss that? I already said 'NOU!'"),
+            _("Uh, [player]...{w=0.3} I already said 'NOU!'")
         )
         # Quips when you ask her to yell NoU, but she has more than 1 card
         QUIPS_MONIKA_DONT_NEED_YELL_NOU = (
@@ -208,10 +208,10 @@ init 5 python in mas_nou:
         )
         # Quips when Monika forgot to say nou
         QUIPS_MONIKA_FORGOT_YELL_NOU = (
-            _("Oh...You're right!"),
+            _("Oh... You're right!"),
             _("Whoops, you got me there!"),
             _("Jeez, how did I forget..."),
-            _("Ehehe, completely unintentionally~"),
+            _("Ehehe, completely unintentional~"),
             _("Ehehe, caught me!"),
             _("How silly of me! Ahaha!~")
         )
@@ -241,25 +241,25 @@ init 5 python in mas_nou:
             _("Silly, you yell 'NOU' when you have only one card left!"),
             _("I think you still have more than one card, [player]."),
             _("You have too many cards to say 'NOU' now."),
-            _("A bit early for yelling 'NOU', [player]!"),
+            _("A bit early for yelling 'NOU,' [player]!"),
             _("You should say 'NOU' before playing your second last card, [player]."),
             _("[player], you can be so silly sometimes~")
         )
         # Quips when Monika catches you on not saying NoU
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} NOU, [player]!"),
-            _("You forgot to say 'NOU', [player]!"),
-            _("You thought I wouldn't notice?~ You should've said 'NOU'!"),
+            _("You forgot to say 'NOU,' [player]!"),
+            _("You thought I wouldn't notice?~ You should've said 'NOU!'"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
-            _("I caught you! You didn't say 'NOU'!"),
-            _("You didn't say 'NOU'! And now you must take 2 cards!~")
+            _("I caught you! You didn't say 'NOU!'"),
+            _("You didn't say 'NOU!' And now you must take 2 cards!~")
         )
         # Quips when the player said nou, but didn't play a card afterwards
         QUIPS_PLAYER_FALSE_NOU = (
             _("You should say 'NOU' only if you're going to play a card, [player]."),
             _("Why didn't you play a card?"),
-            _("Eh, [player]? You should play a card after saying 'NOU'!"),
+            _("Eh, [player]? You should play a card after saying 'NOU!'"),
             _("Don't say 'NOU' if you're not going to play a card."),
             _("[player], don't yell 'NOU' for no reason..."),
             _("[player], you can be so silly sometimes~")
@@ -3368,7 +3368,7 @@ label monika_change_nou_house_rules:
             m 1eub "Sure!"
             m 1eua "Victory points is the number of points you need to reach to win the game."
             m 3eud "If you want to play without points, just choose '0'."
-            m 1eua "We can also start each round with different number of cards in our hands."
+            m 1eua "We can also start each round with a different number of cards in our hands."
             m 3esa "For example, if you want longer games, we can start with 10 cards."
             m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a Draw 2, the cards {i}stack{/i}...{w=0.3}{nw}"
             extend 4tsb "and the last unlucky person will have to draw all those cards."
@@ -3386,7 +3386,7 @@ label monika_change_nou_house_rules:
     m 3eua "Is there anything else you would like to change?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is there anything else you would like to change?{fast}"
+        m "Is there anything else you'd like to change?{fast}"
 
         "Yes.":
             jump monika_change_nou_house_rules.menu_loop
@@ -3413,8 +3413,8 @@ label .change_points_to_win_loop:
         )
 
         if points_cap < 0:
-            m 2rksdla "[player], the game will never end, if the goal is negative."
-            m 3ekb "Try again, silly!"
+            m 2rksdla "[player], the game will never end if the goal is negative."
+            m 7ekb "Try again, silly!"
 
         elif points_cap == 0:
             m 3eua "Oh, you just want to have quick games?"
@@ -3434,12 +3434,12 @@ label .change_points_to_win_loop:
                     $ persistent._mas_game_nou_house_rules["points_to_win"] = 0
                     $ ready = True
 
-                "No":
+                "Nah.":
                     m 3eua "Then choose again."
 
         elif points_cap > 3000:
             m 2eka "Oh it's too much I think..."
-            m 3eka "Let's leave it at 3000?{nw}"
+            m 7eka "Let's leave it at 3000?{nw}"
             $ _history_list.pop()
             menu:
                 m "Let's leave it at 3000?{fast}"
@@ -3449,7 +3449,7 @@ label .change_points_to_win_loop:
                     $ persistent._mas_game_nou_house_rules["points_to_win"] = 3000
                     $ ready = True
 
-                "No":
+                "Nah.":
                     m 3eua "Then choose again."
 
         else:
@@ -3477,11 +3477,11 @@ label .change_starting_cards_loop:
 
         if starting_cards < 1:
             m 2rksdlb "We can't play cards without cards, [player]!"
-            m 3ekb "Try again, silly~"
+            m 7ekb "Try again, silly~"
 
         elif starting_cards < 4:
             m 2eka "I don't think this will make sense, [player]..."
-            m 3eka "Let's start with at least 4 cards?{nw}"
+            m 7eka "Let's start with at least 4 cards?{nw}"
             $ _history_list.pop()
             menu:
                 m "Let's start with at least 4 cards?{fast}"
@@ -3490,12 +3490,12 @@ label .change_starting_cards_loop:
                     $ persistent._mas_game_nou_house_rules["starting_cards"] = 4
                     $ ready = True
 
-                "No.":
+                "Nah.":
                     m 3eua "Then try again."
 
         elif starting_cards > 20:
             m 2hub "Ahaha, [player]! How do you think I'll hold all these cards?"
-            m 3eua "Let's leave it at 20 cards?{nw}"
+            m 7eua "Let's leave it at 20 cards?{nw}"
             $ _history_list.pop()
             menu:
                 m "Let's leave it at 20 cards?{fast}"
@@ -3504,7 +3504,7 @@ label .change_starting_cards_loop:
                     $ persistent._mas_game_nou_house_rules["starting_cards"] = 20
                     $ ready = True
 
-                "No.":
+                "Nah.":
                     m 3eua "Then try again."
 
         else:
@@ -3536,7 +3536,7 @@ init 5 python:
 
 label monika_explain_nou_rules:
     m 1hua "Of cource, [player]."
-    m 7eub "The game looks complicated at first, {w=0.1}{nw}"
+    m 3eub "The game looks complicated at first, {w=0.1}{nw}"
     extend 4eub "but it's actually pretty simple."
     m 4eua "I'm sure if we play a few more games, you'll get the hang of it."
 
@@ -3546,26 +3546,26 @@ label monika_explain_nou_rules:
     else:
         m 7esa "So since we're playing with house rules, we start the game with [persistent._mas_game_nou_house_rules[starting_cards]] cards."
 
-    m 1esa "Your goal is to play all your cards before I play mine."
+    m 1esa "Your goal is to play all your cards before I play all of mine."
     m 3eub "To play a card you need to match it by the color or the text with the top card on the discard pile."
     m 3eua "If you can't play a card in your turn, you must draw one from the draw pile."
     m 1esa "You don't {i}have{/i} to play it, though."
 
     if persistent._mas_game_nou_house_rules["points_to_win"]:
-        m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins this round."
+        m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins the round."
         m 1eua "The winner is awarded with the points equal to the remaining cards in the opponent's hand."
         m "Then we play more rounds until one of us reaches the goal - [persistent._mas_game_nou_house_rules[points_to_win]] points."
         m 1esa "Such scoring makes the game more competitive and strategic."
 
     else:
-        m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins the game."
+        m 3eub "After you play a card or skip your turn, my turn begins and so on until someone wins the game."
         m 1esa "Such scoring makes the game quicker and more casual."
 
     m 3eub "One important rule is before playing your second last card, {w=0.2}{nw}"
     extend 7eub "you should yell 'NOU' so I can know that you're close to victory!"
     m 2rksdla "Well, I guess yelling won't work in our case..."
     m 7hub "But you can press a button to let me know!"
-    m 1eua "If one of us forgot to say 'NOU,' the other can {i}remind{/i} them. That will make the unlucky person to draw 2 more cards."
+    m 1eua "If one of us forgot to say 'NOU,' the other can {i}remind{/i} them. That will make the unlucky person draw 2 more cards."
     m 3eub "Besides the {i}Number{/i} cards, there are also special cards known as {i}Action{/i} and {i}Wild{/i} cards."
     m 3eua "You can distinguish an Action card by its symbol, and a Wild card by its black color."
     m 1eua "These cards can make your opponent skip their turn or even draw more cards."
@@ -3579,12 +3579,12 @@ label monika_explain_nou_rules:
         m 3eua "Usually, you can only play them if you have no other cards of the same color in the discard pile, but we're playing with our own rules."
 
     m 1eua "When you play any Wild card, you should choose what color you want to set for it."
-    m "As powerful Wild and Action cards may look, you can still save yourself from them."
+    m "As powerful as Wild and Action cards may look, you can still save yourself from them."
     m 1eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the new color."
     m 3eua "...Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
     m 1eku "But I don't think it's really about winning anyway."
-    show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    show monika 5hubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubla "Ehehe~"
     return
 
@@ -3685,12 +3685,12 @@ label mas_nou_game_end:
 
             $ store.mas_nou.reset_points()
 
-            m 3eua "Would you like to play more?{nw}"
+            m 3eua "Would you like to play some more?{nw}"
             $ _history_list.pop()
             menu:
-                m "Would you like to play more?{fast}"
+                m "Would you like to play some more?{fast}"
 
-                "Yes.":
+                "Sure.":
                     m 1hub "Yay!"
                     show monika 1hua zorder MAS_MONIKA_Z
                     python:
@@ -3699,7 +3699,7 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
-                "No.":
+                "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
             $ del dlg_choice, _round, store.mas_nou.game
@@ -3723,12 +3723,12 @@ label mas_nou_game_end:
 
             $ store.mas_nou.reset_points()
 
-            m 3eua "Would you like to play more?{nw}"
+            m 3eua "Would you like to play some more?{nw}"
             $ _history_list.pop()
             menu:
-                m "Would you like to play more?{fast}"
+                m "Would you like to play some more?{fast}"
 
-                "Yes.":
+                "Sure.":
                     m 1hub "Yay!"
                     show monika 1hua zorder MAS_MONIKA_Z
                     python:
@@ -3737,7 +3737,7 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
-                "No.":
+                "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
             $ del dlg_choice, _round, store.mas_nou.game
@@ -3764,7 +3764,7 @@ label mas_nou_game_end:
     menu:
         m "Would you like to play another [_round!t]?{fast}"
 
-        "Yes.":
+        "Sure.":
             show monika 1hua zorder MAS_MONIKA_Z
             python:
                 store.mas_nou.game.reset_game()
@@ -3772,7 +3772,7 @@ label mas_nou_game_end:
 
             jump mas_nou_game_loop
 
-        "No.":
+        "Not right now.":
             m 1hua "Alright, let's play again soon~"
 
     $ del dlg_choice, _round, store.mas_nou.game
@@ -3782,8 +3782,8 @@ label mas_nou_game_end:
 # All end game reactions labels go here
 label mas_nou_reaction_player_wins_round:
     if persistent._mas_game_nou_abandoned > 2:
-        m 1hub "I'm glad you won this time!"
-        m 1eua "Good job, [player]!"
+        m 1hua "I'm glad you won this time..."
+        m 3eub "Good job, [player]!"
 
     elif store.mas_nou.player_win_streak > 3:
         $ dlg_choice = renpy.random.randint(1, 3)
@@ -3795,7 +3795,7 @@ label mas_nou_reaction_player_wins_round:
                 m 1hksdlb "I have no chance against you!"
 
             else:
-                m 1hksdlb "Give me at least a chance~"
+                m 1hksdlb "Give me a chance at least~"
 
         elif dlg_choice == 2:
             m 1eub "And another [_round!t]!"
@@ -3833,12 +3833,12 @@ label mas_nou_reaction_player_wins_round:
             m 3eua "I'm really glad you won this time~"
 
         elif dlg_choice == 2:
-            m 1hua "I had a feeling you will win~"
-            m 3hub "Ehehe~ Good, job!"
+            m 1hua "I had a feeling you'd win~"
+            m 3hub "Ehehe~ Good job!"
 
         else:
             if len(store.mas_nou.game.monika.hand) > 2:
-                m 1tuu "Your luck is back?~"
+                m 1tuu "Your luck must be back~"
                 m 1hua "Well played! Ehehe~"
 
             else:
@@ -3877,7 +3877,7 @@ label mas_nou_reaction_player_wins_round:
                 m 1hub "Another quick win for you!"
 
                 if renpy.random.randint(1, 4) == 1:
-                    m 1kuu "But you better not to relax, [player]~"
+                    m 1kuu "But you better not relax, [player]~"
 
             elif dlg_choice == 2:
                 m 1wuo "Wow, [player]!"
@@ -4008,7 +4008,7 @@ label mas_nou_reaction_monika_wins_round:
                 m 1eka "Not without your help, I guess. Ehehe~"
 
             else:
-                m 3tsb "Told you I'll win!"
+                m 3tsb "Told you I'd win!"
                 m 1tfu "Now it's time for you to draw cards."
 
         elif dlg_choice == 2:
@@ -4042,7 +4042,7 @@ label mas_nou_reaction_monika_wins_round:
                 extend 3eua "You almost won this time."
 
             else:
-                m 1kua "I have a feeling that you'll win next [_round!t]~"
+                m 1kua "I have a feeling you'll win next [_round!t]~"
 
         else:
             if len(store.mas_nou.game.player.hand) < 3:
@@ -4117,7 +4117,7 @@ label mas_nou_reaction_monika_wins_round:
             if len(store.mas_nou.game.player.hand) > 4:
                 m 1tsb "Not bad, [player]."
                 m 3tub "I think you could even have won this time, {w=0.5}{nw}"
-                extend 1tuu "if not for all those cards you've drew"
+                extend 1tuu "if not for all those cards you drew."
                 m 1hub "Ahaha~"
 
             else:
@@ -4128,7 +4128,7 @@ label mas_nou_reaction_monika_wins_round:
             m 1hua "I won again~"
 
         elif store.mas_nou.player_win_streak > 1:
-            m 1sub "Finally I won too~"
+            m 1sub "Finally I won~"
 
         else:
             m 1hua "I won~"
@@ -4188,7 +4188,7 @@ label mas_nou_reaction_player_surrenders:
         m 1ekc "[player]...{w=0.3}{nw}"
         extend 1eksdld "you keep giving up on our games..."
         m 1rksdlc "I hope you're enjoying playing with me."
-        m 1eka "I do enjoy every moment I'm with you~"
+        m 1eka "I enjoy every moment I'm with you~"
 
     elif store.mas_nou.game.current_turn == 1:
         m 1etd "But we just started."
@@ -4201,10 +4201,10 @@ label mas_nou_reaction_player_surrenders:
             and len(store.mas_nou.game.player.hand) > 8
         ):
             m 3ekb "I love to play with you no matter what the outcome is!"
-            m 1eka "I hope you're feeling the same way~"
+            m 1eka "I hope you feel the same way~"
 
         else:
-            m 1eud "You could at least try..."
+            m 1rud "You could at least try..."
             m 1eka "It would mean a lot to me."
 
     else:
@@ -4216,7 +4216,7 @@ label mas_nou_reaction_player_surrenders:
             if len(store.mas_nou.game.monika.hand) > 1:
                 m 2esa "Actually, I had quite bad cards, [player]."
             else:
-                m 2esa "Actually, I had a quite bad last card, [player]."
+                m 2esa "Actually, I had quite a bad last card, [player]."
 
             m 7eka "I think you could win this [_round!t]."
 
