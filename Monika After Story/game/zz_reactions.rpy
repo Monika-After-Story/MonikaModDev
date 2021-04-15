@@ -2143,7 +2143,7 @@ label mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite:
     return
 
 label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transexual-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transgender-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
     return
 
 # velius94
