@@ -6460,7 +6460,8 @@ init -3 python:
                         NOTE: can be multiple of this format
                 values:
                     MASFilterMap objects
-            has_mid - True if this hair has a mid option, False if not
+            mpm_mid - MASPoseMap for mid hair layer.
+                This is the enable/disable type
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -6482,11 +6483,7 @@ init -3 python:
                 split=None,
                 ex_props=None,
                 hl_data=None,
-                has_mid=False
-                # TODO - shoot actually, because mid is optional, this means
-                #   we need another MASPoseMap for the mid.
-                #   To prevent future issues, let's do it like
-                #   a subclass for additional hair rules
+                mpm_mid=None
             ):
             """
             MASHair constructor
@@ -6527,8 +6524,9 @@ init -3 python:
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
-                has_mid - True if this hair has mid, False if not
-                    (Default: False)
+                mpm_mid - MASPoseMap for mid hair layers
+                    Should be enable/disable type or else we crash
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6547,8 +6545,15 @@ init -3 python:
             if split is not None and type(split) != MASPoseMap:
                 raise Exception("split MUST be PoseMap")
 
+            if (
+                    mpm_mid is not None
+                    and not isinstance(mpm_mid, MASPoseMap)
+                    and mpm_mid._mpm_type != MASPoseMap.MPM_TYPE_ED
+            ):
+                raise Exception("mpm_mid must be MASPoseMap of type ED / 0")
+
             self.split = split
-            self.has_mid = has_mid
+            self.mpm_mid = mpm_mid
 
         def __repr__(self):
             return "<Hair: {0}>".format(self.name)
@@ -6644,14 +6649,25 @@ init -3 python:
                     # add the tag
                     new_img.append(self.img_sit)
 
-                    # genreate back, mid, and front images
+                    # genreate back and front images
                     back_img = new_img + [store.mas_sprites.BHAIR_SUFFIX]
                     front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
-                    #mid_img = new_img + [store.mas_sprites.MHAIR_SUFFIX]
+
+                    # mid images as well
+                    if (
+                            self.mpm_mid is not None
+                            and self.mpm_mid.get(leanpose, False)
+                    ):
+                        mid_img = new_img + [store.mas_sprites.MHAIR_SUFFIX]
+
+                    else:
+                        mid_img = None
 
                     # add them to list
                     loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])
                     loadstrs.append(front_img + [store.mas_sprites.FILE_EXT])
+                    if mid_img is not None:
+                        loadstrs.append(mid_img + [store.mas_sprites.FILE_EXT])
 
                     # highlights
                     loadstrs.extend(self.__build_loadstrs_hl(
@@ -6662,6 +6678,11 @@ init -3 python:
                         front_img,
                         hl_key.format(store.mas_sprites.FHAIR)
                     ))
+                    if mid_img is not None:
+                        loadstrs.extend(self.__build_loadstrs_hl(
+                            mid_img,
+                            hl_key.format(store.mas_sprites.MHAIR)
+                        ))
 
             return loadstrs
 
