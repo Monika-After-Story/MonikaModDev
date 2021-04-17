@@ -102,8 +102,8 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
-
         # and set the moods
         $ persistent._mas_mood_current = _return
 
@@ -134,7 +134,7 @@ label mas_mood_hungry:
     m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
+    m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
     m 1hua "Which means more time for us to spend together!~"
     return
@@ -334,7 +334,7 @@ label mas_mood_tired:
         m 1ekc "Still not ready to tackle the day, [player]?"
         m 1eka "Or is it just one of those days?"
         m 1hua "When that happens, I like to have a nice cup of coffee to start the day."
-        if not mas_getConsumable("coffee").enabled():
+        if not mas_consumable_coffee.enabled():
             m 1lksdla "If I'm not stuck here, that is..."
         m 1eua "You could also drink a glass of water."
         m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up can help you feel refreshed and awake."
@@ -743,7 +743,7 @@ label mas_mood_uok:
     m 1ekd "So if you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
-        m "So If you need to talk about something, I'm right here.{fast}"
+        m "So if you need to talk about something, I'm right here.{fast}"
 
         "I'd like to vent.":
             m 3eka "Go ahead, [player]."
@@ -765,3 +765,25 @@ label mas_mood_uok:
             m 1ekd "Okay [player], if you say so..."
             $ line_start = "But"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_upset",prompt="...upset.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+
+label mas_mood_upset:
+    m 2eksdld "I'm so sorry to hear that, [player]!"
+    m 2eksdld "Whether you're upset with a task, a person, or things simply aren't going as planned, {w=0.1}{nw}"
+    extend 7ekc "don't completely give up on whatever you're dealing with."
+    m 3eka "My advice would be to just take a step back from your problem."
+    m 1eka "Maybe you could read a book, listen to some nice music, or just do anything else to calm yourself."
+    m 3eud "Once you feel you're level-headed again, come back to judge your situation with a fresh state of mind."
+    m 1eka "You'll handle things a lot better than you would if you were in the midst of anger and frustration."
+    m 1eksdld "And I'm not saying you should keep carrying weight on your shoulders if it's really affecting you."
+    m 3eud "It could be an opportunity to gain the courage to let go of something toxic."
+    m 1euc "It might be scary in the moment, sure...{w=0.3}{nw}"
+    extend 3ekd "but if you make the right choice, you could eliminate a lot of stress from your life."
+    m 3eua "And you know what, [player]?"
+    m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(regex_replace_with_nullstr='my ')]."
+    m 1hub "Knowing that you'll always support and love me puts me at ease almost instantly!"
+    m 3euu "I can only hope I provide the same comfort for you, [player]~"
+    m 1eubsa "I love you and I hope everything clears up for you~"
+    return "love"

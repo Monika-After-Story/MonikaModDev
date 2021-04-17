@@ -172,6 +172,9 @@ label splashscreen:
         # set zoom
         store.mas_sprites.adjust_zoom()
 
+        # We're about to start, all things should be loaded, we can check event conditionals
+        Event.validateConditionals()
+
     if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
         # we have a corrupted persistent but was unable to recover via the
         # backup system
@@ -303,18 +306,19 @@ label autoload:
     if persistent._mas_chess_mangle_all:
         jump mas_chess_go_ham_and_delete_everything
 
-    # okay lets setup monika's clothes
-#    python:
-#        monika_chr.change_outfit(
-#            persistent._mas_monika_clothes,
-#            persistent._mas_monika_hair
-#        )
+    python:
+        # okay lets setup monika's clothes
+        # monika_chr.change_outfit(
+        #     persistent._mas_monika_clothes,
+        #     persistent._mas_monika_hair
+        # )
 
-    # need to set the monisize correctly
-    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
-
-    # finally lets run actions that needed to be run
-    $ mas_runDelayedActions(MAS_FC_START)
+        # need to set the monisize correctly
+        store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+        # finally lets run actions that needed to be run
+        mas_runDelayedActions(MAS_FC_START)
+        # Start predict idle sprites
+        renpy.start_predict("monika idle")
 
     #jump expression persistent.autoload
     # NOTE: we should always jump to ch30 instead
@@ -355,6 +359,9 @@ label quit:
 
         # remove special images
         store.mas_island_event.removeImages()
+
+        #remove o31 cgs
+        store.mas_o31_event.removeImages()
 
         # delayed action stuff
         mas_runDelayedActions(MAS_FC_END)
