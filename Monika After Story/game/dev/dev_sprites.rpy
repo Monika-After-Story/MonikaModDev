@@ -124,6 +124,26 @@ init 100 python:
                 ))
 
 
+init -1 python:
+    dev_mas_hair_test = MASHair(
+        "dev_test",
+        "dev_test",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        ex_props={
+            "ribbon": True,
+        },
+        mpm_mid=MASPoseMap(
+            default=False,
+            l_default=False,
+            p1=True,
+            p3=True
+        )
+    )
+
+
 init 5 python:
     addEvent(
         Event(

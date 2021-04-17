@@ -6461,6 +6461,7 @@ init -3 python:
                 values:
                     MASFilterMap objects
             mpm_mid - MASPoseMap for mid hair layer.
+                Determines if the mid layer should be used for a pose.
                 This is the enable/disable type
 
         SEE MASSpriteFallbackBase for inherited properties
@@ -6483,7 +6484,7 @@ init -3 python:
                 split=None,
                 ex_props=None,
                 hl_data=None,
-                mpm_mid=None
+                mpm_mid=None 
             ):
             """
             MASHair constructor
@@ -6524,7 +6525,8 @@ init -3 python:
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
-                mpm_mid - MASPoseMap for mid hair layers
+                mpm_mid - MASPoseMap for mid hair usage.
+                    Determines if a mid layer should be used for a pose.
                     Should be enable/disable type or else we crash
                     (Default: None)
             """
