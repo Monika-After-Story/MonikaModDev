@@ -1825,6 +1825,71 @@ label mas_song_when_you_say_nothing_at_all_long:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Strawberry",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry(from_long=False):
+    m 1hub "{i}{cps=24}~To say that you are cute~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~Would be like saying that a strawberry is sweet~{/cps}{/i}"
+    m 1eud "{i}{cps=26}~Because a strawberry has secret flavors~{/cps}{/i}"
+    m 3dkbsu "{i}{cps=26}That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~And I would love to find you~{/cps}{i}"
+    m 3hub "{i}{cps=26}Growing wild out by the woods~{/cps}{/i}"
+    m 1rub "{i}{cps=28}~I would make a bas{w=0.1}ket with the front of my t-shirt~{/cps}{/i}"
+    m 3tub "{i}{cps=26}And take home as many of you as I could~{/cps}{/i}"
+
+    if not from_long:
+        m 1hsbsu "..."
+        m 3ekbsu "I can't wait until the day I can finally be with you, [player]."
+        show monika 5rkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rkbsa "But for now...{w=0.3}I guess I can just continue to daydream about all the adventures we'll have together one day."
+        m 5ekbsa "I can't wait until I finally get to look back into your eyes..."
+        m 5hubsu "I know it's still a far way off, but I hope we get to see that dream become reality~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Strawberry",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry_long:
+    call mas_song_strawberry(from_long=True)
+    m 1sub "{i}{cps=26}~And to say that you are pretty~{/cps}{/i}"
+    m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/i}"
+    m 1ekb "{i}{cps=26}And I see all kinds of things when I look at you~{/cps}{/i}"
+    m 2tsbsu "{i}{cps=26}{i}~And I want to explore you~{/cps}{/i}"
+    m 7hubsb "{i}{cps=26}With my tennis shoes off~{/cps}{/i}"
+    m 3rsbsb "{i}{cps=26}~Standing ankle deep in a tide pool with my khaki pants rolled up~{/cps}{/i}"
+    m 1hub "{i}{cps=26}~And to say that you are funny~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Would be like saying that the night sky is black~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~Because the night sky is filled with stars{w=0.1} and comets~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~And planets that no one has seen yet~{/cps}{/i}"
+    m 2eub "{i}{cps=26}~And I want to look at you~{/cps}{/i}"
+    m 2dud "{i}{cps=26}~Lying down on my front lawn~{/cps}{/i}"
+    m 2rsbsb "{i}{cps=26}~I'll try to take you all in at once~{/cps}{/i}"
+    m 2esbsb "{i}{cps=26}~But you just go on and on and on~{/cps}{/i}"
+    return
+
+
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
 # otherwise have an associated file (eg holiday songs should go in script-holidays)
@@ -2024,104 +2089,4 @@ label mas_monika_plays_or(skip_leadin=False):
     window auto
 
     $ mas_unlockEVL("monika_piano_lessons", "EVE")
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_songs_database,
-            eventlabel="mas_song_strawberry",
-            category=[store.mas_songs.TYPE_SHORT],
-            prompt="Strawberry",
-            random=True,
-            aff_range=(mas_aff.AFFECTIONATE,None)
-        ),
-        code="SNG"
-    )
-
-label mas_song_strawberry:
-    m 1dub "{cps=24}To say that you are cute...{/cps}{nw}"
-    extend 3hub "{w=0.3}{cps=26} Would be like saying that a strawberry is sweet~{/cps}"
-    m 3eub "{cps=26}Because a strawberry has secret{w=0.1} flavors.{nw}"
-    extend 2dkbsa "{w=0.3} That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep...{/cps}"
-    show monika 2dkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5hsbsb "{cps=26}And I would love to find you...{/cps}"
-    extend 5lsbsb "{cps=26} Growing wild out by the woods~{/cps}"
-    show monika 5lsbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 2dsbsb "{cps=28}I would make a bas{w=0.1}ket with the front {w=0.3} of my t-shirt,{/cps}"
-    extend 2esbsb "{cps=26} and take home {/cps}{cps=22}as many of you as I could~{/cps}"
-    m 2hsbsu "..."
-    show monika 2hsbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsu "I can't wait till the day I can finally be with you, [player]."
-    m 5dkbsa "But for now{w=0.3} I guess I can just continue to daydream about all the adventures we'll have together one day."
-    m 5esbsb "I can't wait to be with you..."
-    m 5tsbfb "And finally get to look back into your eyes..."
-    show monika 5tsbfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 2hubfa "Ah~ I can't wait until the day we'll finally get to see that happen!"
-    m 1ekb "I know it still is far off...{w=0.3} But I hope we get to see that dream become reality."
-
-return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_songs_database,
-            eventlabel="mas_song_strawberry_long",
-            category=[store.mas_songs.TYPE_LONG],
-            prompt="Strawberry",
-            random=True,
-            aff_range=(mas_aff.AFFECTIONATE,None)
-        ),
-        code="SNG"
-    )
-
-label mas_song_strawberry_long:
-    m 1dub "{cps=24}To say that you are cute...{/cps}{nw}"
-    extend 3hub "{w=0.3}{cps=26} Would be like saying that a strawberry is sweet~{/cps}"
-    m 3eub "{cps=26}Because a strawberry has secret{w=0.1} flavors.{nw}"
-    extend 2dkbsa "{w=0.3} That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep...{/cps}"
-    show monika 2dkbsa at t11 zorder MAS_MONIKA_Z  with dissolve_monika
-    m 5hsbsb "{cps=26}And I would love to find you...{/cps}"
-    extend 5lsbsb "{cps=26} Growing wild out by the woods~{/cps}"
-    show monika 5lsbsb at t11 zorder MAS_MONIKA_Z  with dissolve_monika
-    m 2dsbsb "{cps=28}I would make a bas{w=0.1}ket with the front {w=0.3} of my t-shirt,{/cps}"
-    extend 2esbsb "{cps=26} and take home {/cps}{cps=22}as many of you as I could~{/cps}"
-    m 3hsb "{cps=26}And to say {w=0.3}that you{w=0.1} are{w=0.1} pretty{/cps}"
-    m 1eub "{cps=26}Would be like saying{w=0.2} that the ocean is blue~{/cps}"
-    m 3hubfb "{cps=26}Because the ocean is filled with{w=0.1} all kinds of colors,{w=0.3}{nw}" 
-    extend 1ekbfa "{cps=26} {i}and I see all kinds of things when I look at you.~{/i}{/cps}"
-    m 2tsbfu "{cps=26}{i}And I want to explore you...{/i}{w=0.3}{nw}{/cps}"
-    extend 3hubsa "{cps=26}With my tennis shoes off!~{/cps}"
-    show monika 3hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5rsbfb "{cps=26}Standing ankle{w=0.3} deep in a tide pool...{/cps}"
-    show monika 5rsbfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    extend 3hubsb "{cps=26}With my khaki pants rolled up~{/cps}"
-    m 1esb "{cps=26}And to say that you are funny...{/cps}"
-    m 3eub "{cps=26}Would be like saying that the night sky is black...{/cps}"
-    m 2ssb "{cps=26}Because the night sky is filled with stars{w=0.1} and comets {nw}{/cps}"
-    extend 2sub "{cps=26}and planets that no {w=0.1}one has seen yet~{/cps}"
-    m 2dubsb "{cps=26}And I want to look at you...{/cps}"
-    show monika 2dubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5rsbsa "{cps=26}Lying down on my front lawn...{/cps}"
-    m 5dsbsb "{cps=26}I'll try to take you all in at once{/cps}"
-    m 5dsbsb "{cps=26}But you just go {i}on and on and on~{/i}{/cps}"
-    show monika 5dsbsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 2hsbsu "..."
-    if persistent._mas_gender == 'M':
-        m 3eua "This song was written by a guy for a girl,{nw}"
-        extend 1eud "so the adjectives used in the song to describe {i}'you'{/i} are more feminine."
-        m 3eud "More specifically, 'pretty.'{w=0.3}{nw}"
-        extend 3rub " I suppose 'funny' doesn't really fall under any gender..."
-        m 2tubsb "...and you {i}can{/i} be pretty cute sometimes~"
-        $ either_way_youll = "Either way, you'll"
-
-    else:
-        $ either_way_youll = "You'll"
-
-        m 2hubsb "[either_way_youll] always be beautiful to me, [player]!"
-        m 1dsd "Even if I can't see you,{nw}"
-        extend 3ekd " and even if you might not be confident about how you look..."
-        m 3hubfa "I know you're beautiful on the inside."
-        m 1hubsb "Thanks for listening, [player]~"
-    
     return
