@@ -2134,7 +2134,7 @@ init -10 python:
 
         def _deco_add(self, deco=None, tag=None):
             """
-            Adds deco object to the background. 
+            Adds deco object to the background.
             NOTE: do NOT use this. This should only be used by the public
             show/hide deco functions as well as other internal stuff.
 
@@ -2154,7 +2154,7 @@ init -10 python:
         def _deco_rm(self, name):
             """
             Removes deco object from this background.
-            NOTE: do NOT use this. This should only be used by the public 
+            NOTE: do NOT use this. This should only be used by the public
             show/hide deco functions as well as other internal stuff
 
             IN:
@@ -2184,7 +2184,7 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object
 
             OUT:
-                change_info - MASBackgroundChangeInfo object with shows 
+                change_info - MASBackgroundChangeInfo object with shows
                     populated.
             """
             for vis_tag in store.mas_deco.vis_store:
@@ -2225,11 +2225,9 @@ init -10 python:
                 if (
                         not mas_isDecoTagVisible(deco_obj.name)
                         or new_adf is None
-                        or new_adf != adv_df
                 ):
                     # hide all deco objects that do not have a definition
-                    # in the new bg OR have a differing deco frame OR are not in
-                    # the vis_store
+                    # in the new bg OR are not in the vis_store
                     change_info.hides[deco_obj.name] = adv_df
                     self._deco_rm(deco_obj.name)
 
@@ -2522,7 +2520,7 @@ init -10 python:
             MASImageTagDecoDefinition.register_img, except bg_id is provided
             by this BG object.
 
-            NOTE: this is NOT required if you already used 
+            NOTE: this is NOT required if you already used
                 MASImageTagDefinition to define the associated tags.
 
             IN:
@@ -2631,10 +2629,10 @@ init -20 python in mas_background:
             Constructor
 
             IN:
-                hides - dict of image tags and MASAdvancedDecoFrames to 
+                hides - dict of image tags and MASAdvancedDecoFrames to
                     hide in the dissolve
                     (Default: None)
-                shows - dict of image tags and MASAdvancedDecoFrames to 
+                shows - dict of image tags and MASAdvancedDecoFrames to
                     show in the dissolve
                     (Default: None)
             """
@@ -2645,6 +2643,12 @@ init -20 python in mas_background:
 
             self.hides = hides
             self.shows = shows
+
+        def __repr__(self):
+            """
+            Returns description of this object
+            """
+            return "<BackgroundChangeInfo: (hides: {0}, shows: {1})>".format(self.hides, self.shows)
 
         def __len__(self):
             return len(self.hides) + len(self.shows)
@@ -3025,8 +3029,8 @@ init -2 python in mas_background:
 
 
 init -20 python in mas_background:
-    
-    # background ID definitions 
+
+    # background ID definitions
     # NOTE: you do NOT need to define ids here. Assigning IDs here just
     #   makes it easier for MASImageTagDefintions
     MBG_DEF = "spaceroom"
@@ -3212,7 +3216,17 @@ label monika_change_background_loop:
         skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
-    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
+    # UI shields + buttons
+    # NOTE: buttons are in here since there is no consistency if placed in 
+    # the bg change label.
+    $ mas_RaiseShield_core()
+    $ HKBHideButtons()
+
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_transition=skip_transition, skip_outro=skip_outro, set_persistent=True)
+
+    $ HKBShowButtons()
+    $ mas_DropShield_core()
+
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
@@ -3230,6 +3244,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         pause 2.0
 
     python:
+
         #Set persistent
         if set_persistent:
             persistent._mas_current_background = new_bg.background_id
@@ -3265,7 +3280,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         change_info = mas_changeBackground(new_bg)
 
     #Now redraw the room
-    call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
+    call spaceroom(scene_change=not skip_transition, dissolve_all=True, bg_change_info=change_info, force_exp="monika 1hua")
 
     if not skip_outro:
         m 1eua "Here we are!"

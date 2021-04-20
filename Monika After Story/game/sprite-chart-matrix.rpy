@@ -913,7 +913,7 @@ init -98 python:
 init -4 python in mas_sprites:
     # NOTE: render_key
 
-    Y_OFFSET = -130
+    # Y_OFFSET = -130
 
     # cache ids
     CID_FACE = 1 # NOTE: we should not use highlights for this
@@ -1163,9 +1163,9 @@ init -4 python in mas_sprites:
                 self._l_render_hl(renders, render_key, st, at)
 
             # blit all
-            rv = renpy.Render(width, height)
+            rv = renpy.Render(self.width, self.height)
             for render in renders:
-                rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
+                rv.blit(render, (self.xpos, self.ypos))
 
             return rv
 
