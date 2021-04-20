@@ -538,7 +538,7 @@ init 5 python:
             eventlabel="mas_compliment_chess",
             prompt="You're awesome at chess!",
             unlocked=False,
-            conditional="renpy.seen_label('mas_chess_game_start')",
+            conditional="renpy.seen_label('mas_chess')",
             action=EV_ACT_UNLOCK
         ),
         code="CMP"
