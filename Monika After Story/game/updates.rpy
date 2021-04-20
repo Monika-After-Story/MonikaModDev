@@ -379,6 +379,12 @@ label v0_12_1_2(version="v0_12_1_2"):
     python:
         if persistent.ever_won:
             persistent._mas_ever_won.update(persistent.ever_won)
+
+        mas_setEVLPropValues(
+            "mas_compliment_chess",
+            conditional="persistent._mas_chess_stats['losses']>5"
+        )
+
     return
 
 # 0.12.1
