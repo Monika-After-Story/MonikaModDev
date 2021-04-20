@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.1.2
 label v0_12_1_2(version="v0_12_1_2"):
     python:
-        pass
+        if persistent.ever_won:
+            persistent._mas_ever_won.update(persistent.ever_won)
     return
 
 # 0.12.1

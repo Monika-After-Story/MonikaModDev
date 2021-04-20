@@ -616,7 +616,7 @@ init 5 python:
             eventlabel="mas_compliment_chess",
             prompt="You're awesome at chess!",
             unlocked=False,
-            conditional="renpy.seen_label('mas_chess_game_start')",
+            conditional="renpy.seen_label('mas_chess')",
             action=EV_ACT_UNLOCK
         ),
         code="CMP"
@@ -656,7 +656,7 @@ init 5 python:
 label mas_compliment_pong:
     m 1hub "Ahaha~"
     m 2eub "Thanks [player], but pong isn't exactly a complex game."
-    if persistent.ever_won['pong']:
+    if persistent._mas_ever_won['pong']:
         m 1lksdla "You've already won against me."
         m "So you know it's very simple."
         show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve_monika
