@@ -382,7 +382,7 @@ label v0_12_1_2(version="v0_12_1_2"):
 
         mas_setEVLPropValues(
             "mas_compliment_chess",
-            conditional="persistent._mas_chess_stats['losses']>5"
+            conditional="persistent._mas_chess_stats.get('losses', 0)>5"
         )
 
     return
