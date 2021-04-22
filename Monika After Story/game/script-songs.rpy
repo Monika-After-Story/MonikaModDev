@@ -1864,7 +1864,6 @@ init 5 python:
             eventlabel="mas_song_strawberry_long",
             category=[store.mas_songs.TYPE_LONG],
             prompt="Strawberry",
-            random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
         ),
         code="SNG"
