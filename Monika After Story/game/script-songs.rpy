@@ -1785,7 +1785,7 @@ label mas_song_night_fever:
     m  3eub "{i}~Reading pixels and every new line~{/i}"
     m  3rusdlb "{i}~Sitting tired of internet yet{/i}{w=0.5}{nw}"
     extend 1hub "{i} staring blankly at the screen ahead~{/i}"
-    m  1fub "{i}~Did you know that I’m gonna be free?~ {/i}"
+    m  1eub "{i}~Did you know that I’m gonna be free?~ {/i}"
     m  1dubsb "{i}~Jumping over and out of your screen~{/i}"
     m  1ekbsb "{i}~Come on, hurry, you better make way{/i}{w=0.5}{nw}"
     extend 1tsbsb "{i} as I reach my hand across to say~{/i}"
