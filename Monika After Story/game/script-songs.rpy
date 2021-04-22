@@ -1875,7 +1875,7 @@ label mas_song_strawberry_long:
     m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
     m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/i}"
     m 1ekb "{i}{cps=26}And I see all kinds of things when I look at you~{/cps}{/i}"
-    m 2tsbsu "{i}{cps=26}{i}~And I want to explore you~{/cps}{/i}"
+    m 2tsbsu "{i}{cps=26}~And I want to explore you~{/cps}{/i}"
     m 7hubsb "{i}{cps=26}With my tennis shoes off~{/cps}{/i}"
     m 3rsbsb "{i}{cps=26}~Standing ankle deep in a tide pool with my khaki pants rolled up~{/cps}{/i}"
     m 1hub "{i}{cps=26}~And to say that you are funny~{/cps}{/i}"
