@@ -377,7 +377,12 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.1.2
 label v0_12_1_2(version="v0_12_1_2"):
     python:
-        pass
+        if mas_getEVLPropValue("monika_dystopias", action):
+            mas_setEVLPropValues(
+                "monika_dystopias",
+                conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)"
+            )
+
     return
 
 # 0.12.1
