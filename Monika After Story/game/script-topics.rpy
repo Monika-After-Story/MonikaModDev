@@ -14490,7 +14490,7 @@ init 5 python:
             category=['literature'],
             prompt="We",
             conditional="mas_seenLabels(['monika_1984', 'monika_brave_new_world'], seen_all=True)",
-            random=True
+            action=EV_ACT_RANDOM
         )
     )
 
