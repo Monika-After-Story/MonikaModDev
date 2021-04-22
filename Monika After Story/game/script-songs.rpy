@@ -1873,7 +1873,7 @@ label mas_song_strawberry_long:
     call mas_song_strawberry(from_long=True)
     m 1sub "{i}{cps=26}~And to say that you are pretty~{/cps}{/i}"
     m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
-    m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/i}"
+    m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/cps}{/i}"
     m 1ekb "{i}{cps=26}And I see all kinds of things when I look at you~{/cps}{/i}"
     m 2tsbsu "{i}{cps=26}~And I want to explore you~{/cps}{/i}"
     m 7hubsb "{i}{cps=26}With my tennis shoes off~{/cps}{/i}"
