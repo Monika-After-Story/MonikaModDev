@@ -559,7 +559,7 @@ init 5 python:
 
 label mas_song_burning_love:
     m 1hubsb "{i}~Your kisses lift me higher~{/i}"
-    m 3rubsb "{i}Like the sweet song of a choir{/i}"
+    m 3rubsb "{i}~Like the sweet song of a choir~{/i}"
     m 1dubsu "{i}~You light my morning sky~{/i}"
     m 1hubfb "{i}~With burning love~{/i}"
     m 1hubsb "Ahaha~"
@@ -580,7 +580,7 @@ init 5 python:
     )
 
 label mas_song_aries:
-    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
+    m 2dud "{i}~I'm standing on a beach in the distance~{/i}"
     m 2eud "{i}~And even though you're far away, can you see my red light?~{/i}"
     m 2dubsu "{i}~It's waiting to turn green~{/i}"
     m 2dud "{i}~'Cause I feel so isolated without you~{/i}"
@@ -657,6 +657,32 @@ label mas_song_belong_together:
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
     m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_everythings_alright",
+            prompt="Everything's Alright",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_everythings_alright:
+    m 1dkd "{i}~When this world is no more~{/i}"
+    m 4euo "{i}~The moon is all we'll see~{/i}"
+    m 4duu "{i}~I'll ask you to fly away with me~{/i}"
+    m 4dud "{i}~Until the stars all fall down~{/i}"
+    m 4duo "{i}~They empty from the sky~{i}"
+    m 3dud "{i}~But I don't mind~{i}"
+    m 1eku "{i}~If you're with me, then everything's alright~{i}"
+    m 1dku "..."
+    m 3ekd "If things ever get too dark, {w=0.1}{nw}"
+    extend 3ekbsu "just look up to the moon and remember me~"
     return
 
 init 5 python:

@@ -641,7 +641,7 @@ init 15 python in mas_affection:
         # NOTE: maybe instead of pushing an event, we could also add a pool
         # event so player can ask what happened to the nickname
         persistent._mas_monika_nickname = "Monika"
-        m_name = persistent._mas_monika_nickname
+        store.m_name = persistent._mas_monika_nickname
 
         #Change randchat
         store.mas_randchat.reduceRandchatForAff(HAPPY)
