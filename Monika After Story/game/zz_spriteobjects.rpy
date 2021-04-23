@@ -1603,7 +1603,7 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
 
-        ###CUPCAKE
+    ###CUPCAKE
     ## cupcake
     # Natsuki's cupcakes
     # thank you JMO!

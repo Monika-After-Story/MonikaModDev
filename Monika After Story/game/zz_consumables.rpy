@@ -1252,7 +1252,7 @@ init 6 python:
         cons_high=30*60 #30 minute max
     )
 
-        MASConsumable(
+    MASConsumable(
         consumable_id="cupcake",
         consumable_type=store.mas_consumables.TYPE_FOOD,
         disp_name="cupcake",
