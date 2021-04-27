@@ -10,6 +10,7 @@ init -1 python in mas_dev_unit_tests:
         ("MASHistorySaver", "dev_unit_test_mhs", False, False),
         ("MASHistorySaver - correct_pbday_mhs", "dev_unit_test_mhs_cpm", False, False),
         ("UTC APIs", "dev_unit_test_utc_api", False, False),
+        ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
     ]
 
     class MASUnitTest(object):
@@ -2540,4 +2541,56 @@ label dev_unit_test_utc_api:
 
     call dev_unit_tests_finish_test(utc_tester)
 
+    return
+
+label dev_unit_test_wrs_regexpchecks:
+    m "Running tests..."
+
+    python:
+        wrs_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+        #Basic YT Detection
+        wrs_tester.prepareTest("Normal YT detection")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                "- YouTube",
+                "CA Celeste Piano Collections: 11 Reach for the Summit (Lena Raine, Trevor Alan Gomes) - YouTube"
+            )
+        )
+
+        #Jpn characters
+        wrs_tester.prepareTest("Japanese Character Checks")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                "ドキドキ",
+                "【DDLC】ドキドキ文芸部に入部してみるぺこ！【ホロライブ/兎田ぺこら】 - YouTube - Opera"
+            )
+        )
+
+
+        #r34 (titles are taken from images/posts w/o explicit content)
+        r34_regexp = r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w ]+monika)|([[\w \]\-()]*monika[\w?()\-: ]*(r34|rule34)))"
+        wrs_tester.prepareTest("r34 title (r34xxx)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "Rule 34 - 1girls black legwear black thighhighs blondynkitezgraja blue skirt brown hair cleavage clothing doki doki literature club female female only green eyes long hair medium breasts monika monika (doki doki literature club) piano skirt skirt lift thighhighs | 4046712"
+            )
+        )
+        wrs_tester.prepareTest("r34 title (r34paheal)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "Post 4187900: Monika cosplay squchan tagme"
+            )
+        )
+        wrs_tester.prepareTest("r34 title (DDLCRule34)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "[Commission] Office Monika for Hisame-kun (light nsfw) : DDLCRule34"
+            )
+        )
+
+    call dev_unit_tests_finish_test(wrs_tester)
     return

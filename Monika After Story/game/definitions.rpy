@@ -6695,6 +6695,20 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    def mas_setEventPause(seconds=60):
+        """
+        Sets a pause 'til next event
+
+        IN:
+            seconds - the number of seconds to pause for. Can be None to remove pause
+                (Default: 60)
+        """
+        if not seconds:
+            mas_globals.event_unpause_dt = None
+
+        else:
+            mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
+
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
         """

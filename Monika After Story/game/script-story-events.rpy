@@ -1434,7 +1434,7 @@ label mas_crashed_preshort:
     $ mas_startupWeather()
 
     # we can call spaceroom appropriately here
-    call spaceroom(scene_change=True)
+    call spaceroom(scene_change=True, force_exp="monika 2ekc")
     return
 
 label mas_crashed_short:
