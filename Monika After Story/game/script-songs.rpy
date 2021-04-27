@@ -1849,7 +1849,7 @@ label mas_song_strawberry(from_long=False):
     m 3tub "{i}{cps=26}And take home as many of you as I could~{/cps}{/i}"
 
     if not from_long:
-        m 1hsbsu "..."
+        m 1hubsu "..."
         m 3ekbsu "I can't wait until the day I can finally be with you, [player]."
         show monika 5rkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5rkbsa "But for now...{w=0.3}I guess I can just continue to daydream about all the adventures we'll have together one day."
