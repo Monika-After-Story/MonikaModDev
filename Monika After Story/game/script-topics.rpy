@@ -14523,7 +14523,7 @@ label monika_we:
     m 3eud "Even when he is poised to report I-330 to the authorities for her subversive behavior, he ultimately chooses not to, and instead continues meeting her."
     m 3rkbla "One day I-330 slips D-503 some alcohol, and he begins to get in touch with his repressed, animalistic side, feeling passion..."
     m 3tublc "And once I-330 insinuates she has another partner, he begins to feel something he couldn't feel before...{w=0.5}jealousy."
-    m 1eksdlc "Despite his acknowledgment of the deterioration of relations between him, his friend R-13 and his partner, O-90, he is unable to stop loving I-330."
+    m 1eksdlc "Despite his acknowledgment of the deterioration of his relationship with O-90, as well as with his friend R-13, he is unable to stop loving I-330."
     m 3eksdld "Later, when he goes to obtain another sick note from the Bureau, he is diagnosed with having developed a 'soul,' or imagination."
     m 3tkd "This is considered a grave condition by the One State, as it makes the Ciphers less machine-like."
     m 4wud "Can you believe it? Possessing something as integral as our imagination, emotions, or individual personality is considered a mortal sickness!"
