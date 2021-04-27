@@ -109,6 +109,8 @@ default persistent._mas_acs_bbh_list = []
 default persistent._mas_acs_bse_list = []
 default persistent._mas_acs_bba_list = []
 default persistent._mas_acs_ase_list = []
+default persistent._mas_acs_bmh_list = []
+default persistent._mas_acs_mmh_list = []
 default persistent._mas_acs_bat_list = []
 default persistent._mas_acs_mat_list = []
 default persistent._mas_acs_mab_list = []
@@ -742,6 +744,9 @@ init -5 python in mas_sprites:
     FHAIR = "front"
     BHAIR = "back"
     MHAIR = "mid"
+
+    # head
+    HEAD = "head"
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
@@ -2211,8 +2216,10 @@ init -3 python:
         MAB_ACS = 7 # between middle arms and boobs
         BSE_ACS = 8 # between base and clothes
         ASE_ACS = 9 # between base arms and clothes
-        BAT_ACS = 10 # between base arms and table
+        BAT_ACS = 10 # between mid hair and table
         MAT_ACS = 11 # between middle arms and table
+        BMH_ACS = 12 # between back arms and mid hair
+        MMH_ACS = 13 # between mid hair and head
 
         # valid rec layers
         # NOTE: this MUST be in the same order as save_state/load_State
@@ -2232,6 +2239,8 @@ init -3 python:
             ASE_ACS,
             BAT_ACS,
             MAT_ACS,
+            BMH_ACS,
+            MMH_ACS,
         )
 
         # split layers
@@ -2247,6 +2256,8 @@ init -3 python:
             BSE_ACS,
             BBA_ACS,
             ASE_ACS,
+            BMH_ACS,
+            MMH_ACS,
             BAT_ACS,
             MAT_ACS,
             MAB_ACS,
@@ -2290,7 +2301,13 @@ init -3 python:
                 # accessories to be rendered after base arms, before arm clothes
                 self.ASE_ACS: [],
 
-                # accessories to be rendered after back arms, before table
+                # accessories to be rendered after back arms, before mid hair
+                self.BMH_ACS: [],
+
+                # accessories to be rendered after mid hair, before head
+                self.MMH_ACS: [],
+
+                # accessories to be rendered after head, before table
                 self.BAT_ACS: [],
 
                 # accessories to be rendered after table, before middle arms
@@ -2359,6 +2376,8 @@ init -3 python:
                 "BSE",
                 "BBA",
                 "ASE",
+                "BMH",
+                "MMH",
                 "BAT",
                 "MAT",
                 "MAB",
@@ -2654,6 +2673,8 @@ init -3 python:
                 _acs_ase_names,
                 _acs_bat_names,
                 _acs_mat_names,
+                _acs_bmh_names,
+                _acs_mmh_names,
                 startup=False
             ):
             """
@@ -2676,6 +2697,8 @@ init -3 python:
                 _acs_ase_names - list of ase acs names to load
                 _acs_bat_names - list of bat acs names to load
                 _acs_mat_names - list of mat acs names to load
+                _acs_bmh_names - list of bmh acs names to load
+                _acs_mmh_names - list of mmh acs names to load
                 startup - True if we are loading on start, False if not
                     (Default: False)
             """
@@ -2693,6 +2716,8 @@ init -3 python:
             self._load_acs(_acs_bse_names, self.BSE_ACS)
             self._load_acs(_acs_bba_names, self.BBA_ACS)
             self._load_acs(_acs_ase_names, self.ASE_ACS)
+            self._load_acs(_acs_bmh_names, self.BMH_ACS)
+            self._load_acs(_acs_mmh_names, self.MMH_ACS)
             self._load_acs(_acs_bat_names, self.BAT_ACS)
             self._load_acs(_acs_mat_names, self.MAT_ACS)
             self._load_acs(_acs_mab_names, self.MAB_ACS)
@@ -3240,6 +3265,8 @@ init -3 python:
                 store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bat_list,
                 store.persistent._mas_acs_mat_list,
+                store.persistent._mas_acs_bmh_list,
+                store.persistent._mas_acs_mmh_list,
                 startup=startup
             )
 
@@ -3265,6 +3292,8 @@ init -3 python:
                     [11]: ase acs data
                     [12]: bat acs data
                     [13]: mat acs data
+                    [14]: bmh acs data
+                    [15]: mmh acs data
                 as_prims - True if this data was saved as primitive data types,
                     false if as objects
                     (Default: False)
@@ -3525,6 +3554,22 @@ init -3 python:
                 self.ASE_ACS,
                 force_acs
             )
+            store.persistent._mas_acs_bmh_list = self._save_acs(
+                self.BMH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mmh_list = self._save_acs(
+                self.MMH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bat_list = self._save_acs(
+                self.BAT_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mat_list = self._save_acs(
+                self.MAT_ACS,
+                force_acs
+            )
             store.persistent._mas_acs_mab_list = self._save_acs(
                 self.MAB_ACS,
                 force_acs
@@ -3604,6 +3649,8 @@ init -3 python:
                 [11]: ase acs data (Default: [])
                 [12]: bat acs data (Default: [])
                 [13]: mat acs data (Default: [])
+                [14]: bmh acs data (Default: [])
+                [15]: mmh acs data (Default: [])
             """
             # determine which clothes to save
             if force_clothes or self.clothes.stay_on_start:

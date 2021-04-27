@@ -136,11 +136,19 @@ init -1 python:
             "ribbon": True,
         },
         mpm_mid=MASPoseMap(
-            default=False,
+            default=True,
             l_default=False,
-            p1=True,
-            p3=True
         )
+    )
+    store.mas_sprites.init_hair(dev_mas_hair_test)
+    store.mas_selspr.init_selectable_hair(
+        dev_mas_hair_test,
+        "DEV TEST",
+        "dev_test",
+        "hair",
+        select_dlg=[
+            "I AM A TEST"
+        ]
     )
 
 

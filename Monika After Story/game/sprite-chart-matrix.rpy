@@ -2208,7 +2208,7 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
 
-    def _rk_hair(rk_list, hair, flt, hair_key, lean):
+    def _rk_hair(rk_list, hair, flt, hair_key, lean, leanpose):
         """
         Adds hair render key
 
@@ -2217,6 +2217,7 @@ init -4 python in mas_sprites:
             flt - filter to use
             hair_key - hair key to use (front/back/mid)
             lean - tyoe of lean
+            leanpose - leanpose
 
         OUT:
             rk_list - list to add render keys to
@@ -2251,8 +2252,16 @@ init -4 python in mas_sprites:
         img_key = (flt, img_str)
         cache_hair = _gc(CID_HAIR)
         if img_key in cache_hair:
-            rk_list.append((img_key, CID_HAIR, None, None))
+            if cache_hair[img_key] is not None:
+                rk_list.append((img_key, CID_HAIR, None, None))
             return
+
+        # check if mid and no need to render
+        if hair_key == MHAIR:
+            if hair.mpm_mid is None or not hair.mpm_mid.get(leanpose, False):
+                # mid not in this hair for this pose
+                cache_hair[img_key] = None
+                return
 
         # otherwise need to build ImageBase
         rk_list.append((
@@ -2261,6 +2270,45 @@ init -4 python in mas_sprites:
             store.Image(img_str),
             _bhli(img_list, hair.gethlc(hair_key, lean, flt)),
         ))
+
+
+    def _rk_head(rk_list, flt, lean):
+        """
+        Adds head render keys.
+
+        IN:
+            bcode - base code to use
+            flt - filter to use
+            lean - type of lean
+
+        OUT:
+            rk_list - list to add render keys to
+        """
+        if lean:
+            img_str = "".join((
+                B_MAIN,
+                PREFIX_BODY_LEAN,
+                lean,
+                ART_DLM,
+                HEAD,
+                FILE_EXT,
+            ))
+
+        else:
+            img_str = "".join((
+                B_MAIN,
+                BASE_BODY_STR,
+                HEAD,
+                FILE_EXT
+            ))
+
+        # cache check
+        img_key = (flt, img_str)
+        if img_key in _gc(CID_BODY):
+            rk_list.append((img_key, CID_BODY, None, None))
+            return
+
+        rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
 
 
     def _rk_table(rk_list, tablechair, show_shadow, flt):
@@ -2352,6 +2400,8 @@ init -4 python in mas_sprites:
             acs_bse_list,
             acs_bba_list,
             acs_ase_list,
+            acs_bmh_list,
+            acs_mhh_list,
             acs_bat_list,
             acs_mat_list,
             acs_mab_list,
@@ -2392,8 +2442,11 @@ init -4 python in mas_sprites:
                 body and back arms
             acs_ase_list - sorted list of MASAccessories to draw between base
                 arms and outfit
-            acs_bat_list - sorted list of MASAccessories to draw between back
-                arms and table
+            acs_bmh_list - sorted list of MASAccessories to draw betrween back
+                arms and mid hair
+            acs_mmh_list - sorted list of MASAccessories to draw between mid
+                hair and head
+            acs_bat_list - sorted list of MASAccessories to draw before table
             acs_mat_list - sorted list of MASAccessories to draw between
                 middle arms and table
             acs_mab_list - sorted list of MASAccessories to draw between
@@ -2463,7 +2516,7 @@ init -4 python in mas_sprites:
         _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR, lean, leanpose)
 
         # 3. bbh-acs
         _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
@@ -2502,18 +2555,30 @@ init -4 python in mas_sprites:
             "0"
         )
 
-        # 12. bat-acs
+        # 12. bmh-acs
+        _rk_accessory_list(rk_list, acs_bmh_list, flt, leanpose)
+
+        # 13. mid-hair
+        _rk_hair(rk_list, hair, flt, MHAIR, lean, leanpose)
+
+        # 14. mmh-acs
+        _rk_accessory_list(rk_list, acs_mhh_list, flt, leanpose)
+
+        # 15. body-head
+        _rk_head(rk_list, flt, lean)
+
+        # 16. bat-acs
         _rk_accessory_list(rk_list, acs_bat_list, flt, leanpose)
 
-        # 13. table
+        # 17. table
         _rk_table(rk_list, tablechair, show_shadow, flt)
 
-        # 14. mat-acs
+        # 18. mat-acs
         _rk_accessory_list(rk_list, acs_mat_list, flt, leanpose)
 
-        # 15. arms-base-5
-        # 16. ase-acs-5
-        # 17. arms-5
+        # 19. arms-base-5
+        # 20. ase-acs-5
+        # 21. arms-5
         _rk_arms_nh_wbase(
             rk_list,
             base_arms,
@@ -2526,12 +2591,12 @@ init -4 python in mas_sprites:
             "5"
         )
 
-        # 18. mab-acs
+        # 22. mab-acs
         _rk_accessory_list(rk_list, acs_mab_list, flt, leanpose)
 
-        # 19. base-1
-        # 20. bse-acs-1
-        # 21. body-1
+        # 23. base-1
+        # 24. bse-acs-1
+        # 25. body-1
         _rk_body_nh_wbase(
             rk_list,
             clothing,
@@ -2542,19 +2607,19 @@ init -4 python in mas_sprites:
             lean=lean
         )
 
-        # 22. bfh-acs
+        # 26. bfh-acs
         _rk_accessory_list(rk_list, acs_bfh_list, flt, leanpose)
 
-        # 23. face-pre
+        # 27. face-pre
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
-        # 24. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR, lean)
+        # 28. front-hair
+        _rk_hair(rk_list, hair, flt, FHAIR, lean, leanpose)
 
-        # 25. afh-acs
+        # 29. afh-acs
         _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)
 
-        # 26. face
+        # 30. face
         _rk_face(
             rk_list,
             eyes,
@@ -2569,12 +2634,12 @@ init -4 python in mas_sprites:
             emote
         )
 
-        # 27. mid-acs
+        # 31. mid-acs
         _rk_accessory_list(rk_list, acs_mid_list, flt, leanpose)
 
-        # 28. arms-base-1
-        # 29. ase-acs-1
-        # 30. arms-1
+        # 32. arms-base-1
+        # 33. ase-acs-1
+        # 34. arms-1
         _rk_arms_nh_wbase(
             rk_list,
             base_arms,
@@ -2587,7 +2652,7 @@ init -4 python in mas_sprites:
             "10"
         )
 
-        # 31. pst-acs
+        # 35. pst-acs
         _rk_accessory_list(rk_list, acs_pst_list, flt, leanpose)
 
         return rk_list
@@ -3126,6 +3191,8 @@ init -2 python:
         acs_bse_list = character.acs.get(MASMonika.BSE_ACS, [])
         acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
         acs_ase_list = character.acs.get(MASMonika.ASE_ACS, [])
+        acs_bmh_list = character.acs.get(MASMonika.BMH_ACS, [])
+        acs_mmh_list = character.acs.get(MASMonika.MMH_ACS, [])
         acs_bat_list = character.acs.get(MASMonika.BAT_ACS, [])
         acs_mat_list = character.acs.get(MASMonika.MAT_ACS, [])
         acs_mab_list = character.acs.get(MASMonika.MAB_ACS, [])
@@ -3165,6 +3232,8 @@ init -2 python:
                 acs_bse_list,
                 acs_bba_list,
                 acs_ase_list,
+                acs_bmh_list,
+                acs_mmh_list,
                 acs_bat_list,
                 acs_mat_list,
                 acs_mab_list,
