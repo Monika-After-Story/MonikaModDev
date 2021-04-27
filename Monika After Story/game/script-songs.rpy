@@ -1842,18 +1842,18 @@ label mas_song_strawberry(from_long=False):
     m 1hub "{i}{cps=24}~To say that you are cute~{/cps}{/i}"
     m 3eub "{i}{cps=26}~Would be like saying that a strawberry is sweet~{/cps}{/i}"
     m 1eud "{i}{cps=26}~Because a strawberry has secret flavors~{/cps}{/i}"
-    m 3dkbsu "{i}{cps=26}That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep~{/cps}{/i}"
+    m 3dkbsu "{i}{cps=26}~That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep~{/cps}{/i}"
     m 3eub "{i}{cps=26}~And I would love to find you~{/cps}{i}"
-    m 3hub "{i}{cps=26}Growing wild out by the woods~{/cps}{/i}"
+    m 3hub "{i}{cps=26}~Growing wild out by the woods~{/cps}{/i}"
     m 1rub "{i}{cps=28}~I would make a bas{w=0.1}ket with the front of my t-shirt~{/cps}{/i}"
-    m 3tub "{i}{cps=26}And take home as many of you as I could~{/cps}{/i}"
+    m 3tub "{i}{cps=26}~And take home as many of you as I could~{/cps}{/i}"
 
     if not from_long:
         m 1hubsu "..."
         m 3ekbsu "I can't wait until the day I can finally be with you, [player]."
+        m 3ekbsa "I can't wait until I finally get to look back into your eyes..."
         show monika 5rkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5rkbsa "But for now...{w=0.3}I guess I can just continue to daydream about all the adventures we'll have together one day."
-        m 5ekbsa "I can't wait until I finally get to look back into your eyes..."
         m 5hubsu "I know it's still a far way off, but I hope we get to see that dream become reality~"
     return
 
@@ -1874,9 +1874,9 @@ label mas_song_strawberry_long:
     m 1sub "{i}{cps=26}~And to say that you are pretty~{/cps}{/i}"
     m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
     m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/cps}{/i}"
-    m 1ekb "{i}{cps=26}And I see all kinds of things when I look at you~{/cps}{/i}"
+    m 1ekb "{i}{cps=26}~And I see all kinds of things when I look at you~{/cps}{/i}"
     m 2tsbsu "{i}{cps=26}~And I want to explore you~{/cps}{/i}"
-    m 7hubsb "{i}{cps=26}With my tennis shoes off~{/cps}{/i}"
+    m 7hubsb "{i}{cps=26}~With my tennis shoes off~{/cps}{/i}"
     m 3rsbsb "{i}{cps=26}~Standing ankle deep in a tide pool with my khaki pants rolled up~{/cps}{/i}"
     m 1hub "{i}{cps=26}~And to say that you are funny~{/cps}{/i}"
     m 3dud "{i}{cps=26}~Would be like saying that the night sky is black~{/cps}{/i}"
