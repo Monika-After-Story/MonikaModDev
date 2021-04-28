@@ -2275,12 +2275,8 @@ init python:
         OUT:
             bool - Whether or not the given year is a leap year
         """
-        #Prelim check, if not mod 4, definitely not a leap year
-        if year % 4 != 0:
+        try:
+            datetime.date(year, 2, 29)
+            return True
+        except ValueError:
             return False
-
-        #To account for error, we must also check if divisible by 100 and NOT 400
-        if year % 100 == 0 and year % 400 != 0:
-            return False
-
-        return True
