@@ -237,13 +237,3 @@ python early in mas_utils:
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(renpy.game.persistent.version_number))
-
-    #store.mas_utils.MASMacLog = __MASMacLog
-    #store.mas_utils.macLogOpen = __macLogOpen
-    #store.mas_utils.getMASLog = __getMASLog
-    #store.mas_utils.logcreate = __logcreate
-    #store.mas_utils.writelog = __writelog
-    #store.mas_utils.wtf = __wtf
-    #store.mas_utils.writestack = __writestack
-    #store.mas_utils.logrotate = __logrotate
-    #store.mas_utils.tryparseint = __tryparseint
