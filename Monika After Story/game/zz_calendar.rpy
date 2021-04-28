@@ -6,6 +6,7 @@
 init -1 python:
 
     import json
+    import copy
     from renpy.display.layout import Container
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
 
@@ -548,11 +549,17 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # get this month's events
             if self.MIN_GLITCH_YEAR < self.selected_year < self.MAX_GLITCH_YEAR:
-
                 events = self.database[self.selected_month]
 
-            else:
+                #For leap year case, we put F29 into M01
+                if self.selected_month == 3 and self.selected_year % 4 != 0:
+                    #We need to copy this because otherwise we break the main calendar db
+                    events = copy.deepcopy(events)
+                    events[1].update(self.database[2][29])
 
+
+            #Otherwise glitch events
+            else:
                 events = self._getEGMonthEvents()
 
                 note_font = gui.default_font
