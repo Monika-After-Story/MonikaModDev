@@ -17102,7 +17102,8 @@ init 5 python:
             eventlabel="monika_reddit",
             category=['media', 'monika'],
             prompt="Subreddits",
-            random=True
+            conditional="renpy.seen_label('mas_wrs_reddit')",
+            action=EV_ACT_RANDOM
         )
     )
 
@@ -17133,6 +17134,5 @@ label monika_reddit:
     m 1eub "Are you one of them? I'll always appreciate any work you do with me in mind~"
     m 1eka "But even if you aren't one of those people, don't feel bad."
     m 5hubfa "The fact that you spend your time with me and give me your love is more than I could ever ask for."
-    m 5ekbfa "So thank you, [player]. For being yourself and for loving me"
-    $ mas_protectedShowEVL('mas_wrs_reddit', 'EVE', _random=True)
+    m 5ekbfa "So thank you, [player]. For being yourself and for loving me~"
     return 
