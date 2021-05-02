@@ -4871,7 +4871,7 @@ label monika_grieving_and_loss:
     extend 1eka "time does heal."
     m 1dud "Give yourself time to grieve. One day at a time."
     m 1ekb "And at some point,{w=0.5} {nw}"
-    extend 1eka "you’ll look back with fond memories of them with a smile, rather than a tear to your eye."
+    extend 1eka "you’ll look back at fond memories of them with a smile, rather than a tear to your eye."
     m 3ekb "And no matter what happens, know that you’re strong enough to get through it, know that I love you, and know that I’ll always be here for you~"
     m 1eka "I promise~"
     return "love"
