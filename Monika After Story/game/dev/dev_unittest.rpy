@@ -10,6 +10,7 @@ init -1 python in mas_dev_unit_tests:
         ("MASHistorySaver", "dev_unit_test_mhs", False, False),
         ("MASHistorySaver - correct_pbday_mhs", "dev_unit_test_mhs_cpm", False, False),
         ("UTC APIs", "dev_unit_test_utc_api", False, False),
+        ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
     ]
 
     class MASUnitTest(object):
@@ -106,10 +107,10 @@ init -1 python in mas_dev_unit_tests:
                 ))
                 return False
 
-            # now check keys + values 
+            # now check keys + values
             a_keys = sorted(actual.keys())
             for e_key in expected:
-                
+
                 if e_key not in a_keys:
                     self.tests.append(MASUnitTest(
                         self.test_name,
@@ -120,12 +121,12 @@ init -1 python in mas_dev_unit_tests:
                     ))
                     return False
 
-                # pop key off 
+                # pop key off
                 a_keys.remove(e_key)
                 if not self.assertEqual(expected[e_key], actual[e_key]):
                     return False
 
-            # if any keys remain in a, then we had a mismatch 
+            # if any keys remain in a, then we had a mismatch
             if len(a_keys) > 0:
                 self.tests.append(MASUnitTest(
                     self.test_name,
@@ -379,7 +380,7 @@ label dev_unit_tests_show_pass:
 
 label dev_unit_tests_show_fail:
     m 1ektsc "!!!FAILED!!!"
-    return 
+    return
 
 label dev_unit_tests_show_msgs(msg_list, format_text=False):
     $ index = 0
@@ -494,7 +495,7 @@ label dev_unit_test_event_yearadjust:
         end_dt = now_dt - datetime.timedelta(days=380)
         expected = (add_years(start_dt, 2), add_years(end_dt, 2), True)
         actual = Event._yearAdjust(start_dt, end_dt, [])
-        eya_tester.assertEqual(expected, actual)       
+        eya_tester.assertEqual(expected, actual)
 
         eya_tester.prepareTest("ahead now, same year")
         now_dt = datetime.datetime.now()
@@ -502,7 +503,7 @@ label dev_unit_test_event_yearadjust:
         end_dt = now_dt + datetime.timedelta(days=10)
         expected = (start_dt, end_dt, False)
         actual = Event._yearAdjust(start_dt, end_dt, [])
-        eya_tester.assertEqual(expected, actual)              
+        eya_tester.assertEqual(expected, actual)
 
         eya_tester.prepareTest("ahead now, diff year")
         now_dt = datetime.datetime.now()
@@ -537,7 +538,7 @@ label dev_unit_test_json_masposemap:
             return gen_data(MASPoseArms.J_NAME_LEFT, ldata)
 
         def gen_right(rdata):
-            return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)       
+            return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)
 
         def arms_both(extra=False):
             data = gen_both(("both_pa", True, True))
@@ -1776,7 +1777,7 @@ label dev_unit_test_mhs:
         mhs_tester.assertEqual(test_data[0], test_mhs.trigger)
         mhs_tester.assertFalse(test_mhs.use_year_before)
         store.mas_globals.tt_detected = prev_data[0]
-        MASHistorySaver.first_sesh = prev_data[1]       
+        MASHistorySaver.first_sesh = prev_data[1]
 
         mhs_tester.prepareTest("isActive|continuous")
         test_mhs = gen_fresh_mhs()
@@ -2515,4 +2516,56 @@ label dev_unit_test_utc_api:
 
     call dev_unit_tests_finish_test(utc_tester)
 
+    return
+
+label dev_unit_test_wrs_regexpchecks:
+    m "Running tests..."
+
+    python:
+        wrs_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+        #Basic YT Detection
+        wrs_tester.prepareTest("Normal YT detection")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                "- YouTube",
+                "CA Celeste Piano Collections: 11 Reach for the Summit (Lena Raine, Trevor Alan Gomes) - YouTube"
+            )
+        )
+
+        #Jpn characters
+        wrs_tester.prepareTest("Japanese Character Checks")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                "ドキドキ",
+                "【DDLC】ドキドキ文芸部に入部してみるぺこ！【ホロライブ/兎田ぺこら】 - YouTube - Opera"
+            )
+        )
+
+
+        #r34 (titles are taken from images/posts w/o explicit content)
+        r34_regexp = r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w ]+monika)|([[\w \]\-()]*monika[\w?()\-: ]*(r34|rule34)))"
+        wrs_tester.prepareTest("r34 title (r34xxx)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "Rule 34 - 1girls black legwear black thighhighs blondynkitezgraja blue skirt brown hair cleavage clothing doki doki literature club female female only green eyes long hair medium breasts monika monika (doki doki literature club) piano skirt skirt lift thighhighs | 4046712"
+            )
+        )
+        wrs_tester.prepareTest("r34 title (r34paheal)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "Post 4187900: Monika cosplay squchan tagme"
+            )
+        )
+        wrs_tester.prepareTest("r34 title (DDLCRule34)|")
+        wrs_tester.assertTrue(
+            mas_isInActiveWindow(
+                r34_regexp,
+                "[Commission] Office Monika for Hisame-kun (light nsfw) : DDLCRule34"
+            )
+        )
+
+    call dev_unit_tests_finish_test(wrs_tester)
     return

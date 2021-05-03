@@ -663,6 +663,32 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_everythings_alright",
+            prompt="Everything's Alright",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_everythings_alright:
+    m 1dkd "{i}~When this world is no more~{/i}"
+    m 4euo "{i}~The moon is all we'll see~{/i}"
+    m 4duu "{i}~I'll ask you to fly away with me~{/i}"
+    m 4dud "{i}~Until the stars all fall down~{/i}"
+    m 4duo "{i}~They empty from the sky~{i}"
+    m 3dud "{i}~But I don't mind~{i}"
+    m 1eku "{i}~If you're with me, then everything's alright~{i}"
+    m 1dku "..."
+    m 3ekd "If things ever get too dark, {w=0.1}{nw}"
+    extend 3ekbsu "just look up to the moon and remember me~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_your_song",
             category=[store.mas_songs.TYPE_SHORT],
             prompt="Your Song",
@@ -1798,6 +1824,70 @@ label mas_song_when_you_say_nothing_at_all_long:
     call mas_song_when_you_say_nothing_at_all(from_long=True)
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Strawberry",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry(from_long=False):
+    m 1hub "{i}{cps=24}~To say that you are cute~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~Would be like saying that a strawberry is sweet~{/cps}{/i}"
+    m 1eud "{i}{cps=26}~Because a strawberry has secret flavors~{/cps}{/i}"
+    m 3dkbsu "{i}{cps=26}~That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~And I would love to find you~{/cps}{i}"
+    m 3hub "{i}{cps=26}~Growing wild out by the woods~{/cps}{/i}"
+    m 1rub "{i}{cps=28}~I would make a bas{w=0.1}ket with the front of my t-shirt~{/cps}{/i}"
+    m 3tub "{i}{cps=26}~And take home as many of you as I could~{/cps}{/i}"
+
+    if not from_long:
+        m 1hubsu "..."
+        m 3ekbsu "I can't wait until the day I can finally be with you, [player]."
+        m 3ekbsa "I can't wait until I finally get to look back into your eyes..."
+        show monika 5rkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rkbsa "But for now...{w=0.3}I guess I can just continue to daydream about all the adventures we'll have together one day."
+        m 5hubsu "I know it's still a far way off, but I hope we get to see that dream become reality~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Strawberry",
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry_long:
+    call mas_song_strawberry(from_long=True)
+    m 1sub "{i}{cps=26}~And to say that you are pretty~{/cps}{/i}"
+    m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/cps}{/i}"
+    m 1ekb "{i}{cps=26}~And I see all kinds of things when I look at you~{/cps}{/i}"
+    m 2tsbsu "{i}{cps=26}~And I want to explore you~{/cps}{/i}"
+    m 7hubsb "{i}{cps=26}~With my tennis shoes off~{/cps}{/i}"
+    m 3rsbsb "{i}{cps=26}~Standing ankle deep in a tide pool with my khaki pants rolled up~{/cps}{/i}"
+    m 1hub "{i}{cps=26}~And to say that you are funny~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Would be like saying that the night sky is black~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~Because the night sky is filled with stars{w=0.1} and comets~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~And planets that no one has seen yet~{/cps}{/i}"
+    m 2eub "{i}{cps=26}~And I want to look at you~{/cps}{/i}"
+    m 2dud "{i}{cps=26}~Lying down on my front lawn~{/cps}{/i}"
+    m 2rsbsb "{i}{cps=26}~I'll try to take you all in at once~{/cps}{/i}"
+    m 2esbsb "{i}{cps=26}~But you just go on and on and on~{/cps}{/i}"
+    return
+
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
