@@ -2346,10 +2346,12 @@ screen updater:
         hbox:
             spacing gui._scale(25)
 
-            if u.state == u.DONE:
-                # We call quit here, instead of proceed, because linux works way too good and always restarts after calling proceed
-                textbutton _("Proceed") action Quit(confirm=False)
-                textbutton _("Restart") action [Function(me.__del__), Function(u.proceed)]
+            # We call quit here instead of proceed, otherwise linux always restarts
+            # We also call quit when we get an ERROR, UPDATE_NOT_AVAILABLE or CANCELLED state, otherwise, proceed calls full_restart
+            # in this case, in windows we end up in the main menu and in linux everything breaks apart
+            if u.state in (u.ERROR, u.UPDATE_NOT_AVAILABLE, u.DONE, u.DONE_NO_RESTART, u.CANCELLED):
+                textbutton _("Quit") action Function(renpy.quit, relaunch=False)
+                textbutton _("Restart") action [Function(me.__del__), Function(renpy.quit, relaunch=True)]
 
             else:
                 if u.can_proceed:
