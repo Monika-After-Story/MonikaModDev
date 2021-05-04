@@ -156,9 +156,9 @@ init 5 python in mas_nou:
         # Quips when Monika chooses a color to set
         # Quips for when she gets a wild card on the first turn
         QUIPS_MONIKA_ANNOUNCE_COLOR_FIRST_TURN = (
-            _("I think I'll set.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.monika.chosen_color] color!"),
-            _("I want [store.mas_nou.game.monika.chosen_color] color."),
-            _("I choose [store.mas_nou.game.monika.chosen_color] color."),
+            _("I think I'll go.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.monika.chosen_color]!"),
+            _("I want [store.mas_nou.game.monika.chosen_color]."),
+            _("I choose [store.mas_nou.game.monika.chosen_color]."),
             _("Hmm.{w=0.2}.{w=0.2}.{w=0.2}I choose [store.mas_nou.game.monika.chosen_color]!")
         )
         # Quips for when she reflects a wild card
@@ -247,7 +247,7 @@ init 5 python in mas_nou:
         )
         # Quips when Monika catches you on not saying NoU
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
-            _("Aha!{w=0.3} NOU, [player]!"),
+            _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
             _("You thought I wouldn't notice?~ You should've said 'NOU!'"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
@@ -401,7 +401,7 @@ init 5 python in mas_nou:
         REACTIONS_MAP_PLAYER_REFLECTED_CARD = {
             0: [
                 (_("Aww, I wasn't expecting this!"),),
-                (_("Just once, [player]...just once!~"),)
+                (_("Just once, [player]...once!~"),)
             ],
             1: [
                 (_("Alright,{w=0.1} this time you won..."),),
@@ -3025,7 +3025,7 @@ init 5 python in mas_nou:
                     remind_quip = renpy.random.choice(self.game.QUIPS_PLAYER_FORGOT_YELL_NOU)
                     # add the prefix if Monika has said something prior to this
                     if has_yelled_nou:
-                        remind_quip = "And while we're talking about this~ {w=0.5}" + remind_quip
+                        remind_quip = "...And speaking of NOU...{w=0.5}" + remind_quip
 
                     renpy.say(m, remind_quip, interact=True)
                     # she caught you, draw 2 cards
