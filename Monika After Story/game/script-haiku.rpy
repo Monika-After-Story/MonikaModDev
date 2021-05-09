@@ -304,7 +304,7 @@ init 5 python:
 
 label mas_haiku_colors:
     m 3eud "{i}You're back again{/i}{w=1}{nw}\n"
-    extend 3ebsku "{i}The world regain its colors{/i}{w=0.5}{nw}\n"
+    extend 3ekbsu "{i}The world regain its colors{/i}{w=0.5}{nw}\n"
     extend 1hubsu "{i}Filling me with hope{/i}"
     call monika_haiku_closing_quip
     return
