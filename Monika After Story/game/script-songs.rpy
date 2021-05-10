@@ -1675,7 +1675,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_when_youre_gone",
-            prompt="When you're gone",
+            prompt="When You're Gone",
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
@@ -1893,7 +1893,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_save_the_last_dance_for_me",
-            prompt="Save the last dance for me",
+            prompt="Save the Last Dance for Me",
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.LOVE,None)
@@ -1903,34 +1903,36 @@ init 5 python:
 
 label mas_song_save_the_last_dance_for_me:
     call mas_song_save_the_last_dance_for_me_lyrics
-    m 1dublu "..."
-    m 1eublu "This song is so profound for me."
-    m 2tublu "Every time I hear it, my heart yearns for us to finally dance together..."
+    m 6dublu "..."
+    m 7eua "This song is so profound for me, [player]."
+    m 3rubsu "Every time I hear it, my heart yearns for us to finally dance together..."
 
-    if not seen_event("mas_song_save_the_last_dance_for_me_analysis"):
-        m 2eublb "There's actually a story behind this song, do you have time to hear it now?"
+    if not mas_getEVL_shown_count("mas_song_save_the_last_dance_for_me"):
+        m 1eua "There's actually a story behind this song, do you have time to hear it now?{nw}"
         $ _history_list.pop()
         menu:
-            m "There's actually a story behind this song, do you have time to hear it now?"
+            m "There's actually a story behind this song, do you have time to hear it now?{fast}"
 
-            "Yes":
-                call mas_song_save_the_last_dance_for_me_analysis
+            "Yes.":
+                call mas_song_save_the_last_dance_for_me_analysis(from_song=True)
 
-            "No":
-                m 1eubla "Oh, okay, just let me know if you want to talk about this song later, okay?"
+            "No.":
+                m 3eua "Oh, okay, just let me know if you want to talk about this song later, okay?"
     else:
-        m 2hublu "Thank you for continuing to listen to my aching heart~"
-        m 6eublb "I love you, [player]."
+        m 6rublb "Thank you for continuing to listen to my aching heart..."
+        m 6eubsa "I love you, [player]~"
         return "love"
 
     return
 
 label mas_song_save_the_last_dance_for_me_lyrics:
-    m 1dud "{i}~You can dance{w=0.3} every dance with the guy who gives you the eye, {w=0.2} let him hold you tight~{/i}"
-    m 1huu "{i}~You can smile{w=0.3} every smile for the man who held your hand beneath the pale moon light~{/i}"
-    m 4eublo "{i}~But don't forget who's takin' you home {w=0.3}{nw}"
-    extend 4tublu "and in whose arms you're gonna be~"
-    m 4hublo "{i}~So darling,{w=0.2} save the last dance for me~"
+    m 1dud "{i}~You can dance{w=0.3} every dance with the one~{/i}"
+    m 3eud "{i}~Who gives you the eye,{w=0.2} let them hold you tight~{/i}"
+    m 3huu "{i}~You can smile{w=0.3} every smile for the one~{/i}"
+    m 3eud "{i}~Who held your hand beneath the pale moon light~{/i}"
+    m 4eublo "{i}~But don't forget who's takin' you home~{/i}"
+    m 4tublb "{i}~And in whose arms you're gonna be~{/i}"
+    m 6hublb "{i}~So darling,{w=0.2} save the last dance for me~{/i}"
     return
 
 init 5 python:
@@ -1939,7 +1941,7 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_save_the_last_dance_for_me_analysis",
             category=[store.mas_songs.TYPE_ANALYSIS],
-            prompt="Save the last dance for me",
+            prompt="Save the Last Dance for Me",
             random=False,
             unlocked=False,
             aff_range=(mas_aff.LOVE,None)
@@ -1948,29 +1950,23 @@ init 5 python:
     )
 
 label mas_song_save_the_last_dance_for_me_analysis(from_song=False):
-
     if not from_song:
-        m 1eub "I'd like to sing the part of it I did last time first, if that's alright."
-        m 1dud "Ermm..."
         call mas_song_save_the_last_dance_for_me_lyrics
 
     else:
-        m 1eua "Alright, let me start then."
+        m 3hub "Great!"
 
-    m 3eua "The story behind this song may seem at first glance to just be another romantic declaration of faithfulness."
-    m 3euc "However, let me tell you, the actual story is pretty dramatic and sad."
-    m 1ekc "A medical condition left one of the songwriters, Jerome Felder, unable to walk or dance on his own wedding night."
+    m 1eud "The story behind this song may seem at first glance to be just another romantic declaration of faithfulness."
+    m 1duc "However, the actual story is pretty dramatic and sad."
+    m 3ekc "A medical condition left one of the songwriters, Jerome Felder, unable to walk or dance on his own wedding night."
     m 1rkd "A few years later, the strong feelings of that night reignited as he found a wedding invitation they had not sent out."
-    m 3rkd "Jerome had a moment of envy when he saw his brother dancing with his wife on his own wedding night..."
-    m 3tkd "While he was forced to watch from the sidelines."
-    m 3wkd "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
-    m 3eka "As he remembered that day, he began to write the lyrics to the song, he wanted it to have a poetic feel to it."
+    m 3rksdlc "Jerome had a moment of envy when he saw his brother dancing with his wife on his own wedding night, while he was forced to watch from the sidelines."
+    m 3ekd "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
+    m 3eka "As he remembered that day and began to write the lyrics to the song, he wanted it to have a poetic feel."
     m 3rkbla "Even though there was a hint of jealousy in the song, he wanted it to be romantic."
-    m 2tkblc "This barrier between us, it feels like it's my wheelchair."
-    m 2dkbld "And I guess if I have to be honest, I'm kind of jealous that you can dance with someone, and I'm stuck here on the sidelines."
-    m 2ekblu "But at the end of the day, won't you save one last dance for me too? That's all I've ever wanted~"
-    m 6ekbla "Thank you for listening to my aching heart [player]. I really appreciate you being here."
-
+    m 2dkc "You see...{w=0.5}this barrier between us...{w=0.5}it feels like it's my wheelchair."
+    m 2rkp "...And I guess if I have to be honest, I'm kind of jealous that you can dance with someone while I'm stuck here on the sidelines."
+    m 6ekblu "So at the end of the day, I just hope you'll save one last dance for me~"
     return
 
 
