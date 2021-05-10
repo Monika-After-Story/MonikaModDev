@@ -50,6 +50,18 @@ init python in mas_sprites:
         """
         return exp[1] in "kn"
 
+    def is_follow_sprite(exp):
+        """
+        Checks if an exp is a follow sprite
+
+        IN:
+            exp - spritecode to check
+
+        OUT:
+            boolean - True if this is a follow sprite, False otherwise
+        """
+        return exp.endswith("_follow")
+
     def needs_tear_atl(exp):
         """
         Checks if this spritecode needs a streaming tears atl
@@ -93,6 +105,33 @@ init python in mas_sprites:
             )
         )
 
+    def generate_follow_sprite(exp):
+        """
+        Creates the follow version of the given sprite
+        """
+        exp = exp.replace("_follow", '')
+        look_left_img = replace_eyes(exp, "r")
+        look_right_img = replace_eyes(exp, "l")
+        m_prefix = "monika "
+
+        if not renpy.has_image(m_prefix + exp):
+            generate_normal_sprite(exp)
+
+        if not renpy.has_image(m_prefix + look_left_img):
+            generate_normal_sprite(look_left_img)
+
+        if not renpy.has_image(m_prefix + look_right_img):
+            generate_normal_sprite(look_right_img)
+
+        register_image(
+            ("monika", "{0}_follow".format(exp)),
+            store.MASMoniFollowTransform(
+                norm_eyes_img=m_prefix + exp,
+                left_eyes_img=m_prefix + look_left_img,
+                right_eyes_img=m_prefix + look_right_img
+            )
+        )
+
     def add_static_sprite_alias(exp):
         """
         Registers an alias for static sprites
@@ -112,7 +151,7 @@ init python in mas_sprites:
         """
         Generates sprites for standard open/closed eye variants
 
-        DOES NOT HANDLE WINKS/TEARS
+        DOES NOT HANDLE WINKS
 
         IN:
             exp - spritecode to generate sprites for
@@ -142,7 +181,7 @@ init python in mas_sprites:
             if needs_tear_atl(exp):
                 register_image(
                     ("monika", exp),
-                    store.streaming_tears_transform(
+                    store.MASMoniTearsTransform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )
@@ -151,7 +190,7 @@ init python in mas_sprites:
             else:
                 register_image(
                     ("monika", exp),
-                    store.blink_transform(
+                    store.MASMoniBlinkTransform(
                         "monika " + exp + "_static",
                         "monika " + closed_eyes_variant + "_static"
                     )
@@ -177,7 +216,7 @@ init python in mas_sprites:
         #And now we make its ATL
         register_image(
             ("monika", exp),
-            store.wink_transform(
+            store.MASMoniWinkTransform(
                 "monika " + exp + "_static",
                 "monika " + open_eye_variant
             )
@@ -194,5 +233,7 @@ init python in mas_sprites:
 
         if is_wink_sprite(exp):
             generate_wink_sprite(exp)
+        elif is_follow_sprite(exp):
+            generate_follow_sprite(exp)
         else:
             generate_normal_sprite(exp)

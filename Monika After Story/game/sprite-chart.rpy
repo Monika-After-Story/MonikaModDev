@@ -40,6 +40,8 @@
 #   k - left eye wink (winkleft)
 #   n - right eye wink (winkright)
 #   f - soft eyes (soft)
+#   m - left smug (smugleft)
+#   g - right smug (smugright)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
@@ -124,7 +126,10 @@ default persistent._mas_force_clothes = False
 default persistent._mas_force_hair = False
 # Set to True if the user manually set hair
 
-define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed")
+default persistent._mas_last_ahoge_dt = None
+# set to the dt of when we last set the ahoge
+
+define m = DynamicCharacter('m_name', image='monika', what_prefix='', what_suffix='', ctc="ctc", ctc_position="fixed", show_function=store.mas_core.show_display_say)
 
 #image night_filter = Solid("#20101897", xsize=1280, ysize=850)
 
@@ -132,6 +137,26 @@ image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
 # Monika's piano sprite
 image mas_piano = MASFilterSwitch("mod_assets/other/mas_piano.png")
+
+init -10 python in mas_core:
+    import renpy
+    _last_text = None
+
+    def show_display_say(who, what_string, **kwargs):
+        """
+        semi-override of show_display_say so we can force text to render
+        immediately.
+        """
+        global _last_text
+        rv = renpy.character.show_display_say(who, what_string, **kwargs)
+
+        if isinstance(rv, tuple):
+            # r7-specific handling.
+            # purposely not doing *rv in case tom changes stuff again
+            rv = renpy.display.screen.get_widget(rv[0], rv[1], rv[2])
+
+        _last_text = rv
+        return _last_text
 
 ### ACS TYPE + DEFAULTING FRAMEWORK ###########################################
 # this contains special acs type mappings
@@ -256,8 +281,9 @@ init -100 python in mas_sprites:
     # marks that an ACS is located at the left hair strand, eye level
 
     EXP_A_RQHP = "required-hair-prop"
-    # v: string
-    # marks that an ACS requires a hairstyle with the value'd prop to be worn
+    # v: string/list
+    # marks that an ACS requires a hairstyle with the value'd prop(s) to be
+    # worn
 
     EXP_A_LD = "left-desk-acs"
     # v: ignored
@@ -286,12 +312,13 @@ init -100 python in mas_sprites:
     # marks that a hair style is a twintails style
 
     EXP_H_RQCP = "required-clothes-prop"
-    # v: string
-    # marks that a hair style requires clothes with the value'd prop to be worn
+    # v: string/list
+    # marks that a hair style requires clothes with the value'd prop(s) to be
+    # worn
 
     EXP_H_EXCLCP = "excluded-clothes-props"
     # v: list of strings
-    # marks that a hair style requires clothes with none of hte value'd props
+    # marks that a hair style requires clothes with none of the value'd props
     # to be worn
 
     EXP_H_TS = "tiedstrand"
@@ -302,11 +329,32 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a hair style has no tails. By default we assume ponytail.
 
+    EXP_H_TB = "twinbraid"
+    #v: ignored
+    #marks the hair as a twinbraid hairstyle
+
     # ---- CLOTHES ----
+
+    EXP_C_BLS = "bare-left-shoulder"
+    # v: ignored
+    # marks that a clothing item has a bare left shoulder
+    # this is auto-added if bare-shoulders is added
 
     EXP_C_BRS = "bare-right-shoulder"
     # v: ignored
     # marks that a clothing item has a bare right shoulder
+    # this is auto-added if bare-shoulders is added
+
+    EXP_C_BS = "bare-shoulders"
+    # v: ignored
+    # marks that a clothing item has bare shoulders
+    # this is auto-added if both left/right bare shoulders are added
+
+    EXP_C_C_DTS = "compat-downtiedstrand"
+    # v: ignored
+    # compatibilty exprop saying that these clothes work with the 
+    # downtiedstrand hair style
+    # NOTE: THIS IS AN EXCEPTION. We should not be doing exprops like this.
 
     EXP_C_COST = "costume"
     # v: costume type as string (o31, d25, etc..)
@@ -326,6 +374,12 @@ init -100 python in mas_sprites:
     # twin tail exclusions
 
     # --- default mux types ---
+
+    DEF_MUX_AHOGE = [
+        "ahoge",
+        "hat",
+    ]
+    # default mux type for ahoges
 
     DEF_MUX_RB = [
         "ribbon",
@@ -377,6 +431,7 @@ init -100 python in mas_sprites:
     # default mux types for left-desk related items (namely foods)
 
     DEF_MUX_HAT = [
+        "ahoge",
         "hat",
         "bow",
         "bunny-scrunchie",
@@ -394,6 +449,10 @@ init -100 python in mas_sprites:
 
     # maps ACS types to their ACS template
     ACS_DEFS = {
+        "ahoge": ACSTemplate(
+            "ahoge",
+            mux_type=DEF_MUX_AHOGE,
+        ),
         "bow": ACSTemplate(
             "bow",
             mux_type=DEF_MUX_RB,
@@ -508,7 +567,7 @@ init -100 python in mas_sprites:
             ex_props={
                 EXP_A_TWRB: True,
                 EXP_A_RBL: True,
-                EXP_A_RQHP: EXP_H_TT,
+                EXP_A_RQHP: [EXP_H_TT],
             }
         ),
         "wrist-bracelet": ACSTemplate(
@@ -620,7 +679,7 @@ init -5 python in mas_sprites:
     LOC_WH = (1280, 850)
 
     # composite stuff
-    I_COMP = "LiveComposite"
+    I_COMP = "im.Composite"
     L_COMP = "LiveComposite"
     TRAN = "Transform"
 
@@ -1058,6 +1117,35 @@ init -5 python in mas_sprites:
         init_acs(remover_acs)
         return remover_acs
 
+
+    def get_acs(acs_name):
+        """
+        Gets the ACS object for a given name from the ACS map
+
+        IN:
+            acs_name - name of the ACS to get
+
+        RETURNS: ACS object, or None if no acs object with the given name
+        """
+        return ACS_MAP.get(acs_name, None)
+
+
+    def get_acs_of_type(acs_type):
+        """
+        Gets all ACS objects for a given ACS type.
+
+        IN:
+            acs_type - type of ACS to get
+
+        RETURNS: list of ACS objects with the given type. list may be empty
+            if no ACS of the given type
+        """
+        return [
+            acs for acs in ACS_MAP.itervalues()
+            if acs.acs_type == acs_type
+        ]
+
+
     def init_acs(mas_acs):
         """
         Initlializes the given MAS accessory into a dictionary map setting
@@ -1277,6 +1365,21 @@ init -5 python in mas_sprites:
             store.mas_selspr.set_prompt(rm_acs.acs_type, "wear")
 
 
+    def acs_rm_exit_pst_removal(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs after the ACS is removed
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc - acs location the ACS was removed from
+        """
+        # if removing hat, wear ahoge if we have any
+        if rm_acs.acs_type == "hat" and moni_chr.last_ahoge is not None:
+            moni_chr.wear_acs(moni_chr.last_ahoge)
+
+
     def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
         """
         Runs before mux type acs are removed
@@ -1290,6 +1393,7 @@ init -5 python in mas_sprites:
         # abort if current hair not compatible wtih CAS
         if not is_hairacs_compatible(moni_chr.hair, new_acs):
             temp_space["abort"] = True
+            return
 
 
     def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
@@ -1538,9 +1642,11 @@ init -5 python in mas_sprites:
         RETURNS: True if hair+acs is compatible, False if not
         """
         # first check for required hair prop
-        req_hair_prop = acs.getprop(EXP_A_RQHP, None)
-        if req_hair_prop is not None and not hair.hasprop(req_hair_prop):
-            return False
+        req_hair_props = acs.getprop(EXP_A_RQHP, None)
+        if req_hair_props is not None:
+            for req_hair_prop in req_hair_props:
+                if not hair.hasprop(req_hair_prop):
+                    return False
 
         # then check exclusions
         excl_hair_props = acs.getprop(EXP_A_EXCLHP, None)
@@ -1563,9 +1669,11 @@ init -5 python in mas_sprites:
         RETURNS: True if clothes+hair is comaptible, False if not
         """
         # first check for required clothes prop
-        req_cloth_prop = hair.getprop(EXP_H_RQCP, None)
-        if req_cloth_prop is not None and not clothes.hasprop(req_cloth_prop):
-            return False
+        req_cloth_props = hair.getprop(EXP_H_RQCP, None)
+        if req_cloth_props is not None:
+            for req_cloth_prop in req_cloth_props:
+                if not clothes.hasprop(req_cloth_prop):
+                    return False
 
         # then check exclusions
         excl_cloth_props = hair.getprop(EXP_H_EXCLCP, None)
@@ -2130,6 +2238,22 @@ init -3 python:
             ASE_ACS,
         )
 
+        # rec layers in standard render order
+        RENDER_ORDER = (
+            PRE_ACS,
+            BBH_ACS,
+            BSE_ACS,
+            BBA_ACS,
+            ASE_ACS,
+            BAT_ACS,
+            MAT_ACS,
+            MAB_ACS,
+            BFH_ACS,
+            AFH_ACS,
+            MID_ACS,
+            PST_ACS,
+        )
+
         def __init__(self):
             """
             Constructor
@@ -2147,58 +2271,43 @@ init -3 python:
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
 
-            # accesories to be rendereed before anything
-            self.acs_pre = []
-
-            # accessories to be rendered after back hair, before body
-            self.acs_bbh = []
-
-            # accessories to be rendered after base body, before body clothes
-            self.acs_bse = []
-
-            # accessories to be rendered after body, before back arms
-            self.acs_bba = []
-
-            # accessories to be rendered after base arms, before arm clothes
-            self.acs_ase = []
-
-            # accessories to be rendered after back arms, before table
-            self.acs_bat = []
-
-            # accessories to be rendered after table, before middle arms
-            self.acs_mat = []
-
-            # accessories to be rendered after middle arms before boobs
-            self.acs_mab = []
-
-            # accessories to be rendered after boobs, before front hair
-            self.acs_bfh = []
-
-            # accessories to be rendered after fornt hair, before face
-            self.acs_afh = []
-
-            # accessories to be rendered after face, before front arms
-            self.acs_mid = []
-
-            # accessories to be rendered last
-            self.acs_pst = []
-
-            self.hair_hue=0 # hair color?
-
             # setup acs dict
             self.acs = {
-                self.PRE_ACS: self.acs_pre,
-                self.MID_ACS: self.acs_mid,
-                self.PST_ACS: self.acs_pst,
-                self.BBH_ACS: self.acs_bbh,
-                self.BFH_ACS: self.acs_bfh,
-                self.AFH_ACS: self.acs_afh,
-                self.BBA_ACS: self.acs_bba,
-                self.MAB_ACS: self.acs_mab,
-                self.BSE_ACS: self.acs_bse,
-                self.ASE_ACS: self.acs_ase,
-                self.BAT_ACS: self.acs_bat,
-                self.MAT_ACS: self.acs_mat,
+                # accesories to be rendereed before anything
+                self.PRE_ACS: [],
+
+                # accessories to be rendered after back hair, before body
+                self.BBH_ACS: [],
+
+                # accessories to be rendered after base body, before body clothes
+                self.BSE_ACS: [],
+
+                # accessories to be rendered after body, before back arms
+                self.BBA_ACS: [],
+
+                # accessories to be rendered after base arms, before arm clothes
+                self.ASE_ACS: [],
+
+                # accessories to be rendered after back arms, before table
+                self.BAT_ACS: [],
+
+                # accessories to be rendered after table, before middle arms
+                self.MAT_ACS: [],
+
+                # accessories to be rendered after middle arms before boobs
+                self.MAB_ACS: [],
+
+                # accessories to be rendered after boobs, before front hair
+                self.BFH_ACS: [],
+
+                # accessories to be rendered after fornt hair, before face
+                self.AFH_ACS: [],
+
+                # accessories to be rendered after face, before front arms
+                self.MID_ACS: [],
+
+                # accessories to be rendered last
+                self.PST_ACS: [],
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -2225,6 +2334,51 @@ init -3 python:
             #   of highlights
             self.tablechair = MASTableChair("def", "def")
 
+            # set to the ahoge we had set during this session
+            self.last_ahoge = None
+
+            # special mapping of ACS with acs types
+            # this is a dual key map. Use this for quick removal of acs types
+            # key: acs type
+            # value: dict of the following format:
+            #   key: acs name
+            #   value: acs object
+            self._acs_type_map = {}
+
+        def __repr__(self):
+            """
+            this is lengthy and will contain all objects
+            """
+            # build ACS strings
+            # this determines order to show ACS in
+            acs_str_map = (
+                "PRE",
+                "BBH",
+                "BSE",
+                "BBA",
+                "ASE",
+                "BAT",
+                "MAT",
+                "MAB",
+                "BFH",
+                "AFH",
+                "MID",
+                "PST",
+            )
+            acs_str = []
+            for idx, pfx in enumerate(acs_str_map):
+                rec_layer = self.RENDER_ORDER[idx]
+                acs_list = self.__get_acs(rec_layer)
+                if len(acs_list) > 0:
+                    acs_str.append("{0}: {1}".format(pfx, acs_list))
+
+            return "<Monika: ({0}, {1}, {2}, {3})>".format(
+                self.clothes,
+                self.hair,
+                ", ".join(acs_str),
+                self.tablechair
+            )
+
         def __get_acs(self, acs_type):
             """
             Returns the accessory list associated with the given type
@@ -2236,6 +2390,62 @@ init -3 python:
                 accessory list, or None if the given acs_type is not valid
             """
             return self.acs.get(acs_type, None)
+
+        def ahoge(self, force_change=False):
+            """
+            Applies a random ahoge to Monika.
+
+            IN:
+                force_change - True will force an ahoge to be set, even if
+                    one is currently available.
+                    (Deafult: False)
+
+            RETURNS: True if we set the ahoge, False if not
+            """
+            # dont wear one if this ahoge was already set today, unless
+            # we are doing a force change.
+            if (
+                    persistent._mas_last_ahoge_dt is not None
+                    and not force_change
+                    and datetime.datetime.now().date()
+                        == persistent._mas_last_ahoge_dt.date()
+            ):
+                    # we already set the ahoge today so dont set it again.
+                    return False
+
+            # random select an ahoge
+            self._set_ahoge(
+                random.choice(store.mas_sprites.get_acs_of_type("ahoge"))
+            )
+            return True
+
+        def _set_ahoge(self, ahoge_acs, force_wear=False):
+            """
+            Sets the ahoge for Monika, also setting the appropriate last
+            ahoge and everything.
+
+            IN:
+                ahoge_acs - the ACS object for the ahoge to wear
+                    NOTE: pass in None to clear the ahoge.
+                force_wear - pass True to wear the ahoge even if we are wearing
+                    a hat.
+                    (Default: False)
+            """
+            if ahoge_acs is None:
+                # clear the ahoge, if we are wearing it.
+                if self.last_ahoge is not None:
+                    self.remove_acs(self.last_ahoge)
+                    self.last_ahoge = None
+                return
+
+            # set the last ahoge to the given acs
+            self.last_ahoge = ahoge_acs
+            persistent._mas_last_ahoge_dt = datetime.datetime.now()
+
+            if self.get_acs_of_type("hat") is not None and not force_wear:
+                return
+
+            self.wear_acs(ahoge_acs)
 
         def _determine_poses(self, lean, arms):
             """
@@ -2427,18 +2637,19 @@ init -3 python:
             return True
 
         def _load(self,
+                # NOTE: this is in REC_LAYER order
                 _clothes_name,
                 _hair_name,
                 _acs_pre_names,
                 _acs_bbh_names,
-                _acs_bse_names,
-                _acs_bba_names,
-                _acs_ase_names,
-                _acs_mab_names,
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
                 _acs_pst_names,
+                _acs_bba_names,
+                _acs_mab_names,
+                _acs_bse_names,
+                _acs_ase_names,
                 _acs_bat_names,
                 _acs_mat_names,
                 startup=False
@@ -2453,14 +2664,14 @@ init -3 python:
                 _hair_name - name of hair to load
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
-                _acs_bse_names - list of bse acs names to load
-                _acs_bba_names - list of bba acs names to load
-                _acs_ase_names - list of ase acs names to load
-                _acs_mab_names - list of mab acs names to load
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
-                _acs_pst_names - list of pst acs names to load,
+                _acs_pst_names - list of pst acs names to load
+                _acs_bba_names - list of bba acs names to load
+                _acs_mab_names - list of mab acs names to load
+                _acs_bse_names - list of bse acs names to load
+                _acs_ase_names - list of ase acs names to load
                 _acs_bat_names - list of bat acs names to load
                 _acs_mat_names - list of mat acs names to load
                 startup - True if we are loading on start, False if not
@@ -2474,6 +2685,7 @@ init -3 python:
             )
 
             # acs
+            # NOTE: this is in render layer order
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
             self._load_acs(_acs_bse_names, self.BSE_ACS)
@@ -2486,6 +2698,9 @@ init -3 python:
             self._load_acs(_acs_afh_names, self.AFH_ACS)
             self._load_acs(_acs_mid_names, self.MID_ACS)
             self._load_acs(_acs_pst_names, self.PST_ACS)
+
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
 
         def _load_acs(self, per_acs, acs_type):
             """
@@ -3013,14 +3228,14 @@ init -3 python:
                 store.persistent._mas_monika_hair,
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
-                store.persistent._mas_acs_bse_list,
-                store.persistent._mas_acs_bba_list,
-                store.persistent._mas_acs_ase_list,
-                store.persistent._mas_acs_mab_list,
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
                 store.persistent._mas_acs_pst_list,
+                store.persistent._mas_acs_bba_list,
+                store.persistent._mas_acs_mab_list,
+                store.persistent._mas_acs_bse_list,
+                store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bat_list,
                 store.persistent._mas_acs_mat_list,
                 startup=startup
@@ -3062,8 +3277,11 @@ init -3 python:
             self.change_outfit(_data[0], _data[1])
 
             # acs
-            for index in range(len(self.REC_LAYERS)):
-                self._load_acs_obj(_data[index+2], self.REC_LAYERS[index])
+            for index, rec_layer in enumerate(self.REC_LAYERS):
+                self._load_acs_obj(_data[index+2], rec_layer)
+
+            # set ahoge if we have one
+            self.last_ahoge = self.get_acs_of_type("ahoge")
 
         def reset_all(self, by_user=None):
             """
@@ -3091,7 +3309,6 @@ init -3 python:
                 self.acs_list_map.get(accessory.name, None)
             )
 
-
         def remove_acs_exprop(self, exprop):
             """
             Removes all ACS of given exprop.
@@ -3104,7 +3321,6 @@ init -3 python:
                 if _acs and _acs.hasprop(exprop):
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
 
-
         def remove_acs_mux(self, mux_types):
             """
             Removes all ACS with a mux type in the given list.
@@ -3112,24 +3328,23 @@ init -3 python:
             IN:
                 mux_types - list of acs_types to remove from acs
             """
-            for acs_name in self.acs_list_map.keys():
-                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
-                if _acs and _acs.acs_type in mux_types:
-                    self.remove_acs_in(_acs, self.acs_list_map[acs_name])
+            for mux_type in mux_types:
+                acs_with_mux = self._acs_type_map.get(mux_type, {})
+                for acs_name in acs_with_mux.keys():
+                    self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
-
-        def remove_acs_in(self, accessory, acs_type):
+        def remove_acs_in(self, accessory, acs_layer):
             """
-            Removes the given accessory from the given accessory list type
+            Removes the given accessory from the given accessory list layer
 
             IN:
                 accessory - accessory to remove
-                acs_type - ACS type
+                acs_layer - ACS layer to remove from
             """
             if self.lock_acs:
                 return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3141,7 +3356,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort removal if we were told to abort
@@ -3156,7 +3371,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # cleanup blacklist
@@ -3167,8 +3382,21 @@ init -3 python:
                 if accessory.name in self.acs_list_map:
                     self.acs_list_map.pop(accessory.name)
 
+                # cleanup type mapping
+                type_map = self._acs_type_map.get(accessory.acs_type, {})
+                if accessory.name in type_map:
+                    type_map.pop(accessory.name)
+
                 # now remove
                 acs_list.remove(accessory)
+
+                # finally post removal code
+                store.mas_sprites.acs_rm_exit_pst_removal(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_layer
+                )
 
         def remove_all_acs(self):
             """
@@ -3177,19 +3405,19 @@ init -3 python:
             for rec_layer in self.REC_LAYERS:
                 self.remove_all_acs_in(rec_layer)
 
-        def remove_all_acs_in(self, acs_type):
+        def remove_all_acs_in(self, acs_layer):
             """
-            Removes all accessories from the given accessory type
+            Removes all accessories from the given accessory layer
 
             IN:
-                acs_type - ACS type to remove all
+                acs_layer - ACS layer to remove acs from
             """
             if self.lock_acs:
                 return
 
-            if acs_type in self.acs:
+            if acs_layer in self.acs:
                 # need to clear blacklisted
-                for acs in self.acs[acs_type]:
+                for acs in self.acs[acs_layer]:
                     # run programming point
                     acs.exit(self)
 
@@ -3201,8 +3429,7 @@ init -3 python:
                     if acs.name in self.acs_list_map:
                         self.acs_list_map.pop(acs.name)
 
-                self.acs[acs_type] = list()
-
+                self.acs[acs_layer] = list()
 
         def reset_clothes(self, by_user=None):
             """
@@ -3416,7 +3643,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, acs.get_rec_layer())
 
-        def wear_acs_in(self, accessory, acs_type):
+        def wear_acs_in(self, accessory, acs_layer):
             """
             Wears the given accessory
 
@@ -3425,7 +3652,7 @@ init -3 python:
 
             IN:
                 accessory - accessory to wear
-                acs_type - layer to wear the acs in.
+                acs_layer - layer to wear the acs in.
             """
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
@@ -3434,15 +3661,15 @@ init -3 python:
             # if the given layer does not match rec layer, force the correct
             # layer unless override
             if (
-                    acs_type != accessory.get_rec_layer()
+                    acs_layer != accessory.get_rec_layer()
                     and not self._override_rec_layer
             ):
-                acs_type = accessory.get_rec_layer()
+                acs_layer = accessory.get_rec_layer()
 
             # verify aso_type is valid for the desired acs layer
             # unless override
             if not self._override_rec_layer:
-                if acs_type in (self.BSE_ACS, self.ASE_ACS):
+                if acs_layer in (self.BSE_ACS, self.ASE_ACS):
                     valid_aso_type = MASAccessoryBase.ASO_SPLIT
                 else:
                     valid_aso_type = MASAccessoryBase.ASO_REG
@@ -3450,7 +3677,7 @@ init -3 python:
                 if accessory.aso_type != valid_aso_type:
                     return
 
-            acs_list = self.__get_acs(acs_type)
+            acs_list = self.__get_acs(acs_layer)
             temp_space = {
                 "acs_list": acs_list,
             }
@@ -3462,7 +3689,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # abort wearing if we were told to abort
@@ -3478,14 +3705,19 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
-                # add to mapping
-                self.acs_list_map[accessory.name] = acs_type
+                # add to mappings
+                self.acs_list_map[accessory.name] = acs_layer
+
+                acs_type = accessory.acs_type
+                if acs_type not in self._acs_type_map:
+                    self._acs_type_map[acs_type] = {}
+                self._acs_type_map[acs_type][accessory.name] = accessory
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -3495,7 +3727,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
                 # run programming point for acs
@@ -3506,7 +3738,7 @@ init -3 python:
                     temp_space,
                     self,
                     accessory,
-                    acs_type
+                    acs_layer
                 )
 
         def wear_acs_pre(self, acs):
@@ -3650,6 +3882,12 @@ init -3 python:
                     hl_data[0],
                     hl_data[1]
                 )
+
+        def __repr__(self):
+            return "<TableChair: (table: {0}, chair: {1})>".format(
+                self.table,
+                self.chair
+            )
 
         def prepare(self):
             """
@@ -4964,6 +5202,10 @@ init -3 python:
             else:
                 self.ex_props = ex_props
 
+            # setup exprop related material
+            self.default_exprops()
+            self.format_exprops()
+
             # setup highlight map
             self.__setup_hl_map(full_hl_data)
 
@@ -5035,6 +5277,18 @@ init -3 python:
             """
             raise NotImplementedError
 
+        def default_exprops(self):
+            """
+            Called after sprite creation in the base class. This should be
+            implemented by sprite object classes as appropraite.
+
+            the only things that should happen in here are defaulting of
+            exprops as a result of other exprops.
+
+            All code in here should be safe to call more than once.
+            """
+            pass
+
         def entry(self, _monika_chr, **kwargs):
             """
             Calls the entry programming point if it exists
@@ -5056,6 +5310,19 @@ init -3 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+        def format_exprops(self):
+            """
+            Called after sprite creation in the base class, after exprops
+            have been defaulted in. This should be implemented by sprite object
+            classes as appropriate.
+
+            The only things that should happen here are adjusting formats
+            of exprops so they are valid/uniform/as expected by consuming code
+
+            All code in here should be safe to call more than once.
+            """
+            pass
 
         def gethlc(self, *args, **kwargs):
             """
@@ -5440,6 +5707,18 @@ init -3 python:
             # now generate the hl data
             return (hl_keys, hl_def, hl_mapping)
 
+        def format_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASAccessoryBase, self).format_exprops()
+
+            # format required-hair-prop into list if itsnt
+            # NOTE: no handilng for non-string types
+            req_hair_prop = self.getprop(store.mas_sprites.EXP_A_RQHP)
+            if store.mas_sprites_json._verify_str(req_hair_prop, False):
+                self.ex_props[store.mas_sprites.EXP_A_RQHP] = [req_hair_prop]
+
         @staticmethod
         def get_priority(acs):
             """
@@ -5581,6 +5860,9 @@ init -3 python:
                 keep_on_desk,
                 hl_data
             )
+
+        def __repr__(self):
+            return "<ACS: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, poseid):
             """
@@ -5812,6 +6094,9 @@ init -3 python:
             )
 
             self.arm_split = arm_split
+
+        def __repr__(self):
+            return "<SACS: {0}>".format(self.name)
 
         def __build_loadstrs_hl(self, prefix, poseid, armcode):
             """
@@ -6251,6 +6536,9 @@ init -3 python:
 
             self.split = split
 
+        def __repr__(self):
+            return "<Hair: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds highlight load strs for a split layer
@@ -6361,6 +6649,18 @@ init -3 python:
                     ))
 
             return loadstrs
+
+        def format_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASHair, self).format_exprops()
+
+            # format required-clothes-prop into list if it isn't.
+            # NOTE: no handling for non-string types
+            req_cloth_prop = self.getprop(store.mas_sprites.EXP_H_RQCP)
+            if store.mas_sprites_json._verify_str(req_cloth_prop, False):
+                self.ex_props[store.mas_sprites.EXP_H_RQCP] = [req_cloth_prop]
 
         def gethlc(self, hair_key, lean, flt, defval=None):
             """
@@ -6523,6 +6823,9 @@ init -3 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
+        def __repr__(self):
+            return "<Clothes: {0}>".format(self.name)
+
         def __build_loadstrs_hl(self, prefix, hl_key):
             """
             Builds loadstrs for body highlights
@@ -6641,6 +6944,26 @@ init -3 python:
             loadstrs.extend(pose_arms.build_loadstrs(c_prefix))
 
             return loadstrs
+
+        def default_exprops(self):
+            """
+            Override of base class function
+            """
+            super(MASClothes, self).default_exprops()
+
+            # default bare shoulder exprops
+            if self.hasprop(store.mas_sprites.EXP_C_BS):
+                self.addprop(store.mas_sprites.EXP_C_BLS)
+                self.addprop(store.mas_sprites.EXP_C_BRS)
+            elif (
+                    self.hasprop(store.mas_sprites.EXP_C_BLS)
+                    and self.hasprop(store.mas_sprites.EXP_C_BRS)
+            ):
+                self.addprop(store.mas_sprites.EXP_C_BS)
+
+            # default DTS compat if BRS is set
+            if self.hasprop(store.mas_sprites.EXP_C_BRS):
+                self.addprop(store.mas_sprites.EXP_C_C_DTS)
 
         def determine_arms(self, leanpose):
             """
@@ -6832,6 +7155,1851 @@ init -3 python:
 
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
 
+python early:
+# # # START: Idle disp stuff
+    import random
+
+    class IdleExpException(Exception):
+        """
+        Custor exception for MASMoniIdleExp
+        """
+        def __init__(self, msg):
+            self.msg = msg
+
+        def __str__(self):
+            return "IdleExpException: " + self.msg
+
+    class MASMoniIdleExp(object):
+        """
+        A class to represent a single idle exp
+
+        PROPERTIES:
+            code - (str) exp code for this exp
+            ref - (ImageReference) image reference to the sprite
+            duration - (int/tuple) duration of this exp in seconds
+            aff_range - (None/tuple) affection range for this exp
+            conditional - (None/str) python condition for this exp
+            weight - (None/int) weight of this exp that's used in random selection
+            tag - (None/str) tag for this exp
+            repeatable - (boolean) boolean indicating whether or not this exp can be reused
+            add_to_tag_map - (boolean) private flag whether or not this exp will be added to the tag map
+                NOTE: usually you want to add exp to the map, unless they are temp. Exps in the map WILL NOT be removed by gc
+        """
+        MIN_WEIGHT = 1
+        MAX_WEIGHT = 100
+
+        exp_tags_map = dict()
+        _conditional_cache = dict()
+
+        def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
+            """
+            Constructor for idle expressions
+
+            IN:
+                code - exp code
+                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                    (Default: tuple (20, 30))
+                aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
+                    Values can be None to not limit lower or upper bounds
+                    (Default: None)
+                conditional - string with condition, assuming it's python code. If when evaled it returns False, this exp won't be used
+                    (Default: None)
+                weight - weight to use when choosing from a pool of exps. Must be between 1 and 100.
+                    NOTE: if this is None, this exp will be FORCED among with other exps that has None as weight. This is to guarantee that we'll get an exp
+                    (Default: 50)
+                tag - tag for this exp. Used to group exps. There's no group for exps with no tag
+                    (Default: None)
+                repeatable - whether or not this exp can be used multiple times
+                    (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
+                    (Default: True)
+            """
+            self.code = code
+            self.ref = renpy.display.image.ImageReference(("monika", code,))
+
+            if isinstance(duration, list):
+                duration = tuple(duration)
+            if isinstance(duration, tuple):
+                _len = len(duration)
+                if _len != 2:
+                    raise IdleExpException(
+                        "Expected a tuple/list of 2 items for the duration property. Got the tuple/list of {0} item{1} instead.".format(
+                            _len,
+                            "s" if _len != 1 else ""
+                        )
+                    )
+
+                elif duration[0] < 1 or duration[1] < 1:
+                    raise IdleExpException(
+                        "Duration for idle expression must be at least one second long. Got: {0} and {1}.".format(
+                            duration[0],
+                            duration[1]
+                        )
+                    )
+
+            elif duration < 1:
+                raise IdleExpException(
+                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
+                        duration[0]
+                    )
+                )
+            self.duration = duration
+
+            # The rest is handles in another method
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+
+        def _finish_init(self, aff_range, conditional, weight, tag, repeatable, add_to_tag_map):
+            """
+            This method only exists so we don't need to copy/paste code.
+            Finishes init process. For args explanation look up __init__
+            """
+            if not mas_affection._isValidAffRange(aff_range):
+                raise IdleExpException(
+                    "Got invalid aff range: {0}.".format(
+                        aff_range
+                    )
+                )
+            self.aff_range = aff_range
+
+            if (
+                conditional is not None
+                and conditional not in MASMoniIdleExp._conditional_cache
+            ):
+                MASMoniIdleExp._conditional_cache[conditional] = renpy.python.py_compile(conditional, "eval")
+            self.conditional = conditional
+
+            if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
+                raise IdleExpException(
+                    "Weight must be between 0 and 100. Got {0}.".format(
+                        weight
+                    )
+                )
+            self.weight = weight
+
+            if tag is not None and add_to_tag_map:
+                if tag in MASMoniIdleExp.exp_tags_map:
+                    MASMoniIdleExp.exp_tags_map[tag].append(self)
+
+                else:
+                    MASMoniIdleExp.exp_tags_map[tag] = [self]
+            self.tag = tag
+            self._add_to_tag_map = add_to_tag_map
+
+            self.repeatable = repeatable
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            if isinstance(self.duration, tuple):
+                duration = "{0}-{1} sec".format(self.duration[0], self.duration[1])
+            else:
+                duration = "{0} sec".format(self.duration)
+
+            return "<MASMoniIdleExp: (code: '{0}', duration: {1}, tag: {2})>".format(
+                self.code,
+                duration,
+                tag
+            )
+
+        def select_duration(self):
+            """
+            A method to select duration for this exp
+
+            OUT:
+                int in range of the duration property of this exp, or the prop itself if it's not a range
+            """
+            if isinstance(self.duration, tuple):
+                return random.randint(self.duration[0], self.duration[1])
+            return self.duration
+
+        def check_aff(self, aff=None):
+            """
+            Checks if we're within aff range of this exp
+
+            IN:
+                aff - affection to check, if None, uses current affection lvl
+                    (Default: None)
+
+            OUT:
+                boolean: True if we're within the range, False otherwise
+
+            ASSUMES:
+                mas_curr_affection
+                mas_affection._betweenAff
+            """
+            if self.aff_range is None:
+                return True
+
+            if aff is None:
+                aff = mas_curr_affection
+            return mas_affection._betweenAff(self.aff_range[0], aff, self.aff_range[1])
+
+        def check_conditional(self):
+            """
+            Checks conditional for this exp
+
+            OUT:
+                True if we passed, False otherwise
+            """
+            if self.conditional is None:
+                return True
+
+            code_obj = MASMoniIdleExp._conditional_cache[self.conditional]
+            return bool(renpy.python.py_eval_bytecode(code_obj))
+
+        @staticmethod
+        def weighted_choice(exps):
+            """
+            Does weighted choice
+
+            IN:
+                exps - list/tuple of MASMoniIdleExp
+
+            OUT:
+                MASMoniIdleExp or None if was given incorrect input
+
+            ASSUMES:
+                mas_utils.weightedChoice
+            """
+            rng_choice = list()
+            weighted_choice = list()
+
+            for exp in exps:
+                if exp.weight is None:
+                    rng_choice.append(exp)
+
+                else:
+                    weighted_choice.append((exp, exp.weight))
+
+            if rng_choice:
+                exp = random.choice(rng_choice)
+
+            else:
+                exp = mas_utils.weightedChoice(weighted_choice)
+
+            return exp
+
+    class MASMoniIdleExpGroup(MASMoniIdleExp):
+        """
+        A class to represent a group of MASMoniIdleExp's
+
+        PROPERTIES:
+            exps - (list) exps (MASMoniIdleExp) in this group
+            current_index - (int) id of the currently selected exp
+            These are the same as for MASMoniIdleExp:
+                aff_range
+                conditional
+                weight
+                tag
+                repeatable
+                add_to_tag_map
+        """
+        def __init__(self, exps, aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
+            """
+            Constructor for groups of idle exps
+            NOTE: Check MASMoniIdleExp for explanation of params/methods
+
+            IN:
+                exps - list of or a single MASMoniIdleExp
+                    NOTE: technically you CAN do inner groups by passing in MASMoniIdleExpGroup
+                aff_range - affection range for this group. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                conditional - string with condition. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
+                    NOTE: if this is None, this group will be FORCED among with other exps/groups that has None as weight.
+                        This is to guarantee that we'll get this if we want so
+                    (Default: 50)
+                tag - tag for this group. Used to group groups
+                    (Default: None)
+                repeatable - whether or not this group can be used multiple times
+                    (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
+                    (Default: True)
+            """
+            if isinstance(exps, tuple):
+                exps = list(exps)
+            elif not isinstance(exps, list):
+                exps = [exps]
+            self.exps = exps
+            self.current_index = -1
+
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self._validate_children_aff_range()
+
+        def _validate_children_aff_range(self):
+            """
+            Validates aff range of the exps
+
+            ASSUMES:
+                we finished init this group
+            """
+            if self.aff_range is not None:
+                for exp in self.exps:
+                    if exp.aff_range is None:
+                        exp.aff_range = self.aff_range
+                        if isinstance(exp, MASMoniIdleExpGroup):
+                            exp._validate_children_aff_range()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            return "<MASMoniIdleExpGroup (group: {0}, tag: {1})>".format(
+                self.exps,
+                tag
+            )
+
+        def select_duration(self):
+            """
+            Meaningless as hawaiian pizza
+            """
+            return NotImplemented
+
+        def check_aff(self, aff=None, check_children=True):
+            """
+            Checks if we're within aff range of this group
+
+            IN:
+                aff - affection to check, if None, uses current affection lvl
+                    (Default: None)
+                check_children - boolean wheather or not we should check this group's exps aff ranges as well
+                    (Default: True)
+
+            OUT:
+                boolean: True if we're within the range, False otherwise
+
+            ASSUMES:
+                mas_curr_affection
+                mas_affection._betweenAff
+            """
+            if aff is None:
+                aff = mas_curr_affection
+
+            return (
+                (
+                    self.aff_range is None
+                    or mas_affection._betweenAff(self.aff_range[0], aff, self.aff_range[1])
+                )
+                and (
+                    not check_children
+                    or any([exp.check_aff(aff) for exp in self.exps])
+                )
+            )
+
+        def check_conditional(self, check_children=True):
+            """
+            Checks conditional for this group
+
+            IN:
+                check_children - boolean wheather or not we should check this group's exps conditionals as well
+                    (Default: True)
+
+            OUT:
+                True if we passed, False otherwise
+            """
+            return (
+                (
+                    self.conditional is None
+                    or bool(
+                        renpy.python.py_eval_bytecode(
+                            MASMoniIdleExpGroup._conditional_cache[self.conditional]
+                        )
+                    )
+                )
+                and (
+                    not check_children
+                    or any([exp.check_conditional() for exp in self.exps])
+                )
+            )
+
+        def progress_group(self):
+            """
+            Progresses the group to the next exp
+
+            OUT:
+                tuple:
+                    selected exp or None
+                        NOTE: Ideally we should never get a None from this
+                    boolean whether or not we've finished this group (so we can move to the next one)
+                    boolean whether or not this group is empty (so the group can be removed)
+            """
+            exp = None
+            max_index = len(self.exps) - 1
+            self.current_index += 1
+
+            # Try to select an exp while we can/'til we find one
+            while self.current_index <= max_index and exp is None:
+                exp = self.exps[self.current_index]
+
+                # Validate it
+                if exp.check_aff() and exp.check_conditional():
+                    # Pop if it's a one'n'done one
+                    if not exp.repeatable:
+                        self.exps.pop(self.current_index)
+                        self.current_index -= 1# We need to decrement the id
+
+                # Or try again with the next id
+                else:
+                    exp = None
+                    self.current_index += 1
+
+            # If we reached the max index, then we're done with this group
+            is_done = (self.current_index >= max_index) or exp is None
+            # If we popped all the exps from this group, then we should ask to remove it
+            is_empty = not bool(self.exps)
+
+            # Reset the index since we may reuse this group later
+            if is_done and not is_empty:
+                self.current_index = -1
+
+            return exp, is_done, is_empty
+
+    class MASMoniIdleExpRngGroup(MASMoniIdleExpGroup):
+        """
+        Like MASMoniIdleExpGroup, but chooses exps at random
+
+        PROPERTIES:
+            exps - (list) exps (MASMoniIdleExp) in this group
+            max_uses - (int) max number of random selections for this group before switching to next exp/group
+            uses - (int) how many times we used this group to select an exp
+            These are the same as for MASMoniIdleExp:
+                aff_range
+                conditional
+                weight
+                tag
+                repeatable
+                add_to_tag_map
+        """
+        def __init__(self, exps, max_uses=None, aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
+            """
+            Constructor for groups of random idle exps
+            NOTE: Check MASMoniIdleExp and MASMoniIdleExpGroup for explanation of params/methods
+
+            IN:
+                exps - list of or a single MASMoniIdleExp
+                    NOTE: technically you CAN do inner groups by passing in MASMoniIdleExpGroup / MASMoniIdleExpRngGroup
+                max_uses - number of times this group will select an exp before ending its cycle. If None,
+                    this'll be set to the number of children
+                    (Default: None)
+                aff_range - affection range for this group. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                conditional - string with condition. If this doesn't pass, no exps of this group will be shown
+                    (Default: None)
+                weight - weight to use when choosing from a pool of exps/groups. Must be between 1 and 100.
+                    NOTE: if this is None, this group will be FORCED among with other exps/groups that has None as weight.
+                        This is to guarantee that we'll get this if we want so
+                    (Default: 50)
+                tag - tag for this group. Used to group groups
+                    (Default: None)
+                repeatable - whether or not this group can be used multiple times
+                    (Default: True)
+                add_to_tag_map - whether or not this exp will be added to the tag map using its tag
+                    (Default: True)
+            """
+            if isinstance(exps, tuple):
+                exps = list(exps)
+            elif not isinstance(exps, list):
+                exps = [exps]
+            self.exps = exps
+
+            if max_uses is None:
+                max_uses = len(self.exps)
+            self.max_uses = max_uses
+            self.uses = 0
+
+            self._finish_init(aff_range, conditional, weight, tag, repeatable, add_to_tag_map)
+            self._validate_children_aff_range()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            if self.tag is None:
+                tag = "None"
+            else:
+                tag = "'{0}'".format(self.tag)
+
+            return "<MASMoniIdleExpRngGroup (group: {0}, tag: {1})>".format(
+                self.exps,
+                tag
+            )
+
+        def progress_group(self):
+            """
+            Progresses the group to the next exp
+
+            OUT:
+                tuple:
+                    selected exp or None
+                        NOTE: Ideally we should never get a None from this
+                    boolean whether or not we've finished this group (so we can move to the next one)
+                    boolean whether or not this group is empty (so the group can be removed)
+            """
+            exp = None
+
+            if self.uses < self.max_uses:
+                self.uses += 1
+                exp_pool = filter(lambda exp: exp.check_aff() and exp.check_conditional(), self.exps)
+                exp = MASMoniIdleExpRngGroup.weighted_choice(exp_pool)
+
+                if exp is not None and not exp.repeatable:
+                    self.exps.remove(exp)
+
+            is_done = (self.uses >= self.max_uses) or exp is None
+            is_empty = not bool(self.exps)
+
+            if is_done and not is_empty:
+                self.uses = 0
+
+            return exp, is_done, is_empty
+
+    class MASMoniIdleDisp(renpy.display.core.Displayable):
+        """
+        Advanced displayable for managing Moni's idle sprites
+
+        PROPERTIES:
+            exp_map - (dict) map between exps and aff lvls
+            forced_exps - (list) forced exps
+            current_exp - (MASMoniIdleExp) currently selected exp
+            dissolve - (Dissolve) the Dissolve transform we're currently rendering
+            exp_groups - (list) MASMoniIdleExpGroup objects that are being 'itered' through
+            fallback - (MASMoniIdleExp) fallback exp. Must ALWAYS be available
+            redraw_st - (int/float) required shown timebase to switch to the next exp
+            current_st - (float) current shown timebase
+            duration - (float) duration (in seconds) for the current exp
+                (basically the difference between redraw_st and current_st)
+            dissolve_duration - (float) the duration of the current dissolve
+            forced_mode - (boolean) indicates that we've forced an expression
+            group_mode - (boolean) - indicates that we're handling a group of expressions
+        """
+        # eyes codes whose transforms we manually reset
+        # EYES_EXP_CODES = ("k", "n")
+        # Dissolve for exp changes
+        QUICK_DISSOLVE = 0.1
+        # Dissolve for pose changes
+        SLOW_DISSOLVE = 0.25
+
+        BLIT_COORDS = (0, 0)
+
+        # Cache the dissolves so we can reuse them
+        _transform_cache = dict()
+
+        def __init__(self, exps=None, fallback=None):
+            """
+            Constructor for idle displayable
+
+            IN:
+                exps - list/tuple of MASMoniIdleExp / MASMoniIdleExpGroup objects
+                    (Default: None)
+                fallback - MASMoniIdleExp that is used as a fallback
+                    when all other exps aren't passing checks. If None, a standart MASMoniIdleExp
+                    will be used with the '1esa' exp code.
+                    NOTE: This one MUST ALWAYS be valid.
+                    (Default: None)
+
+            ASSUMES:
+                mas_affection._aff_order
+            """
+            super(MASMoniIdleDisp, self).__init__()
+
+            if exps is None:
+                exps = tuple()
+
+            self.exp_map = dict()
+            for aff_lvl in mas_affection._aff_order:
+                self.exp_map[aff_lvl] = [exp for exp in exps if exp.check_aff(aff_lvl)]
+
+            self.forced_exps = list()
+            self.exp_groups = list()
+
+            self.forced_mode = False
+            self.group_mode = False
+            self._predicted_modes = {"forced_mode": None, "group_mode": None}
+
+            if fallback is None:
+                fallback = MASMoniIdleExp("1esa", duration=10, tag="fallback", add_to_tag_map=False)
+            self.fallback = fallback
+            self.current_exp = fallback
+            self._predicted_exp = None
+            self.current_img = None
+            self._skip_dissolve = False
+
+            self._last_st = 0.0
+            self.redraw_st = 0.0
+            self.current_st = 0.0
+            self.dissolve_duration = 0.0
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<MASMoniIdleDisp: (curr exp: {0}, next exp in: {1} sec)>".format(
+                self.current_exp,
+                self.duration
+            )
+
+        @property
+        def duration(self):
+            """
+            Prop for the current exp duration
+            NOTE: we round the value
+
+            OUT:
+                float - duration of the current exp in seconds
+            """
+            return round(self.redraw_st - self.current_st, 1)
+
+        def update(self):
+            """
+            This causes this disp to update
+            """
+            self.redraw_st = 0.0
+            self.dissolve_duration = 0.0
+            renpy.redraw(self, 0.0)
+
+        def add(self, exps, redraw=False):
+            """
+            Adds expressions to this idle disp
+
+            IN:
+                exps - list of MASMoniIdleExp / MASMoniIdleExpGroup objects or a single object
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+            """
+            # Workaround for single obj
+            if not isinstance(exps, (tuple, list)):
+                exps = (exps,)
+
+            for exp in exps:
+                for aff_lvl, exp_list in self.exp_map.iteritems():
+                    if exp.check_aff(aff_lvl):
+                        exp_list.append(exp)
+
+            if redraw:
+                self.update()
+
+        def add_by_code(self, code, redraw=False, **kwargs):
+            """
+            Adds an expression to this idle disp generating it from exp code
+            NOTE: the exp won't be added to the tag map unless you specify it to
+
+            IN:
+                code - exp code
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+                kwargs - additional kwargs that will be passed into MASMoniIdleExp
+            """
+            if "add_to_tag_map" not in kwargs:
+                kwargs["add_to_tag_map"] = False
+
+            self.add(
+                MASMoniIdleExp(code, **kwargs),
+                redraw=redraw
+            )
+
+        def add_by_tag(self, tag, redraw=False):
+            """
+            Adds an expression to this disp using tags
+            Uses weighted choice to select an exp If there's more
+            than one exp with this tag
+
+            IN:
+                tag - tag tou se
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+            """
+            exps = MASMoniIdleExp.exp_tags_map.get(tag, tuple())
+            exp = MASMoniIdleExp.weighted_choice(exps)
+            if exp is not None:
+                self.add(exp, redraw=redraw)
+
+        def remove(self, exp, redraw=False):
+            """
+            Removes an expression by instance
+
+            IN:
+                exp - MASMoniIdleExp / MASMoniIdleExpGroup object
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+            """
+            need_redraw = self.current_exp is exp
+
+            for exp_list in self.exp_map.itervalues():
+                if exp in exp_list:
+                    exp_list.remove(exp)
+                    need_redraw = True
+
+            if (
+                isinstance(exp, MASMoniIdleExpGroup)
+                and exp in self.exp_groups
+            ):
+                self.exp_groups[:] = list()
+                need_redraw = True
+
+            if self._predicted_exp is exp:
+                self._predicted_exp = None
+
+            if redraw and need_redraw:
+                self.update()
+
+        def remove_by_tag(self, tag, redraw=False):
+            """
+            Removes expressions by tag
+
+            IN:
+                tag - tag to filter by
+                redraw - whether or not we're forcing a redraw
+                    (Default: False)
+            """
+            need_redraw = self.current_exp.tag == tag
+
+            for group in self.exp_groups:
+                if group.tag == tag:
+                    self.exp_groups[:] = list()
+                    need_redraw = True
+                    break
+
+            for exp_list in self.exp_map.itervalues():
+                for exp_id in range(len(exp_list)-1, -1, -1):
+                    if exp_list[exp_id].tag == tag:
+                        exp_list.pop(exp_id)
+                        need_redraw = True
+
+            if self._predicted_exp is not None and self._predicted_exp.tag == tag:
+                self._predicted_exp = None
+
+            if redraw and need_redraw:
+                self.update()
+
+        def force(self, exps, clear=True, redraw=True, skip_dissolve=False):
+            """
+            Forces current idle expression to be exps
+            NOTE: the weight and repeatable params are ignored
+
+            IN:
+                exps - list of MASMoniIdleExp / MASMoniIdleExpGroup objects or a single object
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+            """
+            if clear:
+                self.forced_exps[:] = list()
+                self.exp_groups[:] = list()
+
+            if isinstance(exps, (MASMoniIdleExp, MASMoniIdleExpGroup)):
+                self.forced_exps.append(exps)
+
+            else:
+                if isinstance(exps, tuple):
+                    exps = list(exps)
+                self.forced_exps += exps
+
+            if clear:
+                self._predicted_exp = None
+
+            if skip_dissolve:
+                self._skip_dissolve = True
+
+            if redraw:
+                self.update()
+
+        def force_by_code(self, code, clear=True, redraw=True, skip_dissolve=False, **kwargs):
+            """
+            Forces current idle expression to a new exp using exp code
+            NOTE: the exp won't be added to the tag map unless you specify it to
+
+            IN:
+                code - exp code
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+                kwargs - additional kwargs that will be passed into MASMoniIdleExp
+            """
+            if "add_to_tag_map" not in kwargs:
+                kwargs["add_to_tag_map"] = False
+
+            self.force(
+                MASMoniIdleExp(code, **kwargs),
+                clear=clear,
+                skip_dissolve=skip_dissolve,
+                redraw=redraw
+            )
+
+        def force_by_tag(self, tag, clear=True, redraw=True, skip_dissolve=False):
+            """
+            Forces current idle expression to a new exp using exp tag.
+            If there's several exp with the same tag, we use weighted choice.
+
+            IN:
+                tag - exp tag
+                clear - whether or not we'll clear currently forced/queued exps
+                    (Default: True)
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+            """
+            exps = MASMoniIdleExp.exp_tags_map.get(tag, tuple())
+            exp = MASMoniIdleExp.weighted_choice(exps)
+            if exp is not None:
+                self.force(exp, clear=clear, redraw=redraw, skip_dissolve=skip_dissolve)
+
+        def unforce(self, exp, redraw=True, skip_dissolve=False):
+            """
+            Removes forced exp by instance
+
+            IN:
+                exp - MASMoniIdleExp / MASMoniIdleExpGroup object
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+            """
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
+
+            need_redraw = self.current_exp is exp
+
+            if exp in self.forced_exps:
+                self.forced_exps.remove(exp)
+                need_redraw = True
+
+            if (
+                isinstance(exp, MASMoniIdleExpGroup)
+                and exp in self.exp_groups
+            ):
+                self.exp_groups[:] = list()
+                need_redraw = True
+
+            if self._predicted_exp is exp:
+                self._predicted_exp = None
+
+            if skip_dissolve:
+                self._skip_dissolve = True
+
+            if redraw and need_redraw:
+                self.update()
+
+        def unforce_by_tag(self, tag, redraw=True, skip_dissolve=False):
+            """
+            Removes forced exp by tag
+
+            IN:
+                tag - tag to filter by
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+            """
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
+
+            need_redraw = self.current_exp.tag == tag
+
+            for group in self.exp_groups:
+                if group.tag == tag:
+                    self.exp_groups[:] = list()
+                    need_redraw = True
+                    break
+
+            for f_exp_id in range(len(self.forced_exps)-1, -1, -1):
+                if self.forced_exps[f_exp_id].tag == tag:
+                    self.forced_exps.pop(f_exp_id)
+                    need_redraw = True
+
+            if self._predicted_exp is not None and self._predicted_exp.tag == tag:
+                self._predicted_exp = None
+
+            if skip_dissolve:
+                self._skip_dissolve = True
+
+            if redraw and need_redraw:
+                self.update()
+
+        def unforce_all(self, redraw=True, skip_dissolve=False):
+            """
+            Removes all forced exp
+
+            IN:
+                redraw - whether or not we're forcing a redraw
+                    (Default: True)
+                skip_dissolve - whether or not we skip dissolve transition for the next exp change
+                    (Default: False)
+            """
+            if not (self.forced_mode or self.forced_exps or self._predicted_modes["forced_mode"]):
+                return
+
+            if (
+                (self.forced_mode and self.group_mode)
+                or (self._predicted_modes["forced_mode"] and self._predicted_modes["group_mode"])
+            ):
+                self.exp_groups[:] = list()
+
+            self._predicted_exp = None
+
+            self.forced_exps[:] = list()
+
+            if skip_dissolve:
+                self._skip_dissolve = True
+
+            if redraw:
+                self.update()
+
+        def __handle_group(self, group, add_to_list=True):
+            """
+            Handles a group OwO
+
+            OUT:
+                MASMoniIdleExp
+            """
+            # Get actuall exp
+            exp, is_done, is_empty = group.progress_group()
+
+            # This should never happen
+            if exp is None:
+                self.remove(group)
+                exp = self.fallback
+
+            # If the group is empty, we remove it
+            elif is_empty:
+                self.remove(group)
+
+            # If this gruop cycle has ended, we remove it from the currently selected groups
+            elif is_done:
+                if group in self.exp_groups:
+                    self.exp_groups.remove(group)
+
+                # Also remove it from the pool if it's 'unrepeatable'
+                if not group.repeatable:
+                    self.remove(group)
+
+            # Otherwise everything is good, add to the list of groups if needed
+            elif add_to_list:
+                self.exp_groups.append(group)
+
+            return exp
+
+        def __select_exp(self):
+            """
+            Selects an appropriate expression that we can show now
+
+            OUT:
+                MASMoniIdleExp
+
+            ASSUMES:
+                mas_curr_affection
+                mas_utils.weightedChoice
+            """
+            exp = None
+            exp_id = None
+            chose_group = False
+
+            # If we're currently using a group, then we continue
+            while exp is None and self.exp_groups:
+                chose_group = True
+
+                group = self.exp_groups[-1]
+                # We need to check the group in case of aff/cond changes
+                if (
+                    group.check_aff(check_children=False)
+                    and group.check_conditional(check_children=False)
+                ):
+                    exp = self.__handle_group(group, add_to_list=False)
+
+                # This group should be removed as inappropriate
+                else:
+                    self.exp_groups.pop(-1)
+
+            # Otherwise try to select one of forced exps
+            while exp is None and self.forced_exps:
+                self._predicted_modes["forced_mode"] = True
+                exp = self.forced_exps.pop(0)
+                if not exp.check_aff() or not exp.check_conditional():
+                    exp = None
+
+            # If we still haven't chosen anything, select one of base exps
+            if exp is None:
+                self._predicted_modes["group_mode"] = False
+                self._predicted_modes["forced_mode"] = False
+                exp_list = self.exp_map[mas_curr_affection]
+                if exp_list:
+                    choices = list()
+                    forced_choices = list()
+                    has_valid_exp = False
+
+                    for id, exp in enumerate(exp_list):
+                        if exp.check_conditional():
+                            has_valid_exp = True
+                            # For convinience we force exps whose weight is None
+                            if exp.weight is None:
+                                forced_choices.append(id)
+
+                            # Otherwise add to weighted choice
+                            else:
+                                choices.append((id, exp.weight))
+
+                    if has_valid_exp:
+                        if forced_choices:
+                            exp_id = random.choice(forced_choices)
+
+                        else:
+                            exp_id = mas_utils.weightedChoice(choices)
+
+                        exp = exp_list[exp_id]
+
+                    else:
+                        exp = None
+
+            # Handle inner groups
+            while isinstance(exp, MASMoniIdleExpGroup):
+                self._predicted_modes["group_mode"] = True
+                chose_group = True
+                exp = self.__handle_group(exp, add_to_list=True)
+
+            # If we STILL haven't chosen anything, we use the fallback
+            if exp is None:
+                self._predicted_modes["group_mode"] = False
+                exp = self.fallback
+
+            # Otherwise check if we should remove this exp
+            elif not chose_group and not exp.repeatable:
+                self.remove(exp)
+
+            return exp
+
+        def select_exp(self):
+            """
+            Actually selects an expression. If we had a predicted exp, return it,
+            otherwise select one now.
+
+            OUT:
+                MASMoniIdleExp
+            """
+            if (
+                self._predicted_exp is not None
+                and self._predicted_exp.check_aff()
+                and self._predicted_exp.check_conditional()
+            ):
+                exp = self._predicted_exp
+
+            else:
+                exp = self.__select_exp()
+
+            self._predicted_exp = None
+            self.forced_mode = self._predicted_modes["forced_mode"]
+            self.group_mode = self._predicted_modes["group_mode"]
+
+            # We meed to reset some params for wink transforms since RenPy is dum
+            # if exp.code[1] in MASMoniIdleDisp.EYES_EXP_CODES:
+            #     MASMoniIdleDisp.__reset_transform(exp.ref._target(), exp.code)
+
+            return exp
+
+        def render(self, width, height, st, at):
+            """
+            Render for this disp
+            I have no idea how this works
+            """
+            if st > self._last_st:
+                self.current_st += (st - self._last_st)
+
+            # else:
+            #     self.current_st += st
+
+            self._last_st = st
+
+            # Is it the time to select a new exp/stop dissolving?
+            if (
+                self.current_st >= self.redraw_st
+                or (
+                    self.dissolve_duration == 0.0
+                    and (
+                        not self.current_exp.check_aff()
+                        or not self.current_exp.check_conditional()
+                    )
+                )
+            ):
+                self.current_st = 0.0
+
+                # If we were dissolving, we just finished
+                # Set next redraw using the exp duration
+                if self.dissolve_duration != 0.0:
+                    self.current_img = self.current_exp.ref
+                    self.dissolve_duration = 0.0
+                    self.redraw_st = self.current_exp.select_duration()
+                    redraw_time = self.redraw_st
+
+                # The current exp has expired, we need to select a new one
+                else:
+                    next_exp = self.select_exp()
+
+                    # New pose? Dissolve
+                    if not self._skip_dissolve and next_exp.code[0] != self.current_exp.code[0]:
+                        key = (MASMoniIdleDisp.SLOW_DISSOLVE, self.current_exp.code, next_exp.code)
+
+                        if key not in MASMoniIdleDisp._transform_cache:
+                            self.current_img = renpy.display.transition.Dissolve(
+                                time=MASMoniIdleDisp.SLOW_DISSOLVE,
+                                old_widget=self.current_exp.ref,
+                                new_widget=next_exp.ref,
+                                alpha=True
+                            )
+                            MASMoniIdleDisp._transform_cache[key] = self.current_img
+
+                        else:
+                            self.current_img = MASMoniIdleDisp._transform_cache[key]
+
+                        self.dissolve_duration = MASMoniIdleDisp.SLOW_DISSOLVE
+                        self.redraw_st = MASMoniIdleDisp.SLOW_DISSOLVE
+                        redraw_time = self.redraw_st
+
+                    # Different exp? Dissolve
+                    elif not self._skip_dissolve and next_exp.code != self.current_exp.code:
+                        key = (MASMoniIdleDisp.QUICK_DISSOLVE, self.current_exp.code, next_exp.code)
+
+                        if key not in MASMoniIdleDisp._transform_cache:
+                            self.current_img = renpy.display.transition.Dissolve(
+                                time=MASMoniIdleDisp.QUICK_DISSOLVE,
+                                old_widget=self.current_exp.ref,
+                                new_widget=next_exp.ref,
+                                alpha=True
+                            )
+                            MASMoniIdleDisp._transform_cache[key] = self.current_img
+
+                        else:
+                            self.current_img = MASMoniIdleDisp._transform_cache[key]
+
+                        self.dissolve_duration = MASMoniIdleDisp.QUICK_DISSOLVE
+                        self.redraw_st = MASMoniIdleDisp.QUICK_DISSOLVE
+                        redraw_time = self.redraw_st
+
+                    # Otherwise we don't need to dissolve since the exp is the same (or we decided to skip dissolve in/out)
+                    else:
+                        self.current_img = next_exp.ref
+                        self.dissolve_duration = 0.0
+                        self._skip_dissolve = False
+                        self.redraw_st = next_exp.select_duration()
+                        redraw_time = self.redraw_st
+
+                    # Now we can set the current exp
+                    self.current_exp = next_exp
+
+            # Otherwise we come here too early
+            else:
+                redraw_time = self.redraw_st - self.current_st
+
+            img_render = renpy.render(self.current_img, width, height, self.current_st, at)
+
+            main_render = renpy.Render(img_render.width, img_render.height)
+            # main_render.place(img, x=0, y=0, st=render_st)
+            main_render.blit(img_render, MASMoniIdleDisp.BLIT_COORDS)
+
+            renpy.redraw(self, redraw_time)
+
+            return main_render
+
+        def get_placement(self):
+            """
+            Override that returns a more correct placement for this disp
+            """
+            xpos, ypos, xanchor, yanchor, xoffset, yoffset, subpixel = self.current_exp.ref.get_placement()
+
+            if xoffset is None:
+                xoffset = 0
+            if yoffset is None:
+                yoffset = 0
+
+            return xpos, ypos, xanchor, yanchor, xoffset, yoffset, subpixel
+
+        def visit(self):
+            """
+            Returns exps for prediction
+
+            OUT:
+                list of displayables
+            """
+            if self._predicted_exp is None:
+                self._predicted_exp = self.__select_exp()
+            return [self.current_exp.ref, self._predicted_exp.ref]
+
+        def do_after_topic_logic(self):
+            """
+            Checks if we should reset the current exp
+            since we just finished a topic, and if we should, does it
+            NOTE: this is intended to be called in call_next_event
+            """
+            if not self.forced_mode:
+                # Makes no sense to continue the group because of the topic interruption
+                if self.group_mode:
+                    self.exp_groups[:] = list()
+                    self._predicted_exp = None
+                    self._skip_dissolve = True
+                    self.update()
+
+                # If the current exp expires soon, we just skip it to avoid unnatural exp/pose changes
+                elif self.duration < 2:
+                    self._skip_dissolve = True
+                    self.update()
+
+        # @staticmethod
+        # def __reset_transform(transform, code):
+        #     """
+        #     A method to partially reset a transform
+
+        #     IN:
+        #         transform - transform to reset params for
+        #         code - exp code that's used to reset the transforms' child
+        #     """
+        #     transform.st = 0
+        #     transform.at = 0
+        #     transform.block = None
+        #     # transform.predict_block = None
+        #     transform.atl_state = None
+        #     transform.done = False
+        #     transform.transform_event = None
+        #     transform.last_transform_event = None
+        #     transform.last_child_transform_event = None
+        #     transform.atl_st_offset = 0
+
+        #     og_child = renpy.display.image.ImageReference(("monika", code,))
+        #     transform.set_child(og_child)
+        #     transform.raw_child = og_child
+
+    class MASMoniBlinkTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes blinking possible
+        (replaces the old ATL which was quite buggy)
+        """
+        # Consts for blink steps
+        STEP_START = "start"
+        STEP_DB_START = "db_start"
+        STEP_DB_END = "db_end"
+        STEP_END = "end"
+
+        # The chance for double blink
+        DB_CHANCE = 0.01
+
+        # Blink timings (min, max)
+        STEP_START_DUR_MIN = 3
+        STEP_START_DUR_MAX = 7
+
+        STEP_END_DUR_MIN = 0.06
+        STEP_END_DUR_MAX = 0.07
+
+        STEP_END_INTO_DB_DUR_MIN = 0.02
+        STEP_END_INTO_DB_DUR_MAX = 0.04
+
+        STEP_DB_START_DUR_MIN = 0.1
+        STEP_DB_START_DUR_MAX = 0.15
+
+        STEP_DB_END_DUR_MIN = STEP_END_DUR_MIN
+        STEP_DB_END_DUR_MAX = STEP_END_DUR_MAX
+
+        # Dissolves durations
+        STEP_START_DIS_DUR = 0.01
+        STEP_END_DIS_DUR = 0.01
+        STEP_DB_START_DIS_DUR = STEP_START_DIS_DUR
+        STEP_DB_END_DIS_DUR = STEP_END_DIS_DUR
+
+        WINK_EYES = ("k", "n")
+
+        BLIT_COORDS = (0, 0)
+
+        # We keep these params in the class' namespace so we can keep the blink state between different exp
+        current_img = None
+        current_step = STEP_START
+        next_step = STEP_START
+        _last_at = 0.0
+        current_at = 0.0
+        redraw_at = 0.0
+
+        def __init__(self, open_eyes_img, closed_eyes_img):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                open_eyes_img - FULL name of the image for open eyes
+                closed_eyes_img - FULL name of the image for closed eyes
+            """
+            super(MASMoniBlinkTransform, self).__init__(self)
+
+            self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
+            self.closed_eyes_img = renpy.display.image.ImageReference(closed_eyes_img)
+            self.transform_map = {
+                MASMoniBlinkTransform.STEP_START: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_START_DIS_DUR,
+                    old_widget=self.closed_eyes_img,
+                    new_widget=self.open_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_END: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_END_DIS_DUR,
+                    old_widget=self.open_eyes_img,
+                    new_widget=self.closed_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_DB_START: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_DB_START_DIS_DUR,
+                    old_widget=self.closed_eyes_img,
+                    new_widget=self.open_eyes_img,
+                    alpha=True
+                ),
+                MASMoniBlinkTransform.STEP_DB_END: renpy.display.transition.Dissolve(
+                    time=MASMoniBlinkTransform.STEP_DB_END_DIS_DUR,
+                    old_widget=self.open_eyes_img,
+                    new_widget=self.closed_eyes_img,
+                    alpha=True
+                )
+            }
+            # Do this here to save some time during rendering
+            self.is_wink = bool(open_eyes_img.split("monika ")[-1].split("_")[0][1] in MASMoniBlinkTransform.WINK_EYES)
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            # If st == 0, we do not increment the current at,
+            # that's so Monika doesn't blink immediately after closed eyes
+            if at > MASMoniBlinkTransform._last_at and st != 0:
+                MASMoniBlinkTransform.current_at += (at - MASMoniBlinkTransform._last_at)
+
+            MASMoniBlinkTransform._last_at = at
+
+            # st == 0 means we just switched to this exp, might want to extend the blink dur for little bit
+            if st == 0 and MASMoniBlinkTransform.current_step in (MASMoniBlinkTransform.STEP_START, MASMoniBlinkTransform.STEP_DB_START):
+                # NOTE: If this is a wink and we just started showing it, we extend the blink duration
+                # so Monika can finish her wink. This is a bit gross, but gives us better visuals.
+                # If we ever need such handling for the other eyes, we might need a better system
+                if self.is_wink:
+                    MASMoniBlinkTransform.current_at = MASMoniBlinkTransform.redraw_at - MASMoniWinkTransform.STEP_START_DUR
+
+                # Otherwise just some arbitrary number if it's the time to blink soon
+                elif MASMoniBlinkTransform.redraw_at - MASMoniBlinkTransform.current_at < 0.5:
+                    MASMoniBlinkTransform.current_at = MASMoniBlinkTransform.redraw_at - 0.25
+
+                # Sanitize it
+                # MASMoniBlinkTransform.redraw_at = min(MASMoniBlinkTransform.redraw_at, MASMoniBlinkTransform.STEP_START_DUR_MAX)
+                MASMoniBlinkTransform.current_at = max(0, MASMoniBlinkTransform.current_at)
+
+            # at == 0 means we just showed Monika, no transition at all
+            if at == 0:
+                MASMoniBlinkTransform.current_step = MASMoniBlinkTransform.STEP_START
+                MASMoniBlinkTransform.current_at = 0.0
+                MASMoniBlinkTransform.current_img = self.open_eyes_img
+                MASMoniBlinkTransform.redraw_at = random.randint(MASMoniBlinkTransform.STEP_START_DUR_MIN, MASMoniBlinkTransform.STEP_START_DUR_MAX)
+                MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_END
+
+            # Otherwise check if we should move to the next step
+            elif MASMoniBlinkTransform.current_at >= MASMoniBlinkTransform.redraw_at:
+                MASMoniBlinkTransform.current_at = 0.0
+                MASMoniBlinkTransform.current_img = self.transform_map[MASMoniBlinkTransform.next_step]
+
+                # First step (open eyes)
+                if MASMoniBlinkTransform.next_step == MASMoniBlinkTransform.STEP_START:
+                    MASMoniBlinkTransform.current_step = MASMoniBlinkTransform.STEP_START
+                    MASMoniBlinkTransform.redraw_at = random.randint(MASMoniBlinkTransform.STEP_START_DUR_MIN, MASMoniBlinkTransform.STEP_START_DUR_MAX)
+                    MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_END
+
+                # Last step (close eyes)
+                elif MASMoniBlinkTransform.next_step == MASMoniBlinkTransform.STEP_END:
+                    MASMoniBlinkTransform.current_step = MASMoniBlinkTransform.STEP_END
+                    # Do we want a double blink?
+                    if random.random() > MASMoniBlinkTransform.DB_CHANCE:
+                        # No
+                        MASMoniBlinkTransform.redraw_at = random.uniform(MASMoniBlinkTransform.STEP_END_DUR_MIN, MASMoniBlinkTransform.STEP_END_DUR_MAX)
+                        MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_START
+
+                    else:
+                        # Yes
+                        MASMoniBlinkTransform.redraw_at = random.uniform(MASMoniBlinkTransform.STEP_END_INTO_DB_DUR_MIN, MASMoniBlinkTransform.STEP_END_INTO_DB_DUR_MAX)
+                        MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_DB_START
+
+                # Substep start (double blink open eyes)
+                elif MASMoniBlinkTransform.next_step == MASMoniBlinkTransform.STEP_DB_START:
+                    MASMoniBlinkTransform.current_step = MASMoniBlinkTransform.STEP_DB_START
+                    MASMoniBlinkTransform.redraw_at = random.uniform(MASMoniBlinkTransform.STEP_DB_START_DUR_MIN, MASMoniBlinkTransform.STEP_DB_START_DUR_MAX)
+                    MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_DB_END
+
+                # Substep end (double blink close eyes)
+                elif MASMoniBlinkTransform.next_step == MASMoniBlinkTransform.STEP_DB_END:
+                    MASMoniBlinkTransform.current_step = MASMoniBlinkTransform.STEP_DB_END
+                    MASMoniBlinkTransform.redraw_at = random.uniform(MASMoniBlinkTransform.STEP_DB_END_DUR_MIN, MASMoniBlinkTransform.STEP_DB_END_DUR_MAX)
+                    MASMoniBlinkTransform.next_step = MASMoniBlinkTransform.STEP_START
+
+            # Otherwise we're here too early, request a redraw
+            else:
+                # NOTE: It's important to update the curr img here
+                MASMoniBlinkTransform.current_img = self.transform_map[MASMoniBlinkTransform.current_step]
+
+            img_render = renpy.render(MASMoniBlinkTransform.current_img, width, height, MASMoniBlinkTransform.current_at, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniBlinkTransform.BLIT_COORDS)
+
+            # I'd like to save us redraws, but we can't. At minimum we need a redraw every 0.1-0.2 sec
+            renpy.redraw(self, 0.1)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return self.transform_map.values()
+
+    class MASMoniWinkTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes winks possible
+        (replaces the old ATL which was quite buggy)
+        """
+        STEP_START = "start"
+        STEP_END = "end"
+        STEP_DONE = "done"
+
+        STEP_START_DUR = 1.0
+        STEP_END_DIS_DUR = 0.01
+
+        RESETTING_EVS = ("replace", "replaced")
+        BLIT_COORDS = (0, 0)
+
+        def __init__(self, wink_img, open_eyes_img):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                wink_img - FULL name of the image for wink eyes
+                open_eyes_img - FULL name of the image for opened eyes
+            """
+            super(MASMoniWinkTransform, self).__init__(self)
+
+            self.wink_img = renpy.display.image.ImageReference(wink_img)
+            self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
+            self.current_img = self.wink_img
+            self.wink_into_open_eyes_dis = renpy.display.transition.Dissolve(
+                time=MASMoniBlinkTransform.STEP_END_DIS_DUR,
+                old_widget=self.wink_img,
+                new_widget=self.open_eyes_img,
+                alpha=True
+            )
+
+            self.next_step = MASMoniWinkTransform.STEP_START
+
+            self._last_st = 0.0
+            self.current_st = 0.0
+            self.redraw_st = 0.0
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            if st > self._last_st:
+                self.current_st += (st - self._last_st)
+
+            else:
+                self.__reset()
+                # self.current_st += st
+
+            self._last_st = st
+
+            if (
+                self.redraw_st is not None
+                and self.current_st >= self.redraw_st
+            ):
+                self.current_st = 0.0
+
+                # First step (wink)
+                if self.next_step == MASMoniWinkTransform.STEP_START:
+                    self.current_img = self.wink_img
+                    self.redraw_st = MASMoniWinkTransform.STEP_START_DUR
+                    self.next_step = MASMoniWinkTransform.STEP_END
+
+                # "Last" step (open eyes)
+                elif self.next_step == MASMoniWinkTransform.STEP_END:
+                    self.current_img = self.wink_into_open_eyes_dis
+                    self.redraw_st = None
+
+            img_render = renpy.render(self.current_img, width, height, self.current_st, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniWinkTransform.BLIT_COORDS)
+
+            if self.redraw_st is not None:
+                renpy.redraw(self, self.redraw_st - self.current_st)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return [self.wink_img, self.wink_into_open_eyes_dis]
+
+        def __reset(self):
+            """
+            A method to reset params of this disp
+            """
+            self.next_step = MASMoniWinkTransform.STEP_START
+            self._last_st = 0.0
+            self.current_st = 0.0
+            self.redraw_st = 0.0
+            # self.current_img = self.open_eyes_img
+            self.transform_event = None
+
+        def _hide(self, st, at, kind):
+            """
+            This method is being called (sometimes) when the disp is being hidden.
+            We use it to reset some params
+            NOTE: must always return None
+            """
+            self.__reset()
+            return None
+
+        def _show(self):
+            """
+            This method is being called (sometimes) when the disp is being shown.
+            We use it to reset some params
+            """
+            self.__reset()
+
+    class MASMoniTearsTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes tears possible
+        (replaces the old ATL which was quite buggy)
+        """
+        # Transforms "steps" consts
+        STEP_START = "start"
+        STEP_END = "end"
+
+        # Timings consts
+        STEP_START_DUR_MIN = 9
+        STEP_START_DUR_MAX = 12
+
+        STEP_END_DUR_MIN = 0.14
+        STEP_END_DUR_MAX = 0.16
+
+        # Dissolve duration consts
+        STEP_START_DIS_DUR = 0.01
+        STEP_END_DIS_DUR = 0.01
+
+        BLIT_COORDS = (0, 0)
+
+        current_img = None
+        current_step = STEP_START
+        next_step = STEP_START
+        _last_at = 0.0
+        current_at = 0.0
+        redraw_at = 0.0
+
+        def __init__(self, open_eyes_img, closed_eyes_img):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                open_eyes_img - FULL name of the image for open eyes
+                closed_eyes_img - FULL name of the image for closed eyes
+            """
+            super(MASMoniTearsTransform, self).__init__(self)
+
+            self.open_eyes_img = renpy.display.image.ImageReference(open_eyes_img)
+            self.closed_eyes_img = renpy.display.image.ImageReference(closed_eyes_img)
+            self.transform_map = {
+                MASMoniTearsTransform.STEP_START: renpy.display.transition.Dissolve(
+                    time=MASMoniTearsTransform.STEP_START_DIS_DUR,
+                    old_widget=self.closed_eyes_img,
+                    new_widget=self.open_eyes_img,
+                    alpha=True
+                ),
+                MASMoniTearsTransform.STEP_END: renpy.display.transition.Dissolve(
+                    time=MASMoniTearsTransform.STEP_END_DIS_DUR,
+                    old_widget=self.open_eyes_img,
+                    new_widget=self.closed_eyes_img,
+                    alpha=True
+                )
+            }
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            if at > MASMoniTearsTransform._last_at and st != 0:
+                MASMoniTearsTransform.current_at += (at - MASMoniTearsTransform._last_at)
+
+            MASMoniTearsTransform._last_at = at
+
+            # st == 0 means we just switched to this exp, might want to extend the blink dur for little bit
+            if (
+                st == 0
+                and MASMoniTearsTransform.current_step == MASMoniTearsTransform.STEP_START
+                and MASMoniTearsTransform.redraw_at - MASMoniTearsTransform.current_at < 0.5
+            ):
+                MASMoniTearsTransform.current_at = max(0, MASMoniTearsTransform.redraw_at - 0.25)
+
+            if at == 0:
+                MASMoniTearsTransform.current_step = MASMoniTearsTransform.STEP_START
+                MASMoniTearsTransform.current_at = 0.0
+                MASMoniTearsTransform.current_img = self.open_eyes_img
+                MASMoniTearsTransform.redraw_at = random.randint(MASMoniTearsTransform.STEP_START_DUR_MIN, MASMoniTearsTransform.STEP_START_DUR_MAX)
+                MASMoniTearsTransform.next_step = MASMoniTearsTransform.STEP_END
+
+            elif MASMoniTearsTransform.current_at >= MASMoniTearsTransform.redraw_at:
+                MASMoniTearsTransform.current_at = 0.0
+                MASMoniTearsTransform.current_img = self.transform_map[MASMoniTearsTransform.next_step]
+
+                # First step (close eyes)
+                if MASMoniTearsTransform.next_step == MASMoniTearsTransform.STEP_START:
+                    MASMoniTearsTransform.current_step = MASMoniTearsTransform.STEP_START
+                    MASMoniTearsTransform.redraw_at = random.randint(MASMoniTearsTransform.STEP_START_DUR_MIN, MASMoniTearsTransform.STEP_START_DUR_MAX)
+                    MASMoniTearsTransform.next_step = MASMoniTearsTransform.STEP_END
+
+                # Last step (open eyes)
+                elif MASMoniTearsTransform.next_step == MASMoniTearsTransform.STEP_END:
+                    MASMoniTearsTransform.current_step = MASMoniTearsTransform.STEP_END
+                    MASMoniTearsTransform.redraw_at = random.uniform(MASMoniTearsTransform.STEP_END_DUR_MIN, MASMoniTearsTransform.STEP_END_DUR_MAX)
+                    MASMoniTearsTransform.next_step = MASMoniTearsTransform.STEP_START
+
+            else:
+                MASMoniTearsTransform.current_img = self.transform_map[MASMoniTearsTransform.current_step]
+
+            img_render = renpy.render(MASMoniTearsTransform.current_img, width, height, MASMoniTearsTransform.current_at, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniTearsTransform.BLIT_COORDS)
+
+            renpy.redraw(self, 0.1)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return self.transform_map.values()
+
+    class _MASMoniFollowTransformDissolve(renpy.display.transition.Dissolve):
+        """
+        Dissolve subclass that allows to pass different st and at values to its widgets
+        """
+        def __init__(self, *args, **kwargs):
+            """
+            Adds 4 new params
+            """
+            super(_MASMoniFollowTransformDissolve, self).__init__(*args, **kwargs)
+
+            # KEY CHANGES
+            self.new_widget_st = None
+            self.new_widget_at = None
+            self.old_widget_st = None
+            self.old_widget_at = None
+
+        def render(self, width, height, st, at):
+            """
+            Makes use of the new params
+            """
+            if renpy.game.less_updates:
+                return renpy.display.transition.null_render(self, width, height, st, at)
+
+            if st >= self.time:
+                self.events = True
+                return renpy.display.transition.render(self.new_widget, width, height, st, at)
+
+            complete = min(1.0, st / self.time)
+
+            if self.time_warp is not None:
+                complete = self.time_warp(complete)
+
+            # KEY CHANGES
+            old_widget_st = self.old_widget_st if self.old_widget_st is not None else st
+            old_widget_at = self.old_widget_at if self.old_widget_at is not None else at
+            new_widget_st = self.new_widget_st if self.new_widget_st is not None else st
+            new_widget_at = self.new_widget_at if self.new_widget_at is not None else at
+
+            bottom = renpy.display.transition.render(self.old_widget, width, height, old_widget_st, old_widget_at)
+            top = renpy.display.transition.render(self.new_widget, width, height, new_widget_st, new_widget_at)
+
+            width = min(top.width, bottom.width)
+            height = min(top.height, bottom.height)
+
+            rv = renpy.display.render.Render(width, height, opaque=not self.alpha)
+
+            rv.operation = renpy.display.render.DISSOLVE
+            rv.operation_alpha = self.alpha
+            rv.operation_complete = complete
+
+            rv.blit(bottom, (0, 0), focus=False, main=False)
+            rv.blit(top, (0, 0), focus=True, main=True)
+
+            renpy.display.render.redraw(self, 0)
+
+            return rv
+
+    class MASMoniFollowTransform(renpy.display.core.Displayable):
+        """
+        A displayable which makes follow sprites possible
+        (replaces conditionswitch for dissolves and optimization)
+        """
+        REDRAW_PAUSE = 0.1
+
+        DIS_DUR = 0.1
+
+        BLIT_COORDS = (0, 0)
+
+        def __init__(self, norm_eyes_img, left_eyes_img, right_eyes_img, up_eyes_img=None, down_eyes_img=None):
+            """
+            Constructor
+            NOTE: this takes in full image names, with prefixes and suffixes
+
+            IN:
+                norm_eyes_img - FULL name of the image for look straight eyes
+                left_eyes_img - FULL name of the image for look left eyes
+                right_eyes_img - FULL name of the image for look right eyes
+                up_eyes_img - FULL name of the image for look up eyes
+                    NOTE: unused since we don't have the sprites yet
+                down_eyes_img - FULL name of the image for look down eyes
+                    NOTE: unused since we don't have the sprites yet
+            """
+            super(MASMoniFollowTransform, self).__init__(self)
+
+            self.norm_eyes_code = norm_eyes_img
+            self.norm_eyes_img = renpy.display.image.ImageReference(norm_eyes_img)
+            self.left_eyes_code = left_eyes_img
+            self.left_eyes_img = renpy.display.image.ImageReference(left_eyes_img)
+            self.right_eyes_code = right_eyes_img
+            self.right_eyes_img = renpy.display.image.ImageReference(right_eyes_img)
+            # self.up_eyes_code = up_eyes_img
+            # self.up_eyes_img = renpy.display.image.ImageReference(up_eyes_img)
+            # self.down_eyes_code = down_eyes_img
+            # self.down_eyes_img = renpy.display.image.ImageReference(down_eyes_img)
+
+            self.current_img = self.norm_eyes_img
+            self.current_exp_code = self.norm_eyes_code
+
+            # NOTE: keys here are tuples of strings of the current and next exp
+            self.transform_map = dict()
+            img_map = {
+                self.norm_eyes_code: self.norm_eyes_img,
+                self.left_eyes_code: self.left_eyes_img,
+                self.right_eyes_code: self.right_eyes_img,
+                # self.up_eyes_code: self.up_eyes_img,
+                # self.down_eyes_code: self.down_eyes_img
+            }
+            for first_img_code in img_map.iterkeys():
+                for second_img_code in img_map.iterkeys():
+                    if first_img_code != second_img_code:
+                        self.transform_map[(first_img_code, second_img_code)] = _MASMoniFollowTransformDissolve(
+                            time=MASMoniFollowTransform.DIS_DUR,
+                            old_widget=img_map[first_img_code],
+                            new_widget=img_map[second_img_code],
+                            alpha=True
+                        )
+
+            self._last_st = 0.0
+            self.current_st = 0.0
+            self.redraw_st = 0.0
+
+        def render(self, width, height, st, at):
+            """
+            Render of this disp
+            """
+            if st > self._last_st:
+                self.current_st += (st - self._last_st)
+
+            # else:
+            #     self.current_st += st
+
+            self._last_st = st
+
+            if st == 0 or self.current_st >= self.redraw_st:
+                self.current_st = 0.0
+                self.redraw_st = MASMoniFollowTransform.REDRAW_PAUSE
+
+                mouse_pos = store.mas_windowutils.getMousePosRelative()
+                if mouse_pos[0] < 0:
+                    next_img = self.left_eyes_img
+                    next_exp_code = self.left_eyes_code
+
+                elif mouse_pos[0] > 0:
+                    next_img = self.right_eyes_img
+                    next_exp_code = self.right_eyes_code
+
+                # elif mouse_pos[1] > 0:
+                #     next_img = self.up_eyes_img
+                #     next_exp_code = self.up_eyes_code
+
+                # elif mouse_pos[1] < 0:
+                #     next_img = self.down_eyes_img
+                #     next_exp_code = self.down_eyes_code
+
+                else:
+                    next_img = self.norm_eyes_img
+                    next_exp_code = self.norm_eyes_code
+
+                if st != 0 and self.current_exp_code != next_exp_code:
+                    self.current_img = self.transform_map[(self.current_exp_code, next_exp_code)]
+                    self.current_exp_code = next_exp_code
+                    # Pass the st and at params to the transforms widgets
+                    # so we can keep their states regardless of the transition
+                    self.current_img.old_widget_st = st
+                    self.current_img.old_widget_at = at
+                    self.current_img.new_widget_st = st
+                    self.current_img.new_widget_at = at
+                    render_st = self.current_st
+
+                else:
+                    self.current_img = next_img
+                    self.current_exp_code = next_exp_code
+                    render_st = st
+
+                redraw_time = self.redraw_st
+
+            else:
+                redraw_time = self.redraw_st - self.current_st
+                render_st = st
+
+            img_render = renpy.render(self.current_img, width, height, render_st, at)
+            rv = renpy.Render(img_render.width, img_render.height)
+            rv.blit(img_render, MASMoniFollowTransform.BLIT_COORDS)
+
+            renpy.redraw(self, redraw_time)
+
+            return rv
+
+        def visit(self):
+            """
+            Returns imgs for prediction
+
+            OUT:
+                list of displayables
+            """
+            return self.transform_map.values()
+
+# # # END: Idle disp stuff
 
 init -2 python in mas_sprites:
     # base-related sprtie stuff
@@ -7228,8 +9396,7 @@ image monika 6ATL_cryleftright:
 
         repeat
 
-# similar to cryleft and right
-# meant for DISTRESSED
+# # # START: DEPRECATED IMAGES, THESE WILL BE REMOVED SOON
 image monika 6ATL_lookleftright:
 
     # select image
@@ -7255,10 +9422,6 @@ image monika 6ATL_lookleftright:
             10.0
     repeat
 
-### [IMG045]
-# special purpose ATLs that cant really be used for other things atm
-
-# Below 0 to upset affection
 image monika ATL_0_to_upset:
 
     # 1 time this part
@@ -7291,7 +9454,6 @@ image monika ATL_0_to_upset:
 
         repeat
 
-# affectionate
 image monika ATL_affectionate:
     # select image
     block:
@@ -7329,7 +9491,6 @@ image monika ATL_affectionate:
 
     repeat
 
-# enamored
 image monika ATL_enamored:
 
     # 1 time this part
@@ -7378,7 +9539,6 @@ image monika ATL_enamored:
 
         repeat
 
-# love
 image monika ATL_love:
 
     # 1 time this parrt
@@ -7428,6 +9588,10 @@ image monika ATL_love:
                 30.0
 
         repeat
+# # # END: DEPRECATED IMGS
+
+### [IMG045]
+# special purpose ATLs that cant really be used for other things atm
 
 # random exps for love_too at normal thru aff
 image monika ATL_love_too_norm_plus:
@@ -7480,21 +9644,148 @@ image monika ATL_love_too_enam_plus:
             "monika 5esu"
 
 ### [IMG050]
-# condition-switched images for old school image selecting
-image monika idle = ConditionSwitch(
-    "mas_isMoniBroken(lower=True)", "monika 6ckc",
-    "mas_isMoniDis()", "monika 6ATL_lookleftright",
-#    "mas_isMoniUpset()", "monika 2efc"
-#    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
-    "mas_isBelowZero()", "monika ATL_0_to_upset",
-    "mas_isMoniHappy()", "monika 1eua",
-    "mas_isMoniAff()", "monika ATL_affectionate",
-    "mas_isMoniEnamored()", "monika ATL_enamored",
-    "mas_isMoniLove()", "monika ATL_love",
-    "True", "monika 1esa",
-    predict_all=True
-)
+# NOTE we need this ready before init 500
+init 499 python:
+    # Brand new displayable for idle
+    mas_moni_idle_disp = MASMoniIdleDisp(
+        (
+            # Broken (how dared you, monster?)
+            MASMoniIdleExp("6ckc", duration=60, aff_range=(None, mas_aff.BROKEN), tag="broken_exps"),
+            # Distressed
+            MASMoniIdleExp("6rkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+            MASMoniIdleExp("6lkc", duration=(5, 10), aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED), tag="dist_exps"),
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExpRngGroup(
+                        [
+                            MASMoniIdleExp("6rktpc", duration=(5, 10)),
+                            MASMoniIdleExp("6lktpc", duration=(5, 10))
+                        ],
+                        max_uses=4
+                    ),
+                    MASMoniIdleExpRngGroup(
+                        [
+                            MASMoniIdleExp("6rktdc", duration=(5, 10)),
+                            MASMoniIdleExp("6lktdc", duration=(5, 10))
+                        ]
+                    ),
+                    MASMoniIdleExp("6dktdc", duration=(3, 5))
+                ],
+                aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED),
+                weight=2,
+                tag="dist_exps"
+            ),
+            # Below 0 and Upset
+            MASMoniIdleExp("2esc", duration=5, aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=None, repeatable=False, tag="below_zero_startup_exps"),
+            MASMoniIdleExp("2esc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=95, tag="below_zero_exps"),
+            MASMoniIdleExp("5tsc", aff_range=(mas_aff.UPSET, mas_aff.NORMAL), conditional="mas_isBelowZero()", weight=5, tag="below_zero_exps"),
+            # Normal
+            MASMoniIdleExp("1esa", duration=60, aff_range=(mas_aff.NORMAL, mas_aff.NORMAL), conditional="not mas_isBelowZero()", tag="norm_exps"),
+            # Happy
+            MASMoniIdleExp("1eua", duration=60, aff_range=(mas_aff.HAPPY, mas_aff.HAPPY), tag="happy_exps"),
+            # Affectionate
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("1eua", duration=1),
+                    MASMoniIdleExp("1sua", duration=4),
+                    MASMoniIdleExp("1eua"),
+                ],
+                aff_range=(mas_aff.AFFECTIONATE, None),
+                weight=2,
+                tag="idle_star_eyes"
+            ),
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("1eua", duration=1),
+                    MASMoniIdleExp("1kua", duration=1),
+                    MASMoniIdleExp("1eua"),
+                ],
+                aff_range=(mas_aff.AFFECTIONATE, None),
+                weight=2,
+                tag="idle_wink"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=70),
+                    MASMoniIdleExp("1eua_follow", weight=30)# 30% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE),
+                weight=94,
+                tag="aff_exps"
+            ),
+            MASMoniIdleExp("1hua", aff_range=(mas_aff.AFFECTIONATE, mas_aff.AFFECTIONATE), weight=5, tag="aff_exps"),
+            # Enamored
+            MASMoniIdleExp("1eua", duration=5, aff_range=(mas_aff.ENAMORED, None), weight=None, repeatable=False, tag="enam_plus_startup_exps"),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=None),
+                    MASMoniIdleExp("1eua_follow", weight=None)# 50% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED),
+                weight=75,
+                tag="enam_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5esu", weight=None),
+                    MASMoniIdleExp("5esu_follow", weight=None)# 50% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED),
+                weight=11,
+                tag="enam_exps"
+            ),
+            MASMoniIdleExp("5tsu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+            MASMoniIdleExp("1huu", aff_range=(mas_aff.ENAMORED, mas_aff.ENAMORED), weight=6, tag="enam_exps"),
+            # Love
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("1eua", weight=30),
+                    MASMoniIdleExp("1eua_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=50,
+                tag="love_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5esu", weight=30),
+                    MASMoniIdleExp("5esu_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=26,
+                tag="love_exps"
+            ),
+            MASMoniIdleExp("5tsu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+            MASMoniIdleExp("1huu", aff_range=(mas_aff.LOVE, None), weight=9, tag="love_exps"),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5eubla", weight=30),
+                    MASMoniIdleExp("5eubla_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=5,
+                tag="love_exps"
+            ),
+            MASMoniIdleExpRngGroup(
+                [
+                    MASMoniIdleExp("5eubsa", weight=30),
+                    MASMoniIdleExp("5eubsa_follow", weight=70)# 70% to follow
+                ],
+                max_uses=1,
+                aff_range=(mas_aff.LOVE, None),
+                weight=2,
+                tag="love_exps"
+            )
+        )
+    )
 
+image monika idle = mas_moni_idle_disp
 
 ### [IMG100]
 # chibi monika sprites
@@ -7512,7 +9803,9 @@ image ghost_monika:
 
 # transiton to empty desk
 # NOTE: to hide a desk ACS, set that ACS to not keep on desk b4 calling this
-label mas_transition_to_emptydesk:
+label mas_transition_to_emptydesk(hide_dlg_box=True):
+    if hide_dlg_box:
+        window hide
     $ store.mas_sprites.show_empty_desk()
     hide monika with dissolve_monika
     return
@@ -7521,8 +9814,10 @@ label mas_transition_to_emptydesk:
 # NOTE: to unhide a desk ACS, set that ACS to keep on desk AFTER calling this
 # IN:
 #   exp - expression to show when monika is shown
-label mas_transition_from_emptydesk(exp="monika 1eua"):
+label mas_transition_from_emptydesk(exp="monika 1eua", show_dlg_box=True):
+    if show_dlg_box:
+        window auto
     $ renpy.show(exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
-    $ renpy.with_statement(dissolve)
+    $ renpy.with_statement(dissolve_monika)
     hide emptydesk
     return

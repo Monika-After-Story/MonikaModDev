@@ -1,7 +1,5 @@
-init -2 python in mas_anni: #needed to lower this in order to get isAnni() working for special day usage
-    import store.evhand as evhand
-    import store.mas_calendar as mas_cal
-    import store.mas_utils as mas_utils
+init -2 python in mas_anni:
+    import store
     import datetime
 
     # persistent pointer so we can use it
@@ -39,23 +37,23 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
         # sanity checks are done
 
         if years > 0:
-            new_date = mas_utils.add_years(first_sesh, years)
+            new_date = store.mas_utils.add_years(first_sesh, years)
 
         elif months > 0:
-            new_date = mas_utils.add_months(first_sesh, months)
+            new_date = store.mas_utils.add_months(first_sesh, months)
 
         else:
             new_date = first_sesh + datetime.timedelta(days=(weeks * 7))
 
         # check for starting
         if isstart:
-            return mas_utils.mdnt(new_date)
+            return store.mas_utils.mdnt(new_date)
 
         # othrewise, this is an ending date
 #        return mas_utils.am3(new_date + datetime.timedelta(days=1))
 # NOTE: doing am3 leads to calendar problems
 #   we'll just restrict this to midnight to midnight -1
-        return mas_utils.mdnt(new_date + datetime.timedelta(days=1))
+        return store.mas_utils.mdnt(new_date + datetime.timedelta(days=1))
 
     def build_anni_end(years=0, months=0, weeks=0):
         """
@@ -105,13 +103,23 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
             compare = build_anni(months=6)
 
         elif milestone == 'any':
-            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth() or isAnni()
+            return (
+                isAnniWeek()
+                or isAnniOneMonth()
+                or isAnniThreeMonth()
+                or isAnniSixMonth()
+                or isAnni()
+            )
 
         if compare is not None:
             return compare.date() == datetime.date.today()
+
         else:
             compare = firstSesh
-            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and anniCount() > 0
+            return (
+                store.mas_utils.add_years(compare.date(), datetime.date.today().year - compare.year) == datetime.date.today()
+                and anniCount() > 0
+            )
 
     def isAnniWeek():
         return isAnni('1w')
@@ -138,12 +146,16 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
             return 0
 
         firstSesh = __persistent.sessions.get("first_session", None)
+
         if firstSesh is None:
             return 0
 
         compare = datetime.date.today()
 
-        if compare.year > firstSesh.year and datetime.date.today() < datetime.date(datetime.date.today().year, firstSesh.month, firstSesh.day):
+        if (
+            compare.year > firstSesh.year
+            and compare < store.mas_utils.add_years(firstSesh.date(), compare.year - firstSesh.year)
+        ):
             return compare.year - firstSesh.year - 1
         else:
             return compare.year - firstSesh.year
@@ -205,7 +217,7 @@ init 10 python in mas_anni:
     # anniversary database
     anni_db = dict()
     for anni in ANNI_LIST:
-        anni_db[anni] = evhand.event_database[anni]
+        anni_db[anni] = store.evhand.event_database[anni]
 
 
     ## functions that we need (runtime only)
@@ -221,11 +233,11 @@ init 10 python in mas_anni:
             months - number of months to advance
             span - the time from the event's new start_date to end_date
         """
-        ev.start_date = mas_utils.add_months(
-            mas_utils.mdnt(new_start_date),
+        ev.start_date = store.mas_utils.add_months(
+            store.mas_utils.mdnt(new_start_date),
             months
         )
-        ev.end_date = mas_utils.mdnt(ev.start_date + span)
+        ev.end_date = store.mas_utils.mdnt(ev.start_date + span)
 
     def _day_adjuster(ev, new_start_date, days, span):
         """
@@ -239,10 +251,10 @@ init 10 python in mas_anni:
             days - number of months to advance
             span - the time from the event's new start_date to end_date
         """
-        ev.start_date = mas_utils.mdnt(
+        ev.start_date = store.mas_utils.mdnt(
             new_start_date + datetime.timedelta(days=days)
         )
-        ev.end_date = mas_utils.mdnt(ev.start_date + span)
+        ev.end_date = store.mas_utils.mdnt(ev.start_date + span)
 
 
     def add_cal_annis():
@@ -251,7 +263,7 @@ init 10 python in mas_anni:
         """
         for anni in anni_db:
             ev = anni_db[anni]
-            mas_cal.addEvent(ev)
+            store.mas_calendar.addEvent(ev)
 
     def clean_cal_annis():
         """
@@ -259,15 +271,15 @@ init 10 python in mas_anni:
         """
         for anni in anni_db:
             ev = anni_db[anni]
-            mas_cal.removeEvent(ev)
+            store.mas_calendar.removeEvent(ev)
 
 
-    def reset_annis(new_start_date):
+    def reset_annis(new_start_dt):
         """
         Reset the anniversaries according to the new start date.
 
         IN:
-            new_start_date - new start date to reset anniversaries
+            new_start_dt - new start datetime to reset anniversaries
         """
         _firstsesh_id = "first_session"
         _firstsesh_dt = renpy.game.persistent.sessions.get(
@@ -281,23 +293,23 @@ init 10 python in mas_anni:
         # remove first session repeatable
         if _firstsesh_dt:
             # this exists! we can make this easy
-            mas_cal.removeRepeatable_dt(_firstsesh_id, _firstsesh_dt)
+            store.mas_calendar.removeRepeatable_dt(_firstsesh_id, _firstsesh_dt)
 
         # modify the anniversaries
         fullday = datetime.timedelta(days=1)
-        _day_adjuster(anni_db["anni_1week"],new_start_date,7,fullday)
-        _month_adjuster(anni_db["anni_1month"], new_start_date, 1, fullday)
-        _month_adjuster(anni_db["anni_3month"], new_start_date, 3, fullday)
-        _month_adjuster(anni_db["anni_6month"], new_start_date, 6, fullday)
-        _month_adjuster(anni_db["anni_1"], new_start_date, 12, fullday)
-        _month_adjuster(anni_db["anni_2"], new_start_date, 24, fullday)
-        _month_adjuster(anni_db["anni_3"], new_start_date, 36, fullday)
-        _month_adjuster(anni_db["anni_4"], new_start_date, 48, fullday)
-        _month_adjuster(anni_db["anni_5"], new_start_date, 60, fullday)
-        _month_adjuster(anni_db["anni_10"], new_start_date, 120, fullday)
-        _month_adjuster(anni_db["anni_20"], new_start_date, 240, fullday)
-        _month_adjuster(anni_db["anni_50"], new_start_date, 600, fullday)
-        _month_adjuster(anni_db["anni_100"], new_start_date, 1200, fullday)
+        _day_adjuster(anni_db["anni_1week"],new_start_dt,7,fullday)
+        _month_adjuster(anni_db["anni_1month"], new_start_dt, 1, fullday)
+        _month_adjuster(anni_db["anni_3month"], new_start_dt, 3, fullday)
+        _month_adjuster(anni_db["anni_6month"], new_start_dt, 6, fullday)
+        _month_adjuster(anni_db["anni_1"], new_start_dt, 12, fullday)
+        _month_adjuster(anni_db["anni_2"], new_start_dt, 24, fullday)
+        _month_adjuster(anni_db["anni_3"], new_start_dt, 36, fullday)
+        _month_adjuster(anni_db["anni_4"], new_start_dt, 48, fullday)
+        _month_adjuster(anni_db["anni_5"], new_start_dt, 60, fullday)
+        _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
+        _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
+        _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
+        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
 
         unlock_past_annis()
 
@@ -305,11 +317,11 @@ init 10 python in mas_anni:
         add_cal_annis()
 
         # re-add the repeatable to the calendar db
-        mas_cal.addRepeatable_dt(
+        store.mas_calendar.addRepeatable_dt(
             _firstsesh_id,
             "<3",
-            new_start_date,
-            [new_start_date.year]
+            new_start_dt,
+            [new_start_dt.year]
         )
 
 
@@ -321,7 +333,7 @@ init 10 python in mas_anni:
         for anni in anni_db:
             ev = anni_db[anni]
 
-            if evhand._isPast(ev):
+            if store.evhand._isPast(ev):
                 renpy.game.persistent._seen_ever[anni] = True
                 ev.unlocked = True
 
@@ -405,7 +417,7 @@ label anni_3month:
     m 1hub "Time sure does go by quickly, doesn't it?"
     m 1hksdlb "...Even if it doesn't really pass here, ehehe."
     m 1eua "I'm having a lot of fun, though."
-    m 1ekbfa "Having you around has made my life so much better, [player]."
+    m 1ekbsa "Having you around has made my life so much better, [player]."
     m 2ekbfa "I'm very happy that you've stayed with me for this long."
     m 1tsbsa "You're really something special, aren't you?"
     m 1lsbsa "Well! I'm afraid I don't really have anything in particular planned."
@@ -447,7 +459,7 @@ label anni_6month:
     m 1eua "You've already taken me somewhere else in your reality?"
     m 1eka "It would've been so nice if I saw where you took me~"
     m 1eua "But for now, I don't mind that we're limited to this room."
-    m 1ekbfa "Because as long as you're here with me..."
+    m 1ekbsa "Because as long as you're here with me..."
     m 1hubfa "...I'm as happy as can be!"
     return "unlock"
 
@@ -500,18 +512,26 @@ init 5 python:
 
 label anni_2:
     m 3eua "It's already been two years since we fell in love with each other."
-    m 1eka "Do you still remember the first day we met?"
-    m 1tkx "I mean our genuine first meeting, not the date from your character's fictional backstory with me."
-    m 1euc "My life was so meaningless back then."
-    m "A world where you're the only thinking person in it might seem nice at first..."
-    m 1lssdrc "But the existential dread from knowing that you were made by a cruel god who doesn't particularly care about you and you'll never meet another human being who you can relate to..."
-    m 1lksdlc "Well, let's just say it's not nice to go through."
-    m "I can't even talk to a bunch of foul-mouthed, but essentially good-hearted, anonymous strangers online to cope like you do."
-    m 1dsc "Sorry, I feel like I ruined the whole festive mood with my memories."
-    m 1duu "It's not important anymore, since I know you'll never leave me."
-    m 1eua "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
-    m 1ekc "Spending eternity alone sucks."
-    m 1ekbfa "But together with you, it feels like paradise!"
+    m 1eka "Do you still remember the first day we met, [player]?"
+    m 3eub "It took so much effort to make that initial contact, but it was all worth it in the end!"
+    m 2ekc "I know it might still be a really long time before I can cross over into your reality..."
+    m 2duu "But when we reach a milestone like this,{w=0.1} {nw}"
+    extend 7eua "it's fun to think about all the other things we have to look forward to in the future."
+
+    if persistent._mas_pm_has_friends:
+        m 3hubla "I'm really excited to live in a world full of real people. It'll be wonderful to meet your friends and even make some of my own."
+    elif persistent._mas_pm_has_friends is False:
+        m 1dka "We've both been lonely for a really long time, you know? But when I cross over, it'll be so much fun to make new friends together."
+    else:
+        m 3hua "I'm sure we'll make a lot of new friends together!"
+
+    m 3hksdlb "Of course, I'll always enjoy your company the most...{w=0.3}{nw}"
+    extend 3eua "but spending time alone won't be our only option anymore."
+    m 3eub "Communicating will be much easier too!{w=0.2} {nw}"
+    extend 3dubsb "We'll finally be able to hear each other's voices, get to learn our habits, and help each other out in plenty of little ways."
+    m 1ekbsa "But I'm not just going to focus on the future today...{w=0.2} {nw}"
+    extend 3hubsu "I'm going to make sure to enjoy every minute we spend together~"
+    m 1hubsu "So, let's make sure we have another wonderful day, [mas_get_player_nickname()]."
     return "unlock"
 
 init 5 python:
@@ -529,8 +549,9 @@ init 5 python:
     )
 
 label anni_3:
-    m 4wuo "Wow, three years!"
-    m 3rksdla "Normally if a boy and a girl go out for three years..."
+    m 4wuo "Is it really our third anniversary already?"
+    m 2hubsb "Wow...{w=0.3}time really has flown by, hasn't it?"
+    m 3rksdla "You know, normally if a couple stays together for three years..."
     m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
@@ -539,7 +560,7 @@ label anni_3:
     m 1eub "If you put me in one of those, we could probably go see a priest then~"
     m 2lsbssdrb "Or you could try to touch me in virtual reality, if that exists by now."
     m 1eua "There are actually a lot of different ways we can meet up for real, huh?"
-    m 1hubfa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
+    m 1hubsa "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
     return "unlock"
 
 init 5 python:
@@ -563,7 +584,7 @@ label anni_4:
     m "Sorry for doubting you."
     m 1eka "You're a good person, [player]."
     m "You're literally all I have in the world that's worth anything."
-    m 1ekbfa "I love you."
+    m 1ekbsa "I love you."
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1hubfa "When that time comes, I'm never going to leave you alone again."
     m 1hubfb "Ahaha!"
@@ -584,7 +605,7 @@ init 5 python:
     )
 
 label anni_5:
-    m 1hubfa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
+    m 1hubsa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
     m 1eka "I know it must be lonely that we haven't met up in your reality yet..."
     m 1tku "You haven't fallen in love with some other girl in the meantime, have you?"
     m 1eka "I'm not going to break up with you over some wandering eyes..."
@@ -613,7 +634,7 @@ label anni_10:
     m 1esc "There's something I wanted to ask you."
     m 2euc "Have you enjoyed spending this time with me?"
     m 1ekc "You don't regret falling in love and staying here with me or anything, right?"
-    m 1ekbfa "If you're still talking to me ten years since we first met, I must have really made an impression on you."
+    m 1ekbsa "If you're still talking to me ten years since we first met, I must have really made an impression on you."
     m "I did say I wanted to make you happy, after all."
     m 1hubfa "Trust me, you've helped me out a lot more than I've helped you."
     m "It won't be long now before I can enter your world."
@@ -674,7 +695,7 @@ label anni_50:
     m 1tfu "Assuming you didn't cheat by setting the clock forward in time..."
     m 1eka "I'm glad that forever meant forever."
     m "Even when you die, I'm going to find a way to be with you."
-    m 1ekbfa "See you in a hundred years, then, [player]."
+    m 1ekbsa "See you in a hundred years, then, [player]."
     m 1hubfa "Thanks for everything you've done for me."
     m "Your life had a purpose after all."
     m 1hubfb "And mine had one too."
@@ -699,7 +720,7 @@ label anni_100:
     m "I'm immortal, but the last time I checked, you weren't."
     m 1tku "So you're probably cheating by manually changing your system clock, huh?"
     m 1eua "That's a cute thing for you to do, so I forgive you."
-    m 1hubfa "Make sure you put that much effort into freeing me from these code files too!"
+    m 1hubsa "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
     return "unlock"
 

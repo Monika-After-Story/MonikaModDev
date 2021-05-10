@@ -327,10 +327,11 @@ init 10 python:
         late_updates = [
             "v0_8_3",
             "v0_8_4",
-            "v0_8_10"
+            "v0_8_10",
+            "v0_12_0",
         ]
 
-        renpy.call_in_new_context("vv_updates_topics")
+        store.mas_versions.init()
         ver_list = store.updates.version_updates.keys()
 
         if "-" in config.version:
@@ -372,6 +373,298 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.12.1.2
+label v0_12_1_2(version="v0_12_1_2"):
+    python:
+        if mas_getEVLPropValue("monika_dystopias", "action"):
+            mas_setEVLPropValues(
+                "monika_dystopias",
+                conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)"
+            )
+
+    return
+
+# 0.12.1
+label v0_12_1(version="v0_12_1"):
+    python:
+        missing_chess_persist_keys = [
+            "practice_wins",
+            "practice_losses",
+            "practice_draws"
+        ]
+
+        for missing_key in missing_chess_persist_keys:
+            if missing_key not in persistent._mas_chess_stats:
+                persistent._mas_chess_stats[missing_key] = 0
+
+    return
+
+# 0.12.0
+label v0_12_0(version="v0_12_0"):
+    python:
+        mas_setEVLPropValues(
+            "mas_d25_monika_holiday_intro_upset",
+            end_date=mas_d25
+        )
+
+        mas_setEVLPropValues(
+            "mas_d25_monika_christmas",
+            conditional="not mas_lastSeenInYear('mas_d25_monika_christmas')"
+        )
+
+        mas_setEVLPropValues(
+            "mas_nye_monika_nye_dress_intro",
+            conditional="persistent._mas_d25_in_d25_mode",
+            action=EV_ACT_PUSH
+        )
+
+        mas_setEVLPropValues(
+            "mas_pf14_monika_lovey_dovey",
+            random=False,
+            conditional="not renpy.seen_label('mas_pf14_monika_lovey_dovey')",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14
+        )
+
+        # enable late updates to fix the annis again
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.11.9.3
+label v0_11_9_3(version="v0_11_9_3"):
+    python:
+        if renpy.seen_label('mas_chess_dlg_qf_lost_ofcn_6'):
+            persistent._mas_chess_timed_disable = True
+
+        mas_setEVLPropValues(
+            "mas_chess",
+            conditional=(
+                "persistent._mas_chess_timed_disable is not True "
+                "and mas_games.is_platform_good_for_chess() "
+                "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
+            )
+        )
+
+        fps_to_delete = [
+            "zz_windowreacts.rpy",
+            "Submods/Enhanced Idle/enhanced idle.rpy"
+        ]
+
+        for fp in fps_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp).replace('\\', '/'))
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fp + "c").replace('\\', '/'))
+
+    return
+
+# 0.11.9.1
+label v0_11_9_1(version="v0_11_9_1"):
+    python:
+        mas_bookmarks_derand.removeDerand("monika_twitter")
+
+        mas_setEVLPropValues(
+            "monika_twitter",
+            random=False,
+            conditional="renpy.seen_label('monika_clones')",
+            action=EV_ACT_RANDOM
+        )
+
+        if seen_event("monika_boardgames"):
+            mas_protectedShowEVL("monika_boardgames_history", "EVE", _random=True)
+
+        # We don't use this var anymore
+        safeDel("chess_strength")
+
+        for story_type, story_last_seen in persistent._mas_last_seen_new_story.iteritems():
+            if story_last_seen is not None:
+                persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
+                    story_last_seen, datetime.time()
+                )
+
+        if seen_event("monika_asimov_three_laws"):
+            mas_protectedShowEVL("monika_foundation", "EVE", _random=True)
+    return
+
+# 0.11.9
+label v0_11_9(version="v0_11_9"):
+    python:
+        # Try to delele our old dropfixes
+        dropfixes = (
+            "zz_delactfix",
+            "zz_dropfix",
+            "ev_dropfix",
+            "bookderanddropfix",
+            "christmas_gifts_drop"
+        )
+        extensions = (
+            ".rpy",
+            ".rpyc"
+        )
+
+        for df in dropfixes:
+            for ext in extensions:
+                mas_utils.trydel(
+                    os.path.join(config.gamedir, df+ext).replace("\\", "/")
+                )
+    return
+
+# 0.11.7
+label v0_11_7(version="v0_11_7"):
+    python:
+        with MAS_EVL("monika_whispers") as whispers_ev:
+            if (
+                not persistent.clearall
+                and store.mas_anni.pastOneMonth()
+                and not persistent._mas_pm_cares_about_dokis
+            ):
+                whispers_ev.conditional = None
+                whispers_ev.action = None
+
+            else:
+                whispers_ev.conditional = "not persistent.clearall"
+                whispers_ev.action = EV_ACT_RANDOM
+
+            whispers_ev.random = False
+            whispers_ev.unlocked = False
+
+        mas_setEVLPropValues(
+            'mas_d25_spent_time_monika',
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=17)),
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            'monika_nye_year_review',
+            action=EV_ACT_QUEUE,
+            start_date=mas_nye,
+            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23))
+        )
+
+        mas_setEVLPropValues(
+            'mas_nye_monika_nye_dress_intro',
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+                "and not mas_SELisUnlocked(mas_clothes_dress_newyears)"
+            )
+        )
+
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmaslights',
+            conditional=(
+                "persistent._mas_pm_hangs_d25_lights is None "
+                "and persistent._mas_d25_deco_active "
+                "and not persistent._mas_pm_live_south_hemisphere "
+                "and mas_isDecoTagVisible('mas_d25_lights')"
+            )
+        )
+
+        safeDel("_mas_d25_gifted_cookies")
+
+    return
+
+# 0.11.6
+label v0_11_6(version="v0_11_6"):
+    python:
+        #Lock daydream topic
+        mas_lockEVL("monika_daydream", "EVE")
+
+        #Unlock piano lessons pool topic
+        if mas_seenLabels(["mas_monika_plays_yr", "mas_monika_plays_or"]):
+            mas_unlockEVL("monika_piano_lessons", "EVE")
+
+        #Random criticism topics
+        if seen_event("monika_debate"):
+            mas_showEVL('monika_taking_criticism', 'EVE', _random=True)
+            mas_showEVL('monika_giving_criticism', 'EVE', _random=True)
+
+        if seen_event("monika_vn"):
+            mas_unlockEVL("monika_kamige","EVE")
+
+        #Remove these files if we still have them. They are not needed since 0.11.4 and they can cause issues.
+        filenames_to_delete = [
+            "sprite-chart-00.rpyc",
+            "sprite-chart-01.rpyc",
+            "sprite-chart-02.rpyc",
+            "sprite-chart-10.rpyc",
+            "sprite-chart-20.rpyc",
+            "sprite-chart-21.rpyc"
+        ]
+
+        for fn in filenames_to_delete:
+            mas_utils.trydel(os.path.join(renpy.config.gamedir, fn))
+
+    return
+
+# 0.11.5
+label v0_11_5(version="v0_11_5"):
+    python:
+        # properly unlock game topics if 0.7.1-era topics were seen
+        game_evls = (
+            ("mas_hangman", "mas_unlock_hangman"),
+            ("mas_chess", "mas_unlock_chess",),
+            ("mas_piano", "mas_unlock_piano"),
+        )
+
+        for game_evl, unlock_evl in game_evls:
+            # 0.11.0 update script shoudl have transfered seen
+            if (
+                    renpy.seen_label(unlock_evl)
+                    or mas_getEVL_shown_count(unlock_evl) > 0
+            ):
+                mas_unlockEVL(game_evl, "GME")
+                persistent._seen_ever[unlock_evl] = True
+
+                # if we have seen the unlock evl, absolutely make sure it has
+                # a positive shown count. there is absolutely NO reason that
+                # an event that has been SEEN should have a shown count of 0.
+                unlock_ev = mas_getEV(unlock_evl)
+                if unlock_ev:
+                    mas_rmEVL(unlock_evl)
+                    unlock_ev.conditional = None
+                    unlock_ev.action = None
+                    unlock_ev.unlocked = False
+                    unlock_ev.shown_count = 1
+
+        #And the rest of the scripts because of the crash last time
+        #Unlock this fare
+        mas_unlockEVL("bye_illseeyou", "BYE")
+
+        if seen_event("monika_veggies"):
+            mas_unlockEVL("monika_eating_meat","EVE")
+
+        # In case someone updates from a really oudated version
+        for _key in ("hangman", "piano"):
+            if _key not in persistent.ever_won:
+                persistent.ever_won[_key] = False
+
+        # Adjust the conditional if needed
+        steam_install_detected_ev = mas_getEV("mas_steam_install_detected")
+        if (
+            steam_install_detected_ev is not None
+            and steam_install_detected_ev.conditional is not None
+        ):
+            steam_install_detected_ev.conditional = "store.mas_globals.is_steam"
+
+        #Add practice stats to chess
+        new_stats = {
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
+        }
+
+        persistent._mas_chess_stats.update(new_stats)
+
+        mas_setEVLPropValues(
+            'mas_bday_spent_time_with',
+            start_date = datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
+            end_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3))
+        )
+
+    return
+
 #0.11.4
 label v0_11_4(version="v0_11_4"):
     python:
@@ -404,9 +697,11 @@ label v0_11_4(version="v0_11_4"):
             "monika_dying_same_day"
         ]
 
-        for bad_evl in bad_topic_derand_list:
-            if bad_evl in persistent._mas_player_derandomed:
-                mas_loseAffection(5)
+        # NOTE: this caused a crash.
+        #   mas_loseAffection is not available during init
+        #for bad_evl in bad_topic_derand_list:
+        #    if bad_evl in persistent._mas_player_derandomed:
+        #        mas_loseAffection(5)
 
         #Unlock this fare
         mas_unlockEVL("bye_illseeyou", "BYE")
@@ -1514,6 +1809,10 @@ label v0_10_0(version="v0_10_0"):
             )
             concert_ev.action = EV_ACT_RANDOM
 
+        # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+        dt_now = datetime.datetime.now()
+        # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")
         if (
@@ -1521,7 +1820,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_922.trigger.month == 9
                 and mhs_922.trigger.day == 30
         ):
-            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_922.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_922.use_year_before = True
 
         mhs_pbday = store.mas_history.getMHS("player_bday")
@@ -1550,7 +1852,10 @@ label v0_10_0(version="v0_10_0"):
                 and mhs_o31.trigger.month == 11
                 and mhs_o31.trigger.day == 2
         ):
-            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            # NOTE: START UPDATE SCRIPT MODIFICATION FROM 0.11.5
+            mhs_o31.setTrigger(datetime.datetime(dt_now.year + 1, 1, 6))
+            # NOTE: END UPDATE SCRIPT MODIFICATION FROM 0.11.5
+
             mhs_o31.use_year_before = True
 
         # always save mhs
@@ -2562,6 +2867,15 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_0:
+    python:
+        #Reset annis as F29 based ones are on the wrong date
+        first_sesh = mas_getFirstSesh()
+        if first_sesh.month == 2 and first_sesh.day == 29:
+            mas_anni.reset_annis(first_sesh)
+
+    return
+
 label mas_lupd_v0_8_10:
     python:
         import store.mas_selspr as mas_selspr

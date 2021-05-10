@@ -1866,7 +1866,7 @@ init 200 python in mas_dockstat:
                 # no data found, assume a missing monika
                 return (MAS_PKG_NF, None)
 
-            real_data = parseMoniData(real_data)
+            real_data = parseMoniData(real_data, rd_log)
             ret_code = MAS_PKG_DL
 
         else:
@@ -2220,7 +2220,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
         #If bday + aff+, we use this fare
         if (
             mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
-            and not mas_SELisUnlocked(mas_clothes_blackdress)
+            and not persistent._mas_bday_has_done_bd_outro
         ):
             if len(persistent._mas_dockstat_checkout_log) == 0:
                 #We change Moni's outfit here because she just got ready
@@ -2315,12 +2315,6 @@ label mas_dockstat_empty_desk:
             mas_startupWeather()
             skip_setting_weather = True
 
-        # reset zoom before showing spaceroom
-        store.mas_sprites.reset_zoom()
-
-    call spaceroom(hide_monika=True, scene_change=True)
-
-    python:
         mas_from_empty = True
 
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
@@ -2328,13 +2322,18 @@ label mas_dockstat_empty_desk:
         if mas_isD25Season() and persistent._mas_d25_deco_active:
             store.mas_d25ShowVisuals()
 
+        #NOTE: Player bday and Moni bday do a zoom reset so deco is shown properly
         if mas_confirmedParty() and mas_isMonikaBirthday():
             persistent._mas_bday_visuals = True
+            store.mas_sprites.reset_zoom()
             store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
         #NOTE: elif'd so we don't try and show two types of visuals here
         elif persistent._mas_player_bday_decor:
+            store.mas_sprites.reset_zoom()
             store.mas_surpriseBdayShowVisuals()
+
+    call spaceroom(hide_monika=True, scene_change=True)
 
     #FALL THROUGH
 
@@ -2477,6 +2476,9 @@ label mas_dockstat_found_monika:
 
     elif mas_run_d25s_exit and not mas_lastSeenInYear("mas_d25_monika_d25_mode_exit"):
         call mas_d25_season_exit
+
+    elif mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25ShowVisuals()
 
     jump ch30_post_exp_check
 

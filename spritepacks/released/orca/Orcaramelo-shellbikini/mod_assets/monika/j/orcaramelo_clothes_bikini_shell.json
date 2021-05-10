@@ -12,7 +12,7 @@
     "stay_on_start": true,
     "ex_props": {
         "bikini": true,
-        "bare-right-shoulder": true
+        "bare-shoulders": true
     },
     "select_info": {
         "display_name": "Bikini (Shell)",
