@@ -1929,7 +1929,7 @@ label mas_song_save_the_last_dance_for_me_lyrics:
     m 1dud "{i}~You can dance{w=0.3} every dance with the one~{/i}"
     m 3eud "{i}~Who gives you the eye,{w=0.2} let them hold you tight~{/i}"
     m 3huu "{i}~You can smile{w=0.3} every smile for the one~{/i}"
-    m 3eud "{i}~Who held your hand beneath the pale moon light~{/i}"
+    m 3eud "{i}~Who held your hand beneath the pale moonlight~{/i}"
     m 4eublo "{i}~But don't forget who's takin' you home~{/i}"
     m 4tublb "{i}~And in whose arms you're gonna be~{/i}"
     m 6hublb "{i}~So darling,{w=0.2} save the last dance for me~{/i}"
@@ -1956,17 +1956,17 @@ label mas_song_save_the_last_dance_for_me_analysis(from_song=False):
     else:
         m 3hub "Great!"
 
-    m 1eud "The story behind this song may seem at first glance to be just another romantic declaration of faithfulness."
-    m 1duc "However, the actual story is pretty dramatic and sad."
-    m 3ekc "A medical condition left one of the songwriters, Jerome Felder, unable to walk or dance on his own wedding night."
+    m 1eud "The story behind this song may seem to be just another romantic declaration of faithfulness."
+    m 1duc "However, the actual story is pretty dramatic and sad..."
+    m 3ekc "A medical condition left one of the songwriters,{w=0.1} Jerome Felder, unable to walk or dance on his own wedding night."
     m 1rkd "A few years later, the strong feelings of that night reignited as he found a wedding invitation they had not sent out."
     m 3rksdlc "Jerome had a moment of envy when he saw his brother dancing with his wife on his own wedding night, while he was forced to watch from the sidelines."
     m 3ekd "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
     m 3eka "As he remembered that day and began to write the lyrics to the song, he wanted it to have a poetic feel."
     m 3rkbla "Even though there was a hint of jealousy in the song, he wanted it to be romantic."
-    m 2dkc "You see...{w=0.5}this barrier between us...{w=0.5}it feels like it's my wheelchair."
-    m 2rkp "...And I guess if I have to be honest, I'm kind of jealous that you can dance with someone while I'm stuck here on the sidelines."
-    m 6ekblu "So at the end of the day, I just hope you'll save one last dance for me~"
+    m 2dkc "You see...{w=0.3}this barrier between us...{w=0.3}it feels like it's my wheelchair."
+    m 2rkp "...And I guess if I'm being honest,{w=0.1} I am kind of jealous that you can dance with someone while I'm stuck here on the sidelines."
+    m 6ekblu "So at the end of the day, I just hope you'll save the last dance for me~"
     return
 
 
