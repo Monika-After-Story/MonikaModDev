@@ -562,3 +562,29 @@ label mas_wrs_twitch:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitch')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_googledocs",
+            category='["google", "docs"]',
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_googledocs:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Are you going to write a story?",
+            "Taking notes, [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_googledocs')
+    return
