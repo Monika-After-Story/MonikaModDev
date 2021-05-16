@@ -3171,9 +3171,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                                 action [SetField(mailbox,'item_type', None),SetField(mailbox,'item_type_old', current_item_type),SelectedIf(mailbox.item_type == None)]
 
                             # Only need keys
-                            $ filter_map_sorted=sorted(filter_map.keys())   
-
-                            for item_type_name in filter_map_sorted:
+                            for item_type_name in sorted(filter_map.keys()):
                                 textbutton _(item_type_name):
                                     style "hkb_button"
                                     xysize (300, 40)
