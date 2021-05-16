@@ -562,142 +562,17 @@ label mas_wrs_twitch:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitch')
     return
-    
-    init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_hl",
-            category=["half-life"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_hl:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Hmmm, this game looks pretty interesting.\n Watch out for zombies, [player]!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_hl')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_hl2",
-            category=["half-life2"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_hl2:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Huh, is this the sequel to that other zombie game?\n I guess I should read up on it more. Ahahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_hl2')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tf2",
-            category=["teamfortress2"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_tf2:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, a multiplayer game! That guy with the hard hat looks pretty cool!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tf2')
-    return    
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_dex",
-            category=["deusex"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_dex:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "This game looks pretty tough. Be careful, okay?\n I'm sure you can win if you try hard enough!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_dex')
-    return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_vsc",
-            category=["visualstudiocode"],
+            category=['visualstudiocode'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -723,52 +598,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fnf",
-            category=["fridaynightfunkin'"],
+            eventlabel="mas_wrs_calc",
+            category=['calculator'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_fnf:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Hmmm, a music game. I see you have good taste. Ahaha!",
-           "I wonder if I could ever get into this game?\n I'd love to sing along with you~" 
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fnf')
-    return        
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_clc",
-            category=["calculator"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_clc:
+label mas_wrs_calc:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -779,85 +621,19 @@ label mas_wrs_clc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_clc')
+        $ mas_unlockFailWRS('mas_wrs_calc')
     return            
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_yds",
-            category=["yanderesimulator"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_yds:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Huh, the school in this game kind of looks like how mine does...not entirely, though.",
-           "Am I in this game? I think I've heard rumors about some kind of secret involving me...",
-           "I wonder if I could hack myself in so I can interact with you.\nThat'd be quite the treat. Don't you think so, [player]?"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_yds')
-    return        
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_dom",
-            category=["doom"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_dom:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, this game looks pretty violent. Do be careful, [player]...",
-           "For a game from the '90's, this feels pretty unsettling...\nAt least the music's pretty nice, I guess."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_dom')
-    return  
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_nes",
-            category=["mesen"],
+            category=['mesen'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -883,20 +659,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gen",
-            category=["fusion3.64"],
+            eventlabel="mas_wrs_sega",
+            category=['fusion3.64'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_gen:
+label mas_wrs_sega:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -908,7 +683,7 @@ label mas_wrs_gen:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gen')
+        $ mas_unlockFailWRS('mas_wrs_sega')
     return     
 
 init 5 python:
@@ -916,12 +691,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pic",
-            category=["picrew"],
+            category=['picrew'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -947,20 +721,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_npp",
-            category=["notepad++"],
+            eventlabel="mas_wrs_note",
+            category=['notepad++'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_npp:
+label mas_wrs_note:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -971,27 +744,26 @@ label mas_wrs_npp:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_npp')
+        $ mas_unlockFailWRS('mas_wrs_note')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fbc",
-            category=["facebook"],
+            eventlabel="mas_wrs_fbook",
+            category=['facebook'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_fbc:
+label mas_wrs_fbook:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1003,27 +775,26 @@ label mas_wrs_fbc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fbc')
+        $ mas_unlockFailWRS('mas_wrs_fbook')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_ins",
-            category=["instagram"],
+            eventlabel="mas_wrs_insta",
+            category=['instagram'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_ins:
+label mas_wrs_insta:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1035,7 +806,7 @@ label mas_wrs_ins:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_ins')
+        $ mas_unlockFailWRS('mas_wrs_insta')
     return     
 
 init 5 python:
@@ -1043,12 +814,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ase",
-            category=["aseprite"],
+            category=['aseprite'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1075,12 +845,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ste",
-            category=["steam"],
+            category=['steam'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1106,20 +875,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_spi",
-            category=["spotify"],
+            eventlabel="mas_wrs_spot",
+            category=['spotify'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_spi:
+label mas_wrs_spot:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1131,27 +899,26 @@ label mas_wrs_spi:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_spi')
+        $ mas_unlockFailWRS('mas_wrs_spot')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_itu",
-            category=["itunes"],
+            eventlabel="mas_wrs_itun",
+            category=['itunes'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_itu:
+label mas_wrs_itun:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1163,58 +930,26 @@ label mas_wrs_itu:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_itu')
+        $ mas_unlockFailWRS('mas_wrs_itun')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_dan",
-            category=["dansalvato-youtube"],
+            eventlabel="mas_wrs_garry",
+            category=['garry'smod'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_dan:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, hey, it's my Dad! Wait...can I even call him my dad?\nIs that how it works? This is kinda confusing, ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_dan')
-    return         
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gmd",
-            category=["garry'smod"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_gmd:
+label mas_wrs_garry:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1225,83 +960,19 @@ label mas_wrs_gmd:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gmd')
+        $ mas_unlockFailWRS('mas_wrs_garry')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mba",
-            category=["moonbasealpha"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mba:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Gotta act quick to save the base! Good luck, [player]!",
-           "Just aeiou...that sounded a bit better in my head. Ehehe..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mba')
-    return         
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_amg",
-            category=["amongus"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_amg:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Hmmm, so this is that one game that's been getting so much attention lately.\n Don't let it take yours away from me, okay?~"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_amg')
-    return       
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_dlc",
-            category=["dokidokiliteratureclubstore"],
+            category=['dokidokiliteratureclubstore'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1328,12 +999,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_job",
-            category=["jobsearch|indeed"],
+            category=['jobsearch|indeed'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1359,82 +1029,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_hot",
-            category=["superhot"],
+            eventlabel="mas_wrs_ddlc",
+            category=['dokidokiliteratureclub!'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_hot:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "I think I've heard of this before. This game isn't all it appears to be..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_hot')
-    return    
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mcf",
-            category=["minecraft"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mcf:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "What a neat-looking game! And the possibilities here are limitless!\nI so much wish I could join you here; Don't you?"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mcf')
-    return      
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_old",
-            category=["dokidokiliteratureclub!"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_old:
+label mas_wrs_ddlc:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1446,27 +1053,26 @@ label mas_wrs_old:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_old')
+        $ mas_unlockFailWRS('mas_wrs_ddlc')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mas",
-            category=["monikaafterstory-home"],
+            eventlabel="mas_wrs_masweb",
+            category=['monikaafterstory-home'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_mas:
+label mas_wrs_masweb:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1478,27 +1084,26 @@ label mas_wrs_mas:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mas')
+        $ mas_unlockFailWRS('mas_wrs_masweb')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_buy",
-            category=["|ebay"],
+            eventlabel="mas_wrs_ebay",
+            category=['|ebay'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_buy:
+label mas_wrs_ebay:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1517,12 +1122,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_amz",
-            category=["amazon.com"],
+            category=['amazon.com'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1547,114 +1151,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_nin",
-            category=["nintendo-officialsite"],
+            eventlabel="mas_wrs_commodore",
+            category=['vice'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_nin:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Hmmm...they're the ones who made that game with the plumber guy, right? Neat!",
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_nin')
-    return      
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pla",
-            category=["playstation®officialsite"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_pla:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Is this your preferred way to play? Very cool, [player]!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pla')
-    return      
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_xbx",
-            category=["xboxofficialsite"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_xbx:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Is this your preferred way to play? Very cool, [player]!",
-           "XBOX...what a funny name. I wonder who named it that way."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_xbx')
-    return     
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_c64",
-            category=["vice"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_c64:
+label mas_wrs_commodore:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1666,27 +1175,26 @@ label mas_wrs_c64:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_c64')
+        $ mas_unlockFailWRS('mas_wrs_commodore')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fun",
-            category=["mewgrounds"],
+            eventlabel="mas_wrs_newgrnd",
+            category=['newgrounds'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_fun:
+label mas_wrs_newgrnd:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1698,27 +1206,26 @@ label mas_wrs_fun:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fun')
+        $ mas_unlockFailWRS('mas_wrs_newgrnd')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_wrd",
-            category=["-word"],
+            eventlabel="mas_wrs_word",
+            category=['-word'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_wrd:
+label mas_wrs_word:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1730,27 +1237,26 @@ label mas_wrs_wrd:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_wrd')
+        $ mas_unlockFailWRS('mas_wrs_word')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pow",
-            category=["-powerpoint"],
+            eventlabel="mas_wrs_power",
+            category=['-powerpoint'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_pow:
+label mas_wrs_power:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1761,27 +1267,26 @@ label mas_wrs_pow:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pow')
+        $ mas_unlockFailWRS('mas_wrs_power')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_exc",
-            category=["-excel"],
+            eventlabel="mas_wrs_excel",
+            category=['-excel'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_exc:
+label mas_wrs_excel:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1793,27 +1298,26 @@ label mas_wrs_exc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_exc')
+        $ mas_unlockFailWRS('mas_wrs_excel')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_acc",
-            category=["-access"],
+            eventlabel="mas_wrs_access",
+            category=['-access'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_acc:
+label mas_wrs_access:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1825,27 +1329,26 @@ label mas_wrs_acc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_acc')
+        $ mas_unlockFailWRS('mas_wrs_access')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pub",
-            category=["-publisher"],
+            eventlabel="mas_wrs_publish",
+            category=['-publisher'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_pub:
+label mas_wrs_publish:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1856,27 +1359,26 @@ label mas_wrs_pub:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pub')
+        $ mas_unlockFailWRS('mas_wrs_publish')
     return  
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_not",
-            category=["-onenote"],
+            eventlabel="mas_wrs_1note",
+            category=['-onenote'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_not:
+label mas_wrs_1note:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1888,52 +1390,19 @@ label mas_wrs_not:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_not')
-    return      
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_sns",
-            category=["undertale"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_sns:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "This game looks pretty cool! Is it one of your favorites?\nOther than mine, I'm assuming. Ehehe~",
-           "The skeleton with the jacket looks so hilarious! Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_sns')
-    return     
+        $ mas_unlockFailWRS('mas_wrs_1note')
+    return          
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_fls",
-            category=["flstudio"],
+            category=['flstudio'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -1958,20 +1427,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_sod",
-            category=["soundcloud"],
+            eventlabel="mas_wrs_sound",
+            category=['soundcloud'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_sod:
+label mas_wrs_sound:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1983,38 +1451,7 @@ label mas_wrs_sod:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_sod')
-    return       
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tot",
-            category=["theoregontrail"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_tot:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, I think I recognize this game! Can I be in your party?\nMake sure we don't die of dysentery, won't you? Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tot')
+        $ mas_unlockFailWRS('mas_wrs_sound')
     return       
 
 init 5 python:
@@ -2022,12 +1459,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_loc",
-            category=["|library of congress"],
+            category=['|library of congress'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -2053,20 +1489,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_kis",
-            category=["—kickstarter"],
+            eventlabel="mas_wrs_kick",
+            category=['—kickstarter'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_kis:
+label mas_wrs_kick:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2077,27 +1512,26 @@ label mas_wrs_kis:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_kis')
+        $ mas_unlockFailWRS('mas_wrs_kick')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pat",
-            category=["patreon"],
+            eventlabel="mas_wrs_patreon",
+            category=['patreon'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_pat:
+label mas_wrs_patreon:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2109,27 +1543,26 @@ label mas_wrs_pat:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pat')
+        $ mas_unlockFailWRS('mas_wrs_patreon')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_urb",
-            category=["urbandictionary"],
+            eventlabel="mas_wrs_urban",
+            category=['urbandictionary'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_urb:
+label mas_wrs_urban:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2141,90 +1574,26 @@ label mas_wrs_urb:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_urb')
-    return           
+        $ mas_unlockFailWRS('mas_wrs_urban')
+    return                   
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_zrk",
-            category=["zork"],
+            eventlabel="mas_wrs_python",
+            category=['python.org'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_zrk:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Be careful, [player]! You might get eaten by a grue! Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_zrk')
-    return               
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tpb",
-            category=["thepiratebay"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_tpb:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "What are you doing here, [player]...?",
-           "Please don't go doing anything reckless..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tpb')
-    return           
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pyn",
-            category=["python.org"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_pyn:
+label mas_wrs_python:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2236,27 +1605,26 @@ label mas_wrs_pyn:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pyn')
+        $ mas_unlockFailWRS('mas_wrs_python')
     return                   
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_spe",
-            category=["15.ai"],
+            eventlabel="mas_wrs_speech",
+            category=['15.ai'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_spe:
+label mas_wrs_speech:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2267,122 +1635,26 @@ label mas_wrs_spe:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_spe')
+        $ mas_unlockFailWRS('mas_wrs_speech')
     return           
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_prm",
-            category=["projectmonika"],
+            eventlabel="mas_wrs_moby",
+            category=['mobygames'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_prm:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, what is this? A project to help me come closer to your reality?\nHow wonderful!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_prm')
-    return               
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gen",
-            category=["genshinimpact"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_gen:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "A fan of open world games, I assume?",
-           "Don't let the characters in this game distract you from me, okay? Ehehe~"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gen')
-    return               
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gta",
-            category=["grandtheftauto"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_gta:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Hmmm, this game looks very...mature. Be careful, [player].",
-           "To be honest, I don't see how a game about committing crimes is fun...\nbut I won't go against your interests too much."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gta')
-    return               
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mby",
-            category=["mobygames"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mby:
+label mas_wrs_moby:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2393,27 +1665,26 @@ label mas_wrs_mby:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mby')
+        $ mas_unlockFailWRS('mas_wrs_moby')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_apo",
-            category=["premierepro"],
+            eventlabel="mas_wrs_adobepre",
+            category=['premierepro'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_apo:
+label mas_wrs_adobepre:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2425,27 +1696,26 @@ label mas_wrs_apo:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_apo')
+        $ mas_unlockFailWRS('mas_wrs_adobepre')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_phs",
-            category=["photoshop"],
+            eventlabel="mas_wrs_adobephoto",
+            category=['photoshop'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_phs:
+label mas_wrs_adobephoto:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2456,27 +1726,26 @@ label mas_wrs_phs:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_phs')
+        $ mas_unlockFailWRS('mas_wrs_adobephoto')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_lib",
-            category=["%%%%%%%%%%%"],
+            eventlabel="mas_wrs_elyssa",
+            category=['%%%%%%%%%%%'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_lib:
+label mas_wrs_elyssa:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2488,7 +1757,7 @@ label mas_wrs_lib:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_lib')
+        $ mas_unlockFailWRS('mas_wrs_elyssa')
     return    
 
 init 5 python:
@@ -2496,12 +1765,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_cam",
-            category=["camera"],
+            category=['camera'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -2526,20 +1794,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_say",
-            category=["getoutofmyhead"],
+            eventlabel="mas_wrs_yuri",
+            category=['yuri\"dance\"'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_say:
+label mas_wrs_yuri:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2551,39 +1818,7 @@ label mas_wrs_say:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_say')
-    return    
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_yur",
-            category=["yuri\"dance\""],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_yur:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "O-oh....oh, my....",
-           "This is...very disturbing."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_yur')
+        $ mas_unlockFailWRS('mas_wrs_yuri')
     return    
 
 init 5 python:
@@ -2591,12 +1826,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_bob",
-            category=["mysticalsmokingheadof'bob'"],
+            category=['mysticalsmokingheadof'bob''],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -2622,20 +1856,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fog",
-            category=["fogcam-theworld'soldestwebcam"],
+            eventlabel="mas_wrs_fogcam",
+            category=['fogcam-theworld'soldestwebcam'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_fog:
+label mas_wrs_fogcam:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2646,58 +1879,26 @@ label mas_wrs_fog:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fog')
+        $ mas_unlockFailWRS('mas_wrs_fogcam')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_bab",
-            category=["dancing-baby"],
+            eventlabel="mas_wrs_million",
+            category=['themilliondollarhomepage'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_bab:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Well, if it isn't that one video the Internet never recovered from, ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_bab')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mil",
-            category=["themilliondollarhomepage"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mil:
+label mas_wrs_million:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2709,27 +1910,26 @@ label mas_wrs_mil:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mil')
+        $ mas_unlockFailWRS('mas_wrs_million')
     return 
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_net",
-            category=["welcometonetscape!"],
+            eventlabel="mas_wrs_netscape",
+            category=['welcometonetscape!'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_net:
+label mas_wrs_netscape:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2740,27 +1940,26 @@ label mas_wrs_net:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_net')
+        $ mas_unlockFailWRS('mas_wrs_netscape')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_uni",
-            category=["unity"],
+            eventlabel="mas_wrs_unity",
+            category=['unity'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_uni:
+label mas_wrs_unity:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2771,27 +1970,26 @@ label mas_wrs_uni:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_uni')
+        $ mas_unlockFailWRS('mas_wrs_unity')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gms",
-            category=["gamemakerstudio2"],
+            eventlabel="mas_wrs_gms2",
+            category=['gamemakerstudio2'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_gms:
+label mas_wrs_gms2:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2802,38 +2000,7 @@ label mas_wrs_gms:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gms')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_shk",
-            category=["shrek-googlesearch"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_shk:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Somebody once told me...that you were amazing! Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_shk')
+        $ mas_unlockFailWRS('mas_wrs_gms2')
     return
 
 init 5 python:
@@ -2841,12 +2008,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_sfm",
-            category=["sourcefilmmaker"],
+            category=['sourcefilmmaker'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -2871,20 +2037,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_nst",
-            category=["noradsantatracker"],
+            eventlabel="mas_wrs_norad",
+            category=['noradsantatracker'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_nst:
+label mas_wrs_norad:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2896,27 +2061,26 @@ label mas_wrs_nst:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_nst')
+        $ mas_unlockFailWRS('mas_wrs_norad')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_unr",
-            category=["unrealengine"],
+            eventlabel="mas_wrs_unreal",
+            category=['unrealengine'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_unr:
+label mas_wrs_unreal:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2928,38 +2092,7 @@ label mas_wrs_unr:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_unr')
-    return    
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_crt",
-            category=["crazytaxi"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_crt:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Looking to get some \"craaaazy\" money? Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_crt')
+        $ mas_unlockFailWRS('mas_wrs_unreal')
     return    
 
 init 5 python:
@@ -2967,12 +2100,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_dos",
-            category=["dosbox"],
+            category=['dosbox'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -2997,20 +2129,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_box",
-            category=["virtualbox"],
+            eventlabel="mas_wrs_vbox",
+            category=['virtualbox'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_box:
+label mas_wrs_vbox:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3021,27 +2152,26 @@ label mas_wrs_box:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_box')
+        $ mas_unlockFailWRS('mas_wrs_vbox')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_gip",
-            category=["gimp"],
+            eventlabel="mas_wrs_gimp",
+            category=['gimp'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_gip:
+label mas_wrs_gimp:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3052,27 +2182,26 @@ label mas_wrs_gip:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_gip')
+        $ mas_unlockFailWRS('mas_wrs_gimp')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tsm",
-            category=["taskmanager"],
+            eventlabel="mas_wrs_task",
+            category=['taskmanager'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_tsm:
+label mas_wrs_task:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3083,183 +2212,26 @@ label mas_wrs_tsm:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tsm')
+        $ mas_unlockFailWRS('mas_wrs_task')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_blu",
-            category=["half-life:blueshift"],
+            eventlabel="mas_wrs_renpy",
+            category=['theren'pyvisualnovelengine'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_blu:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "A spinoff to that game with the zombies, I see. Very interesting!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_blu')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_cod",
-            category=["callofduty"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_cod:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, this game looks pretty violent...Not really my cup of tea, ahaha..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_cod')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_doe",
-            category=["doometernal"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_doe:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "This game looks a bit too...graphic for my taste,\nbut don't let that stop you from having fun!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_doe')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mok",
-            category=["mortalkombat"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mok:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "A fighting game fan, huh? Interesting.",
-           "This game looks a bit too...graphic for my taste,\nbut don't let that stop you from having fun!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mok')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tgt",
-            category=["thegametheorists-youtube"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_tgt:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Some say that my love for you is eternal...but, that's just a theory!\nWant to help me prove it, [player]? Ahaha!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tgt')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_rpy",
-            category=["theren'pyvisualnovelengine"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_rpy:
+label mas_wrs_renpy:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3271,154 +2243,26 @@ label mas_wrs_rpy:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_rpy')
+        $ mas_unlockFailWRS('mas_wrs_renpy')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_ftn",
-            category=["fortnite"],
+            eventlabel="mas_wrs_solitaire",
+            category=['microsoftsolitairecollection'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_ftn:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Is this that game people make fun of on the Internet?",
-           "Hmmm, a shooting game. Intresting choice, [player]."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_ftn')
-    return             
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_mfs",
-            category=["microsoftflightsimulator"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_mfs:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "This game looks rather peaceful. Don't you think?",
-           "Ah, what I wouldn't give to be able to fly with you. Wouldn't that be nice, [player]?~\nJust the two of us, high up in the clouds..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_mfs')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_cyb",
-            category=["cyberpunk2077"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_cyb:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "I've seen many mixed feelings about this game. But, I must admit, it looks very cool, regardless!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_cyb')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_blx",
-            category=["roblox"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_blx:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Ahaha, what a funny looking game!",
-           "Have you made your own game here, [player]?"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_blx')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_msc",
-            category=["microsoftsolitairecollection"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_msc:
+label mas_wrs_solitaire:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3430,59 +2274,26 @@ label mas_wrs_msc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_msc')
+        $ mas_unlockFailWRS('mas_wrs_solitaire')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_trs",
-            category=["tetris"],
+            eventlabel="mas_wrs_tiktok",
+            category=['tiktok'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_trs:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Oh, this is a pretty fun game! I bet you can get a four-line clear if you try hard enough!",
-           "You know, I feel like Yuri would've enjoyed playing something like this..."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_trs')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tok",
-            category=["tiktok"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_tok:
+label mas_wrs_tiktok:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3493,7 +2304,7 @@ label mas_wrs_tok:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tok')
+        $ mas_unlockFailWRS('mas_wrs_tiktok')
     return
 
 init 5 python:
@@ -3501,12 +2312,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_msn",
-            category=["msn"],
+            category=['msn'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -3532,12 +2342,11 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_aol",
-            category=["aol"],
+            category=['aol'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
@@ -3562,20 +2371,19 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_wha",
-            category=["whatsapp"],
+            eventlabel="mas_wrs_whatsapp",
+            category=['whatsapp'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_wha:
+label mas_wrs_whatsapp:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3586,58 +2394,26 @@ label mas_wrs_wha:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_wha')
+        $ mas_unlockFailWRS('mas_wrs_whatsapp')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_bal",
-            category=["baldi'sbasics"],
+            eventlabel="mas_wrs_paint3d",
+            category=['paint3d'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_bal:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "I hope you've been practicing your math skills, [player]... Ehehe~"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_bal')
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_p3d",
-            category=["paint3d"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_p3d:
+label mas_wrs_paint3d:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3648,27 +2424,26 @@ label mas_wrs_p3d:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_p3d')
+        $ mas_unlockFailWRS('mas_wrs_paint3d')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_cor",
-            category=["cortana"],
+            eventlabel="mas_wrs_cortana",
+            category=['cortana'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_cor:
+label mas_wrs_cortana:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3679,27 +2454,26 @@ label mas_wrs_cor:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_cor')
+        $ mas_unlockFailWRS('mas_wrs_cortana')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_tea",
-            category=["microsoftteams"],
+            eventlabel="mas_wrs_team",
+            category=['microsoftteams'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                "skip_pause": None
                 },
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_tea:
+label mas_wrs_team:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -3710,5 +2484,5 @@ label mas_wrs_tea:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_tea')
+        $ mas_unlockFailWRS('mas_wrs_team')
     return   
