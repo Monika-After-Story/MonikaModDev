@@ -567,7 +567,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_vsc",
+            eventlabel="mas_wrs_vscode",
             category=['visualstudiocode'],
             rules={
                 "notif-group": "Window Reactions",
@@ -579,7 +579,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_vsc:
+label mas_wrs_vscode:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -591,14 +591,14 @@ label mas_wrs_vsc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_vsc')
+        $ mas_unlockFailWRS('mas_wrs_vscode')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_calc",
+            eventlabel="mas_wrs_calculate",
             category=['calculator'],
             rules={
                 "notif-group": "Window Reactions",
@@ -610,7 +610,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_calc:
+label mas_wrs_calculate:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -621,7 +621,7 @@ label mas_wrs_calc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_calc')
+        $ mas_unlockFailWRS('mas_wrs_calculate')
     return            
 
 init 5 python:
@@ -659,7 +659,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_sega",
+            eventlabel="mas_wrs_fusion",
             category=['fusion3.64'],
             rules={
                 "notif-group": "Window Reactions",
@@ -671,7 +671,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_sega:
+label mas_wrs_fusion:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -683,14 +683,14 @@ label mas_wrs_sega:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_sega')
+        $ mas_unlockFailWRS('mas_wrs_fusion')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_pic",
+            eventlabel="mas_wrs_picrew",
             category=['picrew'],
             rules={
                 "notif-group": "Window Reactions",
@@ -702,7 +702,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_pic:
+label mas_wrs_picrew:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -714,14 +714,14 @@ label mas_wrs_pic:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_pic')
+        $ mas_unlockFailWRS('mas_wrs_picrew')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_note",
+            eventlabel="mas_wrs_notepad",
             category=['notepad++'],
             rules={
                 "notif-group": "Window Reactions",
@@ -733,7 +733,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_note:
+label mas_wrs_notepad:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -744,7 +744,7 @@ label mas_wrs_note:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_note')
+        $ mas_unlockFailWRS('mas_wrs_notepad')
     return     
 
 init 5 python:
@@ -813,7 +813,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_ase",
+            eventlabel="mas_wrs_aseprite",
             category=['aseprite'],
             rules={
                 "notif-group": "Window Reactions",
@@ -825,7 +825,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_ase:
+label mas_wrs_aseprite:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -837,14 +837,14 @@ label mas_wrs_ase:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_ase')
+        $ mas_unlockFailWRS('mas_wrs_aseprite')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_ste",
+            eventlabel="mas_wrs_steam",
             category=['steam'],
             rules={
                 "notif-group": "Window Reactions",
@@ -856,7 +856,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_ste:
+label mas_wrs_steam:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -868,14 +868,14 @@ label mas_wrs_ste:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_ste')
+        $ mas_unlockFailWRS('mas_wrs_steam')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_spot",
+            eventlabel="mas_wrs_spotify",
             category=['spotify'],
             rules={
                 "notif-group": "Window Reactions",
@@ -887,7 +887,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_spot:
+label mas_wrs_spotify:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -899,14 +899,14 @@ label mas_wrs_spot:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_spot')
+        $ mas_unlockFailWRS('mas_wrs_spotify')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_itun",
+            eventlabel="mas_wrs_itunes",
             category=['itunes'],
             rules={
                 "notif-group": "Window Reactions",
@@ -918,7 +918,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_itun:
+label mas_wrs_itunes:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -930,7 +930,7 @@ label mas_wrs_itun:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_itun')
+        $ mas_unlockFailWRS('mas_wrs_itunes')
     return       
 
 init 5 python:
@@ -967,7 +967,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_dlc",
+            eventlabel="mas_wrs_ddlcstore",
             category=['dokidokiliteratureclubstore'],
             rules={
                 "notif-group": "Window Reactions",
@@ -979,7 +979,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_dlc:
+label mas_wrs_ddlcstore:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -991,14 +991,14 @@ label mas_wrs_dlc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_dlc')
+        $ mas_unlockFailWRS('mas_wrs_ddlcstore')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_job",
+            eventlabel="mas_wrs_jobsearch",
             category=['jobsearch|indeed'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1010,7 +1010,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_job:
+label mas_wrs_jobsearch:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1022,7 +1022,7 @@ label mas_wrs_job:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_job')
+        $ mas_unlockFailWRS('mas_wrs_jobsearch')
     return       
 
 init 5 python:
@@ -1060,7 +1060,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_masweb",
+            eventlabel="mas_wrs_maswebsite",
             category=['monikaafterstory-home'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1072,7 +1072,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_masweb:
+label mas_wrs_maswebsite:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1084,7 +1084,7 @@ label mas_wrs_masweb:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_masweb')
+        $ mas_unlockFailWRS('mas_wrs_maswebsite')
     return      
 
 init 5 python:
@@ -1114,14 +1114,14 @@ label mas_wrs_ebay:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_buy')
+        $ mas_unlockFailWRS('mas_wrs_ebay')
     return  
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_amz",
+            eventlabel="mas_wrs_amazon",
             category=['amazon.com'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1133,7 +1133,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_amz:
+label mas_wrs_amazon:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1144,14 +1144,14 @@ label mas_wrs_amz:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_amz')
+        $ mas_unlockFailWRS('mas_wrs_amazon')
     return      
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_commodore",
+            eventlabel="mas_wrs_vice",
             category=['vice'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1163,7 +1163,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_commodore:
+label mas_wrs_vice:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1175,14 +1175,14 @@ label mas_wrs_commodore:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_commodore')
+        $ mas_unlockFailWRS('mas_wrs_vice')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_newgrnd",
+            eventlabel="mas_wrs_newgrounds",
             category=['newgrounds'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1194,7 +1194,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_newgrnd:
+label mas_wrs_newgrounds:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1206,7 +1206,7 @@ label mas_wrs_newgrnd:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_newgrnd')
+        $ mas_unlockFailWRS('mas_wrs_newgrounds')
     return      
 
 init 5 python:
@@ -1244,7 +1244,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_power",
+            eventlabel="mas_wrs_powerpoint",
             category=['-powerpoint'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1256,7 +1256,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_power:
+label mas_wrs_powerpoint:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1267,7 +1267,7 @@ label mas_wrs_power:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_power')
+        $ mas_unlockFailWRS('mas_wrs_powerpoint')
     return      
 
 init 5 python:
@@ -1336,7 +1336,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_publish",
+            eventlabel="mas_wrs_publisher",
             category=['-publisher'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1348,7 +1348,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_publish:
+label mas_wrs_publisher:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1359,14 +1359,14 @@ label mas_wrs_publish:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_publish')
+        $ mas_unlockFailWRS('mas_wrs_publisher')
     return  
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_1note",
+            eventlabel="mas_wrs_onenote",
             category=['-onenote'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1378,7 +1378,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_1note:
+label mas_wrs_onenote:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1390,14 +1390,14 @@ label mas_wrs_1note:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_1note')
+        $ mas_unlockFailWRS('mas_wrs_onenote')
     return          
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fls",
+            eventlabel="mas_wrs_flstudio",
             category=['flstudio'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1409,7 +1409,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_fls:
+label mas_wrs_flstudio:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1420,14 +1420,14 @@ label mas_wrs_fls:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fls')
+        $ mas_unlockFailWRS('mas_wrs_flstudio')
     return        
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_sound",
+            eventlabel="mas_wrs_soundcloud",
             category=['soundcloud'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1439,7 +1439,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_sound:
+label mas_wrs_soundcloud:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1451,14 +1451,14 @@ label mas_wrs_sound:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_sound')
+        $ mas_unlockFailWRS('mas_wrs_soundcloud')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_loc",
+            eventlabel="mas_wrs_congresslibrary",
             category=['|library of congress'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1470,7 +1470,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_loc:
+label mas_wrs_congresslibrary:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1482,14 +1482,14 @@ label mas_wrs_loc:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_loc')
+        $ mas_unlockFailWRS('mas_wrs_congresslibrary')
     return       
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_kick",
+            eventlabel="mas_wrs_kickstarter",
             category=['—kickstarter'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1501,7 +1501,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_kick:
+label mas_wrs_kickstarter:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1512,7 +1512,7 @@ label mas_wrs_kick:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_kick')
+        $ mas_unlockFailWRS('mas_wrs_kickstarter')
     return       
 
 init 5 python:
@@ -1550,7 +1550,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_urban",
+            eventlabel="mas_wrs_urbandictionary",
             category=['urbandictionary'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1562,7 +1562,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_urban:
+label mas_wrs_urbandictionary:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1574,7 +1574,7 @@ label mas_wrs_urban:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_urban')
+        $ mas_unlockFailWRS('mas_wrs_urbandictionary')
     return                   
 
 init 5 python:
@@ -1612,7 +1612,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_speech",
+            eventlabel="mas_wrs_15ai",
             category=['15.ai'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1624,7 +1624,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_speech:
+label mas_wrs_15ai:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1635,14 +1635,14 @@ label mas_wrs_speech:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_speech')
+        $ mas_unlockFailWRS('mas_wrs_15ai')
     return           
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_moby",
+            eventlabel="mas_wrs_mobygames",
             category=['mobygames'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1654,7 +1654,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_moby:
+label mas_wrs_mobygames:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1665,14 +1665,14 @@ label mas_wrs_moby:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_moby')
+        $ mas_unlockFailWRS('mas_wrs_mobygames')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_adobepre",
+            eventlabel="mas_wrs_adobepro",
             category=['premierepro'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1684,7 +1684,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_adobepre:
+label mas_wrs_adobepro:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1696,14 +1696,14 @@ label mas_wrs_adobepre:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_adobepre')
+        $ mas_unlockFailWRS('mas_wrs_adobepro')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_adobephoto",
+            eventlabel="mas_wrs_photoshop",
             category=['photoshop'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1715,7 +1715,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_adobephoto:
+label mas_wrs_photoshop:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1726,14 +1726,14 @@ label mas_wrs_adobephoto:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_adobephoto')
+        $ mas_unlockFailWRS('mas_wrs_photoshop')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_elyssa",
+            eventlabel="mas_wrs_elyssasite",
             category=['%%%%%%%%%%%'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1745,7 +1745,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_elyssa:
+label mas_wrs_elyssasite:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1757,14 +1757,14 @@ label mas_wrs_elyssa:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_elyssa')
+        $ mas_unlockFailWRS('mas_wrs_elyssasite')
     return    
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_cam",
+            eventlabel="mas_wrs_camera",
             category=['camera'],
             rules={
                 "notif-group": "Window Reactions",
@@ -1776,7 +1776,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_cam:
+label mas_wrs_camera:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1787,7 +1787,7 @@ label mas_wrs_cam:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_cam')
+        $ mas_unlockFailWRS('mas_wrs_camera')
     return    
 
 init 5 python:
@@ -1825,7 +1825,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_bob",
+            eventlabel="mas_wrs_bobwebsite",
             category=['mysticalsmokingheadof'bob''],
             rules={
                 "notif-group": "Window Reactions",
@@ -1837,7 +1837,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_bob:
+label mas_wrs_bobwebsite:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -1849,7 +1849,7 @@ label mas_wrs_bob:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_bob')
+        $ mas_unlockFailWRS('mas_wrs_bobwebsite')
     return
 
 init 5 python:
@@ -2129,7 +2129,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_vbox",
+            eventlabel="mas_wrs_virtualbox",
             category=['virtualbox'],
             rules={
                 "notif-group": "Window Reactions",
@@ -2141,7 +2141,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_vbox:
+label mas_wrs_virtualbox:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2152,7 +2152,7 @@ label mas_wrs_vbox:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_vbox')
+        $ mas_unlockFailWRS('mas_wrs_virtualbox')
     return
 
 init 5 python:
@@ -2189,7 +2189,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_task",
+            eventlabel="mas_wrs_taskmanager",
             category=['taskmanager'],
             rules={
                 "notif-group": "Window Reactions",
@@ -2201,7 +2201,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_task:
+label mas_wrs_taskmanager:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2212,7 +2212,7 @@ label mas_wrs_task:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_task')
+        $ mas_unlockFailWRS('mas_wrs_taskmanager')
     return
 
 init 5 python:
@@ -2461,7 +2461,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_team",
+            eventlabel="mas_wrs_teams",
             category=['microsoftteams'],
             rules={
                 "notif-group": "Window Reactions",
@@ -2473,7 +2473,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_team:
+label mas_wrs_teams:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -2484,5 +2484,5 @@ label mas_wrs_team:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_team')
+        $ mas_unlockFailWRS('mas_wrs_teams')
     return   
