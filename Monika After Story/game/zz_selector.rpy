@@ -1766,8 +1766,8 @@ init -10 python in mas_selspr:
         if scr is not None:
             scr.scope["mailbox"].search_text = search_query
             # Search
-            flt_items = _selector_search_items(scr.scope["filtered_items"], search_query)
-            scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["filtered_items"]
+            flt_items = _selector_search_items(scr.scope["menu_filtered_items"], search_query)
+            scr.scope["search_filtered_items"] = flt_items if flt_items is not None else scr.scope["menu_filtered_items"]
         # Update the screen
         renpy.restart_interaction()
 
@@ -3127,7 +3127,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     $ sel_frame_vsize = mailbox.read_frame_vsize()
             
     # only add menu if filter_map is provided and has more than one option
-    if filter_map and len(filter_map) > 1:
+    if filter_map:
 
         #filter dropdown button
         frame:   
@@ -3160,15 +3160,12 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                             spacing 5
                             first_spacing 0
                             null height 1
-                            
-                            # Hold current item type
-                            $ current_item_type = mailbox.item_type
 
                             textbutton _("Show All"):
                                 style "hkb_button"
                                 xysize (300, 40)
                                 xalign 0.8 
-                                action [SetField(mailbox,'item_type', None),SetField(mailbox,'item_type_old', current_item_type),SelectedIf(mailbox.item_type == None)]
+                                action [SetField(mailbox,'item_type', None),SetField(mailbox,'item_type_old', mailbox.item_type),SelectedIf(mailbox.item_type == None)]
 
                             # Only need keys
                             for item_type_name in sorted(filter_map.keys()):
@@ -3176,7 +3173,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                                     style "hkb_button"
                                     xysize (300, 40)
                                     xalign 0.8                                
-                                    action [SetField(mailbox,'item_type', item_type_name),SetField(mailbox,'item_type_old', current_item_type),SelectedIf(mailbox.item_type == item_type_name)]
+                                    action [SetField(mailbox,'item_type', item_type_name),SetField(mailbox,'item_type_old', mailbox.item_type),SelectedIf(mailbox.item_type == item_type_name)]
                         
                             null height 1
 
@@ -3192,11 +3189,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
         
 
     if mailbox.item_type:
-        $ filtered_items = filter_map[mailbox.item_type]
+        $ menu_filtered_items = filter_map[mailbox.item_type]
     else:
-        $ filtered_items = items
+        $ menu_filtered_items = items
     
-    default  flt_items = filtered_items
+    default  search_filtered_items = menu_filtered_items
 
 
 
@@ -3223,12 +3220,12 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 length 50
                 xalign 0.0
                 layout "nobreak"
-                first_indent (0 if flt_items is filtered_items else 10)
+                first_indent (0 if search_filtered_items is menu_filtered_items else 10)
                 # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
                 changed store.mas_selspr.selector_search_callback
 
         # NOTE: we do need an instance check here
-        if flt_items is filtered_items:
+        if not mailbox.search_text:
             text "Search for...":
                 text_align 0.0
                 layout "nobreak"
@@ -3265,7 +3262,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in flt_items:
+                    for selectable in search_filtered_items:
                         add selectable:
                             # xoffset 5
                             xalign 0.5
@@ -3467,14 +3464,11 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 
         # make filter_map items MASSelectableImageButtonDisplayable
         if filter_map:
-            filter_map_selbtn = {}
+            filter_map_selbtn = collections.defaultdict(list)
             for d_item in disp_items:
                 for filter_items in filter_map:
                     if d_item.selectable in filter_map[filter_items]:
-                        if filter_items in filter_map_selbtn:
-                            filter_map_selbtn[filter_items].append(d_item)
-                        else:
-                            filter_map_selbtn[filter_items] = [d_item]     
+                        filter_map_selbtn[filter_items].append(d_item)
             filter_map = filter_map_selbtn
 
         # fill select map
@@ -4038,14 +4032,11 @@ label monika_ribbon_select:
                 use_acs.pop(index)
 
         # generate filter map
-        mapping = {}
+        mapping = collections.defaultdict(list)
         for acs_sel in use_acs:
             acs_type_tc = mas_selspr.mas_item_name_format(acs_sel.get_sprobj().acs_type)
-            if acs_type_tc in mapping:
-                mapping[acs_type_tc].append(acs_sel)
-            else:
-                mapping[acs_type_tc] = [acs_sel]     
-
+            mapping[acs_type_tc].append(acs_sel)
+            
         # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
