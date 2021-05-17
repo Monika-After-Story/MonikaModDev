@@ -598,7 +598,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_calculate",
+            eventlabel="mas_wrs_calculator",
             category=['calculator'],
             rules={
                 "notif-group": "Window Reactions",
@@ -610,7 +610,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_calculate:
+label mas_wrs_calculator:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -621,7 +621,7 @@ label mas_wrs_calculate:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_calculate')
+        $ mas_unlockFailWRS('mas_wrs_calculator')
     return            
 
 init 5 python:
@@ -722,7 +722,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_notepad",
-            category=['notepad++'],
+            category=['notepadpp'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -733,7 +733,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_notepad:
+label mas_wrs_notepadpp:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -744,14 +744,14 @@ label mas_wrs_notepad:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_notepad')
+        $ mas_unlockFailWRS('mas_wrs_notepadpp')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_fbook",
+            eventlabel="mas_wrs_facebook",
             category=['facebook'],
             rules={
                 "notif-group": "Window Reactions",
@@ -763,7 +763,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_fbook:
+label mas_wrs_facebook:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -775,14 +775,14 @@ label mas_wrs_fbook:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_fbook')
+        $ mas_unlockFailWRS('mas_wrs_facebook')
     return     
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_insta",
+            eventlabel="mas_wrs_instagram",
             category=['instagram'],
             rules={
                 "notif-group": "Window Reactions",
@@ -794,7 +794,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_insta:
+label mas_wrs_instagram:
     $ wrs_success = mas_display_notif(
         m_name,
         [
@@ -806,7 +806,7 @@ label mas_wrs_insta:
 
 
     if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_insta')
+        $ mas_unlockFailWRS('mas_wrs_instagram')
     return     
 
 init 5 python:
