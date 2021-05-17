@@ -937,36 +937,6 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_garry",
-            category=['garry'smod'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_garry:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "This looks like an intresting game. Lots of creative potential!"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_garry')
-    return     
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ddlcstore",
             category=['dokidokiliteratureclubstore'],
             rules={
