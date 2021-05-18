@@ -16,7 +16,7 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "bare-right-shoulder": true
+        "bare-shoulders": true
     },
     "select_info": {
         "display_name": "Sweater (Shoulderless)",
