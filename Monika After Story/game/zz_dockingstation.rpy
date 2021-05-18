@@ -1866,7 +1866,7 @@ init 200 python in mas_dockstat:
                 # no data found, assume a missing monika
                 return (MAS_PKG_NF, None)
 
-            real_data = parseMoniData(real_data)
+            real_data = parseMoniData(real_data, rd_log)
             ret_code = MAS_PKG_DL
 
         else:

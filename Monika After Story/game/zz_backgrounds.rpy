@@ -3216,7 +3216,17 @@ label monika_change_background_loop:
         skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
-    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
+    # UI shields + buttons
+    # NOTE: buttons are in here since there is no consistency if placed in 
+    # the bg change label.
+    $ mas_RaiseShield_core()
+    $ HKBHideButtons()
+
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_transition=skip_transition, skip_outro=skip_outro, set_persistent=True)
+
+    $ HKBShowButtons()
+    $ mas_DropShield_core()
+
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
@@ -3234,6 +3244,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         pause 2.0
 
     python:
+
         #Set persistent
         if set_persistent:
             persistent._mas_current_background = new_bg.background_id
