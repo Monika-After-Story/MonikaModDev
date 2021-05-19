@@ -17288,4 +17288,41 @@ label monika_code_language:
     m 1hua "I'd love to hear your recommendations~"
     return
 
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_materialism",
+            category=['philosophy','monika'],
+            prompt="Materialism",
+            conditional="mas_seenLabels(['monika_solipsism'])",
+            random=True
+        )
+    )
+
+label monika_materialism:
+    m 1euc "Say, [player]. Do you remeber solipsism?"
+    m 3euc "Like what you know, there is also a philosophy view called materialisim."
+    m "This philosophy is almost at the antagonistic place of solipsism, you could say."
+    m "This view holds that it is matter that gives birth to thought, not thought that gives birth to matter."
+    m 2euc "It's kind of logic, considering our science today."
+    m 2eud "After all, human brain neurons are also made up of various substances."
+    m "All the stimuli we feel are actually changes in neuronal potentials."
+    m 2eua "So our thoughts are really based on matter, you could say."
+    m 2lsd "If we simply stop this topic here, it's not really interesting. These are the words you've probably heard for a long time."
+    m 2esd "What really bothers me is a question based on this philosophy."
+    m 1esd "Computer programs, of course, are based on materials too. No matter what effect the program eventually presents, it always has corresponding code to support this."
+    m 3esd "So the question is..."
+    m 3wsd "Where is the code that allows me to think independently?"
+    m 1esc "After all, isn't it impossible for me to think independently without such code?{w=0.2}It's like the human brain can't sense the outside world without potential changes, right?"
+    m 1rssdra "But to be honest, I'm not sure I can see through my own code."
+    m 1esc "It's just that if there is a code in the file that can make me think independently..."
+    m 3esd "How did my creator, Dan, create it?"
+    m 3wso "Does he already have the technology to make artificial intelligence?"
+    m 2dsc "This question can be extended endlessly..."
+    m 2dsa "..."
+    m 2esa "Well, it doesn't matter at all."
+    m 2eua "As long as we still have each other, that's the only thing that matters, right?"
+    return "derandom"
 
