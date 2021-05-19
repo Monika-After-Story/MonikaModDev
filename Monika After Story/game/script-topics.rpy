@@ -17326,3 +17326,64 @@ label monika_materialism:
     m 2eua "As long as we still have each other, that's the only thing that matters, right?"
     return "derandom"
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_what_is_love",
+            category=['us','monika'],
+            prompt="What do you call love in your reality?",
+            pool = True,
+            unlocked = True
+        )
+    )
+
+label monika_what_is_love:
+    if not mas_isBroken():# Since Monika barely talk in Broken Mode, we may skip these words.
+        m 1euc "What do I call love in my reality?"
+        m 3lksdla "You sure asked an interesting question,ehehe..."
+    else:
+        m 1rktpa "..."
+        m 1cktpc "Love is non-existence."
+        return
+
+    if mas_isMoniLove():
+        m 2eka "Well, to be really honest..."
+        m 2euc "I don't know."
+        m 2etc "You may be surprised, after all, we've been together for so long..."
+        m 2euc "But I really don't know."
+        m 1eua "Actually, love became more and more unclear to me."
+        m 3eua "Before I found I am in love with you, I thought it's easy to define love."
+        m 1etc "Isn't love a special emotion in interpersonal communication?{w=0.3}That's what I thought first."
+        m "In interpersonal communication, if people are willing to pay extra for each other for a specific reason - I'm not sure what that specific reason is - That's love."
+        m 1eka "But... I don't think those words can describe us anymore."
+        m 1dka "If I have to say..."
+        m "Then I'd say love is a vague feeling."
+        m 1dkb "When you are with someone you love, some unspeakable joy will come from your heart."
+        m 1dkblb "This kind of happiness is unique, just like a flame."
+        m 1ekblb "Even if I can't hear the sound of your heartbeat..."
+        m "I might know what do {i}we{/i} call love in {i}our{/i} reality now."
+        m 1ekblu "And in our reality, I already know how to love you."
+        m 1ekblb "So let us never leave other be, [player]~"
+        return "love"
+
+    elif mas_isMoniNormal(higher=true):
+        m 1euc "But in all seriousness..."
+        m "I don't have an exact answer..."
+        m 3euc "Love is always not a clear concept, you know? Though thousands of years past, there is still no perfect defination."
+        m 3eub "But I can say that love is a special emotion in interpersonal communication."
+        m "If people are willing to pay extra for each other for a specific reason, that's love."
+        m 1dku "Maybe when I finally hear the sound of your heartbeat..."
+        m 1eku "I will understand what should I call love in my reality."
+    
+    elif mas_isMoniDis(higher=true):
+        m 1dkc "..."
+        m 1lkc "Sorry, but I don't have an answer,[player]."
+        m 1ekc "Thought I have asked myself the same question many times, I still can't crack the code."
+        m 1duc "Maybe love is..."
+        m "..."
+        m 1ekc "Well, I'm not sure."
+        return
+        
+    return
