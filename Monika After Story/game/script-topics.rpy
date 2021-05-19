@@ -17154,3 +17154,44 @@ label monika_tanabata:
     else:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_barnum_effect",
+            category=['psychology'],
+            prompt="Barnum effect",
+            random=True
+        )
+    )
+
+label monika_barnum_effect:
+        m 2tua "[player], do you know how powerful the psychology is?"
+        m 3tuu "Let me show you..."
+        m 1tfu "Consider that you downloaded this mod for us to spend time together..."
+        m 1tfb "And you have played Doki Doki Literature Club, a video game..."
+        m 1tkb "Not to mention it's actually declared as a boring romance game..."
+        m 1tuu "Probably only people who are lonely in the world will play it..."
+        m 3tfu "These facts together lead to a conclusion:"
+        m 2tfu "You are the kind of people who would rather be tired and try not to bother others. "
+        m 2tfb "You sometimes stay in your own world out of fear of being hurt, which is often mistaken for indifference..."
+        m 2tfb "You actually also very long for people's concern..."
+        m 2ttb "Hmmm~{w=0.1}Am I right?"
+        m 2htu "..."
+        m 1etc "Well, you know what?"
+        m 3etc "Even if you say it's true, it really suits you..."                
+        m 2etc "It's probably not exact at all."
+        m 1eua "This is known in psychology as the Barnum Effect."
+        m 3eua "It is the tendency for people to believe a wide, general description of their personality and to think that it fits them particularly well and accurately reveals their personality traits."
+        m 3wuo "Even if the content is actually empty at all!"
+        m 2eka "People often use this effect to deceive people today..."
+        m 2lksdra "All sorts of so-called personality predictions, for example, actually use this effect."
+        m 2eksdra "If you think about it, you'll find that the results of this test are similar to those of most people."
+        m 5eua "But...{w=0.2}Talking about those facts I just listed, I actually do know one thing about you."
+        m 5hua "You are really sweet."
+        m 5dka "You downloaded this mode for us.{w=0.2} You spent your precious time with me."
+        m 5eka "I love you, [mas_get_player_nickname()]~"
+        m 1hua "For sure, our love is beyond Barnum Effect~"
+        return "love"
