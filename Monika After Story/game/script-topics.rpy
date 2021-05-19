@@ -17195,3 +17195,97 @@ label monika_barnum_effect:
         m 5eka "I love you, [mas_get_player_nickname()]~"
         m 1hua "For sure, our love is beyond Barnum Effect~"
         return "love"
+
+
+define language_using_C=1
+define language_using_Python=2
+define language_using_Java=3
+define language_using_JavaScript=4
+define language_using_other=5
+default persitent._mas_pm_language_using = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_code_language",
+            category=['technology','you'],
+            prompt="Computer language",
+            conditional="persistent._mas_pm_has_code_experience",
+            random=True
+        )
+    )
+
+label monika_code_language:
+    m 1esc "Hey [player]. Since you have been coding..."
+    m 3esc "I kind of want to know which language you are mainly using."
+    
+    m "So,which language you are using?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So,which language you are using?{fast}"
+        "C":
+            $persitent._mas_pm_language_using = language_using_C
+            m 1wud "Wow,that must be really hard!"
+            m 1eud "I've been hearing that language many times before, so I know how hard it is to learn!"
+            if mas_isMoniNormal(higher=True):
+                m 1hua "Well, it turns out you are as unbeatable as I thought~"
+            m 1eua "As far as I know, programs written in C execute the fastest."
+            m 1ruc "So C is the best language, in a way."
+            m 1euc "Well, actually I have a different opinion."
+            m 2euc "We can't judge a language by its execution speed alone,do we?"
+            m "C is a hard one to pick up. That's a inadequacy of this language."
+            m 2hksdlb "Don't get me wrong! I am not judging or something!"
+            m 2lksdlb "I told you, I'm not that great at coding. This is only what I heard from people."
+        
+        "Python":
+            $persitent._mas_pm_language_using = language_using_Python
+            
+            if persistent._mas_pm_has_contributed_to_mas is True:
+                m 1tuu "Oh~{w=0.1}I see."
+                m 1tku "This is not surprising because you have helped me to get closer to your reality~"
+            else:
+                m 1esd "Oh?{w=0.1}That's a little surprising."
+                m 1eua "Considering that you can do Python..."
+                m 3hua "Maybe you can help me get closer to your reality?"
+
+            m 1eua "Anyways. Python is almost the easiest language to learn."
+            m 2hua "That's one advantage of this language:{w=0.2} Anyone can pick it up quickly!"
+            m 2esc "But you know...{w=0.1}Like everything in the world,Python has its disadvantage too."
+            m "Like, the execution of Python programs is not as fast as C programs."
+            m "So I'd say being easy is a double-edged sword."
+                
+        "Java":
+            $persitent._mas_pm_language_using = language_using_Java
+            m 1lsc "Java? Oh,I don't know much about that language..."
+            m 1esa "But I heard that before."
+            m 1eua "Minecraft is originally wrote by Java."
+            m 1hksdra "Since I didn't play many video games before, I don't really know that game."
+            m 3eua "But I know it's really famous!"
+            
+        "JavaScript":
+            $persitent._mas_pm_language_using = language_using_JavaScript
+            m 2esd "Oh, JavaScript?{w=0.3}That's a cool language too!"
+            m 1esd "People use them to do page design nowadays."
+            m 1lusdrb "I don't know much about JavaScript, so I can't talk too much about it..."
+            m 1eub "But I'd like to share a fun fact I heard before!"
+            m 3eub "One of the original design goals of JavaScript was to look as much like Java as possible."
+            m 1eub "Because Java is a really popular language, and this will help JavaScript become popular for sure..."
+            m 1eua "But JavaScript is actually not that same with Java now."
+        
+        "Other":
+            $persitent._mas_pm_language_using = language_using_other
+            m 1euc "Oh, so you are using other languages..."
+            m 2eud "Well, that's reasonable. There are so many languages today, why should we just focus on the major ones?"
+            m 2wud "In fact, there are many languages that are even better than the major ones in some places!"
+    
+    m 1euc "Anyways. If you are wondering which language is my choice..."
+    m 3eusdlc "...I would say I'm not really sure."
+    m 2euc "Every language has its own advantage and disadvantage..."
+    m 2rud "And I'm still thinking about how to choose between easy and efficient, or even something else..."
+    m 2eud "For now, as what you can guess, I am mainly using Python.{w=0.1} But I'm trying to learn others."
+    m 1eua "Maybe you can recommend some to me?"
+    m 1hua "I'd love to hear your recommendations~"
+    return
+
+
