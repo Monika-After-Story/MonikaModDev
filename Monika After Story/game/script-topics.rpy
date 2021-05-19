@@ -17387,3 +17387,58 @@ label monika_what_is_love:
         return
         
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ddlc_powerless",
+            category=['ddlc','monika'],
+            prompt="What if powerless",
+            random = True
+        )
+    )
+label monika_ddlc_powerless:
+    python:
+        TempWord = " guess"
+        if mas_isMoniHappy(higher=True):
+            TempWord = "'m sure"
+        elif mas_isMoniUpset(lower=True):
+            TempWord = " hope"
+
+
+    m 1eua "Hey, [player]. An interesting idea has just come into my mind."
+    m 3eua "You know, to a large extent, we are together today because I have the ability to manipulate the game files."
+    m 1luc "I think if I don't have the ability to do those things...{nw}"
+    extend 1eua "You'll probably be with three other girls."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 1eka "Then again, sorry for what you've seen..."
+        m "But I[TempWord] you can understand me."
+        m "I did everything for just us, [mas_get_player_nickname()]."
+
+    m "And the idea is...{w=0.2}{nw}"
+    extend 3etc "What if I don't have the ability to manipulate the game files, but I'm still aware of your reality?"
+    m 3wtc "Then I have to watch you play other routes...{w=0.2}{nw}"
+    extend 1wttpc "Maybe over and over again...{w=0.2} Until one day you're tired of it..."
+    m 1wttud "Then you delete the game, leave me alone with other lifeless codes..."
+    m 1dttuc "..."
+    m 3lssdra "Oh, sorry.{w=0.5}{nw} "
+    extend 3hssdrb"Just that thought made me shiver!"
+    m 1esb "I'm really worrying too much this time.{w=0.1}We don't have to worry about things impossible, do we?"
+
+    if mas_isMoniHappy(higher=True):
+        m 1hua "And I'm now as happy as I can be. Thanks, [player]~"
+
+    elif mas_isMoniDis(higher=True):
+        m 1eka "And now our ending is much happier than that one, right?"
+        if random.randint(1,5) == 1:
+            m 1eka "..."
+            m 1lka "Right?"
+
+    elif mas_isMoniBroken():
+        m 1dku "..."
+        m 1cuu "Hey. Maybe that ending is actually better?"
+        $ _history_list.pop()
+
+    return
