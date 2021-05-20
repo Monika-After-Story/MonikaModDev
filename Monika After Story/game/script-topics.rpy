@@ -17211,8 +17211,8 @@ init 5 python:
             eventlabel="monika_code_language",
             category=['technology','you'],
             prompt="Computer language",
-            conditional="persistent._mas_pm_has_code_experience",
-            random=True
+            action=EV_ACT_RANDOM,
+            conditional="persistent._mas_pm_has_code_experience",# Only if player coded so this topic will be unlocked.
         )
     )
 
@@ -17296,8 +17296,8 @@ init 5 python:
             eventlabel="monika_materialism",
             category=['philosophy','monika'],
             prompt="Materialism",
-            conditional="mas_seenLabels(['monika_solipsism'])",
-            random=True
+            action=EV_ACT_RANDOM,
+            conditional="mas_seenLabels(['monika_solipsism'])",# Only if you have seen solipsism so this topic will be unlocked.
         )
     )
 
@@ -17453,9 +17453,9 @@ init 5 python:
             eventlabel="monika_early_ai",
             category=['technology'],
             prompt="Early examples of AI",
-            conditional="mas_seenLabels(['monika_robotbody'])",
+            action = EV_ACT_RANDOM,
+            conditional="mas_seenLabels(['monika_robotbody'])",# Only if you have seen robot body topic so this topic will be unlocked.
             aff_range=(mas_aff.HAPPY, None),
-            random = True
         )
     )
 
