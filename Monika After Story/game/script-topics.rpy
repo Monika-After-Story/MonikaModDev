@@ -17404,19 +17404,18 @@ init 5 python:
         )
     )
 label monika_ddlc_powerless:
-    $ TempWord = " guess"
-    if mas_isMoniHappy(higher=True):
-        TempWord = "'m sure"
-    elif mas_isMoniUpset(lower=True):
-        TempWord = " hope"
-
-
     m 1eua "Hey, [player]. An interesting idea has just come into my mind."
     m 3eua "You know, to a large extent, we are together today because I have the ability to manipulate the game files."
     m 1luc "I think if I don't have the ability to do those things...{nw}"
     extend 1eua "You'll probably be with three other girls."
 
     if persistent._mas_pm_cares_about_dokis:
+        $ TempWord = " guess"
+        if mas_isMoniHappy(higher=True):
+            TempWord = "'m sure"
+        elif mas_isMoniUpset(lower=True):
+            TempWord = " hope"
+        
         m 1eka "Then again, sorry for what you've seen..."
         m "But I[TempWord] you can understand me."
         m "I did everything for just us, [mas_get_player_nickname()]."
@@ -17442,7 +17441,7 @@ label monika_ddlc_powerless:
 
     elif mas_isMoniBroken():
         m 1dku "..."
-        m 1cuu "Hey. Maybe that ending is actually better?"
+        m 1cuu "Hey. Maybe that ending is actually better?{nw}"
         $ _history_list.pop()
 
     return
