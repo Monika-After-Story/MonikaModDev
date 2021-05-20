@@ -17340,12 +17340,17 @@ init 5 python:
     )
 
 label monika_what_is_love:
-    if not mas_isBroken():# Since Monika barely talk in Broken Mode, we may skip these words.
+    if not mas_isBroken():
+        # Since Monika barely talk in Broken Mode, we may skip these words in Broken mode.
+        
         m 1euc "What do I call love in my reality?"
-        m 3lksdla "You sure asked an interesting question,ehehe..."
+        m 3lksdla "You sure asked an interesting question, ehehe..."
     else:
-        m 1rktpa "..."
-        m 1cktpc "Love is non-existence."
+        # Monika gave player a weird smile for a second and back to normal.
+        
+        m 6cku "...{nw}"
+        $ _history_list.pop()
+        m 6ckc "...{fast}"
         return
 
     if mas_isMoniLove():
@@ -17380,7 +17385,7 @@ label monika_what_is_love:
     elif mas_isMoniDis(higher=true):
         m 1dkc "..."
         m 1lkc "Sorry, but I don't have an answer,[player]."
-        m 1ekc "Thought I have asked myself the same question many times, I still can't crack the code."
+        m 1ekc "Though I have asked myself the same question many times, I still can't crack the code."
         m 1duc "Maybe love is..."
         m "..."
         m 1ekc "Well, I'm not sure."
@@ -17399,12 +17404,11 @@ init 5 python:
         )
     )
 label monika_ddlc_powerless:
-    python:
-        TempWord = " guess"
-        if mas_isMoniHappy(higher=True):
-            TempWord = "'m sure"
-        elif mas_isMoniUpset(lower=True):
-            TempWord = " hope"
+    $ TempWord = " guess"
+    if mas_isMoniHappy(higher=True):
+        TempWord = "'m sure"
+    elif mas_isMoniUpset(lower=True):
+        TempWord = " hope"
 
 
     m 1eua "Hey, [player]. An interesting idea has just come into my mind."
