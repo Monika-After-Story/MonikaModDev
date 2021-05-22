@@ -787,3 +787,43 @@ label mas_mood_upset:
     m 3euu "I can only hope I provide the same comfort for you, [player]~"
     m 1eubsa "I love you and I hope everything clears up for you~"
     return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_relieved",
+            prompt="...relieved.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_relieved:
+    m 1euc "Oh?"
+    m "What happened, [mas_get_player_nickname()]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What happened, [mas_get_player_nickname()]?{fast}"
+        "I made it through something difficult.":
+            m 1ekb "Ah, really?"
+            m 3hub "You should be proud of yourself, then!"
+            m 3fua "I'm sure that whatever it was, you were working really hard to make it through."
+            m 2eua "And, [player]...{w=0.2}{nw}"
+            extend 2eka "please don't worry too much if things didn't turn out perfectly, okay?"
+            m "Sometimes life throws really tough situations at us, and we just have to do the best with what we're given."
+            m 3ekb "But now that it's done, you should take some time to relax your mind and take good care of yourself."
+            m 3eub "That way, when it's time to move on to the next thing, you'll be in the best state you can be in!"
+            m 1hubla "I love you, [player], and I'm so proud of you for getting through this."
+            $ mas_ILY()
+
+        "Something I was worried about didn't happen.":
+            m 1eub "Oh, that's good!"
+            m 2eka "Whatever was happening, I'm sure you were really anxious...{w=0.2}{nw}"
+            extend 2rkb "that can't have been fun to go through."
+            m 2hka "But it's nice that those worries weren't founded after all, huh?"
+            m 1eka "I'm really glad you're okay, and you have that weight off your chest."
+            m 3hua "Now it'll be easier to move forward with a little more confidence, right?"
+            m 3hub "I'm excited to take those next steps forward with you."
+    return
