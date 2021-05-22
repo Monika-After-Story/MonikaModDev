@@ -2361,7 +2361,7 @@ screen updater:
                     textbutton _("Cancel") action Return()
 
     # Constantly update the screen to force the progress bar to update
-    timer 0.1 action Function(renpy.restart_interaction) repeat True
+    timer 1.0 action Function(renpy.restart_interaction) repeat True
 
 
 style updater_button is confirm_button
