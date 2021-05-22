@@ -2005,19 +2005,14 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_on_the_front_porch",
             prompt="On the Front Porch",
-            category=[store.mas_songs.TYPE_LONG],
-            unlocked=True,
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
     )
 
 label mas_song_on_the_front_porch:
-    m 1dub "{i}~Three creaky wooden stairs~{/i}"
-    m 1dubla "{i}~Those squeaky rocking chairs~{/i}"
-    m 3dublo "{i}~The well worn welcome mat,~{/i}"
-    m 5rublb "{i}~The lattice vines...~{/i}"
-    m 5ekbsb "{i}~The happy times~{/i}"
     m 5dkbsb "{i}~All I wanna do, when the day is through,~{/i}"
     m 5fkbfb "{i}~Is linger here on the front porch with you~{/i}"
     m 1hubfb "{i}~From the wicker swing, while the night birds sing~{/i}"
@@ -2040,7 +2035,7 @@ label mas_song_on_the_front_porch:
     m 5ekbfb "I love you so much~ Never forget that."
     $ mas_ILY()
 
-return  
+    return  
 
 init 5 python:
     addEvent(
@@ -2049,7 +2044,7 @@ init 5 python:
             eventlabel="mas_song_fly_me_to_the_moon",
             prompt="Fly Me to the Moon",
             category=[store.mas_songs.TYPE_SHORT],
-            unlocked=True,
+            unlocked=False,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
@@ -2071,7 +2066,7 @@ label mas_song_fly_me_to_the_moon:
     m 3hubsb "And, I always will!"
     $ mas_ILY()
 
-return    
+    return    
 
 init 5 python:
     addEvent(
@@ -2079,21 +2074,14 @@ init 5 python:
             persistent._mas_songs_database,
             eventlabel="mas_song_heaven",
             prompt="Heaven",
-            category=[store.mas_songs.TYPE_LONG],
-            unlocked=True,
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
     )
 
 label mas_song_heaven:
-    m 1dub "{i}~Oh, thinkin' about all our younger years~{/i}"
-    m 7eub "{i}~There was only you and me~{/i}"
-    m 3dud "{i}~We were young and wild and free~{/i}"
-    m 5dubsb "{i}~Now nothing can take you away from me~{/i}"
-    m 5gubsu "{i}~We've been down that road before~{/i}"
-    m 2ekbsu "{i}~But that's over now~{/i}"
-    m 3tkbsa "{i}~You keep me comin' back for more~{/i}"
     m 1dsbso "{i}~Baby, you're all that I want~{/i}"
     m 5hubfb "{i}~When you're lyin' here in my arms~{/i}"
     m 5rubfb "{i}~I'm findin' it hard to believe~{/i}"
@@ -2104,4 +2092,5 @@ label mas_song_heaven:
     m 1ekbfb "{i}~We're in heaven~{/i}"
     m 1ekbfa "Not a day goes by when I don't dream of us being together, [player]."
     m 1ttbsa "And something tells me I'm not the only one~"
-return
+    
+    return
