@@ -1916,6 +1916,11 @@ label mas_reaction_gift_hanamidango:
                 m 1eub "I didn't have any left, so thank you for stocking up!"
 
         else:
+            if not is_having_food:
+                if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                    $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+                $ hanami_dango.have(skip_leadin=True)
+                
             $ mas_giftCapGainAff(5)
             m 1eub "If you didn't know, these are a street food in Japan. This variant is especially popular during cherry blossom viewings."
             m 3hua "Each color has a bit of a different taste, but all three have a mild sweetness."
@@ -1927,6 +1932,13 @@ label mas_reaction_gift_hanamidango:
             ):
                 m 3eua "I'll be sure to have some later!"
 
+            if not is_having_food and monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me put this plushie away."
+                call mas_transition_to_emptydesk
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+                pause 3.0
+                call mas_transition_from_emptydesk
+                
             else:
                 $ mas_consumable_hanami_dango.prepare()
 
