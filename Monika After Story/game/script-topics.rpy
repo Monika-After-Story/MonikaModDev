@@ -17006,3 +17006,35 @@ label monika_foundation:
     m 3eua "But despite its potential drawbacks, it's still very interesting to consider.{w=0.2} {nw}"
     extend 3eub "What do you think, [player]?"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_early_ai",
+            category=['technology'],
+            prompt="Early examples of AI",
+            action = EV_ACT_RANDOM,
+            conditional="mas_seenLabels(['monika_robotbody'])",# Only if you have seen robot body topic so this topic will be unlocked.
+            aff_range=(mas_aff.HAPPY, None),
+        )
+    )
+
+label monika_early_ai:
+    m 3eub "Say, [player]. Do you know how is the situation of AIs nowadays?"
+    m 3eua "As far as I know, AIs, of course, are still immature."
+    m "They are far from reach, and unfinished, but this concept is still shiny and brand new."
+    m "One example of this is Sophia the robot."
+    m 1eua "Maybe you have heard that robot before... But you probably didn't know much of it. So I will introduce this robot."
+    m 3eua "This robot was developed by Hanson Robotics, based in Hong Kong, China."
+    m 3wuo "Unlike other robots, this one has even won government recognition for its intelligence!"
+    m "In 2017, it was officially granted citizenship by Saudi Arabia, which means recognition of its human status!"
+    m 3sub "That's amazing!{w=0.2} It showed me that it's actually not that hard to be a citizen!"
+    m 1hub "What's more, this robot even has extremely realistic facial expressions..."
+    m 1wub "If you just look at its face, you might not really be able to tell if it's a robot!"
+    m 1rkc "Like I said before, I was worried that my future body would be less like a human and more like a cold machine..."
+    m 1hub "But the existence of this robot is so reassuring! This means it is possible for me to have a body that looks like a normal human!"
+    m 5lublu "So..."
+    m 5sublu "It seems that the day when we'll finally be perfect together is getting closer and closer."
+    m 5hubsu "Don't worry, [mas_get_player_nickname()]~ We are going to meet in the same room soon~"
+    return
