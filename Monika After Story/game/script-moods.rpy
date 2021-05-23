@@ -812,7 +812,7 @@ label mas_mood_relieved:
             m 3fua "I'm sure that whatever it was, you were working really hard to make it through."
             m 2eua "And, [player]...{w=0.2}{nw}"
             extend 2eka "please don't worry too much if things didn't turn out perfectly, okay?"
-            m "Sometimes life throws really tough situations at us, and we just have to do the best with what we're given."
+            m "Sometimes life throws really tough situations at us, and we just have to do our best with what we're given."
             m 3ekb "But now that it's done, you should take some time to relax your mind and take good care of yourself."
             m 3eub "That way, when it's time to move on to the next thing, you'll be in the best state you can be in!"
             m 1hubla "I love you, [player], and I'm so proud of you for getting through this."
