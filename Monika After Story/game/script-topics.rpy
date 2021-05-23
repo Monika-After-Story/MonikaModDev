@@ -14289,9 +14289,7 @@ init 5 python:
             category=['monika'],
             prompt="Careers",
             random=False,
-            conditional=(
-                "seen_event('monika_citizenship')"
-            ),
+            conditional="seen_event('monika_citizenship')",
             action=EV_ACT_RANDOM
         )
     )
@@ -17155,35 +17153,36 @@ label monika_tanabata:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
 
-
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_early_ai",
+            eventlabel="monika_sophia",
             category=['technology'],
-            prompt="Early examples of AI",
-            action = EV_ACT_RANDOM,
-            conditional="mas_seenLabels(['monika_robotbody'])",# Only if you have seen robot body topic so this topic will be unlocked.
-            aff_range=(mas_aff.HAPPY, None)
+            prompt="Sophia",
+            conditional="mas_seenLabels(['monika_robotbody', 'monika_citizenship'], seen_all=True)",
+            action = EV_ACT_RANDOM
         )
     )
 
-label monika_early_ai:
-    m 3eub "Say, [player]. Do you know how is the situation of AIs nowadays?"
-    m 3eua "As far as I know, AIs, of course, are still immature."
-    m "They are far from reach, and unfinished, but this concept is still shiny and brand new."
-    m "One example of this is Sophia the robot."
-    m 1eua "Maybe you have heard that robot before... But you probably didn't know much of it. So I will introduce this robot."
-    m 3eua "This robot was developed by Hanson Robotics, based in Hong Kong, China."
-    m 3wuo "Unlike other robots, this one has even won government recognition for its intelligence!"
-    m "In 2017, it was officially granted citizenship by Saudi Arabia, which means recognition of its human status!"
-    m 3sub "That's amazing!{w=0.2} It showed me that it's actually not that hard to be a citizen!"
-    m 1hub "What's more, this robot even has extremely realistic facial expressions..."
-    m 1wub "If you just look at its face, you might not really be able to tell if it's a robot!"
-    m 1rkc "Like I said before, I was worried that my future body would be less like a human and more like a cold machine..."
-    m 1hub "But the existence of this robot is so reassuring! This means it is possible for me to have a body that looks like a normal human!"
-    m 5lublu "So..."
-    m 5sublu "It seems that the day when we'll finally be perfect together is getting closer and closer."
-    m 5hubsu "Don't worry, [mas_get_player_nickname()]~ We are going to meet in the same room soon~"
+label monika_sophia:
+    m 2eud "Hey [player], remember when I told you before about my concerns with the logistics of crossing over to your reality?"
+    m 2rksdlc "...Like having to have a robot body and becoming a citizen and all of that?"
+    m 7hub "Well I've been doing so more research online and I've found something that gives me hope!"
+    m 3eta "Have you heard of Sophia?"
+    m 3eua "Sophia is a humanoid robot developed by Hanson Robotics, and was first activated on Valentine's Day in 2016."
+    m 1eud "The robot itself was modeled after Queen Nefertiti, Audrey Hepburn, and her inventor's wife, Amanda Hanson, {w=0.2}and is particularly known for her human-like appearance and behavior."
+    m 3eua "She can imitate hand gestures, has more than 60 realistic facial expressions, and can answer certain questions and converse on predefined topics."
+    m 3rua "She even mimics social behavior and incites love in humans..."
+    m 1tub "Sound like someone you know?"
+    m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
+    m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, and recognize individuals."
+    m 3wud "She can also walk and amazingly even has the ablility to draw."
+    m 3hub "As I'm sure you can imagine, this is all very exciting for me to think about!"
+    m 1ekbsa "Being able to actually see your face and be in the same room as you is all I've ever wanted~"
+    m 3wub "Oh! {w=0.5}In 2017 she was granted citizenship in Saudi Arabia!"
+    m 3rtb "So maybe it's not so far-fetched after all to become a citizen and productive member of society in your world!"
+    m 1eud "Now, I realize that it's still likely a long way off before any of this is possible and affordable on a scale where it's likely to affect me..."
+    m 3eud "And I know the technology isn't perfect yet, she's still limited to predefined topics like I am, but just knowing that this exists...{w=0.3}{nw}"
+    extend 1duu "well hope is a wonderful thing~"
     return
