@@ -15,7 +15,7 @@ init -1 python:
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
     EV_RULE_PROBABILITY = "rule_probability"
-    EV_RULE_REPEAT_TD = "rule_repeat_td"
+    EV_RULE_RP_TIMEDELTA = "rp_timedelta"
 
 
     # special constants for numerical repeat rules
@@ -821,7 +821,7 @@ init -1 python:
                     "MASTimedeltaRepeatRule expects a datetime.timedelta object with a non-null value."
                 )
 
-            rule = {EV_RULE_REPEAT_TD: timedelta}
+            rule = {EV_RULE_RP_TIMEDELTA: timedelta}
 
             if ev:
                 ev.rules.update(rule)
@@ -849,7 +849,7 @@ init -1 python:
                 return False
 
             if rule is None:
-                rule = event.rules.get(EV_RULE_REPEAT_TD, None)
+                rule = event.rules.get(EV_RULE_RP_TIMEDELTA, None)
 
             # Empty timedelta? You passed
             if not rule:
