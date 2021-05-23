@@ -1834,6 +1834,7 @@ label mas_reaction_christmascookies:
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
+
 #TODO: Remove the seasonal handling and just write alt dialogue for the not d25s path
 init 5 python:
     if store.mas_isD25Season():
@@ -1888,6 +1889,62 @@ label mas_reaction_candycane:
 
     $ mas_receivedGift("mas_reaction_candycane")
     $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candycane", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
+    #weird not to have her see the gift file that's in the characters folder.
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
+    return
+
+
+init 5 python:
+addReaction("mas_reaction_gift_celerysnack", "celerysnack", is_good=True, exclude_on=["d25g"])
+
+label mas_reaction_celerysnack:
+    $ celerysnack = mas_getConsumable("celerysnack")
+    $ mas_giftCapGainAff(1)
+    $ is_having_food = bool(MASConsumable._getCurrentFood())
+
+    if celerysnack.isMaxedStock():
+        m 1lksdlb "...Ahaha..."
+        m 3eksdla "I appreciate that you want me to have lots on hand..."
+        m "But I think I have enough for now, okay?"
+
+    else:
+        if celerysnack.enabled():
+            m 1wuo "Ah, more celery!"
+            m 1hua "Thank you for bringing me more, [player]. It's always nice to have a healthy snack."
+
+        else:
+            if not is_having_food:
+                if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                    $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+                $ celerysnack.have(skip_leadin=True)
+
+            $ mas_giftCapGainAff(3)
+            m 1eta "Oh, I see something green...{w=0.2}{nw}"
+            extend 1wub "Ah, it's celery!"
+            m 3rub "You know...I think I could make plenty of delicious treats out of this."
+            m 3hub "It's nice to eat on its own, but you can also add a little something sweet to make it even tastier!"
+
+            if is_having_food:
+                m 3hua "I'll be sure to try some later~"
+
+            m 1eua "Thanks, [player]~"
+
+            if not is_having_food and monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me put this plushie away."
+                call mas_transition_to_emptydesk
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+                pause 3.0
+                call mas_transition_from_emptydesk
+
+            #Enable the gift
+            $ celerysnack.enable()
+
+        #Restock
+        $ celerysnack.restock(10)
+
+    $ mas_receivedGift("mas_reaction_celerysnack")
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_celerysnack", "category")
     $ store.mas_filereacts.delete_file(gift_ev_cat)
     #weird not to have her see the gift file that's in the characters folder.
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
