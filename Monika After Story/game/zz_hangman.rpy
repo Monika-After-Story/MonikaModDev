@@ -184,8 +184,8 @@ init -1 python in mas_hangman:
     LETTER_SPACE = 10.0
 
     # word properties
-    WORD_FONT = "gui/font/Halogen.ttf"
-    WORD_SIZE = 30
+    WORD_FONT = "mod_assets/font/m1_fixed.ttf"
+    WORD_SIZE = 36
     WORD_OUTLINE = []
     WORD_COLOR = "#202020"
     WORD_COLOR_GET = "#CC6699"
