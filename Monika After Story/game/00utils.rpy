@@ -1,6 +1,11 @@
 python early in mas_utils:
-    import store
+    import codecs
     import os
+    import platform
+    import shutil
+    import store
+    import time
+    import traceback
 
     # mac logging
     class MASMacLog(renpy.renpy.log.LogFile):
@@ -84,6 +89,7 @@ python early in mas_utils:
     # A map from the log name to a log object.
     mas_mac_log_cache = { }
 
+
     def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
         rv = mas_mac_log_cache.get(name, None)
 
@@ -93,10 +99,12 @@ python early in mas_utils:
 
         return rv
 
+
     def getMASLog(name, append=False, developer=False, flush=False):
         if renpy.macapp or renpy.macintosh:
             return macLogOpen(name, append=append, developer=developer, flush=flush)
         return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
+
 
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
@@ -125,6 +133,7 @@ python early in mas_utils:
             ))
         return new_log
 
+
     def writelog(msg):
         """
         Writes to the mas log if it is open
@@ -135,6 +144,7 @@ python early in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+
     def wtf(msg):
         """
         Wow That Failed
@@ -144,6 +154,7 @@ python early in mas_utils:
             msg - message to log
         """
         writelog(msg)
+
 
     def writestack():
         """
@@ -210,6 +221,67 @@ python early in mas_utils:
 
         # and delete the current file
         trydel(old_path)
+
+
+    def copyfile(oldpath, newpath):
+        """
+        Copies the file at oldpath into a file at newpath
+        Paths assumed to include the filename (like an mv command)
+
+        NOTE:
+            if a copy fails, the error is logged
+
+        IN:
+            oldpath - path to old file, including filename
+            newpath - path to new file, including filename
+
+        RETURNS:
+            True if copy succeeded, False otherwise
+        """
+        try:
+            shutil.copyfile(oldpath, newpath)
+            return True
+        except Exception as e:
+            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
+        return False
+
+
+    def trydel(f_path, log=False):
+        """
+        Attempts to delete something at the given path
+
+        NOTE: completely hides exceptions, unless log is True
+        """
+        try:
+            os.remove(f_path)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+
+    def trywrite(f_path, msg, log=False, mode="w"):
+        """
+        Attempts to write out a file at the given path
+
+        Exceptions are hidden
+
+        IN:
+            f_path - path to write file
+            msg - text to write
+            log - True means we log exceptions
+                (Default: False)
+            mode - write mode to use
+                (Defaut: w)
+        """
+        outfile = None
+        try:
+            outfile = open(f_path, mode)
+            outfile.write(msg)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+        finally:
+            if outfile is not None:
+                outfile.close()
 
     def tryparseint(value, default=0):
         """

@@ -4450,29 +4450,6 @@ init -995 python in mas_utils:
         return utc_to_any(utc_dt, get_localzone())
 
 
-    def copyfile(oldpath, newpath):
-        """
-        Copies the file at oldpath into a file at newpath
-        Paths assumed to include the filename (like an mv command)
-
-        NOTE:
-            if a copy fails, the error is logged
-
-        IN:
-            oldpath - path to old file, including filename
-            newpath - path to new file, including filename
-
-        RETURNS:
-            True if copy succeeded, False otherwise
-        """
-        try:
-            shutil.copyfile(oldpath, newpath)
-            return True
-        except Exception as e:
-            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
-        return False
-
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -4488,43 +4465,6 @@ init -995 python in mas_utils:
             yield
         finally:
             sys.stdout = oldout
-
-    def trydel(f_path, log=False):
-        """
-        Attempts to delete something at the given path
-
-        NOTE: completely hides exceptions, unless log is True
-        """
-        try:
-            os.remove(f_path)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-
-    def trywrite(f_path, msg, log=False, mode="w"):
-        """
-        Attempts to write out a file at the given path
-
-        Exceptions are hidden
-
-        IN:
-            f_path - path to write file
-            msg - text to write
-            log - True means we log exceptions
-                (Default: False)
-            mode - write mode to use
-                (Defaut: w)
-        """
-        outfile = None
-        try:
-            outfile = open(f_path, mode)
-            outfile.write(msg)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-        finally:
-            if outfile is not None:
-                outfile.close()
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
