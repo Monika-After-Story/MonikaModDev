@@ -172,6 +172,9 @@ label splashscreen:
         # set zoom
         store.mas_sprites.adjust_zoom()
 
+        # We're about to start, all things should be loaded, we can check event conditionals
+        Event.validateConditionals()
+
     if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
         # we have a corrupted persistent but was unable to recover via the
         # backup system

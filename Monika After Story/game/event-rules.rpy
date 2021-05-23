@@ -384,7 +384,8 @@ init -1 python:
                 skip_visual=False,
                 random_chance=0,
                 setup_label=None,
-                override_type=False
+                override_type=False,
+                forced_exp=None
             ):
             """
             IN:
@@ -403,6 +404,9 @@ init -1 python:
                 override_type - True will let this greeting override type
                     checks during selection, False will not
                     (Default: False)
+                forced_exp - FULL exp code we want to force
+                    for the first spaceroom render
+                    (Default: None)
 
             RETURNS:
                 a dict containing the specified rules
@@ -423,6 +427,7 @@ init -1 python:
                     random_chance,
                     setup_label,
                     override_type,
+                    forced_exp
                 )
             }
 
@@ -430,7 +435,6 @@ init -1 python:
                 ev.rules.update(rule)
 
             return rule
-
 
         @staticmethod
         def evaluate_rule(event=None, rule=None, defval=True):
@@ -506,7 +510,6 @@ init -1 python:
             # False since there was no rule to check
             return False
 
-
         @staticmethod
         def get_setup_label(ev):
             """
@@ -524,6 +527,23 @@ init -1 python:
 
             return None
 
+        @staticmethod
+        def get_forced_exp(ev):
+            """
+            Gets the forced exp for an event
+
+            IN:
+                ev - the event to evalute
+
+            OUT:
+                string with full exp code, or None
+            """
+            if ev:
+                ev_rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+                if ev_rule is not None:
+                    return ev_rule[4]
+
+            return None
 
     class MASFarewellRule(object):
         """
