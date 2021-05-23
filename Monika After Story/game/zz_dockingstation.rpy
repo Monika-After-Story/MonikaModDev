@@ -1866,7 +1866,7 @@ init 200 python in mas_dockstat:
                 # no data found, assume a missing monika
                 return (MAS_PKG_NF, None)
 
-            real_data = parseMoniData(real_data)
+            real_data = parseMoniData(real_data, rd_log)
             ret_code = MAS_PKG_DL
 
         else:
@@ -2315,9 +2315,6 @@ label mas_dockstat_empty_desk:
             mas_startupWeather()
             skip_setting_weather = True
 
-        # reset zoom before showing spaceroom
-        store.mas_sprites.reset_zoom()
-
         mas_from_empty = True
 
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
@@ -2325,12 +2322,15 @@ label mas_dockstat_empty_desk:
         if mas_isD25Season() and persistent._mas_d25_deco_active:
             store.mas_d25ShowVisuals()
 
+        #NOTE: Player bday and Moni bday do a zoom reset so deco is shown properly
         if mas_confirmedParty() and mas_isMonikaBirthday():
             persistent._mas_bday_visuals = True
+            store.mas_sprites.reset_zoom()
             store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
         #NOTE: elif'd so we don't try and show two types of visuals here
         elif persistent._mas_player_bday_decor:
+            store.mas_sprites.reset_zoom()
             store.mas_surpriseBdayShowVisuals()
 
     call spaceroom(hide_monika=True, scene_change=True)
