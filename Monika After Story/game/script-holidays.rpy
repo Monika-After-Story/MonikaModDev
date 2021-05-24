@@ -4709,6 +4709,7 @@ init -810 python:
 init -11 python in mas_player_bday_event:
     import datetime
     import store.mas_history as mas_history
+    import store
 
     def correct_pbday_mhs(d_pbday):
         """
@@ -4728,11 +4729,13 @@ init -11 python in mas_player_bday_event:
         # determine correct year
         _now = datetime.datetime.now()
         curr_year = _now.year
-        new_dt = pbday_dt.replace(year=curr_year)
+
+        new_dt = store.mas_utils.add_years(pbday_dt, curr_year - pbday_dt.year)
+
         if new_dt < _now:
             # new date before today, set to next year
             curr_year += 1
-            new_dt = pbday_dt.replace(year=curr_year)
+            new_dt = store.mas_utils.add_years(pbday_dt, curr_year - pbday_dt.year)
 
         # set the reset/trigger date
         reset_dt = pbday_dt + datetime.timedelta(days=3)
@@ -6542,12 +6545,15 @@ init -1 python:
         renpy.show("mas_bday_balloons", zorder=8)
 
 
-    def mas_surpriseBdayHideVisuals():
+    def mas_surpriseBdayHideVisuals(cake=False):
         """
         Hides all visuals for surprise party
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+        if cake:
+            renpy.hide("mas_bday_cake_monika")
+
 
     def mas_confirmedParty():
         """
