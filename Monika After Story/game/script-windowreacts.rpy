@@ -591,15 +591,15 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_googledocs",
-            category='["google", "docs"]',
+            eventlabel="mas_wrs_word_processor",
+            category=['Google Docs|LibreOffice Writer|Microsoft Word'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
     )
 
-label mas_wrs_googledocs:
+label mas_wrs_word_processor:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -610,5 +610,5 @@ label mas_wrs_googledocs:
     )
 
     if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_googledocs')
+        $ mas_unlockFailedWRS('mas_wrs_word_processor')
     return
