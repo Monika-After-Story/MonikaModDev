@@ -21,7 +21,7 @@ python early in mas_utils:
             `flush`
                 Determines if the file is flushed after each write.
             """
-            renpy.renpy.log.LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
+            super(MASMacLog, self).__init__(name, append=append, developer=developer, flush=flush)
 
 
         def open(self):  # @ReservedAssignment
@@ -39,7 +39,7 @@ python early in mas_utils:
 
             try:
 
-                home = expanduser("~")
+                home = os.path.expanduser("~")
                 base = os.path.join(home,".MonikaAfterStory/" )
 
                 if base is None:
