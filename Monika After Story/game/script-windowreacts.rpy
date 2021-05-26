@@ -120,7 +120,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_virtualpiano",
-            category=["^Virtual Piano"],
+            category=["Virtual Piano"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -592,12 +592,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_vscode",
-            category=['visualstudiocode'],
+            category=["- Visual Studio Code"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -622,43 +622,13 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_calculator",
-            category=['calculator'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_calculator:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Doing some quick number crunching, I see."
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_calculator')
-    return                    
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_picrew",
-            category=['picrew'],
+            category=["Picrew"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -684,12 +654,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_notepad",
-            category=['notepadpp'],
+            category=["- Notepad++"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -714,12 +684,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_facebook",
-            category=['facebook'],
+            category=["Facebook"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -745,12 +715,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_instagram",
-            category=['instagram'],
+            category=["Instagram"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -776,12 +746,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_aseprite",
-            category=['aseprite'],
+            category=["- Aseprite"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -807,12 +777,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_steam",
-            category=['steam'],
+            category=["Steam"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -838,12 +808,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_spotify",
-            category=['spotify'],
+            category=["Spotify"|"iTunes"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -868,44 +838,13 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_itunes",
-            category=['itunes'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_itunes:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Nice music selection, [player]! Mind if I listen along with you?",
-           "What are you listening to, [player]?"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_itunes')
-    return       
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ddlcstore",
-            category=['dokidokiliteratureclubstore'],
+            category=["Doki Doki Literature Club Store"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -931,12 +870,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_jobsearch",
-            category=['jobsearch|indeed'],
+            category=["| Indeed"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -962,12 +901,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ddlc",
-            category=['dokidokiliteratureclub!'],
+            category=["Doki Doki Literature Club!"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -993,12 +932,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_maswebsite",
-            category=['monikaafterstory-home'],
+            category=["Monika After Story - home"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1024,12 +963,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_ebay",
-            category=['|ebay'],
+            category=["| eBay"|"Amazon.com"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1053,43 +992,13 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_amazon",
-            category=['amazon.com'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label mas_wrs_amazon:
-    $ wrs_success = mas_display_notif(
-        m_name,
-        [
-           "Doing some shopping, [player]?"
-        ],
-        'Window Reactions'
-    )
-
-
-    if not wrs_success:
-        $ mas_unlockFailWRS('mas_wrs_amazon')
-    return        
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_newgrounds",
-            category=['newgrounds'],
+            category=["Newgrounds"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1115,12 +1024,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_word",
-            category=['-word'],
+            category=["- Word"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1146,12 +1055,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_powerpoint",
-            category=['-powerpoint'],
+            category=["- PowerPoint"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1176,12 +1085,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_excel",
-            category=['-excel'],
+            category=["- Excel"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1207,12 +1116,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_access",
-            category=['-access'],
+            category=["- Access"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1238,12 +1147,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_publisher",
-            category=['-publisher'],
+            category=["- Publisher"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1268,12 +1177,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_onenote",
-            category=['-onenote'],
+            category=["- OneNote"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1299,12 +1208,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_flstudio",
-            category=['flstudio'],
+            category=["FL Studio"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1329,12 +1238,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_soundcloud",
-            category=['soundcloud'],
+            category=["SoundCloud"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1360,12 +1269,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_congresslibrary",
-            category=['|library of congress'],
+            category=["| Library of Congress"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1391,12 +1300,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_kickstarter",
-            category=['—kickstarter'],
+            category=["— Kickstarter"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1421,12 +1330,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_patreon",
-            category=['patreon'],
+            category=["Patreon"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1452,12 +1361,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_urbandictionary",
-            category=['urbandictionary'],
+            category=["Urban Dictionary"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1483,12 +1392,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_python",
-            category=['python.org'],
+            category=["Python.org"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1514,12 +1423,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_adobepro",
-            category=['premierepro'],
+            category=["Premiere Pro"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1545,12 +1454,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_photoshop",
-            category=['photoshop'],
+            category=["Photoshop"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1575,12 +1484,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_camera",
-            category=['camera'],
+            category=["Camera"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1605,12 +1514,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_netscape",
-            category=['welcometonetscape!'],
+            category=["Welcome to Netscape!"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1635,12 +1544,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_unity",
-            category=['unity'],
+            category=["Unity"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1665,12 +1574,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_gms2",
-            category=['gamemakerstudio2'],
+            category=["GameMaker Studio 2"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1695,12 +1604,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_sfm",
-            category=['sourcefilmmaker'],
+            category=["Source Filmmaker"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1725,12 +1634,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_unreal",
-            category=['unrealengine'],
+            category=["Unreal Engine"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1756,12 +1665,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_dos",
-            category=['dosbox'],
+            category=["DOSBox"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1786,12 +1695,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_virtualbox",
-            category=['virtualbox'],
+            category=["VirtualBox"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1816,12 +1725,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_gimp",
-            category=['gimp'],
+            category=["GIMP"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1846,12 +1755,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_taskmanager",
-            category=['taskmanager'],
+            category=["Task Manager"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1876,12 +1785,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_renpy",
-            category=['theren'pyvisualnovelengine'],
+            category=["The Ren'py Visual Novel Engine"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1907,12 +1816,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_solitaire",
-            category=['microsoftsolitairecollection'],
+            category=["Microsoft Solitaire Collection"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1938,12 +1847,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_tiktok",
-            category=['tiktok'],
+            category=["TikTok"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1969,12 +1878,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_whatsapp",
-            category=['whatsapp'],
+            category=["WhatsApp"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -1999,12 +1908,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_paint3d",
-            category=['paint3d'],
+            category=["Paint 3D"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -2029,12 +1938,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_cortana",
-            category=['cortana'],
+            category=["Cortana"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
@@ -2059,12 +1968,12 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_teams",
-            category=['microsoftteams'],
+            category=["Microsoft Teams"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
                 "keep_idle_exp": None,
-                },
+            },
             show_in_idle=True
         ),
         code="WRS"
