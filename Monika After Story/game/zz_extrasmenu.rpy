@@ -325,7 +325,7 @@ style mas_extra_menu_label_text is hkb_button_text:
     color "#FFFFFF"
 
 style mas_extra_menu_label_text_dark is hkb_button_text_dark:
-    color "#FD5BA2"
+    color "#f5a3c7"
 
 style mas_adjust_vbar:
     xsize 18

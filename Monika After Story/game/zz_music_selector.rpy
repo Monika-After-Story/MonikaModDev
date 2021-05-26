@@ -900,10 +900,10 @@ style music_menu_button_text is navigation_button_text:
 style music_menu_button_text_dark is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
     font store.mas_ui.music_menu_font
-    color "#FFD9E8"
-    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
-    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
-    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
+    color "#faebf1"
+    outlines [(4, "#7e3568", 0, 0), (2, "#7e3568", 2, 2)]
+    hover_outlines [(4, "#c969ac", 0, 0), (2, "#c969ac", 2, 2)]
+    insensitive_outlines [(4, "#ba78a6", 0, 0), (2, "#ba78a6", 2, 2)]
 
 # Music menu
 #

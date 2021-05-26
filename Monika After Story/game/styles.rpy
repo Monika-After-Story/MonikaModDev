@@ -32,9 +32,9 @@ init -200 python in mas_ui:
 
     style_stash = {}
 
-    dark_button_text_idle_color = "#FD5BA2"
-    dark_button_text_hover_color = "#FFABD8"
-    dark_button_text_insensitive_color = "#8C8C8C"
+    dark_button_text_idle_color = "#f5a3c7"
+    dark_button_text_hover_color = "#ffbdc8"
+    dark_button_text_insensitive_color = "#7373737f"
 
     light_button_text_idle_color = "#000"
     light_button_text_hover_color = "#fa9"
@@ -305,8 +305,8 @@ style generic_fancy_check_button:
 style generic_fancy_check_button_dark:
     properties gui.button_properties("check_button_dark")
     foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
-    hover_background Solid("#CE4A7E")
-    selected_background Solid("#CE4A7E")
+    hover_background Solid("#ce7ea0")
+    selected_background Solid("#ce7ea0")
 
 style generic_fancy_check_button_text is gui_button_text:
     properties gui.button_text_properties("generic_fancy_check_button")
@@ -319,9 +319,9 @@ style generic_fancy_check_button_text is gui_button_text:
 style generic_fancy_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("generic_fancy_check_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#BFBFBF"
-    hover_color "#FFAA99"
-    selected_color "#FFAA99"
+    color "#bfbfbf"
+    hover_color "#1c1a1e"
+    selected_color "#1c1a1e"
     outlines []
 
 # START: image definitions

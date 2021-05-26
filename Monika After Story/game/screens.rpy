@@ -438,8 +438,8 @@ style say_label_dark is default:
     size gui.name_text_size
     xalign gui.name_xalign
     yalign 0.5
-    color "#FFD9E8"
-    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    color "#faebf1"
+    outlines [(3, "#7e3568", 0, 0), (1, "#7e3568", 1, 1)]
 
 style say_dialogue is default:
     xpos gui.text_xpos
@@ -659,9 +659,9 @@ style quick_button_text_dark:
     xysize (205, None)
     font gui.default_font
     size 14
-    idle_color "#FFAA99"
-    selected_color "#FFEEEB"
-    hover_color "#FFD4CC"
+    idle_color "#ebadb9"
+    selected_color "#ffeeeb"
+    hover_color "#fce8ec"
     kerning 0.2
     outlines []
 
@@ -871,10 +871,10 @@ style navigation_button_text is gui_button_text:
 style navigation_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("navigation_button_dark")
     font "gui/font/RifficFree-Bold.ttf"
-    color "#FFD9E8"
-    outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
-    hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
-    insensitive_outlines [(4, "#FFB2D4", 0, 0), (2, "#FFB2D4", 2, 2)]
+    color "#faebf1"
+    outlines [(4, "#7e3568", 0, 0), (2, "#7e3568", 2, 2)]
+    hover_outlines [(4, "#c969ac", 0, 0), (2, "#c969ac", 2, 2)]
+    insensitive_outlines [(4, "#ba78a6", 0, 0), (2, "#ba78a6", 2, 2)]
 
 ## Main Menu screen ############################################################
 ##
@@ -1109,8 +1109,8 @@ style game_menu_label_text is gui_label_text:
 style game_menu_label_text_dark is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
-    color "#FFD9E8"
-    outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
+    color "#faebf1"
+    outlines [(6, "#7e3568", 0, 0), (3, "#7e3568", 2, 2)]
     yalign 0.5
 
 style return_button is navigation_button:
@@ -1288,7 +1288,7 @@ style page_label_text is gui_label_text:
     hover_color gui.hover_color
 
 style page_label_text_dark is gui_label_text:
-    color "#FFD9E8"
+    color "#f5a3c7"
     outlines []
     text_align 0.5
     layout "subtitle"
@@ -1301,11 +1301,19 @@ style page_button_text is gui_button_text:
     properties gui.button_text_properties("page_button")
     outlines []
 
+style page_button_text_dark is gui_button_text:
+    properties gui.button_text_properties("page_button")
+    color "#737373"
+    hover_color "#e699ba"
+    selected_color "#d17b9d"
+    outlines []
+
 style slot_button is gui_button:
     properties gui.button_properties("slot_button")
 
 style slot_button_dark is gui_button:
     properties gui.button_properties("slot_button")
+    background "gui/button/slot_[prefix_]background_d.png"
 
 style slot_button_text is gui_button_text:
     properties gui.button_text_properties("slot_button")
@@ -1614,8 +1622,8 @@ style pref_label_text is gui_label_text:
 style pref_label_text_dark is gui_label_text:
     font "gui/font/RifficFree-Bold.ttf"
     size 24
-    color "#FFD9E8"
-    outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
+    color "#faebf1"
+    outlines [(3, "#7e3568", 0, 0), (1, "#7e3568", 1, 1)]
     yalign 1.0
 
 style pref_vbox is vbox:
@@ -1651,9 +1659,9 @@ style radio_button_text is gui_button_text:
 style radio_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("radio_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C"
-    hover_color "#FF80B7"
-    selected_color "#DE367E"
+    color "#737373"
+    hover_color "#e699ba"
+    selected_color "#d17b9d"
     outlines []
 
 # Check
@@ -1686,9 +1694,9 @@ style check_button_text is gui_button_text:
 style check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("check_button_dark")
     font "gui/font/Halogen.ttf"
-    color "#8C8C8C"
-    hover_color "#FF80B7"
-    selected_color "#DE367E"
+    color "#737373"
+    hover_color "#e699ba"
+    selected_color "#d17b9d"
     outlines []
 
 # Mute all
@@ -2222,7 +2230,7 @@ style confirm_prompt_text is gui_prompt_text:
     layout "subtitle"
 
 style confirm_prompt_text_dark is gui_prompt_text:
-    color "#FD5BA2"
+    color "#f5a3c7"
     outlines []
     text_align 0.5
     layout "subtitle"
