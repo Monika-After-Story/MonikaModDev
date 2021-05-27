@@ -1893,6 +1893,62 @@ label mas_reaction_candycane:
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
+
+init 5 python:
+    addReaction("mas_reaction_gift_fruitplate", "fruitplate", is_good=True, exclude_on=["d25g"])
+
+label mas_reaction_fruitplate:
+    $ fruitplate = mas_getConsumable("fruitplate")
+    $ mas_giftCapGainAff(3)
+    $ is_having_food = bool(MASConsumable._getCurrentFood())
+
+    if fruitplate.isMaxedStock():
+        m 3ekb "I appreciate your attention to my health [player], but I had enough for now."
+        m 3eka "Better save them for later, okay?"
+
+    else:
+        if fruitplate.enabled():
+            m 3wub "More fruits!"
+        else:
+            if not is_having_food:
+                if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
+                    $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+                $ fruitplate.have(skip_leadin=True)
+
+            $ mas_giftCapGainAff(3)
+            m 1sub "Oh! Fruits!"
+
+            if store.seen_event("monika_fruits"):
+                m 1ekbla "You remembered when I mentioned them?"
+                m 3hubsa "That's so sweet~"
+            else:
+                m 3hub "I was just thinking about this!"
+                m 3hua "Fruits have a lot of benefits, too."
+
+            if is_having_food:
+                m 3eka "I'll be sure to eat them later."
+
+            m 1eua "Thanks, [player]~"
+
+            if not is_having_food and monika_chr.is_wearing_acs(mas_acs_center_quetzalplushie):
+                m 3eua "Let me put this plushie away."
+                call mas_transition_to_emptydesk
+                $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+                pause 3.0
+                call mas_transition_from_emptydesk
+
+            #Enable the gift
+            $ fruitplate.enable()
+
+        #Restock
+        $ fruitplate.restock(3)
+
+    $ mas_receivedGift("mas_reaction_fruitplate")
+    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_fruitplate", "category")
+    $ store.mas_filereacts.delete_file(gift_ev_cat)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
+    return
+
 #Ribbon stuffs
 init 5 python:
     addReaction("mas_reaction_blackribbon", "blackribbon", is_good=True)
