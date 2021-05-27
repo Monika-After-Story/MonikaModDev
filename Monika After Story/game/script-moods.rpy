@@ -801,29 +801,33 @@ init 5 python:
     )
 
 label mas_mood_relieved:
-    m 1euc "Oh?"
-    m "What happened, [mas_get_player_nickname()]?{nw}"
+    $ chosen_nickname = mas_get_player_nickname()
+    m 1eud "Oh?"
+
+    m "What happened, [chosen_nickname]?{nw}"
     $ _history_list.pop()
     menu:
-        m "What happened, [mas_get_player_nickname()]?{fast}"
+        m "What happened, [chosen_nickname]?{fast}"
+
         "I made it through something difficult.":
-            m 1ekb "Ah, really?"
+            m 1wud "Really?"
             m 3hub "You should be proud of yourself, then!"
-            m 3fua "I'm sure that whatever it was, you were working really hard to make it through."
+            m 3fua "I'm sure whatever it was, you were working really hard to make it through."
             m 2eua "And, [player]...{w=0.2}{nw}"
             extend 2eka "please don't worry too much if things didn't turn out perfectly, okay?"
-            m "Sometimes life throws really tough situations at us, and we just have to do our best with what we're given."
-            m 3ekb "But now that it's done, you should take some time to relax your mind and take good care of yourself."
-            m 3eub "That way, when it's time to move on to the next thing, you'll be in the best state you can be in!"
-            m 1hubla "I love you, [player], and I'm so proud of you for getting through this."
+            m 2eksdla "Sometimes life throws really tough situations at us, and we just have to do our best with what we're given."
+            m 7ekb "But now that it's done, you should take some time to relax your mind and take good care of yourself."
+            m 3hub "...That way, you'll be ready to face whatever comes your way next!"
+            m 1ekbsa "I love you, [player], and I'm so proud of you for getting through this."
             $ mas_ILY()
 
         "Something I was worried about didn't happen.":
             m 1eub "Oh, that's good!"
-            m 2eka "Whatever was happening, I'm sure you were really anxious...{w=0.2}{nw}"
-            extend 2rkb "that can't have been fun to go through."
-            m 2hka "But it's nice that those worries weren't founded after all, huh?"
-            m 1eka "I'm really glad you're okay, and you have that weight off your chest."
-            m 3hua "Now it'll be easier to move forward with a little more confidence, right?"
-            m 3hub "I'm excited to take those next steps forward with you."
+            m 2eka "Whatever was happening, I'm sure you were really anxious...{w=0.3}{nw}"
+            extend 2rkd "that couldn't have been fun to go through."
+            m 2rkb "It's funny how our minds always seem to assume the worst, huh?"
+            m 7eud "A lot of times what we think could happen ends up being way worse than reality."
+            m 3eka "But anyway, I'm just glad you're okay and that you have that weight off your chest."
+            m 1hua "Now it'll be easier to move forward with a little more confidence, right?"
+            m 1eua "I'm excited to take those next steps forward with you."
     return
