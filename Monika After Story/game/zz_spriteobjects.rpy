@@ -1603,6 +1603,24 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
 
+    ###FRUIT PLATE
+    ## fruitplate
+    # healthy meal
+    # Do I have to give myself thanks? - RaVen
+    mas_acs_fruitplate = MASAccessory(
+        "fruit_plate",
+        "fruit_plate",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_fruitplate)
+
     ### MUSIC NOTE NECKLACE (GOLD)
     ## musicnote_necklace_gold
     # The necklace Monika wore in the vday outfit
