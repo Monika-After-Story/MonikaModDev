@@ -442,8 +442,11 @@ init python in mas_windowutils:
         left, top, right, bottom = pos_tuple
 
         curr_x, curr_y = getMousePos()
-        curr_x = max(curr_x, 1)
-        curr_y = max(curr_y, 1)
+        # NOTE: This is so we get correct pos in fullscreen
+        if curr_x == 0:
+            curr_x = 1
+        if curr_y == 0:
+            curr_y = 1
 
         half_mas_window_x = (right - left)/2
         half_mas_window_y = (bottom - top)/2
