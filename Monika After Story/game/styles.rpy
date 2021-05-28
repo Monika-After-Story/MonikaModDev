@@ -310,7 +310,7 @@ style generic_fancy_check_button_dark:
 
 style generic_fancy_check_button_text is gui_button_text:
     properties gui.button_text_properties("generic_fancy_check_button")
-    font "gui/font/Halogen.ttf"
+    font "gui/font/Aller_Rg.ttf"
     color "#BFBFBF"
     hover_color "#000000"
     selected_color "#000000"
@@ -318,7 +318,7 @@ style generic_fancy_check_button_text is gui_button_text:
 
 style generic_fancy_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("generic_fancy_check_button_dark")
-    font "gui/font/Halogen.ttf"
+    font "gui/font/Aller_Rg.ttf"
     color "#BFBFBF"
     hover_color "#FFAA99"
     selected_color "#FFAA99"
