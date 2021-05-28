@@ -385,6 +385,15 @@ label v0_12_1_3(version="v0_12_1_3"):
                 "mas_compliment_chess",
                 conditional="persistent._mas_chess_stats.get('losses', 0) > 5"
             )
+
+        # added due to a potential crash in the 0.8.13 update that may have caused this to not update
+        # the other events updated in that script have been updated since then and don't need to be done again
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmas_eve',
+            start_date = datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+            end_date = mas_d25
+        )
+
     return
 
 # 0.12.1.2
