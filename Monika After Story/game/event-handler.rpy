@@ -2804,6 +2804,9 @@ label show_prompt_list(sorted_event_labels):
     return _return
 
 label prompts_categories(pool=True):
+    $ cat_names = {
+        "ddlc": "DDLC",
+    }
 
     # this acts as a stack for category lists
     # each item is an _NT_CAT_PANE namedtuple
@@ -2841,7 +2844,7 @@ label prompts_categories(pool=True):
         # tuplelize the main the category list
         # NOTE: we use a 2nd list here to do displaying, keeping track of the
         # older cat list for checking if a category was picked
-        dis_cat_list = [(x.capitalize() + "...",x) for x in main_cat_list]
+        dis_cat_list = [(cat_names.get(x, x.capitalize()) + "...", x) for x in main_cat_list]
 
         # tupelize the event list
 #        no_cat_list = evhand.tuplizeEventLabelList(no_cat_list, unlocked_events)
