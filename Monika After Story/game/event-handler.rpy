@@ -192,7 +192,7 @@ init -998 python in mas_ev_data_ver:
         valid_times = True
     except:
         valid_times = False
-        renpy.log("failed to verify mtimes")
+        renpy.exports.log("failed to verify mtimes")
 
 init -950 python in mas_ev_data_ver:
     import store

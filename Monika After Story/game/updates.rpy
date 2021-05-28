@@ -374,16 +374,27 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.1.2
-label v0_12_1_2(version="v0_12_1_2"):
+# 0.12.1.3
+label v0_12_1_3(version="v0_12_1_3"):
     python:
         if persistent.ever_won:
             persistent._mas_ever_won.update(persistent.ever_won)
 
-        mas_setEVLPropValues(
-            "mas_compliment_chess",
-            conditional="persistent._mas_chess_stats.get('losses', 0)>5"
-        )
+        if mas_getEVLPropValue("mas_compliment_chess", "conditional"):
+            mas_setEVLPropValues(
+                "mas_compliment_chess",
+                conditional="persistent._mas_chess_stats.get('losses', 0) > 5"
+            )
+    return
+
+# 0.12.1.2
+label v0_12_1_2(version="v0_12_1_2"):
+    python:
+        if mas_getEVLPropValue("monika_dystopias", "action"):
+            mas_setEVLPropValues(
+                "monika_dystopias",
+                conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)"
+            )
 
     return
 
