@@ -3134,6 +3134,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 $ ocb_checked = mailbox.read_outfit_checkbox_checked()
                 textbutton _("Outfit Mode"):
                     style "generic_fancy_check_button"
+                    xsize 200
                     activate_sound gui.activate_sound
                     action [
                         ToggleField(persistent, "_mas_setting_ocb"),
@@ -3144,38 +3145,32 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     ]
                     selected ocb_checked
 
-            if mailbox.read_conf_enable():
-                textbutton _("Confirm"):
-                    style "hkb_button"
-                    xalign 0.5
-                    action Jump(confirm)
-            else:
-                textbutton _("Confirm"):
-                    style "hkb_button"
-                    xalign 0.5
-
-            if mailbox.read_restore_enable():
-                textbutton _("Restore"):
-                    style "hkb_button"
-                    xalign 0.5
-                    action Jump(restore)
-            else:
-                textbutton _("Restore"):
-                    style "hkb_button"
-                    xalign 0.5
-
-            textbutton _("Cancel"):
-                style "hkb_button"
-                xalign 0.5
-                action Jump(cancel)
-                # action Function(mailbox.mas_send_return, -1)
-
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
             xoffset -25
             # Compensating the frame padding
             yoffset -10
             ysize (sel_frame_vsize - 45)
+
+    style_prefix "hkb"
+    vbox:
+        xpos 1115
+        yanchor 1.0
+        ypos 715
+
+        if mailbox.read_conf_enable():
+            textbutton _("Confirm") action Jump(confirm)
+        else:
+            textbutton _("Confirm")
+
+        if mailbox.read_restore_enable():
+            textbutton _("Restore") action Jump(restore)
+        else:
+            textbutton _("Restore")
+
+        textbutton _("Cancel") action Jump(cancel)
+        # textbutton _("Cancel") action Function(mailbox.mas_send_return, -1)
+
 
 # GENERAL sidebar selector label
 # NOTE: you should NOT call this label. You should call the helper labels
