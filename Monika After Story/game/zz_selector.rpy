@@ -3104,6 +3104,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     frame:
         area (1075, 50, 200, sel_frame_vsize - 45)
         background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
+        ypadding 10  # Outline width (5) + padding itself (5)
 
         vbox:
             xsize 200
@@ -3117,7 +3118,6 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 vbox:
                     xsize 200
                     spacing 10
-                    null height 1
 
                     # add the remover
                     if remover is not None:
@@ -3126,10 +3126,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
                     for selectable in flt_items:
                         add selectable:
-                            # xoffset 5
                             xalign 0.5
-
-                    null height 1
 
             null height 5
 
@@ -3176,6 +3173,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
             xoffset -25
+            # Compensating the frame padding
+            yoffset -10
+            ysize (sel_frame_vsize - 45)
 
 # GENERAL sidebar selector label
 # NOTE: you should NOT call this label. You should call the helper labels
