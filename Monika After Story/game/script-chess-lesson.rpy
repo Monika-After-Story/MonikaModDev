@@ -5,41 +5,6 @@
 #So, in order not to increase the size of the topic file, 
 #which already had more than 10,000 lines, I decided to open a separate one.
 #
-#This file contains 30 lessons of Chess:
-#    1. What is Chess?(Done)
-#    2. How to move a Pawn?(DONE)
-#    3. How to move a Bishop?
-#    4. How to move a Knight?
-#    5. How to move a Rook?
-#    6. How to move a Queen?
-#    7. How to move a King?
-#    8. When will we win a game?(DONE)
-#    9. Key Points in Chess - 1 (What should you do in opening)(DONE)
-#    10. Key Points in Chess - 2 (How to form a good position of pieces)
-#    11. Popular Beginnings (Includes: Italian Game, Scilian Defense, etc. Gave them only a brief introduction.)(DONE)
-#    12. Advanced Chess - Make the best of a Pawn
-#    13. Advanced Chess - Make the best of a Bishop(DONE)
-#    14. Advanced Chess - Make the best of a Knight
-#    15. Advanced Chess - Make the best of a Rook
-#    16. Advanced Chess - Make the best of a Queen
-#        (There is no lesson about how to make the best of a King, because the controlling of a king is far advanced. Only master would learn it.)
-#    17. Basic Tacs - Sacrificing-To-Win
-#    18. Basic Tacs - Discovered Attacking
-#    19. Basic Tacs - Break the defense
-#    20. Basic Tacs - Avoid draw game
-#    21. Popular Beginnings - Italian Game
-#    22. Popular Beginnings - Scilian Defense
-#    23. Popular Beginnings - Queen's Gamebit
-#    24. Popular Beginnings - French Defense
-#    25. Popular Beginnings - Dutch Defense
-#    26. Key Checkmate - Two Rooks Mate
-#    27. Key Checkmate - One Rook Mate
-#    28. Key Checkmate - Queen Mate
-#    29. Key Checkmate - Two Bishops Mate
-#    30. Key Checkmate - King and Pawn Mate
-#        (There is no Two Knights Mate because two knights can not checkmate.)
-#
-#
 define chesslevel_didntevenbegin = 1
 define chesslevel_beginner = 2
 define chesslevel_advancer = 3
