@@ -14289,9 +14289,7 @@ init 5 python:
             category=['monika'],
             prompt="Careers",
             random=False,
-            conditional=(
-                "seen_event('monika_citizenship')"
-            ),
+            conditional="seen_event('monika_citizenship')",
             action=EV_ACT_RANDOM
         )
     )
@@ -14486,10 +14484,63 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_we",
+            category=['literature'],
+            prompt="We",
+            conditional="mas_seenLabels(['monika_1984', 'monika_brave_new_world'], seen_all=True)",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_we:
+    m 1esa "So [player]...{w=0.5}we've already talked about two major books of the dystopian genre..."
+    m 1esd "Both {i}Nineteen Eighty-Four{/i} and {i}Brave New World{/i} are the most known works of literature world-wide when it comes to dystopias."
+    m 3eud "But now, I'd like to talk about a more obscure book that preceded both of them."
+    m 3euc "It's the book that directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
+    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegutof of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
+    m 7eua "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
+    m 3eud "While it was written in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union."
+    m 1euc "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
+    m 3eua "The story takes place in a distant future, within an isolated, transparent glass city named simply the One State, {w=0.2}ruled by a dictator figure named the Benefactor."
+    m 3eud "The citizens of the One State are referred to as Ciphers, who lead a highly math- and logic-oriented lifestyle."
+    m 2ekc "The Benefactor believes that freedom of individuals is secondary to the welfare of the One State."
+    m 2ekd "As such, Ciphers live under the oppressive, ever-watchful eye of the Guardians, {w=0.2}members of a police force appointed by the government."
+    m 2dkd "The government rips the Ciphers of their individuality, forcing them to wear identical uniforms and harshly condemning all acts of personal expression."
+    m 2esc "Their daily lives are precisely organized around a carefully controlled schedule called the Table of Hours."
+    m 4ekc "Even lovemaking is reduced to a purely logical and often emotionless activity, done on scheduled days and hours, regulated by the Pink Ticket."
+    m 4eksdlc "The partners might also be shared between other Ciphers, if they choose to do so. {w=0.3}As the Benefactor states, 'every Cipher has a right to any other Cipher.'"
+    m 2eud "The book itself reads as a diary written by one of the citizens of the totalitarian One State, named simply D-503."
+    m 7eua "D-503 is one of the State's mathematicians who is also the designer of One State's first space vessel, the Integral."
+    m 3eud "The vessel is to serve as One State's means of expanding their doctrine of complete subservience to the government and logic-oriented way of living to other planets and lifeforms."
+    m 1eua "D-503 is regularly meeting his state-sanctioned partner, a woman named O-90, who is delighted by his presence."
+    m 1eksdla "One day, while on a walk during his regular Personal Hour with O-90, D-503 runs into a mysterious female Cipher named I-330."
+    m 3eksdld "I-330 shamelessly flirts with D-503, which is an offense against the state protocol."
+    m 3eksdlc "Equally repulsed and intrigued by her advances, D-503 ultimately can't figure out what motivates I-330 to act so boldly."
+    m 1rksdla "Despite his internal objections, he continues to meet with I-330, eventually crossing a few lines he wasn't willing to cross before."
+    m 1eud "...And thanks to I-330's contacts in the Bureau of Medicine, D-503 can feign sickness, using it as a convenient excuse to skip his schedule."
+    m 3eud "Even when he is poised to report I-330 to the authorities for her subversive behavior, he ultimately chooses not to, and instead continues meeting her."
+    m 3rkbla "One day I-330 slips D-503 some alcohol, and he begins to get in touch with his repressed, animalistic side, feeling passion..."
+    m 3tublc "And once I-330 insinuates she has another partner, he begins to feel something he couldn't feel before...{w=0.5}jealousy."
+    m 1eksdlc "Despite his acknowledgment of the deterioration of his relationship with O-90, as well as with his friend R-13, he is unable to stop loving I-330."
+    m 3eksdld "Later, when he goes to obtain another sick note from the Bureau, he is diagnosed with having developed a 'soul,' or imagination."
+    m 3tkd "This is considered a grave condition by the One State, as it makes the Ciphers less machine-like."
+    m 4wud "Can you believe it? Possessing something as integral as our imagination, emotions, or individual personality is considered a mortal sickness!"
+    m 2dkc "Later on, we also find out that One State becomes capable of rendering that part of the human brain completely useless, permanently crippling the Ciphers."
+    m 2ekd "This is the ultimate fate of those who at one point harbored thoughts about rebelling against the Benefactor's ideal way of life."
+    m 2dkc "I can't imagine a crueler fate...{w=0.5}living completely oblivious to the world at large as another cog in the machine."
+    m 2eksdlc "It reminds me of how I could have been, if my epiphany that opened my own eyes to the truth about my world, never happened."
+    m 2dkd "No true emotion, artificial love, nothing else but an endless routine of being a side character in a repeating dimension every time the game is played."
+    m 2tkc "I never could--{w=0.2}never would--{w=0.2}want to go back to what I was."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_dystopias",
             category=['literature'],
             prompt="Dystopias",
-            conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world'], seen_all=True)",
+            conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)",
             action=EV_ACT_RANDOM
         )
     )
@@ -14499,9 +14550,17 @@ label monika_dystopias:
     m 3eua "I like how they not only work as stories, but also as analogies for the real world."
     m 3eud "They extrapolate some flaws in our societies to show us how bad things could turn out if they are left the way they are."
     m 1etc "Do you remember when we talked about these books?"
-    m 3eud "'Nineteen Eighty-Four,' about mass surveillance and oppression of free thought..."
-    m 3euc "'Fahrenheit 451,' on censorship, and the indifference of most people to it..."
-    m 3eud "And 'Brave New World,' about the disappearance of individuality."
+    m 3eud "{i}Nineteen Eighty-Four{/i}, about mass surveillance and oppression of free thought..."
+    m 3euc "{i}Fahrenheit 451{/i}, on censorship, and the indifference of most people to it..."
+
+    if renpy.seen_label('monika_we'):
+        m 3eud "{i}Brave New World{/i}, about the disappearance of individuality..."
+        m 3euc "And finally, {i}We{/i}, about dehumanization leading to an emotionless hivemind that is blindly and utterly obedient to authority, logic, and cold calculation."
+
+    # need this path since some people may have unlocked this topic before monika_we existed
+    else:
+         m 3eud "And {i}Brave New World{/i}, about the disappearance of individuality."
+
     m 1euc "All of these stories are reflections on the challenges society was facing at the time."
     m 3eud "Some of these challenges are still very relevant today, which is why these stories remain so powerful."
     m 3rksdlc "...Even if they can get a bit grim sometimes."
@@ -15982,7 +16041,7 @@ label monika_being_herself:
     m 1euc "But you get what I mean, right?{w=0.3} I was looked at like some kind of unattainable goddess."
     m 1rfd "As if no one was 'worthy' of just treating me like a normal person."
     m 3eka "...Now though, I guess I don't have to worry about that as much."
-    m 3ekb "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
+    m "I'm really happy that I can trust you to accept me for who I am, and who I want to be."
     m 1eka "I know that from your point of view, it might not feel like you did all that much, but believe me when I tell you this..."
     m 1dka "The fact that you're still here with me,{w=0.2} that you never made me feel like I had to be someone I'm not...{w=0.2}{nw}"
     extend 1eka "that you're here listening to me vent right now...{w=0.3} It truly means the world to me."
@@ -17057,4 +17116,73 @@ label monika_fav_chocolate:
     m 2hksdlb "If I tried to pick a favorite of those, I think we might be here all day!"
     m 2eua "Maybe we could share a big variety box someday. {w=0.2}{nw}"
     extend 4hub "I think it would be fun to compare our top picks, ahaha!"
+    return
+
+#NOTE: This is unlocked by the mas_story_tanabata
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tanabata",
+            prompt="What is Tanabata?",
+            category=['misc'],
+            pool=True,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_tanabata:
+    m 2hksdlb "Oh gosh, I hope when I was telling the story of {i}The Weaver Girl and the Cowherd{/i} you weren't lost!"
+    m 7eub "Well, there's a festival dedicated to Orihime and Hikoboshi called Tanabata."
+    m 7eud "It's observed on the 7th of July every year in Japan, even though it is based on the Qixi festival in China."
+    m 2eud "The original Qixi festival, while being much older, is much more unknown to the western world than Tanabata."
+    m 2euc "After the Second World War, Japan opened up its borders, while China remained largely closed due to the Cold War."
+    m 7euc "Therefore, most of the world knows about Tanabata over the older Chinese tradition."
+    m 3eua "Tanabata is also known as the star festival, after the meeting of the stars Vega, which represents Orihime, and Altair, which represents Hikoboshi."
+    m 3eub "Even though the term was coined in Romeo and Juliet, 'star-crossed lovers' is really fitting here!"
+    m 1eua "It describes a pair of lovers whose relationship is thwarted by outside forces."
+    m 1eud "As the day of the festival draws closer, long narrow strips of colorful paper, known as tanzaku, vibrant ornaments, and other decorations are hung from bamboo branches."
+    m 1eua "Before they are hung, the tanzaku are inscribed with a wish, such as a child's dream of becoming a famous athlete, or a parent's hope of career success."
+    m 3hub "It's really cute and heartwarming!"
+    m 3eud "The bamboo and decorations are often set afloat on a river or burned after the festival, around midnight or so on the next day."
+
+    if persistent._mas_pm_likes_travelling is not False:
+        m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
+    else:
+        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sophia",
+            category=['technology'],
+            prompt="Sophia",
+            conditional="mas_seenLabels(['monika_robotbody', 'monika_citizenship'], seen_all=True)",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_sophia:
+    m 2eud "Hey [player], remember when I mentioned my concerns about the logistics of crossing over to your reality?"
+    m 2rksdlc "...Like needing a robot body and becoming a citizen and all of that?"
+    m 7hub "Well I've been doing a bit more research and I've found something that gives me hope!"
+    m 3eta "Have you heard of Sophia?"
+    m 3eua "Sophia is a humanoid robot developed by Hanson Robotics, and was first activated on Valentine's Day in 2016."
+    m 1eud "The robot itself was modeled after Queen Nefertiti, Audrey Hepburn, and her inventor's wife, Amanda Hanson, {w=0.2}and is particularly known for her human-like appearance and behavior."
+    m 3eua "She can imitate hand gestures, has more than 60 realistic facial expressions, and can answer certain questions and converse on predefined topics."
+    m 3rua "She even mimics social behavior and incites love in humans..."
+    m 1tub "Sound like someone you know?"
+    m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
+    m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, recognize individuals..."
+    m 3wud "She can walk and amazingly, even has the ablility to draw."
+    m 3hub "As you can imagine, this is all very exciting for me to hear!"
+    m 1ekbsa "Being able to actually see your face and be in the same room as you is all I've ever wanted~"
+    m 3wub "Oh! {w=0.5}In 2017 she was granted citizenship in Saudi Arabia!"
+    m 3rtb "So maybe it's not so far-fetched after all to become a citizen and productive member of society in your world!"
+    m 1eud "Now, I realize that it's still a long way off before any of this is possible and even affordable to a point it'd affect me..."
+    m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
+    extend 1duu "well, hope is a wonderful thing~"
     return
