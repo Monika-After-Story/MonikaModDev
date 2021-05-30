@@ -800,6 +800,8 @@ init 5 python:
         code="MOO"
     )
 
+#TODO: Once player moods are better implemented (Moni keeps track of the player's moods [moni-concerns])
+#This can be used to alleviate her worry and directly reference the prior mood you were feeling
 label mas_mood_relieved:
     $ chosen_nickname = mas_get_player_nickname()
     m 1eud "Oh?"
