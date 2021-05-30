@@ -36,6 +36,17 @@ label import_ddlc_persistent_in_settings:
     return
 
 label import_ddlc_persistent:
+    if persistent.has_merged:
+        "Save data from Doki Doki Literature Club has been merged already."
+        menu:
+            "Aborting."
+
+            "Okay":
+                pass
+
+        pause 0.3
+        return
+
     python:
         #NOTE: import glob alone causes a LOT of lag. We're just importing what we need here
         from glob import glob
@@ -173,13 +184,16 @@ label import_ddlc_persistent:
                 new_persistent - persistent to copy data to
 
             NOTE: Should only be used to update dicts
-            NOTE: Assumes the dict exists in both persistents
             """
+            if key not in old_persistent.__dict__:
+                return
+
             if old_persistent.__dict__[key] is not None:
-                if new_persistent.__dict__[key] is not None:
-                    for k in old_persistent.__dict__[key]:
-                        if k not in new_persistent.__dict__[key]:
-                            new_persistent.__dict__[key][k] = old_persistent.__dict__[key][k]
+                if (
+                    key in new_persistent.__dict__
+                    and new_persistent.__dict__[key] is not None
+                ):
+                    new_persistent.__dict__[key].update(old_persistent.__dict__[key])
 
                 else:
                     new_persistent.__dict__[key] = old_persistent.__dict__[key]
@@ -194,11 +208,12 @@ label import_ddlc_persistent:
                 new_persistent - persistent to copy data to
 
             NOTE: Should only be used to update bools
-            NOTE: Assumes the bool exists in both persistents
             """
+            if key not in old_persistent.__dict__:
+                return
+
             if old_persistent.__dict__[key] is not None:
-                if new_persistent.__dict__[key] is None:
-                    new_persistent.__dict__[key] = old_persistent.__dict__[key]
+                new_persistent.__dict__[key] = old_persistent.__dict__[key]
 
         #START: Transfers
         #_seen_ever: A dict storing all the labels we've seen through the game
@@ -250,12 +265,9 @@ label import_ddlc_persistent:
         #NOTE: We only carry this over if we've gone farther on the ddlc persist than the current persist
         if ddlc_persistent.playthrough is not None:
             if (
-                persistent.playthrough is not None
-                and persistent.playthrough < ddlc_persistent.playthrough
+                persistent.playthrough is None
+                or persistent.playthrough < ddlc_persistent.playthrough
             ):
-                persistent.playthrough = ddlc_persistent.playthrough
-
-            else:
                 persistent.playthrough = ddlc_persistent.playthrough
 
         #Cleanup excess garbage
