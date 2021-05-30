@@ -94,7 +94,8 @@ transform hangman_display_word:
     xcenter 975 yanchor 0 ypos 475
 
 transform hangman_hangman:
-    xanchor 0 yanchor 0 xpos 880 ypos 125
+    xanchor 0 yanchor 0 ypos 125
+    xpos (880 if not persistent._mas_sensitive_mode else 836)
 
 # window sayori
 # left in
