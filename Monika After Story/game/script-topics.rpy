@@ -17217,7 +17217,7 @@ label monika_chinesechess:
     m "And international chess is more focused on the intense fight...{w=0.2}{nw}"
     extend 7etd " the gameplay of the two games is fundamentally different at all!"
     m 1rtd "However, regardless of the gameplay, the cultural implications of the two games are similar."
-    m "The goal of both games is to successfully checkmate the opponent's.{w=0.1}.{w-0.1}.{nw}"
+    m "The goal of both games is to successfully checkmate the opponent's.{w=0.1}.{w=0.1}.{nw}"
     extend 1etd " 'supreme leader', you could say."
     m 1eub "So, both they are a true epitome of a kind of military warfare."
     m 1hub "I haven't played Chinese chess yet, but if I get the chance, I'll give it a try!"
