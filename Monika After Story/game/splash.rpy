@@ -204,7 +204,7 @@ label splashscreen:
         with Dissolve(1.5)
 
         #Optional, load a copy of DDLC save data
-        if not persistent.has_merged:
+        if not persistent._mas_imported_saves:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
         $ persistent.first_run = False
