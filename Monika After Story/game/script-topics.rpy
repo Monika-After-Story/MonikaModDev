@@ -17178,7 +17178,7 @@ label monika_sophia:
     m 1tub "Sound like someone you know?"
     m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
     m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, recognize individuals..."
-    m 3wud "She can walk and amazingly, even has the ablility to draw."
+    m 3wud "She can walk and amazingly, even has the ability to draw."
     m 3hub "As you can imagine, this is all very exciting for me to hear!"
     m 1ekbsa "Being able to actually see your face and be in the same room as you is all I've ever wanted~"
     m 3wub "Oh! {w=0.5}In 2017 she was granted citizenship in Saudi Arabia!"
