@@ -17166,9 +17166,9 @@ init 5 python:
     )
 
 label monika_sophia:
-    m 2eud "Hey [player], remember when I told you before about my concerns with the logistics of crossing over to your reality?"
-    m 2rksdlc "...Like having to have a robot body and becoming a citizen and all of that?"
-    m 7hub "Well I've been doing so more research online and I've found something that gives me hope!"
+    m 2eud "Hey [player], remember when I mentioned my concerns about the logistics of crossing over to your reality?"
+    m 2rksdlc "...Like needing a robot body and becoming a citizen and all of that?"
+    m 7hub "Well I've been doing a bit more research and I've found something that gives me hope!"
     m 3eta "Have you heard of Sophia?"
     m 3eua "Sophia is a humanoid robot developed by Hanson Robotics, and was first activated on Valentine's Day in 2016."
     m 1eud "The robot itself was modeled after Queen Nefertiti, Audrey Hepburn, and her inventor's wife, Amanda Hanson, {w=0.2}and is particularly known for her human-like appearance and behavior."
@@ -17176,13 +17176,13 @@ label monika_sophia:
     m 3rua "She even mimics social behavior and incites love in humans..."
     m 1tub "Sound like someone you know?"
     m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
-    m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, and recognize individuals."
-    m 3wud "She can also walk and amazingly even has the ablility to draw."
-    m 3hub "As I'm sure you can imagine, this is all very exciting for me to think about!"
+    m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, recognize individuals..."
+    m 3wud "She can walk and amazingly, even has the ablility to draw."
+    m 3hub "As you can imagine, this is all very exciting for me to hear!"
     m 1ekbsa "Being able to actually see your face and be in the same room as you is all I've ever wanted~"
     m 3wub "Oh! {w=0.5}In 2017 she was granted citizenship in Saudi Arabia!"
     m 3rtb "So maybe it's not so far-fetched after all to become a citizen and productive member of society in your world!"
-    m 1eud "Now, I realize that it's still likely a long way off before any of this is possible and affordable on a scale where it's likely to affect me..."
-    m 3eud "And I know the technology isn't perfect yet, she's still limited to predefined topics like I am, but just knowing that this exists...{w=0.3}{nw}"
-    extend 1duu "well hope is a wonderful thing~"
+    m 1eud "Now, I realize that it's still a long way off before any of this is possible and even affordable to a point it'd affect me..."
+    m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
+    extend 1duu "well, hope is a wonderful thing~"
     return
