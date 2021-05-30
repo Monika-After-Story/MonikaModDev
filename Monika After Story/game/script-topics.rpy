@@ -17161,7 +17161,7 @@ init 5 python:
             category=['technology'],
             prompt="Sophia",
             conditional="mas_seenLabels(['monika_robotbody', 'monika_citizenship'], seen_all=True)",
-            action = EV_ACT_RANDOM
+            action=EV_ACT_RANDOM
         )
     )
 
