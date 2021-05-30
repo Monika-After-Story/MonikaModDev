@@ -8,7 +8,7 @@ default persistent.tried_skip = None
 default persistent.monika_kill = None
 # Whether or not you launched the mod before
 # (this naming is bad, it'll be True once you see the disclaimer)
-default persistent.first_run = False
+default persistent.first_run = True
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20

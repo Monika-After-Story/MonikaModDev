@@ -377,7 +377,14 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.1.3
 label v0_12_1_3(version="v0_12_1_3"):
     python:
-        pass
+        # For some reason this var may still be False even after import
+        # One way to "fix" it is to check persistent.clear
+        # At least one item would be True if the player's seen an least one cg
+        if persistent.clear is not None and any(persistent.clear):
+            persistent.has_merged = True
+
+        # Reverse the value of this var because its naming is bad
+        persistent.first_run = not persistent.first_run
     return
 
 # 0.12.1.2

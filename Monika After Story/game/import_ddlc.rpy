@@ -102,7 +102,7 @@ label import_ddlc_persistent:
         clearUpdateStructs()
 
     #Check if previous MAS data exists
-    if persistent.first_run:
+    if not persistent.first_run:
         label .save_merge_or_replace:
         menu:
             "Previous Monika After Story save data has also been found.\nWould you like to merge with DDLC save data?"

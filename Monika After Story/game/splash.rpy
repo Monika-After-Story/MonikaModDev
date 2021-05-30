@@ -183,7 +183,7 @@ label splashscreen:
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
-    if not persistent.first_run:
+    if persistent.first_run:
         $ quick_menu = False
         pause 0.5
         scene tos
@@ -207,7 +207,7 @@ label splashscreen:
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
-        $ persistent.first_run = True
+        $ persistent.first_run = False
 
 #    $ basedir = config.basedir.replace('\\', '/')
 #   NOTE: this keeps screwing with my syntax coloring
