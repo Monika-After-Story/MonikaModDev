@@ -17154,3 +17154,40 @@ label monika_tanabata:
     else:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
+
+
+#Not sure if this should be unlocked only when chess is unlocked.
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chinesechess",
+            category=['games'],
+            prompt="Chinese chess",
+            random=True
+        )
+    )
+label monika_chinesechess:
+    m 1eua "Do you know chess, [player]?"
+    m "I mean, {i}Chinese chess{/i}."
+    m 3eua "Another name of this is 'xiangqi'. It's almost completely different from international chess, with many of the rules different."
+    m 3eub "For example, Chinese chess has no queen the piece, and has only five pawns.{w=0.2} There is a huge chasm in the middle of the chessboard, called 'Chu River and Han Border'."
+    m 1eub "The reason why this chasm have such a name is because they are two borders that did exist in Chinese history."
+    m 1eud "I only know that it is related to the period of {i}Conflict Between Chu and Han{/i} in China...{w=0.2}{nw}"
+    extend 1husdlb " But I haven't studied that history in detail, so I don't really know what to say."
+    m 1eub "The complexity of these two chess games has long been the subject of conversation, and no conclusion has ever been reached that will convince everyone."
+    m 1rusdla "Although I play chess, but also only limited to international chess, for Chinese chess...{w=0.2}{nw}"
+    extend 1eksdla " I just know the ground rules, so I have nothing to say."
+    m 2etd "But, you know what?"
+    m 2eub "In my opinion, however, complexity doesn't really matter. What matters is that both types of chess are equally interesting."
+    m 2eua "Chinese chess is more focused on the layout, just like Chinese military strategists."
+    m "And international chess is more focused on the intense fight...{w=0.2}{nw}"
+    extend 7etd " the gameplay of the two games is fundamentally different at all!"
+    m 1rtd "However, regardless of the gameplay, the cultural implications of the two games are similar."
+    m "The goal of both games is to successfully checkmate the opponent's.{w=0.1}.{w-0.1}.{nw}"
+    extend 1etd " 'supreme leader', you could say."
+    m 1eub "So, both they are a true epitome of a kind of military warfare."
+    m 1hub "I haven't played Chinese chess yet, but if I get the chance, I'll give it a try!"
+    m "Maybe in the future, when I'm good at it and get better at coding, I can put it in here and let us play!"
+    return "derandom"
+    
