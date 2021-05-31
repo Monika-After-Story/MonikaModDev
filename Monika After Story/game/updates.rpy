@@ -377,7 +377,18 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.1.3
 label v0_12_1_3(version="v0_12_1_3"):
     python:
-        pass
+        # Use more appropriate naming
+        persistent._mas_imported_saves = persistent.has_merged
+        # For some reason this var may still be False even after import
+        # One way to "fix" it is to check persistent.clear
+        # At least one item would be True if the player's seen a cg
+        if persistent.clear is not None and any(persistent.clear):
+            persistent._mas_imported_saves = True
+        safeDel("has_merged")
+
+        # Reverse the value of this var because its naming is bad
+        persistent.first_run = not persistent.first_run
+
     return
 
 # 0.12.1.2
