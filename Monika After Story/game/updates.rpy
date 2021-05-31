@@ -395,7 +395,8 @@ label v0_12_2(version="v0_12_2"):
         )
 
         # Use more appropriate naming
-        persistent._mas_imported_saves = persistent.has_merged
+        if persistent.has_merged is not None:
+            persistent._mas_imported_saves = persistent.has_merged
         # For some reason this var may still be False even after import
         # One way to "fix" it is to check persistent.clear
         # At least one item would be True if the player's seen a cg

@@ -616,7 +616,7 @@ init 5 python:
             eventlabel="mas_compliment_chess",
             prompt="You're awesome at chess!",
             unlocked=False,
-            conditional="persistent._mas_chess_stats.get('losses', 0)>5",
+            conditional="persistent._mas_chess_stats.get('losses', 0) > 5",
             action=EV_ACT_UNLOCK
         ),
         code="CMP"
