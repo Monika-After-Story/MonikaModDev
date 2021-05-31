@@ -82,7 +82,7 @@ image hm_frame_dark = "mod_assets/games/hangman/hm_frame_d.png"
 
 # TRANSFORMS
 transform hangman_board:
-    xanchor 0 yanchor 0 xpos 675 ypos 100 alpha 0.7
+    xanchor 0 yanchor 0 xpos 675 ypos 100 alpha 1.0
 
 transform hangman_missed_label:
     xanchor 0 yanchor 0 xpos 680 ypos 105
@@ -184,10 +184,10 @@ init -1 python in mas_hangman:
     LETTER_SPACE = 10.0
 
     # word properties
-    WORD_FONT = "gui/font/Halogen.ttf"
-    WORD_SIZE = 30
+    WORD_FONT = "mod_assets/font/m1_fixed.ttf"
+    WORD_SIZE = 36
     WORD_OUTLINE = []
-    WORD_COLOR = "#fff"
+    WORD_COLOR = "#202020"
     WORD_COLOR_GET = "#CC6699"
     WORD_COLOR_MISS = "#000"
 
@@ -697,8 +697,8 @@ label mas_hangman_game_loop:
         m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
 
-        if not persistent.ever_won['hangman']:
-            $ persistent.ever_won['hangman']=True
+        if not persistent._mas_ever_won['hangman']:
+            $ persistent._mas_ever_won['hangman']=True
         #TODO: grant a really tiny amount of affection?
 
     #Give up just ends

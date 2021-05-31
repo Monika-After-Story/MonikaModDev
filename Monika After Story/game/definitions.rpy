@@ -3920,6 +3920,7 @@ init 25 python:
 init -1 python in _mas_root:
     import store
     import datetime
+    import collections
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -3984,12 +3985,7 @@ init -1 python in _mas_root:
         renpy.game.persistent.farewell_database = dict()
         renpy.game.persistent.closed_self = False
         renpy.game.persistent.seen_monika_in_room = False
-        renpy.game.persistent.ever_won = {
-            'pong':False,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
+        renpy.game.persistent._mas_ever_won = collections.defaultdict(bool)
         renpy.game.persistent.sessions={
             'last_session_end':datetime.datetime.now(),
             'current_session_start':datetime.datetime.now(),
@@ -8039,7 +8035,7 @@ default persistent.special_poems = None
 default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
-default persistent.has_merged = False
+default persistent._mas_imported_saves = False
 default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
@@ -8122,7 +8118,10 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
-default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
+# NOTE: For convenience this will automatically add new keys as we add new games, the default value is False
+default persistent._mas_ever_won = collections.defaultdict(bool)
+# TODO: Delete this as depricated
+# default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
