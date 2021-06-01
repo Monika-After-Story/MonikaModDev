@@ -14498,7 +14498,7 @@ label monika_we:
     m 1esd "Both {i}Nineteen Eighty-Four{/i} and {i}Brave New World{/i} are the most known works of literature world-wide when it comes to dystopias."
     m 3eud "But now, I'd like to talk about a more obscure book that preceded both of them."
     m 3euc "It's the book that directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
-    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegutof of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
+    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegut of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
     m 7eua "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
     m 3eud "While it was written in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union."
     m 1euc "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
