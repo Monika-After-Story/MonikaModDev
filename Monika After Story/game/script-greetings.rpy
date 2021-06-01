@@ -3689,7 +3689,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
             # which is consistent with real human thinking habits.
             if renpy.random.randint(1,3) == 1:
                 m 1rua "I don't know if there are other people sitting opposite you...{w=0.2}"
-            else
+            else:
                 m 1lua "I don't know if there are other people sitting opposite you...{w=0.2}"
                 
             extend 3etblu "Perhaps you put your USB across the table?"
