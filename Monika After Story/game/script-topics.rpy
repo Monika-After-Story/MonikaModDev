@@ -17157,6 +17157,7 @@ label monika_tanabata:
 init 5 python:
     addEvent(
         Event(
+            persistent.event_database,
             eventlabel="monika_sophia",
             category=['technology'],
             prompt="Sophia",
