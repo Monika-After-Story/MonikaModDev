@@ -3647,6 +3647,8 @@ label greeting_returned_home_cleanup:
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     $ random_dialogue_id = renpy.random.randint(1,3)
+    $ nickname = mas_get_player_nickname()#Make sure the nickname in question won't change.
+
     if random_dialogue_id == 1:
         m 1hua "And we're home!"
         m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
@@ -3662,82 +3664,90 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
         m 5rud "Though, I can't really see anything...{w=0.2}{nw}"
         extend 5eublb "But we're actually physically together in {i}your reality{/i}, and that's great!"
     
-    m "What did we do on this trip, [mas_get_player_nickname()]?{nw}"
+    m "What did we do on this trip, [nickname]?{nw}"
     
-     #Since this menu is "not sclaed", we'll use a gen-scrollable instead
-        python:
-            final_item = ("It's a secret.", False, False, False, 20)
-            menu_items = [
-                ("I brought you to work.", ".to_work", False, False),
-                ("I brought you to my class.", ".to_class", False, False),
-                ("We went out to eat.", ".to_eat", False, False),
-                ("We just hung out somewhere.", ".to_hungout", False, False),
-                ("I brought you to some attractions.", ".to_attractions", False, False)
-            ]
+    #Since this menu is "not sclaed", we'll use a gen-scrollable instead
+    python:
+        final_item = ("It's a secret.", False, False, False, 20)
+        menu_items = [
+            ("I brought you to work.", ".to_work", False, False),
+            ("I brought you to my class.", ".to_class", False, False),
+            ("We went out to eat.", ".to_eat", False, False),
+            ("We just hung out somewhere.", ".to_hungout", False, False),
+            ("I brought you to some attractions.", ".to_attractions", False, False)
+        ]
 
-        show monika 2ekc at t21
-        $ renpy.say(m, "What did we do on this trip, [mas_get_player_nickname()]?{fast}", interact=False)
-        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    show monika at t21
+    $ renpy.say(m, "What did we do on this trip, [nickname]?{fast}", interact=False)
+    call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
-        $ label_suffix = _return
+    $ label_suffix = _return
 
-        show monika at t11
+    show monika at t11
         
-        #Answered "It's a secret."
-        if not label_suffix:
-            m 5eub "Well, that's okay!"
-            m 5efb "Although you can't cheat on your lovely girlfriend...{w=0.2}{nw}"
-            extend 5hublb "it's okay to keep a little mystery in the relationship~"
+    #Answered "It's a secret."
+    if not label_suffix:
+        m 5eub "Well, that's okay!"
+        m 5efb "Although you can't cheat on your lovely girlfriend...{w=0.2}{nw}"
+        extend 5hublb "it's okay to keep a little mystery in the relationship~"
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
+    else:
+        $ full_label = "greeting_returned_home_morethan5mins_normalplus_dlg{0}".format(label_suffix)
+        jump expression full_label
+            
+    label .to_work:
+        m 2wub "Oh, so I've been with you working?"
+        m 2etu "I hope you're not too distracted by me~"
+        m 1hua "Ahaha!"
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
+            
+    label .to_class:
+        m 2wub "Wow!{nw}"
+        extend 2esu " Then did you tell your classmates about me?"
+        m 2hub "Ahaha!"
+        m 1eka "I'm just kidding. In school, learning is more important."
+        m 1ttb "So I hope you're not thinking about me all the time..."
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
+            
+    label .to_eat:
+        m 1wub "Went out to eat?{w=0.3}{nw}"
+        extend 1sub " That's really romantic of you, [player]!"
+            
+        # Monika turns her eyes to one side when she thinks, 
+        # but not only to one side. 
+        # However, she does have a tendency to look at right. 
+        # She has a 2/3 chance to look at right, 1/3 chance to look at left,
+        # which is consistent with real human thinking habits.
+        if renpy.random.randint(1,3) == 1:
+            m 1rua "I don't know if there are other people sitting opposite you...{w=0.2}"
         else:
-            $ full_label = "greeting_back_from_school{0}".format(label_suffix)
-            jump expression full_label
-            
-         label .to_work:
-            m 2wub "Oh, so I've been with you working?"
-            m 2etu "I hope you're not too distracted by me~"
-            m 1hua "Ahaha!"
-            
-        label .to_class:
-            m 2wub "Wow!{nw}"
-            extend 2esu "then did you tell your classmates about me?"
-            m 2hub "Ahaha!"
-            m 1eka "I'm just kidding. In school, learning is more important."
-            m 1ttb "So I hope you're not thinking about me all the time..."
-            
-        label .to_eat:
-            m 1wub "Went out to eat?{w=0.3}{nw}"
-            extend 1sub "That's really romantic of you, [player]!"
-            
-            # Monika turns her eyes to one side when she thinks, 
-            # but not only to one side. 
-            # However, she does have a tendency to look at right. 
-            # She has a 2/3 chance to look at right, 1/3 chance to look at left,
-            # which is consistent with real human thinking habits.
-            if renpy.random.randint(1,3) == 1:
-                m 1rua "I don't know if there are other people sitting opposite you...{w=0.2}"
-            else:
-                m 1lua "I don't know if there are other people sitting opposite you...{w=0.2}"
+            m 1lua "I don't know if there are other people sitting opposite you...{w=0.2}"
                 
-            extend 3etblu "Perhaps you put your USB across the table?"
-            m 3hublb "Ahaha!"
-            if mas_isMoniAff(higher=true):
-                m 5eublb "Don't worry, [mas_get_player_nickname()]. When we do date, you won't have to put the USB across from us."
+        extend 3etblu "Perhaps you put your USB across the table?"
+        m 3hublb "Ahaha!"
+        if mas_isMoniAff(higher=True):
+            m 5eublb "Don't worry, [mas_get_player_nickname()]. When we do date, you won't have to put the USB across from us."
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
             
-        label .to_hungout:
-            m 1eub "We hung out somewhere together?"
-            if renpy.random.randint(1,10) == 1 and persistent._mas_pm_cares_about_dokis is False:
-                m 1tfu "{cps=*3.0}Oh, yeah, so you made us hung somewhere...{/cps}{nw}"
-                $ _history_list.pop()
-            m 1hublb "That's so romantic!"
-            m 5eublb "I can almost imagine what it will be like when we actually walk side by side on the road..."
-            m 5hubsu "Hmm~"
+    label .to_hungout:
+        m 1eub "We hung out somewhere together?"
+        if renpy.random.randint(1,10) == 1 and persistent._mas_pm_cares_about_dokis is False:
+            m 1tfu "{cps=*3.0}Oh, yeah, so you made us hung somewhere...{/cps}{nw}"
+            $ _history_list.pop()
+        m 1hublb "That's so romantic!"
+        m 5eublb "I can almost imagine what it will be like when we actually walk side by side on the road..."
+        m 5hubsu "Hmm~{w=0.3}{nw}"
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
             
-        label .to_attractions:
-            m 1subsu "Oh my gosh!{w=0.2}{nw}"
-            extend 1subsb " That sounds really romantic!"
-            m 5eubsb "But that's what couples are for, right?"
-            m 5hubsb "Ahaha!"
-    
+    label .to_attractions:
+        m 1subsu "Oh my gosh!{w=0.2}{nw}"
+        extend 1subsb " That sounds really romantic!"
+        m 5eubsb "But that's what couples are for, right?"
+        m 5hubsb "Ahaha!"
+        jump greeting_returned_home_morethan5mins_normalplus_dlg_end
+    return
+
+label greeting_returned_home_morethan5mins_normalplus_dlg_end:
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "We will do this again in future, okay?"
     return
