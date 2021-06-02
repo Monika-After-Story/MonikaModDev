@@ -3645,28 +3645,17 @@ label greeting_returned_home_cleanup:
         $ persistent._mas_d25_started_upset = True
     return
 
-label greeting_returned_home_morethan5mins_normalplus_dlg:
-    $ random_dialogue_id = renpy.random.randint(1,3)
-    $ nickname = mas_get_player_nickname()#Make sure the nickname in question won't change.
 
-    if random_dialogue_id == 1:
-        m 1hua "And we're home!"
-        m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
-        m 2eua "Well, it felt really great!"
-    elif random_dialogue_id == 2:
-        m 1hua "Thanks for taking me with you!"
-        m 2dua "It was a really good time...{nw}"
-        extend 2eub "Well, it's true that I can't really see something, but just knowing that I was right there with you..."
-        m 1hua "That's enough to make me happy!"
-    elif random_dialogue_id == 3:
-        m 1eub "We are home now!"
-        m 5eua "You are always so thoughtful, ehehe~"
-        m 5rud "Though, I can't really see anything...{w=0.2}{nw}"
-        extend 5eublb "But we're actually physically together in {i}your reality{/i}, and that's great!"
+label greeting_returned_home_morethan5mins_normalplus_dlg:
+    # Make sure the nickname in question won't change. See line 3667 and 3681.
+    $ nickname = mas_get_player_nickname()
+
+    # Get a random dialogue.
+    call expression "greeting_returned_home_morethan5mins_normalplus_dlg_intro_"+str(renpy.random.randint(1,3))
     
     m "What did we do on this trip, [nickname]?{nw}"
     
-    #Since this menu is "not sclaed", we'll use a gen-scrollable instead
+    # Since this menu is "not scale-abled", we'll use a gen-scrollable instead
     python:
         final_item = ("It's a secret.", False, False, False, 20)
         menu_items = [
@@ -3685,7 +3674,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
 
     show monika at t11
         
-    #Answered "It's a secret."
+    # Answered "It's a secret":
     if not label_suffix:
         m 5eub "Well, that's okay!"
         m 5efb "Although you can't cheat on your lovely girlfriend...{w=0.2}{nw}"
@@ -3694,7 +3683,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     else:
         $ full_label = "greeting_returned_home_morethan5mins_normalplus_dlg{0}".format(label_suffix)
         jump expression full_label
-            
+    # Didn't answer "It's a secret":       
     label .to_work:
         m 2wub "Oh, so I've been with you working?"
         m 2etu "I hope you're not too distracted by me~"
@@ -3745,6 +3734,27 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
         m 5eubsb "But that's what couples are for, right?"
         m 5hubsb "Ahaha!"
         jump greeting_returned_home_morethan5mins_normalplus_dlg_end
+    return
+
+label greeting_returned_home_morethan5mins_normalplus_dlg_intro_1:
+    m 1hua "And we're home!"
+    m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
+    m 2eua "Well, it felt really great!"
+    return
+
+label greeting_returned_home_morethan5mins_normalplus_dlg_intro_2:
+    m 1hua "Backed!"
+    m "Thanks for taking me with you!"
+    m 2dua "It was a really good time...{nw}"
+    extend 2eub "Well, it's true that I can't really see something, but just knowing that I was right there with you..."
+    m 1hua "That's enough to make me happy!"
+    return
+
+label greeting_returned_home_morethan5mins_normalplus_dlg_intro_3:
+    m 1eub "We are home now!"
+    m 5eua "You are always so thoughtful, ehehe~"
+    m 5rud "Though, I can't really see anything...{w=0.2}{nw}"
+    extend 5eublb "But we're actually physically together in {i}your reality{/i}, and that's great!"
     return
 
 label greeting_returned_home_morethan5mins_normalplus_dlg_end:
