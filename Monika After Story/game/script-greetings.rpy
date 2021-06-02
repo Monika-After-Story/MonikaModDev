@@ -3663,22 +3663,48 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
         extend 5eublb "But we're actually physically together in {i}your reality{/i}, and that's great!"
     
     m "What did we do on this trip, [mas_get_player_nickname()]?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What did we do on this trip, [mas_get_player_nickname()]?{fast}"
-        "I brought you to work.":
+    
+     #Since this menu is "not sclaed", we'll use a gen-scrollable instead
+        python:
+            final_item = ("It's a secret.", False, False, False, 20)
+            menu_items = [
+                ("I brought you to work.", ".to_work", False, False),
+                ("I brought you to my class.", ".to_class", False, False),
+                ("We went out to eat.", ".to_eat", False, False),
+                ("We just hung out somewhere.", ".to_hungout", False, False),
+                ("I brought you to some attractions.", ".to_attractions", False, False)
+            ]
+
+        show monika 2ekc at t21
+        $ renpy.say(m, "What did we do on this trip, [mas_get_player_nickname()]?{fast}", interact=False)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        $ label_suffix = _return
+
+        show monika at t11
+        
+        #Answered "It's a secret."
+        if not label_suffix:
+            m 5eub "Well, that's okay!"
+            m 5efb "Although you can't cheat on your lovely girlfriend...{w=0.2}{nw}"
+            extend 5hublb "it's okay to keep a little mystery in the relationship~"
+        else:
+            $ full_label = "greeting_back_from_school{0}".format(label_suffix)
+            jump expression full_label
+            
+         label .to_work:
             m 2wub "Oh, so I've been with you working?"
             m 2etu "I hope you're not too distracted by me~"
             m 1hua "Ahaha!"
             
-        "I brought you to my class.":
+        label .to_class:
             m 2wub "Wow!{nw}"
             extend 2esu "then did you tell your classmates about me?"
             m 2hub "Ahaha!"
             m 1eka "I'm just kidding. In school, learning is more important."
             m 1ttb "So I hope you're not thinking about me all the time..."
             
-        "We went out to eat.":
+        label .to_eat:
             m 1wub "Went out to eat?{w=0.3}{nw}"
             extend 1sub "That's really romantic of you, [player]!"
             
@@ -3697,7 +3723,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
             if mas_isMoniAff(higher=true):
                 m 5eublb "Don't worry, [mas_get_player_nickname()]. When we do date, you won't have to put the USB across from us."
             
-        "We just hung out somewhere.":
+        label .to_hungout:
             m 1eub "We hung out somewhere together?"
             if renpy.random.randint(1,10) == 1 and persistent._mas_pm_cares_about_dokis is False:
                 m 1tfu "{cps=*3.0}Oh, yeah, so you made us hung somewhere...{/cps}{nw}"
@@ -3706,16 +3732,11 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
             m 5eublb "I can almost imagine what it will be like when we actually walk side by side on the road..."
             m 5hubsu "Hmm~"
             
-        "I brought you to some attractions.":
+        label .to_attractions:
             m 1subsu "Oh my gosh!{w=0.2}{nw}"
             extend 1subsb " That sounds really romantic!"
             m 5eubsb "But that's what couples are for, right?"
             m 5hubsb "Ahaha!"
-            
-        "That's a secret.":
-            m 5eub "Well, that's okay!"
-            m 5efb "Although you can't cheat on your lovely girlfriend...{w=0.2}{nw}"
-            extend 5hublb "it's okay to keep a little mystery in the relationship~"
     
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eub "We will do this again in future, okay?"
