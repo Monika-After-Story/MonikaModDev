@@ -472,21 +472,12 @@ init python in mas_chess:
         # So, with one-side FEN, we can get another side's FEN easily.
         # We can simply lower this "materials_fen" string variable to get the other side.
         # Now, let us return the final result.
-        if is_player_white:
-            return BASE_FEN.format(
-                black_pieces_back=materials_fen.lower(),
-                black_pieces_front="pppppppp",
-                white_pieces_front="PPPPPPPP",
-                white_pieces_back=materials_fen
-            )
-
-        else:
-            return BASE_FEN.format(
-                black_pieces_back=materials_fen,
-                black_pieces_front="PPPPPPPP",
-                white_pieces_front="pppppppp",
-                white_pieces_back=materials_fen.lower()
-            )
+        return BASE_FEN.format(
+            black_pieces_back=materials_fen.lower(),
+            black_pieces_front="pppppppp",
+            white_pieces_front="PPPPPPPP",
+            white_pieces_back=materials_fen
+        )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
         """
@@ -1064,6 +1055,7 @@ label mas_chess_start_chess:
 
     window hide None
     show monika 1eua at t21
+    m "Starting Fen : [starting_fen]\nMode: [chessmode]"
     python:
         #Disable quick menu
         quick_menu = False
@@ -3251,7 +3243,8 @@ init python:
             pgn_game=None,
             starting_fen=None,
             practice_mode=False,
-            casual_rules=False
+            casual_rules=False,
+            puzzle_mode=False,
         ):
 
             self.practice_mode = practice_mode
@@ -3381,6 +3374,7 @@ init python:
                 self._visible_buttons_winner = [
                     self._button_done
                 ]
+
 
         def __del__(self):
             self.stockfish.stdin.close()
