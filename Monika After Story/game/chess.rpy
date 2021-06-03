@@ -1055,7 +1055,6 @@ label mas_chess_start_chess:
 
     window hide None
     show monika 1eua at t21
-    m "Starting Fen : [starting_fen]\nMode: [chessmode]"
     python:
         #Disable quick menu
         quick_menu = False
