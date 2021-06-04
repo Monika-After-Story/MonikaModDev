@@ -42,7 +42,6 @@ init python in mas_chess:
     import chess.pgn
     import store.mas_ui as mas_ui
     import store
-    import sys
     import random
 
     # relative chess directory
