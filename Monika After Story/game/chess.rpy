@@ -657,6 +657,7 @@ label game_chess:
         failed_to_load_save = True
 
         #Prelim definitions of the rules for the menu later
+        chessmode = "normal_chess"
         NormalChessSelecting = True
         Chess960Selecting = False
         BadChessSelecting = False
@@ -3242,7 +3243,8 @@ init python:
             pgn_game=None,
             starting_fen=None,
             practice_mode=False,
-            casual_rules=False
+            casual_rules=False,
+            puzzle_mode=False,
         ):
 
             self.practice_mode = practice_mode
