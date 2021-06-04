@@ -3243,8 +3243,7 @@ init python:
             pgn_game=None,
             starting_fen=None,
             practice_mode=False,
-            casual_rules=False,
-            puzzle_mode=False,
+            casual_rules=False
         ):
 
             self.practice_mode = practice_mode
