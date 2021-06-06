@@ -847,7 +847,7 @@ label monika_idle_toliet:
         m 1eua "I'll be waiting."
     elif mas_isMoniDis(higher=True):
         m 1eua "Okay."
-        m 1eub "Don't worry, I'll be waiting here quitely."
+        m 1eub "Don't worry, I'll be waiting here quietly."
         if renpy.random.randint(1,10) == 1:
             m 1rttpa "...As I always did.{nw}"
             $ _history_list.pop()
