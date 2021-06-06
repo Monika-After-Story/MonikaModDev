@@ -374,7 +374,7 @@ init python in mas_chess:
 
         return "".join(front_row), "".join(back_row)
         
-    def generate_Get960Fen(is_player_white=True):
+    def generate_960_fen(is_player_white=True):
         """
         /// @brief Return a fen of chess960 game.
         /// @function chess960(is_player_white);
@@ -571,7 +571,7 @@ init python in mas_chess:
 
         return white_is_good and black_is_good
 
-    def generate_GetBadChessFen(is_player_white=True):
+    def generate_random_fen(is_player_white=True):
         """
         Generates a random fen
 
@@ -657,9 +657,6 @@ label game_chess:
 
         #Prelim definitions of the rules for the menu later
         chessmode = "normal_chess"
-        NormalChessSelecting = True
-        Chess960Selecting = False
-        BadChessSelecting = False
         casual_rules = False
         practice_mode = False
         is_player_white = 0
@@ -905,9 +902,9 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", "normal_chess", False, NormalChessSelecting),
-                    ("Randomized Chess", "reallybadchess", False, BadChessSelecting),
-                    ("Chess 960", "chess960", False, Chess960Selecting)
+                    ("Normal Chess", "normal_chess", False, (chessmode is "normal_chess")),
+                    ("Randomized Chess", "reallybadchess", False, (chessmode is "reallybadchess")),
+                    ("Chess 960", "chess960", False, (chessmode is "chess960"))
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -992,18 +989,7 @@ label mas_chess_remenu:
 
         #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            python:
-                NormalChessSelecting = False
-                BadChessSelecting = False
-                Chess960Selecting = False
-                if _return == "normal_chess":
-                    NormalChessSelecting = True
-                elif _return == "chess960":
-                    Chess960Selecting = True
-                elif _return == "reallybadchess":
-                    BadChessSelecting = True
-
-                chessmode = _return
+            $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
@@ -1045,9 +1031,9 @@ label mas_chess_start_chess:
         if chessmode == "normal_chess":
             starting_fen = None
         elif chessmode == "chess960":
-            starting_fen = mas_chess.generate_Get960Fen(is_player_white)
+            starting_fen = mas_chess.generate_960_fen(is_player_white)
         else:
-            starting_fen = mas_chess.generate_GetBadChessFen(is_player_white)
+            starting_fen = mas_chess.generate_random_fen(is_player_white)
 
     #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
