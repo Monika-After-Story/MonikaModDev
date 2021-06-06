@@ -303,12 +303,12 @@ init -20 python in mas_weather:
             #Change weather
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
-                #Let's see if we need to scene change
+                # determine if spaceroom idle should dissolve
                 if store.mas_current_background.isChangingRoom(
                         store.mas_current_weather,
                         new_weather
                 ):
-                    store.mas_idle_mailbox.send_scene_change()
+                    store.mas_idle_mailbox.send_dissolve_all()
 
                 #Now we change weather
                 store.mas_changeWeather(new_weather)
@@ -319,12 +319,12 @@ init -20 python in mas_weather:
                 return True
 
             elif store.mas_current_weather != store.mas_weather_def:
-                #Let's see if we need to scene change
+                # determine if spaceroom idle should dissolve
                 if store.mas_current_background.isChangingRoom(
                         store.mas_current_weather,
                         store.mas_weather_def
                 ):
-                    store.mas_idle_mailbox.send_scene_change()
+                    store.mas_idle_mailbox.send_dissolve_all()
 
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
@@ -378,7 +378,6 @@ init -20 python in mas_weather:
 
         # dont need to change anything if we are switching from thunder
         if _old != store.mas_weather_thunder:
-
             # set global flag
             store.mas_is_raining = True
 
@@ -391,6 +390,8 @@ init -20 python in mas_weather:
                 if_changed=True
             )
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_rain_exit(_new):
         """
@@ -405,6 +406,8 @@ init -20 python in mas_weather:
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
 
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
     def _weather_snow_entry(_old):
         """
@@ -461,13 +464,15 @@ init -20 python in mas_weather:
         """
         Overcast entry programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = False
 
 
 init -10 python:
@@ -1122,7 +1127,7 @@ label mas_change_weather(new_weather, by_user=None, set_persistent=False):
         #Call entry programming point
         mas_current_weather.entry(old_weather)
 
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 1dsc_static")
+    call spaceroom(dissolve_all=True, force_exp="monika 1dsc_static")
     return
 
 init 5 python:

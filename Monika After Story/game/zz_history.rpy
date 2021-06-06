@@ -977,6 +977,8 @@ init -810 python:
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
             "_mas_pm_is_trans": "pm.lifestyle.is_trans",
+            "_mas_pm_social_personality": "pm.lifestyle.social_personality",
+            "_mas_pm_swear_frequency": "pm.lifestyle.swear_frequency",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -1000,6 +1002,9 @@ init -810 python:
             # lifestyle / dating
             "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
             "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
+            # lifestyle / work
+            "_mas_pm_last_promoted_d": "pm.lifestyle.last_promoted",
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
@@ -1100,6 +1105,7 @@ init -810 python:
             "_mas_pm_likes_travelling": "pm.likes.travelling",
             "_mas_pm_likes_poetry" : "pm.likes.poetry",
             "_mas_pm_likes_board_games": "pm.likes.board_games",
+            "_mas_pm_likes_nature": "pm.likes.nature",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1150,6 +1156,7 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
+            "_mas_pm_has_heterochromia": "pm.looks.eyes.heterochromia",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",
