@@ -100,6 +100,7 @@ label monika_brb_idle:
                 (_("I'm going to get something."), True, False, False),
                 (_("I'm going to do something."), True, False, False),
                 (_("I'm going to make something."), True, False, False),
+                (_("I'm going to the toilet."), True, False, False),
                 (_("I have to check something."), True, False, False),
                 (_("Someone's at the door."), True, False, False),
                 (_("Nope."), None, False, False),
@@ -824,51 +825,6 @@ label monika_idle_reading_callback:
         call mas_brb_generic_low_aff_callback
 
     return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_idle_toilet",
-            prompt="I'm going to the toilet",
-            category=['be right back'],
-            pool=True,
-            unlocked=True
-        ),
-        markSeen=True
-    )
-
-label monika_idle_toilet:
-    if mas_isMoniNormal(higher=True):
-        m 1eud "Oh, you are going to the toilet?"
-        m 1hua "Okay, see you later~"
-    elif mas_isMoniUpset(higher=True):
-        m 1eub "...Oh, okay!"
-        m 1eua "I'll be waiting."
-    elif mas_isMoniDis(higher=True):
-        m 1eua "Okay."
-        m 1eub "Don't worry, I'll be waiting here quietly."
-        if renpy.random.randint(1,10) == 1:
-            m 1rttpa "...As I always did.{w=0.2}{nw}"
-            $ _history_list.pop()
-    else:
-        m 6ckc "..."
-        
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_toilet_callback")
-    $ persistent._mas_idle_data["monika_idle_toilet"] = True
-    return "idle"
-
-label monika_idle_toilet_callback:
-    if mas_isMoniUpset(higher=True):
-        m 1hua "Welcome back!"
-        m "What else should we do?"
-    elif mas_isMoniDis(higher=True):
-        m 1eua "Welcome back. Anything else we should do?"
-    else:
-        m 6ckc "..."
-    return
-        
-
 
 #Rai's og game idle
 #label monika_idle_game:
