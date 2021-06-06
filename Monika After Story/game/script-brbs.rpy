@@ -825,6 +825,60 @@ label monika_idle_reading_callback:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_toliet",
+            prompt="I'm going to the toliet",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_toliet:
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Oh, toliet?"
+        m 1hua "Okay, see you later~"
+    elif mas_isMoniUpset(higher=True):
+        m 1eub "...Oh, okay!"
+        m 1eua "I'll be waiting."
+    elif mas_isMoniDis(higher=True):
+        m 1eua "Okay."
+        m 1eub "Don't worry, I'll be waiting here quitely."
+        if renpy.random.randint(1,10) == 1:
+            m 1rttpa "...As I always did.{nw}"
+            $ _history_list.pop()
+    else:
+        m 6ckc "..."
+        
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_toliet_callback")
+    $ persistent._mas_idle_data["monika_idle_toliet"] = True
+    return "idle"
+
+label monika_idle_toliet_callback:
+    if mas_isMoniUpset(higher=True):
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes = 20), "monika_idle_toliet"):
+            m 1hua "Welcome back!"
+            m 1eud "You know, it's been a while since you left..."
+            m 1rusdlb "Even though you said you were only going to the toliet, I was almost start to worry that you fell on the floor..."
+            m "Or maybe you just have...{w=0.2}{nw}"
+            extend 1dtc " What's the word...{w=0.2}{nw}"
+            extend 1esd " Oh, {i}Constipation{/i}."
+            m 3esd "If that's the case, then you really should take better care of your health!"
+            m 1eub "Anyways, what else should we do, [mas_get_player_nickname()]?"
+        else:
+            m 1hua "Welcome back!"
+            m "What else should we do?"
+    elif mas_isMoniDis(higher=True):
+        m 1eua "Welcome back. Anything else we should do?"
+    else:
+        m 6ckc "..."
+    return
+        
+
 
 #Rai's og game idle
 #label monika_idle_game:
