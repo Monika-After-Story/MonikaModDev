@@ -3654,6 +3654,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     call expression "greeting_returned_home_morethan5mins_normalplus_dlg_intro_"+str(renpy.random.randint(1,3))
     
     m "What did we do on this trip, [nickname]?{nw}"
+    $ _history_list.pop()
     
     # Since this menu is "not scale-abled", we'll use a gen-scrollable instead
     python:
