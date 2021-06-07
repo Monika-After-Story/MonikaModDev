@@ -4437,7 +4437,7 @@ label monikaroom_greeting_ear_recursionerror:
     )
 
 label greeting_lovepoem1:
-    m 5dkc {i}"Everytime you go, my world darkens,\nGardens of lifeless depression."{/i}
+    m 5dkc "{i}Everytime you go, my world darkens,\nGardens of lifeless depression.{/i}"
     m 5ekbla "{i}When you are back, it feels like heaven,\nSecond to none, impossible to bargain.{/i}"
     m 1skbfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
     m 1hubfa "{i}Even if it's every single day,\nWithout a doubt, you are the nearest.{/i}"
