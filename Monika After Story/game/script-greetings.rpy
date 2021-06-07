@@ -4425,7 +4425,7 @@ label monikaroom_greeting_ear_recursionerror:
 
     jump monikaroom_greeting_choice
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
