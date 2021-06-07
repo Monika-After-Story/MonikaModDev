@@ -4441,7 +4441,7 @@ label greeting_lovepoem1:
     m 5ekbla {i}"When you are back, it feels like heaven,\nSecond to none, impossible to bargain."{/i}
     m 1skbfa {i}"I will give everything to feel this way,\nAwaiting the one I hold dearest."{/i}
     m 1hubfa {i}"Even if it's every single day,\nWithout a doubt, you are the nearest."{/i}
-    m 2tubsb {i}"Nearest to my heart..."{/i}
+    m 2tubsb "{i}Nearest to my heart...{/i}"
     m 5eublb "I came up with this one while you were gone."
     m 1eka "That's right, you are like the sun of my world!"
     m 2hublb "I hope you like it!"
