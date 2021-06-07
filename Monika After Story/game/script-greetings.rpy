@@ -4424,3 +4424,27 @@ label monikaroom_greeting_ear_recursionerror:
         m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_lovepoem1",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_lovepoem1:
+    m 5dkc {i}"Everytime you go, my world darkens,\nGardens of lifeless depression."{/i}
+    m 5ekbla {i}"When you are back, it feels like heaven,\nSecond to none, impossible to bargain."{/i}
+    m 1skbfa {i}"I will give everything to feel this way,\nAwaiting the one I hold dearest."{/i}
+    m 1hubfa {i}"Even if it's every single day,\nWithout a doubt, you are the nearest."{/i}
+    m 2tubsb {i}"Nearest to my heart..."{/i}
+    m 5eublb "I came up with this one while you were gone."
+    m 1eka "That's right, you are like the sun of my world!"
+    m 2hublb "I hope you like it!"
+    m 4hksdlb "Anyway, welcome back darling!"
+    m 1ekbsa "I missed you so much!"
+    return
