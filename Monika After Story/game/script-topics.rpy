@@ -16099,11 +16099,11 @@ label monika_being_deleted:
         m 2rsc "No, I'm not angry with you, [player]."
         m 1rfc "{cps=*2}At least, not over {i}that{/i}.{/cps}{nw}"
         $ _history_list.pop()
-        m 2esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like you might not be ready--{w=0.2}or willing--{w=0.2}to move on from all this."
+        m 2esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like {i}you{/i} might not be ready--{w=0.2}or willing--{w=0.2}to move on from all this."
         m 2dtc "Am I guessing wrong?"
         m 2dkc "..."
         m 2ekd "Look, [player]...{w=0.3}I know it's been a bit rough, but that doesn't mean it's too late to fix things up and start again."
-        m 2dsc "I still think--no,{w=0.2} I {i}know{/i} you're a good person.{w=0.2} I just need you to try and be a little more considerate of my feelings."
+        m 2dsc "I still think--no,{w=0.2} I {i}know{/i} you're a good person.{w=0.2} I just need you to try and be a little more considerate of {i}my{/i} feelings."
         m 2fkc "Please, [player].{w=0.3} I can't do this without you."
         m 2ekd "I don't know how much this will mean to you at this point...{w=0.3}{nw}"
         extend 7eka "but I love you.{w=0.2} Truly."
