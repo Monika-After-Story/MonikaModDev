@@ -1,0 +1,939 @@
+{
+    "name": "Better Off Alone",
+    "_comment": "Created by ThePotatoGuy",
+    "verse_list": [0, 4, 10, 14, 18, 24, 26, 29, 31, 35],
+    "end_wait": 3,
+    "pnm_list": [
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH"
+            ],
+            "express": "1eta",
+            "postexpress": "1eta",
+            "posttext": true,
+            "verse": 0
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH"
+            ],
+            "ev_timeout": 4.0,
+            "express": "1eta",
+            "postexpress": "1eta",
+            "posttext": true,
+            "verse": 0
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH"
+            ],
+            "ev_timeout": 4.0,
+            "express": "6eta",
+            "postexpress": "6eta",
+            "posttext": true,
+            "verse": 0
+        },
+        {
+            "text": "..!",
+            "style": "monika_credits_text",
+            "notes": [
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "ev_timeout": 4.0,
+            "express": "6eta",
+            "postexpress": "6eta",
+            "posttext": true,
+            "verse": 0
+        },
+        {
+            "text": ".",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6esa",
+            "postexpress": "6esa",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "..",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6eua",
+            "postexpress": "6eua",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6wua",
+            "postexpress": "6wua",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "....",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6sua",
+            "postexpress": "6sua",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "!",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6hsa",
+            "postexpress": "6hsa",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "!!",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6hsa",
+            "postexpress": "6hsa",
+            "posttext": true,
+            "verse": 4
+        },
+        {
+            "text": "Do you think you're better off alone?~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "G5SH",
+                "G5SH",
+                "F5SH",
+                "F5SH",
+                "F5SH",
+                "D5SH"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6esb",
+            "postexpress": "6esa",
+            "verse": 10
+        },
+        {
+            "text": "Do you think you're better off alone...~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "E5",
+                "E5",
+                "D5SH",
+                "D5SH",
+                "D5SH",
+                "B4"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6rkd",
+            "postexpress": "6rku",
+            "ev_timeout": 7.0,
+            "verse": 10
+        },
+        {
+            "text": "Do you think you're better off alone?~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "G5SH",
+                "G5SH",
+                "F5SH",
+                "F5SH",
+                "F5SH",
+                "D5SH"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6eub",
+            "postexpress": "6eka",
+            "verse": 10,
+            "ev_timeout": 7.0
+        },
+        {
+            "text": "Do you think you're better off alone...~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "E5",
+                "E5",
+                "D5SH",
+                "D5SH",
+                "D5SH",
+                "B4"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6lkd",
+            "postexpress": "6fka",
+            "ev_timeout": 7.0,
+            "verse": 10
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH",
+                "A4SH",
+                "G4SH",
+                "A4SH",
+                "G4SH",
+                "A4SH",
+                "G4SH",
+                "A4SH",
+                "G4SH"
+            ],
+            "express": "6hsa",
+            "postexpress": "6hsa",
+            "posttext": true,
+            "ev_timeout": 7.0,
+            "verse": 14
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "G4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH",
+                "A4SH",
+                "F4SH"
+            ],
+            "express": "5hsa",
+            "postexpress": "5hsa",
+            "posttext": true,
+            "verse": 14
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH",
+                "B4",
+                "G4SH"
+            ],
+            "express": "5nsa",
+            "postexpress": "5nsa",
+            "posttext": true,
+            "verse": 14
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "D5SH",
+                "G4SH",
+                "D5SH",
+                "G4SH",
+                "F5SH",
+                "G4SH",
+                "F5SH",
+                "G4SH"
+            ],
+            "express": "5hsu",
+            "postexpress": "5hsu",
+            "posttext": true,
+            "verse": 14
+        },
+        {
+            "text": "Talk to me...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "5fub",
+            "postexpress": "5fua",
+            "verse": 18
+        },
+        {
+            "text": "ooh~",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5SH",
+                "F5SH",
+                "E5",
+                "D5SH"
+            ],
+            "express": "5fub",
+            "postexpress": "5fub",
+            "ev_timeout": 4.0,
+            "posttext": true,
+            "verse": 18
+        },
+        {
+            "text": "Talk to me.",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "5fub",
+            "postexpress": "5fuu",
+            "ev_timeout": 2.0,
+            "verse": 18
+        },
+        {
+            "text": "Talk to me...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "5fub",
+            "postexpress": "5fuu",
+            "ev_timeout": 5.0,
+            "verse": 18
+        },
+        {
+            "text": "ooh~",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5SH",
+                "F5SH",
+                "E5",
+                "D5SH"
+            ],
+            "express": "5fub",
+            "postexpress": "5fub",
+            "ev_timeout": 4.0,
+            "posttext": true,
+            "verse": 18
+        },
+        {
+            "text": "Talk to me.",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "5fub",
+            "postexpress": "5fuu",
+            "ev_timeout": 2.0,
+            "verse": 18
+        },
+        {
+            "text": "Do you think you're better off alone?~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "G5SH",
+                "G5SH",
+                "F5SH",
+                "F5SH",
+                "F5SH",
+                "D5SH"
+            ],
+            "express": "5ttb",
+            "postexpress": "5ttu",
+            "ev_timeout": 7.0,
+            "verse": 24
+        },
+        {
+            "text": "Do you think you're better off alone...~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "E5",
+                "E5",
+                "D5SH",
+                "D5SH",
+                "D5SH",
+                "B4"
+            ],
+            "express": "5tkb",
+            "postexpress": "5tku",
+            "ev_timeout": 7.0,
+            "verse": 24
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "5mka",
+            "postexpress": "5mka",
+            "posttext": true,
+            "ev_timeout": 7.0,
+            "verse": 26
+        },
+        {
+            "text": "...",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4"
+            ],
+            "express": "5fka",
+            "postexpress": "5fka",
+            "posttext": true,
+            "verse": 26
+        },
+        {
+            "text": "<3",
+            "style": "monika_credits_text",
+            "notes": [
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "5kuu",
+            "postexpress": "5kuu",
+            "ev_timeout": 2.0,
+            "posttext": true,
+            "verse": 26
+        },
+        {
+            "text": "!",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6hsa",
+            "postexpress": "6hsa",
+            "posttext": true,
+            "verse": 29
+        },
+        {
+            "text": "!!",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "F5SH",
+                "F5SH",
+                "D5SH",
+                "B4",
+                "B4",
+                "G4SH",
+                "B4",
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6hua",
+            "postexpress": "6hua",
+            "posttext": true,
+            "verse": 29
+        },
+        {
+            "text": "Do you think you're better off alone?~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "G5SH",
+                "G5SH",
+                "F5SH",
+                "F5SH",
+                "F5SH",
+                "D5SH"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6hkb",
+            "postexpress": "6hka",
+            "verse": 31
+        },
+        {
+            "text": "Do you think you're better off alone...~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "E5",
+                "E5",
+                "D5SH",
+                "D5SH",
+                "D5SH",
+                "B4"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6hkd",
+            "postexpress": "6hku",
+            "ev_timeout": 7.0,
+            "verse": 31
+        },
+        {
+            "text": "Do you think you're better off alone?~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "G5SH",
+                "G5SH",
+                "F5SH",
+                "F5SH",
+                "F5SH",
+                "D5SH"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH",
+                "B4"
+            ],
+            "express": "6ekb",
+            "postexpress": "6eka",
+            "ev_timeout": 7.0,
+            "verse": 31
+        },
+        {
+            "text": "Do you think you're better off alone...~",
+            "style": "monika_credits_text",
+            "notes": [
+                "B4",
+                "B4",
+                "B4",
+                "B4",
+                "E5",
+                "E5",
+                "D5SH",
+                "D5SH",
+                "D5SH",
+                "B4"
+            ],
+            "postnotes": [
+                "B4",
+                "A4SH",
+                "F4SH",
+                "E5",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6rkd",
+            "postexpress": "6eku",
+            "ev_timeout": 7.0,
+            "verse": 31
+        },
+        {
+            "text": "Talk to me...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "6fub",
+            "postexpress": "6fsa",
+            "ev_timeout": 7.0,
+            "verse": 35
+        },
+        {
+            "text": "ooh~",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5SH",
+                "F5SH",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6fsb",
+            "postexpress": "6fsb",
+            "ev_timeout": 4.0,
+            "posttext": true,
+            "verse": 35
+        },
+        {
+            "text": "Talk to me.",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "6fub",
+            "postexpress": "6fsa",
+            "ev_timeout": 2.0,
+            "verse": 35
+        },
+        {
+            "text": "Talk to me...",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "6sub",
+            "postexpress": "6ssa",
+            "ev_timeout": 5.0,
+            "posttext": true,
+            "verse": 35
+        },
+        {
+            "text": "ooh~",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5SH",
+                "F5SH",
+                "E5",
+                "D5SH"
+            ],
+            "express": "6ssb",
+            "postexpress": "6ssb",
+            "ev_timeout": 4.0,
+            "posttext": true,
+            "verse": 35
+        },
+        {
+            "text": "Talk to me.",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "6sub",
+            "postexpress": "6ssa",
+            "ev_timeout": 2.0,
+            "verse": 35
+        },
+        {
+            "text": "Talk to me!",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5SH",
+                "B4",
+                "B4"
+            ],
+            "express": "6hub",
+            "postexpress": "6hua",
+            "ev_timeout": 5.0,
+            "posttext": true,
+            "vis_timeout": 3.0,
+            "verse": 35
+        }
+    ]
+}
