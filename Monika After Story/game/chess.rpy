@@ -36,6 +36,10 @@ define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
 define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
 
+define mas_chess.CHESS_MODE_NORMAL = "normal_chess"
+define mas_chess.CHESS_MODE_BADCHESS = "chess960"
+define mas_chess.CHESS_MODE_960 = "badchess"
+
 # mass chess store
 init python in mas_chess:
     import os
@@ -374,108 +378,74 @@ init python in mas_chess:
 
         return "".join(front_row), "".join(back_row)
         
-    def generate_960_fen(is_player_white=True):
+    def generate_960_fen():
         """
-        /// @brief Return a fen of chess960 game.
-        /// @function chess960(is_player_white);
-        /// @param is_player_white Where the player plays white or not.
+        This function returns a random chess960 opening fen.
+
+        Chess960 rules are basically:
+        1. One rook must stay on the left side of king, and another one stay on the right side.
+           Due to this, the king can never be placed on a-file or h-file.
+        2. Bishops must stay on different color square.
+        3. Pawns must stay like the normal chess game.
+        4. The position of player A's pieces must be the 'reversed version' of player B's.
+        See chess960 wiki to get more exact information.
+
+        OUT:
+            A random chess960 opening fen.
         """
-        # It's true that these following codes can do better at performance.
-        # But I want high-readable-code.
-        # Well, I can't deny that it's possible there could be someway readable but effcient.
-        # But I just don't know how to.
 
-        # The initial range is an array with 8 elements, it's not hard to understand.
-        # Notice that we are not using abcdefgh, but using numbers.
-        # 1 stands for a-file, 2 stands for b-file, 3 stands for c-file...
-        AvailableRange = [1,2,3,4,5,6,7,8]
+        # Do some variable init works.
+        materials_fen_list = [0,0,0,0,0,0,0,0]
+        materials_fen_string = ""
+        available_range = [0,1,2,3,4,5,6,7]
 
-        # In chess960, it's impossbile to have a king in file-a or file-h.
-        # Which is saying, the king is impossbile to be on the side-line.
-        # So, we have this:
-        KingPosition = random.randint(2,7)
-        AvailableRange.remove(KingPosition)
+        def assign(piece_name, index):
+            """
+            This function accepts two arguments: piece_name and index, and assign a piece into materials_fen_list, remove that position from available_range.
+            IN:
+                piece_name - The symbol of the piece you want to assign. 
+                             N stands for Knight. P stands for Pawn. K stands for King. Q stands for Queen. R stands for rooks. B stands for Bishops.
 
-        # And then, for rooks, the rule is:
-        # One rook must stay on the left side of king,
-        # and the other one must stay on right side of king.
-        # So, firstly, let us know which squares are available for these two rooks:
-        Rook1Position_Available = []
-        Rook2Position_Available = []
-        for i in range(1,KingPosition,1):
-            Rook1Position_Available.append(i)
-        for i in range(KingPosition+1,9,1):
-            Rook2Position_Available.append(i)
-        
-        # Now we know those squares can be placed a rook, then, let us random a sqaure in these available positions:
-        Rook1Position = random.choice(Rook1Position_Available)
-        Rook2Position = random.choice(Rook2Position_Available)
-        AvailableRange.remove(Rook1Position)
-        AvailableRange.remove(Rook2Position)
+                index - The index of this piece's position.  
+            """
+            materials_fen_list[index] = piece_name
+            available_range.remove(index)
 
-        # Now let us do the bishops position question.
-        # In chess960, though bishops can be the same side of king, but they must stay on different color square.
-        # So, fristly, let us set one bishop's position.
-        # The array "AvailableRange" is the range of this bishop. Let us random:
-        Bishop1Position = random.choice(AvailableRange)
-        AvailableRange.remove(Bishop1Position)
+        # Firstly get the position of two bishops.
+        first_bishop_position = random.randint(1,4) * 2
+        second_bishop_position = random.randint(1,4) * 2 - 1# "-1" to make sure the color is different.
 
-        # Okay, so, which is the color of the bishop we just got?
-        # Considering that singular numbers are dark and even numbers are light,
-        # we can use this principle to determine the color of the image.
-        Bishop1_IsLightSquare = bool((Bishop1Position % 2) == 0)
+        # Assign bishop positions. "-1" to make sure no out of index.
+        assign('B', first_bishop_position-1)
+        assign('B', second_bishop_position-1)
 
-        # Now let's take the color into consideration, get the available range of bishop2.
-        Bishop2Position_Available = AvailableRange[:]
-        for i in range(1,9,1):
-            if Bishop1_IsLightSquare == True:
-                if i % 2 == 0 and i in Bishop2Position_Available:
-                    Bishop2Position_Available.remove(i)
-            else:
-                if i % 2 != 0 and i in Bishop2Position_Available:
-                    Bishop2Position_Available.remove(i)
-        
-        # The final available range of bishop2 is set now!
-        # Let us random one in this range:
-        Bishop2Position = random.choice(Bishop2Position_Available)
-        AvailableRange.remove(Bishop2Position)
+        # Secondly assign the queen.
+        assign('Q', available_range[random.randint(1,5)])
 
-        # Great, now we only left the queen, two knights.
-        # They have no special rules, simply random is enough:
-        QueenPosition = random.choice(AvailableRange)
-        AvailableRange.remove(QueenPosition)
+        # Thirdly get the current available position for knights.
+        # Make sure that after the knights were placed, the left available range is not going to against the rule 1 of chess960.
+        available_positions_for_knights = ([ [0, 1], [0, 2], [0, 3], [0, 4], [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]] [random.randint(0,9)])
 
-        Knight1Position = random.choice(AvailableRange)
-        AvailableRange.remove(Knight1Position)
+        # Assign Knights.
+        assign('N', available_range[available_positions_for_knights[1]])
+        assign('N', available_range[available_positions_for_knights[0]])
 
-        Knight2Position = AvailableRange[0]# There is only one element left now. So simply [0] is enough.
+        # Only 3 room now, that's just perfect for 2 rooks and 1 king.
+        # Assign with this order: Rook, King, Rook to obey rule 1 of chess960.
+        assign('R', available_range[0])
+        assign('K', available_range[0])
+        assign('R', available_range[0])
 
-        # Every pieces are set.
-        # But not in the FEN way. Let us covert our way into FEN way.
-        # (Oh yeah, this part is hard-coded.)
-        # (But come on, we made so many hard-coded creations already.)
-        materials_fen = ""
-        exec("character"+str(KingPosition)+"=\"K\"")
-        exec("character"+str(Rook1Position)+"=\"R\"")
-        exec("character"+str(Rook2Position)+"=\"R\"")
-        exec("character"+str(Knight1Position)+"=\"N\"")
-        exec("character"+str(Knight2Position)+"=\"N\"")
-        exec("character"+str(QueenPosition)+"=\"Q\"")
-        exec("character"+str(Bishop1Position)+"=\"B\"")
-        exec("character"+str(Bishop2Position)+"=\"B\"")
-        for i in range(1,9,1):
-            exec("materials_fen+=character"+str(i))
+        # We were using list to store, now convert into string.
+        for i in range(0,8,1):
+            materials_fen_string += materials_fen_list[i]
 
-        # So far we got only one-side FEN, but in chess960, the position of a player's piece
-        # is a reversed version of the other player.
-        # So, with one-side FEN, we can get another side's FEN easily.
-        # We can simply lower this "materials_fen" string variable to get the other side.
-        # Now, let us return the final result.
+        # Finally. Now return a full fen.
         return BASE_FEN.format(
-            black_pieces_back=materials_fen.lower(),
+            black_pieces_back=materials_fen_string.lower(),
             black_pieces_front="pppppppp",
             white_pieces_front="PPPPPPPP",
-            white_pieces_back=materials_fen
+            white_pieces_back=materials_fen_string
         )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
@@ -902,9 +872,9 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", "normal_chess", False, (chessmode is "normal_chess")),
-                    ("Randomized Chess", "reallybadchess", False, (chessmode is "reallybadchess")),
-                    ("Chess 960", "chess960", False, (chessmode is "chess960"))
+                    ("Normal Chess", mas_chess.CHESS_MODE_NORMAL, False, (chessmode is mas_chess.CHESS_MODE_NORMAL)),
+                    ("Randomized Chess", mas_chess.CHESS_MODE_BADCHESS, False, (chessmode is mas_chess.CHESS_MODE_BADCHESS)),
+                    ("Chess 960", mas_chess.CHESS_MODE_960, False, (chessmode is mas_chess.CHESS_MODE_960))
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -1028,10 +998,10 @@ label mas_chess_remenu:
 label mas_chess_start_chess:
     #Setup the chess FEN
     python:
-        if chessmode == "normal_chess":
+        if chessmode == mas_chess.CHESS_MODE_NORMAL:
             starting_fen = None
-        elif chessmode == "chess960":
-            starting_fen = mas_chess.generate_960_fen(is_player_white)
+        elif chessmode == mas_chess.CHESS_MODE_960:
+            starting_fen = mas_chess.generate_960_fen()
         else:
             starting_fen = mas_chess.generate_random_fen(is_player_white)
 
@@ -2109,7 +2079,7 @@ init python:
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
 
-            #Check if these exist, if not we add them in and default them to empty lists
+            #Check if these exist, if not we add them in and default them to available_range lists
             if "_visible_buttons" not in self.__dict__:
                 self._visible_buttons = list()
 
@@ -2338,7 +2308,7 @@ init python:
             """
             Updates the position of all MASPieces
             """
-            #Empty the piece map
+            #available_range the piece map
             self.piece_map = dict()
 
             #And refill it
@@ -2859,7 +2829,6 @@ init python:
             """
             return 7 - value
 
-
     class MASPiece(object):
         """
         MASChessPiece
@@ -3359,6 +3328,7 @@ init python:
                 self._visible_buttons_winner = [
                     self._button_done
                 ]
+
 
         def __del__(self):
             self.stockfish.stdin.close()
