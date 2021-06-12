@@ -653,6 +653,13 @@ init -10 python in mas_selspr:
     }
 
 
+    # filter menu name exceptions  
+    selector_filer_menu_mapping = {
+        "s-type-ribbon": "S-type Ribbon"
+    }
+
+    
+
     def selectable_key(selectable):
         """
         Returns the display name of a selectable. meant for sorting.
@@ -1782,14 +1789,9 @@ init -10 python in mas_selspr:
             item_name - formatted
         """
 
-        # excpetions that include a "-" in the name
-        name_space_exceptions = {
-            "s-type-ribbon": "S-type Ribbon"
-        }
-
         # manually change items that include "-" else replace "-" with a space
-        if item_name in name_space_exceptions:
-            item_name = name_space_exceptions[item_name]
+        if item_name in selector_filer_menu_mapping:
+            item_name = selector_filer_menu_mapping[item_name]
         else:
             item_name = item_name.replace("-", " ")
             # capitalise
