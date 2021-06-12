@@ -626,7 +626,7 @@ label game_chess:
         failed_to_load_save = True
 
         #Prelim definitions of the rules for the menu later
-        chessmode = "normal_chess"
+        chessmode = mas_chess.CHESS_MODE_NORMAL
         casual_rules = False
         practice_mode = False
         is_player_white = 0
@@ -2308,7 +2308,7 @@ init python:
             """
             Updates the position of all MASPieces
             """
-            #available_range the piece map
+            #Empty the piece map
             self.piece_map = dict()
 
             #And refill it
