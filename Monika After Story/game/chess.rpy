@@ -2829,6 +2829,7 @@ init python:
             """
             return 7 - value
 
+
     class MASPiece(object):
         """
         MASChessPiece
