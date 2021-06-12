@@ -17201,13 +17201,13 @@ init 5 python:
 
 label monika_likecosplay:
     if mas_hasUnlockedClothesWithExprop("cosplay"):
-        m 3hub "You know, I didn't expect how much I would enjoy it!"
+        m 3hub "You know, I didn't know how much I would enjoy it!"
         m 2rka "At first, it felt kind of strange, dressing up as someone else on purpose."
         m 2euu "But there's a real art to constructing a convincing costume. Attention to detail can make a huge difference."
         m 1hubsb "And when you put on the costume at last...{w=0.2}it's such a thrill to see how you look in it!"
         m 3hub "Some cosplayers really get into acting as the character they're dressed as, as well."
         m 3hksdlb "I'm not really much of an actor myself, so I'll probably only do that a little bit..."
-        m 7eub "But don't hesitate to ask me if you want to see a particular costume again, [player]!{w=0.2}{nw}"
+        m 7eub "But don't hesitate to ask me if you want to see a particular costume again, [player]! {w=0.2}{nw}"
         extend 7hublu "I'd be more than happy to dress up for you."
     else:
         m 1etc "Cosplay?"
@@ -17215,6 +17215,7 @@ label monika_likecosplay:
         m 1eub "But some of those costumes are really impressive, I have to admit!"
         m 2hubla "If you were interested, working on a costume with you could be a really fun project to try."
         m 2euu "I wonder what sorts of characters you'd want to dress up as..."
+        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5huu "Now that I'm thinking about it...well, I might have a few ideas for myself."
         m 5rubla "Hmm..."
     return
