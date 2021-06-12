@@ -2073,7 +2073,7 @@ label ch30_reset:
         and bath_cleanup_ev.start_date is not None
     ):
         # Moni was alone for at least 10 minutes
-        # And it is the time to run cleanup
+        # And it is the time to run the cleanup event
         if (
             mas_dockstat.retmoni_status is None
             and mas_getAbsenceLength() >= datetime.timedelta(minutes=10)

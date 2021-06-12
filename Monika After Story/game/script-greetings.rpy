@@ -4354,7 +4354,7 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
-    ev_rules = {}
+    ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
             random_chance=3,
@@ -4457,16 +4457,19 @@ init 5 python:
 
     del ev_rules
 
-# TODO: move this to change_clothes, also add a similar var for hair
-default persistent._mas_previous_clothes = mas_clothes_def.name
+init 1:
+    # NOTE this should be defined AFTER init 0
+    # NOTE: default may be not completely reliable, always save the snapshot yourself
+    default persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
 
 label greeting_after_bath:
     python hide:
         # Some preperations
         mas_RaiseShield_core()
         mas_startupWeather()
-        # Let Moni get a towel
-        persistent._mas_previous_clothes = monika_chr.clothes.name
+        # Save current outfit
+        persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+        # Now let Moni get a towel
         monika_chr.change_clothes(
             random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
             by_user=False,
@@ -4478,7 +4481,7 @@ label greeting_after_bath:
         # We leave this acs to the clothes PPs in case the towel we chose doesn't support it
         # if not monika_chr.is_wearing_acs(mas_acs_water_drops):
         #     monika_chr.wear_acs(mas_acs_water_drops)
-        # Set the cleaup event
+        # Setup the cleaup event
         mas_setEVLPropValues(
             "mas_after_bath_cleanup",
             start_date=datetime.datetime.now() + datetime.timedelta(minutes=random.randint(30, 90)),
@@ -4490,7 +4493,6 @@ label greeting_after_bath:
     call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
 
     $ renpy.pause(random.randint(5, 15), hard=True)
-    # show monika 1huu_static at t11 zorder MAS_MONIKA_Z with dissolve_monika
     call mas_transition_from_emptydesk("monika 1huu")
     $ renpy.pause(2.0)
     $ quick_menu = True
@@ -4537,7 +4539,10 @@ init 5 python:
 
 label mas_after_bath_cleanup:
     # Sanity check (checking for towel should be enough)
-    if not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+    if (
+        not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
+        and not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+    ):
         return
 
     if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
@@ -4552,7 +4557,7 @@ label mas_after_bath_cleanup:
 
     $ renpy.pause(1.0, hard=True)
     call mas_after_bath_cleanup_change_outfit
-    $ renpy.pause(random.randint(10, 20), hard=True)
+    $ renpy.pause(random.randint(10, 15), hard=True)
 
     call mas_transition_from_emptydesk("monika 3hub")
     window auto
@@ -4569,29 +4574,33 @@ label mas_after_bath_cleanup:
 label mas_after_bath_cleanup_change_outfit:
     # TODO: Rng outfit selection wen
     python hide:
-        prev_clothes = mas_sprites.get_sprite(mas_sprites.SP_CLOTHES, persistent._mas_previous_clothes)
-        # Fallback just in case
-        if prev_clothes is None or prev_clothes.hasprop(mas_sprites.EXP_C_WET):
-            if mas_isMoniHappy(higher=True):
-                prev_clothes = mas_clothes_blazerless
+        if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+            prev_clothes = mas_sprites.get_sprite(mas_sprites.SP_CLOTHES, persistent._mas_previous_moni_state[0])
+            # Fallback just in case
+            if prev_clothes is None or prev_clothes.hasprop(mas_sprites.EXP_C_WET):
+                if mas_isMoniHappy(higher=True):
+                    prev_clothes = mas_clothes_blazerless
 
-            else:
-                prev_clothes = mas_clothes_def
+                else:
+                    prev_clothes = mas_clothes_def
 
-        monika_chr.change_clothes(
-            prev_clothes,
-            by_user=False,
-            outfit_mode=True
-        )
+            monika_chr.change_clothes(
+                prev_clothes,
+                by_user=False,
+                outfit_mode=True
+            )
+
         if monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET):
+            # I think it's better to always select new random hair, even after using outfit mode
+            prev_hair = random.choice(
+                [
+                    hair_obj
+                    for hair_obj in mas_sprites.HAIR_MAP.itervalues()
+                    if not hair_obj.hasprop(mas_sprites.EXP_H_WET) and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
+                ]
+            )
             monika_chr.change_hair(
-                random.choice(
-                    [
-                        hair_obj
-                        for hair_obj in mas_sprites.HAIR_MAP.itervalues()
-                        if not hair_obj.hasprop(mas_sprites.EXP_H_WET) and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
-                    ]
-                ),
+                prev_hair,
                 by_user=False
             )
 
