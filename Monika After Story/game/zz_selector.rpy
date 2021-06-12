@@ -1776,7 +1776,7 @@ init -10 python in mas_selspr:
         """
         Formats acs name to be sentence case, with spaces, and pluralized
 
-        IN: 
+        IN:
             item_name - the text to be formatted
         OUT:
             item_name - formatted
@@ -3073,7 +3073,7 @@ style mas_selector_sidebar_vbar:
 #    thumb "gui/slider/horizontal_hover_thumb.png"
     thumb Frame("gui/scrollbar/vertical_poem_thumb.png", left=6, top=6, tile=True)
     bar_vertical True
-    bar_invert True       
+    bar_invert True
 
 # Filter dropdown button styles
 style filter_dropdown_down is generic_button_light:
@@ -3081,32 +3081,120 @@ style filter_dropdown_down is generic_button_light:
     xysize (130, 40)
     padding (5, 5, 5, 5)
     align (0.5, 0.2)
-    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
-    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
 
 style filter_dropdown_down_dark is generic_button_dark:
     kerning 0.2
     xysize (130, 40)
     padding (5, 5, 5, 5)
     align (0.5, 0.2)
-    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
-    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
 
 style filter_dropdown_up is generic_button_light:
     kerning 0.2
     xysize (130, 40)
     padding (5, 5, 5, 5)
     align (0.5, 0.2)
-    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
-    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
 
 style filter_dropdown_up_dark is generic_button_dark:
     kerning 0.2
     xysize (130, 40)
     padding (5, 5, 5, 5)
     align (0.5, 0.2)
-    child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
-    hover_child Fixed(HBox(Null(width=8), Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]), Null(width=12), Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3), xalign = 0.5, yalign = 0.1), xalign=0.5, yalign = 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
 
 
 # the selector screen sidebar version should be shown, not called.
@@ -3125,17 +3213,17 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     zorder 50
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
-            
+
     # only add menu if filter_map is provided and has more than one option
     if filter_map:
 
         #filter dropdown button
-        frame:   
+        frame:
             area (960, 3, 50, 40)
-            background None           
+            background None
 
             button:
-                if mailbox.show_filter: 
+                if mailbox.show_filter:
                     style "filter_dropdown_down"
                 else:
                     style "filter_dropdown_up"
@@ -3143,7 +3231,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
         if mailbox.show_filter:
             # Categories Menu
-            frame:   
+            frame:
                 area (750, 45, 300, 500)
                 background None
 
@@ -3164,17 +3252,25 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                             textbutton _("Show All"):
                                 style "hkb_button"
                                 xysize (300, 40)
-                                xalign 0.8 
-                                action [SetField(mailbox,'item_type', None),SetField(mailbox,'item_type_old', mailbox.item_type),SelectedIf(mailbox.item_type == None)]
+                                xalign 0.8
+                                selected mailbox.item_type is None
+                                action [
+                                    SetField(mailbox,'item_type', None),
+                                    SetField(mailbox,'item_type_old', mailbox.item_type),
+                                ]
 
                             # Only need keys
                             for item_type_name in sorted(filter_map.keys()):
                                 textbutton _(item_type_name):
                                     style "hkb_button"
                                     xysize (300, 40)
-                                    xalign 0.8                                
-                                    action [SetField(mailbox,'item_type', item_type_name),SetField(mailbox,'item_type_old', mailbox.item_type),SelectedIf(mailbox.item_type == item_type_name)]
-                        
+                                    xalign 0.8
+                                    selected mailbox.item_type == item_type_name
+                                    action [
+                                        SetField(mailbox,'item_type', item_type_name),
+                                        SetField(mailbox,'item_type_old', mailbox.item_type),
+                                    ]
+
                             null height 1
 
                     null height 5
@@ -3182,17 +3278,17 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 bar:
                     value YScrollValue("sidebar_scroll_acs")
                     style "classroom_vscrollbar"
-                    xoffset -25  
-        
+                    xoffset -25
+
     else:
-        $ mailbox.item_type = None        
-        
+        $ mailbox.item_type = None
+
 
     if mailbox.item_type:
         $ menu_filtered_items = filter_map[mailbox.item_type]
     else:
         $ menu_filtered_items = items
-    
+
     default  search_filtered_items = menu_filtered_items
 
 
@@ -3284,7 +3380,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         )
                     ]
                     selected ocb_checked
-            
+
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
                     style "hkb_button"
@@ -3299,8 +3395,14 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
-                    action [SetField(mailbox,'item_type', None),SetField(mailbox,'item_type_old', None),SetField(mailbox,'show_filter',False),Jump(restore),SelectedIf(0)]
-                    
+                    selected False
+                    action [
+                        SetField(mailbox,'item_type', None),
+                        SetField(mailbox,'item_type_old', None),
+                        SetField(mailbox,'show_filter', False),
+                        Jump(restore)
+                    ]
+
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -3498,7 +3600,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 
         # setup prev line
         prev_line = ""
-    
+
     show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
 
 
@@ -3552,7 +3654,7 @@ label mas_selector_sidebar_select_midloop:
                 _history_list.pop()
             #Using this to clear relevant entries from history
             prev_line = disp_text
-    
+
     jump mas_selector_sidebar_select_loop
 
 label mas_selector_sidebar_select_restore:
@@ -3708,7 +3810,7 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
 
-    # Possible idea for clothes / hair filtering, this works but would require more meaningful ex_props to be added to all items, 
+    # Possible idea for clothes / hair filtering, this works but would require more meaningful ex_props to be added to all items,
     # and would require extra filtering to remove "internal ex_props". This could be incorporated into AOC to show what is in each category?
     #python:
     #    # generate filter map
@@ -3719,7 +3821,7 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
     #            if ex_prop in mapping:
     #                mapping[ex_prop].append(item)
     #            else:
-    #                mapping[ex_prop] = [item]     
+    #                mapping[ex_prop] = [item]
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
@@ -4036,7 +4138,7 @@ label monika_ribbon_select:
         for acs_sel in use_acs:
             acs_type_tc = mas_selspr.mas_item_name_format(acs_sel.get_sprobj().acs_type)
             mapping[acs_type_tc].append(acs_sel)
-            
+
         # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
