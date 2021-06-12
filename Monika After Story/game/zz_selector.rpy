@@ -3396,12 +3396,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                     style "hkb_button"
                     xalign 0.5
                     selected False
-                    action [
-                        SetField(mailbox,'item_type', None),
-                        SetField(mailbox,'item_type_old', None),
-                        SetField(mailbox,'show_filter', False),
-                        Jump(restore)
-                    ]
+                    action Jump(restore)
 
             else:
                 textbutton _("Restore"):
