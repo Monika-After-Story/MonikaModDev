@@ -178,7 +178,7 @@ init python in mas_windowutils:
                 winname = win.get_wm_name()
 
                 #NOTE: This must be config.name as we call this during init time, where config.name is None
-                if transient_for is None and winname and renpy.config.window_title in winname:
+                if transient_for is None and winname and renpy.config.window_title == winname:
                     return win
 
         except BadWindow:
@@ -201,7 +201,7 @@ init python in mas_windowutils:
             """
             Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
             """
-            if renpy.config.window_title in win32gui.GetWindowText(hwnd):
+            if renpy.config.window_title == win32gui.GetWindowText(hwnd):
                 raise MASWindowFoundException(hwnd)
 
         try:
@@ -399,7 +399,14 @@ init python in mas_windowutils:
         if hwnd is None:
             return None
 
-        return win32gui.GetWindowRect(hwnd)
+        rv = win32gui.GetWindowRect(hwnd)
+
+        # win32gui may return incorrect geometry (-32k seems to be the limit),
+        # in this case we return None
+        if rv[0] <= -32000 and rv[1] <= -32000:
+            return None
+
+        return rv
 
     def _getMASWindowPos_Linux():
         """
@@ -435,6 +442,11 @@ init python in mas_windowutils:
         left, top, right, bottom = pos_tuple
 
         curr_x, curr_y = getMousePos()
+        # NOTE: This is so we get correct pos in fullscreen
+        if curr_x == 0:
+            curr_x = 1
+        if curr_y == 0:
+            curr_y = 1
 
         half_mas_window_x = (right - left)/2
         half_mas_window_y = (bottom - top)/2

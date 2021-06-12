@@ -2,28 +2,21 @@
     "__author": "retroadamshow",
     "version": 3,
     "type": 0,
-    "name": "retro_bow_blue",
-    "img_sit": "retro_bow_blue",
+    "name": "retro_bow_normal",
+    "img_sit": "retro_ribbon_normal",
     "pose_map": {
         "default": "0",
         "l_default": "5"
     },
     "rec_layer": 3,
-    "acs_type": "bow",
-    "mux_type": [
-        "ribbon",
-        "bow"
-    ],
+    "acs_type": "ribbon",
     "stay_on_start": true,
-    "giftname": "8bluebow",
-    "ex_props": {
-        "ribbon-like": true
-    },
-    "dlg_desc": "8-bit blue bow",
+    "giftname": "8whiteribbon",
+    "dlg_desc": "8-bit ribbon",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "8-bit Blue",
-        "thumb": "retro_bow_blue",
+        "display_name": "Ribbon (8-bit White)",
+        "thumb": "retro_ribbon_normal",
         "group": "ribbon",
         "select_dlg": [
             "How nostalgic!"
