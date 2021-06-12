@@ -3330,7 +3330,6 @@ init python:
                     self._button_done
                 ]
 
-
         def __del__(self):
             self.stockfish.stdin.close()
             self.stockfish.wait()
