@@ -2079,7 +2079,7 @@ init python:
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
 
-            #Check if these exist, if not we add them in and default them to available_range lists
+            #Check if these exist, if not we add them in and default them to empty lists
             if "_visible_buttons" not in self.__dict__:
                 self._visible_buttons = list()
 
