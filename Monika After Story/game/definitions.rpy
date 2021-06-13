@@ -6223,10 +6223,9 @@ init 2 python:
         Checks if we can show something risque
 
         Conditions for this:
-            1. We're not in sensitive mode
-            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
-            3. Player is over 18
-            4. Aff condition (raw)
+            1. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            2. Player is over 18
+            3. Aff condition (raw)
 
         IN:
             aff_thresh:
