@@ -31,15 +31,6 @@ default persistent._mas_chess_mangle_all = False
 # skip file checks
 default persistent._mas_chess_skip_file_checks = False
 
-define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
-define mas_chess.CHESS_SAVE_EXT = ".pgn"
-define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
-define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
-
-define mas_chess.CHESS_MODE_NORMAL = "normal_chess"
-define mas_chess.CHESS_MODE_BADCHESS = "chess960"
-define mas_chess.CHESS_MODE_960 = "badchess"
-
 # mass chess store
 init python in mas_chess:
     import os
@@ -47,6 +38,16 @@ init python in mas_chess:
     import store.mas_ui as mas_ui
     import store
     import random
+
+    CHESS_SAVE_PATH = "/chess_games/"
+    CHESS_SAVE_EXT = ".pgn"
+    CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
+    CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+
+    #chess modes
+    CHESS_MODE_NORMAL = "normal_chess"
+    CHESS_MODE_BADCHESS = "chess960"
+    CHESS_MODE_960 = "badchess"
 
     # relative chess directory
     REL_DIR = "chess_games/"
@@ -377,7 +378,7 @@ init python in mas_chess:
             back_row, front_row = front_row, back_row
 
         return "".join(front_row), "".join(back_row)
-        
+
     def generate_960_fen():
         """
         This function returns a random chess960 opening fen.
@@ -393,59 +394,60 @@ init python in mas_chess:
         OUT:
             A random chess960 opening fen.
         """
+        #Positions dict, maps piece type to file
+        positions = dict()
 
-        # Do some variable init works.
-        materials_fen_list = [0,0,0,0,0,0,0,0]
-        materials_fen_string = ""
-        available_range = [0,1,2,3,4,5,6,7]
+        #Gen king pos (cannot be on the outer files)
+        king_position = random.randint(2, 7)
 
-        def assign(piece_name, index):
-            """
-            This function accepts two arguments: piece_name and index, and assign a piece into materials_fen_list, remove that position from available_range.
-            IN:
-                piece_name - The symbol of the piece you want to assign. 
-                             N stands for Knight. P stands for Pawn. K stands for King. Q stands for Queen. R stands for rooks. B stands for Bishops.
+        #Now gen rook positions
+        left_rook_position = random.choice(range(1, 9)[:king_position - 1])
+        right_rook_position = random.choice(range(1, 9)[king_position:])
 
-                index - The index of this piece's position.  
-            """
-            materials_fen_list[index] = piece_name
-            available_range.remove(index)
+        #Now, we generate the remaining available range:
+        available_spaces = [ x for x in range(1, 9) if x not in (king_position, left_rook_position, right_rook_position) ]
 
-        # Firstly get the position of two bishops.
-        first_bishop_position = random.randint(1,4) * 2
-        second_bishop_position = random.randint(1,4) * 2 - 1# "-1" to make sure the color is different.
+        first_bishop_position = random.choice(available_spaces)
+        available_spaces.remove(first_bishop_position)
 
-        # Assign bishop positions. "-1" to make sure no out of index.
-        assign('B', first_bishop_position-1)
-        assign('B', second_bishop_position-1)
+        #For picking bishops, we need to have one on a light square, one on a dark square
+        is_light_squared_bishop = first_bishop_position % 2 == 0
+        second_bishop_position = random.choice(
+            filter(lambda x: x % 2 != int(is_light_squared_bishop), available_spaces)
+        )
+        available_spaces.remove(second_bishop_position)
 
-        # Secondly assign the queen.
-        assign('Q', available_range[random.randint(1,5)])
+        #Queen can be anywhere remaining
+        queen_position = random.choice(available_spaces)
+        available_spaces.remove(queen_position)
 
-        # Thirdly get the current available position for knights.
-        # Make sure that after the knights were placed, the left available range is not going to against the rule 1 of chess960.
-        available_positions_for_knights = ([ [0, 1], [0, 2], [0, 3], [0, 4], [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]] [random.randint(0,9)])
+        #Finally, unpack for knights
+        first_knight_position, second_knight_position = available_spaces
 
-        # Assign Knights.
-        assign('N', available_range[available_positions_for_knights[1]])
-        assign('N', available_range[available_positions_for_knights[0]])
+        #Now that we have positions, we should format them for easy conversion to a FEN
+        generated_positions = sorted([
+            (king_position, "K"),
+            (left_rook_position, "R"),
+            (right_rook_position, "R"),
+            (first_bishop_position, "B"),
+            (second_bishop_position, "B"),
+            (queen_position, "Q"),
+            (first_knight_position, "N"),
+            (second_knight_position, "N")
+        ])
 
-        # Only 3 room now, that's just perfect for 2 rooks and 1 king.
-        # Assign with this order: Rook, King, Rook to obey rule 1 of chess960.
-        assign('R', available_range[0])
-        assign('K', available_range[0])
-        assign('R', available_range[0])
+        back_row_str = ""
 
-        # We were using list to store, now convert into string.
-        for i in range(0,8,1):
-            materials_fen_string += materials_fen_list[i]
+        for _pos in generated_positions:
+            back_row_str += _pos[1]
+
 
         # Finally. Now return a full fen.
         return BASE_FEN.format(
-            black_pieces_back=materials_fen_string.lower(),
+            black_pieces_back=back_row_str.lower(),
             black_pieces_front="pppppppp",
             white_pieces_front="PPPPPPPP",
-            white_pieces_back=materials_fen_string
+            white_pieces_back=back_row_str
         )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
