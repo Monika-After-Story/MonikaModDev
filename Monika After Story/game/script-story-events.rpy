@@ -983,12 +983,12 @@ label mas_unlock_hangman:
     m 1hua "Soooo~"
     m 1hub "I made Hangman!"
 
-    if persistent._mas_pm_cares_about_dokis is False: # must be known 
+    if mas_safeToRefDokis():
         m 1lksdlb "Hopefully it's not in poor taste..."
 
     m 1eua "It was always my favorite game to play with the club."
 
-    if persistent._mas_pm_cares_about_dokis is False:
+    if mas_safeToRefDokis():
         m 1lsc "But, come to think of it..."
         m "The game is actually quite morbid."
         m 3rssdlc "You guess letters for a word to save someone's life."

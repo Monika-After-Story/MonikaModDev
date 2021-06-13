@@ -786,6 +786,17 @@ init python:
         return derandlist
 
 
+    def mas_safeToRefDokis():
+        """
+        Checks if it is safe for us to reference the dokis in a potentially
+        sensitive matter. The user must have responded to the question
+        regarding dokis - if the user hasn't responded, then we assume it is
+        NEVER safe to reference dokis.
+
+        RETURNS: True if safe to reference dokis
+        """
+        return store.persistent._mas_pm_cares_about_dokis is False
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for

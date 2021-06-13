@@ -1000,7 +1000,7 @@ label monika_sayori:
 
     if (
             not renpy.seen_label("monika_sayori")
-            and persistent._mas_pm_cares_about_dokis is False # must be known
+            and mas_safeToRefDokis()
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
@@ -1648,7 +1648,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    if persistent._mas_pm_cares_about_dokis:
+    if mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
@@ -4567,7 +4567,7 @@ label monika_othergames:
 
     if (
         mas_getEVL_shown_count("monika_othergames") < mas_sensitive_limit
-        and persistent._mas_pm_cares_about_dokis is False
+        and mas_safeToRefDokis()
     ):
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
@@ -10449,12 +10449,12 @@ label monika_yellowwp:
             m 4euc "It's a metaphor for her own captivity, obviously..."
             m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2ekd "There was...also mention of a rope, so I always had my own interpretation of the ending..."
-            if persistent._mas_pm_cares_about_dokis is False:
+            if mas_safeToRefDokis():
                 m 2euc "Sayori liked that story too, if I remember right."
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always...pleasant."
-            if persistent._mas_pm_cares_about_dokis is False:
+            if mas_safeToRefDokis():
                 m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
                 m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}.' It's just...so small."
@@ -10953,7 +10953,7 @@ label monika_bullying:
     m 2ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
     m 3ekd "I {i}had{/i} to do whatever I could to make sure we ended up together."
 
-    if persistent._mas_pm_cares_about_dokis is False:
+    if mas_safeToRefDokis():
         m 3dkc "...Sayori's suicide was just an unfortunate side effect."
 
     if mas_isMoniNormal(higher=True):
