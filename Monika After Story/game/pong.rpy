@@ -510,7 +510,7 @@ label demo_minigame_pong:
             $ currentpos = get_pos(channel="music")
             $ adjusted_t5 = "<from " + str(currentpos) + " loop 4.444>bgm/5_natsuki.ogg"
             stop music fadeout 2.0
-            $ renpy.music.play(adjusted_t5c, fadein=2.0, tight=True)
+            $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True)
 
     $ ball_paddle_bounces = 0
     $ pong_difficulty_before = persistent._mas_pong_difficulty
