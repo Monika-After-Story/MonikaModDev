@@ -1007,33 +1007,32 @@ label monika_sayori:
         m 4wud "That pun was completely unintentional, I swear!"
         m 2lksdlb "But anyway..."
 
-    if not persistent._mas_sensitive_mode: # TODO: this doesnt seem like a spot where we can replace with cares_about_dokis
-        m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+    # NOTE: I removed the sensitive check here
+    #   If it seems this should be guarded with a check, let me know
+    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
 
-        m "If you're comfortable, that is.{nw}"
-        $ _history_list.pop()
-        menu:
-            m "If you're comfortable, that is.{fast}"
-            "Yes.":
-                m 4eka "You know how Sayori is really clumsy?"
-                m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
-                m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-                m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-                m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
-                m 2dksdld "Because she started clawing at the rope, trying to free herself."
-                m "She must have kept at it all the way until she lost consciousness."
-                m 4eksdlc "That's why her fingertips were all bloody, anyway."
-                m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-                m 2eud "So you can't really fault her for that."
-                m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-                m 2ekd "It's not healthy to think about the things you could have done differently."
-                m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
-                m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-            "No.":
-                m "I understand, [player]."
-        m 2euc "Still, though..."
-    else:
-        m 2ekc "..."
+    m "If you're comfortable, that is.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "If you're comfortable, that is.{fast}"
+        "Yes.":
+            m 4eka "You know how Sayori is really clumsy?"
+            m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
+            m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
+            m 2dksdld "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m 4eksdlc "That's why her fingertips were all bloody, anyway."
+            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m 2eud "So you can't really fault her for that."
+            m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m 2ekd "It's not healthy to think about the things you could have done differently."
+            m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
+            m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
+    m 2euc "Still, though..."
 
     m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1649,7 +1648,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    if persistent._mas_sensitive_mode: # TODO
+    if persistent._mas_pm_cares_about_dokis:
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
@@ -3102,8 +3101,7 @@ label monika_tsundere:
     m 3euc "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
 
-    if not persistent._mas_sensitive_mode: # TODO
-        m 1ekc "And I'm not even going to talk about her home situation..."
+    m 1ekc "And I'm not even going to talk about her home situation..."
 
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
 
@@ -13260,10 +13258,7 @@ label monika_load_custom_music:
     python:
         # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
-        store.songs.initMusicChoices(
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode # TODO
-        )
+        store.songs.initMusicChoices(store.mas_egg_manager.sayori_enabled())
         diff = len(store.songs.music_choices) - old_music_count
 
     if diff > 0:

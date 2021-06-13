@@ -502,7 +502,7 @@ label demo_minigame_pong:
     scene bg pong field
 
     # natsuki scare setup if appropriate
-    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode: # TODO
+    if store.mas_egg_manager.natsuki_enabled():
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
         # we'll take advantage of Okay everyone's sync with natsuki's version
@@ -510,7 +510,7 @@ label demo_minigame_pong:
             $ currentpos = get_pos(channel="music")
             $ adjusted_t5 = "<from " + str(currentpos) + " loop 4.444>bgm/5_natsuki.ogg"
             stop music fadeout 2.0
-            $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True)
+            $ renpy.music.play(adjusted_t5c, fadein=2.0, tight=True)
 
     $ ball_paddle_bounces = 0
     $ pong_difficulty_before = persistent._mas_pong_difficulty
@@ -525,7 +525,7 @@ label demo_minigame_pong:
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
     # natsuki scare if appropriate
-    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode: # TODO
+    if store.mas_egg_manager.natsuki_enabled():
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene

@@ -2,8 +2,9 @@
 
 # sayori music chnage/scare
 label sayori_name_scare:
-    if persistent._mas_sensitive_mode: # TODO
+    if not store.mas_egg_manager.name_eggs_enabled():
         return
+
     python:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
@@ -13,8 +14,9 @@ label sayori_name_scare:
 
 # yuri scare
 label yuri_name_scare:
-    if persistent._mas_sensitive_mode: # TODO
+    if not store.mas_egg_manager.name_eggs_enabled():
         return
+
 #    show yuri 3s zorder 2 at t11
     # disable stuff
     $ HKBHideButtons()
@@ -39,7 +41,7 @@ label yuri_name_scare:
 
 # natsuki scare
 label natsuki_name_scare(playing_okayev=False):
-    if persistent._mas_sensitive_mode: # TODO
+    if not store.mas_egg_manager.name_eggs_enabled():
         return
 
     # disable stuff
@@ -164,7 +166,7 @@ image n_rects3:
 
 #natsuki scare 2:
 label natsuki_name_scare_hungry:
-    if persistent._mas_sensitive_mode: # TODO
+    if not store.mas_egg_manager.name_eggs_enabled():
         return
 
 #label natsuki_name_scare2:
@@ -263,3 +265,63 @@ label mas_ghost_monika:
 
     #Exit the game.
     jump _quit
+
+init -1 python in mas_egg_manager:
+    import store
+
+
+    def is_eggable_name(name):
+        """
+        Checks if the given name is eggable
+
+        IN:
+            name - the name to check (string)
+
+        RETURNS: True if the name is eggable
+        """
+        return name in ("sayori", "natsuki", "yuri")
+
+
+    def name_eggs_enabled():
+        """
+        Checks if name eggs are enabled
+
+        RETURNS: True if name eggs are enabled
+        """
+        return not store.persistent._mas_disable_eggs
+
+    
+    def natsuki_enabled():
+        """
+        Checks if the natsuki egg should be enabled
+
+        RETURNS: True if natsuki egg should be enabled
+        """
+        return (
+            name_eggs_enabled()
+            and store.persistent.playername.lower() == "natsuki"
+        )
+
+
+    def sayori_enabled():
+        """
+        Checks if the sayori egg should be enabled
+
+        RETURNS: True if the sayori egg should be enabled
+        """
+        return (
+            name_eggs_enabled()
+            and store.persistent.playername.lower() == "sayori"
+        )
+
+
+    def yuri_enabled():
+        """
+        Checks if the yuri egg should be enabled
+
+        RETURNS: True if yuri egg should be enabled
+        """
+        return (
+            name_eggs_enabled()
+            and store.persistent.playername.lower() == "yuri"
+        )

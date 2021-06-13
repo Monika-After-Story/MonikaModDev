@@ -537,50 +537,55 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3eka "Please pick a nicer name for yourself, okay?"
 
         else:
-            #Sayori name check
-            if lowername == "sayori":
-                call sayori_name_scare
+            # easter egg name checks
+            if store.mas_egg_manager.is_eggable_name(lowername):
+                m 1ttu "Are you sure this is your real name, or are you missing with me?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Are you sure this is your real name, or are you missing with me?{fast}"
 
-            elif (
-                    persistent.playername.lower() == "sayori"
-                    and not persistent._mas_sensitive_mode # TODO
-                ):
-                $ songs.initMusicChoices()
+                    "Yes, this is my name":
+                        $ persistent._mas_disable_eggs = True
+
+                    "Maybe...":
+                        $ persistent._mas_disable_eggs = False
 
             python:
-                def adjustNames(new_name):
-                    """
-                    Adjusts the names to the new names
-                    """
-                    global player
+                old_name = persistent.playername
+                done = True
 
-                    persistent.mcname = player
-                    mcname = player
-                    persistent.playername = new_name
-                    player = new_name
+                # adjust names
+                persistent.mcname = player
+                mcname = player
+                persistent.playername = tempname
+                player = tempname
 
+            # egg adjustments
+            # MUST BE AFTER THE NAME ADJUSTMENT
+            if store.mas_egg_manager.sayori_enabled():
+                call sayori_name_scare
+
+            elif old_name == "sayori":
+                # reset music choices
+                $ songs.initMusicChoices()
+
+            # name reactions
             if lowername == "monika":
-                $ adjustNames(tempname)
                 m 1tkc "Really?"
                 m "That's the same as mine!"
                 m 1tku "Well..."
                 m "Either it really is your name or you're playing a joke on me."
                 m 1hua "But it's fine by me if that's what you want me to call you~"
-                $ done = True
 
             elif mas_good_player_name_comp.search(tempname):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
-                $ adjustNames(tempname)
                 m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
-                $ done = True
 
             else:
-                $ adjustNames(tempname)
                 m 1eub "Okay then!"
                 m 3eub "From now on, I'll call you '[player].'"
-                $ done = True
 
         if not done:
             show monika 1eua

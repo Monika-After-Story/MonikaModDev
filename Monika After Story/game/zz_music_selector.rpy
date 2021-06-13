@@ -782,10 +782,7 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if (
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode # TODO
-        ):
+    if store.mas_egg_manager.sayori_enabled():
         # sayori specific
 
         # init choices
@@ -1037,10 +1034,7 @@ init python:
             persistent.playername
         """
         # sayori cannot make the volume quieter
-        if (
-            persistent.playername.lower() != "sayori"
-            or persistent._mas_sensitive_mode # TODO
-        ):
+        if not store.mas_egg_manager.sayori_enabled():
             songs.adjustVolume(up=False)
 
 
@@ -1063,10 +1057,7 @@ init python:
         # sayori cannot mute
         if (
                 curr_volume > 0.0
-                and (
-                    persistent.playername.lower() != "sayori"
-                    or persistent._mas_sensitive_mode # TODO
-                )
+                and not store.mas_egg_manager.sayori_enabled()
                 and mute_enabled
             ):
             songs.music_volume = curr_volume

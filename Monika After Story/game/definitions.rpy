@@ -7893,6 +7893,9 @@ define mas_monika_twitter_handle = "lilmonix3"
 init python:
     persistent._mas_sensitive_mode = False
 
+# should eggs be disabled?
+default persistent._mas_disable_eggs = False
+
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 

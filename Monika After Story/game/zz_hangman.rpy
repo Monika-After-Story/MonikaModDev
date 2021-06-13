@@ -350,10 +350,7 @@ label game_hangman:
 
     python:
         import store.mas_hangman as mas_hmg
-        is_sayori = (
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode # TODO
-        )
+        is_sayori = store.mas_egg_manager.sayori_enabled()
         is_window_sayori_visible = False
 
         # instruction text and other sensitive stuff
