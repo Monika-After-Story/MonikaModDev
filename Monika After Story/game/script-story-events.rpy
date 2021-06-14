@@ -460,6 +460,7 @@ init 3 python:
         "penetrat",
         "pillow",
         "sex",
+        "^son$"
         "spank",
         "superman",
         "superwoman",
