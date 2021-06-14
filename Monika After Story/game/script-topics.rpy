@@ -4271,7 +4271,7 @@ label monika_heroism:
     m 1lsc "Heroes are so personal."
     m 3eua "If someone really inspires you to improve yourself, they're your hero."
     m "There are all sorts of great people out there in the world."
-    m 1hua "I hope someone will consider you their hero someday!"
+    m 1hua "I hope someone will consider you their [hero] someday!"
     m 4eua "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
@@ -8298,7 +8298,7 @@ label monika_wolf:
     m 1hubsa "Ehehe~"
     m 1eka "I can't help but be reminded of how you saved my life by being here with me."
     m "I really do depend on you, [mas_get_player_nickname()]."
-    m 1ekbsa "You're my hero after all~"
+    m 1ekbsa "You're my [hero] after all~"
     return
 
 label monika_battery:
@@ -13164,7 +13164,7 @@ label monika_whydoyouloveme:
         m 3eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
-        m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+        m 3ekbsa "You truly are my [hero], [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
     return
 
 init 5 python:
