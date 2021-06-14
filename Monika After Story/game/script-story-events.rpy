@@ -447,7 +447,7 @@ init 3 python:
         "masturbat",
         "mistress",
         "moani",
-        "momika",
+        "mom+ika",
         "momma",
         "mommy",
         "mother",
