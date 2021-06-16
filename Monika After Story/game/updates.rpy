@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.2.1
 label v0_12_2_1(version="v0_12_2_1"):
     python:
-        pass
+        if seen_event("monika_nihilism"):
+            mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
     return
 
 # 0.12.2
