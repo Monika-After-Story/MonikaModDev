@@ -57,7 +57,7 @@ label monika_haiku_intro:
     #unlocking haiku events
     $ mas_unlockEVL("monika_haiku", "EVE")
     $ mas_unlockEVL("monika_what_is_haiku", "EVE")
-    $ mas_protectedShowEVL('monika_haiku_random', 'EVE', _random=True)
+    $ mas_setEVLPropValues("monika_haiku_random", random=True)
     return "no_unlock"
 
 #Haiku explaination topic
@@ -121,10 +121,10 @@ init 5 python:
 
 label monika_haiku:
     m 1eua "Sure."
-    m 3hub "I'm always glad to share my writings with you, [player]!"
-    m 1euc "Now, let me just think for a second{nw}"
+    m 1hub "I'm always glad to share my writings with you, [player]!"
+    m 1eua "Now, let me just think for a second{nw}"
     extend 1etc ".{w=0.5}.{w=0.5}."
-    m 7eua "Okay, here goes."
+    m 3eud "Okay, here goes."
     call monika_push_random_haiku
     return
 
@@ -399,8 +399,72 @@ init 5 python:
     )
 
 label mas_haiku_adrenaline:
-    m 3esb "{i}Adrenaline shot{/i}{w=1}{nw}\n"
+    m 3efb "{i}Adrenaline shot{/i}{w=1}{nw}\n"
     extend 3efu "{i}The world slows and catch my pace{/i}{w=0.5}{nw}\n"
-    extend 3dfu "{i}All becoming one{/i}"
+    extend 3efu "{i}All becoming one{/i}"
+    call monika_haiku_closing_quip
+    return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_haiku_database,
+            eventlabel="mas_haiku_daybreak",
+        ),
+        code="HKU"
+    )
+
+label mas_haiku_daybreak:
+    m 3eub "{i}Morning breaks at last{/i}{w=1}{nw}\n"
+    extend 3duu "{i}The sky dons its golden cloak{/i}{w=0.5}{nw}\n"
+    extend 3duu "{i}Heralding the sun{/i}"
+    call monika_haiku_closing_quip
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_haiku_database,
+            eventlabel="mas_haiku_cicadas",
+        ),
+        code="HKU"
+    )
+
+label mas_haiku_cicadas:
+    m 3eua "{i}Cicada's shrill cries{/i}{w=0.5}{nw}\n"
+    extend 3eua "{i}Piercing through the heat's numbness{/i}{w=1}{nw}\n"
+    extend 3duu "{i}Songs of summer days{/i}"
+    call monika_haiku_closing_quip
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_haiku_database,
+            eventlabel="mas_haiku_routine",
+        ),
+        code="HKU"
+    )
+
+label mas_haiku_routine:
+    m 3ekd "{i}Day-to-day routine{/i}{w=1}{nw}\n"
+    extend 3dksdlc "{i}The meat-ghost rattles its chains{/i}{w=0.5}{nw}\n"
+    extend 3dksdlc "{i}Yearning for release{/i}"
+    call monika_haiku_closing_quip
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_haiku_database,
+            eventlabel="mas_haiku_spider",
+        ),
+        code="HKU"
+    )
+
+label mas_haiku_spider:
+    m 3esd "{i}Spider caught its prey{/i}{w=0.5}{nw}\n"
+    extend 3esd "{i}Tangled in a silky snare{/i}{w=1}{nw}\n"
+    extend 3dssdlc "{i}Cruel fate but unseen{/i}"
     call monika_haiku_closing_quip
     return
