@@ -374,10 +374,56 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.2.1
+label v0_12_2_1(version="v0_12_2_1"):
+    python:
+        pass
+    return
+
+# 0.12.2
+label v0_12_2(version="v0_12_2"):
+    python:
+        if persistent.ever_won:
+            persistent._mas_ever_won.update(persistent.ever_won)
+
+        if mas_getEVLPropValue("mas_compliment_chess", "conditional"):
+            mas_setEVLPropValues(
+                "mas_compliment_chess",
+                conditional="persistent._mas_chess_stats.get('losses', 0) > 5"
+            )
+
+        # added due to a potential crash in the 0.8.13 update that may have caused this to not update
+        # the other events updated in that script have been updated since then and don't need to be done again
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmas_eve',
+            start_date = datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+            end_date = mas_d25
+        )
+
+        # Use more appropriate naming
+        if persistent.has_merged is not None:
+            persistent._mas_imported_saves = persistent.has_merged
+        # For some reason this var may still be False even after import
+        # One way to "fix" it is to check persistent.clear
+        # At least one item would be True if the player's seen a cg
+        if persistent.clear is not None and any(persistent.clear):
+            persistent._mas_imported_saves = True
+        safeDel("has_merged")
+
+        # Reverse the value of this var because its naming is bad
+        persistent.first_run = not persistent.first_run
+
+    return
+
 # 0.12.1.2
 label v0_12_1_2(version="v0_12_1_2"):
     python:
-        pass
+        if mas_getEVLPropValue("monika_dystopias", "action"):
+            mas_setEVLPropValues(
+                "monika_dystopias",
+                conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)"
+            )
+
     return
 
 # 0.12.1
@@ -2166,7 +2212,8 @@ label v0_8_13(version="v0_8_13"):
                     datetime.time(hour=20)
                 )
 
-                d25_sp_tim.end_date = datetime.datetime.combine(
+                # NOTE: Here was a crash because of undefined var, fixed in 0.12.1 typos
+                d25_sp_tm.end_date = datetime.datetime.combine(
                     mas_d25p,
                     datetime.time(hour=1)
                 )
