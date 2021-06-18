@@ -652,13 +652,11 @@ init -10 python in mas_selspr:
         ],
     }
 
-
-    # filter menu name exceptions  
+    # filter menu name exceptions
     selector_filer_menu_mapping = {
         "s-type-ribbon": "S-type Ribbon"
     }
 
-    
 
     def selectable_key(selectable):
         """
@@ -3217,7 +3215,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     $ sel_frame_vsize = mailbox.read_frame_vsize()
 
     # only add menu if filter_map is provided and has more than one option
-    if filter_map:
+    if filter_map is not None and len(filter_map) > 1:
 
         #filter dropdown button
         frame:
@@ -3285,15 +3283,13 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
     else:
         $ mailbox.item_type = None
 
-
     if mailbox.item_type:
         $ menu_filtered_items = filter_map[mailbox.item_type]
+
     else:
         $ menu_filtered_items = items
 
-    default  search_filtered_items = menu_filtered_items
-
-
+    default search_filtered_items = menu_filtered_items
 
     # Search bar
     frame:
@@ -3318,11 +3314,10 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 length 50
                 xalign 0.0
                 layout "nobreak"
-                first_indent (0 if search_filtered_items is menu_filtered_items else 10)
+                first_indent (0 if not mailbox.search_text else 10)
                 # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
                 changed store.mas_selspr.selector_search_callback
 
-        # NOTE: we do need an instance check here
         if not mailbox.search_text:
             text "Search for...":
                 text_align 0.0
