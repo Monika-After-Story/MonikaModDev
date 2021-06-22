@@ -1528,6 +1528,7 @@ init 790 python in mas_piano_keys:
         stock_songs = [
             "happybirthday.json",
             "yourreality.json",
+            "betteroffalone.json",
             "d__p_c__o.json"
         ]
 
@@ -1929,7 +1930,8 @@ init 800 python in mas_piano_keys:
     # and now we should only add certain songs to the main pnml_db
     __stock_song_names = [
         "Happy Birthday",
-        "Your Reality"
+        "Your Reality",
+        "Better Off Alone",
 #        "D--p-c--o"
     ]
     for _song in __stock_song_names:
