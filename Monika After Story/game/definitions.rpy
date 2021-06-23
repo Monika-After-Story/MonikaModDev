@@ -1582,6 +1582,7 @@ python early:
 
             return eventlabels
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkConditionals(events, rebuild_ev=False):
             # NOTE: DEPRECATED
@@ -1642,6 +1643,7 @@ python early:
 
             return events
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkCalendar(events):
             # NOTE: DEPRECATED
@@ -1789,7 +1791,7 @@ python early:
 
             return
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """DEPRECATED
@@ -1825,7 +1827,7 @@ python early:
 
             return False
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """DEPRECATED
@@ -2981,7 +2983,7 @@ python early:
             ))
 
 # init -1 python:
-
+    @store.mas_utils.deprecated(should_raise=True)
     class MASInteractable(renpy.Displayable):
         """DEPRECATED
 
