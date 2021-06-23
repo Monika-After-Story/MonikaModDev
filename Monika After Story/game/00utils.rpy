@@ -354,20 +354,19 @@ python early in mas_utils:
                 else:
                     newline = ""
 
-                exc = DeprecationWarning(
-                    msg.format(
-                        module=module,
-                        name=name,
-                        use_instead_text=use_instead_text,
-                        newline=newline
-                    )
+                msg = msg.format(
+                    module=module,
+                    name=name,
+                    use_instead_text=use_instead_text,
+                    newline=newline
                 )
 
                 if should_raise:
-                    raise exc
+                    raise DeprecationWarning(msg)
 
                 else:
-                    writelog(str(exc))
+                    print(msg)
+                    writelog(msg)
 
                 return callable_(*args, **kwargs)
 
