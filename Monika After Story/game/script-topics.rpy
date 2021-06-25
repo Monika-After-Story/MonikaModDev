@@ -17187,3 +17187,25 @@ label monika_sophia:
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_fireworks",
+            category=["summer"],
+            prompt="Fireworks",
+            random=mas_isSummer()
+        )
+    )
+
+label monika_fireworks:
+    m 1eub "Are you a fan of fireworks, [mas_get_player_nickname()]?"
+    m 3hua "A lot of places use them in summer festivities. I wonder if you've seen any this year."
+    m 3wub "I think it would be so fun to watch them together, don't you?"
+    m 3hua "There are the huge ones that light up the entire night sky...{w=0.2}or if you're in the mood for something quieter, we could use sparklers!"
+    show monika 5lublu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5lublu "Just imagining the light dancing about, illuminating your face in flickering light..."
+    m 5hublu "Then maybe we could share a festive snack, snuggling together on a picnic blanket."
+    m 5eub "Wouldn't that be so fun, [mas_get_player_nickname()]?"
+    return
