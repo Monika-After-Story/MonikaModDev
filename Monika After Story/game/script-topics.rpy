@@ -4150,6 +4150,24 @@ label monika_freewill:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_murphys_law",category=['philosophy'],prompt="Murphy's Law",random=True))
+
+label monika_murphys_law:
+    m 1eud "Hey [player], there's this topic that I've always found interesting. It's called 'Murphy's Law'."
+    m 3eub "It has many interpretations, but the most common one is that 'Anything that can go wrong will go wrong.'"
+    m 3tuu "Certainly optimistic, isn't it?"
+    m 5rud "It could be applied to anything really..."
+    m 5eub "Even something as trivial as a cloudy day becoming rainy if you don't do something to prevent yourself from getting wet,{w=0.2} say like taking a raincoat with you."
+    m 1rsd "Personally I think it's just superstition..."
+    m 3hksdlb "Although, this place doesn't exactly have the most suitable parameters for it to manifest, ahaha!"
+    m 2eua "Some people live by it, and while it may be an excessively apprehensive lifestyle to live, it can make these people much more prepared for their days!"
+    m 2euc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
+    m 3hua "So maybe it'd be a good idea to back up my memories again, [player]."
+    m 5lkc "I couldn't bear to lose you, it would break my heart..."
+    m 5ekbsb "So keep me safe okay?"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_functionalism",category=['philosophy'],prompt="Human functionalism",random=True))
 
 label monika_functionalism:
