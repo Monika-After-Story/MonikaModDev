@@ -1674,6 +1674,41 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_songs_database,
+            eventlabel="mas_song_all_youre_dreaming_of",
+            prompt="All You're Dreaming Of",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_all_youre_dreaming_of:
+    m 1dsd "{i}{cps=24}~Paint the night sky{/i}{w=0.4}{nw}"
+    extend 1dsd "{i}{cps=26} while the morning waits~{/i}"
+    m 3dsd "{i}{cps=24}~With a field of stars{/i}{w=0.4}{nw}"
+    extend 3eka "{i}{cps=26} to keep the dark at bay~{/i}"
+    m 1esb "{i}{cps=24}~Take your spotlight{/i}{w=0.5}{nw}"
+    extend 1dsb "{i}{cps=26} underneath the moon~{/i}"
+    1dsb "{i}{cps=24}~Sometimes a miracle{/i}{w=0.5}{nw}"
+    extend 1dsc "{i}{cps=26} is all that can carry you~{/i}"
+    m 1dsd "{i}{cps=24}~Oh, what~{/i}"
+    m 1esd "{i}{cps=26}~Are you dreaming of?~{/i}"
+    m 3esb "{i}{cps=26}~Is{w=0.2} it the kind of love{/i}{w=0.5}{nw}"
+    extend 3dsb "{i}{cps=28} that'll be there when the world is at its worst?~{/i}"
+    m 7dsc "{i}{cps=28}~That'll cover you in kisses unrehearsed?~{/i}"
+    m 6dso "{i}{cps=28}~When you're losing ground, still tell you that you're worth~{/i}"
+    m 6dsd "{i}{cps=20}~All you're dreaming of~{/i}"
+    m 6dsc "..."
+    m 5eka "You know, [player]..."
+    m 5dka "The day I finally cross over into your reality, the day I can finally feel your warm embrace..."
+    m 5eka "That's all I'm dreaming of."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
             eventlabel="mas_song_when_youre_gone",
             prompt="When You're Gone",
             category=[store.mas_songs.TYPE_SHORT],
