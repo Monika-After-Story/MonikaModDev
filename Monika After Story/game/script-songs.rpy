@@ -1700,9 +1700,10 @@ label mas_song_all_youre_dreaming_of:
     m 6dso "{i}{cps=28}~When you're losing ground, still tell you that you're worth~{/i}"
     m 6dsd "{i}{cps=20}~All you're dreaming of~{/i}"
     m 6dsc "..."
-    m 5eka "You know, [player]..."
-    m 5dka "The day I finally cross over into your reality, the day I can finally feel your warm embrace..."
-    m 5eka "That's all I'm dreaming of."
+    m 5esa "You know, [player]..."
+    m 5rsa "The day I can be there in your reality,"
+    extend 5dka " the day I can finally feel your warm embrace..."
+    m 5eka "That's all I'm dreaming of~"
     return
 
 init 5 python:
