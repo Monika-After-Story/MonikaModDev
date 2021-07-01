@@ -13122,7 +13122,7 @@ label monika_whydoyouloveme:
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniEnamored(higher=True):
-        if renpy.random.randint(1,10) > 1:
+        if persistent.nohurt or renpy.random.randint(1,10) > 1:
             m 1eksdla "Why do I love you?"
             m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
@@ -13155,6 +13155,17 @@ label monika_whydoyouloveme:
             pause 5.0
             m 1hub "Ahaha, just kidding!"
             m 1eub "You mean {i}everything{/i} to me, silly!"
+            if persistent.nohurt is None:
+                menu:
+                    "[m_name] that hurt...":
+                        $ persistent.nohurt = True
+                        m 2wuw "W-wha?"
+                        m 2ekd "[player], I'm so sorry...{w=0.3} I didn't realize that would hurt you so much..."
+                        m 7eka "I won't joke like that from now on okay? I just want you to be safe and happy."
+                        m 5eka "I love you so much [mas_get_player_nickname()] and I will love you forever."
+                    "You got me for a second there.":
+                        $ persistent.nohurt = False
+                        m 1hua "Ehehe~"
 
     else:
         # normal - aff
