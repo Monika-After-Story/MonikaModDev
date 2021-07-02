@@ -13162,7 +13162,7 @@ label monika_whydoyouloveme:
                         m 2wuw "W-wha?"
                         m 2ekd "[player], I'm so sorry...{w=0.3} I didn't mean to make you feel that way."
                         m 7eka "I won't joke like that from now on, okay? I just want you to be safe and happy."
-                        m 5eka "I love you so much, [mas_get_player_nickname()]. I always will."
+                        m 5eka "I love you so much, [mas_get_player_nickname()], and I will love you forever."
                         $ mas_ILY()
                     "You got me for a second there.":
                         $ persistent.nohurt = False
