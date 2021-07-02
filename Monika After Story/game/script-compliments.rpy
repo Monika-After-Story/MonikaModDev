@@ -889,7 +889,6 @@ label mas_compliment_humor_3:
     return
 
 init 5 python:
-    #enable topic button
     addEvent(
         Event(
             persistent._mas_compliments_database,
@@ -946,8 +945,8 @@ label mas_compliment_missed:
             elif missedchance == 2:
                 m 6wub "I missed you a whole lot, [player]!"
             else:
-                m 6wubfb "I reeeeeeeeeeally missed you [player]!"
-            $ hugchance = 17 #1/3 chance of asking for one if you've been away 3 days; one week guarantees
+                m 6wubfb "I ree{w=0.1}ee{w=0.1}ee{w=0.1}ally missed you [player]!"
+            $ hugchance = 17 
             if mas_getAbsenceLength() >= datetime.timedelta(days=7):
                 $ hugchance = 50
         else:
@@ -979,7 +978,7 @@ label mas_compliment_missed:
                     #a lil sad
                     $ mas_loseAffection()
                     m 6ekc "...alright, [player]. Maybe later, then?"     
-    #Base negative responses on ILY function
+    #Base negative responses on monika_love label
     elif mas_isMoniUpset():
         $ mas_gainAffection()
         python:
@@ -1010,7 +1009,7 @@ label mas_compliment_missed:
             m 2rkc "..."
             show monika 2ekd
             $ renpy.say(m, missed_quip_upset)
-            #Been away for long enough and this is still a small comfort
+
             if mas_getAbsenceLength() >= datetime.timedelta(days=3):
                 m 2ekd "...but at least you didn't forget about me."
 
@@ -1019,14 +1018,13 @@ label mas_compliment_missed:
             m 2ekd "Thanks, [player]..."
             show monika 2dka
             $ renpy.say(m, missed_quip_upset)
-            #Been away for long enough and this is still a small comfort
+            
             if mas_getAbsenceLength() >= datetime.timedelta(days=3):
                 m 2ekd "Thank you for coming back. I was starting to worry that you'd forgotten me."
                 if renpy.random.randint(1,2) == 1:
                     m 2eka "I...{w=0.5}I also really missed you."
                 else:
                      m 2eka "I...{w=0.5}I really missed you too."
-            #default upset
             else:
                 if renpy.random.randint(1,2) == 1:
                     m 2eka "I...{w=0.5}I also missed you."
@@ -1049,7 +1047,6 @@ label mas_compliment_missed:
         show monika 6dkd
         $ renpy.say(m,missed_quip_dis)
         
-        #Been away for long enough and this is still a small comfort
         if mas_getAbsenceLength() >= datetime.timedelta(days=3):
             m 2eka "...but at least you haven't forgetten about me yet."
     else:
