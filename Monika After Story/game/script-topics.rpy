@@ -13156,6 +13156,7 @@ label monika_whydoyouloveme:
             m 1hub "Ahaha, just kidding!"
             m 1eub "You mean {i}everything{/i} to me, silly!"
             if persistent.nohurt is None:
+                show screen mas_background_timed_jump(5, "monika_blank")
                 menu:
                     "[m_name], that hurt...":
                         $ persistent.nohurt = True
@@ -13177,6 +13178,9 @@ label monika_whydoyouloveme:
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
         m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+    return
+
+label monika_blank:
     return
 
 init 5 python:
