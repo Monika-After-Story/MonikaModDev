@@ -13157,7 +13157,7 @@ label monika_whydoyouloveme:
             m 1eub "You mean {i}everything{/i} to me, silly!"
             if persistent.nohurt is None:
                 menu:
-                    "[m_name] that hurt...":
+                    "[m_name], that hurt...":
                         $ persistent.nohurt = True
                         m 2wuw "W-wha?"
                         m 2ekd "[player], I'm so sorry...{w=0.3} I didn't realize that would hurt you so much..."
