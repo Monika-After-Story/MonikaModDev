@@ -945,7 +945,7 @@ label mas_compliment_missed:
             elif missedchance == 2:
                 m 6wub "I missed you a whole lot, [player]!"
             else:
-                m 6wubfb "I ree{w=0.1}ee{w=0.1}ee{w=0.1}ally missed you [player]!"
+                m 6wubfb "...I ree{w=0.1}ee{w=0.1}ee{w=0.1}ally missed you [player]!"
             $ hugchance = 17 
             if mas_getAbsenceLength() >= datetime.timedelta(days=7):
                 $ hugchance = 50
