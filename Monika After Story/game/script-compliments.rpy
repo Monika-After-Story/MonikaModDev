@@ -894,7 +894,6 @@ init 5 python:
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_missed",
             prompt="I missed you!",
-            aff_range=(mas_aff.BROKEN, None)
         ),
         code="CMP"
     )
