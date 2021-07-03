@@ -887,17 +887,21 @@ label mas_compliment_humor_3:
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
     return
-
+    
 init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_missed",
             prompt="I missed you!",
+            unlocked=False,
+            conditional="not mas_globals.returned_home_this_sesh",
+            action=EV_ACT_UNLOCK
         ),
         code="CMP"
     )
-    store.mas_unlockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
+    if mas_globals.returned_home_this_sesh is False:
+        store.mas_unlockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_missed:    
     python:
@@ -927,8 +931,7 @@ label mas_compliment_missed:
             _("I've been thinking of you while you were gone!"),
         ]
         missed_quip = random.choice(missed_quips)
-    $ mas_lockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
-    
+    $ store.mas_lockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
     if mas_isMoniNormal(higher=True):
         $ mas_gainAffection(2)
         $ hugchance = 2
