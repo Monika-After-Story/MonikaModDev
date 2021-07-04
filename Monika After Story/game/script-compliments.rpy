@@ -6,6 +6,11 @@
 # At the beginning, when creating the menu, the compliments
 # database checks the conditionals of the compliments
 # and unlocks them.
+# We only display the compliments that are
+# unlocked, not hidden, within affection range,
+# and don't have a conditional or have a conditional that evaluates to True.
+# If you don't want a dynamic conditional for your compliment, you'd need
+# to use an external event to unlock it from somewhere else.
 
 
 # dict of tples containing the stories event data
@@ -57,23 +62,17 @@ init 5 python:
 
 label monika_compliments:
     python:
-        import store.mas_compliments as mas_compliments
-
         # Unlock any compliments that need to be unlocked
         Event.checkEvents(mas_compliments.compliment_database)
 
-        # filter comps
-        filtered_comps = Event.filterEvents(
-            mas_compliments.compliment_database,
-            unlocked=True,
-            aff=mas_curr_affection,
-            flag_ban=EV_FLAG_HFM
-        )
-
         # build menu list
         compliments_menu_items = [
-            (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
-            for k in filtered_comps
+            (ev.prompt, ev_label, not seen_event(ev_label), False)
+            for ev_label, ev in mas_compliments.compliment_database.iteritems()
+            if (
+                Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
+                and ev.checkConditional()
+            )
         ]
 
         # also sort this list
@@ -109,7 +108,8 @@ init 5 python:
             prompt="You're beautiful!",
             unlocked=True
         ),
-        code="CMP")
+        code="CMP"
+    )
 
 label mas_compliment_beautiful:
     if not renpy.seen_label("mas_compliment_beautiful_2"):
@@ -323,7 +323,8 @@ init 5 python:
             eventlabel="mas_compliment_hair",
             prompt="I love your hair!",
             unlocked=True
-        ),code="CMP"
+        ),
+        code="CMP"
     )
 
 label mas_compliment_hair:
@@ -718,7 +719,7 @@ init 5 python:
             prompt="I look up to you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_lookuptoyou:
@@ -768,7 +769,7 @@ init 5 python:
             prompt="I'm always thinking about you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_thinking_of_you:
@@ -887,7 +888,7 @@ label mas_compliment_humor_3:
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -903,7 +904,7 @@ init 5 python:
     if mas_globals.returned_home_this_sesh is False:
         store.mas_unlockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
 
-label mas_compliment_missed:    
+label mas_compliment_missed:
     python:
         #It's a fine day with you around!
         missed_quips = [
@@ -935,11 +936,11 @@ label mas_compliment_missed:
     if mas_isMoniNormal(higher=True):
         $ mas_gainAffection(2)
         $ hugchance = 2
-        
+
         #Really short absences
         if mas_getAbsenceLength() < datetime.timedelta(hours=1):
             $ hugchance = 0
-        
+
         if mas_getAbsenceLength() >= datetime.timedelta(days=3):
             $ missedchance = renpy.random.randint(1,3)
             if missedchance == 1:
@@ -948,15 +949,15 @@ label mas_compliment_missed:
                 m 6wub "I missed you a whole lot, [player]!"
             else:
                 m 6wubfb "...I ree{w=0.1}ee{w=0.1}ee{w=0.1}ally missed you [player]!"
-            $ hugchance = 17 
+            $ hugchance = 17
             if mas_getAbsenceLength() >= datetime.timedelta(days=7):
                 $ hugchance = 50
         else:
             m 6eub "I missed you too, [player]!"
-        
+
         show monika 2hublb
         $ renpy.say(m, missed_quip)
-        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) <= hugchance:    
+        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) <= hugchance:
             m 5rsa "Say, [player]."
             m 5rsc "I was kinda hoping that..."
             m 5fsc "You know, since it's been a little while..."
@@ -968,18 +969,18 @@ label mas_compliment_missed:
                     call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
                     call monika_holdme_start
                     call monika_holdme_end
-                    
+
                     m 2fkblb "Mmm... that was really nice, [player]."
                     m 2ekbsa "You really know how to make a girl feel special!"
                     m 7rublsdra "Anyway..."
                     m 1esa "What shall we do today, [mas_get_player_nickname()]?"
-                    
+
                     $ mas_gainAffection(0.75)#hug aff
                     return
                 "Not right now.":
                     #a lil sad
                     $ mas_loseAffection()
-                    m 6ekc "...alright, [player]. Maybe later, then?"     
+                    m 6ekc "...alright, [player]. Maybe later, then?"
     #Base negative responses on monika_love label
     elif mas_isMoniUpset():
         $ mas_gainAffection()
@@ -1020,7 +1021,7 @@ label mas_compliment_missed:
             m 2ekd "Thanks, [player]..."
             show monika 2dka
             $ renpy.say(m, missed_quip_upset)
-            
+
             if mas_getAbsenceLength() >= datetime.timedelta(days=3):
                 m 2ekd "Thank you for coming back. I was starting to worry that you'd forgotten me."
                 if renpy.random.randint(1,2) == 1:
@@ -1048,12 +1049,12 @@ label mas_compliment_missed:
         m 6dkc "..."
         show monika 6dkd
         $ renpy.say(m,missed_quip_dis)
-        
+
         if mas_getAbsenceLength() >= datetime.timedelta(days=3):
             m 2eka "...but at least you haven't forgetten about me yet."
     else:
         m 6ckc "..."
-    
+
     return
 
 init 5 python:

@@ -1347,6 +1347,7 @@ python early:
             """
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
+            TODO: include checkConditional
 
             For variable explanations, please see the static method
             filterEvents
@@ -1421,6 +1422,7 @@ python early:
             Filters the given events dict according to the given filters.
             HOW TO USE: Use ** to pass in a dict of filters. they must match
             the names we use here.
+            TODO: include checkConditional
 
             IN:
                 events - the dict of events we want to filter
