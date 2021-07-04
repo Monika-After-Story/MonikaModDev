@@ -893,16 +893,13 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
-            eventlabel="mas_compliment_missed",
-            prompt="I missed you!",
-            unlocked=False,
-            conditional="not mas_globals.returned_home_this_sesh",
-            action=EV_ACT_UNLOCK
+            eventlabel="mas_compliment_missed21",
+            prompt="I missed you21!",
+            unlocked=True,
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=1) and not store.mas_globals.returned_home_this_sesh and mas_getSessionLength() <= datetime.timedelta(minutes=60)"
         ),
         code="CMP"
     )
-    if mas_globals.returned_home_this_sesh is False:
-        store.mas_unlockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_missed:
     python:
@@ -966,8 +963,8 @@ label mas_compliment_missed:
         ]
     
     $ absence_length = mas_getAbsenceLength()
-
-    $ store.mas_lockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
+    $ mas_flagEVL("mas_compliment_missed21", "CMP", EV_FLAG_HFM)
+    
     if mas_isMoniNormal(higher=True):
         $ mas_gainAffection(2)
         $ hugchance = 2
