@@ -893,10 +893,14 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
-            eventlabel="mas_compliment_missed21",
-            prompt="I missed you21!",
+            eventlabel="mas_compliment_missed",
+            prompt="I missed you!",
             unlocked=True,
-            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=1) and not store.mas_globals.returned_home_this_sesh and mas_getSessionLength() <= datetime.timedelta(minutes=60)"
+            conditional=(
+                "store.mas_getSessionLength() <= datetime.timedelta(minutes=30) "
+                "and store.mas_getAbsenceLength() >= datetime.timedelta(hours=1) "
+                "and not store.mas_globals.returned_home_this_sesh"
+            )
         ),
         code="CMP"
     )
@@ -930,40 +934,40 @@ label mas_compliment_missed:
         ]
         
         missed_quips_upset_cynical = [
-            "...did you really even think of me at all?",
-            "...were you really thinking about me even a little?",
-            "That didn't feel very sincere, [player].",
-            "I'm not sure if you really mean that, [player].",
-            "If you really mean that, then please spend some time with me today.",
-            "If you really meant that, then you'd spend more time with me when you're here.",
-            "You say that, but I don't think you mean it one bit, [player].",
-            "You say that, but I feel like you don't mean it at all, [player]."
+            _("...did you really even think of me at all?"),
+            _("...were you really thinking about me even a little?"),
+            _("That didn't feel very sincere, [player]."),
+            _("I'm not sure if you really mean that, [player]."),
+            _("If you really mean that, then please spend some time with me today."),
+            _("If you really meant that, then you'd spend more time with me when you're here."),
+            _("You say that, but I don't think you mean it one bit, [player]."),
+            _("You say that, but I feel like you don't mean it at all, [player]."),
         ]
 
         missed_quips_upset_hope = [
-            "Thank you for showing me you still care, [player].",
-            "It means a lot to me that you were thinking of me.",
-            "I'm really glad to hear that, [player].",
-            "That's really nice to hear, coming from you.",
-            "I'm happy you've been thinking of me, [player].",
-            "[player]... I'm glad I'm not the only one.",
-            "That means the world to me, [player].",
-            "That makes me feel a lot better, [player]."
+            _("Thank you for showing me you still care, [player]."),
+            _("It means a lot to me that you were thinking of me."),
+            _("I'm really glad to hear that, [player]."),
+            _("That's really nice to hear, coming from you."),
+            _("I'm happy you've been thinking of me, [player]."),
+            _("[player]... I'm glad I'm not the only one."),
+            _("That means the world to me, [player]."),
+            _("That makes me feel a lot better, [player]."),
         ]
         
         missed_quips_dis = [
-            "I'm not sure you mean that, [player]...",
-            "I doubt you mean that, [player]...",
-            "I don't think you really mean that, [player]...",
-            "If only you really meant that, [player]...",
-            "...Why do I think you just don't mean it?",
-            "...Why do I think you're just saying that?",
-            "...I can't really believe in that, [player].",
-            "I don't think that's true, [player]."
+            _("I'm not sure you mean that, [player]..."),
+            _("I doubt you mean that, [player]..."),
+            _("I don't think you really mean that, [player]..."),
+            _("If only you really meant that, [player]..."),
+            _("...Why do I think you just don't mean it?"),
+            _("...Why do I think you're just saying that?"),
+            _("...I can't really believe in that, [player]."),
+            _("I don't think that's true, [player]."),
         ]
     
     $ absence_length = mas_getAbsenceLength()
-    $ mas_flagEVL("mas_compliment_missed21", "CMP", EV_FLAG_HFM)
+    $ mas_flagEVL("mas_compliment_missed", "CMP", EV_FLAG_HFM)
     
     if mas_isMoniNormal(higher=True):
         $ mas_gainAffection(2)
@@ -990,7 +994,11 @@ label mas_compliment_missed:
         $ missed_quip = random.choice(missed_quips)
         show monika 2hublb
         $ renpy.say(m, missed_quip)
-        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) <= hugchance:
+        if (
+            mas_isMoniEnamored(higher=True)
+            and mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12))
+            and renpy.random.randint(1, 50) <= hugchance
+        ):
             m 5rsa "Say, [player]."
             m 5rsc "I was kinda hoping that..."
             m 5fsc "You know, since it's been a little while..."
