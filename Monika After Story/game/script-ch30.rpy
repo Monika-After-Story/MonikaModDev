@@ -1727,11 +1727,7 @@ label ch30_hour:
                 chance = max(mas_getSessionLength().total_seconds() / (4*3600.0), 0.2)
                 if chance >= 1 or random.random() < chance:
                     holdme_ev.unflag(EV_FLAG_HFRS)
-        
-        #Disable the option to say you miss her after about an hour            
-        if mas_getSessionLength() > datetime.timedelta(minutes=60):
-            store.mas_lockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
-        
+
     return
 
 # label for things that should run about once per day
