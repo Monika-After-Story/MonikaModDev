@@ -6,6 +6,11 @@
 # At the beginning, when creating the menu, the compliments
 # database checks the conditionals of the compliments
 # and unlocks them.
+# We only display the compliments that are
+# unlocked, not hidden, within affection range,
+# and don't have a conditional or have a conditional that evaluates to True.
+# If you don't want a dynamic conditional for your compliment, you'd need
+# to use an external event to unlock it from somewhere else.
 
 
 # dict of tples containing the stories event data
@@ -57,23 +62,17 @@ init 5 python:
 
 label monika_compliments:
     python:
-        import store.mas_compliments as mas_compliments
-
         # Unlock any compliments that need to be unlocked
         Event.checkEvents(mas_compliments.compliment_database)
 
-        # filter comps
-        filtered_comps = Event.filterEvents(
-            mas_compliments.compliment_database,
-            unlocked=True,
-            aff=mas_curr_affection,
-            flag_ban=EV_FLAG_HFM
-        )
-
         # build menu list
         compliments_menu_items = [
-            (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
-            for k in filtered_comps
+            (ev.prompt, ev_label, not seen_event(ev_label), False)
+            for ev_label, ev in mas_compliments.compliment_database.iteritems()
+            if (
+                Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
+                and ev.checkConditional()
+            )
         ]
 
         # also sort this list
@@ -109,7 +108,8 @@ init 5 python:
             prompt="You're beautiful!",
             unlocked=True
         ),
-        code="CMP")
+        code="CMP"
+    )
 
 label mas_compliment_beautiful:
     if not renpy.seen_label("mas_compliment_beautiful_2"):
@@ -323,7 +323,8 @@ init 5 python:
             eventlabel="mas_compliment_hair",
             prompt="I love your hair!",
             unlocked=True
-        ),code="CMP"
+        ),
+        code="CMP"
     )
 
 label mas_compliment_hair:
@@ -718,7 +719,7 @@ init 5 python:
             prompt="I look up to you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_lookuptoyou:
@@ -768,7 +769,7 @@ init 5 python:
             prompt="I'm always thinking about you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_thinking_of_you:
@@ -887,7 +888,7 @@ label mas_compliment_humor_3:
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -895,15 +896,15 @@ init 5 python:
             eventlabel="mas_compliment_missed",
             prompt="I missed you!",
             unlocked=False,
-            conditional="not store.mas_globals.returned_home_this_sesh"
+            conditional="not mas_globals.returned_home_this_sesh",
+            action=EV_ACT_UNLOCK
         ),
         code="CMP"
     )
-    if mas_globals.returned_home_this_sesh is False and store.mas_getAbsenceLength() >= datetime.timedelta(seconds=1):
-        #mas_unflagEVL("mas_compliment_missed", "EVE", "EV_FLAG_HFM")
+    if mas_globals.returned_home_this_sesh is False:
         store.mas_unlockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
 
-label mas_compliment_missed:    
+label mas_compliment_missed:
     python:
         #It's a fine day with you around!
         missed_quips = [
@@ -930,51 +931,17 @@ label mas_compliment_missed:
             _("I was lonely waiting for you!"),
             _("I've been thinking of you while you were gone!"),
         ]
-        
-        missed_quips_upset_cynical = [
-            "...did you really even think of me at all?",
-            "...were you really thinking about me even a little?",
-            "That didn't feel very sincere, [player].",
-            "I'm not sure if you really mean that, [player].",
-            "If you really mean that, then please spend some time with me today.",
-            "If you really meant that, then you'd spend more time with me when you're here.",
-            "You say that, but I don't think you mean it one bit, [player].",
-            "You say that, but I feel like you don't mean it at all, [player]."
-        ]
-
-        missed_quips_upset_hope = [
-            "Thank you for showing me you still care, [player].",
-            "It means a lot to me that you were thinking of me.",
-            "I'm really glad to hear that, [player].",
-            "That's really nice to hear, coming from you.",
-            "I'm happy you've been thinking of me, [player].",
-            "[player]... I'm glad I'm not the only one.",
-            "That means the world to me, [player].",
-            "That makes me feel a lot better, [player]."
-        ]
-        
-        missed_quips_dis = [
-            "I'm not sure you mean that, [player]...",
-            "I doubt you mean that, [player]...",
-            "I don't think you really mean that, [player]...",
-            "If only you really meant that, [player]...",
-            "...Why do I think you just don't mean it?",
-            "...Why do I think you're just saying that?",
-            "...I can't really believe in that, [player].",
-            "I don't think that's true, [player]."
-        ]
-        
+        missed_quip = random.choice(missed_quips)
     $ store.mas_lockEventLabel("mas_compliment_missed", eventdb=store.mas_compliments.compliment_database)
-    #$ mas_flagEVL("mas_compliment_missed", "EVE", "EV_FLAG_HFM")#HFRS
-    $ absence_length = mas_getAbsenceLength()
     if mas_isMoniNormal(higher=True):
         $ mas_gainAffection(2)
         $ hugchance = 2
-        
+
         #Really short absences
-        if absence_length < datetime.timedelta(hours=1):
+        if mas_getAbsenceLength() < datetime.timedelta(hours=1):
             $ hugchance = 0
-        if absence_length >= datetime.timedelta(days=3):
+
+        if mas_getAbsenceLength() >= datetime.timedelta(days=3):
             $ missedchance = renpy.random.randint(1,3)
             if missedchance == 1:
                 m 6wub "I missed you a ton, [player]!"
@@ -982,17 +949,15 @@ label mas_compliment_missed:
                 m 6wub "I missed you a whole lot, [player]!"
             else:
                 m 6wubfb "...I ree{w=0.1}ee{w=0.1}ee{w=0.1}ally missed you [player]!"
-            $ hugchance = 17 
-            if absence_length >= datetime.timedelta(days=7):
+            $ hugchance = 17
+            if mas_getAbsenceLength() >= datetime.timedelta(days=7):
                 $ hugchance = 50
         else:
             m 6eub "I missed you too, [player]!"
-        
-        $ missed_quip = random.choice(missed_quips)
-        
+
         show monika 2hublb
         $ renpy.say(m, missed_quip)
-        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) <= hugchance:    
+        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1,50) <= hugchance:
             m 5rsa "Say, [player]."
             m 5rsc "I was kinda hoping that..."
             m 5fsc "You know, since it's been a little while..."
@@ -1004,28 +969,51 @@ label mas_compliment_missed:
                     call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
                     call monika_holdme_start
                     call monika_holdme_end
-                    
+
                     m 2fkblb "Mmm... that was really nice, [player]."
                     m 2ekbsa "You really know how to make a girl feel special!"
                     m 7rublsdra "Anyway..."
                     m 1esa "What shall we do today, [mas_get_player_nickname()]?"
-                    
+
                     $ mas_gainAffection(0.75)#hug aff
                     return
                 "Not right now.":
                     #a lil sad
                     $ mas_loseAffection()
-                    m 6ekc "...alright, [player]. Maybe later, then?"     
+                    m 6ekc "...alright, [player]. Maybe later, then?"
     #Base negative responses on monika_love label
     elif mas_isMoniUpset():
         $ mas_gainAffection()
+        python:
+            missed_quips_upset_cynical = [
+                "...did you really even think of me at all?",
+                "...were you really thinking about me even a little?",
+                "That didn't feel very sincere, [player].",
+                "I'm not sure if you really mean that, [player].",
+                "If you really mean that, then please spend some time with me today.",
+                "If you really meant that, then you'd spend more time with me when you're here.",
+                "You say that, but I don't think you mean it one bit, [player].",
+                "You say that, but I feel like you don't mean it at all, [player]."
+            ]
+
+            missed_quips_upset_hope = [
+                "Thank you for showing me you still care, [player].",
+                "It means a lot to me that you were thinking of me.",
+                "I'm really glad to hear that, [player].",
+                "That's really nice to hear, coming from you.",
+                "I'm happy you've been thinking of me, [player].",
+                "[player]... I'm glad I'm not the only one.",
+                "That means the world to me, [player].",
+                "That makes me feel a lot better, [player]."
+            ]
+
         if _mas_getAffection() <= -50:
             $ missed_quip_upset = renpy.random.choice(missed_quips_upset_cynical)
             m 2rkc "..."
             show monika 2ekd
             $ renpy.say(m, missed_quip_upset)
 
-            if absence_length >= datetime.timedelta(days=3):
+            if mas_getAbsenceLength() >= datetime.timedelta(days=3):
                 m 2ekd "...but at least you didn't forget about me."
 
         else:
@@ -1033,8 +1021,8 @@ label mas_compliment_missed:
             m 2ekd "Thanks, [player]..."
             show monika 2dka
             $ renpy.say(m, missed_quip_upset)
-            
-            if absence_length >= datetime.timedelta(days=3):
+
+            if mas_getAbsenceLength() >= datetime.timedelta(days=3):
                 m 2ekd "Thank you for coming back. I was starting to worry that you'd forgotten me."
                 if renpy.random.randint(1,2) == 1:
                     m 2eka "I...{w=0.5}I also really missed you."
@@ -1046,16 +1034,27 @@ label mas_compliment_missed:
                 else:
                     m 2eka "I...{w=0.5}I missed you too."
     elif mas_isMoniDis():
-        $ missed_quip_dis = renpy.random.choice(missed_quips_dis)
+        python:
+            missed_quips_dis = [
+                "I'm not sure you mean that, [player]...",
+                "I doubt you mean that, [player]...",
+                "I don't think you really mean that, [player]...",
+                "If only you really meant that, [player]...",
+                "...Why do I think you just don't mean it?",
+                "...Why do I think you're just saying that?",
+                "...I can't really believe in that, [player].",
+                "I don't think that's true, [player]."
+            ]
+            missed_quip_dis = renpy.random.choice(missed_quips_dis)
         m 6dkc "..."
         show monika 6dkd
         $ renpy.say(m,missed_quip_dis)
-        
-        if absence_length >= datetime.timedelta(days=3):
+
+        if mas_getAbsenceLength() >= datetime.timedelta(days=3):
             m 2eka "...but at least you haven't forgetten about me yet."
     else:
         m 6ckc "..."
-    
+
     return
 
 init 5 python:
