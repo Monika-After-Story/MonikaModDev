@@ -932,19 +932,8 @@ label mas_compliment_missed:
             _("I was lonely waiting for you!"),
             _("I've been thinking of you while you were gone!"),
         ]
-        
-        missed_quips_upset_cynical = [
-            _("...did you really even think of me at all?"),
-            _("...were you really thinking about me even a little?"),
-            _("That didn't feel very sincere, [player]."),
-            _("I'm not sure if you really mean that, [player]."),
-            _("If you really mean that, then please spend some time with me today."),
-            _("If you really meant that, then you'd spend more time with me when you're here."),
-            _("You say that, but I don't think you mean it one bit, [player]."),
-            _("You say that, but I feel like you don't mean it at all, [player]."),
-        ]
 
-        missed_quips_upset_hope = [
+        missed_quips_upset = [
             _("Thank you for showing me you still care, [player]."),
             _("It means a lot to me that you were thinking of me."),
             _("I'm really glad to hear that, [player]."),
@@ -1026,32 +1015,22 @@ label mas_compliment_missed:
     elif mas_isMoniUpset():
         $ mas_gainAffection()
 
-        if _mas_getAffection() <= -50:
-            $ missed_quip_upset = renpy.random.choice(missed_quips_upset_cynical)
-            m 2rkc "..."
-            show monika 2ekd
-            $ renpy.say(m, missed_quip_upset)
+        $ missed_quip_upset = renpy.random.choice(missed_quips_upset)
+        m 2ekd "Thanks, [player]..."
+        show monika 2dka
+        $ renpy.say(m, missed_quip_upset)
 
-            if absence_length >= datetime.timedelta(days=3):
-                m 2ekd "...but at least you didn't forget about me."
-
-        else:
-            $ missed_quip_upset = renpy.random.choice(missed_quips_upset_hope)
-            m 2ekd "Thanks, [player]..."
-            show monika 2dka
-            $ renpy.say(m, missed_quip_upset)
-
-            if absence_length >= datetime.timedelta(days=3):
-                m 2ekd "Thank you for coming back. I was starting to worry that you'd forgotten me."
-                if renpy.random.randint(1,2) == 1:
-                    m 2eka "I...{w=0.5}I also really missed you."
-                else:
-                     m 2eka "I...{w=0.5}I really missed you too."
+        if absence_length >= datetime.timedelta(days=3):
+            m 2ekd "Thank you for coming back. I was starting to worry that you'd forgotten me."
+            if renpy.random.randint(1,2) == 1:
+                m 2eka "I...{w=0.5}I also really missed you."
             else:
-                if renpy.random.randint(1,2) == 1:
-                    m 2eka "I...{w=0.5}I also missed you."
-                else:
-                    m 2eka "I...{w=0.5}I missed you too."
+                m 2eka "I...{w=0.5}I really missed you too."
+        else:
+            if renpy.random.randint(1,2) == 1:
+                m 2eka "I...{w=0.5}I also missed you."
+            else:
+                m 2eka "I...{w=0.5}I missed you too."
     elif mas_isMoniDis():
         $ missed_quip_dis = renpy.random.choice(missed_quips_dis)
         m 6dkc "..."
