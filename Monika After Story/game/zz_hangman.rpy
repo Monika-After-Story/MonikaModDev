@@ -362,12 +362,7 @@ init -1 python in mas_hangman:
 
         RETURNS: display word
         """
-        dash_tokens = word.split("-")
-
-        return list("-".join([
-            "_" * len(token)
-            for token in dash_tokens
-        ]))
+        return ["_" if c != "-" else "-" for c in word]
 
 
 # post processing
