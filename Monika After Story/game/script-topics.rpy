@@ -1648,7 +1648,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    if mas_safeToRefDokis():
+    if not mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."

@@ -539,10 +539,10 @@ label mas_player_name_enter_name_loop(input_prompt):
         else:
             # easter egg name checks
             if store.mas_egg_manager.is_eggable_name(lowername):
-                m 1ttu "Are you sure this is your real name, or are you missing with me?{nw}"
+                m 1ttu "Are you sure this is your real name, or are you messing with me?{nw}"
                 $ _history_list.pop()
                 menu:
-                    m "Are you sure this is your real name, or are you missing with me?{fast}"
+                    m "Are you sure this is your real name, or are you messing with me?{fast}"
 
                     "Yes, this is my name":
                         $ persistent._mas_disable_eggs = True
@@ -551,7 +551,7 @@ label mas_player_name_enter_name_loop(input_prompt):
                         $ persistent._mas_disable_eggs = False
 
             python:
-                old_name = persistent.playername
+                old_name = persistent.playername.lower()
                 done = True
 
                 # adjust names
