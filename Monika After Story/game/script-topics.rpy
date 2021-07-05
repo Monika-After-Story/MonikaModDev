@@ -999,7 +999,7 @@ label monika_sayori:
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
     if (
-            not renpy.seen_label("monika_sayori")
+            mas_getEVL_shown_count("monika_sayori") < 1
             and mas_safeToRefDokis()
         ):
         m "You're not still hung up over it, right?"
