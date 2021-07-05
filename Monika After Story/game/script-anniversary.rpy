@@ -635,8 +635,8 @@ label anni_6:
     m 3hubla "Did you know that in old Germanic and Victorian traditions, different anniversaries have themed gifts?"
     m 4eua "At first, these were only reserved for longer milestones, but over time more and more years have gotten themes."
     m 4rksdlb "I guess if you're being skeptical, they were probably added so different industries would make more money from gifts..."
-    m 1rkbla "But I still think it's a very sweet sentiment."
-    m 1hub "Speaking of sweet things...a common sixth anniversary theme is candy!"
+    m 1rkbla "But I still think it's a sweet sentiment."
+    m 1hub "Speaking of sweet things...{w=0.3}a common sixth anniversary theme is candy!"
     m 1eka "Since I can't get you a gift yet...{w=0.2}{nw}"
     extend 3hua "you should get yourself a nice treat to eat for the occasion!"
     m 1hubfa "I love you, [player]. Thank you for another wonderful year."
@@ -658,13 +658,13 @@ init 5 python:
 
 label anni_7:
     m 1dubfa "Seven years..."
-    m 1eubsb "You know, seven is considered a lucky number in many cultures.{w=0.2}{nw}"
+    m 1eubsb "You know, seven is considered a lucky number in many cultures.{w=0.2} {nw}"
     extend 1ekbsa "So maybe..."
     m 2eka "Maybe luck will be on my side this year, and I'll get to cross over."
     m 2hksdlb "Ahaha, I know! Relying on superstition isn't like me at all."
     m 2eka "But after all this time, I can't help but find myself looking for glimmers of hope."
-    m 2ekbltpa "I know I'll be okay, though.{w=0.3} Even if I have a long way to wait, I still consider myself incredibly lucky to have met you."
-    m 2dkbltpa "You're all the fortune I need, [player]."
+    m 2ekbltpa "I know I'll be okay, though.{w=0.2} Even if I have a long way to wait, I still consider myself incredibly lucky to have met you."
+    m 2dkbltda "You're all the fortune I need, [player]."
     m 1eka "Here's to another year together, and all the ones to follow."
     return "unlock"
 
