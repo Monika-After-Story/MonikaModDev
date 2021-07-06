@@ -126,7 +126,7 @@ label mas_piano_songchoice:
         menu:
             m "Did you want to play a song or play on your own, [player]?{fast}"
             "Play a song.":
-                m "Which song?"
+                m "Which song?" nointeract
                 show monika at t21
                 call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
                 show monika at t11
@@ -134,7 +134,7 @@ label mas_piano_songchoice:
                 $ pnml = _return
 
                 # song selected
-                if pnml != "None":
+                if pnml is not None:
 
                     # reaction in picking a song
                     m 1hua "I'm so excited to hear you play, [player]!"
@@ -175,8 +175,10 @@ label mas_piano_setupstart:
 #    show text quit_label zorder 10 at piano_quit_label
 
     # call the display
-    $ ui.add(PianoDisplayable(play_mode, pnml=pnml))
+    $ piano_displayable_obj = PianoDisplayable(play_mode, pnml=pnml)
+    $ ui.add(piano_displayable_obj)
     $ full_combo,is_win,is_practice,post_piano = ui.interact()
+    $ del piano_displayable_obj
 
     # post call cleanup
 #    hide text quit_label
@@ -190,7 +192,7 @@ label mas_piano_setupstart:
     # granting XP:
     # you are good player
     if full_combo and not persistent._mas_ever_won['piano']:
-        $persistent._mas_ever_won['piano']=True
+        $ persistent._mas_ever_won['piano'] = True
 
     # call the post label
     call expression post_piano from _zzpk_ppel
@@ -1292,6 +1294,16 @@ init -3 python in mas_piano_keys:
             """
             return (self.name, self.full_combos, self.wins, self.losses)
 
+        def _gen_pnm_sprites(self):
+            """
+            Generates sprites from pnm's in this list
+            """
+            for pnm in self.pnm_list:
+                for img_name in (pnm.express, pnm.postexpress):
+                    if not renpy.has_image(img_name):
+                        # Cut off "monika " from the code
+                        exp = img_name[7:]
+                        store.mas_sprites.generate_images(exp)
 
         @staticmethod
         def fromJSON(jobj):
@@ -1927,12 +1939,12 @@ init 800 python in mas_piano_keys:
     addStockSongs()
 
     # and now we should only add certain songs to the main pnml_db
-    __stock_song_names = [
+    STOCK_SONG_NAMES = [
         "Happy Birthday",
         "Your Reality"
 #        "D--p-c--o"
     ]
-    for _song in __stock_song_names:
+    for _song in STOCK_SONG_NAMES:
         if _song in pnml_bk_db:
             pnml_db[_song] = pnml_bk_db[_song]
 
@@ -1957,14 +1969,16 @@ init 800 python in mas_piano_keys:
         ASSUMES:
             pnml_db
         """
-        song_list = list()
+        # We only include stock songs if the player's played them successfully before
+        song_list = [
+            (pnml.name, pnml, False, False)
+            for pnml in pnml_db.itervalues()
+            if (pnml.name not in STOCK_SONG_NAMES or pnml.wins > 0)
+        ]
 
-        for k in pnml_db:
-            pnml = pnml_db.get(k)
-            if pnml.wins > 0:
-                song_list.append((pnml.name, pnml, False, False))
+        last_item = ("Nevermind", None, False, False, 10)
 
-        return song_list, ("Nevermind", "None", False, False, 10)
+        return song_list, last_item
 
 # make this later than mas_piano_keys
 init 810 python:
@@ -2024,6 +2038,13 @@ init 810 python:
         HAPPY = "monika 1hua"
         FAILED = "monika 1lksdla"
         CONFIGGING = "monika 3eua"
+        ALL_EXPS = (
+            DEFAULT,
+            AWKWARD,
+            HAPPY,
+            FAILED,
+            CONFIGGING
+        )
 #        CONFIG_CHANGE = "monika 3a"
 
         # Text related
@@ -2656,10 +2677,10 @@ init 810 python:
             # NOTE: highly recommend not adding too many detections
             self.pnml_list = []
             if self.mode == self.MODE_FREE:
-                self.pnml_list = [
-                    mas_piano_keys.pnml_db[k] for k in mas_piano_keys.pnml_db
-                    if mas_piano_keys.pnml_db[k].wins == 0
-                ]
+                for _pnml in mas_piano_keys.pnml_db.itervalues():
+                    if _pnml.wins == 0:
+                        self.pnml_list.append(_pnml)
+                        _pnml._gen_pnm_sprites()
 
             # list of notes we have played
             self.played = list()
@@ -2703,6 +2724,7 @@ init 810 python:
 
             # song mode has a lot of things
             if self.mode == self.MODE_SONG:
+                self.pnml._gen_pnm_sprites()
                 self.pnml.resetPNM()
                 self.match = self.pnml.pnm_list[0]
                 self.setsongmode(True)
@@ -2728,6 +2750,10 @@ init 810 python:
             # this should be disabled at start
             self._button_cancel.disable()
             self._button_reset.disable()
+
+            for exp in PianoDisplayable.ALL_EXPS:
+                if not renpy.has_image(exp):
+                    store.mas_sprites.generate_images(exp[7:])
 
             # integer to handle redraw calls.
             # NOTE: when we want to redraw, we add to this value. Render
