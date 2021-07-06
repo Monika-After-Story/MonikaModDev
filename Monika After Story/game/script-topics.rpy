@@ -16564,7 +16564,7 @@ label monika_piano_lessons:
         m 3eka "I'm actually not {i}that{/i} good at playing piano, [mas_get_player_nickname()]."
         m 3rkd "Certainly not good enough to be teaching other people yet..."
 
-    m 2eud "If you can believe it, I started to learn after starting the club--so not long before I met you."
+    m 2eud "If you can believe it, I started to learn after starting the club--{w=0.2}so not long before I met you."
     m "It was really fortunate that I did, because piano became such an important part of reaching out to you."
     m 2ekc "I was still afraid of breaking too far from the game's script at the time, {w=0.2}{nw}"
     extend 7eka "but I wanted--no, I {w=0.2}{i}needed{/i}{w=0.2} to communicate my feelings to you somehow."
