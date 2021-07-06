@@ -186,7 +186,6 @@ label mas_piano_setupstart:
     $ enable_esc()
     $ mas_startup_song()
     $ pnmlSaveTuples()
-    $ del piano_displayable_obj
 
     show monika 1hua at t11
 
