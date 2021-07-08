@@ -271,7 +271,8 @@ label mas_transgender_reveal:
                 $ _history_list.pop()
                 menu:
                     m "What gender do you identify as now?"
-                    "Male.":
+                    "Male.": 
+                    # TODO: add gender persistent changes
                     
                     "Female.":
                     
