@@ -475,7 +475,7 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            #"diary_entry":13, # NOTE: this will not be removed until later
+            "diary_entry":13, # TODO: for diary!
             "last_seen":14,
             "years":15,
             "sensitive":16,
@@ -489,7 +489,7 @@ python early:
             "eventlabel",
             "locks",
             "rules",
-            "diary_entry",
+            #"diary_entry",
             "flags"
         )
 
@@ -549,7 +549,7 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-#                diary_entry=None,
+                diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
@@ -676,7 +676,7 @@ python early:
                 end_date,
                 unlock_date,
                 0, # shown_count
-                "", # diary_entry
+                diary_entry,
                 last_seen,
                 years,
                 sensitive,
@@ -726,7 +726,7 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-#                    self.diary_entry = diary_entry
+                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
                     self.sensitive = sensitive

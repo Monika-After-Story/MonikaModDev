@@ -1604,7 +1604,6 @@ label monikaroom_greeting_ear_rmrf:
 
         m "I shouldn't trust the Internet so blindly..."
 
->>>>>>> content
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
@@ -1686,10 +1685,6 @@ label monikaroom_greeting_opendoor_locked:
     m "Did I scare you, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Did I scare you, [player]?"
-        "Yes":
-            m "Aww, sorry."
-
         m "Did I scare you, [player]?{fast}"
         "Yes.":
             if mas_isMoniNormal(higher=True):
@@ -1707,6 +1702,8 @@ label monikaroom_greeting_opendoor_locked:
                     ), 
                     replace=True
                 )
+
+        "No.":
 
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             $ _history_list.pop()

@@ -1106,7 +1106,7 @@ init python in mas_diary:
                 output.write("\n")
 
                 # increase the P
-                entry_count + =1
+                entry_count += 1
 
             # return PS entries
             outstr = output.getvalue()
@@ -1471,7 +1471,7 @@ init 1 python in mas_diary:
         #   2u - 2 digit current day, unpadded (date)
         #   f - full word current day
         #   s - short/abbrv word current day
-        "D": _dk_day
+        "D": _dk_day,
 
         # current hour
         # h|<modifier>
@@ -1590,7 +1590,7 @@ init 1 python in mas_diary:
         #   m. - use fractions in minute granularity (x,y minutes)
         #   s - limit to seconds granularity (xxxx seconds)
         #   ms - # TODO (microseconds?)
-        "tss": _dk_time_since_start,
+        #"tss": _dk_time_since_start,
     }
 
 
@@ -1762,6 +1762,7 @@ init 2018 python:
         # NOTE: debug
         # template_choice should be an int
         sel_template = entry_templates[template_choice]
+        diary_kws = mas_diary.diary_keywords_gen
     
         # TODO,if the file doesnt exist, use "w"
         # otherwise, use "a"
