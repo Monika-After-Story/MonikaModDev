@@ -1,0 +1,30 @@
+{
+    "__author": "LanvalLime",
+    "version": 3,
+    "type": 0,
+    "name": "lanvallime_ribbon_sky_blue",
+    "img_sit": "lanvallime_ribbon_sky_blue",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "mux_type": [
+        "ribbon"
+    ],
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Ribbon (Sky Blue)",
+        "thumb": "lanvallime_ribbon_sky_blue",
+        "group": "ribbon",
+        "hover_dlg": [
+            "Have you ever been cloud watching?",
+            "Have you ever been cloud gazing?"
+        ],
+        "select_dlg": [
+            "You always make me feel like I'm in the clouds, [player]."
+        ]
+    },
+    "giftname": "skyblueribbon"
+}

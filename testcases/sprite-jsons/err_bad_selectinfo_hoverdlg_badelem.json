@@ -1,0 +1,17 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "test",
+        "group": "test",
+        "hover_dlg": [
+            "valid elem",
+            false,
+            10
+        ]
+    }
+}

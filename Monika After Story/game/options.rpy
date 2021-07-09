@@ -6,24 +6,20 @@
 
 
 ## Basics ######################################################################
+init -999:
+    ## A human-readable name of the game. This is used to set the default window
+    ## title, and shows up in the interface and error reports.
+    ##
+    ## The _() surrounding the string marks it as eligible for translation.
+    define config.name = "Monika After Story"
 
-## A human-readable name of the game. This is used to set the default window
-## title, and shows up in the interface and error reports.
-##
-## The _() surrounding the string marks it as eligible for translation.
-
-define config.name = "Monika After Story"
-
+    ## The version of the game.
+    define config.version = "0.12.2"
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
 define gui.show_name = False
-
-
-## The version of the game.
-
-define config.version = "0.7.2"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -102,8 +98,8 @@ define config.window = "auto"
 
 ## Transitions used to show and hide the dialogue window
 
-define config.window_show_transition = Dissolve(.2)
-define config.window_hide_transition = Dissolve(.2)
+define config.window_show_transition = dissolve_textbox
+define config.window_hide_transition = dissolve_textbox
 
 
 ## Preference defaults #########################################################
@@ -153,12 +149,16 @@ define config.allow_skipping = True
 define config.has_autosave = False
 define config.autosave_on_quit = False
 define config.autosave_slots = 0
-define config.layers = [ 'master', 'transient', 'screens', 'overlay', 'front' ]
+define config.layers = ["master", "transient", "minigames", "screens", "overlay", "front"]
 define config.image_cache_size = 64
-define config.predict_statements = 50
+define config.debug_image_cache = config.developer
+define config.predict_statements = 5
 define config.rollback_enabled = config.developer
 define config.menu_clear_layers = ["front"]
 define config.gl_test_image = "white"
+define config.label_overrides = {
+    "_choose_renderer": "mas_choose_renderer_override"
+}
 #define config.gl_resize = False
 
 init python:
@@ -229,7 +229,7 @@ init python:
     build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
     build.classify("game/dev/*.*",None) #But not the dev folder
     build.classify("README.html",build.name) #Included help file for mod installation
-    build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
+    build.classify("game/python-packages/**",build.name)#Additional python pacakges
     build.classify("CustomIcon**.**",build.name)
 
 

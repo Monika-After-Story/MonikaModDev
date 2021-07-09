@@ -1,0 +1,23 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 1,
+    "name": "orcaramelo_ponytailbraid",
+    "img_sit": "orcaramelo_ponytailbraid",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "ribbon": true,
+        "braidstrand": true
+    },
+    "select_info": {
+        "display_name": "Ponytail with Braid",
+        "thumb": "orcaramelo_ponytailbraid",
+        "group": "hair"
+    },
+    "unlock": true
+}

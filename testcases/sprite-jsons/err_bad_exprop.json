@@ -1,0 +1,11 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "ex_props": {
+        "valid": 10,
+        "invalid": []
+    }
+}

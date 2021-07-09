@@ -1,0 +1,29 @@
+{
+    "__author": "LanvalLime",
+    "version": 3,
+    "type": 0,
+    "name": "lanvallime_ribbon_lilac",
+    "img_sit": "lanvallime_ribbon_lilac",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "mux_type": [
+        "ribbon"
+    ],
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Ribbon (Lilac)",
+        "thumb": "lanvallime_ribbon_lilac",
+        "group": "ribbon",
+        "hover_dlg": [
+            "This looks like it would smell nice..."
+        ],
+        "select_dlg": [
+            "Just like you!"
+        ]
+    },
+    "giftname": "lilacribbon"
+}

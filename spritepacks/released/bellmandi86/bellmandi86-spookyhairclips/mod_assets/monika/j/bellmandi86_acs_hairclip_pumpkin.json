@@ -1,0 +1,30 @@
+{
+    "__author": "bellmandi86",
+    "version": 3,
+    "type": 0,
+    "name": "bellmandi86_hairclip_pumpkin",
+    "img_sit": "bellmandi86_hairclip_pumpkin",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "stay_on_start": true,
+    "ex_props": {
+        "o31": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Pumpkin)",
+        "thumb": "bellmandi86_hairclip_pumpkin",
+        "group": "left-hair-clip",
+        "select_dlg": [
+            "What do you get if you divide the circumference of a pumpkin by its diameter? Pumpkin Pi!",
+            "Bibbidi-bobbidi-boo!",
+            "I wonder if this used to be a carriage...",
+            "It's the great pumpkin, [player]!",
+            "That's so cute, my little pumpkin~"
+        ]
+    },
+    "giftname": "pumpkinhairclip"
+}

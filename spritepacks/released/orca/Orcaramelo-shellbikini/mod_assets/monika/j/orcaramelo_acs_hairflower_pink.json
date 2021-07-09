@@ -1,0 +1,29 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 0,
+    "name": "orcaramelo_hairflower_pink",
+    "img_sit": "orcaramelo_hairflower_pink",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "stay_on_start": true,
+    "rec_layer": 5,
+    "priority": 20,
+    "acs_type": "left-hair-flower",
+    "mux_type": [
+        "left-hair-flower"
+    ],
+    "ex_props": {
+        "left-hair-strand-eye-level": true
+    },
+    "select_info": {
+        "display_name": "Flower (Pink)",
+        "thumb": "orcaramelo_hairflower_pink",
+        "group": "left-hair-flower"
+    },
+    "giftname": "pinkflower"
+}
+
+

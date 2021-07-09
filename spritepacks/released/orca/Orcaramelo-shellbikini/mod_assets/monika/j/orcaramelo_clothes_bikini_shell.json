@@ -1,0 +1,29 @@
+{
+    "__author": "Orcaramelo",
+    "version": 3,
+    "type": 2,
+    "name": "orcaramelo_bikini_shell",
+    "img_sit": "orcaramelo_bikini_shell",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "bikini": true,
+        "bare-shoulders": true
+    },
+    "select_info": {
+        "display_name": "Bikini (Shell)",
+        "thumb": "orcaramelo_bikini_shell",
+        "group": "clothes",
+        "select_dlg": [
+            "Seashells seashells, by the sea shore~",
+            "Who says mermaids aren't real?"
+        ]
+    },
+    "giftname": "shellbikini",
+    "pose_arms": {}
+}
+

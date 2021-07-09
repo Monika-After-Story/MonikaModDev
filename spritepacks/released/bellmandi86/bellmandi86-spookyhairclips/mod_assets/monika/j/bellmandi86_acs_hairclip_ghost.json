@@ -1,0 +1,30 @@
+{
+    "__author": "bellmandi86",
+    "version": 3,
+    "type": 0,
+    "name": "bellmandi86_hairclip_ghost",
+    "img_sit": "bellmandi86_hairclip_ghost",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "left-hair-clip",
+    "stay_on_start": true,
+    "ex_props": {
+        "o31": true
+    },
+    "select_info": {
+        "display_name": "Hairclip (Ghost)",
+        "thumb": "bellmandi86_hairclip_ghost",
+        "group": "left-hair-clip",
+        "select_dlg": [
+            "Spoooooooooky!",
+            "BOO!",
+            "Who ya gonna call?",
+            "I ain't afraid of no ghost.",
+            "If there's something strange in your neighborhood..."
+        ]
+    },
+    "giftname": "ghosthairclip"
+}
