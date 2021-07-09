@@ -6638,6 +6638,189 @@ init 21 python:
         renpy.show("monika " + exp_code)
         return ""
 
+    def valuepluralize(value, unit):
+        """
+        Version of pluralize that also checks the given value and returns it in
+        the string.
+
+        IN:
+            value - numerical value we are comparing against
+            unit - the singular unit we may pluralize
+
+        RETURNS:
+            potentially pluralized unit + value
+        """
+        if value == 0:
+            # valueless
+            return ""
+
+        # otherwise we can return this appropriately
+        return "{0} {1}".format(value, pluralize(value, unit))
+
+
+    def gethours(t_delta=None, t_seconds=None):
+        """
+        Gets the number of hours from either a time delta or number of seconds.
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get hours from
+                (Default: None)
+            t_seconds - the number of seconds to get hours from
+                (Default: None)
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of hours in the given timedelta
+            [1]: remainder number of seconds
+        """
+        if t_delta is not None:
+            t_seconds = t_delta.total_seconds()
+
+        if t_seconds is None:
+            return (0, 0)
+
+        return (int(t_seconds / 3600), int(t_seconds % 3600))
+
+
+    def getminutes(t_delta=None, t_seconds=None):
+        """
+        Gest the number of minutes from either a timedelta or number of secs.
+        timedelta has higher pirority
+
+        IN:
+            t_delta - the timedelta to get minutes from
+                (Default: None)
+            t_seconds - the number of seconds to get minutes from
+                (Default: None)
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of minutes in the given timedelta
+            [1]: remainder number of seconds
+        """
+        if t_delta is not None:
+            t_seconds = t_delta.total_seconds()
+
+        if t_seconds is None:
+            return (0, 0)
+
+        return (int(t_seconds / 60), int(t_seconds % 60))
+
+
+    def getmonths(t_delta=None, t_weeks=None, t_days=None, groupbydays=False):
+        """
+        Gets the number of months from either a timedelta, weeks, or days
+        depending on the input args
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get months from
+                (Default: None)
+            t_weeks - number of weeks to get months from
+                (Default: None)
+            t_days - number of days to get months from
+                (Default: None)
+            groupbydays - True means to use 30 days for a month. False will use
+                4 weeks for a month (28 days)
+                NOTE: True will use t_days, False will use t_weeks
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of months in the given timedelta
+            [1]: reaminder number of weeks, days if groupbydays is True
+        """
+        # TODO
+
+
+    def getweeks(t_delta=None, t_days=None):
+        """
+        Gets the number of weeks from either a timedelta or number of days
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get weeks from
+                (Default: None)
+            t_days - the number of days to get weeks from
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of weeks in the given timedelta
+            [1]: remainder number of days
+        """
+        if t_delta is not None:
+            t_days = t_delta.days
+
+        if t_days is None:
+            return (0, 0)
+
+        return (int(t_days / 7), int(t_days % 7))
+
+
+    def pluralize(value, unit):
+        """
+        Generates an appropriate pluralized string if required for a value
+        ASSUMEs that the unit given is pluralized with a simple s
+
+        IN:
+            value - numerical value we are comparing against
+            unit - the singular unit we may pluralize
+
+        RETURNS:
+            potentially pluralized unit
+        """
+        if value == 1:
+            return unit
+
+        return unit + "s"
+
+
+    def randrange(count, start, end, order=False, dups=False):
+        """
+        Generates a range of count numbers within the specified start-end range
+        The selected numbers are picked randomly (unless count == end-start)
+        IN:
+            count - number of numbers to generate
+            start - starting number (inclusive)
+            end - ending number (inclusive)
+            order - True will sort the resulting range. False will not.
+                NOTE: sort is from least to greatest
+                (Default: False)
+            dups - True will allow duplicate values. False will not
+                (Default: False)
+        RETURNS: an iterable range of numbers, or None if a range could not
+            be built
+        """
+        if start > end:
+            # this is impossible, wtf you doin
+            return None
+
+        if not dups:
+
+            if count > (end - start + 1):
+                # no dups but pick more than the given range? wtf man
+                return None
+
+            if order and count == (end - start + 1):
+                # no dups, in order, and count is exact to range
+                return range(start, end + 1)
+
+        # otherwise, time to generate a range
+        r_range = list()
+        for index in range(0, count):
+
+            # generate a rando
+            sel_num = renpy.random.randint(start, end)
+            while not dups and sel_num in r_range:
+                sel_num = renpy.random.randint(start, end)
+
+            r_range.append(sel_num)
+
+        if order:
+            r_range.sort()
+
+        return r_range
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme

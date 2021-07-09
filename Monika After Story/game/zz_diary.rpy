@@ -114,7 +114,13 @@ init python in mas_diary:
     from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
-    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary/main/"
+    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary"
+
+    # main templates folder
+    MAIN_FOLDER = "/main/"
+
+    # PS entry folder
+    PS_FOLDER = "/ps/"
 
     # game folder
     # we only need this until we create a mod_assets.rpa (probably)
@@ -538,18 +544,40 @@ init python in mas_diary:
         return body_str
 
 
-    def _scanTemplates():
+    def _scanEntryTemplates():
+        """
+        Scans the template folder for valid entry templates.
+
+        RETURNS:
+            list of template filepaths we found
+        """
+        return _scanTemplates(MAIN_FOLDER)
+
+
+    def _scanPSTemplates():
+        """
+        Scans the template folder for valid PS templates.
+
+        RETURNS:
+            list of template filepaths we found
+        """
+        return _scanTemplates(PS_FOLDER)
+
+
+    def _scanTemplates(folder):
         """
         Scans the template folder for valid templates.
 
-        ASSUMES:
-            templates
+        IN:
+            folder - the folder we are getting templates from
+
+        RETURNS:
+            list of template filepaths we found
         """
-        global templates
         templates = list()
-        t_files = os.listdir(diary_basedir)
+        t_files = os.listdir(diary_basedir + folder)
         for t_filename in t_files:
-            t_filepath = diary_basedir + t_filename
+            t_filepath = diary_basedir + folder + t_filename
             
             if (
                     isValidTemplateFilename(t_filename) 
@@ -558,9 +586,68 @@ init python in mas_diary:
                 # TODO, this really should be a dict with ## as the keys
                 templates.append(t_filepath)
 
+        return templates
+
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
+    def _dk_ampm(modifier, curr_mods, use_time):
+        """
+        Gets the ampm thing from the current time
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            use_time - given time
+
+        RETURNS: ampm thing as a string
+        """
+        # TODO this needs stftime
+        return ""
+   
+
+    def _dk_ampm_current(modifier, curr_mods):
+        """
+        Gets current ampm thing as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in game events
+                curr_time: datetime of this diary entry's creation
+
+        RETURNS: ampm thing as a string
+        """
+        return _dk_ampm(modifier, curr_mods, curr_mods["curr_time"])
+
+
+    def _dk_ampm_end(modifier, curr_mods):
+        """
+        Gets last session end ampm thing as a string
+
+        IN:
+            modifier- modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply beause of in-game events
+                end_time: datetime of the last ession's end time
+
+        RETURNS: last session end ampm thing as a string
+        """
+        return _dk_ampm(modifier, curr_mods, curr_mods["end_time"])
+
+    
+    def _dk_ampm_start(modifier, curr_mods):
+        """
+        Gets current session start ampm thing as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict fo rrules)
+            curr_mods - dict of mods to apply because of in-game events
+                start_time: datetime of the current session's start time
+
+        RETURNS: current session start ampmp thin gas a string
+        """
+        return _dk_ampm(modifier, curr_mods, curr_mods["start_time"])
+
+
     def _dk_body(modifier, curr_mods):
         """
         Generates the body
@@ -802,6 +889,81 @@ init python in mas_diary:
         return renpy.random.choice(greetings_list)
 
 
+    def _dk_hour(modifier, curr_mods, use_time):
+        """
+        Gets the curren thour of the given time as a nicely formatted string
+        according to the formatting rule
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            use_time - time to turn into a nicely formatted string
+
+        RETURNS: current hour as a string
+        """
+        curr_hour = use_time.hour
+
+        if modifier == "12u":
+            # 2 digit time, unpadded
+
+            curr_hour = curr_hour  % 12
+
+            if curr_hour == 0:
+                # noon and midnight
+                curr_hour = 12
+
+            return str(curr_hour)
+        
+        elif modifier == "12":
+            # 2 digit hour, padded
+            return use_time.strftime("%I")
+
+        # otherwise use the 24 hour default
+        return str(curr_hour)
+
+
+    def _dk_hour_current(modifier, curr_mods):
+        """
+        Gets current hour as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in game events
+                curr_time: datetime of this diary entry's creation
+
+        RETURNS: current hour as a string
+        """
+        return _dk_hour(modifier, curr_mods, curr_mods["curr_time"])
+
+
+    def _dk_hour_end(modifier, curr_mods):
+        """
+        Gets last session end hour as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to aplly because of in-game events
+                end_time: datetime of the last session's end time
+
+        RETURNS: last session end hour as a string
+        """
+        return _dk_hour(modifier, curr_mods, curr_mods["end_time"])
+
+
+    def _dk_hour_start(modifier, curr_mods):
+        """
+        Gets the current session start hour as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in-game events
+                start_time: datetime of the current session's start time
+
+        RETURNS: current session start hour as a string
+        """
+        return _dk_hour(modifier, curr_mods, curr_mods["start_time"])
+
+
     def _dk_m_name(modifier, curr_mods):
         """
         Generates monika's name
@@ -820,6 +982,67 @@ init python in mas_diary:
         # TODO this needs to be changed because of the new nickname thing
         # probably another modifier
         return "Monika"
+
+
+    def _dk_minute(modifier, curr_mods, use_time):
+        """
+        Gets the minute from the given time
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            use_time - given time
+
+        RETURNS: minute as a string
+        """
+        if modifier == "2u":
+            # 2 digit minute, unpadded
+            return str(use_time.minute)
+
+        # otherwise 2 digit minute padded
+        return use_time.strftime("%M")
+
+
+    def _dk_minute_current(modifier, curr_mods):
+        """
+        Gets current minute as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in-game events
+                curr_time: datetime of this diary entry's creation
+
+        RETURNS: current minute as a string
+        """
+        return _dk_minute(modifier, curr_mods, curr_mods["curr_time"])
+
+
+    def _dk_minute_end(modifier, curr_mods):
+        """
+        Gets last session end minute as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in-game events
+                end_time: datetime of last session end time
+
+        RETURNS: last session end minute as a string
+        """
+        return _dk_minute(modifier, curr_mods, curr_mods["end_time"])
+
+
+    def _dk_minute_start(modifier, curr_mods):
+        """
+        Gets current session start minute as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in-game events
+                start_time: datetime of current session start time
+
+        RETURNS: current session start minute as a string
+        """
+        return _dk_minute(modifier, curr_mods, curr_mods["start_time"])
 
 
     def _dk_month(modifier, curr_mods):
@@ -893,6 +1116,67 @@ init python in mas_diary:
         # otherwise no PS entries
         return None
 
+
+    def _dk_second(modifier, curr_mods, use_time):
+        """
+        Gets the second from the given time
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            use_time - given time
+
+        RETURNS: second as a string
+        """
+        if modifier == "2u":
+            # 2 digit second, unpadded
+            return str(use_time.second)
+
+        # otherwise, 2 digit second padded
+        return use_time.strftime("%S")
+
+
+    def _dk_second_current(modifier, curr_mods):
+        """
+        Gets the current second as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in game events
+                curr_time: datetime of this diary entry's creation
+
+        RETURNS current second as a string
+        """
+        return _dk_second(modifier, curr_mods, curr_mods["curr_time"])
+
+
+    def _dk_second_end(modifier, curr_mods):
+        """
+        Gets the last session end second as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict of mods to apply because of in game events
+                end_time: datetime of last session's end time
+
+        RETURNS: last session end second as a string
+        """
+        return _dk_second(modifier, curr_mods, curr_mods["end_time"])
+
+
+    def _dk_second_start(modifier, curr_mods):
+        """
+        Gets the current session start second as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - dict o fmods to apply because of in game events
+                start_time - datetie of current session's start time
+
+        RETURNS: current session start second as a string
+        """
+        return _dk_second(modifier, curr_mods, curr_mods["start_time"])
+
     
     def _dk_story(modifier, curr_mods):
         """
@@ -914,6 +1198,112 @@ init python in mas_diary:
 
         # otherwise no story entries
         return None
+
+
+    def _dk_time_since(modifier, curr_mods, start_time, end_time):
+        """
+        Gets the time in between the start and end times as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            start_time - starting time to use
+            end_time - ending time to use
+
+        RETURNS: time in between start and end as a string
+        """
+        t_delta = end_time - start_time
+        if t_delta.days < 0:
+            # negative time, we cant do any calcs with this
+            return "no time at all!"
+
+        # otherwise modifier checking
+        if modifier == "hm":
+            # hour + minute granularity
+            t_seconds = t_delta.total_seconds()
+            hours_str = mas_utils.valuepluralize(int(t_seconds / 3600), "hour")
+            minutes_str = mas_utils.valuepluralize(
+                int((t_seconds % 3600) / 60),
+                "minute"
+            )
+
+            if len(hours_str) == 0 and len(minutes_str) == 0:
+                # less time than our granularity can handle
+                return "less than a minute"
+
+            output = ""
+
+            if len(hours_str) > 0:
+                output += hours_str
+
+            if len(minutes_str) > 0:
+
+                if len(output) > 0:
+                    output += " and "
+
+                output += minutes_str
+
+            # return the results
+            return output
+
+
+        elif modifier == "h":
+            # hour granularity, rounded
+            t_seconds = t_delta.total_seconds()
+            hours = int(t_seconds / 3600)
+            minutes = int((t_seconds % 3600) / 60)
+
+            if minutes > 30:
+                # rounding
+                hours += 1
+
+            return mas_utils.valuepluralize(hours, "hour")
+
+        elif modifier == "h.":
+            # hour granularity, fraction
+            hours = t_delta.total_seconds() / 3600
+
+            # TODO: format specifier, round to 1 dec point
+            return "TODO"
+
+        elif modifier == "m":
+            # minute granularity, rounded
+            t_seconds = t_delta.total_seconds()
+            minutes = int(t_seconds / 60)
+            r_seconds = t_seconds - (minutes * 60)
+
+            if r_seconds > 30:
+                # rounding
+                minutes += 1
+
+            return mas_utils.valuepluralize(minutes, "minute")
+
+        elif modifier == "m.":
+            # minute granularity, fraction
+            minutes = t_delta.total_seconds() / 60
+
+            # TODO: format specifier, round to 1 dec point
+            return "TODO"
+
+        elif modifier == "s":
+            # seconds granularity
+            return mas_utils.valuepluralize(t_delta.total_seconds(), "second")
+
+        elif modifier == "ms":
+            # microseconds
+            # TODO
+            return "TODO"
+
+        # otherwise, we are using the auto alg, which scales based the amount
+        # of time. This also displays all level
+
+
+
+
+    def _dk_time_since_end(modifier, curr_mods):
+        """
+
+        """
 
 
     def _dk_topicsCSV(modifier, curr_mods):
@@ -1053,9 +1443,10 @@ init 1 python in mas_diary:
 #        "story": _dk_story,
 
         # PS entries. 
-        # Each entry is written on a new line, but not separated by a newline
-        # NOTE: breaklines are automatically applied
-        "ps": _dk_ps,
+        # no modifier
+        # NOTE: ps entry is no longer used. Instead PS entries are considerd
+        # multiple sessions
+#        "ps": _dk_ps,
 
         # current year
         # Y|<modifier>
@@ -1082,7 +1473,124 @@ init 1 python in mas_diary:
         #   s - short/abbrv word current day
         "D": _dk_day
 
-        # TODO: times
+        # current hour
+        # h|<modifier>
+        # modifier rules:
+        #   24 - 24 hour time (Default)
+        #   12 - 12 hour 
+        #   12u - 12 hour, unpadded
+        "h": _dk_hour_current,
+
+        # current hour ampm
+        # hap|<modifier>
+        # modifier rules:
+        #   u - upper case AMPM (Default)
+        #   l - lower case AMPM 
+        #   . - use A.M./P.M.
+        # combinable: u + . / l + .
+        "hap": _dk_ampm_current,
+
+        # current minute
+        # m|<modifier>
+        # modifier rules:
+        #   2 - 2 digit minute (Default)
+        #   2u - 2 digit minute, unpadded
+        "m": _dk_minute_current,
+
+        # current seconds
+        # s|<modifier>
+        # modifier rules:
+        #   2 - 2 digit seconds (Default)
+        #   2u - 2 digit seconds, unpadded
+        "s": _dk_second_current,
+
+        # current session start hour
+        # sh|<modifier>
+        # modifier rules:
+        #   24 - 24 hour time (Default)
+        #   12 - 12 hour time
+        #   12u - 12 hour, unpadded
+        "sh": _dk_hour_start,
+
+        # curernt session start hour amppm
+        # shap|<modifier>
+        # modifier rules:
+        #   u - upper case AMPM (Default)
+        #   l - lower case AMPM
+        #   . - use A.M./P.M.
+        # combinableL U + . / l + .
+        "shap": _dk_ampm_start,
+
+        # current session start minute
+        # sm:<modifier>
+        # modifier rules:
+        #   2 - 2 digit minute (Default)
+        #   2u - 2 digit minute, unpadded
+        "sm": _dk_minute_start,
+
+        # current session start second
+        # ss:<modifier>
+        # modifier rules:
+        #   2 - 2 digit second (Default)
+        #   2u - 2 git second, unpadded
+        "ss": _dk_second_start,
+
+        # last session end hour
+        # eh|<modifier>
+        # modifier rules:
+        #   24 - 24 hour time (Default)
+        #   12 - 12 hour time
+        #   12u - 12 hour, unpadded
+        "eh": _dk_hour_end,
+
+        # last session end hour ampm
+        # ehap|<modifier>
+        # modifier rules:
+        #   u - upper case AMPM (Default)
+        #   l - lower case AMPM
+        #   . - use A.M./P.M.
+        # combinable: U + . / l + .
+        "ehap": _dk_ampm_end,
+
+        # last session end minute
+        # em|<modifier>
+        #   2 - 2 digit minute (Default)
+        #   2u - 2 digit minute, unpadded
+        "em": _dk_minute_end,
+
+        # last session end second
+        # es|<modifier>
+        #   2 - 2 digit seconds (Default)
+        #   2u - 2 digit seconds, unpadded
+        "es": _dk_second_end,
+
+        # time since last session end to current session start
+        # NOTE for limited granularities, proper rounding is applied
+        # tse|<modifier>
+        #   auto - use an alg that scales time to most appropriate units (Default)
+        #   all - display all time scales
+        #   hm - use x hours, y minutes granularity
+        #   h - limit to hour granularity (x hours)
+        #   h. - use fractions in hour granularity (x.y hours)
+        #   m - limit to minutes granularity (xx minutes)
+        #   m. - use fractions in minute granularity (x.y minutes)
+        #   s - limit to seconds granularity (xxxx seconds)
+        #   ms - # TODO (microsecond?)
+        "tse": _dk_time_since_end,
+
+        # time since current session start to now
+        # NOTE: for limited granularities, proper rounding is applied
+        # tss|<modifier>
+        #   auto - use an alg that scales time to most appropriate units (Default)
+        #   all - display all time scales
+        #   hm - use x hours, y minutes granularity
+        #   h - limit to hour granularity (x hours)
+        #   h. - use fractions in hour granularity (x.y hours)
+        #   m - limit to minutes granularity (xx minutes)
+        #   m. - use fractions in minute granularity (x,y minutes)
+        #   s - limit to seconds granularity (xxxx seconds)
+        #   ms - # TODO (microseconds?)
+        "tss": _dk_time_since_start,
     }
 
 
@@ -1249,11 +1757,11 @@ init 2018 python:
         # TODO: determining which template to pick
 
         # NOTE: debug stuff right now
-        mas_diary._scanTemplates()
+        entry_templates = mas_diary._scanEntryTemplates()
 
         # NOTE: debug
         # template_choice should be an int
-        sel_template = mas_diary.templates[template_choice]
+        sel_template = entry_templates[template_choice]
     
         # TODO,if the file doesnt exist, use "w"
         # otherwise, use "a"

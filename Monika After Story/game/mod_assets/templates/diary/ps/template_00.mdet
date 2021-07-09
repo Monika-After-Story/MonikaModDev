@@ -1,0 +1,7 @@
+# diary template PS entry
+# @author potato
+#
+# These entries are used when multiple sessions occur per day
+# Lines starting with '#' are ignored
+# These are also always prefixed with with a line that says <P>S:
+[player] came back at 
