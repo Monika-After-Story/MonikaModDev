@@ -1,5 +1,563 @@
 # This file is meant to store any special effects.
 # These can be some images or transforms.
+init -500 python in mas_parallax:
+    import pygame
+    import math
+
+    class Decal(object):
+        """
+        Represents a decal. Basically a struct, made for convenience
+        This is not a desplayable.
+        """
+        def __init__(self, img, x=0, y=0, z=0):
+            """
+            Constructor for decals
+
+            IN:
+                img - the img/disp for this decal
+                x - the x offset from the center of the main sprite
+                    (Default: 0)
+                y - the y offset from the center of the main sprite
+                    (Default: 0)
+                z - basically zorder
+                    (Default: 0)
+            """
+            self.img = renpy.easy.displayable(img)
+            self._x = x
+            self._y = y
+            self._z = z
+            self.callback = None
+
+        @property
+        def x(self):
+            return self._x
+
+        @x.setter
+        def x(self, value):
+            self._x = value
+            if self.callback:
+                self.callback()
+
+        @property
+        def y(self):
+            return self._y
+
+        @y.setter
+        def y(self, value):
+            self._y = value
+            if self.callback:
+                self.callback()
+
+        @property
+        def z(self):
+            return self._z
+
+        @z.setter
+        def z(self, value):
+            self._z = value
+            if self.callback:
+                self.callback()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4})>".format(type(self).__name__, repr(self.img), self._x, self._y, self._z)
+
+    class _DecalContainer(renpy.display.core.Displayable):
+        """
+        A container displayable. It takes a base (consider it main displayable) and any number of children.
+        The container will be of just enough size to contain the base and the children, aligning everything to its center.
+        Children can be given x, y, and zorder offsets relative to the center
+        """
+        def __init__(self, base, *args):
+            """
+            Constructor for containers
+
+            IN:
+                base - the base img (must be Decal)
+                args - children (must be Decal)
+            """
+            super(_DecalContainer, self).__init__()
+
+            self._base = base
+
+            self._items = list(args)
+            self._items.append(base)
+            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
+            for item in self._items:
+                if not isinstance(item, Decal):
+                    raise Exception("{0} can accept only Decal, got: {1}".format(type(self).__name__, type(item)))
+                item.callback = self.update
+
+            self.size = (0, 0)
+
+        @property
+        def base(self):
+            return self._base
+
+        @base.setter
+        def base(self, decal):
+            if not isinstance(decal, Decal):
+                return
+
+            base_id = self._items.index(self._base)
+            self._items.pop(base_id)
+            decal.callback = self.update
+            self._base = decal
+            self._items.insert(base_id, decal)
+
+            renpy.redraw(self, 0.0)
+
+        @property
+        def children(self):
+            return [item for item in self._items if item is not self._base]
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<{0}: (base: {1}, children: {2})>".format(type(self).__name__, self._base, self.children)
+
+        def add(self, decal):
+            """
+            Adds a Decal to this container
+            """
+            if not isinstance(decal, Decal):
+                return
+
+            decal.callback = self.update
+            self._items.append(decal)
+            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
+            renpy.redraw(self, 0.0)
+
+        def remove(self, decal):
+            """
+            Removes a Decal instance from this container
+            """
+            if decal in self._items and decal is not self._base:
+                decal.callback = None
+                self._items.remove(decal)
+                renpy.redraw(self, 0.0)
+
+        def remove_all(self):
+            """
+            Removes all decals from this container
+            """
+            while self._items:
+                item = self._items.pop()
+                item.callback = None
+            renpy.redraw(self, 0.0)
+
+        def render(self, width, height, st, at):
+            """
+            The render method where we do the meth logic to align everything properly
+            """
+            # Predefine the size of the final render
+            main_render_width = 0
+            main_render_height = 0
+
+            render_items = list()
+            for item in self._items:
+                item_disp = item.img
+                item_x_offset, item_y_offset = item.x, item.y
+
+                item_render = renpy.render(item_disp, width, height, st, at)
+                item_width = item_render.width
+                item_height = item_render.height
+
+                main_render_width = max(main_render_width, item_width)
+                main_render_height = max(main_render_height, item_height)
+
+                width_diff = main_render_width - item_width
+                height_diff = main_render_height - item_height
+                abs_x_offset = abs(item_x_offset)
+                abs_y_offset = abs(item_y_offset)
+
+                if abs_x_offset > max(0, width_diff / 2.0):
+                    main_render_width += (2 * abs_x_offset - width_diff)
+
+                if abs_y_offset > max(0, height_diff / 2.0):
+                    main_render_height += (2 * abs_y_offset - height_diff)
+
+                render_items.append(
+                    (
+                        item_disp,
+                        item_render,
+                        item_width / 2.0 - item_x_offset,
+                        item_height / 2.0 - item_y_offset
+                    )
+                )
+
+            # Now that we finally have the appropriate width and height for the render, render our stuff
+            main_render = renpy.Render(main_render_width, main_render_height)
+            for _disp, _render, _x_offset, _y_offset in render_items:
+                main_render.place(
+                    _disp,
+                    x=main_render_width / 2.0 - _x_offset,
+                    y=main_render_height / 2.0 - _y_offset,
+                    render=_render
+                )
+
+            # renpy.redraw(self, 1.0)
+            self.size = (main_render_width, main_render_height)
+            # main_render.fill("#ca00004d")
+
+            return main_render
+
+        def update(self):
+            """
+            Updates this disp
+            """
+            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
+            renpy.redraw(self, 0)
+
+        def visit(self):
+            """
+            Returns images of this disp for prediction
+            """
+            return [item.img for item in self._items]
+
+
+    class ParallaxSprite(renpy.display.core.Displayable):
+        """
+        Class to represent signle parallax sprite
+        """
+        NORMAL_ZOOM = 1.0
+        DEF_ANCHOR = (0.5, 0.5)
+
+        def __init__(self, img, x, y, z, zoom=1.0, function=None, decals=(), on_click=None, on_release=None, min_zoom=1.0, max_zoom=4.0):
+            """
+            Constructor for parallax sprites
+            NOTE: the child image will be anchored to its center, bear that in mind when giving it transforms
+
+            IN:
+                img - path to the img/Displayable
+                x - base x coord for the sprite
+                y - base y coord for the sprite
+                z - base z coord for the sprite
+                    NOTE: treat this as zorder
+                    NOTE: MUST BE > 0
+                zoom - default zoom for this sprite
+                    (Default: 1.0)
+                function - a function for the sprite's transform,
+                    use it if you need additional effects
+                    NOTE: your function SHOULD NOT affect the xoffset/yoffset/zoom (zoom only if you enabled it for the user) props
+                    (Default: None)
+                decals - list of decals for this sprite
+                    (Default: None)
+                on_click - a callable object that gets called on click (LMB) events
+                    (Default: None)
+                min_zoom - min zoom value
+                    (Default: 1.0)
+                max_zoom - max zoom value
+                    (Default: 4.0)
+                    NOTE: if min_zoom == max_zoom, the user won't be able to zoom in/out
+            """
+
+            super(ParallaxSprite, self).__init__()
+
+            # For convenience, we assume the mouse is in the center
+            self.mouse_x = config.screen_width / 2.0
+            self.mouse_y = config.screen_height / 2.0
+
+            self._x = x
+            self._y = y
+            if z < 1:
+                raise Exception("The zorder property must be greater than 0.")
+            self._z = z
+
+            self._container = _DecalContainer(
+                Decal(img, 0, 0, 0),
+                *decals
+            )
+
+            self._transform = Transform(
+                self._container,
+                # TODO: enable functions
+                # function=function,
+                anchor=ParallaxSprite.DEF_ANCHOR,
+                transform_anchor=True,
+                subpixel=True
+            )
+            self._transform.zorder = z
+
+            self.min_zoom = min_zoom
+            self.max_zoom = max_zoom
+            self._zoom = zoom
+
+            # Set this again to run the methods
+            self.zoom = zoom
+
+            self._render = None
+
+            if on_click is not None and not callable(on_click):
+                raise Exception("The on_click property must be a callable.")
+            self.on_click = on_click
+
+        @property
+        def x(self):
+            return self._x
+
+        @x.setter
+        def x(self, value):
+            self._x = value
+            self.update_offsets()
+
+        @property
+        def y(self):
+            return self._y
+
+        @y.setter
+        def y(self, value):
+            self._y = value
+            self.update_offsets()
+
+        @property
+        def z(self):
+            return self._z
+
+        @z.setter
+        def z(self, value):
+            self._z = value
+            self.update_offsets()
+
+        @property
+        def zoom(self):
+            return self._zoom
+
+        @zoom.setter
+        def zoom(self, value):
+            value = min(max(value, self.min_zoom), self.max_zoom)
+            self._zoom = value
+            self._transform.zoom = value
+            self.update_offsets()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4}, decals: {5})>".format(type(self).__name__, self._container.base, self._x, self._y, self._z, self._container.children)
+
+        def update_offsets(self):
+            """
+            Updates the offsets of this parallax sprite
+            NOTE: I have no idea how I made this meth work, don't change it
+            """
+            zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
+
+            # NOTE: Here we make an important assumption - the img we use (the container) will be of the screen width/height
+            zoom_correction_x = config.screen_width * zoom_factor / 2.0
+            zoom_correction_y = config.screen_height * zoom_factor / 2.0
+
+            # We use screen_width and screen_height for our parallax
+            available_x_shift = config.screen_width / float(self._z)
+            available_y_shift = config.screen_height / float(self._z)
+
+            half_screen_width = config.screen_width / 2.0
+            half_screen_height = config.screen_height / 2.0
+
+            mouse_x_factor = self.mouse_x / half_screen_width
+            mouse_y_factor = self.mouse_y / half_screen_height
+
+            # Our offsets consist of 3 parts:
+            # - base coords give offsets to x and y (depend on zoom level)
+            # - shift from the parallax effect (depends on mouse pos)
+            # - correction to the zoom effect (depends on mouse pos)
+            self._transform.xoffset = self._x*(1.0 + zoom_factor) + available_x_shift*(1.0 - mouse_x_factor) - zoom_correction_x*mouse_x_factor
+            self._transform.yoffset = self._y*(1.0 + zoom_factor) + available_y_shift*(1.0 - mouse_y_factor) - zoom_correction_y*mouse_y_factor
+
+            # Now update the screen
+            self._transform.update()
+            renpy.redraw(self, 0.0)
+
+        def __getstate__(self):
+            """
+            This is used for pickling. Render objects cannot be pickled, so here we reset the value of _render to None.
+            The docs say CDD shouldn't keep Render, but we have to, as it works much better than
+            the built-in focus system which RenPy uses (for some reason it's more laggy and causes a few bugs).
+            Instead we keep the latest Render and check whether or not the pixel at the given x and y is opaque (apparently it's faster).
+
+            NOTE: The docs say CDD can be pickled, but it doesn't seem to be the case as Style objects inside them cannot be.
+                Nevertheless, I decided to handle this case so we can be sure that isn't our fault.
+            """
+            rv = super(ParallaxSprite, self).__getstate__()
+            rv["_render"] = None
+
+            return rv
+
+        def event(self, ev, x, y, st):
+            """
+            The event handler
+            """
+            if ev.type == pygame.MOUSEMOTION:
+                self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+                self.update_offsets()
+
+            elif ev.type == pygame.MOUSEBUTTONDOWN:
+                if self.min_zoom != self.max_zoom:
+                    if ev.button == 4:
+                        self.zoom += 0.1
+
+                    elif ev.button == 5:
+                        self.zoom -= 0.1
+
+            elif ev.type == pygame.MOUSEBUTTONUP:
+                if ev.button == 1:
+                    # if self.on_click is not None and self.is_focused():
+                    if self.on_click is not None and self._render.is_pixel_opaque(x, y):
+                        self.on_click()
+                        # raise renpy.IgnoreEvent()
+
+            return None
+
+        def render(self, width, height, st, at):
+            """
+            The render method
+            """
+            img_render = renpy.render(self._transform, width, height, st, at)
+            main_render = renpy.Render(width, height)
+            main_render.place(self._transform, x=0, y=0, render=img_render)
+            # main_render.add_focus(self, None, 0, 0, config.screen_width, config.screen_height, 0, 0, main_render)
+            self._render = main_render
+
+            return main_render
+
+        def visit(self):
+            """
+            Returns the transform for prediction
+            """
+            return [self._transform]
+
+        def predict_one(self):
+            """
+            Called to ask this displayable to call the callback with all
+            the images it may want to load.
+            """
+            self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+            self.update_offsets()
+
+
+    class ParallaxBackground(renpy.display.core.Displayable):
+        """
+        DEPRECATED
+        Class to represent a background with parallax effect
+        """
+        NORMAL_ZOOM = 1.0
+        DEF_ANCHOR = (0.5, 0.5)
+
+        def __init__(self, img, zoom=1.0, min_zoom=1.0, max_zoom=4.0):
+            """
+            Constructor for parallax background
+
+            IN:
+                img - the img for this background
+                zoom - default zoom for this sprite
+                    (Default: 1.0)
+                min_zoom - min zoom value
+                    (Default: 1.0)
+                max_zoom - max zoom value
+                    (Default: 4.0)
+                NOTE: if min_zoom == max_zoom, the user won't be able to zoom in/out
+            """
+            super(ParallaxBackground, self).__init__()
+
+            self.mouse_x = config.screen_width / 2.0
+            self.mouse_y = config.screen_height / 2.0
+
+            img = renpy.easy.displayable(img)
+            self.size = img.load().get_size()
+
+            self._transform = Transform(
+                img,
+                anchor=ParallaxBackground.DEF_ANCHOR,
+                transform_anchor=True,
+                subpixel=True
+            )
+
+            self.min_zoom = min_zoom
+            self.max_zoom = max_zoom
+            self._zoom = zoom
+
+            self.zoom = zoom
+
+        @property
+        def zoom(self):
+            return self._zoom
+
+        @zoom.setter
+        def zoom(self, value):
+            value = min(max(value, self.min_zoom), self.max_zoom)
+            self._zoom = value
+            self._transform.zoom = value
+            self.update_offsets()
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<{0}: (img: {1})>".format(type(self).__name__, self._transform.child)
+
+        def update_offsets(self):
+            """
+            Updates the offsets of this background
+            """
+            #NOTE: Factor should always be > 0 here
+            zoom_factor = self._zoom - ParallaxBackground.NORMAL_ZOOM
+            available_x_shift = config.screen_width * zoom_factor / 2.0
+            available_y_shift = config.screen_height * zoom_factor / 2.0
+
+            half_screen_width = config.screen_width / 2.0
+            half_screen_height = config.screen_height / 2.0
+
+            self._transform.xoffset = self.size[0]/2 + available_x_shift*(2 - self.mouse_x/half_screen_width)
+            self._transform.yoffset = self.size[1]/2 + available_y_shift*(3 - self.mouse_y/half_screen_height)
+
+            self._transform.update()
+            renpy.redraw(self, 0)
+
+        def event(self, ev, x, y, st):
+            """
+            The event handler
+            """
+            if ev.type == pygame.MOUSEMOTION:
+                self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+                self.update_offsets()
+
+            elif ev.type == pygame.MOUSEBUTTONDOWN:
+                if self.min_zoom != self.max_zoom:
+                    if ev.button == 4:
+                        self.zoom += 0.1
+
+                    elif ev.button == 5:
+                        self.zoom -= 0.1
+
+            return None
+
+        def render(self, width, height, st, at):
+            """
+            The render method
+            """
+            img_render = renpy.render(self._transform, width, height, st, at)
+            main_render = renpy.Render(width, height)
+            main_render.place(self._transform, x=0, y=0, render=img_render)
+
+            return main_render
+
+        def visit(self):
+            """
+            Returns the background for prediction
+            """
+            return [self._transform]
+
+        def predict_one(self):
+            """
+            Called to ask this displayable to call the callback with all
+            the images it may want to load.
+            """
+            self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+            self.update_offsets()
+
 
 image yuri dragon2:
     parallel:
