@@ -17227,8 +17227,9 @@ label monika_tanabata:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
 
+
 init 5 python:
-    addEvent(
+   addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_sophia",
@@ -17260,3 +17261,4 @@ label monika_sophia:
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
     return
+    
