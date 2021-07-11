@@ -1969,6 +1969,42 @@ label mas_song_save_the_last_dance_for_me_analysis(from_song=False):
     m 6ekblu "So at the end of the day, I just hope you'll save the last dance for me~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_safe_and_sound",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Safe and Sound",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_safe_and_sound:
+    m 1dsb "{i}~ I could lift you up ~{/i}"
+    m 3esa "{i}~ I could show you what you want to see, {/i}{w=0.5}{nw}"
+    extend 3sub "{i}and take you where you want to be ~{/i}"
+    m 1ekbsu "{i}~ You could be my luck{/i} ~"
+    m 1dkd "{i}~ Even if the sky is falling down {/i}{w=0.5}{nw}"
+    extend 3hub "{i}I know that we'll be safe and sound! ~{/i}"
+    m 2dsu "{i}~ I could fill your cup ~{/i}"
+    m 2rka "{i}~ You know my river won't evaporate {/i}{w=0.5}{nw}"
+    extend 7hublb "{i}this world we still appreciate ~{/i}"
+    m 2dkbsb "{i}~ You could be my luck ~{/i}"
+    m 2rkd "{i}~ Even in a hurricane of frowns {/i}{w=0.5}{nw}"
+    extend 2hubsb "{i}I know that we'll be safe and sound ~{/i}"
+    # TODO: Expressions.
+    m 1dka "{i}~ {cps=5}Safe and sound{/cps} ~{/i}"
+    m 1dka "{i}~ {cps=5}Safe and sound{/cps} ~{/i}"
+    m 1dka "{i}~ {cps=5}Safe and sound{/cps} ~{/i}"
+    m 1dka "{i}~ {cps=5}We're safe and sound{/cps} ~{/i}"
+    m 1hua "Ehehe... I feel like there's nothing we couldn't last through together, [mas_get_player_nickname()]."
+    m 3ekbsa "As long as we love and support each other, we'll always be {i}safe and sound{/i}, right?"
+    m 2hublb "I hope you feel the same way, my love. Ahaha~"
+    return
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
