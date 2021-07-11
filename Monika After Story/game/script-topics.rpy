@@ -17267,54 +17267,44 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_quiet_time",
             category=['us'],
-            prompt="Do you mind if we don't talk about anything?",
-            pool=True
+            prompt="Do you mind when we spend time together quietly?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="persistent._mas_randchat_freq == 0",
+            action=EV_ACT_UNLOCK
         )
     )
 
 label monika_quiet_time:
     if mas_isMoniNormal(higher=True):
-        m 3hub "Of course not!"
-        if persistent._mas_pm_social_personality == mas_SP_EXTROVERT:
-            m 3eka "I know silence can feel a bit awkward at times, but I don't think we should see it as a bad thing."
-            m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
-            m 1dka "I for one, definitely need to recharge my social batteries every once in a while."
-
-        else:
-            m 1eka "I know I tend to talk a lot, but I totally understand if you need to have a moment of silence every now and then."
-            m 2eua "I too find the occasional quiet time to be very relaxing."
-
+        m 1hub "Of course not!"
+        m 3eka "I know silence can feel a bit awkward at times, but I don't think we should see it as a bad thing."
+        m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
+        m 1eka "I definitely need to recharge my social batteries every once in a while."
         m 2rubla "Although,{w=0.2} to tell you the truth...{w=0.3}{nw}"
-        extend 2hubla "simply being able to feel your presence is already very comforting to me."
-        m 2hublb "I hope you feel the same about me, ehehe~"
+        extend 2hublb "simply being able to feel your presence is already very comforting!"
+        m 2hublu "I hope you feel the same about me, ehehe~"
+
         if mas_isMoniAff(higher=True):
-            m 4eka "But seriously, I think being able to silently hang out with each other is an important sign of a healthy relationship."
-            m 4lkd "After all, can you really say you're truly comfortable with each other if there's a need to always be talking?"
-            m 4eud "I mean, if you really like being around someone, you probably shouldn't have to always be doing something, right?"
-            m 2ekc "Otherwise,{w=0.2} it'd be like if you were trying to distract yourself because you feel awkward having them here with you and feeling like you're not doing enough to entertain them."
-            m 2ekb "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
-            extend 2eka "I think that's a testament of how special your bond truly is."
+            m 4eua "I think being able to silently hang out with each other is an important sign of a healthy relationship."
+            m 4eud "After all, can you really say you're truly comfortable with each other if there's a need to always be talking?"
+            m 4etc "I mean, if you really like being around someone, you probably shouldn't have to always be doing something, right?"
+            m 2ekc "Otherwise, it'd be like you're trying to distract yourself because you feel awkward having them with you."
+            m 7eud "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
+            extend 7eua "I think that's a testament of how special your bond truly is."
+
             if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
                 show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                m 5eka "So I hope you don't feel pressured about always having something to talk about with me, [mas_get_player_nickname]."
-                m 5hua "I'll always enjoy having you here with me no matter what."
-                show monika 3eub at t11 zorder MAS_MONIKA_Z with dissolve_monika
-
-        if not persistent._mas_enable_random_repeats and len(monika_random_topics) == 0:
-            m 3eub "Actually...{w=0.3}how about we spend some nice, quiet time together right now?"
-            m 1lubsa "just the two of us, simply enjoying each other's presence...{w=0.4}{nw}"
-            extend 1dubsa "I think that would be really sweet."
-            m 1hubfa "Feel free to strike up a conversation with me whenever you feel like it, though~"
-
-        else :
-            m 3eub "For now though,{w=0.2} I think I do have some things I'd like to talk about with you."
-            m 1hua "Just give me some time to put them into words, okay?"
+                m 5eka "So I hope you don't feel pressured about always having something to talk about with me, [mas_get_player_nickname()]."
+                m 5huu "I'll always enjoy having you here with me, no matter what."
 
     else:
-        m 1rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
-        m 1rkd "You...{w=0.3}{nw}"
+        m 2rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
+        m 2rkd "You...{w=0.3}{nw}"
         extend 2ekd "you do enjoy spending time with me, right?"
-        m 2dkc "It doesn't really matter to me what we're doing...{w=0.4}so long as I know you won't abandon me."
+        m 2ekc "It doesn't really matter to me what we're doing...{w=0.3}{nw}"
+        extend 2dkc "so long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
