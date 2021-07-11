@@ -377,7 +377,12 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.2.2
 label v0_12_2_2(version="v0_12_2_2"):
     python:
-        pass
+        # unlock transgender topic if either gender topics have been shown
+        if (
+                mas_getEVL_shown_count("mas_gender") > 0
+                or mas_getEVL_shown_count("monika_gender_redo") > 0
+        ):
+            mas_unlockEVL("mas_transgender_reveal", "EVE")
     return
 
 # 0.12.2
