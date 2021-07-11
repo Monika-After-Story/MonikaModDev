@@ -398,7 +398,7 @@ init 3 python:
         "lezbo",
         "liar",
         "loser",
-        "mad",
+        "^mad$",
         "maniac",
         "masochist",
         "milf",
@@ -1145,7 +1145,7 @@ init 5 python:
 
 label mas_random_limit_reached:
     #Notif so people don't get stuck here
-    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
     python:
         limit_quips = [
@@ -1525,7 +1525,7 @@ label mas_crashed_preshort:
     $ mas_startupWeather()
 
     # we can call spaceroom appropriately here
-    call spaceroom(scene_change=True)
+    call spaceroom(scene_change=True, force_exp="monika 2ekc")
     return
 
 label mas_crashed_short:
@@ -2115,7 +2115,7 @@ label mas_text_speed_enabler:
         m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
-        m 3hua "Ahaha~"
+        m 3hub "Ahaha~"
 
     else:
         m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
@@ -2183,15 +2183,8 @@ label mas_notification_windowreact:
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
 
-        $ dlg_line = "And"
-        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
-        if not store.mas_windowreacts.can_do_windowreacts:
-            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
-            extend 3eub "which would allow me to see your active window!"
-            $ dlg_line = "Of course, you don't have to install the second one, but"
-
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
+        m 5eka "...And I'd really appreciate it, [player]."
 
     else:
         m 3eub "Would you like to see how they work?{nw}"
@@ -2202,7 +2195,7 @@ label mas_notification_windowreact:
             "Sure!":
                 m 1hua "Okay, [player]!"
                 m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-                $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                $ mas_display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
                 m 1hub "There it is!"
 
             "No thanks.":
@@ -2215,11 +2208,7 @@ label mas_notification_windowreact:
 
 
         elif renpy.linux:
-            if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
-            else:
-                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
-                extend 3hua "I'll be able to know what your active window is!"
+            m 3rksdla "Also, since you're using Linux...I now know how to check what your active window is."
 
         if not renpy.macintosh:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
@@ -2300,6 +2289,16 @@ init 5 python:
     )
 
 label mas_change_to_def:
+    # remove from event list in case PP and ch30 both push
+    $ mas_rmallEVL("mas_change_to_def")
+
+    #Extra sanity check just in case. This should NEVER happen.
+    if (
+        mas_hasSpecialOutfit()
+        and monika_chr.clothes.name == persistent._mas_event_clothes_map[datetime.date.today()]
+    ):
+        return "no_unlock"
+
     # on occasion after special events we want to change out of an outfit like a costume
     # in these cases, for Happy+, change to blazerless instead
     if mas_isMoniHappy(higher=True) and monika_chr.clothes != mas_clothes_blazerless:
@@ -2318,9 +2317,6 @@ label mas_change_to_def:
         call mas_clothes_change()
 
         m "Okay, what else should we do today?"
-
-        # remove from event list in case PP and ch30 both push
-        $ mas_rmallEVL("mas_change_to_def")
 
         # lock the event clothes selector
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
