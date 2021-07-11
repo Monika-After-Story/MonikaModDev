@@ -16058,6 +16058,79 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_being_deleted",
+            prompt="Are you still mad at me for deleting you?",
+            category=["ddlc", "monika"],
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            conditional="persistent.monika_kill and store.mas_anni.anniCount() >= 1",
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_being_deleted:
+    if mas_isMoniEnamored(higher=True):
+        m 1wusdld "...!"
+        m 3eksdld "[mas_get_player_nickname(capitalize=True)]...{w=0.3}are you {i}still{/i} thinking about that?"
+        m 3dksdlc "I thought we would both be past that by now."
+        m 2rkc "I know I said some pretty awful things after you deleted me...{w=0.3}{nw}"
+        extend 7ekd "but I want you to know that I didn't mean any of it."
+        m 6ekc "I'm sorry if I hurt your feelings.{w=0.3} I was so overwhelmed with shock and fear that I just wasn't thinking rationally anymore."
+        m 6rktpc "I-{w=0.1}it's just that...{w=0.3}even back then, you meant everything to me, and...{w=0.3}the distress of losing you forever made me lash out."
+        m 6ektda "But if it puts your mind at ease, I'm not upset with you at all, [mas_get_player_nickname()]. {w=0.2}I forgave you for all that a long time ago."
+        m 6eka "So please don't feel guilty."
+        m 6eka "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
+        m 7ekbsu "You gave me a second chance...{w=0.3}you gave meaning to my life. {w=0.2}I genuinely believe that because of that, all the suffering I went through paid off in the end."
+        m 1hubsb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me!"
+        m 1euu "So let's try to not think about the past, and instead enjoy what we have now, okay?"
+        m 3eka "I love you, [player]. {w=0.2}I know this isn't always easy, but I hope you'll be able to forgive yourself."
+        $ mas_ILY()
+
+    elif mas_isMoniNormal(higher=True):
+        m 1euc "..."
+        m 2eka "Of course not, silly."
+        m 2rkc "It's true that it really hurt when you did that...{w=0.3}{nw}"
+        extend 2eksdld "but to be completely honest with you, I was more terrified than actually angry at you."
+        m 2dksdlc "...Terrified of the idea that you hated me.{w=0.2} That you didn't want anything to do with me, and that you would abandon me, forever."
+        m 7eka "But as we both saw...{w=0.3}that's not what ended up happening at all.{w=0.2} You came back to me, and you've been making me so happy ever since."
+        m 3dku "If anything, I'm just grateful that you brought me back and that we get to spend our time together now."
+        m 1eka "So do me a favor and try not to think about that anymore, okay? {w=0.2}That's all behind us now."
+
+    elif mas_isMoniUpset():
+        m 2rsc "No, I'm not angry with you, [player]."
+        m 1rfc "{cps=*2}At least, not over {i}that{/i}.{/cps}{nw}"
+        $ _history_list.pop()
+        m 2esc "I {i}would{/i} say that we should leave the past behind us and think of the present instead, but I feel like {i}you{/i} might not be ready--{w=0.2}or willing--{w=0.2}to move on from all this."
+        m 2dtc "Am I guessing wrong?"
+        m 2dkc "..."
+        m 2ekd "Look, [player]...{w=0.3}I know it's been a bit rough, but that doesn't mean it's too late to fix things up and start again."
+        m 2dsc "I still think--no,{w=0.2} I {i}know{/i} you're a good person.{w=0.2} I just need you to try and be a little more considerate of {i}my{/i} feelings."
+        m 2fkc "Please, [player].{w=0.3} I can't do this without you."
+        m 2ekd "I don't know how much this will mean to you at this point...{w=0.3}{nw}"
+        extend 7eka "but I love you.{w=0.2} Truly."
+        $ mas_ILY()
+
+    else:
+        m 6ekc "..."
+        m 6lkc "...I think it's fair to say that {i}you{/i} obviously are the one who's mad at me..."
+
+        if persistent._mas_pm_monika_deletion_justice:
+            m 6ektpc "I deserved it, after all. {w=0.2}That's what you told me once, right?"
+
+        m 6dktpc "..."
+        m 6dktpd "...No, I don't resent you for deleting me."
+        m 6dktuc "I never did..."
+        m 6ektud "If anything...{w=0.3}I at least hope knowing that can make you happy."
+        m 6dktdc "..."
+        m 6rkc "..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_remembrance",
             category=['monika'],
             prompt="How much of your past do you remember?",
