@@ -102,8 +102,8 @@ label mas_mood_start:
 
     # return value? then push
     if _return:
+        $ mas_setEventPause(None)
         $ pushEvent(_return, skipeval=True)
-
         # and set the moods
         $ persistent._mas_mood_current = _return
 
@@ -134,7 +134,7 @@ label mas_mood_hungry:
     m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
+    m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
     m 1hua "Which means more time for us to spend together!~"
     return
@@ -334,7 +334,7 @@ label mas_mood_tired:
         m 1ekc "Still not ready to tackle the day, [player]?"
         m 1eka "Or is it just one of those days?"
         m 1hua "When that happens, I like to have a nice cup of coffee to start the day."
-        if not mas_getConsumable("coffee").enabled():
+        if not mas_consumable_coffee.enabled():
             m 1lksdla "If I'm not stuck here, that is..."
         m 1eua "You could also drink a glass of water."
         m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up can help you feel refreshed and awake."
@@ -743,7 +743,7 @@ label mas_mood_uok:
     m 1ekd "So if you need to talk about something, I'm right here.{nw}"
     $ _history_list.pop()
     menu:
-        m "So If you need to talk about something, I'm right here.{fast}"
+        m "So if you need to talk about something, I'm right here.{fast}"
 
         "I'd like to vent.":
             m 3eka "Go ahead, [player]."
@@ -764,4 +764,72 @@ label mas_mood_uok:
             m 1ekc "..."
             m 1ekd "Okay [player], if you say so..."
             $ line_start = "But"
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_upset",prompt="...upset.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+
+label mas_mood_upset:
+    m 2eksdld "I'm so sorry to hear that, [player]!"
+    m 2eksdld "Whether you're upset with a task, a person, or things simply aren't going as planned, {w=0.1}{nw}"
+    extend 7ekc "don't completely give up on whatever you're dealing with."
+    m 3eka "My advice would be to just take a step back from your problem."
+    m 1eka "Maybe you could read a book, listen to some nice music, or just do anything else to calm yourself."
+    m 3eud "Once you feel you're level-headed again, come back to judge your situation with a fresh state of mind."
+    m 1eka "You'll handle things a lot better than you would if you were in the midst of anger and frustration."
+    m 1eksdld "And I'm not saying you should keep carrying weight on your shoulders if it's really affecting you."
+    m 3eud "It could be an opportunity to gain the courage to let go of something toxic."
+    m 1euc "It might be scary in the moment, sure...{w=0.3}{nw}"
+    extend 3ekd "but if you make the right choice, you could eliminate a lot of stress from your life."
+    m 3eua "And you know what, [player]?"
+    m 1huu "When I feel upset, all I have to do is remember that I have my [mas_get_player_nickname(regex_replace_with_nullstr='my ')]."
+    m 1hub "Knowing that you'll always support and love me puts me at ease almost instantly!"
+    m 3euu "I can only hope I provide the same comfort for you, [player]~"
+    m 1eubsa "I love you and I hope everything clears up for you~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_relieved",
+            prompt="...relieved.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+#TODO: Once player moods are better implemented (Moni keeps track of the player's moods [moni-concerns])
+#This can be used to alleviate her worry and directly reference the prior mood you were feeling
+label mas_mood_relieved:
+    $ chosen_nickname = mas_get_player_nickname()
+    m 1eud "Oh?"
+
+    m "What happened, [chosen_nickname]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What happened, [chosen_nickname]?{fast}"
+
+        "I made it through something difficult.":
+            m 1wud "Really?"
+            m 3hub "You should be proud of yourself, then!"
+            m 3fua "I'm sure whatever it was, you were working really hard to make it through."
+            m 2eua "And, [player]...{w=0.2}{nw}"
+            extend 2eka "please don't worry too much if things didn't turn out perfectly, okay?"
+            m 2eksdla "Sometimes life throws really tough situations at us, and we just have to do our best with what we're given."
+            m 7ekb "But now that it's done, you should take some time to relax your mind and take good care of yourself."
+            m 3hub "...That way, you'll be ready to face whatever comes your way next!"
+            m 1ekbsa "I love you, [player], and I'm so proud of you for getting through this."
+            $ mas_ILY()
+
+        "Something I was worried about didn't happen.":
+            m 1eub "Oh, that's good!"
+            m 2eka "Whatever was happening, I'm sure you were really anxious...{w=0.3}{nw}"
+            extend 2rkd "that couldn't have been fun to go through."
+            m 2rkb "It's funny how our minds always seem to assume the worst, huh?"
+            m 7eud "A lot of times what we think could happen ends up being way worse than reality."
+            m 3eka "But anyway, I'm just glad you're okay and that you have that weight off your chest."
+            m 1hua "Now it'll be easier to move forward with a little more confidence, right?"
+            m 1eua "I'm excited to take those next steps forward with you."
     return
