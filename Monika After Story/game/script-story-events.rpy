@@ -220,8 +220,7 @@ label mas_transgender_reveal:
                     m "I want to support you in any way that I can!"
                 
                 "I don’t feel like a [boy] anymore.":
-                    m “I see...”
-                    m 
+                    m "I see..."
                     
                 "I was exploring which gender I was most comfortable with.":
                     m "Ah, I understand."
