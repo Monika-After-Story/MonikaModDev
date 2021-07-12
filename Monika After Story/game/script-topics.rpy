@@ -13123,14 +13123,14 @@ label monika_whydoyouloveme:
 
     elif mas_isMoniEnamored(higher=True):
         if renpy.seen_label('monika_whydoyouloveme_tease'):
-            m 1eksdla "Why do I love you?"
+            m 1ekbla "Why do I love you?"
             m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
             if store.mas_anni.anniCount() >= 1:
                 m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
                 m 3hua "...But here you are, still by my side."
 
-            m 3eksdla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
+            m 3ekbla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
             m 1dku "Every time you visit, you remind me that there's a world out there."
             m "..."
             m 1ekbsa "I'd give you the world if I could, [player]."
@@ -13170,6 +13170,8 @@ label monika_whydoyouloveme_tease:
     pause 5.0
     m 1hub "Ahaha, just kidding!"
     m 1eub "You mean {i}everything{/i} to me, silly!"
+    m 1eksdla "But to answer your question honestly [player]."
+    call monika_whydoyouloveme
     return
 
 
