@@ -1190,6 +1190,8 @@ label monika_nihilism:
         m "I think I would be too selfish to kill myself anyway."
         m 1hua "So much for being a good person, right?"
         m 1hub "Ahaha!"
+
+    $ mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
     return
 
 # Since Your Reality is playable via music menu, this topic is outof date.
@@ -16550,6 +16552,55 @@ label monika_nature:
             m 3eka "But as long as I'm with you, I'm fine if you'd prefer to be indoors."
             m 1tfu "Just don't expect me to let you stay inside all the time~"
     return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_impermanence",
+            category=["philosophy"],
+            prompt="Impermanence",
+            random=False,
+            unlocked=False
+        )
+    )
+
+label monika_impermanence:
+    m 2euc "You know [player], I find myself thinking about some dark stuff occasionally."
+    m 4eud "Concepts like nihilism{w=0.2}, {nw}"
+    extend 4dkc "depression{w=0.2}, {nw}"
+    extend 4rkd "impermanence...."
+    m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression or anything like that myself."
+    m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
+    m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
+    m 3eua "Actually, there's a poem I read that delivers this message quite well."
+    m 1esd "{i}I met a traveller from an antique land{/i}"
+    m 1eud "{i}Who said: 'Two vast and trunkless legs of stone{/i}"
+    m 3euc "{i}Stand in the desert... Near them, on the sand,{/i}"
+    m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
+    m 1eud "{i}And wrinkled lip, and sneer of cold command,{/i}"
+    m "{i}Tell that its sculptor well those passions read{/i}"
+    m 1euc "{i}Which yet survive, stamped on these lifeless things,{/i}"
+    m "{i}The hand that mocked them and the heart that fed:{/i}"
+    m 3eud "{i}And on the pedestal these words appear:{/i}"
+    m "{i}'My name is Ozymandias, king of kings:{/i}"
+    m 3eksdld "{i}Look on my works, ye Mighty, and despair!'{/i}"
+    m 3eksdlc "{i}Nothing beside remains. Round the decay{/i}"
+    m "{i}Of that colossal wreck, boundless and bare{/i}"
+    m 1eksdld "{i}The lone and level sands stretch far away.'{/i}"
+    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will fade eventually fade away."
+    m 1euc "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
+    extend 1dkc "give up.{w=0.3} To fall into a pit of despair and stay there, sometimes for as long as they live."
+    m 3eksdlc "After all, nothing you do matters in the grand scheme of things."
+    m 3eud "Nothing you {i}can{/i} do matters...{w=0.3}{nw}"
+    extend 1rkc "so why bother doing anything at all?"
+    m 3eud "It's not hard to see why some might consider this as the natural conclusion of such a realization."
+    m 1rkc "It can be...{w=0.2}enticing, {w=0.2}even comforting in it's own twisted way."
+    m 1euc "But let me pose a question...{w=0.3}why should the fact that nothing really matters be the one thing that {i}does{/i} matter?"
+    m 3eud "Does it really matter that long after we're gone, we don't matter anymore? {w=0.2}After all, we won't even be there to realize it."
+    m 3eka "Enjoy the moment and be a positive influence on those around you...{w=0.3}that's all any of us can really do."
+    m 1dku "Just living {i}is{/i} enough."
+    return
 
 init 5 python:
     addEvent(
