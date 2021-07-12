@@ -2094,3 +2094,30 @@ label mas_song_heaven:
     m 1ttbsa "And something tells me I'm not the only one~"
     
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_can_you_feel_the_sunshine",
+            prompt="Can You Feel the Sunshine?",
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_can_you_feel_the_sunshine:
+    m 1dub "{i}~Can you feel the sunshine?~{/i}"
+    m 1ekb "{i}~Does it brighten up your day?~{/i}"
+    m 1dka "{i}~Don't you feel that sometimes~{/i}"
+    m 1ekbla "{i}~You just need to run away?~{/i}"
+    m 3hubsb "{i}~Reach out for the sunshine~{/i}"
+    m 7dkbsb "{i}~Forget about the rain~{/i}"
+    m 5rubsu "{i}~Just think about the good times~{/i}"
+    m 5subsb "{i}~And they will come back again~{/i}"
+    m 1dkbsu "{i}~Feel the sunshine...~{/i}"
+    m 1ekbla "Never forget I'll be here to brighten your day if you need it, [player]."
+
+    return
