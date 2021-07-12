@@ -13122,7 +13122,7 @@ label monika_whydoyouloveme:
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniEnamored(higher=True):
-        if persistent.nohurt or renpy.random.randint(1,10) > 1:
+        if renpy.seen_label('monika_whydoyouloveme_tease'):
             m 1eksdla "Why do I love you?"
             m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
@@ -13151,23 +13151,7 @@ label monika_whydoyouloveme:
                 m 1ekbsa "Please know that I'm here for you, whenever you need me~"
 
         else:
-            m 1esc "I don't."
-            pause 5.0
-            m 1hub "Ahaha, just kidding!"
-            m 1eub "You mean {i}everything{/i} to me, silly!"
-            if persistent.nohurt is None:
-                show screen mas_background_timed_jump(5, "monika_blank")
-                menu:
-                    "[m_name], that hurt...":
-                        $ persistent.nohurt = True
-                        m 2wuw "W-wha?"
-                        m 2ekd "[player], I'm so sorry...{w=0.3} I didn't mean to make you feel that way."
-                        m 7eka "I won't joke like that from now on, okay? I just want you to be safe and happy."
-                        m 5eka "I love you so much, [mas_get_player_nickname()], and I will love you forever."
-                        $ mas_ILY()
-                    "You got me for a second there.":
-                        $ persistent.nohurt = False
-                        m 1hua "Ehehe~"
+            call monika_whydoyouloveme_tease
 
     else:
         # normal - aff
@@ -13178,10 +13162,16 @@ label monika_whydoyouloveme:
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
         m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+
     return
 
-label monika_blank:
+label monika_whydoyouloveme_tease:
+    m 1esc "I don't."
+    pause 5.0
+    m 1hub "Ahaha, just kidding!"
+    m 1eub "You mean {i}everything{/i} to me, silly!"
     return
+
 
 init 5 python:
     addEvent(
