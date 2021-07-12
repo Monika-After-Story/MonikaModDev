@@ -3914,6 +3914,7 @@ label greeting_back_from_game:
             m 2hksdlb "You were gone for a long time..."
 
             m 1eka "Did you have fun?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Did you have fun?{fast}"
                 "Yes.":

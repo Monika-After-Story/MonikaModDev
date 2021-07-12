@@ -2109,7 +2109,7 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
-                elif re.findall("mon(-|\\s)+ika", lowername):
+                elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
                     m 2tfc "..."
                     m 2esc "Try again."
                     show monika 1eua
@@ -2124,7 +2124,8 @@ label monika_affection_nickname:
 
                 else:
                     if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
-                        if inputname == "Monika":
+                        if lowername == "monika":
+                            $ inputname = inputname.capitalize()
                             m 3hua "Ehehe, back to the classics I see~"
 
                         elif good_monika_nickname_comp.search(inputname):
