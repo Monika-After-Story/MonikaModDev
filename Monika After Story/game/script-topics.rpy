@@ -17311,3 +17311,51 @@ label monika_sophia:
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_quiet_time",
+            category=['us'],
+            prompt="Do you mind when we spend time together quietly?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="persistent._mas_randchat_freq == 0",
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_quiet_time:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Of course not!"
+        m 3eka "I know silence can feel a bit awkward at times, but I don't think we should see it as a bad thing."
+        m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
+        m 1eka "I definitely need to recharge my social batteries every once in a while."
+        m 2rubla "Although,{w=0.2} to tell you the truth...{w=0.3}{nw}"
+        extend 2hublb "just being able to feel your presence is already pretty comforting."
+        m 2hublu "I hope you feel the same about me, ehehe~"
+
+        if mas_isMoniAff(higher=True):
+            m 4eua "I think being able to silently hang out with each other is an important sign of a healthy relationship."
+            m 4eud "After all, can you really say you're truly comfortable with each other if there's a need to always be talking?"
+            m 4etc "I mean, if you really like being around someone, you probably shouldn't have to always be doing something, right?"
+            m 2ekc "Otherwise, it'd be like you're trying to distract yourself because you feel awkward having them with you."
+            m 7eud "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
+            extend 7eua "I think that's a testament of how special your bond truly is."
+
+            if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+                show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5eka "So I hope you don't feel pressured about always having something to talk about with me, [mas_get_player_nickname()]."
+                m 5huu "I'll always enjoy having you here with me, no matter what."
+
+    else:
+        m 2rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
+        m 2rkd "You...{w=0.3}{nw}"
+        extend 2ekd "you do enjoy spending time with me, right?"
+        m 2ekc "It doesn't really matter to me what we're doing...{w=0.3}{nw}"
+        extend 2dkc "so long as I know you won't abandon me."
+        m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
+        m 2dksdlc "..."
+    return

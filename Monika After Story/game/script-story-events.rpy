@@ -1070,7 +1070,7 @@ label mas_random_limit_reached:
 
     m 1eka "[limit_quip]"
     if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
-        m 1ekc "I'm sure I'll have something to talk about after a little rest."
+        m 1ekc "I'm sure I'll have something to talk about in a while."
 
     else:
         if not renpy.seen_label("mas_random_ask"):
@@ -1079,6 +1079,9 @@ label mas_random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
+        $ mas_showEVL('monika_quiet_time','EVE',unlock=True)
+        $ mas_stripEVL('monika_quiet_time',remove_dates=False)
+
     return "no_unlock"
 
 label mas_random_ask:
