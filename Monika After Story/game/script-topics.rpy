@@ -17283,7 +17283,7 @@ label monika_quiet_time:
         m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
         m 1eka "I definitely need to recharge my social batteries every once in a while."
         m 2rubla "Although,{w=0.2} to tell you the truth...{w=0.3}{nw}"
-        extend 2hublb "simply being able to feel your presence is already very comforting!"
+        extend 2hublb "just being able to feel your presence is already pretty comforting."
         m 2hublu "I hope you feel the same about me, ehehe~"
 
         if mas_isMoniAff(higher=True):
