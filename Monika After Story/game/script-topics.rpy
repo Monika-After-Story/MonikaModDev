@@ -16570,7 +16570,7 @@ label monika_impermanence:
     m 4eud "Concepts like nihilism{w=0.2}, {nw}"
     extend 4dkc "depression{w=0.2}, {nw}"
     extend 4rkd "impermanence...."
-    m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression myself or anything like that myself."
+    m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression or anything like that myself."
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
     m 3eua "Actually, there's a poem I read that delivers this message quite well."
