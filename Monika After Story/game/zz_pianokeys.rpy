@@ -134,7 +134,7 @@ label mas_piano_songchoice:
                 $ pnml = _return
 
                 # song selected
-                if pnml is not None:
+                if pnml:
 
                     # reaction in picking a song
                     m 1hua "I'm so excited to hear you play, [player]!"
@@ -1976,7 +1976,7 @@ init 800 python in mas_piano_keys:
             if (pnml.name not in STOCK_SONG_NAMES or pnml.wins > 0)
         ]
 
-        last_item = ("Nevermind", None, False, False, 10)
+        last_item = ("Nevermind", False, False, False, 10)
 
         return song_list, last_item
 
