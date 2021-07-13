@@ -5,7 +5,7 @@
 
 # hangman stuff only
 default persistent._mas_hangman_playername = False
-define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!"
 
 # IMAGES-----------
 # hangman
@@ -353,6 +353,18 @@ init -1 python in mas_hangman:
         return words.pop(random.randint(0, len(words)-1))
 
 
+    def wordToDisplay(word):
+        """
+        Formats a word so it can be displayed in hangman
+
+        IN:
+            word - word to format (string)
+
+        RETURNS: display word
+        """
+        return ["_" if c != "-" else "-" for c in word]
+
+
 # post processing
 init 10 python:
 
@@ -454,7 +466,7 @@ label mas_hangman_game_loop:
                 and persistent.playername.isalpha()
                 and len(persistent.playername) <= 15
             ):
-            display_word = list("_" * len(persistent.playername.lower()))
+            display_word = mas_hmg.wordToDisplay(persistent.playername.lower())
             hm_hint = mas_hmg.HM_HINT.format("I")
             word = persistent.playername.lower()
             player_word = True
@@ -464,7 +476,7 @@ label mas_hangman_game_loop:
             if word == -1:
                 word = mas_hmg.randomSelect(hangman_mode)
 
-            display_word = list("_" * len(word[0]))
+            display_word = mas_hmg.wordToDisplay(word[0])
             hm_hint = mas_hmg.HM_HINT.format(word[1])
 
             word = word[0]
