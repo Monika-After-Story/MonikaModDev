@@ -786,6 +786,17 @@ init python:
         return derandlist
 
 
+    def mas_safeToRefDokis():
+        """
+        Checks if it is safe for us to reference the dokis in a potentially
+        sensitive matter. The user must have responded to the question
+        regarding dokis - if the user hasn't responded, then we assume it is
+        NEVER safe to reference dokis.
+
+        RETURNS: True if safe to reference dokis
+        """
+        return store.persistent._mas_pm_cares_about_dokis is False
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -1203,10 +1214,7 @@ label mas_ch30_post_holiday_check:
     $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if (
-            persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.yuri_enabled():
         call yuri_name_scare from _call_yuri_name_scare
 
         # this skips greeting algs
@@ -1513,8 +1521,7 @@ label ch30_post_mid_loop_eval:
             ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    not persistent._mas_sensitive_mode
-                    and store.mas_globals.show_s_light
+                    store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1

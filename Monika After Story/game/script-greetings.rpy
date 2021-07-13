@@ -1219,8 +1219,6 @@ label i_greeting_monikaroom:
     # FALL THROUGH
 label monikaroom_greeting_choice:
     $ _opendoor_text = "...Gently open the door."
-    if persistent._mas_sensitive_mode:
-        $ _opendoor_text = "Open the door."
 
     if mas_isMoniBroken():
         pause 4.0
