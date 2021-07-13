@@ -611,6 +611,7 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+    @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
     class MASAffectionRule(object):
         """
         NOTE: DEPRECATED
@@ -622,6 +623,7 @@ init -1 python:
         to check against.
         """
 
+        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
         @staticmethod
         def create_rule(min, max, ev=None):
             """
@@ -652,7 +654,7 @@ init -1 python:
 
             return rule
 
-
+        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
         @staticmethod
         def evaluate_rule(event=None, rule=None, affection=None, noRuleReturn=False):
             """

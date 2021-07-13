@@ -301,7 +301,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
@@ -316,7 +316,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
 
     ### special function for resetting versions

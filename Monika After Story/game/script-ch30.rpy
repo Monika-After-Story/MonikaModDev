@@ -508,7 +508,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -535,7 +535,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
