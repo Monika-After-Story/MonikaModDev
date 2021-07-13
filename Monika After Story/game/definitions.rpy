@@ -1,21 +1,23 @@
 define persistent.demo = False
 
-define config.developer = False #This is the flag for Developer tools
+define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    import io
     import singleton
+    import datetime
+    import traceback
+
+
     me = singleton.SingleInstance()
+
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z = 3
 
-    # this is now global
-    import datetime
-
-    # uncomment when needed
-    import traceback
     _dev_tb_list = []
+
 
     ### Overrides of core renpy things
     def dummy(*args, **kwargs):
@@ -304,6 +306,36 @@ python early:
         return True
 
     renpy.display.image.ImageReference.find_target = mas_find_target
+
+    class MASImageData(renpy.display.im.ImageBase):
+        """
+        NOTE: It might be unsafe to save this in persistent,
+            I don't think we're doing that anywhere, but bear that in mind
+
+        This image manipulator loads an image from binary data.
+        """
+        def __init__(self, data, filename, **properties):
+            """
+            Constructor
+
+            IN:
+                data - string of bytes, giving the compressed image data in a standard
+                    file format.
+                filename - "filename" associated with the image. This is used to provide a
+                    hint to Ren'Py about the format of `data`. (It's not actually
+                    loaded from disk.)
+                properties - additional props
+            """
+            super(MASImageData, self).__init__(data, filename, **properties)
+            self.data = data
+            self.filename = filename
+
+        def __unicode__(self):
+            return u"MASImageData(%r)" % self.filename
+
+        def load(self):
+            f = io.BytesIO(self.data)
+            return renpy.display.pgrender.load_image(f, self.filename)
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -6400,7 +6432,7 @@ init 2 python:
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
-        
+
     def mas_setEventPause(seconds=60):
         """
         Sets a pause 'til next event
