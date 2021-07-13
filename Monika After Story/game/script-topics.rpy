@@ -13114,8 +13114,8 @@ label monika_whydoyouloveme:
         m 2wfc "I ask myself that question every day."
 
     elif mas_isMoniDis():
-        m 1efc "I-"
-        m 1rkc "I'm not sure..."
+        m 1efc "I-{w=0.3}{nw}"
+        extend 1rkc "I'm not sure..."
 
     elif mas_isMoniUpset():
         m 1dsc "Hmm..."
