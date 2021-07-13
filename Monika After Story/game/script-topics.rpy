@@ -13125,7 +13125,7 @@ label monika_whydoyouloveme:
         m 1ekbla "Why do I love you?"
 
         #First time seeing this variation gets you an "I don't" tease
-        if not renpy.seen_label('monika_whydoyouloveme_tease'):
+        if not renpy.seen_label('monika_whydoyouloveme_tease') and renpy.random.randint(1, 4) == 1:
             call monika_whydoyouloveme_tease
 
         #The above flow leads back into this one
