@@ -4,128 +4,8 @@
 # Monika reacts to he place the player clicks
 
 
-python early:
-
-    # islands-specific displayable, handles issues with no decoding
-    def MASIslandBackground(**filter_pairs):
-        """
-        DynamicDisplayable for Island background images. This includes
-        special handling to return None if island images could not be
-        decoded.
-
-        All Island images should use fallback handling and are built with that
-        in mind.
-
-        IN:
-            **filter_pairs - filter pairs to MASFilterWeatherMap.
-
-        RETURNS: DynamicDisplayable for Island images that respect filters and
-            weather.
-        """
-        return MASFilterWeatherDisplayableCustom(
-            _mas_islands_select,
-            True,
-            **filter_pairs
-        )
-
-
-# island image definitions
-image mas_islands_wf = MASIslandBackground(
-    day=MASWeatherMap({
-        mas_weather.PRECIP_TYPE_DEF: (
-            "mod_assets/location/special/with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_RAIN: (
-            "mod_assets/location/special/rain_with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_SNOW: (
-            "mod_assets/location/special/snow_with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_OVERCAST: (
-            "mod_assets/location/special/overcast_with_frame.png"
-        ),
-    }),
-    night=MASWeatherMap({
-        mas_weather.PRECIP_TYPE_DEF: (
-            "mod_assets/location/special/night_with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_RAIN: (
-            "mod_assets/location/special/night_rain_with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_SNOW: (
-            "mod_assets/location/special/night_snow_with_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_OVERCAST: (
-            "mod_assets/location/special/night_overcast_with_frame.png"
-        ),
-    })
-)
-image mas_islands_wof = MASIslandBackground(
-    day=MASWeatherMap({
-        mas_weather.PRECIP_TYPE_DEF: (
-            "mod_assets/location/special/without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_RAIN: (
-            "mod_assets/location/special/rain_without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_SNOW: (
-            "mod_assets/location/special/snow_without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_OVERCAST: (
-            "mod_assets/location/special/overcast_without_frame.png"
-        ),
-    }),
-    night=MASWeatherMap({
-        mas_weather.PRECIP_TYPE_DEF: (
-            "mod_assets/location/special/night_without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_RAIN: (
-            "mod_assets/location/special/night_rain_without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_SNOW: (
-            "mod_assets/location/special/night_snow_without_frame.png"
-        ),
-        mas_weather.PRECIP_TYPE_OVERCAST: (
-            "mod_assets/location/special/night_overcast_without_frame.png"
-        ),
-    })
-)
-
-init 2 python:
-    # snow-specific maps. This is because the cherry-blossom thing.
-    # NOTE: we even though this is snow, we set the precip types to def
-    #   this is so we can leverage the fallback system
-    mas_islands_snow_wf_mfwm = MASFilterWeatherMap(
-        day=MASWeatherMap({
-            mas_weather.PRECIP_TYPE_DEF: (
-                "mod_assets/location/special/snow_with_frame.png"
-            )
-        }),
-        night=MASWeatherMap({
-            mas_weather.PRECIP_TYPE_DEF: (
-                "mod_assets/location/special/night_snow_with_frame.png"
-            )
-        }),
-    )
-    mas_islands_snow_wof_mfwm = MASFilterWeatherMap(
-        day=MASWeatherMap({
-            mas_weather.PRECIP_TYPE_DEF: (
-                "mod_assets/location/special/snow_without_frame.png"
-            )
-        }),
-        night=MASWeatherMap({
-            mas_weather.PRECIP_TYPE_DEF: (
-                "mod_assets/location/special/night_snow_without_frame.png"
-            )
-        }),
-    )
-
-    mas_islands_snow_wf_mfwm.use_fb = True
-    mas_islands_snow_wof_mfwm.use_fb = True
-
-
 ### initialize the island images
-init -10 python:
+init 1 python:
     ## NOTE: we assume 2 things:
     #   - we have write access to teh mod_assets folder
     #   - the existing pngs dont exist yet
@@ -138,7 +18,70 @@ init -10 python:
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
 
 
-    def _mas_islands_select(st, at, mfwm):
+init -25 python in mas_island_event:
+    import random
+    import itertools
+    from zipfile import ZipFile
+
+    import store
+    import store.mas_dockstat as mds
+    import store.mas_ics as mis
+    from store import (
+        mas_utils,
+        mas_weather,
+        Transform,
+        LiveComposite,
+        MASWeatherMap,
+        MASFilterWeatherDisplayableCustom,
+        MASFilterWeatherDisplayable
+    )
+    from store.mas_parallax import (
+        ParallaxSprite,
+        ParallaxDecal
+    )
+
+    # These are dics, they're being populated later
+    # Once we decode the imgs
+    island_disp_map = None
+    decal_disp_map = None
+    bg_disp_map = None
+    overlay_disp_map = None
+
+    # setup the docking station we are going to use here
+    islands_station = store.MASDockingStation(mis.ISLANDS_FOLDER)
+
+    # These get passed to the contructors when we create these sprites
+    # NOTE: parallax decals are added later, NOT here. That's because they're dynamic
+    # Structure:
+    # type: {
+    #    id: (args_tuple, kwargs_dict)
+    # }
+    store.m = None
+    SPRITES_ARGUMENTS = {
+        "isld": {
+            "isld_0": ((374, 670, 10), {"zoom": 1.0}),
+            "isld_1": ((808, 519, 40), {"zoom": 1.0, "function": None, "on_click": renpy.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")}),
+            "isld_2": ((462, 393, 90), {"zoom": 1.0, "function": None}),
+            "isld_3": ((338, 179, 130), {"zoom": 1.0, "function": None}),
+            "isld_4": ((182, 202, 150), {"zoom": 1.0}),
+            "isld_5": ((1135, 270, 50), {"zoom": 1.0, "function": None}),
+            "isld_6": ((1013, 112, 200), {"zoom": 1.0, "function": None}),
+            "isld_7": ((475, 97, 250), {"zoom": 1.0, "function": None}),
+            "isld_8": ((563, 84, 220), {"zoom": 1.0})
+        },
+        "decal": {
+            "bookshelf": ((91, -60, 4), {}),
+            "bushes": ((97, -52, 5), {}),
+            "house": ((-14, -113, 1), {}),
+            "tree": ((12, -210, 3), {}),
+            "glitch": ((-14, -113, 2), {})
+        },
+        "bg": {
+            "def": ((renpy.config.screen_width/2.0, renpy.config.screen_height/2.0, 10000), {"zoom": 1.1, "min_zoom": 1.1, "max_zoom": 4.1})
+        }
+    }
+
+    def _select_img(st, at, mfwm):
         """
         Selection function to use in Island-based images
 
@@ -147,22 +90,43 @@ init -10 python:
             at - renpy related
             mfwm - MASFilterWeatherMap for this island
 
-        RETURNS: displayable data
+        RETURNS:
+            displayable data
         """
-        if mas_cannot_decode_islands:
-            return "None", None
+        # During winter we always return images with snow
+        # Nonideal, but we have to do this because of the tree
+        # FIXME: ideal solution would be split the images by seasons too
+        if store.mas_isWinter():
+            return mfwm.fw_get(store.mas_sprites.get_filter(), store.mas_weather_snow)
 
-        # otherwise standard mechanics
-        return mas_fwm_select(st, at, mfwm)
+        return store.mas_fwm_select(st, at, mfwm)
 
+    def IslandFilterWeatherDisplayable(**filter_pairs):
+        """
+        DynamicDisplayable for Island images.
 
-init -11 python in mas_island_event:
-    import store
-    import store.mas_dockstat as mds
-    import store.mas_ics as mis
+        IN:
+            **filter_pairs - filter pairs to MASFilterWeatherMap.
 
-    # setup the docking station we are going to use here
-    islands_station = store.MASDockingStation(mis.islands_folder)
+        OUT:
+            DynamicDisplayable for Island images that respect filters and
+                weather.
+        """
+        return MASFilterWeatherDisplayableCustom(
+            _select_img,
+            True,
+            **filter_pairs
+        )
+
+    def shouldDecodeImages():
+        """
+        A united check whether or not we should decode images this sesh
+        """
+        # TODO: add more checks here as needed
+        return (
+            not store.mas_isO31()
+            # and (X or not Y)
+        )
 
     def decodeImages():
         """
@@ -170,16 +134,360 @@ init -11 python in mas_island_event:
 
         Returns TRUE upon success, False otherwise
         """
-        return mds.decodeImages(islands_station, mis.islands_map)
+        if not shouldDecodeImages():
+            return False
 
+        isld_map = {
+            "isld_0": {
+                "d": "islds/0/d.obj",
+                "d_r": "islds/0/d_r.obj",
+                "d_s": "islds/0/d_s.obj",
+                "n": "islds/0/n.obj",
+                "n_r": "islds/0/n_r.obj",
+                "n_s": "islds/0/n_s.obj"
+            },
+            "isld_1": {
+                "d": "islds/1/d.obj",
+                "d_r": "islds/1/d_r.obj",
+                "d_s": "islds/1/d_s.obj",
+                "n": "islds/1/n.obj",
+                "n_r": "islds/1/n_r.obj",
+                "n_s": "islds/1/n_s.obj"
+            },
+            "isld_2": {
+                "d": "islds/2/d.obj",
+                "d_r": "islds/2/d_r.obj",
+                "d_s": "islds/2/d_s.obj",
+                "n": "islds/2/n.obj",
+                "n_r": "islds/2/n_r.obj",
+                "n_s": "islds/2/n_s.obj"
+            },
+            "isld_3": {
+                "d": "islds/3/d.obj",
+                "d_r": "islds/3/d_r.obj",
+                "d_s": "islds/3/d_s.obj",
+                "n": "islds/3/n.obj",
+                "n_r": "islds/3/n_r.obj",
+                "n_s": "islds/3/n_s.obj"
+            },
+            "isld_4": {
+                "d": "islds/4/d.obj",
+                "d_r": "islds/4/d_r.obj",
+                "d_s": "islds/4/d_s.obj",
+                "n": "islds/4/n.obj",
+                "n_r": "islds/4/n_r.obj",
+                "n_s": "islds/4/n_s.obj"
+            },
+            "isld_5": {
+                "d": "islds/5/d.obj",
+                "d_r": "islds/5/d_r.obj",
+                "d_s": "islds/5/d_s.obj",
+                "n": "islds/5/n.obj",
+                "n_r": "islds/5/n_r.obj",
+                "n_s": "islds/5/n_s.obj"
+            },
+            "isld_6": {
+                "d": "islds/6/d.obj",
+                "d_r": "islds/6/d_r.obj",
+                "d_s": "islds/6/d_s.obj",
+                "n": "islds/6/n.obj",
+                "n_r": "islds/6/n_r.obj",
+                "n_s": "islds/6/n_s.obj"
+            },
+            "isld_7": {
+                "d": "islds/7/d.obj",
+                "d_r": "islds/7/d_r.obj",
+                "d_s": "islds/7/d_s.obj",
+                "n": "islds/7/n.obj",
+                "n_r": "islds/7/n_r.obj",
+                "n_s": "islds/7/n_s.obj"
+            },
+            "isld_8": {
+                "d": "islds/8/d.obj",
+                "d_r": "islds/8/d_r.obj",
+                "d_s": "islds/8/d_s.obj",
+                "n": "islds/8/n.obj",
+                "n_r": "islds/8/n_r.obj",
+                "n_s": "islds/8/n_s.obj"
+            }
+        }
+        decal_map = {
+            "bookshelf": {
+                "d": "decals/bookshelf/d.obj",
+                "d_r": "decals/bookshelf/d_r.obj",
+                "d_s": "decals/bookshelf/d_s.obj",
+                "n": "decals/bookshelf/n.obj",
+                "n_r": "decals/bookshelf/n_r.obj",
+                "n_s": "decals/bookshelf/n_s.obj"
+            },
+            "bushes": {
+                "d": "decals/bushes/d.obj",
+                "d_r": "decals/bushes/d_r.obj",
+                "d_s": "decals/bushes/d_s.obj",
+                "n": "decals/bushes/n.obj",
+                "n_r": "decals/bushes/n_r.obj",
+                "n_s": "decals/bushes/n_s.obj"
+            },
+            "house": {
+                "d": "decals/house/d.obj",
+                "d_r": "decals/house/d_r.obj",
+                "d_s": "decals/house/d_s.obj",
+                "n": "decals/house/n.obj",
+                "n_r": "decals/house/n_r.obj",
+                "n_s": "decals/house/n_s.obj"
+            },
+            "tree": {
+                "d": "decals/tree/d.obj",
+                "d_r": "decals/tree/d_r.obj",
+                "d_s": "decals/tree/d_s.obj",
+                "n": "decals/tree/n.obj",
+                "n_r": "decals/tree/n_r.obj",
+                "n_s": "decals/tree/n_s.obj"
+            }
+        }
+        bg_map = {
+            "def": {
+                "d": "bg/def/d.obj",
+                "d_r": "bg/def/d_r.obj",
+                "d_s": "bg/def/d_s.obj",
+                "n": "bg/def/n.obj",
+                "n_r": "bg/def/n_r.obj",
+                "n_s": "bg/def/n_s.obj"
+            }
+        }
+        overlay_map = {
+            "rain": {
+                "d": "overlays/rain/d.obj",
+                "n": "overlays/rain/n.obj"
+            },
+            "snow": {
+                "d": "overlays/snow/d.obj",
+                "n": "overlays/snow/n.obj"
+            }
+        }
+        glitch_fns = (
+            "glitch/g_0.obj",
+            "glitch/g_1.obj",
+            "glitch/g_2.obj",
+            "glitch/g_3.obj",
+            "glitch/g_4.obj",
+            "glitch/g_5.obj",
+            "glitch/g_6.obj"
+        )
 
-    def removeImages():
+        err_msg = "[ERROR] Failed to decode images: {}."
+
+        pkg = islands_station.getPackage("project_or")
+
+        if not pkg:
+            mas_utils.writelog(err_msg.format("Missing package"))
+            return False
+
+        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=mis.ISLAND_PKG_CHKSUM)
+
+        if not pkg_data:
+            mas_utils.writelog(err_msg.format("Bad package."))
+            return False
+
+        glitch_frames = None
+
+        def _read_zip(zip_file, map_):
+            """
+            Inner helper function to read zip and override maps
+
+            IN:
+                zip_file - the zip file opened for reading
+                map_ - the map to get filenames from, and which will be overriden
+            """
+            for name, path_map in map_.iteritems():
+                for sprite_type, path in path_map.iteritems():
+                    raw_data = zip_file.read(path)
+                    img = store.MASImageData(raw_data, name + ".png")
+                    path_map[sprite_type] = img
+
+        try:
+            with ZipFile(pkg_data, "r") as zip_file:
+                # Now override maps to contain imgs instead of img paths
+                for map_ in (isld_map, decal_map, bg_map, overlay_map):
+                    _read_zip(zip_file, map_)
+
+                # Anim frames are handled a bit differently
+                glitch_frames = tuple(
+                    (store.MASImageData(zip_file.read(fn), fn + ".png") for fn in glitch_fns)
+                )
+
+        except Exception as e:
+            mas_utils.writelog(err_msg.format(e))
+            return False
+
+        else:
+            # We loaded the images, now create dynamic displayables
+            _buildDisplayables(isld_map, decal_map, bg_map, overlay_map, glitch_frames)
+
+        return True
+
+    def _buildDisplayables(isld_map, decal_map, bg_map, overlay_map, glitch_frames):
         """
-        Removes the decoded images at the end of their lifecycle
+        Takes multiple maps with images and builds displayables from them, sets global vars
+        NOTE: should be used inside decode_images
+        NOTE: no sanity checks, can raise exceptions
 
-        AKA quitting
+        IN:
+            isld_map - the map from island names to raw images
+            decal_map - the map from decal names to raw images
+            bg_map - the map from bg ids to raw images
+            overlay_map - the map from overlay ids to raw images
+            glitch_frames - tuple of glitch anim frames
         """
-        mds.removeImages(islands_station, mis.islands_map)
+        global island_disp_map, decal_disp_map, bg_disp_map, overlay_disp_map
+
+        # Build the islands
+        island_disp_map = dict()
+        for isld_name, img_map in isld_map.iteritems():
+            disp = IslandFilterWeatherDisplayable(
+                day=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
+                    }
+                ),
+                night=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
+                    }
+                )
+            )
+            args, kwargs = SPRITES_ARGUMENTS["isld"][isld_name]
+            island_disp_map[isld_name] = ParallaxSprite(disp, *args, **kwargs)
+
+        # Build the decals
+        decal_disp_map = dict()
+        for decal_name, img_map in decal_map.iteritems():
+            disp = IslandFilterWeatherDisplayable(
+                day=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
+                    }
+                ),
+                night=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
+                    }
+                )
+            )
+            args, kwargs = SPRITES_ARGUMENTS["decal"][decal_name]
+            decal_disp_map[decal_name] = ParallaxDecal(disp, *args, **kwargs)
+
+        # Build the bg
+        bg_disp_map = dict()
+        for bg_name, img_map in bg_map.iteritems():
+            disp = IslandFilterWeatherDisplayable(
+                day=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
+                    }
+                ),
+                night=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
+                    }
+                )
+            )
+            args, kwargs = SPRITES_ARGUMENTS["bg"][bg_name]
+            bg_disp_map[bg_name] = ParallaxSprite(disp, *args, **kwargs)
+
+        # Build the overlays
+        overlay_disp_map = dict()
+        for overlay_name, img_map in overlay_map.iteritems():
+            # Overlays are just dynamic displayables
+            overlay_disp_map[overlay_name] = MASFilterWeatherDisplayable(
+                True,
+                day=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["d"]
+                    }
+                ),
+                night=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["n"]
+                    }
+                )
+            )
+
+        # Build glitch disp
+        def _select_glitch_frame(transform, st, at):
+            """
+            A function which we use as a transform, updates the child
+            """
+            redraw = random.uniform(0.3, 1.3)
+            next_child = random.choice(glitch_frames)
+
+            transform.child = next_child
+
+            return redraw
+
+        glitch_disp = Transform(child=glitch_frames[0], function=_select_glitch_frame)
+        args, kwargs = SPRITES_ARGUMENTS["decal"]["glitch"]
+        decal_disp_map["glitch"] = ParallaxDecal(glitch_disp, *args, **kwargs)
+
+    def getIslandsImg():
+        """
+        Builds an image for islands and returns it
+        NOTE: This is temporary until we split islands into foreground/background
+        NOTE: change the island image definitions when this happens.
+
+        OUT:
+            LiveComposite
+        """
+        # Just in case we always remove all decals and readd them as needed
+        for isld in island_disp_map.itervalues():
+            isld._container.remove_all()
+
+        island_disp_map["isld_1"]._container.add(
+            decal_disp_map["bookshelf"],
+            decal_disp_map["bushes"],
+            decal_disp_map["house"],
+            decal_disp_map["tree"],
+            decal_disp_map["glitch"]
+        )
+
+        # First add parallax sprites (islands and bg)
+        imgs = island_disp_map.values()
+        imgs.append(bg_disp_map["def"])
+        # In order from back to front
+        imgs.sort(key=lambda sprite: sprite.z, reverse=True)
+
+        # Now add overlays (they are always last)
+        if store.mas_is_raining:
+            imgs.append(overlay_disp_map["rain"])
+
+        elif store.mas_is_snowing:
+            imgs.append(overlay_disp_map["snow"])
+
+        def_coords = itertools.repeat((0, 0), len(imgs))
+        lc_args = itertools.chain.from_iterable(itertools.izip(def_coords, imgs))
+
+        return LiveComposite(
+            (renpy.config.screen_width, renpy.config.screen_height),
+            *lc_args
+        )
 
     def isWinterWeather():
         """
@@ -202,14 +510,6 @@ init -11 python in mas_island_event:
                 - False otherwise
         """
         return store.mas_is_raining or store.mas_current_weather == store.mas_weather_overcast
-
-
-init 4 python:
-    # adjustments to islands flags in the case of other runtime things
-    if mas_isO31():
-        # no islands event on o31
-        mas_cannot_decode_islands = True
-        store.mas_island_event.removeImages()
 
 
 init 5 python:
@@ -613,33 +913,6 @@ label mas_island_bookshelf2:
         m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
         m "That'd be wonderful~"
     return
-
-#NOTE: This is temporary until we split islands into foreground/background
-# NOTE: change the island image definitions (see top of this file) when this
-#   happens.
-init 500 python in mas_island_event:
-    def getBackground():
-        """
-        Because of the dead cherry blossom, we keep the snowy islands during all of winter
-
-        Picks the islands bg to use based on the season.
-
-        RETURNS: image to use as a displayable. (or image path)
-        """
-        if store.mas_isWinter():
-            if store._mas_island_window_open:
-                return store.mas_islands_snow_wof_mfwm.fw_get(
-                    store.mas_sprites.get_filter()
-                )
-
-            return store.mas_islands_snow_wf_mfwm.fw_get(
-                store.mas_sprites.get_filter()
-            )
-
-        if store._mas_island_window_open:
-            return "mas_islands_wof"
-
-        return "mas_islands_wf"
 
 
 screen mas_islands_background:

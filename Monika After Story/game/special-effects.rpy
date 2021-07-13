@@ -4,7 +4,9 @@ init -500 python in mas_parallax:
     import pygame
     import math
 
-    class Decal(object):
+    import store
+
+    class ParallaxDecal(object):
         """
         Represents a decal. Basically a struct, made for convenience
         This is not a desplayable.
@@ -64,7 +66,7 @@ init -500 python in mas_parallax:
             """
             return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4})>".format(type(self).__name__, repr(self.img), self._x, self._y, self._z)
 
-    class _DecalContainer(renpy.display.core.Displayable):
+    class _ParallaxDecalContainer(renpy.display.core.Displayable):
         """
         A container displayable. It takes a base (consider it main displayable) and any number of children.
         The container will be of just enough size to contain the base and the children, aligning everything to its center.
@@ -75,10 +77,10 @@ init -500 python in mas_parallax:
             Constructor for containers
 
             IN:
-                base - the base img (must be Decal)
-                args - children (must be Decal)
+                base - the base img (must be ParallaxDecal)
+                args - children (must be ParallaxDecal)
             """
-            super(_DecalContainer, self).__init__()
+            super(_ParallaxDecalContainer, self).__init__()
 
             self._base = base
 
@@ -86,8 +88,8 @@ init -500 python in mas_parallax:
             self._items.append(base)
             self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
             for item in self._items:
-                if not isinstance(item, Decal):
-                    raise Exception("{0} can accept only Decal, got: {1}".format(type(self).__name__, type(item)))
+                if not isinstance(item, ParallaxDecal):
+                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(item)))
                 item.callback = self.update
 
             self.size = (0, 0)
@@ -98,7 +100,7 @@ init -500 python in mas_parallax:
 
         @base.setter
         def base(self, decal):
-            if not isinstance(decal, Decal):
+            if not isinstance(decal, ParallaxDecal):
                 return
 
             base_id = self._items.index(self._base)
@@ -119,34 +121,38 @@ init -500 python in mas_parallax:
             """
             return "<{0}: (base: {1}, children: {2})>".format(type(self).__name__, self._base, self.children)
 
-        def add(self, decal):
+        def add(self, *decals):
             """
-            Adds a Decal to this container
+            Adds a ParallaxDecal to this container
             """
-            if not isinstance(decal, Decal):
-                return
+            for decal in decals:
+                if not isinstance(decal, ParallaxDecal):
+                    continue
 
-            decal.callback = self.update
-            self._items.append(decal)
+                decal.callback = self.update
+                self._items.append(decal)
+
             self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
             renpy.redraw(self, 0.0)
 
-        def remove(self, decal):
+        def remove(self, *decals):
             """
-            Removes a Decal instance from this container
+            Removes a ParallaxDecal instance from this container
             """
-            if decal in self._items and decal is not self._base:
-                decal.callback = None
-                self._items.remove(decal)
-                renpy.redraw(self, 0.0)
+            for decal in decals:
+                if decal in self._items and decal is not self._base:
+                    decal.callback = None
+                    self._items.remove(decal)
+
+            renpy.redraw(self, 0.0)
 
         def remove_all(self):
             """
             Removes all decals from this container
             """
-            while self._items:
-                item = self._items.pop()
-                item.callback = None
+            for child in self.children:
+                self._items.remove(child)
+                child.callback = None
             renpy.redraw(self, 0.0)
 
         def render(self, width, height, st, at):
@@ -175,17 +181,17 @@ init -500 python in mas_parallax:
                 abs_y_offset = abs(item_y_offset)
 
                 if abs_x_offset > max(0, width_diff / 2.0):
-                    main_render_width += (2 * abs_x_offset - width_diff)
+                    main_render_width += (2*abs_x_offset - width_diff)
 
                 if abs_y_offset > max(0, height_diff / 2.0):
-                    main_render_height += (2 * abs_y_offset - height_diff)
+                    main_render_height += (2*abs_y_offset - height_diff)
 
                 render_items.append(
                     (
                         item_disp,
                         item_render,
-                        item_width / 2.0 - item_x_offset,
-                        item_height / 2.0 - item_y_offset
+                        item_width/2.0 - item_x_offset,
+                        item_height/2.0 - item_y_offset
                     )
                 )
 
@@ -194,8 +200,8 @@ init -500 python in mas_parallax:
             for _disp, _render, _x_offset, _y_offset in render_items:
                 main_render.place(
                     _disp,
-                    x=main_render_width / 2.0 - _x_offset,
-                    y=main_render_height / 2.0 - _y_offset,
+                    x=main_render_width/2.0 - _x_offset,
+                    y=main_render_height/2.0 - _y_offset,
                     render=_render
                 )
 
@@ -245,7 +251,7 @@ init -500 python in mas_parallax:
                     NOTE: your function SHOULD NOT affect the xoffset/yoffset/zoom (zoom only if you enabled it for the user) props
                     (Default: None)
                 decals - list of decals for this sprite
-                    (Default: None)
+                    (Default: empty tuple)
                 on_click - a callable object that gets called on click (LMB) events
                     (Default: None)
                 min_zoom - min zoom value
@@ -258,8 +264,8 @@ init -500 python in mas_parallax:
             super(ParallaxSprite, self).__init__()
 
             # For convenience, we assume the mouse is in the center
-            self.mouse_x = config.screen_width / 2.0
-            self.mouse_y = config.screen_height / 2.0
+            self.mouse_x = renpy.config.screen_width / 2.0
+            self.mouse_y = renpy.config.screen_height / 2.0
 
             self._x = x
             self._y = y
@@ -267,12 +273,12 @@ init -500 python in mas_parallax:
                 raise Exception("The zorder property must be greater than 0.")
             self._z = z
 
-            self._container = _DecalContainer(
-                Decal(img, 0, 0, 0),
+            self._container = _ParallaxDecalContainer(
+                ParallaxDecal(img, 0, 0, 0),
                 *decals
             )
 
-            self._transform = Transform(
+            self._transform = store.Transform(
                 self._container,
                 # TODO: enable functions
                 # function=function,
@@ -347,15 +353,15 @@ init -500 python in mas_parallax:
             zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
 
             # NOTE: Here we make an important assumption - the img we use (the container) will be of the screen width/height
-            zoom_correction_x = config.screen_width * zoom_factor / 2.0
-            zoom_correction_y = config.screen_height * zoom_factor / 2.0
+            zoom_correction_x = renpy.config.screen_width * zoom_factor / 2.0
+            zoom_correction_y = renpy.config.screen_height * zoom_factor / 2.0
 
             # We use screen_width and screen_height for our parallax
-            available_x_shift = config.screen_width / float(self._z)
-            available_y_shift = config.screen_height / float(self._z)
+            available_x_shift = renpy.config.screen_width / float(self._z)
+            available_y_shift = renpy.config.screen_height / float(self._z)
 
-            half_screen_width = config.screen_width / 2.0
-            half_screen_height = config.screen_height / 2.0
+            half_screen_width = renpy.config.screen_width / 2.0
+            half_screen_height = renpy.config.screen_height / 2.0
 
             mouse_x_factor = self.mouse_x / half_screen_width
             mouse_y_factor = self.mouse_y / half_screen_height
@@ -418,7 +424,7 @@ init -500 python in mas_parallax:
             img_render = renpy.render(self._transform, width, height, st, at)
             main_render = renpy.Render(width, height)
             main_render.place(self._transform, x=0, y=0, render=img_render)
-            # main_render.add_focus(self, None, 0, 0, config.screen_width, config.screen_height, 0, 0, main_render)
+            # main_render.add_focus(self, None, 0, 0, renpy.config.screen_width, renpy.config.screen_height, 0, 0, main_render)
             self._render = main_render
 
             return main_render
@@ -462,13 +468,13 @@ init -500 python in mas_parallax:
             """
             super(ParallaxBackground, self).__init__()
 
-            self.mouse_x = config.screen_width / 2.0
-            self.mouse_y = config.screen_height / 2.0
+            self.mouse_x = renpy.config.screen_width / 2.0
+            self.mouse_y = renpy.config.screen_height / 2.0
 
             img = renpy.easy.displayable(img)
             self.size = img.load().get_size()
 
-            self._transform = Transform(
+            self._transform = store.Transform(
                 img,
                 anchor=ParallaxBackground.DEF_ANCHOR,
                 transform_anchor=True,
@@ -504,11 +510,11 @@ init -500 python in mas_parallax:
             """
             #NOTE: Factor should always be > 0 here
             zoom_factor = self._zoom - ParallaxBackground.NORMAL_ZOOM
-            available_x_shift = config.screen_width * zoom_factor / 2.0
-            available_y_shift = config.screen_height * zoom_factor / 2.0
+            available_x_shift = renpy.config.screen_width * zoom_factor / 2.0
+            available_y_shift = renpy.config.screen_height * zoom_factor / 2.0
 
-            half_screen_width = config.screen_width / 2.0
-            half_screen_height = config.screen_height / 2.0
+            half_screen_width = renpy.config.screen_width / 2.0
+            half_screen_height = renpy.config.screen_height / 2.0
 
             self._transform.xoffset = self.size[0]/2 + available_x_shift*(2 - self.mouse_x/half_screen_width)
             self._transform.yoffset = self.size[1]/2 + available_y_shift*(3 - self.mouse_y/half_screen_height)

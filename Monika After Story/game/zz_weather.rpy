@@ -475,7 +475,7 @@ init -20 python in mas_weather:
             store.mas_globals.show_vignette = False
 
 
-init -10 python:
+init -50 python:
 
     def MASWeather(
             weather_id,
