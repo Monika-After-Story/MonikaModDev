@@ -3744,12 +3744,37 @@ label ch30_reload_delegate:
 #    del ev_rules
 
 label greeting_ghost:
-    #Prevent it from happening more than once.
-    $ mas_lockEVL("greeting_ghost", "GRE")
-
-    #Call event in easter eggs.
     call mas_ghost_monika
+#The current easter egg closes the game, in this version of the greeting I'd like it to cut to a black screen for a second before returning to normal MAS.
 
+    m 1hfb "...Boo!"
+    m 1hfa "...{w=0.2}{nw}"
+    extend 1hub "Ahaha! Did I scare you, [player]?"
+    m 3eub "You told me that you like spooky jumpscares, so I thought I'd pull a little trick on you for the season."
+    m 3hub "Well? What'd you think?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Well? What'd you think?{fast}"
+        "That was awesome, you really got me!":
+            m 1hub "Ahaha! Yay!"
+            m 2lksdla "I was pretty nervous waiting for you to show up, you know."
+            m 2tublu "Not as nervous as you were, though!"
+            m 2hublb "I'm glad my little prank paid off, ahaha~"
+        #I would like to code this so that it unlocks again next October, is that possible?
+        "That didn't scare me.":
+            m 1eka "Ah..."
+            m 2etp "Jeez...I really tried to set up something creepy for you."
+            m 2tub "I guess you're really hard to scare though, huh?"
+            m 1efu "I'll just have to try harder next time."
+            $ mas_lockEVL("greeting_ghost", "GRE")
+            #Maybe this one shouldn't stay permanently locked either? Not sure if she'd want to try the same trick again.
+        "I didn't like that, you really scared me.":
+            m 2wkd "Oh no!"
+            m 2ekd "[player], I'm really sorry. I didn't mean to upset you."
+            m 2rkd "I thought it would be a fun prank, since you told me you liked this sort of thing..."
+            m 2tkc "But I guess it's a bit more mean-spirited to surprise you right when you opened the game."
+            m 2ekb "I promise I won't do that again, okay?"
+            $ mas_lockEVL("greeting_ghost", "GRE")
     return
 
 init 5 python:

@@ -258,8 +258,6 @@ label mas_ghost_monika:
     #Time the original game displayed zoomed in face for.
     pause 0.01
 
-    #Prevent player from losing affection.
-    $ persistent.closed_self = True
-
-    #Exit the game.
-    jump _quit
+    #Does this flash to the spaceroom? Should not load different backgrounds.
+    $ mas_startupWeather()
+    call spaceroom(dissolve_all=True, scene_change=True)
