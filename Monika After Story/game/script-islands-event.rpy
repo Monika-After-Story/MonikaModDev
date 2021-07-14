@@ -59,15 +59,42 @@ init -25 python in mas_island_event:
     store.m = None
     SPRITES_ARGUMENTS = {
         "isld": {
-            "isld_0": ((374, 670, 10), {"zoom": 1.0}),
-            "isld_1": ((808, 519, 40), {"zoom": 1.0, "function": None, "on_click": renpy.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")}),
-            "isld_2": ((462, 393, 90), {"zoom": 1.0, "function": None}),
-            "isld_3": ((338, 179, 130), {"zoom": 1.0, "function": None}),
-            "isld_4": ((182, 202, 150), {"zoom": 1.0}),
-            "isld_5": ((1135, 270, 50), {"zoom": 1.0, "function": None}),
-            "isld_6": ((1013, 112, 200), {"zoom": 1.0, "function": None}),
-            "isld_7": ((475, 97, 250), {"zoom": 1.0, "function": None}),
-            "isld_8": ((563, 84, 220), {"zoom": 1.0})
+            "isld_0": (
+                (374, 670, 10),
+                {"zoom": 1.0}
+            ),
+            "isld_1": (
+                (808, 519, 40),
+                {"zoom": 1.0, "function": None, "on_click": renpy.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")}
+            ),
+            "isld_2": (
+                (462, 393, 90),
+                {"zoom": 1.0, "function": None}
+            ),
+            "isld_3": (
+                (338, 179, 130),
+                {"zoom": 1.0, "function": None}
+            ),
+            "isld_4": (
+                (182, 202, 150),
+                {"zoom": 1.0}
+            ),
+            "isld_5": (
+                (1135, 270, 50),
+                {"zoom": 1.0, "function": None}
+            ),
+            "isld_6": (
+                (1013, 112, 200),
+                {"zoom": 1.0, "function": None}
+            ),
+            "isld_7": (
+                (475, 97, 250),
+                {"zoom": 1.0, "function": None}
+            ),
+            "isld_8": (
+                (563, 84, 220),
+                {"zoom": 1.0}
+            )
         },
         "decal": {
             "bookshelf": ((91, -60, 4), {}),
@@ -77,7 +104,10 @@ init -25 python in mas_island_event:
             "glitch": ((-14, -113, 2), {})
         },
         "bg": {
-            "def": ((renpy.config.screen_width/2.0, renpy.config.screen_height/2.0, 10000), {"zoom": 1.1, "min_zoom": 1.1, "max_zoom": 4.1})
+            "def": (
+                (renpy.config.screen_width/2.0, renpy.config.screen_height/2.0, 10000),
+                {"zoom": 1.1, "min_zoom": 1.1, "max_zoom": 4.1}
+            )
         }
     }
 
@@ -132,7 +162,8 @@ init -25 python in mas_island_event:
         """
         Attempts to decode the iamges
 
-        Returns TRUE upon success, False otherwise
+        OUT:
+            True upon success, False otherwise
         """
         if not shouldDecodeImages():
             return False
