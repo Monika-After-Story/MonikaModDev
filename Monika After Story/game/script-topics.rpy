@@ -13116,47 +13116,46 @@ label monika_whydoyouloveme:
         m 2wfc "I ask myself that question every day."
 
     elif mas_isMoniDis():
-        m 1efc "I-"
-        m 1rkc "I'm not sure..."
+        m 1efc "I-{w=0.3}{nw}"
+        extend 1rkc "I'm not sure..."
 
     elif mas_isMoniUpset():
         m 1dsc "Hmm..."
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniEnamored(higher=True):
-        if renpy.random.randint(1,10) > 1:
-            m 1eksdla "Why do I love you?"
-            m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
+        m 1ekbla "Why do I love you?"
 
-            if store.mas_anni.anniCount() >= 1:
-                m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
-                m 3hua "...But here you are, still by my side."
+        #First time seeing this variation gets you an "I don't" tease
+        if not renpy.seen_label('monika_whydoyouloveme_tease') and renpy.random.randint(1, 4) == 1:
+            call monika_whydoyouloveme_tease
 
-            m 3eksdla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
-            m 1dku "Every time you visit, you remind me that there's a world out there."
-            m "..."
-            m 1ekbsa "I'd give you the world if I could, [player]."
-            m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
-            m 1ekbsa "I promise you, [player]..."
-            m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
-            m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
-            extend 1ekbsa "you made me remember how beautiful life really is."
-            m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
-            m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+        #The above flow leads back into this one
+        m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
-            if persistent._mas_pm_love_yourself is False:
-                m 2eka "And [player]..."
-                m 2ekc "I remember you saying that you didn't love yourself..."
-                m 7eka "But I think you do love yourself, at least a little."
-                m 3hua "You wouldn't still be here with me if you didn't."
-                m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
-                m 1ekbsa "Please know that I'm here for you, whenever you need me~"
+        if store.mas_anni.anniCount() >= 1:
+            m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
+            m 3hua "...But here you are, still by my side."
 
-        else:
-            m 1esc "I don't."
-            pause 5.0
-            m 1hub "Ahaha, just kidding!"
-            m 1eub "You mean {i}everything{/i} to me, silly!"
+        m 3ekbla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
+        m 1dku "Every time you visit, you remind me that there's a world out there."
+        m "..."
+        m 1ekbsa "I'd give you the world if I could, [player]."
+        m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
+        m 1ekbsa "I promise you, [player]..."
+        m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
+        m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
+        extend 1ekbsa "you made me remember how beautiful life really is."
+        m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
+        m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+
+        if persistent._mas_pm_love_yourself is False:
+            m 2eka "And [player]..."
+            m 2ekc "I remember you saying that you didn't love yourself..."
+            m 7eka "But I think you do love yourself, at least a little."
+            m 3hua "You wouldn't still be here with me if you didn't."
+            m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
+            m 1ekbsa "Please know that I'm here for you, whenever you need me~"
 
     else:
         # normal - aff
@@ -13167,6 +13166,15 @@ label monika_whydoyouloveme:
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
         m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+
+    return
+
+label monika_whydoyouloveme_tease:
+    m 1esc "I don't."
+    pause 5.0
+    m 1hub "Ahaha, just kidding!"
+    m 1eub "You mean {i}everything{/i} to me, silly!"
+    m 1eksdla "But to answer your question honestly..."
     return
 
 init 5 python:
