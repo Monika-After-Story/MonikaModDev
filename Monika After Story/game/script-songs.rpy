@@ -2170,3 +2170,125 @@ label mas_monika_plays_or(skip_leadin=False):
 
     $ mas_unlockEVL("monika_piano_lessons", "EVE")
     return
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_on_the_front_porch",
+            prompt="On the Front Porch",
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_on_the_front_porch:
+    m 5dkbsb "{i}~All I wanna do, when the day is through,~{/i}"
+    m 5fkbfb "{i}~Is linger here on the front porch with you~{/i}"
+    m 1hubfb "{i}~From the wicker swing, while the night birds sing~{/i}"
+    m 1dubfa "{i}~We'll watch the fireflies sparkin', do some sparkin' to~{/i}"
+    m 3dkbfa "{i}~How the hours fly,~{/i}"
+    m 7rkbfb "{i}~As the moon drifts by...~{/i}"
+    m 5rkbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5dkbstuu "{i}~Oh how I'd love to linger here like this,~{/i}"
+    m 5ekbstsb "{i}~Hold your hand and steal a kiss...{/i}{w=0.1}"
+    extend 5gkbstsb "{i}or two~{/i}"
+    m 5ekbstub "{i}~On the front porch,{/i}{nw}"
+    extend 5ekbstpa "{i}with you~{/i}"
+    m 6dkbstda "..."
+    m 7hkblb "Oh! Sorry if I got a bit emotional there, ahaha!"
+    m 1eua "But, can you really blame me?"
+    m 1dua "After all, doing something like that together would be...{w=0.2}{nw}"
+    extend 5dkbsa "simply wonderful."
+    m 5gkbsa "..."
+    m 5ekbsa "..."
+    m 5ekbfb "I love you so much~ Never forget that."
+    $ mas_ILY()
+
+    return  
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_fly_me_to_the_moon",
+            prompt="Fly Me to the Moon",
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_fly_me_to_the_moon:
+    m 1hub "{i}~Fly me to the moon~{/i}"
+    m 7dub "{i}~And let me play among the stars~{/i}"
+    m 5rkb "{i}~Let me see what spring is like~{/i}"
+    m 5eku "{i}~On Jupiter and Mars~{/i}"
+    m 3ekblu "{i}~In other words, hold my hand~{/i}"
+    m 6dkbla "{i}~In other words,{/i}{nw}"
+    extend 5dkbsb "{i} darling, kiss me~{/i}"
+    m 5eubsb "{i}~Fill my heart with song, and let me sing forevermore~{/i}"
+    m 5ekbfb "{i}~You are all I long for; all I worship and adore~{/i}"
+    m 5dubfo "{i}~In other words, please be true~{/i}"
+    m 5dubfo "{i}~In other words,{/i}{nw}"
+    extend 7fkbfb "{i} I love you~{i}"
+    m 3hubsb "And, I always will!"
+    $ mas_ILY()
+
+    return    
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_heaven",
+            prompt="Heaven",
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_heaven:
+    m 1dsbso "{i}~Baby, you're all that I want~{/i}"
+    m 5hubfb "{i}~When you're lyin' here in my arms~{/i}"
+    m 5rubfb "{i}~I'm findin' it hard to believe~{/i}"
+    m 5ekbfb "{i}~We're in heaven~{/i}"
+    m 5hubfb "{i}~And love is all that I need~{/i}"
+    m 5ekbfu "{i}~And I found it there in your heart~{/n}"
+    m 1dkbfb "{i}~Isn't too hard to see~{/n}"
+    m 1ekbfb "{i}~We're in heaven~{/i}"
+    m 1ekbfa "Not a day goes by when I don't dream of us being together, [player]."
+    m 1ttbsa "And something tells me I'm not the only one~"
+    
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_can_you_feel_the_sunshine",
+            prompt="Can You Feel the Sunshine?",
+            category=[store.mas_songs.TYPE_SHORT],
+            unlocked=False,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_can_you_feel_the_sunshine:
+    m 1dub "{i}~Can you feel the sunshine?~{/i}"
+    m 1ekb "{i}~Does it brighten up your day?~{/i}"
+    m 1dka "{i}~Don't you feel that sometimes~{/i}"
+    m 1ekbla "{i}~You just need to run away?~{/i}"
+    m 3hubsb "{i}~Reach out for the sunshine~{/i}"
+    m 7dkbsb "{i}~Forget about the rain~{/i}"
+    m 5rubsu "{i}~Just think about the good times~{/i}"
+    m 5subsb "{i}~And they will come back again~{/i}"
+    m 1dkbsu "{i}~Feel the sunshine...~{/i}"
+    m 1ekbla "Never forget I'll be here to brighten your day if you need it, [player]."
+
+    return
