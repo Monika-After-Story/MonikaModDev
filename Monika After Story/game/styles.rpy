@@ -476,6 +476,9 @@ init 25 python in mas_ui:
         if only_seen and ev.shown_count == 0:
             return False
 
+        if not ev.checkConditional():
+            return False
+
         if not search_query:
             return True
 
