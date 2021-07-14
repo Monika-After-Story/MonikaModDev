@@ -212,3 +212,78 @@ init python:
             data = persistent.__dict__[lkey]
             for item in data:
                 outfile.write("{0}\n".format(str(item)))
+
+
+init python in dev_mas_shared:
+    import cPickle
+    import store
+    import store.mas_docking_station as mds
+    import store.mas_ev_data_ver as ver
+
+    from collections import defaultdict
+
+    class MASPersistentAnalyzer(object):
+        """
+        class for analyzing persistent data objects
+
+        PROPERTIES:
+            event_db - all events database
+                key: eventlabel
+                value: EventDBData object
+            property_index - index of all event objects
+                key: property name
+                value: dictionary:
+                    key: the value of the property
+                        (for category, each tag is a separate value)
+                    value: dictionary:
+                        key: eventlabel
+                        value: EventDBData object
+        """
+
+        def __init__(self, in_char):
+            """
+            IN:
+                in_char - pass True if the persisten file is int 
+                eh user's charactesr dir. Otherwise we use the 
+                loaded persistent
+            """
+            self.in_char = in_char
+            self.clear()
+
+        def analyze(self):
+            """
+            Loads and analyzes persistent data
+            """
+            # select persistent to load
+            if self.in_char:
+                pkg = mds.getPackage("persistent")
+                pdata = cPickle.loads(pkg.read().decode("zlib"))
+                pkg.close()
+            else:
+                pdata = store.persistent
+
+            for ev_label in pdata.event_database:
+                ev_data = store.EventDBData(pdata.event_database[ev_label])
+
+                # add to primary db
+                self.event_db[ev_label] = ev_data
+
+                # add to index db
+                for prop_name in store.Event.T_EVENT_NAMES:
+                    prop_value = getattr(ev_data, prop_name)
+
+                    # listables need to be split into parts                    
+                    # except affection
+                    if ver._verify_tuli(prop_value) and prop_name != "aff_range":
+                        for item in prop_value:
+                            self.property_index[prop_name][item][ev_label] = ev_data
+
+                    else:
+                        self.property_index[prop_name][prop_value][ev_label] = ev_data
+
+        def clear(self):
+            """
+            Clears data
+            """
+            self.event_db = {}
+            self.property_index = defaultdict(lambda: defaultdict(dict))

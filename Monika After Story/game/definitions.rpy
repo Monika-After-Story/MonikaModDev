@@ -360,6 +360,30 @@ python early:
         def __str__(self):
             return self.msg
 
+
+    # event data class - use for data grouping - no behaviors allowed
+    class EventDBData(object):
+        """
+        Speciality class that can hold data from data tuples (events)
+        Read-only (for now)
+        """
+
+        def __init__(self, data_tup):
+            """
+            IN:
+                data_tup - the data to store
+            """
+            self.data_tup = data_tup
+
+        def __getattr__(self, name):
+            attr_loc = Event.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                return self.data_tup[attr_loc]
+
+            return None
+
+
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
     # NOTE: Events are TIED to the database they are found in. Moving databases
