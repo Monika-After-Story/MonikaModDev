@@ -126,7 +126,7 @@ label mas_piano_songchoice:
         menu:
             m "Did you want to play a song or play on your own, [player]?{fast}"
             "Play a song.":
-                m "Which song?" nointeract
+                m "Which song would you like to play?" nointeract
                 show monika at t21
                 call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
                 show monika at t11
@@ -368,7 +368,7 @@ label mas_piano_yr_fail:
 label mas_piano_yr_prac:
     m 1hua "That was really cool, [player]!"
     m 3eua "With some more practice, you'll be able to play my song perfectly."
-    m 1eka "Make sure to practice everyday for me, okay?~"
+    m 1eka "Make sure to practice every day for me, okay?~"
     return
 
 
