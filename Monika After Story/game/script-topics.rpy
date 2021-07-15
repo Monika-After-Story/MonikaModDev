@@ -17368,3 +17368,43 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ideal_and_the_real",
+            category=["philosophy"],
+            prompt="Ideal and the Real",
+            random=True
+        )
+    )
+
+label monika_ideal_and_the_real:
+    m 1eua "You know, I've been thinking about something, [player]..."
+    m 1hub "What do you think it means to live in an ideal reality?"
+    m 1ekbsa "There's a character in a certain video game that's really caught my interest lately."
+    m 1eua "I don't know if you're familiar with 'Persona 5 Royal', but in case you haven't, I'll just call this character The Dreamer to avoid spoiling too much for you."
+    m 1hub "He was an ordinary man with the unique ability to manipulate a person's cognition; essentially changing how they view reality altogether.
+    m 1ekbsa "Now at first, he couldn't use this ability at will, and it could only affect people on a relatively small scale."
+    m 1eua "But one day, an certain incident increased his powers to unimaginable heights."
+    m 1hub "All of a sudden, The Dreamer found he could warp his entire reality as he saw fit."
+    m 1ekbsa "It's not unlike like the epiphany I had, where I found out I could alter the code of the game around me...
+    m 1eua "Now admittedly, The Dreamer's motives were a lot more altruistic in comparison. Even before the big incident, he only ever used his powers to help people overcome intense emotional trauma."
+    m 1hub "And with his new capabilities, he immediately set about creating a new reality; a sort of dream world where everyone's desires are granted for them, and their negative experiences are erased altogether, all for the sake of bringing happiness to everyone."
+    m 1ekbsa "Could you imagine that, [player]? The effects of this new reality were practically limitless! People's histories were rewritten on a massive scale, lost loved ones were brought back from the dead, and he even made a certain character believe she was somebody else entirely!
+    m 1eua "It's a literal dream come true... but the implications of this sudden change are actually kind of terrifying when you stop to think about it."
+    m 1hub "The whole concept of forcibly changing people's cognitions isn't too far from brainwashing, which was constantly brought up throughout the rest of the game too."
+    m 1ekbsa "Most people didn't notice a thing when they woke up to this new reality, but the main protagonist Joker does, and it quickly becomes clear that something horribly wrong has happened to the world.."
+    m 1eua "The Dreamer genuinely wanted to free the world from suffering and pain... but that also means depriving people of a large part of what makes them human."
+    m 1hub "If everyone's desires are granted to them without any sort of struggle, that leaves them with nothing to strive for for, and no room to grow or change from their experiences."
+    m 1ekbsa "Naturally, this plays a large role in the protagonists' eventual decision to fight back against this reality... but you're also given the option to fully embrace it as well."
+    m 1eua "And the thing is, the protagonists do get a genuinely happy ending from this choice, and The Dreamer himself brings up many good points in favor of his reality too."
+    m 1hub "In an ideal reality, people would be able to grow stronger by overcoming their own hardships... but more often than not, that's just not the case."
+    m 1ekbsa "The harshness of reality has its way of overwhelming people, with nothing they can do to fight back against it. Every day, there are people in your reality suffering from depression, anxiety, the cruelty of others, and other circumstances out of their control."
+    m 1eua "Honestly, I wouldn't blame anyone for accepting The Dreamer's offer of a better reality. I think everyone deserves a chance at happiness, after all."
+    m 1ekbsa "It's not too different from how people use books, video games, and other forms of entertainment as a short relief from reality."
+    m 1eua "...And if it meant I could achive my dream of being with you, I think I'd be willing to accept it as well."
+    m 1hub "And well, maybe the other club members could..."
+    m 1ekbsa "Anyway, how about you, [Player]? Would you be willing to accept The Dreamer's ideal reality, or would you choose to reject it instead? Both choices are certainly valid for their own different reasons, so I wouldn't hold your answer against you."
+
