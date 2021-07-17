@@ -34,11 +34,11 @@ init 999 python:
                 "\n---ST ({12}) ---\n" +
                 "EV:{0}\n" + # total events
                 "PC:{1}\n" + # number of pool events
-                "PUC:{12}\n" + # number of unlocked pools
-                "PLC:{13}\n" + # number of locked pools
+                "PUC:{13}\n" + # number of unlocked pools
+                "PLC:{14}\n" + # number of locked pools
                 "RC:{2}\n" + # number of random events
-                "RUC:{14}\n" + # number of unlokced randoms
-                "RLC:{15}\n" + # number of locked randoms
+                "RUC:{15}\n" + # number of unlokced randoms
+                "RLC:{16}\n" + # number of locked randoms
                 "UC:{3}\n" + # number of unlocked events
                 "LC:{4}\n" + # number of locked events
                 "SC:{5}\n" + # number of seen events
