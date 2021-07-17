@@ -229,7 +229,6 @@ init 999 python:
 
             _ev_stats_file.write(config.version + "\n\n")
             _ev_stats_file.write(mas_sessionDataDump())
-            _ev_stats_file.write("\n\n")
             _ev_stats_file.write(mas_progressionDataDump())
 
             # gather data
@@ -273,7 +272,7 @@ init 999 python:
             "XP to next level: {2}\n"
             "Current level: {3}\n"
             "Current xp rate: {4}\n"
-            "XP last granted: {5}\n"
+            "XP last granted: {5}\n\n"
         ).format(
             persistent._mas_xp_rst,
             persistent._mas_xp_hrx,
