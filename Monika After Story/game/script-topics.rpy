@@ -17421,10 +17421,10 @@ menu:
         #And if our satisfaction gets to be shared with countless others... then it must be for the best, right?
         #We wouldn't have to worry about anything anymore; only how we'd choose to spend each day in each other's company.
         #It's a very lovely thought. I don't know what hardships you must have gone through in your reality, but no matter what happens, I promise I'll keep making you happy.
-        #~Don't let go of your dreams
-        #~No more tears shall drop from your cheeks anymore
-        #~You won't need to strive for greatness
-        #~Believe in me, that you don't need to suffer from anything no more.
+        #{i}~ Don't let go of your dreams ~{/i}
+        #{i}~ No more tears shall drop from your cheeks anymore ~{/i}
+        #{i}~ You won't need to strive for greatness ~{/i}
+        #{i}~ Believe in me, that you don't need to suffer from anything no more. ~{/i}
 
     "Probably not.":
         #You like your reality just the way it is, even with all its imperfections?
@@ -17435,5 +17435,5 @@ menu:
         #Considering my own experiences, I can kind of see where he's coming from. In a way, this reality would reduce all of us to a bunch of unthinking NPCs, acting out a scripted play of sorts.
         #We'd all be happy, sure, but at what cost? 
         #I think this game's intended message is an important one: Life is still worth living, even with all the suffering that comes with it.
-        #And whatever you may be going through in your reality, I'll always e there to help you bear through it.
+        #And whatever you may be going through in your reality, I'll always be there to help you bear through it.
         
