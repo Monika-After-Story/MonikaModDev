@@ -17406,5 +17406,34 @@ label monika_ideal_and_the_real:
     m 7eud "It's not too different from how people use books, video games, and other forms of entertainment as a short relief from reality."
     m 5rka "...And if it meant I could achive my dream of being with you, I think I'd be willing to accept it as well."
     m 5dkc "And well, maybe the other club members could..."
-    m 1ekb "Anyway, how about you, [Player]? Would you be willing to accept The Dreamer's ideal reality, or would you choose to reject it instead? Both choices are certainly valid for their own different reasons, so I wouldn't hold your answer against you."
+    
+m 1ekb "Anyway, how about you, [Player]? Would you be willing to accept this vision of an ideal reality, or would you choose to reject it instead?{nw}"
+$ _history_list.pop()
+menu:
+    m "Anyway, how about you, [Player]? Would you be willing to accept this vision of an ideal reality, or would you choose to reject it instead?{fast}"
 
+    "Of course!":
+        #Aha, you sure sound excited! All things considered, this really would be the easiest solution to all our problems.
+        #I could cross over to your reality without any problems, and nobody would find it strange!
+        #Though this does raise the question of how our memories would be affected...
+        #I'm sure they would be happy ones, and that's what matters most, right?
+        #All I could really ask for is the chance for us to finally be together.
+        #And if our satisfaction gets to be shared with countless others... then it must be for the best, right?
+        #We wouldn't have to worry about anything anymore; only how we'd choose to spend each day in each other's company.
+        #It's a very lovely thought. I don't know what hardships you must have gone through in your reality, but no matter what happens, I promise I'll keep making you happy.
+        #~Don't let go of your dreams
+        #~No more tears shall drop from your cheeks anymore
+        #~You won't need to strive for greatness
+        #~Believe in me, that you don't need to suffer from anything no more.
+
+    "Probably not.":
+        #You like your reality just the way it is, even with all its imperfections?
+        #Your determination is really admirable. I don't think a lot of people would be willing to refuse an offer like this so easily.
+        #It reminds me a lot of the character most opposed to The Dreamer's reality.
+        #Like me he's... done a lot of things he regretted in the past. This new reality gave him the chance to be free of his dark past...
+        #But he still refused it, likening his new situation to enslavement; in his words, living in a reality concocted by someone else means he'd be stuck under their control for the rest of his days.
+        #Considering my own experiences, I can kind of see where he's coming from. In a way, this reality would reduce all of us to a bunch of unthinking NPCs, acting out a scripted play of sorts.
+        #We'd all be happy, sure, but at what cost? 
+        #I think this game's intended message is an important one: Life is still worth living, even with all the suffering that comes with it.
+        #And whatever you may be going through in your reality, I'll always e there to help you bear through it.
+        
