@@ -117,12 +117,6 @@ init -1 python:
 
                     # event not blocked from random selection
                     and not sel_ev.anyflags(EV_FLAG_HFRS)
-
-                    # event not blocked because of sensitivty
-                    and (
-                        not persistent._mas_sensitive_mode
-                        or not sel_ev.sensitive
-                    )
             ):
                 pushEvent(sel_ev.eventlabel, notify=True)
                 return
@@ -1005,42 +999,40 @@ label monika_sayori:
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
     if (
-            not persistent._mas_sensitive_mode
-            and not renpy.seen_label("monika_sayori")
-            and not persistent._mas_pm_cares_about_dokis
+            mas_getEVL_shown_count("monika_sayori") < 1
+            and mas_safeToRefDokis()
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
         m 4wud "That pun was completely unintentional, I swear!"
         m 2lksdlb "But anyway..."
 
-    if not persistent._mas_sensitive_mode:
-        m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+    # NOTE: I removed the sensitive check here
+    #   If it seems this should be guarded with a check, let me know
+    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
 
-        m "If you're comfortable, that is.{nw}"
-        $ _history_list.pop()
-        menu:
-            m "If you're comfortable, that is.{fast}"
-            "Yes.":
-                m 4eka "You know how Sayori is really clumsy?"
-                m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
-                m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-                m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-                m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
-                m 2dksdld "Because she started clawing at the rope, trying to free herself."
-                m "She must have kept at it all the way until she lost consciousness."
-                m 4eksdlc "That's why her fingertips were all bloody, anyway."
-                m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-                m 2eud "So you can't really fault her for that."
-                m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-                m 2ekd "It's not healthy to think about the things you could have done differently."
-                m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
-                m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-            "No.":
-                m "I understand, [player]."
-        m 2euc "Still, though..."
-    else:
-        m 2ekc "..."
+    m "If you're comfortable, that is.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "If you're comfortable, that is.{fast}"
+        "Yes.":
+            m 4eka "You know how Sayori is really clumsy?"
+            m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
+            m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
+            m 2dksdld "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m 4eksdlc "That's why her fingertips were all bloody, anyway."
+            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m 2eud "So you can't really fault her for that."
+            m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m 2ekd "It's not healthy to think about the things you could have done differently."
+            m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
+            m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
+    m 2euc "Still, though..."
 
     m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1658,7 +1650,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    if persistent._mas_sensitive_mode:
+    if not mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
@@ -3111,8 +3103,7 @@ label monika_tsundere:
     m 3euc "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
 
-    if not persistent._mas_sensitive_mode:
-        m 1ekc "And I'm not even going to talk about her home situation..."
+    m 1ekc "And I'm not even going to talk about her home situation..."
 
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
 
@@ -4578,8 +4569,7 @@ label monika_othergames:
 
     if (
         mas_getEVL_shown_count("monika_othergames") < mas_sensitive_limit
-        and not persistent._mas_sensitive_mode
-        and not persistent._mas_pm_cares_about_dokis
+        and mas_safeToRefDokis()
     ):
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
@@ -10461,12 +10451,12 @@ label monika_yellowwp:
             m 4euc "It's a metaphor for her own captivity, obviously..."
             m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2ekd "There was...also mention of a rope, so I always had my own interpretation of the ending..."
-            if not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+            if mas_safeToRefDokis():
                 m 2euc "Sayori liked that story too, if I remember right."
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always...pleasant."
-            if not persistent._mas_sensitive_mode:
+            if mas_safeToRefDokis():
                 m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
                 m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}.' It's just...so small."
@@ -10965,7 +10955,7 @@ label monika_bullying:
     m 2ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
     m 3ekd "I {i}had{/i} to do whatever I could to make sure we ended up together."
 
-    if not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+    if mas_safeToRefDokis():
         m 3dkc "...Sayori's suicide was just an unfortunate side effect."
 
     if mas_isMoniNormal(higher=True):
@@ -13278,10 +13268,7 @@ label monika_load_custom_music:
     python:
         # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
-        store.songs.initMusicChoices(
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode
-        )
+        store.songs.initMusicChoices(store.mas_egg_manager.sayori_enabled())
         diff = len(store.songs.music_choices) - old_music_count
 
     if diff > 0:
