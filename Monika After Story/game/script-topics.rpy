@@ -17355,3 +17355,54 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+
+#I'm just putting it here very weirdly because I don't understand rpy code at all.
+#I don't even know whether I'm doing it correctly, but here goes...
+#I just realized that this is Python coding because of the elifs I see. Sorry, I just took a class on if-elses -w-"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_piano_skills",
+            category=['you'],
+            prompt="[player]'s piano skills",
+            random=True
+            conditional="mas_seenLabels('monika_piano_lessons')",
+            #that conditional is weird. I can't see to find the actual prompt, so I'll have to go with that.
+            #it's really bugging me, so if someone could fix it, I'd be glad ^w^
+        )
+    )
+
+label monika_piano_skills:
+    m 1rsc "Hmm..."
+    m 1esc "Hey [player]?
+    m 3rsd "Do you by chance...{w=0.3}{nw}"
+    extend 3rksdlb "have any piano skills?"
+    m 4esb "It just occured to me that even if I don't have much piano experience,{w=0.3}{nw}"
+    extend 4hub "you might!"
+    m 1eua "So [player], do you have any experience from learning the piano?{nw}"
+    menu:
+        m "So [player], do you have any experience from learning the piano?{fast}"
+        
+        "Yes.":
+            m 1sua "Really?"
+            m 3hub "That's wonderful!"
+            m 5rsa "You could teach me some of what you know someday!"
+
+        "Not a lot.":
+            m 2eka "That's okay, [player]."
+            m 2hua "After all, it's hard to learn the piano!"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eua "I would like you to teach me a little bit of what you know someday.
+            m 5hub "Ahaha~"
+
+        "No.":
+            m 1euc "I see."
+            m 1hksdlb "It's quite difficult to learn the piano after all, ahaha!"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5ekbsa "But no matter what you know, I'll love you all the same."
+    return
+#the script looks a bit wrong to me, just saying.
+#could someone fix it please?
+#I only understand "tom." python ;-;
