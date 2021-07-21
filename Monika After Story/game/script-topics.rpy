@@ -17399,14 +17399,14 @@ label monika_piano_skills:
             m 2hua "After all, it's hard to learn the piano!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I would like you to teach me a little bit of what you know someday.
-            m 5hubsa "Ahaha~"
+            m 5hua "Ehehe~"
 
         "No.":
             m 1duc "I see."
             m 3hksdlb "It's quite difficult to learn the piano after all, ahaha!"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsa "But no matter what you know, my affection for you never wavers."
-    m 5hua "I love you~"
+    m 5ekbsa "But no matter what you know, my love for you never wavers."
+    m 5hubsb "I love you!"
     return "love"
 #the script looks a bit wrong to me, just saying.
 #could someone fix it please?
