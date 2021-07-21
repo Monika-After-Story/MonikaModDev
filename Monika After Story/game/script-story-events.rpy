@@ -343,7 +343,7 @@ init 3 python:
         "shit",
         "sick",
         "slaughter",
-        "slave",
+        r"\bslave\b",
         "slut",
         "sociopath",
         "soil",
