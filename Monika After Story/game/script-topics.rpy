@@ -17367,21 +17367,25 @@ init 5 python:
             eventlabel="monika_piano_skills",
             category=['you'],
             prompt="[player]'s piano skills",
-            random=True
-            conditional="mas_seenLabels('monika_piano_lessons')",
+            random=True,
+            pool=True,
             #that conditional is weird. I can't see to find the actual prompt, so I'll have to go with that.
             #it's really bugging me, so if someone could fix it, I'd be glad ^w^
+            #this topic should appear in the Unseen menu when Monika has already talked to the user about the user asking for piano lessons and the player has already unlocked the piano.
+            #...which should appear after the user has gotten the piano, so ig it's simple. I can't find the prompt ;-;
         )
     )
 
 label monika_piano_skills:
     m 1rsc "Hmm..."
     m 1esc "Hey [player]?
-    m 3rsd "Do you by chance...{w=0.3}{nw}"
+    m 3rsd "Do you by chance... {w=0.3}{nw}"
     extend 3rksdlb "have any piano skills?"
-    m 4esb "It just occured to me that even if I don't have much piano experience,{w=0.3}{nw}"
+    m 2hksdlb "Ahaha!"
+    m 4esb "It just occured to me that even if I don't have much piano experience, {w=0.3}{nw}"
     extend 4hub "you might!"
     m 1eua "So [player], do you have any experience from learning the piano?{nw}"
+    $_history_list.pop()
     menu:
         m "So [player], do you have any experience from learning the piano?{fast}"
         
@@ -17398,8 +17402,8 @@ label monika_piano_skills:
             m 5hub "Ahaha~"
 
         "No.":
-            m 1euc "I see."
-            m 1hksdlb "It's quite difficult to learn the piano after all, ahaha!"
+            m 1duc "I see."
+            m 3hksdlb "It's quite difficult to learn the piano after all, ahaha!"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5ekbsa "But no matter what you know, I'll love you all the same."
     return
