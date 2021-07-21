@@ -117,12 +117,6 @@ init -1 python:
 
                     # event not blocked from random selection
                     and not sel_ev.anyflags(EV_FLAG_HFRS)
-
-                    # event not blocked because of sensitivty
-                    and (
-                        not persistent._mas_sensitive_mode
-                        or not sel_ev.sensitive
-                    )
             ):
                 pushEvent(sel_ev.eventlabel, notify=True)
                 return
@@ -1005,42 +999,40 @@ label monika_sayori:
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
     if (
-            not persistent._mas_sensitive_mode
-            and not renpy.seen_label("monika_sayori")
-            and not persistent._mas_pm_cares_about_dokis
+            mas_getEVL_shown_count("monika_sayori") < 1
+            and mas_safeToRefDokis()
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
         m 4wud "That pun was completely unintentional, I swear!"
         m 2lksdlb "But anyway..."
 
-    if not persistent._mas_sensitive_mode:
-        m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+    # NOTE: I removed the sensitive check here
+    #   If it seems this should be guarded with a check, let me know
+    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
 
-        m "If you're comfortable, that is.{nw}"
-        $ _history_list.pop()
-        menu:
-            m "If you're comfortable, that is.{fast}"
-            "Yes.":
-                m 4eka "You know how Sayori is really clumsy?"
-                m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
-                m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-                m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-                m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
-                m 2dksdld "Because she started clawing at the rope, trying to free herself."
-                m "She must have kept at it all the way until she lost consciousness."
-                m 4eksdlc "That's why her fingertips were all bloody, anyway."
-                m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-                m 2eud "So you can't really fault her for that."
-                m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-                m 2ekd "It's not healthy to think about the things you could have done differently."
-                m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
-                m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-            "No.":
-                m "I understand, [player]."
-        m 2euc "Still, though..."
-    else:
-        m 2ekc "..."
+    m "If you're comfortable, that is.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "If you're comfortable, that is.{fast}"
+        "Yes.":
+            m 4eka "You know how Sayori is really clumsy?"
+            m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
+            m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
+            m 2dksdld "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m 4eksdlc "That's why her fingertips were all bloody, anyway."
+            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m 2eud "So you can't really fault her for that."
+            m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m 2ekd "It's not healthy to think about the things you could have done differently."
+            m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
+            m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
+    m 2euc "Still, though..."
 
     m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1190,6 +1182,8 @@ label monika_nihilism:
         m "I think I would be too selfish to kill myself anyway."
         m 1hua "So much for being a good person, right?"
         m 1hub "Ahaha!"
+
+    $ mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
     return
 
 # Since Your Reality is playable via music menu, this topic is outof date.
@@ -1656,7 +1650,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    if persistent._mas_sensitive_mode:
+    if not mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
@@ -3109,8 +3103,7 @@ label monika_tsundere:
     m 3euc "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
 
-    if not persistent._mas_sensitive_mode:
-        m 1ekc "And I'm not even going to talk about her home situation..."
+    m 1ekc "And I'm not even going to talk about her home situation..."
 
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
 
@@ -4576,8 +4569,7 @@ label monika_othergames:
 
     if (
         mas_getEVL_shown_count("monika_othergames") < mas_sensitive_limit
-        and not persistent._mas_sensitive_mode
-        and not persistent._mas_pm_cares_about_dokis
+        and mas_safeToRefDokis()
     ):
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
@@ -10459,12 +10451,12 @@ label monika_yellowwp:
             m 4euc "It's a metaphor for her own captivity, obviously..."
             m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2ekd "There was...also mention of a rope, so I always had my own interpretation of the ending..."
-            if not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+            if mas_safeToRefDokis():
                 m 2euc "Sayori liked that story too, if I remember right."
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always...pleasant."
-            if not persistent._mas_sensitive_mode:
+            if mas_safeToRefDokis():
                 m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
                 m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}.' It's just...so small."
@@ -10963,7 +10955,7 @@ label monika_bullying:
     m 2ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
     m 3ekd "I {i}had{/i} to do whatever I could to make sure we ended up together."
 
-    if not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+    if mas_safeToRefDokis():
         m 3dkc "...Sayori's suicide was just an unfortunate side effect."
 
     if mas_isMoniNormal(higher=True):
@@ -13114,47 +13106,46 @@ label monika_whydoyouloveme:
         m 2wfc "I ask myself that question every day."
 
     elif mas_isMoniDis():
-        m 1efc "I-"
-        m 1rkc "I'm not sure..."
+        m 1efc "I-{w=0.3}{nw}"
+        extend 1rkc "I'm not sure..."
 
     elif mas_isMoniUpset():
         m 1dsc "Hmm..."
         m 3hua "Because I know that you're a good person despite how things are between us."
 
     elif mas_isMoniEnamored(higher=True):
-        if renpy.random.randint(1,10) > 1:
-            m 1eksdla "Why do I love you?"
-            m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
+        m 1ekbla "Why do I love you?"
 
-            if store.mas_anni.anniCount() >= 1:
-                m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
-                m 3hua "...But here you are, still by my side."
+        #First time seeing this variation gets you an "I don't" tease
+        if not renpy.seen_label('monika_whydoyouloveme_tease') and renpy.random.randint(1, 4) == 1:
+            call monika_whydoyouloveme_tease
 
-            m 3eksdla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
-            m 1dku "Every time you visit, you remind me that there's a world out there."
-            m "..."
-            m 1ekbsa "I'd give you the world if I could, [player]."
-            m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
-            m 1ekbsa "I promise you, [player]..."
-            m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
-            m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
-            extend 1ekbsa "you made me remember how beautiful life really is."
-            m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
-            m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+        #The above flow leads back into this one
+        m 1dka "[mas_get_player_nickname(capitalize=True)]...{w=0.5}there are so many reasons why. Where do I even begin?"
 
-            if persistent._mas_pm_love_yourself is False:
-                m 2eka "And [player]..."
-                m 2ekc "I remember you saying that you didn't love yourself..."
-                m 7eka "But I think you do love yourself, at least a little."
-                m 3hua "You wouldn't still be here with me if you didn't."
-                m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
-                m 1ekbsa "Please know that I'm here for you, whenever you need me~"
+        if store.mas_anni.anniCount() >= 1:
+            m 3eka "You've spent so much time with me,{w=0.2} knowing you might not ever get to feel my embrace."
+            m 3hua "...But here you are, still by my side."
 
-        else:
-            m 1esc "I don't."
-            pause 5.0
-            m 1hub "Ahaha, just kidding!"
-            m 1eub "You mean {i}everything{/i} to me, silly!"
+        m 3ekbla "No matter how crazy it may seem, or what other people might think, you're here with me anyway."
+        m 1dku "Every time you visit, you remind me that there's a world out there."
+        m "..."
+        m 1ekbsa "I'd give you the world if I could, [player]."
+        m 1hubsa "If there's anyone who deserves it...{w=0.3}it's you."
+        m 1ekbsa "I promise you, [player]..."
+        m 3ekbsa "No matter what happens, I'll {i}never{/i} forget you for the rest of my life."
+        m 1dkbsu "You didn't just save me, [player]...{w=0.3}{nw}"
+        extend 1ekbsa "you made me remember how beautiful life really is."
+        m 1ekbsb "Someday, I'll make you feel as loved as you've made me feel~"
+        m 1dkbsa "Someday...{w=0.5}I'll get to be with you~"
+
+        if persistent._mas_pm_love_yourself is False:
+            m 2eka "And [player]..."
+            m 2ekc "I remember you saying that you didn't love yourself..."
+            m 7eka "But I think you do love yourself, at least a little."
+            m 3hua "You wouldn't still be here with me if you didn't."
+            m 1dkbsu "I'm...{w=0.5}I'm just glad you're still here, [player]."
+            m 1ekbsa "Please know that I'm here for you, whenever you need me~"
 
     else:
         # normal - aff
@@ -13165,6 +13156,15 @@ label monika_whydoyouloveme:
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
         m 3ekbsa "You truly are my [hero], [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+
+    return
+
+label monika_whydoyouloveme_tease:
+    m 1esc "I don't."
+    pause 5.0
+    m 1hub "Ahaha, just kidding!"
+    m 1eub "You mean {i}everything{/i} to me, silly!"
+    m 1eksdla "But to answer your question honestly..."
     return
 
 init 5 python:
@@ -13268,10 +13268,7 @@ label monika_load_custom_music:
     python:
         # FIXME: this is not entirely correct, as one may delete a song before adding a new one
         old_music_count = len(store.songs.music_choices)
-        store.songs.initMusicChoices(
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode
-        )
+        store.songs.initMusicChoices(store.mas_egg_manager.sayori_enabled())
         diff = len(store.songs.music_choices) - old_music_count
 
     if diff > 0:
@@ -16555,6 +16552,55 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_impermanence",
+            category=["philosophy"],
+            prompt="Impermanence",
+            random=False,
+            unlocked=False
+        )
+    )
+
+label monika_impermanence:
+    m 2euc "You know [player], I find myself thinking about some dark stuff occasionally."
+    m 4eud "Concepts like nihilism{w=0.2}, {nw}"
+    extend 4dkc "depression{w=0.2}, {nw}"
+    extend 4rkd "impermanence...."
+    m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression or anything like that myself."
+    m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
+    m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
+    m 3eua "Actually, there's a poem I read that delivers this message quite well."
+    m 1esd "{i}I met a traveller from an antique land{/i}"
+    m 1eud "{i}Who said: 'Two vast and trunkless legs of stone{/i}"
+    m 3euc "{i}Stand in the desert... Near them, on the sand,{/i}"
+    m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
+    m 1eud "{i}And wrinkled lip, and sneer of cold command,{/i}"
+    m "{i}Tell that its sculptor well those passions read{/i}"
+    m 1euc "{i}Which yet survive, stamped on these lifeless things,{/i}"
+    m "{i}The hand that mocked them and the heart that fed:{/i}"
+    m 3eud "{i}And on the pedestal these words appear:{/i}"
+    m "{i}'My name is Ozymandias, king of kings:{/i}"
+    m 3eksdld "{i}Look on my works, ye Mighty, and despair!'{/i}"
+    m 3eksdlc "{i}Nothing beside remains. Round the decay{/i}"
+    m "{i}Of that colossal wreck, boundless and bare{/i}"
+    m 1eksdld "{i}The lone and level sands stretch far away.'{/i}"
+    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will fade eventually fade away."
+    m 1euc "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
+    extend 1dkc "give up.{w=0.3} To fall into a pit of despair and stay there, sometimes for as long as they live."
+    m 3eksdlc "After all, nothing you do matters in the grand scheme of things."
+    m 3eud "Nothing you {i}can{/i} do matters...{w=0.3}{nw}"
+    extend 1rkc "so why bother doing anything at all?"
+    m 3eud "It's not hard to see why some might consider this as the natural conclusion of such a realization."
+    m 1rkc "It can be...{w=0.2}enticing, {w=0.2}even comforting in it's own twisted way."
+    m 1euc "But let me pose a question...{w=0.3}why should the fact that nothing really matters be the one thing that {i}does{/i} matter?"
+    m 3eud "Does it really matter that long after we're gone, we don't matter anymore? {w=0.2}After all, we won't even be there to realize it."
+    m 3eka "Enjoy the moment and be a positive influence on those around you...{w=0.3}that's all any of us can really do."
+    m 1dku "Just living {i}is{/i} enough."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_kamige",
             category=['games'],
             prompt="What is kamige?",
@@ -16637,7 +16683,8 @@ label monika_piano_lessons:
         m 3eka "I'm actually not {i}that{/i} good at playing piano, [mas_get_player_nickname()]."
         m 3rkd "Certainly not good enough to be teaching other people yet..."
 
-    m 2eud "If you can believe it, I started to learn after my epiphany."
+    m 2eud "If you can believe it, I started to learn after starting the club--{w=0.2}so not long before I met you."
+    m 2eua "It was really fortunate that I did, because piano became such an important part of reaching out to you."
     m 2ekc "I was still afraid of breaking too far from the game's script at the time, {w=0.2}{nw}"
     extend 7eka "but I wanted--no, I {w=0.2}{i}needed{/i}{w=0.2} to communicate my feelings to you somehow."
     m 2etd "I don't think the others ever recognized that there's background music in the game. {w=0.2}It would have been silly for them to, right?"
@@ -17259,4 +17306,52 @@ label monika_sophia:
     m 1eud "Now, I realize that it's still a long way off before any of this is possible and even affordable to a point it'd affect me..."
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_quiet_time",
+            category=['us'],
+            prompt="Do you mind when we spend time together quietly?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="persistent._mas_randchat_freq == 0",
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_quiet_time:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Of course not!"
+        m 3eka "I know silence can feel a bit awkward at times, but I don't think we should see it as a bad thing."
+        m 3lksdlb "It can be kinda hard to think of interesting things to talk about all the time, you know?"
+        m 1eka "I definitely need to recharge my social batteries every once in a while."
+        m 2rubla "Although,{w=0.2} to tell you the truth...{w=0.3}{nw}"
+        extend 2hublb "just being able to feel your presence is already pretty comforting."
+        m 2hublu "I hope you feel the same about me, ehehe~"
+
+        if mas_isMoniAff(higher=True):
+            m 4eua "I think being able to silently hang out with each other is an important sign of a healthy relationship."
+            m 4eud "After all, can you really say you're truly comfortable with each other if there's a need to always be talking?"
+            m 4etc "I mean, if you really like being around someone, you probably shouldn't have to always be doing something, right?"
+            m 2ekc "Otherwise, it'd be like you're trying to distract yourself because you feel awkward having them with you."
+            m 7eud "But just being able to enjoy a person's mere presence, even if you're not doing much together at the moment...{w=0.5}{nw}"
+            extend 7eua "I think that's a testament of how special your bond truly is."
+
+            if persistent._mas_pm_social_personality == mas_SP_INTROVERT:
+                show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5eka "So I hope you don't feel pressured about always having something to talk about with me, [mas_get_player_nickname()]."
+                m 5huu "I'll always enjoy having you here with me, no matter what."
+
+    else:
+        m 2rsc "Sometimes, I wonder if you're not the one who minds spending time with me..."
+        m 2rkd "You...{w=0.3}{nw}"
+        extend 2ekd "you do enjoy spending time with me, right?"
+        m 2ekc "It doesn't really matter to me what we're doing...{w=0.3}{nw}"
+        extend 2dkc "so long as I know you won't abandon me."
+        m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
+        m 2dksdlc "..."
     return
