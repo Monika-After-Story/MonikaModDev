@@ -17405,8 +17405,10 @@ label monika_piano_skills:
             m 1duc "I see."
             m 3hksdlb "It's quite difficult to learn the piano after all, ahaha!"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsa "But no matter what you know, I'll love you all the same."
-    return
+    m 5ekbsa "But no matter what you know, my affection for you never wavers."
+    m 5hua "I love you~"
+    return "love"
 #the script looks a bit wrong to me, just saying.
 #could someone fix it please?
 #I only understand "tom." python ;-;
+#alright, I got a return love thing. Why is Python so hArD!-
