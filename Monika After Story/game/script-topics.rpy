@@ -17399,7 +17399,7 @@ label monika_piano_skills:
             m 2hua "After all, it's hard to learn the piano!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5eua "I would like you to teach me a little bit of what you know someday.
-            m 5hub "Ahaha~"
+            m 5hubsa "Ahaha~"
 
         "No.":
             m 1duc "I see."
