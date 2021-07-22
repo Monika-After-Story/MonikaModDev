@@ -17355,3 +17355,38 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_going_to_space",
+            category=['nature'],
+            prompt="Going to space",
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_going_to_space:
+    m 1hubla "Ehehe~"
+    m 1eubla "Hey, [player]? You know that there are so many places in your world that I want to go and see with you."
+    m 3eua "But there's actually a place that I'm not so interested in going to, even though many people seem to really want to go there."
+    m 6eua "Do you know what that place is?"
+    m 4eub "It's space!"
+    m 4ruc "I really don't get it! I mean, it's {i}space!{/i}"
+    m 4euc "I don't know if you've noticed, but you can sometimes see space outside the window in this room."
+    m 5tuu "Though maybe you haven't noticed it if you've been properly focused on me~"
+    m 5guc "But really! There's nothing out there!"
+    m 6euc "It's called 'space' because it's mostly just empty space with nothing in it."
+    m 6euc "I guess you have the nice view of the starry sky, but like, you can see that from earth too."
+    m 6guc "Some rich people will spend enough money to feed tens of thousands of people to not even leave low earth orbit."
+    m 6euc "I suppose it's just a way of showing off. Like, you're one of the few people who have gone to space, and that somehow makes you better than everyone else."
+    m 3tua "But do you know who I think is the best person ever?"
+    m 3tsa "And be careful! The person is not the one you might think it is!"
+    m 5hua "Ahaha!"
+    m 5kub "Just kidding! It's you!"
+    m 5fsbsu "I love you, [player]."
+    
+    return "love"
+
