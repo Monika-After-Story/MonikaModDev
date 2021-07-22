@@ -17365,12 +17365,10 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_piano_skills",
-            category=['you'],
+            category=['you' , 'music'],
             prompt="[player]'s piano skills",
             random=True,
             pool=True,
-            #that conditional is weird. I can't see to find the actual prompt, so I'll have to go with that.
-            #it's really bugging me, so if someone could fix it, I'd be glad ^w^
             #this topic should appear in the Unseen menu when Monika has already talked to the user about the user asking for piano lessons and the player has already unlocked the piano.
             #...which should appear after the user has gotten the piano, so ig it's simple. I can't find the prompt ;-;
         )
