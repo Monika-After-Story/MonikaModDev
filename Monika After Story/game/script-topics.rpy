@@ -17201,11 +17201,13 @@ init 5 python:
 
 label monika_fireworks:
     m 1eub "Are you a fan of fireworks, [mas_get_player_nickname()]?"
-    m 3hua "A lot of places use them in summer festivities. I wonder if you've seen any this year."
-    m 3wub "I think it would be so fun to watch them together, don't you?"
-    m 3hua "There are the huge ones that light up the entire night sky...{w=0.2}or if you're in the mood for something quieter, we could use sparklers!"
+    m 1eua "A lot of places use them in summer festivities.{w=0.2} {nw}"
+    extend 3hua "I wonder if you've seen any this year."
+    m 3wub "I think it'd be really fun to watch them together, don't you?"
+    m 3sua "There are the huge ones that light up the entire night sky...{w=0.3}{nw}"
+    extend 3hub "or if you're in the mood for something quieter, we could use sparklers!"
     show monika 5lublu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lublu "Just imagining the light dancing about, illuminating your face in flickering light..."
-    m 5hublu "Then maybe we could share a festive snack, snuggling together on a picnic blanket."
-    m 5eub "Wouldn't that be so fun, [mas_get_player_nickname()]?"
+    m 5hublu "Then maybe we could share a festive snack, snuggling together on a picnic blanket~"
+    m 5eub "Wouldn't that be fun, [mas_get_player_nickname()]?"
     return
