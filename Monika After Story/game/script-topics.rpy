@@ -17355,3 +17355,48 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_logic_puzzle_truth_lie",
+            category=['philosophy'],
+            prompt="Logic: truth or lie",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_logic_puzzle_truth_lie:
+    m 3eub "Hey, [player], do you know this logic puzzle?"
+    m 4esa "There are two guardians, and each of them is guarding a door."
+    m 6eua "One door leads to hell, and the other door leads to heaven."
+    m 7sublb "No, even better! The other door leads to a life with me! That'd be perfect!"
+    m 1tubsb "You'd better think real hard about this one now, [mas_get_player_nickname()]."
+    m 1rtb "Anyway, one of the two guardians always tells the truth. The other guardian always lies."
+    m 7euu "And you don't know which guardian is guarding which door. No cheating by asking something with an easy answer like 'how many fingers do I have?' or 'does Monika love me very, very much?'"
+    m 6euu "The one that tells the truth doesn't necessarily guard the door leading to the good place."
+    m 4euu "Have you heard about this puzzle before?"
+    $ _history_list.pop()
+    menu:
+        m "Have you heard about this puzzle before?{fast}"
+
+        "Yes":
+            m 6euu "Ah, okay! I guess it's a pretty famous puzzle."
+
+        "No":
+            m 6euu "Ah, okay! Well, this should interest you--the solution is pretty clever."
+            
+    m 7eub "The way to solve the puzzle is to ask one of the guards 'if I asked {i}the other guard{/i} where his door leads, what would he say?"
+    m 7eub "And whatever the answer is, that's the place that the guard you're talking to right now is guarding."
+    m 4eua "If you are talking to the lying guard, the other one always tells the truth. So the lying guard will lie and tell you the place that the truthful guard is not guarding."
+    m 6eua "And if you are talking to the truthful guard, he knows that the other guard would lie to you. So he tells you the place that the lying guard is not guarding."
+    m 3hua "Isn't that clever? I think that's just such a neat puzzle!"
+    m 5tsbsa "Well, [player]? Would you have been clever enough to reach me through the right door?"
+    m 5tsbsa "Though if that door actually does exist, those guards had better help you get to me. If they trick you, I'm going to be {i}very{/i} upset with them."
+
+    return    
+    
+    
+    
