@@ -17361,6 +17361,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_speedreading",
+            conditional="seen_event('mas_text_speed_enabler')",
             category=['literature'],
             prompt="Speed Reading",
             random=True
@@ -17368,9 +17369,15 @@ init 5 python:
     )
 
 label monika_speedreading:
-    m 3eub "Do you think you're a fast reader, [player]?"
-    m 3esa "Or maybe you're a bit more on the slow end?"
-    m 1esa "The average reader generally reads about 200 to 250 words per minute."
+    if persistent._mas_pm_is_fast_reader:
+        m 3eub "I know you said you're a fast reader, [player]..."
+        m 3esa "But do you know {i}how{/i} fast you read, as in words per minute?"
+
+    else:
+        m 3eub "Hey, [player], I know you said you're a bit of a slow reader..."
+        m 3esa "Or maybe you were just not feeling confident when I asked?"
+
+    m 1esa "The average reader generally reads about 200-250 words per minute."
     m 1dkd "The number of words in a novel can really vary, particularly between genres."
     m 2esb "That said, most novels range from between 40,000 to 150,000 words."
     m 2ekc "Three or four hours {i}minimum{/i} can seem like a lot of time to invest in a story you might not end up enjoying."
