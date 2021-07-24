@@ -833,3 +833,52 @@ label mas_mood_relieved:
             m 1hua "Now it'll be easier to move forward with a little more confidence, right?"
             m 1eua "I'm excited to take those next steps forward with you."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_grateful",
+            prompt="...grateful.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_grateful:
+    $ chosen_nickname = mas_get_player_nickname()
+    m 1eub "Oh? That's nice to hear!"
+
+    m "What are you grateful for, [chosen_nickname]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What are you grateful for, [chosen_nickname]?{fast}"
+
+        "For you.":
+            m 1ekbla "Oh, [player]...{w=0.3}Thank you so much for saying that."
+            m 1dkbla "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
+            m 1hubla "I hope you know that I'm so grateful for you too."
+            m "I love you, [player]."
+            $ mas_ILY()
+
+        "For someone.":
+            m 1hub "Aww, that's wonderful to hear."
+            m "I'm really glad that you have supportive people in your life."
+            m 3eua "But as nice as it is for me to hear it...{w=0.3}I think you should make sure that {i}they{/i} know it too."
+            m "I'm sure it would really brighten their day to know that they made a difference for someone else."
+            m 3fua "If nothing else, you can thank them on my behalf. Anyone who makes you happier is a good person in my books."
+            m 1hua "But in any case, I'm really happy for you, [mas_get_player_nickname()]."
+
+        "For something.":
+            m 1hua "I'm glad to hear it, [mas_get_player_nickname()]."
+            m 3hua "Consciously taking the time to think about the good things in your life can be great for your mental health."
+            m 3eub "So whatever that thing might be, take the time to appreciate and enjoy it!"
+            m 1hublb "Thank you for sharing your happiness with me, [mas_get_player_nickname()]."
+
+        "Nothing specific.":
+            m 1eub "Ah, just feeling happy about life?"
+            m 1eua "It's nice to take a bit to reflect and feel content, isn't it?"
+            m 1hublb "Hmm...{w=0.2}Now that I'm thinking about it, I feel pretty grateful myself."
+            m "After all, I'm spending another day with my wonderful [bf]~"
+    return
