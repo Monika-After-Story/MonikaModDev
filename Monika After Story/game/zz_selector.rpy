@@ -652,6 +652,11 @@ init -10 python in mas_selspr:
         ],
     }
 
+    # filter menu name exceptions
+    selector_filer_menu_mapping = {
+        "s-type-ribbon": "S-type Ribbon"
+    }
+
 
     def selectable_key(selectable):
         """
@@ -1265,7 +1270,6 @@ init -10 python in mas_selspr:
             CLOTH_SEL_MAP
         )
 
-
     def _filter_sel_single(item, unlocked, group):
         """
         Checks if the given item matches the given criteria
@@ -1285,7 +1289,6 @@ init -10 python in mas_selspr:
             return False
 
         return True
-
 
     def _filter_sel(select_list, unlocked, group=None):
         """
@@ -1625,7 +1628,174 @@ init -10 python in mas_selspr:
 
                 # make sure the selector uses the right propmt
 
+    def _selector_filter_items(item, search_query, search_kws):
+        """
+        The filter key we use in the selector screen.
 
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to filter by
+            search_kws - search_query split using spaces
+
+        OUT:
+            boolean whether or not the event pass the criteria
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        for search_kw in search_kws:
+            if (
+                search_kw in name
+                or search_kw in id
+                or (acs_type and search_kw in acs_type)
+                or (ex_props and search_kw in ex_props)
+            ):
+                return True
+
+        return False
+
+    def _selector_sort_items(item, search_query, search_kws):
+        """
+        The sort key we use in the selector screen.
+
+        IN:
+            item - MASSelectableImagebuttonDisplayables object
+            search_query - search query to sort by
+            search_kws - search_query split using spaces
+
+        OUT:
+            weight as int
+        """
+        name = item.selectable.display_name.lower()
+        id = item.selectable.name.lower()
+        spr_obj = item.selectable.get_sprobj()
+        acs_type = spr_obj.acs_type if "acs_type" in spr_obj.__dict__ else ""
+        ex_props = " ".join(spr_obj.ex_props.keys())
+
+        weight = 0
+        base_increment = 2
+        base_modifier = len(search_kws) + 1
+
+        if search_query == name or search_query == id:
+            weight += base_increment * base_modifier**8
+
+        elif search_query in name:
+            if name.startswith(search_query):
+                weight += base_increment * base_modifier**7
+
+            else:
+                weight += base_increment * base_modifier**6
+
+        elif search_query in id:
+            if id.startswith(search_query):
+                weight += base_increment * base_modifier**5
+
+            else:
+                weight += base_increment * base_modifier**4
+
+        else:
+            for search_kw in search_kws:
+                if search_kw in name:
+                    weight += base_increment * base_modifier**3
+
+                elif search_kw in id:
+                    weight += base_increment * base_modifier**2
+
+                elif acs_type and search_kw in acs_type:
+                    weight += base_increment * base_modifier
+
+                elif ex_props and search_kw in ex_props:
+                    weight += base_increment
+
+        return weight
+
+    def _selector_search_items(items, search_query):
+        """
+        The method for filtering and sorting items in the selector screen.
+
+        IN:
+            items - the items to search in
+            search_query - the search query to filter and sort by
+
+        OUT:
+            list of event objects or None if empty query was given
+        """
+        if not search_query:
+            return None
+
+        search_query = search_query.lower().strip()
+        search_kws = search_query.split()
+
+        flt_items = [
+            item
+            for item in items
+            if _selector_filter_items(item, search_query, search_kws)
+        ]
+        flt_items.sort(key=lambda item: _selector_sort_items(item, search_query, search_kws), reverse=True)
+
+        return flt_items
+
+    def selector_adj_ranged_callback(adj):
+        """
+        This is called by an adjustment of the twopane menu
+        when its range is being changed (set)
+
+        IN:
+            adj - the adj object
+        """
+        widget = renpy.get_widget("mas_selector_sidebar", "search_input", "screens")
+        caret_relative_pos = 1.0
+        if widget is not None:
+            caret_pos = widget.caret_pos
+            content_len = len(widget.content)
+
+            if content_len > 0:
+                caret_relative_pos = caret_pos / float(content_len)
+
+        # This ensures that the caret is always visible (close enough) to the user
+        # when they enter text
+        adj.change(adj.range * caret_relative_pos)
+
+    def selector_search_callback(search_query):
+        """
+        The selector screen input callback.
+
+        IN:
+            search_query - search query to filter and sort by
+        """
+        # Get the screen to pass events into
+        scr = renpy.get_screen("mas_selector_sidebar")
+        if scr is not None:
+            scr.scope["mailbox"].search_text = search_query
+            # Search
+            flt_items = _selector_search_items(scr.scope["menu_filtered_items"], search_query)
+            scr.scope["search_filtered_items"] = flt_items if flt_items is not None else scr.scope["menu_filtered_items"]
+        # Update the screen
+        renpy.restart_interaction()
+
+
+    def mas_item_name_format(item_name):
+        """
+        Formats acs name to be sentence case, with spaces, and pluralized
+
+        IN:
+            item_name - the text to be formatted
+        OUT:
+            item_name - formatted
+        """
+
+        # manually change items that include "-" else replace "-" with a space
+        if item_name in selector_filer_menu_mapping:
+            item_name = selector_filer_menu_mapping[item_name]
+        else:
+            item_name = item_name.replace("-", " ")
+            # capitalise
+            item_name = item_name.capitalize()
+
+        return item_name
 
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
@@ -1646,6 +1816,11 @@ init -10 python in mas_selspr:
             self.send_conf_enable(False)
             self.send_restore_enable(False)
             self.send_frame_vsize(SB_VIEWPORT_BOUNDS_H)
+            # NOTE: THESE ARE NOT SETTINGS. These are state vars for the selector screen
+            self.item_type = None
+            self.item_type_old = None
+            self.show_filter = False
+            self.search_text = None
 
         def _get(self, headline):
             """
@@ -2883,7 +3058,6 @@ init -1 python:
 init 200 python in mas_selspr:
     load_selectables()
 
-
 # now these tranforms are for the selector sidebar screen
 transform mas_selector_sidebar_tr_show:
     xpos 1280 xanchor 0 ypos 10 yanchor 0
@@ -2901,6 +3075,128 @@ style mas_selector_sidebar_vbar:
     bar_vertical True
     bar_invert True
 
+# Filter dropdown button styles
+style filter_dropdown_down is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_down_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_up is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_up_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+
 # the selector screen sidebar version should be shown, not called.
 # note that we do tons of calls here, so just be ready to do tons of loop overs
 # every couple of seconds.
@@ -2912,14 +3208,132 @@ style mas_selector_sidebar_vbar:
 #   cancel - label to jump to when canceling
 #   restore - label to jump to when restoring
 #   remover - remover display item, if appropriate. Can be None
-screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None):
+#   filter_map - list of filter categories shown in the menu. Can be None
+screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None, filter_map=None):
     zorder 50
-#    modal True
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
 
+    # only add menu if filter_map is provided and has more than one option
+    if filter_map is not None and len(filter_map) > 1:
+
+        #filter dropdown button
+        frame:
+            area (960, 3, 50, 40)
+            background None
+
+            button:
+                if mailbox.show_filter:
+                    style "filter_dropdown_down"
+                else:
+                    style "filter_dropdown_up"
+                action ToggleField(mailbox, "show_filter")
+
+        if mailbox.show_filter:
+            # Categories Menu
+            frame:
+                area (750, 45, 300, 500)
+                background None
+
+                vbox:
+                    xsize 300
+                    xalign 0.5
+
+                    viewport id "sidebar_scroll_acs":
+                        mousewheel True
+                        yfill False
+
+                        vbox:
+                            xsize 300
+                            spacing 5
+                            first_spacing 0
+                            null height 1
+
+                            textbutton _("Show All"):
+                                style "hkb_button"
+                                xysize (300, 40)
+                                xalign 0.8
+                                selected mailbox.item_type is None
+                                action [
+                                    SetField(mailbox,'item_type', None),
+                                    SetField(mailbox,'item_type_old', mailbox.item_type),
+                                ]
+
+                            # Only need keys
+                            for item_type_name in sorted(filter_map.keys()):
+                                textbutton _(item_type_name):
+                                    style "hkb_button"
+                                    xysize (300, 40)
+                                    xalign 0.8
+                                    selected mailbox.item_type == item_type_name
+                                    action [
+                                        SetField(mailbox,'item_type', item_type_name),
+                                        SetField(mailbox,'item_type_old', mailbox.item_type),
+                                    ]
+
+                            null height 1
+
+                    null height 5
+
+                bar:
+                    value YScrollValue("sidebar_scroll_acs")
+                    style "classroom_vscrollbar"
+                    xoffset -25
+
+    else:
+        $ mailbox.item_type = None
+
+    if mailbox.item_type:
+        $ menu_filtered_items = filter_map[mailbox.item_type]
+
+    else:
+        $ menu_filtered_items = items
+
+    default search_filtered_items = menu_filtered_items
+
+    # Search bar
     frame:
-        area (1075, 5, 200, sel_frame_vsize)
+        xpos 1075
+        ypos 5
+        xsize 200
+        ysize 40
+        background Solid("#ffaa99aa")
+
+        viewport:
+            draggable False
+            arrowkeys False
+            mousewheel "horizontal"
+            # I have no idea why, but this must be 5 px shorter
+            xsize 195
+            ysize 38
+            xadjustment ui.adjustment(ranged=store.mas_selspr.selector_adj_ranged_callback)
+
+            input:
+                id "search_input"
+                style_prefix "input"
+                length 50
+                xalign 0.0
+                layout "nobreak"
+                first_indent (0 if not mailbox.search_text else 10)
+                # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
+                changed store.mas_selspr.selector_search_callback
+
+        if not mailbox.search_text:
+            text "Search for...":
+                text_align 0.0
+                layout "nobreak"
+                color "#EEEEEEB2"
+                first_indent 10
+                line_leading 1
+                outlines []
+
+    # Run when filter is changed
+    if mailbox.item_type != mailbox.item_type_old:
+        $ mailbox.item_type_old = mailbox.item_type
+        $ store.mas_selspr.selector_search_callback(mailbox.search_text)
+
+    frame:
+        area (1075, 50, 200, sel_frame_vsize - 45)
         background Frame(store.mas_ui.sel_sb_frame, left=6, top=6, tile=True)
 
         vbox:
@@ -2941,9 +3355,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in items:
+                    for selectable in search_filtered_items:
                         add selectable:
-#                            xoffset 5
+                            # xoffset 5
                             xalign 0.5
 
                     null height 1
@@ -2978,7 +3392,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
+                    selected False
                     action Jump(restore)
+
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -2988,10 +3404,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
-#                action Function(mailbox.mas_send_return, -1)
+                # action Function(mailbox.mas_send_return, -1)
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
+            unscrollable "hide"
             xoffset -25
 
 # GENERAL sidebar selector label
@@ -3024,15 +3441,18 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
+#   filter_map - list of selectables for each category  to display in the menu.
+#       (Defailt: None)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
     python:
+
         if not store.mas_selspr.valid_select_type(select_type):
             raise Exception(
                 "invalid selection constant: {0}".format(select_type)
@@ -3136,6 +3556,15 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 for item in items
             ]
 
+        # make filter_map items MASSelectableImageButtonDisplayable
+        if filter_map:
+            filter_map_selbtn = collections.defaultdict(list)
+            for d_item in disp_items:
+                for filter_items in filter_map:
+                    if d_item.selectable in filter_map[filter_items]:
+                        filter_map_selbtn[filter_items].append(d_item)
+            filter_map = filter_map_selbtn
+
         # fill select map
         item_found = store.mas_selspr._fill_select_map_and_set_remover(
             monika_chr,
@@ -3164,7 +3593,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item)
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
+
+
 
 label mas_selector_sidebar_select_loop:
     python:
@@ -3340,9 +3771,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, filter_map)
 
     return _return
 
@@ -3370,6 +3801,19 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 #
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+
+    # Possible idea for clothes / hair filtering, this works but would require more meaningful ex_props to be added to all items,
+    # and would require extra filtering to remove "internal ex_props". This could be incorporated into AOC to show what is in each category?
+    #python:
+    #    # generate filter map
+    #    mapping = {}
+    #    for item in items:
+    #        ex_props = mas_selspr.mas_item_name_format(item.get_sprobj().ex_props)
+    #        for ex_prop in ex_props:
+    #            if ex_prop in mapping:
+    #                mapping[ex_prop].append(item)
+    #            else:
+    #                mapping[ex_prop] = [item]
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
@@ -3668,6 +4112,7 @@ label monika_ribbon_select:
         # if we are not using a force ribbon hair, add a remover.
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
+        #get selected acs_types
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
         # remove non-compatible acs
@@ -3680,7 +4125,13 @@ label monika_ribbon_select:
             ):
                 use_acs.pop(index)
 
-        # make sure ot use ribbon for remover type
+        # generate filter map
+        mapping = collections.defaultdict(list)
+        for acs_sel in use_acs:
+            acs_type_tc = mas_selspr.mas_item_name_format(acs_sel.get_sprobj().acs_type)
+            mapping[acs_type_tc].append(acs_sel)
+
+        # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
             "ribbon",
@@ -3692,14 +4143,13 @@ label monika_ribbon_select:
         )
         sel_map = {}
 
-    m 1eua "Sure [player]!"
-
 #    if monika_chr.hair.name != mas_hair_def.name:
 #        m "But im going to change my clothes and hair back to normal."
 #        $ monika_chr.reset_outfit(False)
 
+    m 1eua "Sure [player]!"
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, filter_map=mapping)
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3708,6 +4158,7 @@ label monika_ribbon_select:
 
     return
 #### End Ribbon change topic
+
 
 #### Monika hairclips
 init 5 python:

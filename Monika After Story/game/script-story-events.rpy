@@ -537,50 +537,55 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3eka "Please pick a nicer name for yourself, okay?"
 
         else:
-            #Sayori name check
-            if lowername == "sayori":
-                call sayori_name_scare
+            # easter egg name checks
+            if store.mas_egg_manager.is_eggable_name(lowername):
+                m 1ttu "Are you sure this is your real name, or are you messing with me?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Are you sure this is your real name, or are you messing with me?{fast}"
 
-            elif (
-                    persistent.playername.lower() == "sayori"
-                    and not persistent._mas_sensitive_mode
-                ):
-                $ songs.initMusicChoices()
+                    "Yes, this is my name":
+                        $ persistent._mas_disable_eggs = True
+
+                    "Maybe...":
+                        $ persistent._mas_disable_eggs = False
 
             python:
-                def adjustNames(new_name):
-                    """
-                    Adjusts the names to the new names
-                    """
-                    global player
+                old_name = persistent.playername.lower()
+                done = True
 
-                    persistent.mcname = player
-                    mcname = player
-                    persistent.playername = new_name
-                    player = new_name
+                # adjust names
+                persistent.mcname = player
+                mcname = player
+                persistent.playername = tempname
+                player = tempname
 
+            # egg adjustments
+            # MUST BE AFTER THE NAME ADJUSTMENT
+            if store.mas_egg_manager.sayori_enabled():
+                call sayori_name_scare
+
+            elif old_name == "sayori":
+                # reset music choices
+                $ songs.initMusicChoices()
+
+            # name reactions
             if lowername == "monika":
-                $ adjustNames(tempname)
                 m 1tkc "Really?"
                 m "That's the same as mine!"
                 m 1tku "Well..."
                 m "Either it really is your name or you're playing a joke on me."
                 m 1hua "But it's fine by me if that's what you want me to call you~"
-                $ done = True
 
             elif mas_good_player_name_comp.search(tempname):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
-                $ adjustNames(tempname)
                 m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
-                $ done = True
 
             else:
-                $ adjustNames(tempname)
                 m 1eub "Okay then!"
                 m 3eub "From now on, I'll call you '[player].'"
-                $ done = True
 
         if not done:
             show monika 1eua
@@ -964,11 +969,6 @@ init 5 python:
     )
 
 label mas_unlock_hangman:
-    if persistent._mas_sensitive_mode:
-        $ game_name = "Word Guesser"
-    else:
-        $ game_name = "Hangman"
-
     m 1eua "So, [player]..."
 
     if store.mas_games._total_games_played() > 49:
@@ -981,14 +981,14 @@ label mas_unlock_hangman:
         m 3eua "I know you haven't tried playing Pong with me, yet."
 
     m 1hua "Soooo~"
-    m 1hub "I made [game_name]!"
+    m 1hub "I made Hangman!"
 
-    if not persistent._mas_sensitive_mode:
+    if mas_safeToRefDokis():
         m 1lksdlb "Hopefully it's not in poor taste..."
 
     m 1eua "It was always my favorite game to play with the club."
 
-    if not persistent._mas_sensitive_mode:
+    if mas_safeToRefDokis():
         m 1lsc "But, come to think of it..."
         m "The game is actually quite morbid."
         m 3rssdlc "You guess letters for a word to save someone's life."
@@ -1070,7 +1070,7 @@ label mas_random_limit_reached:
 
     m 1eka "[limit_quip]"
     if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
-        m 1ekc "I'm sure I'll have something to talk about after a little rest."
+        m 1ekc "I'm sure I'll have something to talk about in a while."
 
     else:
         if not renpy.seen_label("mas_random_ask"):
@@ -1079,6 +1079,9 @@ label mas_random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
+        $ mas_showEVL('monika_quiet_time','EVE',unlock=True)
+        $ mas_stripEVL('monika_quiet_time',remove_dates=False)
+
     return "no_unlock"
 
 label mas_random_ask:
@@ -1434,7 +1437,7 @@ label mas_crashed_preshort:
     $ mas_startupWeather()
 
     # we can call spaceroom appropriately here
-    call spaceroom(scene_change=True)
+    call spaceroom(scene_change=True, force_exp="monika 2ekc")
     return
 
 label mas_crashed_short:

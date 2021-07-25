@@ -358,7 +358,7 @@ python early:
         def __init__(self, _msg):
             self.msg = _msg
         def __str__(self):
-            return "EventError: " + self.msg
+            return self.msg
 
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
@@ -431,8 +431,7 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
-    #   sensitive - True means this is a sensitve topic, False means it is not
-    #       (Default: False)
+    #   sensitive - IGNORED
     #   aff_range - tuple of the following format:
     #       [0]: - low limit of affection where this event is available
     #           (inclusive)
@@ -470,7 +469,7 @@ python early:
             #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
-            "sensitive":16,
+            #"sensitive":16, # NOTE: this will not be removed until later
             "aff_range":17,
             "show_in_idle":18,
         }
@@ -482,7 +481,8 @@ python early:
             "locks",
             "rules",
             "diary_entry",
-            "flags"
+            "flags",
+            "sensitive",
         )
 
         # filterables
@@ -495,7 +495,7 @@ python early:
             "seen", # 5
             "excl_cat", # 6
             "moni_wants", # 7
-            "sensitive", # 8
+            "sensitive", # 8 # NOTE: do not comment out for compatibility
             "aff", # 9
             "flag_req", # 10
             "flag_ban", # 11
@@ -518,6 +518,11 @@ python early:
         #   SEE the evhand store in event-handler
         # NOTE: action code should be callable on a given event object
         ACTION_MAP = dict()
+
+        # Conditional cache
+        # A map from conditional string to compiled code objects
+        # (speeds up event checks)
+        _conditional_cache = dict()
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -626,6 +631,10 @@ python early:
             self.rules = rules
             self.flags = flags
 
+            # NOTE: set deprecated properties here
+            self.diary_entry = ""
+            self.sensitive = False
+
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (
@@ -645,7 +654,7 @@ python early:
                 "", # diary_entry
                 last_seen,
                 years,
-                sensitive,
+                False, # sensitive
                 aff_range,
                 show_in_idle
             )
@@ -695,7 +704,7 @@ python early:
 #                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
-                    self.sensitive = sensitive
+                    #self.sensitive = sensitive
                     self.aff_range = aff_range
                     self.show_in_idle = show_in_idle
 
@@ -707,22 +716,44 @@ python early:
             # setup lock entry
             Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
 
+            # Cache conditional
+            if self.conditional is not None and self.conditional not in Event._conditional_cache:
+                Event._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
 
-        # equality override
         def __eq__(self, other):
+            """
+            Equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             if isinstance(self, other.__class__):
                 return self.eventlabel == other.eventlabel
             return False
 
-        # equality override
         def __ne__(self, other):
+            """
+            Non-equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             return not self.__eq__(other)
 
-        # set attr overrride
         def __setattr__(self, name, value):
-            #
-            # Override of setattr so we can do cool things
-            #
+            """
+            Override of setattr so we can do cool things
+
+            IN:
+                name - the name of the prop to change (str)
+                value - the new value
+            """
             if name in self.N_EVENT_NAMES:
                 super(Event, self).__setattr__(name, value)
 #                self.__dict__[name] = value
@@ -754,6 +785,14 @@ python early:
                         # nullify bad date types
                         if type(value) is not datetime.datetime:
                             value = None
+
+                    # If we are setting a conditional, we may need to compile it
+                    elif (
+                        name == "conditional"
+                        and value is not None
+                        and value not in Event._conditional_cache
+                    ):
+                        Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -842,6 +881,25 @@ python early:
             # otheerwise check the range
             low, high = self.aff_range
             return store.mas_affection._betweenAff(low, aff_level, high)
+
+        def checkConditional(self, globals=None, locals=None):
+            """
+            Checks conditional of this event
+
+            IN:
+                globals - global scope for eval. If None, the base store is used.
+                    (Default: None)
+                locals - local scope for eval. If None, set to globals.
+                    (Default: None)
+
+            OUT:
+                boolean:
+                    True if passed, False if not
+            """
+            if self.conditional is None:
+                return True
+
+            return renpy.python.py_eval_bytecode(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
 
         def canRepeat(self):
             """
@@ -972,13 +1030,34 @@ python early:
             """
             self.flags &= ~flags
 
+        @classmethod
+        def validateConditionals(cls):
+            """
+            A method to validate conditionals
+
+            ASSUMES:
+                mas_all_ev_db
+            """
+            for ev in mas_all_ev_db.itervalues():
+                if ev.conditional is not None:
+                    try:
+                        renpy.python.py_eval_bytecode(cls._conditional_cache[ev.conditional])
+
+                    except Exception as e:
+                        raise EventException(
+                            "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
+                                ev.conditional,
+                                ev.eventlabel,
+                                traceback.format_exc()
+                            )
+                        )
+
         @staticmethod
         def getSortPrompt(ev):
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return renpy.substitute(ev.prompt).lower()
-
 
         @staticmethod
         def getSortShownCount(ev):
@@ -1330,8 +1409,8 @@ python early:
                     return False
 
             # sensitivyt
-            if sensitive is not None and event.sensitive != sensitive:
-                return False
+#            if sensitive is not None and event.sensitive != sensitive:
+#                return False
 
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
@@ -1377,13 +1456,7 @@ python early:
                 moni_wants - boolean value to match if the event has the monika
                     wants this first.
                     (Default: None )
-                sensitive - boolean value to match if the event is sensitive
-                    or not
-                    NOTE: if None, we use inverse of _mas_sensitive_mode, only
-                        if sensitive mode is True.
-                        AKA: we only filter sensitve topics if sensitve mode is
-                        enabled.
-                    (Default: None)
+                sensitive - IGNORED
                 aff - affection level to match aff_range
                     (Default: None)
                 flag_req - flags that the event must match
@@ -1411,7 +1484,7 @@ python early:
             # setup keys
             cat_key = Event.FLT[0]
             act_key = Event.FLT[4]
-            sns_key = Event.FLT[8]
+            #sns_key = Event.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -1429,15 +1502,6 @@ python early:
             action = flt_args.get(act_key)
             if action and len(action) == 0:
                 flt_args[act_key] = None
-
-            sensitive = flt_args.get(sns_key)
-            if sensitive is None:
-                try:
-                    # i have no idea if this is reachable from here
-                    if persistent._mas_sensitive_mode:
-                        flt_args[sns_key] = False
-                except:
-                    pass
 
             filt_ev_dict = dict()
 
@@ -1670,7 +1734,7 @@ python early:
                 return False
 
             # now check conditional, if needed
-            if ev.conditional is not None and not eval(ev.conditional):
+            if not ev.checkConditional():
                 return False
 
             # check if valid action
@@ -3845,6 +3909,7 @@ init 25 python:
 init -1 python in _mas_root:
     import store
     import datetime
+    import collections
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -3909,12 +3974,7 @@ init -1 python in _mas_root:
         renpy.game.persistent.farewell_database = dict()
         renpy.game.persistent.closed_self = False
         renpy.game.persistent.seen_monika_in_room = False
-        renpy.game.persistent.ever_won = {
-            'pong':False,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
+        renpy.game.persistent._mas_ever_won = collections.defaultdict(bool)
         renpy.game.persistent.sessions={
             'last_session_end':datetime.datetime.now(),
             'current_session_start':datetime.datetime.now(),
@@ -4375,46 +4435,6 @@ init -995 python in mas_utils:
         return utc_to_any(utc_dt, get_localzone())
 
 
-    def tryparseint(value, default=0):
-        """
-        Attempts to parse the given value into an int. Returns the default if
-        that parse failed.
-
-        IN:
-            value - value to parse
-            default - value to return if parse fails
-            (Default: 0)
-
-        RETURNS: an integer representation of the given value, or default if
-            the given value could not be parsed into an int
-        """
-        try:
-            return int(value)
-        except:
-            return default
-
-    def copyfile(oldpath, newpath):
-        """
-        Copies the file at oldpath into a file at newpath
-        Paths assumed to include the filename (like an mv command)
-
-        NOTE:
-            if a copy fails, the error is logged
-
-        IN:
-            oldpath - path to old file, including filename
-            newpath - path to new file, including filename
-
-        RETURNS:
-            True if copy succeeded, False otherwise
-        """
-        try:
-            shutil.copyfile(oldpath, newpath)
-            return True
-        except Exception as e:
-            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
-        return False
-
     @contextmanager
     def stdout_as(outstream):
         """
@@ -4430,155 +4450,6 @@ init -995 python in mas_utils:
             yield
         finally:
             sys.stdout = oldout
-
-    def writelog(msg):
-        """
-        Writes to the mas log if it is open
-
-        IN:
-            msg - message to write to log
-        """
-        if mas_log_open:
-            mas_log.write(msg)
-
-    def wtf(msg):
-        """
-        Wow That Failed
-        For logging stuff that should never happen
-
-        IN:
-            msg - message to log
-        """
-        writelog(msg)
-
-    def writestack():
-        """
-        Prints current stack to log
-        """
-        writelog("".join(traceback.format_stack()))
-
-    def trydel(f_path, log=False):
-        """
-        Attempts to delete something at the given path
-
-        NOTE: completely hides exceptions, unless log is True
-        """
-        try:
-            os.remove(f_path)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-
-    def trywrite(f_path, msg, log=False, mode="w"):
-        """
-        Attempts to write out a file at the given path
-
-        Exceptions are hidden
-
-        IN:
-            f_path - path to write file
-            msg - text to write
-            log - True means we log exceptions
-                (Default: False)
-            mode - write mode to use
-                (Defaut: w)
-        """
-        outfile = None
-        try:
-            outfile = open(f_path, mode)
-            outfile.write(msg)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-        finally:
-            if outfile is not None:
-                outfile.close()
-
-    def logcreate(filepath, append=False, flush=False, addversion=False):
-        """
-        Creates a log at the given filepath.
-        This also opens the log and sets raw_write to True.
-        This also adds per version number if desired
-
-        IN:
-            filepath - filepath of the log to create (extension is added)
-            append - True will append to the log. False will overwrite
-                (Default: False)
-            flush - True will flush every operation, False will not
-                (Default: False)
-            addversion - True will add the version, False will not
-                You dont need this if you create the log in runtime,
-                (Default: False)
-
-        RETURNS: created log object.
-        """
-        new_log = getMASLog(filepath, append=append, flush=flush)
-        new_log.open()
-        new_log.raw_write = True
-        if addversion:
-            new_log.write("VERSION: {0}\n".format(
-                store.persistent.version_number
-            ))
-        return new_log
-
-    def logrotate(logpath, filename):
-        """
-        Does a log rotation. Log rotations contstantly increase. We defualt
-        to about 2 decimal places, but let the limit go past that
-
-        NOTE: exceptions are logged
-
-        IN:
-            logpath - path to the folder containing logs
-                NOTE: this is assumed to have the trailing slash
-            filename - filename of the log to rotate
-        """
-        try:
-            filelist = os.listdir(logpath)
-        except Exception as e:
-            writelog("[ERROR] " + str(e) + "\n")
-            return
-
-        # log rotation constants
-        __numformat = "{:02d}"
-        __numdelim = "."
-
-        # parse filelist for valid filenames,
-        # also sort them so the largest number is last
-        filelist = sorted([
-            x
-            for x in filelist
-            if x.startswith(filename)
-        ])
-
-        # now extract only the largest number in this list.
-        # NOTE: this is only possible if we have more than one file in the list
-        if len(filelist) > 1:
-            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
-            largest_num = tryparseint(largest_num, -1)
-
-        else:
-            # otherwise
-            largest_num = -1
-
-        # now increaese largest num to get the next number we should write out
-        largest_num += 1
-
-        # delete whatever file that is if it exists
-        new_path = os.path.normcase("".join([
-            logpath,
-            filename,
-            __numdelim,
-            __numformat.format(largest_num)
-        ]))
-        trydel(new_path)
-
-        # and copy our main file over
-        old_path = os.path.normcase(logpath + filename)
-        copyfile(old_path, new_path)
-
-        # and delete the current file
-        trydel(old_path)
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -4625,106 +4496,6 @@ init -995 python in mas_utils:
 
         except:
             return default
-
-    log_error = None
-
-    # mac logging
-    class MASMacLog(LogFile):
-
-        def __init__(self, name, append=False, developer=False, flush=True):
-            """
-            `name`
-                The name of the logfile, without the .txt extension.
-            `append`
-                If true, we will append to the logfile. If false, we will truncate
-                it to an empty file the first time we write to it.
-            `developer`
-                If true, nothing happens if config.developer is not set to True.
-            `flush`
-                Determines if the file is flushed after each write.
-            """
-            LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
-
-
-        def open(self):  # @ReservedAssignment
-
-            if self.file:
-                return True
-
-            if self.file is False:
-                return False
-
-            if self.developer and not renpy.config.developer:
-                return False
-
-            if not renpy.config.log_enable:
-                return False
-
-            try:
-
-                home = expanduser("~")
-                base = os.path.join(home,".MonikaAfterStory/" )
-
-                if base is None:
-                    return False
-
-                fn = os.path.join(base, self.name + ".txt")
-
-                path, filename = os.path.split(fn)
-                if not os.path.exists(path):
-                    os.makedirs(path)
-
-                if self.append:
-                    mode = "a"
-                else:
-                    mode = "w"
-
-                if renpy.config.log_to_stdout:
-                    self.file = real_stdout
-
-                else:
-
-                    try:
-                        self.file = codecs.open(fn, mode, "utf-8")
-                    except:
-                        pass
-
-                if self.append:
-                    self.write('')
-                    self.write('=' * 78)
-                    self.write('')
-
-                self.write("%s", time.ctime())
-                try:
-                    self.write("%s", platform.platform())
-                except:
-                    self.write("Unknown platform.")
-                self.write("%s", renpy.version())
-                self.write("%s %s", renpy.config.name, renpy.config.version)
-                self.write("")
-
-                return True
-
-            except:
-                self.file = False
-                return False
-
-    # A map from the log name to a log object.
-    mas_mac_log_cache = { }
-
-    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
-        rv = mas_mac_log_cache.get(name, None)
-
-        if rv is None:
-            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
-            mas_mac_log_cache[name] = rv
-
-        return rv
-
-    def getMASLog(name, append=False, developer=False, flush=False):
-        if renpy.macapp or renpy.macintosh:
-            return macLogOpen(name, append=append, developer=developer, flush=flush)
-        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
 
     def is_file_present(filename):
         """
@@ -4820,7 +4591,6 @@ init -100 python in mas_utils:
             return float(value)
         except:
             return default
-
 
     def bullet_list(_list, bullet="  -"):
         """
@@ -6453,10 +6223,9 @@ init 2 python:
         Checks if we can show something risque
 
         Conditions for this:
-            1. We're not in sensitive mode
-            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
-            3. Player is over 18
-            4. Aff condition (raw)
+            1. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            2. Player is over 18
+            3. Aff condition (raw)
 
         IN:
             aff_thresh:
@@ -6477,8 +6246,7 @@ init 2 python:
         _date = datetime.date.today() + grace
 
         return (
-            not persistent._mas_sensitive_mode
-            and persistent._mas_first_kiss is not None
+            persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
             and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
@@ -6619,6 +6387,20 @@ init 2 python:
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
+
+    def mas_setEventPause(seconds=60):
+        """
+        Sets a pause 'til next event
+
+        IN:
+            seconds - the number of seconds to pause for. Can be None to remove pause
+                (Default: 60)
+        """
+        if not seconds:
+            mas_globals.event_unpause_dt = None
+
+        else:
+            mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
 
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
@@ -7950,7 +7732,7 @@ default persistent.special_poems = None
 default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
-default persistent.has_merged = False
+default persistent._mas_imported_saves = False
 default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
@@ -8033,7 +7815,10 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
-default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
+# NOTE: For convenience this will automatically add new keys as we add new games, the default value is False
+default persistent._mas_ever_won = collections.defaultdict(bool)
+# TODO: Delete this as depricated
+# default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
@@ -8103,8 +7888,12 @@ define skip_setting_weather = False# in case of crashes/reloads, predefine it he
 
 define mas_monika_twitter_handle = "lilmonix3"
 
-# sensitive mode enabler
-default persistent._mas_sensitive_mode = False
+# sensitive mode is always set to False now
+init python:
+    persistent._mas_sensitive_mode = False
+
+# should eggs be disabled?
+default persistent._mas_disable_eggs = False
 
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
