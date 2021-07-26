@@ -1996,8 +1996,7 @@ label mas_song_fly_me_to_the_moon:
     m "{i}~In other words,{/i}{nw}"
     extend 3fkbsb "{i} I {w=0.2}love {w=0.2}you~{i}"
     m 3hubsb "And, I always will!"
-    $ mas_ILY()
-    return
+    return "love"
 
 init 5 python:
     addEvent(
