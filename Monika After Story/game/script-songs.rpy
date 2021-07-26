@@ -1976,7 +1976,7 @@ init 5 python:
             eventlabel="mas_song_fly_me_to_the_moon",
             prompt="Fly Me to the Moon",
             category=[store.mas_songs.TYPE_SHORT],
-            unlocked=False,
+            random=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
@@ -2006,7 +2006,7 @@ init 5 python:
             eventlabel="mas_song_heaven",
             prompt="Heaven",
             category=[store.mas_songs.TYPE_SHORT],
-            unlocked=False,
+            random=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
@@ -2032,7 +2032,7 @@ init 5 python:
             eventlabel="mas_song_can_you_feel_the_sunshine",
             prompt="Can You Feel the Sunshine?",
             category=[store.mas_songs.TYPE_SHORT],
-            unlocked=False,
+            random=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
@@ -2055,7 +2055,7 @@ init 5 python:
             eventlabel="mas_song_on_the_front_porch",
             prompt="On the Front Porch",
             category=[store.mas_songs.TYPE_SHORT],
-            unlocked=False,
+            random=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="SNG"
