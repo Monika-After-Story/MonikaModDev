@@ -36,6 +36,10 @@ define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
 define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
 
+define mas_chess.CHESS_MODE_NORMAL = "normal_chess"
+define mas_chess.CHESS_MODE_BADCHESS = "chess960"
+define mas_chess.CHESS_MODE_960 = "badchess"
+
 # mass chess store
 init python in mas_chess:
     import os
@@ -313,6 +317,7 @@ init python in mas_chess:
         return 'p'
 
     def gen_side(white=True, max_side_value=14):
+
         """
         Generates a player's side
 
@@ -372,6 +377,76 @@ init python in mas_chess:
             back_row, front_row = front_row, back_row
 
         return "".join(front_row), "".join(back_row)
+        
+    def generate_960_fen():
+        """
+        This function returns a random chess960 opening fen.
+
+        Chess960 rules are basically:
+        1. One rook must stay on the left side of king, and another one stay on the right side.
+           Due to this, the king can never be placed on a-file or h-file.
+        2. Bishops must stay on different color square.
+        3. Pawns must stay like the normal chess game.
+        4. The position of player A's pieces must be the 'reversed version' of player B's.
+        See chess960 wiki to get more exact information.
+
+        OUT:
+            A random chess960 opening fen.
+        """
+
+        # Do some variable init works.
+        materials_fen_list = [0,0,0,0,0,0,0,0]
+        materials_fen_string = ""
+        available_range = [0,1,2,3,4,5,6,7]
+
+        def assign(piece_name, index):
+            """
+            This function accepts two arguments: piece_name and index, and assign a piece into materials_fen_list, remove that position from available_range.
+            IN:
+                piece_name - The symbol of the piece you want to assign. 
+                             N stands for Knight. P stands for Pawn. K stands for King. Q stands for Queen. R stands for rooks. B stands for Bishops.
+
+                index - The index of this piece's position.  
+            """
+            materials_fen_list[index] = piece_name
+            available_range.remove(index)
+
+        # Firstly get the position of two bishops.
+        first_bishop_position = random.randint(1,4) * 2
+        second_bishop_position = random.randint(1,4) * 2 - 1# "-1" to make sure the color is different.
+
+        # Assign bishop positions. "-1" to make sure no out of index.
+        assign('B', first_bishop_position-1)
+        assign('B', second_bishop_position-1)
+
+        # Secondly assign the queen.
+        assign('Q', available_range[random.randint(1,5)])
+
+        # Thirdly get the current available position for knights.
+        # Make sure that after the knights were placed, the left available range is not going to against the rule 1 of chess960.
+        available_positions_for_knights = ([ [0, 1], [0, 2], [0, 3], [0, 4], [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]] [random.randint(0,9)])
+
+        # Assign Knights.
+        assign('N', available_range[available_positions_for_knights[1]])
+        assign('N', available_range[available_positions_for_knights[0]])
+
+        # Only 3 room now, that's just perfect for 2 rooks and 1 king.
+        # Assign with this order: Rook, King, Rook to obey rule 1 of chess960.
+        assign('R', available_range[0])
+        assign('K', available_range[0])
+        assign('R', available_range[0])
+
+        # We were using list to store, now convert into string.
+        for i in range(0,8,1):
+            materials_fen_string += materials_fen_list[i]
+
+        # Finally. Now return a full fen.
+        return BASE_FEN.format(
+            black_pieces_back=materials_fen_string.lower(),
+            black_pieces_front="pppppppp",
+            white_pieces_front="PPPPPPPP",
+            white_pieces_back=materials_fen_string
+        )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
         """
@@ -466,7 +541,7 @@ init python in mas_chess:
 
         return white_is_good and black_is_good
 
-    def generate_fen(is_player_white=True):
+    def generate_random_fen(is_player_white=True):
         """
         Generates a random fen
 
@@ -551,7 +626,7 @@ label game_chess:
         failed_to_load_save = True
 
         #Prelim definitions of the rules for the menu later
-        do_really_bad_chess = False
+        chessmode = "normal_chess"
         casual_rules = False
         practice_mode = False
         is_player_white = 0
@@ -649,7 +724,6 @@ label game_chess:
                     #These also override the base settings as to play a continuation
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-                    do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
                 jump mas_chess_start_chess
 
@@ -788,7 +862,6 @@ label game_chess:
             #These also override the base settings as to play a continuation
             practice_mode = eval(loaded_game.headers.get("Practice", "False"))
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-            do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
         jump mas_chess_start_chess
 
@@ -799,8 +872,9 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", False, False, not do_really_bad_chess),
-                    ("Randomized Chess", True, False, do_really_bad_chess)
+                    ("Normal Chess", mas_chess.CHESS_MODE_NORMAL, False, (chessmode is mas_chess.CHESS_MODE_NORMAL)),
+                    ("Randomized Chess", mas_chess.CHESS_MODE_BADCHESS, False, (chessmode is mas_chess.CHESS_MODE_BADCHESS)),
+                    ("Chess 960", mas_chess.CHESS_MODE_960, False, (chessmode is mas_chess.CHESS_MODE_960))
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -883,9 +957,9 @@ label mas_chess_remenu:
     elif _return not in ("confirm", None):
         $ _history_list.pop()
 
-        #Normal/Really Bad Chess selection
+        #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            $ do_really_bad_chess = _return
+            $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
@@ -923,7 +997,13 @@ label mas_chess_remenu:
 
 label mas_chess_start_chess:
     #Setup the chess FEN
-    $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
+    python:
+        if chessmode == mas_chess.CHESS_MODE_NORMAL:
+            starting_fen = None
+        elif chessmode == mas_chess.CHESS_MODE_960:
+            starting_fen = mas_chess.generate_960_fen()
+        else:
+            starting_fen = mas_chess.generate_random_fen(is_player_white)
 
     #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
@@ -1237,7 +1317,6 @@ label mas_chess_savegame(silent=False, allow_return=True):
         if game_result == mas_chess.IS_ONGOING:
             m 1eub "Let's continue this game soon!"
     return
-
 
 label mas_chess_locked_no_play:
     m 1euc "No thanks, [player]."
@@ -2000,7 +2079,7 @@ init python:
             self.player_move_prompts = player_move_prompts
             self.monika_move_quips = monika_move_quips
 
-            #Check if these exist, if not we add them in and default them to empty lists
+            #Check if these exist, if not we add them in and default them to available_range lists
             if "_visible_buttons" not in self.__dict__:
                 self._visible_buttons = list()
 
@@ -2093,6 +2172,7 @@ init python:
 
             #Requested highlights to draw, contains board-coord tuples of squares to highlight
             self.requested_highlights = set()
+            self.requested_highlights_color = dict()
 
             #If it's Monika's turn, send her the board positions so that she can start analyzing.
             if not self.is_player_turn():
@@ -2229,7 +2309,7 @@ init python:
             """
             Updates the position of all MASPieces
             """
-            #Empty the piece map
+            #available_range the piece map
             self.piece_map = dict()
 
             #And refill it
@@ -2250,17 +2330,22 @@ init python:
             """
             return self.piece_map.get((px, py), None)
 
-        def request_highlight(self, board_pos):
+        def request_highlight(self, board_pos, color = 1):
             """
             Requests the renderer to draw a highlight on the square at the specified square
 
             IN:
                 board_pos - position string representing the board square to highlight (example a2)
+                color - The highlight color.
+                        Currently, we accepts 4 types: Yellow, Green, Red, Magenta.
+                        And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
+                        The default value is 1, which means Yellow.
             """
             x = MASChessDisplayableBase.uci_alpha_to_x_coord(board_pos[0])
             y = int(board_pos[1]) - 1
 
             self.requested_highlights.add((x, y))
+            self.requested_highlights_color[str((x,y))] = color
 
         def remove_highlight(self, board_pos):
             """
@@ -2273,6 +2358,148 @@ init python:
             y = int(board_pos[1]) - 1
 
             self.requested_highlights.discard((x, y))
+            del self.requested_highlights_color[str((x,y))]
+
+        def request_highlight_common_format(self, pgn_pos, color = 1):
+            """
+            Highlight a square by pgn_pos.
+            The difference between this function and request_highlight() function is that this function receives a more "common format".
+            Such as: If you types "request_highlight("c4")", that function will actually highlight the c5 square.
+            But in this function, if you typed c4, then, you're highlighting c4 square, don't worry.
+
+            IN:
+                pgn_pos - position string representing the board square to highlight (example a2)
+                color - The highlight color.
+                        Currently, we accepts 4 types: Yellow, Green, Red, Magenta.
+                        And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
+                        The default value is 1, which means Yellow.
+            """
+            self.request_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])), color)
+        
+        def remove_highlight_common_format(self, pgn_pos):
+            """
+            See request_highlight_common_format description to get more information.
+
+            IN:
+                pgn_pos - position string representing the board square to remove highlight (example a2)
+            """
+            self.remove_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])))
+
+        def request_highlight_line(self, line_number, color = 1):
+            """
+            Basically a simple way to highlight a line.
+            The way to highlight those squares is actually calling the request_highlight() 8 times.
+
+            IN:
+                line_number - The line index of the line that you want to highlight. This is supposed to be a int.
+                color - The highlight color.
+                        Currently, we accepts 4 types: Yellow, Green, Red, Magenta.
+                        And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
+                        The default value is 1, which means Yellow.
+            """
+            for i in range(0,8,1):
+                self.request_highlight_common_format(chr(ord('a')+i) + str(line_number), color)
+        
+        def remove_highlight_line(self, line_number):
+            """
+            Basically a simple way to remove highlights of a line.
+            The way to remove those highlights is actually calling the remove_highlight() 8 times.
+
+            IN:
+                line_number - The line index of the line that you want to remove. This is supposed to be a int.
+            """
+            for i in range(0,8,1):
+                self.remove_highlight_common_format(chr(ord('a')+i) + str(line_number))
+
+        def request_highlight_file(self, file_letter, color = 1):
+            """
+            Basically a simple way to highlight a file.
+            The way to highlight those squares is actually calling the request_highlight() 8 times.
+
+            IN:
+                file_letter - The file index of the file that you want to highlight. This is supposed to be a chr.
+                color - The highlight color.
+                        Currently, we accepts 4 types: Yellow, Green, Red, Magenta.
+                        And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
+                        The default value is 1, which means Yellow.
+            """
+            for i in range(1,9,1):
+                self.request_highlight_common_format(file_letter + str(i), color)
+        
+        def remove_highlight_file(self, file_letter):
+            """
+            Basically a simple way to remove highlights of a file.
+            The way to remove those highlights is actually calling the request_highlight() 8 times.
+
+            IN:
+                file_letter - The file index of the file that you want to remove hightlights. This is supposed to be a chr.
+            """
+            for i in range(1,9,1):
+                self.remove_highlight_common_format(file_letter + str(i))
+
+        def request_highlight_diagonal(self, square1, square2, pause_time = None, color = 1):
+            """
+            Highlights a diagonal with a given start and end.
+            If the pause_time is provided, it will be paused after each highlighted box.
+
+            One thing in particular must be noted.
+            For arguments, the letter of file for square1 must be smaller in ASCII code than the letter of file for square2.
+            Example:
+            The following codes are legal:
+                request_highlight_diagonal("c6","e8")
+                request_highlight_diagonal("d8","h4")
+            The following codes are illegal:
+                request_highlight_diagonal("e8","c6") -- letter 'e' is bigger in ASCII code than letter 'c'.
+                request_highlight_diagonal("h4","d8") -- letter 'h' is bigger in ASCII code than letter 'd'.
+
+            IN:
+                square1 - The start square, supposed to be a string. Example: "c6"
+                square2 - The end square, supposed to be a string. Example: "e8"
+                pause_time - This is not a must. If the pause_time is provided, it will be paused after each highlighted box.
+                color - The highlight color.
+                        Currently, we accepts 4 types: Yellow, Green, Red, Magenta.
+                        And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
+                        The default value is 1, which means Yellow.
+            """
+            if int(square1[1]) > int(square2[1]):#From the Left-Top draw to Right-Bottom
+                for i in range(int(square1[1]), int(square2[1])-1, -1):
+                    self.request_highlight_common_format(chr(ord(square1[0])+i-int(square2[1])) + str(int(square2[1]) - i + int(square1[1])), color)
+                    if pause_time != None:
+                        renpy.pause(pause_time)
+            else:
+                for i in range(int(square1[1]), int(square2[1])+1, 1):
+                    self.request_highlight_common_format(chr(ord(square1[0])+i-int(square1[1])) + str(i), color)
+                    if pause_time != None:
+                        renpy.pause(pause_time)           
+
+        def remove_highlight_diagonal(self, square1, square2, pause_time = None):
+            """
+            It's basically the opposite of the function request_highlight_diagonal.
+
+            IN:
+                square_start - The start square, supposed to be a string. Example: "c6"
+                square_end - The end square, supposed to be a string. Example: "e8"
+                pause_time - This is not a must. If the pause_time is provided, it will be paused after each highlighted box.
+            """
+            if int(square1[1]) > int(square2[1]):#From the Left-Top draw to Right-Bottom
+                for i in range(int(square1[1]), int(square2[1])-1, -1):
+                    self.remove_highlight_common_format(chr(ord(square1[0])+i-int(square2[1])) + str(int(square2[1]) - i + int(square1[1])))
+                    if pause_time != None:
+                        renpy.pause(pause_time)
+            else:
+                for i in range(int(square1[1]), int(square2[1])+1, 1):
+                    self.remove_highlight_common_format(chr(ord(square1[0])+i-int(square1[1])) + str(i))
+                    if pause_time != None:
+                        renpy.pause(pause_time)
+
+        def remove_highlight_all(self):
+            """
+            Erase all current highlights.
+            """
+            del self.requested_highlights
+            del self.requested_highlights_color
+            self.requested_highlights = set()
+            self.requested_highlights_color = dict()
 
         def __push_move(self, move_str):
             """
@@ -2489,7 +2716,15 @@ init python:
 
             #Now render requested highlights if any
             for hl in self.requested_highlights:
-                renderer.blit(highlight_yellow, MASChessDisplayableBase.board_coords_to_screen_coords(hl))
+                if self.requested_highlights_color[str(hl)] == 1:
+                    color = highlight_yellow
+                elif self.requested_highlights_color[str(hl)] == 2:
+                    color = highlight_green
+                elif self.requested_highlights_color[str(hl)] == 3:
+                    color = highlight_red
+                else:
+                    color = highlight_magenta
+                renderer.blit(color, MASChessDisplayableBase.board_coords_to_screen_coords(hl))
 
             #Draw the pieces on the Board renderer.
             for piece_location, Piece in self.piece_map.iteritems():
@@ -2563,7 +2798,8 @@ init python:
                 px, py = mas_getMousePos()
                 px -= MASChessDisplayableBase.PIECE_WIDTH / 2
                 py -= MASChessDisplayableBase.PIECE_HEIGHT / 2
-                piece.render(width, height, st, at, px, py, renderer)
+                if piece is not None:
+                    piece.render(width, height, st, at, px, py, renderer)
 
             #Ask that we be re-rendered ASAP, so we can show the next frame.
             renpy.redraw(self, 0)
@@ -2749,7 +2985,6 @@ init python:
                 value - coordinate part (x or y) to invert
             """
             return 7 - value
-
 
     class MASPiece(object):
         """
@@ -3251,6 +3486,7 @@ init python:
                     self._button_done
                 ]
 
+
         def __del__(self):
             self.stockfish.stdin.close()
             self.stockfish.wait()
@@ -3528,7 +3764,7 @@ init python:
                     monika_move_check = chess.Move.from_uci(monika_move)
 
                     if self.board.is_legal(monika_move_check):
-                        #Monika is thonking
+                        #Monika is thinking
                         renpy.pause(1.5)
 
                         #Push her move
@@ -3663,3 +3899,414 @@ init python:
                 quit_reason == 1, #Did player surrender?
                 self.board.fullmove_number
             )
+
+    class MASChessDisplayable_Puzzle(MASChessDisplayableBase):
+        def __init__(
+            self,
+            is_player_white,
+            pgn_game=None,
+            starting_fen=None,
+            practice_mode=False,
+            casual_rules=False
+        ):
+            super(MASChessDisplayable_Puzzle, self).__init__(
+                    is_player_white,
+                    pgn_game,
+                    starting_fen,
+                    casual_rules,
+                    player_move_prompts=[
+                        "[mas_quipExp('2lta')]You'd better to look before you leap...",
+                        "[mas_quipExp('2eub')]Before you go, ask yourself, are you sure?",
+                        "[mas_quipExp('2ltc')]So what should we do here?",
+                        "[mas_quipExp('2tsu')]If that's too difficult, you can ask one of your most talented girlfriends..."],
+                    monika_move_quips=[
+                        "[mas_quipExp('2hub')]Nice move! So, my response is...",
+                        "[mas_quipExp('2hub')]Good job! But how should you respond to this next step?"
+                    ]
+                )
+
+            self.correct_move = list()
+            self.correct_response = list()
+            self.incorrect_move = dict()
+            self.hint = list()
+            
+            #How many moves have been taken in this puzzle?
+            #Note:Not a turn, but a move. Each move that Monika takes or the player takes increases this variable by 1.
+            self.num_moves = 0
+
+            #How many moves to solve this puzzle? When num_moves >= num_moves_total, this puzzle is recognized as solved.
+            self.num_moves_total = 1
+
+            self.num_turns = 0
+
+            #Has the player requested a prompt this turn? This will be True if it was requested.
+            #every time the player takes the correct move (that is, to proceed to the next turn), this variable will fall back to False.
+            self.asked_hint = False
+
+            #How many times the player played a incorrect move in this puzzle?
+            self.incorrect_total = 0
+
+            #How many times the player asked for a hint in this puzzle?
+            #Note: This variable will not increase if player repeatedly asked for hint in only one turn.
+            #Only if the player enter the next turn, or say, asked_hint = False, then this variable will increase.
+            self.hint_total = 0
+
+            #This variable is to quickly know which puzzle it is.
+            #The initial value is set to -1, so that newcomers who forget the Settings are immediately notified that they have forgotten.
+            #The puzzle_id here should be the one in the puzzle label name. For example, the puzzle_id of monika_chesslesson_puzzles_1 would be 1.
+            self.puzzle_id = -1
+
+            self.quit_game_finished = False
+
+            self._button_done = MASButtonDisplayable.create_stb(
+                _("Done"),
+                False,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                MASChessDisplayableBase.DRAWN_BUTTON_Y_TOP,
+                MASChessDisplayableBase.BUTTON_WIDTH,
+                MASChessDisplayableBase.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            self._button_giveup = MASButtonDisplayable.create_stb(
+                    _("Give up"),
+                    True,
+                    MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                    MASChessDisplayableBase.DRAWN_BUTTON_Y_TOP,
+                    MASChessDisplayableBase.BUTTON_WIDTH,
+                    MASChessDisplayableBase.BUTTON_HEIGHT,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=gui.activate_sound
+                )
+            
+            self._button_hint = MASButtonDisplayable.create_stb(
+                _("Hint"),
+                True,
+                MASChessDisplayableBase.BUTTON_INDICATOR_X,
+                MASChessDisplayableBase.DRAWN_BUTTON_Y_MID,
+                MASChessDisplayableBase.BUTTON_WIDTH,
+                MASChessDisplayableBase.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            self._visible_buttons = [
+                    self._button_giveup,
+                    self._button_hint
+                ]
+
+        def undo_move(self):
+            """
+            Undoes the last move
+
+            OUT:
+                None
+            """
+            #user wants to undo the last move
+            #NOTE: While the chess.Board object has a pop function, we cannot use it here due to the nature of saving these as
+            #pgn files. As such we pop somewhat inefficiently, but we do it such that the fen can always be used to restore
+            last_move_fen = self.move_history.pop(-1)
+
+            #Remove the last move since we've undone
+            old_board = self.board
+            old_board.move_stack = old_board.move_stack[:len(old_board.move_stack)-2]
+            old_board.stack = old_board.stack[:len(old_board.stack)-2]
+
+            #Update the board to the undo
+            self.board = MASBoard(fen=last_move_fen)
+
+            #Now transfer the move data
+            self.board.move_stack = old_board.move_stack
+            self.board.stack = old_board.stack
+
+            #Restore the last move if we can
+            if self.board.move_stack:
+                last_move_uci = self.board.move_stack[-1].uci()
+                self.last_move_src, self.last_move_dst = MASChessDisplayableBase.uci_to_coords(last_move_uci)
+
+            else:
+                self.last_move_src = None
+                self.last_move_dst = None
+
+            #Adjust MASPieces
+            self.update_pieces()
+
+            self.current_turn = not self.current_turn
+
+            self.set_button_states()
+            return None
+
+        def __push_move(self, move_str, manual = False):
+            """
+            Internal function which pushes a uci move to the board and all MASPieces, handling promotions as necessary
+
+            IN:
+                move_str - uci string representing the move to push
+
+                manual - A boolean to check if this is a manual move. If this is a manual move(manual = True), then 'num_moves' the variable won't increase.
+                    (Default: False)
+
+            NOTE: This does NOT verify validity
+            """
+            #Step 1: Get our move locations
+            (x1, y1), (x2, y2) = MASChessDisplayableBase.uci_to_coords(move_str)
+
+            #Now get the piece
+            piece = self.get_piece_at(x1, y1)
+
+            #Move the piece
+            piece.move(x2, y2)
+
+            #Promote it if we need to
+            if len(move_str) > 4:
+                piece.promote_to(move_str[4])
+
+            #Add this undo if it's the player's turn
+            if self.is_player_turn():
+                self.move_history.append(self.board.fen())
+
+            self.last_move_src = (x1, y1)
+            self.last_move_dst = (x2, y2)
+
+            #We push the move here because we need to update fens and game history
+            self.board.push_uci(move_str)
+
+            #Check if we need to redraw MASPieces
+            self.check_redraw()
+
+            #Increases the variable 'num_moves'
+            if manual == False:
+                self.num_moves += 1
+
+            #Switch the turn
+            self.current_turn = not self.current_turn
+      
+        def handle_player_move(self):
+            """
+            Manages player move
+            """
+            #HERE WAS A SANITY CHECK, SEE ORIGINAL THIS FUNCTION.
+
+            px, py = self.get_piece_pos()
+
+            move_str = None
+
+            if px is not None and py is not None and self.selected_piece is not None:
+                move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
+
+                #Promote if needed
+                if (
+                    chess.Move.from_uci(move_str + 'q') in self.possible_moves
+                    and self.get_piece_at(self.selected_piece[0], self.selected_piece[1]).get_type() == 'p'
+                    and (py == 0 or py == 7)
+                ):
+                    #Set selected piece to None to drop it
+                    self.selected_piece = None
+
+                    #Now call the promotion screen
+                    promote = renpy.call_in_new_context("mas_chess_promote_context", self.is_player_white)
+                    move_str += promote
+
+            if move_str is None:
+                return
+
+            if chess.Move.from_uci(move_str) in self.possible_moves:
+                # Firstly we set the player's move on board.
+                self.__push_move(move_str)
+                self.set_button_states()
+                
+                self.selected_piece = None
+
+                # Secondly let us see if player moved correctly.
+                key = str(self.num_moves/2) + move_str
+                if key in self.incorrect_move.keys():
+                    # If player played a wrong move, but it's in the list, then:
+
+                    # Firstly disable interactions.
+                    self.toggle_sensitivity()
+
+                    # Secondly jump to the predetermined label. Notice re-enable the interaction is that label's job.
+                    self.incorrect_total += 1
+                    renpy.jump(self.incorrect_move[key])
+
+                elif move_str != self.correct_move[self.num_moves/2]:
+                    # If player not only played a wrong move, but it's not in the list too, then:
+                    # Firstly disable interactions.
+                    self.toggle_sensitivity()
+
+                    # Secondly jump to the predetermined label. Notice re-enable the interaction is that label's job.
+                    self.incorrect_total += 1
+                    renpy.jump("monika_chesslesson_puzzles_wrong_default")
+                
+                # If the execution reachs here, it means player's move is no problem.
+                # So let's do some variable setting for the next turn.
+                self.asked_hint = False
+
+        def handle_monika_move(self):
+            """
+            Handles Monika's move
+            """
+            move_str = self.correct_response[self.num_moves/2]
+            renpy.pause(random.uniform(1,2))
+
+            self.__push_move(move_str)
+
+        def handle_manual_move(self):
+            """
+            Handle a manual move that was pushed into the list by queue_move().
+            Notice we used False as the 'manual' arguemnt, so 'num_moves' the variable won't increase.
+            """
+            move_str = self.move_stack.pop(0)
+            self.__push_move(move_str, True)
+
+        def check_buttons(self, ev, x, y, st):
+            """
+            Runs button checks/functions if pressed
+            """
+            if self.is_player_turn():
+                if self._button_giveup.event(ev, x, y, st):
+                    wants_quit = renpy.call_in_new_context("mas_chess_confirm_context", prompt=_("Are you sure you want to give up?"))
+                    if wants_quit:
+                        #User wishes to give up
+                        self.quit_game = True
+                elif self._button_hint.event(ev, x, y, st):
+                    # Disable the interaction to board firstly.
+                    self.toggle_sensitivity()
+
+                    # Then call the correct label.
+                    # Notice that re-enable the board's interaction is the called label's job.
+                    temp = self.asked_hint
+                    self.asked_hint = True
+                    self.hint_total += 1
+                    renpy.call(self.hint[self.num_moves/2], asked = temp)
+
+        def reaction_add(self, turn_number, correct_move, correct_response, incorrect_move, hint):
+            """
+            Firstly, let's be clear. A puzzle system can take the form of:
+            1. Monika presents the player with a situation. This is determined by starting_fen.
+            2. The player takes a step. In this case, there are the following branches:
+                Possibility 1: The player made the right move (note that the correct solution to the puzzle should be unique).
+                            Then no problem, and Monika responded by taking a pre-determined step.
+                Possibility 2: the player did not make the right move, but this move was written in advance in the "incorrect list".
+                            A label is called to explain to the player exactly why this step does not work.
+                            (therefore, the incorrect list should contain error-prone points).
+                Possibility 3: Not only is the player making an incorrect move, but it's not included in the list.
+                            Monika will simply say "Your move is wrong", "There is no logic to this move", etc, and then undo the player's move and tell the player to replay.
+            3. Repeat step 2 until the puzzle is complete.
+
+            This function adds a set of data needed for the puzzle to the current puzzle system.
+
+            IN:
+                move_number - At what move-number is this response list?
+                correct_move - What is the right step for the player to take at this point?
+                correct_response - After making the right move, what will Monika play in response?  Supposed to be a UCI-MOVE string, like 'c6c7', not PGN standard.
+                incorrect_move - This should be a list, that is, the "incorrect list".
+                                 If n is an even number, the n element should be a UCI "incorrect move",
+                                 and n+1 element is the name of the label that will be called for this incorrect move.
+                hint - This should be a string, a label name.
+
+            EXAMPLE:
+                reaction_add(1,
+                     "c5c6",
+                     "d8c6",
+                    ["a5a6","monika_chesslesson_puzzles_1_1_wrong1","a1h8","monika_chesslesson_puzzles_1_1_wrong2","c1d3","monika_chesslesson_puzzles_1_1_wrong3"],
+                    "monika_chesslesson_puzzles_hint1"
+                    )
+
+                This will add the turn 1's reactions into the system.
+            """
+            self.correct_move.insert(turn_number-1, correct_move)
+            self.correct_response.insert(turn_number-1, correct_response)
+            for i in range(0,len(incorrect_move),2):
+                self.incorrect_move[str(turn_number-1) + incorrect_move[i]] = incorrect_move[i+1]
+            self.hint.insert(turn_number-1, hint)
+
+        def score_settlement(self):
+            return
+            """
+            This function will calculate the number of points that should be given to the player for the current puzzle.
+            This calculation is then added to the player's score.
+            """
+            #Get the difference between the player's rating and the puzzle's rating.
+            delta = mas_list_puzzle[self.puzzle_id] - persistent._mas_pm_player_puzzlelevel
+            
+            #The expression of the variable incorrect_coefficient is an inverse proportional function in math.
+            #As the number of player incorrect move increases, this at first dramatically affects the coefficient of scoring, and then almost no more.
+            #There is also a guarantee that the coefficient will not fall below -1.472.
+            incorrect_coefficient = max(-1.472, (1/(3.2227-self.incorrect_total) - 0.643))
+
+            #This coefficient is giving a different correction ratio depending on the delta variable.
+            #The expected expression here should be a function that is "incremented on R and its derivative is always positive", but only the function's time is infinite then can this function exists.
+            #Taylor expansion is used here to find the third iteration, that is, the cubic expression, which can guarantee the basic accuracy within the interval of [-100,100].
+            delta_coefficient = 0.00000008 * math.pow(delta,3) + 0.0003 * math.pow(delta,2) + 0.0595 * delta - 0.0422
+
+            #And this coefficient is given another modification based on the player's current rating.
+            #The higher the player's rating, the more likely it is to drop points rather than increase them.
+            def rating_coefficient(value):
+                return value#Waiting to be finished
+
+                if value > 0:
+                    return value * persistent._mas_pm_player_puzzlelevel
+            
+            #Finally, set the score into the persistent data.
+            persistent._mas_pm_player_puzzlelevel += rating_coefficient(7 * incorrect_coefficient * + delta_coefficient)
+            return 0
+
+        def be_player_turn(self):
+            """
+            Give the turn to the player.
+            Note that this function simply sets the current_turn variable to a value that will give the player a turn.
+            The purpose of this function is to make sure that at a hint label or error-prone label,
+            if Monika takes a few steps on the board to explain it to the player, then use this function at the end to make sure it's the player's turn.
+            """
+            self.current_turn = chess.WHITE if self.is_player_white else chess.BLACK
+
+        def game_loop(self):
+            """
+            Runs the puzzle game loop
+            """
+            while self.num_moves < self.num_moves_total and self.quit_game == False:
+                # Monika turn actions
+                if not self.is_player_turn():
+                    renpy.show("monika 1dsc")
+                    renpy.say(
+                        m,
+                        renpy.random.choice(self.monika_move_quips),
+                        False
+                    )
+                    store._history_list.pop()
+                    self.handle_monika_move()
+
+                # prepare a quip before the player turn loop
+                should_update_quip = False
+                quip = renpy.random.choice(self.player_move_prompts)
+
+                # player turn actions
+                # 'is_game_over' is to allow interaction at the end of the game
+                while self.is_player_turn():
+                    # we always reshow Monika here
+                    renpy.show("monika 1eua")
+                    if (
+                        should_update_quip
+                        and "{fast}" not in quip
+                    ):
+                        quip = quip + "{fast}"
+
+                    should_update_quip = True
+                    renpy.say(m, quip, False)
+                    store._history_list.pop()
+
+                    # interactions are handled in the event method
+                    interaction = ui.interact(type="minigame")
+                    if self.quit_game or self.num_moves >= self.num_moves_total:
+                        break
+            
+            # The loop is end, now let us see the reason.
+            if self.num_moves >= self.num_moves_total:
+                # Reason 1: Player successed.
+                renpy.jump("monika_chesslesson_puzzles_result_complete")
+            elif self.quit_game:
+                # Player just give up.
+                renpy.jump("monika_chesslesson_puzzles_result_giveup")
+            return
