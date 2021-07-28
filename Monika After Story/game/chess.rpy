@@ -2374,7 +2374,13 @@ init python:
                         And for these 4 types, 1 for Yellow, 2 for Green, 3 for Red, 4 for Magenta
                         The default value is 1, which means Yellow.
             """
-            self.request_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])), color)
+            if self.is_player_white:
+                self.request_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])), color)
+            else:
+                self.request_highlight(
+                    chr( int(ord(pgn_pos[0]) + (100.5-ord(pgn_pos[0]))*2) ) + pgn_pos[1],
+                    color
+                    )
         
         def remove_highlight_common_format(self, pgn_pos):
             """
@@ -2383,7 +2389,13 @@ init python:
             IN:
                 pgn_pos - position string representing the board square to remove highlight (example a2)
             """
-            self.remove_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])))
+            if self.is_player_white:
+                self.remove_highlight(pgn_pos[0] + str(9-int(pgn_pos[1])))
+            else:
+                self.remove_highlight(
+                    chr( int(ord(pgn_pos[0]) + (100.5-ord(pgn_pos[0]))*2) ) + pgn_pos[1]
+                )
+        
 
         def request_highlight_line(self, line_number, color = 1):
             """
