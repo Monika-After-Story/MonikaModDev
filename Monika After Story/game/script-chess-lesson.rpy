@@ -1621,9 +1621,136 @@ init 5 python:
     )
 
 label monika_chesslesson_intro_advance_pawn:
-    m "We mentioned before that pawns can fight, too."
-    m "That's kind of only a sketch, you could say."
-    m "To be more detailed, there are many things pawns can do."
+    m 1eua "We mentioned before that pawns can fight, too."
+    m 1euc "That's kind of only a sketch, you could say."
+    m 1luc "To be more detailed, there are many things pawns can do."
+    if seen_event("monika_chesslesson_opening_basic_idea"):
+        m 1lud "Like control center, which you already learnt in opening lesson."
+    m 1eub "There are a couple of useful pawn configurations that you have to know."
+    m 1eua "Oh, just let me get the board so I can teach you.{w=0.2} Hold on...{w=0.3}{nw}"
+    show monika at t11
+    python:
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/6n1/4P3/3P4/2P5/8/8/8 b - - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+        renpy.pause(1)
+    m 3eub "This is the {b}Pawn Chain{/b} structure, a very common one."
+    m 3eua "A pawn chain can be very long, like 5 pawns, or very short, only 2 pawns is enough, too."
+    m 1eub "The point of the pawn chain is that it's often hard to tear them down."
+    m 1eua "Like, the game that just in front of your eyes, black has a knight able to attack the e6 pawn."
+    m 1eub "But it's obvious that after this attack, the knight will be removed too."
+    m "This is the characteristic of a pawn chain, that every pawn in the chain is protected by the next pawn--{w=0.3}{nw}"
+    extend 1eua " except, of course, for the last pawn, which has no protection."
+    m 2eua "So, the last pawn--{w=0.3}also called the backward pawn--{w=0.3}is the weak point in the pawn chain."
+    m 2eub "In general, we think that pawn chains are a good structure. It's strong, helps control a lot of squares, and is great at blocking rooks."
+    m 3eua "Another common structure is {b}Pawn Wall{/b},{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/8/8/3ppp2/8/3PPP2/8/8 w - - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+    extend 3eub " which is particularly effective in endgames."
+    m 3eua "In this positionn you see, there is a pawn wall on both sides. So whichever side moves first will lose its pawn."
+    m 2eub "It is common to use this structure to prevent your opponent's pawn from advancing in endgame."
+    m 2euc "But, notice that these pawns have no protection from each other, so they're actually kind of breakable to pieces like rook."
+    m 2eud "There are many other structures too, and I've seen a lot of people tell beginners about most of them at once...{w=0.3}{nw}"
+    extend 2rtc " Personally, I don't think that's good."
+    m 2eud "Pawn structure is a major question in chess, and you usually have to go to the master level to know a lot about it."
+    m 1eua "So I prefer to let you experience more pawn structures in actual match."
+    m 1eub "However, there are a few common kinds of pawn that I should mention."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "6k1/pp3ppp/8/8/8/PP1P4/5PPP/6K1 w - - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+        game.request_highlight_common_format("d3")
+    m "This d3 pawn is the {b}passed pawn{/b}, a pawn who is generally considered a great threat, especially in endgame."
+    m 1eub "A passed pawn means a pawn has no opponent's pawns in front of it or on adjacent files, which means, this pawn is having a great chance at promoting!"
+    m 3eub "Passed pawns are much more powerful than you might think, sometimes even at the risk of losing materials to create or protect passed pawns is acceptable."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/7p/5kp1/4p3/p3rPRP/3K2P1/8/8 b - - 1 43")
+        game.toggle_sensitivity()
+        game.show()
+    m 1eub "Like this one. It was a famous game of the last century, and is now regarded as a brilliant move."
+    m 1eua "Efim Geller, a former grandmaster, plays the black. Now it was his turn, and guess what he did?"
+    show monika 1lud
+    python:
+        game.queue_move("f6g7")
+        game.handle_monika_move()
+        renpy.pause(1)
+    m 2wuo "He completely ignored white's threat to take the rook! Why is that?"
+    m 2hub "If we look at what happens next in this game, we'll see that black's move was a brilliant one."
+    python:
+        game.queue_move("h4h5")
+        game.handle_player_move()
+        renpy.pause(1)
+    m 2eua "You may also have a hard time understanding why white didn't immediately remove the rook, but instead moved the h-file pawn."
+    m 2eub "In fact, white has realized how clever black's move was and is trying to give rook room to move out to stop the a-file passed pawn."
+    m 2eua "But it was too late.{w=0.3}{nw}"
+    python:
+        game.queue_move("a4a3")
+        game.handle_monika_move()
+    extend 2hub " After this pawn move, it's so obvious that there is no way white can prevent this passed pawn from promoting."
+    m 2eua "That's why black simply moved the king without any thought of protecting rook--{w=0.3}{nw}"
+    extend 2hua "White is already struggling to deal with the passed pawn, who has the mood for rook?"
+    m 2eub "If white simply removes a rook, it is effectively giving the other side a queen at the cost of a rook."
+    m 2luc "Indeed, it's a little late for white to deal with the pawn even if white doesn't remove the rook."
+    m 2lud "But that's another question to discuss, and if white deals with it immediately, it will at least cost the opponent a few more turns."
+    m 2eub "Now you can see how terrible a passed pawn in the endgame can be--{w=0.3}after all, a passed pawn in the endgame is almost a potential queen!"
+    m 2eua "Another common type of pawn is called {b}Isolated Pawn{/b}."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "2krr3/1pp2ppp/p1n2n2/2b1P3/8/1BP2N2/PP3PPP/R1N3KR b - - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+    m "In this game, the e5 pawn{nw}"
+    python:
+        game.request_highlight_common_format("e5")
+    extend " is an isolated pawn."
+    m 2eub "The so-called isolated pawn, understood literally, means that a pawn is isolated. There is no other pawn on its adjacent files to support it."
+    m 1eua "Generally, we consider isolated pawn as a weak pawn, and it is easy to be attacked as a breakthrough point."
+    m 1etc "But that's not to say it's absolutely bad...{w=0.3}{nw}"
+    extend 1esa " For example, actually a passed pawn is mostly also an isolated pawns, too."
+    m 1eub "In the endgame, having an isolated pawn is often a good thing--{w=0.3}{nw}"
+    extend 2rssdru "because it's usually the passed pawn, puff!"
+    m 1esd "However, in middlegames or openings, an isolated pawn is often a big problem. Your opponent will quickly use this breakthrough point to destroy your defense."
+    m 1esa "The last one I want to talk about is a structure where a lot of beginners might even consider it as a good structure."
+    m 1eub "That's {b}Doubled Pawns{/b}."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbq1rk1/p1pp1ppp/1p2pn2/8/2PP4/P1P1P3/5PPP/R1BQKBNR w KQ - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+    m 1eua "See the c4 pawn and the c3 pawn,{w=0.3}{nw}"
+    python:
+        game.request_highlight_common_format("c4",highlight_type_red)
+        game.request_highlight_common_format("c3",highlight_type_red)
+    extend " they are the doubled pawns."
+    m 1eub "Doubled pawns, obviously, mean two pawns from the same player appear on the same file."
+    m 1esa "Also, there is another concept, {b}Tripled Pawns{/b}, I think I don't need to explain it for it's self-evident."
+    m 1esb "Why do we say that doubled pawns are bad? The reason is underlying."
+    m 3esb "In a structure like doubled pawns, both two pawns are usually unprotected, because they are the one who supposed to protect each other!"
+    m 3esa "The pawn that overlaps is usually the other pawn's original adjacent pawn."
+    m 3hua "Hence its second disadvantage--{w=0.2}the possibility that it has broken a potential pawn chain or some other good structures."
+    m 1etd "Of course, nothing is absolute. Sometimes a double is not so bad."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bq1rk1/ppp2ppp/2n1np2/3p4/1b1P4/2NQBN2/PPP1BPPP/2KR3R w - - 0 1")
+        game.toggle_sensitivity()
+        game.show()
+    m 1lsd "Like this situation, is there a doubled pawn?{w=0.3} Of course there is, that's the f6 pawn."
+    m 1esd "But is this pawn weak?"
+    m 1esc "It's not! This pawn is protected by the g7 pawn, so although it is a double pawn, it is not really weak."
+    m 1rtd "However, it's true that the tripled pawns I just mentioned is pretty bad in almost all cases...{w=0.3}{nw}"
+    m 1rtc "And the tetra pawn, not to mention. I can't even think for a moment under what circumstances a tetra pawn might be good."
+    m 1rssdrb "So I guess there is something absolute too?"
+    m 1eua "All in all, the question of the structure of pawns is a very profound knowledge."
+    m 1eub "And today I can only give you some of the most basic knowledge since it's too much to introduce them all at once."
+    m 1eua "I hope this lesson has given you a little bit of a better sense of how to use pawns."
+    m 1hub "Thanks for listening!"
+    $ game.hide()
+    show monika at t11
     return
 
 init 5 python:
