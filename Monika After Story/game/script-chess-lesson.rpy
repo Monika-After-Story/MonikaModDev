@@ -278,6 +278,461 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_chesslesson_terms",
+            category=["chess lessons"],
+            prompt="Terms in chess",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_init_finished') and persistent._mas_pm_player_know_terms == False",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_terms:
+    if mas_getEV("monika_chesslesson_terms").shown_count == 0:
+        m 1hub "Well, [player], I've prepared a list about terms you may don't understand."
+        m 1hua "Choose one you don't understand, and I'll explain that one for you!"
+    else:
+        m 1hub "Did you forget a term? Don't worry, [mas_get_player_nickname()]~"
+
+    # Since the list is terribly long, let us use this menu.
+    python:
+        final_item = ("I've understood all of them now.", False, False, False, 20)
+        menu_items = [
+            ("Blunder", ".blunder", False, False),
+            ("Book Move", ".bookmove", False, False),
+            ("Battery", ".bookmove", False, False),
+            ("Develop", ".develop", False, False),
+            ("Finachetto", ".finachetto", False, False),
+            ("File and Line",".fileandline",False,False),
+            ("Fortress","fortress",False,False),
+            ("Gambit", ".gambit", False, False),
+            ("Kind Side and Queen Side", ".side", False, False),
+            ("Materials", ".materials", False, False),
+            ("Stalemate", ".stalemate", False, False),
+            ("Threefold Repetition", ".threefold", False, False),
+            ("Underpromotion", ".underpromotion", False, False),
+            ("Zugzwang", ".zugzwang", False, False)
+        ]
+    
+    show monika 1eua at t21
+    $ renpy.say(m, "Which one you don't know?{fast}", interact=False)
+    call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    
+    $ label = _return
+
+    $ random_dialogue = random.choice(["So...","Anyways...","Now...", "This is what this term means. So...", "For now..."])
+
+    while label:# "while label" means player didn't pick final_item.
+        call expression "monika_chesslesson_terms" + label_suffix
+
+        $ renpy.say(m, "Is there anyone you still don't know?{fast}", interact=False)
+        call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        $ label = _return
+
+        $ random_dialogue = random.choice(["So...","Anyways...","Now...", "This is what this term means. So...", "For now..."])
+
+    label .blunder:
+        m 1eub "Blunder means a really bad move."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="8/5k2/3q4/3P4/4P3/4K3/8/8 b - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1eua "Like this game, it's black to move."
+        m 3eub "Black has a queen, while white has only two pawns. It's obvious that white is in a huge disadvantage."
+        m 3eua "There are many ways black can kill White, but let's say black is a beginner and they play this move:{w=0.3}{nw}"
+        python:
+            game.queue_move("d6d5")
+            game.handle_monika_move()
+        extend 3hua " obviously again, this is losing a winning position."
+        python:
+            game.queue_move("e4d5")
+            game.handle_player_move()
+        m 1eua "After white takes the queen, black no longer has a chance to win."
+        m 1eub "For move like this one, we call it a blunder."
+        m 1hua "Easy to understand, right?"
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+    
+    label .bookmove:
+        m 1eud "Oh, this concept. It is often misunderstood by many people."
+        m 1luc "A book move does not mean that a move is so good that it will be recorded in a book."
+        m 3eud "The book move is always an opening move, and it means this move is something that was included in textbook."
+        m 3eua "Or say, a book move is an opening move which is considered standard."
+        m 1eub "For example...{w=0.3}{nw}"
+        python:
+            game = MASChessDisplayableBase(is_player_white=True)
+            game.toggle_sensitivity()
+            game.show()
+        extend 1eua " In openings, the most popular choice would be move the e2 pawn."
+        python:
+            game.queue_move("e2e4")
+            game.handle_player_move()
+        m 1eub "This is the the most classic first move, has been studied for thousands of years, called {i}King's Pawn Opening{/i}."
+        m 1eua "So this is a book move."
+        python:
+            game.queue_move("e7e5")
+            game.handle_monika_move()
+        m "And this response, is also pretty classic. So this is also a book move."
+        $ game.hide()
+        m "[random_dialogue]"
+        return
+    
+    label .battery:
+        m 1eud "Oh, battery? This is a relatively advanced concept."
+        m 3eua "This concept refers to a configuration of chess pieces."
+        m 3eub "When you stack up pieces that have the same attack path, it's called a battery."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="r4rk1/pp1b1ppp/2p5/3p4/3P4/qPPQ4/P4PPP/R2B1RK1 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 3eua "See this game. Notice the b1-h7 diagonal."
+        python:
+            game.request_highlight_diagonal("b1","h7",0.3)
+            renpy.pause(0.5)
+        m 4lub "This diagonal is being controlled by the white queen."
+        m 4esb "If white move their bishop to c2 square, then this is a battery move!"
+        python:
+            game.queue_move("d1c2")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.request_highlight_diagonal("b1","h7",0.3,highlight_type_red)
+            renpy.pause(0.5)
+        m 4lsa "It's like charging the queen, so people called move like this {i}battery{/i}."
+        m 1lub "After the queen is charged, if black does not block this attack path, the queen will move to h7 on the next turn, which is a checkmate."
+        m 1hua "That's what battery is for--{w=0.3}to \"charge\" a piece!"
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+    
+    label .develop:
+        m 1eub "Develop the term means move pieces to a position where they can be useful."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True)
+            game.toggle_sensitivity()
+            game.show()
+        m 1rtb "I don't know if you're aware of one thing, that's chess pieces are usually not very useful in their initial position."
+        m 1esd "For example, the two bishops.{w=0.3}{nw}"
+        python:
+            game.request_highlight_diagonal("c1","h6")
+            game.request_highlight_diagonal("a6","f1")
+        extend 1esc " They are almost completely useless in the initial position for they are blocked."
+        m 1esa "And two knights are the same.{w=0.3}{nw}"
+        python:
+            game.remove_highlight_all()
+            game.request_highlight_common_format("a3")
+            game.request_highlight_common_format("c3")
+            game.request_highlight_common_format("d2")
+            game.request_highlight_common_format("e2")
+            game.request_highlight_common_format("f3")
+            game.request_highlight_common_format("h3")
+        extend 1eub " These squares that they can control can not help control the central area."
+        m 1eua "Therefore, it is necessary to move the pieces into a positive position."
+        python:
+            game.hide()
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pppppppp/8/8/2PPPP2/1PNB1N2/PB4PP/R2Q1RK1 w kq - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m "See this position. In this game, black didn't lose any piece, but black is in a huge disadvantage."
+        m 3eub "The reason is obvious. The white pieces have been mobilized, and the black side has not moved at all."
+        m 3eua "The process of moving pieces out is called \"develop\"."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .finachetto:
+        m 1eub "Finachetto the term means a special position of bishops."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1esa "In this game, notice the bishop on g7 square.{nw}"
+        python:
+            game.request_highlight_common_foramt("g7")
+        extend 1esb " {w=0.3}That's a finachetto bishop."
+        m 1eub "When a bishop is a finachetto one, this bishop is probably highly useful for it can control the most long diagonal on the board."
+        m 3eua "And this bishop is hard to remove, too, because there are three pawns protecting it."
+        m 1eua "About the exact advantage of finachetto, since this is only a lesson to introduce, I'm not going to talk about it further."
+        m 1hub "If you're interested, let us learn this position later!"
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+    
+    label .fileandline:
+        m 1eub "Oh, file and line?"
+        m 1rusdlb "As what you can probably guess, the word file in chess, of course, doesn't mean a document. It means a vertical column!"
+        m 1esa "Line, on the other hand, means a horizontal column."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="8/8/8/8/8/8/8/8 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        #TODO: Implements letters and numbers on the board
+        m 1eub "Let us look at this board I made for us which we've been using all the time."# Here we assume that Monika made the chessboard in MAS.
+        m 1esb "I've added letters and numbers on it, which you've perhaps already found."
+        m 3eub "These letters, {i}abcdefgh{/i}, are the symbol of files."
+        m 3eua "To refer to them, we can say a-file, b-file or something like these."
+        m 3hua "And lines, neturally, were presented by numbers."
+        m 1eub "So we can refer to them with this format: Line 1, Line 2, things like these."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+    
+    label .fortress:
+        m 1eub "The fortress is something kind of a trick that you can use when you're in a endgame with disadvantage."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="8/8/8/6k1/8/4R3/2KP4/6q1 b - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 3esa "See this game. White has a queen, while black has only a rook."
+        m "Things seem pretty hopeless, right?"
+        m 3tuu "But actually white can not win this game if black play correctly."
+        m 3eub  "This is kind of unexpected, isn't it? Let us just see how things are going to turn our if both two players are playing the best move."
+        python:
+            game.queue_move("g1g4")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("e3c3")
+            game.handle_monika_move()
+            renpy.pause(1)
+            game.queue_move("g4e4")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("c2c1")
+            game.handle_monika_move()
+            renpy.pause(1)
+            game.queue_move("e4h1")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("c1c2")
+            game.handle_monika_move()
+            renpy.pause(1)
+            game.queue_move("h1e4")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("c2d1")
+            game.handle_monika_move()
+            renpy.pause(1)
+            game.queue_move("e4h1")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("d1e2")
+            game.handle_monika_move()
+            renpy.pause(1)
+            game.queue_move("h1g2")
+            game.handle_player_move()
+            renpy.pause(1)
+            game.queue_move("e2d1")
+            game.handle_monika_move()
+            renpy.pause(2)
+        m 2eub "Did you find the point?"
+        m 2hua "Yes, it's impossible for white to win if black played correctly, but it's also impossible for black to win if white played correctly."
+        m 2hub "White's two pieces form a fortress that prevents white from being checkmate, so black can only check, but never checkmate."
+        m 2ltc "Though, this technique is considered a trick by some players, so there are someone who don't like it."
+        m 2esd "But you want me to tell you? There's nothing in the rules of chess that says you can't do that."
+        m 2esb "In fact, this compulsive draw is also an expression of chess skill, isn't it?"
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .gambit:
+        m 3esa "Gambit is an important skill."
+        m 3esb "When you see your opponent suddenly and strangely hand you a piece--{w=0.2}often seen in openings--{w=0.2}Beware! This could be a gambit!"
+        python:
+            game = MASChessDisplayableBase(is_player_white=True,starting_fen="rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq d6 0 2")
+            game.toggle_sensitivity()
+            game.show()
+            game.queue_move("c2c4")
+            game.handle_player_move()
+        m 1eub "The game in front of your eyes is a famous opening called {b}Queen's Gambit{/b}."
+        if seen_event("monika_chesslesson_opening_queen_gambit"):
+            m 1esa "Remember this one? I taught it to you before!"
+        else:
+            m 1esb "I've prepared a full lesson about this opening, so we can have a more detailing discussion later."
+            m 1esa "As for now, let us just foucs on gambit the concept."
+        m 1eub "In this opening, white just pushed the c2 pawn to c4, which might seems strange."
+        python:
+            game.queue_move("d5d4")
+            game.handle_monika_move()
+        m 1esd "It's true that black can capture this pawn, and there seems like nothing can recapture black's pawn."
+        m 1esa "But it's only 'seems like'. The fact is that white can always recapture this pawn or force black to cost a few turns to protect it!"
+        python:
+            game.queue_move("e2e3")
+            game.handle_player_move()
+        m 1lub "Here, white moved a pawn forward, which also opened a diagonal."
+        python:
+            game.request_highlight_diagonal("a6","f1")
+        m 1lua "Black doesn't have a very good way to protect this pawn."
+        m 1eub "Also, if black does end up taking the time to protect the pawn, then white is bound to take the lead elsewhere."
+        m 1hua "So, you get the idea now. Gambit refers to a move in which one gives up some of one's pieces in order to gain an advantage in elsewhere."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .side:
+        m 1esa "King Side and Queen Side, literally, the side where the king is or the side where the queen is."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True)
+            game.toggle_sensitivity()
+            game.show()
+        m 1lub "E-file to h-file is the king side,{w=0.3}{nw}"
+        python:
+            game.request_highlight_file('e',highlight_type_green)
+            game.request_highlight_file('f',highlight_type_green)
+            game.request_highlight_file('g',highlight_type_green)
+            game.request_highlight_file('h',highlight_type_green)
+        extend 1lua "and the a-file to d-file, as what you can guess,{w=0.3}{nw}"
+        python:
+            game.request_highlight_file('a')
+            game.request_highlight_file('b')
+            game.request_highlight_file('c')
+            game.request_highlight_file('d')
+        extend 1eua " is the queen side."
+        m 1esb "Note that they never change. It's not that this range changes as the game progresses and the positions of the king and queen change."
+        python:
+            game.hide()
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqk2r/1p2ppbp/p2p1np1/8/3NP3/2N1B3/PPPQ1PPP/2KR1B1R b kq - 3 8")
+            game.toggle_sensitivity()
+            game.show()
+        m 1lub "Like this position. Although the king has moved, the king is on the queen side instead of the king side now."
+        m 3esd "You may find this rule puzzling, but this is the term."
+        m 1duc "I can't explain to you in a few words why...{w=0.3}{nw}"
+        extend 1eua " But if you keep studying chess, you'll see that it's reasonable."
+        $ game.hide()
+        m "[random_dialogue]"
+        return
+
+    label .materials:
+        m 1eub "Materials the word means the power of pieces, you could say."
+        m 1eua "The more pieces a player has, and the more powerful the pieces, the stronger their materials will be."
+        m 3eub "For example, if one player has 8 queens and another has only 5 rook, it is clear that the former has better materials than the latter."
+        m 1eua "[random_dialogue]"
+        return
+    
+    label .stalemate:
+        m 1esd "Stalemate is the third way to end a chess game."
+        m 1esc "When a stalemate happens, it means no one is the winner, and no one is the loser too."
+        m 1eub "It occurs when the opponent's king is not attacked at the moment, but the opponent's king must be attacked after the move, and the opponent can not move other pieces except the king."
+        m 1eua "There are many reasons why an opponent cannot move a piece other than the king. For example, they may have only one king and no other pieces."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "7K/8/3b2k1/3b4/8/8/8/8 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1eub "Like this position. It's white to move, but white has no any legal move, so this is a stalemate."
+        m 1hua "I made a full lesson of this because it worth a discussion. We can focus on this in that class."
+        m 1hub "For now, this brief introduction should be enough."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .threefold:
+        m 3eub "Threefold Repetition is a chess rule and it's really important."
+        m 1eua "When the same position is presented again and again, the third time, the game is decided as a draw."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "1kb5/1pp5/8/8/8/8/8/R4KB1 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1lub "In this game, black is not so good, but their opponent don't know the threefold repetition rule."
+        m 1lua "So the following moves were played."
+        python:
+            game.queue_move("g1a7")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("b8a8")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("a7g1")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("a8b8")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("g1a7")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("b8a8")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("a7g1")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("a8b8")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("g1a7")
+            game.handle_player_move()
+            renpy.pause(0.5)
+            game.queue_move("b8a8")
+            game.handle_player_move()
+            renpy.pause(2)
+        m 1lub "Now, since the exact repeat position has been presented three times, the game will be judged a draw."
+        m 1lua "White could have used the advantage of an extra rook to win the game, but only ended up having a draw."
+        m 1eua "That's the example of this term."
+        m 1eub "Notice that this rule requires the exact same position. Even a tiny difference won't be allowed to reach this draw."
+        m 3eub "For example, even though the positions of the pieces are completely unchanged, the king loses the possibility of castling in one repetition."
+        m 3eua "Then, this is not seen as quite the same."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .underpromotion:
+        m 1eud "You know pawns can promote to a queen, and queen is the most powerful piece."
+        m 1euc "But there is some cases that you musn't promote to a queen, otherwise this is not the best move. Sometimes it will even ruin your chance to win."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/3P1k1P/2q5/8/8/8/5K2/6R1 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1eub "Like this position, it's white to move, do you think it's the best to promote to a queen?"
+        m 1eka "Well, that's not really bad, and white can win after that promotion, too."
+        m 1eud "But what if white promoted to a knight?"
+        python:
+            game.queue_move("d7d8n")
+            game.handle_player_move()
+        m 1esa "Then, since the opponent has to escape from the check firstly, we can take the queen."
+        m 1esb "Isn't this a easier way to win?"
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    label .zugzwang:
+        m 1eub "Zugzwang is a German word. It's a tactic."
+        m 1rusdlb "Now that you're asking about it, let me say something in passing. I was actually planning to give you a separate lesson on this, you know?"
+        m 1rusdla "But Zugzwang is a relatively \"not-that-important\" tactic, and it can take quite a bit of time to prepare a single lesson."
+        m 1rksdlc "And I don't want to keep you waiting too long..."
+        m 1esd "So my final decision is to introduce them here, I hope you don't mind, ehehe~"
+        m 1hub "Anyway, what Zugzwang is referring to is \"a bad move that has to be played\"."
+        python:
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/8/2Kp4/3Pk3/8/8/8/8 w - - 0 1")
+            game.toggle_sensitivity()
+            game.show()
+        m 1lub "It's white to move now, but white would wish they can skip their turn."
+        m 1lua "This is because no matter how white moves their king, they are bound to lose their pawn."
+        m 1eua "And to lose a pawn means to lose the possibility of winning in this endgame."
+        python:
+            game.queue_move("c6c7")
+            game.handle_player_move()
+        m 3eub "Unfortunately, rules are rules, and the rule is that players can't skip their turn. White has to move the king helplessly."
+        python:
+            game.queue_move("e5d5")
+            game.handle_monika_move()
+        m 3lua "Then, black happily take the pawn, which means black is already winning as long as they played correctly."
+        m 1lub"Similarly, if black moves first here, then it's white to win."
+        m 1eub "This \"reluctant but must bad move\" is called zugzwang."
+        $ game.hide()
+        m 1eua "[random_dialogue]"
+        return
+
+    # If the player exit the while loop, it means they chose the "I've understood all of them now".
+    show monika at t11
+    m 1eub "Okay!"
+    m 1hub "If there is any term you somehow forget, feel free to ask me again!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_chesslesson_whenwin",
             category=["chess lessons"],
             prompt="How to win a game?",
