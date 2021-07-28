@@ -341,7 +341,7 @@ label monika_chesslesson_terms:
             game.show()
         m 1eua "Like this game, it's black to move."
         m 3eub "Black has a queen, while white has only two pawns. It's obvious that white is in a huge disadvantage."
-        m 3eua "There are many ways black can kill White, but let's say black is a beginner and they play this move:{w=0.3}{nw}"
+        m 3eua "There are many ways black can checkmate white, but let's say black is a beginner and they play this move:{w=0.3}{nw}"
         python:
             game.queue_move("d6d5")
             game.handle_monika_move()
