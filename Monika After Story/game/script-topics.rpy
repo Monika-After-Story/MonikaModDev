@@ -8035,8 +8035,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_writingtip6",
             category=['writing tips'],
-            prompt="Writing Tip #6",
-            pool=True,
+            conditional="seen_event('monika_writingtip5')",
+            action=EV_ACT_POOL
         )
     )
 
@@ -8053,7 +8053,9 @@ label monika_writingtip6:
     m 2rksdlb "When I buy a brand new journal and open it up to that first pristine page...it's really daunting, ahaha!"
     m 2ekb "It feels like I have to make sure I fill the journal with things as beautiful as the cover."
     m 3hub "So I've started to use a 'junk journal' as well! {w=0.2}A cheap, plain notebook gives you lots of freedom to scribble and write anything at all."
-    m 1hua "And you know, those rough drafts and odd ideas are the first step to a finished work worthy of a lovely frame!"
+    m 3hua "And you know, those rough drafts and odd ideas are the first step to a finished work worthy of a lovely frame!"
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
     return
 
 #### END WRITING TIPS
