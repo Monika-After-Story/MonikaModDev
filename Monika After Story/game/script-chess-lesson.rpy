@@ -300,12 +300,12 @@ label monika_chesslesson_terms:
         final_item = ("I've understood all of them now.", False, False, False, 20)
         menu_items = [
             ("Blunder", ".blunder", False, False),
-            ("Book Move", ".bookmove", False, False),
+            ("Book Move", ".battery", False, False),
             ("Battery", ".bookmove", False, False),
             ("Develop", ".develop", False, False),
             ("Finachetto", ".finachetto", False, False),
             ("File and Line",".fileandline",False,False),
-            ("Fortress","fortress",False,False),
+            ("Fortress",".fortress",False,False),
             ("Gambit", ".gambit", False, False),
             ("Kind Side and Queen Side", ".side", False, False),
             ("Materials", ".materials", False, False),
@@ -332,6 +332,9 @@ label monika_chesslesson_terms:
         $ label = _return
 
         $ random_dialogue = random.choice(["So...","Anyways...","Now...", "This is what this term means. So...", "For now..."])
+
+    # If the player exit the while loop, it means they chose the "I've understood all of them now".
+    jump monika_chesslesson_terms_end
 
     label .blunder:
         m 1eub "Blunder means a really bad move."
@@ -413,7 +416,7 @@ label monika_chesslesson_terms:
             game = MASChessDisplayableBase(is_player_white=True)
             game.toggle_sensitivity()
             game.show()
-        m 1rtb "I don't know if you're aware of one thing, that's chess pieces are usually not very useful in their initial position."
+        m 1ltc "I don't know if you're aware of one thing, that's chess pieces are usually not very useful in their initial position."
         m 1esd "For example, the two bishops.{w=0.3}{nw}"
         python:
             game.request_highlight_diagonal("c1","h6")
@@ -450,7 +453,7 @@ label monika_chesslesson_terms:
             game.show()
         m 1esa "In this game, notice the bishop on g7 square.{nw}"
         python:
-            game.request_highlight_common_foramt("g7")
+            game.request_highlight_common_format("g7")
         extend 1esb " {w=0.3}That's a finachetto bishop."
         m 1eub "When a bishop is a finachetto one, this bishop is probably highly useful for it can control the most long diagonal on the board."
         m 3eua "And this bishop is hard to remove, too, because there are three pawns protecting it."
@@ -489,6 +492,7 @@ label monika_chesslesson_terms:
         m "Things seem pretty hopeless, right?"
         m 3tuu "But actually white can not win this game if black play correctly."
         m 3eub  "This is kind of unexpected, isn't it? Let us just see how things are going to turn our if both two players are playing the best move."
+        show monika 1lua
         python:
             game.queue_move("g1g4")
             game.handle_player_move()
@@ -526,7 +530,7 @@ label monika_chesslesson_terms:
             game.queue_move("e2d1")
             game.handle_monika_move()
             renpy.pause(2)
-        m 2eub "Did you find the point?"
+        m 2lub "Did you find the point?"
         m 2hua "Yes, it's impossible for white to win if black played correctly, but it's also impossible for black to win if white played correctly."
         m 2hub "White's two pieces form a fortress that prevents white from being checkmate, so black can only check, but never checkmate."
         m 2ltc "Though, this technique is considered a trick by some players, so there are someone who don't like it."
@@ -553,7 +557,7 @@ label monika_chesslesson_terms:
             m 1esa "As for now, let us just foucs on gambit the concept."
         m 1eub "In this opening, white just pushed the c2 pawn to c4, which might seems strange."
         python:
-            game.queue_move("d5d4")
+            game.queue_move("d5c4")
             game.handle_monika_move()
         m 1esd "It's true that black can capture this pawn, and there seems like nothing can recapture black's pawn."
         m 1esa "But it's only 'seems like'. The fact is that white can always recapture this pawn or force black to cost a few turns to protect it!"
@@ -582,7 +586,7 @@ label monika_chesslesson_terms:
             game.request_highlight_file('f',highlight_type_green)
             game.request_highlight_file('g',highlight_type_green)
             game.request_highlight_file('h',highlight_type_green)
-        extend 1lua "and the a-file to d-file, as what you can guess,{w=0.3}{nw}"
+        extend 1lua " and the a-file to d-file, as what you can guess,{w=0.3}{nw}"
         python:
             game.request_highlight_file('a')
             game.request_highlight_file('b')
@@ -619,6 +623,8 @@ label monika_chesslesson_terms:
             game = MASChessDisplayableBase(is_player_white=True, starting_fen = "7K/8/3b2k1/3b4/8/8/8/8 w - - 0 1")
             game.toggle_sensitivity()
             game.show()
+            game.request_highlight_diagonal("d6","f8",color = highlight_type_red)
+            game.request_highlight_diagonal("d5","g8",color = highlight_type_red)
         m 1eub "Like this position. It's white to move, but white has no any legal move, so this is a stalemate."
         m 1hua "I made a full lesson of this because it worth a discussion. We can focus on this in that class."
         m 1hub "For now, this brief introduction should be enough."
@@ -659,15 +665,9 @@ label monika_chesslesson_terms:
             renpy.pause(0.5)
             game.queue_move("a8b8")
             game.handle_player_move()
-            renpy.pause(0.5)
-            game.queue_move("g1a7")
-            game.handle_player_move()
-            renpy.pause(0.5)
-            game.queue_move("b8a8")
-            game.handle_player_move()
             renpy.pause(2)
         m 1lub "Now, since the exact repeat position has been presented three times, the game will be judged a draw."
-        m 1lua "White could have used the advantage of an extra rook to win the game, but only ended up having a draw."
+        m 1eua "White could have used the advantage of an extra rook to win the game, but only ended up having a draw."
         m 1eua "That's the example of this term."
         m 1eub "Notice that this rule requires the exact same position. Even a tiny difference won't be allowed to reach this draw."
         m 3eub "For example, even though the positions of the pieces are completely unchanged, the king loses the possibility of castling in one repetition."
@@ -700,13 +700,14 @@ label monika_chesslesson_terms:
         m 1rusdlb "Now that you're asking about it, let me say something in passing. I was actually planning to give you a separate lesson on this, you know?"
         m 1rusdla "But Zugzwang is a relatively \"not-that-important\" tactic, and it can take quite a bit of time to prepare a single lesson."
         m 1rksdlc "And I don't want to keep you waiting too long..."
-        m 1esd "So my final decision is to introduce them here, I hope you don't mind, ehehe~"
+        m 1husdlb "So my final decision is to introduce them here, I hope you don't mind, ehehe~"
         m 1hub "Anyway, what Zugzwang is referring to is \"a bad move that has to be played\"."
         python:
             game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/8/2Kp4/3Pk3/8/8/8/8 w - - 0 1")
             game.toggle_sensitivity()
             game.show()
-        m 1lub "It's white to move now, but white would wish they can skip their turn."
+        m 1lud "It's white to move now, but white would wish they can skip their turn."
+        m 1luc "Guess why?"
         m 1lua "This is because no matter how white moves their king, they are bound to lose their pawn."
         m 1eua "And to lose a pawn means to lose the possibility of winning in this endgame."
         python:
@@ -722,8 +723,9 @@ label monika_chesslesson_terms:
         $ game.hide()
         m 1eua "[random_dialogue]"
         return
+    return
 
-    # If the player exit the while loop, it means they chose the "I've understood all of them now".
+label monika_chesslesson_terms_end:
     show monika at t11
     m 1eub "Okay!"
     m 1hub "If there is any term you somehow forget, feel free to ask me again!"
