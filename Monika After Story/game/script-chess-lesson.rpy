@@ -324,7 +324,7 @@ label monika_chesslesson_terms:
     $ random_dialogue = random.choice(["So...","Anyways...","Now...", "This is what this term means. So...", "For now..."])
 
     while label:# "while label" means player didn't pick final_item.
-        call expression "monika_chesslesson_terms" + label_suffix
+        call expression "monika_chesslesson_terms" + label
 
         $ renpy.say(m, "Is there anyone you still don't know?{fast}", interact=False)
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
