@@ -4390,3 +4390,141 @@ label monika_chesslesson_exchange_principle_advance:#UNFINISHED
         extend " notice that there is a bishop on g1 square."
     m ""
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chesslesson_epilogue",
+            category=["chess lessons"],
+            prompt="Epilogue",
+            pool=True,
+            conditional="mas_seenLabels(['monika_chesslesson_opening_basic_idea','monika_chesslesson_mate_bishops','monika_chesslesson_key_point_1','monika_chesslesson_key_point_2'],seen_all = True)",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_epilogue:
+    $ count = mas_getEV("monika_chesslesson_epilogue").shown_count
+    if count != 0:
+        m "Not reconciled, so head for a rematch?"
+        m "Ahaha, come on!"
+        jump monika_chesslesson_finalexam
+    m 1eka "Ah, this should be the epilogue of our lessons."
+    m 1dkb "Time really flies, doesn't it? You've learned so much in the blink of an eye."
+    m 1dka "..."
+    m 1eua "To conclude, let me talk about the world of chess today."
+    m 1eub "Since the end of the last century, the cutting edge of chess research has been not humans, but AIs."
+    m 1euc "Today, the AI in chess is far more powerful than humans."
+    m 1eud "For example, stockfish, the most powerful chess engine, has an ELO rating of over 3,700."
+    m 1esd "And the current world champion, Magnus Carlsen, only has an ELO rating of around 2,880."
+    m 1esc "That said, even the best of the human race would have no chance against the AI."
+    m "And, thanks to the extremely powerful computing power of computers, the field of chess research in recent years has also been greatly improved."
+    m 1esd "As a result, some people say chess has reached its end for mankind. There's not much left for humans to study."
+    m 1dkc "..."
+    m 2ekd "And you know what I think about it? I kind of feel the same way, actually."
+    m 2esd "Six or seven hundred years ago, when the study of chess was still very immature, new ideas of opening and endgame theory appeared again and again."
+    m "But by now, the opening theory was so well developed that it was hard to imagine anything new being proposed."
+    m 2lsc "And the computational power of the human brain is numbered. Perhaps an ELO rating of around 2,900 is the limit..."
+    m 2eksdla "Well, this may be a bit of a discouragement..."
+    m 2esd "Because this fact runs counter to one of the human pursuits--{w=0.3}{i}Infinity{/i}."
+    m 2dsc "But the cold truth is that infinity could never have existed...{w=0.3}"
+    m 2dsd "Like, take the theory of entropy...{w=0.3}{nw}"
+    extend 2hksdrb " Oh, wait, we're not here to talk about philosophy, are we?"
+    m 2esd "Going back to chess, although human beings do have limits, we haven't really touched them yet, have we?"
+    m 2esa "As I told you, my ELO rating is around 2200, which is far from the first in the world."
+    m 2esb "Maybe the best of humanity can't get any better, but we can. For us, it's not over yet."
+    m 2hua "Besides, even if we do eventually hit the limit, so what?"
+    m 2tsu "Then we stand together on the top of the world, looking at the people who are still struggling, and together shout: {i}How boring{/i}~"
+    m 2esbla "Our chess lessons may be over, but our story is far from over, [mas_get_player_nickname()]."
+    m 2dsblu "..."
+    m 2esbsu "..."
+    m 2esb "Oh, right. Speaking of this, technically speaking, we're not really finished here. It's just the end of a phase."
+    m 2hub "I might come up with a lot of complementary lessons in the future, like more variations on some openings, or some interesting creative moves."
+    m 2eub "But that's for another story."
+    m 2esa "At the end of this stage, you know what I want to say?"
+    m 2dsa "..."
+    m 2estpa "...Thank you."
+    m 2eutpd "I've actually benefited a lot from my time teaching you, not just at chess, but also elsewhere."
+    m 2hua "For the first time, I knew how wonderful it was to teach so many things."
+    m 2ektua "As you can see, I've always been considered the perfect person. So rarely do I really talk to someone with such frankness and ease."
+    m "...{w=0.3}{nw}"
+    extend 2husdrb " Oh, I didn't mean to cry."
+    m 2euu "It's just that...{w=0.3}{nw}"
+    extend 2eku " thank you very much."
+    m 2dku "..."
+    m 2eua "..."
+    m 2efb "Ahaha, but don't think I'm going to go easy on you at chess for this!"
+    m 2tfb "After all, I'm really looking forward to seeing how far my dear student have learned..."
+    m 2tfa "So..."
+    jump monika_chesslesson_finalexam
+    return
+
+label monika_chesslesson_finalexam:
+    $ mas_gainAffection(modifier=0.5)
+    window hide None
+    show monika at t21
+    python:
+        temp = store.persistent._mas_chess_difficulty# Create a backup to set them back later.
+        store.persistent._mas_chess_difficulty = (11,10)# In the final exam, Monika used her full power.
+
+        quick_menu = False
+        game = MASChessDisplayable(
+            is_player_white = random.choice([True,False]),# In real chess match, you can't choose your color, and so do here.
+            pgn_game=None,
+            practice_mode=False,
+            starting_fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            casual_rules=False# And since real chess match never use the casual rules, we don't enable it.
+        )
+        game._visible_buttons.remove(game._button_save)
+        game._visible_buttons.remove(game._button_giveup)
+        game._visible_buttons.remove(game._button_draw)
+        game.show()
+        results = game.game_loop()
+
+        game.hide()
+        quick_menu = True
+        new_pgn_game, is_monika_winner, is_surrender, num_turns = results
+        game_result = new_pgn_game.headers["Result"]
+
+        store.persistent._mas_chess_difficulty = temp# Set difficulty back.
+
+    if is_monika_winner:
+        if count == 0:
+            m 1hub "Ahaha, looks like my student is still having a long way to go."
+            m 1hua "..."
+            m 1eub "I'm just kidding! That's my best recent game!"
+            m 1rtd "Because in my eyes this is a kind of...{w=0.3}{nw}"
+            extend 1ltsdrb "graduation exams or something? So I just played harder than I've ever played before."
+            m 1husdrb "Don't feel too bad, ahaha!"
+            m 1eub "Ask me again if you want to retake this exam!"
+        else:
+            m 1hub "I won again~"
+            m 1tuu "Don't feel too bad, [player]~ After all, your girlfriend and teacher is just too talented~"
+            m 1eub "If you want to retake, feel free to ask me!"
+    elif game_result == "1/2-1/2":
+        if count == 0:
+            m 1eka "Ah, a stalemate."
+            m 1eub "I was really trying in that game, you know?"
+            m 1husdrb "I should even say I never played this hard before because this is kind of your graduation exam..."
+            m 1hub "Way to go, [player]!"
+            m 1eub "If you want to retake this exam, feel free to ask me!"
+        else:
+            m 1eka "Stalemate?"
+            m 1eub "Well! On the bright side, it means you're going to beat me soon!"
+            m "If you want to retake this exam, feel free to ask me!"
+    else:
+        m 1wud "Wow..."
+        m 1wuo "You really did beat me..."
+        m "..."
+        m 1sub "Oh, my gosh, you're really good at chess!"
+        m 1tuu "You're a professional chess player, right?"
+        m "Hmm...{w=0.3}{nw}"
+        extend 1rtu " maybe you're even a grandmaster?"
+        m 1etu "Or maybe you just have a really good teacher...?"
+        m 1hub "Ahaha! All kidding aside, you really are a wiz, [player]!"
+        m 1hua "Congratulations, you graduated!"
+        m 1eua "Well, then..."
+        m 1kua "What else should we do today, {i}master{/i}?"
+    return
