@@ -1816,7 +1816,7 @@ label monika_chesslesson_opening_italian_game:
     m 2hua "And I may prepare a lesson about this variation later, to get more details about this variation, I guess you need to wait for me, ahaha!"
     python:
         game.hide()
-        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3")
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 3 3")
         game.toggle_sensitivity()
         game.show()
         game.queue_move("g8f6")
@@ -1835,9 +1835,9 @@ label monika_chesslesson_opening_italian_game:
         game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4")
         game.toggle_sensitivity()
         game.show()
-        game.queue_move("g8f6")
+        game.queue_move("b1c3")
         game.handle_monika_move()
-    extend 2hub " Nf6 is also a good choice."
+    extend 2hub " Nc3 is also a good choice."
     m 2eud "Another even more agressive response is Ng5."
     python:
         game.hide()
@@ -1870,14 +1870,17 @@ label monika_chesslesson_opening_italian_game:
     m 7eud "But in fact, this is not always the case with the variations of Italian Game, you know?"
     python:
         game.hide()
-        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqk1nr/ppppbppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4")
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 4 4")
         game.toggle_sensitivity()
         game.show()
         game.queue_move("f8e7")
         game.handle_monika_move()
     m 1eub "A move to enter another variation called {b}Hungarian Defense{/b} is Be7."
     m 1eua "This variation can form a stable defense and lead the situation into a solid and delicate position battle."
-    m 3lub "It prevents white from playing the Knight Attack variation which we just talked about, because this e7 bishop is controlling the g5 square."
+    m 3lub "It prevents white from playing the Knight Attack variation which we just talked about,{w=0.3}{nw}"
+    python:
+        game.request_highlight_diagonal("e7","h4")
+    extend " because this e7 bishop is controlling the g5 square."
     m 3eua "What's more, this variation also avoid another really agressive and sharp variation called {b}Evan's Gambit{/b}, which is also another lesson's content."
     m 1eub "So, after this bishop move, the situation often turns into a slow and kind of passive game."
     m 2eub "In addition, the Giuoco Piano Game I mentioned above will also forms a relatively relax game."
