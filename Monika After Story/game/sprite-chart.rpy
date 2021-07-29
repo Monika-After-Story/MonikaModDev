@@ -3790,7 +3790,7 @@ init -3 python:
                     acs_layer
                 )
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pre(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre body accessory mode
@@ -3800,7 +3800,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.PRE_ACS)
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bbh(self, acs):
             """DEPRECATED
             Wears the given accessory in the post back hair accessory loc
@@ -3810,7 +3810,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BBH_ACS)
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bfh(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre front hair accesory log
@@ -3820,7 +3820,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BFH_ACS)
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_afh(self, acs):
             """DEPRECATED
             Wears the given accessory in the between front hair and arms
@@ -3831,7 +3831,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.AFH_ACS)
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_mid(self, acs):
             """DEPRECATED
             Wears the given accessory in the mid body acessory mode
@@ -3841,7 +3841,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.MID_ACS)
 
-        @store.mas_utils.deprecated()
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pst(self, acs):
             """DEPRECATED
             Wears the given accessory in the post body accessory mode
