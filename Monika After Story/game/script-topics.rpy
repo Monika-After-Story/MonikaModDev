@@ -8035,6 +8035,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_writingtip6",
             category=['writing tips'],
+            prompt="Writing Tip #5",
             conditional="seen_event('monika_writingtip5')",
             action=EV_ACT_POOL
         )
