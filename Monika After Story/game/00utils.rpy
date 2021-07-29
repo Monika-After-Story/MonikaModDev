@@ -1,6 +1,7 @@
 python early in mas_utils:
     import codecs
     import os
+    import sys
     import platform
     import shutil
     import store
@@ -365,7 +366,7 @@ python early in mas_utils:
                     raise DeprecationWarning(msg)
 
                 else:
-                    print(msg)
+                    print(msg, end="", file=sys.stderr)
                     writelog(msg)
 
                 return callable_(*args, **kwargs)
