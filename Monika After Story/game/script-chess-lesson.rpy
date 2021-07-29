@@ -1760,7 +1760,7 @@ init 5 python:
         )
     )
 
-label monika_chesslesson_opening_italian_game:#UNFINISHED
+label monika_chesslesson_opening_italian_game:
     m 1eub "Italian Game is one of the most common openings, you could say."
     m 1eua "Hold on, I am going to get the board here..."
     show monika 1eua at t21
@@ -1769,7 +1769,7 @@ label monika_chesslesson_opening_italian_game:#UNFINISHED
         game.toggle_sensitivity()
         game.show()
         renpy.pause(1)
-    m "In Italian Game, white plays e4 to begin a King's Pawn Opening game.{w=0.3}{nw}"
+    m 3lub "In Italian Game, white plays e4 to begin a King's Pawn Opening game.{w=0.3}{nw}"
     python:
         game.queue_move("e2e4")
         game.handle_player_move()
@@ -1777,24 +1777,134 @@ label monika_chesslesson_opening_italian_game:#UNFINISHED
     python:
         game.queue_move("e7e5")
         game.handle_monika_move()
-    extend " pretty normal."
-    m "White then plays Nf3,{w=0.3}{nw}"
+    extend 3eua " pretty normal."
+    m 1lub "White then plays Nf3,{w=0.3}{nw}"
     python:
         game.queue_move("g1f3")
         game.handle_player_move()
-    extend " another netrual move to develop materials and control center."
-    m "Since this knight attacks the e5 pawn, black would protect this pawn with Nc6,{w=0.3}{nw}"
+    extend 1eua " which is another netrual move to develop materials and control center."
+    m 1lua "Since this knight attacks the e5 pawn, black would protect this pawn with Nc6,{w=0.3}{nw}"
     python:
         game.queue_move("b8c6")
         game.handle_monika_move()
-    extend " which is also a move to control center and develop materials."
-    m "And here, white plays Bc4,{w=0.3}{nw}"
+    extend 1lub " which is also a move to control center and develop materials."
+    m 4lub "And here, white plays Bc4,{w=0.3}{nw}"
     python:
         game.queue_move("f1c4")
         game.handle_player_move()
-    extend " which starts the Italian Game."
-    m "From now on, this game is Italian Game."
-    m ""
+    extend 4esa " which starts the Italian Game."
+    m 2eub "From now on, this game is the famous Italian Game."
+    m 7eua "Now, let's take a look at the characteristics of this opening."
+    python:
+        game.request_highlight_diagonal("a2","g8")
+    m 7eub "For white, white's bishop enjoys a long diagonal, which attacks the f7 pawn and penetrates the center."
+    m 7eud "You may don't know this, but f7 pawn is probably considered a weak pawn."
+    m 2eud "Why?{w=0.2}{nw}"
+    extend 2eub " The reason is that f7 pawn is different with other pawns, when pieces are all in their initial position, its only defender is the king."
+    m 2rtd "And usually, it's better to not move the king out of the backrank too early."
+    m 2rtc "Once the king is out of the backrank, it's at a risk of being checked, which can be a breakthrough point to your opponent."
+    m 2eua "So this bishop is a potential king side threat."
+    m 2eub "Another thing you may've already found is that the Italian Game is an opening that develops very quickly."
+    m 2lua "As you can see, even only a few turns passed, white is already having the chance to play a king side castle."
+    m 7lub "All moves that two players played except the first move are development moves."
+    m 2etc "The above is the advantage of white side, what about black side?"
+    m 2eub "For black, a diagonal similar with the diagonal that the white bishop can enjoy is also available for black."
+    python:
+        game.queue_move("f1c5")
+        game.handle_monika_move()
+    m 7lub "This is a major variation of Italian Game called {b}Giuoco Piano Game{/b} for this variation is probably slow and not agressive."
+    m 2hua "And I may prepare a lesson about this variation later, to get more details about this variation, I guess you need to wait for me, ahaha!"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("g8f6")
+        game.handle_monika_move()
+    m 2eua "Another popular choice is to play Nf6, which develops another knight and also attacks white's e4 pawn."
+    m 2esb "This is a relatively agressive way. The black replaces defense with attack and actively competes for the center."
+    m 2esa "Naturally, white cannot lose a central pawn for nothing, otherwise their central competitiveness will be seriously damaged."
+    m 2lsa "So the following moves is to protect this pawn,{w=0.3}{nw}"
+    python:
+        game.queue_move("d2d3")
+        game.handle_player_move()
+    extend 2lsb " like a d3 move."
+    m 2hua "Of course, develop a knight here is also nothing wrong.{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("g8f6")
+        game.handle_monika_move()
+    extend 2hub " Nf6 is also a good choice."
+    m 2eud "Another even more agressive response is Ng5."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("f3g5")
+        game.handle_monika_move()
+    m 7esd "This knight move is really tricky to people who don't know this move!"
+    m 7esc "If black doesn't realize the knight's real purpose, they will be miserable!"
+    python:
+        game.request_highlight_diagonal("a2","g8")
+        game.request_highlight_common_format("f7",highlight_type_red)
+    m 7lsd "Remember I said earlier that f7 pawn is a weak pawn?"
+    m 2esc "At this point, the knight and the bishop attacked f7 square together."
+    m 2eub "Therefore, if the knight jumps to f7 square, the king can never capture the knight for it's protected by the bishop."
+    m 4esb "You should always remember that {i}a knight on the g5 square is always a very naughty and cunning knight{/i}."
+    m 4esa "That knight is usually supported by a piece that looks as if it has nothing to do with it, ready to give you a painful lesson at anytime."
+    m 4esb "The current variation with this crafty knight move is called {b}Knight Attack{/b}."
+    m 2eua "Of course, black certainly did have ability to fight back against this crafty knight."
+    python:
+        game.queue_move("d7d5")
+        game.handle_monika_move()
+        game.remove_highlight_diagonal("e6","g8")
+        game.request_highlight_common_format("f7")
+    m 2lub "After d5, a pawn blocked and attacked the bishop, so white can not play Nxf7 now."
+    m 2eua "In the follow-up, the white side usually withdraws the bishop to a safe place."
+    m 2eub "There are many subsequent variations after this, so we're only going to talk about them in another lesson which just for the Knight Attack variation."
+    m 2eua "What we just talked about is a series of quite fierce moves, and conflicts can occur at any time."
+    m 7eud "But in fact, this is not always the case with the variations of Italian Game, you know?"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqk1nr/ppppbppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("f8e7")
+        game.handle_monika_move()
+    m 1eub "A move to enter another variation called {b}Hungarian Defense{/b} is Be7."
+    m 1eua "This variation can form a stable defense and lead the situation into a solid and delicate position battle."
+    m 3lub "It prevents white from playing the Knight Attack variation which we just talked about, because this e7 bishop is controlling the g5 square."
+    m 3eua "What's more, this variation also avoid another really agressive and sharp variation called {b}Evan's Gambit{/b}, which is also another lesson's content."
+    m 1eub "So, after this bishop move, the situation often turns into a slow and kind of passive game."
+    m 2eub "In addition, the Giuoco Piano Game I mentioned above will also forms a relatively relax game."
+    m 2eua "As for why...{w=0.3}{nw}"
+    extend 2hub " that's also another lesson, again, ahaha!"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3")
+        game.toggle_sensitivity()
+        game.show()
+    m 2eua "Those are what I'd like to say to introduce the Italian Game."
+    m 2eub "All in all, Italian Game is a various opening."
+    m 1eub "Depending on how two players going to play, the game can turns into a agressive one, or a passive one."
+    m 1eua "In this opening, the white bishop on c4 square is at a risk of being attacked."
+    m 3eub "And, though this bishop is controlling the center, but actually black's center is not under immediate pressure."
+    m 3eua "Like the e5 pawn.{w=0.3}{nw}"
+    python:
+        game.request_highlight_common_format("e5")
+    extend 1lub " It controls two central squares, but in most of variations, this pawn is not going to be attacked soon."
+    m 1eub "And that's why black can play a lot of counterstrike."
+    m 1hua "I personally recommend this opening to beginners, because this opening is relatively simple and easy to understand."
+    m 1eua "In addition, most of its variations focus on the center, which helps beginners realize what the way of competition center should be."
+    m 1hub "If you haven't tried this oepning yet, you should!"
+    m 1hua "And, for those lessons that focus on its specific variations, I will take some time to prepare them."
+    m "For now, thanks for listening!"
+    show monika at t11
+    $ game.hide()
     return
 
 init 5 python:
