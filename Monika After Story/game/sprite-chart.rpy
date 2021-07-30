@@ -7359,7 +7359,9 @@ python early:
 
             if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
                 raise IdleExpException(
-                    "Weight must be between 0 and 100. Got {0}.".format(
+                    "The weight property must be between {0} and {1}. Got {2}.".format(
+                        MASMoniIdleExp.MIN_WEIGHT,
+                        MASMoniIdleExp.MAX_WEIGHT,
                         weight
                     )
                 )
