@@ -354,7 +354,7 @@ init -100 python in mas_sprites:
 
     EXP_C_C_DTS = "compat-downtiedstrand"
     # v: ignored
-    # compatibilty exprop saying that these clothes work with the 
+    # compatibilty exprop saying that these clothes work with the
     # downtiedstrand hair style
     # NOTE: THIS IS AN EXCEPTION. We should not be doing exprops like this.
 
@@ -6531,7 +6531,7 @@ init -3 python:
                 split=None,
                 ex_props=None,
                 hl_data=None,
-                mpm_mid=None 
+                mpm_mid=None
             ):
             """
             MASHair constructor
@@ -7243,6 +7243,7 @@ init -3 python:
 python early:
 # # # START: Idle disp stuff
     import random
+    import collections
 
     class IdleExpException(Exception):
         """
@@ -7273,7 +7274,7 @@ python early:
         MIN_WEIGHT = 1
         MAX_WEIGHT = 100
 
-        exp_tags_map = dict()
+        exp_tags_map = collections.defaultdict(list)
         _conditional_cache = dict()
 
         def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
@@ -7362,11 +7363,8 @@ python early:
             self.weight = weight
 
             if tag is not None and add_to_tag_map:
-                if tag in MASMoniIdleExp.exp_tags_map:
-                    MASMoniIdleExp.exp_tags_map[tag].append(self)
+                MASMoniIdleExp.exp_tags_map[tag].append(self)
 
-                else:
-                    MASMoniIdleExp.exp_tags_map[tag] = [self]
             self.tag = tag
             self._add_to_tag_map = add_to_tag_map
 
