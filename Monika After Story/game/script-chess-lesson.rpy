@@ -2020,7 +2020,7 @@ label monika_chesslesson_opening_queen_gambit:
     m 3eub "Queen's Gambit the opening, different with Italian Game or Sicilian Defense, is a Queen's Pawn Opening."
     show monika at t21
     python:
-        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")
+        game = MASChessDisplayableBase(is_player_white=True)
         game.toggle_sensitivity()
         game.show()
         game.queue_move("d2d4")
@@ -2097,7 +2097,7 @@ label monika_chesslesson_opening_queen_gambit:
         game.queue_move("f1c4")
         game.handle_player_move()
     m 1lua "After Bxc4, whtie regained the pawn and developed the bishop at the same time."
-    m 1hua "The subsequent changes are not the opening category, so we'll leave them out for the time being."
+    m 1hua "The subsequent changes are not the opening category anymore, so we'll leave them out for the time being."
     m 3eub "In this situation, for white, they enjoys a strong center."
     m 3eua "White has two pawns in center, and developed a bishop, while black only developed a knight."
     m 3eta "However, white weakened the queen side, so white is potentially at a risk of being attacked."
@@ -2106,10 +2106,11 @@ label monika_chesslesson_opening_queen_gambit:
         game.queue_move("c7c5")
         game.handle_monika_move()
     m 3etd "Like a c5 move, you know?"
-    m 2eub "This c5 is not a gift to white, as for why, we're going to introduce them in another lesson."
-    m 1etd "To make a general conclusion about this variety, I would say..."
-    m 2esd "This variation gives white a strong but perhaps temporary center."
-    m 2esc "But after this highlight time has passed, white may fell into a disadvantage for the weak queen side."
+    m 2eub "This c5 is not a gift to white. It actually weaken the white's center control."
+    m 2eua "As for why, we're going to introduce them in another lesson."
+    m 1etd "To make a general conclusion about this variation, I would say...{w=0.3}{nw}"
+    extend 2esd "This variation gives white a strong but perhaps temporary center."
+    m 2esc "And after this highlight time has passed, white may fell into a disadvantage for the weak queen side."
     m 2eub "So, if you are white, you need to make the most of your strong center to keep the pressure on and not let your development advantage be equalized."
     m 2eua "And if you are black, then actively look for a breakthrough and find an opportunity to take advantage of white's relatively weak queen side."
     m 2hua "Now let's look at other variations."
@@ -2133,7 +2134,7 @@ label monika_chesslesson_opening_queen_gambit:
         game.show()
         game.queue_move("g8f6")
         game.handle_monika_move()
-    m 2lua " and this one is known as {b}Queen's Gambit Declined: Marshall Defense{/b}."
+    extend 2lua " and this one is known as {b}Queen's Gambit Declined: Marshall Defense{/b}."
     m 2eua "Also, c6 is another reasonable move.{w=0.3}{nw}"
     python:
         game.hide()
@@ -2143,7 +2144,7 @@ label monika_chesslesson_opening_queen_gambit:
         game.queue_move("c7c6")
         game.handle_monika_move()
     extend 4lub " This one is known as {b}Slav Defense{/b}."
-    m 4eub "And this move is known as...{w=0.3}{nw}"
+    m 4eub "And this move is...{w=0.3}{nw}"
     extend 2rtc " Well, in fact, many people don't think it is a variation of Queen's Gambit, but a separate opening."
     m 2etb "Though I personally think this should be a variation of Queen's Gambit, so this one was also included in the lesson of Queen's Gambit's variations."
     m 2eua "Anyways, the above ways to decline it usually turn the game into a relatively mild one."
@@ -2197,7 +2198,7 @@ label monika_chesslesson_opening_queen_gambit:
     m 2esb "This opening starts a fierce battle which foucs on center from the second turn, puts immediate pressure on black."
     m 2esa "Its variations can be classified as either {i}Accepted{/i} or {i}Declined{/i}."
     m 4eub "But no matter which one, both they lead to a game with two pawn chains of two sides, so the game often turns into a closed one."
-    m 4hua "Actually, this also applies for other Queen's Pawn Opening. A characteristic of it is that it's oftend a closed game."
+    m 4hua "Actually, this also applies for other Queen's Pawn Opening. A characteristic of it is that it's often a closed game."
     m 4hub "Variations which accept the gambit are more aggressive, while declined variation are somewhat more moderate."
     m 2eka "Since this is a complicated opening, this class can only cover the most basic concepts."
     m 2eub "The unfolding of this opening will be examined in detail in those classes devoted to variations."
