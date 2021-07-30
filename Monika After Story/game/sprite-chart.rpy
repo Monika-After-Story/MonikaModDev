@@ -7283,7 +7283,10 @@ python early:
 
             IN:
                 code - exp code
-                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                duration - duration for this exp in seconds. This can be a single number or a tuple of 2 number. If it's a tuple,
+                    the duration is being chosen at random between 2 values.
+                    If the numbers are floats, we use random.uniform, otherwise random.randint.
+                    NOTE: Do not mix ints with floats.
                     (Default: tuple (20, 30))
                 aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
                     Values can be None to not limit lower or upper bounds
@@ -7309,23 +7312,23 @@ python early:
                 _len = len(duration)
                 if _len != 2:
                     raise IdleExpException(
-                        "Expected a tuple/list of 2 items for the duration property. Got the tuple/list of {0} item{1} instead.".format(
+                        "Expected a tuple of 2 items for the duration property. Got a tuple of {0} item{1} instead.".format(
                             _len,
                             "s" if _len != 1 else ""
                         )
                     )
 
-                elif duration[0] < 1 or duration[1] < 1:
+                elif duration[0] <= 0 or duration[1] <= 0:
                     raise IdleExpException(
-                        "Duration for idle expression must be at least one second long. Got: {0} and {1}.".format(
+                        "Duration for idle expression must be a positive number. Got: {0} and {1}.".format(
                             duration[0],
                             duration[1]
                         )
                     )
 
-            elif duration < 1:
+            elif duration <= 0:
                 raise IdleExpException(
-                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
+                    "Duration for idle expression must be a positive number. Got: {0}.".format(
                         duration[0]
                     )
                 )
@@ -7395,10 +7398,14 @@ python early:
             A method to select duration for this exp
 
             OUT:
-                int in range of the duration property of this exp, or the prop itself if it's not a range
+                int/float
             """
             if isinstance(self.duration, tuple):
+                if isinstance(self.duration[0], float) and isinstance(self.duration[1], float):
+                    return random.uniform(self.duration[0], self.duration[1])
+
                 return random.randint(self.duration[0], self.duration[1])
+
             return self.duration
 
         def check_aff(self, aff=None):
