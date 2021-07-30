@@ -2006,6 +2006,211 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_chesslesson_opening_queen_gambit",
+            category=["chess lessons"],
+            prompt="Opening: Queen's Gambit",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_opening_basic_idea')",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_opening_queen_gambit:
+    m 3eub "Queen's Gambit the opening, different with Italian Game or Sicilian Defense, is a Queen's Pawn Opening."
+    show monika at t21
+    python:
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("d2d4")
+        game.handle_player_move()
+        renpy.pause(1)
+    m 3lub "After this move, if black responded with d5,{w=0.3}{nw}"
+    python:
+        game.queue_move("d7d5")
+        game.handle_monika_move()
+    extend 3eua " white is having a chance to start the Queen's Gambit."
+    python:
+        game.queue_move("c2c4")
+        game.handle_player_move()
+    m 1eub "And if white wanted to play this opening, then they should play c4 which is the move I just played."
+    m 1eua "From now on, this game turns into Queen's Gambit."
+    if mas_seenLabels(["monika_chesslesson_terms.gambit"]):
+        m 1eub "You once asked me what the term gambit meant, and this opening is which I used there as an example."
+        m 1esa "So you know, this c4 move is not just losing a pawn for nothing."
+    else:
+        m 1esd "Just to make sure, do you know what the term {i}Gambit{/i} means?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Just to make sure, do you know what the term {i}Gambit{/i} means?{fast}"
+            "Yes, I know it.":
+                m 1hub "Great!"
+                m 1hua "Then you know this move is not losing a pawn for nothing."
+            "No, what is that?":
+                m 1esa "Oh, gambit means you abandoned a piece."
+                m 1husdrb "But of course, it doesn't mean blunders are gambits!"
+                m 1husdra "The difference between the gambit and a bad move is that it is a purposeful, controlled abandonment."
+                m 1eub "While you lose material in gambit, you gain an advantage elsewhere."
+                m 1esa "That is to say, gambit is a sacrifice, not just giving your opponent a gift."
+                m 1esb "Let us just watch the following to see why this is a gambit move, not a blunder."
+    m 1esa "If black accepts this gambit and take the c4 pawn, then this opening turns into variation {b}Queen's Gambit: Accepted{/b}."
+    python:
+        game.queue_move("d5c4")
+        game.handle_monika_move()
+    m 1lsb "Since this move also reveals the black queen{nw}"
+    python:
+        game.request_highlight_common_format("d8",highlight_type_red)
+        game.request_highlight_common_format("d7",highlight_type_red)
+        game.request_highlight_common_format("d6",highlight_type_red)
+        game.request_highlight_common_format("d5",highlight_type_red)
+        game.request_highlight_common_format("d4",highlight_type_red)
+    extend " to add a potential pressure on d4 pawn,{w=0.3} white would play e3{nw}"
+    python:
+        game.queue_move("e2e3")
+        game.handle_player_move()
+    extend 1lsa " to protect d4 square."
+    python:
+        game.request_highlight_diagonal("c4","f1",color = highlight_type_magenta)
+    m 3eub "This move also revealed the f1 bishop which is going to attack the c4 pawn."
+    m 3eud "Black can stubbornly refuse to allow White to recapture a pawn,{w=0.3}{nw}"
+    python:
+        game.queue_move("b7b5")
+        game.handle_monika_move()
+    extend 3luc " for example by playing a b5 move."
+    m 2esd "However, if black really were to do so, their move would be contrary to the principle of opening."
+    m 2esc "Black's pawns barely do help to control the center, and black does not develop any knight or bishop too."
+    m 2rsc "White, meanwhile, has two pawns in the center, giving white a really solid center control."
+    m 2euc "So, in conclusion, if black so stubbornly refuses to lose a pawn, then they lose their chance to control the center."
+    m "However, it is true that white has lost a pawn and has a material disadvantage."
+    m 1rsc "So black's move is at least not a blunder, it's just inaccurate."
+    m 1eub "in comparison, a more common choice for black in this variation is to abandon this pawn."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp1pppp/8/8/2pP4/4P3/PP3PPP/RNBQKBNR b KQkq - 0 3")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("g8f6")
+        game.handle_monika_move()
+    m 1lub "Nf6, black develops a knight and join the competition of center."
+    python:
+        game.queue_move("f1c4")
+        game.handle_player_move()
+    m 1lua "After Bxc4, whtie regained the pawn and developed the bishop at the same time."
+    m 1hua "The subsequent changes are not the opening category, so we'll leave them out for the time being."
+    m 3eub "In this situation, for white, they enjoys a strong center."
+    m 3eua "White has two pawns in center, and developed a bishop, while black only developed a knight."
+    m 3eta "However, white weakened the queen side, so white is potentially at a risk of being attacked."
+    m 1etd "In addition, black also has many potential counterattacks aim at d4."
+    python:
+        game.queue_move("c7c5")
+        game.handle_monika_move()
+    m 3etd "Like a c5 move, you know?"
+    m 2eub "This c5 is not a gift to white, as for why, we're going to introduce them in another lesson."
+    m 1etd "To make a general conclusion about this variety, I would say..."
+    m 2esd "This variation gives white a strong but perhaps temporary center."
+    m 2esc "But after this highlight time has passed, white may fell into a disadvantage for the weak queen side."
+    m 2eub "So, if you are white, you need to make the most of your strong center to keep the pressure on and not let your development advantage be equalized."
+    m 2eua "And if you are black, then actively look for a breakthrough and find an opportunity to take advantage of white's relatively weak queen side."
+    m 2hua "Now let's look at other variations."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2")
+        game.toggle_sensitivity()
+        game.show()
+    m 3eub "We've been talking about what would happen if we accepted this gambit, but there are actually variations that don't accept it."
+    python:
+        game.queue_move("e7e6")
+        game.handle_monika_move()
+    m 3eua "The move e6 is one of the way to decline it."
+    m 2eub "With this e6 pawn to protect d5 square, black stabilizes their pawn structure while refusing to accept this gambit."
+    m 2esa "This is the variation {b}Queen's Gambit: Declined{/b}."
+    m 2eub "The Nf6 move we mentioned in this lesson's beinning is also a way to decline this gambit,{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("g8f6")
+        game.handle_monika_move()
+    m 2lua " and this one is known as {b}Queen's Gambit Declined: Marshall Defense{/b}."
+    m 2eua "Also, c6 is another reasonable move.{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("c7c6")
+        game.handle_monika_move()
+    extend 4lub " This one is known as {b}Slav Defense{/b}."
+    m 4eub "And this move is known as...{w=0.3}{nw}"
+    extend 2rtc " Well, in fact, many people don't think it is a variation of Queen's Gambit, but a separate opening."
+    m 2etb "Though I personally think this should be a variation of Queen's Gambit, so this one was also included in the lesson of Queen's Gambit's variations."
+    m 2eua "Anyways, the above ways to decline it usually turn the game into a relatively mild one."
+    m 2esa "Another pretty interesting way to decline Queen's Gambit is to play c5."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("c7c5")
+        game.handle_monika_move()
+    m 2wuo "A counter gambit! White offers the c5 pawn as a gambit, which is a really surprising idea!"
+    m 2wub "If white accepts this c5 pawn,{w=0.3}{nw}"
+    python:
+        game.queue_move("d4c5")
+        game.handle_player_move()
+    extend " then, after playing e6,{w=0.3}{nw}"
+    python:
+        game.queue_move("e7e6")
+        game.handle_monika_move()
+        game.request_highlight_diagonal("c5","f8",color = highlight_type_red)
+    extend 2wuo " black turns into the one who freed the bishop to reacpture now!"
+    m 2etc "And if white didn't accept this c5 pawn, but to take the d5 pawn,{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pp2pppp/8/2pp4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq c6 0 3")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("c4d5")
+        game.handle_player_move()
+    extend 2etb " then black could simply use the queen to recapture white's pawn."
+    python:
+        game.queue_move("d8d5")
+        game.handle_monika_move()
+    m 2eua "So no matter which pawn white decide to take, black is not really losing a pawn."
+    m 2eub "Actually, this counter gambit move can be used in other declined variations too."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3")
+        game.toggle_sensitivity()
+        game.show()
+    m 4lub "Like, here, after white played Nf3,{w=0.3}{nw}"
+    python:
+        game.queue_move("g1f3")
+        game.handle_player_move()
+    extend 4lua " there is nothing wrong with playing this counter gambit."
+    python:
+        game.queue_move("c7c5")
+        game.handle_monika_move()
+    m 2esa "All in all, Queen's Gambit is a somewhat complicated opening, which we can't explain in a few words in this lesson."
+    m 2esb "This opening starts a fierce battle which foucs on center from the second turn, puts immediate pressure on black."
+    m 2esa "Its variations can be classified as either {i}Accepted{/i} or {i}Declined{/i}."
+    m 4eub "But no matter which one, both they lead to a game with two pawn chains of two sides, so the game often turns into a closed one."
+    m 4hua "Actually, this also applies for other Queen's Pawn Opening. A characteristic of it is that it's oftend a closed game."
+    m 4hub "Variations which accept the gambit are more aggressive, while declined variation are somewhat more moderate."
+    m 2eka "Since this is a complicated opening, this class can only cover the most basic concepts."
+    m 2eub "The unfolding of this opening will be examined in detail in those classes devoted to variations."
+    m 2hua "But I hope this lesson has taught you some new ideas about chess!"
+    m 2hub "Thanks for listening~"
+    $ game.hide()
+    show monika at t11
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_chesslesson_intro_advance_bishop",
             category=["chess lessons"],
             prompt="Bishop - Advanced",
