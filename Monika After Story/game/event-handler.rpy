@@ -2766,9 +2766,11 @@ label prompt_menu:
         jump prompt_menu
 
 label prompt_menu_end:
-
     show monika at t11
-    $ mas_DropShield_dlg()
+    if store.mas_globals.in_idle_mode:
+        $ mas_dlgToIdleShield()
+    else:
+        $ mas_DropShield_dlg()
     jump ch30_visual_skip
 
 label show_prompt_list(sorted_event_labels):

@@ -230,7 +230,7 @@ init 5 python:
     )
 
 label monika_idle_brb:
-    $ mas_brbs.idle_setup("monika_idle_brb", "monika_idle_brb_callback")
+    $ mas_brbs.idle_setup()
 
     if mas_isMoniAff(higher=True):
         m 1eua "Alright, [player]."
@@ -458,8 +458,6 @@ init 5 python:
     )
 
 label monika_idle_game:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eud "Oh, you're going to play another game?"
         m 1eka "That's alright, [player]."
@@ -486,6 +484,8 @@ label monika_idle_game:
     else:
         m 6ckc "..."
 
+    # Do it here since we can get to this brb via .skip_intro
+    $ mas_brbs.idle_setup("monika_idle_game")
     return
 
 label monika_idle_game_callback:
@@ -621,7 +621,7 @@ label monika_idle_workout_callback:
 
             m 2esa "You sure took your time, [player].{w=0.3}{nw}"
             extend 2eub " That must've been one heck of a workout."
-            m 2eka "It's good to push your limits, but you shouldn't overdo it."
+            m 7eka "It's good to push your limits, but you shouldn't overdo it."
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=10), "monika_idle_workout"):
             m 1esa "Done with your workout, [player]?"
@@ -643,12 +643,11 @@ label monika_idle_workout_callback:
                     # continue workout and return Monika to idle state
                     m 1hub "That's the spirit!"
 
-                    $ brb_label = "monika_idle_workout"
-                    $ pushEvent("mas_brb_back_to_idle",skipeval=True)
+                    $ mas_brbs.idle_setup("monika_idle_workout")
                     return
 
-        m 7eua "Make sure to rest properly and maybe get a snack to get some energy back."
-        m 7eub "[wb_quip]"
+        m 3eua "Make sure to rest properly and maybe get a snack to get some energy back."
+        m 3eub "[wb_quip]"
 
     elif mas_isMoniUpset():
         m 2euc "Done with your workout, [player]?"
