@@ -160,6 +160,15 @@ define config.label_overrides = {
     "_choose_renderer": "mas_choose_renderer_override"
 }
 #define config.gl_resize = False
+init python:
+    # Print all deprecation warnings
+    def __print_deprecation_warnings():
+        for msg in store.mas_utils.deprecated.__all_warnings__:
+            print(msg)
+
+    config.lint_hooks.append(
+        __print_deprecation_warnings
+    )
 
 init python:
     if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])

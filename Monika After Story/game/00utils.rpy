@@ -362,6 +362,8 @@ python early in mas_utils:
                     newline=newline
                 )
 
+                deprecated.__all_warnings__.add(msg)
+
                 if should_raise:
                     raise DeprecationWarning(msg)
 
@@ -374,3 +376,6 @@ python early in mas_utils:
             return wrapper
 
         return decorator
+
+    # Keep all warnings
+    deprecated.__all_warnings__ = set()
