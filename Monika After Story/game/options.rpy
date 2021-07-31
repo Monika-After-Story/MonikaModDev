@@ -163,6 +163,7 @@ define config.label_overrides = {
 init python:
     # Print all deprecation warnings
     def __print_deprecation_warnings():
+        print("Total deprecation warnings: {0}".format(len(store.mas_utils.deprecated.__all_warnings__)))
         for msg in store.mas_utils.deprecated.__all_warnings__:
             print(msg)
 
