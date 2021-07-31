@@ -87,12 +87,12 @@ init 10 python in mas_brbs:
                     MASMoniIdleExp("1hubsa", duration=(4, 8)),
                     MASMoniIdleExp("1hubla", duration=(4, 8))
                 ],
-                weight=30
+                weight=10
             )
         ],
         max_uses=1,
         aff_range=(store.mas_aff.AFFECTIONATE, None),
-        weight=5,
+        weight=3,
         tag="idle_mode_exps"
     )
 
@@ -230,7 +230,7 @@ init 5 python:
     )
 
 label monika_idle_brb:
-    $ mas_brbs.idle_setup()
+    $ mas_brbs.idle_setup("monika_idle_brb", "monika_idle_brb_callback")
 
     if mas_isMoniAff(higher=True):
         m 1eua "Alright, [player]."
