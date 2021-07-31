@@ -2212,6 +2212,160 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_chesslesson_opening_modern_defense",
+            category=["chess lessons"],
+            prompt="Opening: Modern Defense",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_opening_basic_idea')",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_opening_modern_defense:
+    m 2esc "Modern Defense is considered kind of a freak when it firstly appears to the world."
+    m 2esd "I should warn you that the idea of this opening is quite different from others--{w=0.3}as is the word {i}modern{/i} in its name."
+    m 2esa "So don't bother trying to understand this if you haven't already understood those more traditional openings."
+    m 1eub "With that in mind, let's get started."
+    show monika at t21
+    python:
+        game = MASChessDisplayableBase(is_player_white=True)
+        game.toggle_sensitivity()
+        game.show()
+    m 2euc "The first thing you should know is that Modern Defense {i}doesn't{/i} mean a couple of specific moves."
+    m 4eud "Modern Defense refers to a lot of openings, as long as these openings are an opening played a g6 move early."
+    if seen_event("monika_chesslesson_intro_advance_bishop"):
+        m 1eub "Since you already learnt what's the finachetto concept, you probably know the reason of this move."
+    else:
+        m 1esd "Yes, a g6 move, in opening. Sounds kind of strange, right?"
+        m 1esa "But let us just see an example then you can understand this move."
+    m 4lsb "One of the fastest way to play g6 is white played e4 to begin the game,{w=0.3}{nw}"
+    python:
+        game.queue_move("e2e4")
+        game.handle_player_move()
+    extend " then, as the first move, black can respond a g6,{w=0.3}{nw}"
+    python:
+        game.queue_move("g7g6")
+        game.handle_monika_move()
+    extend 4eua " which is actually a preparation."
+    m 3eua "It's true that the g6 move did almost nothing to help the control center, seemingly moving an unimpressive side pawn."
+    m 3lub "There are a few options for white, but the most accepted one is to play d4,{w=0.3}{nw}"
+    python:
+        game.queue_move("d2d4")
+        game.handle_player_move()
+    extend 3lua " which puts two pawns in the center."
+    m 1esa "Two pawns in the center is probably a good sign for it usually means a strong center, but here, it's not as strong as normally."
+    m 1eub "Remember what I just said? The g6 move is a preparation. A preparation for what?"
+    python:
+        game.queue_move("f8g7")
+        game.handle_monika_move()
+    m 1hua "The answer is for a king side finachetto."
+    python:
+        game.request_highlight_diagonal("a1","h8",color = highlight_type_red)
+    m 1wub "Look at this long diagonal! It creates a lot of potential counterstrike chance, which is why 1.g6 move isn't bad."
+    m 1hub "With this finachetto as the supporter, white's center is not {i}that{/i} strong."
+    m 3eub "Now we mentioned this opening, it is important to also mention a chess theory that has arisen only in recent years."
+    m 3esa "{b}Hypermodern Chess{/b}, also known as {b}hypermodernism{/b}. A still very new idea."
+    m 3esb "This theory challenge the traditional idea:{w=0.2}{i} The center needed to be occupied by pawns in the opening{/i}."
+    m 1esb "If you've watched many games or you've learnt some openings, you should have more or less understood this traditional idea."
+    m 1esa "Indeed, even I told you that the first move would be best with a central pawn move, but that's not the Hypermodern theory."
+    m 1rsa "Though, Hypermodern theory doesn't think that a central pawn move is bad. It just holds this idea: {i}A central pawn move is not a must{/i}."
+    m 1eub "The reason why I brought this opening into my lesson list is I want to introduce this theory to you."
+    m 2hub "I'm also preparing some other openings about this theory, though they aren't ready yet, you may need to wait for me some more days."
+    m 2eua "Anyways, now, let us back to the Modern Defense to see this new theory's power."
+    m 2eub "After this finachetto was made, it's white to move."
+    m 4lub "One of the variations of this situation is to play f4,{w=0.3}{nw}"
+    python:
+        game.queue_move("f2f4")
+        game.handle_player_move()
+    extend 4lua " which is known as {b}Three Pawns Attack{/b} variation."
+    m 2hksdrb "If you haven't studied this theory before, you now might think that every turn of Modern Defense is really a surprise, right?"
+    m 2eua "It's not often you start with three pawns in a row, is it?"
+    m 4esa "Once again, the opening principle is {i}control center, develop materials{/i}. It's never {i}move central pawns first, then knights and bishops{/i}."
+    m 4esb "The only reason people usually don't move multiple pawns in a row in the opening phase is because it probably weakens the center."
+    m 4eua "In other openings, the opponent push central pawns, and then keep the pressure on the center with knights and bishops."
+    m "So you have to deal with those threats first."
+    m 4etb "But here, black's pressure on the center is relatively weak."
+    m 2hua "Take advantage of this opportunity to control more squares immediately, this is the idea of this variation's white side."
+    m 2eua "Another seemingly more traditional idea for white is to play Nf3."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen="rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("g1f3")
+        game.handle_player_move()
+        game.request_highlight_diagonal("a1","h1",color = highlight_type_red)
+    m 2eub "One obvious fact is that black's king side finachetto's attack path went through the center, but there is a d4 pawn in the center."
+    m 2eua "Without this pawn being removed, black can not make the most of their finachetto."
+    m 2esa "And once this pawn was removed, with this finachetto, black can try to start a fierce queen side attack with a queen side pawn storm."
+    m 2eub "The idea of this Nf3 move, which is also known as {b}Geller Variation{/b}, is to add more protection on d4 pawn to prevent this attack from happening too soon in a way."
+    m 2eua "This move in a longer term is to prepare for a king side castle, which moves the king to the safer side."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen="rnbqk1nr/ppppppbp/6p1/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 1 3")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("b1c3")
+        game.handle_player_move()
+        game.request_highlight_diagonal("a1","h1",color = highlight_type_red)
+    m 7lua "And there is another idea of thinking about the queen side knight, which is now known as the {b}Standard Line{/b} variation."
+    m 7eua "The king side knight move's idea is to control dark squares, which is trying to against the drak-squared finachetto."
+    m 2eub "And this queen side knight, different with king side knight, is trying to control light squares."
+    m 3eub "As with the king side knight, this move is to prepare for a queen side castle."
+    m 2eud "Yes, queen side castle is somewhat more dangerous for it's being aimed at by the finachetto according to what I just said."
+    m 2esd "But if we chose the queen side, on the other hand, this means that we have more freedom to start our pawn storm in king side."
+    m 2esc "A king side finachetto is usually not a threat to opponent's king side, but actually a threat to queen side, this is what you should know."
+    m 4eud "In other words, if you want to break a opponent's king side finachetto like the current one, you should start a king side attack, not queen side attack."
+    m 4eua "So the idea of this variation is to face the queen side threat, launch a king side attack to destroy opponent's finachetto."
+    m 1eua "There are many more variations that will follow, so we'll do a separate lesson on that."
+    m 3eub "But you should probably have noticed the fact that both sides' idea is centre on this finachetto."
+    m 3esa "This is the charm of the Hypermodern genre."
+    m 3hub "They don't primarily use pawns to control the center, but instead use pieces such as knights and bishops to pressure the center."
+    m 1esa "Most of the other openings have clear goals, such as the {b}Dragon Variation{/b}'s sub-variation {b}Accelerated Dragon{/b} of the {b}Sicilian Defense{/b}."
+    if seen_event("monika_chesslesson_sicilian_defense"):
+        m 1esb "And given that I've mentioned Dragon Variation to you, I think I don't need too many descriptions about it here."
+    else:
+        python:
+            game.hide()
+            game = MASChessDisplayableBase(is_player_white=True, starting_fen="r1bqk2r/pp1pppbp/2n2np1/8/2BNP3/2N5/PPP2PPP/R1BQK2R w KQkq - 2 7")
+            game.toggle_sensitivity()
+            game.show()
+        m 1esb "I know I haven't taught you that opening, so I have set that variation's position on the board for you."
+    m 1lub "White's intention is self-evident:{w=0.2} to use their development advantage to attack the opponent's king side."
+    m 1lua "And black's plan is also clear: I have a c-file advantage, ready to ruin your c-file to start my show."
+    m 3eud "{i}Let's just see who's faster.{w=0.2}"
+    extend 3euc " You're going to destroy my king side first, or I will take you out on the c-file first{/i}."
+    m 3eua " This is this variation."
+    m 2esc "But Modern Defense? Black is {i}do you know what I want{/i}? And white is also {i}guess which side I'm going to castle or attack{/i}?"
+    m 1euc "All in all, the Modern Defense is a particularly subtle and complex opening."
+    m 1rtd "I don't recommend this for beginners, because they'll probably be overwhelmed by this anti-traditional move and have no idea what they're doing."
+    m 1eud "There once was a man tried to explain this opening to readers in his chess book, a grandmaster heard about it and said in surprise:"
+    m 1esc "{i}You will have to explain everything!{/i}"
+    m "And this writer later wrote about the incident in his book, commenting \"there is some truth to that\"."
+    m 1eka "So don't blame yourself too much if you find yourself making plenty of blunder when you try this opening in future."
+    m 1hub "Still, if you don't know much about the Hypermodern genre, you really should study it carefully!"
+    m 1hua "This genre may be the breakthrough for your progress, you know?"
+    m 1rksdra "In fact, that is my past. I was limited to simply memorizing the moves without any breakthrough in olddays."
+    m 3esd "At the end of the lesson, I don't know if you're aware of one thing, but I used the word {i}side{/i} a lot in this course."
+    m 3rtc "It's partly because it's true that this opening is focusing on sides, but morely..."
+    m 3esb "I want to let you notice that a game has two sides, king side and queen side."
+    m 3esa "And there isn't a possible way to make both two sides sound for a player."
+    m 2eka "A chess game does not necessarily open the center first, then tear two sides, and then enter the endgame."
+    m 2eua "This is the charm of Hypermodern again. Launch a side flash attack is also pretty cool, you know?"
+    m 2rsa "...Well,{w=0.3}{nw}"
+    extend 2rssdra " we really focused on Hypermodern not Modern Defense in this lesson, huh?"
+    m 2hssdra "But that was my goal from the beginning, so I guess it shouldn't be a problem?"
+    m 2hksdra "We'll talk more about the opening itself in a future lesson devoted to variations of this opening, I promise."
+    m 2hub "For now, thanks for listening~"
+    show monika at t11
+    $ game.hide()
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_chesslesson_intro_advance_bishop",
             category=["chess lessons"],
             prompt="Bishop - Advanced",
