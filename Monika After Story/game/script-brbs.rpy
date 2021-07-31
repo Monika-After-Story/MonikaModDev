@@ -5,7 +5,103 @@
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
 init 10 python in mas_brbs:
+    import random
     import store
+    from store import (
+        MASMoniIdleExp,
+        MASMoniIdleExpGroup,
+        MASMoniIdleExpRngGroup
+    )
+
+    idle_mode_exps = MASMoniIdleExpRngGroup(
+        [
+            # leaning day dreaming
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("5rubla", duration=(10, 20)),
+                    MASMoniIdleExp("5rublu", duration=(5, 10)),
+                    MASMoniIdleExp("5rubsu", duration=(20, 30)),
+                    MASMoniIdleExp("5rubla", duration=(5, 10)),
+                ],
+                weight=30
+            ),
+            # leaning smug day dreaming
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("5rubla", duration=(10, 20)),
+                    MASMoniIdleExp("5gsbsu", duration=(20, 30)),
+                    MASMoniIdleExp("5tsbsu", duration=1),
+                    MASMoniIdleExp("1hubfu", duration=(5, 10)),
+                    MASMoniIdleExp("1hubsa", duration=(5, 10)),
+                    MASMoniIdleExp("1hubla", duration=(5, 10))
+                ],
+                weight=30
+            ),
+            # resting day dreaming
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("1lublu", duration=(10, 20)),
+                    MASMoniIdleExp("1msblu", duration=(5, 10)),
+                    MASMoniIdleExp("1msbsu", duration=(20, 30)),
+                    MASMoniIdleExp("1hubsu", duration=(5, 10)),
+                    MASMoniIdleExp("1hubla", duration=(5, 10))
+                ],
+                weight=30
+            ),
+            # spacing-out-like
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExpRngGroup(
+                        [
+                            # start from right
+                            MASMoniIdleExpGroup(
+                                [
+                                    MASMoniIdleExp("1gubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1mubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1mubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gsbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1msbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gsbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1msbsu", duration=(0.9, 1.8))
+                                ]
+                            ),
+                            # or start from left
+                            MASMoniIdleExpGroup(
+                                [
+                                    MASMoniIdleExp("1mubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1mubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gubla", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1msbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gsbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1msbsu", duration=(0.9, 1.8)),
+                                    MASMoniIdleExp("1gsbsu", duration=(0.9, 1.8))
+                                ]
+                            )
+                        ],
+                        max_uses=1
+                    ),
+                    MASMoniIdleExp("1tsbfu", duration=1),
+                    MASMoniIdleExp("1hubfu", duration=(4, 8)),
+                    MASMoniIdleExp("1hubsa", duration=(4, 8)),
+                    MASMoniIdleExp("1hubla", duration=(4, 8))
+                ],
+                weight=30
+            )
+        ],
+        max_uses=1,
+        aff_range=(store.mas_aff.AFFECTIONATE, None),
+        weight=5,
+        tag="idle_mode_exps"
+    )
+
+    WB_QUIPS_NORMAL = [
+        _("So, what else did you want to do today?"),
+        _("What else did you want to do today?"),
+        _("Is there anything else you wanted to do today?"),
+        _("What else should we do today?")
+    ]
 
     def get_wb_quip():
         """
@@ -15,13 +111,57 @@ init 10 python in mas_brbs:
         OUT:
             A randomly selected quip for coming back to the spaceroom
         """
+        return renpy.substitute(random.choice(WB_QUIPS_NORMAL))
 
-        return renpy.substitute(renpy.random.choice([
-            _("So, what else did you want to do today?"),
-            _("What else did you want to do today?"),
-            _("Is there anything else you wanted to do today?"),
-            _("What else should we do today?"),
-        ]))
+    def idle_setup(brb_label=None, brb_callback_label=None):
+        """
+        This callback is called in every brb event to enable idle mode
+
+        IN:
+            brb_label - the label of this brb event, if None, use the current label
+                (Default: None)
+            brb_callback_label - the callback label of this brb event, if None, we build it here
+                (Default: None)
+        """
+        # Get currect label
+        if brb_label is None:
+            brb_label = store.mas_submod_utils.current_label
+
+        # Add idle extra exps
+        store.mas_moni_idle_disp.add_by_tag("idle_mode_exps")
+
+        # Set vars
+        store.mas_globals.in_idle_mode = True
+        store.persistent._mas_in_idle_mode = True
+        store.persistent._mas_idle_data[brb_label] = True
+        renpy.save_persistent()
+
+        # Send callback label
+        if brb_callback_label is None:
+            brb_callback_label = brb_label + "_callback"
+        if renpy.has_label(brb_callback_label):
+            store.mas_idle_mailbox.send_idle_cb(brb_callback_label)
+
+    def idle_teardown():
+        """
+        This callback is called in the prompt_menu label
+            to disable idle mode
+
+        OUT:
+            string with brb callback label or None
+        """
+        # Remove idle exps
+        store.mas_moni_idle_disp.remove_by_tag("idle_mode_exps")
+
+        # Clean up idle stuff
+        store.mas_globals.in_idle_mode = False
+        store.persistent._mas_in_idle_mode = False
+        store.persistent._mas_idle_data.clear()
+        store.persistent._mas_greeting_type = None
+        renpy.save_persistent()
+
+        # Return callback label
+        return store.mas_idle_mailbox.get_idle_cb()
 
     def was_idle_for_at_least(idle_time, brb_evl):
         """
@@ -80,7 +220,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_brb_idle",
+            eventlabel="monika_idle_brb",
             prompt="I'll be right back",
             category=['be right back'],
             pool=True,
@@ -89,7 +229,9 @@ init 5 python:
         markSeen=True
     )
 
-label monika_brb_idle:
+label monika_idle_brb:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniAff(higher=True):
         m 1eua "Alright, [player]."
 
@@ -125,13 +267,9 @@ label monika_brb_idle:
     else:
         m 6ckc "..."
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_brb_idle_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_brb"] = True
-    return "idle"
+    return
 
-label monika_brb_idle_callback:
+label monika_idle_brb_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
@@ -151,7 +289,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_writing_idle",
+            eventlabel="monika_idle_writing",
             prompt="I'm going to write for a bit",
             category=['be right back'],
             pool=True,
@@ -160,7 +298,9 @@ init 5 python:
         markSeen=True
     )
 
-label monika_writing_idle:
+label monika_idle_writing:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         if (
             mas_isMoniHappy(higher=True)
@@ -189,13 +329,9 @@ label monika_writing_idle:
     else:
         m 6ckc "..."
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_writing"] = True
-    return "idle"
+    return
 
-label monika_writing_idle_callback:
+label monika_idle_writing_callback:
 
     if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
@@ -221,6 +357,8 @@ init 5 python:
     )
 
 label monika_idle_shower:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniLove():
         m 1eua "Going to go shower?"
 
@@ -267,11 +405,7 @@ label monika_idle_shower:
     else:
         m 6ckc "..."
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_shower_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_shower"] = True
-    return "idle"
+    return
 
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
@@ -308,11 +442,7 @@ label bye_brb_shower_timeout:
     m 3tubfu "Nevermind that, [player]."
     m 1hubfb "I hope you have a nice shower!"
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_shower_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_shower"] = True
-    return "idle"
+    return
 
 init 5 python:
     addEvent(
@@ -328,6 +458,8 @@ init 5 python:
     )
 
 label monika_idle_game:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eud "Oh, you're going to play another game?"
         m 1eka "That's alright, [player]."
@@ -354,9 +486,7 @@ label monika_idle_game:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_game_callback")
-    $ persistent._mas_idle_data["monika_idle_game"] = True
-    return "idle"
+    return
 
 label monika_idle_game_callback:
     if mas_isMoniNormal(higher=True):
@@ -389,6 +519,8 @@ init 5 python:
     )
 
 label monika_idle_coding:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh! Going to code something?"
 
@@ -417,9 +549,7 @@ label monika_idle_coding:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_coding_callback")
-    $ persistent._mas_idle_data["monika_idle_coding"] = True
-    return "idle"
+    return
 
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
@@ -451,14 +581,19 @@ init 5 python:
     )
 
 label monika_idle_workout:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1hub "Okay, [player]!"
+
         if persistent._mas_pm_works_out is False:
             m 3eub "Working out is a great way to take care of yourself!"
             m 1eka "I know it might be hard to start out,{w=0.2}{nw}"
             extend 3hua " but it's definitely a habit worth forming."
+
         else:
             m 1eub "It's good to know you're taking care of your body!"
+
         m 3esa "You know how the saying goes, 'A healthy mind in a healthy body.'"
         m 3hua "So go work up a good sweat, [player]~"
         m 1tub "Just let me know when you've had enough."
@@ -475,9 +610,7 @@ label monika_idle_workout:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_workout_callback")
-    $ persistent._mas_idle_data["monika_idle_workout"] = True
-    return "idle"
+    return
 
 label monika_idle_workout_callback:
     if mas_isMoniNormal(higher=True):
@@ -539,6 +672,8 @@ init 5 python:
     )
 
 label monika_idle_nap:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eua "Going to take a nap, [player]?"
         m 3eua "They're a healthy way to rest during the day if you're feeling tired."
@@ -555,9 +690,7 @@ label monika_idle_nap:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_nap_callback")
-    $ persistent._mas_idle_data["monika_idle_nap"] = True
-    return "idle"
+    return
 
 label monika_idle_nap_callback:
     if mas_isMoniNormal(higher=True):
@@ -608,6 +741,8 @@ init 5 python:
     )
 
 label monika_idle_homework:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eub "Oh, okay!"
         m 1hua "I'm proud of you for taking your studies seriously."
@@ -621,11 +756,7 @@ label monika_idle_homework:
     else:
         m 6ckc "..."
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_homework_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_homework"] = True
-    return "idle"
+    return
 
 label monika_idle_homework_callback:
     if mas_isMoniDis(higher=True):
@@ -660,6 +791,8 @@ init 5 python:
     )
 
 label monika_idle_working:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eua "Alright, [player]."
         m 1eub "Don't forget to take a break every now and then!"
@@ -678,11 +811,7 @@ label monika_idle_working:
     else:
         m 6ckc "..."
 
-    #Set up the callback label
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_working_callback")
-    #Then the idle data
-    $ persistent._mas_idle_data["monika_idle_working"] = True
-    return "idle"
+    return
 
 label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
@@ -713,6 +842,8 @@ init 5 python:
     )
 
 label monika_idle_screen_break:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         if mas_timePastSince(mas_getEVL_last_seen("monika_idle_screen_break"), mas_getSessionLength()):
 
@@ -749,9 +880,7 @@ label monika_idle_screen_break:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_screen_break_callback")
-    $ persistent._mas_idle_data["monika_idle_screen_break"] = True
-    return "idle"
+    return
 
 label monika_idle_screen_break_callback:
     if mas_isMoniNormal(higher=True):
@@ -785,6 +914,8 @@ init 5 python:
     )
 
 label monika_idle_reading:
+    $ mas_brbs.idle_setup()
+
     if mas_isMoniNormal(higher=True):
         m 1eub "Really? That's great, [player]!"
         m 3lksdla "I'd love to read with you, but my reality has its limits, unfortunately."
@@ -797,9 +928,7 @@ label monika_idle_reading:
     else:
         m 6dkc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_reading_callback")
-    $ persistent._mas_idle_data["monika_idle_reading"] = True
-    return "idle"
+    return
 
 label monika_idle_reading_callback:
     if mas_isMoniNormal(higher=True):

@@ -2645,7 +2645,7 @@ label prompt_menu:
         # if talk is hit here, then we retrieve label from mailbox and
         # call it.
         # after the event is over, we drop shields return to idle flow
-        $ cb_label = mas_idle_mailbox.get_idle_cb()
+        $ cb_label = mas_brbs.idle_teardown()
 
         # NOTE: we call the label directly instead of pushing to event stack
         #   so that if the user quits during the event, we get the appropriate
@@ -2655,19 +2655,12 @@ label prompt_menu:
         #   restored on a relaunch, which would make no sense lol.
 
         # only call label if it exists
-        if cb_label is not None:
+        if renpy.has_label(cb_label):
             call expression cb_label
 
         #Show idle exp here so we dissolve like other topics
-        show monika idle with dissolve_monika
-
-        # clean up idle stuff
-        $ persistent._mas_greeting_type = None
-        $ store.mas_globals.in_idle_mode = False
-
-        # this event will cleanup the remaining idle vars
-        $ pushEvent("mas_idle_mode_greeting_cleanup")
-        $ mas_idle_mailbox.send_skipmidloopeval()
+        if not renpy.showing("monika idle"):
+            show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
         # NOTE: we only need to enable music hotkey since we are in dlg mode
         #$ mas_DropShield_idle()
