@@ -309,6 +309,7 @@ label monika_chesslesson_terms:
             ("Gambit", ".gambit", False, False),
             ("Kind Side and Queen Side", ".side", False, False),
             ("Materials", ".materials", False, False),
+            ("Major Pieces and Minor Pieces", ".majorandminor", False, False),
             ("Stalemate", ".stalemate", False, False),
             ("Threefold Repetition", ".threefold", False, False),
             ("Underpromotion", ".underpromotion", False, False),
@@ -614,6 +615,16 @@ label monika_chesslesson_terms:
         m 1eua "[random_dialogue]"
         return
     
+    label .majorandminor:
+        m 1esa "Oh, these two terms."
+        m 3esb "\"Major Pieces\" the term means the queen and the rooks."
+        m 3eua "This is because both the queen and the rooks are really powerful pieces."
+        m 1eua "Different with any other piece, they are able to control a file or a rank."
+        m 1hub "And now you can probably guess what does the term \"Minor Pieces\" mean now."
+        m 1hua "It means knights and bishops for they are less powerful pieces."
+        m 1eua "[random_dialogue]"
+        return
+
     label .stalemate:
         m 1esd "Stalemate is the third way to end a chess game."
         m 1esc "When a stalemate happens, it means no one is the winner, and no one is the loser too."
