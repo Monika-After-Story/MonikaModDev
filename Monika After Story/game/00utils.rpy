@@ -336,7 +336,7 @@ python early in mas_utils:
                 """
                 Wrapper around the deprecated function/class
                 """
-                msg = "[WARNING]: '{module}{name}' is deprecated.{use_instead_text}{newline}"
+                msg = "[WARNING]: '{module}{name}' is deprecated.{use_instead_text}"
 
                 if hasattr(callable_, "__module__") and callable_.__module__:
                     module = callable_.__module__ + "."
@@ -350,16 +350,10 @@ python early in mas_utils:
                 else:
                     use_instead_text = " Use '{0}' instead.".format(use_instead)
 
-                if not should_raise:
-                    newline = "\n"
-                else:
-                    newline = ""
-
                 msg = msg.format(
                     module=module,
                     name=name,
-                    use_instead_text=use_instead_text,
-                    newline=newline
+                    use_instead_text=use_instead_text
                 )
 
                 deprecated.__all_warnings__.add(msg)
@@ -368,8 +362,8 @@ python early in mas_utils:
                     raise DeprecationWarning(msg)
 
                 else:
-                    print(msg, end="", file=sys.stderr)
-                    writelog(msg)
+                    print(msg, file=sys.stderr)
+                    writelog(msg + "\n")
 
                 return callable_(*args, **kwargs)
 
