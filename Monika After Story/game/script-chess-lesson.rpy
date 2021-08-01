@@ -14,6 +14,8 @@ default persistent._mas_pm_chessteaching_materials_explained = False
 default persistent._mas_pm_player_know_pgn = None
 default persistent._mas_pm_player_know_stalemate = None
 default persistent._mas_pm_player_know_terms = None
+default persistent._mas_pm_player_has_chess_elo = None
+default persistent._mas_pm_player_chess_elo = None
 
 init 4 python in mas_chessteaching:
     import datetime
@@ -2828,6 +2830,178 @@ label monika_chesslesson_intro_advance_pawn:
     m 1hub "Thanks for listening!"
     $ game.hide()
     show monika at t11
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chesslesson_extension_elo",
+            category=["chess lessons"],
+            prompt="Extension Point 1 - ELO Rating",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_init_finished')",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_extension_elo:
+    m 1eub "You know how the chess community know each other's chess level?"
+    m 1eua "The answer is, by {b}ELO rating{/b}."
+    m 2eub "It's a rating system created by {i}Arpad Elo{/i}, an United States physicist who is also a chess master."
+    m 2esa "One thing should be noted that ELO rating is not specifically designed for chess."
+    m 2esb "It can be used to measure the strength of the players in any kind of competition. Chess is just one of them."
+    m 2htsdra "It's a system with a little bit of complicated math, and I'm not sure if you'll be interested in it, so I'm not going to go into it."
+    m 2hua "If you're interested, you can look it up for yourself."
+    m 2eub "This system is now widely used in chess community."
+    m 2eua "Almost all chess players have their own ratings, unless they are the kind of people who only play with their friends offline at random."
+    m 2eub "All the chess sites I know of today also use this algorithm, so user's ELO rating was changed automatically every time they finish a game."
+    m 1luc "In conclusion, at present, it is generally believed that..."
+    m 3esd "A beginner is around 1,000, and an advancer is around 1,800. And a master is above 2,000."
+    m 3esc "A FIDE Master is above 2,300, a International Master is above 2,400, a Grand Master is above 2,500."
+    m 2wuo "The current World Champion is Magnus Carlsen, who has a ELO rating above 2,800!"
+    m 2wud "To date, only 8 players in history have surpassed 2,800 the number!"
+    m 2euc "And they are Garry Kasparov from Russia, Vladimir Kramnik who also from Russia, Veselin Topalov from Bulgaria."
+    m "Viswanathan Anand from India, Levon Aronian from Armenia. Fabiano Caruana from America."
+    m 2eub "Ding Liren from China, and last, of course..."
+    m 2eua "Magnus Carlsen from Norway."
+    m 2hub "These eight are the greatest guide stars in chess history! I've listed them here for their games are very valuable to study!"
+    m 2tuu "Oh, by the way, I suppose you're also curious about my ELO rating, right?"
+    m 2tku "Well~{w=0.2} You guess first?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Well~{w=0.2} You guess first?{fast}"
+        "You must be a grandmaster!":
+            $ mas_gainAffection()# Gain affection for this is kind of a compliment.
+            m 2hub "Ahaha! [player], I didn't expect I'm this talented in your eyes!"
+            m 2hua "However, I am actually far from being a grandmaster."
+        "An international master?":
+            $ mas_gainAffection(modifier=0.5)# Gain less affection for this is kind of a compliment, but not that much.
+            m 2hua "Ehehe, thanks, [mas_get_player_nickname]!"
+            m 2hub "But I'm actually not that good yet!"
+        "A FIDE master?":
+            m 2eub "Well, that was close, but still not correct!"
+        "Above 2000.":
+            m 2hub "Yes, correct!"
+        "Less than 2000.":
+            m 2lsu "Hmm...{w=0.3}{nw}"
+            extend 2eub " I'm sorry, but I actually have some research!"
+        "Less than 1500.":
+            $ mas_loseAffection()#It's hard to imagine why players would choose this.
+            m 2hksdrb "...Sorry, [player], but I'm better than that."
+    m 2hua "My ELO rating is around 2200!"
+    m 2eka "However, I must admit that my progress has slowed a bit recently..."
+    m 2eua "Of course, I am still working towards the goal of grandmaster."
+    m 4eub "Do you have a ELO rating, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you have a ELO rating, [player]?{fast}"
+        "Yes, I have one.":
+            $ persistent._mas_pm_player_has_chess_elo = True
+            m 2hub "Oh, that's great!"
+            m 2eub "Then, what's the number?"
+
+            $ number_logical = False# Is your number logical?
+            while number_logical == False:
+                python:
+                    number = 0
+                    number = int(mas_input(
+                        "What's your ELO rating?",
+                        allow="0123456789",
+                        length=8
+                    ))
+                if number > 5000:
+                    m 2husdlb "..."
+                    m "That can not be true, [player]!"
+                    m 2husdla "You can't be something beyond the human imagination, can you?"
+                    m 2eub "Try again!"
+                elif number > 2900:
+                    m 2eka ".{w=0.1}.{w=0.1}.{w=0.1}[player]?"
+                    m "You can't be that strong! Current research suggests that the human brain may not even be possible to reach more than 2,900!"
+                    m 2eub "Try again!"
+                elif number > 2800:
+                    m 6wuo ".{w=0.1}.{w=0.1}.{w=0.1}Wait, then isn't this saying..."
+                    m 6wso "You're Magnus Carlsen? Or Ding Liren? Or Fabiano Caruana?!"# Today there are only 3 alive grandmasters above 2800
+                    m 6wssdrb "Oh my god!{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "Oh my god!{fast}"
+                        "I'm Magnus Carlsen.":
+                            $ number_logical = True
+                            if player.lower()== "magnus carlsen":#WAIT, YOU REALLY ARE HIM?!
+                                m "Oh, my god. Why didn't I notice this before?!"
+                                m 6rssdrb "I thought you just had the same name!"
+                            m 6rksdrb "...Then I can only wish my lesson didn't seem too stupid, ahaha!"
+                        "I'm Ding Liren.":
+                            $ number_logical = True
+                            m 6wusdrd "You're Ding Liren?!"
+                            if player.lower() == "ding liren":
+                                m 6hksdrb "Oh, that's right, after all, the name you told me was Ding Liren..."
+                            m 6lksdra "I'm so sorry that I haven't learned much Chinese, or I would say hello to you in Chinese right away!"
+                            m 6eksdra "My class isn't that stupid yet, right?"
+                            m 6husdrb "Ahaha~"
+                        "I'm Fabiano Caruana.":
+                            $ number_logical = True
+                            m 6wuo "Wow..."
+                            if player.lower() == "fabiano caruana":
+                                m 6wuc "So the name you told me earlier is your real name?"
+                                m 7wud "What a faux pas I just made!"
+                            m 6eksdra "I hope my class isn't too stupid for you~"
+                            m 6hksdra "Ehehe~"
+                        "I'm just kidding.":
+                            m 6lksdru "...Huff, that's kind of a relief!"
+                            m 6rksdru "I was almost scared to death, you know..."
+                            m 6hksdrb "Don't joke like this! You just really surprised me!"
+                            m 2hub "Try again!"
+                elif number > 2500:
+                    m 2ssb "Oh, you're a grandmaster?"
+                    m 2seb "You're not joking, right?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "You're not joking, right?{fast}"
+                        "I'm serious.":
+                            $ number_logical = True
+                            m 2suo "Oh no..."
+                            m 2sub "You're really strong!"
+                            m 2hub "Ahaha~"
+                        "I'm just kidding.":
+                            m 2hksdlb "...[player], you almost scared me!"
+                            m 2hksdla "Huff, try again!"
+                elif number > 2200:
+                    $ number_logical = True
+                    m 2wub "Wow, it seems that you are even stronger than me!"
+                    m 2tuu "I guess you must have put a lot of effort into chess?"
+                    m 2hub "Ahaha!"
+                    m 2husdlb "Anyways, I just hope you didn't think my class is too stupid, ehehe~"
+                elif number > 2000:
+                    $ number_logical = True
+                    m 2hub "Oh, it's a score very close to mine!"
+                    m 2hua "So we will teach each other more in the future, ahaha!"
+                elif number > 1500:
+                    $ number_logical = True
+                    m 2eub "Oh, so you're an advancer!"
+                    m 2hub "Don't worry, I'll try my best to bring you up to my level!"
+                    m 2hua "Maybe one day, you can even surpass me and become my teacher!"
+                elif number > 800:
+                    $ number_logical = True
+                    m 2eud "Oh, you're kind of a beginner, I see."
+                    m 2hub "Don't let it get you down! It just means you have a lot of room for improvement!"
+                else:
+                    $ number_logical = True
+                    m 2ltc "Oh, so you haven't learnt much about chess..."
+                    m 2eub "That's okay, I'll do my best to teach you!"
+            $ persistent._mas_pm_player_chess_elo = number
+        "No, I don't have one.":
+            $ persistent._mas_pm_player_has_chess_elo = False
+            m 2hub "Oh, that's alright!"
+            m 2hua "Though I personally suggest you to have one!"
+            m 2eua "You don't need to hire someone to rate you, you just need to sign in a chess website!"
+            m 4eub "Then, after you've played dozens of games on the site using this account, the site can basically determine your ELO rating!"
+            m 4esa "You can try this website: {a=https://www.chess.com}{i}{u}https://www.chess.com{/u}{/i}{/a}"
+    m 2eua "Anyway, as an introduction to ELO, we're done now."
+    m 2hub "Nowadays, ELO rating system is widely used in many fields, such as Weiqi and football. If you are interested, you can learn about it!"
+    m 2hua "Thanks for listening~"
     return
 
 init 5 python:
