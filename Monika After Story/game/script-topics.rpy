@@ -17336,6 +17336,55 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_andromeda_strain",
+            category=['literature'],
+            prompt="The Andromeda Strain",
+            random=True
+        )
+    )
+
+label monika_andromeda_strain:
+    m 1eua "[player], have you ever heard of {i}Jurassic Park{/i}?"
+    m "It's a pretty famous story and it's gotten numerous adaptations and sequels... but what I really want to discuss right now is a lesser known novel by the same author, Michael Crichton."
+    m 7eub "And that's {i}The Andromeda Strain{/i}!"
+    m 1euc "It's all about the possibility of extraterrestrial microbes."
+    m 2esd "The story begins when a satellite crashes down to earth in a small town."
+    m 2euo "Unfortunately, that satellite came with a pretty terrifying passenger... the Andromeda Strain."
+    m 2rsc "Before scientists even get to the town to investigate, the entire population is wiped out by it, with two exceptions."
+    m 4wud "An elderly man and a newborn baby."
+    m 6efd "But when the scientist team arrives and begins investigating, nobody else dies. It's a total mystery at first!"
+    m 7mfsdld "How did just these two people survive, when the typical victims of a virus are the very young and the elderly?"
+    m 7esc "As the scientists study the microbe recovered from the satellite capsule, they make some alarming discoveries."
+    m 2wud "The Andromeda Strain is technically neither a virus nor a bacteria, making it all that much harder to figure out."
+    m 3esb "Luckily, the four scientists doing the investigation are some of the world's leading specialists in their fields!"
+    m 1esa "By the end of the story, they solve the mytstery and learn that the Andromeda Strain can't replicate under abnormal Ph conditions."
+    m 1eud "It turns out that the reason both the newborn and the elderly man survived was because their bodies' Ph levels were abnormal."
+    m 2ltd"That's a pretty interesting twist, huh?"
+    m 4lfd "But you know, a lot went wrong with their investigation."
+    m 6wfc "For example, at one point the strain mutates to eat into plastics and rubber, and {i}that{/i} leads to a nuclear bomb nearly detonating!"
+    m 7efc "And you know what? There's a character in all of this who made a really serious mistake."
+    m 1esc "Charles Burton was responsible for studying how quickly the virus spreads, incubates, and ultimately kills."
+    m 2efd "His crucial mistake was in failing to autopsy the rats that he had injected with an anti-coagulating drug."
+    m 2wfc "This mistake cost the team nearly 48 hours!"
+    m 3gfsdlc "Given how time sensitive this research was, and how rapidly the Andromeda Strain mutated..."
+    m 1dksdlc "It makes one wonder just what would've happened if the other team members also made such significant mistakes."
+    m 7ekd "It's possible that they would've solved the mytstery before the Andromeda Strain mutated, completely averting the nuclear bomb crisis."
+    m 7gtd "...and you know what?"
+    m 6efo "In the end, the Andromeda Strain still escapes the lab and gets into the atmosphere."
+    m 6eub "Luck seems to be on humanity's side, because once it gets into the atmosphere it somehow mutates into a benign pathogen."
+    m 3dksdlc "Could you imagine something so scary being stopped by mere luck?"
+    m 6fkc "It makes me really worry about the future sometimes..."
+    m 6esb "Ah! There's a silver lining though."
+    m 7eub "In reality, Burton's mistake never would have occurred and the research team would have had far more people working on it!"
+    m 1ekb "Even so... [player], if you're ever on a team project, don't forget to ask your teammates for help, okay?"
+    m 2eka "And if you just need someone to listen to you talk about your work, remember that I'm always here for you."
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_quiet_time",
             category=['us'],
             prompt="Do you mind when we spend time together quietly?",
