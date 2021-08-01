@@ -2367,6 +2367,142 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_chesslesson_opening_french_defense",
+            category=["chess lessons"],
+            prompt="Opening: French Defense",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_opening_basic_idea')",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_opening_french_defense:
+    m 1eua "French Defense is another popular response to 1.e4 and was considered solid and passive."
+    show monika at t21
+    python:
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1")
+        game.toggle_sensitivity()
+        game.show()
+    m 1lub "After this natural move, black can respond e6,{w=0.3}{nw}"
+    python:
+        game.queue_move("e7e6")
+        game.handle_monika_move()
+    extend 1lua " which starts the French Defense."
+    m 3eua "Since black's e6 pawn didn't directly add pressure on the center, an ideal choice for white would be d4,{w=0.3}{nw}"
+    python:
+        game.queue_move("d2d4")
+        game.handle_player_move()
+    extend 3lub " which builds a strong center for white."
+    m 1esd "However, black can respond a d5 move.{w=0.3}{nw}"
+    python:
+        game.queue_move("d7d5")
+        game.handle_monika_move()
+        game.request_highlight_diagonal("d5","f7",color = highlight_type_green)
+    extend 3lsa " With this d5-e6-f7 soild pawn chain, black has a lot of potential counterstrike chance."
+    m 3esa "Black's idea is trying to keep the center closed with this pawn chain, and then begin a queen side attack."
+    m 3eud "However, black's disadvantage is they have a blocked light-squared bishop,"
+    m 1eub "For white, they have two major choices."
+    m 1eua "The first one is to play exd5,{w=0.3}{nw}"
+    python:
+        game.queue_move("e4d5")
+        game.handle_player_move()
+    extend 1lub " immediately open the center."
+    m 1lua "Without doubt, black is going to recapture this pawn,{w=0.3}{nw}"
+    python:
+        game.queue_move("e6d5")
+        game.handle_monika_move()
+    extend 1hua " which is the {b}Exchange Variation{/b}."
+    m "This variation got this name for this variation exchanged pawns."
+    m 1eub "In Exchange Variation, white's idea is to avoid a closing game, open the center."
+    m 1eua "Let us analyze this situation."
+    m 1lub "Each side has a pawn in the center, and each side has lost a pawn, so the situation is symmetrical."
+    m 1lua "And it's white to play now, so even though the situation is symmetrical, white is slightly better."
+    m 1eua "And after that, the game is hard to predict and we won't talk much about it."
+    m 1esb "Another common variation of French Defense is {b}Advance Variation{/b}."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq d6 0 3")
+        game.toggle_sensitivity()
+        game.show()
+    m 1esa "White chooses to advance their pawn one square,{w=0.2}{nw}"
+    python:
+        game.queue_move("e4e5")
+        game.handle_player_move()
+    extend 1lsa " which is why there is a word \"advance\" in the name."
+    m 3esd "This move did not destroy the strong chain of French Defense. Instead, it makes this pawn chain stuck."
+    m 3esa "Thus, white expanded their space advantage."
+    m 2eub "If you were black, what would you do?"
+    m 2luc "At first glance, the center is still closed and the defense is still strong, so there seems to be nothing to worry about."
+    m 4esd "But the black side's development possibilities have been severely hampered."
+    python:
+        game.request_highlight_common_format("f6",highlight_type_red)
+    m 4lsc "For example, f6 square is being controlled by white's e5 pawn, which makes Nf6 impossible."
+    m 1esa "Also, remembered what I mentioned?"
+    python:
+        game.request_highlight_diagonal("c8","e6",highlight_type_yellow)
+    m 1esc "A weaknesses of black in French Defense is they blocked their bishop with their own pawn chain."
+    m 1rsc "So, on the one hand, black is missing f6 square which is a good place to develop knight. On the other hand, black is blocking their own bishop."
+    m 3esd "It's true that black can certainly spend some turns developing pieces in some other way."
+    m 3esc "Like Bd7, or Ne7."
+    m 2esd "But doing so often only makes you even more passive."
+    m 4eud "French Defense, though noted for its defensive solidity, is by no means devoid of aggression!"
+    m 4eua "This is also the key point I want to make to you."
+    m 1ltc "There are a lot of novices who start with making a few chains of pawns and then move their pieces around behind the chains, thinking that their defenses are unbreakable."
+    m 3esd "This idea is {i}absolutely{/i} wrong. Remember, there is {i}absolutely{/i} no perfect defense in chess."
+    m 3esc "Often unaware of their space disadvantage, these novices allow their opponents to advance and advance, eventually launch an overwhelming attack."
+    m 1esa "An opening with not even a bit of aggression is not an opening, but a blunder."
+    m 1eub "So, in this Advance Variation, the most accepted move is to stop white from gainning even more space."
+    python:
+        game.remove_highlight_all()
+        game.queue_move("c7c5")
+        game.handle_monika_move()
+    m 1lua "With c5, black counterstrike the root of white's pawn chain."
+    m 1lud "White can not just play dxc5,{w=0.3}{nw}"
+    python:
+        game.queue_move("d4c5")
+        game.handle_player_move()
+    extend 3esd " because this will only help black to develop their bishop."
+    python:
+        game.queue_move("f8c5")
+        game.handle_monika_move()
+    m 2euc "After Bxc5, black didn't lose a pawn and developed a bishop with this recapture move."
+    m 2ltd "Now white has an unprotected e5 pawn in the center, black has two pawns in the center and has developed a piece, so black is better."
+    m 2eua "A better move would be c3.{w=0.3}{nw}"
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/pp3ppp/4p3/2ppP3/3P4/8/PPP2PPP/RNBQKBNR w KQkq c6 0 4")
+        game.toggle_sensitivity()
+        game.show()
+        game.queue_move("c2c3")
+        game.handle_player_move()
+    extend 2lub " With this c3 pawn, white protected their d4 pawn."
+    m 2hua "After that, there's a lot of options, and it's not possible to talk about it in a couple of words here, so we'll do a separate lesson on that in the future."
+    m 1eub "At the end of my lecture, let me give French Defense an overall comment."
+    m 1eua "A game of French Defense is, in a way, a contest of counterattack."
+    m 1esb "{i}Hold the line, don't retreat, wait for the opportunity to counterattack,{/i} that's the black thinking."
+    m 1esa "What I want you to notice is that the reason why French Defense is popular."
+    m 1esb "Why French Defense, after all these years, is still considered a remarkable opening, is that it was an effective defense constructed in only a few turns."
+    m 1eub "The opening focus was on the control center, and the French Defense did that, so it worked."
+    m 1eua "Also, again, this opening is not entirely without aggression."
+    python:
+        game.hide()
+        game = MASChessDisplayableBase(is_player_white=True, starting_fen = "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq d6 0 3")
+        game.toggle_sensitivity()
+        game.show()
+    m 1lub "In the second turn, black played d5 to hit the center, where many beginners might play d6 for they think it's solid."
+    m 1eta "Indeed, it may have been solid at that time. But the d6 did little to help the control center, making space even more difficult for Franch's already awkward space."
+    m 1esa "And remember? In the Advance Variation, when black faces white's center pawn chain, the best option is to attack immediately with c5."
+    m 1esb "{i}A completely unaggressive opening is the recipe for failure{/i}. I want you to remember that."
+    m 1hua "Thanks for listening!"
+    $ game.hide()
+    show monika at t11
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_chesslesson_intro_advance_bishop",
             category=["chess lessons"],
             prompt="Bishop - Advanced",
