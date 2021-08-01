@@ -316,8 +316,16 @@ python early in mas_utils:
         """
         Decorator that marks functions and classes as deprecated
 
+        During LINT every UNIQUE EXECUTION (during the init phase) of a deprecated object
+            will be reported to stdout using lint hooks
+        During RUNTIME every EXECUTION of a deprecated object
+            will be reported in the main log (mas_log.txt) and stderr
+        NOTE: if we were allowed to raise, we RAISE a DeprecationWarning intead
+
+        You can access all the reports via __all_warnings__
+
         IN:
-            use_instead - string with the nameof the function/class to use instead
+            use_instead - string with the name of the function/class to use instead
             should_raise - whether we raise an exception or just log the error
         """
         def decorator(callable_):
