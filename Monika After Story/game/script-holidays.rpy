@@ -4710,6 +4710,7 @@ init -810 python:
 init -11 python in mas_player_bday_event:
     import datetime
     import store.mas_history as mas_history
+    import store
 
     def correct_pbday_mhs(d_pbday):
         """
@@ -4729,11 +4730,13 @@ init -11 python in mas_player_bday_event:
         # determine correct year
         _now = datetime.datetime.now()
         curr_year = _now.year
-        new_dt = pbday_dt.replace(year=curr_year)
+
+        new_dt = store.mas_utils.add_years(pbday_dt, curr_year - pbday_dt.year)
+
         if new_dt < _now:
             # new date before today, set to next year
             curr_year += 1
-            new_dt = pbday_dt.replace(year=curr_year)
+            new_dt = store.mas_utils.add_years(pbday_dt, curr_year - pbday_dt.year)
 
         # set the reset/trigger date
         reset_dt = pbday_dt + datetime.timedelta(days=3)
@@ -6299,6 +6302,26 @@ init 20 python:
  None could ever replace {size=+7}my{/size} special rose~
 
  Forever your Valentine,
+ Monika
+"""
+    )
+
+    mas_poem_vday_5 = MASPoem(
+        poem_id="poem_f14_5",
+        category="f14",
+        prompt="Sweetest",
+        title=" My dearest [player],",
+        text="""\
+ Chocolate covered cherries and a goodnight kiss;
+ Being with you, darling, is the sweetest bliss.
+ Popsicles in summer, dancing in the rain;
+ From snuggling you, honey, I could never abstain.
+ Your laughter is my sugar cube, your smile is my cream;
+ To share a coffee date with you, my love, would be a dream.
+ Of all the candy, all the cake, of fruits and cookies too;
+ The sweetest thing in my whole life will always be you.
+
+ Forever yours,
  Monika
 """
     )

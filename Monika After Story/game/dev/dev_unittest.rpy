@@ -2480,6 +2480,31 @@ label dev_unit_test_mhs_cpm:
         )
         rs_mhs(prev_data)
 
+        test_name = "2-29|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(2000, 2, 29)
+        inc_year = int(mas_utils.add_years(bday, test_now.year - bday.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 1),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 3),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 3, 3),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
     call dev_unit_tests_finish_test(mhs_tester)
 
     return

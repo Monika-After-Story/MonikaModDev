@@ -193,7 +193,7 @@ init -998 python in mas_ev_data_ver:
         valid_times = True
     except:
         valid_times = False
-        renpy.log("failed to verify mtimes")
+        store.mas_utils.writelog("[EARLY] [ERROR]: Failed to verify mtimes\n")
 
 init -950 python in mas_ev_data_ver:
     import store
@@ -2527,7 +2527,7 @@ label call_next_event:
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
-            $ mas_moni_idle_disp.unforce_all()
+            $ mas_moni_idle_disp.unforce_all(skip_dissolve=True)
 
         $ mas_globals.this_ev = ev
         call expression event_label from _call_expression

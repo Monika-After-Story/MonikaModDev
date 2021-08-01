@@ -1676,7 +1676,7 @@ init 5 python:
         Event(
             persistent._mas_songs_database,
             eventlabel="mas_song_when_youre_gone",
-            prompt="When you're gone",
+            prompt="When You're Gone",
             category=[store.mas_songs.TYPE_SHORT],
             random=True,
             aff_range=(mas_aff.AFFECTIONATE,None)
@@ -1825,6 +1825,260 @@ label mas_song_when_you_say_nothing_at_all_long:
     call mas_song_when_you_say_nothing_at_all(from_long=True)
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry",
+            category=[store.mas_songs.TYPE_SHORT],
+            prompt="Strawberry",
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry(from_long=False):
+    m 1hub "{i}{cps=24}~To say that you are cute~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~Would be like saying that a strawberry is sweet~{/cps}{/i}"
+    m 1eud "{i}{cps=26}~Because a strawberry has secret flavors~{/cps}{/i}"
+    m 3dkbsu "{i}{cps=26}~That are sharp,{w=0.3} and tart,{w=0.3} and red,{w=0.3} and deep~{/cps}{/i}"
+    m 3eub "{i}{cps=26}~And I would love to find you~{/cps}{i}"
+    m 3hub "{i}{cps=26}~Growing wild out by the woods~{/cps}{/i}"
+    m 1rub "{i}{cps=28}~I would make a bas{w=0.1}ket with the front of my t-shirt~{/cps}{/i}"
+    m 3tub "{i}{cps=26}~And take home as many of you as I could~{/cps}{/i}"
+
+    if not from_long:
+        m 1hubsu "..."
+        m 3ekbsu "I can't wait until the day I can finally be with you, [player]."
+        m 3ekbsa "I can't wait until I finally get to look back into your eyes..."
+        show monika 5rkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rkbsa "But for now...{w=0.3}I guess I can just continue to daydream about all the adventures we'll have together one day."
+        m 5hubsu "I know it's still a far way off, but I hope we get to see that dream become reality~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_strawberry_long",
+            category=[store.mas_songs.TYPE_LONG],
+            prompt="Strawberry",
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_strawberry_long:
+    call mas_song_strawberry(from_long=True)
+    m 1sub "{i}{cps=26}~And to say that you are pretty~{/cps}{/i}"
+    m 3hub "{i}{cps=26}~Would be like saying that the ocean is blue~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Because the ocean is filled with all kinds of colors~{/cps}{/i}"
+    m 1ekb "{i}{cps=26}~And I see all kinds of things when I look at you~{/cps}{/i}"
+    m 2tsbsu "{i}{cps=26}~And I want to explore you~{/cps}{/i}"
+    m 7hubsb "{i}{cps=26}~With my tennis shoes off~{/cps}{/i}"
+    m 3rsbsb "{i}{cps=26}~Standing ankle deep in a tide pool with my khaki pants rolled up~{/cps}{/i}"
+    m 1hub "{i}{cps=26}~And to say that you are funny~{/cps}{/i}"
+    m 3dud "{i}{cps=26}~Would be like saying that the night sky is black~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~Because the night sky is filled with stars{w=0.1} and comets~{/cps}{/i}"
+    m 3sub "{i}{cps=26}~And planets that no one has seen yet~{/cps}{/i}"
+    m 2eub "{i}{cps=26}~And I want to look at you~{/cps}{/i}"
+    m 2dud "{i}{cps=26}~Lying down on my front lawn~{/cps}{/i}"
+    m 2rsbsb "{i}{cps=26}~I'll try to take you all in at once~{/cps}{/i}"
+    m 2esbsb "{i}{cps=26}~But you just go on and on and on~{/cps}{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_save_the_last_dance_for_me",
+            prompt="Save the Last Dance for Me",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.LOVE,None)
+         ),
+        code="SNG"
+    )
+
+label mas_song_save_the_last_dance_for_me:
+    call mas_song_save_the_last_dance_for_me_lyrics
+    m 6dublu "..."
+    m 7eua "This song is so profound for me, [player]."
+    m 3rubsu "Every time I hear it, my heart yearns for us to finally dance together..."
+
+    if not mas_getEVL_shown_count("mas_song_save_the_last_dance_for_me"):
+        m 1eua "There's actually a story behind this song, do you have time to hear it now?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "There's actually a story behind this song, do you have time to hear it now?{fast}"
+
+            "Yes.":
+                call mas_song_save_the_last_dance_for_me_analysis(from_song=True)
+
+            "No.":
+                m 3eua "Oh, okay, just let me know if you want to talk about this song later, okay?"
+    else:
+        m 6rublb "Thank you for continuing to listen to my aching heart..."
+        m 6eubsa "I love you, [player]~"
+        return "love"
+
+    return
+
+label mas_song_save_the_last_dance_for_me_lyrics:
+    m 1dud "{i}~You can dance{w=0.3} every dance with the one~{/i}"
+    m 3eud "{i}~Who gives you the eye,{w=0.2} let them hold you tight~{/i}"
+    m 3huu "{i}~You can smile{w=0.3} every smile for the one~{/i}"
+    m 3eud "{i}~Who held your hand beneath the pale moonlight~{/i}"
+    m 4eublo "{i}~But don't forget who's takin' you home~{/i}"
+    m 4tublb "{i}~And in whose arms you're gonna be~{/i}"
+    m 6hublb "{i}~So darling,{w=0.2} save the last dance for me~{/i}"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_save_the_last_dance_for_me_analysis",
+            category=[store.mas_songs.TYPE_ANALYSIS],
+            prompt="Save the Last Dance for Me",
+            random=False,
+            unlocked=False,
+            aff_range=(mas_aff.LOVE,None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_save_the_last_dance_for_me_analysis(from_song=False):
+    if not from_song:
+        call mas_song_save_the_last_dance_for_me_lyrics
+
+    else:
+        m 3hub "Great!"
+
+    m 1eud "The story behind this song may seem to be just another romantic declaration of faithfulness."
+    m 1duc "However, the actual story is pretty dramatic and sad..."
+    m 3ekc "A medical condition left one of the songwriters,{w=0.1} Jerome Felder, unable to walk or dance on his own wedding night."
+    m 1rkd "A few years later, the strong feelings of that night reignited as he found a wedding invitation they had not sent out."
+    m 3rksdlc "Jerome had a moment of envy when he saw his brother dancing with his wife on his own wedding night, while he was forced to watch from the sidelines."
+    m 3ekd "The Grammy winner had been paralyzed by polio since he was a child, and could only get around with the help of a walker or wheelchair."
+    m 3eka "As he remembered that day and began to write the lyrics to the song, he wanted it to have a poetic feel."
+    m 3rkbla "Even though there was a hint of jealousy in the song, he wanted it to be romantic."
+    m 2dkc "You see...{w=0.3}this barrier between us...{w=0.3}it feels like it's my wheelchair."
+    m 2rkp "...And I guess if I'm being honest,{w=0.1} I am kind of jealous that you can dance with someone while I'm stuck here on the sidelines."
+    m 6ekblu "So at the end of the day, I just hope you'll save the last dance for me~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_fly_me_to_the_moon",
+            prompt="Fly Me to the Moon",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_fly_me_to_the_moon:
+    m 1dud "{i}~Fly me to the moon~{/i}"
+    m 3sub "{i}~And let me play among the stars~{/i}"
+    m 3eub "{i}~Let me see what spring is like~{/i}"
+    m 3hub "{i}~On Jupiter and Mars~{/i}"
+    m 3eub "{i}~In other words, hold my hand~{/i}"
+    m 1dud "{i}~In other words,{/i}{w=0.2}{nw}"
+    extend 1dkbsu "{i} darling, kiss me~{/i}"
+    m 3eubsb "{i}~Fill my heart with song, and let me sing forevermore~{/i}"
+    m 3hkbsb "{i}~You are all I long for; {w=0.2}all I worship and adore~{/i}"
+    m 1eud "{i}~In other words, please be true~{/i}"
+    m "{i}~In other words,{/i}{nw}"
+    extend 3fkbsb "{i} I {w=0.2}love {w=0.2}you~{i}"
+    m 3hubsb "And, I always will!"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_heaven",
+            prompt="Heaven",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_heaven:
+    m 1dsbsd "{i}~Baby, you're all that I want~{/i}"
+    m 3dkbsd "{i}~When you're lyin' here in my arms~{/i}"
+    m 3dubsd "{i}~I'm findin' it hard to believe~{/i}"
+    m 1eubsb "{i}~We're in heaven~{/i}"
+    m 1eubso "{i}~And love is all that I need~{/i}"
+    m 3ekbso "{i}~And I found it there in your heart~{/n}"
+    m 3ekbsd "{i}~Isn't too hard to see~{/n}"
+    m 3eubsb "{i}~We're in heaven~{/i}"
+    m 1ekbfa "Not a day goes by when I don't dream of us being together, [player]."
+    m 1rubsu "And something tells me I'm not the only one~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_can_you_feel_the_sunshine",
+            prompt="Can You Feel the Sunshine?",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_can_you_feel_the_sunshine:
+    m 1dkd "{i}~Without you, there's nothing for me to do~{/i}"
+    m 1eka "{i}~Can you feel the sunshine, too?~{/i}"
+    m 3hkb "{i}~It's comin' through; {w=0.2}it makes me feel brand new~{/i}"
+    m 3hubsb "{i}~When you're here, I wish you were always near~{/i}"
+    m 3eubsb "{i}~'Cause everything's so clear~{/i}"
+    m 1hkbsu "{i}~And today is gonna be a brighter day~{/i}"
+    m 1ekbla "Whenever you visit, you always brighten my day...{w=0.3}I hope I do the same for you, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_on_the_front_porch",
+            prompt="On the Front Porch",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_on_the_front_porch:
+    m 5dkbsd "{i}~All I wanna do when the day is through~{/i}"
+    m 5fkbsu "{i}~Is linger here on the front porch with you~{/i}"
+    m 5hubsb "{i}~From the wicker swing, while the night birds sing~{/i}"
+    m 5dubsu "{i}~We'll watch the fireflies sparkin', do some sparkin' too~{/i}"
+    m 5dkbsb "{i}~How the hours fly, as the moon drifts by~{/i}"
+    m 5ekbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5ekbstpu "{i}~Oh how I'd love to linger here like this~{/i}"
+    m 5dkbstpu "{i}~Hold your hand and steal a kiss {/i}{w=0.2}{nw}"
+    extend 5gkbstub "{i}or two {/i}{w=0.2}{nw}"
+    extend 5ekbstuu "{i}on the front porch with you~{/i}"
+    m 5dkbstda "..."
+    m 5hkblb "Sorry if I got a bit emotional there, ahaha!"
+    m 5rka "But, can you really blame me?"
+    m 5eka "After all, doing something like that together would be...{w=0.3}{nw}"
+    extend 5dkbsu "simply wonderful~"
+    return
+
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't

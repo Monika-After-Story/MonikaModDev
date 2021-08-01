@@ -65,9 +65,7 @@ jobs:
       - name: rpy lint
         run: |
           cd renpy
-          ./renpy.sh "../mas0105/" lint &> >(tee renpy_output)
-          python ../tools/renpy_lint_parser.py
-          cat renpy_output_clean
+          ./renpy.sh "../mas0105/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
       # distribute
       - name: rpy distribute
