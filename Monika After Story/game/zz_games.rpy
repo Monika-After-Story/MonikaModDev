@@ -19,7 +19,7 @@ init -10 python in mas_games:
 init 1 python in mas_games:
     #Constant for hangman name
     #NOTE: This is adjusted in the mas_pick_a_game label
-    HANGMAN_NAME = _("Hangman")
+    HANGMAN_NAME = _("Hangman") if not store.persistent._mas_sensitive_mode else _("Word Guesser")
 
     def _total_games_played(exclude_list=[]):
         """
@@ -178,7 +178,7 @@ label mas_pick_a_game:
 
     python:
         #Adjust for this name
-        mas_games.HANGMAN_NAME = _("Hangman")
+        mas_games.HANGMAN_NAME = _("Hangman") if not persistent._mas_sensitive_mode else _("Word Guesser")
 
         #Decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]

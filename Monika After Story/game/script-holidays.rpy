@@ -6305,26 +6305,6 @@ init 20 python:
 """
     )
 
-    mas_poem_vday_5 = MASPoem(
-        poem_id="poem_f14_5",
-        category="f14",
-        prompt="Sweetest",
-        title=" My dearest [player],",
-        text="""\
- Chocolate covered cherries and a goodnight kiss;
- Being with you, darling, is the sweetest bliss.
- Popsicles in summer, dancing in the rain;
- From snuggling you, honey, I could never abstain.
- Your laughter is my sugar cube, your smile is my cream;
- To share a coffee date with you, my love, would be a dream.
- Of all the candy, all the cake, of fruits and cookies too;
- The sweetest thing in my whole life will always be you.
-
- Forever yours,
- Monika
-"""
-    )
-
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:

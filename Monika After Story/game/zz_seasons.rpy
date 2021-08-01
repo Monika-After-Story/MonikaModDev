@@ -150,16 +150,12 @@ init 10 python in mas_seasons:
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
 
-        #Enable summer topics
-        store.mas_protectedShowEVL("monika_fireworks", "EVE", _random=True)
-
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        #Disable Summer Topics
-        store.mas_hideEVL("monika_fireworks", "EVE", derandom=True)
+        pass
 
 
     def _pp_winter():

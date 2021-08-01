@@ -5,17 +5,38 @@
 
 # hangman stuff only
 default persistent._mas_hangman_playername = False
-define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!"
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
 # hangman
-image hm_6 = "mod_assets/games/hangman/hm_6.png"
-image hm_5 = "mod_assets/games/hangman/hm_5.png"
-image hm_4 = "mod_assets/games/hangman/hm_4.png"
-image hm_3 = "mod_assets/games/hangman/hm_3.png"
-image hm_2 = "mod_assets/games/hangman/hm_2.png"
-image hm_1 = "mod_assets/games/hangman/hm_1.png"
-image hm_0 = "mod_assets/games/hangman/hm_0.png"
+image hm_6 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_6.png",
+    "True", "mod_assets/games/hangman/hm_6.png"
+)
+image hm_5 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_5.png",
+    "True", "mod_assets/games/hangman/hm_5.png"
+)
+image hm_4 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_4.png",
+    "True", "mod_assets/games/hangman/hm_4.png"
+)
+image hm_3 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_3.png",
+    "True", "mod_assets/games/hangman/hm_3.png"
+)
+image hm_2 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_2.png",
+    "True", "mod_assets/games/hangman/hm_2.png"
+)
+image hm_1 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_1.png",
+    "True", "mod_assets/games/hangman/hm_1.png"
+)
+image hm_0 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/games/hangman/hm_sm_0.png",
+    "True", "mod_assets/games/hangman/hm_0.png"
+)
 
 # sayori
 image hm_s:
@@ -332,18 +353,6 @@ init -1 python in mas_hangman:
         return words.pop(random.randint(0, len(words)-1))
 
 
-    def wordToDisplay(word):
-        """
-        Formats a word so it can be displayed in hangman
-
-        IN:
-            word - word to format (string)
-
-        RETURNS: display word
-        """
-        return ["_" if c != "-" else "-" for c in word]
-
-
 # post processing
 init 10 python:
 
@@ -362,7 +371,10 @@ label game_hangman:
 
     python:
         import store.mas_hangman as mas_hmg
-        is_sayori = store.mas_egg_manager.sayori_enabled()
+        is_sayori = (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        )
         is_window_sayori_visible = False
 
         # instruction text and other sensitive stuff
@@ -370,8 +382,13 @@ label game_hangman:
             "Guess a letter: (Type {0}'!' to give up)"
         )
 
-        instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
-        store.mas_hangman.game_name = "Hangman"
+        if persistent._mas_sensitive_mode:
+            instruct_txt = instruct_txt.format("")
+            store.mas_hangman.game_name = "Word Guesser"
+
+        else:
+            instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
+            store.mas_hangman.game_name = "Hangman"
 
 label mas_hangman_game_select_diff:
     m "Choose a difficulty.{nw}"
@@ -437,7 +454,7 @@ label mas_hangman_game_loop:
                 and persistent.playername.isalpha()
                 and len(persistent.playername) <= 15
             ):
-            display_word = mas_hmg.wordToDisplay(persistent.playername.lower())
+            display_word = list("_" * len(persistent.playername.lower()))
             hm_hint = mas_hmg.HM_HINT.format("I")
             word = persistent.playername.lower()
             player_word = True
@@ -447,7 +464,7 @@ label mas_hangman_game_loop:
             if word == -1:
                 word = mas_hmg.randomSelect(hangman_mode)
 
-            display_word = mas_hmg.wordToDisplay(word[0])
+            display_word = list("_" * len(word[0]))
             hm_hint = mas_hmg.HM_HINT.format(word[1])
 
             word = word[0]
@@ -471,7 +488,9 @@ label mas_hangman_game_loop:
         $ is_window_sayori_visible = True
 
     m "Alright, I've got one."
-    m "[hm_hint]"
+
+    if not persistent._mas_sensitive_mode:
+        m "[hm_hint]"
 
     # main loop for hangman game
     $ done = False
@@ -481,6 +500,9 @@ label mas_hangman_game_loop:
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
     $ give_up = False
+
+    if persistent._mas_sensitive_mode:
+        $ avail_letters.remove("?")
 
     $ dt_color = mas_hmg.WORD_COLOR
     while not done:
