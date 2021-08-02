@@ -4235,35 +4235,36 @@ init python:
             self.hint.insert(turn_number-1, hint)
 
         def score_settlement(self):
-            return
             """
             This function will calculate the number of points that should be given to the player for the current puzzle.
             This calculation is then added to the player's score.
+            This algorithm is essentially a ELO-algorithm.
             """
-            #Get the difference between the player's rating and the puzzle's rating.
-            delta = mas_list_puzzle[self.puzzle_id] - persistent._mas_pm_player_puzzlelevel
+            player_score = persistent._mas_player_puzzlelevel
+            puzzle_score = mas_list_puzzle[chess_puzzle_id-1]
             
-            #The expression of the variable incorrect_coefficient is an inverse proportional function in math.
-            #As the number of player incorrect move increases, this at first dramatically affects the coefficient of scoring, and then almost no more.
-            #There is also a guarantee that the coefficient will not fall below -1.472.
-            incorrect_coefficient = max(-1.472, (1/(3.2227-self.incorrect_total) - 0.643))
+            # Step 1:
+            # Calculate a correction ratio. This ratio is only related to the player's score.
+            # It is a negative linear correlation.
+            # As the player's score is higher, a win will result in fewer points and a loss will result in fewer points too.
+            ratio =  40 - player_score/100
 
-            #This coefficient is giving a different correction ratio depending on the delta variable.
-            #The expected expression here should be a function that is "incremented on R and its derivative is always positive", but only the function's time is infinite then can this function exists.
-            #Taylor expansion is used here to find the third iteration, that is, the cubic expression, which can guarantee the basic accuracy within the interval of [-100,100].
-            delta_coefficient = 0.00000008 * math.pow(delta,3) + 0.0003 * math.pow(delta,2) + 0.0595 * delta - 0.0422
+            # Step 2:
+            # The player's performance is then calculated. This is also a linear correlation function.
+            # The maximum value of this function is 1, which means that the player has not made any incorrect moves or asked for hints.
+            # Otherwise, the value will gradually decrease to 0 if the player makes a mistake or asks for a hint.
+            performance = 1 - (incorrect_total + hint_total)/(num_moves/2)
+            performance = max(performance, 0)
 
-            #And this coefficient is given another modification based on the player's current rating.
-            #The higher the player's rating, the more likely it is to drop points rather than increase them.
-            def rating_coefficient(value):
-                return value#Waiting to be finished
+            # Step 3:
+            # Calculate a expected performance.
+            expected_performance = 1 / (1 + float(pow(10,(puzzle_score-player_score)/400)))
 
-                if value > 0:
-                    return value * persistent._mas_pm_player_puzzlelevel
-            
-            #Finally, set the score into the persistent data.
-            persistent._mas_pm_player_puzzlelevel += rating_coefficient(7 * incorrect_coefficient * + delta_coefficient)
-            return 0
+            # Step 4:
+            # Set the score.
+            score_should_change = ratio * (performance - expected_performance)
+            persistent._mas_player_puzzlelevel += score_should_change
+
 
         def be_player_turn(self):
             """

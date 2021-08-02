@@ -9,7 +9,7 @@ define CHESSPUZZLE_RESULT_PLAYER_GIVE_UP = 2
 $ config.developer = True
 $ config.console = True
 
-default persistent._mas_pm_player_puzzlelevel = 800
+default persistent._mas_player_puzzlelevel = 800
 
 init 5 python:
     #-------
@@ -37,16 +37,6 @@ init 5 python:
     mas_list_puzzle.insert(1,476)
     mas_list_puzzle.insert(2,1283)
 
-    def DEBUG_STATUS_SHOW():
-        renpy.watch("chess_puzzle.num_moves")
-        renpy.watch("chess_puzzle.num_moves_total")
-        return 0
-
-    def DEBUG_STATUS_UNSHOW():
-        renpy.unwatch("chess_puzzle.num_moves")
-        renpy.unwatch("chess_puzzle.num_moves_total")
-        return 0
-
 init 5 python:
     addEvent(
         Event(
@@ -67,13 +57,13 @@ label monika_chesslesson_puzzles_start:
         if event.shown_count == 0:
             # Set player's chess puzzle level based on their chess level:
             if persistent._mas_pm_player_chesslevel == chesslevel_master:
-                $ persistent._mas_pm_player_puzzlelevel = 2000
+                $ persistent._mas_player_puzzlelevel = 2000
             elif persistent._mas_pm_player_chesslevel == chesslevel_advancer:
-                $ persistent._mas_pm_player_puzzlelevel = 1500
+                $ persistent._mas_player_puzzlelevel = 1500
             elif persistent._mas_pm_player_chesslevel == chesslevel_beginner:
-                $ persistent._mas_pm_player_puzzlelevel = 800
+                $ persistent._mas_player_puzzlelevel = 800
             else:
-                $ persistent._mas_pm_player_puzzlelevel = 400
+                $ persistent._mas_player_puzzlelevel = 400
             m 1eud "Chess puzzles?"
             m 1sub "I'm so glad you asked!"
             m 3sub "Solving puzzles of chess is an important way to improve your chess level."
@@ -130,7 +120,7 @@ label monika_chesslesson_puzzles_choicer:
         delta = dict()
 
         for i in range(1,len(mas_list_puzzle),1):
-            delta[str(i)] = abs(mas_list_puzzle[i] - persistent._mas_pm_player_puzzlelevel) 
+            delta[str(i)] = abs(mas_list_puzzle[i] - persistent._mas_player_puzzlelevel) 
 
         random_number = random.randint(1,2600)
         delta.sort(reverse = True)
@@ -142,9 +132,9 @@ label monika_chesslesson_puzzles_choicer:
 
 label monika_chesslesson_puzzles_result_complete:
     # Change the player's puzzle score based on their performance.
-    #$ chess_puzzle.score_settlement()
+    $ chess_puzzle.score_settlement()
 
-    if persistent._mas_pm_player_puzzlelevel < 800:
+    if persistent._mas_player_puzzlelevel < 800:
         # At this level(didn't even begin to learn chess), player need more encouragement than constructive proposal.
         if chess_puzzle.incorrect_total == 0:
             m "Wow, you correctly solved this puzzle without one single incorrect move!"
@@ -160,7 +150,7 @@ label monika_chesslesson_puzzles_result_complete:
             m "Puzzle solved!"
             m "Not bad. Though you chose a few bad moves, it's still a nice one!"
             m "Anyway..."
-    elif persistent._mas_pm_player_puzzlelevel <= 1500:
+    elif persistent._mas_player_puzzlelevel <= 1500:
         # At this level(beginner), player should start hearing some advice.
         if chess_puzzle.incorrect_total == 0:
             m 2hua "Puzzle solved!{w=0.3}{nw}"
@@ -174,7 +164,7 @@ label monika_chesslesson_puzzles_result_complete:
         else:
             m "Puzzle solved!"
             m "Though, considering how many wrong moves you've made, I suggest you do some special training sometime."
-    elif persistent._mas_pm_player_puzzlelevel <= 2000:
+    elif persistent._mas_player_puzzlelevel <= 2000:
         # At this level(advancer), player is a skillful person in chess already. So Monika started sharing ideas with the player.
         m ""
     else:
