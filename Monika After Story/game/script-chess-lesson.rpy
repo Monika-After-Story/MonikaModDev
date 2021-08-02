@@ -2512,6 +2512,289 @@ label monika_chesslesson_opening_french_defense:
     show monika at t11
     return
 
+define fen_chess_opening_center_accept = "rnbqkbnr/pppp1ppp/8/8/3pP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"
+define fen_chess_opening_center_beyer = "rnbqkbnr/ppp2ppp/8/3pp3/3PP3/8/PPP2PPP/RNBQKBNR w KQkq d6 0 3"
+define fen_chess_opening_english_indian = "rnbqkb1r/pppppppp/5n2/8/2P5/8/PP1PPPPP/RNBQKBNR w KQkq - 1 2"
+define fen_chess_opening_english_king = "rnbqkbnr/pppp1ppp/8/4p3/2P5/8/PP1PPPPP/RNBQKBNR w KQkq e6 0 2"
+define fen_chess_opening_english_agincourt = "rnbqkbnr/pppp1ppp/4p3/8/2P5/8/PP1PPPPP/RNBQKBNR w KQkq - 0 2"
+define fen_chess_opening_english_symmetrical = "rnbqkbnr/pp1ppppp/8/2p5/2P5/8/PP1PPPPP/RNBQKBNR w KQkq c6 0 2"
+define fen_chess_opening_french_advance = "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3"
+define fen_chess_opening_french_exchange = "rnbqkbnr/ppp2ppp/8/3p4/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0 4"
+define fen_chess_opening_italian_twoknight = "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4"
+define fen_chess_opening_italian_giuoco = "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4"
+define fen_chess_opening_modern_d4 = "rnbqkbnr/pppppp1p/6p1/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2"
+define fen_chess_opening_modern_e4 = "rnbqkbnr/pppppp1p/6p1/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"
+define fen_chess_opening_sicilian_open = "r1bqkbnr/pp1ppppp/2n5/2p5/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq d3 0 3"
+define fen_chess_opening_sicilian_close = "rnbqkbnr/pp1ppppp/8/2p5/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2"
+define fen_chess_opening_sicilian_alapin = "rnbqkbnr/pp1ppppp/8/2p5/4P3/2P5/PP1P1PPP/RNBQKBNR b KQkq - 0 2"
+define fen_chess_opening_scandinavian_main = "rnb1kbnr/ppp1pppp/8/q7/8/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 4"
+define fen_chess_opening_scandinavian_close = "rnbqkbnr/ppp1pppp/8/3p4/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2"
+define fen_chess_opening_queen_decline = "rnbqkbnr/ppp2ppp/4p3/3p4/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3"
+define fen_chess_opening_queen_accept = "rnbqkbnr/ppp1pppp/8/8/2pP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chesslesson_opening_choicer",
+            category=["chess lessons"],
+            prompt="I'd like to play a certain opening with you!",
+            pool=True,
+            conditional="seen_event('monika_chesslesson_opening_basic_idea')",
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_chesslesson_opening_choicer:
+    if mas_getEV("monika_chesslesson_opening_choicer").shown_count == 0:
+        m "Oh, you'd like to play a certain opening?"
+        m "That's fine!"
+        m "After all, you can't really learn them by just listening to me without playing one of the openings yourself!"
+        m "Oh, by the way, there are some openings because I haven't had enough time to prepare lessons to teach you."
+        m "So you can see for yourself what those openings look like now!"
+    
+    $ opening = ""
+    $ variation = ""
+    jump monika_chesslesson_opening_choicer_main
+
+label monika_chesslesson_opening_choicer_main:
+    # Since the list is terribly long, let us use this menu.
+    python:
+        final_item = ("Nevermind.", -1, False, False, 20)
+        menu_items = [
+            ("Center Game", "center", False, False),
+            ("English Opening", "english", False, False),
+            ("French Defense", "french", False, False),
+            ("Italian Game", "italian", False, False),
+            ("Modern Defense", "modern", False, False),
+            ("Sicilian Defense", "sicilian", False, False),
+            ("Scandinavian Defense", "scandinavian", False, False),
+            ("Queen's Gambit", "queen", False, False)
+        ]
+    
+    show monika 1eua at t21
+    $ renpy.say(m, "Which one would you like?{fast}", interact=False)
+    call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    
+    $ opening = _return
+    if opening == -1:
+        m 1eka "Oh, well."
+        return
+    jump monika_chesslesson_opening_choicer_sub
+
+label monika_chesslesson_opening_choicer_sub:
+    # Since the list is terribly long, let us use this menu.
+    python:
+        final_item = ("I'd like to play another opening.", -1, False, False, 20)
+        variation_items = {
+            "center":[
+                ("Center Game: Accepted", fen_chess_opening_center_accept, False, False),
+                ("Center Game: Beyer Gambit", fen_chess_opening_center_beyer, False, False)
+            ],
+            "english":[
+                ("English Opening: Anglo-Indian Defense", fen_chess_opening_english_indian, False, False),
+                ("English Opening: King's English Variation", fen_chess_opening_english_king, False, False),
+                ("English Opening: Agincourt Defense", fen_chess_opening_english_agincourt, False, False),
+                ("English Opening: Symmetrical Variation", fen_chess_opening_english_symmetrical, False, False)
+            ],
+            "french":[
+                ("French Defense: Advance Variation", fen_chess_opening_french_advance, False, False),
+                ("French Defense: Exchange Variation", fen_chess_opening_french_exchange, False, False)
+            ],
+            "italian":[
+                ("Italian Game: Two Knight Defense", fen_chess_opening_italian_twoknight, False, False),
+                ("Italian Game: Giuoco Piano Game", fen_chess_opening_italian_giuoco, False, False)
+            ],
+            "modern":[
+                ("Modern Defense with 1.e4", fen_chess_opening_modern_e4, False, False),
+                ("Modern Defense with 1.d4", fen_chess_opening_modern_d4, False, False)
+            ],
+            "sicilian":[
+                ("Sicilian Defense: Closed", fen_chess_opening_sicilian_close, False, False),
+                ("Sicilian Defense: Open", fen_chess_opening_sicilian_open, False, False),
+                ("Sicilian Defense: Alapin Variation", fen_chess_opening_sicilian_alapin, False, False)
+            ],
+            "scandinavian":[
+                ("Scandinavian Defense: Main Line", fen_chess_opening_scandinavian_main, False, False),
+                ("Scandinavian Defense: Closed", fen_chess_opening_scandinavian_close, False, False)
+            ],
+            "queen":[
+                ("Queen's Gambit: Accepted", fen_chess_opening_queen_accept, False, False),
+                ("Queen's Gambit: Declined", fen_chess_opening_queen_decline, False, False)
+            ]
+        }
+    
+    show monika 1eua at t21
+    $ menu_options = variation_items[opening]
+    $ renpy.say(m, "Is there any variation you prefer?{fast}", interact=False)
+    call screen mas_gen_scrollable_menu(menu_options, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+    
+    $ variation = _return
+    if variation == -1:
+        # Back to the last level to re-choose.
+        jump monika_chesslesson_opening_choicer_main
+    else:
+        m "Okay, then I'll set that variation on the board!"
+        jump monika_chesslesson_opening_choicer_color
+
+label monika_chesslesson_opening_choicer_color:
+    show monikat at t11
+    m "Do you want to play black or white?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you want to play black or white?{fast}"
+        "I'd like to play white.":
+            $ is_player_white = True
+            m "Okay!"
+        "I'd like to play black.":
+            $ is_player_white = False
+            m "Okay!"
+        "Let's be random!":
+            $ is_player_white = random.choice([True,False])
+            m "Okay!"
+    jump monika_chesslesson_opening_choicer_game
+
+label monika_chesslesson_opening_choicer_game:
+    window hide None
+    show monika 1eua at t21
+    python:
+        #Disable quick menu
+        quick_menu = False
+
+        #Add the displayable
+        chess_displayable_obj = MASChessDisplayable(
+            is_player_white,
+            pgn_game=None,
+            practice_mode=False,
+            starting_fen=variation,
+            casual_rules=False
+        )
+        chess_displayable_obj.show()
+        results = chess_displayable_obj.game_loop()
+        chess_displayable_obj.hide()
+
+        #Enable quick menu
+        quick_menu = True
+
+        # unpack results
+        new_pgn_game, is_monika_winner, is_surrender, num_turns = results
+
+        # game result header
+        game_result = new_pgn_game.headers["Result"]
+
+    show monika at t11
+    $ mas_gainAffection(modifier=0.5)
+    # monika wins
+    if is_monika_winner:
+        $ persistent._mas_chess_stats["losses"] += 1
+
+        #Monika wins by player surrender
+        if is_surrender:
+            if num_turns < 5:
+                m 1eud "Oh, you're just checking this opening out?"
+                m 1hub "Okay!"
+
+            else:
+                m 1ekc "Giving up, [player]?"
+                m 1eub "Alright, but even if things aren't going too well, it's more fun to play to the end!"
+                m 3eka "In the end, I'm just happy to be spending time with you~"
+                m 1eua "Anyway..."
+
+        #Monika wins by checkmate
+        else:
+            m 1sub "I won, yay!~"
+
+            #Some setup
+            python:
+                total_losses = persistent._mas_chess_stats.get("practice_losses", 0) + persistent._mas_chess_stats.get("losses", 0)
+                total_wins = persistent._mas_chess_stats.get("practice_wins", 0) + persistent._mas_chess_stats.get("wins", 0)
+
+            #Responses based on win rate
+            if float(total_wins)/total_losses < 0.3:
+                call mas_chess_dlg_game_monika_wins_often
+
+            else:
+                call mas_chess_dlg_game_monika_wins_sometimes
+                m 1eua "Anyway..."
+
+        if not is_surrender:
+            #Monika plays a little easier if you didn't just surrender
+            $ mas_chess._decrement_chess_difficulty()
+
+    #Always save in progress games unless they're over
+    elif game_result == mas_chess.IS_ONGOING:
+        call mas_chess_savegame(allow_return=False)
+        return
+
+    #Stalemate
+    elif game_result == "1/2-1/2":
+        if new_pgn_game.headers.get("DrawRequested"):
+            m 1eua "Sure, we'll call this game a draw."
+            m 3wuo "That was a pretty long game!"
+            $ line_start = "Great job though"
+
+        else:
+            m 1eka "Aw, looks like we have a stalemate."
+            $ line_start = "But on the bright side"
+
+        if not persistent._mas_ever_won["chess"]:
+            m 3hub "[line_start], you're getting closer and closer to beating me, [player]~"
+
+        else:
+            m 1hua "Nice work on getting this far, [player]~"
+
+        $ persistent._mas_chess_stats["draws"] += 1
+
+    #Player wins
+    else:
+        python:
+            player_win_quips = [
+                _("I'm so proud of you, [player]!"),
+                _("I'm proud of you, [player]!~"),
+                _("Well played, [player]!"),
+                _("It makes me really happy to see you win~"),
+                _("I'm happy to see you win!"),
+                _("No matter the outcome, I'll always enjoy playing with you.")
+            ]
+            persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
+
+            #Give player XP if this is their first win
+            if not persistent._mas_ever_won['chess']:
+                persistent._mas_ever_won['chess'] = True
+
+        m 3eub "Great job, you won!"
+        m 3hub "[renpy.substitute(random.choice(player_win_quips))]"
+
+        m 1eua "Anyway..."
+
+        $ mas_chess._increment_chess_difficulty()
+
+    #We only save a game if there's enough turns
+    if num_turns > 4:
+        m 1eua "Would you like to save this game?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Would you like to save this game?{fast}"
+
+            "Yes.":
+                $ loaded_game = None
+                call mas_chess_savegame
+
+            "No.":
+                pass
+
+    m "Do you want to play another certain opening?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you want to play another certain opening?{fast}"
+        "Yes.":
+            m "Alright!"
+            jump monika_chesslesson_opening_choicer
+        "No.":
+            m "Okay, then let us play again soon!"
+    return
+
 init 5 python:
     addEvent(
         Event(
