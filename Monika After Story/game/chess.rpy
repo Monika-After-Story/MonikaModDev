@@ -2397,7 +2397,7 @@ init python:
                 )
         
 
-        def request_highlight_line(self, line_number, color = 1):
+        def request_highlight_rank(self, line_number, color = 1):
             """
             Basically a simple way to highlight a line.
             The way to highlight those squares is actually calling the request_highlight() 8 times.
@@ -2412,7 +2412,7 @@ init python:
             for i in range(0,8,1):
                 self.request_highlight_common_format(chr(ord('a')+i) + str(line_number), color)
         
-        def remove_highlight_line(self, line_number):
+        def remove_highlight_rank(self, line_number):
             """
             Basically a simple way to remove highlights of a line.
             The way to remove those highlights is actually calling the remove_highlight() 8 times.

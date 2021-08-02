@@ -306,7 +306,7 @@ label monika_chesslesson_terms:
             ("Battery", ".bookmove", False, False),
             ("Develop", ".develop", False, False),
             ("Finachetto", ".finachetto", False, False),
-            ("File and Line",".fileandline",False,False),
+            ("File and Rank",".fileandrank",False,False),
             ("Fortress",".fortress",False,False),
             ("Gambit", ".gambit", False, False),
             ("Kind Side and Queen Side", ".side", False, False),
@@ -466,10 +466,10 @@ label monika_chesslesson_terms:
         m 1eua "[random_dialogue]"
         return
     
-    label .fileandline:
-        m 1eub "Oh, file and line?"
+    label .fileandrank:
+        m 1eub "Oh, file and rank?"
         m 1rusdlb "As what you can probably guess, the word file in chess, of course, doesn't mean a document. It means a vertical column!"
-        m 1esa "Line, on the other hand, means a horizontal column."
+        m 1esa "Rank, on the other hand, means a horizontal column."
         python:
             game = MASChessDisplayableBase(is_player_white=True,starting_fen="8/8/8/8/8/8/8/8 w - - 0 1")
             game.toggle_sensitivity()
@@ -479,8 +479,8 @@ label monika_chesslesson_terms:
         m 1esb "I've added letters and numbers on it, which you've perhaps already found."
         m 3eub "These letters, {i}abcdefgh{/i}, are the symbol of files."
         m 3eua "To refer to them, we can say a-file, b-file or something like these."
-        m 3hua "And lines, neturally, were presented by numbers."
-        m 1eub "So we can refer to them with this format: Line 1, Line 2, things like these."
+        m 3hua "And ranks, neturally, were presented by numbers."
+        m 1eub "So we can refer to them with this format: Rank 1, Rank 2, things like these."
         $ game.hide()
         m 1eua "[random_dialogue]"
         return
@@ -834,7 +834,7 @@ label monika_chesslesson_whenwin:
     m 2esb "Black is now {i}checkmated{/i}!"
     m 2eub "To understand why, let us see this.{w=0.1}.{w=0.1}.{w=0.1}{nw}"
 
-    #Highlight the lines that rooks are attacking.
+    #Highlight the ranks that rooks are attacking.
     python:
         for i in ['a','b','c','d','e','f','g','h']:
             game.request_highlight("{0}{1}".format(i, 1))
@@ -845,7 +845,7 @@ label monika_chesslesson_whenwin:
         
         renpy.pause(0.5)
     
-    m "See? White has two rooks to control two lines.{w=0.1} Black's king is now being attacked.{w=0.1}.{w=0.1}.{nw}"
+    m "See? White has two rooks to control two ranks.{w=0.1} Black's king is now being attacked.{w=0.1}.{w=0.1}.{nw}"
     extend 2euu "And there is no way black can get out of this now!"
     m 2etu "Wherever black is going, black is still being attacked!"
     m "This is a {i}checkmate{/i}--{w=0.1}And now, we won the game."
@@ -1003,7 +1003,7 @@ label monika_chesslesson_intro_basic_pawn:
     m 3hksdra "...Don't worry, this is the last special rule of pawns, I promise."
     m 3lksdra "To see this special rule, let us keep moving forward...{w=1.0}{nw}"
 
-    python:#Keep moving forward till the pawn reached the last line
+    python:#Keep moving forward till the pawn reached the last rank
         game.queue_move("e5e6")
         game.handle_player_move()
         renpy.pause(1)
@@ -1021,7 +1021,7 @@ label monika_chesslesson_intro_basic_pawn:
         renpy.pause(2)
 
     m 2eua "Okay, let us pause here..."
-    m 2wud "The pawn is going to reach the last line!{w=0.3} Is this pawn going to be useless then?"
+    m 2wud "The pawn is going to reach the last rank!{w=0.3} Is this pawn going to be useless then?"
     m 2euu "Actually, no.{w=1.0} In fact, this pawn is about to play to its full value:"
 
     python:
@@ -1032,7 +1032,7 @@ label monika_chesslesson_intro_basic_pawn:
     m "I know what you are thinking about:{w=1.0}{nw}"
     extend 2ltd "{i}What is this now? Did my eyes cheat on me?{/i}"
     m 2esb "Relax, [mas_get_player_nickname()]~ This is the last special rule: {i}Promotion{/i}."
-    m "When a pawn reaches the last line, it can be promoted into any piece except pawn and king."
+    m "When a pawn reaches the last rank, it can be promoted into any piece except pawn and king."
     if seen_event("monika_chesslesson_intro_basic_queen"):
         m 3esb "And as I told you, queen is the most powerful piece."
     else:
@@ -1257,13 +1257,13 @@ label monika_chesslesson_intro_basic_rook:
         renpy.pause(2)
     m 3eub "Rook is the second most powerful chess piece after queen."
     python:
-        game.request_highlight_line(5)
+        game.request_highlight_rank(5)
         game.request_highlight_file('d')
     m 3lub "See these highlighted squares?"
     m 3eua "They are all within the control of the rook at this point."
     m 1eub "Rooks can move any number of squares horizontally or vertically, as long as there is nothing blocking them in the path."
-    m 1eua "In other words, rooks can move to any square in its current file or line if no block in their path."
-    m "In this case, line 5 and d-File."
+    m 1eua "In other words, rooks can move to any square in its current file or rank if no block in their path."
+    m "In this case, rank 5 and d-File."
     m 1eud "If there is a piece in their movable path that blocks them, they must first remove that piece from that position or they cannot directly reach the other side."
     m 1duc "Let me put a few pieces on the chessboard to illustrate the point...{w=0.5}{nw}"
     python:
@@ -1440,7 +1440,7 @@ label monika_chesslesson_intro_basic_queen:
     m 1hub "As the most powerful piece, the queen can move any number of squares in any direction!"
     m 1duc "So, if you want me to mark the moveable range...{w=0.3}{nw}"
     python:
-        game.request_highlight_line(5)
+        game.request_highlight_rank(5)
         game.request_highlight_file('d')
         game.request_highlight_diagonal("a8","h1")
         game.request_highlight_diagonal("a2","g8")
@@ -1453,7 +1453,7 @@ label monika_chesslesson_intro_basic_queen:
         game = MASChessDisplayableBase(is_player_white=True, starting_fen = "8/8/8/3Q1P2/8/8/8/8 w - - 0 1")
         game.toggle_sensitivity()
         game.show()
-        game.request_highlight_line(5)
+        game.request_highlight_rank(5)
         game.request_highlight_file('d')
         game.request_highlight_diagonal("a8","h1")
         game.request_highlight_diagonal("a2","g8")
@@ -1604,14 +1604,14 @@ label monika_chesslesson_opening_basic_idea:
     m 2eub "Taking the queen as another example. In the corner, the queen controls 21 sqaures.{w=0.3}{nw}"
     python:
         game.request_highlight_file('a')
-        game.request_highlight_line(1)
+        game.request_highlight_rank(1)
         game.request_highlight_diagonal("a1","h8")
     extend 2eua " 21 squares, indeed, it's powerful. But what if the queen is in center?"
     python:
         game.queue_move("a1d4")
         game.handle_player_move()
         game.remove_highlight_all()
-        game.request_highlight_line(4)
+        game.request_highlight_rank(4)
         game.request_highlight_file('d')
         game.request_highlight_diagonal("a1","h8")
         game.request_highlight_diagonal("a7","g1")
@@ -2136,7 +2136,7 @@ label monika_chesslesson_opening_queen_gambit:
     python:
         game.queue_move("e7e6")
         game.handle_monika_move()
-    m 3eua "The move e6 is one of the way to decline it."
+    m 3eua "The move e6 is one of the way to d it."
     m 2eub "With this e6 pawn to protect d5 square, black stabilizes their pawn structure while refusing to accept this gambit."
     m 2esa "This is the variation {b}Queen's Gambit: Declined{/b}."
     m 2eub "The Nf6 move we mentioned in this lesson's beinning is also a way to decline this gambit,{w=0.3}{nw}"
@@ -3361,7 +3361,7 @@ label monika_chesslesson_pgn:
     m 1hua "If you haven't, don't worry, it's logical.{w=0.2} After all, this is a little hard to understand."
     m 1esa "When we're refering a pawn, we refer to it by its file index."
     m 1esb "In \"e4\" the move, the letter \"e\" means we are pushing the e-file pawn."
-    m 2esb "And it's white moving, white has only one pawn can move to line 4 now."
+    m 2esb "And it's white moving, white has only one pawn can move to rank 4 now."
     m 2esa "So we simply record this move as \"e4\"."
     m 2lsb "And in \"d5\" the move, black is pushing the d-file pawn, so we uses the letter \"d\" to refer to that pawn."
     m 2etc "At this point, you may think of a question:{w=0.5}{nw}"
@@ -3402,7 +3402,7 @@ label monika_chesslesson_pgn:
     m "And it moved to square b8, b8 is on the b-file too, this move didn't change the file of that pawn.{w=0.3} So we write the number \"8\" down."
     m 2esa "Now let's think about how to represent \"promotion\"."
     m 2esd "If there is only one possible promotion in chess, and that is to be queen, there is no special record required."
-    m 2rsd "We can just finish the record as \"b8\" here.{w=0.3} After all, in that possibility, people would see the record of a pawn reached the last line and know that it must have become a queen."
+    m 2rsd "We can just finish the record as \"b8\" here.{w=0.3} After all, in that possibility, people would see the record of a pawn reached the last rank and know that it must have become a queen."
     m 2esd "But the problem is that there isn't only one possible promotion.{w=0.2} There are four possibilities. Queen, Rook, Bishop or Knight."
     m 2esc "So it is necessary to write down what this pawn became."
     m 2lsb "At this point, the pawn became a queen, so we write \"=Q\" to record it was promoted to a queen."
@@ -3482,7 +3482,7 @@ label monika_chesslesson_pgn:
     m 2etd "So we should record this move as \"Rc5c6\"?"
     m 1eud "Actually, there is no need.{w=0.5}{nw}"
     extend 1eub " An important tenet of the PGN specification is {i}to keep the record length as short as possible while keeping the information clear{/i}."
-    m "In this position, we can ignore the c-file information and just write down \"5\" the line information to mark the location."
+    m "In this position, we can ignore the c-file information and just write down \"5\" the rank information to mark the location."
     m 1hua "So the final result is \"R5c6\"."
 
     python:
@@ -3497,7 +3497,7 @@ label monika_chesslesson_pgn:
         game.queue_move("a1d1")
         game.handle_player_move()
     
-    extend 2eub " then we should record this as \"Rad1\" instead of \"R1d1\" for it's the file information that matters, not the line information now."
+    extend 2eub " then we should record this as \"Rad1\" instead of \"R1d1\" for it's the file information that matters, not the rank information now."
     m 2rud "Of course, there are also very extreme cases where we need to write out all the information."
     m 2duc "Hold on...{w=0.5}{nw}"
 
@@ -3508,7 +3508,7 @@ label monika_chesslesson_pgn:
         game.show()
     
     m 2lud "This one.{w=0.5}{nw}"
-    extend 2wud " There are many queens that can move to d4 square at the same time! And writing line information or file information alone is not enough to ensure the clarity of the record!"
+    extend 2wud " There are many queens that can move to d4 square at the same time! And writing rank information or file information alone is not enough to ensure the clarity of the record!"
     m 2lud "So, if we moved like this,{w=0.3}{nw}"
     
     python:
@@ -3516,7 +3516,7 @@ label monika_chesslesson_pgn:
         game.handle_player_move()
     
     extend 2eud " Then we have no choice but to write down the initial position completely. The final result is \"Qb6d4\"."
-    m 2eub "Of course, this is a very, very rare situation. In practice, we usually just write the line message or the file message, and that would be enough."
+    m 2eub "Of course, this is a very, very rare situation. In practice, we usually just write the rank message or the file message, and that would be enough."
     m "Now let's talk about capturing from pieces that are not pawns.{w=0.3}{nw}"
     extend 2duc " Hold on...{w=0.5}{nw}"
     
@@ -3607,10 +3607,10 @@ label monika_chesslesson_pgn_question1:
         piece_type = random.choice(['Q','B','N','P','R','K'])
         piece_type = 'B'#DEBUG USE.
         piece_position_file = random.choice(['a','b','c','d','e','f','g','h'])
-        piece_position_line = random.randint(1,8)
+        piece_position_rank = random.randint(1,8)
         fen_to_start = ""
         for i in range(1,9,1):
-            if i == 9-piece_position_line:
+            if i == 9-piece_position_rank:
                 fen_to_start += str(ord(piece_position_file) - ord('a')) if str(ord(piece_position_file) - ord('a') -1) != "0" else ""
                 fen_to_start += piece_type
                 fen_to_start += str(7 - ord(piece_position_file) + ord('a')) if str(7 - ord(piece_position_file) + ord('a')) != "0" else ""
@@ -3626,40 +3626,40 @@ label monika_chesslesson_pgn_question1:
                 # Random result 1: Non-Diagonal move.
                 if random.randint(1,2) == 1:
                     # Sub-Random result 1: Move to up or down.
-                    target_position_line_available = [1,2,3,4,5,6,7,8]
-                    target_position_line_available.pop(piece_position_line-1)
-                    target_position_line = random.choice(target_position_line_available)
+                    target_position_rank_available = [1,2,3,4,5,6,7,8]
+                    target_position_rank_available.pop(piece_position_rank-1)
+                    target_position_rank = random.choice(target_position_rank_available)
                     target_position_file = piece_position_file
                 else:
                     # Sub-Random result 2: Move to left or right.
-                    target_position_line = piece_position_line
+                    target_position_rank = piece_position_rank
                     target_position_file_available = ['a','b','c','d','e','f','g','h']
                     target_position_file_available.remove(piece_position_file)
                     target_position_file = random.choice(target_position_file_available)
             else: 
                 # Random result 2: Diagonal move.
-                target_position_line_available = [1,2,3,4,5,6,7,8]
-                target_position_line_available.pop(piece_position_line-1)
-                target_position_line = random.choice(target_position_line_available)
-                target_position_file = chr(ord(piece_position_file) + (target_position_line - piece_position_line) * random.choice([-1,1]))
+                target_position_rank_available = [1,2,3,4,5,6,7,8]
+                target_position_rank_available.pop(piece_position_rank-1)
+                target_position_rank = random.choice(target_position_rank_available)
+                target_position_file = chr(ord(piece_position_file) + (target_position_rank - piece_position_rank) * random.choice([-1,1]))
         elif piece_type == 'R':
             if random.randint(1,2) == 1:
-                target_position_line_available = [1,2,3,4,5,6,7,8]
-                target_position_line_available.pop(piece_position_line-1)
-                target_position_line = random.choice(target_position_line_available)
+                target_position_rank_available = [1,2,3,4,5,6,7,8]
+                target_position_rank_available.pop(piece_position_rank-1)
+                target_position_rank = random.choice(target_position_rank_available)
                 target_position_file = piece_position_file
             else:
-                target_position_line = piece_position_line
+                target_position_rank = piece_position_rank
                 target_position_file_available = ['a','b','c','d','e','f','g','h']
                 target_position_file_available.remove(piece_position_file)
                 target_position_file = random.choice(target_position_file_available)
         elif piece_type == 'B':
-            target_position_line_available = [1,2,3,4,5,6,7,8]
-            target_position_line_available.pop(piece_position_line-1)
+            target_position_rank_available = [1,2,3,4,5,6,7,8]
+            target_position_rank_available.pop(piece_position_rank-1)
             #for i in range(0,7,1):
-                #if target_position_line_available[i] - piece_position_line > 
-            target_position_line = random.choice(target_position_line_available)
-            target_position_file = chr(ord(piece_position_file) + (target_position_line - piece_position_line) * random.choice([-1,1]))
+                #if target_position_rank_available[i] - piece_position_rank > 
+            target_position_rank = random.choice(target_position_rank_available)
+            target_position_file = chr(ord(piece_position_file) + (target_position_rank - piece_position_rank) * random.choice([-1,1]))
         elif piece_type == 'N':
             target_position_file = 1
         elif piece_type == 'P':
@@ -3667,18 +3667,18 @@ label monika_chesslesson_pgn_question1:
         else:
             # piece_type == 'K'   situation.
             target_position_file = piece_position_file
-            target_position_line = piece_position_line
-            while target_position_file == piece_position_line and target_position_file == piece_position_file:
-                target_position_line = chr(ord(piece_position_line) + random.randint(-1,1))
+            target_position_rank = piece_position_rank
+            while target_position_file == piece_position_rank and target_position_file == piece_position_file:
+                target_position_rank = chr(ord(piece_position_rank) + random.randint(-1,1))
                 target_position_file = chr(ord(piece_position_file) + random.randint(-1,1))
 
         game = MASChessDisplayableBase(is_player_white = True, starting_fen = fen_to_start)
         game.toggle_sensitivity()
         game.show()
         renpy.pause(2.0)
-        move_goingtoplay = piece_position_file + str(piece_position_line) + target_position_file + str(target_position_line)
-    m "target_position_line_available: [target_position_line_available]"
-    m "target_position_line: [target_position_line]"
+        move_goingtoplay = piece_position_file + str(piece_position_rank) + target_position_file + str(target_position_rank)
+    m "target_position_rank_available: [target_position_rank_available]"
+    m "target_position_rank: [target_position_rank]"
     m "[move_goingtoplay]"
     python:
         game.queue_move(move_goingtoplay)
@@ -3686,7 +3686,7 @@ label monika_chesslesson_pgn_question1:
         renpy.pause(2.0)
     
         player_answer = "" # The variblae to store what played typed.
-        correct_answer = piece_type + target_position_file + str(target_position_line) # The correct answer.
+        correct_answer = piece_type + target_position_file + str(target_position_rank) # The correct answer.
         corrected = False # True if the play answered correctly.
         failure_time = 0 # How many times did the player fail?
         failure_wronganswer = False # Ever the player replied a wrong answer(Type empty answer won't set this to True.)
@@ -3813,8 +3813,8 @@ label monika_chesslesson_stalemates:
             m 3eub "In this situation, white's rooks are controlling all the squares near the black king."
             python:
                 game.request_highlight_file('g',highlight_type_red)
-                game.request_highlight_line(6,highlight_type_red)
-                game.request_highlight_line(4,highlight_type_red)
+                game.request_highlight_rank(6,highlight_type_red)
+                game.request_highlight_rank(4,highlight_type_red)
             m 2esb "But it's important to note that at this moment, the black king is not under attack. In other words, he is safe at this point."
             m 2esa "It is only after it has taken a move that it is under attack. Until it takes a move, it's always safe."
             m "So this is a stalemate."
@@ -3825,9 +3825,9 @@ label monika_chesslesson_stalemates:
                 game.toggle_sensitivity()
                 game.show()
                 game.request_highlight_file('g',highlight_type_red)
-                game.request_highlight_line(6,highlight_type_red)
-                game.request_highlight_line(4,highlight_type_red)
-                game.request_highlight_line(5,highlight_type_red)
+                game.request_highlight_rank(6,highlight_type_red)
+                game.request_highlight_rank(4,highlight_type_red)
+                game.request_highlight_rank(5,highlight_type_red)
             m 2esa "Just here and now, the black king is under attack. You don't need it to move. It's already attacked."
             m 2hub "So this is not a stalemate, but a checkmate."
             m 2hua "I think you get it by now, right?"
@@ -4229,7 +4229,7 @@ label monika_chesslesson_mate_two_rook:
         game = MASChessDisplayableBase(is_player_white=True,starting_fen="3K4/7r/8/8/8/8/8/8 w - - 0 1")
         game.toggle_sensitivity()
         game.show()
-        game.request_highlight_line(7)
+        game.request_highlight_rank(7)
         game.request_highlight_file('h')
     extend 2eub " Okay! See the movable range of this rook?"
     m 2etc "Though it controls a dozen of squares, but it's the squares next to the king that really matter."
@@ -4251,12 +4251,12 @@ label monika_chesslesson_mate_two_rook:
         game.handle_player_move()
         renpy.pause(1.0)
     
-    m 3lub "Firstly, white moved one rook to control line 4."
+    m 3lub "Firstly, white moved one rook to control rank 4."
     python:
-        game.request_highlight_line(4)
-    m 3eub "See? There is no way black can let the king enter the line 4 now."
-    m 2eua "And, of course, black can not just let the king enter the line 6, because line 6 is closer to the boundary."
-    m 2eub "For more turns to survive, black should stay on the line 5."
+        game.request_highlight_rank(4)
+    m 3eub "See? There is no way black can let the king enter the rank 4 now."
+    m 2eua "And, of course, black can not just let the king enter the rank 6, because rank 6 is closer to the boundary."
+    m 2eub "For more turns to survive, black should stay on the rank 5."
     python:
         game.queue_move("d5e5")
         game.handle_monika_move()
@@ -4266,9 +4266,9 @@ label monika_chesslesson_mate_two_rook:
         game.queue_move("b2b5")
         game.handle_player_move()
         renpy.pause(1.0)
-        game.request_highlight_line(5)
-    m 2wsb "Notice that both the line 5 and the line 4 are being controlled by white now!"
-    m 2lsb "Black must flee to line 6."
+        game.request_highlight_rank(5)
+    m 2wsb "Notice that both the rank 5 and the rank 4 are being controlled by white now!"
+    m 2lsb "Black must flee to rank 6."
     python:
         game.queue_move("e5f6")
         game.handle_monika_move()
@@ -4285,33 +4285,33 @@ label monika_chesslesson_mate_two_rook:
         renpy.pause(1.0)
         game.queue_move("a4a6")
         game.handle_player_move()
-        game.remove_highlight_line(4)
-        game.request_highlight_line(6)
+        game.remove_highlight_rank(4)
+        game.request_highlight_rank(6)
         renpy.pause(1.0)
         game.queue_move("e6d7")
         game.handle_monika_move()
         renpy.pause(1.0)
         game.queue_move("b5b7")
         game.handle_player_move()
-        game.remove_highlight_line(5)
-        game.request_highlight_line(7)
+        game.remove_highlight_rank(5)
+        game.request_highlight_rank(7)
         renpy.pause(1.0)
         game.queue_move("d7c8")
         game.handle_monika_move()
         renpy.pause(1.0)
         game.queue_move("a6a7")
         game.handle_player_move()
-        game.remove_highlight_line(6)
+        game.remove_highlight_rank(6)
         renpy.pause(1.0)
         game.queue_move("c8d8")
         game.handle_monika_move()
         renpy.pause(1.0)
-    m 2esb "It's white's turn now. Black is on the boundary, unable to move to the line 7 for it was controlled by the rook on b7 square."
-    m 2esu "So now, white can simply attack the line 8,{w=0.2}{nw}"
+    m 2esb "It's white's turn now. Black is on the boundary, unable to move to the rank 7 for it was controlled by the rook on b7 square."
+    m 2esu "So now, white can simply attack the rank 8,{w=0.2}{nw}"
     python:
         game.queue_move("a7a8")
         game.handle_player_move()
-        game.request_highlight_line(8)
+        game.request_highlight_rank(8)
     extend 2hsu "{i} Checkmate{/i}."
     $ game.hide()
     m 2hub "This is how Two Rook Mate works. The easiest checkmate endgame in chess."
@@ -4430,16 +4430,16 @@ label monika_chesslesson_mate_one_rook:
     m 2eub "If we want to checkmate the opponent, then we should firstly push the king to the corner so we can limit its mobility."
     m 2eud "But how can we achieve this goal now?"
     m 2rud "In Two Rook Mate, if we want to push the king to the corner, the method is very simple."
-    m "First, we use a rook to control a line so that the king can't move down. Then we use another rook to attack the line where the king is currently."
+    m "First, we use a rook to control a rank so that the king can't move down. Then we use another rook to attack the rank where the king is currently."
     m 2eud "But now? We have no another rook."
-    $ game.request_highlight_line(5)
+    $ game.request_highlight_rank(5)
     m 2lud "Now, our rook blocks the possibility of the king moving closer to the center."
-    m 2luc "Once it attacks the king directly now, then it's the opponent's turn. The king can always escape to the side of our attack line that is good for it."
+    m 2luc "Once it attacks the king directly now, then it's the opponent's turn. The king can always escape to the side of our attack rank that is good for it."
     python:
-        game.remove_highlight_line(5)
+        game.remove_highlight_rank(5)
         game.queue_move("h5h6")
         game.handle_player_move()
-        game.request_highlight_line(6)
+        game.request_highlight_rank(6)
         renpy.pause(1.0)
         game.queue_move("d6d5")
         game.handle_monika_move()
@@ -4469,15 +4469,15 @@ label monika_chesslesson_mate_one_rook:
         game.toggle_sensitivity()
         game.show()
     m 2eua "Now let us back to beginning, start thinking about how to push the king of our opponent to the boundary."
-    m 2rud "Although the king can't control a whole line...{w=0.4}{nw}"
-    extend 2eud " But, actually, we don't need to control a whole line in the first place."
+    m 2rud "Although the king can't control a whole rank...{w=0.4}{nw}"
+    extend 2eud " But, actually, we don't need to control a whole rank in the first place."
     m 2eub "All we need is to make it impossible for our opponent's king to cross the blockade. So we just need to control 3 squares."
     python:
         game.request_highlight_common_format("c5")
         game.request_highlight_common_format("d5")
         game.request_highlight_common_format("e5")
         renpy.pause(0.5)
-    m 2lub "Look at the 3 squares I have highlighted. If we are controlling these three squares now, after we move the rook to line 6, the opponent can only flee to the border, not to the other side."
+    m 2lub "Look at the 3 squares I have highlighted. If we are controlling these three squares now, after we move the rook to rank 6, the opponent can only flee to the border, not to the other side."
     m 1eub "Isn't that exactly what a king can do? Therefore, let's take the king to this position and control those 3 squares."
     python:
 
@@ -4555,7 +4555,7 @@ label monika_chesslesson_mate_one_rook:
         game.handle_monika_move()
         renpy.pause(0.5)
     m 1tsb "{i}Try running again?{/i}{w=0.4} You can now say that to your opponent now."
-    m 1esb "Notice you're controlling g5 square and h5 square now, the opponent's king can't move to line 5."
+    m 1esb "Notice you're controlling g5 square and h5 square now, the opponent's king can't move to rank 5."
     m 1eub "Now that the blockade has been handed over to the king, let's move our rook and push it up a line!"
     show monika 1eua
     python:
@@ -4602,7 +4602,7 @@ label monika_chesslesson_mate_one_rook:
         game.handle_monika_move()
         renpy.pause(0.5)
     m 1hua "It's time to win!{w=0.2}{nw}"
-    extend 1esu " The opponent no longer has room to escape, and the turn is ours now. We just need to simply push the rook to the line where the opponent's king is, that is,{w=0.4}{nw}"
+    extend 1esu " The opponent no longer has room to escape, and the turn is ours now. We just need to simply push the rook to the rank where the opponent's king is, that is,{w=0.4}{nw}"
     extend 1efu " {i}Checkmate{/i}!"
     python:
         game.queue_move("a7a8")
@@ -4800,7 +4800,7 @@ label monika_chesslesson_mate_queen:
         game.remove_highlight_common_format("f4")
         game.remove_highlight_common_format("f6")
         game.request_highlight_file('d')
-        game.request_highlight_line(4)
+        game.request_highlight_rank(4)
         game.request_highlight_diagonal("a1","h8")
         game.request_highlight_diagonal("a7","g1")
     m 2wub "Almost every nook and cranny! Such is the power of a queen!"
@@ -4865,11 +4865,11 @@ label monika_chesslesson_mate_queen:
         game.queue_move("g8h8")
         game.handle_monika_move()
         renpy.pause(1)
-        game.remove_highlight_line(4)
+        game.remove_highlight_rank(4)
         game.remove_highlight_diagonal("b1","h7")
         game.queue_move("e4e7")
         game.handle_player_move()
-        game.request_highlight_line(7)
+        game.request_highlight_rank(7)
         game.request_highlight_diagonal("a3","f8")
         renpy.pause(2)
         game.queue_move("h8g8")
@@ -4880,7 +4880,7 @@ label monika_chesslesson_mate_queen:
     python:
         game.remove_highlight_file('e')
         game.remove_highlight_diagonal("a3","f8")
-        game.remove_highlight_line(7)
+        game.remove_highlight_rank(7)
         game.queue_move("e7g7")
         game.handle_monika_move()
         renpy.pause(1)
@@ -5399,7 +5399,7 @@ label monika_chesslesson_exchange_principle_advance:#UNFINISHED
         renpy.pause(1)
     m "Black has no way of reversing this result. It was a losing game for black."
     m "The reason is simple. Black's pieces are out of position."
-    m "If Black had a line 8 rook, the situation would be completely different."
+    m "If Black had a rank 8 rook, the situation would be completely different."
     m "It doesn't even have to be a rook, even if it's a bishop or a knight, then black is a sure win."
     m "But unfortunately no ifs.{w=0.2} The fact of the matter is that the position of black's pieces is just that bad. Material forces advantage is just useless."
     m "So, sometimes, if there's a move that even if it looks silly, even if it's going to lose materials, as long as it's going to help you get a perfect piece position, go for it."
@@ -5526,7 +5526,7 @@ label monika_chesslesson_epilogue:
     m 2estpa "...Thank you."
     m 2eutpd "I've actually benefited a lot from my time teaching you, not just at chess, but also elsewhere."
     m 2hua "For the first time, I knew how wonderful it was to teach so many things."
-    m 2ektua "As you can see, I've always been considered the perfect person. So rarely do I really talk to someone with such frankness and ease."
+    m 2ektua "As you can see, I've always been considered the perfect person. So rarely do I really talk to someone with such relax and ease."
     m "...{w=0.3}{nw}"
     extend 2husdrb " Oh, I didn't mean to cry."
     m 2euu "It's just that...{w=0.3}{nw}"
