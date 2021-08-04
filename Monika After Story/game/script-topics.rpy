@@ -10476,6 +10476,64 @@ label monika_yellowwp:
 
     return "derandom"
 
+# have you read amontillado
+default persistent._mas_pm_read_cask_of_amontillado = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_amontillado",
+            category=['literature'],
+            prompt="The Cask of Amontillado",
+            unlocked=True,
+            #random=True
+        )
+    )
+
+label monika_amontillado:
+    m 1eua "Hey [player], have you ever read {i}The Cask of Amontillado{/i}?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Hey [player], have you ever read {i}The Cask of Amontillado{/i}?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_read_cask_of_amontillado = True
+            m 1hua "Great!"
+            m 1eua "That means you don't mind me talking about the story with you, right?"
+            m 2eta "It's about a man named Montresor's quest for revenge against his friend, Fortunato the wine connoisseur."
+            m 6esb "One night during a carnival, Montresor puts his plot into action and lures Fortunato away from the prying eye of the public, to his private family mausoleum."
+            m 7efb "Montresor does this by asking his friend to verify for him that the wine he bought really is a cask of Amontillado - hence the title."
+            m 6rssdld "...Although it seems a little strange to drink in a family mausoleum, that might have been the most accessible secluded place."
+            m 7lsd "Montresor only makes the nature of his revenge clear when we, the reader, realize what he's doing."
+            m 2wfo "He intends to murder his friend!"
+            m 2efd "As his drunken friend follows him, Montresor chains him in an alcove and then begins to lay bricks at the opening."
+            m 2esc "Ultimately, Montresor entombs Fortunato behind the wall and keeps his murder a secret for the next fifty years."
+            m 2dkc "It's a pretty harsh punishment, isn't it?"
+            m 4dkc "...Particularly since the reader is never even given an explanation for what Fortunato did to make Montresor so angry."
+            m 2lksdlc "...[player], there's one part of this story that really scares me."
+            m 6ekc "While Montresor is entombing him, Fortunato's drunkeness starts to wear off."
+            m 7ekd "Imagine waking up to see someone sealing you away. You'd scream right?"
+            m 4esd "Well, that's exactly what Fortunato does."
+            m 2wsd "But Montresor loudly shouts over Fortunato so that nobody can hear him."
+            
+            m 2ltc "I'm not even sure if anyone would have been close enough to hear Fortunato's cries for help, but even so..."
+            m 2fktpc "Just the thought of trying to call for help and having your voice taken from you, making you helpless, is such a terrifying thought."
+            m 2fktud "I feel like it's similar to how it feels right when the game crashes on me or when you quit without saying goodbye."
+            m 2dktsc "The feeling right before you die..."
+            m 2dktdc ".{w=0.5}.{w=0.5}.{w=0.5}"
+            show monika 2rtsdld with dissolve_monika
+            m 2rtsdld "...That got awfully dark, huh?"
+            m 7hsa "Well, as long as we're together I'm sure I won't have to experience that despair for long!"
+            m 1ekb "Just make sure to tell me goodbye when you leave, okay [player]?"
+            return "derandom"
+        "No.":
+            $ persistent._mas_pm_read_cask_of_amontillado = False
+            m 1euc "Oh, alright."
+            m 1eka "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1fkb "I'd like to discuss it with you when you're ready."
+
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(
