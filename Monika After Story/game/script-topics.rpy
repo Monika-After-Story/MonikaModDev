@@ -17379,3 +17379,60 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hello_monika",
+            category=['life'],
+            prompt="Hello Monika!",
+            pool=True
+        )
+    )
+    
+label monika_hello_monika:
+
+    python:
+    
+        monika_hello_random_responses = ["Hi, {0}!".format(mas_get_player_nickname()),"Hello to you too, {0}!".format(player),"Hey, {0}! What's up?".format(player),"¡Hola {0}!".format(player),"Bonjour, {0}!".format(mas_get_player_nickname()),"Hi, {0}!".format(player),"Hey, {0}! How's it going?".format(mas_get_player_nickname()),"Hey hey!","Oh! {0}!".format(mas_get_player_nickname()),"Ah! {0}!".format(player)]
+
+        monika_hello_random_responses_how = ["I'm great, {0}! I feel super full of energy today!".format(player),"I feel really good! This is just a really feel-good day for me, today.","I feel great, thanks! I think this is going to be a really nice day.","I'm good, thanks! I'm thinking about what I'm going to do today.","I feel pretty good, thanks. I'm a little tired for some reason, but other than that, I'm fine."]
+        
+        monika_hello_random_responses_nice = ["Thanks, {0}! It's great to see you, too!".format(mas_get_player_nickname()),"Nice to see you too, {0}! I always love to see you.".format(mas_get_player_nickname()),"Thank you, {0}! You're always so sweet.".format(mas_get_player_nickname())]
+        
+        monika_hello_random_responses_what = ["I've been reading some poems I found online. Some of them were really great!","I've been reading some poems I found online. Some of them were just awful!","I'm reading a new novel! I'm not sure how I feel about it yet. If I finish it, maybe we can talk about it!","I've been reading news articles online. Some of what's going on out there is pretty crazy.","I've been practising piano. My playing is still a bit rough, ahaha!","I've been sitting here thinking for a little while. Not about anything in particular, just kind of this and that.","I've been, um... actually, I haven't done much today, ahaha!"]
+        
+        monika_hello_random_responses_lovely = ["Aww, thank you, {0}! You're so sweet!".format(mas_get_player_nickname()),"Oh, {0}! You flirt!".format(mas_get_player_nickname()),"You're even lovelier, {0}! I'm so happy to be here with you!".format(player),"Oh, you noticed! I think I look really good today!","Thank you! You're so kind, {0}!".format(mas_get_player_nickname()),"Oh, {0}! If I could, I would kiss you right now!".format(mas_get_player_nickname())]
+        
+        monika_hello_random_response_chosen = renpy.random.choice(monika_hello_random_responses)
+    
+    m 6hub "[monika_hello_random_response_chosen]"
+    
+    $ _history_list.pop()
+    menu:
+        m "[monika_hello_random_response_chosen]{fast}"
+
+        "How are you?":
+            $ monika_hello_random_responses_how_chosen = renpy.random.choice(monika_hello_random_responses_how)
+            m 1esa "[monika_hello_random_responses_how_chosen]"
+
+        "It's nice to see you!":
+            $ monika_hello_random_responses_nice_chosen = renpy.random.choice(monika_hello_random_responses_nice)
+            m 1hsbsa "[monika_hello_random_responses_nice_chosen]"
+            
+        "What have you been doing?":
+            $ monika_hello_random_responses_what_chosen = renpy.random.choice(monika_hello_random_responses_what)
+            m 6eua "[monika_hello_random_responses_what_chosen]"
+
+        "You look as lovely as ever!":
+            $ monika_hello_random_responses_lovely_chosen = renpy.random.choice(monika_hello_random_responses_lovely)
+            m 5eubsb "[monika_hello_random_responses_lovely_chosen]"
+    
+    
+    m "So, what do you want to do today?"
+    
+    return
+
+
+
