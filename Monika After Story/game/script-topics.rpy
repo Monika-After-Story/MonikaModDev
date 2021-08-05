@@ -10486,8 +10486,7 @@ init 5 python:
             eventlabel="monika_amontillado",
             category=['literature'],
             prompt="The Cask of Amontillado",
-            unlocked=True,
-            #random=True
+            random=True
         )
     )
 
@@ -10525,7 +10524,6 @@ label monika_amontillado:
             m 2rtsdld "...That got awfully dark, huh?"
             m 7hsa "Well, as long as we're together I'm sure I won't have to experience that despair for long!"
             m 1ekb "Just make sure to tell me goodbye when you leave, okay [player]?"
-            return "derandom"
         "No.":
             $ persistent._mas_pm_read_cask_of_amontillado = False
             m 1euc "Oh, alright."
