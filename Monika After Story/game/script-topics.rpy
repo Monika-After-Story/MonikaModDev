@@ -17379,3 +17379,48 @@ label monika_quiet_time:
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_speedreading",
+            conditional="seen_event('mas_text_speed_enabler')",
+            category=['literature'],
+            prompt="Speed Reading",
+            random=True
+        )
+    )
+
+label monika_speedreading:
+    if persistent._mas_pm_is_fast_reader:
+        m 3eub "I know you said you're a fast reader, [player]..."
+        m 3esa "But do you know {i}how{/i} fast you read, as in words per minute?"
+
+    else:
+        m 3eub "Hey, [player], I know you said you're a bit of a slow reader..."
+        m 3esa "Or maybe you were just not feeling confident when I asked?"
+
+    m 1esa "The average reader generally reads about 200-250 words per minute."
+    m 1dkd "The number of words in a novel can really vary, particularly between genres."
+    m 2esb "That said, most novels range from between 40,000 to 150,000 words."
+    m 2ekc "Three or four hours {i}minimum{/i} can seem like a lot of time to invest in a story you might not end up enjoying."
+    m 7esd "You've probably heard of speed reading before..."
+    m 7rkc "Which was a bit of a fad around 1960 when Eveyln Wood claimed she could read 2,700 words a minute, and then opened up institutes to teach other people."
+    m 6eksdru "Since we're not all using her method well over fifty years later, I think it's safe to say that it's not really achievable."
+    m 7eua "Still, there are lots of new technologies that are aiming to improve both reading speed and comprehension."
+    m 7eub "Since most people read using digital formats..."
+    m 7hub "You can change the {i}formatting.{/i}"
+    m 1esa "There are browser plugins which can change the color gradation of text lines to guide your eyes through a passage more easily."
+    m 3esb "And there are smart phone applications which let you choose how many words you see at a time."
+    m 3esa "Others show you only one word that's lined up so your eye movement is minimized, cutting down on time that way."
+    m 1esb "These techniques have the potential to help people with reading disorders."
+    m 1hub "On top of that, there are even typefaces that were developed specially for people with dyslexia!"
+    m 1eka "It's safe to say that no one method is perfect...{w=0.6} or will work for every person."
+    m 4esa "But...{w=0.3} if you've wanted to read a bit more and are putting it off because you don't feel like you have time..."
+    m 4eub "Why don't you look into some of those methods and give them a try?"
+    m 4hub "Even if it doesn't help you read faster, if it makes it more enjoyable that's still a win, right?"
+    m 4sub "I'd love to talk about some of the things you've read!"
+    m 5rua "Just...{w=0.3} make sure to save time for me~"
+    m 5hubla "ehehe"
+    return
