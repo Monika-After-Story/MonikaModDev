@@ -1,4 +1,19 @@
-#------To do: Add a new apologize reason for not listening the lesson carefully?--------
+###
+# The following is the order of lesson activation:
+# It definitely starts with monika_chesslesson_init, then, Player will be asked to answer the following questions:
+#     1. Do you know chess terms?
+#     2. Do you know PGN format?
+#     3. Do you know some special rules?(Stalemate and something else)
+# No matter how the player answers, the following lessons will always be unlocked:
+#     1. Basic introduction to pieces.
+#        And if player learnt these basic introduction, the advance introduction will be unlocked by them too.
+#     2. Key Points(this included PGN format).
+#     3. What is chess?
+#     4. Terms lesson
+# If player answered they know terms, then they won't need to watch the term lesson to mark them as "know terms". So do the PGN format and special rules.
+# After player know terms, PGN, the openings lesson will be unlocked.
+# After player learnt every opening and key point and advance piece introduction, the epilogue is unlocked.
+###
 define chesslevel_didntevenbegin = 1
 define chesslevel_beginner = 2
 define chesslevel_advancer = 3
@@ -58,6 +73,24 @@ init 4 python in mas_chessteaching:
             A Boolean. Based on player's chess level to return.
         """
         return (persistent._mas_pm_player_chesslevel >= 2)
+
+    def player_know_terms():
+        '''
+        Return a True if player know terms.
+        Otherwise return a False.
+        OUT:
+            Boolean.
+        '''
+        return persistent._mas_pm_player_know_terms or seen_event("monika_chesslesson_terms")
+    
+    def player_know_pgn():
+        '''
+        Return a True if player know PGN.
+        Otherwise return a False.
+        OUT:
+            Boolean.
+        '''
+        return persistent._mas_pm_player_know_pgn or seen_event("monika_chesslesson_pgn")
 
 label monika_chesslesson_answer_repeated:
     m 1rusdrb "Sorry, [mas_get_player_nickname()]..."
@@ -147,60 +180,52 @@ label monika_chesslesson_init:
                 m 1hksdla "Oh, gosh... It's even more oppressive now..."
                 m 1efa "But don't worry! I'm still going to try my best!"
     
-    if player_is_good_at_chess() == False:
-        m 1eub "Then, in view of your statement that you are not very good at chess, let me confirm a few things in particular."
-        m 3eua "Do you know what is {i}PGN format{/i}?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Do you know what is {i}PGN format{/i}?{fast}"
-            "Yes, I know.":
-                $ persistent._mas_pm_player_know_pgn = True
-                m 3hua "Okay! Then I guess I don't need to prepare PGN lesson for you."
-                m 1hub "Thanks for telling me that, [player]!"
-            "Not really.":
-                $ persistent._mas_pm_player_know_pgn = False
-                m 1eub "Okay, then I will add that lesson into my list!"
-        
-        m 1eua "And, do you know the exact rules of stalemate?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "And, do you know the exact rules of stalemate?{fast}"
-            "Yes, I know.":
-                $ persistent._mas_pm_player_know_stalemate = True
-                $ word = "another" if persistent._mas_pm_player_know_pgn else "a"
-                m 1hua "Okay! Then this will be [word] lesson that I don't need to prepare."
-            "Not really.":
-                $ persistent._mas_pm_player_know_stalemate = False
-                m 1hub "Not a problem! I'll teach you that one."
-        
-        m 3eub "One last thing, do you know basic chess terms?"
-        m 3rtc "Like...{w=0.3}{nw}"
-        extend 3rtd " {i}King Side{/i}, {i}Book Move{/i}, {i}Blunder{/i}, {i}Materials{/i} things?"
-        m 3rtc "Do you know them?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "Do you know them?{fast}"
-            "Yes, I know.":
-                $ persistent._mas_pm_player_know_terms = True
-                m 1hua "Understood! Then I guess there is no need for me to prepare those lessons, ahaha!"
-            "Not really.":
-                $ persistent._mas_pm_player_know_terms = False
-                m 1hub "That's fine, I will prepare a lesson of these terms for you!"
+    m 1eub "And then, there's some more advanced stuff that I'm not sure I should teach you right away."
+    if mas_chessteaching.player_is_good_at_chess():
+        m 1eka "I know you said you know a lot about chess, but just in case."
+    m 1eua "To make sure if you can learn the advanced stuff right away, I need to make sure that you know some certain points about chess."
+    m "Don't worry, even if you know these things, I will prepare those lessons for you. I just won't make them part of your required basic course!"
+    m 1eub "So..."
+    m 3eua "Do you know what is {i}PGN format{/i}?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you know what is {i}PGN format{/i}?{fast}"
+        "Yes, I know.":
+            $ persistent._mas_pm_player_know_pgn = True
+            m 3hua "Okay! Then I guess you don't need to learn PGN format before head to advanced stuff!"
+            m 1hub "Thanks for telling me that, [player]!"
+        "Not really.":
+            $ persistent._mas_pm_player_know_pgn = False
+            m 1eub "Okay, then I will add that lesson into my list!"
+    
+    m 1eua "And, do you know the exact rules of stalemate?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "And, do you know the exact rules of stalemate?{fast}"
+        "Yes, I know.":
+            $ persistent._mas_pm_player_know_stalemate = True
+            $ word = "another" if persistent._mas_pm_player_know_pgn else "a"
+            m 1hua "Okay! Then this will be [word] lesson that you don't need to learn!"
+        "Not really.":
+            $ persistent._mas_pm_player_know_stalemate = False
+            m 1hub "Not a problem! I'll teach you that one."
+    
+    m 3eub "One last thing, do you know basic chess terms?"
+    m 3rtc "Like...{w=0.3}{nw}"
+    extend 3rtd " {i}King Side{/i}, {i}Book Move{/i}, {i}Blunder{/i}, {i}Materials{/i}, {i}Finachetto{/i} things?"
+    m 3rtc "Do you know them?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Do you know them?{fast}"
+        "Yes, I know.":
+            $ persistent._mas_pm_player_know_terms = True
+            m 1hua "Understood! Then I guess there is no need for me to prepare those lessons, ahaha!"
+        "Not really.":
+            $ persistent._mas_pm_player_know_terms = False
+            m 1hub "That's fine, I will prepare a lesson of these terms for you!"
 
     m 1eua "Anyways, I will prepare them soon."
     m 1hua "Be ready!"
-
-    m "OH, AND BY THE WAY."
-    m "As it is still in the beta phase, you can now activate the Chess Lesson immediately for your convenience."
-    m "Normally, you have to wait three days."
-    m "So, do you want to activate them right now for testing?{nw}"
-    menu:
-        m "So, do you want to activate them right now for testing?{fast}"
-        "Yes.":
-            m "Then here we are."
-            $ pushEvent("monika_chesslesson_init_finished",skipeval=True)
-        "No.":
-            m "Alright."
 
     # Hide this event.
     $ mas_hideEVL("monika_chesslesson_init", "EVE", lock=True, depool=True)
@@ -223,12 +248,11 @@ label monika_chesslesson_init_finished:
     m 3husdla "Although they are a bit messy...{w=0.4}{nw}"
     extend 3husdlb " and I don't have a strict order for them either."
     if persistent._mas_pm_player_chesslevel == chesslevel_master:
-        m 3rusdlb "And considering that you're already a master at chess, I'm afraid these lessons seem rather useless to you..."
+        m 3rusdlb "And considering that you're already a master at chess, I'm afraid these lessons seem rather dry to you..."
     elif persistent._mas_pm_player_chesslevel == chesslevel_advancer:
-        m 3rusdlb "And considering that you say you've done quite a bit of work on chess, I hope you'll tolerate some of the more verbose aspects of my lesson."
+        m 3rusdlb "And considering that you say you've done quite a bit of work on chess, I hope you won't find my lesson boring, ehehe~"
     m 1eua "But anyway, if you see any lessons that interest you, just ask me."
-    m 1esb "There are also some courses that I won't offer you right now...{w=0.2} I'm only going to talk to you about those advanced stuffs after you've taken certain classes."
-    m 1hub "That's about all I have to say. If you want to have a class, you can start now!"
+    m 1hub "That's about all I have to say. If you want to have a class, we can start it now!"
     return
 
 init 5 python:
@@ -284,7 +308,7 @@ init 5 python:
             category=["chess lessons"],
             prompt="Terms in chess",
             pool=True,
-            conditional="seen_event('monika_chesslesson_init_finished') and persistent._mas_pm_player_know_terms == False",
+            conditional="seen_event('monika_chesslesson_init_finished')",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock":None}
         )
@@ -1517,7 +1541,7 @@ init 5 python:
             category=["chess lessons"],
             prompt="Opening: Basic idea",
             pool=True,
-            conditional="seen_event('monika_chesslesson_init_finished')",
+            conditional="mas_chessteaching.player_know_pgn() and mas_chessteaching.player_know_terms()",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock":None}
         )
