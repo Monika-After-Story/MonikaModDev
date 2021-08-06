@@ -17407,7 +17407,7 @@ label monika_hello_monika:
         
         monika_hello_random_response_chosen = renpy.random.choice(monika_hello_random_responses)
     
-    m 6hub "[monika_hello_random_response_chosen]"
+    m 6hub "[monika_hello_random_response_chosen]{nw}"
     
     $ _history_list.pop()
     menu:
