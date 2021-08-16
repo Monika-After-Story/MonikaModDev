@@ -17197,7 +17197,7 @@ init 5 python:
             prompt="Birth Flowers",
             conditional="renpy.seen_label('birthdate_set')",
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.NORMAL,None)
+            aff_range=(mas_aff.AFFECTIONATE,None)
         )
     )
 
