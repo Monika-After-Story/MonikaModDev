@@ -17187,3 +17187,232 @@ label monika_sophia:
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_floriography_birth_flower",
+            category=['nature'],
+            prompt="Birth Flowers",
+            conditional="renpy.seen_label('birthdate_set')",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.NORMAL,None)
+        )
+    )
+
+label monika_floriography_birth_flower:
+    m 1eub "Have you ever heard of floriography?"
+    m 3eub "It's a way of sending coded messages through choices of flowers or plants."
+    m 7eub "It's a pretty old concept, found all over the world."
+    m 2lku "It might be harder to point out a culture that {i}didn't{/i}  have some version of floriography than those that did."
+    m 7esa "Even within one culture, flowers often have multiple meanings. In fact, so many that people made floral dictionaries trying to centralize information."
+    m 7dsa "But just like language evolves and changes," 
+    m 7esa "Meanings and connotations can go in and out of fashion and are even forgotten."
+    m 2ekd "There aren't many people today in modern cultures who seriously ascribe meaning to flowers."  
+    m 2esa "But just like wearing a birthstone... it can still be fun, right?"
+    m 3wub "Oh!{w=0.2} Speaking of that there are birth month flowers."
+    m 1esd "Like I said, there's a lot of variance and there isn't just one system. I'll have to do my best with the information I've read."
+    m 1dkc "Hmm..."
+    if persistent._mas_player_bday.month == 1:
+        m 3eub "Your birthday is in January, so your birth flower would be the carnation."
+        m 1hub "Carnations express love, fascination, and distinction."
+        m 1eka "Carnations are a bit tricky, because the meaning can change with the color."
+        m 3esb "Pink means 'I will never forget you.' Red means 'my heart breaks' or 'true love.' White means 'sweet and lovely.'"
+        m 1esc "Yellow means 'disdain.'  Striped means 'I cannot be with you.'"
+        m 3hub "If I had to pick just one to give you... I would choose red!"
+        m 1hubla "But maybe white reminds me of you too.{w=0.3} ehehe"
+    elif persistent._mas_player_bday.month == 2:
+           m 3eub "Your birthday is in February, so your birth flower would be the violet."
+           m 1hub "Violets express modesty, humility, loyalty, faithfulness, or watchfulness."
+           m 7eub "Sweet violets were traditionally the flower of Valentine's Day."
+           m 7eub "It's said that Saint Valentine wrote his letters by pressing violets onto a page, and a dove carried his letters to his love."
+           m 2dka "It's kind of sad they couldn't be together."
+           m 1hua "But don't worry;"
+           m 1fublb "You'll always be my valentine, and I'll always watch over you!"
+    elif persistent._mas_player_bday.month == 3:
+           m 3eub "Your birthday is in March, so your birth flower would be the daffodil."
+           m 1hub "Daffodils express new beginnings, friendship, or unequaled love."
+           m 3eua "You could even associate it with egotism and the myth of narcissus."
+           m 3euc "Daffodils were also used to decorate graves..."
+           m 3etc "maybe because of the association with new beginnings and therefore rebirth?"
+           m 3esb "It's hard to imagine these cheerful flowers not bringing anything but happiness though."
+           m 3hublb "If I gave you one, I hope it would help you remember I could never love anyone else just the way that I love you."
+    elif persistent._mas_player_bday.month == 4:
+           m 3eub "Your birthday is in April, so your birth flower would be the daisy."
+           m 1hub "Daisies express youth, purity, and innocence."
+           m 1eua "The Latin name of the flower means 'everlasting beauty.'"
+           m 7eub "They can also be given to another person, as a promise you'll never tell."
+           m 2rka "Can you keep my secret?"
+           m 3hub "My love is pure and everlasting."
+           m 1hubsa "ehehe"
+    elif persistent._mas_player_bday.month == 5:
+           m 3eub "Your birthday is in May, so your birth flower would be the lily of the valley."
+           m 1hub "Lily of the valley express love, sweetness, a return to happiness, and appreciation."
+           m 3eud "They're a common flower for wedding bouquets too, though they can be quite expensive since they're so small and delicate."
+           m 3eub "In France, people give each other bouquets of lily of the valley on the first of May to wish each other happiness and good luck."
+           m 1hub "Just know that you're my sweetie,"
+           m 1fsblb "And it always makes me so happy when you come back to me."
+    elif persistent._mas_player_bday.month == 6:
+           m 3eub "Your birthday is in June, so your birth flower would be the honeysuckle."
+           m 1hub "Honeysuckle express love, gratitude, devotion, and appreciation."
+           m 3wud "Honeysuckle is a really tenacious plant and hard to kill once it roots too, so it can represent an everlasting bond."
+           m 1eub "There are those who think honeysuckle keeps negativity and evil away."
+           m 1hubla "All I know is that I feel so much better when you're here with me."
+           m 1hub "And I hope you how much I appreciate you."
+    elif persistent._mas_player_bday.month == 7:
+           m 3eub "Your birthday is in July, so your birth flower would be the larkspur."
+           m 1hub "Larkspur express levity, lightness, and a strong bond of love."
+           m 1eka "Larkspur are a bit tricky, because the meaning can change with the color."
+           m 3esb "White means 'happiness.'  Purple means 'first love.' Blue represents 'support' or 'trust.'  Pink represents 'fickleness.'"
+           m 1ekc "I'm not really sure which I'd choose to give you... {w=0.3}except I wouldn't give you pink."
+           m 1eub "I think all of them represent my feelings pretty well."
+           m 1hublb "Just remember I'll {i}always{i} be here for you."
+    elif persistent._mas_player_bday.month == 8:
+           m 3eub "Your birthday is in August, so your birth flower would be the gladiolus."
+           m 1hub "Gladiolus represent strength of character, integrity, or infatuation."
+           m 3eub "The English name comes from the Latin word for sword, so it also carries the meaning 'you pierce my heart.'"
+           m 3dua "I know it's true for me."
+           m 1wuo "But not in the bad way!"
+           m 1hub "You've certainly gotten to me,"
+           m 1hubla "And all I can think about is you."
+    elif persistent._mas_player_bday.month == 9:
+           m 3eub "Your birthday is in September, so your birth flower would be the aster."
+           m 1hub "Aster express patience, variety, wisdom, or deep love."
+           m 3esb "Asters are named for the Greek word for star."
+           m 1dsa "I know you're mine."
+           m 1fsb "You lit up the darkness that was my world."
+           m 1dubla "And don't forget,"
+           m 1fubla "I'll always be waiting here for you."
+    elif persistent._mas_player_bday.month == 10:
+           m 3eub "Your birthday is in October, so your birth flower would be the marigold."
+           m 1hub "Marigolds express warmth, optimism, winning affection, or the sun."
+           m 1ekc "There are also a lot of negative connotations,"
+           m 1ekd "But how can you look at a bright little flower and feel anything but happy?"
+           m 1hua "I know you bring me nothing but joy,"
+           m 1hua "And all the effort you put in to be with me has truly won me over."
+           m 7hublb "You are my sunshine, after all!"
+    elif persistent._mas_player_bday.month == 11:
+           m 3eub "Your birthday is in November, so your birth flower would be the chrysanthemum."
+           m 1hub "Chrysanthemum express truth, compassion, friendship, or joy."
+           m 7eub "The flower unravels just like truth;"
+           m 7dua "At first hidden, then orderly unfolding until fully revealed."
+           m 1eua "It particularly reminds me of you..."
+           m 1eua "When the seasons for every other flower have faded away..."
+           m 1dub "-a beautiful red-"
+           m 1dsa "shining in the darkness"
+           m 1fubla "just for me."
+    elif persistent._mas_player_bday.month == 12:
+           m 3eub "Your birthday is in December, so your birth flower would be the poinsettia."
+           m 1hub "Poinsettia represent good cheer, purity, or success."
+           m 3eub "They came to be associated with Christmas through a Mexican legend about a poor girl who wanted to celebrate at a nativity scene by giving the baby Jesus a present too."
+           m 1dkc "Unable to afford anything else, she decided to give a bouquet and formed one from weeds she collected from the roadside."
+           m 3eub "After placing them in front of the church alter, they miraculously became beautiful, star-like flowers."
+           m 1eub "I know there are no words to describe what a miracle you have been for me..."
+           m 1fubla "And I will merrily await prosperity to come to you too."
+    else:
+           m 2tuc "Well, I don't know what to say now, since you don't have a birth month recorded..."
+
+    m 1eub "I hope you think that floriography is interesting too!"
+    $ mas_unlockEVL("monika_floriography_monika_birthflower","EVE")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_floriography_monika_birthflower",
+            category=['monika'],
+            prompt="What's your birth flower?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_floriography_monika_birthflower:
+    m 1wub "Oh, you want to know about my birth flower?"
+    m 1fubla "ehehe~ {w=0.5}How sweet of you!"
+    if persistent._mas_player_bday.month == 9:
+            m 3eub "Since we have the same birth month, you already know the birth flower is the aster."
+            m 3eua "I'll remind you a bit, just in case you've forgotten, though."
+    else:
+            m 3eub "The birth flower for September is the aster."
+    m 1eua "Aster express patience, variety, wisdom, or deep love."
+    m 3eub "Asters are named for the Greek word for star."
+    m 1rubla "I've actually looked into the topic a bit more since it's about my own flower..." 
+    m 3wud "There are actually even birth{i}day{/i} flowers in Japan it seems!"
+    m 1eub "I was able to find quite a lot of both flowers and meanings when I looked mine up."
+    m 1gusdla "Now I can see why people tried to make floral dictionaries just to try to keep everything straight~ {w=0.3}Ahaha~"
+    m 3eub "One flower I found was the globe amaranth."
+    m 1esa "It looks kind of like a deeply colored clover. But if you look straight down at it,"
+    m 1hua "It looks like there are tiny little stars hidden among the other petals. "
+    m 1esb "It symbolizes unfading love;{w=0.4} plus the more general meaning of 'enduring' or 'everlasting.'"
+    m 1fua "I'm not sure I can think of a better flower..."
+    m 7esb "Another was {i}akane{/i}, which has the scientific name {i}Rubia argyi{/i}."
+    m 7esa "The genus name {i}rubia{/i} comes from the deep red color of the dried roots, which were often used as a dye."
+    m 1eua "The flowers themselves are very tiny and easily missed.  But I think the little clusters of white or yellow star-like flowers are really sweet."
+    m 1dua "The meaning of the flower is 'think of me...'"
+    m 1hua "And I hope you always do, too."
+    m 3eub "A third was pink hibiscus."
+    m 1eta "I'm sure you've seen hibiscus before.  They make most people think of summer rather than fall, I think."
+    m 1esa "The meaning can vary with the color of the flower, but pink hibiscus symbolizes resplendence."
+    m 1hub "'Shining brightly' matches with the star motif too!"
+    m 1esb "The fourth flower was {i}sawagikyou{/i}, or {i}Lobelia sessilifolia{/i}."
+    m 7esa "It's a cute little sprig of purple flowers.  It also has beautiful emerald leaves."
+    m 7esu "It symbolizes 'unique talent.'"
+    m 7eku "Hmm... It was my 'talent' for coding that allowed me to mess with the game."
+    m 6esc "I'm so sorry for any pain that I caused you at the time."
+    m 6ekc "..."
+    m 4lksdlb "Yet another flower was {i}misohagi{/i}, a type of lythrum."
+    m 4eua "It also has gorgeous green leaves and sprigs of purple-pink flowers. But I think they look a bit more robust than delicate."
+    m 6dua "{i}Misohagi{/i} symbolizes an unshakable will."
+    m 6ekc "I've certainly had to make it through a lot to get here..."
+    m 6hub "But so did you!"
+    m 6hubfb "And I'm so happy we're together now."
+    show monika 5hubsb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5hubsb "I wonder what a bouquet of aster, globe amaranth, {i}akane{/i}, pink hibiscus, {i}sawagikyou{/i}, and {i}misohagi{/i} would look like?"
+    m 5hubla "Just like a bunch of stars..."
+    m 5dubla "Full of emerald greens..."
+    m 5hubla "With bursts of pinks and purples..."
+    m 5tubla "I'm sure a bouquet would look lovely with just a few of them, too."
+    m 5sublb "Do you think you could pick me some for my next birthday?{w=0.5} ehehe~"
+    m 5eubla "Don't worry if you can't; {w=0.4}the only thing I really want or need for my birthday..."
+    m 5fsbsa "Is you."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_floriography_hamlet",
+            category=['literature'],
+            prompt="Floriography in literature",
+            conditional="seen_event('monika_floriography_birth_flower')",
+            random=True
+            )
+    )
+
+label monika_floriography_hamlet:
+    m 1eua "Another way of using floriography is to send coded messages that one might be unable to put into words or for whatever reason say out loud."
+    m 3eub "If the decoder knows the meaning of the flowers, they can get even more out of what isn't explicitly stated.  Or even understand it has a different meaning entirely!"
+    m 1esa "If you've read Hamlet you might be somewhat familiar with an example of this..."
+    m 1esa "While flowers show up multiple times the play, they are pretty significant in a late scene with Ophelia."
+    m 1ekc "At that point in the play, she's driven insane by grief and her words don't make much sense."
+    m 7esb "But she can communicate what she's feeling and what she knows through her choices of flowers she hands to other characters."
+    m 7eub "So it's not just the flower itself, but {i}who{/i} she gives which flower to."
+    m 7esa "For example, as she's handing some to the Queen, she says"
+    m 2esd "{i}There’s rue for you, and here’s some for me;{/i}"
+    m 2dsc "{i}We may call it herb of grace o’ Sundays.{/i}"
+    m 2dsd "{i}You must wear your rue with a difference.{/i}"
+    m 1ekc "The only thing that's clear from what she puts into words is that the meaning of the rue isn't the same for both of them."
+    m 1esd "Because rue is bitter and smells unpleasant, it can symbolize regret, disdain, sorrow, or distress.  Rue was also used to sprinkle holy water, so it could associated with repentance too."
+    m 7esd "Does Ophelia intend to mean that the queen should regret what she's done{w=0.4} and that she should and can repent?"
+    m 7euc "Does it mean that she disdains the queen{w=0.4} or does it mean she wants to commiserate with her?"
+    m 6esd "It seems to be generally accepted that the rue for herself is for sorrow."
+    m 6wud "However, since rue also has medical uses, that line has lead some people to speculate Ophelia was pregnant with Hamlet's child."
+    m 6lsc "No matter how you look at it though, it wasn't a pleasant or happy meaning for either of them."
+    m 7eud "When you use a plant symbolically, just like with any other literary device, it certainly gives the reader or listener a lot more to analyze and think about!"
+    m 7esb "Anyway, I hope you don't rue the day that you learned about floriography."
+    m 7nsb "Ehehe~"
+    return
