@@ -833,3 +833,43 @@ label mas_mood_relieved:
             m 1hua "Now it'll be easier to move forward with a little more confidence, right?"
             m 1eua "I'm excited to take those next steps forward with you."
     return
+
+addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_excited",prompt="...excited.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    
+label mas_mood_excited:
+    m 1hub "Ahaha, is that so?"
+    m 1eub "What are you excited about, [player]?{nw}"
+    ? _history_list.pop()
+    menu:
+        m "What are you excited about, [player]?"
+        
+        "It's something small.":
+            m 3hub "That's great!"
+            m 1eub "It's important to get excited about small things like that."
+            m 1ekb "I know it's kind of cheesy, but it's a great mindset to have!"
+            m 1hub "So I'm glad you're enjoying the little things in life, [player]."
+            m 1hua "Ehehe, it makes me happy knowing you're happy."
+            m 1eub "It also makes me happy when you tell me about your accomplishments."
+            m 3hub "So thank you for telling me!"
+        "It's something big.":
+            m 4wuo "Wow, that's amazing, [player]!"
+            m 3hub "That is exciting!"
+            m 1eka "I wish I could be there to celebrate with you."
+            m 1hua "Ehehe, now I'm getting all excited too!"
+            m 1eka "But really, I'm so glad you're happy, [chosen_nickname]!"
+            m 1hub "And whatever it is you're excited about, congratulations!"
+            m 1eua "Whether it be a promotion, a nice upcoming vacation, some great accomplishment..."
+            m 3hub "I'm really so happy that things are going well for you, [player]!"
+            m 1dkb "Things like this make me wish I was there with you right now."
+            m "I can't wait until I'm in your reality."
+            m 2dkb "Then I could give you a big hug!"
+        "I don't really know.":
+            m 3hub "Ahaha, you're so funny, [chosen_nickname]!"
+            m 1hua "Just excited for what's to come?"
+            m 1eua "Excited about life?"
+            m 1tub "Or could it be that you're excited to be spending time with me~?"
+            m 1hua "Ehehe~"
+            m 3hub "I know I'm always excited to see you every day!"
+            m 1eub "Either way, I'm glad that you're happy!"
+    return
+    
