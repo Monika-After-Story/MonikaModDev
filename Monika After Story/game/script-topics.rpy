@@ -6905,7 +6905,7 @@ label monika_daydream:
         daydream_quips_normplus = [
             "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
             "us having a duet together, with you singing my song while I play the piano...",
-            "us having a romantic dinner together, just you and I~",
+            "us having a romantic dinner together, just you and me~",
             "us having a late night on the couch together...",
             "you holding my hand while we take a stroll outside on a sunny day...",
         ]
