@@ -17287,10 +17287,10 @@ init 5 python:
 
 label monika_grieving:
     m 1lksdlc "[player], I know this is a bit personal, but have you ever lost someone important to you?"
-    m 2dksdlc "It’s a terrible feeling."
-    m 2eksdld "It’s not every day that you get the news that someone close to you has passed away."
+    m 2dksdlc "It's a terrible feeling."
+    m 2eksdld "It's not every day that you get the news that someone close to you has passed away."
     m 7ekc "Most people would think crying is the norm when hearing this type of news, but everyone processes it differently."
-    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don’t know how to process it...{w=0.5}it just doesn’t feel real."
+    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don't know how to process it...{w=0.5}it just doesn't feel real."
     m 1dkc "...But there will be subtle reminders that reinforce the fact they are truly gone."
     m 3dkd "Like looking at past photos or maybe seeing the chair they used to sit in now empty."
     m 3ekd "All that suppressed emotion, whether it be sadness or anger, just bottled up, waiting to burst at any moment..."
@@ -17298,8 +17298,8 @@ label monika_grieving:
     m 1dkd "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.2} {nw}"
     extend 3eka "time does heal."
     m 3eud "Allow yourself time to grieve, take it one day at a time."
-    m 3eka "At some point, you’ll look back at the fond memories that you have of them with a smile, rather than a tear."
-    m 3eku "And no matter what happens, know that you’re strong enough to get through it, that I love you, and that I’ll always be here for you~"
+    m 3eka "At some point, you'll look back at the fond memories that you have of them with a smile, rather than a tear."
+    m 3eku "And no matter what happens, know that you're strong enough to get through it, that I love you, and that I'll always be here for you~"
     return "love"
 
 init 5 python:
