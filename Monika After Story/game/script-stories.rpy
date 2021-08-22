@@ -188,14 +188,7 @@ label monika_short_stories_menu:
 
         switch_item = ("I'd like to hear a " + switch_str + " story", "monika_short_stories_menu", False, False, 20)
 
-        #Final quit item
-        if persistent._mas_sensitive_mode:
-            space = 20
-
-        else:
-            space = 0
-
-        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
+        final_item = (mas_stories.STORY_RETURN, False, False, False, 0)
 
     # move Monika to the left
     show monika 1eua at t21
@@ -208,10 +201,7 @@ label monika_short_stories_menu:
     $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
 
     # call scrollable pane
-    if persistent._mas_sensitive_mode:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
-    else:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -289,8 +279,6 @@ label mas_scary_story_setup:
 
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-
-    $ mas_changeBackground(mas_background_def)
 
     #If we're in O31 mode, it's already raining and the room is also already set up
     if not persistent._mas_o31_in_o31_mode:
