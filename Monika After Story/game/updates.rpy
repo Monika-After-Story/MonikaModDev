@@ -301,7 +301,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
@@ -316,7 +316,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
 
     ### special function for resetting versions
@@ -374,7 +374,20 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.1.3
+# 0.12.2.3
+label v0_12_2_3(version="v0_12_2_3"):
+    python:
+        pass
+    return
+
+# 0.12.2.2
+label v0_12_2_2(version="v0_12_2_2"):
+    python:
+        if seen_event("monika_nihilism"):
+            mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
+    return
+
+# 0.12.2
 label v0_12_2(version="v0_12_2"):
     python:
         if persistent.ever_won:
