@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.2.3
 label v0_12_2_3(version="v0_12_2_3"):
     python:
-        pass
+        if seen_event("monika_back_ups"):
+            mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
     return
 
 # 0.12.2.2

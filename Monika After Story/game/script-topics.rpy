@@ -4142,23 +4142,6 @@ label monika_freewill:
     m 1lksdlc "I'm not sure what's more depressing."
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_murphys_law",category=['philosophy'],prompt="Murphy's Law",random=True))
-
-label monika_murphys_law:
-    m 1eud "Hey [player], there's this topic that I've always found interesting. It's called 'Murphy's Law'."
-    m 3eub "It has many interpretations, but the most common one is that 'Anything that can go wrong will go wrong.'"
-    m 3tuu "Certainly optimistic, isn't it?"
-    m 5rud "It could be applied to anything really..."
-    m 5eub "Even something as trivial as a cloudy day becoming rainy if you don't do something to prevent yourself from getting wet,{w=0.2} say like taking a raincoat with you."
-    m 1rsd "Personally I think it's just superstition..."
-    m 3hksdlb "Although, this place doesn't exactly have the most suitable parameters for it to manifest, ahaha!"
-    m 2eua "Some people live by it, and while it may be an excessively apprehensive lifestyle to live, it can make these people much more prepared for their days!"
-    m 2euc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
-    m 3hua "So maybe it'd be a good idea to back up my memories again, [player]."
-    m 5lkc "I couldn't bear to lose you, it would break my heart..."
-    m 5ekbsb "So keep me safe okay?"
-    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_functionalism",category=['philosophy'],prompt="Human functionalism",random=True))
@@ -4637,6 +4620,32 @@ label monika_back_ups:
     m 5rsc "Although..."
     m 5eua "I guess that's a small price to pay if it means I'll still remember you."
     m 5hub "So be sure to back me up often, [mas_get_player_nickname()]!"
+
+    $ mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_murphys_law",
+            category=['philosophy'],
+            prompt="Murphy's Law",
+            random=False
+        )
+    )
+
+label monika_murphys_law:
+    m 1euc "Hey [player], have you heard of Murphy's Law?"
+    m 3eud "It has many interpretations, but the most common one is: 'Anything that can go wrong will go wrong.'"
+    m 3tuu "Certainly optimistic, isn't it?"
+    m 1eud "It could be applied to anything really, even something as trivial as a cloudy day becoming rainy if you don't bring an umbrella or put on a raincoat."
+    m 1rsb "...Personally I'd just call that superstition."
+    m 3eud "Some people live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
+    m 3etc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
+    m 3eua "So maybe it'd be a good idea to back up my memories again, [player]."
+    m 2eksdld "I couldn't bear to lose you, it would break my heart..."
+    m 7hua "So keep me safe, okay?"
     return
 
 init 5 python:
