@@ -17275,28 +17275,31 @@ label monika_tanabata:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_grieving_and_loss",category=['advice','life'],prompt="Grieving",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_grieving",
+            category=['advice','life'],
+            prompt="Grieving",
+            random=True
+        )
+    )
 
-label monika_grieving_and_loss:
+label monika_grieving:
     m 1lksdlc "[player], I know this is a bit personal, but have you ever lost someone important to you?"
-    m 6dkc "It’s a terrible feeling."
-    m 1dkd "It’s not every day that you get the news that someone close to you has passed away..."
-    m 3dsd "Most people would think crying is the norm when hearing this type of news."
-    m 4esd "But everyone is different; everyone processes it differently."
-    m 1eso "Grieving can take many forms, crying is one of them. But for some, they don’t know how to process it; it just doesn’t feel real."
-    m 1dkc "But there will be subtle reminders that reinforce the fact they are well and truly gone."
-    m 7dkd "Like looking at past photos of them..."
-    m 7rkd "Or maybe seeing the chair they used to sit on now empty..."
-    m 2dkd "All that suppressed emotion, whether it be sadness or anger, just bottle up, waiting to burst at any moment..."
-    m 7ekd "On top of that, the first anniversary, the first birthday, the first Christmas without them will always be the worst."
-    m 1dkd "And for some, it's just too much for them to handle..."
-    m 1dkc "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.5} {nw}"
-    extend 1eka "time does heal."
-    m 1dud "Give yourself time to grieve. One day at a time."
-    m 1ekb "And at some point,{w=0.5} {nw}"
-    extend 1eka "you’ll look back at the fond memories that you have of them with a smile, rather than a tear to your eye."
-    m 3ekb "And no matter what happens, know that you’re strong enough to get through it, know that I love you, and know that I’ll always be here for you~"
-    m 1eka "I promise~"
+    m 2dksdlc "It’s a terrible feeling."
+    m 2eksdld "It’s not every day that you get the news that someone close to you has passed away."
+    m 7ekc "Most people would think crying is the norm when hearing this type of news, but everyone processes it differently."
+    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don’t know how to process it...{w=0.5}it just doesn’t feel real."
+    m 1dkc "...But there will be subtle reminders that reinforce the fact they are truly gone."
+    m 3dkd "Like looking at past photos or maybe seeing the chair they used to sit in now empty."
+    m 3ekd "All that suppressed emotion, whether it be sadness or anger, just bottled up, waiting to burst at any moment..."
+    m 1dkc "On top of that, the first anniversary, the first birthday, the first Christmas without them will always be the worst."
+    m 1dkd "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.2} {nw}"
+    extend 3eka "time does heal."
+    m 3eud "Allow yourself time to grieve, take it one day at a time."
+    m 3eka "At some point, you’ll look back at the fond memories that you have of them with a smile, rather than a tear."
+    m 3eku "And no matter what happens, know that you’re strong enough to get through it, that I love you, and that I’ll always be here for you~"
     return "love"
 
 init 5 python:
