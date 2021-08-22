@@ -17399,7 +17399,8 @@ label monika_likecosplay:
         m 3hubsb "When you put on the costume at last...{w=0.2}it's such a thrill to see how you look in it!"
         m 3eub "Some cosplayers really get into acting as the character they're dressed as!"
         m 2rksdla "I'm not really much of an actor myself, so I'll probably only do that a little bit..."
-        m 7eua "But don't hesitate to ask me if you want to see a particular costume again, [mas_get_player_nickname()]... {w=0.2}{nw}"
+        $ p_nickname = mas_get_player_nickname()
+        m 7eua "But don't hesitate to ask me if you want to see a particular costume again, [p_nickname]... {w=0.2}{nw}"
         extend 3hublu "I'd be more than happy to dress up for you~"
 
     else:
