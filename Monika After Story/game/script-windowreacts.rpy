@@ -603,8 +603,10 @@ label mas_wrs_word_processor:
     $ wrs_success = display_notif(
         m_name,
         [
-            "Are you going to write a story?",
-            "Taking notes, [player]?"
+            "Writing a story?",
+            "Taking notes, [player]?",
+            "Writing a poem?",
+            "Writing a love letter?~"
         ],
         'Window Reactions'
     )
