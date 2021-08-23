@@ -5102,10 +5102,13 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
+
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
     elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
+
+    $ mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -17465,4 +17468,32 @@ label monika_likecosplay:
         m 2rtu "I wonder what sorts of characters you'd want to dress up as, [mas_get_player_nickname()]..."
         show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5rtblu "Now that I'm thinking about it...{w=0.3}well, I just might have a few ideas myself..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ddlcroleplay",
+            category=['media', 'ddlc'],
+            prompt="DDLC Roleplay",
+            random=False
+        )
+    )
+
+label monika_ddlcroleplay:
+    m 1esd "Hey, remember when we talked about fanfiction?"
+    m 3etd "Well, I stumbled upon a pretty unusual form of them."
+    m 3euc "It turns out, some people like to make social media accounts supposedly run by fictional characters."
+    m 3eua "There are quite a few about the other girls, and...{w=0.3}{nw}"
+    extend 3rua "even some claiming to be me."
+    m 1rkb "Well, I say that, but most of these blogs don't actually insist that they're {i}really{/i} me."
+    m 1eud "Like I said, it's kind of a different form of fanfiction. {w=0.2}An {i}interactive{/i} form."
+    m 3eud "Some of them accept questions from readers, and most interact with other blogs like them."
+    m 3eusdla "So, in a way, it's kind of an improv format as well. {w=0.2}It seems like a lot of things might come up that the writer doesn't expect."
+    m 4rksdlb "It was very strange to see at first, but when I think about it, it must be a pretty fun way to collaborate with people."
+    m 3euc "It also seems like some people like to make these pages for characters that they really relate to, so...{w=0.2}{nw}"
+    extend 1hksdlb "maybe I can take it as flattery, in a way?"
+    m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
+    m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
