@@ -192,7 +192,7 @@ init -998 python in mas_ev_data_ver:
         valid_times = True
     except:
         valid_times = False
-        renpy.exports.log("failed to verify mtimes")
+        store.mas_utils.writelog("[EARLY] [ERROR]: Failed to verify mtimes\n")
 
 init -950 python in mas_ev_data_ver:
     import store
@@ -1781,7 +1781,7 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
-
+    @store.mas_utils.deprecated("mas_hideEVL", should_raise=True)
     def hideEventLabel(
             eventlabel,
             lock=False,
@@ -1809,7 +1809,7 @@ init python:
         #       (DEfault: evhand.event_database)
         mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
-
+    @store.mas_utils.deprecated("mas_hideEvent")
     def hideEvent(
             event,
             lock=False,
@@ -1957,7 +1957,7 @@ init python:
         """
         mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
 
-
+    @store.mas_utils.deprecated("mas_lockEvent", should_raise=True)
     def lockEvent(ev):
         """
         NOTE: DEPRECATED
@@ -1968,7 +1968,7 @@ init python:
         """
         mas_lockEvent(ev)
 
-
+    @store.mas_utils.deprecated("mas_lockEventLabel", should_raise=True)
     def lockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         NOTE: DEPRECATED
@@ -2041,7 +2041,7 @@ init python:
         persistent.event_list.insert(0, (event_label, notify))
         return
 
-
+    @store.mas_utils.deprecated("mas_unlockEvent", should_raise=True)
     def unlockEvent(ev):
         """
         NOTE: DEPRECATED
@@ -2052,7 +2052,7 @@ init python:
         """
         mas_unlockEvent(ev)
 
-
+    @store.mas_utils.deprecated("mas_unlockEventLabel")
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         NOTE: DEPRECATED
