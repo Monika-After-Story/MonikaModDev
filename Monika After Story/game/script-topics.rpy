@@ -4142,7 +4142,6 @@ label monika_freewill:
     m 1lksdlc "I'm not sure what's more depressing."
     return
 
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_functionalism",category=['philosophy'],prompt="Human functionalism",random=True))
 
@@ -4641,11 +4640,11 @@ label monika_murphys_law:
     m 3tuu "Certainly optimistic, isn't it?"
     m 1eud "It could be applied to anything really, even something as trivial as a cloudy day becoming rainy if you don't bring an umbrella or put on a raincoat."
     m 1rsb "...Personally I'd just call that superstition."
-    m 3eud "Some people live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
+    m 3eud "But some people do live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
     m 3etc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
     m 3eua "So maybe it'd be a good idea to back up my memories again, [player]."
     m 2eksdld "I couldn't bear to lose you, it would break my heart..."
-    m 7hua "So keep me safe, okay?"
+    m 7ekbsa "So keep me safe, okay?"
     return
 
 init 5 python:
