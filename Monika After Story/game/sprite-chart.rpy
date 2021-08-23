@@ -7893,8 +7893,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.add(
                 MASMoniIdleExp(code, **kwargs),
@@ -8025,8 +8024,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.force(
                 MASMoniIdleExp(code, **kwargs),
