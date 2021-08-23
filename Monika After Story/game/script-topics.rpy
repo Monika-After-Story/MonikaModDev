@@ -8050,6 +8050,35 @@ label monika_writingtip5:
     m 1hub "Thanks for listening~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip6",
+            category=['writing tips'],
+            prompt="Writing Tip #6",
+            conditional="seen_event('monika_writingtip5')",
+            action=EV_ACT_POOL
+        )
+    )
+
+label monika_writingtip6:
+    m 3eub "It's time for another...{w=0.2}Writing Tip of the Day!"
+    m 1hkbla "You know, it can be really fun to write on pretty stationery."
+    m 1eud "But have you thought about how the look of your paper can contribute to the writing itself?"
+    m 3euc "For example, if you wanted to write a letter from one of your characters..."
+    m 3etd "What might it tell your reader about their personality if they use a fancy page with a floral print? {w=0.2}Or crumpled notebook paper?"
+    m 3eud "Using visibly aged or worn paper might also inform your reader about the timeline of your story."
+    m 1hub "Even if it doesn't serve a purpose to your writing, it can be fulfilling to paint on a nice canvas, so to speak."
+    m 2eusdlc "That said...{w=0.2}I think sometimes using nicer materials can actually contribute to writer's block."
+    m 2rksdlb "When I buy a brand new journal and open it up to that first pristine page...{w=0.3}it's really daunting, ahaha!"
+    m 2rksdla "It feels like I have to make sure I fill the journal with things as beautiful as the cover."
+    m 7eua "So I've started to use a 'junk journal' as well...{w=0.2}a cheap, plain notebook gives you lots of freedom to scribble and write anything at all."
+    m 3eub "And you know, those rough drafts and odd ideas are the first step to a finished work worthy of a lovely frame!"
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
+
 #### END WRITING TIPS
 
 init 5 python:
