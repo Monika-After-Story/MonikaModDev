@@ -3620,7 +3620,7 @@ init 25 python:
         """
         Class to represent events for PauseDisplayableWithEvents
         """
-        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False):
+        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False, restart_interaction=False):
             """
             Constructor for events
 
@@ -3632,6 +3632,9 @@ init 25 python:
                     (Default: False)
                 invoke_in_new_context - whether or not we'll invoke the functions
                     to avoid interaction issues
+                    (Default: False)
+                restart_interaction - whether or not we'll also call renpy.restart_interaction
+                    to update the screen
                     (Default: False)
             """
             self.timedelta = timedelta
@@ -3646,6 +3649,7 @@ init 25 python:
             self.functions = functions
             self.repeatable = repeatable
             self.invoke_in_new_context = invoke_in_new_context
+            self.restart_interaction = restart_interaction
 
             self.end_datetime = None
 
@@ -3674,6 +3678,9 @@ init 25 python:
 
                 else:
                     func()
+
+                if self.restart_interaction:
+                    renpy.restart_interaction()
 
     class PauseDisplayableWithEvents(renpy.Displayable):
         """
@@ -3712,55 +3719,80 @@ init 25 python:
             """
             super(renpy.Displayable, self).__init__()
 
-            if events is None:
-                events = [PauseDisplayableWithEvents.CRUTCH_EVENT]
+            # This will set remaining_events and all_events props
+            self.set_events(events)
 
-            elif isinstance(events, tuple):
-                events = list(events)
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            elif isinstance(events, list):
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            # Assuming it's a single PauseDisplayableEvent
-            else:
-                events = [events, PauseDisplayableWithEvents.CRUTCH_EVENT]
-
-            events.sort(key=PauseDisplayableWithEvents.__sort_key_td)
-
-            self.events = events
-            self.__events = list(events)
             self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
         def __repr__(self):
             """
             Representation of this obj
             """
-            return "<PauseDisplayableWithEvents ({0})>".format(self.events)
+            return "<PauseDisplayableWithEvents ({0})>".format(self.__remaining_events)
+
+        @classmethod
+        def __handle_events(cls, events):
+            """
+            Takes events and sorts them before passing further
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+
+            OUT:
+                sorted list
+            """
+            if events is None:
+                events = [cls.CRUTCH_EVENT]
+
+            elif isinstance(events, tuple):
+                events = list(events)
+                events.append(cls.CRUTCH_EVENT)
+
+            elif isinstance(events, list):
+                events.append(cls.CRUTCH_EVENT)
+
+            # Assuming it's a single PauseDisplayableEvent
+            else:
+                events = [events, cls.CRUTCH_EVENT]
+
+            events.sort(key=cls.__sort_key_td)
+
+            return events
+
+        def set_events(self, events):
+            """
+            Sets new events for this PauseDisplayable
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+            """
+            events = self.__handle_events(events)
+            self.__remaining_events = events
+            self.__all_events = list(events)
 
         def __set_end_datetimes(self):
             """
             Sets end datetimes for events using current time
             """
             _now = datetime.datetime.now()
-            for event in self.events:
-                event.set_end_datetime(_now + event.timedelta)
+            for ev in self.__remaining_events:
+                ev.end_datetime = _now + ev.timedelta
 
         def __reset_events(self):
             """
             Resets events state
             """
-            self.events = self.__events[:]
-            for ev in self.events:
-                ev.set_end_datetime(None)
+            self.__remaining_events = self.__all_events[:]
+            for ev in self.__remaining_events:
+                ev.end_datetime = None
 
         def start(self):
             """
             Starts this displayable
             """
-            self.should_enable_afm = store._preferences.afm_enable
+            self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
             ui.interact()
@@ -3771,7 +3803,7 @@ init 25 python:
             """
             ui.remove(self)
             self.__abort_events = True
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3783,7 +3815,7 @@ init 25 python:
             ui.remove(self)
             self.__reset_events()
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3801,9 +3833,9 @@ init 25 python:
             """
             _now = datetime.datetime.now()
 
-            for event in self.events[:]:
+            for event in self.__remaining_events[:]:
                 if _now >= event.end_datetime:
-                    self.events.remove(event)
+                    self.__remaining_events.remove(event)
                     yield event
 
                 # no need to keep iter, we can return at this point
@@ -3815,17 +3847,17 @@ init 25 python:
             Sets a timeout for event generator
             """
             # No need to do anything if we have no pending events
-            if not self.events:
+            if not self.__remaining_events:
                 return
 
             _now = datetime.datetime.now()
-            _end_dt = self.events[0].end_datetime
+            _end_dt = self.__remaining_events[0].end_datetime
 
             if _end_dt >= _now:
-                timeout = (_end_dt - _now).total_seconds() + 0.1
+                timeout = (_end_dt - _now).total_seconds()
 
             else:
-                timeout = 0.1
+                timeout = 0.0
 
             renpy.timeout(timeout)
 
@@ -3862,7 +3894,7 @@ init 25 python:
                         event()
                         if event.repeatable:
                             event.set_end_datetime(datetime.datetime.now() + event.timedelta)
-                            store.mas_utils.insert_sort(self.events, event, PauseDisplayableWithEvents.__sort_key_dt)
+                            store.mas_utils.insert_sort(self.__remaining_events, event, PauseDisplayableWithEvents.__sort_key_dt)
 
                     # If we aborted, we need to quit asap
                     else:
@@ -3875,8 +3907,8 @@ init 25 python:
             elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 self.__abort_events = True
                 ui.remove(self)
-                if self.should_enable_afm:
-                    self.should_enable_afm = None
+                if self.__should_enable_afm:
+                    self.__should_enable_afm = None
                     store._preferences.afm_enable = True
                 return True
 
