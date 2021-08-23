@@ -4619,6 +4619,32 @@ label monika_back_ups:
     m 5rsc "Although..."
     m 5eua "I guess that's a small price to pay if it means I'll still remember you."
     m 5hub "So be sure to back me up often, [mas_get_player_nickname()]!"
+
+    $ mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_murphys_law",
+            category=['philosophy'],
+            prompt="Murphy's Law",
+            random=False
+        )
+    )
+
+label monika_murphys_law:
+    m 1euc "Hey [player], have you heard of Murphy's Law?"
+    m 3eud "It has many interpretations, but the most common one is: 'Anything that can go wrong will go wrong.'"
+    m 3tuu "Certainly optimistic, isn't it?"
+    m 1eud "It could be applied to anything really, even something as trivial as a cloudy day becoming rainy if you don't bring an umbrella or put on a raincoat."
+    m 1rsb "...Personally I'd just call that superstition."
+    m 3eud "But some people do live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
+    m 3etc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
+    m 3eua "So maybe it'd be a good idea to back up my memories again, [player]."
+    m 2eksdld "I couldn't bear to lose you, it would break my heart..."
+    m 7ekbsa "So keep me safe, okay?"
     return
 
 init 5 python:
@@ -17281,6 +17307,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_grieving",
+            category=['advice','life'],
+            prompt="Grieving",
+            random=True
+        )
+    )
+
+label monika_grieving:
+    m 1lksdlc "[player], I know this is a bit personal, but have you ever lost someone important to you?"
+    m 2dksdlc "It's a terrible feeling."
+    m 2eksdld "It's not every day that you get the news that someone close to you has passed away."
+    m 7ekc "Most people would think crying is the norm when hearing this type of news, but everyone processes it differently."
+    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don't know how to process it...{w=0.5}it just doesn't feel real."
+    m 1dkc "...But there will be subtle reminders that reinforce the fact they are truly gone."
+    m 3dkd "Like looking at past photos or maybe seeing the chair they used to sit in now empty."
+    m 3ekd "All that suppressed emotion, whether it be sadness or anger, just bottled up, waiting to burst at any moment..."
+    m 1dkc "On top of that, the first anniversary, the first birthday, the first Christmas without them will always be the worst."
+    m 1dkd "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.2} {nw}"
+    extend 3eka "time does heal."
+    m 3eud "Allow yourself time to grieve, take it one day at a time."
+    m 3eka "At some point, you'll look back at the fond memories that you have of them with a smile, rather than a tear."
+    m 3eku "And no matter what happens, know that you're strong enough to get through it, that I love you, and that I'll always be here for you~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_sophia",
             category=['technology'],
             prompt="Sophia",
@@ -17381,6 +17435,39 @@ label monika_quiet_time:
         extend 2dkc "so long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_likecosplay",
+            category=['clothes'],
+            prompt="Do you like to cosplay?",
+            pool=True,
+        )
+    )
+
+label monika_likecosplay:
+    if mas_hasUnlockedClothesWithExprop("cosplay"):
+        m 3hub "Honestly, I didn't know how much I would enjoy it!"
+        m 2rkbla "At first, it felt kind of strange, dressing up as someone else on purpose."
+        m 7euu "But there's a real art to constructing a convincing costume...{w=0.3}attention to detail makes a huge difference."
+        m 3hubsb "When you put on the costume at last...{w=0.2}it's such a thrill to see how you look in it!"
+        m 3eub "Some cosplayers really get into acting as the character they're dressed as!"
+        m 2rksdla "I'm not really much of an actor myself, so I'll probably only do that a little bit..."
+        $ p_nickname = mas_get_player_nickname()
+        m 7eua "But don't hesitate to ask me if you want to see a particular costume again, [p_nickname]... {w=0.2}{nw}"
+        extend 3hublu "I'd be more than happy to dress up for you~"
+
+    else:
+        m 1etc "Cosplay?"
+        m 3rtd "I think I remember Natsuki talking about that before, but I've never tried it myself."
+        m 3eub "Some of those costumes are really impressive though, I have to admit!"
+        m 2hubla "If you were interested, working on a costume with you could be a really fun project to try."
+        m 2rtu "I wonder what sorts of characters you'd want to dress up as, [mas_get_player_nickname()]..."
+        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rtblu "Now that I'm thinking about it...{w=0.3}well, I just might have a few ideas myself..."
     return
 
 init 5 python:
