@@ -2645,7 +2645,7 @@ label prompt_menu:
         # if talk is hit here, then we retrieve label from mailbox and
         # call it.
         # after the event is over, we drop shields return to idle flow
-        $ cb_label = mas_brbs.idle_teardown()
+        $ cb_label = mas_idle_mailbox.get_idle_cb()
 
         # NOTE: we call the label directly instead of pushing to event stack
         #   so that if the user quits during the event, we get the appropriate
@@ -2657,6 +2657,9 @@ label prompt_menu:
         # only call label if it exists
         if renpy.has_label(cb_label):
             call expression cb_label
+
+        else:
+            call mas_brb_generic_callback
 
         #Show idle exp here so we dissolve like other topics
         if not renpy.showing("monika idle"):

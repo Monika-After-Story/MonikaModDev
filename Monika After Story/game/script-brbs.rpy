@@ -232,8 +232,6 @@ init 5 python:
     )
 
 label monika_idle_brb:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniAff(higher=True):
         m 1eua "Alright, [player]."
 
@@ -269,6 +267,8 @@ label monika_idle_brb:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_brb"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_brb_callback:
@@ -285,6 +285,7 @@ label monika_idle_brb_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -301,8 +302,6 @@ init 5 python:
     )
 
 label monika_idle_writing:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         if (
             mas_isMoniHappy(higher=True)
@@ -331,6 +330,8 @@ label monika_idle_writing:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_writing"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_writing_callback:
@@ -343,6 +344,7 @@ label monika_idle_writing_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -359,8 +361,6 @@ init 5 python:
     )
 
 label monika_idle_shower:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniLove():
         m 1eua "Going to go shower?"
 
@@ -407,6 +407,8 @@ label monika_idle_shower:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_shower"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_shower_callback:
@@ -435,6 +437,7 @@ label monika_idle_shower_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 label bye_brb_shower_timeout:
@@ -444,6 +447,8 @@ label bye_brb_shower_timeout:
     m 3tubfu "Nevermind that, [player]."
     m 1hubfb "I hope you have a nice shower!"
 
+    $ persistent._mas_idle_data["monika_idle_shower"] = True
+    $ mas_brbs.idle_setup("monika_idle_shower", "monika_idle_shower_callback")
     return
 
 init 5 python:
@@ -486,7 +491,7 @@ label monika_idle_game:
     else:
         m 6ckc "..."
 
-    # Do it here since we can get to this brb via .skip_intro
+    $ persistent._mas_idle_data["monika_idle_game"] = True
     $ mas_brbs.idle_setup("monika_idle_game")
     return
 
@@ -505,6 +510,7 @@ label monika_idle_game_callback:
     else:
         m 6ckc "..."
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -521,8 +527,6 @@ init 5 python:
     )
 
 label monika_idle_coding:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eua "Oh! Going to code something?"
 
@@ -551,6 +555,8 @@ label monika_idle_coding:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_coding"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_coding_callback:
@@ -566,6 +572,7 @@ label monika_idle_coding_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 
@@ -583,8 +590,6 @@ init 5 python:
     )
 
 label monika_idle_workout:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1hub "Okay, [player]!"
 
@@ -612,6 +617,8 @@ label monika_idle_workout:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_workout"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_workout_callback:
@@ -645,6 +652,7 @@ label monika_idle_workout_callback:
                     # continue workout and return Monika to idle state
                     m 1hub "That's the spirit!"
 
+                    $ persistent._mas_idle_data["monika_idle_workout"] = True
                     $ mas_brbs.idle_setup("monika_idle_workout")
                     return
 
@@ -657,6 +665,7 @@ label monika_idle_workout_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -673,8 +682,6 @@ init 5 python:
     )
 
 label monika_idle_nap:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eua "Going to take a nap, [player]?"
         m 3eua "They're a healthy way to rest during the day if you're feeling tired."
@@ -691,6 +698,8 @@ label monika_idle_nap:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_nap"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_nap_callback:
@@ -726,6 +735,7 @@ label monika_idle_nap_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -742,8 +752,6 @@ init 5 python:
     )
 
 label monika_idle_homework:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eub "Oh, okay!"
         m 1hua "I'm proud of you for taking your studies seriously."
@@ -757,6 +765,8 @@ label monika_idle_homework:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_homework"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_homework_callback:
@@ -776,6 +786,7 @@ label monika_idle_homework_callback:
     else:
         m 6ckc "..."
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -792,8 +803,6 @@ init 5 python:
     )
 
 label monika_idle_working:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eua "Alright, [player]."
         m 1eub "Don't forget to take a break every now and then!"
@@ -812,6 +821,8 @@ label monika_idle_working:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_working"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_working_callback:
@@ -827,6 +838,7 @@ label monika_idle_working_callback:
     else:
         m 6ckc "..."
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -843,8 +855,6 @@ init 5 python:
     )
 
 label monika_idle_screen_break:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         if mas_timePastSince(mas_getEVL_last_seen("monika_idle_screen_break"), mas_getSessionLength()):
 
@@ -881,6 +891,8 @@ label monika_idle_screen_break:
     else:
         m 6ckc "..."
 
+    $ persistent._mas_idle_data["monika_idle_screen_break"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_screen_break_callback:
@@ -899,6 +911,7 @@ label monika_idle_screen_break_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -915,8 +928,6 @@ init 5 python:
     )
 
 label monika_idle_reading:
-    $ mas_brbs.idle_setup()
-
     if mas_isMoniNormal(higher=True):
         m 1eub "Really? That's great, [player]!"
         m 3lksdla "I'd love to read with you, but my reality has its limits, unfortunately."
@@ -929,6 +940,8 @@ label monika_idle_reading:
     else:
         m 6dkc "..."
 
+    $ persistent._mas_idle_data["monika_idle_reading"] = True
+    $ mas_brbs.idle_setup()
     return
 
 label monika_idle_reading_callback:
@@ -953,6 +966,7 @@ label monika_idle_reading_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
+    $ mas_brbs.idle_teardown()
     return
 
 
