@@ -126,6 +126,8 @@ init 10 python in mas_brbs:
         # Get currect label
         if brb_label is None:
             brb_label = store.mas_submod_utils.current_label
+            if not renpy.has_label(brb_label):
+                brb_label = None
 
         # Add idle extra exps
         store.mas_moni_idle_disp.add_by_tag("idle_mode_exps")
@@ -133,7 +135,7 @@ init 10 python in mas_brbs:
         # Set vars
         store.mas_globals.in_idle_mode = True
         store.persistent._mas_in_idle_mode = True
-        store.persistent._mas_idle_data[brb_label] = True
+        # store.persistent._mas_idle_data[brb_label] = True
         renpy.save_persistent()
 
         # Send callback label
@@ -144,23 +146,19 @@ init 10 python in mas_brbs:
 
     def idle_teardown():
         """
-        This callback is called in the prompt_menu label
-            to disable idle mode
-
-        OUT:
-            string with brb callback label or None
+        This callback is called to disable idle mode
         """
         # Remove idle exps
         store.mas_moni_idle_disp.remove_by_tag("idle_mode_exps")
 
-        # Clean up idle stuff
+        # Clean up idle vars
         store.mas_globals.in_idle_mode = False
         store.persistent._mas_in_idle_mode = False
-        store.persistent._mas_idle_data.clear()
+        # store.persistent._mas_idle_data.clear()
         store.persistent._mas_greeting_type = None
         renpy.save_persistent()
 
-        # Return callback label
+        # Return callback label (this may or may not be valid)
         return store.mas_idle_mailbox.get_idle_cb()
 
     def was_idle_for_at_least(idle_time, brb_evl):
@@ -178,6 +176,10 @@ init 10 python in mas_brbs:
         """
         brb_ev = store.mas_getEV(brb_evl)
         return brb_ev and brb_ev.timePassedSinceLastSeen_dt(idle_time)
+
+label mas_brb_generic_callback:
+    $ mas_brbs.idle_teardown()
+    return
 
 # label to use if we want to get back into idle from a callback
 label mas_brb_back_to_idle:
