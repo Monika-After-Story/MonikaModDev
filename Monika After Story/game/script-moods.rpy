@@ -831,42 +831,54 @@ label mas_mood_relieved:
             m 1eua "I'm excited to take those next steps forward with you."
     return
 
-addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_excited",prompt="...excited.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
-    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_excited",
+            prompt="...excited.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
 label mas_mood_excited:
-    m 1hub "Ahaha, is that so?"
-    m 1eub "What are you excited about, [player]?{nw}"
-    ? _history_list.pop()
+    m 1hub "Ahaha, is that so, [player]?"
+    m 3eua "What are you excited about,{w=0.1} is it something big?{nw}"
+    $ _history_list.pop()
     menu:
-        m "What are you excited about, [player]?"
-        
-        "It's something small.":
-            m 3hub "That's great!"
-            m 1eub "It's important to get excited about small things like that."
-            m 1ekb "I know it's kind of cheesy, but it's a great mindset to have!"
-            m 1hub "So I'm glad you're enjoying the little things in life, [player]."
-            m 1hua "Ehehe, it makes me happy knowing you're happy."
-            m 1eub "It also makes me happy when you tell me about your accomplishments."
-            m 3hub "So thank you for telling me!"
-        "It's something big.":
+        m "What are you excited about, is it something big?{fast}"
+
+        "It is!":
             m 4wuo "Wow, that's amazing, [player]!"
-            m 3hub "That is exciting!"
             m 1eka "I wish I could be there to celebrate with you."
-            m 1hua "Ehehe, now I'm getting all excited too!"
-            m 1eka "But really, I'm so glad you're happy, [chosen_nickname]!"
-            m 1hub "And whatever it is you're excited about, congratulations!"
+            m 1hub "Now I'm getting all excited too!"
+            m 3eka "But really, I'm glad you're happy, [mas_get_player_nickname()]!"
+            m 3eub "And whatever it is you're excited about, congratulations!"
             m 1eua "Whether it be a promotion, a nice upcoming vacation, some great accomplishment..."
-            m 3hub "I'm really so happy that things are going well for you, [player]!"
-            m 1dkb "Things like this make me wish I was there with you right now."
-            m "I can't wait until I'm in your reality."
-            m 2dkb "Then I could give you a big hug!"
-        "I don't really know.":
-            m 3hub "Ahaha, you're so funny, [chosen_nickname]!"
-            m 1hua "Just excited for what's to come?"
-            m 1eua "Excited about life?"
-            m 1tub "Or could it be that you're excited to be spending time with me~?"
-            m 1hua "Ehehe~"
-            m 3hub "I know I'm always excited to see you every day!"
-            m 1eub "Either way, I'm glad that you're happy!"
+            m 3hub "I'm really happy that things are going well for you, [player]!"
+            m 1dka "Things like this make me wish I was there with you right now."
+            m 2dkblu "I can't wait until I'm in your reality."
+            m 2hubsa "Then I could give you a big hug!"
+            m 2hubsb "Ahaha~"
+
+        "It's something small.":
+            m 1hub "That's great!"
+            m 3eua "It's important to get excited about small things like that."
+            m 1rksdla "...I know it's kind of cheesy,{w=0.1} {nw}"
+            extend 3hub "but it's a great mindset to have!"
+            m 1eua "So I'm glad you're enjoying the little things in life, [player]."
+            m 1hua "It makes me happy knowing you're happy."
+            m 1eub "It also makes me happy to hear about your accomplishments."
+            m 3hub "So thanks for telling me!~"
+
+        "I'm not too sure.":
+            m 1eta "Ah, just excited for what's to come?{w=0.2} {nw}"
+            extend 1eua "Excited about life?{w=0.2} {nw}"
+            extend 1tsu "Or maybe.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+            m 1tku "Could it be that you're excited to be spending time with me?~"
+            m 1huu "Ehehe~"
+            m 3eua "I know I'm always excited to see you every day."
+            m 1hub "Either way, I'm glad that you're happy!"
     return
-    
