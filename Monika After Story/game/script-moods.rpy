@@ -857,10 +857,10 @@ label mas_mood_excited:
             m 3eka "But really, I'm glad you're happy, [mas_get_player_nickname()]!"
             m 3eub "And whatever it is you're excited about, congratulations!"
             m 1eua "Whether it be a promotion, a nice upcoming vacation, some great accomplishment..."
-            m 3hub "I'm really happy that things are going well for you, [player]!"
+            m 3eub "I'm really happy that things are going well for you, [player]!"
             m 1dka "Things like this make me wish I was there with you right now."
             m 2dkblu "I can't wait until I'm in your reality."
-            m 2hubsa "Then I could give you a big hug!"
+            m 2eubsa "Then I could give you a big hug!"
             m 2hubsb "Ahaha~"
 
         "It's something small.":
