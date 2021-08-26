@@ -1,6 +1,13 @@
 default persistent.monika_reload = 0
-default persistent.tried_skip = False
-default persistent.monika_kill = True #Assume non-merging players killed monika.
+# Has the player tried to skip?
+# (this is None because the player might tried to skip, but hasn't merged the saves yet)
+default persistent.tried_skip = None
+# Has the player deleted Monika?
+# (we don't assume that you killed Monika,
+# this'll be set in the intro or during saves merging)
+default persistent.monika_kill = None
+# Whether or not you launched the mod before
+default persistent.first_run = True
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
@@ -501,7 +508,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -528,7 +535,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
@@ -778,6 +785,17 @@ init python:
 
         return derandlist
 
+
+    def mas_safeToRefDokis():
+        """
+        Checks if it is safe for us to reference the dokis in a potentially
+        sensitive matter. The user must have responded to the question
+        regarding dokis - if the user hasn't responded, then we assume it is
+        NEVER safe to reference dokis.
+
+        RETURNS: True if safe to reference dokis
+        """
+        return store.persistent._mas_pm_cares_about_dokis is False
 
 
 # IN:
@@ -1196,10 +1214,7 @@ label mas_ch30_post_holiday_check:
     $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if (
-            persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.yuri_enabled():
         call yuri_name_scare from _call_yuri_name_scare
 
         # this skips greeting algs
@@ -1506,8 +1521,7 @@ label ch30_post_mid_loop_eval:
             ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    not persistent._mas_sensitive_mode
-                    and store.mas_globals.show_s_light
+                    store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
