@@ -446,12 +446,12 @@ init 5 python in mas_nou:
 
         REACTIONS_MAP_PLAYER_REFLECTED_WD4 = {
             0: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[0]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[0]) + [
-                (_("Hmm, I wasn't prepared for this!"),),
-                (_("Jeez!{w=0.2} How many of these do you have?!"),)
+                (_("Hmm, I wasn't prepared for this!"),)
             ],
             1: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[1]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[1]) + [
                 (_("I'll remember this~"), _("Watch out, [player]!~")),
-                (_("Man, you've got a lot of plus 2's!"),)
+                (_("Man, you've got a lot of plus 2's!"),),
+                (_("Jeez!{w=0.2} How many of these do you have?!"),)
             ],
             2: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[2]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[2]) + [
                 (_("...{w=0.3}How did you do that?"), _("If you keep playing like that, I won't have a chance to win!"))
@@ -672,8 +672,7 @@ init 5 python in mas_nou:
                 amount = 6
                 offset = 32
 
-            for i in range(amount):
-                xpos -= (offset / 2)
+            xpos -= (amount * offset / 2)
 
             return xpos
 
@@ -909,10 +908,10 @@ init 5 python in mas_nou:
                 and len(next_player.hand) >= self.HAND_CARDS_LIMIT
             ):
                 if next_player.isAI:
-                    quips = self.QUIPS_PLAYER_CARDS_LIMIT
+                    quips = self.QUIPS_MONIKA_CARDS_LIMIT
 
                 else:
-                    quips = self.QUIPS_MONIKA_CARDS_LIMIT
+                    quips = self.QUIPS_PLAYER_CARDS_LIMIT
 
                 self.set_sensitive(False)
                 self.__say_quip(quips, new_context=True)
@@ -984,7 +983,7 @@ init 5 python in mas_nou:
                 OUT:
                     True if there is a card with that color, False otherwise
                 """
-                return color in [card.color for card in hand if card.color is not None]
+                return color in {card.color for card in hand if card.color is not None}
 
             # "Attack rules"
             if not player.should_skip_turn:
@@ -1671,7 +1670,7 @@ init 5 python in mas_nou:
             MIN_THONK_TIME = 0.2
             MAX_THONK_TIME = 0.8
             SHUFFLING_CHANCE = 15
-            LOW_MISSING_NOU_CHANCE = 5
+            LOW_MISSING_NOU_CHANCE = 10
             HIGHT_MISSING_NOU_CHANCE = 25
 
             def __init__(self, game, leftie=False):
@@ -5196,8 +5195,9 @@ init -10 python in mas_cardgames:
                                 c.hovered = False
                                 evt_list.append(evt)
 
-                        self.last_event = evt
-                        evt = None
+                        if evt is not None:
+                            self.last_event = evt
+                            evt = None
 
                         if dststack is not None:
                             evt = CardEvent()
