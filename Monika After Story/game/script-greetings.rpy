@@ -2314,6 +2314,7 @@ label greeting_stillsickresting:
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
+        $ mas_ILY()
 
     else:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
