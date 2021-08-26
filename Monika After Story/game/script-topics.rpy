@@ -16586,7 +16586,7 @@ label monika_impermanence:
     m 3eksdlc "{i}Nothing beside remains. Round the decay{/i}"
     m "{i}Of that colossal wreck, boundless and bare{/i}"
     m 1eksdld "{i}The lone and level sands stretch far away.'{/i}"
-    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will fade eventually fade away."
+    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will eventually fade away."
     m 1euc "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
     extend 1dkc "give up.{w=0.3} To fall into a pit of despair and stay there, sometimes for as long as they live."
     m 3eksdlc "After all, nothing you do matters in the grand scheme of things."
