@@ -17535,8 +17535,6 @@ init 5 python:
             category=["misc", "club members"],
             prompt="Ita-bags",
             random=True,
-            pool=True,
-            unlocked=True
         )
     )
 
