@@ -14,7 +14,7 @@ init -999:
     define config.name = "Monika After Story"
 
     ## The version of the game.
-    define config.version = "0.12.1"
+    define config.version = "0.12.2"
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
@@ -160,6 +160,26 @@ define config.label_overrides = {
     "_choose_renderer": "mas_choose_renderer_override"
 }
 #define config.gl_resize = False
+init 50 python:
+    # For some reason it's not inported yet, so we do it now /shrug
+    from __future__ import print_function
+
+    config.lint_hooks = [
+        lambda: print(),
+        lambda: print("#"*5, "START MAS LINT HOOKS", "#"*5),
+        # Print all deprecation warnings after lint
+        lambda: print(
+            "Known uses of deprecated functions/classes in initialisation:",
+            (
+                "\n".join([msg.rjust(len(msg) + 4) for msg in store.mas_utils.deprecated.__all_warnings__])
+                if store.mas_utils.deprecated.__all_warnings__
+                else "    None"
+            ),
+            "",
+            sep="\n"
+        ),
+        lambda: print("#"*5, "END MAS LINT HOOKS", "#"*5)
+    ]
 
 init python:
     if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])

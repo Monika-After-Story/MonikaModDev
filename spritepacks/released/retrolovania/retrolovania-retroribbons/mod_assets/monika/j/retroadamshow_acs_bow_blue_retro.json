@@ -1,0 +1,25 @@
+{
+    "__author": "retroadamshow",
+    "version": 3,
+    "type": 0,
+    "name": "retro_bow_blue",
+    "img_sit": "retro_ribbon_blue",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "giftname": "8blueribbon",
+    "dlg_desc": "8-bit blue ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (8-bit Blue)",
+        "thumb": "retro_ribbon_blue",
+        "group": "ribbon",
+        "select_dlg": [
+            "How nostalgic!"
+        ]
+    }
+}

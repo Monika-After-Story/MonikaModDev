@@ -1219,8 +1219,6 @@ label i_greeting_monikaroom:
     # FALL THROUGH
 label monikaroom_greeting_choice:
     $ _opendoor_text = "...Gently open the door."
-    if persistent._mas_sensitive_mode:
-        $ _opendoor_text = "Open the door."
 
     if mas_isMoniBroken():
         pause 4.0
@@ -3109,6 +3107,9 @@ label greeting_back_from_school:
 
     return
 
+default persistent._mas_pm_last_promoted_d = None
+# date when player last got promotion
+
 init 5 python:
     addEvent(
         Event(
@@ -3129,17 +3130,51 @@ label greeting_back_from_work:
         menu:
             m "How was work today?{fast}"
 
-            "Amazing.":
+            "Amazing!":
+                if not persistent._mas_pm_last_promoted_d:
+                    $ promoted_recently = False
+                else:
+                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_last_promoted_d + datetime.timedelta(days=180)
+
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
+
+                m 1sua "What made it such an amazing day?{nw}"
+                menu:
+                    m "What made it such an amazing day?{fast}"
+
+                    "I moved up!":
+                        if promoted_recently:
+                            m 3suo "Wow! Again?!"
+                            m 3sub "You got promoted pretty recently too...{w=0.3}you must really be doing amazing work!"
+                            m 1huu "I'm so, {w=0.2}so proud of you, [mas_get_player_nickname()]~"
+
+                        else:
+                            $ player_nick = mas_get_player_nickname()
+                            m 3suo "Wow! Congratulations [player_nick], {w=0.1}{nw}"
+                            extend 3hub "I'm so proud of you!"
+                            m 1euu "I knew you could do it~"
+                            $ promoted_recently = True
+
+                        $ persistent._mas_pm_last_promoted_d = datetime.date.today()
+
+                    "I got a lot done!":
+                        m 3hub "That's great, [mas_get_player_nickname()]!"
+
+                    "It was just an amazing day.":
+                        m 3hub "That's great to hear!"
+
                 m 3eua "I can only imagine how well you must work on days like that."
-                m 1hua "...Maybe you'll even move up a bit soon!"
+                if not promoted_recently:
+                    m 1hub "...Maybe you'll even move up a bit soon!"
                 m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
+
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
                     m 3tubsu "Would you like your dinner, your bath, or..."
                     m 1hubfb "Ahaha~ Just kidding."
                 else:
-                    m 3eub "Let's enjoy some time together!"
+                    m 3msb "What better way to wrap up an amazing day than with your amazing girlfriend?~"
+
                 return
 
             "Good.":
@@ -4312,15 +4347,16 @@ label greeting_spacing_out:
         spacing_out_pause = PauseDisplayableWithEvents()
         events = list()
         next_event_time = 0
-        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
-        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+        right_smug = renpy.partial(renpy.show, "monika 1gsbsu")
+        left_smug = renpy.partial(renpy.show, "monika 1msbsu")
 
         # Make the events which will change exps
         for i in range(random.randint(4, 6)):
             events.append(
                 PauseDisplayableEvent(
                     datetime.timedelta(seconds=next_event_time),
-                    right_smug if use_right_smug else left_smug
+                    right_smug if use_right_smug else left_smug,
+                    restart_interaction=True
                 )
             )
             next_event_time += random.uniform(0.9, 1.8)
@@ -4329,7 +4365,8 @@ label greeting_spacing_out:
         events.append(
             PauseDisplayableEvent(
                 datetime.timedelta(seconds=next_event_time),
-                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+                renpy.partial(renpy.show, "monika 1tsbsu"),
+                restart_interaction=True
             )
         )
         next_event_time += 0.7
@@ -4340,8 +4377,8 @@ label greeting_spacing_out:
                 spacing_out_pause.stop
             )
         )
-        spacing_out_pause.events[:] = events
 
+        spacing_out_pause.set_events(events)
         spacing_out_pause.start()
 
     # Small pause so people don't skip this line

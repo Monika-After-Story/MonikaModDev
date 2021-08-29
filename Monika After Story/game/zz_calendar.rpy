@@ -6,6 +6,7 @@
 init -1 python:
 
     import json
+    import copy
     from renpy.display.layout import Container
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
 
@@ -548,11 +549,17 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
             # get this month's events
             if self.MIN_GLITCH_YEAR < self.selected_year < self.MAX_GLITCH_YEAR:
-
                 events = self.database[self.selected_month]
 
-            else:
+                #For leap year case, we put F29 into M01
+                if self.selected_month == 3 and not mas_isLeapYear(self.selected_year):
+                    #We need to copy this because otherwise we break the main calendar db
+                    events = copy.deepcopy(events)
+                    events[1].update(self.database[2][29])
 
+
+            #Otherwise glitch events
+            else:
                 events = self._getEGMonthEvents()
 
                 note_font = gui.default_font
@@ -1074,6 +1081,7 @@ init -1 python in mas_calendar:
     import datetime
     import json
     import renpy
+    import store
 
     ### Calendar database stores events for repeating / processing and more.
     #
@@ -1149,7 +1157,7 @@ init -1 python in mas_calendar:
 
         return str(years) + " years ago"
 
-
+    @store.mas_utils.deprecated(use_instead="genFriendlyDispDate_d")
     def genFriendlyDispDate(_datetime):
         """
         NOTE: DEPRECATED
@@ -1984,16 +1992,6 @@ init 100 python:
         if "monika_dating_startdate" in persistent._seen_ever:
             persistent._seen_ever.pop("monika_dating_startdate")
 
-
-# wrap it up in a screen
-screen mas_calendar_screen(select_date=False):
-
-    zorder 51
-
-    add MASCalendar(select_date)
-        #xalign 0.5
-        #yalign 0.5
-
 label mas_show_calendar_detail(items,area,align,first_item,final_item):
     call screen mas_calendar_events_scrollable_list(items, area, align, first_item=first_item, final_item=final_item)
     return
@@ -2177,14 +2175,19 @@ label _first_time_calendar_use:
 label _mas_start_calendar(select_date=True):
 
     python:
+        #Check if shields are up for whatever reason. If so, we won't drop them when leaving this label
+        _should_drop_shields = not store.mas_calendar.enabled
+        mas_calRaiseOverlayShield()
         HKBHideButtons()
 
-    call screen mas_calendar_screen(select_date)
+        ui.add(MASCalendar(select_date))
+        rv = ui.interact()
 
-    python:
         HKBShowButtons()
+        if _should_drop_shields:
+            mas_calDropOverlayShield()
 
-    return _return
+    return rv
 
 label mas_start_calendar_read_only:
     call _mas_start_calendar(select_date=False)
@@ -2215,11 +2218,7 @@ screen calendar_overlay():
     #
     image "mod_assets/calendar/calendar_button_shadow.png" xpos 351 ypos 251
 
-    if (
-        store.mas_calendar.enabled
-        and not store._menu
-        and renpy.get_screen("mas_calendar_screen") is None
-    ):
+    if store.mas_calendar.enabled and not store._menu:
         imagebutton:
             idle ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
@@ -2232,7 +2231,6 @@ screen calendar_overlay():
         image ("mod_assets/calendar/calendar_button_normal.png" if mas_current_background.isFltDay() else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
-
     def mas_calDropOverlayShield():
         """RUNTIME ONLY
         Enables input for the calendar overlay
@@ -2267,3 +2265,19 @@ init python:
         """
         if not mas_current_background.hide_calendar and not mas_calIsVisible_ovl():
             renpy.show_screen("calendar_overlay", _layer="master")
+
+    def mas_isLeapYear(year):
+        """
+        Checks if the given year is a leap year, accounting for the error
+
+        IN:
+            year - int, year to check
+
+        OUT:
+            bool - Whether or not the given year is a leap year
+        """
+        try:
+            datetime.date(year, 2, 29)
+            return True
+        except ValueError:
+            return False

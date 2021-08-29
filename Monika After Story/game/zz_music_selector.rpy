@@ -190,11 +190,7 @@ init -1 python in songs:
 #            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
 
         # sayori only allows this
-        if store.persistent._mas_sensitive_mode:
-            sayonara_name = SAYO_NARA_SENS
-        else:
-            sayonara_name = SAYO_NARA
-        music_choices.append((sayonara_name, FP_SAYO_NARA))
+        music_choices.append((SAYO_NARA, FP_SAYO_NARA))
 
         # grab custom music
         __scanCustomBGM(music_choices)
@@ -786,10 +782,7 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if (
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.sayori_enabled():
         # sayori specific
 
         # init choices
@@ -1041,10 +1034,7 @@ init python:
             persistent.playername
         """
         # sayori cannot make the volume quieter
-        if (
-            persistent.playername.lower() != "sayori"
-            or persistent._mas_sensitive_mode
-        ):
+        if not store.mas_egg_manager.sayori_enabled():
             songs.adjustVolume(up=False)
 
 
@@ -1067,10 +1057,7 @@ init python:
         # sayori cannot mute
         if (
                 curr_volume > 0.0
-                and (
-                    persistent.playername.lower() != "sayori"
-                    or persistent._mas_sensitive_mode
-                )
+                and not store.mas_egg_manager.sayori_enabled()
                 and mute_enabled
             ):
             songs.music_volume = curr_volume

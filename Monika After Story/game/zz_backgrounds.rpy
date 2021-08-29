@@ -1795,7 +1795,7 @@ init -10 python:
             self._sr_ss.verify()
             self._ss_mn.verify()
 
-
+    @store.mas_utils.deprecated(use_instead="MASFilterableBackground")
     def MASBackground(
             background_id,
             prompt,
@@ -2317,6 +2317,7 @@ init -10 python:
             """
             return self.getRoom(self._flt_man.current())
 
+        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
         def getDayRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2366,6 +2367,7 @@ init -10 python:
                 return None
             return m_w_m.get(precip_type)
 
+        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
         def getNightRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -3237,7 +3239,17 @@ label monika_change_background_loop:
         skip_transition = mas_background.EXP_SKIP_TRANSITION in sel_background.ex_props
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
-    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_outro=skip_outro, set_persistent=True)
+    # UI shields + buttons
+    # NOTE: buttons are in here since there is no consistency if placed in
+    # the bg change label.
+    $ mas_RaiseShield_core()
+    $ HKBHideButtons()
+
+    call mas_background_change(sel_background, skip_leadin=skip_leadin, skip_transition=skip_transition, skip_outro=skip_outro, set_persistent=True)
+
+    $ HKBShowButtons()
+    $ mas_DropShield_core()
+
     return
 
 #Generic background changing label, can be used if we wanted a sort of story related change
@@ -3255,6 +3267,7 @@ label mas_background_change(new_bg, skip_leadin=False, skip_transition=False, sk
         pause 2.0
 
     python:
+
         #Set persistent
         if set_persistent:
             persistent._mas_current_background = new_bg.background_id
