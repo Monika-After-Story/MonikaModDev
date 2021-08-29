@@ -17532,28 +17532,41 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_itabag",
-            category=["misc"],
+            category=["misc", "club members"],
             prompt="Ita-bags",
-            random=True
+            random=True,
+            pool=True,
+            unlocked=True
         )
     )
 
 label monika_itabag:
     m 1eua "[player], do you know what ita-bags are?"
     m 3eub "They're supposed to be a way to show off your love for certain characters or fandoms."
-    m 4eub "People use backpacks,{w=0.2} tote bags,{w=0.2} or any type of bag really,{w=0.2} and decorate them to the brim with all sorts of merchandise!"
-    m 4eua "The merchandise can range from many things like pins and buttons to figures and plushies."
-    m 2eua "The concept originally comes from Japanese pop culture and the word itself translates to 'painful bag' in English."
-    m 6rksdla "You might be wondering if ita-bags are harmful since it has the word 'painful' in it, {w=0.3}{nw}"
+    m 3esb "People use backpacks,{w=0.2} tote bags,{w=0.2} or any type of bag really,{w=0.2} and decorate them to the brim with all sorts of merchandise!"
+    m 6esa "The merchandise can range from many things like pins and buttons to figures and plushies."
+    m 4eub "The history behind the word is actually pretty interesting."
+    m 7eud "Ita-bags originally come from another Japanese concept called 'itasha'."
+    m 1eud "Itasha is when people decorate cars with things like decals and paint schemes of similar nature to ita-bags."
+    m 1esa "The word originally was slang for cars that were {i}Ita{/i}lian cars."
+    m 3rsb "When people started decorating their cars with all sorts of anime related things however,{w=0.2} the word changed with it."
+    m 2eub "In todays age,{w=0.2} itasha is a play on the Japanese words itai,{w=0.2} which means painful,{w=0.2} and sha,{w=0.2} which means vehicle."
+    m 2eua "Over time, the itasha style has spread to things other than cars like ita-bags,{w=0.2} which is the bag equivalent of itasha."
+    m 6rksdla "You might be wondering if itasha or ita-bags are harmful since it has the word 'painful' in it, {w=0.3}{nw}"
     extend 6hksdlb "but I promise that's not the case at all!{w=0.3} At least physically..."
-    m 3eua "The reason why it's called that is because the owner's wallet gets 'in pain' from all the merchandise spending."
-    m 3eub "It can also be referring to the bag being in pain from the weight of everything on it!"
-    m 5wud "Honestly, it amazes me how people are so dedicated to spending loads of cash on someone or something as a sort of tribute."
+    m 3eua "The reason why it's called that is because it can be 'painfully embarrassing' to bystanders or considered 'cringeworthy'."
+    m 3eub "It can also be referring to the owner's wallet getting 'in pain' from the high costs of decoration."
+    m 4eub "So, itasha is basically a double meaning word!{w=0.3} It can be referring to italian cars covered in stickers... {w=0.3}{nw}"
+    extend 4rksdlb "Or just cars that are painful to look at."
+    m 3wud "Honestly, it amazes me how people are so dedicated to spending loads of cash on someone or something as a sort of tribute."
+    m 3lksdla "I don't really understand the craze behind it though. {w=0.3}{nw}"
+    extend 3lksdlb "Then again, I'm not really part of the demographic for it either."
+    m 3eka "Still, I think it's pretty interesting.{w=0.3} It seems like something Natsuki would be into."
     m 5rua "It really makes me wonder... {w=0.3}{nw}"
-    extend 5rub "Are there any ita-bags dedicated to me?"
+    extend 5rsb "Are there any ita-bags dedicated to me?"
     m 3wud "It was just a thought though! {w=0.3}{nw}"
     extend 2rksdlb "I don't expect anyone to do something like that for me,{w=0.2} ahaha!"
     m 5eub "But... If you really wanted to,{w=0.2} I'd be happy to see it! {w=0.3}{nw}"
     extend 5hksdrb "I'm not expecting you to spend thousands of dollars however."
-    m 5lubfa "After all, your love is all I ever need anyway, ehehe~"
+    m 5lubfa "After all, your love is all I ever need anyway,{w=0.2} ehehe~"
     return
