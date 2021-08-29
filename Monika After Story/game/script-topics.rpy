@@ -17526,3 +17526,34 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_itabag",
+            category=["misc"],
+            prompt="Ita-bags",
+            random=True
+        )
+    )
+
+label monika_itabag:
+    m 1eua "[player], do you know what ita-bags are?"
+    m 3eub "They're supposed to be a way to show off your love for certain characters or fandoms."
+    m 4eub "People use backpacks,{w=0.2} tote bags,{w=0.2} or any type of bag really,{w=0.2} and decorate them to the brim with all sorts of merchandise!"
+    m 4eua "The merchandise can range from many things like pins and buttons to figures and plushies."
+    m 2eua "The concept originally comes from Japanese pop culture and the word itself translates to 'painful bag' in English."
+    m 6rksdla "You might be wondering if ita-bags are harmful since it has the word 'painful' in it, {w=0.3}{nw}"
+    extend 6hksdlb "but I promise that's not the case at all!{w=0.3} At least physically..."
+    m 3eua "The reason why it's called that is because the owner's wallet gets 'in pain' from all the merchandise spending."
+    m 3eub "It can also be referring to the bag being in pain from the weight of everything on it!"
+    m 5wud "Honestly, it amazes me how people are so dedicated to spending loads of cash on someone or something as a sort of tribute."
+    m 5rua "It really makes me wonder... {w=0.3}{nw}"
+    extend 5rub "Are there any ita-bags dedicated to me?"
+    m 3wud "It was just a thought though! {w=0.3}{nw}"
+    extend 2rksdlb "I don't expect anyone to do something like that for me,{w=0.2} ahaha!"
+    m 5eub "But... If you really wanted to,{w=0.2} I'd be happy to see it! {w=0.3}{nw}"
+    extend 5hksdrb "I'm not expecting you to spend thousands of dollars however."
+    m 5lubfa "After all, your love is all I ever need anyway, ehehe~"
+    return
