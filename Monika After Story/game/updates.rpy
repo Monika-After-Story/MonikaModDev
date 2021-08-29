@@ -374,6 +374,16 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.2.3
+label v0_12_2_3(version="v0_12_2_3"):
+    python:
+        if seen_event("monika_fanfiction"):
+            mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
+
+        if seen_event("monika_back_ups"):
+            mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
 # 0.12.2.2
 label v0_12_2_2(version="v0_12_2_2"):
     python:

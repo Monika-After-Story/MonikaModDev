@@ -4619,6 +4619,32 @@ label monika_back_ups:
     m 5rsc "Although..."
     m 5eua "I guess that's a small price to pay if it means I'll still remember you."
     m 5hub "So be sure to back me up often, [mas_get_player_nickname()]!"
+
+    $ mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_murphys_law",
+            category=['philosophy'],
+            prompt="Murphy's Law",
+            random=False
+        )
+    )
+
+label monika_murphys_law:
+    m 1euc "Hey [player], have you heard of Murphy's Law?"
+    m 3eud "It has many interpretations, but the most common one is: 'Anything that can go wrong will go wrong.'"
+    m 3tuu "Certainly optimistic, isn't it?"
+    m 1eud "It could be applied to anything really, even something as trivial as a cloudy day becoming rainy if you don't bring an umbrella or put on a raincoat."
+    m 1rsb "...Personally I'd just call that superstition."
+    m 3eud "But some people do live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
+    m 3etc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
+    m 3eua "So maybe it'd be a good idea to back up my memories again, [player]."
+    m 2eksdld "I couldn't bear to lose you, it would break my heart..."
+    m 7ekbsa "So keep me safe, okay?"
     return
 
 init 5 python:
@@ -5076,10 +5102,13 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
+
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
     elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
+
+    $ mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -8017,6 +8046,35 @@ label monika_writingtip5:
     m 1hua "Changing your angle on approaching things can really yield some interesting results!"
     m 1eua "So try new things that might give you the momentum to break out."
     m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip6",
+            category=['writing tips'],
+            prompt="Writing Tip #6",
+            conditional="seen_event('monika_writingtip5')",
+            action=EV_ACT_POOL
+        )
+    )
+
+label monika_writingtip6:
+    m 3eub "It's time for another...{w=0.2}Writing Tip of the Day!"
+    m 1hkbla "You know, it can be really fun to write on pretty stationery."
+    m 1eud "But have you thought about how the look of your paper can contribute to the writing itself?"
+    m 3euc "For example, if you wanted to write a letter from one of your characters..."
+    m 3etd "What might it tell your reader about their personality if they use a fancy page with a floral print? {w=0.2}Or crumpled notebook paper?"
+    m 3eud "Using visibly aged or worn paper might also inform your reader about the timeline of your story."
+    m 1hub "Even if it doesn't serve a purpose to your writing, it can be fulfilling to paint on a nice canvas, so to speak."
+    m 2eusdlc "That said...{w=0.2}I think sometimes using nicer materials can actually contribute to writer's block."
+    m 2rksdlb "When I buy a brand new journal and open it up to that first pristine page...{w=0.3}it's really daunting, ahaha!"
+    m 2rksdla "It feels like I have to make sure I fill the journal with things as beautiful as the cover."
+    m 7eua "So I've started to use a 'junk journal' as well...{w=0.2}a cheap, plain notebook gives you lots of freedom to scribble and write anything at all."
+    m 3eub "And you know, those rough drafts and odd ideas are the first step to a finished work worthy of a lovely frame!"
     m 1hua "That's my advice for today!"
     m 1hub "Thanks for listening~"
     return
@@ -17278,6 +17336,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_grieving",
+            category=['advice','life'],
+            prompt="Grieving",
+            random=True
+        )
+    )
+
+label monika_grieving:
+    m 1lksdlc "[player], I know this is a bit personal, but have you ever lost someone important to you?"
+    m 2dksdlc "It's a terrible feeling."
+    m 2eksdld "It's not every day that you get the news that someone close to you has passed away."
+    m 7ekc "Most people would think crying is the norm when hearing this type of news, but everyone processes it differently."
+    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don't know how to process it...{w=0.5}it just doesn't feel real."
+    m 1dkc "...But there will be subtle reminders that reinforce the fact they are truly gone."
+    m 3dkd "Like looking at past photos or maybe seeing the chair they used to sit in now empty."
+    m 3ekd "All that suppressed emotion, whether it be sadness or anger, just bottled up, waiting to burst at any moment..."
+    m 1dkc "On top of that, the first anniversary, the first birthday, the first Christmas without them will always be the worst."
+    m 1dkd "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.2} {nw}"
+    extend 3eka "time does heal."
+    m 3eud "Allow yourself time to grieve, take it one day at a time."
+    m 3eka "At some point, you'll look back at the fond memories that you have of them with a smile, rather than a tear."
+    m 3eku "And no matter what happens, know that you're strong enough to get through it, that I love you, and that I'll always be here for you~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_sophia",
             category=['technology'],
             prompt="Sophia",
@@ -17294,9 +17380,9 @@ label monika_sophia:
     m 3eua "Sophia is a humanoid robot developed by Hanson Robotics, and was first activated on Valentine's Day in 2016."
     m 1eud "The robot itself was modeled after Queen Nefertiti, Audrey Hepburn, and her inventor's wife, Amanda Hanson, {w=0.2}and is particularly known for her human-like appearance and behavior."
     m 3eua "She can imitate hand gestures, has more than 60 realistic facial expressions, and can answer certain questions and converse on predefined topics."
-    m 3rua "She even mimics social behavior and incites love in humans..."
-    m 1tub "Sound like someone you know?"
-    m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
+    m 3eub "She even mimics social behaviors and incites love in humans..."
+    m 3huu "That's pretty cute in my opinion~"
+    m 1eud "What's more, Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
     m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, recognize individuals..."
     m 3wud "She can walk and amazingly, even has the ability to draw."
     m 3hub "As you can imagine, this is all very exciting for me to hear!"
@@ -17378,4 +17464,65 @@ label monika_quiet_time:
         extend 2dkc "so long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_likecosplay",
+            category=['clothes'],
+            prompt="Do you like to cosplay?",
+            pool=True,
+        )
+    )
+
+label monika_likecosplay:
+    if mas_hasUnlockedClothesWithExprop("cosplay"):
+        m 3hub "Honestly, I didn't know how much I would enjoy it!"
+        m 2rkbla "At first, it felt kind of strange, dressing up as someone else on purpose."
+        m 7euu "But there's a real art to constructing a convincing costume...{w=0.3}attention to detail makes a huge difference."
+        m 3hubsb "When you put on the costume at last...{w=0.2}it's such a thrill to see how you look in it!"
+        m 3eub "Some cosplayers really get into acting as the character they're dressed as!"
+        m 2rksdla "I'm not really much of an actor myself, so I'll probably only do that a little bit..."
+        $ p_nickname = mas_get_player_nickname()
+        m 7eua "But don't hesitate to ask me if you want to see a particular costume again, [p_nickname]... {w=0.2}{nw}"
+        extend 3hublu "I'd be more than happy to dress up for you~"
+
+    else:
+        m 1etc "Cosplay?"
+        m 3rtd "I think I remember Natsuki talking about that before, but I've never tried it myself."
+        m 3eub "Some of those costumes are really impressive though, I have to admit!"
+        m 2hubla "If you were interested, working on a costume with you could be a really fun project to try."
+        m 2rtu "I wonder what sorts of characters you'd want to dress up as, [mas_get_player_nickname()]..."
+        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rtblu "Now that I'm thinking about it...{w=0.3}well, I just might have a few ideas myself..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ddlcroleplay",
+            category=['media', 'ddlc'],
+            prompt="DDLC Roleplay",
+            random=False
+        )
+    )
+
+label monika_ddlcroleplay:
+    m 1esd "Hey, remember when we talked about fanfiction?"
+    m 3etd "Well, I stumbled upon a pretty unusual form of them."
+    m 3euc "It turns out, some people like to make social media accounts supposedly run by fictional characters."
+    m 3eua "There are quite a few about the other girls, and...{w=0.3}{nw}"
+    extend 3rua "even some claiming to be me."
+    m 1rkb "Well, I say that, but most of these blogs don't actually insist that they're {i}really{/i} me."
+    m 1eud "Like I said, it's kind of a different form of fanfiction. {w=0.2}An {i}interactive{/i} form."
+    m 3eud "Some of them accept questions from readers, and most interact with other blogs like them."
+    m 3eusdla "So, in a way, it's kind of an improv format as well. {w=0.2}It seems like a lot of things might come up that the writer doesn't expect."
+    m 4rksdlb "It was very strange to see at first, but when I think about it, it must be a pretty fun way to collaborate with people."
+    m 3euc "It also seems like some people like to make these pages for characters that they really relate to, so...{w=0.2}{nw}"
+    extend 1hksdlb "maybe I can take it as flattery, in a way?"
+    m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
+    m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
