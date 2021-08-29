@@ -423,9 +423,7 @@ init -19 python:
                 if None, zorder is preserved, otherwise set to 0.
                 Equivalent of `zorder` property
                 (Default: 0)
-            tag - string, used to specify the tag of image
-                Equivalent of the `as` property
-                (Default: None)
+            tag - ignored - do not use
             behind - list of strings, giving image tags that this image is
                 shown behind.
                 Equivalent of the `behind` property
@@ -439,7 +437,7 @@ init -19 python:
             self.layer = layer
             self.what = what
             self.zorder = zorder
-            self.tag = tag
+            self.tag = None
             self.behind = behind
             self.real_tag = None
             self.name = None
@@ -479,9 +477,9 @@ init -19 python:
             IN:
                 name - tag of the image to show
             """
-            self.name = name
-            if self.name is None:
+            if name is None:
                 return
+            self.name = name
 
             # first, determine the tag that will end up being used.
             if self.tag is None:
@@ -744,6 +742,14 @@ init -19 python:
             # key: deco tag
             # value: MASDecoFrame (adv deco frame) for that tag
 
+            self._deco_tag_override = {}
+            # key: deco tag
+            # value: actual deco tag in use
+
+            self._deco_tag_override_r = {}
+            # key: actual deco tag in use
+            # value: deco tag
+
             self._deco_render_map = {
                 store.mas_deco.LAYER_BACK: [],
                 store.mas_deco.LAYER_MID: [],
@@ -755,6 +761,8 @@ init -19 python:
             self.changed = False
 
         def __getitem__(self, item):
+            item = self.get_override_name(item)
+
             if item in self._adv_decos:
                 return self._adv_decos[item]
 
@@ -792,7 +800,7 @@ init -19 python:
             #   3 - update all other dec db information
             #   4 - set changed
 
-        def _adv_add_deco(self, deco_obj, adv_deco_frame):
+        def _adv_add_deco(self, deco_obj, adv_deco_frame, override_tag=None):
             """
             Adds a decoration object to teh deco manager.
             This is meant for Advanced DecoFrames
@@ -801,10 +809,14 @@ init -19 python:
                 deco_obj - MASDecoration object to add
                 adv_deco_frame - MASAdvancedDecoFRame to associate with deco
                     object.
+                override_tag - tag to use as the "name" for this deco
             """
-            # TODO - update for deco tag replace
             self._adv_decos[deco_obj.name] = deco_obj
             self._deco_frame_map[deco_obj.name] = adv_deco_frame
+
+            if override_tag is not None:
+                self._deco_tag_override[override_tag] = deco_obj.name
+                self._deco_tag_override_r[deco_obj.name] = override_tag
 
         def add_back(self, deco_obj, deco_frame):
             """
@@ -841,10 +853,18 @@ init -19 python:
             """
             Generates iter of advanced deco objects and their frames
 
-            RETURNS: iter of tuple containing deco object and adv deco frame
+            RETURNS: iter of tuple:
+                [0] - deco object
+                [1] - adv deco frame
+                [2] - the override tag (will be the same as deco object's name
+                    if no override tag given)
             """
             for deco_name, deco_obj in self._adv_decos:
-                yield deco_obj, self._deco_frame_map[deco_name]
+                yield (
+                    deco_obj,
+                    self._deco_frame_map[deco_name],
+                    self._deco_tag_override_r.get(deco_name, deco_name)
+                )
 
         def diff_deco_adv(self, deco, adv_df):
             """
@@ -871,6 +891,17 @@ init -19 python:
 
             return 1
 
+        def get_override_name(self, name):
+            """
+            Gets the tag name that is actually being used for the given name
+
+            IN:
+                name - name to get real tag name for
+
+            RETURNS: the real tag name
+            """
+            return self._deco_tag_override.get(name, name)
+
         def rm_deco(self, name):
             """
             REmoves all instances of the deco with the given name from this
@@ -880,6 +911,8 @@ init -19 python:
                 name - tag, either deco name or image tag, of the deco object
                     to remove
             """
+            name = self.get_override_name(name)
+
             deco_obj = None
             if name in self._decos:
                 deco_obj = self._decos.pop(name)
@@ -918,9 +951,11 @@ init -19 python:
         mas_current_background._deco_add(tag=tag)
 
         if show_now:
-            adf = mas_current_background.get_deco_adf(tag)
-            if adf is not None:
-                adf.show(tag)
+            deco_info = mas_current_background.get_deco_info(tag)
+            if deco_info is not None:
+                real_tag, adf = deco_info
+                if adf is not None:
+                    adf.show(real_tag)
         else:
             mas_current_background._deco_man.changed = True
 
@@ -944,13 +979,29 @@ init -19 python:
             store.mas_deco.vis_store.pop(tag)
 
         if hide_now:
-            adf = mas_current_background.get_deco_adf(tag)
-            if adf is not None:
-                adf.hide()
+            deco_info = mas_current_background.get_deco_info(tag)
+            if deco_info is not None:
+                ignore, adf = deco_info
+                if adf is not None:
+                    adf.hide()
         else:
             mas_current_background._deco_man.changed = True
 
 
+    def mas_isDecoTagEnabled(tag):
+        """
+        Checks if the given deco tag is in the vis store, which means its
+        slated to be visible if it can be.
+
+        IN:
+            tag - the image tag to check
+
+        RETURNS: True if the deco is slated to be visible, False if not
+        """
+        return tag in store.mas_deco.vis_store
+
+
+    @store.mas_utils.deprecated(use_instead="mas_isDecoTagEnabled")
     def mas_isDecoTagVisible(tag):
         """
         Checks if the given deco tag is still visible. (as in the vis_store)
@@ -960,7 +1011,28 @@ init -19 python:
 
         RETURNS: True if the deco is still visible, false if not
         """
-        return tag in store.mas_deco.vis_store
+        return mas_isDecoTagEnabled(tag)
+
+
+    def mas_isDecoTagShowing(tag):
+        """
+        Checks if this deco is showing - as in the image associated with
+        this tag is being rendered (including replace tag depending on bg)
+
+        IN:
+            tag - the image tag to check
+
+        RETURNS: True if the deco is being shown, false if not
+        """
+        deco_info = mas_current_background.get_deco_info(tag)
+        if deco_info is None:
+            return False
+
+        real_tag, adf = deco_info
+        if adf is None:
+            return False
+
+        return adf.showing()
 
 
 # TODO: complete with real room deco

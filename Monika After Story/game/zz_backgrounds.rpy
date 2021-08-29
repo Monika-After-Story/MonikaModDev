@@ -2148,12 +2148,15 @@ init -10 python:
             if tag is not None:
                 deco_info = self.get_deco_info(tag)
                 if deco_info is not None:
-                    replace_tag, adv_frame = deco_info
+                    real_tag, adv_frame = deco_info
 
-                deco = store.mas_deco.get_deco(tag)
+                deco = store.mas_deco.get_deco(real_tag)
                 if adv_frame is not None and deco is not None:
-                    # TODO
-                    self._deco_man._adv_add_deco(deco, adv_frame)
+                    self._deco_man._adv_add_deco(
+                        deco,
+                        adv_frame,
+                        override_tag=tag
+                    )
 
         def _deco_rm(self, name):
             """
@@ -2223,17 +2226,16 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object with hides
                     populated.
             """
-            for deco_obj, adv_df in self._deco_man.deco_iter_adv():
+            for deco_obj, adv_df, override_tag in self._deco_man.deco_iter_adv():
 
-                new_info = new_bg.get_deco_info(deco_obj.name)
                 if (
-                        not mas_isDecoTagVisible(deco_obj.name)
-                        or new_info is None
+                        not mas_isDecoTagEnabled(override_tag)
+                        or new_bg.get_deco_info(override_tag) is None
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
-                    change_info.hides[deco_obj.name] = adv_df
-                    self._deco_rm(deco_obj.name)
+                    change_info.hides[override_tag] = adv_df
+                    self._deco_rm(override_tag)
 
         def fromTuple(self, data_tuple):
             """
@@ -2254,6 +2256,7 @@ init -10 python:
             """
             return (self.unlocked,)
 
+        @store.mas_utils.deprecated(use_instead="get_deco_info")
         def get_deco_adf(self, tag):
             """DEPRECATED
             Gets MASAdvancedDecoFrame associatd with this tag, if one exists.
@@ -2643,8 +2646,14 @@ init -20 python in mas_background:
         to go smoothly.
 
         PROPERTIES:
-            hides - dict of image tags and MASAdvancedDecoFrames to hide
-            shows - dict of image tags and MASAdvancedDecoFrames to show
+            hides - dict:
+                key: image tag (override)
+                value: MASAdvancedDecoFrame to hide
+            shows - dict:
+                key: image tag (override)
+                value: tuple:
+                    [0] - image tag (actual)
+                    [1] - MASAdvancedDecoFrame to show
         """
 
         def __init__(self, hides=None, shows=None):

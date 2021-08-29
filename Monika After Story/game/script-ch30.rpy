@@ -949,8 +949,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 for h_adf in bg_change_info.hides.itervalues():
                     h_adf.hide()
 
-            for s_tag, s_adf in bg_change_info.shows.iteritems():
-                s_adf.show(s_tag)
+            for s_tag, s_info in bg_change_info.shows.iteritems():
+                s_tag_real, s_adf = s_info
+                s_adf.show(s_tag_real)
 
     # vignette
     if store.mas_globals.show_vignette:
