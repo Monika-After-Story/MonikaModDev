@@ -17239,7 +17239,7 @@ label monika_floriography_birth_flower:
            m 3euc "Daffodils were also used to decorate graves..."
            m 3etc "maybe because of the association with new beginnings and therefore rebirth?"
            m 3esb "It's hard to imagine these cheerful flowers not bringing anything but happiness though."
-           m 3hublb "If I gave you one, I hope it would help you remember I could never love anyone else just the way that I love you."
+           m 3hublb "If I gave you some, I hope it would help you remember I could never love anyone else just the way that I love you."
     elif persistent._mas_player_bday.month == 4:
            m 3eub "Your birthday is in April, so your birth flower would be the daisy."
            m 1hub "Daisies express youth, purity, and innocence."
