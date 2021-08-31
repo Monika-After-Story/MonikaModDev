@@ -320,7 +320,7 @@ init python in mas_xp:
 
 
 init python:
-
+    @store.mas_utils.deprecated(should_raise=True)
     def grant_xp(experience):
         """DEPRECATED
         This does not do anything anymore. Around for compatibility
@@ -328,7 +328,7 @@ init python:
         """
         pass
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def get_level():
         """DEPRECATED
         This does not do anything anymore. Around for compatibility purposes

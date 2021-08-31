@@ -117,7 +117,7 @@ label import_ddlc_persistent:
             ddlc_persistent = updateTopicIDs("v031", ddlc_persistent)
             ddlc_persistent = updateTopicIDs("v032", ddlc_persistent)
             ddlc_persistent = updateTopicIDs("v033", ddlc_persistent)
-            clearUpdateStructs()
+            mas_versions.clear()
 
     if ddlc_persistent is None:
         menu:

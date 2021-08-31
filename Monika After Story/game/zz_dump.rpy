@@ -32,15 +32,19 @@ init 999 python:
             # setup lines
             _ev_finalstatline = (
                 "\n---ST ({12}) ---\n" +
-                "EV:{0}\n" +
-                "PC:{1}\n" +
-                "RC:{2}\n" +
-                "UC:{3}\n" +
-                "LC:{4}\n" +
-                "SC:{5}\n" +
-                "SSC:{6} - AVG:{7}\n" +
-                "PSC:{8} - AVG:{9}\n" +
-                "RSC:{10} - AVG:{11}\n"
+                "EV:{0}\n" + # total events
+                "PC:{1}\n" + # number of pool events
+                "PUC:{13}\n" + # number of unlocked pools
+                "PLC:{14}\n" + # number of locked pools
+                "RC:{2}\n" + # number of random events
+                "RUC:{15}\n" + # number of unlokced randoms
+                "RLC:{16}\n" + # number of locked randoms
+                "UC:{3}\n" + # number of unlocked events
+                "LC:{4}\n" + # number of locked events
+                "SC:{5}\n" + # number of seen events
+                "SSC:{6} - AVG:{7}\n" + # number of shown events - avg
+                "PSC:{8} - AVG:{9}\n" + # number of pool showns - avg
+                "RSC:{10} - AVG:{11}\n" # number of random showns - avg
             )
             _ev_statline = "{0} - p:{1} - r:{2} - u:{3} - s:{4} - sc:{5}\n"
 
@@ -53,7 +57,11 @@ init 999 python:
                 """
                 self.ev_count = 0
                 self.pool_count = 0
+                self.pool_unlo_count = 0
+                self.pool_lock_count = 0
                 self.rand_count = 0
+                self.rand_unlo_count = 0
+                self.rand_lock_count = 0
                 self.unlo_count = 0
                 self.lock_count = 0
                 self.seen_count = 0
@@ -124,9 +132,19 @@ init 999 python:
                     self.pool_count += 1
                     self.pshow_count += ev.shown_count
 
+                    if ev.unlocked:
+                        self.pool_unlo_count += 1
+                    else:
+                        self.pool_lock_count += 1
+
                 if ev.random:
                     self.rand_count += 1
                     self.rshow_count += ev.shown_count
+
+                    if ev.unlocked:
+                        self.rand_unlo_count += 1
+                    else:
+                        self.rand_lock_count += 1
 
                 if ev.unlocked:
                     self.unlo_count += 1
@@ -158,7 +176,11 @@ init 999 python:
                         psc_avg,
                         self.rshow_count,
                         rsc_avg,
-                        self.name
+                        self.name,
+                        self.pool_unlo_count,
+                        self.pool_lock_count,
+                        self.rand_unlo_count,
+                        self.rand_lock_count,
                     ) + "\n[MOST]: " +
                     self._ev_statline.format(
                         self.most_seen_ev.eventlabel,
@@ -204,6 +226,7 @@ init 999 python:
 
             _ev_stats_file.write(config.version + "\n\n")
             _ev_stats_file.write(mas_sessionDataDump())
+            _ev_stats_file.write(mas_progressionDataDump())
 
             # gather data
             for ev in mas_all_ev_db.values():
@@ -236,6 +259,25 @@ init 999 python:
         mas_eventDataDump()
         mas_varDataDump()
 
+    def mas_progressionDataDump():
+        """
+        Dumps progression data as a string
+        """
+        return (
+            "Last XP rate reset: {0}\n"
+            "Hours spent today: {1}\n"
+            "XP to next level: {2}\n"
+            "Current level: {3}\n"
+            "Current xp rate: {4}\n"
+            "XP last granted: {5}\n\n"
+        ).format(
+            persistent._mas_xp_rst,
+            persistent._mas_xp_hrx,
+            persistent._mas_xp_tnl,
+            persistent._mas_xp_lvl,
+            mas_xp.xp_rate,
+            mas_xp.prev_grant,
+        )
 
     def mas_sessionDataDump():
         """

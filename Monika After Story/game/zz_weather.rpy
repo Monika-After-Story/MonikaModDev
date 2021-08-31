@@ -477,7 +477,7 @@ init -20 python in mas_weather:
 
 
 init -10 python:
-
+    @store.mas_utils.deprecated(use_instead="MASFilterableWeather")
     def MASWeather(
             weather_id,
             prompt,
@@ -675,6 +675,7 @@ init -10 python:
             """
             self.unlocked = data_tuple[0]
 
+        @store.mas_utils.deprecated(use_instead="get_mask", should_raise=True)
         def sp_window(self, day):
             """DEPRECATED
             Use get_mask instead.
@@ -682,6 +683,7 @@ init -10 python:
             """
             return self.get_mask()
 
+        @store.mas_utils.deprecated(should_raise=True)
         def isbg_window(self, day, no_frame):
             """DEPRECATED
             Islands are now separate images. See script-islands-event.

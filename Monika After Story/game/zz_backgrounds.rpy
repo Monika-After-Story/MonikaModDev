@@ -1796,7 +1796,7 @@ init -10 python:
             self._sr_ss.verify()
             self._ss_mn.verify()
 
-
+    @store.mas_utils.deprecated(use_instead="MASFilterableBackground")
     def MASBackground(
             background_id,
             prompt,
@@ -2297,6 +2297,7 @@ init -10 python:
             """
             return self.getRoom(self._flt_man.current())
 
+        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
         def getDayRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2346,6 +2347,7 @@ init -10 python:
                 return None
             return m_w_m.get(precip_type)
 
+        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
         def getNightRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -3218,7 +3220,7 @@ label monika_change_background_loop:
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
     # UI shields + buttons
-    # NOTE: buttons are in here since there is no consistency if placed in 
+    # NOTE: buttons are in here since there is no consistency if placed in
     # the bg change label.
     $ mas_RaiseShield_core()
     $ HKBHideButtons()

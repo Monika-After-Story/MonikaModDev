@@ -1,11 +1,13 @@
 python early in mas_utils:
     import codecs
     import os
+    import sys
     import platform
     import shutil
     import store
     import time
     import traceback
+    import functools
 
     # mac logging
     class MASMacLog(renpy.renpy.log.LogFile):
@@ -309,3 +311,73 @@ python early in mas_utils:
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
     mas_log.write("VERSION: {0}\n".format(renpy.game.persistent.version_number))
+
+    def deprecated(use_instead=None, should_raise=False):
+        """
+        Decorator that marks functions and classes as deprecated
+
+        During LINT every UNIQUE EXECUTION (during the init phase) of a deprecated object
+            will be reported to stdout using lint hooks
+        During RUNTIME every EXECUTION of a deprecated object
+            will be reported in the main log (mas_log.txt) and stderr
+        NOTE: if we were allowed to raise, we RAISE a DeprecationWarning intead
+
+        You can access all the reports via __all_warnings__
+
+        IN:
+            use_instead - string with the name of the function/class to use instead
+            should_raise - whether we raise an exception or just log the error
+        """
+        def decorator(callable_):
+            """
+            The actual decorator
+
+            IN:
+                callable_ - the func/class to decorate
+            """
+            # FIXME: We have to do this 'til we finally get py3
+            DEF_ATTR = ("__module__", "__name__", "__doc__")
+            assigned = [attr for attr in DEF_ATTR if hasattr(callable_, attr)]
+
+            @functools.wraps(callable_, assigned=assigned)
+            def wrapper(*args, **kwargs):
+                """
+                Wrapper around the deprecated function/class
+                """
+                msg = "[WARNING]: '{module}{name}' is deprecated.{use_instead_text}"
+
+                if hasattr(callable_, "__module__") and callable_.__module__:
+                    module = callable_.__module__ + "."
+                else:
+                    module = ""
+
+                name = callable_.__name__
+
+                if not use_instead:
+                    use_instead_text = ""
+                else:
+                    use_instead_text = " Use '{0}' instead.".format(use_instead)
+
+                msg = msg.format(
+                    module=module,
+                    name=name,
+                    use_instead_text=use_instead_text
+                )
+
+                deprecated.__all_warnings__.add(msg)
+
+                if should_raise:
+                    raise DeprecationWarning(msg)
+
+                else:
+                    print(msg, file=sys.stderr)
+                    writelog(msg + "\n")
+
+                return callable_(*args, **kwargs)
+
+            return wrapper
+
+        return decorator
+
+    # Keep all warnings
+    deprecated.__all_warnings__ = set()
