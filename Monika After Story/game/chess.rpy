@@ -2235,7 +2235,7 @@ init python:
             self.piece_map = dict()
 
             #And refill it
-            for position, Piece in self.board.piece_map().iteritems():
+            for position, Piece in self.board.piece_map().items():
                 MASPiece.fromPiece(
                     Piece,
                     MASChessDisplayableBase.square_to_board_coords(position),
@@ -2494,7 +2494,7 @@ init python:
                 renderer.blit(highlight_yellow, MASChessDisplayableBase.board_coords_to_screen_coords(hl))
 
             #Draw the pieces on the Board renderer.
-            for piece_location, Piece in self.piece_map.iteritems():
+            for piece_location, Piece in self.piece_map.items():
                 #Unpack the location
                 ix, iy = piece_location
 
@@ -2780,7 +2780,7 @@ init python:
 
         IMG_MAP = {
             color + (symbol.upper() if color == "w" else symbol): Image("mod_assets/games/chess/pieces/{0}{1}.png".format(color, (symbol.upper() if color == "w" else symbol)))
-            for color in FP_COLOR_LOOKUP.itervalues()
+            for color in FP_COLOR_LOOKUP.values()
             for symbol in mas_chess.PIECE_POOL
         }
 

@@ -3,5 +3,5 @@ init 20 python in mas_stories:
         """
         Dev function, unlocks all stories
         """
-        for story in story_database.itervalues():
+        for story in story_database.values():
             story.unlocked=True

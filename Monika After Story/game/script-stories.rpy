@@ -163,7 +163,7 @@ label monika_short_stories_menu:
         # build menu list
         stories_menu_items = [
             (story_ev.prompt, story_evl, False, False)
-            for story_evl, story_ev in mas_stories.story_database.iteritems()
+            for story_evl, story_ev in mas_stories.story_database.items()
             if Event._filterEvent(
                 story_ev,
                 pool=False,

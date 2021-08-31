@@ -709,7 +709,7 @@ init python:
             return
 
         active_window_handle = mas_getActiveWindowHandle()
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
                 and ev.checkConditional()
@@ -730,7 +730,7 @@ init python:
         IN:
             List of ev_labels to exclude from being unlocked
         """
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if ev_label not in excluded:
                 ev.unlocked=True
 

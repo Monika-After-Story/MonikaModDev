@@ -1973,7 +1973,7 @@ init 800 python in mas_piano_keys:
         # We only include stock songs if the player's played them successfully before
         song_list = [
             (pnml.name, pnml, False, False)
-            for pnml in pnml_db.itervalues()
+            for pnml in pnml_db.values()
             if (pnml.name not in STOCK_SONG_NAMES or pnml.wins > 0)
         ]
 
@@ -2678,7 +2678,7 @@ init 810 python:
             # NOTE: highly recommend not adding too many detections
             self.pnml_list = []
             if self.mode == self.MODE_FREE:
-                for _pnml in mas_piano_keys.pnml_db.itervalues():
+                for _pnml in mas_piano_keys.pnml_db.values():
                     if _pnml.wins == 0:
                         self.pnml_list.append(_pnml)
                         _pnml._gen_pnm_sprites()

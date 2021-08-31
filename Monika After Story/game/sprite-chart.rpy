@@ -1149,7 +1149,7 @@ init -5 python in mas_sprites:
             if no ACS of the given type
         """
         return [
-            acs for acs in ACS_MAP.itervalues()
+            acs for acs in ACS_MAP.values()
             if acs.acs_type == acs_type
         ]
 
@@ -7871,7 +7871,7 @@ python early:
                 exps = (exps,)
 
             for exp in exps:
-                for aff_lvl, exp_list in self.exp_map.iteritems():
+                for aff_lvl, exp_list in self.exp_map.items():
                     if exp.check_aff(aff_lvl):
                         exp_list.append(exp)
 
@@ -7924,7 +7924,7 @@ python early:
             """
             need_redraw = self.current_exp is exp
 
-            for exp_list in self.exp_map.itervalues():
+            for exp_list in self.exp_map.values():
                 if exp in exp_list:
                     exp_list.remove(exp)
                     need_redraw = True
@@ -7959,7 +7959,7 @@ python early:
                     need_redraw = True
                     break
 
-            for exp_list in self.exp_map.itervalues():
+            for exp_list in self.exp_map.values():
                 for exp_id in range(len(exp_list)-1, -1, -1):
                     if exp_list[exp_id].tag == tag:
                         exp_list.pop(exp_id)
@@ -8997,8 +8997,9 @@ python early:
                 # self.up_eyes_code: self.up_eyes_img,
                 # self.down_eyes_code: self.down_eyes_img
             }
-            for first_img_code in img_map.iterkeys():
-                for second_img_code in img_map.iterkeys():
+
+            for first_img_code in img_map.keys():
+                for second_img_code in img_map.keys():
                     if first_img_code != second_img_code:
                         self.transform_map[(first_img_code, second_img_code)] = _MASMoniFollowTransformDissolve(
                             time=MASMoniFollowTransform.DIS_DUR,

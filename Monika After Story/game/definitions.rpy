@@ -1082,7 +1082,7 @@ python early:
             ASSUMES:
                 mas_all_ev_db
             """
-            for ev in mas_all_ev_db.itervalues():
+            for ev in mas_all_ev_db.values():
                 if ev.conditional is not None:
                     try:
                         renpy.python.py_eval_bytecode(cls._conditional_cache[ev.conditional])

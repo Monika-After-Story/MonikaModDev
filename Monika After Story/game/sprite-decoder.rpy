@@ -57,7 +57,7 @@ init python in mas_sprite_decoder:
             #Since tuples aren't supported in json, we need to do some conversion here
             ARM_MAP["5"] = tuple(ARM_MAP["5"])
 
-            for side_key, side_list in SIDES_MAP.iteritems():
+            for side_key, side_list in SIDES_MAP.items():
                 SIDES_MAP[side_key] = tuple(side_list)
 
         #I don't really like this but it's a cleaner way of bringing up this exception once instead of multiple times

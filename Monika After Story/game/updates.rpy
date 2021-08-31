@@ -536,7 +536,7 @@ label v0_11_9_1(version="v0_11_9_1"):
         # We don't use this var anymore
         safeDel("chess_strength")
 
-        for story_type, story_last_seen in persistent._mas_last_seen_new_story.iteritems():
+        for story_type, story_last_seen in persistent._mas_last_seen_new_story.items():
             if story_last_seen is not None:
                 persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
                     story_last_seen, datetime.time()
