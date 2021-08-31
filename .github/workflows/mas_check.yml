@@ -39,10 +39,10 @@ jobs:
       # dl renpy src
       - name: Download rpy source
         run: |
-          wget https://www.renpy.org/dl/7.4.4/renpy-7.4.4-sdk.tar.bz2
-          tar xf renpy-7.4.4-sdk.tar.bz2
-          rm renpy-7.4.4-sdk.tar.bz2
-          mv renpy-7.4.4-sdk renpy
+          wget https://www.renpy.org/dl/7.4.8/renpy-7.4.8-sdk.tar.bz2
+          tar xf renpy-7.4.8-sdk.tar.bz2
+          rm renpy-7.4.8-sdk.tar.bz2
+          mv renpy-7.4.8-sdk renpy
 
       # download base mas
       - name: Download base MAS + copy files over
