@@ -378,9 +378,11 @@ init -2 python in mas_poemgame_fun:
 #       (Default: None - 0)
 #   _style_prefix - style prefix to use for this screen
 #       (Default: None)
-#   _layer - layer to show this screen on
-#       (Default: None)
+#   _layer - IGNORED - no longer in use - just specify layer when u call the screen
 screen mas_pg_textbutton_grid(words, row_info, col_info, xywh, bg_image=None, is_modal=False, _zorder=None, _style_prefix=None, _layer=None):
+    modal is_modal
+    zorder _zorder
+    style_prefix _style_prefix
 
     # precalc setup for rows/cols
     python:
@@ -390,16 +392,6 @@ screen mas_pg_textbutton_grid(words, row_info, col_info, xywh, bg_image=None, is
             row_spacing = int(xywh[3] / row_info[0])
         if col_spacing is None:
             col_spacing = int(xywh[2] / col_info[0])
-
-    # start with screen props
-    if is_modal:
-        modal True
-    if _zorder:
-        zorder _zorder
-    if _style_prefix:
-        style_prefix _style_prefix
-    if _layer:
-        layer _layer
 
     # fixed area
     fixed:
