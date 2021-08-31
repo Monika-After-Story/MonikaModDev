@@ -1083,60 +1083,26 @@ init 5 python:
     )
 
 label drawing_brb:
-    if not mas_isMoniDis(lower=True):
+    if mas_isMoniNormal(higher=True):
         m 6sub "Oh! You're going to draw something?"
         m 6hua "Have fun!"
-    else:
+    elif mas_isMoniBroken:
         m 1rkc "..."
-$ mas_idle_mailbox.send_idle_cb("drawing_brb_callback")
+    else:
+        m 1rkc "Oh.. Okay."
+    $ mas_idle_mailbox.send_idle_cb("drawing_brb_callback")
 return "idle"
 
 label drawing_brb_callback:
-    if not mas_isMoniDis(lower=True):
+    if mas_isMoniNormal(higher=True):
         m 6eub "Done?"
-        m 6rkb "I know I can't see anything you draw, but I am really curious to know what you drew."
-        m 6ekb "Please, don't feel like I'm prying over your personal space or anything, I just really want to know..."
-        m 1esa "What did you draw?{nw}"
-        $ _history_list.pop()
-        menu:
-            m "What did you draw?{fast}"
-            "Just some fanart.":
-                if not persistent.mas_pm_drew_fanart:
-                    m 6eub "Oh! You draw fanart?"
-                    m 4eub "Fanart can be a great way of expressing your love for a franchise or a celebrity."
-                    m 7rfc "It's annoying how some poeple think that fanart isn't real art or invaluable."
-                    m 2tfd "Like, sorry I care about something that I like and drew it, right?"
-                    m 2dsc "..."
-                    m 2lkb "Sorry [player]. I just needed to let off some steam there."
-                    m 1eua "Anyway, I am so proud of you for drawing something."
-                    m 2ekbsb "I love you, [player]. Never forget that."
-                    $ persistent.mas_pm_drew_fanart = True,
-                else:
-                    m 6sub "You're drawing fanart again?"
-                    m 6eua "That's great, [player]!"
-                    m 6ekbsa "I am so proud of you for drawing something. Even though I haven't seen your art, I am sure it's wonderful."
-                    m 2ekbsb "I know it is."
-            "A real person.":
-                m 2sub "You drew a person?"
-                m 4eub "Well, you must really care about that person. I am glad to see you have someone that you really care about, [player]."
-                m 2rsc "Wait, maybe it was a commission?"
-                m 2ekbsb "Well, either way, I am very proud of you. This is why I admire you so much."
-            "An environment.":
-                m 6wub "You drew an environment?"
-                m 2eua "I don't know anything about drawing them myself, but I've heard they are very challenging."
-                m 6ekbsb "I don't know if you find them challenging or not, but I still am extremely proud of you for drawing anything."
-            "An Original Character.":
-                m 4suo "An original character?"
-                m 6wou "[player], that's amazing!"
-                m 6eud "Even if I don't know how to draw, I do know it's hard to make good character designs."
-                m 4esbsb "You are so creative... and so talented, too..."
-                m 6ekbsb "It takes so much creativity and hard work to make memorable and original character designs... and here you are, no doubt doing a wonderful job."
-                m 6hubfa "You are so talented... I am so lucky to have you."
-            "It's something personal..":
-                m 6ekb "It's completely alright, [player]. I'm sorry if I pryed into your personal space by asking that."
-                m 7eub "Art can be something very personal. It's a way of expressing yourself in a way you can't or don't want to in real life."
-                m 2eub "I am glad to see you are making something so close and personal to yourself."
+        m 6rkb "Sometimes I really wish I could see what you draw to see how amazing you draw."
+        m 7hub "But until then, I'll just have to cheer you on from the sidelines.."
+        m 1eub "And that's exactly what I'm gonna do!"
+        m 4hub "Great job, [player]! You're so talented, I just know it!"
+    elif mas_isMoniBroken:
+        m 1rkc "..."
     else:
-        m 2rkc "Oh.. You're done already."
-        m 2lkc "Well, I guess we can spend some time together."
+       m 1rkc "Ah, you're back.."
 return
+
