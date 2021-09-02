@@ -229,6 +229,7 @@ init -19 python:
             """
             super(MASImageTagDecoration, self).__init__(tag, ex_props)
 
+
             # check for duplicate deco
             store.mas_deco._add_it_deco(self)
 
@@ -564,7 +565,7 @@ init -19 python:
 
             return deco_def.bg_map.get(bg_id, None)
 
-        def get_img(bg_id):
+        def get_img(self, bg_id):
             """
             Gets the tag and MASAdvancedDecoFrame to use for a bg for this
             definition.

@@ -4,6 +4,7 @@
 image dev_monika_bg_one = "dev/deco/fakebg_1.png"
 image dev_monika_bg_two = "dev/deco/fakebg_2.png"
 image dev_monika_deco_one = "dev/deco/fakedeco_1_0.png"
+image dev_monika_deco_one_alt = "dev/deco/fakedeco_1_0_alt.png"
 image dev_monika_deco_two = "dev/deco/fakedeco_2_0.png"
 
 
@@ -61,7 +62,7 @@ init 501 python:
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_1",
-        MASAdvancedDecoFrame(at_list=[i44], zorder=6)
+        MASAdvancedDecoFrame(at_list=[i44], zorder=6),
     )
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_two",
@@ -73,7 +74,8 @@ init 501 python:
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
         "dev_mas_bg_2",
-        MASAdvancedDecoFrame(at_list=[i32], zorder=6)
+        MASAdvancedDecoFrame(zorder=6),
+        replace_tag="dev_monika_deco_one_alt"
     )
     #MASImageTagDecoDefinition.register_img(
     #    "dev_monika_deco_two",
@@ -149,7 +151,7 @@ label dev_deco_tag_test_adf:
     m 1euc " now to next bg"
     call mas_background_change(dev_mas_bg_2)
 
-    m 1eud "they should be in different positions, except deco 2 will be hidden"
+    m 1eud "deco 1 should be a different color, deco 2 should be hidden"
     m 2wuw "now back to spaceroom"
     call mas_background_change(mas_background_def)
 
