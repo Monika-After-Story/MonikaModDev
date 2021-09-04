@@ -1099,7 +1099,7 @@ label drawing_brb_callback:
         m 7hub "But until then, I'll just have to cheer you on from the sidelines.."
         m 1eub "And that's exactly what I'm gonna do!"
         m 4hub "Great job, [player]! You're so talented, I just know it!"
-    elif mas_isMoniBroken:
+    elif mas_isMoniBroken():
         m 1rkc "..."
     else:
        m 1rkc "Ah, you're back.."
