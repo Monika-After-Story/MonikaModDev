@@ -893,7 +893,7 @@ label mas_fun_fact_round_earth:
     if renpy.seen_label("monika_science"):
         $ dialogue_line =  "And like we discussed before, it's also known that the sun isn't the center of the universe"
 
-    m 3eua "[dialogue_line] -- it's just one of many stars in the galaxy."
+    m 3eua "[dialogue_line]--it's just one of many stars in the galaxy."
     m 1msblu "But do you know where science says the center of the universe is now?"
     m 3kubsu "It's you.{w=0.2} You're the center of {i}my{/i} universe, [mas_get_player_nickname()]."
     m 3hubsb "Ahaha!"
