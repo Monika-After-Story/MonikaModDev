@@ -2147,10 +2147,13 @@ init -10 python:
             """
             if tag is not None:
                 deco_info = self.get_deco_info(tag)
-                if deco_info is not None:
-                    real_tag, adv_frame = deco_info
 
+                if deco_tag is None:
+                    return
+
+                real_tag, adv_frame = deco_info
                 deco = store.mas_deco.get_deco(real_tag)
+
                 if adv_frame is not None and deco is not None:
                     self._deco_man._adv_add_deco(
                         deco,
