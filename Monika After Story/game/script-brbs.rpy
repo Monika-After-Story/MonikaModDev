@@ -1074,10 +1074,9 @@ init 5 python:
             persistent.event_database,
             eventlabel="drawing_brb",
             category=['be right back'],
-            prompt="I'm going to go draw something",
+            prompt="I'm going to go draw",
             pool=True,
             unlocked=True,
-
         ),
         markSeen=True
     )
@@ -1086,12 +1085,12 @@ label drawing_brb:
     if mas_isMoniNormal(higher=True):
         m 6sub "Oh! You're going to draw something?"
         m 6hua "Have fun!"
-    elif mas_isMoniBroken:
+    elif mas_isMoniBroken():
         m 1rkc "..."
     else:
         m 1rkc "Oh.. Okay."
     $ mas_idle_mailbox.send_idle_cb("drawing_brb_callback")
-return "idle"
+    return "idle"
 
 label drawing_brb_callback:
     if mas_isMoniNormal(higher=True):
