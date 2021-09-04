@@ -7,6 +7,8 @@ image dev_monika_deco_one = "dev/deco/fakedeco_1_0.png"
 image dev_monika_deco_one_alt = "dev/deco/fakedeco_1_0_alt.png"
 image dev_monika_deco_two = "dev/deco/fakedeco_2_0.png"
 
+image dev_monika_deco_flt = MASFilterSwitch("dev/deco/fakedeco_1_2.png")
+
 
 init -1 python:
     dev_mas_bg_1 = MASFilterableBackground(
@@ -82,6 +84,11 @@ init 501 python:
     #    "dev_mas_bg_2",
     #    MASAdvancedDecoFrame(at_list=[i33], zorder=6)
     #)
+    MASImageTagDecoDefinition.register_img(
+        "dev_monika_deco_flt",
+        "dev_mas_bg_2",
+        MASAdvancedDecoFrame(zorder=6)
+    )
 
 
 init 5 python:

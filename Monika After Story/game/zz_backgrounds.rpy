@@ -2148,7 +2148,7 @@ init -10 python:
             if tag is not None:
                 deco_info = self.get_deco_info(tag)
 
-                if deco_tag is None:
+                if deco_info is None:
                     return
 
                 real_tag, adv_frame = deco_info
