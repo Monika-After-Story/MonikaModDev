@@ -87,7 +87,7 @@ init 501 python:
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_flt",
         "dev_mas_bg_2",
-        MASAdvancedDecoFrame(zorder=6)
+        MASAdvancedDecoFrame(zorder=20)
     )
 
 
