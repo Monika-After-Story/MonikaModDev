@@ -1002,20 +1002,7 @@ init -19 python:
         return tag in store.mas_deco.vis_store
 
 
-    @store.mas_utils.deprecated(use_instead="mas_isDecoTagEnabled")
     def mas_isDecoTagVisible(tag):
-        """
-        Checks if the given deco tag is still visible. (as in the vis_store)
-
-        IN:
-            tag - the image tag to check
-
-        RETURNS: True if the deco is still visible, false if not
-        """
-        return mas_isDecoTagEnabled(tag)
-
-
-    def mas_isDecoTagShowing(tag):
         """
         Checks if this deco is showing - as in the image associated with
         this tag is being rendered (including replace tag depending on bg)
