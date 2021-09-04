@@ -1103,5 +1103,5 @@ label drawing_brb_callback:
         m 1rkc "..."
     else:
        m 1rkc "Ah, you're back.."
-return
+    return
 
