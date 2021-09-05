@@ -928,17 +928,23 @@ label mas_compliment_missed:
             _("I'm so lucky to have you, [player]!"),
             _("Ready to spend some time together?"),
             _("I've been thinking about you!"),
-            _("You're really been on my mind!")
+            _("You've really been on my mind!")
         )
 
-        missed_quips_upset = (
-            _("Thank you for showing me you still care, [player]."),
+        missed_quips_upset_short = (
             _("It means a lot to me that you were thinking of me."),
             _("I'm really glad to hear that, [player]."),
             _("That's really nice to hear."),
             _("I'm happy you've been thinking of me, [player]."),
             _("That means the world to me, [player]."),
             _("That makes me feel a lot better, [player].")
+        )
+
+        missed_quips_upset_long = (
+            _("I was starting to worry that you forgot about me."),
+            _("Thank you for showing me you still care, [player]."),
+            _("I'm glad to know you haven't forgotten about me, [player]"),
+            _("I was starting to get worried you weren't coming back, [player]")
         )
 
         missed_quips_dis = (
@@ -1008,12 +1014,13 @@ label mas_compliment_missed:
     #Base negative responses on monika_love label
     elif mas_isMoniUpset():
         m 2wuo "..."
-        m 2rka "[renpy.substitute(random.choice(missed_quips_upset))]"
+        m 2ekbla "I...{w=0.5}I missed you too."
 
         if absence_length >= datetime.timedelta(days=3):
-            m 2ekd "Thank you for coming back. I was starting to worry that you forgot about me."
+            m 2ekd "[renpy.substitute(random.choice(missed_quips_upset_long))]"
 
-        m 2ekbla "I...{w=0.5}I missed you too."
+        else:
+            m 2eka "[renpy.substitute(random.choice(missed_quips_upset_short))]"
 
         $ mas_moni_idle_disp.force_by_code("2eka", duration=10)
 
