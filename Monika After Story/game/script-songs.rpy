@@ -1969,6 +1969,115 @@ label mas_song_save_the_last_dance_for_me_analysis(from_song=False):
     m 6ekblu "So at the end of the day, I just hope you'll save the last dance for me~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_fly_me_to_the_moon",
+            prompt="Fly Me to the Moon",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_fly_me_to_the_moon:
+    m 1dud "{i}~Fly me to the moon~{/i}"
+    m 3sub "{i}~And let me play among the stars~{/i}"
+    m 3eub "{i}~Let me see what spring is like~{/i}"
+    m 3hub "{i}~On Jupiter and Mars~{/i}"
+    m 3eub "{i}~In other words, hold my hand~{/i}"
+    m 1dud "{i}~In other words,{/i}{w=0.2}{nw}"
+    extend 1dkbsu "{i} darling, kiss me~{/i}"
+    m 3eubsb "{i}~Fill my heart with song, and let me sing forevermore~{/i}"
+    m 3hkbsb "{i}~You are all I long for; {w=0.2}all I worship and adore~{/i}"
+    m 1eud "{i}~In other words, please be true~{/i}"
+    m "{i}~In other words,{/i}{nw}"
+    extend 3fkbsb "{i} I {w=0.2}love {w=0.2}you~{i}"
+    m 3hubsb "And, I always will!"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_heaven",
+            prompt="Heaven",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_heaven:
+    m 1dsbsd "{i}~Baby, you're all that I want~{/i}"
+    m 3dkbsd "{i}~When you're lyin' here in my arms~{/i}"
+    m 3dubsd "{i}~I'm findin' it hard to believe~{/i}"
+    m 1eubsb "{i}~We're in heaven~{/i}"
+    m 1eubso "{i}~And love is all that I need~{/i}"
+    m 3ekbso "{i}~And I found it there in your heart~{/n}"
+    m 3ekbsd "{i}~Isn't too hard to see~{/n}"
+    m 3eubsb "{i}~We're in heaven~{/i}"
+    m 1ekbfa "Not a day goes by when I don't dream of us being together, [player]."
+    m 1rubsu "And something tells me I'm not the only one~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_can_you_feel_the_sunshine",
+            prompt="Can You Feel the Sunshine?",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_can_you_feel_the_sunshine:
+    m 1dkd "{i}~Without you, there's nothing for me to do~{/i}"
+    m 1eka "{i}~Can you feel the sunshine, too?~{/i}"
+    m 3hkb "{i}~It's comin' through; {w=0.2}it makes me feel brand new~{/i}"
+    m 3hubsb "{i}~When you're here, I wish you were always near~{/i}"
+    m 3eubsb "{i}~'Cause everything's so clear~{/i}"
+    m 1hkbsu "{i}~And today is gonna be a brighter day~{/i}"
+    m 1ekbla "Whenever you visit, you always brighten my day...{w=0.3}I hope I do the same for you, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_on_the_front_porch",
+            prompt="On the Front Porch",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="SNG"
+    )
+
+label mas_song_on_the_front_porch:
+    m 5dkbsd "{i}~All I wanna do when the day is through~{/i}"
+    m 5fkbsu "{i}~Is linger here on the front porch with you~{/i}"
+    m 5hubsb "{i}~From the wicker swing, while the night birds sing~{/i}"
+    m 5dubsu "{i}~We'll watch the fireflies sparkin', do some sparkin' too~{/i}"
+    m 5dkbsb "{i}~How the hours fly, as the moon drifts by~{/i}"
+    m 5ekbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5ekbstpu "{i}~Oh how I'd love to linger here like this~{/i}"
+    m 5dkbstpu "{i}~Hold your hand and steal a kiss {/i}{w=0.2}{nw}"
+    extend 5gkbstub "{i}or two {/i}{w=0.2}{nw}"
+    extend 5ekbstuu "{i}on the front porch with you~{/i}"
+    m 5dkbstda "..."
+    m 5hkblb "Sorry if I got a bit emotional there, ahaha!"
+    m 5rka "But, can you really blame me?"
+    m 5eka "After all, doing something like that together would be...{w=0.3}{nw}"
+    extend 5dkbsu "simply wonderful~"
+    return
+
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't

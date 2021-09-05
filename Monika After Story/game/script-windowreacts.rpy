@@ -586,3 +586,36 @@ label mas_wrs_twitch:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitch')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_word_processor",
+            category=['Google Docs|LibreOffice Writer|Microsoft Word'],
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            },
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_word_processor:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Writing a story?",
+            "Taking notes, [player]?",
+            "Writing a poem?",
+            "Writing a love letter?~"
+        ],
+        'Window Reactions'
+    )
+
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_word_processor')
+    return
