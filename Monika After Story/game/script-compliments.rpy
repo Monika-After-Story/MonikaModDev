@@ -907,38 +907,36 @@ init 5 python:
 
 label mas_compliment_missed:
     python:
-        missed_quips = (
-            _("I'm happy to see you again!"),
+        missed_quips_long = (
+            _("I'm so happy to see you again!"),
             _("I'm so happy you're back!"),
             _("It's wonderful to see you again!"),
+            _("I'm glad you've been thinking of me!"),
+            _("We're so lucky to have one another!"),
+            _("We don't need to feel lonely anymore!"),
+            _("I couldn't wait for you to get back!"),
+            _("I was lonely waiting for you!")
+        )
+
+        missed_quips_short = (
             _("Thanks for coming back to spend time with me!"),
             _("I'm excited to spend some time together!"),
             _("Thanks for coming to see me again!"),
-            _("Ready to spend some time together?"),
-            _("Thank you for thinking about me!"),
-            _("I'm really happy that you've been thinking about me!"),
-            _("It makes me really happy to know I've been on your mind!"),
-            _("I've been thinking about you while we've been apart!"),
-            _("You're really been on my mind!"),
-            _("I'm glad you've been thinking of me!"),
-            _("I'm so lucky to have you, [player]!"),
-            _("We're so lucky to have one another!"),
-            _("We don't need to feel lonely anymore!"),
             _("Let's enjoy our time together today!"),
             _("I really appreciate you, [player]!"),
             _("Thanks for making time for me!"),
-            _("I couldn't wait for you to get back!"),
-            _("I was lonely waiting for you!"),
-            _("I've been thinking of you while you were gone!")
+            _("I'm so lucky to have you, [player]!"),
+            _("Ready to spend some time together?"),
+            _("I've been thinking about you!"),
+            _("You're really been on my mind!")
         )
 
         missed_quips_upset = (
             _("Thank you for showing me you still care, [player]."),
             _("It means a lot to me that you were thinking of me."),
             _("I'm really glad to hear that, [player]."),
-            _("That's really nice to hear, coming from you."),
+            _("That's really nice to hear."),
             _("I'm happy you've been thinking of me, [player]."),
-            _("[player]... I'm glad I'm not the only one."),
             _("That means the world to me, [player]."),
             _("That makes me feel a lot better, [player].")
         )
@@ -950,7 +948,7 @@ label mas_compliment_missed:
             _("If only you really meant that, [player]..."),
             _("...Why do I think you just don't mean it?"),
             _("...Why do I think you're just saying that?"),
-            _("...I can't really believe in that, [player]."),
+            _("...I can't really believe that, [player]."),
             _("I don't think that's true, [player].")
         )
 
@@ -967,11 +965,11 @@ label mas_compliment_missed:
                 $ hugchance = 15
 
             m 1fka "I missed you so much, [mas_get_player_nickname()]!"
+            m 3fka "[renpy.substitute(random.choice(missed_quips_long))]"
 
         else:
             m 1fka "I missed you too, [mas_get_player_nickname()]!"
-
-        m 3hublb "[renpy.substitute(random.choice(missed_quips))]"
+            m 3hub "[renpy.substitute(random.choice(missed_quips_short))]"
 
         if (
             mas_isMoniEnamored(higher=True)
@@ -983,13 +981,13 @@ label mas_compliment_missed:
             m 1eka "I was kinda hoping that..."
             m 3ekblb "You know, since it's been a little while..."
 
-            m 1ekblb "Could you give me a hug? I've been feeling pretty lonely while you were away.{nw}"
+            m 1ekblb "Could you give me a hug? {w=0.3}I've been feeling pretty lonely while you were away.{nw}"
             $ _history_list.pop()
             menu:
                 m "Could you give me a hug? I've been feeling pretty lonely while you were away.{fast}"
 
                 "Sure, [m_name]!":
-                    $ mas_gainAffection(0.75)
+                    $ mas_gainAffection()
 
                     call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
                     call monika_holdme_start
@@ -1001,9 +999,9 @@ label mas_compliment_missed:
 
                 "Not right now.":
                     $ mas_loseAffection()
-                    m 2lkc "...Alright, maybe later, then?"
+                    m 2lkp "...Alright, maybe later, then?"
                     python:
-                        mas_moni_idle_disp.force_by_code("2lkc", duration=10, redraw=False)
+                        mas_moni_idle_disp.force_by_code("2lkp", duration=10, redraw=False)
                         mas_moni_idle_disp.force_by_code("2rsc", duration=10, clear=False, redraw=False)
                         mas_moni_idle_disp.force_by_code("1esc", duration=30, clear=False)
 
@@ -1015,18 +1013,7 @@ label mas_compliment_missed:
         if absence_length >= datetime.timedelta(days=3):
             m 2ekd "Thank you for coming back. I was starting to worry that you forgot about me."
 
-            if random.randint(1, 2) == 1:
-                m 2ekbla "I...{w=0.5}I also really missed you."
-
-            else:
-                m 2ekbla "I...{w=0.5}I really missed you too."
-
-        else:
-            if random.randint(1, 2) == 1:
-                m 2ekbla "I...{w=0.5}I also missed you."
-
-            else:
-                m 2ekbla "I...{w=0.5}I missed you too."
+        m 2ekbla "I...{w=0.5}I missed you too."
 
         $ mas_moni_idle_disp.force_by_code("2eka", duration=10)
 
@@ -1035,7 +1022,7 @@ label mas_compliment_missed:
         m 6rktpd "[renpy.substitute(random.choice(missed_quips_dis))]"
 
         if absence_length >= datetime.timedelta(days=3):
-            m 6dktdc "...But at least you haven't forgetten about me yet."
+            m 6dktdc "...But at least you haven't forgetten about me...{w=0.5}yet."
 
     else:
         m 6ckc "..."
