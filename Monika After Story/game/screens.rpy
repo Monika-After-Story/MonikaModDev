@@ -1350,7 +1350,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "radio"
+                        style_prefix "generic_fancy_check"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1364,7 +1364,7 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
@@ -1379,7 +1379,7 @@ screen preferences():
 
 
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Gameplay")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
@@ -1400,7 +1400,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _(" ")
 #                    textbutton _("Sensitive Mode"):
 #                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
