@@ -7631,6 +7631,14 @@ default persistent._mas_pm_like_orchestral_music = None
 #Do you play an instrument?
 default persistent._mas_pm_plays_instrument = None
 
+#Do you have piano experience?
+default persistent._mas_pm_has_piano_experience = None
+
+#Consts to be used for checking piano skills
+define mas_PIANO_EXP_HAS = 2
+define mas_PIANO_EXP_SOME = 1
+define mas_PIANO_EXP_NONE = 0 #0 as this can also bool to False
+
 init 5 python:
     addEvent(
         Event(
@@ -7643,7 +7651,6 @@ init 5 python:
     )
 
 label monika_orchestra:
-
     m 3euc "Hey [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
@@ -7689,11 +7696,32 @@ label monika_orchestra:
                 jump .no_choice
 
             elif tempinstrument == "piano":
+                $ persistent._mas_pm_plays_instrument = True
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
-                m 1hua "Maybe we could do a duet someday!"
-                m 1huu "Ehehe~"
-                $ persistent._mas_pm_plays_instrument = True
+                m 1eua "Do you have a lot of experience playing the piano?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Do you have a lot of experience playing the piano?{fast}"
+
+                    "Yes.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_HAS
+                        m 3hua "Really?"
+                        m 3sub "That's wonderful!"
+                        m 1eua "Maybe someday you can teach me and we can even have a duet!"
+
+                    "Not much.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
+                        m 2eka "That's okay, [player]."
+                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 4hua "But even if you don't have too much experience, I'm sure we could learn together~"
+
+                    "No.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_NONE
+                        m 1duc "I see."
+                        m 3hksdlb "It can be pretty difficult to start out,{w=0.2} {nw}"
+                        extend 3huu "but I'm sure if you keep practicing you'll even be able to play better than I can, [player]~"
+
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
                 m 3eub "...Oh!"
@@ -17466,57 +17494,6 @@ label monika_quiet_time:
         m 2dksdlc "..."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_piano_skills",
-            category=['you' , 'music'],
-            prompt="[player]'s piano skills",
-            random=True,
-            pool=True,
-            #this topic should appear in the Unseen menu when Monika has already talked to the user about the user asking for piano lessons and the player has already unlocked the piano.
-            #...which should appear after the user has gotten the piano, so ig it's simple. I can't find the prompt ;-;
-        )
-    )
-
-label monika_piano_skills:
-    m 1rsc "Hmm..."
-    m 1esc "Hey [player]?
-    m 3rsd "Do you by chance... {w=0.3}{nw}"
-    extend 3rksdlb "have any piano skills?"
-    m 2hksdlb "Ahaha!"
-    m 4esb "It just occured to me that even if I don't have much piano experience, {w=0.3}{nw}"
-    extend 4hub "you might!"
-    m 1eua "So [player], do you have any experience from learning the piano?{nw}"
-    $_history_list.pop()
-    menu:
-        m "So [player], do you have any experience from learning the piano?{fast}"
-
-        "Yes.":
-            m 1sua "Really?"
-            m 3hub "That's wonderful!"
-            m 5rsa "You could teach me some of what you know someday!"
-
-        "Not a lot.":
-            m 2eka "That's okay, [player]."
-            m 2hua "After all, it's hard to learn the piano!"
-            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5eua "I would like you to teach me a little bit of what you know someday.
-            m 5hua "Ehehe~"
-
-        "No.":
-            m 1duc "I see."
-            m 3hksdlb "It's quite difficult to learn the piano after all, ahaha!"
-    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5ekbsa "But no matter what you know, my love for you never wavers."
-    m 5hubsb "I love you!"
-    return "love"
-
-#the script looks a bit wrong to me, just saying.
-#could someone fix it please?
-#I only understand "tom." python ;-;
-#alright, I got a return love thing. Why is Python so hArD!-
 init 5 python:
     addEvent(
         Event(
