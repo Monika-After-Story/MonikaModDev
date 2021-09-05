@@ -31,11 +31,6 @@ default persistent._mas_chess_mangle_all = False
 # skip file checks
 default persistent._mas_chess_skip_file_checks = False
 
-define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
-define mas_chess.CHESS_SAVE_EXT = ".pgn"
-define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
-define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
-
 # mass chess store
 init python in mas_chess:
     import os
@@ -43,6 +38,16 @@ init python in mas_chess:
     import store.mas_ui as mas_ui
     import store
     import random
+
+    CHESS_SAVE_PATH = "/chess_games/"
+    CHESS_SAVE_EXT = ".pgn"
+    CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
+    CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+
+    #chess modes
+    MODE_NORMAL = "normal_chess"
+    MODE_BAD_CHESS = "chess960"
+    MODE_960 = "badchess"
 
     # relative chess directory
     REL_DIR = "chess_games/"
@@ -313,6 +318,7 @@ init python in mas_chess:
         return 'p'
 
     def gen_side(white=True, max_side_value=14):
+
         """
         Generates a player's side
 
@@ -372,6 +378,77 @@ init python in mas_chess:
             back_row, front_row = front_row, back_row
 
         return "".join(front_row), "".join(back_row)
+
+    def generate_960_fen():
+        """
+        This function returns a random chess960 opening fen.
+
+        Chess960 rules are basically:
+        1. One rook must stay on the left side of king, and another one stay on the right side.
+           Due to this, the king can never be placed on a-file or h-file.
+        2. Bishops must stay on different color square.
+        3. Pawns must stay like the normal chess game.
+        4. The position of player A's pieces must be the 'reversed version' of player B's.
+        See chess960 wiki to get more exact information.
+
+        OUT:
+            A random chess960 opening fen.
+        """
+        #Positions dict, maps piece type to file
+        positions = dict()
+
+        #Gen king pos (cannot be on the outer files)
+        king_position = random.randint(2, 7)
+
+        #Now gen rook positions
+        left_rook_position = random.choice(range(1, 9)[:king_position - 1])
+        right_rook_position = random.choice(range(1, 9)[king_position:])
+
+        #Now, we generate the remaining available range:
+        available_spaces = [ x for x in range(1, 9) if x not in (king_position, left_rook_position, right_rook_position) ]
+
+        first_bishop_position = random.choice(available_spaces)
+        available_spaces.remove(first_bishop_position)
+
+        #For picking bishops, we need to have one on a light square, one on a dark square
+        is_light_squared_bishop = first_bishop_position % 2 == 0
+        second_bishop_position = random.choice(
+            filter(lambda x: x % 2 != int(is_light_squared_bishop), available_spaces)
+        )
+        available_spaces.remove(second_bishop_position)
+
+        #Queen can be anywhere remaining
+        queen_position = random.choice(available_spaces)
+        available_spaces.remove(queen_position)
+
+        #Finally, unpack for knights
+        first_knight_position, second_knight_position = available_spaces
+
+        #Now that we have positions, we should format them for easy conversion to a FEN
+        generated_positions = sorted([
+            (king_position, "K"),
+            (left_rook_position, "R"),
+            (right_rook_position, "R"),
+            (first_bishop_position, "B"),
+            (second_bishop_position, "B"),
+            (queen_position, "Q"),
+            (first_knight_position, "N"),
+            (second_knight_position, "N")
+        ])
+
+        back_row_str = ""
+
+        for _pos in generated_positions:
+            back_row_str += _pos[1]
+
+
+        # Finally. Now return a full fen.
+        return BASE_FEN.format(
+            black_pieces_back=back_row_str.lower(),
+            black_pieces_front="pppppppp",
+            white_pieces_front="PPPPPPPP",
+            white_pieces_back=back_row_str
+        )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
         """
@@ -466,7 +543,7 @@ init python in mas_chess:
 
         return white_is_good and black_is_good
 
-    def generate_fen(is_player_white=True):
+    def generate_random_fen(is_player_white=True):
         """
         Generates a random fen
 
@@ -551,7 +628,7 @@ label game_chess:
         failed_to_load_save = True
 
         #Prelim definitions of the rules for the menu later
-        do_really_bad_chess = False
+        chessmode = mas_chess.MODE_NORMAL
         casual_rules = False
         practice_mode = False
         is_player_white = 0
@@ -649,7 +726,6 @@ label game_chess:
                     #These also override the base settings as to play a continuation
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-                    do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
                 jump mas_chess_start_chess
 
@@ -788,7 +864,6 @@ label game_chess:
             #These also override the base settings as to play a continuation
             practice_mode = eval(loaded_game.headers.get("Practice", "False"))
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-            do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
         jump mas_chess_start_chess
 
@@ -799,8 +874,9 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", False, False, not do_really_bad_chess),
-                    ("Randomized Chess", True, False, do_really_bad_chess)
+                    ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode is mas_chess.MODE_NORMAL)),
+                    ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode is mas_chess.MODE_BAD_CHESS)),
+                    ("Chess 960", mas_chess.MODE_960, False, (chessmode is mas_chess.MODE_960))
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -883,9 +959,9 @@ label mas_chess_remenu:
     elif _return not in ("confirm", None):
         $ _history_list.pop()
 
-        #Normal/Really Bad Chess selection
+        #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            $ do_really_bad_chess = _return
+            $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
@@ -923,7 +999,13 @@ label mas_chess_remenu:
 
 label mas_chess_start_chess:
     #Setup the chess FEN
-    $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
+    python:
+        if chessmode == mas_chess.MODE_NORMAL:
+            starting_fen = None
+        elif chessmode == mas_chess.MODE_960:
+            starting_fen = mas_chess.generate_960_fen()
+        else:
+            starting_fen = mas_chess.generate_random_fen(is_player_white)
 
     #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
@@ -1237,7 +1319,6 @@ label mas_chess_savegame(silent=False, allow_return=True):
         if game_result == mas_chess.IS_ONGOING:
             m 1eub "Let's continue this game soon!"
     return
-
 
 label mas_chess_locked_no_play:
     m 1euc "No thanks, [player]."
