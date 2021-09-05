@@ -1366,8 +1366,13 @@ screen preferences():
                 vbox:
                     style_prefix "generic_fancy_check"
                     label _("Graphics")
+
+                    # this is a normal button
+                    textbutton _("Change Renderer"):
+                        style "check_button"
+                        action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
-                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
@@ -1565,8 +1570,8 @@ screen preferences():
                         null height gui.pref_spacing
 
                         textbutton _("Mute All"):
+                            style "generic_fancy_check_button"
                             action Preference("all mute", "toggle")
-                            style "mute_all_button"
 
 
             hbox:
