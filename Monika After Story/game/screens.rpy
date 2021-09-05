@@ -1750,7 +1750,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1766,7 +1766,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             box_wrap True
             spacing 25
 
