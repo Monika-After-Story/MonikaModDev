@@ -929,10 +929,10 @@ label mas_chess_remenu:
     $ menu_options = menu_contents[menu_category]["options"]
     $ final_items = menu_contents[menu_category]["final_items"]
 
+    m "How would you like to play?[('{fast}' if loopback else '')]" nointeract
+
     #Now we show menu
     call screen mas_gen_scrollable_menu(menu_options, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
-
-    $ renpy.say(m, "How would you like to play?{0}".format("{fast}" if loopback else ""), interact=False)
 
     $ loopback = True
 
