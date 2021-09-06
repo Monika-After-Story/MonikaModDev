@@ -21,6 +21,7 @@ init 1 python:
 init -25 python in mas_island_event:
     import random
     import itertools
+    import functools
     from zipfile import ZipFile
 
     import store
@@ -50,63 +51,83 @@ init -25 python in mas_island_event:
     # setup the docking station we are going to use here
     islands_station = store.MASDockingStation(mis.ISLANDS_FOLDER)
 
-    # These get passed to the contructors when we create these sprites
-    # NOTE: parallax decals are added later, NOT here. That's because they're dynamic
-    # Structure:
-    # type: {
-    #    id: (args_tuple, kwargs_dict)
-    # }
     store.m = None
-    SPRITES_ARGUMENTS = {
+    # This map holds partials which expect the last agrument - the displayable obj - to be passed in
+    # to create sprites/decals/etc
+    # NOTE: As you can see ParallaxDecal aren't being passed in partials, they are dynamically added later
+    # during composite image building
+    # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
+    PARTIAL_OBJECTS_MAP = {
         "isld": {
-            "isld_0": (
-                (374, 670, 10),
-                {"zoom": 1.0}
+            "isld_0": functools.partial(ParallaxSprite, x=374, y=670, z=10, zoom=1.0),
+            "isld_1": functools.partial(
+                ParallaxSprite,
+                x=808,
+                y=519,
+                z=40,
+                zoom=1.0,
+                function=None,
+                on_click=functools.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")
             ),
-            "isld_1": (
-                (808, 519, 40),
-                {"zoom": 1.0, "function": None, "on_click": renpy.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")}
+            "isld_2": functools.partial(
+                ParallaxSprite,
+                x=462,
+                y=393,
+                z=90,
+                zoom=1.0,
+                function=None
             ),
-            "isld_2": (
-                (462, 393, 90),
-                {"zoom": 1.0, "function": None}
+            "isld_3": functools.partial(
+                ParallaxSprite,
+                x=338,
+                y=179,
+                z=130,
+                zoom=1.0,
+                function=None
             ),
-            "isld_3": (
-                (338, 179, 130),
-                {"zoom": 1.0, "function": None}
+            "isld_4": functools.partial(ParallaxSprite, x=182, y=202, z=150, zoom=1.0),
+            "isld_5": functools.partial(
+                ParallaxSprite,
+                x=1135,
+                y=270,
+                z=50,
+                zoom=1.0,
+                function=None
             ),
-            "isld_4": (
-                (182, 202, 150),
-                {"zoom": 1.0}
+            "isld_6": functools.partial(
+                ParallaxSprite,
+                x=1013,
+                y=112,
+                z=200,
+                zoom=1.0,
+                function=None
             ),
-            "isld_5": (
-                (1135, 270, 50),
-                {"zoom": 1.0, "function": None}
+            "isld_7": functools.partial(
+                ParallaxSprite,
+                x=475,
+                y=97,
+                z=250,
+                zoom=1.0,
+                function=None
             ),
-            "isld_6": (
-                (1013, 112, 200),
-                {"zoom": 1.0, "function": None}
-            ),
-            "isld_7": (
-                (475, 97, 250),
-                {"zoom": 1.0, "function": None}
-            ),
-            "isld_8": (
-                (563, 84, 220),
-                {"zoom": 1.0}
-            )
+            "isld_8": functools.partial(ParallaxSprite, x=563, y=84, z=220, zoom=1.0),
         },
         "decal": {
-            "bookshelf": ((91, -60, 4), {}),
-            "bushes": ((97, -52, 5), {}),
-            "house": ((-14, -113, 1), {}),
-            "tree": ((12, -210, 3), {}),
-            "glitch": ((-14, -113, 2), {})
+            "bookshelf": functools.partial(ParallaxDecal, x=91, y=-60, z=4),
+            "bushes": functools.partial(ParallaxDecal, x=97, y=-52, z=5),
+            "house": functools.partial(ParallaxDecal, x=-14, y=-113, z=1),
+            "tree": functools.partial(ParallaxDecal, x=12, y=-210, z=3),
+            "glitch": functools.partial(ParallaxDecal, x=-14, y=-113, z=2)
         },
         "bg": {
-            "def": (
-                (renpy.config.screen_width/2.0, renpy.config.screen_height/2.0, 10000),
-                {"zoom": 1.1, "min_zoom": 1.1, "max_zoom": 4.1}
+            "def": functools.partial(
+                ParallaxSprite,
+                x=renpy.config.screen_width/2.0,
+                y=renpy.config.screen_height/2.0,
+                z=10000,
+                zoom=1.1,
+                min_zoom=1.1,
+                max_zoom=4.1
             )
         }
     }
@@ -150,7 +171,7 @@ init -25 python in mas_island_event:
 
     def shouldDecodeImages():
         """
-        A united check whether or not we should decode images this sesh
+        A united check whether or not we should decode images in this sesh
         """
         # TODO: add more checks here as needed
         return (
@@ -393,8 +414,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            args, kwargs = SPRITES_ARGUMENTS["isld"][isld_name]
-            island_disp_map[isld_name] = ParallaxSprite(disp, *args, **kwargs)
+            island_disp_map[isld_name] = PARTIAL_OBJECTS_MAP["isld"][isld_name](disp)
 
         # Build the decals
         decal_disp_map = dict()
@@ -417,8 +437,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            args, kwargs = SPRITES_ARGUMENTS["decal"][decal_name]
-            decal_disp_map[decal_name] = ParallaxDecal(disp, *args, **kwargs)
+            decal_disp_map[decal_name] = PARTIAL_OBJECTS_MAP["decal"][decal_name](disp)
 
         # Build the bg
         bg_disp_map = dict()
@@ -441,8 +460,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            args, kwargs = SPRITES_ARGUMENTS["bg"][bg_name]
-            bg_disp_map[bg_name] = ParallaxSprite(disp, *args, **kwargs)
+            bg_disp_map[bg_name] = PARTIAL_OBJECTS_MAP["bg"][bg_name](disp)
 
         # Build the overlays
         overlay_disp_map = dict()
@@ -475,8 +493,7 @@ init -25 python in mas_island_event:
             return redraw
 
         glitch_disp = Transform(child=glitch_frames[0], function=_select_glitch_frame)
-        args, kwargs = SPRITES_ARGUMENTS["decal"]["glitch"]
-        decal_disp_map["glitch"] = ParallaxDecal(glitch_disp, *args, **kwargs)
+        decal_disp_map["glitch"] = PARTIAL_OBJECTS_MAP["decal"]["glitch"](glitch_disp)
 
     def getIslandsImg():
         """
