@@ -7714,12 +7714,12 @@ label monika_orchestra:
                         $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
                         m 2eka "That's okay, [player]."
                         m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
-                        m 4hua "But even if you don't have too much experience, I'm sure we could learn together~"
+                        m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
 
-                    "No.":
+                    "I just started.":
                         $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_NONE
                         m 1duc "I see."
-                        m 3hksdlb "It can be pretty difficult to start out,{w=0.2} {nw}"
+                        m 3hksdlb "It can be pretty difficult at the beginning,{w=0.2} {nw}"
                         extend 3huu "but I'm sure if you keep practicing you'll even be able to play better than I can, [player]~"
 
             elif tempinstrument == "harmonika":
