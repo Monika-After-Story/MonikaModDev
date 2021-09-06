@@ -1095,7 +1095,7 @@ label drawing_brb:
 label drawing_brb_callback:
     if mas_isMoniNormal(higher=True):
         m 6eub "Done?"
-        m 6rkb "Sometimes I really wish I could see what you draw to see how amazing you draw."
+        m 6rkb "Sometimes I really wish I could see what you drew to see how amazing you draw."
         m 7hub "But until then, I'll just have to cheer you on from the sidelines.."
         m 1eub "And that's exactly what I'm gonna do!"
         m 4hub "Great job, [player]! You're so talented, I just know it!"
