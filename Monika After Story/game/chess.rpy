@@ -317,8 +317,7 @@ init python in mas_chess:
         #Otherwise, since we can't afford to expend more, we just get pawns
         return 'p'
 
-    def gen_side(white=True, max_side_value=14):
-
+    def _gen_side(white=True, max_side_value=14):
         """
         Generates a player's side
 
@@ -378,77 +377,6 @@ init python in mas_chess:
             back_row, front_row = front_row, back_row
 
         return "".join(front_row), "".join(back_row)
-
-    def generate_960_fen():
-        """
-        This function returns a random chess960 opening fen.
-
-        Chess960 rules are basically:
-        1. One rook must stay on the left side of king, and another one stay on the right side.
-           Due to this, the king can never be placed on a-file or h-file.
-        2. Bishops must stay on different color square.
-        3. Pawns must stay like the normal chess game.
-        4. The position of player A's pieces must be the 'reversed version' of player B's.
-        See chess960 wiki to get more exact information.
-
-        OUT:
-            A random chess960 opening fen.
-        """
-        #Positions dict, maps piece type to file
-        positions = dict()
-
-        #Gen king pos (cannot be on the outer files)
-        king_position = random.randint(2, 7)
-
-        #Now gen rook positions
-        left_rook_position = random.choice(range(1, 9)[:king_position - 1])
-        right_rook_position = random.choice(range(1, 9)[king_position:])
-
-        #Now, we generate the remaining available range:
-        available_spaces = [ x for x in range(1, 9) if x not in (king_position, left_rook_position, right_rook_position) ]
-
-        first_bishop_position = random.choice(available_spaces)
-        available_spaces.remove(first_bishop_position)
-
-        #For picking bishops, we need to have one on a light square, one on a dark square
-        is_light_squared_bishop = first_bishop_position % 2 == 0
-        second_bishop_position = random.choice(
-            filter(lambda x: x % 2 != int(is_light_squared_bishop), available_spaces)
-        )
-        available_spaces.remove(second_bishop_position)
-
-        #Queen can be anywhere remaining
-        queen_position = random.choice(available_spaces)
-        available_spaces.remove(queen_position)
-
-        #Finally, unpack for knights
-        first_knight_position, second_knight_position = available_spaces
-
-        #Now that we have positions, we should format them for easy conversion to a FEN
-        generated_positions = sorted([
-            (king_position, "K"),
-            (left_rook_position, "R"),
-            (right_rook_position, "R"),
-            (first_bishop_position, "B"),
-            (second_bishop_position, "B"),
-            (queen_position, "Q"),
-            (first_knight_position, "N"),
-            (second_knight_position, "N")
-        ])
-
-        back_row_str = ""
-
-        for _pos in generated_positions:
-            back_row_str += _pos[1]
-
-
-        # Finally. Now return a full fen.
-        return BASE_FEN.format(
-            black_pieces_back=back_row_str.lower(),
-            black_pieces_front="pppppppp",
-            white_pieces_front="PPPPPPPP",
-            white_pieces_back=back_row_str
-        )
 
     def _validate_sides(white_front, white_back, black_front, black_back):
         """
@@ -575,8 +503,8 @@ init python in mas_chess:
             and attempts < 10
         ):
             attempts += 1
-            player_first_row, player_second_row = gen_side(is_player_white, max_piece_value)
-            monika_first_row, monika_second_row = gen_side(not is_player_white, monika_max_piece_value)
+            player_first_row, player_second_row = _gen_side(is_player_white, max_piece_value)
+            monika_first_row, monika_second_row = _gen_side(not is_player_white, monika_max_piece_value)
 
             if is_player_white:
                 white_front = player_first_row
@@ -608,6 +536,73 @@ init python in mas_chess:
                 white_pieces_front=monika_first_row,
                 white_pieces_back=monika_second_row
             )
+
+    def generate_960_fen():
+        """
+        This function returns a random chess960 opening fen.
+
+        Chess960 rules are basically:
+        1. One rook must stay on the left side of king, and another one stay on the right side.
+           Due to this, the king can never be placed on a-file or h-file.
+        2. Bishops must stay on different color square.
+        3. Pawns must stay like the normal chess game.
+        4. The position of player A's pieces must be the 'reversed version' of player B's.
+        See chess960 wiki to get more exact information.
+
+        OUT:
+            A random chess960 opening fen.
+        """
+        #Gen king pos (cannot be on the outer squares)
+        king_position = random.randint(1, 6)
+
+        #Now gen rook positions
+        left_rook_position = random.randint(0, king_position-1)
+        right_rook_position = random.randint(king_position+1, 7)
+
+        #Now, we generate the remaining available range
+        occupied_positions = frozenset((king_position, left_rook_position, right_rook_position))
+        # FIXME: Due to a renpy bug, we have to access python set here via _set
+        # In the latest versions it might be fixed, so this should be adjusted w/ r7 support
+        available_white_positions = _set(range(1, 9, 2)) - occupied_positions
+        available_black_positions = _set(range(0, 8, 2)) - occupied_positions
+
+        #For picking bishops, we need to have one on a light square, one on a dark square
+        first_bishop_position = random.choice(tuple(available_white_positions))
+        second_bishop_position = random.choice(tuple(available_black_positions))
+        if bool(random.randint(0, 1)):
+            first_bishop_position, second_bishop_position = second_bishop_position, first_bishop_position
+
+        occupied_positions = frozenset((first_bishop_position, second_bishop_position))
+        available_positions = (available_white_positions | available_black_positions) - occupied_positions
+
+        #Queen can be anywhere remaining
+        queen_position = random.choice(tuple(available_positions))
+        available_positions.remove(queen_position)
+
+        #Finally, unpack for knights
+        first_knight_position, second_knight_position = available_positions
+
+        #Now that we have positions, we should format them for easy conversion to a FEN
+        pos_to_piece_map = {
+            king_position: "K",
+            left_rook_position: "R",
+            right_rook_position: "R",
+            first_bishop_position: "B",
+            second_bishop_position: "B",
+            queen_position: "Q",
+            first_knight_position: "N",
+            second_knight_position: "N"
+        }
+
+        back_row_str = "".join(pos_to_piece_map[i] for i in range(8))
+
+        # Finally. Now return a full fen.
+        return BASE_FEN.format(
+            black_pieces_back=back_row_str.lower(),
+            black_pieces_front="pppppppp",
+            white_pieces_front="PPPPPPPP",
+            white_pieces_back=back_row_str
+        )
 
     def enqueue_output(out, queue, lock):
         for line in iter(out.readline, b''):
