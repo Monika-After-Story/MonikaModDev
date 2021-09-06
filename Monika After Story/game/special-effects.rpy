@@ -84,13 +84,13 @@ init -500 python in mas_parallax:
 
             self._base = base
 
-            self._items = list(args)
-            self._items.append(base)
-            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
-            for item in self._items:
-                if not isinstance(item, ParallaxDecal):
-                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(item)))
-                item.callback = self.update
+            self._decals = list(args)
+            self._decals.append(base)
+            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
+            for decal in self._decals:
+                if not isinstance(decal, ParallaxDecal):
+                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal)))
+                decal.callback = self.update
 
             self.size = (0, 0)
 
@@ -103,17 +103,18 @@ init -500 python in mas_parallax:
             if not isinstance(decal, ParallaxDecal):
                 return
 
-            base_id = self._items.index(self._base)
-            self._items.pop(base_id)
+            base_id = self._decals.index(self._base)
+            old_base = self._decals.pop(base_id)
+            old_base.callback = None
             decal.callback = self.update
             self._base = decal
-            self._items.insert(base_id, decal)
+            self._decals.insert(base_id, decal)
 
             renpy.redraw(self, 0.0)
 
         @property
         def children(self):
-            return [item for item in self._items if item is not self._base]
+            return [decal for decal in self._decals if decal is not self._base]
 
         def __repr__(self):
             """
@@ -130,9 +131,9 @@ init -500 python in mas_parallax:
                     continue
 
                 decal.callback = self.update
-                self._items.append(decal)
+                self._decals.append(decal)
 
-            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
+            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
             renpy.redraw(self, 0.0)
 
         def remove(self, *decals):
@@ -140,9 +141,9 @@ init -500 python in mas_parallax:
             Removes a ParallaxDecal instance from this container
             """
             for decal in decals:
-                if decal in self._items and decal is not self._base:
+                if decal in self._decals and decal is not self._base:
                     decal.callback = None
-                    self._items.remove(decal)
+                    self._decals.remove(decal)
 
             renpy.redraw(self, 0.0)
 
@@ -151,7 +152,7 @@ init -500 python in mas_parallax:
             Removes all decals from this container
             """
             for child in self.children:
-                self._items.remove(child)
+                self._decals.remove(child)
                 child.callback = None
             renpy.redraw(self, 0.0)
 
@@ -164,21 +165,21 @@ init -500 python in mas_parallax:
             main_render_height = 0
 
             render_items = list()
-            for item in self._items:
-                item_disp = item.img
-                item_x_offset, item_y_offset = item.x, item.y
+            for decal in self._decals:
+                decal_disp = decal.img
+                decal_x_offset, decal_y_offset = decal.x, decal.y
 
-                item_render = renpy.render(item_disp, width, height, st, at)
-                item_width = item_render.width
-                item_height = item_render.height
+                decal_render = renpy.render(decal_disp, width, height, st, at)
+                decal_width = decal_render.width
+                decal_height = decal_render.height
 
-                main_render_width = max(main_render_width, item_width)
-                main_render_height = max(main_render_height, item_height)
+                main_render_width = max(main_render_width, decal_width)
+                main_render_height = max(main_render_height, decal_height)
 
-                width_diff = main_render_width - item_width
-                height_diff = main_render_height - item_height
-                abs_x_offset = abs(item_x_offset)
-                abs_y_offset = abs(item_y_offset)
+                width_diff = main_render_width - decal_width
+                height_diff = main_render_height - decal_height
+                abs_x_offset = abs(decal_x_offset)
+                abs_y_offset = abs(decal_y_offset)
 
                 if abs_x_offset > max(0, width_diff / 2.0):
                     main_render_width += (2*abs_x_offset - width_diff)
@@ -188,10 +189,10 @@ init -500 python in mas_parallax:
 
                 render_items.append(
                     (
-                        item_disp,
-                        item_render,
-                        item_width/2.0 - item_x_offset,
-                        item_height/2.0 - item_y_offset
+                        decal_disp,
+                        decal_render,
+                        decal_width/2.0 - decal_x_offset,
+                        decal_height/2.0 - decal_y_offset
                     )
                 )
 
@@ -215,14 +216,14 @@ init -500 python in mas_parallax:
             """
             Updates this disp
             """
-            self._items.sort(key=lambda item: item.z - float(item is self._base)/2.0)
+            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
             renpy.redraw(self, 0)
 
         def visit(self):
             """
             Returns images of this disp for prediction
             """
-            return [item.img for item in self._items]
+            return [decal.img for decal in self._decals]
 
 
     class ParallaxSprite(renpy.display.core.Displayable):
@@ -232,7 +233,7 @@ init -500 python in mas_parallax:
         NORMAL_ZOOM = 1.0
         DEF_ANCHOR = (0.5, 0.5)
 
-        def __init__(self, img, x, y, z, zoom=1.0, function=None, decals=(), on_click=None, on_release=None, min_zoom=1.0, max_zoom=4.0):
+        def __init__(self, img, x, y, z, zoom=1.0, function=None, decals=(), on_click=None, min_zoom=1.0, max_zoom=4.0):
             """
             Constructor for parallax sprites
             NOTE: the child image will be anchored to its center, bear that in mind when giving it transforms
@@ -395,6 +396,7 @@ init -500 python in mas_parallax:
         def event(self, ev, x, y, st):
             """
             The event handler
+            TODO: allow to move around and zoom in/out with keyboard
             """
             if ev.type == pygame.MOUSEMOTION:
                 self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
@@ -444,6 +446,7 @@ init -500 python in mas_parallax:
             self.update_offsets()
 
 
+    @store.mas_utils.deprecated(use_instead="ParallaxSprite")
     class ParallaxBackground(renpy.display.core.Displayable):
         """
         DEPRECATED
