@@ -913,8 +913,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                # please keep i11 - otherwise monika jumps if we scene change without dissolving all
-                renpy.show(force_exp, tag="monika", at_list=[i11], zorder=MAS_MONIKA_Z)
+                # NOTE: if Monika jumps when this is called, make sure to 
+                #   dissolve all
+                renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
                     renpy.with_statement(None)
