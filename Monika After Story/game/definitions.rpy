@@ -392,6 +392,30 @@ python early:
         def __str__(self):
             return self.msg
 
+
+    # event data class - use for data grouping - no behaviors allowed
+    class EventDBData(object):
+        """
+        Speciality class that can hold data from data tuples (events)
+        Read-only (for now)
+        """
+
+        def __init__(self, data_tup):
+            """
+            IN:
+                data_tup - the data to store
+            """
+            self.data_tup = data_tup
+
+        def __getattr__(self, name):
+            attr_loc = Event.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                return self.data_tup[attr_loc]
+
+            return None
+
+
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
     # NOTE: Events are TIED to the database they are found in. Moving databases
@@ -463,8 +487,7 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
-    #   sensitive - True means this is a sensitve topic, False means it is not
-    #       (Default: False)
+    #   sensitive - IGNORED
     #   aff_range - tuple of the following format:
     #       [0]: - low limit of affection where this event is available
     #           (inclusive)
@@ -502,7 +525,7 @@ python early:
             #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
-            "sensitive":16,
+            #"sensitive":16, # NOTE: this will not be removed until later
             "aff_range":17,
             "show_in_idle":18,
         }
@@ -514,7 +537,8 @@ python early:
             "locks",
             "rules",
             "diary_entry",
-            "flags"
+            "flags",
+            "sensitive",
         )
 
         # filterables
@@ -527,7 +551,7 @@ python early:
             "seen", # 5
             "excl_cat", # 6
             "moni_wants", # 7
-            "sensitive", # 8
+            "sensitive", # 8 # NOTE: do not comment out for compatibility
             "aff", # 9
             "flag_req", # 10
             "flag_ban", # 11
@@ -663,6 +687,10 @@ python early:
             self.rules = rules
             self.flags = flags
 
+            # NOTE: set deprecated properties here
+            self.diary_entry = ""
+            self.sensitive = False
+
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (
@@ -682,7 +710,7 @@ python early:
                 "", # diary_entry
                 last_seen,
                 years,
-                sensitive,
+                False, # sensitive
                 aff_range,
                 show_in_idle
             )
@@ -732,7 +760,7 @@ python early:
 #                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
-                    self.sensitive = sensitive
+                    #self.sensitive = sensitive
                     self.aff_range = aff_range
                     self.show_in_idle = show_in_idle
 
@@ -1437,8 +1465,8 @@ python early:
                     return False
 
             # sensitivyt
-            if sensitive is not None and event.sensitive != sensitive:
-                return False
+#            if sensitive is not None and event.sensitive != sensitive:
+#                return False
 
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
@@ -1484,13 +1512,7 @@ python early:
                 moni_wants - boolean value to match if the event has the monika
                     wants this first.
                     (Default: None )
-                sensitive - boolean value to match if the event is sensitive
-                    or not
-                    NOTE: if None, we use inverse of _mas_sensitive_mode, only
-                        if sensitive mode is True.
-                        AKA: we only filter sensitve topics if sensitve mode is
-                        enabled.
-                    (Default: None)
+                sensitive - IGNORED
                 aff - affection level to match aff_range
                     (Default: None)
                 flag_req - flags that the event must match
@@ -1518,7 +1540,7 @@ python early:
             # setup keys
             cat_key = Event.FLT[0]
             act_key = Event.FLT[4]
-            sns_key = Event.FLT[8]
+            #sns_key = Event.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -1536,15 +1558,6 @@ python early:
             action = flt_args.get(act_key)
             if action and len(action) == 0:
                 flt_args[act_key] = None
-
-            sensitive = flt_args.get(sns_key)
-            if sensitive is None:
-                try:
-                    # i have no idea if this is reachable from here
-                    if persistent._mas_sensitive_mode:
-                        flt_args[sns_key] = False
-                except:
-                    pass
 
             filt_ev_dict = dict()
 
@@ -1614,6 +1627,7 @@ python early:
 
             return eventlabels
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkConditionals(events, rebuild_ev=False):
             # NOTE: DEPRECATED
@@ -1674,6 +1688,7 @@ python early:
 
             return events
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkCalendar(events):
             # NOTE: DEPRECATED
@@ -1821,7 +1836,7 @@ python early:
 
             return
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """DEPRECATED
@@ -1857,7 +1872,7 @@ python early:
 
             return False
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """DEPRECATED
@@ -3013,7 +3028,7 @@ python early:
             ))
 
 # init -1 python:
-
+    @store.mas_utils.deprecated(should_raise=True)
     class MASInteractable(renpy.Displayable):
         """DEPRECATED
 
@@ -3661,7 +3676,7 @@ init 25 python:
         """
         Class to represent events for PauseDisplayableWithEvents
         """
-        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False):
+        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False, restart_interaction=False):
             """
             Constructor for events
 
@@ -3673,6 +3688,9 @@ init 25 python:
                     (Default: False)
                 invoke_in_new_context - whether or not we'll invoke the functions
                     to avoid interaction issues
+                    (Default: False)
+                restart_interaction - whether or not we'll also call renpy.restart_interaction
+                    to update the screen
                     (Default: False)
             """
             self.timedelta = timedelta
@@ -3687,6 +3705,7 @@ init 25 python:
             self.functions = functions
             self.repeatable = repeatable
             self.invoke_in_new_context = invoke_in_new_context
+            self.restart_interaction = restart_interaction
 
             self.end_datetime = None
 
@@ -3715,6 +3734,9 @@ init 25 python:
 
                 else:
                     func()
+
+                if self.restart_interaction:
+                    renpy.restart_interaction()
 
     class PauseDisplayableWithEvents(renpy.Displayable):
         """
@@ -3753,55 +3775,80 @@ init 25 python:
             """
             super(renpy.Displayable, self).__init__()
 
-            if events is None:
-                events = [PauseDisplayableWithEvents.CRUTCH_EVENT]
+            # This will set remaining_events and all_events props
+            self.set_events(events)
 
-            elif isinstance(events, tuple):
-                events = list(events)
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            elif isinstance(events, list):
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            # Assuming it's a single PauseDisplayableEvent
-            else:
-                events = [events, PauseDisplayableWithEvents.CRUTCH_EVENT]
-
-            events.sort(key=PauseDisplayableWithEvents.__sort_key_td)
-
-            self.events = events
-            self.__events = list(events)
             self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
         def __repr__(self):
             """
             Representation of this obj
             """
-            return "<PauseDisplayableWithEvents ({0})>".format(self.events)
+            return "<PauseDisplayableWithEvents ({0})>".format(self.__remaining_events)
+
+        @classmethod
+        def __handle_events(cls, events):
+            """
+            Takes events and sorts them before passing further
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+
+            OUT:
+                sorted list
+            """
+            if events is None:
+                events = [cls.CRUTCH_EVENT]
+
+            elif isinstance(events, tuple):
+                events = list(events)
+                events.append(cls.CRUTCH_EVENT)
+
+            elif isinstance(events, list):
+                events.append(cls.CRUTCH_EVENT)
+
+            # Assuming it's a single PauseDisplayableEvent
+            else:
+                events = [events, cls.CRUTCH_EVENT]
+
+            events.sort(key=cls.__sort_key_td)
+
+            return events
+
+        def set_events(self, events):
+            """
+            Sets new events for this PauseDisplayable
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+            """
+            events = self.__handle_events(events)
+            self.__remaining_events = events
+            self.__all_events = list(events)
 
         def __set_end_datetimes(self):
             """
             Sets end datetimes for events using current time
             """
             _now = datetime.datetime.now()
-            for event in self.events:
-                event.set_end_datetime(_now + event.timedelta)
+            for ev in self.__remaining_events:
+                ev.end_datetime = _now + ev.timedelta
 
         def __reset_events(self):
             """
             Resets events state
             """
-            self.events = self.__events[:]
-            for ev in self.events:
-                ev.set_end_datetime(None)
+            self.__remaining_events = self.__all_events[:]
+            for ev in self.__remaining_events:
+                ev.end_datetime = None
 
         def start(self):
             """
             Starts this displayable
             """
-            self.should_enable_afm = store._preferences.afm_enable
+            self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
             ui.interact()
@@ -3812,7 +3859,7 @@ init 25 python:
             """
             ui.remove(self)
             self.__abort_events = True
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3824,7 +3871,7 @@ init 25 python:
             ui.remove(self)
             self.__reset_events()
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3842,9 +3889,9 @@ init 25 python:
             """
             _now = datetime.datetime.now()
 
-            for event in self.events[:]:
+            for event in self.__remaining_events[:]:
                 if _now >= event.end_datetime:
-                    self.events.remove(event)
+                    self.__remaining_events.remove(event)
                     yield event
 
                 # no need to keep iter, we can return at this point
@@ -3856,17 +3903,17 @@ init 25 python:
             Sets a timeout for event generator
             """
             # No need to do anything if we have no pending events
-            if not self.events:
+            if not self.__remaining_events:
                 return
 
             _now = datetime.datetime.now()
-            _end_dt = self.events[0].end_datetime
+            _end_dt = self.__remaining_events[0].end_datetime
 
             if _end_dt >= _now:
-                timeout = (_end_dt - _now).total_seconds() + 0.1
+                timeout = (_end_dt - _now).total_seconds()
 
             else:
-                timeout = 0.1
+                timeout = 0.0
 
             renpy.timeout(timeout)
 
@@ -3903,7 +3950,7 @@ init 25 python:
                         event()
                         if event.repeatable:
                             event.set_end_datetime(datetime.datetime.now() + event.timedelta)
-                            store.mas_utils.insert_sort(self.events, event, PauseDisplayableWithEvents.__sort_key_dt)
+                            store.mas_utils.insert_sort(self.__remaining_events, event, PauseDisplayableWithEvents.__sort_key_dt)
 
                     # If we aborted, we need to quit asap
                     else:
@@ -3916,8 +3963,8 @@ init 25 python:
             elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 self.__abort_events = True
                 ui.remove(self)
-                if self.should_enable_afm:
-                    self.should_enable_afm = None
+                if self.__should_enable_afm:
+                    self.__should_enable_afm = None
                     store._preferences.afm_enable = True
                 return True
 
@@ -6266,10 +6313,9 @@ init 2 python:
         Checks if we can show something risque
 
         Conditions for this:
-            1. We're not in sensitive mode
-            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
-            3. Player is over 18
-            4. Aff condition (raw)
+            1. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            2. Player is over 18
+            3. Aff condition (raw)
 
         IN:
             aff_thresh:
@@ -6290,8 +6336,7 @@ init 2 python:
         _date = datetime.date.today() + grace
 
         return (
-            not persistent._mas_sensitive_mode
-            and persistent._mas_first_kiss is not None
+            persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
             and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
@@ -7933,8 +7978,12 @@ define skip_setting_weather = False# in case of crashes/reloads, predefine it he
 
 define mas_monika_twitter_handle = "lilmonix3"
 
-# sensitive mode enabler
-default persistent._mas_sensitive_mode = False
+# sensitive mode is always set to False now
+init python:
+    persistent._mas_sensitive_mode = False
+
+# should eggs be disabled?
+default persistent._mas_disable_eggs = False
 
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0

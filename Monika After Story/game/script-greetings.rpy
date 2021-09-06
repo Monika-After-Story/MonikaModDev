@@ -1219,8 +1219,6 @@ label i_greeting_monikaroom:
     # FALL THROUGH
 label monikaroom_greeting_choice:
     $ _opendoor_text = "...Gently open the door."
-    if persistent._mas_sensitive_mode:
-        $ _opendoor_text = "Open the door."
 
     if mas_isMoniBroken():
         pause 4.0
@@ -4349,15 +4347,16 @@ label greeting_spacing_out:
         spacing_out_pause = PauseDisplayableWithEvents()
         events = list()
         next_event_time = 0
-        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
-        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+        right_smug = renpy.partial(renpy.show, "monika 1gsbsu")
+        left_smug = renpy.partial(renpy.show, "monika 1msbsu")
 
         # Make the events which will change exps
         for i in range(random.randint(4, 6)):
             events.append(
                 PauseDisplayableEvent(
                     datetime.timedelta(seconds=next_event_time),
-                    right_smug if use_right_smug else left_smug
+                    right_smug if use_right_smug else left_smug,
+                    restart_interaction=True
                 )
             )
             next_event_time += random.uniform(0.9, 1.8)
@@ -4366,7 +4365,8 @@ label greeting_spacing_out:
         events.append(
             PauseDisplayableEvent(
                 datetime.timedelta(seconds=next_event_time),
-                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+                renpy.partial(renpy.show, "monika 1tsbsu"),
+                restart_interaction=True
             )
         )
         next_event_time += 0.7
@@ -4377,8 +4377,8 @@ label greeting_spacing_out:
                 spacing_out_pause.stop
             )
         )
-        spacing_out_pause.events[:] = events
 
+        spacing_out_pause.set_events(events)
         spacing_out_pause.start()
 
     # Small pause so people don't skip this line
