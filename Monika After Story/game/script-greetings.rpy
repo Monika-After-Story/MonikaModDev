@@ -4505,9 +4505,9 @@ label greeting_after_bath:
 
     if mas_getEVL_shown_count("greeting_after_bath") < 5:
         m 7lubsb "I just finished [bathing_showering]...{w=0.3}{nw}"
-        extend 1ekbfa "You don't mind me in just a towel, do you?~"
+        extend 1ekbfa "you don't mind me being in my towel, do you?~"
         m 1hubfb "Ahaha~"
-        m 3hubsa "I'll be getting ready for the day soon."
+        m 3hubsa "I'll be getting ready for the [mas_globals.time_of_day_4state] soon."
 
     # Gets used to it
     else:
@@ -4519,7 +4519,7 @@ label greeting_after_bath:
             m 1hubfb "Ahaha~"
 
         else:
-            m 1eua "I'll be getting ready for the day soon."
+            m 1eua "I'll be getting ready for the [mas_globals.time_of_day_4state] soon."
 
     python:
         # enable music menu and music hotkeys
@@ -4546,11 +4546,11 @@ label mas_after_bath_cleanup:
         return
 
     if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1eua "I'm going to get myself ready.{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+        m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     else:
         m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
-        extend 3eua "I'm going to get ready."
+        extend 3eua "I'm going to get dressed."
 
     window hide
     call mas_transition_to_emptydesk
@@ -4566,7 +4566,7 @@ label mas_after_bath_cleanup:
         m 3hub "All done!{w=1}{nw}"
 
     else:
-        m 3hub "Alright, I finished my routine!"
+        m 3hub "Alright, I'm back!~"
         m 1eua "So what would you like to do today, [player]?"
 
     return
