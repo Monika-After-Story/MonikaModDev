@@ -2414,7 +2414,7 @@ init python:
             highlight_magenta = renpy.render(MASChessDisplayableBase.PIECE_HIGHLIGHT_MAGENTA_IMAGE, 1280, 720, st, at)
 
             #Get our mouse pos
-            mx, my = mas_getMousePos()
+            mx, my = renpy.get_mouse_pos()
 
             #Since different buttons show during the game vs post game, we'll sort out what's shown here
             visible_buttons = list()
@@ -2562,7 +2562,7 @@ init python:
                 #Draw the selected piece.
                 piece = self.get_piece_at(self.selected_piece[0], self.selected_piece[1])
 
-                px, py = mas_getMousePos()
+                px, py = renpy.get_mouse_pos()
                 px -= MASChessDisplayableBase.PIECE_WIDTH / 2
                 py -= MASChessDisplayableBase.PIECE_HEIGHT / 2
                 piece.render(width, height, st, at, px, py, renderer)
@@ -2640,7 +2640,7 @@ init python:
             OUT:
                 Tuple of coordinates (x, y) marking where the piece is
             """
-            mx, my = mas_getMousePos()
+            mx, my = renpy.get_mouse_pos()
             mx -= MASChessDisplayableBase.BASE_PIECE_X
             my -= MASChessDisplayableBase.BASE_PIECE_Y
             px = mx / MASChessDisplayableBase.PIECE_WIDTH

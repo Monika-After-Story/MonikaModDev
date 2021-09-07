@@ -6630,8 +6630,13 @@ init 21 python:
 
         return rv
 
+    @store.mas_utils.deprecated(use_instead="renpy.get_mouse_pos", should_raise=True)
     def mas_getMousePos():
         """
+        DEPRECIATED
+
+        Use renpy.get_mouse_pos instead
+
         Gets the mouse position in terms of physical screen size
 
         OUT:
