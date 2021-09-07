@@ -6907,6 +6907,7 @@ label mas_bday_surprise_party_reaction_no_make_wish:
     show monika 6hft
 
 label mas_bday_surprise_party_reaction_post_make_wish:
+    pause 0.1
     $ mas_bday_cake_lit = False
     window auto
     if mas_isMoniNormal(higher=True):
