@@ -72,27 +72,33 @@ init -500 python in mas_parallax:
         The container will be of just enough size to contain the base and the children, aligning everything to its center.
         Children can be given x, y, and zorder offsets relative to the center
         """
-        def __init__(self, base, *args):
+        def __init__(self, base, *children):
             """
             Constructor for containers
 
             IN:
                 base - the base img (must be ParallaxDecal)
-                args - children (must be ParallaxDecal)
+                children - children imgs (must be ParallaxDecal)
             """
             super(_ParallaxDecalContainer, self).__init__()
 
             self._base = base
 
-            self._decals = list(args)
+            self._decals = list(children)
             self._decals.append(base)
-            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
+            self.__sort_decals()
             for decal in self._decals:
                 if not isinstance(decal, ParallaxDecal):
                     raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal)))
                 decal.callback = self.update
 
             self.size = (0, 0)
+
+        def __sort_decals(self):
+            """
+            Sorts inner list of images, ensures the base is being the last
+            """
+            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
 
         @property
         def base(self):
@@ -133,7 +139,7 @@ init -500 python in mas_parallax:
                 decal.callback = self.update
                 self._decals.append(decal)
 
-            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
+            self.__sort_decals()
             renpy.redraw(self, 0.0)
 
         def remove(self, *decals):
@@ -216,7 +222,7 @@ init -500 python in mas_parallax:
             """
             Updates this disp
             """
-            self._decals.sort(key=lambda decal: decal.z - float(decal is self._base)/2.0)
+            self.__sort_decals()
             renpy.redraw(self, 0)
 
         def visit(self):
