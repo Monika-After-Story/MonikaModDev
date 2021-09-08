@@ -4,6 +4,37 @@
 # Monika reacts to he place the player clicks
 
 
+# Start lvl to start calculations from
+# NOTE: being set to an int when the user unlocks the islands
+default persistent._mas_islands_start_lvl = None
+# Current progress, -1 means not unlocked yet
+default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
+# Most of the progression is linear, but some things items are unlocked at random
+# (e.g. either bookshelf or bushes at lvl X, but both at lvl X+Y)
+# that's so every player gets a bit different progression.
+# Bear in mind, if you decide to add a new item, you'll need an update script
+default persistent._mas_islands_unlocks = {
+    # Islands
+    "isld_0": True,# You're here, so it's always unlocked
+    "isld_1": False,
+    "isld_2": False,
+    "isld_3": False,
+    "isld_4": False,
+    "isld_5": False,
+    "isld_6": False,
+    "isld_7": False,
+    "isld_8": False,
+    # Decals
+    "bookshelf": False,
+    "bushes": False,
+    "house": False,
+    "tree": False,
+    "glitch": False,
+    # BG
+    "def": True,# def is always unlocked
+}
+
+
 ### initialize the island images
 init 1 python:
     ## NOTE: we assume 2 things:
@@ -28,6 +59,7 @@ init -25 python in mas_island_event:
     import store.mas_dockstat as mds
     import store.mas_ics as mis
     from store import (
+        persistent,
         mas_utils,
         mas_weather,
         Transform,
@@ -40,6 +72,12 @@ init -25 python in mas_island_event:
         ParallaxSprite,
         ParallaxDecal
     )
+
+    DEF_PROGRESS = -1
+    MAX_PROGRESS_ENAM = 4
+    MAX_PROGRESS_LOVE = 9
+    PROGRESS_FACTOR_ENAM = 4
+    PROGRESS_FACTOR_LOVE = 5
 
     # These are dics, they're being populated later
     # Once we decode the imgs
@@ -54,6 +92,7 @@ init -25 python in mas_island_event:
     store.m = None
     # This map holds partials which expect the last agrument - the displayable obj - to be passed in
     # to create sprites/decals/etc
+    # NOTE: If you want to add a new image, read docs for decodeImages
     # NOTE: As you can see ParallaxDecal aren't being passed in partials, they are dynamically added later
     # during composite image building
     # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
@@ -65,7 +104,6 @@ init -25 python in mas_island_event:
                 x=808,
                 y=519,
                 z=40,
-                zoom=1.0,
                 function=None,
                 on_click=functools.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")
             ),
@@ -74,7 +112,6 @@ init -25 python in mas_island_event:
                 x=462,
                 y=393,
                 z=90,
-                zoom=1.0,
                 function=None
             ),
             "isld_3": functools.partial(
@@ -82,7 +119,6 @@ init -25 python in mas_island_event:
                 x=338,
                 y=179,
                 z=130,
-                zoom=1.0,
                 function=None
             ),
             "isld_4": functools.partial(ParallaxSprite, x=182, y=202, z=150, zoom=1.0),
@@ -91,7 +127,6 @@ init -25 python in mas_island_event:
                 x=1135,
                 y=270,
                 z=50,
-                zoom=1.0,
                 function=None
             ),
             "isld_6": functools.partial(
@@ -99,7 +134,6 @@ init -25 python in mas_island_event:
                 x=1013,
                 y=112,
                 z=200,
-                zoom=1.0,
                 function=None
             ),
             "isld_7": functools.partial(
@@ -107,7 +141,6 @@ init -25 python in mas_island_event:
                 x=475,
                 y=97,
                 z=250,
-                zoom=1.0,
                 function=None
             ),
             "isld_8": functools.partial(ParallaxSprite, x=563, y=84, z=220, zoom=1.0),
@@ -181,7 +214,11 @@ init -25 python in mas_island_event:
 
     def decodeImages():
         """
-        Attempts to decode the iamges
+        Attempts to decode the images
+        NOTE: If you want to add a new images, you'll have to add it
+            to the maps inside this function, as well as to PARTIAL_OBJECTS_MAP
+            A little inconvinient, but it has to be done. We also don't
+            plan to add new images often, so it shouldn't be a big problem.
 
         OUT:
             True upon success, False otherwise
@@ -495,7 +532,141 @@ init -25 python in mas_island_event:
         glitch_disp = Transform(child=glitch_frames[0], function=_select_glitch_frame)
         decal_disp_map["glitch"] = PARTIAL_OBJECTS_MAP["decal"]["glitch"](glitch_disp)
 
-    def getIslandsImg():
+
+    # Next go functions for lvl unlocks, head to _handleUnlocks
+    # to understand how this works
+    def _unlocks_for_lvl_0():
+        persistent._mas_islands_unlocks["isld_1"] = True
+        persistent._mas_islands_unlocks["isld_8"] = True
+
+    def _unlocks_for_lvl_1():
+        persistent._mas_islands_unlocks["isld_2"] = True
+
+    def _unlocks_for_lvl_2():
+        persistent._mas_islands_unlocks["tree"] = True
+
+    def _unlocks_for_lvl_3():
+        # Unlock only 1, the rest at lvl 5
+        if not (
+            persistent._mas_islands_unlocks["isld_3"]
+            and persistent._mas_islands_unlocks["isld_4"]
+            and persistent._mas_islands_unlocks["isld_5"]
+        ):
+            if bool(random.randint(0, 1)):
+                persistent._mas_islands_unlocks["isld_3"] = True
+                persistent._mas_islands_unlocks["isld_4"] = True
+
+            else:
+                persistent._mas_islands_unlocks["isld_5"] = True
+
+    def _unlocks_for_lvl_4():
+        persistent._mas_islands_unlocks["glitch"] = True
+
+        # Unlock only 1, the rest at lvl 7
+        if not (
+            persistent._mas_islands_unlocks["bookshelf"]
+            and persistent._mas_islands_unlocks["bushes"]
+        ):
+            if bool(random.randint(0, 1)):
+                persistent._mas_islands_unlocks["bookshelf"] = True
+
+            else:
+                persistent._mas_islands_unlocks["bushes"] = True
+
+    def _unlocks_for_lvl_5():
+        persistent._mas_islands_unlocks["isld_7"] = True
+
+        # Unlock everything from lvl 3
+        persistent._mas_islands_unlocks["isld_3"] = True
+        persistent._mas_islands_unlocks["isld_4"] = True
+        persistent._mas_islands_unlocks["isld_5"] = True
+
+    def _unlocks_for_lvl_6():
+        persistent._mas_islands_unlocks["isld_6"] = True
+
+    def _unlocks_for_lvl_7():
+        # Unlock everything from lvl 4
+        persistent._mas_islands_unlocks["bookshelf"] = True
+        persistent._mas_islands_unlocks["bushes"] = True
+
+    def _unlocks_for_lvl_8():
+        # TODO: me
+        return
+
+    def _unlocks_for_lvl_9():
+        # TODO: me
+        return
+
+    def _handleUnlocks():
+        """
+        Method to unlock various islands features when the player progresses.
+        For example: new decals, new islands, new extra events, set persistent vars, etc.
+        For that you need to edit existing callbacks, or add a new one if it doesn't exist yet
+        """
+        curr_progress = getProgressionLevel()
+        g = globals()
+
+        for i in range(curr_progress+1):
+            callback = g.get("_unlocks_for_lvl_{}".format(i), None)
+            if callback is not None:
+                callback()
+
+    def _advanceProgressionLevel():
+        """
+        Increments the lvl of progression of the islands event,
+        it will do nothing if the player hasn't unlocked the islands yet or if
+        the current lvl is invalid
+        """
+        start_lvl = persistent._mas_islands_start_lvl
+        # If this var is None, then the user hasn't unlocked the event yet
+        if start_lvl is None:
+            return persistent._mas_islands_progress
+
+        lvl_difference = store.mas_xp.level() - start_lvl
+        # This should never happen
+        # TODO: potentially throw an error here?
+        if lvl_difference < 0:
+            return persistent._mas_islands_progress
+
+        if store.mas_isMoniEnamored(higher=True):
+            if store.mas_isMoniLove(higher=True):
+                max_progress = MAX_PROGRESS_LOVE
+                progress_factor = PROGRESS_FACTOR_LOVE
+
+            else:
+                max_progress = MAX_PROGRESS_ENAM
+                progress_factor = PROGRESS_FACTOR_ENAM
+
+            new_progress = min(int(lvl_difference // progress_factor), max_progress)
+
+        else:
+            new_progress = DEF_PROGRESS
+
+        # Now set new level
+        persistent._mas_islands_progress = max(new_progress, persistent._mas_islands_progress)
+        _handleUnlocks()
+
+        return persistent._mas_islands_progress
+
+    def setStartLevel():
+        """
+        Sets the starting level for islands progression
+        NOTE: THIS MUST BE CALELD ONLY ONCE THE PLAYER UNLOCKS THE ISALNDS
+            AS THIS TRIGGERS THE PROGRESSION
+        """
+        if persistent._mas_islands_start_lvl is None:
+            persistent._mas_islands_start_lvl = store.mas_xp.level()
+
+    def getProgressionLevel():
+        """
+        Returns current progression level
+
+        OUT:
+            int
+        """
+        return persistent._mas_islands_progress
+
+    def getIslandsDisp():
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
@@ -504,34 +675,42 @@ init -25 python in mas_island_event:
         OUT:
             LiveComposite
         """
+        # Progress lvl
+        _advanceProgressionLevel()
+
         # Just in case we always remove all decals and readd them as needed
         for isld in island_disp_map.itervalues():
             isld._container.remove_all()
 
-        island_disp_map["isld_1"]._container.add(
-            decal_disp_map["bookshelf"],
-            decal_disp_map["bushes"],
-            decal_disp_map["house"],
-            decal_disp_map["tree"],
-            decal_disp_map["glitch"]
-        )
+        sub_displayables = list()
 
-        # First add parallax sprites (islands and bg)
-        imgs = island_disp_map.values()
-        imgs.append(bg_disp_map["def"])
-        # In order from back to front
-        imgs.sort(key=lambda sprite: sprite.z, reverse=True)
+        # Add all unlocked islands
+        for key, disp in island_disp_map.iteritems():
+            if persistent._mas_islands_unlocks[key]:
+                sub_displayables.append(disp)
+
+        # Add all unlocked decals for islands 1 (other islands don't have any as of now)
+        for key in ("bookshelf", "bushes", "house", "tree", "glitch"):
+            if persistent._mas_islands_unlocks[key]:
+                island_disp_map["isld_1"]._container.add(decal_disp_map[key])
+
+        # Add the bg (we only have one as of now)
+        sub_displayables.append(bg_disp_map["def"])
+
+        # Sort in order from back to front
+        sub_displayables.sort(key=lambda sprite: sprite.z, reverse=True)
 
         # Now add overlays (they are always last)
         if store.mas_is_raining:
-            imgs.append(overlay_disp_map["rain"])
+            sub_displayables.append(overlay_disp_map["rain"])
 
         elif store.mas_is_snowing:
-            imgs.append(overlay_disp_map["snow"])
+            sub_displayables.append(overlay_disp_map["snow"])
 
-        def_coords = itertools.repeat((0, 0), len(imgs))
-        lc_args = itertools.chain.from_iterable(itertools.izip(def_coords, imgs))
+        def_coords = itertools.repeat((0, 0), len(sub_displayables))
+        lc_args = itertools.chain.from_iterable(itertools.izip(def_coords, sub_displayables))
 
+        # Try to make a LiveComposite
         return LiveComposite(
             (renpy.config.screen_width, renpy.config.screen_height),
             *lc_args
