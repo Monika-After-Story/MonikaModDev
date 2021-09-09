@@ -328,7 +328,7 @@ init -25 python in mas_island_event:
             ParallaxSprite,
             x=renpy.config.screen_width/2.0,
             y=renpy.config.screen_height/2.0,
-            z=10000,
+            z=15000,
             zoom=1.1,
             min_zoom=1.1,
             max_zoom=4.1
@@ -726,7 +726,7 @@ init -25 python in mas_island_event:
         persistent._mas_islands_progress = DEF_PROGRESS
         persistent._mas_islands_unlocks = _IslandsImgDataHolder.getDefaultUnlocks()
 
-    def getIslandsDisp():
+    def getIslandsDisp(enable_events=True):
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
@@ -738,14 +738,18 @@ init -25 python in mas_island_event:
         # Progress lvl
         _advanceProgressionLevel()
 
-        # Just in case we always remove all decals and readd them as needed
-        for isld in island_disp_map.itervalues():
-            isld._container.remove_all()
-
         sub_displayables = list()
 
         # Add all unlocked islands
         for key, disp in island_disp_map.iteritems():
+            # Just in case we always remove all decals and readd them as needed
+            disp._container.remove_all()
+            # Toggle events as desired
+            disp.toggle_events(enable_events)
+            # Reset offsets
+            disp.reset_mouse_pos()
+            disp.update_offsets()
+            # Add if unlocked
             if persistent._mas_islands_unlocks[key]:
                 sub_displayables.append(disp)
 
@@ -755,7 +759,11 @@ init -25 python in mas_island_event:
                 island_disp_map["isld_1"]._container.add(decal_disp_map[key])
 
         # Add the bg (we only have one as of now)
-        sub_displayables.append(bg_disp_map["bg_def"])
+        bg_disp = bg_disp_map["bg_def"]
+        bg_disp.toggle_events(enable_events)
+        bg_disp.reset_mouse_pos()
+        bg_disp.update_offsets()
+        sub_displayables.append(bg_disp)
 
         # Sort in order from back to front
         sub_displayables.sort(key=lambda sprite: sprite.z, reverse=True)
@@ -829,27 +837,7 @@ label mas_monika_islands:
         disable_esc()
         renpy.store.mas_hotkeys.no_window_hiding = True
 
-        is_done = False
-        islands_disp = store.mas_island_event.getIslandsDisp()
-
-    # HACK: We show the disp with a tranition first and then show the screen.
-    # With r7 we will be able to call screens with transitions,
-    # So we better to update this code later
-    scene
-    show expression islands_disp as temp_islands_bg zorder 50
-    with Fade(0.5, 0, 0.5)
-    hide temp_islands_bg with None
-
-    while not is_done:
-        call screen mas_islands(islands_disp)
-
-        $ is_done = _return == "done"
-
-    show expression islands_disp as temp_islands_bg zorder 50 with None
-    # NOTE: We can't progress filter here, it looks bad
-    call spaceroom(force_exp="monika 1eua", progress_filter=False)
-    hide temp_islands_bg
-    with Fade(0.5, 0, 0.5)
+    call mas_islands
 
     # 155, 545
     # random chance to get mini moni appear
@@ -863,9 +851,36 @@ label mas_monika_islands:
         mas_OVLShow()
         mas_DropShield_core()
 
-        del islands_disp, is_done
-
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
+    return
+
+label mas_islands(transition=True, enable_events=True):
+    python:
+        is_done = False
+        islands_disp = store.mas_island_event.getIslandsDisp(enable_events=enable_events)
+
+    # HACK: We show the disp with a tranition first and then show the screen.
+    # With r7 we will be able to call screens with transitions,
+    # So we better to update this code later
+    if transition:
+        scene
+        show expression islands_disp as temp_islands_bg zorder 50
+        with Fade(0.5, 0, 0.5)
+        hide temp_islands_bg with None
+
+    while not is_done:
+        call screen mas_islands(islands_disp)
+
+        $ is_done = _return == "done"
+
+    if transition:
+        show expression islands_disp as temp_islands_bg zorder 50 with None
+        # NOTE: We can't progress filter here, it looks bad
+        call spaceroom(force_exp="monika 1eua", progress_filter=False)
+        hide temp_islands_bg
+        with Fade(0.5, 0, 0.5)
+
+    $ del islands_disp, is_done
     return
 
 label mas_island_upsidedownisland:

@@ -309,6 +309,8 @@ init -500 python in mas_parallax:
                 raise Exception("The on_click property must be a callable.")
             self.on_click = on_click
 
+            self._enable_events = True
+
         @property
         def x(self):
             return self._x
@@ -347,12 +349,24 @@ init -500 python in mas_parallax:
             self._transform.zoom = value
             self.update_offsets()
 
+        def update_mouse_pos(self):
+            """
+            Updates mouse pos
+            """
+            self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+
         def reset_mouse_pos(self):
             """
             Resets mouse pos
             """
-            self.mouse_x = renpy.config.screen_width / 2.0
-            self.mouse_y = renpy.config.screen_height / 2.0
+            self.mouse_x = int(renpy.config.screen_width / 2.0)
+            self.mouse_y = int(renpy.config.screen_height / 2.0)
+
+        def toggle_events(self, value):
+            """
+            Toggles events (and hence the parallax effect)
+            """
+            self._enable_events = value
 
         def __repr__(self):
             """
@@ -412,24 +426,25 @@ init -500 python in mas_parallax:
             The event handler
             TODO: allow to move around and zoom in/out with keyboard
             """
-            if ev.type == pygame.MOUSEMOTION:
-                self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
-                self.update_offsets()
+            if self._enable_events:
+                if ev.type == pygame.MOUSEMOTION:
+                    self.update_mouse_pos()
+                    self.update_offsets()
 
-            elif ev.type == pygame.MOUSEBUTTONDOWN:
-                if self.min_zoom != self.max_zoom:
-                    if ev.button == 4:
-                        self.zoom += 0.1
+                elif ev.type == pygame.MOUSEBUTTONDOWN:
+                    if self.min_zoom != self.max_zoom:
+                        if ev.button == 4:
+                            self.zoom += 0.1
 
-                    elif ev.button == 5:
-                        self.zoom -= 0.1
+                        elif ev.button == 5:
+                            self.zoom -= 0.1
 
-            elif ev.type == pygame.MOUSEBUTTONUP:
-                if ev.button == 1:
-                    # if self.on_click is not None and self.is_focused():
-                    if self.on_click is not None and self._render.is_pixel_opaque(x, y):
-                        self.on_click()
-                        # raise renpy.IgnoreEvent()
+                elif ev.type == pygame.MOUSEBUTTONUP:
+                    if ev.button == 1:
+                        # if self.on_click is not None and self.is_focused():
+                        if self.on_click is not None and self._render.is_pixel_opaque(x, y):
+                            self.on_click()
+                            # raise renpy.IgnoreEvent()
 
             return None
 
@@ -456,7 +471,8 @@ init -500 python in mas_parallax:
             Called to ask this displayable to call the callback with all
             the images it may want to load.
             """
-            self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
+            if self._enable_events:
+                self.update_mouse_pos()
             self.update_offsets()
 
 
