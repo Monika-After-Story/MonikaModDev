@@ -27,7 +27,7 @@ init 1 python:
     #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
-    mas_decoded_islands = not store.mas_island_event.decodeImages()
+    mas_decoded_islands = store.mas_island_event.decodeImages()
     mas_cannot_decode_islands = not mas_decoded_islands
 
 
@@ -815,54 +815,55 @@ init 5 python:
     )
 
 label mas_monika_islands:
+    # Sanity check in case of restart and failing to decode
+    if not mas_decoded_islands:
+        return
+
     m 1eub "I'll let you admire the scenery for now."
     m 1hub "Hope you like it!"
 
-    # prevent interactions
-    $ mas_RaiseShield_core()
-    $ mas_OVLHide()
-    $ disable_esc()
-    $ renpy.store.mas_hotkeys.no_window_hiding = True
+    # Raise shields
+    python:
+        mas_RaiseShield_core()
+        mas_OVLHide()
+        disable_esc()
+        renpy.store.mas_hotkeys.no_window_hiding = True
 
-    # keep looping the screen
-    $ _mas_island_keep_going = True
+        is_done = False
+        islands_disp = store.mas_island_event.getIslandsDisp()
 
-    # keep track about the window
-    $ _mas_island_window_open = True
+    # HACK: We show the disp with a tranition first and then show the screen.
+    # With r7 we will be able to call screens with transitions,
+    # So we better to update this code later
+    scene
+    show expression islands_disp as temp_islands_bg zorder 50
+    with Fade(0.5, 0, 0.5)
+    hide temp_islands_bg with None
 
-    # text used for the window
-    $ _mas_toggle_frame_text = "Close Window"
+    while not is_done:
+        call screen mas_islands(islands_disp)
 
-    # shimeji flag
-    $ _mas_island_shimeji = False
+        $ is_done = _return == "done"
 
+    show expression islands_disp as temp_islands_bg zorder 50 with None
+    # NOTE: We can't progress filter here, it looks bad
+    call spaceroom(force_exp="monika 1eua", progress_filter=False)
+    hide temp_islands_bg
+    with Fade(0.5, 0, 0.5)
+
+    # 155, 545
     # random chance to get mini moni appear
-    if renpy.random.randint(1,100) == 1:
-        $ _mas_island_shimeji = True
+    # if renpy.random.randint(1,100) == 1:
+    #     $ _mas_island_shimeji = True
 
-    # double screen trick
-    show screen mas_islands_background
+    # Drop shields
+    python:
+        store.mas_hotkeys.no_window_hiding = False
+        enable_esc()
+        mas_OVLShow()
+        mas_DropShield_core()
 
-    # keep showing the event until the player wants to go
-    while _mas_island_keep_going:
-
-        # image map with the event
-        call screen mas_show_islands()
-
-        if _return:
-            # call label if we have one
-            call expression _return
-        else:
-            # player wants to quit the event
-            $ _mas_island_keep_going = False
-    # hide extra screen
-    hide screen mas_islands_background
-
-    # drop shields
-    $ mas_DropShield_core()
-    $ mas_OVLShow()
-    $ enable_esc()
-    $ store.mas_hotkeys.no_window_hiding = False
+        del islands_disp, is_done
 
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
@@ -1185,20 +1186,19 @@ label mas_island_bookshelf2:
     return
 
 
+screen mas_islands(islands_displayable, show_return_button=True):
+    style_prefix "island"
+
+    add islands_displayable
+
+    if show_return_button:
+        textbutton _("Go Back"):
+            align (0.5, 0.98)
+            action Return("done")
+
 screen mas_islands_background:
 
     add mas_island_event.getBackground()
-
-#    if morning_flag:
-#        if _mas_island_window_open:
-#            add "mod_assets/location/special/without_frame.png"
-#        else:
-#            add "mod_assets/location/special/with_frame.png"
-#    else:
-#        if _mas_island_window_open:
-#            add "mod_assets/location/special/night_without_frame.png"
-#        else:
-#            add "mod_assets/location/special/night_with_frame.png"
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
@@ -1211,23 +1211,6 @@ screen mas_show_islands():
     imagemap:
 
         ground mas_island_event.getBackground()
-
-#        if mas_is_raining:
-#            if _mas_island_window_open:
-#                ground "mod_assets/location/special/rain_without_frame.png"
-#            else:
-#                ground "mod_assets/location/special/rain_with_frame.png"
-#        elif morning_flag:
-#            if _mas_island_window_open:
-#                ground "mod_assets/location/special/without_frame.png"
-#            else:
-#                ground "mod_assets/location/special/with_frame.png"
-#        else:
-#            if _mas_island_window_open:
-#                ground "mod_assets/location/special/night_without_frame.png"
-#            else:
-#                ground "mod_assets/location/special/night_with_frame.png"
-
 
         hotspot (11, 13, 314, 270) action Return("mas_island_upsidedownisland") # island upside down
         hotspot (403, 7, 868, 158) action Return("mas_island_sky") # sky

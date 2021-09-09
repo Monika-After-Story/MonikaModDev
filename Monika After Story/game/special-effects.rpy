@@ -271,8 +271,9 @@ init -500 python in mas_parallax:
             super(ParallaxSprite, self).__init__()
 
             # For convenience, we assume the mouse is in the center
-            self.mouse_x = renpy.config.screen_width / 2.0
-            self.mouse_y = renpy.config.screen_height / 2.0
+            self.mouse_x = 0
+            self.mouse_y = 0
+            self.reset_mouse_pos()
 
             self._x = x
             self._y = y
@@ -345,6 +346,13 @@ init -500 python in mas_parallax:
             self._zoom = value
             self._transform.zoom = value
             self.update_offsets()
+
+        def reset_mouse_pos(self):
+            """
+            Resets mouse pos
+            """
+            self.mouse_x = renpy.config.screen_width / 2.0
+            self.mouse_y = renpy.config.screen_height / 2.0
 
         def __repr__(self):
             """
