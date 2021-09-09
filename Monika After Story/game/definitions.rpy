@@ -366,6 +366,7 @@ python early:
     # all bitmask flags apply until next restart or the flag is unset.
     # NOTE: do NOT add a bitmask flag if you want to save its value.
     #   if you need saved data, add a new prop or use an existing one.
+    EV_FLAG_DEF = 0
 
     EV_FLAG_HFM = 2
     # Hidden From Menus
@@ -609,7 +610,7 @@ python early:
                 sensitive=False,
                 aff_range=None,
                 show_in_idle=False,
-                flags=0
+                flags=EV_FLAG_DEF
             ):
 
             # setting up defaults

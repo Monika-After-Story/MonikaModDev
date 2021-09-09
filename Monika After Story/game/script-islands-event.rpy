@@ -27,7 +27,8 @@ init 1 python:
     #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
-    mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
+    mas_decoded_islands = not store.mas_island_event.decodeImages()
+    mas_cannot_decode_islands = not mas_decoded_islands
 
 
 init -25 python in mas_island_event:
@@ -333,7 +334,7 @@ init -25 python in mas_island_event:
             max_zoom=4.1
         )
     )
-    # Otherlays
+    # Overlays
     _IslandsImgDataHolder(
         "overlay_rain",
         default_unlocked=True,
@@ -673,6 +674,9 @@ init -25 python in mas_island_event:
         Increments the lvl of progression of the islands event,
         it will do nothing if the player hasn't unlocked the islands yet or if
         the current lvl is invalid
+
+        OUT:
+            int - current progress lvl
         """
         start_lvl = persistent._mas_islands_start_lvl
         # If this var is None, then the user hasn't unlocked the event yet
@@ -708,7 +712,7 @@ init -25 python in mas_island_event:
     def setStartLevel():
         """
         Sets the starting level for islands progression
-        NOTE: THIS MUST BE CALELD ONLY ONCE THE PLAYER UNLOCKS THE ISALNDS
+        NOTE: THIS MUST BE CALLED ONLY ONCE THE PLAYER UNLOCKS THE ISLANDS
             AS THIS TRIGGERS THE PROGRESSION
         """
         if persistent._mas_islands_start_lvl is None:
@@ -796,36 +800,19 @@ init -25 python in mas_island_event:
 
 
 init 5 python:
-    if not mas_cannot_decode_islands:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="mas_monika_islands",
-                category=['monika','misc'],
-                prompt="Can you show me the floating islands?",
-                pool=True,
-                unlocked=False,
-                rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
-                aff_range=(mas_aff.ENAMORED, None)
-            )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_islands",
+            category=['monika','misc'],
+            prompt="Can you show me the floating islands?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
+            aff_range=(mas_aff.ENAMORED, None),
+            flags=EV_FLAG_DEF if mas_decoded_islands else EV_FLAG_HFM
         )
-
-init -876 python in mas_delact:
-    # this event requires a delayed aciton, since we cannot ensure that
-    # the sprites for this were decoded correctly
-
-    def _mas_monika_islands_unlock():
-        return store.MASDelayedAction.makeWithLabel(
-            2,
-            "mas_monika_islands",
-            (
-                "not store.mas_cannot_decode_islands"
-                " and mas_isMoniEnamored(higher=True)"
-            ),
-            store.EV_ACT_UNLOCK,
-            store.MAS_FC_START
-        )
-
+    )
 
 label mas_monika_islands:
     m 1eub "I'll let you admire the scenery for now."

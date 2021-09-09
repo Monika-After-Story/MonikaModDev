@@ -377,7 +377,10 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.2.4
 label v0_12_2_4(version="v0_12_2_4"):
     python:
-        pass
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="store.mas_decoded_islands"
+        )
     return
 
 # 0.12.2.3

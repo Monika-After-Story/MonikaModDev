@@ -3408,46 +3408,22 @@ label greeting_siat:
     return "love"
 
 init 5 python:
-    if not mas_cannot_decode_islands:
-        ev_rules = {}
-        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
-        ev_rules.update(MASPriorityRule.create_rule(40))
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True))
+    ev_rules.update(MASPriorityRule.create_rule(40))
 
-        addEvent(
-            Event(
-                persistent.greeting_database,
-                eventlabel="greeting_ourreality",
-                unlocked=True,
-                rules=ev_rules,
-                aff_range=(mas_aff.ENAMORED, None),
-            ),
-            code="GRE"
-        )
-        del ev_rules
-
-
-init -876 python in mas_delact:
-    # this greeting requires a delayed action, since we cannot ensure that
-    # the sprites for this were decoded correctly
-
-    # NOTE: we dont need this anymore
-    #   We originally needed this since aff_range was not used by greetings
-    #   so we wanted to get this to unlock if we are only able to decode
-    #   islands. Now that aff range is part of gre parsing, the only thing
-    #   that matters is whether or not the event is active, which in this
-    #   case, only happens if the islands were decoded and aff is enamored+
-    def _greeting_ourreality_unlock():
-        return store.MASDelayedAction(
-            1,
-            store.mas_getEV("greeting_ourreality"),
-            (
-                "not store.mas_cannot_decode_islands"
-                " and mas_isMoniEnamored(higher=True)"
-            ),
-            store.EV_ACT_UNLOCK,
-            store.MAS_FC_START
-        )
-
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ourreality",
+            conditional="store.mas_decoded_islands",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_ourreality:
     m 1hub "Hi, [player]!"
