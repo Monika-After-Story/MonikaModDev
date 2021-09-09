@@ -1,3 +1,28 @@
+python early in mas_logging:
+    import logging
+    import os
+
+    #Thanks python...
+    from logging import handler as loghandlers
+
+    #Consts
+    LOG_FORMAT = "[{asctime}] [{levelname}]: {message}"
+    LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+    #Full logging info
+    def init_log(name, filepath):
+        """
+        """
+        if not os.path.exists(filepath):
+            os.makedirs(filepath)
+
+        formatter = logging.Formatter(fmt=LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
+
+        handler = loghandlers.RotatingFileHandler
+        log = logging.getLogger(name)
+        log.addHandler(logging.FileHandler(filepath))
+        return log
+
 python early in mas_utils:
     import codecs
     import os
