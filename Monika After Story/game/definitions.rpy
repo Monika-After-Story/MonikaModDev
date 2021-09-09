@@ -309,8 +309,8 @@ python early:
 
     class MASImageData(renpy.display.im.ImageBase):
         """
-        NOTE: It might be unsafe to save this in persistent,
-            I don't think we're doing that anywhere, but bear that in mind
+        NOTE: This DOES NOT support saving in persistent (pickling),
+            and it might be unsafe to do so.
 
         This image manipulator loads an image from binary data.
         """
@@ -331,7 +331,13 @@ python early:
             self.filename = filename
 
         def __unicode__(self):
-            return u"MASImageData(%r)" % self.filename
+            return u"MASImageData({})".format(self.filename)
+
+        def __repr__(self):
+            return str(self.__unicode__())
+
+        def __reduce__(self):
+            return (str, (self.filename,))
 
         def load(self):
             f = io.BytesIO(self.data)
