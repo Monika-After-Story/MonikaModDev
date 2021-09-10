@@ -67,10 +67,10 @@ jobs:
           unzip mas.zip -d mas0105
 
       # TEMP
-      - name: what are these
-        run: |
-          file mas0105
-          file renpy
+      #      - name: what are these
+      #  run: |
+      #    file mas0105
+      #    file renpy
 
       # copy files over
       - name: copy source over
