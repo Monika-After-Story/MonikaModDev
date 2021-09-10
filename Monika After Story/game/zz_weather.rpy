@@ -84,31 +84,6 @@ image snow_weather_fb = MASFallbackFilterDisplayable(
 
 ## end spaceroom weather art
 
-## living room weather art
-
-## end living room weather art
-
-## start island bg weather art
-
-image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
-image mas_island_day = "mod_assets/location/special/without_frame.png"
-image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
-image mas_island_night = "mod_assets/location/special/night_without_frame.png"
-image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
-image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
-image mas_island_frame_rain_night = "mod_assets/location/special/night_rain_with_frame.png"
-image mas_island_rain_night = "mod_assets/location/special/night_rain_without_frame.png"
-image mas_island_frame_overcast = "mod_assets/location/special/overcast_with_frame.png"
-image mas_island_overcast = "mod_assets/location/special/overcast_without_frame.png"
-image mas_island_frame_overcast_night = "mod_assets/location/special/night_overcast_with_frame.png"
-image mas_island_overcast_night = "mod_assets/location/special/night_overcast_without_frame.png"
-image mas_island_frame_snow = "mod_assets/location/special/snow_with_frame.png"
-image mas_island_snow = "mod_assets/location/special/snow_without_frame.png"
-image mas_island_frame_snow_night = "mod_assets/location/special/night_snow_with_frame.png"
-image mas_island_snow_night = "mod_assets/location/special/night_snow_without_frame.png"
-
-## end island bg weather art
-
 # NOTE: might not use these
 #default persistent._mas_weather_snow_happened = False
 #default persistent._mas_weather_rain_happened = False

@@ -9,7 +9,7 @@
 default persistent._mas_islands_start_lvl = None
 # Current progress, -1 means not unlocked yet
 default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
-# Most of the progression is linear, but some things items are unlocked at random
+# Most of the progression is linear, but some things are unlocked at random
 # (e.g. either bookshelf or bushes at lvl X, but both at lvl X+Y)
 # that's so every player gets a bit different progression.
 # Bear in mind, if you decide to add a new item, you'll need an update script
@@ -221,8 +221,7 @@ init -25 python in mas_island_event:
             ParallaxSprite,
             x=374,
             y=670,
-            z=10,
-            zoom=1.0
+            z=10
         )
     )
     store.m = None# TODO: delete this
@@ -329,7 +328,6 @@ init -25 python in mas_island_event:
             x=renpy.config.screen_width/2.0,
             y=renpy.config.screen_height/2.0,
             z=15000,
-            zoom=1.1,
             min_zoom=1.1,
             max_zoom=4.1
         )
@@ -669,7 +667,7 @@ init -25 python in mas_island_event:
             if callback is not None:
                 callback()
 
-    def _advanceProgressionLevel():
+    def _advanceProgression():
         """
         Increments the lvl of progression of the islands event,
         it will do nothing if the player hasn't unlocked the islands yet or if
@@ -678,12 +676,11 @@ init -25 python in mas_island_event:
         OUT:
             int - current progress lvl
         """
-        start_lvl = persistent._mas_islands_start_lvl
         # If this var is None, then the user hasn't unlocked the event yet
-        if start_lvl is None:
+        if persistent._mas_islands_start_lvl is None:
             return persistent._mas_islands_progress
 
-        lvl_difference = store.mas_xp.level() - start_lvl
+        lvl_difference = store.mas_xp.level() - persistent._mas_islands_start_lvl
         # This should never happen
         # TODO: potentially throw an error here?
         if lvl_difference < 0:
@@ -709,14 +706,20 @@ init -25 python in mas_island_event:
 
         return persistent._mas_islands_progress
 
-    def setStartLevel():
+    def _setupProgression():
         """
         Sets the starting level for islands progression
-        NOTE: THIS MUST BE CALLED ONLY ONCE THE PLAYER UNLOCKS THE ISLANDS
-            AS THIS TRIGGERS THE PROGRESSION
         """
         if persistent._mas_islands_start_lvl is None:
             persistent._mas_islands_start_lvl = store.mas_xp.level()
+
+    def startProgression():
+        """
+        Starts islands progression
+        """
+        if store.mas_isMoniEnamored(higher=True):
+            _setupProgression()
+            _advanceProgression()
 
     def _resetProgression():
         """
@@ -726,17 +729,25 @@ init -25 python in mas_island_event:
         persistent._mas_islands_progress = DEF_PROGRESS
         persistent._mas_islands_unlocks = _IslandsImgDataHolder.getDefaultUnlocks()
 
-    def getIslandsDisp(enable_events=True):
+    def getIslandsDisp(check_progression=True, enable_interaction=True):
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
         FIXME: py3 update
 
+        IN:
+            check_progression - whether to check for new unlocks or not,
+                this might be a little slow
+                (Default: True)
+            enable_interaction - whether to enable events or not (including parallax effect)
+                (Default: True)
+
         OUT:
             LiveComposite
         """
         # Progress lvl
-        _advanceProgressionLevel()
+        if check_progression:
+            _advanceProgression()
 
         sub_displayables = list()
 
@@ -745,10 +756,11 @@ init -25 python in mas_island_event:
             # Just in case we always remove all decals and readd them as needed
             disp._container.remove_all()
             # Toggle events as desired
-            disp.toggle_events(enable_events)
-            # Reset offsets
+            disp.toggle_events(enable_interaction)
+            # Reset offsets and zoom
             disp.reset_mouse_pos()
-            disp.update_offsets()
+            # Reset offsets and zoom
+            disp.zoom = disp.min_zoom
             # Add if unlocked
             if persistent._mas_islands_unlocks[key]:
                 sub_displayables.append(disp)
@@ -760,9 +772,9 @@ init -25 python in mas_island_event:
 
         # Add the bg (we only have one as of now)
         bg_disp = bg_disp_map["bg_def"]
-        bg_disp.toggle_events(enable_events)
+        bg_disp.toggle_events(enable_interaction)
         bg_disp.reset_mouse_pos()
-        bg_disp.update_offsets()
+        bg_disp.zoom = bg_disp.min_zoom
         sub_displayables.append(bg_disp)
 
         # Sort in order from back to front
@@ -832,12 +844,12 @@ label mas_monika_islands:
 
     # Raise shields
     python:
-        mas_RaiseShield_core()
         mas_OVLHide()
+        mas_RaiseShield_core()
         disable_esc()
         renpy.store.mas_hotkeys.no_window_hiding = True
 
-    call mas_islands
+    call mas_islands(force_exp="monika 1eua")
 
     # 155, 545
     # random chance to get mini moni appear
@@ -848,36 +860,52 @@ label mas_monika_islands:
     python:
         store.mas_hotkeys.no_window_hiding = False
         enable_esc()
+        mas_MUINDropShield()
         mas_OVLShow()
-        mas_DropShield_core()
 
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
 
-label mas_islands(transition=True, enable_events=True):
+label mas_islands(fade_in=True, fade_out=True, check_progression=True, enable_interaction=True, **spaceroom_kwargs):
+    # Sanity check
+    if persistent._mas_islands_start_lvl is None:
+        return
+
     python:
+        # NOTE: We can't progress filter here, it looks bad
+        spaceroom_kwargs.setdefault("progress_filter", False)
         is_done = False
-        islands_disp = store.mas_island_event.getIslandsDisp(enable_events=enable_events)
+        islands_disp = store.mas_island_event.getIslandsDisp(
+            check_progression=check_progression,
+            enable_interaction=enable_interaction
+        )
 
     # HACK: We show the disp with a tranition first and then show the screen.
     # With r7 we will be able to call screens with transitions,
     # So we better to update this code later
-    if transition:
+    if fade_in:
         scene
-        show expression islands_disp as temp_islands_bg zorder 50
+        show expression islands_disp as islands_bg
         with Fade(0.5, 0, 0.5)
-        hide temp_islands_bg with None
+        hide islands_bg with None
 
-    while not is_done:
-        call screen mas_islands(islands_disp)
+    if enable_interaction:
+        # If this is an interaction, we call the screen so
+        # the user can see parallax effect + events
+        while not is_done:
+            call screen mas_islands(islands_disp)
 
-        $ is_done = _return == "done"
+            $ is_done = _return == "done"
 
-    if transition:
-        show expression islands_disp as temp_islands_bg zorder 50 with None
-        # NOTE: We can't progress filter here, it looks bad
-        call spaceroom(force_exp="monika 1eua", progress_filter=False)
-        hide temp_islands_bg
+    else:
+        # Otherwise just show it as a static image
+        show screen mas_islands(islands_disp, show_return_button=False)
+
+    if fade_out:
+        hide screen mas_islands
+        show expression islands_disp as islands_bg zorder MAS_MONIKA_Z*10 with None
+        call spaceroom(**spaceroom_kwargs)
+        hide islands_bg
         with Fade(0.5, 0, 0.5)
 
     $ del islands_disp, is_done

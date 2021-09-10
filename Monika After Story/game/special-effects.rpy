@@ -239,7 +239,7 @@ init -500 python in mas_parallax:
         NORMAL_ZOOM = 1.0
         DEF_ANCHOR = (0.5, 0.5)
 
-        def __init__(self, img, x, y, z, zoom=1.0, function=None, decals=(), on_click=None, min_zoom=1.0, max_zoom=4.0):
+        def __init__(self, img, x, y, z, function=None, decals=(), on_click=None, min_zoom=1.0, max_zoom=4.0):
             """
             Constructor for parallax sprites
             NOTE: the child image will be anchored to its center, bear that in mind when giving it transforms
@@ -251,8 +251,6 @@ init -500 python in mas_parallax:
                 z - base z coord for the sprite
                     NOTE: treat this as zorder
                     NOTE: MUST BE > 0
-                zoom - default zoom for this sprite
-                    (Default: 1.0)
                 function - a function for the sprite's transform,
                     use it if you need additional effects
                     NOTE: your function SHOULD NOT affect the xoffset/yoffset/zoom (zoom only if you enabled it for the user) props
@@ -298,10 +296,10 @@ init -500 python in mas_parallax:
 
             self.min_zoom = min_zoom
             self.max_zoom = max_zoom
-            self._zoom = zoom
+            self._zoom = min_zoom
 
             # Set this again to run the methods
-            self.zoom = zoom
+            self.zoom = min_zoom
 
             self._render = None
 

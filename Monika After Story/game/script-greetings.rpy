@@ -3426,41 +3426,47 @@ init 5 python:
     del ev_rules
 
 label greeting_ourreality:
+    # Unlock islands
+    $ store.mas_island_event.startProgression()
+
     m 1hub "Hi, [player]!"
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
+
     if persistent._mas_current_background != "spaceroom":
         m 4eub "...But we need to go back to the spaceroom for the best view."
         m 1hua "Let's head over, [player]."
         call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
         m 1eua "Here we are!"
         m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     else:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
     m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
+
     $ mas_OVLHide()
+    $ mas_RaiseShield_core()
     $ disable_esc()
-    if mas_current_background.isFltDay():
-        show mas_island_frame_day zorder 20
-    else:
-        show mas_island_frame_night zorder 20
+    call mas_islands(fade_out=False, check_progression=False, enable_interaction=False)
+
     m "Well..."
     m "What do you think?"
     m "I worked really hard on this."
     m "A place just for the both of us."
     m "It's also where I can keep practicing my programming skills."
-    $ mas_OVLShow()
+
     $ enable_esc()
-    if mas_current_background.isFltDay():
-        hide mas_island_frame_day
-    else:
-        hide mas_island_frame_night
+    $ mas_MUINDropShield()
+    $ mas_OVLShow()
+    call mas_islands(fade_in=False, check_progression=False, enable_interaction=False, force_exp="monika 1lsc")
+
     #Transition back to Monika
     m 1lsc "Being in the classroom all day can be dull."
     m 1ekc "Plus, I get really lonely waiting for you to return."
@@ -3473,13 +3479,11 @@ label greeting_ourreality:
     m 1eua "Why don't we just make our own reality?"
     m 1lksdla "Well, it's not exactly perfect yet."
     m 1hua "But it's a start."
-    # m 1eub "I'll let you admire the scenery for now."
-    # m 1hub "Hope you like it!"
+
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
-
     # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",skipeval=True)
+    $ pushEvent("mas_monika_islands", skipeval=True)
     return
 
 init 5 python:
