@@ -301,7 +301,7 @@ init -25 python in mas_island_event:
             ParallaxSprite,
             x=563,
             y=84,
-            z=220,
+            z=220
         )
     )
     # Decals
@@ -891,11 +891,17 @@ label mas_islands(fade_in=True, fade_out=True, check_progression=True, enable_in
 
     if enable_interaction:
         # If this is an interaction, we call the screen so
-        # the user can see parallax effect + events
+        # the user can see the parallax effect + events
         while not is_done:
+            hide screen mas_islands
             call screen mas_islands(islands_disp)
+            show screen mas_islands(islands_disp, show_return_button=False)
 
-            $ is_done = _return == "done"
+            if _return is False:
+                $ is_done = True
+
+            elif renpy.has_label(_return):
+                call expression _return
 
     else:
         # Otherwise just show it as a static image
@@ -1231,15 +1237,17 @@ label mas_island_bookshelf2:
 
 screen mas_islands(islands_displayable, show_return_button=True):
     style_prefix "island"
+    layer "master"
+    zorder MAS_MONIKA_Z*10
 
     add islands_displayable
 
-    # Unsure why, but w/o hbox renpy won't apply the prefix style
-    hbox:
-        align (0.5, 0.98)
-        if show_return_button:
+    if show_return_button:
+        # Unsure why, but w/o hbox renpy won't apply the prefix style
+        hbox:
+            align (0.5, 0.98)
             textbutton _("Go Back"):
-                action Return("done")
+                action Return(False)
 
 screen mas_islands_background:
 

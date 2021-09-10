@@ -257,7 +257,8 @@ init -500 python in mas_parallax:
                     (Default: None)
                 decals - list of decals for this sprite
                     (Default: empty tuple)
-                on_click - a callable object that gets called on click (LMB) events
+                on_click - if it's a callable object, it'll be called on click (LMB) events,
+                    otherwise it'll be returned on those events
                     (Default: None)
                 min_zoom - min zoom value
                     (Default: 1.0)
@@ -303,8 +304,6 @@ init -500 python in mas_parallax:
 
             self._render = None
 
-            if on_click is not None and not callable(on_click):
-                raise Exception("The on_click property must be a callable.")
             self.on_click = on_click
 
             self._enable_events = True
@@ -441,8 +440,10 @@ init -500 python in mas_parallax:
                     if ev.button == 1:
                         # if self.on_click is not None and self.is_focused():
                         if self.on_click is not None and self._render.is_pixel_opaque(x, y):
-                            self.on_click()
-                            # raise renpy.IgnoreEvent()
+                            if callable(self.on_click):
+                                return self.on_click()
+
+                            return self.on_click
 
             return None
 
