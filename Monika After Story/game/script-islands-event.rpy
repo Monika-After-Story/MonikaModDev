@@ -1234,10 +1234,12 @@ screen mas_islands(islands_displayable, show_return_button=True):
 
     add islands_displayable
 
-    if show_return_button:
-        textbutton _("Go Back"):
-            align (0.5, 0.98)
-            action Return("done")
+    # Unsure why, but w/o hbox renpy won't apply the prefix style
+    hbox:
+        align (0.5, 0.98)
+        if show_return_button:
+            textbutton _("Go Back"):
+                action Return("done")
 
 screen mas_islands_background:
 
@@ -1281,45 +1283,29 @@ screen mas_show_islands():
 # Defining a new style for buttons, because other styles look ugly
 
 # properties for these island view buttons
-style island_button is default:
-    properties gui.button_properties("island_button")
-    idle_background  "mod_assets/island_idle_background.png"
-    hover_background "mod_assets/island_hover_background.png"
+style island_button is generic_button_light:
     xysize (205, None)
     ypadding 5
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style island_button_dark is default:
-    properties gui.button_properties("island_button_dark")
-    idle_background  "mod_assets/island_idle_background_d.png"
-    hover_background "mod_assets/island_hover_background_d.png"
+style island_button_dark is generic_button_dark:
     xysize (205, None)
     ypadding 5
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
-style island_button_text is default:
-    properties gui.button_text_properties("island_button")
-    idle_background  "mod_assets/island_idle_background.png"
-    hover_background "mod_assets/island_hover_background.png"
+style island_button_text is generic_button_text_light:
     font gui.default_font
     size gui.text_size
     xalign 0.5
-    idle_color mas_ui.light_button_text_idle_color
-    hover_color mas_ui.light_button_text_hover_color
     kerning 0.2
     outlines []
 
-style island_button_text_dark is default:
-    properties gui.button_text_properties("island_button_dark")
-    idle_background  "mod_assets/island_idle_background_d.png"
-    hover_background "mod_assets/island_hover_background_d.png"
+style island_button_text_dark is generic_button_text_dark:
     font gui.default_font
     size gui.text_size
     xalign 0.5
-    idle_color mas_ui.dark_button_text_idle_color
-    hover_color mas_ui.dark_button_text_hover_color
     kerning 0.2
     outlines []
 
