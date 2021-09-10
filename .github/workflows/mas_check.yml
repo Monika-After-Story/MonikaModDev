@@ -66,6 +66,12 @@ jobs:
           mkdir mas0105
           unzip mas.zip -d mas0105
 
+      # TEMP
+      - name: what are these
+        run: |
+          file mas0105
+          file renpy
+
       # copy files over
       - name: copy source over
         run: cp -Rf Monika\ After\ Story/* mas0105/
