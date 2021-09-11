@@ -219,97 +219,148 @@ init -25 python in mas_island_event:
         default_unlocked=True,
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=374,
-            y=670,
-            z=10
+            x=0,
+            y=624,
+            z=10,
+            on_click=True
         )
     )
-    store.m = None# TODO: delete this
     _IslandsImgDataHolder(
         "isld_1",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=808,
-            y=519,
+            x=463,
+            y=373,
             z=40,
             function=None,
-            on_click=functools.partial(renpy.invoke_in_new_context, renpy.say, store.m, "Clicked!")
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_2",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=462,
-            y=393,
+            x=255,
+            y=289,
             z=90,
-            function=None
+            function=None,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_3",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=338,
-            y=179,
+            x=262,
+            y=145,
             z=130,
-            function=None
+            function=None,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_4",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=182,
-            y=202,
-            z=150
+            x=0,
+            y=0,
+            z=150,
+            on_click="mas_island_upsidedownisland"
         )
     )
     _IslandsImgDataHolder(
         "isld_5",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=1135,
-            y=270,
+            x=996,
+            y=184,
             z=50,
-            function=None
+            function=None,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_6",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=1013,
-            y=112,
+            x=912,
+            y=46,
             z=200,
-            function=None
+            function=None,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_7",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=475,
-            y=97,
+            x=439,
+            y=84,
             z=250,
-            function=None
+            function=None,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
         "isld_8",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=563,
-            y=84,
-            z=220
+            x=484,
+            y=54,
+            z=220,
+            on_click=True
         )
     )
     # Decals
-    _IslandsImgDataHolder("decal_bookshelf", partial_disp=functools.partial(ParallaxDecal, x=91, y=-60, z=4))
-    _IslandsImgDataHolder("decal_bushes", partial_disp=functools.partial(ParallaxDecal, x=97, y=-52, z=5))
-    _IslandsImgDataHolder("decal_house", partial_disp=functools.partial(ParallaxDecal, x=-14, y=-113, z=1))
-    _IslandsImgDataHolder("decal_tree", partial_disp=functools.partial(ParallaxDecal, x=12, y=-210, z=3))
-    _IslandsImgDataHolder("decal_glitch", fp_map={}, partial_disp=functools.partial(ParallaxDecal, x=-14, y=-113, z=2))
+    _IslandsImgDataHolder(
+        "decal_bookshelf",
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=407,
+            y=64,
+            z=4,
+            on_click="mas_island_bookshelf"
+        )
+    )
+    _IslandsImgDataHolder(
+        "decal_bushes",
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=348,
+            y=73,
+            z=5
+        )
+    )
+    _IslandsImgDataHolder(
+        "decal_house",
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=245,
+            y=-48,
+            z=1
+        )
+    )
+    _IslandsImgDataHolder(
+        "decal_tree",
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=149,
+            y=-228,
+            z=3,
+            on_click="mas_island_cherry_blossom_tree"
+        )
+    )
+    _IslandsImgDataHolder(
+        "decal_glitch",
+        fp_map={},
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=25,
+            y=100,
+            z=2,
+            on_click="mas_island_glitchedmess"
+        )
+    )
     GLITCH_FPS = (
         "glitch/g_0.obj",
         "glitch/g_1.obj",
@@ -325,11 +376,12 @@ init -25 python in mas_island_event:
         default_unlocked=True,
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=renpy.config.screen_width/2.0,
-            y=renpy.config.screen_height/2.0,
+            x=0,
+            y=0,
             z=15000,
             min_zoom=1.1,
-            max_zoom=4.1
+            max_zoom=4.1,
+            on_click="mas_island_sky"
         )
     )
     # Overlays

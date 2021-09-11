@@ -6,12 +6,12 @@ init -500 python in mas_parallax:
 
     import store
 
-    class ParallaxDecal(object):
+    class ParallaxDecal(renpy.display.core.Displayable):
         """
-        Represents a decal. Basically a struct, made for convenience
-        This is not a desplayable.
+        Represents a decal, intended to be used with ParallaxSprite,
+        may work not as expected in other cases.
         """
-        def __init__(self, img, x=0, y=0, z=0):
+        def __init__(self, img, x=0, y=0, z=0, on_click=None):
             """
             Constructor for decals
 
@@ -23,12 +23,19 @@ init -500 python in mas_parallax:
                     (Default: 0)
                 z - basically zorder
                     (Default: 0)
+                on_click - a callable to call on click events, or just a non-None value to return
+                    (Default: None)
             """
+            super(ParallaxDecal, self).__init__()
+
             self.img = renpy.easy.displayable(img)
             self._x = x
             self._y = y
             self._z = z
+            self.on_click = on_click
             self.callback = None
+
+            self._render = None
 
         @property
         def x(self):
@@ -66,11 +73,49 @@ init -500 python in mas_parallax:
             """
             return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4})>".format(type(self).__name__, repr(self.img), self._x, self._y, self._z)
 
+        def __getstate__(self):
+            """
+            Check ParallaxSprite for more info
+            """
+            rv = super(ParallaxDecal, self).__getstate__()
+            rv["_render"] = None
+
+            return rv
+
+        def event(self, ev, x, y, st):
+            """
+            The event handler
+            """
+            if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
+                # renpy.invoke_in_new_context(renpy.say, store.m, "Decal: {}".format(repr(self.img.child)))
+                if self._render.is_pixel_opaque(x, y):
+                    if callable(self.on_click):
+                        return self.on_click()
+
+                    return self.on_click
+
+            return None
+
+        def render(self, width, height, st, at):
+            """
+            The render method
+            """
+            img_surf = renpy.render(self.img, width, height, st, at)
+            render = renpy.Render(img_surf.width, img_surf.height)
+            render.blit(img_surf, (0, 0))
+
+            self._render = render
+
+            return render
+
+        def visit(self):
+            return [self.img]
+
+
     class _ParallaxDecalContainer(renpy.display.core.Displayable):
         """
         A container displayable. It takes a base (consider it main displayable) and any number of children.
-        The container will be of just enough size to contain the base and the children, aligning everything to its center.
-        Children can be given x, y, and zorder offsets relative to the center
+        The container will be of just enough size to contain the base and the children.
         """
         def __init__(self, base, *children):
             """
@@ -92,6 +137,7 @@ init -500 python in mas_parallax:
                     raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal)))
                 decal.callback = self.update
 
+            self.offsets = (0, 0)
             self.size = (0, 0)
 
         def __sort_decals(self):
@@ -148,8 +194,8 @@ init -500 python in mas_parallax:
             """
             for decal in decals:
                 if decal in self._decals and decal is not self._base:
-                    decal.callback = None
                     self._decals.remove(decal)
+                    decal.callback = None
 
             renpy.redraw(self, 0.0)
 
@@ -160,76 +206,80 @@ init -500 python in mas_parallax:
             for child in self.children:
                 self._decals.remove(child)
                 child.callback = None
+
             renpy.redraw(self, 0.0)
+
+        def event(self, ev, x, y, st):
+            """
+            The event handler for this container,
+            propagates events to its children
+            """
+            # renpy.invoke_in_new_context(renpy.say, store.m, "Coords: {} | Container: {}".format((x, y), repr(self.base.img.child)))
+            for i in range(len(self._decals)-1, -1, -1):
+                decal = self._decals[i]
+                rv = decal.event(ev, x + self.offsets[0] - decal.x, y + self.offsets[1] - decal.y, st)
+                if rv is not None:
+                    return rv
+
+            return None
 
         def render(self, width, height, st, at):
             """
             The render method where we do the meth logic to align everything properly
             """
-            # Predefine the size of the final render
-            main_render_width = 0
-            main_render_height = 0
-
+            min_blit_x = 0
+            min_blit_y = 0
+            render_width = 0
+            render_height = 0
             render_items = list()
+
             for decal in self._decals:
-                decal_disp = decal.img
-                decal_x_offset, decal_y_offset = decal.x, decal.y
+                decal_surf = renpy.render(decal, width, height, st, at)
 
-                decal_render = renpy.render(decal_disp, width, height, st, at)
-                decal_width = decal_render.width
-                decal_height = decal_render.height
+                min_blit_x = min(min_blit_x, decal.x)
+                min_blit_y = min(min_blit_y, decal.y)
 
-                main_render_width = max(main_render_width, decal_width)
-                main_render_height = max(main_render_height, decal_height)
+                render_width = max(render_width, decal_surf.width + decal.x)
+                render_height = max(render_height, decal_surf.height + decal.y)
 
-                width_diff = main_render_width - decal_width
-                height_diff = main_render_height - decal_height
-                abs_x_offset = abs(decal_x_offset)
-                abs_y_offset = abs(decal_y_offset)
+                render_items.append((decal_surf, decal.x, decal.y))
 
-                if abs_x_offset > max(0, width_diff / 2.0):
-                    main_render_width += (2*abs_x_offset - width_diff)
+            base_blit_x = abs(min_blit_x)
+            base_blit_y = abs(min_blit_y)
 
-                if abs_y_offset > max(0, height_diff / 2.0):
-                    main_render_height += (2*abs_y_offset - height_diff)
+            render_width += base_blit_x
+            render_height += base_blit_y
 
-                render_items.append(
-                    (
-                        decal_disp,
-                        decal_render,
-                        decal_width/2.0 - decal_x_offset,
-                        decal_height/2.0 - decal_y_offset
-                    )
-                )
+            render = renpy.Render(render_width, render_height)
+            for surf, blit_x, blit_y in render_items:
+                render.blit(surf, (base_blit_x + blit_x, base_blit_y + blit_y))
 
-            # Now that we finally have the appropriate width and height for the render, render our stuff
-            main_render = renpy.Render(main_render_width, main_render_height)
-            for _disp, _render, _x_offset, _y_offset in render_items:
-                main_render.place(
-                    _disp,
-                    x=main_render_width/2.0 - _x_offset,
-                    y=main_render_height/2.0 - _y_offset,
-                    render=_render
-                )
+            self.size = (render_width, render_height)
+            self.offsets = (min_blit_x, min_blit_y)
+            if renpy.config.developer:
+                render.fill("#ca00004d")
 
-            # renpy.redraw(self, 1.0)
-            self.size = (main_render_width, main_render_height)
-            # main_render.fill("#ca00004d")
+            return render
 
-            return main_render
+        def _update_offsets(self):
+            """
+            HACK: Runs the render method and updates offsets,
+            this is terrible, but has to be done. Blame RenPy.
+            """
+            self.render(renpy.config.screen_width, renpy.config.screen_height, 0, 0)
 
         def update(self):
             """
             Updates this disp
             """
             self.__sort_decals()
-            renpy.redraw(self, 0)
+            renpy.redraw(self, 0.0)
 
         def visit(self):
             """
             Returns images of this disp for prediction
             """
-            return [decal.img for decal in self._decals]
+            return [decal for decal in self._decals]
 
 
     class ParallaxSprite(renpy.display.core.Displayable):
@@ -237,7 +287,6 @@ init -500 python in mas_parallax:
         Class to represent signle parallax sprite
         """
         NORMAL_ZOOM = 1.0
-        DEF_ANCHOR = (0.5, 0.5)
 
         def __init__(self, img, x, y, z, function=None, decals=(), on_click=None, min_zoom=1.0, max_zoom=4.0):
             """
@@ -281,7 +330,7 @@ init -500 python in mas_parallax:
             self._z = z
 
             self._container = _ParallaxDecalContainer(
-                ParallaxDecal(img, 0, 0, 0),
+                ParallaxDecal(img, 0, 0, 0, on_click=on_click),
                 *decals
             )
 
@@ -289,7 +338,6 @@ init -500 python in mas_parallax:
                 self._container,
                 # TODO: enable functions
                 # function=function,
-                anchor=ParallaxSprite.DEF_ANCHOR,
                 transform_anchor=True,
                 subpixel=True
             )
@@ -303,8 +351,6 @@ init -500 python in mas_parallax:
             self.zoom = min_zoom
 
             self._render = None
-
-            self.on_click = on_click
 
             self._enable_events = True
 
@@ -376,30 +422,46 @@ init -500 python in mas_parallax:
             Updates the offsets of this parallax sprite
             NOTE: I have no idea how I made this meth work, don't change it
             """
+            screen_width = renpy.config.screen_width
+            screen_height = renpy.config.screen_height
+
             zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
 
-            # NOTE: Here we make an important assumption - the img we use (the container) will be of the screen width/height
-            zoom_correction_x = renpy.config.screen_width * zoom_factor / 2.0
-            zoom_correction_y = renpy.config.screen_height * zoom_factor / 2.0
+            zoom_correction_x = screen_width * zoom_factor / 2.0
+            zoom_correction_y = screen_height * zoom_factor / 2.0
 
             # We use screen_width and screen_height for our parallax
-            available_x_shift = renpy.config.screen_width / float(self._z)
-            available_y_shift = renpy.config.screen_height / float(self._z)
+            available_x_shift = screen_width / float(self._z)
+            available_y_shift = screen_height / float(self._z)
 
-            half_screen_width = renpy.config.screen_width / 2.0
-            half_screen_height = renpy.config.screen_height / 2.0
+            half_screen_width = screen_width / 2.0
+            half_screen_height = screen_height / 2.0
 
             mouse_x_factor = self.mouse_x / half_screen_width
             mouse_y_factor = self.mouse_y / half_screen_height
+
+            container_offset_x = abs(self._container.offsets[0])
+            container_offset_y = abs(self._container.offsets[1])
 
             # Our offsets consist of 3 parts:
             # - base coords give offsets to x and y (depend on zoom level)
             # - shift from the parallax effect (depends on mouse pos)
             # - correction to the zoom effect (depends on mouse pos)
-            self._transform.xoffset = self._x*(1.0 + zoom_factor) + available_x_shift*(1.0 - mouse_x_factor) - zoom_correction_x*mouse_x_factor
-            self._transform.yoffset = self._y*(1.0 + zoom_factor) + available_y_shift*(1.0 - mouse_y_factor) - zoom_correction_y*mouse_y_factor
+            # - offsets from the container
+            self._transform.xoffset = (
+                self._x*(1.0 + zoom_factor)
+                + available_x_shift*(1.0 - mouse_x_factor)
+                - zoom_correction_x*mouse_x_factor
+                - container_offset_x*(1.0 + zoom_factor)
+            )
+            self._transform.yoffset = (
+                self._y*(1.0 + zoom_factor)
+                + available_y_shift*(1.0 - mouse_y_factor)
+                - zoom_correction_y*mouse_y_factor
+                - container_offset_y*(1.0 + zoom_factor)
+            )
 
-            # Now update the screen
+            # Now update the displayable
             self._transform.update()
             renpy.redraw(self, 0.0)
 
@@ -438,12 +500,10 @@ init -500 python in mas_parallax:
 
                 elif ev.type == pygame.MOUSEBUTTONUP:
                     if ev.button == 1:
-                        # if self.on_click is not None and self.is_focused():
-                        if self.on_click is not None and self._render.is_pixel_opaque(x, y):
-                            if callable(self.on_click):
-                                return self.on_click()
-
-                            return self.on_click
+                        # if self.is_focused():
+                        if self._render.is_pixel_opaque(x, y):
+                            x_pos, y_pos, x_anchor, y_anchor, x_offset, y_offset, subpixel = self._transform.get_placement()
+                            return self._transform.event(ev, x-x_offset, y-y_offset, st)
 
             return None
 
@@ -472,6 +532,7 @@ init -500 python in mas_parallax:
             """
             if self._enable_events:
                 self.update_mouse_pos()
+            self._container._update_offsets()
             self.update_offsets()
 
 
@@ -552,7 +613,7 @@ init -500 python in mas_parallax:
             self._transform.yoffset = self.size[1]/2 + available_y_shift*(3 - self.mouse_y/half_screen_height)
 
             self._transform.update()
-            renpy.redraw(self, 0)
+            renpy.redraw(self, 0.0)
 
         def event(self, ev, x, y, st):
             """
