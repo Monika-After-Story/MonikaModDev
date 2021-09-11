@@ -1001,15 +1001,15 @@ label mas_compliment_missed:
 
                     m 6dkbsa "Mmm...that was really nice, [player]."
                     m 7ekbsb "You really know how to make me feel special~"
-                    $ mas_moni_idle_disp.force_by_code("1eubsa", duration=10)
+                    $ mas_moni_idle_disp.force_by_code("1eubsa", duration=10, skip_dissolve=True)
 
                 "Not right now.":
                     $ mas_loseAffection()
                     m 2lkp "...Alright, maybe later, then?"
                     python:
-                        mas_moni_idle_disp.force_by_code("2lkp", duration=10, redraw=False)
-                        mas_moni_idle_disp.force_by_code("2rsc", duration=10, clear=False, redraw=False)
-                        mas_moni_idle_disp.force_by_code("1esc", duration=30, clear=False)
+                        mas_moni_idle_disp.force_by_code("2lkp", duration=10, redraw=False, skip_dissolve=True)
+                        mas_moni_idle_disp.force_by_code("2rsc", duration=10, clear=False, redraw=False, skip_dissolve=True)
+                        mas_moni_idle_disp.force_by_code("1esc", duration=30, clear=False, skip_dissolve=True)
 
     #Base negative responses on monika_love label
     elif mas_isMoniUpset():
@@ -1022,7 +1022,7 @@ label mas_compliment_missed:
         else:
             m 2eka "[renpy.substitute(random.choice(missed_quips_upset_short))]"
 
-        $ mas_moni_idle_disp.force_by_code("2eka", duration=10)
+        $ mas_moni_idle_disp.force_by_code("2eka", duration=10, skip_dissolve=True)
 
     elif mas_isMoniDis():
         m 6dkc "..."
