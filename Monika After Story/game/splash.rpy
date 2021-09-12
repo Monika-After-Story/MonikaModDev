@@ -163,6 +163,9 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
+        # Open the settings panel in the menu
+        _game_menu_screen = "preferences"
+
         _mas_AffStartup()
 
         persistent.sessions['current_session_start']=datetime.datetime.now()
