@@ -17,9 +17,9 @@ init -500 python in mas_parallax:
 
             IN:
                 img - the img/disp for this decal
-                x - the x offset from the center of the main sprite
+                x - the x offset in the container
                     (Default: 0)
-                y - the y offset from the center of the main sprite
+                y - the y offset in the container
                     (Default: 0)
                 z - basically zorder
                     (Default: 0)
@@ -284,21 +284,20 @@ init -500 python in mas_parallax:
 
     class ParallaxSprite(renpy.display.core.Displayable):
         """
-        Class to represent signle parallax sprite
+        Represents a sprite with parallax effect
         """
         NORMAL_ZOOM = 1.0
 
         def __init__(self, img, x, y, z, function=None, decals=(), on_click=None, min_zoom=1.0, max_zoom=4.0):
             """
             Constructor for parallax sprites
-            NOTE: the child image will be anchored to its center, bear that in mind when giving it transforms
 
             IN:
                 img - path to the img/Displayable
-                x - base x coord for the sprite
-                y - base y coord for the sprite
-                z - base z coord for the sprite
-                    NOTE: treat this as zorder
+                x - the sprite x pos on the screen
+                y - the sprite y pos on the screen
+                z - the sprite z pos
+                    NOTE: treat this as zorder, it also determines the maximum amount of parallax effect
                     NOTE: MUST BE > 0
                 function - a function for the sprite's transform,
                     use it if you need additional effects
@@ -421,16 +420,12 @@ init -500 python in mas_parallax:
         def update_offsets(self):
             """
             Updates the offsets of this parallax sprite
-            NOTE: I have no idea how I made this meth work, don't change it
             """
             screen_width = renpy.config.screen_width
             screen_height = renpy.config.screen_height
 
             # basically how much zoom is currently going on
             zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
-
-            zoom_correction_x = screen_width * zoom_factor / 2.0
-            zoom_correction_y = screen_height * zoom_factor / 2.0
 
             # We use screen_width and screen_height for our parallax
             # determines how far away from center can the parallax shift be
@@ -440,7 +435,7 @@ init -500 python in mas_parallax:
             half_screen_width = screen_width / 2.0
             half_screen_height = screen_height / 2.0
 
-            # normalize the mouse position with the center of the screen 
+            # normalize the mouse position with the center of the screen
             # 0.0 - left / bottom
             # 1.0 - center
             # 2.0 - right / top
@@ -458,13 +453,13 @@ init -500 python in mas_parallax:
             self._transform.xoffset = (
                 self._x*(1.0 + zoom_factor)
                 + available_x_shift*(1.0 - mouse_x_factor)
-                - zoom_correction_x*mouse_x_factor
+                - zoom_factor*self.mouse_x
                 - container_offset_x*(1.0 + zoom_factor)
             )
             self._transform.yoffset = (
                 self._y*(1.0 + zoom_factor)
                 + available_y_shift*(1.0 - mouse_y_factor)
-                - zoom_correction_y*mouse_y_factor
+                - zoom_factor*self.mouse_y
                 - container_offset_y*(1.0 + zoom_factor)
             )
 
