@@ -1,7 +1,14 @@
 
 # large rewrite incoming
 
+persistent._mas_decos = {}
+# key: the deco tag 
+# value: tuple of deco data
+#   TODO
+
 init -700 python in mas_deco:
+    import mimtypes
+
     deco_def_db = {}
     # mapping of deco definitions.
 
@@ -9,6 +16,8 @@ init -700 python in mas_deco:
     # mapping of deco tags (see deco_db) of all deco objects that were shown
     # key: deco name/tag
     # value: ignored
+
+    DECO_PATH_INTERNAL = "mod_assets/deco/"
 
 
 init -20 python in mas_deco:
@@ -167,6 +176,7 @@ init -19 python:
                     None to mark the deco object as a "simple" object that
                     gets the standard filters applied.
                     (Default: None)
+                    NOTE: DO NOT USE THIS - NOT IMPLEMENTING FOR NOW
                 ex_props - dict of arbitrary properties associated with this
                     deco object.
                     (Default: None)
@@ -182,6 +192,14 @@ init -19 python:
                     (
                         "Deco object '{0}' does not contain image or "
                         "MASFilterWeatherMap"
+                    ).format(s_name)
+                )
+
+            if fwm is not None:
+                raise Exception(
+                    (
+                        "Deco object '{0}' - MASFilterWeatherMap not supported "
+                        "at this time"
                     ).format(s_name)
                 )
 
