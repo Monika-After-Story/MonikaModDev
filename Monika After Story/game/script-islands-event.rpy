@@ -441,7 +441,7 @@ init -25 python in mas_island_event:
         # Nonideal, but we have to do this because of the tree
         # FIXME: ideal solution would be split the images by seasons too
         if store.mas_isWinter():
-            return mfwm.fw_get(store.mas_sprites.get_filter(), store.mas_weather_snow)
+            return mfwm.fw_get(store.mas_sprites.get_filter(), store.mas_weather_snow), None
 
         return store.mas_fwm_select(st, at, mfwm)
 

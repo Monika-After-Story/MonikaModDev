@@ -86,6 +86,7 @@ init -500 python in mas_parallax:
             """
             The event handler
             """
+            # Check for left mouse button click
             if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
                 # renpy.invoke_in_new_context(renpy.say, store.m, "Decal: {}".format(repr(self.img.child)))
                 if self._render is not None and self._render.is_pixel_opaque(x, y):
@@ -494,13 +495,15 @@ init -500 python in mas_parallax:
 
                 elif ev.type == pygame.MOUSEBUTTONDOWN:
                     if self.min_zoom != self.max_zoom:
+                        # Check for mouse wheel scrolling up
                         if ev.button == 4:
                             self.zoom += 0.1
-
+                        # Check for mouse wheel scrolling down
                         elif ev.button == 5:
                             self.zoom -= 0.1
 
                 elif ev.type == pygame.MOUSEBUTTONUP:
+                    # Check for left mouse button click
                     if ev.button == 1:
                         # if self.is_focused():
                         if self._render is not None and self._render.is_pixel_opaque(x, y):
@@ -541,128 +544,6 @@ init -500 python in mas_parallax:
             if self._enable_events:
                 self.update_mouse_pos()
             self._container._update_offsets()
-            self.update_offsets()
-
-
-    @store.mas_utils.deprecated(use_instead="ParallaxSprite")
-    class ParallaxBackground(renpy.display.core.Displayable):
-        """
-        DEPRECATED
-        Class to represent a background with parallax effect
-        """
-        NORMAL_ZOOM = 1.0
-        DEF_ANCHOR = (0.5, 0.5)
-
-        def __init__(self, img, zoom=1.0, min_zoom=1.0, max_zoom=4.0):
-            """
-            Constructor for parallax background
-
-            IN:
-                img - the img for this background
-                zoom - default zoom for this sprite
-                    (Default: 1.0)
-                min_zoom - min zoom value
-                    (Default: 1.0)
-                max_zoom - max zoom value
-                    (Default: 4.0)
-                NOTE: if min_zoom == max_zoom, the user won't be able to zoom in/out
-            """
-            super(ParallaxBackground, self).__init__()
-
-            self.mouse_x = renpy.config.screen_width / 2.0
-            self.mouse_y = renpy.config.screen_height / 2.0
-
-            img = renpy.easy.displayable(img)
-            self.size = img.load().get_size()
-
-            self._transform = store.Transform(
-                img,
-                anchor=ParallaxBackground.DEF_ANCHOR,
-                transform_anchor=True,
-                subpixel=True
-            )
-
-            self.min_zoom = min_zoom
-            self.max_zoom = max_zoom
-            self._zoom = zoom
-
-            self.zoom = zoom
-
-        @property
-        def zoom(self):
-            return self._zoom
-
-        @zoom.setter
-        def zoom(self, value):
-            value = min(max(value, self.min_zoom), self.max_zoom)
-            self._zoom = value
-            self._transform.zoom = value
-            self.update_offsets()
-
-        def __repr__(self):
-            """
-            Representation of this object
-            """
-            return "<{0}: (img: {1})>".format(type(self).__name__, self._transform.child)
-
-        def update_offsets(self):
-            """
-            Updates the offsets of this background
-            """
-            #NOTE: Factor should always be > 0 here
-            zoom_factor = self._zoom - ParallaxBackground.NORMAL_ZOOM
-            available_x_shift = renpy.config.screen_width * zoom_factor / 2.0
-            available_y_shift = renpy.config.screen_height * zoom_factor / 2.0
-
-            half_screen_width = renpy.config.screen_width / 2.0
-            half_screen_height = renpy.config.screen_height / 2.0
-
-            self._transform.xoffset = self.size[0]/2 + available_x_shift*(2 - self.mouse_x/half_screen_width)
-            self._transform.yoffset = self.size[1]/2 + available_y_shift*(3 - self.mouse_y/half_screen_height)
-
-            self._transform.update()
-            renpy.redraw(self, 0.0)
-
-        def event(self, ev, x, y, st):
-            """
-            The event handler
-            """
-            if ev.type == pygame.MOUSEMOTION:
-                self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
-                self.update_offsets()
-
-            elif ev.type == pygame.MOUSEBUTTONDOWN:
-                if self.min_zoom != self.max_zoom:
-                    if ev.button == 4:
-                        self.zoom += 0.1
-
-                    elif ev.button == 5:
-                        self.zoom -= 0.1
-
-            return None
-
-        def render(self, width, height, st, at):
-            """
-            The render method
-            """
-            img_render = renpy.render(self._transform, width, height, st, at)
-            main_render = renpy.Render(width, height)
-            main_render.place(self._transform, x=0, y=0, render=img_render)
-
-            return main_render
-
-        def visit(self):
-            """
-            Returns the background for prediction
-            """
-            return [self._transform]
-
-        def predict_one(self):
-            """
-            Called to ask this displayable to call the callback with all
-            the images it may want to load.
-            """
-            self.mouse_x, self.mouse_y = renpy.get_mouse_pos()
             self.update_offsets()
 
 
