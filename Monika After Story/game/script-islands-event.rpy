@@ -219,9 +219,9 @@ init -25 python in mas_island_event:
         default_unlocked=True,
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=0,
-            y=624,
-            z=10,
+            x=-64,
+            y=660,
+            z=20,
             on_click=True
         )
     )
@@ -262,8 +262,8 @@ init -25 python in mas_island_event:
         "isld_4",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=0,
-            y=0,
+            x=-9,
+            y=-9,
             z=150,
             on_click="mas_island_upsidedownisland"
         )
@@ -272,7 +272,7 @@ init -25 python in mas_island_event:
         "isld_5",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=996,
+            x=1021,
             y=184,
             z=50,
             function=None,
