@@ -58,9 +58,10 @@ init -25 python in mas_island_event:
 
     DEF_PROGRESS = -1
     MAX_PROGRESS_ENAM = 4
-    MAX_PROGRESS_LOVE = 9
+    # TODO: add a few more lvl
+    MAX_PROGRESS_LOVE = 7
     PROGRESS_FACTOR_ENAM = 4
-    PROGRESS_FACTOR_LOVE = 5
+    PROGRESS_FACTOR_LOVE = 4
 
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
@@ -373,7 +374,6 @@ init -25 python in mas_island_event:
     SHIMEJI_CHANCE = 100
     _IslandsImgDataHolder(
         "decal_shimeji",
-        default_unlocked=True,
         fp_map={},
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -685,13 +685,14 @@ init -25 python in mas_island_event:
         persistent._mas_islands_unlocks["isld_2"] = True
 
     def _unlocks_for_lvl_2():
-        persistent._mas_islands_unlocks["decal_tree"] = True
+        persistent._mas_islands_unlocks["decal_glitch"] = True
+        persistent._mas_islands_unlocks["decal_bushes"] = True
 
     def _unlocks_for_lvl_3():
         # Unlock only 1, the rest at lvl 5
         if not (
             persistent._mas_islands_unlocks["isld_4"]
-            and persistent._mas_islands_unlocks["isld_5"]
+            or persistent._mas_islands_unlocks["isld_5"]
         ):
             if bool(random.randint(0, 1)):
                 persistent._mas_islands_unlocks["isld_4"] = True
@@ -700,18 +701,18 @@ init -25 python in mas_island_event:
                 persistent._mas_islands_unlocks["isld_5"] = True
 
     def _unlocks_for_lvl_4():
-        persistent._mas_islands_unlocks["decal_glitch"] = True
+        persistent._mas_islands_unlocks["decal_shimeji"] = True
 
         # Unlock only 1, the rest at lvl 7
         if not (
             persistent._mas_islands_unlocks["decal_bookshelf"]
-            and persistent._mas_islands_unlocks["decal_bushes"]
+            or persistent._mas_islands_unlocks["decal_tree"]
         ):
             if bool(random.randint(0, 1)):
                 persistent._mas_islands_unlocks["decal_bookshelf"] = True
 
             else:
-                persistent._mas_islands_unlocks["decal_bushes"] = True
+                persistent._mas_islands_unlocks["decal_tree"] = True
 
     def _unlocks_for_lvl_5():
         persistent._mas_islands_unlocks["isld_7"] = True
@@ -727,7 +728,7 @@ init -25 python in mas_island_event:
     def _unlocks_for_lvl_7():
         # Unlock everything from lvl 4
         persistent._mas_islands_unlocks["decal_bookshelf"] = True
-        persistent._mas_islands_unlocks["decal_bushes"] = True
+        persistent._mas_islands_unlocks["decal_tree"] = True
 
     def _unlocks_for_lvl_8():
         # TODO: me
@@ -771,7 +772,7 @@ init -25 python in mas_island_event:
             return persistent._mas_islands_progress
 
         if store.mas_isMoniEnamored(higher=True):
-            if store.mas_isMoniLove(higher=True):
+            if store.mas_isMoniLove(higher=True) and persistent._mas_islands_progress >= MAX_PROGRESS_ENAM:
                 max_progress = MAX_PROGRESS_LOVE
                 progress_factor = PROGRESS_FACTOR_LOVE
 
