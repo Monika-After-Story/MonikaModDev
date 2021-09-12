@@ -377,10 +377,15 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.2.4
 label v0_12_2_4(version="v0_12_2_4"):
     python:
+        # Set a conditional
         mas_setEVLPropValues(
             "greeting_ourreality",
             conditional="store.mas_decoded_islands"
         )
+        # Unlock for people who has seen the event before
+        if seen_event("mas_monika_islands"):
+            mas_island_event.startProgression()
+            persistent._mas_islands_progress = 7
     return
 
 # 0.12.2.3
