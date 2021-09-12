@@ -35,7 +35,7 @@ init -25 python in mas_island_event:
     import random
     import itertools
     import functools
-    import weakref
+    import math
     from zipfile import ZipFile
 
     import store
@@ -350,17 +350,6 @@ init -25 python in mas_island_event:
             on_click="mas_island_cherry_blossom_tree"
         )
     )
-    _IslandsImgDataHolder(
-        "decal_glitch",
-        fp_map={},
-        partial_disp=functools.partial(
-            ParallaxDecal,
-            x=25,
-            y=100,
-            z=2,
-            on_click="mas_island_glitchedmess"
-        )
-    )
     GLITCH_FPS = (
         "glitch/g_0.obj",
         "glitch/g_1.obj",
@@ -369,6 +358,31 @@ init -25 python in mas_island_event:
         "glitch/g_4.obj",
         "glitch/g_5.obj",
         "glitch/g_6.obj"
+    )
+    _IslandsImgDataHolder(
+        "decal_glitch",
+        fp_map={},
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=260,
+            y=-44,
+            z=2,
+            on_click="mas_island_glitchedmess"
+        )
+    )
+    SHIMEJI_CHANCE = 100
+    _IslandsImgDataHolder(
+        "decal_shimeji",
+        default_unlocked=True,
+        fp_map={},
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            Transform(renpy.display.image.ImageReference(("chibika", "smile")), zoom=0.4),
+            x=935,
+            y=325,
+            z=45,
+            on_click="mas_island_shimeji"
+        )
     )
     # BGs
     _IslandsImgDataHolder(
@@ -641,6 +655,24 @@ init -25 python in mas_island_event:
         partial_disp = _IslandsImgDataHolder.getDataFor("decal_glitch").partial_disp
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
+        # Build chibi disp
+        def _chibi_transform_fn(transform, st, at):
+            """
+            A function which we use as a transform, updates the child
+            """
+            roto_speed = 15
+            amp = 60
+            frenq = 0.5
+            zoom_factor = 1 + abs(transform.zoom - ParallaxSprite.NORMAL_ZOOM)
+
+            transform.rotate = st % 360 * roto_speed
+            transform.ypos = int(math.sin(st*frenq) * amp * zoom_factor)
+
+            return 0.0
+
+        partial_disp = _IslandsImgDataHolder.getDataFor("decal_shimeji").partial_disp
+        decal_disp_map["decal_shimeji"] = partial_disp(function=_chibi_transform_fn)
+
         return
 
 
@@ -797,14 +829,7 @@ init -25 python in mas_island_event:
         OUT:
             LiveComposite
         """
-        # Progress lvl
-        if check_progression:
-            _advanceProgression()
-
-        sub_displayables = list()
-
-        # Add all unlocked islands
-        for key, disp in island_disp_map.iteritems():
+        def reset_parallax_disp(disp):
             # Just in case we always remove all decals and readd them as needed
             disp._container.remove_all()
             # Toggle events as desired
@@ -813,6 +838,16 @@ init -25 python in mas_island_event:
             disp.reset_mouse_pos()
             # Reset offsets and zoom
             disp.zoom = disp.min_zoom
+
+        # Progress lvl
+        if check_progression:
+            _advanceProgression()
+
+        sub_displayables = list()
+
+        # Add all unlocked islands
+        for key, disp in island_disp_map.iteritems():
+            reset_parallax_disp(disp)
             # Add if unlocked
             if persistent._mas_islands_unlocks[key]:
                 sub_displayables.append(disp)
@@ -822,11 +857,15 @@ init -25 python in mas_island_event:
             if persistent._mas_islands_unlocks[key]:
                 island_disp_map["isld_1"]._container.add(decal_disp_map[key])
 
+        # Decal, but not really
+        shimeji_disp = decal_disp_map["decal_shimeji"]
+        reset_parallax_disp(shimeji_disp)
+        if renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+            sub_displayables.append(shimeji_disp)
+
         # Add the bg (we only have one as of now)
         bg_disp = bg_disp_map["bg_def"]
-        bg_disp.toggle_events(enable_interaction)
-        bg_disp.reset_mouse_pos()
-        bg_disp.zoom = bg_disp.min_zoom
+        reset_parallax_disp(bg_disp)
         sub_displayables.append(bg_disp)
 
         # Sort in order from back to front
@@ -847,6 +886,16 @@ init -25 python in mas_island_event:
             (renpy.config.screen_width, renpy.config.screen_height),
             *lc_args
         )
+
+    def _removeImgFromComposite(composite, img_to_remove):
+        """
+        A method to remove parallax sprites from composite img
+        """
+        for i in range(len(composite.children)):
+            child = composite.children[i]
+            if child.child is img_to_remove:
+                composite.remove(child)
+                return
 
     def isWinterWeather():
         """
@@ -902,11 +951,6 @@ label mas_monika_islands:
         renpy.store.mas_hotkeys.no_window_hiding = True
 
     call mas_islands(force_exp="monika 1eua")
-
-    # 155, 545
-    # random chance to get mini moni appear
-    # if renpy.random.randint(1,100) == 1:
-    #     $ _mas_island_shimeji = True
 
     # Drop shields
     python:
@@ -1227,8 +1271,8 @@ label mas_island_daynight2:
 label mas_island_shimeji:
     m "Ah!"
     m "How'd she get there?"
-    m "Give me a second, [player]..."
-    $ _mas_island_shimeji = False
+    m "Give me a second, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+    $ mas_island_event._removeImgFromComposite(islands_disp, mas_island_event.decal_disp_map["decal_shimeji"])
     m "All done!"
     m "Don't worry, I just moved her to a different place."
     return

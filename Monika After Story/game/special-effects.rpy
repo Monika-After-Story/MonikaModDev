@@ -1,8 +1,8 @@
 # This file is meant to store any special effects.
 # These can be some images or transforms.
 init -500 python in mas_parallax:
-    import pygame
     import math
+    import pygame
 
     import store
 
@@ -88,7 +88,7 @@ init -500 python in mas_parallax:
             """
             if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
                 # renpy.invoke_in_new_context(renpy.say, store.m, "Decal: {}".format(repr(self.img.child)))
-                if self._render.is_pixel_opaque(x, y):
+                if self._render is not None and self._render.is_pixel_opaque(x, y):
                     if callable(self.on_click):
                         return self.on_click()
 
@@ -256,8 +256,8 @@ init -500 python in mas_parallax:
 
             self.size = (render_width, render_height)
             self.offsets = (min_blit_x, min_blit_y)
-            if renpy.config.developer:
-                render.fill("#ca00004d")
+            # if renpy.config.developer:
+            #     render.fill("#ca00004d")
 
             return render
 
@@ -302,7 +302,8 @@ init -500 python in mas_parallax:
                     NOTE: MUST BE > 0
                 function - a function for the sprite's transform,
                     use it if you need additional effects
-                    NOTE: your function SHOULD NOT affect the xoffset/yoffset/zoom (zoom only if you enabled it for the user) props
+                    NOTE: your function SHOULD NOT affect xoffset/yoffset/zoom, the behaviour is undefined.
+                        Supported functional: absolute xpos/ypos/rotation/child changing
                     (Default: None)
                 decals - list of decals for this sprite
                     (Default: empty tuple)
@@ -337,7 +338,7 @@ init -500 python in mas_parallax:
             self._transform = store.Transform(
                 self._container,
                 # TODO: enable functions
-                # function=function,
+                function=function,
                 transform_anchor=True,
                 subpixel=True
             )
@@ -443,11 +444,11 @@ init -500 python in mas_parallax:
             container_offset_x = abs(self._container.offsets[0])
             container_offset_y = abs(self._container.offsets[1])
 
-            # Our offsets consist of 3 parts:
+            # Our offsets consist of 4 parts:
             # - base coords give offsets to x and y (depend on zoom level)
             # - shift from the parallax effect (depends on mouse pos)
             # - correction to the zoom effect (depends on mouse pos)
-            # - offsets from the container
+            # - offsets from the container (depend on zoom level)
             self._transform.xoffset = (
                 self._x*(1.0 + zoom_factor)
                 + available_x_shift*(1.0 - mouse_x_factor)
@@ -501,9 +502,14 @@ init -500 python in mas_parallax:
                 elif ev.type == pygame.MOUSEBUTTONUP:
                     if ev.button == 1:
                         # if self.is_focused():
-                        if self._render.is_pixel_opaque(x, y):
+                        if self._render is not None and self._render.is_pixel_opaque(x, y):
                             x_pos, y_pos, x_anchor, y_anchor, x_offset, y_offset, subpixel = self._transform.get_placement()
-                            return self._transform.event(ev, x-x_offset, y-y_offset, st)
+                            # FIXME: Support relative xpos and ypos (add float handling)
+                            x_pos = x_pos or 0
+                            y_pos = y_pos or 0
+                            x_offset = x_offset or 0
+                            y_offset = y_offset or 0
+                            return self._transform.event(ev, x - x_pos - x_offset, y - y_pos - y_offset, st)
 
             return None
 
@@ -511,13 +517,14 @@ init -500 python in mas_parallax:
             """
             The render method
             """
-            img_render = renpy.render(self._transform, width, height, st, at)
-            main_render = renpy.Render(width, height)
-            main_render.place(self._transform, x=0, y=0, render=img_render)
-            # main_render.add_focus(self, None, 0, 0, renpy.config.screen_width, renpy.config.screen_height, 0, 0, main_render)
-            self._render = main_render
+            img_surf = renpy.render(self._transform, width, height, st, at)
+            # NOTE: This has to do full size screen render + instead of blit use place
+            render = renpy.Render(width, height)
+            render.place(self._transform, x=0, y=0, render=img_surf)
+            # render.add_focus(self, None, 0, 0, renpy.config.screen_width, renpy.config.screen_height, 0, 0, render)
+            self._render = render
 
-            return main_render
+            return render
 
         def visit(self):
             """
