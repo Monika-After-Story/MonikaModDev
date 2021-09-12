@@ -426,18 +426,24 @@ init -500 python in mas_parallax:
             screen_width = renpy.config.screen_width
             screen_height = renpy.config.screen_height
 
+            # basically how much zoom is currently going on
             zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
 
             zoom_correction_x = screen_width * zoom_factor / 2.0
             zoom_correction_y = screen_height * zoom_factor / 2.0
 
             # We use screen_width and screen_height for our parallax
+            # determines how far away from center can the parallax shift be
             available_x_shift = screen_width / float(self._z)
             available_y_shift = screen_height / float(self._z)
 
             half_screen_width = screen_width / 2.0
             half_screen_height = screen_height / 2.0
 
+            # normalize the mouse position with the center of the screen 
+            # 0.0 - left / bottom
+            # 1.0 - center
+            # 2.0 - right / top
             mouse_x_factor = self.mouse_x / half_screen_width
             mouse_y_factor = self.mouse_y / half_screen_height
 
