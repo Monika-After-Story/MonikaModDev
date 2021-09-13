@@ -2288,13 +2288,23 @@ init -10 python:
 
             return img
 
-        def getCurrentRoom(self):
+        def getCurrentRoom(self, use_internal=False):
             """
             Gets current Room
 
+            IN:
+                use_internal - True will use the internal filter, rather than
+                    the globally known filter. Seldomly change this.
+                    (Default: False)
+
             RETURNS: Current room image, may be None if this BG is badly built
             """
-            return self.getRoom(self._flt_man.current())
+            if use_internal:
+                flt = self._flt_man.current()
+            else:
+                flt = store.mas_sprites.get_filter()
+
+            return self.getRoom(flt)
 
         @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
         def getDayRoom(self, weather=None):

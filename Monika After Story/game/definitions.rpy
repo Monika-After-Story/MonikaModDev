@@ -1375,7 +1375,8 @@ python early:
             """
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
-
+            TODO: include checkConditional
+            
             For variable explanations, please see the static method
             filterEvents
 
@@ -1814,7 +1815,8 @@ python early:
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
-
+            TODO: include checkConditional
+            
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
