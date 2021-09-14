@@ -1376,7 +1376,7 @@ python early:
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
             TODO: include checkConditional
-            
+
             For variable explanations, please see the static method
             filterEvents
 
@@ -1816,7 +1816,7 @@ python early:
             to a time.
             NOTE: no sanity checks
             TODO: include checkConditional
-            
+
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
@@ -1937,6 +1937,7 @@ python early:
             # return the available events dict
             return available_events
 
+        #TODO: Depricate this
         @staticmethod
         def _checkAffectionRule(ev,keepNoRule=False):
             """
@@ -1950,7 +1951,7 @@ python early:
             """
             return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
 
-
+        #TODO: Depricate this
         @staticmethod
         def checkAffectionRules(events,keepNoRule=False):
             """
@@ -5825,6 +5826,7 @@ init -1 python:
         return mas_isDay(_time)
 
 
+    #TODO: Depricate these funcs in favour of mas_current_background.isFltDay and isFltNight
     def mas_isDay(_time):
         """
         Checks if the sun would be up during the given time
