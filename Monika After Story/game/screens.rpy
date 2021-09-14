@@ -1350,7 +1350,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "radio"
+                        style_prefix "generic_fancy_check"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1364,10 +1364,15 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Graphics")
+
+                    # this is a normal button
+                    textbutton _("Change Renderer"):
+                        style "check_button"
+                        action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
-                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
@@ -1379,7 +1384,7 @@ screen preferences():
 
 
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Gameplay")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
@@ -1400,7 +1405,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _(" ")
 #                    textbutton _("Sensitive Mode"):
 #                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1565,8 +1570,8 @@ screen preferences():
                         null height gui.pref_spacing
 
                         textbutton _("Mute All"):
+                            style "generic_fancy_check_button"
                             action Preference("all mute", "toggle")
-                            style "mute_all_button"
 
 
             hbox:
@@ -1745,7 +1750,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1761,7 +1766,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             box_wrap True
             spacing 25
 

@@ -294,18 +294,23 @@ style generic_button_text_dark is generic_button_text_base:
     hover_color mas_ui.dark_button_text_hover_color
     insensitive_color mas_ui.dark_button_text_insensitive_color
 
+image generic_fancy_check_button_fg = Image("mod_assets/buttons/checkbox/fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_selected = Image("mod_assets/buttons/checkbox/selected_fancy_check.png", yoffset=4)
+
 # fancy checkbox buttons lose the box when selected
 # and the entire frame gets colored
 style generic_fancy_check_button:
     properties gui.button_properties("check_button")
-    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
-    hover_background Solid("#FFBDE1")
+    foreground "generic_fancy_check_button_fg"
+    selected_foreground "generic_fancy_check_button_fg_selected"
+    hover_background Solid("#ffe6f4")
     selected_background Solid("#FFBDE1")
 
 style generic_fancy_check_button_dark:
     properties gui.button_properties("check_button_dark")
-    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
-    hover_background Solid("#CE4A7E")
+    foreground "generic_fancy_check_button_fg"
+    selected_foreground "generic_fancy_check_button_fg_selected"
+    hover_background Solid("#d9739c")
     selected_background Solid("#CE4A7E")
 
 style generic_fancy_check_button_text is gui_button_text:
@@ -315,6 +320,7 @@ style generic_fancy_check_button_text is gui_button_text:
     hover_color "#000000"
     selected_color "#000000"
     outlines []
+    yoffset 3
 
 style generic_fancy_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("generic_fancy_check_button_dark")
@@ -323,6 +329,7 @@ style generic_fancy_check_button_text_dark is gui_button_text_dark:
     hover_color "#FFAA99"
     selected_color "#FFAA99"
     outlines []
+    yoffset 3
 
 # START: image definitions
 image menu_bg:
@@ -474,6 +481,9 @@ init 25 python in mas_ui:
             return False
 
         if only_seen and ev.shown_count == 0:
+            return False
+
+        if not ev.checkConditional():
             return False
 
         if not search_query:

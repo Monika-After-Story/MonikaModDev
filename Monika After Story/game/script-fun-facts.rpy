@@ -854,3 +854,49 @@ label mas_fun_fact_monochrome_dreams:
     #Call the end
     call mas_fun_facts_end
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_fun_fact_round_earth",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_round_earth:
+    m 1rsa "Hmm..."
+    m 1eua "[player], do you think the Earth is round or flat?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[player], do you think the Earth is round or flat?{fast}"
+
+        "Round.":
+            m 3hua "Right! Pretty much everyone agrees on that nowadays."
+
+        "Flat.":
+            m 3hksdlb "Oh come on, [player]! Are you making fun of me?"
+
+    m 1eua "Actually, the Earth being round is something that has been known for a pretty long time."
+    m 3esd "Aristotle taught that the Earth was round in the fourth century BC."
+    m 3esa "He knew that because different stars could be seen from different parts of the world, which wouldn't happen if the Earth was just a flat surface."
+    m 1eua "Ancient astronomers and mathematicians around the world had figured out that the Earth was round long before anyone had actually travelled all the way around it."
+    m 7rksdla "But Earth being the center of the universe?{w=0.2} {nw}"
+    extend 4hksdlb "Oh man!"
+    m 7dsd "People fought about that so hard and for so long, it became a matter of life and death."
+    m 1dkd "The astronomer Galileo was put on trial for heresy just because he said the Earth was not the center of the universe.{w=0.2} {nw}"
+    extend 1esc "He was placed under house arrest for the rest of his life."
+    m 3euc "But as astronomers got better at tracking the movement of planets, it became kind of difficult to reconcile with the Earth being at the center."
+    m 1eud "People had to come up with crazy complex models to explain why planets seemed to zig-zag back and forth across the night sky if they were really going around the Earth."
+
+    if renpy.seen_label("monika_science"):
+        m 3eua "And like we discussed before, it's also known that the sun isn't the center of the universe{nw}"
+
+    else:
+        m 3eua "And now, it's even known that the sun isn't at the center of the universe{nw}"
+
+    extend "--it's just one of many stars in the galaxy."
+    m 1msblu "But do you know where science says the center of the universe is now?"
+    m 3kubsu "It's you.{w=0.2} You're the center of {i}my{/i} universe, [mas_get_player_nickname()]."
+    m 3hubsb "Ahaha!"
+    return

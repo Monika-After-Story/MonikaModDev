@@ -62,6 +62,12 @@ init -1 python in mas_hotkeys:
     # True means dont allow windows to be hidden
     no_window_hiding = False
 
+    # settings is special, so to make things easier regarding hotkeys 
+    # while in the middle of dialogue, this is used to block all 
+    # other hotkeys - PLEASE DONT FORGET TO CHECK THIS via 
+    # mas_HKIsSettingsClosed
+    game_menu_is_opening = False
+
 
 init python:
 
@@ -123,6 +129,27 @@ init python:
         )
 
 
+    def mas_HKIsSettingsClosed():
+        """
+        RETURNS: True if the settings is closed, False otherwise
+        """
+        return not store.mas_hotkeys.game_menu_is_opening
+
+
+    def mas_HKAllowHotkey():
+        """
+        ALWAYS CHECK THIS WHEN DOING ANYTHING THAT BREAKS FLOW.
+
+        Otherwise you may break the game if the game menu opens while something
+        else breaks the context.
+
+        NOTE: there are some hotkeys that DO NOT need to check this.
+
+        RETURNS: True if hotkey is allowed to be used now, False otherwise
+        """
+        return mas_HKIsSettingsClosed() and not _windows_hidden
+
+
     def enable_esc():
         """
         Enables the escape key so you can go to the game menu
@@ -147,7 +174,7 @@ init python:
         """
         hotkey specific muting / unmuting music channel
         """
-        if store.mas_hotkeys.mu_ctrl_enabled and not _windows_hidden:
+        if store.mas_hotkeys.mu_ctrl_enabled and mas_HKAllowHotkey():
             mute_music(store.mas_hotkeys.mu_stop_enabled)
 
 
@@ -155,7 +182,7 @@ init python:
         """
         hotkey specific music volume increasing
         """
-        if store.mas_hotkeys.mu_ctrl_enabled and not _windows_hidden:
+        if store.mas_hotkeys.mu_ctrl_enabled and mas_HKAllowHotkey():
             inc_musicvol()
 
 
@@ -163,7 +190,7 @@ init python:
         """
         hotkey specific music volume decreasing
         """
-        if mas_HKCanQuietMusic() and not _windows_hidden:
+        if mas_HKCanQuietMusic() and mas_HKAllowHotkey():
             dec_musicvol()
 
 
@@ -171,7 +198,7 @@ init python:
         """
         hotkey specific show dialgoue box
         """
-        if store.mas_hotkeys.talk_enabled and not _windows_hidden:
+        if store.mas_hotkeys.talk_enabled and mas_HKAllowHotkey():
             show_dialogue_box()
 
 
@@ -179,7 +206,7 @@ init python:
         """
         hotkey specific open extras menu
         """
-        if store.mas_hotkeys.extra_enabled and not _windows_hidden:
+        if store.mas_hotkeys.extra_enabled and mas_HKAllowHotkey():
             mas_open_extra_menu()
 
 
@@ -187,7 +214,7 @@ init python:
         """
         hotkey specific pick game
         """
-        if store.mas_hotkeys.play_enabled and not _windows_hidden:
+        if store.mas_hotkeys.play_enabled and mas_HKAllowHotkey():
             pick_game()
 
 
@@ -196,7 +223,7 @@ init python:
         Runs the select music function if we are allowed to.
         INTENDED FOR HOTKEY USAGE ONLY
         """
-        if store.mas_hotkeys.music_enabled and not _windows_hidden:
+        if store.mas_hotkeys.music_enabled and mas_HKAllowHotkey():
             select_music()
 
 
@@ -204,14 +231,15 @@ init python:
         """
         hotkey specific derandom topics
         """
-        if store.mas_hotkeys.derandom_enabled and not _windows_hidden:
+        if store.mas_hotkeys.derandom_enabled and mas_HKAllowHotkey():
             mas_derandom_topic()
+
 
     def _mas_hk_bookmark_topic():
         """
         hotkey specific bookmark topics
         """
-        if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
+        if store.mas_hotkeys.bookmark_enabled and mas_HKAllowHotkey():
             mas_bookmark_topic()
 
 
@@ -222,6 +250,8 @@ init python:
         OUT:
             scope - use this dict as temp space
         """
+        store.mas_hotkeys.game_menu_is_opening = True
+
         scope["disb_ani"] = persistent._mas_disable_animations
         scope["sr_time"] = store.mas_suntime.sunrise
         scope["ss_time"] = store.mas_suntime.sunset
@@ -264,6 +294,9 @@ init python:
         store.mas_settings.ui_changed = False
         store.mas_settings.dark_mode_clicked = False
         store.mas_core._last_text = None
+
+        # lastly notify that gamem menu is closing
+        store.mas_hotkeys.game_menu_is_opening = False
 
 
     def _mas_game_menu():
