@@ -1339,6 +1339,9 @@ screen mas_islands(islands_displayable, show_return_button=True):
     layer "master"
     zorder MAS_MONIKA_Z*10
 
+    if show_return_button:
+        key "K_ESCAPE" action Return(False)
+
     add islands_displayable
 
     if show_return_button:

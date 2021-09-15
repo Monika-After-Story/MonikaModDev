@@ -616,8 +616,11 @@ init -500 python in mas_parallax:
                     # Check for left mouse button click
                     if ev.button == 1:
                         # if self._render is not None and self._render.is_pixel_opaque(x, y):
+                        # Optimisazation: only propagate the event if it's withing the image
                         real_x, real_y = self._translate_coords(x, y)
-                        return self._transform.event(ev, real_x, real_y, st)
+                        x_size, y_size = self._transform.render_size
+                        if 0 <= real_x <= x_size and 0 <= real_y <= y_size:
+                            return self._transform.event(ev, real_x, real_y, st)
 
             return None
 
