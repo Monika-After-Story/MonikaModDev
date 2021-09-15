@@ -329,7 +329,8 @@ init -25 python in mas_island_event:
             ParallaxDecal,
             x=348,
             y=73,
-            z=5
+            z=5,
+            on_click=True
         )
     )
     _IslandsImgDataHolder(
@@ -660,13 +661,14 @@ init -25 python in mas_island_event:
             """
             A function which we use as a transform, updates the child
             """
-            roto_speed = 15
-            amp = 60
+            roto_speed = -10
+            amp = 0.0625
             frenq = 0.5
-            zoom_factor = 1 + abs(transform.zoom - ParallaxSprite.NORMAL_ZOOM)
 
             transform.rotate = st % 360 * roto_speed
-            transform.ypos = int(math.sin(st*frenq) * amp * zoom_factor)
+            transform.ypos = math.sin(st * frenq) * amp
+
+            transform.__parallax_sprite__.update_offsets()
 
             return 0.0
 

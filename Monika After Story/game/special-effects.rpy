@@ -35,7 +35,7 @@ init -500 python in mas_parallax:
             self.on_click = on_click
             self.callback = None
 
-            self._render = None
+            # self._render = None
 
         @property
         def x(self):
@@ -71,16 +71,22 @@ init -500 python in mas_parallax:
             """
             Representation of this object
             """
-            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4})>".format(type(self).__name__, repr(self.img), self._x, self._y, self._z)
+            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4})>".format(
+                type(self).__name__,
+                repr(self.img),
+                self._x,
+                self._y,
+                self._z
+            )
 
-        def __getstate__(self):
-            """
-            Check ParallaxSprite for more info
-            """
-            rv = super(ParallaxDecal, self).__getstate__()
-            rv["_render"] = None
+        # def __getstate__(self):
+        #     """
+        #     Check ParallaxSprite for more info
+        #     """
+        #     rv = super(ParallaxDecal, self).__getstate__()
+        #     rv["_render"] = None
 
-            return rv
+        #     return rv
 
         def event(self, ev, x, y, st):
             """
@@ -88,8 +94,8 @@ init -500 python in mas_parallax:
             """
             # Check for left mouse button click
             if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
-                # renpy.invoke_in_new_context(renpy.say, store.m, "Decal: {}".format(repr(self.img.child)))
-                if self._render is not None and self._render.is_pixel_opaque(x, y):
+                if self.is_focused():
+                # if self._render is not None and self._render.is_pixel_opaque(x, y):
                     if callable(self.on_click):
                         return self.on_click()
 
@@ -104,8 +110,9 @@ init -500 python in mas_parallax:
             img_surf = renpy.render(self.img, width, height, st, at)
             render = renpy.Render(img_surf.width, img_surf.height)
             render.blit(img_surf, (0, 0))
+            render.add_focus(self, None, 0, 0, img_surf.width, img_surf.height, 0, 0, render)
 
-            self._render = render
+            # self._render = render
 
             return render
 
@@ -173,7 +180,11 @@ init -500 python in mas_parallax:
             """
             Representation of this object
             """
-            return "<{0}: (base: {1}, children: {2})>".format(type(self).__name__, self._base, self.children)
+            return "<{0}: (base: {1}, children: {2})>".format(
+                type(self).__name__,
+                repr(self._base),
+                self.children
+            )
 
         def add(self, *decals):
             """
@@ -215,7 +226,6 @@ init -500 python in mas_parallax:
             The event handler for this container,
             propagates events to its children
             """
-            # renpy.invoke_in_new_context(renpy.say, store.m, "Coords: {} | Container: {}".format((x, y), repr(self.base.img.child)))
             for i in range(len(self._decals)-1, -1, -1):
                 decal = self._decals[i]
                 rv = decal.event(ev, x + self.offsets[0] - decal.x, y + self.offsets[1] - decal.y, st)
@@ -302,8 +312,11 @@ init -500 python in mas_parallax:
                     NOTE: MUST BE > 0
                 function - a function for the sprite's transform,
                     use it if you need additional effects
-                    NOTE: your function SHOULD NOT affect xoffset/yoffset/zoom, the behaviour is undefined.
-                        Supported functional: absolute xpos/ypos/rotation/child changing
+                    NOTE: your function SHOULD NOT affect xoffset/yoffset/zoom, the behaviour in those cases is undefined.
+                        Supported properties:
+                            - absolute and relative xpos and ypos
+                            - absolute xanchor and yanchor
+                            - rotation
                     (Default: None)
                 decals - list of decals for this sprite
                     (Default: empty tuple)
@@ -342,7 +355,10 @@ init -500 python in mas_parallax:
                 transform_anchor=True,
                 subpixel=True
             )
-            self._transform.zorder = z
+            # Might be useful to have a reference to the sprite from the transform function
+            self._transform.__parallax_sprite__ = self
+            # Renpy doesn't define this attr in __init__ for some reason...
+            self._transform.render_size = (0, 0)
 
             self.min_zoom = min_zoom
             self.max_zoom = max_zoom
@@ -351,7 +367,7 @@ init -500 python in mas_parallax:
             # Set this again to run the methods
             self.zoom = min_zoom
 
-            self._render = None
+            # self._render = None
 
             self._enable_events = True
 
@@ -416,7 +432,14 @@ init -500 python in mas_parallax:
             """
             Representation of this object
             """
-            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4}, decals: {5})>".format(type(self).__name__, self._container.base, self._x, self._y, self._z, self._container.children)
+            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4}, decals: {5})>".format(
+                type(self).__name__,
+                repr(self._container.base.img),
+                self._x,
+                self._y,
+                self._z,
+                self._container.children
+            )
 
         def update_offsets(self):
             """
@@ -425,7 +448,7 @@ init -500 python in mas_parallax:
             screen_width = renpy.config.screen_width
             screen_height = renpy.config.screen_height
 
-            # basically how much zoom is currently going on
+            # Basically how much zoom is currently going on
             zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
 
             # We use screen_width and screen_height for our parallax
@@ -436,52 +459,139 @@ init -500 python in mas_parallax:
             half_screen_width = screen_width / 2.0
             half_screen_height = screen_height / 2.0
 
-            # normalize the mouse position with the center of the screen
+            # Normalize the mouse position with the center of the screen
             # 0.0 - left / bottom
             # 1.0 - center
             # 2.0 - right / top
             mouse_x_factor = self.mouse_x / half_screen_width
             mouse_y_factor = self.mouse_y / half_screen_height
 
+            # Offsets from the container
             container_offset_x = abs(self._container.offsets[0])
             container_offset_y = abs(self._container.offsets[1])
 
-            # Our offsets consist of 4 parts:
+            # Offsets from the transform. That's so if the sprite has a custom func
+            # for its transform which modifies these params, we don't have to
+            # account for zoom level in the func, instead we do it here for convenience.
+            tf_x_pos, tf_y_pos = self._transform.pos
+
+            if tf_x_pos is None:
+                tf_x_pos = 0
+
+            elif isinstance(tf_x_pos, float):
+                tf_x_pos = screen_width * tf_x_pos
+
+            if tf_y_pos is None:
+                tf_y_pos = 0
+
+            elif isinstance(tf_y_pos, float):
+                tf_y_pos = screen_height * tf_y_pos
+
+            tf_x_anchor, tf_y_anchor = self._transform.anchor
+            tf_child_x_size, tf_child_y_size = self._transform.child_size
+            tf_render_x_size, tf_render_y_size = self._transform.render_size
+
+            if tf_x_anchor is None:
+                tf_x_anchor = 0
+
+            elif isinstance(tf_x_anchor, float):
+                tf_x_anchor = (tf_x_anchor - tf_render_x_size / 2.0 + tf_child_x_size / 2.0) / tf_child_x_size
+
+            if tf_y_anchor is None:
+                tf_y_anchor = 0
+
+            elif isinstance(tf_y_anchor, float):
+                tf_y_anchor = (tf_y_anchor - tf_render_y_size / 2.0 + tf_child_y_size / 2.0) / tf_child_y_size
+
+            # Our offsets consist of 6 parts:
             # - base coords give offsets to x and y (depend on zoom level)
             # - shift from the parallax effect (depends on mouse pos)
             # - correction to the zoom effect (depends on mouse pos)
             # - offsets from the container (depend on zoom level)
+            # - offsets from the transfrom xpos and ypos (depend on zoom level)
+            # - offsets from the transfrom xanchor and yanchor (depend on zoom level)
             self._transform.xoffset = (
                 self._x*(1.0 + zoom_factor)
                 + available_x_shift*(1.0 - mouse_x_factor)
                 - zoom_factor*self.mouse_x
                 - container_offset_x*(1.0 + zoom_factor)
+                - tf_x_pos * -zoom_factor
+                + tf_x_anchor * -zoom_factor
             )
             self._transform.yoffset = (
                 self._y*(1.0 + zoom_factor)
                 + available_y_shift*(1.0 - mouse_y_factor)
                 - zoom_factor*self.mouse_y
                 - container_offset_y*(1.0 + zoom_factor)
+                - tf_y_pos * -zoom_factor
+                + tf_y_anchor * -zoom_factor
             )
 
             # Now update the displayable
             self._transform.update()
             renpy.redraw(self, 0.0)
 
-        def __getstate__(self):
-            """
-            This is used for pickling. Render objects cannot be pickled, so here we reset the value of _render to None.
-            The docs say CDD shouldn't keep Render, but we have to, as it works much better than
-            the built-in focus system which RenPy uses (for some reason it's more laggy and causes a few bugs).
-            Instead we keep the latest Render and check whether or not the pixel at the given x and y is opaque (apparently it's faster).
+        # def __getstate__(self):
+        #     """
+        #     This is used for pickling. Render objects cannot be pickled, so here we reset the value of _render to None.
+        #     The docs say CDD shouldn't keep Render, but we have to, as it works much better than
+        #     the built-in focus system which RenPy uses (for some reason it's more laggy and causes a few bugs).
+        #     Instead we keep the latest Render and check whether or not the pixel at the given x and y is opaque (apparently it's faster).
 
-            NOTE: The docs say CDD can be pickled, but it doesn't seem to be the case as Style objects inside them cannot be.
-                Nevertheless, I decided to handle this case so we can be sure that isn't our fault.
-            """
-            rv = super(ParallaxSprite, self).__getstate__()
-            rv["_render"] = None
+        #     NOTE: The docs say CDD can be pickled, but it doesn't seem to be the case as Style objects inside them cannot be.
+        #         Nevertheless, I decided to handle this case so we can be sure that isn't our fault.
+        #     """
+        #     rv = super(ParallaxSprite, self).__getstate__()
+        #     rv["_render"] = None
 
-            return rv
+        #     return rv
+
+        def _translate_coords(self, x, y):
+            """
+            Translate screen coordinates into relative coordinates of this sprite
+
+            IN:
+                x - x coord
+                y - y coord
+
+            OUT:
+                tuple of ints
+            """
+            x_pos, y_pos, x_anchor, y_anchor, x_offset, y_offset, subpixel = self._transform.get_placement()
+            child_x_size, child_y_size = self._transform.child_size
+            render_x_size, render_y_size = self._transform.render_size
+
+            if x_pos is None:
+                x_pos = 0
+            elif isinstance(x_pos, float):
+                x_pos = int(renpy.config.screen_width * x_pos)
+
+            if y_pos is None:
+                y_pos = 0
+            elif isinstance(y_pos, float):
+                y_pos = int(renpy.config.screen_height * y_pos)
+
+            if x_anchor is None:
+                x_anchor = 0
+
+            elif isinstance(x_anchor, float):
+                # BUG: This is incorrect
+                x_anchor = (x_anchor - render_x_size / 2.0 + child_x_size / 2.0) / child_x_size
+
+            if y_anchor is None:
+                y_anchor = 0
+
+            elif isinstance(y_anchor, float):
+                # BUG: This is incorrect
+                y_anchor = (y_anchor - render_y_size / 2.0 + child_y_size / 2.0) / child_y_size
+
+            x_offset = x_offset or 0
+            y_offset = y_offset or 0
+
+            return (
+                x - x_pos - x_offset + x_anchor,
+                y - y_pos - y_offset + y_anchor
+            )
 
         def event(self, ev, x, y, st):
             """
@@ -505,15 +615,9 @@ init -500 python in mas_parallax:
                 elif ev.type == pygame.MOUSEBUTTONUP:
                     # Check for left mouse button click
                     if ev.button == 1:
-                        # if self.is_focused():
-                        if self._render is not None and self._render.is_pixel_opaque(x, y):
-                            x_pos, y_pos, x_anchor, y_anchor, x_offset, y_offset, subpixel = self._transform.get_placement()
-                            # FIXME: Support relative xpos and ypos (add float handling)
-                            x_pos = x_pos or 0
-                            y_pos = y_pos or 0
-                            x_offset = x_offset or 0
-                            y_offset = y_offset or 0
-                            return self._transform.event(ev, x - x_pos - x_offset, y - y_pos - y_offset, st)
+                        # if self._render is not None and self._render.is_pixel_opaque(x, y):
+                        real_x, real_y = self._translate_coords(x, y)
+                        return self._transform.event(ev, real_x, real_y, st)
 
             return None
 
@@ -525,8 +629,7 @@ init -500 python in mas_parallax:
             # NOTE: This has to do full size screen render + instead of blit use place
             render = renpy.Render(width, height)
             render.place(self._transform, x=0, y=0, render=img_surf)
-            # render.add_focus(self, None, 0, 0, renpy.config.screen_width, renpy.config.screen_height, 0, 0, render)
-            self._render = render
+            # self._render = render
 
             return render
 
