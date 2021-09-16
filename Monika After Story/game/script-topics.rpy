@@ -8265,7 +8265,7 @@ label monika_1984:
     m 2tkd "They planned to change all kinds of literature."
     m 3tkd "Novels, books, poems..."
     m 2lksdlc "Anything that could be used to oppose them."
-    m "Poems would look like the ones you tried to make."
+    m "Poems would look like the ones you tried to make in the game."
     m 2dsc "Just a string of nonsensical words with no feeling."
     m 2ekc "I definitely don't want that to happen."
     m 1lksdlc "I can't imagine a world where I can't think freely."
