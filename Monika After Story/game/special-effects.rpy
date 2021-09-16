@@ -142,7 +142,7 @@ init -500 python in mas_parallax:
             self.__sort_decals()
             for decal in self._decals:
                 if not isinstance(decal, ParallaxDecal):
-                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal)))
+                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal).__name__))
                 decal.callback = self.update
 
             self.offsets = (0, 0)
@@ -329,7 +329,6 @@ init -500 python in mas_parallax:
                     (Default: 4.0)
                     NOTE: if min_zoom == max_zoom, the user won't be able to zoom in/out
             """
-
             super(ParallaxSprite, self).__init__()
 
             # For convenience, we assume the mouse is in the center
@@ -350,7 +349,6 @@ init -500 python in mas_parallax:
 
             self._transform = store.Transform(
                 self._container,
-                # TODO: enable functions
                 function=function,
                 transform_anchor=True,
                 subpixel=True
@@ -409,6 +407,23 @@ init -500 python in mas_parallax:
             self._transform.zoom = value
             self.update_offsets()
 
+        @property
+        def decals(self):
+            return self._container.children
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4}, decals: {5})>".format(
+                type(self).__name__,
+                repr(self._container.base.img),
+                self._x,
+                self._y,
+                self._z,
+                self.decals
+            )
+
         def update_mouse_pos(self):
             """
             Updates mouse pos
@@ -425,21 +440,35 @@ init -500 python in mas_parallax:
         def toggle_events(self, value):
             """
             Toggles events (and hence the parallax effect)
+
+            IN:
+                value - the value to set
             """
             self._enable_events = value
 
-        def __repr__(self):
+        def add_decals(self, *decals):
             """
-            Representation of this object
+            Adds decals to this sprite
+
+            IN:
+                decals - ParallaxDecal objects
             """
-            return "<{0}: (img: {1}, x: {2}, y: {3}, z: {4}, decals: {5})>".format(
-                type(self).__name__,
-                repr(self._container.base.img),
-                self._x,
-                self._y,
-                self._z,
-                self._container.children
-            )
+            self._container.add(*decals)
+
+        def remove_decals(self, *decals):
+            """
+            Removes decals from this sprite
+
+            IN:
+                decals - ParallaxDecal objects
+            """
+            self._container.remove(*decals)
+
+        def clear_decals(self):
+            """
+            Removes all decals from this sprite
+            """
+            self._container.remove_all()
 
         def update_offsets(self):
             """
@@ -639,6 +668,9 @@ init -500 python in mas_parallax:
         def visit(self):
             """
             Returns the transform for prediction
+
+            OUT:
+                list with the disp to predict
             """
             return [self._transform]
 
@@ -651,6 +683,91 @@ init -500 python in mas_parallax:
                 self.update_mouse_pos()
             self._container._update_offsets()
             self.update_offsets()
+
+    class ParallaxBackground(renpy.display.core.Displayable):
+        """
+        A more optimised version of RenPy's Composite.
+        Intended to be used when you need multiple ParallaxSprite on the screen.
+        """
+        def __init__(self, *children):
+            """
+            Constructor for parallax background
+
+            IN:
+                children - ParallaxSprite objects for this background to compose together,
+                    but technically can be any displayables (for example if you need something static)
+            """
+            super(ParallaxBackground, self).__init__()
+
+            self.children = list(children)
+
+        def add(self, sprite):
+            """
+            Adds a sprite to this background
+
+            IN:
+                sprite - perhaps a ParallaxSprite or other kind of displayable
+            """
+            self.children.append(sprite)
+
+        def insert(self, index, sprite):
+            """
+            Inserts a sprite in this background
+
+            IN:
+                index - the index to insert at
+                sprite - the sprite to insert
+
+            ASSUMES:
+                the index exists
+            """
+            self.children.insert(index, sprite)
+
+        def remove(self, sprite):
+            """
+            Removes a sprite from this background
+
+            IN:
+                sprite - the sprite to remove
+
+            ASSUMES:
+                the sprite IS in the background
+            """
+            self.children.remove(sprite)
+
+        def event(self, ev, x, y, st):
+            """
+            The event handler
+            """
+            for child in self.children:
+                rv = child.event(ev, x, y, st)
+                if rv is not None:
+                    return rv
+
+            return None
+
+        def render(self, width, height, st, at):
+            """
+            The render method
+            """
+            render = renpy.Render(width, height)
+
+            for child in self.children:
+                render.blit(
+                    renpy.render(child, width, height, st, at),
+                    (0, 0)
+                )
+
+            return render
+
+        def visit(self):
+            """
+            Returns the children for prediction
+
+            OUT:
+                list of ParallaxSprite
+            """
+            return [child for child in self.children]
 
 
 image yuri dragon2:

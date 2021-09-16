@@ -33,7 +33,6 @@ init 1 python:
 
 init -25 python in mas_island_event:
     import random
-    import itertools
     import functools
     import math
     from zipfile import ZipFile
@@ -52,6 +51,7 @@ init -25 python in mas_island_event:
         MASFilterWeatherDisplayable
     )
     from store.mas_parallax import (
+        ParallaxBackground,
         ParallaxSprite,
         ParallaxDecal
     )
@@ -260,7 +260,7 @@ init -25 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxSprite,
             x=292,
-            y=125,
+            y=155,
             z=95,
             function=None,
             on_click=True
@@ -860,14 +860,15 @@ init -25 python in mas_island_event:
         OUT:
             LiveComposite
         """
-        def reset_parallax_disp(disp):
+        global SHIMEJI_CHANCE
+
+        def _reset_parallax_disp(disp):
             # Just in case we always remove all decals and readd them as needed
-            disp._container.remove_all()
+            disp.clear_decals()
             # Toggle events as desired
             disp.toggle_events(enable_interaction)
             # Reset offsets and zoom
             disp.reset_mouse_pos()
-            # Reset offsets and zoom
             disp.zoom = disp.min_zoom
 
         # Progress lvl
@@ -878,25 +879,36 @@ init -25 python in mas_island_event:
 
         # Add all unlocked islands
         for key, disp in island_disp_map.iteritems():
-            reset_parallax_disp(disp)
+            _reset_parallax_disp(disp)
             # Add if unlocked
             if persistent._mas_islands_unlocks[key]:
                 sub_displayables.append(disp)
 
         # Add all unlocked decals for islands 1 (other islands don't have any as of now)
-        for key in ("decal_bookshelf", "decal_bushes", "decal_house", "decal_tree", "decal_glitch"):
-            if persistent._mas_islands_unlocks[key]:
-                island_disp_map["island_1"]._container.add(decal_disp_map[key])
+        island_disp_map["island_1"].add_decals(
+            *[
+                decal_disp_map[key]
+                for key in (
+                    "decal_bookshelf",
+                    "decal_bushes",
+                    "decal_house",
+                    "decal_tree",
+                    "decal_glitch"
+                )
+                if persistent._mas_islands_unlocks[key]
+            ]
+        )
 
         # Decal, but not really
         shimeji_disp = decal_disp_map["decal_shimeji"]
-        reset_parallax_disp(shimeji_disp)
+        _reset_parallax_disp(shimeji_disp)
         if renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+            SHIMEJI_CHANCE *= 2
             sub_displayables.append(shimeji_disp)
 
         # Add the bg (we only have one as of now)
         bg_disp = bg_disp_map["bg_def"]
-        reset_parallax_disp(bg_disp)
+        _reset_parallax_disp(bg_disp)
         sub_displayables.append(bg_disp)
 
         # Sort in order from back to front
@@ -909,24 +921,7 @@ init -25 python in mas_island_event:
         elif store.mas_is_snowing:
             sub_displayables.append(overlay_disp_map["overlay_snow"])
 
-        def_coords = itertools.repeat((0, 0), len(sub_displayables))
-        lc_args = itertools.chain.from_iterable(itertools.izip(def_coords, sub_displayables))
-
-        # Try to make a LiveComposite
-        return LiveComposite(
-            (renpy.config.screen_width, renpy.config.screen_height),
-            *lc_args
-        )
-
-    def _removeImgFromComposite(composite, img_to_remove):
-        """
-        A method to remove parallax sprites from composite img
-        """
-        for i in range(len(composite.children)):
-            child = composite.children[i]
-            if child.child is img_to_remove:
-                composite.remove(child)
-                return
+        return ParallaxBackground(*sub_displayables)
 
     def isWinterWeather():
         """
@@ -1002,7 +997,7 @@ label mas_islands(fade_in=True, fade_out=True, check_progression=True, enable_in
         # NOTE: We can't progress filter here, it looks bad
         spaceroom_kwargs.setdefault("progress_filter", False)
         is_done = False
-        islands_disp = store.mas_island_event.getIslandsDisp(
+        islands_displayable = store.mas_island_event.getIslandsDisp(
             check_progression=check_progression,
             enable_interaction=enable_interaction
         )
@@ -1012,17 +1007,17 @@ label mas_islands(fade_in=True, fade_out=True, check_progression=True, enable_in
     # So we better to update this code later
     if fade_in:
         scene
-        show expression islands_disp as islands_bg
+        show expression islands_displayable as islands_background
         with Fade(0.5, 0, 0.5)
-        hide islands_bg with None
+        hide islands_background with None
 
     if enable_interaction:
         # If this is an interaction, we call the screen so
         # the user can see the parallax effect + events
         while not is_done:
             hide screen mas_islands
-            call screen mas_islands(islands_disp)
-            show screen mas_islands(islands_disp, show_return_button=False)
+            call screen mas_islands(islands_displayable)
+            show screen mas_islands(islands_displayable, show_return_button=False)
 
             if _return is False:
                 $ is_done = True
@@ -1032,16 +1027,16 @@ label mas_islands(fade_in=True, fade_out=True, check_progression=True, enable_in
 
     else:
         # Otherwise just show it as a static image
-        show screen mas_islands(islands_disp, show_return_button=False)
+        show screen mas_islands(islands_displayable, show_return_button=False)
 
     if fade_out:
         hide screen mas_islands
-        show expression islands_disp as islands_bg zorder MAS_MONIKA_Z*10 with None
+        show expression islands_displayable as islands_background zorder MAS_MONIKA_Z*10 with None
         call spaceroom(**spaceroom_kwargs)
-        hide islands_bg
+        hide islands_background
         with Fade(0.5, 0, 0.5)
 
-    $ del islands_disp, is_done
+    $ del islands_displayable, is_done
     return
 
 label mas_island_upsidedownisland:
@@ -1303,7 +1298,7 @@ label mas_island_shimeji:
     m "Ah!"
     m "How'd she get there?"
     m "Give me a second, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    $ mas_island_event._removeImgFromComposite(islands_disp, mas_island_event.decal_disp_map["decal_shimeji"])
+    $ islands_displayable.remove(mas_island_event.decal_disp_map["decal_shimeji"])
     m "All done!"
     m "Don't worry, I just moved her to a different place."
     return
