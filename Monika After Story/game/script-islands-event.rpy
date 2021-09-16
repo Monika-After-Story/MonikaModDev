@@ -227,9 +227,9 @@ init -25 python in mas_island_event:
         default_unlocked=True,
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=-64,
+            x=-85,
             y=660,
-            z=20,
+            z=15,
             on_click=True
         )
     )
@@ -237,9 +237,9 @@ init -25 python in mas_island_event:
         "island_1",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=463,
+            x=483,
             y=373,
-            z=40,
+            z=35,
             function=None,
             on_click=True
         )
@@ -248,9 +248,9 @@ init -25 python in mas_island_event:
         "island_2",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=255,
-            y=289,
-            z=90,
+            x=275,
+            y=299,
+            z=70,
             function=None,
             on_click=True
         )
@@ -259,9 +259,9 @@ init -25 python in mas_island_event:
         "island_3",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=262,
-            y=145,
-            z=130,
+            x=292,
+            y=125,
+            z=95,
             function=None,
             on_click=True
         )
@@ -270,9 +270,9 @@ init -25 python in mas_island_event:
         "island_4",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=-9,
-            y=-9,
-            z=150,
+            x=-15,
+            y=-15,
+            z=125,
             on_click="mas_island_upsidedownisland"
         )
     )
@@ -280,9 +280,9 @@ init -25 python in mas_island_event:
         "island_5",
         partial_disp=functools.partial(
             ParallaxSprite,
-            x=1021,
+            x=991,
             y=184,
-            z=50,
+            z=55,
             function=None,
             on_click=True
         )
@@ -324,8 +324,8 @@ init -25 python in mas_island_event:
         "decal_bookshelf",
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=407,
-            y=64,
+            x=358,
+            y=55,
             z=4,
             on_click="mas_island_bookshelf"
         )
@@ -334,8 +334,8 @@ init -25 python in mas_island_event:
         "decal_bushes",
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=348,
-            y=73,
+            x=305,
+            y=63,
             z=5,
             on_click=True
         )
@@ -344,8 +344,8 @@ init -25 python in mas_island_event:
         "decal_house",
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=245,
-            y=-48,
+            x=215,
+            y=-44,
             z=1
         )
     )
@@ -353,8 +353,8 @@ init -25 python in mas_island_event:
         "decal_tree",
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=149,
-            y=-228,
+            x=130,
+            y=-200,
             z=3,
             on_click="mas_island_cherry_blossom_tree"
         )
@@ -373,8 +373,8 @@ init -25 python in mas_island_event:
         fp_map={},
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=260,
-            y=-44,
+            x=216,
+            y=-54,
             z=2,
             on_click="mas_island_glitchedmess"
         )
@@ -386,9 +386,9 @@ init -25 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxSprite,
             Transform(renpy.display.image.ImageReference(("chibika", "smile")), zoom=0.4),
-            x=935,
-            y=325,
-            z=45,
+            x=930,
+            y=335,
+            z=36,
             on_click="mas_island_shimeji"
         )
     )
