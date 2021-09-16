@@ -965,8 +965,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
-    else:
-        $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
@@ -980,7 +978,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
-    else:
+
+    # both 922 and pbday share the same visual funcs, so need to check both before hiding
+    if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses:
