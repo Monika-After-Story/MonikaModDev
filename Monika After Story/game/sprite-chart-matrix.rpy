@@ -107,7 +107,7 @@ python early:
                 image_path - MUST be an image path string.
                 highlight - MASFilterMap object of highlights to apply
             """
-            super(MASFilterable, self).__init__(
+            super(MASFilterableSprite, self).__init__(
                 focus=focus,
                 default=default,
                 style=style,
@@ -117,6 +117,8 @@ python early:
             self.img_path = image_path
             self.img_obj = Image(image_path)
             self.highlight = highlight
+
+            self._last_flt = self.flt
 
         def __gen_hl(self):
             """
@@ -190,6 +192,15 @@ python early:
 
             # save
             return rv
+
+        def per_interact(self):
+            """
+            Decides whether or no we should redraw this displayable
+            on an interaction
+            """
+            if self._last_flt != self.flt:
+                self._last_flt = self.flt
+                renpy.redraw(self, 0.0)
 
         def visit(self):
             self.flt = store.mas_sprites.get_filter()
@@ -812,7 +823,7 @@ init -99 python in mas_sprites:
 
         FILTERS[flt_enum] = imx
 
-
+    @store.mas_utils.deprecated(use_instead="get_filter", should_raise=True)
     def _decide_filter():
         """DEPRECATED
         Please use get_filter

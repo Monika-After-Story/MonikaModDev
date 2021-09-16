@@ -508,7 +508,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -535,7 +535,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
@@ -913,6 +913,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
+                # NOTE: if Monika jumps when this is called, make sure to 
+                #   dissolve all
                 renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
@@ -949,8 +951,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 for h_adf in bg_change_info.hides.itervalues():
                     h_adf.hide()
 
-            for s_tag, s_adf in bg_change_info.shows.iteritems():
-                s_adf.show(s_tag)
+            for s_tag, s_info in bg_change_info.shows.iteritems():
+                s_tag_real, s_adf = s_info
+                s_adf.show(s_tag_real)
 
     # vignette
     if store.mas_globals.show_vignette:

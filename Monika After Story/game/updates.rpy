@@ -301,7 +301,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
@@ -316,7 +316,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
 
     ### special function for resetting versions
@@ -373,6 +373,22 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.12.3
+label v0_12_3(version="v0_12_3"):
+    python:
+        pass
+    return
+
+# 0.12.2.3
+label v0_12_2_3(version="v0_12_2_3"):
+    python:
+        if seen_event("monika_fanfiction"):
+            mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
+
+        if seen_event("monika_back_ups"):
+            mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
 
 # 0.12.2.2
 label v0_12_2_2(version="v0_12_2_2"):

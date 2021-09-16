@@ -1856,10 +1856,12 @@ label monikaroom_greeting_opendoor:
     m 2eud_static "..."
     show monika 1eua_static at t33
     m 1eud_static "...and..."
-    if mas_isMorning():
+
+    if mas_current_background.isFltDay():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
+
     show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:
@@ -4349,15 +4351,16 @@ label greeting_spacing_out:
         spacing_out_pause = PauseDisplayableWithEvents()
         events = list()
         next_event_time = 0
-        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
-        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+        right_smug = renpy.partial(renpy.show, "monika 1gsbsu")
+        left_smug = renpy.partial(renpy.show, "monika 1msbsu")
 
         # Make the events which will change exps
         for i in range(random.randint(4, 6)):
             events.append(
                 PauseDisplayableEvent(
                     datetime.timedelta(seconds=next_event_time),
-                    right_smug if use_right_smug else left_smug
+                    right_smug if use_right_smug else left_smug,
+                    restart_interaction=True
                 )
             )
             next_event_time += random.uniform(0.9, 1.8)
@@ -4366,7 +4369,8 @@ label greeting_spacing_out:
         events.append(
             PauseDisplayableEvent(
                 datetime.timedelta(seconds=next_event_time),
-                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+                renpy.partial(renpy.show, "monika 1tsbsu"),
+                restart_interaction=True
             )
         )
         next_event_time += 0.7
@@ -4377,8 +4381,8 @@ label greeting_spacing_out:
                 spacing_out_pause.stop
             )
         )
-        spacing_out_pause.events[:] = events
 
+        spacing_out_pause.set_events(events)
         spacing_out_pause.start()
 
     # Small pause so people don't skip this line

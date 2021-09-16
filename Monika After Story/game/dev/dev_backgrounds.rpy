@@ -393,5 +393,86 @@ init 100 python:
             logout.flush()
 
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_bg_test_noflt_prog",
+            category=["dev"],
+            prompt="BG TEST NO FLT PROG",
+            pool=True,
+            unlocked=True
+        )
+    )
 
 
+label dev_bg_test_noflt_prog:
+    
+    m 1eub "testing the no progress filter option"
+
+    python:
+        # save old suntimes
+        old_sr = store.mas_suntime.sunrise
+        old_ss = store.mas_suntime.sunset
+
+    m 1eub "I will change the suntimes now and rebuild BG data"
+
+    python:
+        # determine which time range to use
+        curr_time = datetime.datetime.now().time()
+        curr_suntime = store.mas_utils.time2sec(curr_time) / (60 * 5) # suntime
+        curr_flt = store.mas_sprites.get_filter()
+        if curr_flt == store.mas_sprites.FLT_DAY:
+
+            if mas_isNtoAny(curr_time, 24):
+                # currently past noon
+                new_sr = curr_suntime - 3
+                new_ss = curr_suntime - 2
+
+            else:
+                # currently before noon
+                new_sr = curr_suntime + 2
+                new_ss = curr_suntime + 3
+
+        else:
+            # night/sunset - change to day
+
+            # this is basically 00:00 and 23:55
+            new_sr = 0
+            new_ss = (store.mas_utils.secInDay() - (5 * 60)) / 5
+
+        # set new time data, validate and rebuild
+        store.mas_suntime.sunrise = new_sr
+        store.mas_suntime.sunset = new_ss
+        persistent._mas_sunrise = new_sr * 5
+        persistent._mas_sunset = new_ss * 5
+        store.mas_validate_suntimes()
+        store.mas_background.buildupdate()
+
+    $ bg_flt = mas_current_background._flt_man.current()
+    m 1eua "The current filter '[curr_flt]' != the bg flt '[bg_flt]'"
+
+    call spaceroom(dissolve_all=True, scene_change=True, progress_filter=False)
+
+    m 1eub "the BG should be UNCHANGED"
+
+    call spaceroom(dissolve_all=True, scene_change=True)
+
+    m 1eub "and now everything should change"
+
+    python:
+        # reset back to normal
+        store.mas_suntime.sunrise = old_sr
+        store.mas_suntime.sunset = old_ss
+        persistent._mas_sunrise = old_sr * 5
+        persistent._mas_sunset = old_ss * 5
+        store.mas_validate_suntimes()
+        store.mas_background.buildupdate()
+
+    m 1euc "and now i will turn back to normal"
+
+    call spaceroom(dissolve_all=True, scene_change=True)
+
+    m 1eua "and now back to normal"
+
+    return
