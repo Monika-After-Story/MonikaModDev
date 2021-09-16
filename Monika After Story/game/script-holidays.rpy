@@ -6888,11 +6888,11 @@ label mas_bday_surprise_party_reacton_cake:
     show screen mas_background_timed_jump(5, "mas_bday_surprise_party_reaction_no_make_wish")
     menu:
         "Make a wish, [m_name]...":
+            hide screen mas_background_timed_jump
             $ made_wish = True
             show monika 6hua
             if mas_isplayer_bday():
                 m "Make sure you make one too, [player]!"
-            hide screen mas_background_timed_jump
             #+10 for wishes
             $ mas_gainAffection(10, bypass=True)
             pause 2.0
@@ -6900,8 +6900,8 @@ label mas_bday_surprise_party_reacton_cake:
             jump mas_bday_surprise_party_reaction_post_make_wish
 
 label mas_bday_surprise_party_reaction_no_make_wish:
-    $ made_wish = False
     hide screen mas_background_timed_jump
+    $ made_wish = False
     show monika 6dsc
     pause 2.0
     show monika 6hft
