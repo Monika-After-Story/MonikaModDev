@@ -13,7 +13,7 @@ default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 # (e.g. either bookshelf or bushes at lvl X, but both at lvl X+Y)
 # that's so every player gets a bit different progression.
 # Bear in mind, if you decide to add a new item, you'll need an update script
-default persistent._mas_islands_unlocks = store.mas_island_event._IslandsImgDataHolder.getDefaultUnlocks()
+default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefination.getDefaultUnlocks()
 
 
 ### initialize the island images
@@ -72,11 +72,11 @@ init -25 python in mas_island_event:
     # setup the docking station we are going to use here
     islands_station = store.MASDockingStation(mis.ISLANDS_FOLDER)
 
-    class _IslandsImgDataHolder(object):
+    class IslandsImageDefination(object):
         """
         A generalised abstraction around raw data for the islands sprites
         """
-        TYPE_ISLAND = "isld"
+        TYPE_ISLAND = "island"
         TYPE_DECAL = "decal"
         TYPE_BG = "bg"
         TYPE_OVERLAY = "overlay"
@@ -107,7 +107,7 @@ init -25 python in mas_island_event:
             IN:
                 id_ - unique id for this sprite
                     NOTE: SUPPORTED FORMATS:
-                        - 'isld_###'
+                        - 'island_###'
                         - 'decal_###'
                         - 'bg_###'
                         - 'overlay_###'
@@ -117,6 +117,7 @@ init -25 python in mas_island_event:
                 default_unlocked - whether or not this sprite is unlocked from the get go
                     (Default: False)
                 fp_map - the map of the images for this sprite, if None, we automatically generate it
+                    NOTE: after decoding this will point to a loaded ImageData object instead of a failepath
                     (Default: None)
                 partial_disp - functools.partial of the displayable for this sprite
                     (Default: None)
@@ -158,17 +159,23 @@ init -25 python in mas_island_event:
             OUT:
                 dict
             """
+            filepath_fmt = "{prefix}s/{name}/{suffix}"
+            prefix, name = self.id.split(self.DELIM)
+            # Otherlays are a bit different
+            if self.type == self.TYPE_OVERLAY:
+                suffixes = ("d", "n", "s")
+
+            else:
+                suffixes = ("d", "d_r", "d_s", "n", "n_r", "n_s", "s", "s_r", "s_s")
+
             # FIXME: Use f-strings with py3 pls
-            fp_parts = self.id.split(self.DELIM)
-            # TODO: this should be proper fp updates, not this temp fix
-            suffix = "s" if fp_parts[0] != "bg" else ""
             return {
-                "d": "{}{}/{}/d.obj".format(fp_parts[0], suffix, fp_parts[1]),
-                "d_r": "{}{}/{}/d_r.obj".format(fp_parts[0], suffix, fp_parts[1]),
-                "d_s": "{}{}/{}/d_s.obj".format(fp_parts[0], suffix, fp_parts[1]),
-                "n": "{}{}/{}/n.obj".format(fp_parts[0], suffix, fp_parts[1]),
-                "n_r": "{}{}/{}/n_r.obj".format(fp_parts[0], suffix, fp_parts[1]),
-                "n_s": "{}{}/{}/n_s.obj".format(fp_parts[0], suffix, fp_parts[1])
+                suffix: filepath_fmt.format(
+                    prefix=prefix,
+                    name=name,
+                    suffix=suffix
+                )
+                for suffix in suffixes
             }
 
         @classmethod
@@ -177,7 +184,7 @@ init -25 python in mas_island_event:
             Returns data for an id
 
             OUT:
-                _IslandsImgDataHolder
+                IslandsImageDefination
             """
             return cls._data_map[id_]
 
@@ -196,7 +203,7 @@ init -25 python in mas_island_event:
             }
 
         @classmethod
-        def getFPsForType(cls, type_):
+        def getFilepathsForType(cls, type_):
             """
             Returns filepaths for images of sprites of the given type
 
@@ -215,8 +222,8 @@ init -25 python in mas_island_event:
     # during composite image building
     # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
     # Islands
-    _IslandsImgDataHolder(
-        "isld_0",
+    IslandsImageDefination(
+        "island_0",
         default_unlocked=True,
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -226,8 +233,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_1",
+    IslandsImageDefination(
+        "island_1",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=463,
@@ -237,8 +244,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_2",
+    IslandsImageDefination(
+        "island_2",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=255,
@@ -248,8 +255,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_3",
+    IslandsImageDefination(
+        "island_3",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=262,
@@ -259,8 +266,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_4",
+    IslandsImageDefination(
+        "island_4",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=-9,
@@ -269,8 +276,8 @@ init -25 python in mas_island_event:
             on_click="mas_island_upsidedownisland"
         )
     )
-    _IslandsImgDataHolder(
-        "isld_5",
+    IslandsImageDefination(
+        "island_5",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=1021,
@@ -280,8 +287,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_6",
+    IslandsImageDefination(
+        "island_6",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=912,
@@ -291,8 +298,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_7",
+    IslandsImageDefination(
+        "island_7",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=439,
@@ -302,8 +309,8 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
-        "isld_8",
+    IslandsImageDefination(
+        "island_8",
         partial_disp=functools.partial(
             ParallaxSprite,
             x=484,
@@ -313,7 +320,7 @@ init -25 python in mas_island_event:
         )
     )
     # Decals
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_bookshelf",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -323,7 +330,7 @@ init -25 python in mas_island_event:
             on_click="mas_island_bookshelf"
         )
     )
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_bushes",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -333,7 +340,7 @@ init -25 python in mas_island_event:
             on_click=True
         )
     )
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_house",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -342,7 +349,7 @@ init -25 python in mas_island_event:
             z=1
         )
     )
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_tree",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -353,15 +360,15 @@ init -25 python in mas_island_event:
         )
     )
     GLITCH_FPS = (
-        "glitch/g_0.obj",
-        "glitch/g_1.obj",
-        "glitch/g_2.obj",
-        "glitch/g_3.obj",
-        "glitch/g_4.obj",
-        "glitch/g_5.obj",
-        "glitch/g_6.obj"
+        "other/glitch/frame_0",
+        "other/glitch/frame_1",
+        "other/glitch/frame_2",
+        "other/glitch/frame_3",
+        "other/glitch/frame_4",
+        "other/glitch/frame_5",
+        "other/glitch/frame_6"
     )
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_glitch",
         fp_map={},
         partial_disp=functools.partial(
@@ -373,7 +380,7 @@ init -25 python in mas_island_event:
         )
     )
     SHIMEJI_CHANCE = 100
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "decal_shimeji",
         fp_map={},
         partial_disp=functools.partial(
@@ -386,7 +393,7 @@ init -25 python in mas_island_event:
         )
     )
     # BGs
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "bg_def",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -400,25 +407,17 @@ init -25 python in mas_island_event:
         )
     )
     # Overlays
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "overlay_rain",
         default_unlocked=True,
-        fp_map={
-            "d": "overlays/rain/d.obj",
-            "n": "overlays/rain/n.obj"
-        },
         partial_disp=functools.partial(
             MASFilterWeatherDisplayable,
             use_fb=True
         )
     )
-    _IslandsImgDataHolder(
+    IslandsImageDefination(
         "overlay_snow",
         default_unlocked=True,
-        fp_map={
-            "d": "overlays/snow/d.obj",
-            "n": "overlays/snow/n.obj"
-        },
         partial_disp=functools.partial(
             MASFilterWeatherDisplayable,
             use_fb=True
@@ -485,7 +484,7 @@ init -25 python in mas_island_event:
 
         err_msg = "[ERROR] Failed to decode images: {}.\n"
 
-        pkg = islands_station.getPackage("project_or")
+        pkg = islands_station.getPackage("our_reality")
 
         if not pkg:
             mas_utils.writelog(err_msg.format("Missing package"))
@@ -511,17 +510,17 @@ init -25 python in mas_island_event:
             for name, path_map in map_.iteritems():
                 for sprite_type, path in path_map.iteritems():
                     raw_data = zip_file.read(path)
-                    img = store.MASImageData(raw_data, name + ".png")
+                    img = store.MASImageData(raw_data, "{}_{}.png".format(name, sprite_type))
                     path_map[sprite_type] = img
 
         try:
             with ZipFile(pkg_data, "r") as zip_file:
-                isld_map = _IslandsImgDataHolder.getFPsForType(_IslandsImgDataHolder.TYPE_ISLAND)
-                decal_map = _IslandsImgDataHolder.getFPsForType(_IslandsImgDataHolder.TYPE_DECAL)
-                bg_map = _IslandsImgDataHolder.getFPsForType(_IslandsImgDataHolder.TYPE_BG)
-                overlay_map = _IslandsImgDataHolder.getFPsForType(_IslandsImgDataHolder.TYPE_OVERLAY)
+                island_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_ISLAND)
+                decal_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_DECAL)
+                bg_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_BG)
+                overlay_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_OVERLAY)
                 # Now override maps to contain imgs instead of img paths
-                for map_ in (isld_map, decal_map, bg_map, overlay_map):
+                for map_ in (island_map, decal_map, bg_map, overlay_map):
                     _read_zip(zip_file, map_)
 
                 # Anim frames are handled a bit differently
@@ -535,18 +534,18 @@ init -25 python in mas_island_event:
 
         else:
             # We loaded the images, now create dynamic displayables
-            _buildDisplayables(isld_map, decal_map, bg_map, overlay_map, glitch_frames)
+            _buildDisplayables(island_map, decal_map, bg_map, overlay_map, glitch_frames)
 
         return True
 
-    def _buildDisplayables(isld_imgs_maps, decal_imgs_maps, bg_imgs_maps, overlay_imgs_maps, glitch_frames):
+    def _buildDisplayables(island_imgs_maps, decal_imgs_maps, bg_imgs_maps, overlay_imgs_maps, glitch_frames):
         """
         Takes multiple maps with images and builds displayables from them, sets global vars
         NOTE: no sanity checks
         FIXME: py3 update
 
         IN:
-            isld_imgs_maps - the map from island names to raw images map
+            island_imgs_maps - the map from island names to raw images map
             decal_imgs_maps - the map from decal names to raw images map
             bg_imgs_maps - the map from bg ids to raw images map
             overlay_imgs_maps - the map from overlay ids to raw images map
@@ -555,7 +554,7 @@ init -25 python in mas_island_event:
         global island_disp_map, decal_disp_map, bg_disp_map, overlay_disp_map
 
         # Build the islands
-        for isld_name, img_map in isld_imgs_maps.iteritems():
+        for island_name, img_map in island_imgs_maps.iteritems():
             disp = IslandFilterWeatherDisplayable(
                 day=MASWeatherMap(
                     {
@@ -572,10 +571,18 @@ init -25 python in mas_island_event:
                         mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
                         mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
                     }
+                ),
+                sunset=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
+                    }
                 )
             )
-            partial_disp = _IslandsImgDataHolder.getDataFor(isld_name).partial_disp
-            island_disp_map[isld_name] = partial_disp(disp)
+            partial_disp = IslandsImageDefination.getDataFor(island_name).partial_disp
+            island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
         for decal_name, img_map in decal_imgs_maps.iteritems():
@@ -595,9 +602,17 @@ init -25 python in mas_island_event:
                         mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
                         mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
                     }
+                ),
+                sunset=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
+                    }
                 )
             )
-            partial_disp = _IslandsImgDataHolder.getDataFor(decal_name).partial_disp
+            partial_disp = IslandsImageDefination.getDataFor(decal_name).partial_disp
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
@@ -618,15 +633,23 @@ init -25 python in mas_island_event:
                         mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
                         mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
                     }
+                ),
+                sunset=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
+                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
+                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
+                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
+                    }
                 )
             )
-            partial_disp = _IslandsImgDataHolder.getDataFor(bg_name).partial_disp
+            partial_disp = IslandsImageDefination.getDataFor(bg_name).partial_disp
             bg_disp_map[bg_name] = partial_disp(disp)
 
         # Build the overlays
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
             # Overlays are just dynamic displayables
-            partial_disp = _IslandsImgDataHolder.getDataFor(overlay_name).partial_disp
+            partial_disp = IslandsImageDefination.getDataFor(overlay_name).partial_disp
             overlay_disp_map[overlay_name] = partial_disp(
                 day=MASWeatherMap(
                     {
@@ -636,6 +659,11 @@ init -25 python in mas_island_event:
                 night=MASWeatherMap(
                     {
                         mas_weather.PRECIP_TYPE_DEF: img_map["n"]
+                    }
+                ),
+                sunset=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: img_map["s"]
                     }
                 )
             )
@@ -653,7 +681,7 @@ init -25 python in mas_island_event:
             return redraw
 
         glitch_disp = Transform(child=glitch_frames[0], function=_select_glitch_frame)
-        partial_disp = _IslandsImgDataHolder.getDataFor("decal_glitch").partial_disp
+        partial_disp = IslandsImageDefination.getDataFor("decal_glitch").partial_disp
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
         # Build chibi disp
@@ -672,7 +700,7 @@ init -25 python in mas_island_event:
 
             return 0.0
 
-        partial_disp = _IslandsImgDataHolder.getDataFor("decal_shimeji").partial_disp
+        partial_disp = IslandsImageDefination.getDataFor("decal_shimeji").partial_disp
         decal_disp_map["decal_shimeji"] = partial_disp(function=_chibi_transform_fn)
 
         return
@@ -680,11 +708,11 @@ init -25 python in mas_island_event:
 
     # # # START functions for lvl unlocks, head to _handleUnlocks to understand how this works
     def _unlocks_for_lvl_0():
-        persistent._mas_islands_unlocks["isld_1"] = True
-        persistent._mas_islands_unlocks["isld_8"] = True
+        persistent._mas_islands_unlocks["island_1"] = True
+        persistent._mas_islands_unlocks["island_8"] = True
 
     def _unlocks_for_lvl_1():
-        persistent._mas_islands_unlocks["isld_2"] = True
+        persistent._mas_islands_unlocks["island_2"] = True
 
     def _unlocks_for_lvl_2():
         persistent._mas_islands_unlocks["decal_glitch"] = True
@@ -693,14 +721,14 @@ init -25 python in mas_island_event:
     def _unlocks_for_lvl_3():
         # Unlock only 1, the rest at lvl 5
         if not (
-            persistent._mas_islands_unlocks["isld_4"]
-            or persistent._mas_islands_unlocks["isld_5"]
+            persistent._mas_islands_unlocks["island_4"]
+            or persistent._mas_islands_unlocks["island_5"]
         ):
             if bool(random.randint(0, 1)):
-                persistent._mas_islands_unlocks["isld_4"] = True
+                persistent._mas_islands_unlocks["island_4"] = True
 
             else:
-                persistent._mas_islands_unlocks["isld_5"] = True
+                persistent._mas_islands_unlocks["island_5"] = True
 
     def _unlocks_for_lvl_4():
         persistent._mas_islands_unlocks["decal_shimeji"] = True
@@ -717,15 +745,15 @@ init -25 python in mas_island_event:
                 persistent._mas_islands_unlocks["decal_tree"] = True
 
     def _unlocks_for_lvl_5():
-        persistent._mas_islands_unlocks["isld_7"] = True
+        persistent._mas_islands_unlocks["island_7"] = True
 
         # Unlock everything from lvl 3
-        persistent._mas_islands_unlocks["isld_4"] = True
-        persistent._mas_islands_unlocks["isld_5"] = True
+        persistent._mas_islands_unlocks["island_4"] = True
+        persistent._mas_islands_unlocks["island_5"] = True
 
     def _unlocks_for_lvl_6():
-        persistent._mas_islands_unlocks["isld_3"] = True
-        persistent._mas_islands_unlocks["isld_6"] = True
+        persistent._mas_islands_unlocks["island_3"] = True
+        persistent._mas_islands_unlocks["island_6"] = True
 
     def _unlocks_for_lvl_7():
         # Unlock everything from lvl 4
@@ -814,7 +842,7 @@ init -25 python in mas_island_event:
         """
         persistent._mas_islands_start_lvl = None
         persistent._mas_islands_progress = DEF_PROGRESS
-        persistent._mas_islands_unlocks = _IslandsImgDataHolder.getDefaultUnlocks()
+        persistent._mas_islands_unlocks = IslandsImageDefination.getDefaultUnlocks()
 
     def getIslandsDisp(check_progression=True, enable_interaction=True):
         """
@@ -858,7 +886,7 @@ init -25 python in mas_island_event:
         # Add all unlocked decals for islands 1 (other islands don't have any as of now)
         for key in ("decal_bookshelf", "decal_bushes", "decal_house", "decal_tree", "decal_glitch"):
             if persistent._mas_islands_unlocks[key]:
-                island_disp_map["isld_1"]._container.add(decal_disp_map[key])
+                island_disp_map["island_1"]._container.add(decal_disp_map[key])
 
         # Decal, but not really
         shimeji_disp = decal_disp_map["decal_shimeji"]
