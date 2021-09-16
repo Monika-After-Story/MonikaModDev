@@ -425,3 +425,33 @@ label dev_ahoge_test:
     $ monika_chr.remove_all_acs_in("ahoge")
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_closed_eye_tears_test",
+            category=["dev"],
+            prompt="TEST CLOSED EYE TEARS",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_closed_eye_tears_test:
+    m 6hua "I will now test tears with all closed eye expressions"
+
+    m 6hutsa "streaming tears - closed (happy)"
+    m 6dutsa "streaming tears - closed (sad)"
+    m 6kutsa "streaming tears - wink left"
+    m 6nutsa "streaming tears - wink right"
+
+    m 6hutua "up tears - closed (happy)"
+    m 6dutua "up tears - closed (sad)"
+    m 6kutua "up tears - wink left"
+    m 6nutua "up tears - wink right"
+
+    m 6hutpa "pooled tears - closed (happy)"
+
+    m 1wuw "all other closed-eye-tear combinations are not supported"
+    return

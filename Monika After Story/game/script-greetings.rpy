@@ -1856,10 +1856,12 @@ label monikaroom_greeting_opendoor:
     m 2eud_static "..."
     show monika 1eua_static at t33
     m 1eud_static "...and..."
-    if mas_isMorning():
+
+    if mas_current_background.isFltDay():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
+
     show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:

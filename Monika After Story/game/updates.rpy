@@ -374,8 +374,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.2.4
-label v0_12_2_4(version="v0_12_2_4"):
+# 0.12.3
+label v0_12_3(version="v0_12_3"):
     python:
         # Set a conditional
         mas_setEVLPropValues(

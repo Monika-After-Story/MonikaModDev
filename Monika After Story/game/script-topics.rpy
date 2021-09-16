@@ -7631,6 +7631,14 @@ default persistent._mas_pm_like_orchestral_music = None
 #Do you play an instrument?
 default persistent._mas_pm_plays_instrument = None
 
+#Do you have piano experience?
+default persistent._mas_pm_has_piano_experience = None
+
+#Consts to be used for checking piano skills
+define mas_PIANO_EXP_HAS = 2
+define mas_PIANO_EXP_SOME = 1
+define mas_PIANO_EXP_NONE = 0 #0 as this can also bool to False
+
 init 5 python:
     addEvent(
         Event(
@@ -7643,7 +7651,6 @@ init 5 python:
     )
 
 label monika_orchestra:
-
     m 3euc "Hey [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
@@ -7689,11 +7696,32 @@ label monika_orchestra:
                 jump .no_choice
 
             elif tempinstrument == "piano":
+                $ persistent._mas_pm_plays_instrument = True
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
-                m 1hua "Maybe we could do a duet someday!"
-                m 1huu "Ehehe~"
-                $ persistent._mas_pm_plays_instrument = True
+                m 1eua "Do you have a lot of experience playing the piano?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Do you have a lot of experience playing the piano?{fast}"
+
+                    "Yes.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_HAS
+                        m 3hua "Really?"
+                        m 3sub "That's wonderful!"
+                        m 1eua "Maybe someday you can teach me and we can even have a duet!"
+
+                    "Not much.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
+                        m 2eka "That's okay, [player]."
+                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
+
+                    "I just started.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_NONE
+                        m 1duc "I see."
+                        m 3hksdlb "It can be pretty difficult at the beginning,{w=0.2} {nw}"
+                        extend 3huu "but I'm sure if you keep practicing you'll even be able to play better than I can, [player]~"
+
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
                 m 3eub "...Oh!"

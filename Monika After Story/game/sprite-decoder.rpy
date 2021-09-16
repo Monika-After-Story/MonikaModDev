@@ -21,6 +21,7 @@ init python in mas_sprite_decoder:
     BLUSH_MAP = dict()
     TEAR_MAP = dict()
     SWEAT_MAP = dict()
+    MOD_MAP = {}
 
     class MASSpriteException(Exception):
         def __init__(self, message):
@@ -35,6 +36,7 @@ init python in mas_sprite_decoder:
         """
         global EYEBROW_MAP, EYE_MAP, MOUTH_MAP, ARM_MAP, HEAD_MAP
         global SIDES_MAP, SINGLE_MAP, BLUSH_MAP, TEAR_MAP, SWEAT_MAP
+        global MOD_MAP
 
         jobj = None
 
@@ -52,6 +54,7 @@ init python in mas_sprite_decoder:
             BLUSH_MAP = jobj["blush"]
             TEAR_MAP = jobj["tears"]
             SWEAT_MAP = jobj["sweat"]
+            MOD_MAP = jobj["MOD_MAP"]
 
             #Since tuples aren't supported in json, we need to do some conversion here
             ARM_MAP["5"] = tuple(ARM_MAP["5"])
@@ -181,6 +184,12 @@ init python in mas_sprite_decoder:
 
         if tears is None:
             return False, 0
+
+        # NOTE: tears need custom handling because of problems with closed eyes
+        tm_map = MOD_MAP.get("tears", {}).get(tears, None)
+        eyes = export_dict["eyes"]
+        if tm_map is not None and eyes in tm_map:
+            tears += eyes
 
         #Checks passed. Let's add this
         export_dict["tears"] = tears

@@ -939,6 +939,7 @@ default persistent._mas_last_kiss = None
 
 # mas_kissing_motion_base label
 # Used to do the kiss motion, it takes care of setting persistent._mas_first_kiss
+# Requires enam+ affection
 #
 # IN:
 #     transition - time in seconds used to transition to the actual kiss and then
@@ -959,8 +960,17 @@ default persistent._mas_last_kiss = None
 #         (Default: 6tkbfu)
 #     fade_duration - time in seconds spent fading the screen into black
 #         (Default: 1.0)
-label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
-        initial_exp="6dubfd", mid_exp="6tkbfu", final_exp="6ekbfa", fade_duration=1.0):
+label monika_kissing_motion(
+    transition=4.0,
+    duration=2.0,
+    hide_ui=True,
+    initial_exp="6dubfd",
+    mid_exp="6tkbfu",
+    final_exp="6ekbfa",
+    fade_duration=1.0
+):
+    if not mas_isMoniEnamored(higher=True):
+        return
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
 
