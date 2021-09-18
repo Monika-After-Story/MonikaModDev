@@ -913,7 +913,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                # NOTE: if Monika jumps when this is called, make sure to 
+                # NOTE: if Monika jumps when this is called, make sure to
                 #   dissolve all
                 renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
@@ -1806,7 +1806,7 @@ label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
+        if mas_egg_manager.sayori_enabled() or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
 
     python:

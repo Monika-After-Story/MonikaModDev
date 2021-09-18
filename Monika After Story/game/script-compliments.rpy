@@ -544,6 +544,7 @@ label mas_compliment_hero:
     m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
     m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
     show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    # Keeping this 'hero' since you call her that too
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
     m 5ekbfa "I hope you never forget that, [player]~"

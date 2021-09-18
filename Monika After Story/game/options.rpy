@@ -156,9 +156,6 @@ define config.predict_statements = 5
 define config.rollback_enabled = config.developer
 define config.menu_clear_layers = ["front"]
 define config.gl_test_image = "white"
-define config.label_overrides = {
-    "_choose_renderer": "mas_choose_renderer_override"
-}
 #define config.gl_resize = False
 init 50 python:
     # For some reason it's not inported yet, so we do it now /shrug
@@ -182,6 +179,10 @@ init 50 python:
     ]
 
 init python:
+    #Override the choose renderer screen
+    mas_override_label("_choose_renderer", "mas_choose_renderer_override")
+
+    #The rest
     if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
     renpy.game.preferences.pad_enabled = False
     def replace_text(s):
