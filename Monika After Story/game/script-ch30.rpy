@@ -913,7 +913,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                # NOTE: if Monika jumps when this is called, make sure to 
+                # NOTE: if Monika jumps when this is called, make sure to
                 #   dissolve all
                 renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
@@ -1781,6 +1781,10 @@ label ch30_day:
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        # Once per day Monika does stuff on the islands
+        store.mas_island_event.advanceProgression()
+
     return
 
 
@@ -2091,4 +2095,8 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
+
+    # Did Monika get any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
+
     return
