@@ -7975,6 +7975,7 @@ define boy = "boy"
 define guy = "guy"
 define him = "him"
 define himself = "himself"
+define hero = "hero"
 
 # Input characters filters
 define numbers_only = "0123456789"
@@ -8163,7 +8164,8 @@ label mas_set_gender:
                 "boy": "boy",
                 "guy": "guy",
                 "him": "him",
-                "himself": "himself"
+                "himself": "himself",
+                "hero": "hero"
             },
             "F": {
                 "his": "her",
@@ -8175,7 +8177,8 @@ label mas_set_gender:
                 "boy": "girl",
                 "guy": "girl",
                 "him": "her",
-                "himself": "herself"
+                "himself": "herself",
+                "hero": "heroine"
             },
             "X": {
                 "his": "their",
@@ -8187,7 +8190,8 @@ label mas_set_gender:
                 "boy": "person",
                 "guy": "person",
                 "him": "them",
-                "himself": "themselves"
+                "himself": "themselves",
+                "hero": "hero"
             }
         }
 
@@ -8203,6 +8207,7 @@ label mas_set_gender:
         guy = pronouns["guy"]
         him = pronouns["him"]
         himself = pronouns["himself"]
+        hero = pronouns["hero"]
     return
 
 style jpn_text:

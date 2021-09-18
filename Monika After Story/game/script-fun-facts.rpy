@@ -158,8 +158,8 @@ init 5 python:
 
 label mas_fun_fact_morpheus:
     m 3wub "Oh! A language based fact. I always like these."
-    m 1eua "The word 'morphine' is based on the greek god Morpheus."
-    m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
+    m 1eua "The word 'morphine' is based on the Greek god Morpheus."
+    m 1euc "He was the Greek god of dreams so to have a word based on him makes sense."
     m 3ekc "But then again...wasn't his father Hypnos the god of sleep?"
     m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
     m 4ekc "...So wouldn't it make more sense to name it after Hypnos then?"

@@ -2316,6 +2316,7 @@ label greeting_stillsickresting:
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
+        $ mas_ILY()
 
     else:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
@@ -2989,7 +2990,6 @@ label greeting_back_from_school:
                 m 2ekd "I'm really sorry you had such a bad day today..."
                 m 2eka "I'm just glad you came to me, [player]."
 
-        m 3ekc "If you don't mind me asking, was there something in particular that happened?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -3001,7 +3001,8 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
+        m "If you don't mind me asking, was there something in particular that happened?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
@@ -3914,6 +3915,7 @@ label greeting_back_from_game:
             m 2hksdlb "You were gone for a long time..."
 
             m 1eka "Did you have fun?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Did you have fun?{fast}"
                 "Yes.":
