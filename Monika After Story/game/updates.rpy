@@ -374,6 +374,12 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.3.1
+label v0_12_3_1(version="v0_12_3_1"):
+    python:
+        pass
+    return
+
 # 0.12.2.3
 label v0_12_2_3(version="v0_12_2_3"):
     python:
