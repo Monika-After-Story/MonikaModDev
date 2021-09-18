@@ -163,9 +163,6 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
-        # Open the settings panel in the menu
-        _game_menu_screen = "preferences"
-
         _mas_AffStartup()
 
         persistent.sessions['current_session_start']=datetime.datetime.now()
@@ -288,6 +285,8 @@ label autoload:
         if "_old_history" in globals():
             _history = _old_history
             del _old_history
+        # Open the settings panel in the menu
+        _game_menu_screen = "preferences"
         renpy.block_rollback()
 
         # Fix the game context (normally done when loading save file)
