@@ -94,7 +94,7 @@ init -20 python in mas_island_event:
             else:
                 type_ = self._getType()
             self.type = type_
-            self.default_unlocked = default_unlocked
+            self.default_unlocked = bool(default_unlocked)
             self.fp_map = fp_map if fp_map is not None else self._buildFPMap()
             self.partial_disp = partial_disp
 
@@ -190,6 +190,19 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
+    def __isld_1_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        amp = 0.02
+        frenq_1 = 1.0 / 9.0
+        frenq_2 = 1.0 / 3.0
+
+        transform.ypos = math.cos(at*frenq_1) * math.sin(at*frenq_2) * amp
+        # We updated position, so we should update the sprite, too
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
     IslandsImageDefination(
         "island_1",
         partial_disp=functools.partial(
@@ -197,10 +210,26 @@ init -20 python in mas_island_event:
             x=483,
             y=373,
             z=35,
-            function=None,
+            function=__isld_1_transform_func,
             on_click=True
         )
     )
+    def __isld_2_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        y_amp = -0.01
+        y_frenq_1 = 0.5
+        y_frenq_2 = 0.25
+
+        x_amp = -0.0035
+        x_frenq = 0.2
+
+        transform.ypos = math.sin(math.sin(at*y_frenq_1) + math.sin(at*y_frenq_2)) * y_amp
+        transform.xpos = math.cos(at*x_frenq) * x_amp
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
     IslandsImageDefination(
         "island_2",
         partial_disp=functools.partial(
@@ -208,10 +237,22 @@ init -20 python in mas_island_event:
             x=275,
             y=299,
             z=70,
-            function=None,
+            function=__isld_2_transform_func,
             on_click=True
         )
     )
+    def __isld_3_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        amp = 0.005
+        frenq_1 = 0.25
+        frenq_2 = 0.05
+
+        transform.ypos = (math.sin(at*frenq_1) + abs(math.cos(at*frenq_2))) * amp
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
     IslandsImageDefination(
         "island_3",
         partial_disp=functools.partial(
@@ -219,7 +260,7 @@ init -20 python in mas_island_event:
             x=292,
             y=155,
             z=95,
-            function=None,
+            function=__isld_3_transform_func,
             on_click=True
         )
     )
@@ -233,6 +274,22 @@ init -20 python in mas_island_event:
             on_click="mas_island_upsidedownisland"
         )
     )
+    def __isld_5_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        y_amp = -0.01
+        y_frenq_1 = 1.0 / 10.0
+        y_frenq_2 = 7.0
+
+        x_amp = 0.005
+        x_frenq = 0.25
+
+        transform.ypos = math.sin(math.sin(at*y_frenq_1) * y_frenq_2) * y_amp
+        transform.xpos = math.cos(at*x_frenq) * x_amp
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
     IslandsImageDefination(
         "island_5",
         partial_disp=functools.partial(
@@ -240,7 +297,7 @@ init -20 python in mas_island_event:
             x=991,
             y=184,
             z=55,
-            function=None,
+            function=__isld_5_transform_func,
             on_click=True
         )
     )
@@ -336,6 +393,20 @@ init -20 python in mas_island_event:
             on_click="mas_island_glitchedmess"
         )
     )
+    def __chibi_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        roto_speed = -10
+        amp = 0.065
+        frenq = 0.5
+
+        transform.rotate = at % 360 * roto_speed
+        transform.ypos = math.sin(at * frenq) * amp
+        # We updated position, so we should update the sprite, too
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
     IslandsImageDefination(
         "decal_shimeji",
         fp_map={},
@@ -345,6 +416,7 @@ init -20 python in mas_island_event:
             x=930,
             y=335,
             z=36,
+            function=__chibi_transform_func,
             on_click="mas_island_shimeji"
         )
     )
@@ -669,7 +741,7 @@ init -25 python in mas_island_event:
             )
 
         # Build glitch disp
-        def _select_glitch_frame(transform, st, at):
+        def _glitch_transform_func(transform, st, at):
             """
             A function which we use as a transform, updates the child
             """
@@ -680,28 +752,13 @@ init -25 python in mas_island_event:
 
             return redraw
 
-        glitch_disp = Transform(child=glitch_frames[0], function=_select_glitch_frame)
+        glitch_disp = Transform(child=glitch_frames[0], function=_glitch_transform_func)
         partial_disp = IslandsImageDefination.getDataFor("decal_glitch").partial_disp
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
         # Build chibi disp
-        def _chibi_transform_fn(transform, st, at):
-            """
-            A function which we use as a transform, updates the child
-            """
-            roto_speed = -10
-            amp = 0.065
-            frenq = 0.5
-
-            transform.rotate = at % 360 * roto_speed
-            transform.ypos = math.sin(at * frenq) * amp
-            # We updated position, so we should update the sprite, too
-            transform.__parallax_sprite__.update_offsets()
-
-            return 0.0
-
         partial_disp = IslandsImageDefination.getDataFor("decal_shimeji").partial_disp
-        decal_disp_map["decal_shimeji"] = partial_disp(function=_chibi_transform_fn)
+        decal_disp_map["decal_shimeji"] = partial_disp()
 
         return
 
@@ -809,6 +866,7 @@ init -25 python in mas_island_event:
         # TODO: me
         # _lock("decal_glitch")
         # _unlock("decal_house")
+        # TODO: Update monika_why_spaceroom when the islands are finished
         return
 
     def __unlocks_for_lvl_9():
@@ -847,7 +905,6 @@ init -25 python in mas_island_event:
 
         lvl_difference = store.mas_xp.level() - persistent._mas_islands_start_lvl
         # This should never happen
-        # TODO: potentially throw an error here?
         if lvl_difference < 0:
             return persistent._mas_islands_progress
 
@@ -1048,15 +1105,13 @@ label mas_islands(
             enable_interaction=enable_interaction,
             check_progression=check_progression
         )
+        renpy.start_predict(islands_displayable)
 
-    # HACK: We show the disp with a tranition first and then show the screen.
-    # With r7 we will be able to call screens with transitions,
-    # So we better to update this code later
     if fade_in:
         scene
-        show expression islands_displayable as islands_background
-        with Fade(0.5, 0, 0.5)
-        hide islands_background with None
+        # HACK: Set a transition for the next interaction
+        # TODO: test this for show screen, probably doesnt work
+        $ renpy.transition(Fade(0.5, 0, 0.5))
 
     if enable_interaction:
         # If this is an interaction, we call the screen so
@@ -1078,12 +1133,16 @@ label mas_islands(
 
     if fade_out:
         hide screen mas_islands
+        # HACK: Show the disp so we can fade out of it into spaceroom,
+        # fix it in r7 where you can hide screens with transitions
         show expression islands_displayable as islands_background zorder MAS_MONIKA_Z*10 with None
         call spaceroom(**spaceroom_kwargs)
         hide islands_background
         with Fade(0.5, 0, 0.5)
 
-    $ del islands_displayable, is_done
+    python:
+        renpy.stop_predict(islands_displayable)
+        del islands_displayable, is_done
     return
 
 label mas_island_upsidedownisland:
