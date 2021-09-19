@@ -45,8 +45,8 @@ If there are issues with MAS, please file a [bug report](https://github.com/Back
 
 To add a suggestion, visit [this link](https://github.com/Backdash/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20)
 
- ### Other Help
- Want to help with MAS? Navigate to the [issues page](https://github.com/Backdash/MonikaModDev/issues) to find current bugs or suggestions to work on.
+### Other Help
+Want to help with MAS? Navigate to the [issues page](https://github.com/Backdash/MonikaModDev/issues) to find current bugs or suggestions to work on.
 
 If you have a change you'd like to submit, open a [pull request](https://github.com/Backdash/MonikaModDev/pulls). Any changes made will be reviewed by contributors & fixed/added on to as needed.
 
@@ -91,8 +91,10 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 
 [More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
- ### Join the conversation
+### Join the conversation
 You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates. 
+
+If you want to find pianonotes, spritepacks, submods, external content, or translations, or just discuss MAS in general, visit [our discussions page](https://github.com/Monika-After-Story/MonikaModDev/discussions)
 
 Or if you're more Discord-ly inclined, for a constant stream of our favorite Monika-related content from around the web, and if you're interested in contributing to/building this mod, feel free to join our discord server:
  
