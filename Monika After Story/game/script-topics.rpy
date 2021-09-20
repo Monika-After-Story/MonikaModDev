@@ -17557,3 +17557,30 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_shelsilverstein",
+            category=["literature"],
+            prompt="{i}Masks{/}
+            random=True
+        )
+    )
+
+label monika_xyz:
+    m 6eub "Remember how during the original game I talked a little bit about Shel Silverstein?"
+    m 3esb "Well recently I've been reading a bit more of his poetry!"
+    m 1eub "There's one in particular that stood out to me."
+    m 1eud "It's called {i}Masks{/}, and goes something like this."
+    m 7dsd "She had blue skin, and so did he."
+    m 6dud "He kept it hid, and so did she."
+    m 4dkd "They searched for blue their whole life through,"
+    m 1lkc "Then passed right by, and never knew."
+    m 3ekd "This is a perfect example of how every poem has the potential to leave an impactful message, no matter its length or complexity."
+    m 3eud "If you go your entire life trying to hide something that you're ashamed of or be someone that everyone else wants you to be, you can miss out on meaningful opertunities or relationships."
+    m 6eub "Like ours, for example!"
+    m 6ekd "So just make sure to be yourself, things will always work out in the end."
+    m 5eubsb "I wouldn't want it any other way.~
+    return
+    
