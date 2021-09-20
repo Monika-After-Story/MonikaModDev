@@ -35,7 +35,7 @@ init -500 python in mas_parallax:
             self.on_click = on_click
             self.callback = None
 
-            # self._render = None
+            self._last_render_params = (0, 0, 0.0, 0.0)
 
         @property
         def x(self):
@@ -79,23 +79,19 @@ init -500 python in mas_parallax:
                 self._z
             )
 
-        # def __getstate__(self):
-        #     """
-        #     Check ParallaxSprite for more info
-        #     """
-        #     rv = super(ParallaxDecal, self).__getstate__()
-        #     rv["_render"] = None
-
-        #     return rv
-
         def event(self, ev, x, y, st):
             """
             The event handler
             """
             # Check for left mouse button click
             if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
-                if self.is_focused():
-                # if self._render is not None and self._render.is_pixel_opaque(x, y):
+                # if self.is_focused():
+                # NOTE: In the latest renpy keeping references to renders causes leaks.
+                # The focus system is slow and doesn't allow to use button displayables along with parallax sprites.
+                # So we'll just get the last render with `renpy.render`, that should be reliable since
+                # `render` is called before `event`. Also renpy does something similar internally, too.
+                last_render = renpy.render(self, *self._last_render_params)
+                if last_render.is_pixel_opaque(x, y):
                     if callable(self.on_click):
                         return self.on_click()
 
@@ -110,9 +106,9 @@ init -500 python in mas_parallax:
             img_surf = renpy.render(self.img, width, height, st, at)
             render = renpy.Render(img_surf.width, img_surf.height)
             render.blit(img_surf, (0, 0))
-            render.add_focus(self, None, 0, 0, img_surf.width, img_surf.height, 0, 0, render)
+            # render.add_focus(self, None, 0, 0, img_surf.width, img_surf.height, 0, 0, render)
 
-            # self._render = render
+            self._last_render_params = (render.width, render.height, st, at)
 
             return render
 
@@ -365,8 +361,6 @@ init -500 python in mas_parallax:
             # Set this again to run the methods
             self.zoom = min_zoom
 
-            # self._render = None
-
             self._enable_events = True
 
         @property
@@ -560,21 +554,6 @@ init -500 python in mas_parallax:
             self._transform.update()
             renpy.redraw(self, 0.0)
 
-        # def __getstate__(self):
-        #     """
-        #     This is used for pickling. Render objects cannot be pickled, so here we reset the value of _render to None.
-        #     The docs say CDD shouldn't keep Render, but we have to, as it works much better than
-        #     the built-in focus system which RenPy uses (for some reason it's more laggy and causes a few bugs).
-        #     Instead we keep the latest Render and check whether or not the pixel at the given x and y is opaque (apparently it's faster).
-
-        #     NOTE: The docs say CDD can be pickled, but it doesn't seem to be the case as Style objects inside them cannot be.
-        #         Nevertheless, I decided to handle this case so we can be sure that isn't our fault.
-        #     """
-        #     rv = super(ParallaxSprite, self).__getstate__()
-        #     rv["_render"] = None
-
-        #     return rv
-
         def _translate_coords(self, x, y):
             """
             Translate screen coordinates into relative coordinates of this sprite
@@ -644,7 +623,6 @@ init -500 python in mas_parallax:
                 elif ev.type == pygame.MOUSEBUTTONUP:
                     # Check for left mouse button click
                     if ev.button == 1:
-                        # if self._render is not None and self._render.is_pixel_opaque(x, y):
                         # Optimisazation: only propagate the event if it's withing the image
                         real_x, real_y = self._translate_coords(x, y)
                         x_size, y_size = self._transform.render_size
@@ -661,7 +639,6 @@ init -500 python in mas_parallax:
             # NOTE: This has to do full size screen render + instead of blit use place
             render = renpy.Render(width, height)
             render.place(self._transform, x=0, y=0, render=img_surf)
-            # self._render = render
 
             return render
 
@@ -739,8 +716,10 @@ init -500 python in mas_parallax:
             """
             The event handler
             """
-            for child in self.children:
+            for i in range(len(self.children)-1, -1, -1):
+                child = self.children[i]
                 rv = child.event(ev, x, y, st)
+
                 if rv is not None:
                     return rv
 
