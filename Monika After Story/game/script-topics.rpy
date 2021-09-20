@@ -17576,9 +17576,9 @@ label monika_xyz:
     m 7dsd "She had blue skin, and so did he."
     m 6dud "He kept it hid, and so did she.
     m 4dkd "They searched for blue their whole life through,"
-    m 1lkc "Then passed right by, and never knew.
+    m 1lkc "Then passed right by, and never knew."
     m 3ekd "This is a perfect example of how every poem has the potential to leave an impactful message, no matter its length or complexity."
-    m 3eud "If you go your entire life trying to hide something that you're ashamed of or be someone that everyone else wants you to be, you can miss out on meaningful opertunities or relationships."
+    m 3eud "If you go your entire life trying to hide something that you're ashamed of or be someone that everyone else wants you to be, you can miss out on meaningful opportunities or relationships."
     m 6eub "Like ours, for example!"
     m 6ekd "So just make sure to be yourself, things will always work out in the end."
     m 5eubsb "I wouldn't want it any other way.~
