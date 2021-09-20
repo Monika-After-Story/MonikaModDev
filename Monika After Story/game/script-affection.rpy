@@ -659,16 +659,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-        # unlock islands event if seen already
-        if store.seen_event("mas_monika_islands"):
-            if not store.mas_decoded_islands:
-                # lock the island event since we failed to decode images
-                store.mas_lockEventLabel("mas_monika_islands")
-
-            else:
-                # otherwise we can directly unlock this topic
-                store.mas_unlockEventLabel("mas_monika_islands")
-
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 

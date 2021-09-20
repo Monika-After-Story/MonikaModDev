@@ -385,7 +385,10 @@ label v0_12_3(version="v0_12_3"):
         # Unlock for people who has seen the event before
         if seen_event("mas_monika_islands"):
             mas_island_event.startProgression()
-            persistent._mas_islands_progress = 7
+            # Technically it's impossible to have this as 0,
+            # So it'll mean the islands were unlocked prior to the revamp
+            persistent._mas_islands_start_lvl = 0
+            mas_island_event.advanceProgression()
     return
 
 # 0.12.2.3
