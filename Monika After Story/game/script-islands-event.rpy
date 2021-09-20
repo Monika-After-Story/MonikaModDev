@@ -10,7 +10,6 @@ default persistent._mas_islands_start_lvl = None
 # Current progress, -1 means not unlocked yet
 default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 # Most of the progression is linear, but some things are unlocked at random
-# (e.g. either bookshelf or bushes at lvl X, but both at lvl X+Y)
 # that's so every player gets a bit different progression.
 # Bear in mind, if you decide to add a new item, you'll need an update script
 default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefination.getDefaultUnlocks()
@@ -487,6 +486,8 @@ init -25 python in mas_island_event:
 
     SHIMEJI_CHANCE = 100
 
+    DEF_SCREEN_ZORDER = 55
+
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
     decal_disp_map = dict()
@@ -814,17 +815,17 @@ init -25 python in mas_island_event:
         _unlock("island_8")
 
     def __unlocks_for_lvl_1():
-        _unlock("island_2")
+        _unlock("decal_shimeji")
+        _unlock("decal_glitch")
 
     def __unlocks_for_lvl_2():
-        _unlock("decal_glitch")
-        _unlock("decal_bushes")
+        _unlock("island_2")
 
     def __unlocks_for_lvl_3():
-        # Unlock only 1, the rest at lvl 5
-        if not (
-            _isUnocked("island_4")
-            or _isUnocked("island_5")
+        # Unlock only one, the rest at lvl 5
+        if (
+            not _isUnocked("island_4")
+            and not _isUnocked("island_5")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("island_4")
@@ -833,32 +834,41 @@ init -25 python in mas_island_event:
                 _unlock("island_5")
 
     def __unlocks_for_lvl_4():
-        _unlock("decal_shimeji")
-
-        # Unlock only 1, the rest at lvl 7
-        if not (
-            _isUnocked("decal_bookshelf")
-            or _isUnocked("decal_tree")
+        # Unlock only one, the rest at lvl 6
+        if (
+            not _isUnocked("island_6")
+            and not _isUnocked("island_7")
         ):
             if bool(random.randint(0, 1)):
-                _unlock("decal_bookshelf")
+                _unlock("island_6")
 
             else:
-                _unlock("decal_tree")
+                _unlock("island_7")
 
     def __unlocks_for_lvl_5():
-        _unlock("island_7")
-
+        _unlock("decal_bushes")
         # Unlock everything from lvl 3
         _unlock("island_4")
         _unlock("island_5")
 
     def __unlocks_for_lvl_6():
         _unlock("island_3")
+        # Unlock only one, the rest at lvl 7
+        if (
+            not _isUnocked("decal_bookshelf")
+            and not _isUnocked("decal_tree")
+        ):
+            if bool(random.randint(0, 1)):
+                _unlock("decal_bookshelf")
+
+            else:
+                _unlock("decal_tree")
+        # Unlock everything from lvl 4
+        _unlock("island_7")
         _unlock("island_6")
 
     def __unlocks_for_lvl_7():
-        # Unlock everything from lvl 4
+        # Unlock everything from lvl 6
         _unlock("decal_bookshelf")
         _unlock("decal_tree")
 
@@ -866,11 +876,7 @@ init -25 python in mas_island_event:
         # TODO: me
         # _lock("decal_glitch")
         # _unlock("decal_house")
-        # TODO: Update monika_why_spaceroom when the islands are finished
-        return
-
-    def __unlocks_for_lvl_9():
-        # TODO: me
+        # Update monika_why_spaceroom when the islands are finished
         return
 
     # # # END
@@ -881,8 +887,6 @@ init -25 python in mas_island_event:
         Method to unlock various islands features when the player progresses.
         For example: new decals, new islands, new extra events, set persistent vars, etc.
         """
-        persistent._mas_islands_unlocks.update(IslandsImageDefination.getDefaultUnlocks())
-
         g = globals()
         for i in range(persistent._mas_islands_progress + 1):
             fn_name = renpy.munge("__unlocks_for_lvl_{}".format(i))
@@ -895,18 +899,15 @@ init -25 python in mas_island_event:
         Increments the lvl of progression of the islands event,
         it will do nothing if the player hasn't unlocked the islands yet or if
         the current lvl is invalid
-
-        OUT:
-            int - current progress lvl
         """
         # If this var is None, then the user hasn't unlocked the event yet
         if persistent._mas_islands_start_lvl is None:
-            return persistent._mas_islands_progress
+            return
 
         lvl_difference = store.mas_xp.level() - persistent._mas_islands_start_lvl
         # This should never happen
         if lvl_difference < 0:
-            return persistent._mas_islands_progress
+            return
 
         if store.mas_isMoniEnamored(higher=True):
             if store.mas_isMoniLove(higher=True):
@@ -924,6 +925,12 @@ init -25 python in mas_island_event:
         persistent._mas_islands_progress = min(max(new_progress, persistent._mas_islands_progress), MAX_PROGRESS_LOVE)
         __handleUnlocks()
 
+        return
+
+    def getProgression():
+        """
+        Returns current islands progress lvl
+        """
         return persistent._mas_islands_progress
 
     def startProgression():
@@ -942,7 +949,7 @@ init -25 python in mas_island_event:
         persistent._mas_islands_progress = DEF_PROGRESS
         persistent._mas_islands_unlocks = IslandsImageDefination.getDefaultUnlocks()
 
-    def getIslandsDisp(enable_interaction=True, check_progression=False):
+    def getIslandsDisplayable(enable_interaction=True, check_progression=False):
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
@@ -1056,62 +1063,57 @@ init 5 python:
             rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
             aff_range=(mas_aff.ENAMORED, None),
             flags=EV_FLAG_DEF if mas_decoded_islands else EV_FLAG_HFM
-        )
+        ),
+        restartBlacklist=True
     )
 
 label mas_monika_islands:
-    # Sanity check in case of restart and failing to decode
-    if not mas_decoded_islands:
-        return
-
     m 1eub "I'll let you admire the scenery for now."
     m 1hub "Hope you like it!"
 
-    # Raise shields
-    python:
-        mas_OVLHide()
-        mas_RaiseShield_core()
-        disable_esc()
-        renpy.store.mas_hotkeys.no_window_hiding = True
-
     call mas_islands(force_exp="monika 1eua")
-
-    # Drop shields
-    python:
-        store.mas_hotkeys.no_window_hiding = False
-        enable_esc()
-        mas_MUINDropShield()
-        mas_OVLShow()
 
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
 
+
 label mas_islands(
     fade_in=True,
     fade_out=True,
+    raise_shields=True,
+    drop_shields=True,
     enable_interaction=True,
     check_progression=False,
     **spaceroom_kwargs
 ):
     # Sanity check
-    if persistent._mas_islands_start_lvl is None:
+    if persistent._mas_islands_start_lvl is None or not mas_decoded_islands:
         return
 
     python:
         # NOTE: We can't progress filter here, it looks bad
         spaceroom_kwargs.setdefault("progress_filter", False)
         is_done = False
-        islands_displayable = store.mas_island_event.getIslandsDisp(
+        islands_displayable = mas_island_event.getIslandsDisplayable(
             enable_interaction=enable_interaction,
             check_progression=check_progression
         )
         renpy.start_predict(islands_displayable)
 
     if fade_in:
+        # HACK: Show the disp so we can fade in
+        # fix it in r7 where you can show/call screens with transitions
         scene
-        # HACK: Set a transition for the next interaction
-        # TODO: test this for show screen, probably doesnt work
-        $ renpy.transition(Fade(0.5, 0, 0.5))
+        show expression islands_displayable as islands_background onlayer screens zorder mas_island_event.DEF_SCREEN_ZORDER
+        with Fade(0.5, 0, 0.5)
+        hide islands_background onlayer screens with None
+
+    if raise_shields:
+        python:
+            mas_OVLHide()
+            mas_RaiseShield_core()
+            disable_esc()
+            mas_hotkeys.no_window_hiding = True
 
     if enable_interaction:
         # If this is an interaction, we call the screen so
@@ -1131,19 +1133,27 @@ label mas_islands(
         # Otherwise just show it as a static image
         show screen mas_islands(islands_displayable, show_return_button=False)
 
+    if drop_shields:
+        python:
+            mas_hotkeys.no_window_hiding = False
+            enable_esc()
+            mas_MUINDropShield()
+            mas_OVLShow()
+
     if fade_out:
         hide screen mas_islands
         # HACK: Show the disp so we can fade out of it into spaceroom,
         # fix it in r7 where you can hide screens with transitions
-        show expression islands_displayable as islands_background zorder MAS_MONIKA_Z*10 with None
+        show expression islands_displayable as islands_background onlayer screens zorder mas_island_event.DEF_SCREEN_ZORDER with None
         call spaceroom(**spaceroom_kwargs)
-        hide islands_background
+        hide islands_background onlayer screens
         with Fade(0.5, 0, 0.5)
 
     python:
         renpy.stop_predict(islands_displayable)
         del islands_displayable, is_done
     return
+
 
 label mas_island_upsidedownisland:
     m "Oh, that."
@@ -1299,7 +1309,8 @@ label mas_island_day2:
         m "This would definitely be the best time to have a picnic."
         m "We even have a great view to accompany it with!"
         m "Wouldn't it be nice?"
-        m "Eating under the Cherry Blossom tree."
+        if mas_island_event._isUnocked("decal_tree"):
+            m "Eating under the Cherry Blossom tree."
         m "Adoring the scenery around us."
         m "Enjoying ourselves with each other's company."
         m "Ahh, that'd be fantastic~"
@@ -1465,8 +1476,8 @@ label mas_island_bookshelf2:
 
 screen mas_islands(islands_displayable, show_return_button=True):
     style_prefix "island"
-    layer "master"
-    zorder MAS_MONIKA_Z*10
+    layer "screens"
+    zorder mas_island_event.DEF_SCREEN_ZORDER
 
     if show_return_button:
         key "K_ESCAPE" action Return(False)
@@ -1474,49 +1485,49 @@ screen mas_islands(islands_displayable, show_return_button=True):
     add islands_displayable
 
     if show_return_button:
-        # Unsure why, but w/o hbox renpy won't apply the prefix style
+        # Unsure why, but w/o a hbox renpy won't apply the style prefix
         hbox:
             align (0.5, 0.98)
             textbutton _("Go Back"):
                 action Return(False)
 
-screen mas_islands_background:
+# screen mas_islands_background:
 
-    add mas_island_event.getBackground()
+#     add mas_island_event.getBackground()
 
-    if _mas_island_shimeji:
-        add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-            xpos 935
-            ypos 395
-            zoom 0.5
+#     if _mas_island_shimeji:
+#         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
+#             xpos 935
+#             ypos 395
+#             zoom 0.5
 
-screen mas_show_islands():
-    style_prefix "island"
-    imagemap:
+# screen mas_show_islands():
+#     style_prefix "island"
+#     imagemap:
 
-        ground mas_island_event.getBackground()
+#         ground mas_island_event.getBackground()
 
-        hotspot (11, 13, 314, 270) action Return("mas_island_upsidedownisland") # island upside down
-        hotspot (403, 7, 868, 158) action Return("mas_island_sky") # sky
-        hotspot (699, 347, 170, 163) action Return("mas_island_glitchedmess") # glitched house
-        hotspot (622, 269, 360, 78) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
-        hotspot (716, 164, 205, 105) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
-        hotspot (872, 444, 50, 30) action Return("mas_island_bookshelf") # bookshelf
+#         hotspot (11, 13, 314, 270) action Return("mas_island_upsidedownisland") # island upside down
+#         hotspot (403, 7, 868, 158) action Return("mas_island_sky") # sky
+#         hotspot (699, 347, 170, 163) action Return("mas_island_glitchedmess") # glitched house
+#         hotspot (622, 269, 360, 78) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
+#         hotspot (716, 164, 205, 105) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
+#         hotspot (872, 444, 50, 30) action Return("mas_island_bookshelf") # bookshelf
 
-        if _mas_island_shimeji:
-            hotspot (935, 395, 30, 80) action Return("mas_island_shimeji") # Mini Moni
+#         if _mas_island_shimeji:
+#             hotspot (935, 395, 30, 80) action Return("mas_island_shimeji") # Mini Moni
 
-    if _mas_island_shimeji:
-        add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-            xpos 935
-            ypos 395
-            zoom 0.5
+#     if _mas_island_shimeji:
+#         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
+#             xpos 935
+#             ypos 395
+#             zoom 0.5
 
-    hbox:
-        yalign 0.98
-        xalign 0.96
-        textbutton _mas_toggle_frame_text action [ToggleVariable("_mas_island_window_open"),ToggleVariable("_mas_toggle_frame_text","Open Window", "Close Window") ]
-        textbutton "Go Back" action Return(False)
+#     hbox:
+#         yalign 0.98
+#         xalign 0.96
+#         textbutton _mas_toggle_frame_text action [ToggleVariable("_mas_island_window_open"),ToggleVariable("_mas_toggle_frame_text","Open Window", "Close Window") ]
+#         textbutton "Go Back" action Return(False)
 
 
 # Defining a new style for buttons, because other styles look ugly
@@ -1549,9 +1560,9 @@ style island_button_text_dark is generic_button_text_dark:
     outlines []
 
 # mini moni ATL
-transform moni_sticker_mid:
-    block:
-        function randomPauseMonika
-        parallel:
-            sticker_move_n
-        repeat
+# transform moni_sticker_mid:
+#     block:
+#         function randomPauseMonika
+#         parallel:
+#             sticker_move_n
+#         repeat

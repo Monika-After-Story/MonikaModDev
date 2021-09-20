@@ -35,7 +35,8 @@ init -500 python in mas_parallax:
             self.on_click = on_click
             self.callback = None
 
-            self._last_render_params = (0, 0, 0.0, 0.0)
+            # width, height, at offset
+            self._last_render_params = (0, 0, 0.0)
 
         @property
         def x(self):
@@ -90,7 +91,14 @@ init -500 python in mas_parallax:
                 # The focus system is slow and doesn't allow to use button displayables along with parallax sprites.
                 # So we'll just get the last render with `renpy.render`, that should be reliable since
                 # `render` is called before `event`. Also renpy does something similar internally, too.
-                last_render = renpy.render(self, *self._last_render_params)
+                w, h, at_offset = self._last_render_params
+                last_render = renpy.render(
+                    self,
+                    w,
+                    h,
+                    st,
+                    st + at_offset
+                )
                 if last_render.is_pixel_opaque(x, y):
                     if callable(self.on_click):
                         return self.on_click()
@@ -108,7 +116,7 @@ init -500 python in mas_parallax:
             render.blit(img_surf, (0, 0))
             # render.add_focus(self, None, 0, 0, img_surf.width, img_surf.height, 0, 0, render)
 
-            self._last_render_params = (render.width, render.height, st, at)
+            self._last_render_params = (render.width, render.height, at-st)
 
             return render
 

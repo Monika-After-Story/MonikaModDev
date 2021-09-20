@@ -3453,21 +3453,16 @@ label greeting_ourreality:
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
 
-    $ mas_OVLHide()
-    $ mas_RaiseShield_core()
-    $ disable_esc()
-    call mas_islands(fade_out=False, check_progression=False, enable_interaction=False)
+    call mas_islands(fade_out=False, drop_shields=False, enable_interaction=False)
 
+    pause 4.0
     m "Well..."
     m "What do you think?"
     m "I worked really hard on this."
     m "A place just for the both of us."
     m "It's also where I can keep practicing my programming skills."
 
-    $ enable_esc()
-    $ mas_MUINDropShield()
-    $ mas_OVLShow()
-    call mas_islands(fade_in=False, check_progression=False, enable_interaction=False, force_exp="monika 1lsc")
+    call mas_islands(fade_in=False, raise_shields=False, enable_interaction=False, force_exp="monika 1lsc")
 
     #Transition back to Monika
     m 1lsc "Being in the classroom all day can be dull."
