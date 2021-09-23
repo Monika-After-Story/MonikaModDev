@@ -381,6 +381,17 @@ label v0_12_3_1(version="v0_12_3_1"):
             "mas_bday_spent_time_with",
             action=EV_ACT_PUSH
             )
+
+        mas_setEVLPropValues(
+            "mas_bday_pool_happy_bday",
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            )
+
+        mas_setEVLPropValues(
+            "mas_bday_postbday_notimespent",
+            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            )
+
     return
 
 # 0.12.2.3

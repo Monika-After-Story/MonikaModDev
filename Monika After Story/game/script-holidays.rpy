@@ -6505,21 +6505,34 @@ image mas_bday_balloons = MASFilterSwitch(
 
 ############### [HOL060]: METHODS
 init -1 python:
-    def mas_isMonikaBirthday(_date=None):
+    def mas_isMonikaBirthday(_datetime=None, extend=0):
         """
         checks if the given date is monikas birthday
-        Comparison is done solely with month and day
 
         IN:
-            _date - date to check. If not passed in, we use today.
+            _datetime - datetime to check. If not passed in, we use now.
+            extend - int of how many hours we want to extend past 922
+                defaults to 0
         """
-        if _date is None:
-            _date = datetime.date.today()
+        if _datetime is None:
+            _datetime = datetime.datetime.now()
 
-        return (
-            _date.month == mas_monika_birthday.month
-            and _date.day == mas_monika_birthday.day
+        is_bday = (
+            _datetime.month == mas_monika_birthday.month
+            and _datetime.day == mas_monika_birthday.day
         )
+
+        if extend > 0:
+            return (
+                is_bday
+                or (
+                    _datetime.month == mas_monika_birthday.month
+                    and _datetime.day == mas_monika_birthday.day + 1
+                    and _datetime.hour <= extend
+                )
+            )
+
+        return is_bday
 
 
     def mas_getNextMonikaBirthday():
@@ -6756,7 +6769,7 @@ init 5 python:
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             start_date=mas_monika_birthday,
-            end_date=mas_monika_birthday + datetime.timedelta(days=1),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
             years=[]
         ),
         code="CMP",
@@ -6775,8 +6788,14 @@ label mas_bday_pool_happy_bday:
     $ mas_gainAffection(5,bypass=True)
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
-        m 3eka "I was waiting for you to say those magic words~"
-        m 1eub "{i}Now{/i} we can call it a birthday celebration!"
+
+        if persistent._mas_bday_said_happybday:
+            m 3eka "First you sang it to me and now you've said it..."
+
+        else:
+            m 3eka "I was waiting for you to say those magic words~"
+            m 1eub "{i}Now{/i} we can call it a birthday celebration!"
+
         m 1eka "You really made this occasion so special, [player]."
         m 1ekbsa "I can't thank you enough for loving me this much..."
 
@@ -7121,7 +7140,7 @@ init 5 python:
                 "and not persistent._mas_bday_gone_over_bday"
             ),
             action=EV_ACT_PUSH,
-            start_date=mas_monika_birthday+datetime.timedelta(days=1),
+            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
             end_date=mas_monika_birthday+datetime.timedelta(days=8),
             years=[]
         ),
