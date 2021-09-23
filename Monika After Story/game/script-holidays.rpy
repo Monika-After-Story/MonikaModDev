@@ -6997,7 +6997,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
             conditional="mas_recognizedBday()",
-            action=EV_ACT_QUEUE,
+            action=EV_ACT_PUSH,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
             end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
             years=[]
@@ -7030,6 +7030,7 @@ label mas_bday_spent_time_with:
 
 label mas_bday_spent_time_with_wrapup:
     $ mas_rmallEVL("mas_bday_spent_time_with")
+    $ mas_rmallEVL("mas_bday_postbday_notimespent")
     $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
 
     if gave_gifts > 0:
