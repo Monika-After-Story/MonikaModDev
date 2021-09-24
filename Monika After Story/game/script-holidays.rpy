@@ -6511,7 +6511,7 @@ init -1 python:
 
         IN:
             _datetime - datetime to check. If not passed in, we use now.
-            extend - int of how many hours we want to extend past 922
+            _extend - int of how many hours we want to extend past 922
                 defaults to 0
         """
         if _datetime is None:
