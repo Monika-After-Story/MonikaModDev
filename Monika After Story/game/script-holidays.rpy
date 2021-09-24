@@ -6505,7 +6505,7 @@ image mas_bday_balloons = MASFilterSwitch(
 
 ############### [HOL060]: METHODS
 init -1 python:
-    def mas_isMonikaBirthday(_datetime=None, extend=0):
+    def mas_isMonikaBirthday(_datetime=None, _extend=0):
         """
         checks if the given date is monikas birthday
 
@@ -6522,13 +6522,13 @@ init -1 python:
             and _datetime.day == mas_monika_birthday.day
         )
 
-        if extend > 0:
+        if _extend > 0:
             return (
                 is_bday
                 or (
                     _datetime.month == mas_monika_birthday.month
                     and _datetime.day == mas_monika_birthday.day + 1
-                    and _datetime.hour <= extend
+                    and _datetime.hour <= _extend
                 )
             )
 

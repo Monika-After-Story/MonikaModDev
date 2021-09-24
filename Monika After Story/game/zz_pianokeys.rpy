@@ -258,7 +258,7 @@ label mas_piano_def_prac:
 label mas_piano_hb_win:
     $ mas_gainAffection()
     m 1eua "Wow! You almost got it!"
-    if mas_isMonikaBirthday(extend = 1):
+    if mas_isMonikaBirthday(_extend = 1):
         $ persistent._mas_bday_said_happybday = True
         $ persistent._mas_bday_no_recognize = False
         if mas_isplayer_bday():
@@ -302,7 +302,7 @@ label mas_piano_hb_fail:
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
-    if mas_isMonikaBirthday(extend = 1):
+    if mas_isMonikaBirthday(_extend = 1):
         $ persistent._mas_bday_said_happybday = True
         $ persistent._mas_bday_no_recognize = False
         if mas_isplayer_bday():
