@@ -511,6 +511,7 @@ init -500 python in mas_parallax:
             # Offsets from the transform. That's so if the sprite has a custom func
             # for its transform which modifies these params, we don't have to
             # account for zoom level in the func, instead we do it here for convenience.
+            # If the values are floats, we have to convert them from relative to absolute values
             tf_x_pos, tf_y_pos = self._transform.pos
 
             if tf_x_pos is None:
@@ -533,36 +534,33 @@ init -500 python in mas_parallax:
                 tf_x_anchor = 0
 
             elif isinstance(tf_x_anchor, float):
-                tf_x_anchor = (tf_x_anchor - tf_render_x_size / 2.0 + tf_child_x_size / 2.0) / tf_child_x_size
+                tf_x_anchor = (tf_x_anchor - tf_render_x_size/2.0 + tf_child_x_size/2.0) / tf_child_x_size
 
             if tf_y_anchor is None:
                 tf_y_anchor = 0
 
             elif isinstance(tf_y_anchor, float):
-                tf_y_anchor = (tf_y_anchor - tf_render_y_size / 2.0 + tf_child_y_size / 2.0) / tf_child_y_size
+                tf_y_anchor = (tf_y_anchor - tf_render_y_size/2.0 + tf_child_y_size/2.0) / tf_child_y_size
 
-            # Our offsets consist of 6 parts:
+            # Our offsets consist of 5 parts:
             # - base coords give offsets to x and y (depend on zoom level)
             # - shift from the parallax effect (depends on mouse pos)
             # - correction to the zoom effect (depends on mouse pos)
             # - offsets from the container (depend on zoom level)
-            # - offsets from the transfrom xpos and ypos (depend on zoom level)
-            # - offsets from the transfrom xanchor and yanchor (depend on zoom level)
+            # - offsets from the transfrom xpos, ypos, xanchor, yanchor (depend on zoom level)
             self._transform.xoffset = (
                 self._x*(1.0 + zoom_factor)
                 + available_x_shift*(1.0 - mouse_x_factor)
                 - zoom_factor*self.mouse_x
                 - container_offset_x*(1.0 + zoom_factor)
-                - tf_x_pos * -zoom_factor
-                + tf_x_anchor * -zoom_factor
+                + zoom_factor*(tf_x_pos - tf_x_anchor)
             )
             self._transform.yoffset = (
                 self._y*(1.0 + zoom_factor)
                 + available_y_shift*(1.0 - mouse_y_factor)
                 - zoom_factor*self.mouse_y
                 - container_offset_y*(1.0 + zoom_factor)
-                - tf_y_pos * -zoom_factor
-                + tf_y_anchor * -zoom_factor
+                + zoom_factor*(tf_y_pos - tf_y_anchor)
             )
 
             # Now update the displayable

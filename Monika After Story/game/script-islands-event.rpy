@@ -16,14 +16,39 @@ default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDef
 
 
 ### initialize the island images
-init 1 python:
+init 1:
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
     #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
-    mas_decoded_islands = store.mas_island_event.decodeImages()
-    mas_cannot_decode_islands = not mas_decoded_islands
+    define mas_decoded_islands = store.mas_island_event.decodeImages()
+    define mas_cannot_decode_islands = not mas_decoded_islands
+
+    python:
+        def mas_canShowIslands(flt=None):
+            """
+            Global check for whether or not we can show the islands event
+            This only checks the technical side, NOT event unlocks
+
+            IN:
+                flt - the filter to use in check
+                    If None, we fetch the current filter
+                    If False, we don't check the fitler at all
+                    (Default: None)
+
+            OUT:
+                boolean
+            """
+            # If None, get the current flt
+            if flt is None:
+                flt = mas_sprites.get_filter()
+
+            # IF False, we don't need to check the flt
+            elif flt is False:
+                return mas_decoded_islands
+
+            return mas_decoded_islands and mas_island_event.isFilterSupported(flt)
 
 
 # Transform for weather overlays
@@ -486,12 +511,12 @@ init -25 python in mas_island_event:
     from zipfile import ZipFile
 
     import store
-    import store.mas_dockstat as mds
-    import store.mas_ics as mis
     from store import (
         persistent,
         mas_utils,
         mas_weather,
+        mas_sprites,
+        mas_ics,
         Transform,
         LiveComposite,
         MASWeatherMap,
@@ -514,6 +539,14 @@ init -25 python in mas_island_event:
 
     DEF_SCREEN_ZORDER = 55
 
+    SUPPORTED_FILTERS = frozenset(
+        {
+            mas_sprites.FLT_DAY,
+            mas_sprites.FLT_NIGHT,
+            mas_sprites.FLT_SUNSET
+        }
+    )
+
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
     decal_disp_map = dict()
@@ -522,8 +555,19 @@ init -25 python in mas_island_event:
     overlay_disp_map = dict()
 
     # setup the docking station we are going to use here
-    islands_station = store.MASDockingStation(mis.ISLANDS_FOLDER)
+    islands_station = store.MASDockingStation(mas_ics.ISLANDS_FOLDER)
 
+    def isFilterSupported(flt):
+        """
+        Checks if the event supports a filter
+
+        IN:
+            flt - the filter to check (perhaps one of the constants in mas_sprites)
+
+        OUT:
+            boolean
+        """
+        return flt in SUPPORTED_FILTERS
 
     def _select_img(st, at, mfwm):
         """
@@ -541,7 +585,7 @@ init -25 python in mas_island_event:
         # Nonideal, but we have to do this because of the tree
         # FIXME: ideal solution would be split the images by seasons too
         if store.mas_isWinter():
-            return mfwm.fw_get(store.mas_sprites.get_filter(), store.mas_weather_snow), None
+            return mfwm.fw_get(mas_sprites.get_filter(), store.mas_weather_snow), None
 
         return store.mas_fwm_select(st, at, mfwm)
 
@@ -590,7 +634,7 @@ init -25 python in mas_island_event:
             mas_utils.writelog(err_msg.format("Missing package"))
             return False
 
-        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=mis.ISLAND_PKG_CHKSUM)
+        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=mas_ics.ISLAND_PKG_CHKSUM)
 
         if not pkg_data:
             mas_utils.writelog(err_msg.format("Bad package."))
@@ -1094,7 +1138,7 @@ init 5 python:
             unlocked=False,
             rules={"no_unlock": None, "bookmark_rule": store.mas_bookmarks_derand.WHITELIST},
             aff_range=(mas_aff.ENAMORED, None),
-            flags=EV_FLAG_DEF if mas_decoded_islands else EV_FLAG_HFM
+            flags=EV_FLAG_DEF if mas_canShowIslands(False) else EV_FLAG_HFM
         ),
         restartBlacklist=True
     )
@@ -1119,7 +1163,7 @@ label mas_islands(
     **spaceroom_kwargs
 ):
     # Sanity check
-    if persistent._mas_islands_start_lvl is None or not mas_decoded_islands:
+    if persistent._mas_islands_start_lvl is None or not mas_canShowIslands(False):
         return
 
     python:

@@ -2992,7 +2992,7 @@ init -2 python in mas_background:
             curr_time - current time as datetime.time
         """
         # As of now we only have these, but just in case of future changes
-        if new_flt in (mspr.FLT_DAY, mspr.FLT_NIGHT, mspr.FLT_SUNSET):
+        if store.mas_canShowIslands(new_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -3021,7 +3021,7 @@ init -2 python in mas_background:
         """
         first_flt = new_chunk.first_flt()
         # As of now we only have these, but just in case of future changes
-        if first_flt in (mspr.FLT_DAY, mspr.FLT_NIGHT, mspr.FLT_SUNSET):
+        if store.mas_canShowIslands(first_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",

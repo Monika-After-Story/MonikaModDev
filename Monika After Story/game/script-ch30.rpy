@@ -2082,6 +2082,10 @@ label ch30_reset:
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
+
+    # Did Monika make any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -2095,8 +2099,5 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
-
-    # Did Monika get any progress on the islands?
-    $ store.mas_island_event.advanceProgression()
 
     return
