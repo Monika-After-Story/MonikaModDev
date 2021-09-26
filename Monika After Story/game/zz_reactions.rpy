@@ -998,7 +998,8 @@ label mas_reaction_gift_starter_bday:
         m "But actually getting one is like a dream come true..."
     else:
         m "Another gift?{w=0.5} For me?"
-        m 1eka "This really is a dream come true, [player]"
+        m 1eka "This really is a dream come true, [player]."
+
     m 1sua "Now, what's inside?"
     m 1suo "Oh, it's..."
     return
