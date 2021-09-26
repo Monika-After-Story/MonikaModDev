@@ -7716,7 +7716,7 @@ label monika_orchestra:
                     "Not much.":
                         $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
                         m 2eka "That's okay, [player]."
-                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 2eua "After all, it's a pretty complicated instrument to pick up."
                         m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
 
                     "I just started.":
