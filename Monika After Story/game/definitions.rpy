@@ -1375,6 +1375,7 @@ python early:
             """
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
+            TODO: include checkConditional
 
             For variable explanations, please see the static method
             filterEvents
@@ -1814,6 +1815,7 @@ python early:
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
+            TODO: include checkConditional
 
             IN:
                 ev - single event to check
@@ -1935,6 +1937,7 @@ python early:
             # return the available events dict
             return available_events
 
+        #TODO: Depricate this
         @staticmethod
         def _checkAffectionRule(ev,keepNoRule=False):
             """
@@ -1948,7 +1951,7 @@ python early:
             """
             return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
 
-
+        #TODO: Depricate this
         @staticmethod
         def checkAffectionRules(events,keepNoRule=False):
             """
@@ -5823,6 +5826,7 @@ init -1 python:
         return mas_isDay(_time)
 
 
+    #TODO: Depricate these funcs in favour of mas_current_background.isFltDay and isFltNight
     def mas_isDay(_time):
         """
         Checks if the sun would be up during the given time
@@ -7971,6 +7975,7 @@ define boy = "boy"
 define guy = "guy"
 define him = "him"
 define himself = "himself"
+define hero = "hero"
 
 # Input characters filters
 define numbers_only = "0123456789"
@@ -8159,7 +8164,8 @@ label mas_set_gender:
                 "boy": "boy",
                 "guy": "guy",
                 "him": "him",
-                "himself": "himself"
+                "himself": "himself",
+                "hero": "hero"
             },
             "F": {
                 "his": "her",
@@ -8171,7 +8177,8 @@ label mas_set_gender:
                 "boy": "girl",
                 "guy": "girl",
                 "him": "her",
-                "himself": "herself"
+                "himself": "herself",
+                "hero": "heroine"
             },
             "X": {
                 "his": "their",
@@ -8183,7 +8190,8 @@ label mas_set_gender:
                 "boy": "person",
                 "guy": "person",
                 "him": "them",
-                "himself": "themselves"
+                "himself": "themselves",
+                "hero": "hero"
             }
         }
 
@@ -8199,6 +8207,7 @@ label mas_set_gender:
         guy = pronouns["guy"]
         him = pronouns["him"]
         himself = pronouns["himself"]
+        hero = pronouns["hero"]
     return
 
 style jpn_text:

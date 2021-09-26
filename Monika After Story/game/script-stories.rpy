@@ -633,7 +633,7 @@ label mas_story_genie_regret:
     m 1eua "There was once a genie who was immortal..."
     m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
     m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
-    extend 1rsc "some of them unpleasant."
+    extend 1rsc "some of them were unpleasant."
     m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
     m 1rkc "Some of which, he knew were caused by wishes he had granted."
     m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."

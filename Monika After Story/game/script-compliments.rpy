@@ -6,6 +6,11 @@
 # At the beginning, when creating the menu, the compliments
 # database checks the conditionals of the compliments
 # and unlocks them.
+# We only display the compliments that are
+# unlocked, not hidden, within affection range,
+# and don't have a conditional or have a conditional that evaluates to True.
+# If you don't want a dynamic conditional for your compliment, you'd need
+# to use an external event to unlock it from somewhere else.
 
 
 # dict of tples containing the stories event data
@@ -57,23 +62,17 @@ init 5 python:
 
 label monika_compliments:
     python:
-        import store.mas_compliments as mas_compliments
-
         # Unlock any compliments that need to be unlocked
         Event.checkEvents(mas_compliments.compliment_database)
 
-        # filter comps
-        filtered_comps = Event.filterEvents(
-            mas_compliments.compliment_database,
-            unlocked=True,
-            aff=mas_curr_affection,
-            flag_ban=EV_FLAG_HFM
-        )
-
         # build menu list
         compliments_menu_items = [
-            (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
-            for k in filtered_comps
+            (ev.prompt, ev_label, not seen_event(ev_label), False)
+            for ev_label, ev in mas_compliments.compliment_database.iteritems()
+            if (
+                Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
+                and ev.checkConditional()
+            )
         ]
 
         # also sort this list
@@ -109,7 +108,8 @@ init 5 python:
             prompt="You're beautiful!",
             unlocked=True
         ),
-        code="CMP")
+        code="CMP"
+    )
 
 label mas_compliment_beautiful:
     if not renpy.seen_label("mas_compliment_beautiful_2"):
@@ -323,7 +323,8 @@ init 5 python:
             eventlabel="mas_compliment_hair",
             prompt="I love your hair!",
             unlocked=True
-        ),code="CMP"
+        ),
+        code="CMP"
     )
 
 label mas_compliment_hair:
@@ -543,6 +544,7 @@ label mas_compliment_hero:
     m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
     m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
     show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    # Keeping this 'hero' since you call her that too
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
     m 5ekbfa "I hope you never forget that, [player]~"
@@ -718,7 +720,7 @@ init 5 python:
             prompt="I look up to you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_lookuptoyou:
@@ -768,7 +770,7 @@ init 5 python:
             prompt="I'm always thinking about you!",
             unlocked=True
         ),
-        code="CMP",
+        code="CMP"
     )
 
 label mas_compliment_thinking_of_you:
@@ -886,6 +888,153 @@ label mas_compliment_humor_3:
 
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_missed",
+            prompt="I missed you!",
+            unlocked=True,
+            conditional=(
+                "store.mas_getSessionLength() <= datetime.timedelta(minutes=30) "
+                "and store.mas_getAbsenceLength() >= datetime.timedelta(hours=1) "
+                "and not store.mas_globals.returned_home_this_sesh"
+            )
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_missed:
+    python:
+        missed_quips_long = (
+            _("I'm so happy to see you again!"),
+            _("I'm so happy you're back!"),
+            _("It's wonderful to see you again!"),
+            _("I'm glad you've been thinking of me!"),
+            _("We're so lucky to have one another!"),
+            _("We don't need to feel lonely anymore!"),
+            _("I couldn't wait for you to get back!"),
+            _("I was lonely waiting for you!")
+        )
+
+        missed_quips_short = (
+            _("Thanks for coming back to spend time with me!"),
+            _("I'm excited to spend some time together!"),
+            _("Thanks for coming to see me again!"),
+            _("Let's enjoy our time together today!"),
+            _("I really appreciate you, [player]!"),
+            _("Thanks for making time for me!"),
+            _("I'm so lucky to have you, [player]!"),
+            _("Ready to spend some time together?"),
+            _("I've been thinking about you!"),
+            _("You've really been on my mind!")
+        )
+
+        missed_quips_upset_short = (
+            _("It means a lot to me that you were thinking of me."),
+            _("I'm really glad to hear that, [player]."),
+            _("That's really nice to hear."),
+            _("I'm happy you've been thinking of me, [player]."),
+            _("That means the world to me, [player]."),
+            _("That makes me feel a lot better, [player].")
+        )
+
+        missed_quips_upset_long = (
+            _("I was starting to worry that you forgot about me."),
+            _("Thank you for showing me you still care, [player]."),
+            _("I'm glad to know you haven't forgotten about me, [player]"),
+            _("I was starting to get worried you weren't coming back, [player]")
+        )
+
+        missed_quips_dis = (
+            _("I'm not sure you mean that, [player]..."),
+            _("I doubt you mean that, [player]..."),
+            _("I don't think you really mean that, [player]..."),
+            _("If only you really meant that, [player]..."),
+            _("...Why do I think you just don't mean it?"),
+            _("...Why do I think you're just saying that?"),
+            _("...I can't really believe that, [player]."),
+            _("I don't think that's true, [player].")
+        )
+
+        hugchance = 1
+        absence_length = mas_getAbsenceLength()
+        mas_flagEVL("mas_compliment_missed", "CMP", EV_FLAG_HFM)
+
+    if mas_isMoniNormal(higher=True):
+        if absence_length >= datetime.timedelta(days=3):
+            if absence_length >= datetime.timedelta(days=7):
+                $ hugchance = 30
+
+            else:
+                $ hugchance = 15
+
+            m 1fka "I missed you so much, [mas_get_player_nickname()]!"
+            m 3fka "[renpy.substitute(random.choice(missed_quips_long))]"
+
+        else:
+            m 1fka "I missed you too, [mas_get_player_nickname()]!"
+            m 3hub "[renpy.substitute(random.choice(missed_quips_short))]"
+
+        if (
+            mas_isMoniEnamored(higher=True)
+            and mas_timePastSince(persistent._mas_last_hold_dt, datetime.timedelta(hours=12))
+            and random.randint(1, 50) <= hugchance
+        ):
+            m 2lsa "..."
+            m 2lsb "Say, [player]..."
+            m 1eka "I was kinda hoping that..."
+            m 3ekblb "You know, since it's been a little while..."
+
+            m 1ekblb "Could you give me a hug? {w=0.3}I've been feeling pretty lonely while you were away.{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Could you give me a hug? I've been feeling pretty lonely while you were away.{fast}"
+
+                "Sure, [m_name]!":
+                    $ mas_gainAffection()
+
+                    call monika_holdme_prep(lullaby=MAS_HOLDME_NO_LULLABY, stop_music=True, disable_music_menu=True)
+                    call monika_holdme_start
+                    call monika_holdme_end
+
+                    m 6dkbsa "Mmm...that was really nice, [player]."
+                    m 7ekbsb "You really know how to make me feel special~"
+                    $ mas_moni_idle_disp.force_by_code("1eubsa", duration=10, skip_dissolve=True)
+
+                "Not right now.":
+                    $ mas_loseAffection()
+                    m 2lkp "...Alright, maybe later, then?"
+                    python:
+                        mas_moni_idle_disp.force_by_code("2lkp", duration=10, redraw=False, skip_dissolve=True)
+                        mas_moni_idle_disp.force_by_code("2rsc", duration=10, clear=False, redraw=False, skip_dissolve=True)
+                        mas_moni_idle_disp.force_by_code("1esc", duration=30, clear=False, skip_dissolve=True)
+
+    #Base negative responses on monika_love label
+    elif mas_isMoniUpset():
+        m 2wuo "..."
+        m 2ekbla "I...{w=0.5}I missed you too."
+
+        if absence_length >= datetime.timedelta(days=3):
+            m 2ekd "[renpy.substitute(random.choice(missed_quips_upset_long))]"
+
+        else:
+            m 2eka "[renpy.substitute(random.choice(missed_quips_upset_short))]"
+
+        $ mas_moni_idle_disp.force_by_code("2eka", duration=10, skip_dissolve=True)
+
+    elif mas_isMoniDis():
+        m 6dkc "..."
+        m 6rktpd "[renpy.substitute(random.choice(missed_quips_dis))]"
+
+        if absence_length >= datetime.timedelta(days=3):
+            m 6dktdc "...But at least you haven't forgetten about me...{w=0.5}yet."
+
+    else:
+        m 6ckc "..."
+
     return
 
 init 5 python:
