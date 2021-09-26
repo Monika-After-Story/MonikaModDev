@@ -219,15 +219,25 @@ init -20 python in mas_island_event:
             }
 
     # # # Transform funcs for disps
+    # The functions are mostly similar, the movement is being controlled by the trigonometric functions,
+    # mostly combinations of sine and cosine. Since those are periodic function, the movement is cycled.
+    # The exact period depends on the used trig function and the selected parameters.
+    # 'transform' is the transform object we're modifying
+    # 'st' and 'at' are not documented, timestamps, we're using 'at' since we're doing anim movement here,
+    #     it controls the current position of the object
+    # 'amplitude' variables control the maximum extent of the function (basically how far the object can move)
+    # 'frequency' variables control the frequency (period) of the function (basically speed of the object)
+    # Using different combinations of the functinos and parameters allow to give each object a unique pattern,
+    # which will be repeated after some time, creating a seamless movement loop.
     def __isld_1_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
         """
-        amp = 0.02
-        frenq_1 = 1.0 / 9.0
-        frenq_2 = 1.0 / 3.0
+        amplitude = 0.02
+        frequency_1 = 1.0 / 9.0
+        frequency_2 = 1.0 / 3.0
 
-        transform.ypos = math.cos(at*frenq_1) * math.sin(at*frenq_2) * amp
+        transform.ypos = math.cos(at*frequency_1) * math.sin(at*frequency_2) * amplitude
         # We updated position, so we should update the sprite, too
         transform.__parallax_sprite__.update_offsets()
 
@@ -237,15 +247,15 @@ init -20 python in mas_island_event:
         """
         A function which we use as a transform, updates the child
         """
-        y_amp = -0.01
-        y_frenq_1 = 0.5
-        y_frenq_2 = 0.25
+        y_amplitude = -0.01
+        y_frequency_1 = 0.5
+        y_frequency_2 = 0.25
 
-        x_amp = -0.0035
-        x_frenq = 0.2
+        x_amplitude = -0.0035
+        x_frequency = 0.2
 
-        transform.ypos = math.sin(math.sin(at*y_frenq_1) + math.sin(at*y_frenq_2)) * y_amp
-        transform.xpos = math.cos(at*x_frenq) * x_amp
+        transform.ypos = math.sin(math.sin(at*y_frequency_1) + math.sin(at*y_frequency_2)) * y_amplitude
+        transform.xpos = math.cos(at*x_frequency) * x_amplitude
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
@@ -254,11 +264,11 @@ init -20 python in mas_island_event:
         """
         A function which we use as a transform, updates the child
         """
-        amp = 0.005
-        frenq_1 = 0.25
-        frenq_2 = 0.05
+        amplitude = 0.005
+        frequency_1 = 0.25
+        frequency_2 = 0.05
 
-        transform.ypos = (math.sin(at*frenq_1) + abs(math.cos(at*frenq_2))) * amp
+        transform.ypos = (math.sin(at*frequency_1) + abs(math.cos(at*frequency_2))) * amplitude
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
@@ -267,15 +277,15 @@ init -20 python in mas_island_event:
         """
         A function which we use as a transform, updates the child
         """
-        y_amp = -0.01
-        y_frenq_1 = 1.0 / 10.0
-        y_frenq_2 = 7.0
+        y_amplitude = -0.01
+        y_frequency_1 = 1.0 / 10.0
+        y_frequency_2 = 7.0
 
-        x_amp = 0.005
-        x_frenq = 0.25
+        x_amplitude = 0.005
+        x_frequency = 0.25
 
-        transform.ypos = math.sin(math.sin(at*y_frenq_1) * y_frenq_2) * y_amp
-        transform.xpos = math.cos(at*x_frenq) * x_amp
+        transform.ypos = math.sin(math.sin(at*y_frequency_1) * y_frequency_2) * y_amplitude
+        transform.xpos = math.cos(at*x_frequency) * x_amplitude
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
@@ -285,11 +295,11 @@ init -20 python in mas_island_event:
         A function which we use as a transform, updates the child
         """
         roto_speed = -10
-        amp = 0.065
-        frenq = 0.5
+        amplitude = 0.065
+        frequency = 0.5
 
         transform.rotate = at % 360 * roto_speed
-        transform.ypos = math.sin(at * frenq) * amp
+        transform.ypos = math.sin(at * frequency) * amplitude
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
