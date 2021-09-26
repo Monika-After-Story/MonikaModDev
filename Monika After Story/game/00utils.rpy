@@ -1,26 +1,59 @@
 python early in mas_logging:
+    import datetime
     import logging
     import os
+    import platform
 
     #Thanks python...
-    from logging import handler as loghandlers
+    from logging import handlers as loghandlers
 
     #Consts
-    LOG_FORMAT = "[{asctime}] [{levelname}]: {message}"
+    LOG_FORMAT = "[%(asctime)] [%(levelname)s]: %(message)s"
     LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+    LOG_PATH = os.path.join(renpy.config.basedir, "log")
+
+    LOG_MAXSIZE_B = 5242880 #5 mb
+
+    LOG_HEADER = """
+{0}
+{1}
+{2}
+
+
+VERSION: {3}
+=========================================================
+""".format(
+    datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
+    "{0} {1} | Build: {2}".format(platform.system(), platform.release(), platform.version()),
+    renpy.version(),
+    renpy.config.version
+)
+
+    #Ensure log path exists
+    if not os.path.exists(LOG_PATH):
+        os.makedirs(LOG_PATH)
 
     #Full logging info
-    def init_log(name, filepath):
+    def init_log(name, filename):
         """
         """
-        if not os.path.exists(filepath):
-            os.makedirs(filepath)
-
         formatter = logging.Formatter(fmt=LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
-        handler = loghandlers.RotatingFileHandler
+        handler = loghandlers.RotatingFileHandler(
+            filename=os.path.join(LOG_PATH, filename),
+            mode="a",
+            maxBytes=LOG_MAXSIZE_B,
+            encoding="utf-8",
+            #delay=True
+        )
+
         log = logging.getLogger(name)
-        log.addHandler(logging.FileHandler(filepath))
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter
+        log.addHandler(handler)
+
+        #Write the file header
+        #log.
         return log
 
 python early in mas_utils:
