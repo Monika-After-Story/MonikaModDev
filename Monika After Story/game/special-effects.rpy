@@ -121,6 +121,9 @@ init -500 python in mas_parallax:
             return render
 
         def visit(self):
+            """
+            Returns the img for prediction
+            """
             return [self.img]
 
 
@@ -146,7 +149,7 @@ init -500 python in mas_parallax:
             self.__sort_decals()
             for decal in self._decals:
                 if not isinstance(decal, ParallaxDecal):
-                    raise Exception("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal).__name__))
+                    raise ValueError("{0} can accept only ParallaxDecal, got: {1}".format(type(self).__name__, type(decal).__name__))
                 decal.callback = self.update
 
             self.offsets = (0, 0)
@@ -343,7 +346,11 @@ init -500 python in mas_parallax:
             self._x = x
             self._y = y
             if z < 1:
-                raise Exception("The zorder property must be greater than 0.")
+                raise ValueError(
+                    "{} zorder property must be greater than 0.".format(
+                        type(self).__name__
+                    )
+                )
             self._z = z
 
             self._container = _ParallaxDecalContainer(
@@ -592,14 +599,24 @@ init -500 python in mas_parallax:
 
             elif isinstance(x_anchor, float):
                 # BUG: This is incorrect
-                x_anchor = (x_anchor - render_x_size / 2.0 + child_x_size / 2.0) / child_x_size
+                # x_anchor = (x_anchor - render_x_size / 2.0 + child_x_size / 2.0) / child_x_size
+                raise NotImplementedError(
+                    "{0} doesn't support displayables with relative anchors".format(
+                        type(self).__name__
+                    )
+                )
 
             if y_anchor is None:
                 y_anchor = 0
 
             elif isinstance(y_anchor, float):
                 # BUG: This is incorrect
-                y_anchor = (y_anchor - render_y_size / 2.0 + child_y_size / 2.0) / child_y_size
+                # y_anchor = (y_anchor - render_y_size / 2.0 + child_y_size / 2.0) / child_y_size
+                raise NotImplementedError(
+                    "{0} doesn't support displayables with relative anchors".format(
+                        type(self).__name__
+                    )
+                )
 
             x_offset = x_offset or 0
             y_offset = y_offset or 0
@@ -668,6 +685,7 @@ init -500 python in mas_parallax:
                 self.update_mouse_pos()
             self._container._update_offsets()
             self.update_offsets()
+
 
     class ParallaxBackground(renpy.display.core.Displayable):
         """

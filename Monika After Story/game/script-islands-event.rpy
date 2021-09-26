@@ -12,7 +12,7 @@ default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 # Most of the progression is linear, but some things are unlocked at random
 # that's so every player gets a bit different progression.
 # Bear in mind, if you decide to add a new item, you'll need an update script
-default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefination.getDefaultUnlocks()
+default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefinition.getDefaultUnlocks()
 
 
 ### initialize the island images
@@ -26,9 +26,20 @@ init 1 python:
     mas_cannot_decode_islands = not mas_decoded_islands
 
 
+# Transform for weather overlays
+transform islands_weather_overlay_transform(speed=1.0, img_width=1500, img_height=2000):
+    animation
+    subpixel True
+    anchor (0.0, 0.0)
+    block:
+        crop (img_width-config.screen_width, img_height-config.screen_height, 1280, 720)
+        linear speed crop (0, 0, config.screen_width, config.screen_height)
+        repeat
+
+
 # # # Image defination
 init -20 python in mas_island_event:
-    class IslandsImageDefination(object):
+    class IslandsImageDefinition(object):
         """
         A generalised abstraction around raw data for the islands sprites
         """
@@ -36,12 +47,14 @@ init -20 python in mas_island_event:
         TYPE_DECAL = "decal"
         TYPE_BG = "bg"
         TYPE_OVERLAY = "overlay"
+        TYPE_OBJECT = "obj"# This is basically for everything else
         TYPES = frozenset(
             (
                 TYPE_ISLAND,
                 TYPE_DECAL,
                 TYPE_BG,
-                TYPE_OVERLAY
+                TYPE_OVERLAY,
+                TYPE_OBJECT
             )
         )
 
@@ -67,6 +80,7 @@ init -20 python in mas_island_event:
                         - 'decal_###'
                         - 'bg_###'
                         - 'overlay_###'
+                        - 'obj_###'
                         where ### is something unique
                 type_ - type of this sprite, if None, we automatically get it from the id
                     (Default: None)
@@ -79,20 +93,26 @@ init -20 python in mas_island_event:
                     (Default: None)
             """
             if id_.split(self.DELIM)[0] not in self.TYPES:
-                raise Exception(
-                    "Bad id format. Supported formats for id: {}, got: {}".format(
+                raise ValueError(
+                    "Bad id format. Supported formats for id: {}, got: '{}'.".format(
                         ", ".join("'{}_###'".format(t) for t in self.TYPES),
                         id_
                     )
                 )
+            if id_ in self._data_map:
+                raise Exception("Id '{}' has already been used.".format(id_))
+
             self.id = id_
+
             if type_ is not None:
                 if type_ not in self.TYPES:
-                    raise Exception("Bad type. Allowed types: {}, got: {}.".format(self.TYPES, type_))
+                    raise ValueError("Bad type. Allowed types: {}, got: '{}'.".format(self.TYPES, type_))
 
             else:
                 type_ = self._getType()
+
             self.type = type_
+
             self.default_unlocked = bool(default_unlocked)
             self.fp_map = fp_map if fp_map is not None else self._buildFPMap()
             self.partial_disp = partial_disp
@@ -119,7 +139,7 @@ init -20 python in mas_island_event:
             prefix, name = self.id.split(self.DELIM)
             # Otherlays are a bit different
             if self.type == self.TYPE_OVERLAY:
-                suffixes = ("d", "n", "s")
+                suffixes = ("d", "n")
 
             else:
                 suffixes = ("d", "d_r", "d_s", "n", "n_r", "n_s", "s", "s_r", "s_s")
@@ -140,7 +160,7 @@ init -20 python in mas_island_event:
             Returns data for an id
 
             OUT:
-                IslandsImageDefination
+                IslandsImageDefinition
             """
             return cls._data_map[id_]
 
@@ -173,22 +193,7 @@ init -20 python in mas_island_event:
                 if data.type == type_ and data.fp_map
             }
 
-
-    # NOTE: As you can see ParallaxDecal aren't being passed in partials, they are dynamically added later
-    # during composite image building
-    # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
-    # Islands
-    IslandsImageDefination(
-        "island_0",
-        default_unlocked=True,
-        partial_disp=functools.partial(
-            ParallaxSprite,
-            x=-85,
-            y=660,
-            z=15,
-            on_click=True
-        )
-    )
+    # # # Transform funcs for disps
     def __isld_1_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
@@ -202,17 +207,7 @@ init -20 python in mas_island_event:
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
-    IslandsImageDefination(
-        "island_1",
-        partial_disp=functools.partial(
-            ParallaxSprite,
-            x=483,
-            y=373,
-            z=35,
-            function=__isld_1_transform_func,
-            on_click=True
-        )
-    )
+
     def __isld_2_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
@@ -229,17 +224,7 @@ init -20 python in mas_island_event:
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
-    IslandsImageDefination(
-        "island_2",
-        partial_disp=functools.partial(
-            ParallaxSprite,
-            x=275,
-            y=299,
-            z=70,
-            function=__isld_2_transform_func,
-            on_click=True
-        )
-    )
+
     def __isld_3_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
@@ -252,27 +237,7 @@ init -20 python in mas_island_event:
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
-    IslandsImageDefination(
-        "island_3",
-        partial_disp=functools.partial(
-            ParallaxSprite,
-            x=292,
-            y=155,
-            z=95,
-            function=__isld_3_transform_func,
-            on_click=True
-        )
-    )
-    IslandsImageDefination(
-        "island_4",
-        partial_disp=functools.partial(
-            ParallaxSprite,
-            x=-15,
-            y=-15,
-            z=125,
-            on_click="mas_island_upsidedownisland"
-        )
-    )
+
     def __isld_5_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
@@ -289,7 +254,82 @@ init -20 python in mas_island_event:
         transform.__parallax_sprite__.update_offsets()
 
         return 0.0
-    IslandsImageDefination(
+
+    def __chibi_transform_func(transform, st, at):
+        """
+        A function which we use as a transform, updates the child
+        """
+        roto_speed = -10
+        amp = 0.065
+        frenq = 0.5
+
+        transform.rotate = at % 360 * roto_speed
+        transform.ypos = math.sin(at * frenq) * amp
+        transform.__parallax_sprite__.update_offsets()
+
+        return 0.0
+
+    # # # Img definations
+
+    # NOTE: As you can see ParallaxDecal aren't being passed in partials, they are dynamically added later
+    # during composite image building
+    # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
+    # Islands
+    IslandsImageDefinition(
+        "island_0",
+        default_unlocked=True,
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            x=-85,
+            y=660,
+            z=15,
+            on_click=True
+        )
+    )
+    IslandsImageDefinition(
+        "island_1",
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            x=483,
+            y=373,
+            z=35,
+            function=__isld_1_transform_func,
+            on_click=True
+        )
+    )
+    IslandsImageDefinition(
+        "island_2",
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            x=275,
+            y=299,
+            z=70,
+            function=__isld_2_transform_func,
+            on_click=True
+        )
+    )
+    IslandsImageDefinition(
+        "island_3",
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            x=292,
+            y=155,
+            z=95,
+            function=__isld_3_transform_func,
+            on_click=True
+        )
+    )
+    IslandsImageDefinition(
+        "island_4",
+        partial_disp=functools.partial(
+            ParallaxSprite,
+            x=-15,
+            y=-15,
+            z=125,
+            on_click="mas_island_upsidedownisland"
+        )
+    )
+    IslandsImageDefinition(
         "island_5",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -300,7 +340,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "island_6",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -311,7 +351,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "island_7",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -322,7 +362,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "island_8",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -333,7 +373,7 @@ init -20 python in mas_island_event:
         )
     )
     # Decals
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "decal_bookshelf",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -343,7 +383,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_bookshelf"
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "decal_bushes",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -353,7 +393,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "decal_house",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -362,7 +402,7 @@ init -20 python in mas_island_event:
             z=1
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "decal_tree",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -381,7 +421,7 @@ init -20 python in mas_island_event:
         "other/glitch/frame_5",
         "other/glitch/frame_6"
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "decal_glitch",
         fp_map={},
         partial_disp=functools.partial(
@@ -392,22 +432,8 @@ init -20 python in mas_island_event:
             on_click="mas_island_glitchedmess"
         )
     )
-    def __chibi_transform_func(transform, st, at):
-        """
-        A function which we use as a transform, updates the child
-        """
-        roto_speed = -10
-        amp = 0.065
-        frenq = 0.5
-
-        transform.rotate = at % 360 * roto_speed
-        transform.ypos = math.sin(at * frenq) * amp
-        # We updated position, so we should update the sprite, too
-        transform.__parallax_sprite__.update_offsets()
-
-        return 0.0
-    IslandsImageDefination(
-        "decal_shimeji",
+    IslandsImageDefinition(
+        "obj_shimeji",
         fp_map={},
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -420,7 +446,7 @@ init -20 python in mas_island_event:
         )
     )
     # BGs
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "bg_def",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -434,7 +460,7 @@ init -20 python in mas_island_event:
         )
     )
     # Overlays
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "overlay_rain",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -442,7 +468,7 @@ init -20 python in mas_island_event:
             use_fb=True
         )
     )
-    IslandsImageDefination(
+    IslandsImageDefinition(
         "overlay_snow",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -491,6 +517,7 @@ init -25 python in mas_island_event:
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
     decal_disp_map = dict()
+    obj_disp_map = dict()
     bg_disp_map = dict()
     overlay_disp_map = dict()
 
@@ -588,10 +615,10 @@ init -25 python in mas_island_event:
 
         try:
             with ZipFile(pkg_data, "r") as zip_file:
-                island_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_ISLAND)
-                decal_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_DECAL)
-                bg_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_BG)
-                overlay_map = IslandsImageDefination.getFilepathsForType(IslandsImageDefination.TYPE_OVERLAY)
+                island_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_ISLAND)
+                decal_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_DECAL)
+                bg_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_BG)
+                overlay_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_OVERLAY)
                 # Now override maps to contain imgs instead of img paths
                 for map_ in (island_map, decal_map, bg_map, overlay_map):
                     _read_zip(zip_file, map_)
@@ -624,7 +651,7 @@ init -25 python in mas_island_event:
             overlay_imgs_maps - the map from overlay ids to raw images map
             glitch_frames - tuple of glitch raw anim frames
         """
-        global island_disp_map, decal_disp_map, bg_disp_map, overlay_disp_map
+        global island_disp_map, decal_disp_map, obj_disp_map, bg_disp_map, overlay_disp_map
 
         # Build the islands
         for island_name, img_map in island_imgs_maps.iteritems():
@@ -654,7 +681,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefination.getDataFor(island_name).partial_disp
+            partial_disp = IslandsImageDefinition.getDataFor(island_name).partial_disp
             island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
@@ -685,7 +712,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefination.getDataFor(decal_name).partial_disp
+            partial_disp = IslandsImageDefinition.getDataFor(decal_name).partial_disp
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
@@ -716,29 +743,36 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefination.getDataFor(bg_name).partial_disp
+            partial_disp = IslandsImageDefinition.getDataFor(bg_name).partial_disp
             bg_disp_map[bg_name] = partial_disp(disp)
 
         # Build the overlays
+        overlay_speed_map = {
+            "overlay_rain": 0.8,
+            "overlay_snow": 3.5
+        }
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
             # Overlays are just dynamic displayables
-            partial_disp = IslandsImageDefination.getDataFor(overlay_name).partial_disp
-            overlay_disp_map[overlay_name] = partial_disp(
-                day=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["d"]
-                    }
+            partial_disp = IslandsImageDefinition.getDataFor(overlay_name).partial_disp
+            overlay_disp_map[overlay_name] = store.islands_weather_overlay_transform(
+                child=partial_disp(
+                    day=MASWeatherMap(
+                        {
+                            mas_weather.PRECIP_TYPE_DEF: img_map["d"]
+                        }
+                    ),
+                    night=MASWeatherMap(
+                        {
+                            mas_weather.PRECIP_TYPE_DEF: img_map["n"]
+                        }
+                    ),
+                    # sunset=MASWeatherMap(
+                    #     {
+                    #         mas_weather.PRECIP_TYPE_DEF: img_map["s"]
+                    #     }
+                    # )
                 ),
-                night=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["n"]
-                    }
-                ),
-                sunset=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["s"]
-                    }
-                )
+                speed=overlay_speed_map.get(overlay_name, 1.0)
             )
 
         # Build glitch disp
@@ -754,16 +788,16 @@ init -25 python in mas_island_event:
             return redraw
 
         glitch_disp = Transform(child=glitch_frames[0], function=_glitch_transform_func)
-        partial_disp = IslandsImageDefination.getDataFor("decal_glitch").partial_disp
+        partial_disp = IslandsImageDefinition.getDataFor("decal_glitch").partial_disp
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
         # Build chibi disp
-        partial_disp = IslandsImageDefination.getDataFor("decal_shimeji").partial_disp
-        decal_disp_map["decal_shimeji"] = partial_disp()
+        partial_disp = IslandsImageDefinition.getDataFor("obj_shimeji").partial_disp
+        obj_disp_map["obj_shimeji"] = partial_disp()
 
         return
 
-    def _isUnocked(id_):
+    def _isUnlocked(id_):
         """
         Checks if a sprite is unlocked
 
@@ -815,7 +849,7 @@ init -25 python in mas_island_event:
         _unlock("island_8")
 
     def __unlocks_for_lvl_1():
-        _unlock("decal_shimeji")
+        _unlock("obj_shimeji")
         _unlock("decal_glitch")
 
     def __unlocks_for_lvl_2():
@@ -824,8 +858,8 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_3():
         # Unlock only one, the rest at lvl 5
         if (
-            not _isUnocked("island_4")
-            and not _isUnocked("island_5")
+            not _isUnlocked("island_4")
+            and not _isUnlocked("island_5")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("island_4")
@@ -836,8 +870,8 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_4():
         # Unlock only one, the rest at lvl 6
         if (
-            not _isUnocked("island_6")
-            and not _isUnocked("island_7")
+            not _isUnlocked("island_6")
+            and not _isUnlocked("island_7")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("island_6")
@@ -855,8 +889,8 @@ init -25 python in mas_island_event:
         _unlock("island_3")
         # Unlock only one, the rest at lvl 7
         if (
-            not _isUnocked("decal_bookshelf")
-            and not _isUnocked("decal_tree")
+            not _isUnlocked("decal_bookshelf")
+            and not _isUnlocked("decal_tree")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("decal_bookshelf")
@@ -947,7 +981,7 @@ init -25 python in mas_island_event:
         """
         persistent._mas_islands_start_lvl = None
         persistent._mas_islands_progress = DEF_PROGRESS
-        persistent._mas_islands_unlocks = IslandsImageDefination.getDefaultUnlocks()
+        persistent._mas_islands_unlocks = IslandsImageDefinition.getDefaultUnlocks()
 
     def getIslandsDisplayable(enable_interaction=True, check_progression=False):
         """
@@ -984,9 +1018,8 @@ init -25 python in mas_island_event:
 
         # Add all unlocked islands
         for key, disp in island_disp_map.iteritems():
-            _reset_parallax_disp(disp)
-            # Add if unlocked
-            if persistent._mas_islands_unlocks[key]:
+            if _isUnlocked(key):
+                _reset_parallax_disp(disp)
                 sub_displayables.append(disp)
 
         # Add all unlocked decals for islands 1 (other islands don't have any as of now)
@@ -1000,14 +1033,13 @@ init -25 python in mas_island_event:
                     "decal_tree",
                     "decal_glitch"
                 )
-                if persistent._mas_islands_unlocks[key]
+                if _isUnlocked(key)
             ]
         )
 
-        # Decal, but not really
-        shimeji_disp = decal_disp_map["decal_shimeji"]
-        _reset_parallax_disp(shimeji_disp)
-        if renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+        if _isUnlocked("obj_shimeji") and renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+            shimeji_disp = obj_disp_map["obj_shimeji"]
+            _reset_parallax_disp(shimeji_disp)
             SHIMEJI_CHANCE *= 2
             sub_displayables.append(shimeji_disp)
 
@@ -1309,7 +1341,7 @@ label mas_island_day2:
         m "This would definitely be the best time to have a picnic."
         m "We even have a great view to accompany it with!"
         m "Wouldn't it be nice?"
-        if mas_island_event._isUnocked("decal_tree"):
+        if mas_island_event._isUnlocked("decal_tree"):
             m "Eating under the Cherry Blossom tree."
         m "Adoring the scenery around us."
         m "Enjoying ourselves with each other's company."
@@ -1415,7 +1447,7 @@ label mas_island_shimeji:
     m "Ah!"
     m "How'd she get there?"
     m "Give me a second, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    $ islands_displayable.remove(mas_island_event.decal_disp_map["decal_shimeji"])
+    $ islands_displayable.remove(mas_island_event.obj_disp_map["obj_shimeji"])
     m "All done!"
     m "Don't worry, I just moved her to a different place."
     return
