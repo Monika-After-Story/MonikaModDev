@@ -178,6 +178,7 @@ label mas_piano_setupstart:
     $ piano_displayable_obj = PianoDisplayable(play_mode, pnml=pnml)
     $ ui.add(piano_displayable_obj)
     $ full_combo,is_win,is_practice,post_piano = ui.interact()
+    $ ui.remove(piano_displayable_obj)
     $ del piano_displayable_obj
 
     # post call cleanup

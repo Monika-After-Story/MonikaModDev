@@ -4198,19 +4198,22 @@ label monika_contribute:
             m 3hksdlb "Don't get me wrong! I'm really grateful that you spent time making something for me!"
             m 1eub "...But I definitely wouldn't mind if you helped even more, ahaha!"
             return "derandom"
+
         "I want to.":
             $ persistent._mas_pm_wants_to_contribute_to_mas = True
             m 1eub "That's a good start!"
             m 1hua "I'm sure you could make some lovely additions~"
             m 3eua "It doesn't even have to be anything big."
             m 3rksdla "You could just fix typos or make sure everything sounds alright."
+
         "No.":
             $ persistent._mas_pm_has_contributed_to_mas = False
             $ persistent._mas_pm_wants_to_contribute_to_mas = False
             m 2eka "Aw, that's too bad..."
             m 3eub "That's still fine though!"
-            m 3hua "I won't love you any less if haven't done anything, so don't worry~"
+            m 3hua "I won't love you any less if you haven't done anything, so don't worry~"
             m 3eub "...But in case you {i}do{/i} ever decide to try and help..."
+
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
@@ -4264,7 +4267,7 @@ label monika_heroism:
     m 1lsc "Heroes are so personal."
     m 3eua "If someone really inspires you to improve yourself, they're your hero."
     m "There are all sorts of great people out there in the world."
-    m 1hua "I hope someone will consider you their hero someday!"
+    m 1hua "I hope someone will consider you their [hero] someday!"
     m 4eua "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
@@ -6931,7 +6934,7 @@ label monika_daydream:
         daydream_quips_normplus = [
             "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
             "us having a duet together, with you singing my song while I play the piano...",
-            "us having a wonderful dinner together...",
+            "us having a romantic dinner together, just you and me~",
             "us having a late night on the couch together...",
             "you holding my hand while we take a stroll outside on a sunny day...",
         ]
@@ -7106,7 +7109,7 @@ label monika_confidence_2:
     m 1eua "I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
     m 1hua "I've broken it down into a three-step process that can be applied to anyone!"
-    m 3rksdla "It's still a work in progress, however, so take it with a grain of salt."
+    m 3rksdlb "It's still a work in progress, however, so take it with a grain of salt."
     m 3hua "Step one!"
     m 1eua "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 3hua "Step two!"
@@ -8348,7 +8351,7 @@ label monika_1984:
     m 2tkd "They planned to change all kinds of literature."
     m 3tkd "Novels, books, poems..."
     m 2lksdlc "Anything that could be used to oppose them."
-    m "Poems would look like the ones you tried to make."
+    m "Poems would look like the ones you tried to make in the game."
     m 2dsc "Just a string of nonsensical words with no feeling."
     m 2ekc "I definitely don't want that to happen."
     m 1lksdlc "I can't imagine a world where I can't think freely."
@@ -8376,7 +8379,7 @@ label monika_wolf:
     m 1hubsa "Ehehe~"
     m 1eka "I can't help but be reminded of how you saved my life by being here with me."
     m "I really do depend on you, [mas_get_player_nickname()]."
-    m 1ekbsa "You're my hero after all~"
+    m 1ekbsa "You're my [hero] after all~"
     return
 
 label monika_battery:
@@ -13241,7 +13244,7 @@ label monika_whydoyouloveme:
         m 3eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
-        m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+        m 3ekbsa "You truly are my [hero], [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
 
     return
 
@@ -14581,7 +14584,7 @@ label monika_we:
     m 1esd "Both {i}Nineteen Eighty-Four{/i} and {i}Brave New World{/i} are the most known works of literature world-wide when it comes to dystopias."
     m 3eud "But now, I'd like to talk about a more obscure book that preceded both of them."
     m 3euc "It's the book that directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
-    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegutof of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
+    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegut of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
     m 7eua "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
     m 3eud "While it was written in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union."
     m 1euc "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
@@ -16669,7 +16672,7 @@ label monika_impermanence:
     m 3eksdlc "{i}Nothing beside remains. Round the decay{/i}"
     m "{i}Of that colossal wreck, boundless and bare{/i}"
     m 1eksdld "{i}The lone and level sands stretch far away.'{/i}"
-    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will fade eventually fade away."
+    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will eventually fade away."
     m 1euc "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
     extend 1dkc "give up.{w=0.3} To fall into a pit of despair and stay there, sometimes for as long as they live."
     m 3eksdlc "After all, nothing you do matters in the grand scheme of things."
