@@ -17557,3 +17557,24 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kawaiiaesthetic",
+            category=["clothes", "misc"],
+            prompt="Kawaii aesthetic",
+            random=False
+        )
+    )
+
+label monika_kawaiiaesthetic:
+    m 1lud "Hey,[player]?"
+    m 7eud "Have you heard of the kawaii aesthetic?"
+    m 4rub "It's a type of aesthetic that is fairly popular!"
+    m 2hub "The word kawaii is "cute" in japanese."
+    m 2hub "The aesthetic is usually associated with cute animals, anime, and pastel colors!"
+    m 4wuo "There are kawaii outfits, rooms, and even toys!"
+    m 5hubfa "It's very cute, but..I think you are cuter, [player], ahaha~"
+    return 
