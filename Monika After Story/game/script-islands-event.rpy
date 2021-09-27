@@ -218,10 +218,9 @@ init -20 python in mas_island_event:
                 if data.type == type_ and data.fp_map
             }
 
-    # # # Transform funcs for disps
-    # The functions are mostly similar, the movement is being controlled by the trigonometric functions,
-    # mostly combinations of sine and cosine. Since those are periodic function, the movement is cycled.
-    # The exact period depends on the used trig function and the selected parameters.
+    # # # Transform funcs for island disps
+    # These transforms perform cyclic motion. See dev/transforms for graphical
+    # representations of the motions.
     # 'transform' is the transform object we're modifying
     # 'st' and 'at' are not documented, timestamps, we're using 'at' since we're doing anim movement here,
     #     it controls the current position of the object
