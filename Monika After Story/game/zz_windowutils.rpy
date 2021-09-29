@@ -177,8 +177,7 @@ init python in mas_windowutils:
                 transient_for = win.get_wm_transient_for()
                 winname = win.get_wm_name()
 
-                #NOTE: This must be config.name as we call this during init time, where config.name is None
-                if transient_for is None and winname and renpy.config.window_title == winname:
+                if transient_for is None and winname and store.mas_getWindowTitle() == winname:
                     return win
 
         except BadWindow:
@@ -201,7 +200,7 @@ init python in mas_windowutils:
             """
             Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
             """
-            if renpy.config.window_title == win32gui.GetWindowText(hwnd):
+            if store.mas_getWindowTitle() == win32gui.GetWindowText(hwnd):
                 raise MASWindowFoundException(hwnd)
 
         try:
@@ -666,7 +665,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == config.window_title
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == store.mas_getWindowTitle()
 
     def mas_isInActiveWindow(regexp, active_window_handle=None):
         """
