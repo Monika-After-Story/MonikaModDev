@@ -237,8 +237,10 @@ init -20 python in mas_island_event:
         frequency_2 = 1.0 / 3.0
 
         transform.ypos = math.cos(at*frequency_1) * math.sin(at*frequency_2) * amplitude
-        # We updated position, so we should update the sprite, too
-        transform.__parallax_sprite__.update_offsets()
+        # We updated the transform, so we must update the sprite, too
+        # But only once the transform is active (otherwise you get a recursive loop)
+        if transform.active:
+            transform.__parallax_sprite__.update_offsets()
 
         return 0.0
 
@@ -255,7 +257,8 @@ init -20 python in mas_island_event:
 
         transform.ypos = math.sin(math.sin(at*y_frequency_1) + math.sin(at*y_frequency_2)) * y_amplitude
         transform.xpos = math.cos(at*x_frequency) * x_amplitude
-        transform.__parallax_sprite__.update_offsets()
+        if transform.active:
+            transform.__parallax_sprite__.update_offsets()
 
         return 0.0
 
@@ -268,7 +271,8 @@ init -20 python in mas_island_event:
         frequency_2 = 0.05
 
         transform.ypos = (math.sin(at*frequency_1) + abs(math.cos(at*frequency_2))) * amplitude
-        transform.__parallax_sprite__.update_offsets()
+        if transform.active:
+            transform.__parallax_sprite__.update_offsets()
 
         return 0.0
 
@@ -285,7 +289,8 @@ init -20 python in mas_island_event:
 
         transform.ypos = math.sin(math.sin(at*y_frequency_1) * y_frequency_2) * y_amplitude
         transform.xpos = math.cos(at*x_frequency) * x_amplitude
-        transform.__parallax_sprite__.update_offsets()
+        if transform.active:
+            transform.__parallax_sprite__.update_offsets()
 
         return 0.0
 
@@ -299,7 +304,8 @@ init -20 python in mas_island_event:
 
         transform.rotate = at % 360 * roto_speed
         transform.ypos = math.sin(at * frequency) * amplitude
-        transform.__parallax_sprite__.update_offsets()
+        if transform.active:
+            transform.__parallax_sprite__.update_offsets()
 
         return 0.0
 
@@ -1281,16 +1287,20 @@ label mas_island_cherry_blossom_tree:
 label mas_island_cherry_blossom1:
     if mas_island_event.isWinterWeather():
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
+
     else:
         m "It's a beautiful tree, isn't it?"
+
     m "It's called a Cherry Blossom tree; they're native to Japan."
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is awe-inspiring."
+
     if mas_island_event.isWinterWeather():
         m "When it's blooming, that is."
         m "I can't wait until we get the chance to experience that, [player]."
+
     return
 
 label mas_island_cherry_blossom2:
@@ -1303,8 +1313,10 @@ label mas_island_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
     m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
+
     if mas_island_event.isWinterWeather():
         m "Even if it's bare now, it'll blossom again soon."
+
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
     # manually handle the "love" return key
@@ -1316,12 +1328,15 @@ label mas_island_cherry_blossom4:
     m "A little sake~"
     m "Ahaha! I'm just kidding."
     m "I'd rather have tea or coffee."
+
     if mas_island_event.isWinterWeather():
         m "Or hot chocolate, even. It'd certainly help with the cold."
         m "Of course, even if that failed, we could always cuddle together...{w=0.5} That'd be really romantic~"
+
     else:
         m "But, it'd be nice to watch the falling petals with you."
         m "That'd be really romantic~"
+
     return
 
 label mas_island_sky:
@@ -1356,21 +1371,31 @@ label mas_island_day1:
         m "Perfect for taking a walk to admire the scenery."
         m "...Huddled together, so as to stave off the cold."
         m "...With some nice hot drinks to help keep us warm."
+
     elif mas_is_raining:
         m "Aww, I would've liked to do some reading outdoors."
         m "But I'd rather avoid getting my books wet..."
         m "Soggy pages are a pain to deal with."
         m "Another time, maybe."
+
     elif mas_current_weather == mas_weather_overcast:
         m "Reading outside with this weather wouldn't be too bad, but it could rain at any moment."
         m "I'd rather not risk it."
         m "Don't worry, [player]. We'll do it some other time."
+
     else:
         m "It's a nice day today."
-        m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
+
+        if mas_island_event._isUnlocked("decal_tree"):
+            m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
+
+        else:
+            m "This weather would be good for a little book reading outside right, [player]?"
+
         m "Lying under the shade while reading my favorite book."
         m "...Along with a snack and your favorite drink on the side."
         m "Ahh, that'd be really nice to do~"
+
     return
 
 label mas_island_day2:
@@ -1382,6 +1407,7 @@ label mas_island_day2:
         m "It's a lot harder than it looks like."
         m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
         m "It's just a matter of being a bit silly, you know?"
+
     elif mas_island_event.isCloudyWeather():
         m "Going outdoors with this kind of weather doesn't look very appealing..."
         m "Maybe if I had an umbrella I'd feel more comfortable."
@@ -1389,16 +1415,20 @@ label mas_island_day2:
         m "Staring into each other's eyes."
         m "Then we start leaning closer and closer until we're almost-"
         m "I think you can finish that thought yourself, [player]~"
+
     else:
         m "The weather looks nice."
         m "This would definitely be the best time to have a picnic."
         m "We even have a great view to accompany it with!"
         m "Wouldn't it be nice?"
+
         if mas_island_event._isUnlocked("decal_tree"):
             m "Eating under the Cherry Blossom tree."
+
         m "Adoring the scenery around us."
         m "Enjoying ourselves with each other's company."
         m "Ahh, that'd be fantastic~"
+
     return
 
 label mas_island_day3:
@@ -1406,17 +1436,21 @@ label mas_island_day3:
         m "It's raining pretty heavily..."
         m "I wouldn't want to be outside now."
         m "Though being indoors at a time like this feels pretty cozy, don't you think?"
+
     else:
         m "It's pretty peaceful outside."
+
         if mas_island_event.isWinterWeather():
             m "We could have a snowball fight, you know."
             m "Ahaha, that'd be so much fun!"
             m "I bet I could land a shot on you a few islands away."
             m "Some healthy competition never hurt anyone, right?"
+
         else:
             m "I wouldn't mind lazing around in the grass right now..."
             m "With your head resting on my lap..."
             m "Ehehe~"
+
     return
 
 label mas_island_night1:
@@ -1430,6 +1464,7 @@ label mas_island_night2:
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
+
     else:
         if seen_event('monika_stargazing'):
             m "Aren't the stars so beautiful, [player]?"
@@ -1445,6 +1480,7 @@ label mas_island_night2:
             m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
             m "Of course, it really makes you realize just how small we are in the universe."
             m "Ahaha..."
+
     return
 
 label mas_island_night3:
@@ -1452,8 +1488,10 @@ label mas_island_night3:
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
         m "It's such a shame, really..."
+
     else:
         m "What a beautiful night!"
+
         if mas_island_event.isWinterWeather():
             m "There's just something about a cold, crisp night that I love."
             m "The contrast of the dark sky and the land covered in snow is really breathtaking, don't you think?"
@@ -1461,6 +1499,7 @@ label mas_island_night3:
             m "If I could, I'd add fireflies."
             m "Their lights complement the night sky, it's a pretty sight."
             m "Improve the ambience a little, you know?"
+
     return
 
 label mas_island_daynight1:
@@ -1524,16 +1563,19 @@ label mas_island_bookshelf1:
         m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
         m "It's the books that worry me a bit."
         m "I just hope they don't get too damaged..."
+
     elif mas_island_event.isCloudyWeather():
         m "At times like this, I wish I would've kept my books indoors..."
         m "Looks like we'll just have to wait for better weather to read them."
         m "In the meantime..."
         m "How about cuddling a bit, [player]?"
         m "Ehehe~"
+
     else:
         m "Some of my favorite books are in there."
         m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
         m "Maybe we can read them together sometime~"
+
     return
 
 label mas_island_bookshelf2:
@@ -1545,17 +1587,20 @@ label mas_island_bookshelf2:
         m "I guess turning the pages might be a bit hard that way, ahaha..."
         m "But I'm sure we'll manage somehow."
         m "Isn't that right, [player]?"
+
     elif mas_island_event.isCloudyWeather():
         m "Reading indoors with rain just outside the window is pretty relaxing."
         m "If only I hadn't left the books outside..."
         m "I should probably bring some in here when I get the chance."
         m "I'm certain we can find other things to do meanwhile, right [player]?"
+
     else:
         m "Reading outdoors is a nice change of pace, you know?"
         m "I'd take a cool breeze over a stuffy library any day."
         m "Maybe I should add a table underneath the Cherry Blossom tree."
         m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
         m "That'd be wonderful~"
+
     return
 
 
