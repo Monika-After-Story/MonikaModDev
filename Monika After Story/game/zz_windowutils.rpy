@@ -222,7 +222,10 @@ init python in mas_windowutils:
         """
         #If win is None, then we should just return a None here
         if win is None:
-            return None
+            # This handles some odd issues with setting window on Linux
+            win = _setMASWindow()
+            if win is None:
+                return None
 
         try:
             geom = win.get_geometry()
@@ -247,11 +250,16 @@ init python in mas_windowutils:
     def _setMASWindow():
         """
         Sets the MAS_WINDOW global on Linux systems
+
+        OUT:
+            the window object
         """
         global MAS_WINDOW
 
         if renpy.linux:
             MAS_WINDOW = __getMASWindowLinux()
+
+        return MAS_WINDOW
 
     #Next, the active window handle getters
     def _getActiveWindowHandle_Windows():
