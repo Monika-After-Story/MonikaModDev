@@ -222,12 +222,12 @@ init -20 python in mas_island_event:
     # These transforms perform cyclic motion. See dev/transforms for graphical
     # representations of the motions.
     # 'transform' is the transform object we're modifying
-    # 'st' and 'at' are not documented, timestamps, we're using 'at' since we're doing anim movement here,
+    # 'st' and 'at' are not documented, timestamps, we're using 'at' since we're doing animations,
     #     it controls the current position of the object
     # 'amplitude' variables control the maximum extent of the function (basically how far the object can move)
     # 'frequency' variables control the frequency (period) of the function (basically speed of the object)
     # Using different combinations of the functinos and parameters allow to give each object a unique pattern,
-    # which will be repeated after some time, creating a seamless movement loop.
+    # which will be repeated after some time, creating a seamless loop.
     def __isld_1_transform_func(transform, st, at):
         """
         A function which we use as a transform, updates the child
