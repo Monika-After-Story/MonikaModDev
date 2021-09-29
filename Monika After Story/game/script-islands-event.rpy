@@ -52,15 +52,47 @@ init 1:
 
 
 # Transform for weather overlays
-transform islands_weather_overlay_transform(speed=1.0, img_width=1500, img_height=2000):
+transform mas_islands_weather_overlay_transform(speed=1.0, img_width=1500, img_height=2000):
     animation
+
     subpixel True
     anchor (0.0, 0.0)
+
     block:
         crop (img_width-config.screen_width, img_height-config.screen_height, 1280, 720)
         linear speed crop (0, 0, config.screen_width, config.screen_height)
         repeat
 
+# Overlay image for the lightning effect
+image mas_islands_lightning_overlay:
+    animation
+
+    alpha 0.75
+
+    block:
+        # Set the def child
+        mas_island_event.NULL_DISP
+
+        # Select wait time
+        block:
+            choice 0.3:
+                pause 5.0
+            choice 0.4:
+                pause 10.0
+            choice 0.3:
+                pause 15.0
+
+        # Choice showing lightning or skip
+        block:
+            choice (1.0 / mas_globals.lightning_chance):
+                "mas_lightning"
+                pause 0.1
+                function mas_island_event._play_thunder
+                pause 3.0
+            choice (1.0 - 1.0/mas_globals.lightning_chance):
+                pass
+
+        repeat
 
 # # # Image defination
 init -20 python in mas_island_event:
@@ -309,6 +341,13 @@ init -20 python in mas_island_event:
 
         return 0.0
 
+    def _play_thunder(transform, st, at):
+        """
+        This is used in a transform to play the THUNDER sound effect
+        """
+        renpy.play("mod_assets/sounds/amb/thunder.wav", channel="backsound")
+        return None
+
     # # # Img definations
 
     # NOTE: As you can see ParallaxDecal aren't being passed in partials, they are dynamically added later
@@ -477,7 +516,7 @@ init -20 python in mas_island_event:
         fp_map={},
         partial_disp=functools.partial(
             ParallaxSprite,
-            Transform(renpy.display.image.ImageReference(("chibika", "smile")), zoom=0.4),
+            Transform(renpy.easy.displayable("chibika smile"), zoom=0.4),
             x=930,
             y=335,
             z=36,
@@ -516,6 +555,15 @@ init -20 python in mas_island_event:
             use_fb=True
         )
     )
+    IslandsImageDefinition(
+        "overlay_thunder",
+        default_unlocked=True,
+        fp_map={},
+        partial_disp=functools.partial(
+            renpy.easy.displayable,
+            "mas_islands_lightning_overlay"
+        )
+    )
 
 
 # # # Main framework
@@ -551,7 +599,6 @@ init -25 python in mas_island_event:
     PROGRESS_FACTOR = 4
 
     SHIMEJI_CHANCE = 100
-
     DEF_SCREEN_ZORDER = 55
 
     SUPPORTED_FILTERS = frozenset(
@@ -568,6 +615,8 @@ init -25 python in mas_island_event:
     obj_disp_map = dict()
     bg_disp_map = dict()
     overlay_disp_map = dict()
+
+    NULL_DISP = store.Null()
 
     # setup the docking station we are going to use here
     islands_station = store.MASDockingStation(mas_ics.ISLANDS_FOLDER)
@@ -813,7 +862,7 @@ init -25 python in mas_island_event:
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
             # Overlays are just dynamic displayables
             partial_disp = IslandsImageDefinition.getDataFor(overlay_name).partial_disp
-            overlay_disp_map[overlay_name] = store.islands_weather_overlay_transform(
+            overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
                 child=partial_disp(
                     day=MASWeatherMap(
                         {
@@ -853,6 +902,10 @@ init -25 python in mas_island_event:
         # Build chibi disp
         partial_disp = IslandsImageDefinition.getDataFor("obj_shimeji").partial_disp
         obj_disp_map["obj_shimeji"] = partial_disp()
+
+        # Build thunder overlay
+        partial_disp = IslandsImageDefinition.getDataFor("overlay_thunder").partial_disp
+        overlay_disp_map["overlay_thunder"] = partial_disp()
 
         return
 
@@ -1113,6 +1166,8 @@ init -25 python in mas_island_event:
         # Now add overlays (they are always last)
         if store.mas_is_raining:
             sub_displayables.append(overlay_disp_map["overlay_rain"])
+            if store.mas_globals.show_lightning:
+                sub_displayables.insert(1, overlay_disp_map["overlay_thunder"])
 
         elif store.mas_is_snowing:
             sub_displayables.append(overlay_disp_map["overlay_snow"])
@@ -1217,7 +1272,7 @@ label mas_islands(
             if _return is False:
                 $ is_done = True
 
-            elif renpy.has_label(_return):
+            elif _return is not True and renpy.has_label(_return):
                 call expression _return
 
     else:
