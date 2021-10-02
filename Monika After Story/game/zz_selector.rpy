@@ -3489,14 +3489,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             store.mas_selspr.SB_VIEWPORT_BOUNDS_BS
         )
 
-        # if in outfit mode, apply the outfit before launching
-        if mailbox.read_outfit_checkbox_checked():
-            monika_chr.change_clothes(
-                monika_chr.clothes,
-                by_user=True,
-                outfit_mode=True
-            )
-
     # sanity check to avoid crashes
     if len(items) < 1:
         return False
