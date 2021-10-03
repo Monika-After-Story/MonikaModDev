@@ -96,7 +96,7 @@ init 999 python:
         SPR_FOUND = "#ffe6f4"
 
         MONI_X = -240
-        MONI_Y = 20
+        MONI_Y = -100
 
         # STATES for which monika to show
 
