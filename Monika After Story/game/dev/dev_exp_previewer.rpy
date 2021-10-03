@@ -14,8 +14,8 @@ init 5 python:
     )
 
 label dev_exp_previewer:
-    # call a screen
-    show monika at t21
+    # show monika at t21
+    hide monika
     window hide
 
     $ HKBHideButtons()
@@ -51,12 +51,12 @@ init 999 python:
         import store.mas_sprites as mas_sprites
 
         # CONSTANTS
-        VIEW_WIDTH = 1280
-        VIEW_HEIGHT = 720
+        VIEW_WIDTH = config.screen_width
+        VIEW_HEIGHT = config.screen_height
 
         MARGIN = 10
 
-        PANEL_X = int((VIEW_WIDTH / 2) + 100)
+        PANEL_X = int((VIEW_WIDTH // 2) + 100)
         PANEL_Y = MARGIN
 
         PANEL_WIDTH = VIEW_WIDTH - PANEL_X - MARGIN
@@ -76,8 +76,14 @@ init 999 python:
         # label y is a list generated later
         LBL_X = MARGIN + PANEL_X
 
+        BUTTON_X_COPY = PANEL_X + MARGIN
+        BUTTON_Y_COPY = (PANEL_Y + PANEL_HEIGHT) - (BUTTON_HEIGHT + MARGIN)
+
+        BUTTON_X_PASTE = PANEL_X + PANEL_WIDTH // 2 - BUTTON_WIDTH // 2
+        BUTTON_Y_PASTE = BUTTON_Y_COPY
+
         BUTTON_X_DONE = PANEL_X + PANEL_WIDTH - (BUTTON_WIDTH + MARGIN)
-        BUTTON_Y_DONE = (PANEL_Y + PANEL_HEIGHT) - (BUTTON_HEIGHT + MARGIN)
+        BUTTON_Y_DONE = BUTTON_Y_COPY
 
         # sprite code y
         # sprite code x is genrated later, since this should be centered
@@ -91,20 +97,17 @@ init 999 python:
 
         TEXT_SIZE = 40
 
-        ROWS = 13
-
         SPR_FOUND = "#ffe6f4"
 
-        MONI_X = -240
-        MONI_Y = 20
+        MONI_X = 0
+        MONI_Y = 0
 
         # STATES for which monika to show
 
         # use blit to render monika
-        STATE_MONI_BLIT = 0
-
+        STATE_VALID = 1
         # use show + interaction to render monika
-        STATE_MONI_SHOW = 1
+        STATE_INVALID = 0
 
         ### image name maps
         # for building the real deal sprites
@@ -117,8 +120,8 @@ init 999 python:
             5: ("def", "def")
         }
 
-        # image name map
-        IMG_NMAP = {
+        # Map between sprite code letters and image names
+        IMG_NAMES_MAP = {
             "arms": {
                 1: "steepling",
                 2: "crossed",
@@ -166,18 +169,18 @@ init 999 python:
                 "td": "dried",
                 "tp": "pooled",
                 "tu": "up",
-#                "tl": "left",
-#                "tr": "right",
-#                "th": "closedhappy",
-#                "tc": "closedsad",
+            #    "tl": "left",
+            #    "tr": "right",
+            #    "th": "closedhappy",
+            #    "tc": "closedsad",
             },
             "sweat": {
                 "sdl": "def",
                 "sdr": "right"
             },
-            "emote": {
-                "ec": "confuse"
-            },
+            # "emote": {
+            #     "ec": "confuse"
+            # },
             "mouth": {
                 "a": "smile",
                 "b": "big",
@@ -189,22 +192,14 @@ init 999 python:
                 "x": "angry",
                 "p": "pout",
                 "t": "triangle",
-#                "g": "disgust",
+            #    "g": "disgust",
             }
         }
-
+        # Same as above, but reversed - image names to sprite code letters
+        REVERSE_IMG_NAMES_MAP = {key: {v: k for k, v in sub_map.iteritems()} for key, sub_map in IMG_NAMES_MAP.iteritems()}
 
         ### sprite code maps
         SEL_TX_MAP = {
-            "torso": {
-                "def": "School Uniform",
-                "blazerless": "S. Uniform (Blazerless)",
-                "marisa": "Witch Costume",
-#                "rin": "Neko Costume",
-                "santa": "Santa Monika",
-                "sundress_white": "Sundress (White)",
-                "blackdress": "Formal Dress (Black)",
-            },
             "arms": {
                 1: "Resting on Hands",
                 2: "Crossed",
@@ -213,11 +208,6 @@ init 999 python:
                 5: "Leaning",
                 6: "Down",
                 7: "Down Left, Point Right",
-            },
-            "hair": {
-                "def": "Ponytail",
-                "down": "Down",
-#                "bun": "Bun"
             },
             "eyes": {
                 "e": "Normal",
@@ -260,16 +250,16 @@ init 999 python:
                 "tu": "Tearing Up",
                 "tl": "Tearing Up (Left)",
                 "tr": "Tearing Up (Right)",
-#                "th": "Closed Happy Tears",
-#                "tc": "Closed Sad Tears",
+            #    "th": "Closed Happy Tears",
+            #    "tc": "Closed Sad Tears",
             },
             "sweat": {
                 "sdl": "Left Sweat Drop",
                 "sdr": "Right Sweat Drop"
             },
-            "emote": {
-                "ec": "Confusion"
-            },
+            # "emote": {
+            #     "ec": "Confusion"
+            # },
             "mouth": {
                 "a": "Smile",
                 "b": "Open Smile",
@@ -281,7 +271,21 @@ init 999 python:
                 "x": "Grit Teeth",
                 "p": "Pout",
                 "t": "Triangle",
-#                "g": "Disgust",
+            #    "g": "Disgust",
+            },
+            "torso": {
+                "def": "School Uniform",
+                "blazerless": "S. Uniform (Blazerless)",
+                "marisa": "Witch Costume",
+            #    "rin": "Neko Costume",
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
+                "blackdress": "Formal Dress (Black)",
+            },
+            "hair": {
+                "def": "Ponytail",
+                "down": "Down",
+            #    "bun": "Bun"
             },
             "time": {
                 "day": "Day",
@@ -289,12 +293,9 @@ init 999 python:
             }
         }
 
-
         ### Text map
         LABELS = [
-            "Clothes: ",
             "Pose: ",
-            "Hair: ",
             "Eyes: ",
             "Eyebrows: ",
             "Nose: ",
@@ -302,17 +303,18 @@ init 999 python:
             "Blush: ",
             "Tears: ",
             "Sweat: ",
-            "Emote: ",
+            # "Emote: ",
             "Mouth: ",
+            "Clothes: ",
+            "Hair: ",
             "Filter: "
         ]
 
+        ROWS = len(LABELS)
 
         ### button retvals
         SQ_BUTTON_RETVALS = [
-            "torso",
             "arms",
-            "hair",
             "eyes",
             "eyebrows",
             "nose",
@@ -320,24 +322,17 @@ init 999 python:
             "blush",
             "tears",
             "sweat",
-            "emote",
+            # "emote",
             "mouth",
+            "torso",
+            "hair",
             "time"
         ]
 
         ### Available codes
         NOSE_DEF = "nd"
         # sprite code map
-        SC_MAP = {
-            "torso": [
-                "def",
-                "blazerless",
-                "marisa",
-                #"rin",
-                "santa",
-                "sundress_white",
-                "blackdress",
-            ],
+        SPRITE_CODE_MAP = {
             "arms": [
                 1,
                 2,
@@ -346,11 +341,6 @@ init 999 python:
                 5,
                 6,
                 7,
-            ],
-            "hair": [
-                "def",
-                "down",
-#                "bun"
             ],
             "eyes": [
                 "e",
@@ -394,20 +384,20 @@ init 999 python:
                 "td",
                 "tp",
                 "tu",
-#                "tl",
-#                "tr",
-#                "th",
-#                "tc",
+            #    "tl",
+            #    "tr",
+            #    "th",
+            #    "tc",
             ],
             "sweat": [
                 None,
                 "sdl",
                 "sdr"
             ],
-            "emote": [
-                None,
-                "ec"
-            ],
+            # "emote": [
+            #     None,
+            #     "ec"
+            # ],
             "mouth": [
                 "a",
                 "b",
@@ -419,7 +409,21 @@ init 999 python:
                 "x",
                 "p",
                 "t",
-#                "g",
+            #    "g",
+            ],
+            "torso": [
+                "def",
+                "blazerless",
+                "marisa",
+                #"rin",
+                "santa",
+                "sundress_white",
+                "blackdress",
+            ],
+            "hair": [
+                "def",
+                "down",
+            #    "bun"
             ],
             "time": [ # actually means Filter now
                 "day",
@@ -450,7 +454,6 @@ init 999 python:
             },
         }
 
-
         # list of keys that matter for a sprite code
         SC_PARTS = [
             "arms",
@@ -461,30 +464,15 @@ init 999 python:
             "blush",
             "tears",
             "sweat",
-            "emote",
+            # "emote",
             "mouth"
         ]
 
-
         # selection text index map
         INDEX_MAP = {
-            "torso": 0,
-            "arms": 1,
-            "hair": 2,
-            "eyes": 3,
-            "eyebrows": 4,
-            "nose": 5,
-            "eyebags": 6,
-            "blush": 7,
-            "tears": 8,
-            "sweat": 9,
-            "emote": 10,
-            "mouth": 11,
-            "time": 12
+            k: id_
+            for id_, k in enumerate(SQ_BUTTON_RETVALS)
         }
-
-
-
 
         # pygame stuff
         MOUSE_EVENTS = (
@@ -492,8 +480,6 @@ init 999 python:
             pygame.MOUSEBUTTONUP,
             pygame.MOUSEBUTTONDOWN
         )
-
-
 
         def __init__(self):
             """
@@ -503,7 +489,7 @@ init 999 python:
 
             # update torsos with spritepacked sprites
             torso_map = self.SEL_TX_MAP["torso"]
-            torso_list = self.SC_MAP["torso"]
+            torso_list = self.SPRITE_CODE_MAP["torso"]
             for sel in store.mas_selspr.CLOTH_SEL_MAP.itervalues():
                 spr = sel.get_sprobj()
                 if spr.is_custom and spr.name not in torso_map:
@@ -515,51 +501,6 @@ init 999 python:
                 "#000000B2",
                 xsize=self.PANEL_WIDTH,
                 ysize=self.PANEL_HEIGHT
-            )
-
-            ### setup images
-            # buttons:
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
-            sq_button_idle = Image(
-                "mod_assets/buttons/squares/square_idle.png"
-            )
-            sq_button_hover = Image(
-                "mod_assets/buttons/squares/square_hover.png"
-            )
-            sq_button_disabled = Image(
-                "mod_assets/buttons/squares/square_disabled.png"
-            )
-
-            # button text
-            button_text_left_idle = Text(
-                "<",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_text_left_hover = Text(
-                "<",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
-            )
-            button_text_right_idle = Text(
-                ">",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_text_right_hover = Text(
-                ">",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
             )
 
             # calculat positions
@@ -582,25 +523,20 @@ init 999 python:
             # day / night
 
             # button y coords
-            self.button_ly_list = [
+            button_y_list = [
                 self.ROW_Y_START + (
                     x * (self.ROW_SPACING + self.SQ_BUTTON_HEIGHT)
                 )
                 for x in range(self.ROWS)
             ]
-            self.button_ry_list = list(self.button_ly_list)
 
             # actual left buttons
             self.button_ls = [
-                MASButtonDisplayable(
-                    button_text_left_idle,
-                    button_text_left_hover,
-                    button_text_left_idle,
-                    sq_button_idle,
-                    sq_button_hover,
-                    sq_button_disabled,
+                MASButtonDisplayable.create_stb(
+                    "<",
+                    True,
                     button_lx,
-                    self.button_ly_list[x],
+                    button_y_list[x],
                     self.SQ_BUTTON_WIDTH,
                     self.SQ_BUTTON_HEIGHT,
                     hover_sound=gui.hover_sound,
@@ -612,15 +548,11 @@ init 999 python:
 
             # actual right buttons
             self.button_rs = [
-                MASButtonDisplayable(
-                    button_text_right_idle,
-                    button_text_right_hover,
-                    button_text_right_idle,
-                    sq_button_idle,
-                    sq_button_hover,
-                    sq_button_disabled,
+                MASButtonDisplayable.create_stb(
+                    ">",
+                    True,
                     button_rx,
-                    self.button_ry_list[x],
+                    button_y_list[x],
                     self.SQ_BUTTON_WIDTH,
                     self.SQ_BUTTON_HEIGHT,
                     hover_sound=gui.hover_sound,
@@ -633,29 +565,34 @@ init 999 python:
             # disable buttons that arent needed
             self._disable_singles()
 
-            # Done button
-            button_text_done_idle = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_text_done_hover = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
+            # Copy button
+            self.button_copy = MASButtonDisplayable.create_stb(
+                "Copy",
+                False,
+                self.BUTTON_X_COPY,
+                self.BUTTON_Y_COPY,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
             )
 
-            self.button_done = MASButtonDisplayable(
-                button_text_done_idle,
-                button_text_done_hover,
-                button_text_done_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
+            # Paste button
+            self.button_paste = MASButtonDisplayable.create_stb(
+                "Paste",
+                False,
+                self.BUTTON_X_PASTE,
+                self.BUTTON_Y_PASTE,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # Done button
+            self.button_done = MASButtonDisplayable.create_stb(
+                "Done",
+                False,
                 self.BUTTON_X_DONE,
                 self.BUTTON_Y_DONE,
                 self.BUTTON_WIDTH,
@@ -668,6 +605,8 @@ init 999 python:
             self.all_buttons = list()
             self.all_buttons.extend(self.button_ls)
             self.all_buttons.extend(self.button_rs)
+            self.all_buttons.append(self.button_copy)
+            self.all_buttons.append(self.button_paste)
             self.all_buttons.append(self.button_done)
 
             ## texts
@@ -699,7 +638,7 @@ init 999 python:
             self._selectors = {
                 "arms": self._sel_arms,
                 "blush": self._sel_blush,
-                "emote": self._sel_emote,
+                # "emote": self._sel_emote,
                 "eyes": self._sel_eyes,
                 "eyebags": self._sel_eyebags,
                 "eyebrows": self._sel_eyebrows,
@@ -718,7 +657,7 @@ init 999 python:
             self.curr_sel = {
                 "arms": 0,
                 "blush": 0,
-                "emote": 0,
+                # "emote": 0,
                 "eyes": 0,
                 "eyebags": 0,
                 "eyebrows": 1,
@@ -746,16 +685,12 @@ init 999 python:
             # need to check which render state we should be in
             if self.spr_tran is None:
                # dont need to change anything here
-                self.state = self.STATE_MONI_SHOW
+                self.state = self.STATE_INVALID
 
 
             else:
                 # blit mode needs some adjustments
-                self.state = self.STATE_MONI_BLIT
-                renpy.hide("monika")
-                renpy.restart_interaction()
-
-
+                self.state = self.STATE_VALID
 
         def _adj_sel(self, direct, key):
             """
@@ -766,11 +701,10 @@ init 999 python:
                 key - key to use in selection map
             """
             self.curr_sel[key] = self._select(
-                self.SC_MAP[key],
+                self.SPRITE_CODE_MAP[key],
                 direct,
                 self.curr_sel[key]
             )
-
 
         def _create_sprite(self):
             """
@@ -788,7 +722,10 @@ init 999 python:
             img_eyes = self._get_img_name("eyes")
 
             try:
-                trn, rfr = mas_drawmonika_rk(0, 0, monika_chr,
+                trn, rfr = mas_drawmonika_rk(
+                    0.0,# st
+                    0.0,# at
+                    monika_chr,# character
                     self._get_img_name("eyebrows"),
                     img_eyes,
                     self._get_img_name("nose"),
@@ -802,18 +739,20 @@ init 999 python:
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
                     tears=self._get_img_tears("tears", img_eyes),
-                    emote=self._get_img_name("emote")
+                    # emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
-                return Transform(trn,
-                    zoom=0.80*1.00,
-                    alpha=1.00
+                return store.i21(
+                    Transform(
+                        trn,
+                        zoom=0.90,
+                        alpha=1.00
+                    )
                 )
 
             except:
                 # the eval failed because we didnt have an image
                 return None
-
 
         def _xcenter(self, v_width, width):
             """
@@ -828,7 +767,6 @@ init 999 python:
                 appropiate X coord to center
             """
             return int((v_width - width) / 2)
-
 
         def _seltx_xcenter(self, width):
             """
@@ -845,14 +783,14 @@ init 999 python:
             """
             return self._xcenter(self.SEL_TX_W, width) + self.SEL_TX_X
 
-
         def _select(self, choices, direct, currdex):
             """
             Returns the index of the next possible selection, given a direction
 
             IN:
                 choices - list of choices we have
-                direct - direction to move in (+ -> / - <-)
+                direct - direction to move in (+ -> / - <-),
+                    aswell as the number of indexes to move by
                 currdex - cureent index
 
             RETURNS:
@@ -862,24 +800,26 @@ init 999 python:
                 # only 1 choice? just return 0
                 return 0
 
-            if direct > 0:
-                # lets move right
-                currdex += 1
+            while direct != 0:
+                # Lets move right
+                if direct > 0:
+                    direct -= 1
+                    currdex += 1
 
-                if currdex >= len(choices):
-                    # went past right, wrap to left
-                    currdex = 0
+                    if currdex >= len(choices):
+                        # went past right, wrap to left
+                        currdex = 0
 
-            elif direct < 0:
-                # lets move left
-                currdex -= 1
+                # Lets move left
+                elif direct < 0:
+                    direct += 1
+                    currdex -= 1
 
-                if currdex < 0:
-                    # went past left, wrap to right
-                    currdex = len(choices) - 1
+                    if currdex < 0:
+                        # went past left, wrap to right
+                        currdex = len(choices) - 1
 
             return currdex
-
 
         def _left_button_select(self, ev, x, y, st):
             """
@@ -896,7 +836,6 @@ init 999 python:
                     return True
 
             return False
-
 
         def _right_button_select(self, ev, x, y, st):
             """
@@ -925,36 +864,30 @@ init 999 python:
             self._update_spr_code()
             self._update_sel_tx("arms")
 
-
         def _sel_blush(self, direct):
             self._adj_sel(direct, "blush")
             self._update_spr_code()
             self._update_sel_tx("blush")
-
 
         def _sel_emote(self, direct):
             self._adj_sel(direct, "emote")
             self._update_spr_code()
             self._update_sel_tx("emote")
 
-
         def _sel_eyes(self, direct):
             self._adj_sel(direct, "eyes")
             self._update_spr_code()
             self._update_sel_tx("eyes")
-
 
         def _sel_eyebags(self, direct):
             self._adj_sel(direct, "eyebags")
             self._update_spr_code()
             self._update_sel_tx("eyebags")
 
-
         def _sel_eyebrows(self, direct):
             self._adj_sel(direct, "eyebrows")
             self._update_spr_code()
             self._update_sel_tx("eyebrows")
-
 
         def _sel_hair(self, direct):
             self._adj_sel(direct, "hair")
@@ -964,30 +897,25 @@ init 999 python:
                 mas_hair_def
             ))
 
-
         def _sel_mouth(self, direct):
             self._adj_sel(direct, "mouth")
             self._update_spr_code()
             self._update_sel_tx("mouth")
-
 
         def _sel_nose(self, direct):
             self._adj_sel(direct, "nose")
             self._update_spr_code()
             self._update_sel_tx("nose")
 
-
         def _sel_sweat(self, direct):
             self._adj_sel(direct, "sweat")
             self._update_spr_code()
             self._update_sel_tx("sweat")
 
-
         def _sel_tears(self, direct):
             self._adj_sel(direct, "tears")
             self._update_spr_code()
             self._update_sel_tx("tears")
-
 
         def _sel_time(self, direct):
             self._adj_sel(direct, "time")
@@ -1011,11 +939,11 @@ init 999 python:
             that only have single selection avaialble
             """
             for button in self.button_ls:
-                if len(self.SC_MAP[button.return_value]) < 2:
+                if len(self.SPRITE_CODE_MAP[button.return_value]) < 2:
                     button.disable()
 
             for button in self.button_rs:
-                if len(self.SC_MAP[button.return_value]) < 2:
+                if len(self.SPRITE_CODE_MAP[button.return_value]) < 2:
                     button.disable()
 
 
@@ -1040,7 +968,6 @@ init 999 python:
                 outlines=[]
             )
 
-
         def _build_sel_texts(self):
             """
             Builds a list of Text objects using the current selection map
@@ -1052,7 +979,6 @@ init 999 python:
                 self._build_sel_tx(key)
                 for key in self.SQ_BUTTON_RETVALS
             ]
-
 
         def _get_sel_tx(self, key):
             """
@@ -1072,7 +998,6 @@ init 999 python:
                 return "None"
 
             return self.SEL_TX_MAP[key][spr_code]
-
 
         def _update_sel_tx(self, key):
             """
@@ -1102,7 +1027,6 @@ init 999 python:
 
             return "".join(_codes)
 
-
         def _get_spr_code(self, key, nose=True):
             """
             Get sprite code for a given sprite key
@@ -1119,13 +1043,66 @@ init 999 python:
             """
             # HOW this works:
             # 1. curr_sel has the index for the current selection for a sprite
-            # 2. SC_MAP has the lists of sprite codes arranged by index
-            spr_code = self.SC_MAP[key][self.curr_sel[key]]
+            # 2. SPRITE_CODE_MAP has the lists of sprite codes arranged by index
+            spr_code = self.SPRITE_CODE_MAP[key][self.curr_sel[key]]
             if nose and spr_code == self.NOSE_DEF:
                 return None
 
             return spr_code
 
+        def _from_spr_code(self, spr_code):
+            """
+            Attempts to parse a sprite code and then updates the selectors accordingly
+
+            IN:
+                spr_code - sprite code
+            """
+            # Sanity check so we don't process something crazy from the buffer
+            if not spr_code or 0 > len(spr_code) > 25:
+                return
+
+            spr_code = spr_code.strip(" \t\n\r").lower()
+            try:
+                exp_kwargs = mas_sprite_decoder.parse_exp_to_kwargs(
+                    spr_code
+                )
+
+            except:
+                # Assuming invalid sprite code
+                return
+
+            changed = False
+
+            for key in self.SC_PARTS:
+                # Add bits that might not be present in the given code
+                exp_kwargs.setdefault(key, None)
+
+            for key, value in exp_kwargs.iteritems():
+                # Skip the keys we don't need
+                if (
+                    key in self.SPRITE_CODE_MAP
+                    and key in self.REVERSE_IMG_NAMES_MAP
+                ):
+                    # None means it's something that isn't in the code
+                    # So we just reset to default - 0
+                    if value is None:
+                        new_index = 0
+
+                    # Otherwise have to do a lookup to find the new index
+                    else:
+                        spr_code_letter = self.REVERSE_IMG_NAMES_MAP[key][value]
+                        new_index = self.SPRITE_CODE_MAP[key].index(spr_code_letter)
+
+                    # Now move the selectors
+                    current_index = self.curr_sel[key]
+                    direction = new_index - current_index
+                    # direction = 1 if move_by > 0 else -1
+                    if direction != 0:
+                        changed = True
+                        self._selectors[key](direction)
+
+            if changed:
+                self.sprite_changed = True
 
         def _update_spr_code(self):
             """
@@ -1149,8 +1126,7 @@ init 999 python:
             if spr_code is None:
                 return None
 
-            return self.IMG_NMAP[key][spr_code]
-
+            return self.IMG_NAMES_MAP[key][spr_code]
 
         def _get_img_tears(self, key, eyes):
             """
@@ -1190,126 +1166,113 @@ init 999 python:
             """
             RENDER
             """
-            # renders
-            back = renpy.render(self.background, width, height, st, at)
+            render = renpy.Render(width, height)
 
-            # buttons
-            r_buttons = [
-                (
-                    x.render(width, height, st, at),
-                    (x.xpos, x.ypos)
-                )
-                for x in self.all_buttons
-            ]
+            # Moni render
+            if self.state == self.STATE_VALID:
+                try:
+                    spr_tran_surf = renpy.render(
+                        self.spr_tran, width, height, st, at
+                    )
 
-            # do both text and sel texts together for efficiency
-            r_texts = list()
-            r_sel_txts = list()
+                except:
+                    # this failed to render
+                    self.state = self.STATE_INVALID
+                    spr_tran_surf = renpy.render(
+                        store.i21(Placeholder("girl")), width, height, st, at
+                    )
+                    # FIXME: TEMP
+                    render.blit(spr_tran_surf, (0, 0))
+
+                else:
+                    render.place(self.spr_tran, x=self.MONI_X, y=self.MONI_Y, render=spr_tran_surf)
+
+                finally:
+                    self.sprite_changed = False
+
+            # BG render
+            bg_surf = renpy.render(self.background, width, height, st, at)
+            render.blit(bg_surf, (self.PANEL_X, self.PANEL_Y))
+
+            # Spr code render
+            spr_code_text_color = self.SPR_FOUND
+            spr_code_text = Text(
+                "Sprite Code: " + self.curr_spr_code,
+                font=gui.default_font,
+                size=self.TEXT_SIZE,
+                color=spr_code_text_color,
+                outlines=[]
+            )
+            spr_code_text_surf = renpy.render(spr_code_text, width, height, st, at)
+            render.blit(spr_code_text_surf, (self.LBL_X, self.SC_Y))
+
+            # Text renders, do both text and sel texts together for efficiency
             for x in range(self.ROWS):
-
                 # text
-                r_texts.append((
-                    renpy.render(self.labels[x], width, height, st, at),
-                    (self.LBL_X, self.lbl_y_list[x])
-                ))
+                text_surf = renpy.render(self.labels[x], width, height, st, at)
+                text_blit_coords = (self.LBL_X, self.lbl_y_list[x])
+                render.blit(text_surf, text_blit_coords)
 
-                # selected text
-                _r_sel_tx = renpy.render(
+                # Selected text
+                sel_text_surf = renpy.render(
                     self.curr_sel_txts[x],
                     width,
                     height,
                     st,
                     at
                 )
-
-                rst_w, rst_h = _r_sel_tx.get_size()
-
-                r_sel_txts.append((
-                    _r_sel_tx,
-                    (self._seltx_xcenter(rst_w), self.lbl_y_list[x])
-                ))
-
-
-            #All sprites exist. no need for miss codes
-            spr_clr = self.SPR_FOUND
-
-            spr_txt = Text(
-                "Sprite Code: " + self.curr_spr_code,
-                font=gui.default_font,
-                size=self.TEXT_SIZE,
-                color=spr_clr,
-                outlines=[]
-            )
-            r_spr_code = renpy.render(spr_txt, width, height, st, at)
-
-            # sprite rendres could possibly happen depending on what we do
-            if self.state == self.STATE_MONI_BLIT:
-                try:
-                    r_spr_tran = renpy.render(
-                        self.spr_tran, width, height, st, at
-                    )
-                    self.sprite_changed = False
-                except:
-                    # this failed to render
-                    self.state = self.STATE_MONI_SHOW
-
-            # and blit
-            r = renpy.Render(width, height)
-            if self.state == self.STATE_MONI_BLIT:
-                # blitting the monika is very very hard
-                r.blit(r_spr_tran, (self.MONI_X, self.MONI_Y))
-            r.blit(back, (self.PANEL_X, self.PANEL_Y))
-            r.blit(r_spr_code, (self.LBL_X, self.SC_Y))
-            for vis_t, xy in r_texts:
-                r.blit(vis_t, xy)
-            for vis_t, xy in r_sel_txts:
-                r.blit(vis_t, xy)
-            for vis_b, xy in r_buttons:
-                r.blit(vis_b, xy)
-
-            # if we got here, then we are rendering a sprite that couldnt be
-            # created
-            if self.state == self.STATE_MONI_SHOW and self.sprite_changed:
-                renpy.show(
-                    str("monika " + self.curr_spr_code),
-                    at_list=[i21],
-                    zorder=MAS_MONIKA_Z
+                _surf_w, _surf_h = sel_text_surf.get_size()
+                sel_text_blit_coords = (
+                    self._seltx_xcenter(_surf_w),
+                    self.lbl_y_list[x]
                 )
-                renpy.restart_interaction()
-                self.sprite_changed = False
+                render.blit(sel_text_surf, sel_text_blit_coords)
 
-            return r
+            # Buttons renders
+            for b in self.all_buttons:
+                render.blit(
+                    b.render(width, height, st, at),
+                    (b.xpos, b.ypos)
+                )
 
+            return render
 
         def event(self, ev, x, y, st):
             """
             EVENT
             """
             if ev.type in self.MOUSE_EVENTS:
-
+                # Are we done?
                 if self.button_done.event(ev, x, y, st):
-                    # testing we done
                     return True
 
-                # othrewise, check left buttons
-                if not self._left_button_select(ev, x, y, st):
-                    self._right_button_select(ev, x, y, st)
+                # Check left/right buttons
+                elif self._left_button_select(ev, x, y, st) or self._right_button_select(ev, x, y, st):
+                    # Processing is done later
+                    pass
 
+                # Check copy button
+                elif self.button_copy.event(ev, x, y, st):
+                    pygame.scrap.put(pygame.SCRAP_TEXT, self.curr_spr_code)
+
+                # Check paste button
+                elif self.button_paste.event(ev, x, y, st):
+                    new_spr_code = pygame.scrap.get(pygame.SCRAP_TEXT)
+                    self._from_spr_code(new_spr_code)
+
+                # Redraw if needed
                 if self.sprite_changed:
-
                     # if this is None, we just dont render it
                     self.spr_tran = self._create_sprite()
 
                     if self.spr_tran is None:
-                        self.state = self.STATE_MONI_SHOW
+                        self.state = self.STATE_INVALID
 
                     else:
-                        self.state = self.STATE_MONI_BLIT
-                        renpy.hide("monika")
-                        renpy.restart_interaction()
+                        self.state = self.STATE_VALID
 
-                # rereender
-                renpy.redraw(self, 0)
+                    # Rereender
+                    renpy.redraw(self, 0)
 
-            # otherwise continue
+                return None
             raise renpy.IgnoreEvent()
