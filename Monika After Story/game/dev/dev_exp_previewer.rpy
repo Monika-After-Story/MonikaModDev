@@ -415,7 +415,7 @@ init 999 python:
                 "def",
                 "blazerless",
                 "marisa",
-                #"rin",
+                # "rin",
                 "santa",
                 "sundress_white",
                 "blackdress",
@@ -1171,23 +1171,21 @@ init 999 python:
             # Moni render
             if self.state == self.STATE_VALID:
                 try:
+                    spr_tran = self.spr_tran
                     spr_tran_surf = renpy.render(
-                        self.spr_tran, width, height, st, at
+                        spr_tran, width, height, st, at
                     )
 
                 except:
                     # this failed to render
                     self.state = self.STATE_INVALID
+                    spr_tran = store.i21(Placeholder("girl"))
                     spr_tran_surf = renpy.render(
-                        store.i21(Placeholder("girl")), width, height, st, at
+                        spr_tran, width, height, st, at
                     )
-                    # FIXME: TEMP
-                    render.blit(spr_tran_surf, (0, 0))
-
-                else:
-                    render.place(self.spr_tran, x=self.MONI_X, y=self.MONI_Y, render=spr_tran_surf)
 
                 finally:
+                    render.place(spr_tran, x=self.MONI_X, y=self.MONI_Y, render=spr_tran_surf)
                     self.sprite_changed = False
 
             # BG render
