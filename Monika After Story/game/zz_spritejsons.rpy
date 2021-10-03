@@ -1079,7 +1079,7 @@ init 189 python in mas_sprites_json:
                 ))
 
 
-    def _validate_type(json_obj):
+    def _validate_type(json_obj, msg_log, ind_lvl):
         """
         Validates the type of this json object.
 
@@ -1087,18 +1087,30 @@ init 189 python in mas_sprites_json:
 
         IN:
             json_obj - json object to validate
+            ind_lvl - indentation level
+
+        OUT:
+            msg_log - list to add messages to
 
         RETURNS: SP constant if valid type, None otherwise
         """
         # check for type existence
         if "type" not in json_obj:
-            writelog(MSG_ERR_ID.format(REQ_MISS.format("type")))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                REQ_MISS.format("type")
+            ))
             return None
 
         # type exists, validate
         type_val = json_obj.pop("type")
         if not _verify_sptype(type_val, False):
-            writelog(MSG_ERR_ID.format(BAD_SPR_TYPE.format(type(type_val))))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                BAD_SPR_TYPE.format(type_val)
+            ))
             return None
 
         # type validated, return it
@@ -2207,8 +2219,9 @@ init 189 python in mas_sprites_json:
         #   in case.
 
         # determine type
-        sp_type = _validate_type(jobj)
-        if sp_type is None:
+        msg_log = []
+        sp_type = _validate_type(jobj, msg_log, indent_lvl)
+        if parsewritelogs(msg_log):
             return
 
         # check name and img_sit
