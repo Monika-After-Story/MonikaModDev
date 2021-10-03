@@ -79,8 +79,11 @@ init 999 python:
         BUTTON_X_COPY = PANEL_X + MARGIN
         BUTTON_Y_COPY = (PANEL_Y + PANEL_HEIGHT) - (BUTTON_HEIGHT + MARGIN)
 
-        BUTTON_X_PASTE = PANEL_X + PANEL_WIDTH // 2 - BUTTON_WIDTH // 2
+        BUTTON_X_PASTE = BUTTON_X_COPY + BUTTON_WIDTH + MARGIN
         BUTTON_Y_PASTE = BUTTON_Y_COPY
+
+        BUTTON_X_RESET = BUTTON_X_PASTE + BUTTON_WIDTH + MARGIN
+        BUTTON_Y_RESET = BUTTON_Y_COPY
 
         BUTTON_X_DONE = PANEL_X + PANEL_WIDTH - (BUTTON_WIDTH + MARGIN)
         BUTTON_Y_DONE = BUTTON_Y_COPY
@@ -455,7 +458,7 @@ init 999 python:
         }
 
         # list of keys that matter for a sprite code
-        SC_PARTS = [
+        SPRITE_CODE_PARTS = [
             "arms",
             "eyes",
             "eyebrows",
@@ -589,6 +592,18 @@ init 999 python:
                 activate_sound=gui.activate_sound
             )
 
+            # Reset button
+            self.button_reset = MASButtonDisplayable.create_stb(
+                "Reset",
+                False,
+                self.BUTTON_X_RESET,
+                self.BUTTON_Y_RESET,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
             # Done button
             self.button_done = MASButtonDisplayable.create_stb(
                 "Done",
@@ -607,6 +622,7 @@ init 999 python:
             self.all_buttons.extend(self.button_rs)
             self.all_buttons.append(self.button_copy)
             self.all_buttons.append(self.button_paste)
+            self.all_buttons.append(self.button_reset)
             self.all_buttons.append(self.button_done)
 
             ## texts
@@ -1020,7 +1036,7 @@ init 999 python:
                 the current sprite code
             """
             _codes = list()
-            for key in self.SC_PARTS:
+            for key in self.SPRITE_CODE_PARTS:
                 spr_code = self._get_spr_code(key)
                 if spr_code is not None:
                     _codes.append(str(spr_code))
@@ -1050,6 +1066,22 @@ init 999 python:
 
             return spr_code
 
+        def _reset(self):
+            """
+            Resets exp params
+            """
+            changed = False
+            for key in self.SPRITE_CODE_PARTS:
+                current_index = self.curr_sel[key]
+                new_index = 0 if key != "eyebrows" else 1
+                direction = new_index - current_index
+                if direction != 0:
+                    changed = True
+                    self._selectors[key](direction)
+
+            if changed:
+                self.sprite_changed = True
+
         def _from_spr_code(self, spr_code):
             """
             Attempts to parse a sprite code and then updates the selectors accordingly
@@ -1073,7 +1105,7 @@ init 999 python:
 
             changed = False
 
-            for key in self.SC_PARTS:
+            for key in self.SPRITE_CODE_PARTS:
                 # Add bits that might not be present in the given code
                 exp_kwargs.setdefault(key, None)
 
@@ -1257,6 +1289,9 @@ init 999 python:
                 elif self.button_paste.event(ev, x, y, st):
                     new_spr_code = pygame.scrap.get(pygame.SCRAP_TEXT)
                     self._from_spr_code(new_spr_code)
+
+                elif self.button_reset.event(ev, x, y, st):
+                    self._reset()
 
                 # Redraw if needed
                 if self.sprite_changed:
