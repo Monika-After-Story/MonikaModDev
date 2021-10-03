@@ -55,6 +55,10 @@ init python in mas_sprite_decoder:
             TEAR_MAP = jobj["tears"]
             SWEAT_MAP = jobj["sweat"]
             MOD_MAP = jobj["MOD_MAP"]
+            # Convert lists into sets for speed
+            for sub_map in MOD_MAP.itervalues():
+                for key, value in sub_map.iteritems():
+                    sub_map[key] = set(value)
 
             #Since tuples aren't supported in json, we need to do some conversion here
             ARM_MAP["5"] = tuple(ARM_MAP["5"])
@@ -186,9 +190,9 @@ init python in mas_sprite_decoder:
             return False, 0
 
         # NOTE: tears need custom handling because of problems with closed eyes
-        tm_map = MOD_MAP.get("tears", {}).get(tears, None)
+        tm_set = MOD_MAP.get("tears", {}).get(tears, None)
         eyes = export_dict["eyes"]
-        if tm_map is not None and eyes in tm_map:
+        if tm_set is not None and eyes in tm_set:
             tears += eyes
 
         #Checks passed. Let's add this
