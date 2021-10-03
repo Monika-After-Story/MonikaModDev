@@ -2110,9 +2110,9 @@ label monika_affection_nickname:
                     m 1eka "Try again~"
 
                 elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
-                    m 2tfc "..."
-                    m 2esc "Try again."
-                    show monika 1eua
+                    m 2ttc "..."
+                    m 2tsd "Try again."
+                    show monika 1esc
 
                 elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
                     jump .neutral_accept
