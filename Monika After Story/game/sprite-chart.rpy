@@ -335,6 +335,10 @@ init -100 python in mas_sprites:
     #v: ignored
     #marks the hair as a twinbraid hairstyle
 
+    EXP_H_SB = "straight-bangs"
+    # v: ignored
+    # marks that a hair style has straight bangs
+
     # ---- CLOTHES ----
 
     EXP_C_BLS = "bare-left-shoulder"
@@ -477,6 +481,12 @@ init -100 python in mas_sprites:
             ex_props={
                 "bare neck": True
             }
+        ),
+        "front-bow": ACSTemplate(
+            "front-bow",
+            mux_type=[
+                "TODO" # TODO
+            ]
         ),
         "front-hair-flower-crown": ACSTemplate(
             "front-hair-flower-crown",
