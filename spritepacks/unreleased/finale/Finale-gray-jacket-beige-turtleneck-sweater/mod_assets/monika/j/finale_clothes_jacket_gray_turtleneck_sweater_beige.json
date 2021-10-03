@@ -22,7 +22,8 @@
         "thumb": "finale_gray_jacket",
         "group": "clothes",
         "select_dlg": [
-            "TODO"
+            "Perfect for a chilly day.",
+            "Are we going somewhere, [player]?"
         ]
     },
     "giftname": "grayjacket",
