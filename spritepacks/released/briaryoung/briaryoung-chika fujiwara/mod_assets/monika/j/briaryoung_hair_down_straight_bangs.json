@@ -11,8 +11,8 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "no-tails",
-        "straight-bangs"
+        "no-tails": true,
+        "straight-bangs": true
     },
     "select_info": {
         "display_name": "Down (Straight Bangs)",

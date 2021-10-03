@@ -31,7 +31,7 @@
     "pose_arms": {
         "crossed": {
             "tag": "crossed",
-            "layers": "5^10"
+            "layers": "5"
         },
         "left-down": {
             "tag": "down",
