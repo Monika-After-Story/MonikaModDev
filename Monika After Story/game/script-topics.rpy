@@ -17093,3 +17093,47 @@ label monika_tanabata:
     else:
         m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rpg",
+            category=['Games'],
+            prompt="RPG videogames",
+            pool=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+label monika_rpg
+    m 1esd "Hey, [mas_get_player_nickname()]..."
+ if seen_event("monika_adventure"):
+      m 1esa "Since the last time we talked about video games, I have been making researches on other genres, out of curiosity."
+      m 1esb "And there is something that caught my eyes..."
+ else:
+      m 1esa "I was thinking about what kind of game we could be in."
+      m 1esc "It might be not the best option - "
+      extend 1rtc "at least for me - "
+      m 1esc "but I still find this genre interesting to discuss..."
+    m 3eua "Roleplaying games, or, to put it shortly, RPG!"
+    m 7esd "It's one of the oldest and varied genres. Text-based games, turn-based games, real-time action games..." 
+    m 7esb "But out of all classifications, I'd choose story-driven RPGs. No matter if it's fantasy, sci-fi, or something else." 
+    show monika 5lsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5lsa "It probably feels nice to get into the plot not just by reading it, but also have a role in it!"
+    m 5esa "And not just any role - it's up to you to decide who you'll be and on what adventures to go!"
+ if persistent._mas_pm_like_orchestral_music:
+      m 5esb "And in the case of fantasy games - "
+      extend m 5ssb "add the orchestra music in the background! It surely will give the right mood."
+    show monika 2esc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 2esc "The only thing that turns me off from this genre is... the actual gameplay." 
+    m 2esa "I won't say for all RPGs, but they mostly end up working on numbers." 
+    m 2tsd "Your character's level and statistics, weapon and magic skills, monsters' resistances, and so on." 
+    m 2rud "Sure, that's how this genre started in general..." 
+    m 2ekb "But back in the 70s, you would expect nothing but a simple text or a bunch of letters as graphics on your monitor." 
+    m 2ekd "At least you can ignore that side of the game in single-player mode. (2tkd?) I don't even want to think about online RPGs." 
+    m 2ekc "You can forget about the entourage here - if previously people were at least more interactive with each other, sometimes to the point of actual roleplaying..."
+    m 6esc "Now your character's progress, not your reputation between other players, is all that matters."
+    m 6rsc "Not to mention that you'll be limited in your playstyle, just because that specific skill set is considered more 'efficient' among others than whatever you've come up with."
+    m 6dsc "..."
+    m 2esa "Well, I can surely make a lesson from these thoughts."
+    m 2efu "Don't play just for high numbers and statistics!"
