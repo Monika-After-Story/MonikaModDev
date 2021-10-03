@@ -120,83 +120,27 @@ init 999 python:
         #   [0]: lean
         #   [1]: arm
         LEAN_SMAP = {
-            5: ("def", "def")
+            "5": ("def", "def")
         }
 
         # Map between sprite code letters and image names
         IMG_NAMES_MAP = {
-            "arms": {
-                1: "steepling",
-                2: "crossed",
-                3: "restleftpointright",
-                4: "pointright",
-                6: "down",
-                7: "downleftpointright",
-            },
-            "eyes": {
-                "e": "normal",
-                "w": "wide",
-                "s": "sparkle",
-                "t": "smug",
-                "c": "crazy",
-                "r": "right",
-                "l": "left",
-                "h": "closedhappy",
-                "d": "closedsad",
-                "k": "winkleft",
-                "n": "winkright",
-                "f": "soft",
-                "m": "smugleft",
-                "g": "smugright",
-            },
-            "eyebrows": {
-                "f": "furrowed",
-                "u": "up",
-                "k": "knit",
-                "s": "mid",
-                "t": "think"
-            },
+            "arms": mas_sprite_decoder.ARM_MAP,
+            "eyes": mas_sprite_decoder.EYE_MAP,
+            "eyebrows": mas_sprite_decoder.EYEBROW_MAP,
             "nose": {
                 "nd": "def"
             },
             "eyebags": {
                 "ebd": "def"
             },
-            "blush": {
-                "bl": "lines",
-                "bs": "shade",
-                "bf": "full"
-            },
-            "tears": {
-                "ts": "streaming",
-                "td": "dried",
-                "tp": "pooled",
-                "tu": "up",
-            #    "tl": "left",
-            #    "tr": "right",
-            #    "th": "closedhappy",
-            #    "tc": "closedsad",
-            },
-            "sweat": {
-                "sdl": "def",
-                "sdr": "right"
-            },
+            "blush": mas_sprite_decoder.BLUSH_MAP,
+            "tears": mas_sprite_decoder.TEAR_MAP,
+            "sweat": mas_sprite_decoder.SWEAT_MAP,
             # "emote": {
             #     "ec": "confuse"
             # },
-            "mouth": {
-                "a": "smile",
-                "b": "big",
-                "c": "smirk",
-                "d": "small",
-                "o": "gasp",
-                "u": "smug",
-                "w": "wide",
-                "x": "angry",
-                "p": "pout",
-                "t": "triangle",
-            #    "g": "disgust",
-            }
+            "mouth": mas_sprite_decoder.MOUTH_MAP
         }
         # Same as above, but reversed - image names to sprite code letters
         REVERSE_IMG_NAMES_MAP = {key: {v: k for k, v in sub_map.iteritems()} for key, sub_map in IMG_NAMES_MAP.iteritems()}
@@ -204,13 +148,13 @@ init 999 python:
         ### sprite code maps
         SEL_TX_MAP = {
             "arms": {
-                1: "Resting on Hands",
-                2: "Crossed",
-                3: "Rest Left, Point Right",
-                4: "Point Right",
-                5: "Leaning",
-                6: "Down",
-                7: "Down Left, Point Right",
+                "1": "Resting on Hands",
+                "2": "Crossed",
+                "3": "Rest Left, Point Right",
+                "4": "Point Right",
+                "5": "Leaning",
+                "6": "Down",
+                "7": "Down Left, Point Right",
             },
             "eyes": {
                 "e": "Normal",
@@ -337,13 +281,13 @@ init 999 python:
         # sprite code map
         SPRITE_CODE_MAP = {
             "arms": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
             ],
             "eyes": [
                 "e",
@@ -437,25 +381,7 @@ init 999 python:
         # modifier map, for special cases. Currently this should be used
         # as appenders to image names
         # NOTE: each expression may use this differently.
-        MOD_MAP = {
-            "tears": {
-                "streaming": (
-                    "closedhappy",
-                    "closedsad",
-                    "winkleft",
-                    "winkright",
-                ),
-                "up": (
-                    "closedhappy",
-                    "closedsad",
-                    "winkleft",
-                    "winkright",
-                ),
-                "pooled": (
-                    "closedhappy",
-                ),
-            },
-        }
+        MOD_MAP = mas_sprite_decoder.MOD_MAP
 
         # list of keys that matter for a sprite code
         SPRITE_CODE_PARTS = [
