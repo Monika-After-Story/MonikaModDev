@@ -1016,7 +1016,7 @@ init 999 python:
                 spr_code - sprite code
             """
             # Sanity check so we don't process something crazy from the buffer
-            if not spr_code or 0 > len(spr_code) > 25:
+            if not spr_code or not 0 < len(spr_code) < 25:
                 return
 
             spr_code = spr_code.strip(" \t\n\r").lower()
@@ -1044,7 +1044,7 @@ init 999 python:
                     # None means it's something that isn't in the code
                     # So we just reset to default - 0
                     if value is None:
-                        new_index = 0
+                        new_index = 0 if key != "eyebrows" else 1
 
                     # Otherwise have to do a lookup to find the new index
                     else:
@@ -1054,7 +1054,6 @@ init 999 python:
                     # Now move the selectors
                     current_index = self.curr_sel[key]
                     direction = new_index - current_index
-                    # direction = 1 if move_by > 0 else -1
                     if direction != 0:
                         changed = True
                         self._selectors[key](direction)
@@ -1187,7 +1186,7 @@ init 999 python:
             # Buttons renders
             for b in self.all_buttons:
                 render.blit(
-                    b.render(width, height, st, at),
+                    renpy.render(b, width, height, st, at),
                     (b.xpos, b.ypos)
                 )
 
