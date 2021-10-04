@@ -553,7 +553,7 @@ init 1 python in mas_sprites:
             mfwm_id - ID of the MASFilterWeatherMap object
             mfwm - MASFilterWeatherMap object to verify
         """
-        if mwfm.use_fb:
+        if mfwm.use_fb:
             # fallback-based
 
             # contains all flts that have a valid default fallback somewhere.
@@ -2669,7 +2669,7 @@ init -4 python in mas_sprites:
         return rk_list
 
 
-init -10 python:
+init -50 python:
 
     class MASFilterMap(object):
         """SEALED

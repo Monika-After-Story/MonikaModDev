@@ -18,115 +18,13 @@ init -900 python in mas_ics:
 
     ########################## ISLANDS ########################################
     # islands folder
-    islands_folder = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/location/special/"
+    ISLANDS_FOLDER = os.path.normcase(
+        os.path.join(renpy.config.gamedir, "mod_assets/location/special/")
     )
 
     # NOTE: these checksums are BEFORE b64 encoding
 
-    # Night With Frame
-    islands_nwf = (
-        "0ea361ef4c501c15a23eb36b1c47bf1a8eac1b4c2a1bc214e30db9e4f154dbdc"
-    )
-
-    # night without frame
-    islands_nwof = (
-        "fff96da27e029d5bab839bde8b2a00f8d484ad81880522b0e828c8a2cd0a7c97"
-    )
-
-    # day with frame
-    islands_dwf = (
-        "791f379866edf72dc6fd72ae8d7b26af43dd8278b725a0bf2aeb5c72ba04a672"
-    )
-
-    # day withotu frame
-    islands_dwof = (
-        "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
-    )
-
-    # rain with frame
-    islands_rwf = (
-        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
-    )
-
-    # rain without frame
-    islands_rwof = (
-        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
-    )
-
-    # night rain with frame
-    islands_nrwf = (
-        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
-    )
-
-    # night rain without frame
-    islands_nrwof = (
-        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
-    )
-
-    # overcast with frame
-    islands_owf = (
-        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
-    )
-
-    # overcast without frame
-    islands_owof = (
-        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
-    )
-
-    # night overcast with frame
-    islands_nowf = (
-        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
-    )
-
-    # night overcast without frame
-    islands_nowof = (
-        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
-    )
-
-    # snow with frame
-    islands_swf = (
-        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
-    )
-
-    # snow without frame
-    islands_swof = (
-        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
-    )
-
-    # night snow with frame
-    islands_nswf = (
-        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
-    )
-
-    # night snow without frame
-    islands_nswof = (
-        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
-    )
-
-    # islands dict to map filenames to checksums and real filenames
-    # key: filename of b64 encode
-    # value: tuple:
-    #   [0] - filename to save the image as
-    #   [1] - checksum for that image
-    islands_map = {
-        "nwf": ("night_with_frame.png", islands_nwf),
-        "nwof": ("night_without_frame.png", islands_nwof),
-        "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof),
-        "rwf": ("rain_with_frame.png", islands_rwf),
-        "rwof": ("rain_without_frame.png", islands_rwof),
-        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
-        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
-        "owf": ("overcast_with_frame.png", islands_owf),
-        "owof": ("overcast_without_frame.png", islands_owof),
-        "nowf": ("night_overcast_with_frame.png", islands_nowf),
-        "nowof": ("night_overcast_without_frame.png", islands_nowof),
-        "swf": ("snow_with_frame.png", islands_swf),
-        "swof": ("snow_without_frame.png", islands_swof),
-        "nswf": ("night_snow_with_frame.png", islands_nswf),
-        "nswof": ("night_snow_without_frame.png", islands_nswof)
-    }
+    ISLAND_PKG_CHKSUM = "bd3f4859ce2c7014845700e7d949cc21dcb44d4feb986083f21e67f2d8317f85"
 
     #################################### O31 ##################################
     # cg folder
