@@ -393,6 +393,7 @@ init -21 python in mas_sprites_json:
     import store
     import store.mas_utils as mas_utils
     import traceback
+    import logging
 
     SP_JSON_VER = 3
     VERSION_TXT = "version"
@@ -402,9 +403,59 @@ init -21 python in mas_sprites_json:
     from store.mas_ev_data_ver import _verify_bool, _verify_str, \
         _verify_int, _verify_list, _verify_dict
 
-    log = mas_utils.getMASLog("log/spj")
-    log_open = log.open()
-    log.raw_write = True
+
+    class SpriteJsonLogger(store.mas_logging.MASNewlineLogAdapter):
+        """
+        Speciality logger for sprite jsons.
+        This defaults some props for all log record objects created from this
+        logger.
+
+        accepts newlines in logging.
+        """
+
+        def __init__(self, logger):
+            """
+            IN:
+                logger - the logger to adapt
+            """
+            super(SpriteJsonLogger, self).__init__(
+                logger,
+                extra_props={
+                    "indent_lvl": 0,
+                }
+            )
+
+
+    class SpriteJsonFormatter(store.mas_logging.MASLogFormatter):
+        """
+        Specialty formatter for sprite jsons
+        """
+
+        def format(self, record):
+            """
+            override of logging.Formatter.format
+
+            IN:
+                record - LogRecord object
+
+            RETURNS: string to be logged
+            """
+            self.update_levelname(record)
+            return self.apply_newline_prefix(
+                record,
+                "[{0}]:  {1}{2}".format(
+                    record.levelname,
+                    " " * (record.indent_lvl * 2),
+                    record.msg
+                )
+            )
+
+
+    log = SpriteJsonLogger(store.mas_logging.init_log(
+        "spj",
+        append=False,
+        formatter=SpriteJsonFormatter()
+    ))
 
     py_list = __builtin__.list
     py_dict = __builtin__.dict
@@ -457,18 +508,16 @@ init -21 python in mas_sprites_json:
     # key: (sprite type, name)
     # value: giftname
 
-
+    @store.mas_utils.deprecated(use_instead="log.info, log.warning, log.error, log.exception")
     def writelog(msg):
         # new lines always added ourselves
-        if log_open:
-            log.write(msg)
+        log.info(msg)
 
-
+    @store.mas_utils.deprecated()
     def writelogs(msgs):
         # writes multiple msges given list
-        if log_open:
-            for msg in msgs:
-                log.write(msg)
+        for msg in msgs:
+            writelog(msg)
 
         # clear msgs list
         msgs[:] = []
@@ -484,8 +533,8 @@ init -21 python in mas_sprites_json:
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
     EXTRA_PROP = "extra property '{0}' found"
-    REQ_MISS = "required property '{0}' not found"
-    BAD_SPR_TYPE = "invalid sprite type '{0}'"
+    REQ_MISS = "    required property '{0}' not found"
+    BAD_SPR_TYPE = "    invalid sprite type '{0}'"
     BAD_ACS_LAYER = "invalid ACS layer '{0}'"
     BAD_LIST_TYPE = "property '{0}' index '{1}' - expected type {2}, got {3}"
     EMPTY_LIST = "property '{0}' cannot be an empty list"
@@ -737,8 +786,7 @@ init -21 python in mas_sprites_json:
 
 init 189 python in mas_sprites_json:
     from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP, ACS_MAP
-    from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
-        JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
+    from store.mas_logging import JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
         NAME_BAD
 
@@ -751,10 +799,10 @@ init 189 python in mas_sprites_json:
     MSG_WARN_T = 1
     MSG_ERR_T = 2
 
-    MSG_MAP = {
-        MSG_INFO_T: MSG_INFO,
-        MSG_WARN_T: MSG_WARN,
-        MSG_ERR_T: MSG_ERR
+    MSG_SEVERITY_MAP = {
+        MSG_INFO_T: log.info,
+        MSG_WARN_T: log.warning,
+        MSG_ERR_T: log.error
     }
 
     # main functions
@@ -773,14 +821,11 @@ init 189 python in mas_sprites_json:
         RETURNS: True if an ERR constant was found, False if not
         """
         log_con, indent, msg = msg_data
-        prefix = MSG_MAP.get(log_con, None)
-        if prefix is None:
+        log_func = MSG_SEVERITY_MAP.get(log_con, None)
+        if log_func is None:
             return True
 
-        indents = " " * (indent * 2)
-        msg = indents + prefix.format(msg)
-        writelog(msg)
-
+        log_func(msg, indent_lvl=indent)
         return log_con == MSG_ERR_T
 
 
@@ -1079,7 +1124,7 @@ init 189 python in mas_sprites_json:
                 ))
 
 
-    def _validate_type(json_obj):
+    def _validate_type(json_obj, msg_log, ind_lvl):
         """
         Validates the type of this json object.
 
@@ -1087,18 +1132,30 @@ init 189 python in mas_sprites_json:
 
         IN:
             json_obj - json object to validate
+            ind_lvl - indentation level
+
+        OUT:
+            msg_log - list to add messages to
 
         RETURNS: SP constant if valid type, None otherwise
         """
         # check for type existence
         if "type" not in json_obj:
-            writelog(MSG_ERR_ID.format(REQ_MISS.format("type")))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                REQ_MISS.format("type")
+            ))
             return None
 
         # type exists, validate
         type_val = json_obj.pop("type")
         if not _verify_sptype(type_val, False):
-            writelog(MSG_ERR_ID.format(BAD_SPR_TYPE.format(type(type_val))))
+            msg_log.append((
+                MSG_ERR_T,
+                ind_lvl,
+                BAD_SPR_TYPE.format(type_val)
+            ))
             return None
 
         # type validated, return it
@@ -2143,10 +2200,6 @@ init 189 python in mas_sprites_json:
         """
         dry_run = False
         jobj = None
-        msgs_err = []
-        msgs_warn = []
-        msgs_info = []
-        msgs_exprop = []
         obj_based_params = {}
         sp_obj_params = {}
         sel_params = {}
@@ -2154,7 +2207,7 @@ init 189 python in mas_sprites_json:
         giftname = None
         indent_lvl = 0
 
-        writelog("\n" + MSG_INFO.format(READING_FILE.format(filepath)))
+        log.info(READING_FILE.format(filepath), pfx_newline=True)
 
         # can we read file
         with open(filepath, "r") as jsonfile:
@@ -2162,7 +2215,7 @@ init 189 python in mas_sprites_json:
 
         # is file json
         if jobj is None:
-            writelog(MSG_ERR.format(JSON_LOAD_FAILED.format(filepath)))
+            log.error(JSON_LOAD_FAILED.format(filepath))
             return
 
         if DRY_RUN in jobj:
@@ -2176,7 +2229,7 @@ init 189 python in mas_sprites_json:
 
         # determine version. Versions must match SP_JSON_VER.
         if VERSION_TXT not in jobj:
-            writelog(MSG_ERR.format(VER_NOT_FOUND))
+            log.error(VER_NOT_FOUND)
             return
 
         # version text exists, check it
@@ -2185,12 +2238,12 @@ init 189 python in mas_sprites_json:
         # check type
         if not _verify_int(version, allow_none=False):
             # not valid version type, err this
-            writelog(MSG_ERR.format(VER_BAD.format(SP_JSON_VER, version)))
+            log.error(VER_BAD.format(SP_JSON_VER, version))
             return
 
         # check version match
         if version != SP_JSON_VER:
-            writelog(MSG_ERR.format(VER_BAD.format(SP_JSON_VER, version)))
+            log.error(VER_BAD.format(SP_JSON_VER, version))
             return
 
         # otherwise we good version
@@ -2207,8 +2260,9 @@ init 189 python in mas_sprites_json:
         #   in case.
 
         # determine type
-        sp_type = _validate_type(jobj)
-        if sp_type is None:
+        msg_log = []
+        sp_type = _validate_type(jobj, msg_log, indent_lvl)
+        if parsewritelogs(msg_log):
             return
 
         # check name and img_sit
@@ -2228,10 +2282,10 @@ init 189 python in mas_sprites_json:
         sp_name = sp_obj_params["name"]
 
         # log out that we are loading the sprite object and name
-        writelog(MSG_INFO.format(SP_LOADING.format(
+        log.info(SP_LOADING.format(
             SP_STR.get(sp_type),
             sp_name
-        )))
+        ))
         indent_lvl = 1
 
         # check for existence of pose_map property. We will not validate until
@@ -2425,7 +2479,7 @@ init 189 python in mas_sprites_json:
 
         except Exception as e:
             # in thise case, we ended up with a duplicate
-            writelog(MSG_ERR.format(traceback.format_exc()))
+            log.exception(e)
             return
 
         # check image loadables
@@ -2455,7 +2509,7 @@ init 189 python in mas_sprites_json:
 
             except Exception as e:
                 # we probably ended up with a duplicate again
-                writelog(MSG_ERR.format(e.message))
+                log.error(e.message)
 
                 # undo the sprite init
                 _reset_sp_obj(sp_obj)
@@ -2468,17 +2522,17 @@ init 189 python in mas_sprites_json:
         # alright! we have built the sprite object!
         if dry_run:
             _reset_sp_obj(sp_obj)
-            writelog(MSG_INFO.format(SP_SUCCESS_DRY.format(
+            log.info(SP_SUCCESS_DRY.format(
                 SP_STR.get(sp_type),
                 sp_name
-            )))
+            ))
 
         else:
             sp_obj.is_custom = True
-            writelog(MSG_INFO.format(SP_SUCCESS.format(
+            log.info(SP_SUCCESS.format(
                 SP_STR.get(sp_type),
                 sp_name
-            )))
+            ))
 
 
     def addSpriteObjects():
@@ -2499,7 +2553,7 @@ init 189 python in mas_sprites_json:
             try:
                 addSpriteObject(j_path)
             except Exception as e:
-                writelog(MSG_ERR.format(traceback.format_exc()))
+                log.exception(e)
 
 
     def initSpriteObjectProc():
@@ -2513,7 +2567,7 @@ init 189 python in mas_sprites_json:
         """
         Verifies all hair items that we encountered
         """
-        writelog("\n" + MSG_INFO.format(HM_VER_ALL))
+        log.info(HM_VER_ALL)
 
         # start with keys
         for hkey in hm_key_delayed_veri:
@@ -2538,7 +2592,7 @@ init 189 python in mas_sprites_json:
                 for sp_name in sp_name_list:
                     _replace_hair_map(sp_name, hval)
 
-        writelog(MSG_INFO.format(HM_VER_SUCCESS))
+        log.info(HM_VER_SUCCESS)
 
 
     def _addGift(giftname, indent_lvl):
@@ -2582,7 +2636,7 @@ init 189 python in mas_sprites_json:
         Processes giftnames that were loaded, adding/removing them from
         certain dicts.
         """
-        writelog("\n" + MSG_INFO.format(GR_LOADING))
+        log.info(GR_LOADING)
 
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
@@ -2613,7 +2667,7 @@ init 189 python in mas_sprites_json:
                 # now we always add the gift
                 _addGift(giftname, 1)
 
-        writelog(MSG_INFO.format(GR_SUCCESS))
+        log.info(GR_SUCCESS)
 
 
 init 190 python in mas_sprites_json:

@@ -153,7 +153,7 @@ label monika_short_stories_menu:
             try:
                 can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
             except Exception as ex:
-                store.mas_utils.writelog("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+                store.mas_utils.mas_log.error("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
                 can_unlock_story = False
 
         else:

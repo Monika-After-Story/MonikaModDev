@@ -337,10 +337,12 @@ init -900 python:
             try:
                 os.remove(numnum_del_path)
             except Exception as e:
-                mas_utils.writelog(mas_utils._mas_failrm.format(
-                    numnum_del_path,
-                    str(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    mas_utils._mas__failrm.format(
+                        numnum_del_path,
+                        str(e)
+                    )
+                )
 
         return (numbernumber, numbernumber_del)
 
@@ -357,7 +359,7 @@ init -900 python:
             __mas__backupAndDelete(p_savedir, cal_name, numnum=numnum)
 
         except Exception as e:
-            mas_utils.writelog("[ERROR]: {0}".format(str(e)))
+            store.mas_utils.mas_log.error("[ERROR]: {0}".format(str(e)))
 
 
     def __mas__memoryCleanup():

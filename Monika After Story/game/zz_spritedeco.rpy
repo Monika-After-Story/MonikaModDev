@@ -599,7 +599,7 @@ init -19 python:
                 tag - tag to get img info for
 
             RETURNS: tuple (or None if not found)
-                [0] - tag to use 
+                [0] - tag to use
                 [1] - MASAdvancedDecoFrame to use
             """
             deco_def = store.mas_deco.deco_def_db.get(tag, None)
@@ -613,7 +613,7 @@ init -19 python:
             """
             Gets the tag and MASAdvancedDecoFrame setting to use for a bg for
             a given main tag.
-            NOTE: do not use this for render. Use this for getting raw 
+            NOTE: do not use this for render. Use this for getting raw
             settings.
 
             IN:
