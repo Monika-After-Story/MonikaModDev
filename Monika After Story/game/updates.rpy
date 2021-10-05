@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.3.1
 label v0_12_3_1(version="v0_12_3_1"):
     python:
-        pass
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
     return
 
 # 0.12.2.3
