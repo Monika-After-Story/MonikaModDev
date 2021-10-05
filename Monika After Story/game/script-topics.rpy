@@ -17557,3 +17557,54 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_getting_wet_in_the_rain",
+            category=['weather'],
+            prompt="Getting wet in the rain",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_getting_wet_in_the_rain:
+    m 2rkb "Hey [player], can I ask you a weird little question?"
+    m 2eub "Have you ever... gotten wet in the rain? Like, on purpose, just to have fun?{nw}"
+
+    $ _history_list.pop()
+    menu:
+
+        m "Have you ever... gotten wet in the rain? Like, on purpose, just to have fun?{fast}"
+        "A couple times when I was younger":
+            m 3eka "Yeah, that's what I expected."
+            m 6eub "Although, even some adults actually like the feeling of water droplets falling on them as they peacefully walk through the streets."
+            m 3lkb "I can see where they're coming from, though I probably won't ever get wet on purpose if I have the option to not get my clothes wet."
+            m 4ekb "Drying your clothes in the rainy season is a pain, not to mention the possibility of catching a cold."
+            m 2tkc "Ugh, I just hate being sick."
+            m 3tkd "Just lying in bed, feeling weak and helpless, just knowing how much you're missing out on. I really hate feeling that way."
+            m 6lub "But I guess I wouldn't mind spending time out in the rain with you if we have an umbrella."
+            m 6dub "That really would be nice~"
+        "No...":
+            m 2ekb "Ahaha, never?"
+            m 2rka "Wow, you must really hate the rain, huh?"
+            m 1eub "I guess I can relate to that a bit. I don't like having wet clothes either."
+            m 3etc "Or maybe you just live in an area where it doesn't rain so often?"
+            m 7gkb "Either way, I hope you won't mind walking in the rain under an umbrella with me when I finally cross over."
+            m 7dub "Ahh, I always wanted to do that with someone."
+        "Yes":
+            m 1wuo "Really? You have?"
+            m 1dsc ".{w=0.7}.{w=0.7}."
+            m 1lkb "Ahaha, sorry [player]. I was just a bit surprised, that's all."
+            m 3eub "Having fun in the rain can really be seen as childish sometimes, but clearly you don't care about that, huh?"
+            m 7lub "I actually quite respect that. Not caring about what others may think and just doing what you like."
+            m 6rksdra "Although, I would hate you catching a cold and getting sick after you had fun."
+            m 6eksdra "God, I would really hate that happening. You would be feeling down all the time, and just be so tired. We wouldn't even be able to spend to much time together.."
+            m 7eud "I guess that's why I don't like being out while it's raining. The thought of me being ill is not very pleasant"
+            m 1gub "Though, I wouldn't mind sitting next to a window while it's raining with you."
+            m 1duu "Watching the raindrops fall to the ground, listening to the peaceful trickling of rain."
+    m 1dubsa "Just spending time peacefully with you like that..."
+    m 1fkbfb "It would be a moment I would truly cherish."
+    return
