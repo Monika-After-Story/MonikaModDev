@@ -285,6 +285,8 @@ label autoload:
         if "_old_history" in globals():
             _history = _old_history
             del _old_history
+        # Open the settings panel in the menu
+        _game_menu_screen = "preferences"
         renpy.block_rollback()
 
         # Fix the game context (normally done when loading save file)
@@ -354,9 +356,6 @@ label quit:
 
         # save bgs
         store.mas_background.saveMBGData()
-
-        # remove special images
-        store.mas_island_event.removeImages()
 
         #remove o31 cgs
         store.mas_o31_event.removeImages()

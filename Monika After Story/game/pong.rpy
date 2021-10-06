@@ -502,7 +502,7 @@ label demo_minigame_pong:
     scene bg pong field
 
     # natsuki scare setup if appropriate
-    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
+    if store.mas_egg_manager.natsuki_enabled():
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
         # we'll take advantage of Okay everyone's sync with natsuki's version
@@ -525,7 +525,7 @@ label demo_minigame_pong:
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
     # natsuki scare if appropriate
-    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
+    if store.mas_egg_manager.natsuki_enabled():
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
@@ -977,7 +977,7 @@ label mas_pong_dlg_loser:
 
     #Monika loses five times in a row
     elif win_streak_counter == 5:
-        m 2wud "[mas_get_player_nickname(regex_replace_with_nullstr='my ')]..."
+        m 2wud "[mas_get_player_nickname(capitalize=True, regex_replace_with_nullstr='my ')]..."
         m 2tsu "Have you been practicing?"
         m 3hksdlb "I don't know what happened, but I don't stand a chance against you!"
         m 1eka "Could you go a little bit easier on me please?{w=0.3} {nw}"

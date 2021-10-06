@@ -1795,7 +1795,7 @@ init -10 python:
             self._sr_ss.verify()
             self._ss_mn.verify()
 
-
+    @store.mas_utils.deprecated(use_instead="MASFilterableBackground")
     def MASBackground(
             background_id,
             prompt,
@@ -2146,10 +2146,20 @@ init -10 python:
                     tag definition for this to work.
             """
             if tag is not None:
-                adv_frame = self.get_deco_adf(tag)
-                deco = store.mas_deco.get_deco(tag)
+                deco_info = self.get_deco_info(tag)
+
+                if deco_info is None:
+                    return
+
+                real_tag, adv_frame = deco_info
+                deco = store.mas_deco.get_deco(real_tag)
+
                 if adv_frame is not None and deco is not None:
-                    self._deco_man._adv_add_deco(deco, adv_frame)
+                    self._deco_man._adv_add_deco(
+                        deco,
+                        adv_frame,
+                        override_tag=tag
+                    )
 
         def _deco_rm(self, name):
             """
@@ -2191,9 +2201,9 @@ init -10 python:
                 # show all deco objects that are currently visible.
                 # and do not have equivalent deco frames.
 
-                new_adf = self.get_deco_adf(vis_tag)
-                if new_adf is not None:
-                    change_info.shows[vis_tag] = new_adf
+                new_info = self.get_deco_info(vis_tag)
+                if new_info is not None:
+                    change_info.shows[vis_tag] = new_info
                     self._deco_add(tag=vis_tag)
 
         def exit(self, new_background, **kwargs):
@@ -2219,17 +2229,16 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object with hides
                     populated.
             """
-            for deco_obj, adv_df in self._deco_man.deco_iter_adv():
+            for deco_obj, adv_df, override_tag in self._deco_man.deco_iter_adv():
 
-                new_adf = new_bg.get_deco_adf(deco_obj.name)
                 if (
-                        not mas_isDecoTagVisible(deco_obj.name)
-                        or new_adf is None
+                        not mas_isDecoTagEnabled(override_tag)
+                        or new_bg.get_deco_info(override_tag) is None
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
-                    change_info.hides[deco_obj.name] = adv_df
-                    self._deco_rm(deco_obj.name)
+                    change_info.hides[override_tag] = adv_df
+                    self._deco_rm(override_tag)
 
         def fromTuple(self, data_tuple):
             """
@@ -2250,8 +2259,9 @@ init -10 python:
             """
             return (self.unlocked,)
 
+        @store.mas_utils.deprecated(use_instead="get_deco_info")
         def get_deco_adf(self, tag):
-            """
+            """DEPRECATED
             Gets MASAdvancedDecoFrame associatd with this tag, if one exists.
 
             IN:
@@ -2260,6 +2270,23 @@ init -10 python:
             RETURNS: MASAdvancedDecoFrame object, or None if none exists
             """
             return MASImageTagDecoDefinition.get_adf(self.background_id, tag)
+
+        def get_deco_info(self, tag):
+            """
+            Gets the tag and MASAdvancedDecoFrame to use for a tag, if one
+            exists.
+
+            IN:
+                tag - tag to get deco info for
+
+            RETURNS: tuple (or None if not exists)
+                [0] - tag to use
+                [1] - MASAdvancedDecoFrame object
+            """
+            return MASImageTagDecoDefinition.get_img_for_bg(
+                self.background_id,
+                tag
+            )
 
         def getRoom(self, flt, weather=None):
             """
@@ -2288,14 +2315,25 @@ init -10 python:
 
             return img
 
-        def getCurrentRoom(self):
+        def getCurrentRoom(self, use_internal=False):
             """
             Gets current Room
 
+            IN:
+                use_internal - True will use the internal filter, rather than
+                    the globally known filter. Seldomly change this.
+                    (Default: False)
+
             RETURNS: Current room image, may be None if this BG is badly built
             """
-            return self.getRoom(self._flt_man.current())
+            if use_internal:
+                flt = self._flt_man.current()
+            else:
+                flt = store.mas_sprites.get_filter()
 
+            return self.getRoom(flt)
+
+        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
         def getDayRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2345,6 +2383,7 @@ init -10 python:
                 return None
             return m_w_m.get(precip_type)
 
+        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
         def getNightRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2620,8 +2659,14 @@ init -20 python in mas_background:
         to go smoothly.
 
         PROPERTIES:
-            hides - dict of image tags and MASAdvancedDecoFrames to hide
-            shows - dict of image tags and MASAdvancedDecoFrames to show
+            hides - dict:
+                key: image tag (override)
+                value: MASAdvancedDecoFrame to hide
+            shows - dict:
+                key: image tag (override)
+                value: tuple:
+                    [0] - image tag (actual)
+                    [1] - MASAdvancedDecoFrame to show
         """
 
         def __init__(self, hides=None, shows=None):
@@ -2946,7 +2991,8 @@ init -2 python in mas_background:
             new_flt - incoming filter.
             curr_time - current time as datetime.time
         """
-        if new_flt == mspr.FLT_DAY or new_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(new_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -2974,7 +3020,8 @@ init -2 python in mas_background:
             curr_time - current time as datetime.time
         """
         first_flt = new_chunk.first_flt()
-        if first_flt == mspr.FLT_DAY or first_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(first_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -3217,7 +3264,7 @@ label monika_change_background_loop:
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
     # UI shields + buttons
-    # NOTE: buttons are in here since there is no consistency if placed in 
+    # NOTE: buttons are in here since there is no consistency if placed in
     # the bg change label.
     $ mas_RaiseShield_core()
     $ HKBHideButtons()
