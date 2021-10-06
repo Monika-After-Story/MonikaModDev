@@ -16,6 +16,21 @@ python early:
     ## The version of the game.
     renpy.config.version = "0.12.3"
 
+    ## Save directory ##############################################################
+    ##
+    ## Controls the platform-specific place Ren'Py will place the save files for
+    ## this game. The save files will be placed in:
+    ##
+    ## Windows: %APPDATA\RenPy\<config.save_directory>
+    ##
+    ## Macintosh: $HOME/Library/RenPy/<config.save_directory>
+    ##
+    ## Linux: $HOME/.renpy/<config.save_directory>
+    ##
+    ## This generally should not be changed, and if it is, should always be a
+    ## literal string, not an expression.
+
+    renpy.config.save_directory = "Monika After Story"
 
 init -1200 python:
 ## Sounds and music ############################################################
@@ -72,23 +87,6 @@ init -1200 python:
 ## "window hide", and "window auto" statements.
 
     renpy.config.window = "auto"
-
-
-## Save directory ##############################################################
-##
-## Controls the platform-specific place Ren'Py will place the save files for
-## this game. The save files will be placed in:
-##
-## Windows: %APPDATA\RenPy\<config.save_directory>
-##
-## Macintosh: $HOME/Library/RenPy/<config.save_directory>
-##
-## Linux: $HOME/.renpy/<config.save_directory>
-##
-## This generally should not be changed, and if it is, should always be a
-## literal string, not an expression.
-
-    renpy.config.save_directory = "Monika After Story"
 
 
 ## Icon
