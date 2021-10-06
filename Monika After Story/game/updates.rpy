@@ -374,10 +374,25 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.3
-label v0_12_3(version="v0_12_3"):
+# 0.12.3.2
+label v0_12_3_2(version="v0_12_3_2"):
     python:
         pass
+    return
+
+# 0.12.3.1
+label v0_12_3_1(version="v0_12_3_1"):
+    python:
+        # Set a conditional
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="store.mas_decoded_islands"
+        )
+
+        # Enable late update for this one
+        # (updates islands progression for old players)
+        persistent._mas_zz_lupd_ex_v.append(version)
+
     return
 
 # 0.12.2.3
@@ -2926,6 +2941,18 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_3_1:
+    python:
+        # Unlock for people who has seen the event before
+        if seen_event("mas_monika_islands"):
+            mas_island_event.startProgression()
+            # Technically it's impossible to have this as 0,
+            # So it'll mean the islands were unlocked prior to the revamp
+            persistent._mas_islands_start_lvl = 0
+            mas_island_event.advanceProgression()
+
+    return
+
 label mas_lupd_v0_12_0:
     python:
         #Reset annis as F29 based ones are on the wrong date

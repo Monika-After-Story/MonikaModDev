@@ -357,9 +357,6 @@ label quit:
         # save bgs
         store.mas_background.saveMBGData()
 
-        # remove special images
-        store.mas_island_event.removeImages()
-
         #remove o31 cgs
         store.mas_o31_event.removeImages()
 

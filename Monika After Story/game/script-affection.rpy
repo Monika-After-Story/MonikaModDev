@@ -659,19 +659,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-        # unlock islands event if seen already
-        if store.seen_event("mas_monika_islands"):
-            if store.mas_cannot_decode_islands:
-                # failed to decode islandds, delay this action
-                store.mas_addDelayedAction(2)
-
-                # lock the island event since we failed to decode images
-                store.mas_lockEventLabel("mas_monika_islands")
-
-            else:
-                # otherwise we can directly unlock this topic
-                store.mas_unlockEventLabel("mas_monika_islands")
-
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -685,10 +672,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to affectionate
         """
-
-        # remove island event delayed actions
-        store.mas_removeDelayedActions(1, 2)
-
         #Change randchat
         store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 

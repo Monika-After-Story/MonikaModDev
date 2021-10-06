@@ -367,6 +367,7 @@ style frame_dark:
 
 screen say(who, what):
     style_prefix "say"
+    zorder 60
 
     window:
         id "window"
