@@ -17,6 +17,7 @@ python early:
     renpy.config.version = "0.12.3"
 
 
+init -1200 python:
 ## Sounds and music ############################################################
 
 ## These three variables control which mixers are shown to the player by

@@ -222,7 +222,7 @@ python early in mas_logging:
             name - name of the logger, this will be the same as the file, with the file appending '.txt'
             append - Whether or not we're appending this log or clearing it on load
                 (Default: True)
-            formatter - custom logging.Formatter to be used. 
+            formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
                 (Default: None)
 

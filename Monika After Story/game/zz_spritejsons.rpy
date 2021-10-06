@@ -426,7 +426,7 @@ init -21 python in mas_sprites_json:
             )
 
 
-    class SpriteJsonFormatter(store.mas_logging.MASLogFormatter):
+    class SpriteJsonFormatter(store.mas_logging.MASNewlineLogFormatter):
         """
         Specialty formatter for sprite jsons
         """
