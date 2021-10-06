@@ -5372,6 +5372,7 @@ init -100 python in mas_utils:
 
 
 init -985 python:
+    import datetime
     # global stuff that should be defined somewhat early
 
     def mas_getSessionLength():
