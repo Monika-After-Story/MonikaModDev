@@ -20,10 +20,8 @@ python early in mas_logging:
     }
 
     #Consts
-#    _MAS_LOG_FORMAT = logging.Formatter(
-#        fmt="[%(asctime)s] [%(levelname)s]: %(message)s",
-#        datefmt="%Y-%m-%d %H:%M:%S"
-#    )
+    DEF_FMT = "[%(asctime)s] [%(levelname)s]: %(message)s"
+    DEF_DATEFMT = "%Y-%m-%d %H:%M:%S"
 
     class MASLogFormatter(logging.Formatter):
         """
@@ -37,18 +35,18 @@ python early in mas_logging:
 
         def __init__(self, fmt=None, datefmt=None):
             if fmt is None:
-                fmt = "[%(asctime)s] [%(levelname)s]: %(message)s"
+                fmt = DEF_FMT
             if datefmt is None:
-                datefmt = "%Y-%m-%d %H:%M:%S"
+                datefmt = DEF_DATEFMT
 
             super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
 
-        def format(self, record, fmt=None, datefmt=None):
+        def format(self, record):
             """
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record, fmt, datefmt)
+            return super(MASLogFormatter, self).format(record)
 
         def update_levelname(self, record):
             """
@@ -255,8 +253,7 @@ python early in mas_logging:
                 renpy.version(),
                 renpy.config.version,
                 "=" * 50
-            )
-        )
+        ))
 
         if formatter is None:
             handler.setFormatter(MASLogFormatter())
