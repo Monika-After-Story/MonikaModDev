@@ -381,13 +381,14 @@ init -3 python in mas_piano_keys:
     import store
     import pygame # we need this for keymaps
     import os
-    log = store.mas_logging.MASNewlineLogAdapter(store.mas_logging.init_log(
+    log = store.mas_logging.init_log(
         "pnm",
         append=False,
         formatter=store.mas_logging.MASNewlineLogFormatter(
             fmt="[%(levelname)s]: %(message)s"
-        ) #We don't store time here
-    ))
+        ), #We don't store time here
+        adapter=store.mas_logging.MASNewlineLogAdapter
+    )
 
     from store.mas_utils import tryparseint, tryparsefloat
     import store.mas_ui as mas_ui

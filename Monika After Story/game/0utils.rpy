@@ -208,7 +208,7 @@ python early in mas_logging:
         os.makedirs(LOG_PATH)
 
     #Full logging info
-    def init_log(name, append=True, formatter=None):
+    def init_log(name, append=True, formatter=None, adapter=None):
         """
         Initializes a logger with a handler with the name and files given.
 
@@ -218,6 +218,8 @@ python early in mas_logging:
                 (Default: True)
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
+                (Default: None)
+            adapter - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
 
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
@@ -261,6 +263,9 @@ python early in mas_logging:
         else:
             #Now apply formatting to all further uses
             handler.setFormatter(formatter)
+
+        if adapter is not None:
+            log = adapter(log)
 
         return log
 
