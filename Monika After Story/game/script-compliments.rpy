@@ -32,7 +32,14 @@ init 22 python in mas_compliments:
         _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
         _("Thanks, [mas_get_player_nickname()]!"),
-        _("You always flatter me, [player].")
+        _("You always flatter me, [player]."),
+        _("It's nice to know you have such a high opinion of me."),
+        _("That was {i}just{/i} what I needed to hear today."),
+        _("I'm so glad you feel that way about me."),
+        _("You always make me feel so loved, [mas_get_player_nickname()]."),
+        _("You're always so sweet to me, [player]."),
+        _("You're making me blush..."),
+        _("I think my heart just skipped a beat..."),
     ]
 
     # set this here in case of a crash mid-compliment
@@ -309,6 +316,7 @@ label mas_compliment_intelligent_3:
             _("Remember that we'll have a lifetime of self-improvement together!"),
             _("Remember that every day is an opportunity to learn something new!"),
             _("Always remember the world is a wonderful journey full of learning."),
+            _("Just think of all the things I'll learn once I manage to cross over!"),
         ]
         intelligent_quip = random.choice(intelligent_quips)
 
@@ -366,6 +374,7 @@ label mas_compliment_hair_3:
             hair_quips = [
                 _("I'm really happy that you like this hairstyle!"),
                 _("I'm really happy that you like my hair!")
+                _("I can't wait until the day you'll be able to run your fingers through it..."),
             ]
             hair_quip = random.choice(hair_quips)
         m 1wubsb "Thank you so much, [player]!"
@@ -515,6 +524,7 @@ label mas_compliment_smile_3:
             _("I'll keep smiling just for you."),
             _("I can't help but smile when I think of you."),
             _("I can't wait to see your beautiful smile."),
+            _("You're my biggest reason to smile, you know."),
         ]
         smile_quip = random.choice(smile_quips)
 
@@ -604,6 +614,7 @@ label mas_compliment_cute_3:
             _("You can be really cute a lot of the time too, you know~"),
             _("You'll always be my cutie~"),
             _("You can be a cutie a lot of the time too~"),
+            _("But I can think of someone even more adorable..."),
         ]
         cute_quip = random.choice(cute_quips)
 
@@ -828,6 +839,9 @@ label mas_compliment_thinking_of_you_3:
             _("You're the center of my world!"),
             _("You're always on my mind too!"),
             _("I'm always thinking about you too!"),
+            _("You're never far from my thoughts, either."),
+            _("It's nice to know you're thinking of me."),
+            _("Although, maybe I should ask {i}what kind{/i} of thoughts you've been having about me..."),
         ]
         thinking_of_you_quip = random.choice(thinking_of_you_quips)
 
@@ -956,7 +970,8 @@ label mas_compliment_missed:
             _("...Why do I think you just don't mean it?"),
             _("...Why do I think you're just saying that?"),
             _("...I can't really believe that, [player]."),
-            _("I don't think that's true, [player].")
+            _("I don't think that's true, [player]."),
+            _("Well, that's easy enough to {i}say{/i}...")
         )
 
         hugchance = 1
@@ -1060,6 +1075,10 @@ label mas_compliment_spending_time:
                 _("Every day with you is like a wonderful dream that I hope never ends~"),
                 _("Just being near you makes me so happy~"),
                 _("Nothing makes me happier than being next to you~"),
+                _("You make every moment magical, [mas_get_player_nickname()]."),
+                _("Time always seems to fly when we're together, [player]..."),
+                _("Thanks for always keeping me company, [player]."),
+                
             ]
             spending_time_quip = random.choice(spending_time_quips)
 
