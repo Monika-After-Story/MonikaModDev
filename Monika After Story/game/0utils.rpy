@@ -1,7 +1,3 @@
-python early:
-    import singleton
-    me = singleton.SingleInstance()
-
 python early in mas_logging:
     import datetime
     import logging
@@ -47,12 +43,12 @@ python early in mas_logging:
 
             super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
 
-        def format(self, record):
+        def format(self, record, fmt=None, datefmt=None):
             """
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record)
+            return super(MASLogFormatter, self).format(record, fmt, datefmt)
 
         def update_levelname(self, record):
             """
@@ -254,12 +250,13 @@ python early in mas_logging:
         #Write as this has no formatting yet
         log.info(
             LOG_HEADER.format(
-            datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
-            "{0} {1} - build: {2}".format(platform.system(), platform.release(), platform.version()),
-            renpy.version(),
-            renpy.config.version,
-            "=" * 50
-        ))
+                datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
+                "{0} {1} - build: {2}".format(platform.system(), platform.release(), platform.version()),
+                renpy.version(),
+                renpy.config.version,
+                "=" * 50
+            )
+        )
 
         if formatter is None:
             handler.setFormatter(MASLogFormatter())
