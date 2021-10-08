@@ -404,7 +404,7 @@ init -21 python in mas_sprites_json:
         _verify_int, _verify_list, _verify_dict
 
 
-    class SpriteJsonLogger(store.mas_logging.MASNewlineLogAdapter):
+    class SpriteJsonLogAdapter(store.mas_logging.MASNewlineLogAdapter):
         """
         Speciality logger for sprite jsons.
         This defaults some props for all log record objects created from this
@@ -418,7 +418,7 @@ init -21 python in mas_sprites_json:
             IN:
                 logger - the logger to adapt
             """
-            super(SpriteJsonLogger, self).__init__(
+            super(SpriteJsonLogAdapter, self).__init__(
                 logger,
                 extra_props={
                     "indent_lvl": 0,
@@ -451,11 +451,12 @@ init -21 python in mas_sprites_json:
             )
 
 
-    log = SpriteJsonLogger(store.mas_logging.init_log(
+    log = store.mas_logging.init_log(
         "spj",
         append=False,
-        formatter=SpriteJsonFormatter()
-    ))
+        formatter=SpriteJsonFormatter(),
+        adapter=SpriteJsonLogAdapter
+    )
 
     py_list = __builtin__.list
     py_dict = __builtin__.dict
