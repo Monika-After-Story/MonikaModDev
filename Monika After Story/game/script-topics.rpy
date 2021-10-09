@@ -17557,3 +17557,36 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gameswithyou4",
+            category=["games"],
+            prompt="Adventure Games: Minecraft?",
+            pool=True,
+            unlocked=True,
+            random=True,
+        )
+    )
+
+label monika_gameswithyou4:
+    m 1eua "Hey [player], I've been thinking about other games that I could let myself into lately, one I'm sure you've heard of."
+    m 3eub "I'm talking about Minecraft, an open-world adventure sandbox game."
+    m 1lub "It's really hard to do any research about video games without seeing it."
+    m 3eub "It looks like a really fun game, especially if I could play with you."
+    m 6lub "Adventuring in a nearly infinite world..."
+    m 6rubla "Building our first house together..."
+    m 6rub "Discovering precious metals..."
+    m 3eud "Stumbling upon ancient temples in exotic lands..."
+    m 4sub "The possibilities seem endless!"
+    m 7eub "Though, I noticed a few interesting things during my research."
+    m 2etc "Like, is it just me or does Enderman kind of resemble Yuri?"
+    m 3ltc "Also, why does gravity only apply to a few select objects, like sand and gravel?"
+    m 6rtsdlc "There's also the odd obsession that the villagers have with emerald..."
+    m 6tsbfb "I suppose I can kind of understand, you fell in love with my eyes, didn't you?"
+    m 5hsb "Ehehe~"
+    m 1ekb "Regardless, if we ever do get to play, please make me a skin, I don't think my name is Steve..."
+    m 1ekbfa "I love you!~"
+return "love"
