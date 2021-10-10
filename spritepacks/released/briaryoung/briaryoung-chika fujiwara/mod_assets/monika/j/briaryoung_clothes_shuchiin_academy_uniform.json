@@ -2,8 +2,8 @@
     "__author": "briaryoung",
     "version": 3,
     "type": 2,
-    "name": "briaryoung_chika_fujiwara",
-    "img_sit": "briaryoung_chika_fujiwara",
+    "name": "briaryoung_shuchiin_academy_uniform",
+    "img_sit": "briaryoung_shuchiin_academy_uniform",
     "pose_map": {
         "mpm_type": 0,
         "p1": true,
@@ -21,8 +21,8 @@
         "cosplay": true
     },
     "select_info": {
-        "display_name": "Chika Fujiwara",
-        "thumb": "briaryoung_chika_fujiwara",
+        "display_name": "Shuchi'in Academy Uniform",
+        "thumb": "briaryoung_shuchiin_academy_uniform",
         "group": "clothes",
         "select_dlg": [
             "*dances* - TODO"
@@ -66,5 +66,5 @@
             "layers": "5^10"
         }
     },
-    "giftname": "chikafujiwaracosplay"
+    "giftname": "shuchiinacademyuniform"
 }
