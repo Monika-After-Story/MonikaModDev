@@ -357,7 +357,7 @@ init -900 python:
             __mas__backupAndDelete(p_savedir, cal_name, numnum=numnum)
 
         except Exception as e:
-            store.mas_utils.mas_log.error("[ERROR]: {0}".format(str(e)))
+            store.mas_utils.mas_log.error(str(e))
 
 
     def __mas__memoryCleanup():

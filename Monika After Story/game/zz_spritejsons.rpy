@@ -787,9 +787,14 @@ init -21 python in mas_sprites_json:
 
 init 189 python in mas_sprites_json:
     from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP, ACS_MAP
-    from store.mas_logging import JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
-        LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
+    from store.mas_logging import (
+        JSON_LOAD_FAILED,
+        FILE_LOAD_FAILED,
+        LOAD_TRY,
+        LOAD_SUCC,
+        LOAD_FAILED,
         NAME_BAD
+    )
 
     # ACS_MAP / HAIR_MAP / CLOTH_MAP
     import store.mas_sprites as sms

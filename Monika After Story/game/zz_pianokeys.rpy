@@ -393,9 +393,14 @@ init -3 python in mas_piano_keys:
     from store.mas_utils import tryparseint, tryparsefloat
     import store.mas_ui as mas_ui
 
-    from store.mas_logging import JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
-        LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
+    from store.mas_logging import (
+        JSON_LOAD_FAILED,
+        FILE_LOAD_FAILED,
+        LOAD_TRY,
+        LOAD_SUCC,
+        LOAD_FAILED,
         NAME_BAD
+    )
 
     # directory setup
     pnml_basedir = os.path.normcase(

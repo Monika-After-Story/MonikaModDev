@@ -1125,7 +1125,7 @@ init -11 python in mas_dockstat:
 
             except Exception as e:
                 store.mas_utils.mas_log.error(
-                    "[ERROR] failed to decode '{0}' | {1}".format(
+                    "Failed to decode '{0}' | {1}".format(
                         b64_name,
                         str(e)
                     )

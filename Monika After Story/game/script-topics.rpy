@@ -773,7 +773,7 @@ label mas_rerandom:
 
                     except Exception as ex:
                         store.mas_utils.mas_log.error(
-                            "[ERROR]: Failed to call rerandom callback function. Trace message: {0}".format(ex.message)
+                            "Failed to call rerandom callback function. Trace message: {0}".format(ex.message)
                         )
 
             #Pop the derandom

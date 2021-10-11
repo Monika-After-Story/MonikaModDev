@@ -1895,7 +1895,7 @@ init 20 python:
             return
         elif mas_getEV(ev_label) is None:
             store.mas_utils.mas_log.error(
-                "[ERROR]: ev_label does not exist: {0}".format(repr(ev_label))
+                "ev_label does not exist: {0}".format(repr(ev_label))
             )
             return
 

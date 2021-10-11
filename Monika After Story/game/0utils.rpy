@@ -204,8 +204,11 @@ python early in mas_logging:
     NAME_BAD = "name must be unique."
 
     #Ensure log path exists
-    if not os.path.exists(LOG_PATH):
-        os.makedirs(LOG_PATH)
+    try:
+        if not os.path.exists(LOG_PATH):
+            os.makedirs(LOG_PATH)
+    except Exception as e:
+         raise Exception("Failed to create log folder because: {}".format(e))
 
     #Full logging info
     def init_log(name, append=True, formatter=None, adapter=None):
@@ -225,7 +228,6 @@ python early in mas_logging:
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
         All logs flush and rotate once they're 5 mb in size.
         """
-        #NOTE: using `delay` causes weird issues where the filestream is nonexistent in renpy. Do not use it
 
         _kwargs = {
             "filename": os.path.join(LOG_PATH, name + '.txt'),
