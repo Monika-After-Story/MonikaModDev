@@ -5243,14 +5243,14 @@ init -100 python in mas_utils:
         """
         Generic entry add to the given log.
         Stores both time and given value as a tuple:
-            [0]: datetime.now()
+            [0]: datetime.utcnow()
             [1]: value
 
         IN:
             entry_log - list to log entry to
             value - value to log in this entry
         """
-        entry_log.append((datetime.datetime.now(), value))
+        entry_log.append((datetime.datetime.utcnow(), value))
 
 
     class ISCRAM(ctypes.BigEndianStructure):

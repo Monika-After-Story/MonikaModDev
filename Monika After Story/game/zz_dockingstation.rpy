@@ -1882,6 +1882,37 @@ init 200 python in mas_dockstat:
         return sel_gre_ev
 
 
+    def checkTimesByChecksum():
+        """
+        Processes checkout and checkin logs and returns them in a format 
+        organied by checksum.
+
+        RETURNS: dict of the following format:
+            key: checksum
+            value: tuple:
+                [0] - checkout time (or None if no checkout time)
+                [1] - checkin time (or None if no checkin time)
+        """
+        checkin_log = store.persistent._mas_dockstat_checkin_log
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+        log_times = {}
+
+        # always do checkouts first
+        for dt, chksum in checkout_log:
+            log_times[chksum] = dt
+
+        # checkins will make tuples
+        for dt, chksum in checkin_log:
+            log_times[chksum] = (log_times.get(chksum, None), dt)
+
+        # cleanup checksums with no checkin
+        for chksum in log_times:
+            if not isinstance(log_times[chksum], tuple):
+                log_times[chksum] = (log_times[chksum], None)
+
+        return log_times
+
+
     def getCheckTimes(chksum=None):
         """
         Gets the corresponding checkin/out times for the given chksum.
@@ -1977,14 +2008,15 @@ init 200 python in mas_dockstat:
         return checkin_log[index][0] - checkout_log[index][0]
 
 
-    def timeOut(_date):
+    def timeOut(_date, is_utc=False):
         """
         Given a date, return how long monika has been out
 
         We assume that checkout logs are the source of truth
 
         IN:
-            _date - date to check
+            _date - date to check)
+            is_utc - pass True if the date given is in UTC.
         """
         checkout_log = store.persistent._mas_dockstat_checkout_log
 
