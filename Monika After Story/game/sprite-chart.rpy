@@ -7146,12 +7146,6 @@ init -3 python:
             # otherwise use our arms but return None if not need to render
             return self.pose_arms.get(leanpose, None)
 
-        def get_outfit_extras(self):
-            """
-            Gets outfit extras and arranges them in a structure appropriate
-            for 
-            """
-
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
