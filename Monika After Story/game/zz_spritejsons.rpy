@@ -139,6 +139,12 @@
 #       - optional
 #       - if null, then we use the base pose as guide when determing pose
 #           arms
+#   "outfit_hair": "hair string ID"
+#       - optional
+#       - this hair is used with these clothes when outfit mode is enabled
+#   "outfit_acs": ["acs string IDs"]
+#       - optional
+#       - list of ACS to use with these clothes when outfit mode is enabled
 # }
 #
 # PoseMap JSONSs
@@ -393,6 +399,7 @@ init -21 python in mas_sprites_json:
     import store
     import store.mas_utils as mas_utils
     import traceback
+    from collections import defaultdict
 
     SP_JSON_VER = 3
     VERSION_TXT = "version"
@@ -696,7 +703,8 @@ init -21 python in mas_sprites_json:
 
     OPT_CLOTH_PARAM_NAMES = {
         # object-based verificaiton is different
-#        "hair_map": None,
+        "outfit_hair": (str, _verify_str),
+        "outfit_acs": (list, _verify_list),
     }
     OPT_CLOTH_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
@@ -1685,7 +1693,8 @@ init 189 python in mas_sprites_json:
             sp_name,
             dry_run,
             msg_log,
-            indent_lvl
+            indent_lvl,
+            post_proc_data
         ):
         """
         Validates CLOTHES related properties
@@ -1695,6 +1704,8 @@ init 189 python in mas_sprites_json:
             - giftname
             - pose_arms
             - highlight
+            - outfit_hair
+            - outfit_acs
 
         IN:
             jobj - json object to parse
@@ -1707,10 +1718,11 @@ init 189 python in mas_sprites_json:
         OUT:
             save_obj - dict to save data to
             msg_log - list to save messages to
+            post_proc_data - dict to store data for post proccessing
 
         RETURNS: True if good, False if not
         """
-        # giftname
+        # giftname, outfit_hair, outfit_acs
         if not _validate_params(
             jobj,
             save_obj,
@@ -1720,6 +1732,16 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return
+
+        # some additional processing for outfit_hair and outfit_acs
+        if "outfit_hair" in save_obj:
+            post_proc_data["outfit_extras"][sp_name]["hair"] = save_obj.pop(
+                "outfit_hair"
+            )
+        if "outfit_acs" in save_obj:
+            post_proc_data["outfit_extras"][sp_name]["acs"] = save_obj.pop(
+                "outfit_acs"
+            )
 
         # validate hair_map
         if "hair_map" in obj_based:
@@ -2131,7 +2153,7 @@ init 189 python in mas_sprites_json:
         return True
 
 
-    def addSpriteObject(filepath):
+    def addSpriteObject(filepath, post_proc_data):
         """
         Adds a sprite object, given its json filepath
 
@@ -2140,6 +2162,9 @@ init 189 python in mas_sprites_json:
 
         IN:
             filepath - filepath to the JSON we want to load
+
+        OUT:
+            post_proc_data - dict to store post processing data in
         """
         dry_run = False
         jobj = None
@@ -2318,7 +2343,8 @@ init 189 python in mas_sprites_json:
                     sp_name,
                     dry_run,
                     msg_log,
-                    indent_lvl
+                    indent_lvl,
+                    post_proc_data
                 )
                 if parsewritelogs(msg_log):
                     return
@@ -2481,12 +2507,16 @@ init 189 python in mas_sprites_json:
             )))
 
 
-    def addSpriteObjects():
+    def addSpriteObjects(post_proc_data):
         """
         Adds sprite objects if we find any
 
         Also does delayed validation rules:
             - hair
+
+        OUT:
+            post_proc_data - data to be used in post processing code
+                (should be a dict)
         """
         json_files = sprite_station.getPackageList(".json")
 
@@ -2507,7 +2537,6 @@ init 189 python in mas_sprites_json:
         Prepares internal data for sprite object processing
         """
         pass
-
 
     def verifyHairs():
         """
@@ -2539,6 +2568,45 @@ init 189 python in mas_sprites_json:
                     _replace_hair_map(sp_name, hval)
 
         writelog(MSG_INFO.format(HM_VER_SUCCESS))
+
+
+    def processOutfitExtras(post_proc_data):
+        """
+        Processes outfit extras for sprites
+
+        IN:
+            post_proc_data - data set by the sprite object add alg
+        """
+        outfit_extras = post_proc_data["outfit_extras"]
+        if len(outfit_extras) == 0:
+            return
+
+        # TODO: log start
+
+        for sp_name in outfit_extras:
+            outfit_hair = outfit_extras[sp_name]["hair"]
+            outfit_acs = outfit_extras[sp_name]["acs"]
+
+            if outfit_hair is not None:
+                if outfit_hair in HAIR_MAP:
+                    CLOTH_MAP[sp_name].outfit_hair = HAIR_MAP[outfit_hair]
+                else:
+                    pass
+                    # TODO: log invalid and dont set (warning)
+
+            if outfit_acs is not None:
+                actual_acs = []
+                for acs_name in outfit_acs:
+                    if acs_name in ACS_MAP:
+                        actual_acs.append(ACS_MAP[acs_name])
+                    else:
+                        pass
+                        # TODO: log invalid and dont set (warning)
+
+                if len(actual_acs) > 0:
+                    CLOTH_MAP[sp_name].outfit_acs = actual_acs
+
+        # TODO: log success
 
 
     def _addGift(giftname, indent_lvl):
@@ -2619,12 +2687,17 @@ init 189 python in mas_sprites_json:
 init 190 python in mas_sprites_json:
     # NOTE: must be before 200, which is when saved selector data is loaded
 
-    # prepare the alg
-    initSpriteObjectProc()
+    def runSpriteObjAlg():
+        # prepare the alg
+        initSpriteObjectProc()
+        post_proc_data = mas_utils.nested_defaultdict(levels=3)
 
-    # run the alg
-    addSpriteObjects()
-    verifyHairs()
+        # run the alg
+        addSpriteObjects(post_proc_data)
 
-    # reaction setup
-    processGifts()
+        # post processing
+        verifyHairs()
+        processGifts()
+        processOutfitExtras(post_proc_data)
+
+    runSpriteObjAlg()

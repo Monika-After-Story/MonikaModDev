@@ -4669,6 +4669,8 @@ init -100 python in mas_utils:
     import os
     import math
     from cStringIO import StringIO as fastIO
+    from collections import defaultdict
+    import functools
 
     __secInDay = 24 * 60 * 60
 
@@ -4705,6 +4707,31 @@ init -100 python in mas_utils:
         RETURNS: a list of strings where each string is an item with a bullet.
         """
         return [bullet + " " + str(item) for item in _list]
+
+    
+    def nested_defaultdict(final_factory=None, levels=1):
+        """
+        Generates a nested defaultdict. Basically good for creating an n-level
+        dict of defaults.
+
+        IN:
+            final_factory - the constructor/object factory to use for the
+                innermost defaultdict
+                (Default: None)
+            levels - the number of nested defaultdicts to use. Must be greater
+                than 0 but less than 10.
+                The default value is equivalent to just calling defaultdict
+                (Default: 1)
+
+        RETURNS: a nested defaultdict implementation
+        """
+        def _nested_dd_recur(ff, lvls):
+            if lvls == 1:
+                return ff
+            return functools.partial(defaultdict, _nested_dd_recur(ff, lvls-1))
+
+        levels = min(max(levels, 1), 10)
+        return defaultdict(_nested_dd_recur(final_factory, levels))
 
 
     ### date adjusting functions
