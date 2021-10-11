@@ -2902,8 +2902,8 @@ init -3 python:
                 self,
                 new_clothes=new_cloth,
                 outfit_mode=outfit_mode,
-                outfit_exit_data=temp_space["outfit_exit_data"],
-                outfit_entry_data=temp_space["outfit_entry_data"]
+                outfit_entry_data=temp_space["outfit_entry_data"],
+                outfit_exit_data=temp_space["outfit_exit_data"]
             )
 
             # post exit, pre change
@@ -2930,7 +2930,8 @@ init -3 python:
                 self,
                 prev_clothes=prev_cloth,
                 outfit_mode=outfit_mode,
-                outfit_entry_data=temp_space["outfit_entry_data"]
+                outfit_entry_data=temp_space["outfit_entry_data"],
+                outfit_exit_data=temp_space["outfit_exit_data"]
             )
 
             # post entry point
