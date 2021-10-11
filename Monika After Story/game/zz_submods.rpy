@@ -9,7 +9,7 @@ init -989 python:
     #Log initialized submods
     if store.mas_submod_utils.submod_map:
         mas_submod_utils.submod_log.info(
-            "\nINSTALLED SUBMODS:\n{0}".format(
+            header=store.mas_logging.LOG_HEADER + "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
                     ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
                 )

@@ -2654,7 +2654,7 @@ init -20 python in mas_background:
     DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}"
     DBG_MSG_NU = "\nNew: {0} | {1}"
 
-    _bg_log = store.mas_logging.init_log("bg_flt", append=False)
+    _bg_log = store.mas_logging.init_log("bg_flt", append=False, header=False)
 
     class MASBackgroundChangeInfo(object):
         """

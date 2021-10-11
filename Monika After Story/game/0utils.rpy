@@ -183,7 +183,7 @@ python early in mas_logging:
     LOG_MAXSIZE_B = 5242880 #5 mb
 
     #Add the header to each log, including OS info + MAS version number
-    LOG_HEADER = "\n\n{0}\n{1}\n{2}\n\nVERSION: {3}\n{4}"
+    LOG_HEADER = "\n\n{_date}\n{system_info}\n{renpy_ver}\n\nVERSION: {game_ver}\n{separator}"
 
     #Unformatted logs use these consts (spj/pnm)
     MSG_INFO = "[" + LT_INFO + "]: {0}"
@@ -211,7 +211,7 @@ python early in mas_logging:
          raise Exception("Failed to create log folder because: {}".format(e))
 
     #Full logging info
-    def init_log(name, append=True, formatter=None, adapter=None):
+    def init_log(name, append=True, formatter=None, adapter=None, header=None):
         """
         Initializes a logger with a handler with the name and files given.
 
@@ -224,16 +224,22 @@ python early in mas_logging:
                 (Default: None)
             adapter - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
+            header - Header block for logs to use. If None, the default header printing version info is used. If False, no header is used.
+                (Default: None)
 
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
         All logs flush and rotate once they're 5 mb in size.
         """
-
         _kwargs = {
-            "filename": os.path.join(LOG_PATH, name + '.txt'),
+            "filename": os.path.join(LOG_PATH, name + '.log'),
             "mode": ("a" if append else "w"),
-            "encoding": "utf-8"
+            "encoding": "utf-8",
+            "delay": header is False #We auto delay here if no header to only gen the file once we need to
         }
+
+        #Setup header
+        if header is None:
+            header = LOG_HEADER
 
         if append:
             handler = loghandlers.RotatingFileHandler(maxBytes=LOG_MAXSIZE_B, **_kwargs)
@@ -250,14 +256,16 @@ python early in mas_logging:
         log.addHandler(handler)
 
         #Write as this has no formatting yet
-        log.info(
-            LOG_HEADER.format(
-                datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
-                "{0} {1} - build: {2}".format(platform.system(), platform.release(), platform.version()),
-                renpy.version(),
-                renpy.config.version,
-                "=" * 50
-        ))
+        if header is not False:
+            log.info(
+                header.format(
+                    _date=datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
+                    system_info="{0} {1} - build: {2}".format(platform.system(), platform.release(), platform.version()),
+                    renpy_ver=renpy.version(),
+                    game_ver=renpy.config.version,
+                    separator="=" * 50
+                )
+            )
 
         if formatter is None:
             handler.setFormatter(MASLogFormatter())

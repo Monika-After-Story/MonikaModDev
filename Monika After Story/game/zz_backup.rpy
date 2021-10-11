@@ -26,7 +26,7 @@ python early:
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
         global mas_backup_copy_filename, mas_bad_backups
 
-        early_log = store.mas_logging.init_log("early", append=False)
+        early_log = store.mas_logging.init_log("early", header=False)
 
         per_dir = __main__.path_to_saves(renpy.config.gamedir)
 
