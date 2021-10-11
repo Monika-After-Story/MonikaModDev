@@ -1960,14 +1960,22 @@ init 20 python:
             persistent._mas_absence_time = datetime.timedelta(days=0)
 
         # Monika's initial affection based on start-up.
-        if not persistent._mas_long_absence:
+        if (
+                # didn't use long absense farewell
+                not persistent._mas_long_absence
+
+                # monika is not a file
+                and persistent._mas_moni_chksum is None 
+
+                # not dev mode
+                and not config.developer
+        ):
+            # we skip this for devs since we sometimes use older persistents
+
             time_difference = persistent._mas_absence_time
-            # we skip this for devs since we sometimes use older
-            # persistents and only apply after 1 week
-            if (
-                    not config.developer
-                    and time_difference >= datetime.timedelta(weeks = 1)
-                ):
+
+            # only apply after 1 week
+            if time_difference >= datetime.timedelta(weeks = 1):
                 new_aff = _mas_getAffection() - (
                     0.5 * time_difference.days
                 )
