@@ -446,7 +446,7 @@ python early in mas_utils:
     # A map from the log name to a log object.
     mas_mac_log_cache = { }
 
-
+    @deprecated(use_instead="mas_logging.init_log")
     def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
         rv = mas_mac_log_cache.get(name, None)
 
@@ -456,13 +456,13 @@ python early in mas_utils:
 
         return rv
 
-
+    @deprecated(use_instead="mas_logging.init_log")
     def getMASLog(name, append=False, developer=False, flush=False):
         if renpy.macapp or renpy.macintosh:
             return macLogOpen(name, append=append, developer=developer, flush=flush)
         return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
 
-
+    @deprecated(use_instead="mas_logging.init_log")
     def logcreate(filepath, append=False, flush=False, addversion=False):
         """
         Creates a log at the given filepath.
