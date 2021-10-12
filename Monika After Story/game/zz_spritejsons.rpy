@@ -2573,7 +2573,7 @@ init 189 python in mas_sprites_json:
         """
         Verifies all hair items that we encountered
         """
-        log.info(HM_VER_ALL)
+        log.info(HM_VER_ALL, pfx_newline=True)
 
         # start with keys
         for hkey in hm_key_delayed_veri:
@@ -2642,7 +2642,7 @@ init 189 python in mas_sprites_json:
         Processes giftnames that were loaded, adding/removing them from
         certain dicts.
         """
-        log.info(GR_LOADING)
+        log.info(GR_LOADING, pfx_newline=True)
 
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
