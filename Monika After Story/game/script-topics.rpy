@@ -17201,15 +17201,15 @@ init 5 python:
     )
 
 label monika_materialism:
-    m 1euc "Say, [player]. Do you remeber solipsism?"
-    m 3euc "Like what you know, there is also a philosophy view called materialisim."
-    m "This philosophy is almost at the antagonistic place of solipsism, you could say."
-    m "This view holds that it is matter that gives birth to thought, not thought that gives birth to matter."
-    m 2euc "It's kind of logic, considering our science today."
-    m 2eud "After all, human brain neurons are also made up of various substances."
+    m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
+    m 3euc "Now that we've talked about it, I thought we could talk about a related philosophy--materialism."
+    m "This school of thought is kind of opposite to solipsism, you could say."
+    m "A materialistic view holds that it is matter that gives birth to thought, not thought that gives birth to matter."
+    m 2euc "It's fairly logical, if you think about it from a purely scientific standpoint."
+    m 2eud "After all, human brain neurons are simply different types of matter."
     m "All the stimuli we feel are actually changes in neuronal potentials."
-    m 2eua "So our thoughts are really based on materials, you could say."
-    m 2lsd "If we simply stop this topic here, it's not really interesting. These are the words you've probably heard for a long time."
+    m 2eua "So our thoughts are just the movement and reactions of matter, if you simplify it down."
+    m 2lsd "If we simply stop this topic here, it's not really interesting. You've probably heard this sort of thing before, right?"
     m 2esd "What really bothers me is a question based on this philosophy."
     m 1esd "Computer programs, of course, are based on materials too. No matter what effect the program eventually presents, it always has corresponding code to support this."
     m 3esd "So the question is..."
