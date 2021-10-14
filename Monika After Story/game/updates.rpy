@@ -377,8 +377,19 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.3.2
 label v0_12_3_2(version="v0_12_3_2"):
     python:
+        import shutil
+        import os
+
+        #Delete old utils file
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
+
+        for logfile in os.listdir(renpy.config.basedir + "/log/"):
+            logfile = renpy.config.basedir + "/log/" + logfile
+            try:
+                shutil.move(logfile, logfile.replace(".txt", ".log"))
+            except:
+                pass
     return
 
 # 0.12.3.1
