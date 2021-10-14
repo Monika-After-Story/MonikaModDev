@@ -91,7 +91,7 @@ python early in mas_logging:
 
     class MASExtraPropLogAdapter(logging.LoggerAdapter):
         """
-        Log adapter that enables defaulting of props on LogRecord objects.
+        Log adapter_ctor that enables defaulting of props on LogRecord objects.
         Use this if you need extra props.
 
         PROPERTES:
@@ -156,7 +156,7 @@ python early in mas_logging:
 
     class MASNewlineLogAdapter(MASExtraPropLogAdapter):
         """
-        Log adapter with an option for newline kwargs.
+        Log adapter_ctor with an option for newline kwargs.
         The newline kwarg is pfx_newline.
         """
 
@@ -211,7 +211,7 @@ python early in mas_logging:
          raise Exception("Failed to create log folder because: {}".format(e))
 
     #Full logging info
-    def init_log(name, append=True, formatter=None, adapter=None, header=None):
+    def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None):
         """
         Initializes a logger with a handler with the name and files given.
 
@@ -222,7 +222,7 @@ python early in mas_logging:
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
                 (Default: None)
-            adapter - Constructor reference to the adapter we want to use. If None, no adapter is used
+            adapter_ctor - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
             header - Header block for logs to use. If None, the default header printing version info is used. If False, no header is used.
                 (Default: None)
@@ -274,8 +274,8 @@ python early in mas_logging:
             #Now apply formatting to all further uses
             handler.setFormatter(formatter)
 
-        if adapter is not None:
-            log = adapter(log)
+        if adapter_ctor is not None:
+            log = adapter_ctor(log)
 
         return log
 

@@ -387,7 +387,7 @@ init -3 python in mas_piano_keys:
         formatter=store.mas_logging.MASNewlineLogFormatter(
             fmt="[%(levelname)s]: %(message)s"
         ), #We don't store time here
-        adapter=store.mas_logging.MASNewlineLogAdapter
+        adapter_ctor=store.mas_logging.MASNewlineLogAdapter
     )
 
     from store.mas_utils import tryparseint, tryparsefloat

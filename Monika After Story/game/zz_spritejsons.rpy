@@ -455,7 +455,7 @@ init -21 python in mas_sprites_json:
         "spj",
         append=False,
         formatter=SpriteJsonFormatter(),
-        adapter=SpriteJsonLogAdapter
+        adapter_ctor=SpriteJsonLogAdapter
     )
 
     py_list = __builtin__.list
