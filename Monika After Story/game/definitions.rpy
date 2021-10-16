@@ -1,21 +1,23 @@
 define persistent.demo = False
 
-define config.developer = False #This is the flag for Developer tools
+define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    import io
     import singleton
+    import datetime
+    import traceback
+
+
     me = singleton.SingleInstance()
+
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z = 3
 
-    # this is now global
-    import datetime
-
-    # uncomment when needed
-    import traceback
     _dev_tb_list = []
+
 
     ### Overrides of core renpy things
     def dummy(*args, **kwargs):
@@ -305,6 +307,42 @@ python early:
 
     renpy.display.image.ImageReference.find_target = mas_find_target
 
+    class MASImageData(renpy.display.im.ImageBase):
+        """
+        NOTE: This DOES NOT support saving in persistent (pickling),
+            and it might be unsafe to do so.
+
+        This image manipulator loads an image from binary data.
+        """
+        def __init__(self, data, filename, **properties):
+            """
+            Constructor
+
+            IN:
+                data - string of bytes, giving the compressed image data in a standard
+                    file format.
+                filename - "filename" associated with the image. This is used to provide a
+                    hint to Ren'Py about the format of `data`. (It's not actually
+                    loaded from disk.)
+                properties - additional props
+            """
+            super(MASImageData, self).__init__(data, filename, **properties)
+            self.data = data
+            self.filename = filename
+
+        def __unicode__(self):
+            return u"MASImageData({})".format(self.filename)
+
+        def __repr__(self):
+            return str(self.__unicode__())
+
+        def __reduce__(self):
+            return (str, (self.filename,))
+
+        def load(self):
+            f = io.BytesIO(self.data)
+            return renpy.display.pgrender.load_image(f, self.filename)
+
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
 
@@ -328,6 +366,7 @@ python early:
     # all bitmask flags apply until next restart or the flag is unset.
     # NOTE: do NOT add a bitmask flag if you want to save its value.
     #   if you need saved data, add a new prop or use an existing one.
+    EV_FLAG_DEF = 0
 
     EV_FLAG_HFM = 2
     # Hidden From Menus
@@ -571,7 +610,7 @@ python early:
                 sensitive=False,
                 aff_range=None,
                 show_in_idle=False,
-                flags=0
+                flags=EV_FLAG_DEF
             ):
 
             # setting up defaults
