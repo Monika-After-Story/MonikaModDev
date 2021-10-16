@@ -458,6 +458,26 @@ init -2 python in mas_sprites:
         )
 
 
+    def _clothes_spider_lingerie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for santa lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.wear_acs(store.mas_acs_blackhearts_hairclip)
+
+
+    def _clothes_spider_lingerie_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for santa lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_blackhearts_hairclip)
+
+
     def _clothes_santa_entry(_moni_chr, **kwargs):
         """
         Entry programming point for santa clothes
@@ -1046,6 +1066,40 @@ init -1 python:
             "Nya!"
         ]
     )
+
+    ### SPIDER LINGERIE
+    # thanks BriarYoung
+    mas_clothes_spider_lingerie = MASClothes(
+        "spider_lingerie",
+        "spider_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+            "lingerie": "o31"
+        },
+        entry_pp=store.mas_sprites._clothes_spider_lingerie_entry,
+        exit_pp=store.mas_sprites._clothes_spider_lingerie_exit,
+        pose_arms=MASPoseArms({}, def_base=False)
+    )
+    store.mas_sprites.init_clothes(mas_clothes_spider_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_spider_lingerie,
+        "Lingerie (Spider)",
+        "spider_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Caught you in my web~",
+            "Don't be scared~",
+            "Don't worry, I don't bite..."
+        ]
+    )
+
 
     ### SANTA MONIKA
     ## santa
@@ -1738,6 +1792,34 @@ init -1 python:
         priority=5
     )
     store.mas_sprites.init_acs(mas_acs_rin_ears)
+
+    ### Black hearts Hairclip
+    ## blackhearts_hairclip
+    # black hearst hairclip to go with the spider_lingerie outfit
+    # Thanks BriarYoung
+    mas_acs_blackhearts_hairclip = MASAccessory(
+        "blackhearts_hairclip",
+        "blackhearts_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_blackhearts_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_blackhearts_hairclip,
+        "Hairclip (Black hearts)",
+        "blackhearts_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "My heart beats for you, [player]~",
+            "Full of love, just like you~"
+        ]
+    )
 
     ### Holly Hairclip
     ## holly_hairclip

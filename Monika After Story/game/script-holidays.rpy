@@ -896,6 +896,95 @@ label greeting_o31_cleanup:
         mas_startup_song()
     return
 
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASPriorityRule.create_rule(0))
+    ev_rules.update(MASNumericalRepeatRule.create_rule(EV_NUM_RULE_YEAR))
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True, skip_visual=True))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_lingerie",
+            unlocked=True,
+            conditional=(
+                "mas_canShowRisque() "
+                "and mas_hasUnlockedClothesWithExprop('lingerie')"
+            ),
+            start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
+            end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
+
+label greeting_o31_lingerie:
+    scene black
+    pause 5.0
+    m "Ehehe!"
+    m "Don't worry [player], I'm here..."
+    call mas_o31_lingerie_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_o31_lingerie",
+            conditional=(
+                "mas_canShowRisque() "
+                "and mas_hasUnlockedClothesWithExprop('lingerie')"
+            ),
+            unlocked=False,
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
+            end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
+            years=[]
+        ),
+    )
+
+label mas_o31_lingerie:
+    scene black
+    m "Oh no, did the power go out?"
+    m "How {cps=*2}fortunate{nw}"
+    m "How {fast}unfortunate..."
+    m "I guess I'll just have to take advantage of this situation, [player]..."
+    call mas_o31_lingerie_end
+    return
+
+label mas_o31_lingerie_end:
+    m "Say, have you ever heard of Devil's Night?"
+    m "It's a tradition in some places the night before Halloween for people to go out and be mischievous."
+    m "Well [player], I'm feeling a little mischievous myself tonight..."
+
+    python:
+        store.mas_selspr.unlock_acs(mas_acs_blackhearts_hairclip)
+        store.mas_selspr.unlock_clothes(mas_clothes_spider_lingerie)
+        monika_chr.change_clothes(mas_clothes_spider_lingerie, by_user=False, outfit_mode=True)
+
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 2tfu')
+
+    pause 2.0
+    m 2tub "Ehehe, what do you think?"
+    m 2hub "It's a little different I know, you're probably not sure if you want to touch or run away, ahaha!"
+    m 7rua "It's probably not something I'd wear all the time, but I think it's really neat this time of year."
+    m 2ekbsa "Don't worry [player], I won't get upset if you want me to take it off{cps=*2}{nw}"
+    m "Don't worry [player], I won't get upset if you want me to {fast}change into something else..."
+    m 2hubsb "I know lots of people are scared of spiders and might not find this the most appealing, ahaha!"
+
+    if player.lower() == "amy":
+        m 2rsbla "Alhough I've hear that people named Amy like spiders, ehehe~"
+
+    else:
+        m 2rsbla "Hopefully people named Amy aren't the only ones who like spider, ehehe~"
+
+    python:
+        mas_stripEVL("mas_o31_lingerie", list_pop=True)
+        mas_lockEVL("greeting_o31_lingerie", "GRE")
+
+    return "no_unlock"
+
 #START: O31 DOCKSTAT FARES
 init 5 python:
     addEvent(

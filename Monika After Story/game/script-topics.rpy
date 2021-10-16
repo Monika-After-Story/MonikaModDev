@@ -4539,7 +4539,7 @@ label monika_birthday:
         m 2rksdlb "I don't actually know when yours is, ahaha!"
         m 2eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
-        $ mas_stripEVL('mas_birthdate',True)
+        $ mas_stripEVL('mas_birthdate', list_pop=True)
     return
 
 init 5 python:
