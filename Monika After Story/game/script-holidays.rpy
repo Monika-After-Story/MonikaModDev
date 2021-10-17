@@ -954,7 +954,7 @@ label mas_o31_lingerie:
     scene black
     pause 2.0
     m "Oh no, did the power go out?"
-    m "How {cps=*2}fortunate{nw}"
+    m "How {cps=*2}fortunate{/cps}{nw}"
     $ _history_list.pop()
     m "How {fast}unfortunate..."
     m "I guess I'll just have to take advantage of this situation, [player]..."
@@ -981,7 +981,7 @@ label mas_o31_lingerie_end:
     m 2tub "Ehehe, what do you think?"
     m 2hub "It's a little different I know, you're probably not sure if you want to touch or run away, ahaha!"
     m 7rua "It's probably not something I'd wear all the time, but I think it's really neat this time of year."
-    m 2ekbsa "Don't worry [player], I won't get upset if you want me to take it off{cps=*2}{nw}"
+    m 2ekbsa "Don't worry [player], I won't get upset if you want me to {cps=*2}take it off{/cps}{nw}"
     $ _history_list.pop()
     m "Don't worry [player], I won't get upset if you want me to {fast}change into something else..."
     m 2hubsb "I know lots of people are scared of spiders and might not find this the most appealing, ahaha!"
