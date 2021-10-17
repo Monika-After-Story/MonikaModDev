@@ -472,7 +472,7 @@ label mas_o31_autoload_check:
     python:
         import random
 
-        if mas_isO31() and mas_isMoniNormal(higher=True):
+        if mas_isO31() and datetime.datetime.now().hour >= 3 and mas_isMoniNormal(higher=True):
             #Lock the background selector on o31
             #TODO: Replace this with generic room deco framework for event deco
             store.mas_lockEVL("monika_change_background", "EVE")
@@ -607,7 +607,6 @@ init 5 python:
             years=[]
         )
     )
-
 
 label mas_o31_cleanup:
     m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
@@ -878,9 +877,10 @@ label greeting_o31_generic:
     return
 
 #Cleanup for o31 greets
-label greeting_o31_cleanup:
+label greeting_o31_cleanup(skip_zoom=False):
     window hide
-    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    if not skip_zoom:
+        call monika_zoom_transition(mas_temp_zoom_level,1.0)
     window auto
 
     python:
@@ -925,6 +925,7 @@ label greeting_o31_lingerie:
     m "Ehehe!"
     m "Don't worry [player], I'm here..."
     call mas_o31_lingerie_end
+    call greeting_o31_cleanup(skip_zoom=True)
     return
 
 init 5 python:
@@ -957,15 +958,18 @@ label mas_o31_lingerie_end:
     m "Say, have you ever heard of Devil's Night?"
     m "It's a tradition in some places the night before Halloween for people to go out and be mischievous."
     m "Well [player], I'm feeling a little mischievous myself tonight..."
+    window hide
+    pause 2.0
 
     python:
-        store.mas_selspr.unlock_acs(mas_acs_blackhearts_hairclip)
+        store.mas_selspr.unlock_acs(mas_acs_grayhearts_hairclip)
         store.mas_selspr.unlock_clothes(mas_clothes_spider_lingerie)
         monika_chr.change_clothes(mas_clothes_spider_lingerie, by_user=False, outfit_mode=True)
 
     call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 2tfu')
 
     pause 2.0
+    window auto
     m 2tub "Ehehe, what do you think?"
     m 2hub "It's a little different I know, you're probably not sure if you want to touch or run away, ahaha!"
     m 7rua "It's probably not something I'd wear all the time, but I think it's really neat this time of year."
@@ -977,7 +981,7 @@ label mas_o31_lingerie_end:
         m 2rsbla "Alhough I've hear that people named Amy like spiders, ehehe~"
 
     else:
-        m 2rsbla "Hopefully people named Amy aren't the only ones who like spider, ehehe~"
+        m 2rsbla "Hopefully people named Amy aren't the only ones who like spiders, ehehe~"
 
     python:
         mas_stripEVL("mas_o31_lingerie", list_pop=True)
@@ -995,7 +999,8 @@ init 5 python:
             pool=True,
             unlocked=False,
             action=EV_ACT_UNLOCK,
-            start_date=mas_o31,
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
+            # TODO: update script
             end_date=mas_o31+datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.NORMAL, None)

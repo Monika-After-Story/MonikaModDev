@@ -465,7 +465,7 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            _moni_chr.wear_acs(store.mas_acs_blackhearts_hairclip)
+            _moni_chr.wear_acs(store.mas_acs_grayhearts_hairclip)
 
 
     def _clothes_spider_lingerie_exit(_moni_chr, **kwargs):
@@ -475,7 +475,7 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_blackhearts_hairclip)
+            _moni_chr.remove_acs(store.mas_acs_grayhearts_hairclip)
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -1793,13 +1793,13 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_rin_ears)
 
-    ### Black hearts Hairclip
-    ## blackhearts_hairclip
+    ### Gray hearts Hairclip
+    ## grayhearts_hairclip
     # black hearst hairclip to go with the spider_lingerie outfit
     # Thanks BriarYoung
-    mas_acs_blackhearts_hairclip = MASAccessory(
-        "blackhearts_hairclip",
-        "blackhearts_hairclip",
+    mas_acs_grayhearts_hairclip = MASAccessory(
+        "grayhearts_hairclip",
+        "grayhearts_hairclip",
         MASPoseMap(
             default="0",
             l_default="5"
@@ -1809,11 +1809,11 @@ init -1 python:
         # mux type handled by defaults
         rec_layer=MASMonika.AFH_ACS
     )
-    store.mas_sprites.init_acs(mas_acs_blackhearts_hairclip)
+    store.mas_sprites.init_acs(mas_acs_grayhearts_hairclip)
     store.mas_selspr.init_selectable_acs(
-        mas_acs_blackhearts_hairclip,
-        "Hairclip (Black hearts)",
-        "blackhearts_hairclip",
+        mas_acs_grayhearts_hairclip,
+        "Hairclip (Gray hearts)",
+        "grayhearts_hairclip",
         "left-hair-clip",
         select_dlg=[
             "My heart beats for you, [player]~",
