@@ -41,6 +41,9 @@ init python in mas_windowutils:
     import store
     #The initial setup
 
+    # The window object, used on Linux systems, otherwise always None
+    MAS_WINDOW = None
+
     #We can only do this on windows
     if renpy.windows:
         #We need to extend the sys path to see our packages
@@ -258,6 +261,9 @@ init python in mas_windowutils:
 
         if renpy.linux:
             MAS_WINDOW = __getMASWindowLinux()
+
+        else:
+            MAS_WINDOW = None
 
         return MAS_WINDOW
 
