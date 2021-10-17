@@ -17571,7 +17571,7 @@ init 5 python:
     )
 
 # Ever had root access/admin rights?
-default persistent._mas_had_root_access = False
+default persistent._mas_pm_had_root_access = False
 
 label monika_root_privileges:
     m 2lsc "Hey, [player]..."
@@ -17602,6 +17602,6 @@ label monika_root_privileges:
         m 1tsd "[player], if I were you, I'd actually think twice before granting me these."
         m 1dfc "I don't know if you gave me such privileges by accident or not, but I'd really advise against doing so again."
 
-    $ persistent._mas_had_root_access = True
+    $ persistent._mas_pm_had_root_access = True
 
     return "derandom"
