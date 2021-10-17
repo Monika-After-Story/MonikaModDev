@@ -1,21 +1,23 @@
 define persistent.demo = False
 
-define config.developer = False #This is the flag for Developer tools
+define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    import io
     import singleton
+    import datetime
+    import traceback
+
+
     me = singleton.SingleInstance()
+
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z = 3
 
-    # this is now global
-    import datetime
-
-    # uncomment when needed
-    import traceback
     _dev_tb_list = []
+
 
     ### Overrides of core renpy things
     def dummy(*args, **kwargs):
@@ -305,6 +307,42 @@ python early:
 
     renpy.display.image.ImageReference.find_target = mas_find_target
 
+    class MASImageData(renpy.display.im.ImageBase):
+        """
+        NOTE: This DOES NOT support saving in persistent (pickling),
+            and it might be unsafe to do so.
+
+        This image manipulator loads an image from binary data.
+        """
+        def __init__(self, data, filename, **properties):
+            """
+            Constructor
+
+            IN:
+                data - string of bytes, giving the compressed image data in a standard
+                    file format.
+                filename - "filename" associated with the image. This is used to provide a
+                    hint to Ren'Py about the format of `data`. (It's not actually
+                    loaded from disk.)
+                properties - additional props
+            """
+            super(MASImageData, self).__init__(data, filename, **properties)
+            self.data = data
+            self.filename = filename
+
+        def __unicode__(self):
+            return u"MASImageData({})".format(self.filename)
+
+        def __repr__(self):
+            return str(self.__unicode__())
+
+        def __reduce__(self):
+            return (str, (self.filename,))
+
+        def load(self):
+            f = io.BytesIO(self.data)
+            return renpy.display.pgrender.load_image(f, self.filename)
+
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
 
@@ -328,6 +366,7 @@ python early:
     # all bitmask flags apply until next restart or the flag is unset.
     # NOTE: do NOT add a bitmask flag if you want to save its value.
     #   if you need saved data, add a new prop or use an existing one.
+    EV_FLAG_DEF = 0
 
     EV_FLAG_HFM = 2
     # Hidden From Menus
@@ -359,6 +398,30 @@ python early:
             self.msg = _msg
         def __str__(self):
             return self.msg
+
+
+    # event data class - use for data grouping - no behaviors allowed
+    class EventDBData(object):
+        """
+        Speciality class that can hold data from data tuples (events)
+        Read-only (for now)
+        """
+
+        def __init__(self, data_tup):
+            """
+            IN:
+                data_tup - the data to store
+            """
+            self.data_tup = data_tup
+
+        def __getattr__(self, name):
+            attr_loc = Event.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                return self.data_tup[attr_loc]
+
+            return None
+
 
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
@@ -547,7 +610,7 @@ python early:
                 sensitive=False,
                 aff_range=None,
                 show_in_idle=False,
-                flags=0
+                flags=EV_FLAG_DEF
             ):
 
             # setting up defaults
@@ -1351,6 +1414,7 @@ python early:
             """
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
+            TODO: include checkConditional
 
             For variable explanations, please see the static method
             filterEvents
@@ -1571,6 +1635,7 @@ python early:
 
             return eventlabels
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkConditionals(events, rebuild_ev=False):
             # NOTE: DEPRECATED
@@ -1631,6 +1696,7 @@ python early:
 
             return events
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkCalendar(events):
             # NOTE: DEPRECATED
@@ -1778,7 +1844,7 @@ python early:
 
             return
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """DEPRECATED
@@ -1788,6 +1854,7 @@ python early:
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
+            TODO: include checkConditional
 
             IN:
                 ev - single event to check
@@ -1814,7 +1881,7 @@ python early:
 
             return False
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """DEPRECATED
@@ -1909,6 +1976,7 @@ python early:
             # return the available events dict
             return available_events
 
+        #TODO: Depricate this
         @staticmethod
         def _checkAffectionRule(ev,keepNoRule=False):
             """
@@ -1922,7 +1990,7 @@ python early:
             """
             return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
 
-
+        #TODO: Depricate this
         @staticmethod
         def checkAffectionRules(events,keepNoRule=False):
             """
@@ -2970,7 +3038,7 @@ python early:
             ))
 
 # init -1 python:
-
+    @store.mas_utils.deprecated(should_raise=True)
     class MASInteractable(renpy.Displayable):
         """DEPRECATED
 
@@ -3618,7 +3686,7 @@ init 25 python:
         """
         Class to represent events for PauseDisplayableWithEvents
         """
-        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False):
+        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False, restart_interaction=False):
             """
             Constructor for events
 
@@ -3630,6 +3698,9 @@ init 25 python:
                     (Default: False)
                 invoke_in_new_context - whether or not we'll invoke the functions
                     to avoid interaction issues
+                    (Default: False)
+                restart_interaction - whether or not we'll also call renpy.restart_interaction
+                    to update the screen
                     (Default: False)
             """
             self.timedelta = timedelta
@@ -3644,6 +3715,7 @@ init 25 python:
             self.functions = functions
             self.repeatable = repeatable
             self.invoke_in_new_context = invoke_in_new_context
+            self.restart_interaction = restart_interaction
 
             self.end_datetime = None
 
@@ -3672,6 +3744,9 @@ init 25 python:
 
                 else:
                     func()
+
+                if self.restart_interaction:
+                    renpy.restart_interaction()
 
     class PauseDisplayableWithEvents(renpy.Displayable):
         """
@@ -3710,55 +3785,80 @@ init 25 python:
             """
             super(renpy.Displayable, self).__init__()
 
-            if events is None:
-                events = [PauseDisplayableWithEvents.CRUTCH_EVENT]
+            # This will set remaining_events and all_events props
+            self.set_events(events)
 
-            elif isinstance(events, tuple):
-                events = list(events)
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            elif isinstance(events, list):
-                events.append(PauseDisplayableWithEvents.CRUTCH_EVENT)
-
-            # Assuming it's a single PauseDisplayableEvent
-            else:
-                events = [events, PauseDisplayableWithEvents.CRUTCH_EVENT]
-
-            events.sort(key=PauseDisplayableWithEvents.__sort_key_td)
-
-            self.events = events
-            self.__events = list(events)
             self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
         def __repr__(self):
             """
             Representation of this obj
             """
-            return "<PauseDisplayableWithEvents ({0})>".format(self.events)
+            return "<PauseDisplayableWithEvents ({0})>".format(self.__remaining_events)
+
+        @classmethod
+        def __handle_events(cls, events):
+            """
+            Takes events and sorts them before passing further
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+
+            OUT:
+                sorted list
+            """
+            if events is None:
+                events = [cls.CRUTCH_EVENT]
+
+            elif isinstance(events, tuple):
+                events = list(events)
+                events.append(cls.CRUTCH_EVENT)
+
+            elif isinstance(events, list):
+                events.append(cls.CRUTCH_EVENT)
+
+            # Assuming it's a single PauseDisplayableEvent
+            else:
+                events = [events, cls.CRUTCH_EVENT]
+
+            events.sort(key=cls.__sort_key_td)
+
+            return events
+
+        def set_events(self, events):
+            """
+            Sets new events for this PauseDisplayable
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+            """
+            events = self.__handle_events(events)
+            self.__remaining_events = events
+            self.__all_events = list(events)
 
         def __set_end_datetimes(self):
             """
             Sets end datetimes for events using current time
             """
             _now = datetime.datetime.now()
-            for event in self.events:
-                event.set_end_datetime(_now + event.timedelta)
+            for ev in self.__remaining_events:
+                ev.end_datetime = _now + ev.timedelta
 
         def __reset_events(self):
             """
             Resets events state
             """
-            self.events = self.__events[:]
-            for ev in self.events:
-                ev.set_end_datetime(None)
+            self.__remaining_events = self.__all_events[:]
+            for ev in self.__remaining_events:
+                ev.end_datetime = None
 
         def start(self):
             """
             Starts this displayable
             """
-            self.should_enable_afm = store._preferences.afm_enable
+            self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
             ui.interact()
@@ -3769,7 +3869,7 @@ init 25 python:
             """
             ui.remove(self)
             self.__abort_events = True
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3781,7 +3881,7 @@ init 25 python:
             ui.remove(self)
             self.__reset_events()
             self.__abort_events = False
-            self.should_enable_afm = None
+            self.__should_enable_afm = None
 
             if renpy.game.context().interacting:
                 renpy.end_interaction(False)
@@ -3799,9 +3899,9 @@ init 25 python:
             """
             _now = datetime.datetime.now()
 
-            for event in self.events[:]:
+            for event in self.__remaining_events[:]:
                 if _now >= event.end_datetime:
-                    self.events.remove(event)
+                    self.__remaining_events.remove(event)
                     yield event
 
                 # no need to keep iter, we can return at this point
@@ -3813,17 +3913,17 @@ init 25 python:
             Sets a timeout for event generator
             """
             # No need to do anything if we have no pending events
-            if not self.events:
+            if not self.__remaining_events:
                 return
 
             _now = datetime.datetime.now()
-            _end_dt = self.events[0].end_datetime
+            _end_dt = self.__remaining_events[0].end_datetime
 
             if _end_dt >= _now:
-                timeout = (_end_dt - _now).total_seconds() + 0.1
+                timeout = (_end_dt - _now).total_seconds()
 
             else:
-                timeout = 0.1
+                timeout = 0.0
 
             renpy.timeout(timeout)
 
@@ -3860,7 +3960,7 @@ init 25 python:
                         event()
                         if event.repeatable:
                             event.set_end_datetime(datetime.datetime.now() + event.timedelta)
-                            store.mas_utils.insert_sort(self.events, event, PauseDisplayableWithEvents.__sort_key_dt)
+                            store.mas_utils.insert_sort(self.__remaining_events, event, PauseDisplayableWithEvents.__sort_key_dt)
 
                     # If we aborted, we need to quit asap
                     else:
@@ -3873,8 +3973,8 @@ init 25 python:
             elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
                 self.__abort_events = True
                 ui.remove(self)
-                if self.should_enable_afm:
-                    self.should_enable_afm = None
+                if self.__should_enable_afm:
+                    self.__should_enable_afm = None
                     store._preferences.afm_enable = True
                 return True
 
@@ -5765,6 +5865,7 @@ init -1 python:
         return mas_isDay(_time)
 
 
+    #TODO: Depricate these funcs in favour of mas_current_background.isFltDay and isFltNight
     def mas_isDay(_time):
         """
         Checks if the sun would be up during the given time
@@ -7913,6 +8014,7 @@ define boy = "boy"
 define guy = "guy"
 define him = "him"
 define himself = "himself"
+define hero = "hero"
 
 # Input characters filters
 define numbers_only = "0123456789"
@@ -8101,7 +8203,8 @@ label mas_set_gender:
                 "boy": "boy",
                 "guy": "guy",
                 "him": "him",
-                "himself": "himself"
+                "himself": "himself",
+                "hero": "hero"
             },
             "F": {
                 "his": "her",
@@ -8113,7 +8216,8 @@ label mas_set_gender:
                 "boy": "girl",
                 "guy": "girl",
                 "him": "her",
-                "himself": "herself"
+                "himself": "herself",
+                "hero": "heroine"
             },
             "X": {
                 "his": "their",
@@ -8125,7 +8229,8 @@ label mas_set_gender:
                 "boy": "person",
                 "guy": "person",
                 "him": "them",
-                "himself": "themselves"
+                "himself": "themselves",
+                "hero": "hero"
             }
         }
 
@@ -8141,6 +8246,7 @@ label mas_set_gender:
         guy = pronouns["guy"]
         him = pronouns["him"]
         himself = pronouns["himself"]
+        hero = pronouns["hero"]
     return
 
 style jpn_text:

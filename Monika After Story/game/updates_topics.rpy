@@ -31,6 +31,7 @@ init -1 python in mas_db_merging:
 
 # preeerything
 init -1 python:
+    @store.mas_utils.deprecated(use_instead="mas_versions.clear", should_raise=True)
     def clearUpdateStructs():
         """DEPRECATED
         Use mas_versions.clear instead
@@ -100,7 +101,10 @@ init -2 python in mas_versions:
         # use dot notation to separate the parts of a version
 
         add_steps({
-            #"0.12.2.2": ("0.12.2.1", "0.12.2"),
+            #"0.12.3.2": "0.12.3.1",
+            "0.12.3.1": ("0.12.3", "0.12.2.4", "0.12.2.3"),
+            "0.12.2.3": "0.12.2.2",
+            "0.12.2.2": ("0.12.2.1", "0.12.2"),
             "0.12.2": "0.12.1.2",
             "0.12.1.2": ("0.12.1.1", "0.12.1"),
             "0.12.1": "0.12.0",

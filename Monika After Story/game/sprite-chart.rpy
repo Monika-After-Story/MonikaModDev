@@ -1056,7 +1056,7 @@ init -5 python in mas_sprites:
             return allow_none
         return _verify_uprightpose(val) or _verify_leaningpose(val)
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def acs_lean_mode(sprite_list, lean):
         """
         NOTE: DEPRECATED
@@ -3790,6 +3790,7 @@ init -3 python:
                     acs_layer
                 )
 
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pre(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre body accessory mode
@@ -3799,7 +3800,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.PRE_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bbh(self, acs):
             """DEPRECATED
             Wears the given accessory in the post back hair accessory loc
@@ -3809,7 +3810,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BBH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bfh(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre front hair accesory log
@@ -3819,7 +3820,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BFH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_afh(self, acs):
             """DEPRECATED
             Wears the given accessory in the between front hair and arms
@@ -3830,7 +3831,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.AFH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_mid(self, acs):
             """DEPRECATED
             Wears the given accessory in the mid body acessory mode
@@ -3840,7 +3841,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.MID_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pst(self, acs):
             """DEPRECATED
             Wears the given accessory in the post body accessory mode
@@ -5777,6 +5778,7 @@ init -3 python:
             """
             return acs.priority
 
+        @store.mas_utils.deprecated()
         def get_arm_split_code(self, poseid):
             """DEPRECATED
             NOTE: we are keeping this around for compatiblity purposes

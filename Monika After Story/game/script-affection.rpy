@@ -659,19 +659,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-        # unlock islands event if seen already
-        if store.seen_event("mas_monika_islands"):
-            if store.mas_cannot_decode_islands:
-                # failed to decode islandds, delay this action
-                store.mas_addDelayedAction(2)
-
-                # lock the island event since we failed to decode images
-                store.mas_lockEventLabel("mas_monika_islands")
-
-            else:
-                # otherwise we can directly unlock this topic
-                store.mas_unlockEventLabel("mas_monika_islands")
-
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -685,10 +672,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to affectionate
         """
-
-        # remove island event delayed actions
-        store.mas_removeDelayedActions(1, 2)
-
         #Change randchat
         store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
@@ -2109,7 +2092,7 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new name, silly."
                     m 1eka "Try again~"
 
-                elif re.findall("mon(-|\\s)+ika", lowername):
+                elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
                     m 2tfc "..."
                     m 2esc "Try again."
                     show monika 1eua
@@ -2124,7 +2107,8 @@ label monika_affection_nickname:
 
                 else:
                     if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
-                        if inputname == "Monika":
+                        if lowername == "monika":
+                            $ inputname = inputname.capitalize()
                             m 3hua "Ehehe, back to the classics I see~"
 
                         elif good_monika_nickname_comp.search(inputname):

@@ -508,7 +508,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -535,7 +535,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
@@ -900,6 +900,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
+                # NOTE: if Monika jumps when this is called, make sure to
+                #   dissolve all
                 renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
@@ -936,8 +938,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 for h_adf in bg_change_info.hides.itervalues():
                     h_adf.hide()
 
-            for s_tag, s_adf in bg_change_info.shows.iteritems():
-                s_adf.show(s_tag)
+            for s_tag, s_info in bg_change_info.shows.iteritems():
+                s_tag_real, s_adf = s_info
+                s_adf.show(s_tag_real)
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -949,8 +952,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
-    else:
-        $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     # ----------- Grouping date-based events since they can never overlap:
     #O31 stuff
@@ -964,7 +965,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
-    else:
+
+    # both 922 and pbday share the same visual funcs, so need to check both before hiding
+    if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses:
@@ -1765,6 +1768,10 @@ label ch30_day:
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        # Once per day Monika does stuff on the islands
+        store.mas_island_event.advanceProgression()
+
     return
 
 
@@ -1790,7 +1797,7 @@ label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
+        if mas_egg_manager.sayori_enabled() or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
 
     python:
@@ -2062,6 +2069,10 @@ label ch30_reset:
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
+
+    # Did Monika make any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -2075,4 +2086,5 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
+
     return

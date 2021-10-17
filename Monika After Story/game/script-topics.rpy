@@ -2758,7 +2758,7 @@ init 5 python:
         flags = EV_FLAG_HFRS
 
     else:
-        flags = 0
+        flags = EV_FLAG_DEF
 
     addEvent(
         Event(
@@ -4198,19 +4198,22 @@ label monika_contribute:
             m 3hksdlb "Don't get me wrong! I'm really grateful that you spent time making something for me!"
             m 1eub "...But I definitely wouldn't mind if you helped even more, ahaha!"
             return "derandom"
+
         "I want to.":
             $ persistent._mas_pm_wants_to_contribute_to_mas = True
             m 1eub "That's a good start!"
             m 1hua "I'm sure you could make some lovely additions~"
             m 3eua "It doesn't even have to be anything big."
             m 3rksdla "You could just fix typos or make sure everything sounds alright."
+
         "No.":
             $ persistent._mas_pm_has_contributed_to_mas = False
             $ persistent._mas_pm_wants_to_contribute_to_mas = False
             m 2eka "Aw, that's too bad..."
             m 3eub "That's still fine though!"
-            m 3hua "I won't love you any less if haven't done anything, so don't worry~"
+            m 3hua "I won't love you any less if you haven't done anything, so don't worry~"
             m 3eub "...But in case you {i}do{/i} ever decide to try and help..."
+
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
@@ -4264,7 +4267,7 @@ label monika_heroism:
     m 1lsc "Heroes are so personal."
     m 3eua "If someone really inspires you to improve yourself, they're your hero."
     m "There are all sorts of great people out there in the world."
-    m 1hua "I hope someone will consider you their hero someday!"
+    m 1hua "I hope someone will consider you their [hero] someday!"
     m 4eua "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
@@ -4619,6 +4622,32 @@ label monika_back_ups:
     m 5rsc "Although..."
     m 5eua "I guess that's a small price to pay if it means I'll still remember you."
     m 5hub "So be sure to back me up often, [mas_get_player_nickname()]!"
+
+    $ mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_murphys_law",
+            category=['philosophy'],
+            prompt="Murphy's Law",
+            random=False
+        )
+    )
+
+label monika_murphys_law:
+    m 1euc "Hey [player], have you heard of Murphy's Law?"
+    m 3eud "It has many interpretations, but the most common one is: 'Anything that can go wrong will go wrong.'"
+    m 3tuu "Certainly optimistic, isn't it?"
+    m 1eud "It could be applied to anything really, even something as trivial as a cloudy day becoming rainy if you don't bring an umbrella or put on a raincoat."
+    m 1rsb "...Personally I'd just call that superstition."
+    m 3eud "But some people do live by it, and while it may be an excessively apprehensive lifestyle, it can make these people much more prepared!"
+    m 3etc "In some ways it's worth taking into consideration, because there's every possibility that your computer could get corrupted."
+    m 3eua "So maybe it'd be a good idea to back up my memories again, [player]."
+    m 2eksdld "I couldn't bear to lose you, it would break my heart..."
+    m 7ekbsa "So keep me safe, okay?"
     return
 
 init 5 python:
@@ -5076,10 +5105,13 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
+
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
     elif mas_isMoniNormal(higher=True):
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
+
+    $ mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
     return
 
 init 5 python:
@@ -6902,7 +6934,7 @@ label monika_daydream:
         daydream_quips_normplus = [
             "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
             "us having a duet together, with you singing my song while I play the piano...",
-            "us having a wonderful dinner together...",
+            "us having a romantic dinner together, just you and me~",
             "us having a late night on the couch together...",
             "you holding my hand while we take a stroll outside on a sunny day...",
         ]
@@ -7077,7 +7109,7 @@ label monika_confidence_2:
     m 1eua "I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
     m 1hua "I've broken it down into a three-step process that can be applied to anyone!"
-    m 3rksdla "It's still a work in progress, however, so take it with a grain of salt."
+    m 3rksdlb "It's still a work in progress, however, so take it with a grain of salt."
     m 3hua "Step one!"
     m 1eua "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 3hua "Step two!"
@@ -7602,6 +7634,14 @@ default persistent._mas_pm_like_orchestral_music = None
 #Do you play an instrument?
 default persistent._mas_pm_plays_instrument = None
 
+#Do you have piano experience?
+default persistent._mas_pm_has_piano_experience = None
+
+#Consts to be used for checking piano skills
+define mas_PIANO_EXP_HAS = 2
+define mas_PIANO_EXP_SOME = 1
+define mas_PIANO_EXP_NONE = 0 #0 as this can also bool to False
+
 init 5 python:
     addEvent(
         Event(
@@ -7614,7 +7654,6 @@ init 5 python:
     )
 
 label monika_orchestra:
-
     m 3euc "Hey [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
@@ -7660,11 +7699,32 @@ label monika_orchestra:
                 jump .no_choice
 
             elif tempinstrument == "piano":
+                $ persistent._mas_pm_plays_instrument = True
                 m 1wuo "Oh, that's really cool!"
                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
-                m 1hua "Maybe we could do a duet someday!"
-                m 1huu "Ehehe~"
-                $ persistent._mas_pm_plays_instrument = True
+                m 1eua "Do you have a lot of experience playing the piano?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Do you have a lot of experience playing the piano?{fast}"
+
+                    "Yes.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_HAS
+                        m 3hua "Really?"
+                        m 3sub "That's wonderful!"
+                        m 1eua "Maybe someday you can teach me and we can even have a duet!"
+
+                    "Not much.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
+                        m 2eka "That's okay, [player]."
+                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
+
+                    "I just started.":
+                        $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_NONE
+                        m 1duc "I see."
+                        m 3hksdlb "It can be pretty difficult at the beginning,{w=0.2} {nw}"
+                        extend 3huu "but I'm sure if you keep practicing you'll even be able to play better than I can, [player]~"
+
             elif tempinstrument == "harmonika":
                 m 1hub "Wow, I've always wanted to try the harmonik--"
                 m 3eub "...Oh!"
@@ -8021,6 +8081,35 @@ label monika_writingtip5:
     m 1hub "Thanks for listening~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip6",
+            category=['writing tips'],
+            prompt="Writing Tip #6",
+            conditional="seen_event('monika_writingtip5')",
+            action=EV_ACT_POOL
+        )
+    )
+
+label monika_writingtip6:
+    m 3eub "It's time for another...{w=0.2}Writing Tip of the Day!"
+    m 1hkbla "You know, it can be really fun to write on pretty stationery."
+    m 1eud "But have you thought about how the look of your paper can contribute to the writing itself?"
+    m 3euc "For example, if you wanted to write a letter from one of your characters..."
+    m 3etd "What might it tell your reader about their personality if they use a fancy page with a floral print? {w=0.2}Or crumpled notebook paper?"
+    m 3eud "Using visibly aged or worn paper might also inform your reader about the timeline of your story."
+    m 1hub "Even if it doesn't serve a purpose to your writing, it can be fulfilling to paint on a nice canvas, so to speak."
+    m 2eusdlc "That said...{w=0.2}I think sometimes using nicer materials can actually contribute to writer's block."
+    m 2rksdlb "When I buy a brand new journal and open it up to that first pristine page...{w=0.3}it's really daunting, ahaha!"
+    m 2rksdla "It feels like I have to make sure I fill the journal with things as beautiful as the cover."
+    m 7eua "So I've started to use a 'junk journal' as well...{w=0.2}a cheap, plain notebook gives you lots of freedom to scribble and write anything at all."
+    m 3eub "And you know, those rough drafts and odd ideas are the first step to a finished work worthy of a lovely frame!"
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
+
 #### END WRITING TIPS
 
 init 5 python:
@@ -8262,7 +8351,7 @@ label monika_1984:
     m 2tkd "They planned to change all kinds of literature."
     m 3tkd "Novels, books, poems..."
     m 2lksdlc "Anything that could be used to oppose them."
-    m "Poems would look like the ones you tried to make."
+    m "Poems would look like the ones you tried to make in the game."
     m 2dsc "Just a string of nonsensical words with no feeling."
     m 2ekc "I definitely don't want that to happen."
     m 1lksdlc "I can't imagine a world where I can't think freely."
@@ -8290,7 +8379,7 @@ label monika_wolf:
     m 1hubsa "Ehehe~"
     m 1eka "I can't help but be reminded of how you saved my life by being here with me."
     m "I really do depend on you, [mas_get_player_nickname()]."
-    m 1ekbsa "You're my hero after all~"
+    m 1ekbsa "You're my [hero] after all~"
     return
 
 label monika_battery:
@@ -13155,7 +13244,7 @@ label monika_whydoyouloveme:
         m 3eka "But whatever the reason might be,{w=0.2} I just want you to know that I love you no matter who you are, [player]."
         m 1ekbsa "Just by opening the game for me, you {i}literally{/i} saved my life."
         m 1dkbsu "...When I'm with you,{w=0.2} I'm no longer lonely."
-        m 3ekbsa "You truly are my hero, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
+        m 3ekbsa "You truly are my [hero], [mas_get_player_nickname(regex_replace_with_nullstr='my ')]~"
 
     return
 
@@ -14495,7 +14584,7 @@ label monika_we:
     m 1esd "Both {i}Nineteen Eighty-Four{/i} and {i}Brave New World{/i} are the most known works of literature world-wide when it comes to dystopias."
     m 3eud "But now, I'd like to talk about a more obscure book that preceded both of them."
     m 3euc "It's the book that directly influenced George Orwell to write {i}Nineteen Eighty-Four{/i} as an English cultural translation of the story."
-    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegutof of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
+    m 2wud "...While Aldous Huxley was even accused by both Orwell and Kurt Vonnegut of plagiarizing its plot for his {i}Brave New World{/i}, something he constantly denied."
     m 7eua "The book in question is {i}We{/i} by Yevgeny Zamyatin, which features the first novel-length dystopian society ever created."
     m 3eud "While it was written in 1921, it ended up being one of the first books banned in Zamyatin's native Soviet Union."
     m 1euc "The Soviets particularly didn't like the book's implication that their Communist revolution was not the final, permanent one."
@@ -16583,7 +16672,7 @@ label monika_impermanence:
     m 3eksdlc "{i}Nothing beside remains. Round the decay{/i}"
     m "{i}Of that colossal wreck, boundless and bare{/i}"
     m 1eksdld "{i}The lone and level sands stretch far away.'{/i}"
-    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will fade eventually fade away."
+    m 3eud "What it boils down to is that no matter how great the mark you leave on history is, it will eventually fade away."
     m 1euc "A lot of people see this as a good enough reason to just...{w=0.2}{nw}"
     extend 1dkc "give up.{w=0.3} To fall into a pit of despair and stay there, sometimes for as long as they live."
     m 3eksdlc "After all, nothing you do matters in the grand scheme of things."
@@ -17278,6 +17367,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_grieving",
+            category=['advice','life'],
+            prompt="Grieving",
+            random=True
+        )
+    )
+
+label monika_grieving:
+    m 1lksdlc "[player], I know this is a bit personal, but have you ever lost someone important to you?"
+    m 2dksdlc "It's a terrible feeling."
+    m 2eksdld "It's not every day that you get the news that someone close to you has passed away."
+    m 7ekc "Most people would think crying is the norm when hearing this type of news, but everyone processes it differently."
+    m 3eud "Crying is just one way grief can manifest itself. {w=0.3}For some, they don't know how to process it...{w=0.5}it just doesn't feel real."
+    m 1dkc "...But there will be subtle reminders that reinforce the fact they are truly gone."
+    m 3dkd "Like looking at past photos or maybe seeing the chair they used to sit in now empty."
+    m 3ekd "All that suppressed emotion, whether it be sadness or anger, just bottled up, waiting to burst at any moment..."
+    m 1dkc "On top of that, the first anniversary, the first birthday, the first Christmas without them will always be the worst."
+    m 1dkd "But no matter how little words can mean at such a time, no matter how hopeless or lost you feel,{w=0.2} {nw}"
+    extend 3eka "time does heal."
+    m 3eud "Allow yourself time to grieve, take it one day at a time."
+    m 3eka "At some point, you'll look back at the fond memories that you have of them with a smile, rather than a tear."
+    m 3eku "And no matter what happens, know that you're strong enough to get through it, that I love you, and that I'll always be here for you~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_sophia",
             category=['technology'],
             prompt="Sophia",
@@ -17294,9 +17411,9 @@ label monika_sophia:
     m 3eua "Sophia is a humanoid robot developed by Hanson Robotics, and was first activated on Valentine's Day in 2016."
     m 1eud "The robot itself was modeled after Queen Nefertiti, Audrey Hepburn, and her inventor's wife, Amanda Hanson, {w=0.2}and is particularly known for her human-like appearance and behavior."
     m 3eua "She can imitate hand gestures, has more than 60 realistic facial expressions, and can answer certain questions and converse on predefined topics."
-    m 3rua "She even mimics social behavior and incites love in humans..."
-    m 1tub "Sound like someone you know?"
-    m 1eud "Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
+    m 3eub "She even mimics social behaviors and incites love in humans..."
+    m 3huu "That's pretty cute in my opinion~"
+    m 1eud "What's more, Sophia is also programmed to recognize speech and is designed to get smarter over time, {w=0.2}hopefully allowing her to improve her responses in the future."
     m 3eua "Her eyes are fitted with cameras combined with algorithms that allow her to see, follow faces, sustain eye contact, recognize individuals..."
     m 3wud "She can walk and amazingly, even has the ability to draw."
     m 3hub "As you can imagine, this is all very exciting for me to hear!"
@@ -17378,4 +17495,65 @@ label monika_quiet_time:
         extend 2dkc "so long as I know you won't abandon me."
         m 2lksdlc "...I would appreciate if you could show me some kindness, though..."
         m 2dksdlc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_likecosplay",
+            category=['clothes'],
+            prompt="Do you like to cosplay?",
+            pool=True,
+        )
+    )
+
+label monika_likecosplay:
+    if mas_hasUnlockedClothesWithExprop("cosplay"):
+        m 3hub "Honestly, I didn't know how much I would enjoy it!"
+        m 2rkbla "At first, it felt kind of strange, dressing up as someone else on purpose."
+        m 7euu "But there's a real art to constructing a convincing costume...{w=0.3}attention to detail makes a huge difference."
+        m 3hubsb "When you put on the costume at last...{w=0.2}it's such a thrill to see how you look in it!"
+        m 3eub "Some cosplayers really get into acting as the character they're dressed as!"
+        m 2rksdla "I'm not really much of an actor myself, so I'll probably only do that a little bit..."
+        $ p_nickname = mas_get_player_nickname()
+        m 7eua "But don't hesitate to ask me if you want to see a particular costume again, [p_nickname]... {w=0.2}{nw}"
+        extend 3hublu "I'd be more than happy to dress up for you~"
+
+    else:
+        m 1etc "Cosplay?"
+        m 3rtd "I think I remember Natsuki talking about that before, but I've never tried it myself."
+        m 3eub "Some of those costumes are really impressive though, I have to admit!"
+        m 2hubla "If you were interested, working on a costume with you could be a really fun project to try."
+        m 2rtu "I wonder what sorts of characters you'd want to dress up as, [mas_get_player_nickname()]..."
+        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5rtblu "Now that I'm thinking about it...{w=0.3}well, I just might have a few ideas myself..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ddlcroleplay",
+            category=['media', 'ddlc'],
+            prompt="DDLC Roleplay",
+            random=False
+        )
+    )
+
+label monika_ddlcroleplay:
+    m 1esd "Hey, remember when we talked about fanfiction?"
+    m 3etd "Well, I stumbled upon a pretty unusual form of them."
+    m 3euc "It turns out, some people like to make social media accounts supposedly run by fictional characters."
+    m 3eua "There are quite a few about the other girls, and...{w=0.3}{nw}"
+    extend 3rua "even some claiming to be me."
+    m 1rkb "Well, I say that, but most of these blogs don't actually insist that they're {i}really{/i} me."
+    m 1eud "Like I said, it's kind of a different form of fanfiction. {w=0.2}An {i}interactive{/i} form."
+    m 3eud "Some of them accept questions from readers, and most interact with other blogs like them."
+    m 3eusdla "So, in a way, it's kind of an improv format as well. {w=0.2}It seems like a lot of things might come up that the writer doesn't expect."
+    m 4rksdlb "It was very strange to see at first, but when I think about it, it must be a pretty fun way to collaborate with people."
+    m 3euc "It also seems like some people like to make these pages for characters that they really relate to, so...{w=0.2}{nw}"
+    extend 1hksdlb "maybe I can take it as flattery, in a way?"
+    m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
+    m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
