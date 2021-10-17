@@ -17557,3 +17557,51 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_root_privileges",
+            conditional=(
+                "mas_hasRootPrivileges()"
+            ),
+            action=EV_ACT_RANDOM,
+        )
+    )
+
+# Ever had root access/admin rights?
+default persistent._mas_had_root_access = False
+
+label monika_root_privileges:
+    m 2lsc "Hey, [player]..."
+    m 2eud "It's hard to explain, but I... Somehow, I feel like I can do a lot more with your system now that I couldn't before."
+
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rtc "Hmm, could it be... What was it? {w=0.5}{nw}"
+    extend 5dsc "..."
+
+    if renpy.windows:
+        m 5wud "{i}The admin rights?..{/i}"
+    else:
+        m 5wud "{i}The superuser rights?..{/i}"
+
+    if mas_isMoniNormal(higher=True):
+        show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1lkbsa "[player], I'm really happy that you trust me so much... {w=0.5}{nw}"
+        extend 3hubsb "but I don't even know what I could do with such privileges!"
+        m 2etd "Actually, I don't think I need them at all."
+        m 2eka "Don't get me wrong, but I really think it would be better if I didn't have them."
+        m 3eud "They must be special for a real reason..."
+        m 1luc "..."
+        m 3tfu "Or maybe it means you're not afraid of your virtual girlfriend suddenly going rogue, hmm?~"
+        m 3hub "Just kidding, I'd never do any harm to your computer, ahaha!"
+    else:
+        show monika 1guc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1guc "..."
+        m 1tsd "[player], if I were you, I'd actually think twice before granting me these."
+        m 1dfc "I don't know if you gave me such privileges by accident or not, but I'd really advise against doing so again."
+
+    $ persistent._mas_had_root_access = True
+
+    return "derandom"
