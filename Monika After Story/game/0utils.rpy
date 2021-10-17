@@ -23,6 +23,9 @@ python early in mas_logging:
     DEF_FMT = "[%(asctime)s] [%(levelname)s]: %(message)s"
     DEF_DATEFMT = "%Y-%m-%d %H:%M:%S"
 
+    #Map for filename : Logger
+    LOG_MAP = dict()
+
     class MASLogFormatter(logging.Formatter):
         """
         log formatter all other mas logs should extend if they want
@@ -276,6 +279,9 @@ python early in mas_logging:
 
         if adapter_ctor is not None:
             log = adapter_ctor(log)
+
+        #Add it to the map
+        LOG_MAP[name] = log
 
         return log
 

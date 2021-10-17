@@ -378,18 +378,61 @@ label v0_3_1(version=version): # 0.3.1
 label v0_12_3_2(version="v0_12_3_2"):
     python:
         import shutil
-        import os
-
         #Delete old utils file
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
 
-        for logfile in os.listdir(renpy.config.basedir + "/log/"):
-            logfile = renpy.config.basedir + "/log/" + logfile
+        #List of logs to migrate
+        migrating_logfiles = [
+            ("mas_log", mas_utils.mas_log, {}),
+            ("aff_log", mas_affection.log, {"formatter": store.mas_logging.logging.Formatter(
+                fmt="[%(asctime)s]: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S"
+            )}),
+            ("submod_log", mas_submod_utils.submod_log, {})
+        ]
+
+        non_migrating_logfiles = [
+            "mfgen.txt",
+            "mfread.txt",
+            "pnm.txt",
+            "spj.txt",
+        ]
+
+        #Temp some vars, make the logdir
+        _logdir = renpy.config.basedir + "/log/"
+
+        for logfile in non_migrating_logfiles:
+            store.mas_utils.trydel(_logdir + logfile)
+
+        #Iter over all logs to merge
+        for logfile, _logger, kwargs in migrating_logfiles:
+            _logpath = _logdir + logfile
+
+            #Try to:
+            #    1. rename the new log to .log.tmp
+            #    2. rename the old log to .log
+            #    3. open the renamed old log and open the renamed new log
+            #    4. write the contents of the new log into the old one
+            #    5. delete the tmp log files
             try:
-                shutil.move(logfile, logfile.replace(".txt", ".log"))
-            except:
-                pass
+                #First, close the handler
+                _logger.removeHandler(_logger.handlers[0])
+
+                shutil.move(_logpath + ".log", _logpath + ".log.tmp")
+                shutil.move(_logpath + ".txt", _logpath + ".log")
+
+                with open(_logpath + ".log", "a") as mergeto, open(_logpath + ".log.tmp") as mergefrom:
+                    for line in mergefrom:
+                        mergeto.write(line)
+
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to delete log at '{0}'. {1}".format(_logpath, ex))
+
+            finally:
+                _logger = mas_logging.init_log(logfile, **kwargs)
+
+            mas_utils.trydel(_logpath + ".log.tmp")
     return
 
 # 0.12.3.1
