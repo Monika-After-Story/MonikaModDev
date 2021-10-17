@@ -460,22 +460,24 @@ init -2 python in mas_sprites:
 
     def _clothes_spider_lingerie_entry(_moni_chr, **kwargs):
         """
-        Entry programming point for santa lingerie
+        Entry programming point for spider lingerie
         """
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
             _moni_chr.wear_acs(store.mas_acs_grayhearts_hairclip)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_black_gray)
 
 
     def _clothes_spider_lingerie_exit(_moni_chr, **kwargs):
         """
-        Exit programming point for santa lingerie
+        Exit programming point for spider lingerie
         """
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
             _moni_chr.remove_acs(store.mas_acs_grayhearts_hairclip)
+            _moni_chr.remove_acs(store.mas_acs_ribbon_black_gray)
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -2001,7 +2003,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_black)
@@ -2015,6 +2020,39 @@ init -1 python:
         ],
         select_dlg=[
             "Are we going somewhere special, [player]?"
+        ]
+    )
+
+    ### BLACK/GRAY RIBBON
+    ## ribbon_black_gray
+    # Black/gray ribbon used as part of spider lingerie outfit
+    # thanks Briar
+    mas_acs_ribbon_black_gray = MASAccessory(
+        "ribbon_black_gray",
+        "ribbon_black_gray",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_gray)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_gray,
+        "Ribbon (Black/gray)",
+        "ribbon_black_gray",
+        "ribbon",
+        hover_dlg=[
+            "Very versatile."
+        ],
+        select_dlg=[
+            "This goes with so many different outfits!"
         ]
     )
 

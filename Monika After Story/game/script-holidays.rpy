@@ -921,7 +921,12 @@ init 5 python:
 
 label greeting_o31_lingerie:
     scene black
-    pause 5.0
+    pause 2.0
+
+    menu:
+        "Hello?":
+            pause 5.0
+
     m "Ehehe!"
     m "Don't worry [player], I'm here..."
     call mas_o31_lingerie_end
@@ -947,8 +952,10 @@ init 5 python:
 
 label mas_o31_lingerie:
     scene black
+    pause 2.0
     m "Oh no, did the power go out?"
     m "How {cps=*2}fortunate{nw}"
+    $ _history_list.pop()
     m "How {fast}unfortunate..."
     m "I guess I'll just have to take advantage of this situation, [player]..."
     call mas_o31_lingerie_end
@@ -956,13 +963,14 @@ label mas_o31_lingerie:
 
 label mas_o31_lingerie_end:
     m "Say, have you ever heard of Devil's Night?"
-    m "It's a tradition in some places the night before Halloween for people to go out and be mischievous."
+    m "It's a tradition in some places the night before Halloween for people to go out and act mischievous."
     m "Well [player], I'm feeling a little mischievous myself tonight..."
     window hide
     pause 2.0
 
     python:
         store.mas_selspr.unlock_acs(mas_acs_grayhearts_hairclip)
+        store.mas_selspr.unlock_acs(mas_acs_ribbon_black_gray)
         store.mas_selspr.unlock_clothes(mas_clothes_spider_lingerie)
         monika_chr.change_clothes(mas_clothes_spider_lingerie, by_user=False, outfit_mode=True)
 
@@ -974,6 +982,7 @@ label mas_o31_lingerie_end:
     m 2hub "It's a little different I know, you're probably not sure if you want to touch or run away, ahaha!"
     m 7rua "It's probably not something I'd wear all the time, but I think it's really neat this time of year."
     m 2ekbsa "Don't worry [player], I won't get upset if you want me to take it off{cps=*2}{nw}"
+    $ _history_list.pop()
     m "Don't worry [player], I won't get upset if you want me to {fast}change into something else..."
     m 2hubsb "I know lots of people are scared of spiders and might not find this the most appealing, ahaha!"
 
