@@ -4,6 +4,67 @@
 #   - Brbs should return "idle" to move into idle mode
 #   - Brbs should be short and sweet. Nothing long which makes it feel like an actual topic or is keeping you away
 #       A good practice for these should be no more than 10 lines will be said before you go into idle mode.
+
+init python:
+    def mas_setupIdleMode(brb_label=None, brb_callback_label=None):
+        """
+        Setups idle mode
+
+        IN:
+            brb_label - the label of this brb event, if None, use the current label
+                (Default: None)
+            brb_callback_label - the callback label of this brb event, if None, we build it here
+                (Default: None)
+        """
+        # Get currect label
+        if brb_label is None and renpy.has_label(mas_submod_utils.current_label):
+            brb_label = mas_submod_utils.current_label
+
+        # Add idle extra exps
+        mas_moni_idle_disp.add_by_tag("idle_mode_exps")
+
+        # Set vars
+        mas_globals.in_idle_mode = True
+        persistent._mas_in_idle_mode = True
+        # persistent._mas_idle_data[brb_label] = True
+
+        renpy.save_persistent()
+
+        # Send callback label
+        if brb_callback_label is None and brb_label is not None:
+            brb_callback_label = brb_label + "_callback"
+        if brb_callback_label is not None and renpy.has_label(brb_callback_label):
+            mas_idle_mailbox.send_idle_cb(brb_callback_label)
+
+    def mas_resetIdleMode(clear_idle_data=True):
+        """
+        Resets idle mode
+
+        This is meant to basically clear idle mode for holidays or other
+        things that hijack main flow
+
+        IN:
+            clear_idle_data - whether or not clear persistent idle data
+                (Default: True)
+
+        OUT:
+            string with idle callback label
+            or None if it was reset before
+        """
+        # Remove idle exps
+        mas_moni_idle_disp.remove_by_tag("idle_mode_exps")
+
+        # Reset the idle vars
+        mas_globals.in_idle_mode = False
+        persistent._mas_in_idle_mode = False
+        if clear_idle_data:
+            persistent._mas_idle_data.clear()
+
+        renpy.save_persistent()
+
+        return mas_idle_mailbox.get_idle_cb()
+
+
 init 10 python in mas_brbs:
     import random
     import store
@@ -113,54 +174,6 @@ init 10 python in mas_brbs:
         """
         return renpy.substitute(random.choice(WB_QUIPS_NORMAL))
 
-    def idle_setup(brb_label=None, brb_callback_label=None):
-        """
-        This callback is called in every brb event to enable idle mode
-
-        IN:
-            brb_label - the label of this brb event, if None, use the current label
-                (Default: None)
-            brb_callback_label - the callback label of this brb event, if None, we build it here
-                (Default: None)
-        """
-        # Get currect label
-        if brb_label is None:
-            brb_label = store.mas_submod_utils.current_label
-            if not renpy.has_label(brb_label):
-                brb_label = None
-
-        # Add idle extra exps
-        store.mas_moni_idle_disp.add_by_tag("idle_mode_exps")
-
-        # Set vars
-        store.mas_globals.in_idle_mode = True
-        store.persistent._mas_in_idle_mode = True
-        # store.persistent._mas_idle_data[brb_label] = True
-        renpy.save_persistent()
-
-        # Send callback label
-        if brb_callback_label is None:
-            brb_callback_label = brb_label + "_callback"
-        if renpy.has_label(brb_callback_label):
-            store.mas_idle_mailbox.send_idle_cb(brb_callback_label)
-
-    def idle_teardown():
-        """
-        This callback is called to disable idle mode
-        """
-        # Remove idle exps
-        store.mas_moni_idle_disp.remove_by_tag("idle_mode_exps")
-
-        # Clean up idle vars
-        store.mas_globals.in_idle_mode = False
-        store.persistent._mas_in_idle_mode = False
-        # store.persistent._mas_idle_data.clear()
-        store.persistent._mas_greeting_type = None
-        renpy.save_persistent()
-
-        # Return callback label (this may or may not be valid)
-        return store.mas_idle_mailbox.get_idle_cb()
-
     def was_idle_for_at_least(idle_time, brb_evl):
         """
         Checks if the user was idle (from the brb_evl provided) for at least idle_time
@@ -177,11 +190,9 @@ init 10 python in mas_brbs:
         brb_ev = store.mas_getEV(brb_evl)
         return brb_ev and brb_ev.timePassedSinceLastSeen_dt(idle_time)
 
-label mas_brb_generic_callback:
-    $ mas_brbs.idle_teardown()
-    return
 
 # label to use if we want to get back into idle from a callback
+# DEPRECATED
 label mas_brb_back_to_idle:
     # sanity check
     if globals().get("brb_label", -1) == -1:
@@ -267,9 +278,9 @@ label monika_idle_brb:
     else:
         m 6ckc "..."
 
+    # Can save any data here. Just for example we save a boolean
     $ persistent._mas_idle_data["monika_idle_brb"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_brb_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
@@ -285,7 +296,6 @@ label monika_idle_brb_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -331,8 +341,7 @@ label monika_idle_writing:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_writing"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_writing_callback:
 
@@ -344,7 +353,6 @@ label monika_idle_writing_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -408,8 +416,7 @@ label monika_idle_shower:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_shower"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
@@ -437,7 +444,6 @@ label monika_idle_shower_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 label bye_brb_shower_timeout:
@@ -448,7 +454,7 @@ label bye_brb_shower_timeout:
     m 1hubfb "I hope you have a nice shower!"
 
     $ persistent._mas_idle_data["monika_idle_shower"] = True
-    $ mas_brbs.idle_setup("monika_idle_shower", "monika_idle_shower_callback")
+    $ mas_setupIdleMode("monika_idle_shower", "monika_idle_shower_callback")
     return
 
 init 5 python:
@@ -492,7 +498,8 @@ label monika_idle_game:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_game"] = True
-    $ mas_brbs.idle_setup("monika_idle_game")
+    # Set up idle like this because we could jump to this label from another event
+    $ mas_setupIdleMode("monika_idle_game")
     return
 
 label monika_idle_game_callback:
@@ -510,7 +517,6 @@ label monika_idle_game_callback:
     else:
         m 6ckc "..."
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -556,8 +562,7 @@ label monika_idle_coding:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_coding"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
@@ -572,7 +577,6 @@ label monika_idle_coding_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 
@@ -618,8 +622,7 @@ label monika_idle_workout:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_workout"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_workout_callback:
     if mas_isMoniNormal(higher=True):
@@ -652,9 +655,8 @@ label monika_idle_workout_callback:
                     # continue workout and return Monika to idle state
                     m 1hub "That's the spirit!"
 
-                    $ persistent._mas_idle_data["monika_idle_workout"] = True
-                    $ mas_brbs.idle_setup("monika_idle_workout")
-                    return
+                    # This will resume idle mode
+                    return "idle"
 
         m 3eua "Make sure to rest properly and maybe get a snack to get some energy back."
         m 3eub "[wb_quip]"
@@ -665,7 +667,6 @@ label monika_idle_workout_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -699,8 +700,7 @@ label monika_idle_nap:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_nap"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_nap_callback:
     if mas_isMoniNormal(higher=True):
@@ -735,7 +735,6 @@ label monika_idle_nap_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -766,8 +765,7 @@ label monika_idle_homework:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_homework"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_homework_callback:
     if mas_isMoniDis(higher=True):
@@ -786,7 +784,6 @@ label monika_idle_homework_callback:
     else:
         m 6ckc "..."
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -822,8 +819,7 @@ label monika_idle_working:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_working"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_working_callback:
     if mas_isMoniNormal(higher=True):
@@ -838,7 +834,6 @@ label monika_idle_working_callback:
     else:
         m 6ckc "..."
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -892,8 +887,7 @@ label monika_idle_screen_break:
         m 6ckc "..."
 
     $ persistent._mas_idle_data["monika_idle_screen_break"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_screen_break_callback:
     if mas_isMoniNormal(higher=True):
@@ -911,7 +905,6 @@ label monika_idle_screen_break_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 init 5 python:
@@ -941,8 +934,7 @@ label monika_idle_reading:
         m 6dkc "..."
 
     $ persistent._mas_idle_data["monika_idle_reading"] = True
-    $ mas_brbs.idle_setup()
-    return
+    return "idle"
 
 label monika_idle_reading_callback:
     if mas_isMoniNormal(higher=True):
@@ -966,7 +958,6 @@ label monika_idle_reading_callback:
     else:
         call mas_brb_generic_low_aff_callback
 
-    $ mas_brbs.idle_teardown()
     return
 
 

@@ -2572,9 +2572,7 @@ label call_next_event:
                 $ mas_rebuildEventLists()
 
             if "idle" in ret_items:
-                $ store.mas_globals.in_idle_mode = True
-                $ persistent._mas_in_idle_mode = True
-                $ renpy.save_persistent()
+                $ mas_setupIdleMode(brb_label=event_label)
 
             if "love" in ret_items:
                 $ mas_ILY()
@@ -2654,12 +2652,24 @@ label prompt_menu:
         #   This also prevents the end-of-idle label from being saved and
         #   restored on a relaunch, which would make no sense lol.
 
-        # only call label if it exists
-        if renpy.has_label(cb_label):
+        # Only call the label if it exists
+        if cb_label is not None and renpy.has_label(cb_label):
             call expression cb_label
 
+        # Otherwise reset rv
         else:
-            call mas_brb_generic_callback
+            $ _return = None
+
+        # If we want to resume idle mode, we don't reset
+        if _return != "idle":
+            $ mas_resetIdleMode()
+            # NOTE: Clear this here because closing during idle
+            # or idle callback could launch a specific greeting
+            $ persistent._mas_greeting_type = None
+
+        # Otherwise we have to send the callback label again
+        elif cb_label is not None:
+            $ mas_idle_mailbox.send_idle_cb(cb_label)
 
         #Show idle exp here so we dissolve like other topics
         if not renpy.showing("monika idle"):
