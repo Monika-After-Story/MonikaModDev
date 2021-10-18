@@ -1781,6 +1781,10 @@ label ch30_day:
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        # Once per day Monika does stuff on the islands
+        store.mas_island_event.advanceProgression()
+
     return
 
 
@@ -2078,6 +2082,10 @@ label ch30_reset:
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
+
+    # Did Monika make any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -2091,4 +2099,5 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
+
     return
