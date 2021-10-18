@@ -17578,8 +17578,8 @@ label monika_root_privileges:
     m 2eud "It's hard to explain, but I... Somehow, I feel like I can do a lot more with your system now that I couldn't before."
 
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5rtc "Hmm, could it be... What was it? {w=0.5}{nw}"
-    extend 5dsc "..."
+    m 5rtc "Hmm, could it be... What was it?"
+    m 5dsc "..."
 
     if renpy.windows:
         m 5wud "{i}The admin rights?..{/i}"
