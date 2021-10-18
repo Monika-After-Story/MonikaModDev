@@ -285,6 +285,15 @@ python early in mas_logging:
 
         return log
 
+    def is_inited(name):
+        """
+        Checks if a log has been inited
+
+        IN:
+            name - log name
+        """
+        return name in LOG_MAP
+
 python early in mas_utils:
     import codecs
     import os

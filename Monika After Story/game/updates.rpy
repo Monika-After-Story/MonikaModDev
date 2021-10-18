@@ -376,63 +376,80 @@ label v0_3_1(version=version): # 0.3.1
 
 # 0.12.3.2
 label v0_12_3_2(version="v0_12_3_2"):
-    python:
-        import shutil
+    python hide:
+        import os
+
         #Delete old utils file
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
         store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
 
-        #List of logs to migrate
-        migrating_logfiles = [
-            ("mas_log", mas_utils.mas_log, {}),
-            ("aff_log", mas_affection.log, {"formatter": store.mas_logging.logging.Formatter(
-                fmt="[%(asctime)s]: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S"
-            )}),
-            ("submod_log", mas_submod_utils.submod_log, {})
-        ]
+        ### LOG MIGRATION
+        def _rename_log_file(old_log_path, new_log_path):
+            """
+            Renames log files
 
-        non_migrating_logfiles = [
-            "mfgen.txt",
-            "mfread.txt",
-            "pnm.txt",
-            "spj.txt",
-        ]
-
-        #Temp some vars, make the logdir
-        _logdir = renpy.config.basedir + "/log/"
-
-        for logfile in non_migrating_logfiles:
-            store.mas_utils.trydel(_logdir + logfile)
-
-        #Iter over all logs to merge
-        for logfile, _logger, kwargs in migrating_logfiles:
-            _logpath = _logdir + logfile
-
-            #Try to:
-            #    1. rename the new log to .log.tmp
-            #    2. rename the old log to .log
-            #    3. open the renamed old log and open the renamed new log
-            #    4. write the contents of the new log into the old one
-            #    5. delete the tmp log files
+            IN:
+                old_log_path - the path to the old log
+                new_log_path - the path to the new log
+            """
             try:
-                #First, close the handler
-                _logger.removeHandler(_logger.handlers[0])
+                mas_utils.trydel(new_log_path)
+                os.rename(old_log_path, new_log_path)
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to rename log at '{0}'. {1}".format(old_log_path, ex))
 
-                shutil.move(_logpath + ".log", _logpath + ".log.tmp")
-                shutil.move(_logpath + ".txt", _logpath + ".log")
+        log_dir = os.path.join(renpy.config.basedir, "log")
 
-                with open(_logpath + ".log", "a") as mergeto, open(_logpath + ".log.tmp") as mergefrom:
+        migrating_logs = [
+            mas_utils.mas_log,
+            mas_affection.log,
+            mas_submod_utils.submod_log
+        ]
+        non_migrating_logfiles = [
+            "pnm.txt",
+            "spj.txt"
+        ]
+
+        # These 2 don't always exist
+        for mf_log_name in ("mfgen", "mfread"):
+            if mas_logging.is_inited(mf_log_name):
+                migrating_logs.append(mas_logging.logging.getLogger(mf_log_name))
+
+            else:
+                new_log_path = os.path.join(log_dir, mf_log_name + ".log")
+                old_log_path = os.path.join(log_dir, mf_log_name + ".txt")
+
+                _rename_log_file(old_log_path, new_log_path)
+
+        for log in migrating_logs:
+            new_log_path = os.path.join(log_dir, log.name + ".log")
+            old_log_path = os.path.join(log_dir, log.name + ".txt")
+
+            handlers = list(log.handlers)
+
+            for handler in handlers:
+                handler.close()
+                log.removeHandler(handler)
+
+            try:
+                with open(old_log_path, "a") as mergeto, open(new_log_path, "r") as mergefrom:
                     for line in mergefrom:
                         mergeto.write(line)
 
             except Exception as ex:
-                mas_utils.mas_log.error("Failed to delete log at '{0}'. {1}".format(_logpath, ex))
+                mas_utils.mas_log.error("Failed to update log at '{0}'. {1}".format(old_log_path, ex))
 
-            finally:
-                _logger = mas_logging.init_log(logfile, **kwargs)
+            else:
+                _rename_log_file(old_log_path, new_log_path)
 
-            mas_utils.trydel(_logpath + ".log.tmp")
+            for handler in handlers:
+                # handler.stream = handler._open()
+                log.addHandler(handler)
+
+        for logfile in non_migrating_logfiles:
+            mas_utils.trydel(os.path.join(log_dir, logfile))
+        ### END LOG MIGRATION
+
     return
 
 # 0.12.3.1
