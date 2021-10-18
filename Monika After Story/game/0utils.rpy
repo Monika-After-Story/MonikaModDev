@@ -528,7 +528,7 @@ python early in mas_utils:
         """
         mas_log.critical(msg)
 
-    @deprecated(use_instead="mas_utils.mas_log.debug(exc_info=True)")
+    @deprecated(use_instead="mas_utils.mas_log.debug('', exc_info=True)")
     def writestack():
         """
         Prints current stack to log

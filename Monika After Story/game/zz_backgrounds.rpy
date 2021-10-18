@@ -2831,7 +2831,7 @@ init -20 python in mas_background:
         )
 
         if exc_info:
-            _bg_log.info(exc_info=True)
+            _bg_log.info("", exc_info=True)
 
 
 #START: BG change functions
