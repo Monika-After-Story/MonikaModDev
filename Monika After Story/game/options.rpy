@@ -12,6 +12,9 @@ init -999:
     ##
     ## The _() surrounding the string marks it as eligible for translation.
     define config.name = "Monika After Story"
+    # Add an invisible 0-width char to the title so we know it's unique
+    define config.menu_window_subtitle = "\u200b"
+    define _window_subtitle = "\u200b"
 
     ## The version of the game.
     define config.version = "0.12.3"

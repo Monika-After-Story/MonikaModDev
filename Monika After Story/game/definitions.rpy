@@ -5504,6 +5504,15 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
+    def mas_getWindowTitle():
+        """
+        Returns current windows title set by RenPy
+
+        OUT:
+            str
+        """
+        return renpy.game.interface.window_caption
+
 init -101 python:
     def is_file_present(filename):
         """DEPRECIATED
