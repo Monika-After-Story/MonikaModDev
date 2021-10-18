@@ -114,6 +114,8 @@ init 10 python in mas_seasons:
         """
         Programming point for spring
         """
+        #Run spring function plugins
+        store.mas_submod_utils.getAndRunFunctions(key="pp_spring")
 
         # show spring topics
         store.mas_protectedShowEVL("monika_enjoyingspring", "EVE", _random=True)
@@ -141,11 +143,12 @@ init 10 python in mas_seasons:
         if not renpy.seen_label("greeting_ourreality"):
             store.mas_unlockEVL("greeting_ourreality", "GRE")
 
-
     def _pp_summer():
         """
         Programming point for summer
         """
+        #Run summer function plugins
+        store.mas_submod_utils.getAndRunFunctions(key="pp_summer")
 
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
@@ -158,6 +161,9 @@ init 10 python in mas_seasons:
         """
         Programming point for fall
         """
+        #Run fall function plugins
+        store.mas_submod_utils.getAndRunFunctions(key="pp_fall")
+
         #Disable Summer Topics
         store.mas_hideEVL("monika_fireworks", "EVE", derandom=True)
 
@@ -166,6 +172,8 @@ init 10 python in mas_seasons:
         """
         Programming point for winter
         """
+        #Run winter function plugins
+        store.mas_submod_utils.getAndRunFunctions(key="pp_winter")
 
         # show winter topics
         if not renpy.seen_label("monika_snow"):
