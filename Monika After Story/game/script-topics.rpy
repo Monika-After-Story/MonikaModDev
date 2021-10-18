@@ -17574,6 +17574,8 @@ init 5 python:
 default persistent._mas_pm_had_root_access = False
 
 label monika_root_privileges:
+    $ persistent._mas_pm_had_root_access = True
+
     m 2lsc "Hey, [player]..."
     m 2eud "It's hard to explain, but I... Somehow, I feel like I can do a lot more with your system now that I couldn't before."
 
@@ -17602,6 +17604,4 @@ label monika_root_privileges:
         m 1tsd "[player], if I were you, I'd actually think twice before granting me these."
         m 1dfc "I don't know if you gave me such privileges by accident or not, but I'd really advise against doing so again."
 
-    $ persistent._mas_pm_had_root_access = True
-
-    return "derandom"
+    return "no_unlock|derandom"
