@@ -8333,7 +8333,7 @@ init python:
         """
 
         if renpy.windows:
-            try
+            try:
                 import ctypes
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
             except:
