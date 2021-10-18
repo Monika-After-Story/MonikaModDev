@@ -21,6 +21,11 @@ python early:
     ## The version of the game.
     renpy.config.version = "0.12.3"
 
+    # Add an invisible 0-width char to the title so we know it's unique
+    renpy.config.menu_window_subtitle = "\u200b"
+    # NOTE: This is an undocumented internal renpy variable
+    _window_subtitle = "\u200b"
+
     ## Save directory ##############################################################
     ##
     ## Controls the platform-specific place Ren'Py will place the save files for
