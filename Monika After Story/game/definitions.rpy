@@ -8333,8 +8333,11 @@ init python:
         """
 
         if renpy.windows:
-            import ctypes
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+            try
+                import ctypes
+                return ctypes.windll.shell32.IsUserAnAdmin() != 0
+            except:
+                return False
         else:
             import os
             return os.geteuid() == 0

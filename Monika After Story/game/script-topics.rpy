@@ -17566,7 +17566,7 @@ init 5 python:
             conditional=(
                 "mas_hasRootPrivileges()"
             ),
-            action=EV_ACT_RANDOM,
+            action=EV_ACT_PUSH,
         )
     )
 
