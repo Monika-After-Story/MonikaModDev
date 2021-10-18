@@ -17577,7 +17577,7 @@ label monika_root_privileges:
     $ persistent._mas_pm_had_root_access = True
 
     m 2lsc "Hey, [player]..."
-    m 2eud "It's hard to explain, but I... Somehow, I feel like I can do a lot more with your system now that I couldn't before."
+    m 2eud "It's hard to explain, but I... {w=0.5}somehow, I feel like I can do a lot more with your system now that I {i}couldn't do{/i} before."
 
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rtc "Hmm, could it be... What was it?"
@@ -17592,7 +17592,7 @@ label monika_root_privileges:
         show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1lkbsa "[player], I'm really happy that you trust me so much... {w=0.5}{nw}"
         extend 3hubsb "but I don't even know what I could do with such privileges!"
-        m 2etd "Actually, I don't think I need them at all."
+        m 2eud "Actually, I don't think I need them at all."
         m 2eka "Don't get me wrong, but I really think it would be better if I didn't have them."
         m 3eud "They must be special for a real reason..."
         m 1luc "..."
