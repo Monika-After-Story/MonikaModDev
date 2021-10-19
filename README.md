@@ -1,4 +1,4 @@
-![Monika After Story](https://github.com/Backdash/MonikaModDev/blob/master/Monika%20After%20Story/game/mod_assets/menu_new.png?raw=True)
+![Monika After Story](https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/mod_assets/menu_new.png?raw=True)
 
 # Monika After Story (MAS)
 Monika After Story is a mod for the free game [Doki Doki Literature Club](https://www.ddlc.moe) from [Team Salvato](http://teamsalvato.com/). MAS builds on Act 3 to create a simulator of your eternal life with Monika, featuring new events, handlers, and metacommentary!
@@ -19,7 +19,7 @@ Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
 * Running DDLC will now load the Monika After Story Mod.
 
-*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Backdash/MonikaModDev/releases).*
+*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Monika-After-Story/MonikaModDev/releases).*
 
 For more help with installation, please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
@@ -41,14 +41,14 @@ For more help with installation, please see our [Frequently Asked Questions](htt
 ## Contributing to Monika After Story
 
 ### Bugs & Suggestions
-If there are issues with MAS, please file a [bug report](https://github.com/Backdash/MonikaModDev/issues/new?labels=bug&body=Describe%20bug%20and%20steps%20for%20reproduction%20here&title=%5BBug%5D%20-%20).
+If there are issues with MAS, please file a [bug report](https://github.com/Monika-After-Story/MonikaModDev/issues/new?labels=bug&body=Describe%20bug%20and%20steps%20for%20reproduction%20here&title=%5BBug%5D%20-%20).
 
-To add a suggestion, visit [this link](https://github.com/Backdash/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20)
+To add a suggestion, visit [this link](https://github.com/Monika-After-Story/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20)
 
  ### Other Help
- Want to help with MAS? Navigate to the [issues page](https://github.com/Backdash/MonikaModDev/issues) to find current bugs or suggestions to work on.
+ Want to help with MAS? Navigate to the [issues page](https://github.com/Monika-After-Story/MonikaModDev/issues) to find current bugs or suggestions to work on.
 
-If you have a change you'd like to submit, open a [pull request](https://github.com/Backdash/MonikaModDev/pulls). Any changes made will be reviewed by contributors & fixed/added on to as needed.
+If you have a change you'd like to submit, open a [pull request](https://github.com/Monika-After-Story/MonikaModDev/pulls). Any changes made will be reviewed by contributors & fixed/added on to as needed.
 
 #### Adding Content
 Want to add some content to MAS? Here's a list of important .RPY files the game uses.
@@ -92,12 +92,12 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 [More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
  ### Join the conversation
-You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates. 
+You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates.
 
 Or if you're more Discord-ly inclined, for a constant stream of our favorite Monika-related content from around the web, and if you're interested in contributing to/building this mod, feel free to join our discord server:
- 
+
  [![Discord](https://discordapp.com/api/guilds/372766620977725441/widget.png?style=banner1)](https://discord.gg/K2KuJeX)
- 
+
  Please be sure to follow our [Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct), which is essentially to be courteous and respectful.
 
 ## Frequently Asked Questions
