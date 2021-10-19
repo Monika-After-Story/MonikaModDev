@@ -1,8 +1,3 @@
-#NOTE: This is here to ensure we initialize a singleton as early as possible.
-python early:
-    import singleton
-    me = singleton.SingleInstance()
-
 ## This file contains options that can be changed to customize your game.
 ##
 ## Lines beginning with two '#' marks are comments, and you shouldn't uncomment

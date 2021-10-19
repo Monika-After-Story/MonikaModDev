@@ -1,3 +1,8 @@
+#NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
+init -1500 python:
+    import singleton
+    me = singleton.SingleInstance()
+
 python early in mas_logging:
     import datetime
     import logging
@@ -211,7 +216,7 @@ python early in mas_logging:
         if not os.path.exists(LOG_PATH):
             os.makedirs(LOG_PATH)
     except Exception as e:
-         raise Exception("Failed to create log folder because: {}".format(e))
+        raise Exception("Failed to create log folder because: {}".format(e))
 
     #Full logging info
     def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None):
