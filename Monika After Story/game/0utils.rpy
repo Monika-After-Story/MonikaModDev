@@ -1,5 +1,6 @@
 #NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
 init -1500 python:
+    import os
     import singleton
     me = singleton.SingleInstance()
 
