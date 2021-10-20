@@ -948,6 +948,7 @@ init -19 python:
             show_now - set to True to show immediately
                 (Deafult: False)
         """
+        # TODO: consider adding a predict?
         store.mas_deco.vis_store[tag] = None
         mas_current_background._deco_add(tag=tag)
 
@@ -959,8 +960,6 @@ init -19 python:
                     adf.show(real_tag)
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_hideDecoTag(tag, hide_now=False):
@@ -989,8 +988,6 @@ init -19 python:
                     adf.hide()
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_isDecoTagEnabled(tag):
