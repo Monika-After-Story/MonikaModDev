@@ -964,6 +964,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 s_tag_real, s_adf = s_info
                 s_adf.show(s_tag_real)
 
+            bg_change_info = None
+
             if not dissolve_all:
                 renpy.with_statement(Dissolve(1.0))
 
@@ -1100,10 +1102,6 @@ label ch30_nope:
 
 # NOTE: START HERE
 label ch30_autoload:
-
-    # TODO - testing
-    $ mas_showDecoTag("dev_monika_deco_one")
-
     # This is where we check a bunch of things to see what events to push to the
     # event list
     python:

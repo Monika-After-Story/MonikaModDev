@@ -93,7 +93,7 @@ init -20 python in mas_deco:
         RETURNS: MASDecoration object, or None if not valid name
         """
         if not name.startswith(DECO_PREFIX):
-            name = deco_name_db.get(name, "")
+            name = deco_name_db.get(name, name)
 
         if name:
             return deco_db.get(name, None)
@@ -860,7 +860,7 @@ init -19 python:
                 [2] - the override tag (will be the same as deco object's name
                     if no override tag given)
             """
-            for deco_name, deco_obj in self._adv_decos:
+            for deco_name, deco_obj in self._adv_decos.items():
                 yield (
                     deco_obj,
                     self._deco_frame_map[deco_name],
