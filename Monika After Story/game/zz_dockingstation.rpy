@@ -1221,12 +1221,249 @@ init 200 python in mas_dockstat:
     import random
     import datetime
 
+    from store.mas_ev_data_ver import _verify_td
+
     cr_log_path = "log/mfgen"
     rd_log_path = "log/mfread"
 
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
+
+
+    class MASTrip(object):
+        """
+        Representation of a trip.
+        USE THE CREATE METHOD TO CREATE TRIPS.
+
+        TODO: switch to a dataclass when moving to py3
+
+        PROPERTIES:
+            checksum - the checksum for this trip
+            start_local - local datetime of when the trip started
+            start_utc - utc datetime of when the trip started (may be None)
+            end_local - local datetime of when the trip ended
+            end_utc - utc datetime of when the trip ended (may be None)
+        """
+
+        @staticmethod
+        def create(checkout_entry, checkin_entry):
+            """
+            Creation function - always use this to create trips.
+
+            IN:
+                checkout_entry - the checkout entry data
+                checkin_entry - the checkin entry data
+
+            RETURNS: MASTrip object - May return None if an invalid trip
+                is being created. An invalid trip is one without a matching
+                checksum entry.
+            """
+            # check checkout
+            if checkout_entry is None:
+                start_local = None
+                start_checksum = None
+                start_utc = None
+            else:
+                start_local = checkout_entry[0]
+                start_checksum = checkout_entry[1]
+
+                if len(checkout_entry) > 2:
+                    start_utc = checkout_entry[2]
+
+            # check checkin
+            if checkin_entry is None:
+                end_local = None
+                end_checksum = None
+                end_utc = None
+            else:
+                end_local = checkin_entry[0]
+                end_checksum = checkin_entry[1]
+
+                if len(checkin_entry) > 2:
+                    end_utc = checkout_entry[2]
+
+            # vaildate checksums
+            if start_checksum is None:
+                if end_checksum is None:
+                    # no checksums at all - invalid
+                    return None
+
+                # end checksum exists, but start does not
+                checksum = end_checksum
+
+            elif end_checksum is None:
+                # start checksum exists, but end does not
+                checksum = start_checksum
+
+            elif start_checksum != end_checksum:
+                # both checksums exist, but do not equal each other - invalid
+                return None
+
+            else:
+                # both checksums exist, and equal each other
+                checksum = start_checksum
+
+            # now we can create the trip
+            return MASTrip(
+                checksum,
+                start_local,
+                end_local,
+                start_utc,
+                end_utc
+            )
+
+        def __init__(self, 
+                checksum,
+                start_local,
+                end_local,
+                start_utc=None,
+                end_utc=None
+        ):
+            """
+            Constructor
+
+            IN:
+                checksum - the checksum for this trip (MUST EXIST)
+                start_local - local datetime of when the trip started
+                end_local - local datetime of when the trip ended
+                start_utc - utc datetime of when the trip started, if available
+                    (Default: None)
+                end_utc - utc datetime of when the trip ended, if available
+                    (Default: None)
+            """
+            self._checksum = checksum
+            self._start_local = start_local
+            self._end_local = end_local
+            self._start_utc = start_utc
+            self._end_utc = end_utc
+
+            if not checksum:
+                raise Exception("You can't travel without a signature!")
+
+        @property
+        def checksum(self):
+            """RETURNS: checksum of this trip"""
+            return self._checksum
+
+        @property
+        def start_local(self):
+            """RETURNS: local datetime of when the trip started (may be None)"""
+            return self._start_local
+
+        @property
+        def start_utc(self):
+            """RETURNS: utc datetime of when the trip started (may be None)"""
+            return self._start_utc
+
+        @property
+        def end_local(self):
+            """RETURNS: local datetime of when the trip ended (may be None)"""
+            return self._end_local
+
+        @property
+        def end_utc(self):
+            """RETURNS: utc datetime of when the trip ended (may be None)"""
+            return self._end_utc
+
+        def duration(self, no_start_def=None, no_end_def=None, force_td=False):
+            """
+            Calculates the duration of this trip. Always uses utc.
+
+            Please use has_started and has_ended first to determine validity,
+            otherwise, defaults will be returned.
+
+            IN:
+                no_start_def - the default value to return if no start time
+                    is available.
+                    (Default: None)
+                no_end_def - the default value ot return if no end time is
+                    available.
+                    (Default: None)
+                force_td - if True, forces the return value to always be a 
+                    timedelta object.
+
+                    When True:
+                        If no start time is available -> timedelta of 0 
+                        if no end time is availbale -> timedelta between start
+                            and the current dt.
+                    (Default: False)
+
+            RETURNS: timedelta duration. If force_td is True, then this will
+                ALWAYS be a timedelta object. Otherwise, defaults based on
+                the passed in defaults will be returned.
+            """
+            if self.start_utc is None:
+                if force_td and not _verify_td(no_start_def, False):
+                    return datetime.timedelta(0)
+                return no_start_def
+
+            if self.end_utc is None:
+                if force_td and not _verify_td(no_end_def, False):
+                    return datetime.datetime.utcnow() - self.start_utc:
+                return no_end_def
+
+            return self.end_utc - self.start_utc
+
+        def _duration_local(self, no_start_def=None, no_end_def=None):
+            """
+            Calculates duration using local time. Don't use this unless you
+            know what you are doing.
+
+            IN:
+                no_start_def - default value ot reutrn if no start time is
+                    available.
+                    (Defualt: None)
+                no_end_def - default value to return if no end_time i
+                    availbale.
+                    (Default: None)
+
+            RETURNS: localtime duration, or the defaults.
+            """
+            if self.start_local is None:
+                return no_start_def
+
+            if self.end_local is None:
+                return no_end_def
+
+            return self.end_local - self.start_local
+
+        def has_ended(self, utc=False, local=False):
+            """
+            Checks if this trip ended
+
+            IN:
+                utc - True to check utc end time (takes priority if both
+                    param are false)
+                    (Default: False)
+                local - True to check local end time
+                    (Default: False)
+
+            RETURNS: True if the trip ended, aka has end datetime data
+            """
+            if utc or not local:
+                return self.end_utc is not None
+
+            return self.end_local is not None
+
+        def has_started(self, utc=False, local=False):
+            """
+            Checks if this trip started
+
+            IN:
+                utc - True to check utc start time (takes priority if both
+                    params are false)
+                    (Default: False)
+                local - True to check local start time
+                    (Default: False)
+
+            RETURNS: True if the trip started, aka has start datetime data
+            """
+            if utc or not local:
+                return self.start_utc is not None
+
+            return self.start_local is not None
+
 
 
     def _buildMetaDataList(_outbuffer):
@@ -1882,6 +2119,37 @@ init 200 python in mas_dockstat:
         return sel_gre_ev
 
 
+    def checkTimesByChecksum():
+        """
+        Processes checkout and checkin logs and returns them in a format 
+        organied by checksum.
+
+        RETURNS: dict of the following format:
+            key: checksum
+            value: tuple:
+                [0] - checkout time (or None if no checkout time)
+                [1] - checkin time (or None if no checkin time)
+        """
+        checkin_log = store.persistent._mas_dockstat_checkin_log
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+        log_times = {}
+
+        # always do checkouts first
+        for dt, chksum in checkout_log:
+            log_times[chksum] = dt
+
+        # checkins will make tuples
+        for dt, chksum in checkin_log:
+            log_times[chksum] = (log_times.get(chksum, None), dt)
+
+        # cleanup checksums with no checkin
+        for chksum in log_times:
+            if not isinstance(log_times[chksum], tuple):
+                log_times[chksum] = (log_times[chksum], None)
+
+        return log_times
+
+
     def getCheckTimes(chksum=None):
         """
         Gets the corresponding checkin/out times for the given chksum.
@@ -1977,14 +2245,15 @@ init 200 python in mas_dockstat:
         return checkin_log[index][0] - checkout_log[index][0]
 
 
-    def timeOut(_date):
+    def timeOut(_date, is_utc=False):
         """
         Given a date, return how long monika has been out
 
         We assume that checkout logs are the source of truth
 
         IN:
-            _date - date to check
+            _date - date to check)
+            is_utc - pass True if the date given is in UTC.
         """
         checkout_log = store.persistent._mas_dockstat_checkout_log
 
