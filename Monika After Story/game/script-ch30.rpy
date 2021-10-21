@@ -964,11 +964,11 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 s_tag_real, s_adf = s_info
                 s_adf.show(s_tag_real)
 
+            if len(bg_change_info) > 0 and not dissolve_all:
+                renpy.with_statement(Dissolve(1.0))
+
             bg_change_info = None
             mas_current_background._deco_man.changed = False
-
-            if not dissolve_all:
-                renpy.with_statement(Dissolve(1.0))
 
     # vignette
     if store.mas_globals.show_vignette:
