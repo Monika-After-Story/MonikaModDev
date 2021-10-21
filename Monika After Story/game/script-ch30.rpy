@@ -965,6 +965,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 s_adf.show(s_tag_real)
 
             bg_change_info = None
+            mas_current_background._deco_man.changed = False
 
             if not dissolve_all:
                 renpy.with_statement(Dissolve(1.0))
