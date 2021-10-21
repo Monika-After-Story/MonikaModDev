@@ -1540,39 +1540,20 @@ screen preferences():
                     bar value Preference("auto-forward time")
 
                 vbox:
+                    label _("Music Volume")
+                    hbox:
+                        bar value Preference("music volume")
 
-                    if config.has_music:
-                        label _("Music Volume")
-
-                        hbox:
-                            bar value Preference("music volume")
-
-                    if config.has_sound:
-
-                        label _("Sound Volume")
-
-                        hbox:
-                            bar value Preference("sound volume")
-
-                            if config.sample_sound:
-                                textbutton _("Test") action Play("sound", config.sample_sound)
+                    label _("Sound Volume")
+                    hbox:
+                        bar value Preference("sound volume")
 
 
-                    if config.has_voice:
-                        label _("Voice Volume")
+                    null height gui.pref_spacing
 
-                        hbox:
-                            bar value Preference("voice volume")
-
-                            if config.sample_voice:
-                                textbutton _("Test") action Play("voice", config.sample_voice)
-
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
-
-                        textbutton _("Mute All"):
-                            style "generic_fancy_check_button"
-                            action Preference("all mute", "toggle")
+                    textbutton _("Mute All"):
+                        style "generic_fancy_check_button"
+                        action Preference("all mute", "toggle")
 
 
             hbox:

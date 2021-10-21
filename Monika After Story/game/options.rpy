@@ -5,20 +5,6 @@
 ## may want to uncomment them when appropriate.
 
 
-## Basics ######################################################################
-init -999:
-    ## A human-readable name of the game. This is used to set the default window
-    ## title, and shows up in the interface and error reports.
-    ##
-    ## The _() surrounding the string marks it as eligible for translation.
-    define config.name = "Monika After Story"
-    # Add an invisible 0-width char to the title so we know it's unique
-    define config.menu_window_subtitle = "\u200b"
-    define _window_subtitle = "\u200b"
-
-    ## The version of the game.
-    define config.version = "0.12.3"
-
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
@@ -35,75 +21,6 @@ define gui.about = _("")
 ## or semicolons.
 
 define build.name = "Monika_After_Story"
-
-## Sounds and music ############################################################
-
-## These three variables control which mixers are shown to the player by
-## default. Setting one of these to False will hide the appropriate mixer.
-
-define config.has_sound = True
-define config.has_music = True
-define config.has_voice = False
-
-
-## To allow the user to play a test sound on the sound or voice channel,
-## uncomment a line below and use it to set a sample sound to play.
-
-# define config.sample_sound = "sample-sound.ogg"
-# define config.sample_voice = "sample-voice.ogg"
-
-
-## Uncomment the following line to set an audio file that will be played while
-## the player is at the main menu. This file will continue playing into the
-## game, until it is stopped or another file is played.
-
-define config.main_menu_music = audio.t1
-
-
-## Transitions #################################################################
-##
-## These variables set transitions that are used when certain events occur. Each
-## variable should be set to a transition, or None to indicate that no
-## transition should be used.
-
-## Entering or exiting the game menu.
-
-define config.enter_transition = Dissolve(.2)
-define config.exit_transition = Dissolve(.2)
-
-
-## A transition that is used after a game has been loaded.
-
-define config.after_load_transition = None
-
-
-## Used when entering the main menu after the game has ended.
-
-define config.end_game_transition = Dissolve(.5)
-
-
-## A variable to set the transition used when the game starts does not exist.
-## Instead, use a with statement after showing the initial scene.
-
-
-## Window management ###########################################################
-##
-## This controls when the dialogue window is displayed. If "show", it is always
-## displayed. If "hide", it is only displayed when dialogue is present. If
-## "auto", the window is hidden before scene statements and shown again once
-## dialogue is displayed.
-##
-## After the game has started, this can be changed with the "window show",
-## "window hide", and "window auto" statements.
-
-define config.window = "auto"
-
-
-## Transitions used to show and hide the dialogue window
-
-define config.window_show_transition = dissolve_textbox
-define config.window_hide_transition = dissolve_textbox
-
 
 ## Preference defaults #########################################################
 
@@ -122,43 +39,6 @@ default preferences.music_volume = 0.75
 default preferences.sfx_volume = 0.75
 
 
-## Save directory ##############################################################
-##
-## Controls the platform-specific place Ren'Py will place the save files for
-## this game. The save files will be placed in:
-##
-## Windows: %APPDATA\RenPy\<config.save_directory>
-##
-## Macintosh: $HOME/Library/RenPy/<config.save_directory>
-##
-## Linux: $HOME/.renpy/<config.save_directory>
-##
-## This generally should not be changed, and if it is, should always be a
-## literal string, not an expression.
-
-define config.save_directory = "Monika After Story"
-
-
-## Icon
-## ########################################################################'
-
-## The icon displayed on the taskbar or dock.
-
-define config.window_icon = "gui/window_icon.png"
-
-## Custom configs ##############################################################
-
-define config.allow_skipping = True
-define config.has_autosave = False
-define config.autosave_on_quit = False
-define config.autosave_slots = 0
-define config.layers = ["master", "transient", "minigames", "screens", "overlay", "front"]
-define config.image_cache_size = 64
-define config.debug_image_cache = config.developer
-define config.predict_statements = 5
-define config.rollback_enabled = config.developer
-define config.menu_clear_layers = ["front"]
-define config.gl_test_image = "white"
 #define config.gl_resize = False
 init 50 python:
     # For some reason it's not inported yet, so we do it now /shrug

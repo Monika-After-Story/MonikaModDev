@@ -75,7 +75,7 @@ init python in mas_windowutils:
             store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
-            store.mas_utils.writelog("[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("win32api/win32gui failed to be imported, disabling notifications.")
 
     elif renpy.linux:
         #Get session type
@@ -85,7 +85,7 @@ init python in mas_windowutils:
         if session_type == "wayland":
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling notifications.")
 
         #X11 however is fine
         elif session_type == "x11":
@@ -102,13 +102,13 @@ init python in mas_windowutils:
                 store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
 
-                store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
+                store.mas_utils.mas_log.warning("Xlib failed to be imported, disabling notifications.")
 
         else:
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
 
-            store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("Cannot detect current session type, disabling notifications.")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
