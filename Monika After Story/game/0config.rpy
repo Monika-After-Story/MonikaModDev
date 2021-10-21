@@ -16,8 +16,8 @@ python early:
     ## The version of the game.
     renpy.config.version = "0.12.3"
 
-    # NOTE: This is an undocumented internal renpy variable
-    _window_subtitle = "\u200b"
+    #Triple space suffix to avoid potential issues with same names in window title
+    config.window_title = "Monika After Story   "
 
     ## Save directory ##############################################################
     ##
@@ -124,6 +124,3 @@ define config.main_menu_music = audio.t1
 
 define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
-
-# Add an invisible 0-width char to the title so we know it's unique
-define config.menu_window_subtitle = "\u200b"
