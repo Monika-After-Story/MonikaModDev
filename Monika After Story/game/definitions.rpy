@@ -4,6 +4,10 @@ define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    import io
+    import datetime
+    import traceback
+
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z = 3
