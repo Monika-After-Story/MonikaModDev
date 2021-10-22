@@ -220,7 +220,7 @@ python early in mas_logging:
         raise Exception("Failed to create log folder because: {}".format(e))
 
     #Full logging info
-    def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None):
+    def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None, rotations=5):
         """
         Initializes a logger with a handler with the name and files given.
 
@@ -235,6 +235,8 @@ python early in mas_logging:
                 (Default: None)
             header - Header block for logs to use. If None, the default header printing version info is used. If False, no header is used.
                 (Default: None)
+            rotations - Integer representing the amount of log rotations we should have. If 0, no rotations are used.
+                (Default: 5)
 
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
         All logs flush and rotate once they're 5 mb in size.
@@ -251,7 +253,11 @@ python early in mas_logging:
             header = LOG_HEADER
 
         if append:
-            handler = loghandlers.RotatingFileHandler(maxBytes=LOG_MAXSIZE_B, **_kwargs)
+            handler = loghandlers.RotatingFileHandler(
+                maxBytes=LOG_MAXSIZE_B,
+                backupCount=rotations,
+                **_kwargs
+            )
         else:
             handler = logging.FileHandler(**_kwargs)
 

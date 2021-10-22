@@ -316,7 +316,8 @@ init -1 python in mas_affection:
         formatter=store.mas_logging.logging.Formatter(
             fmt="[%(asctime)s]: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S"
-        )
+        ),
+        rotations=50
     )
 
     # LOG messages
