@@ -12,14 +12,14 @@
     "acs_type": "front-bow",
     "stay_on_start": true,
     "giftname": "blackfrontbow",
-    "dlg_desc": "black front bow",
+    "dlg_desc": "bow",
     "dlg_plural": false,
     "select_info": {
         "display_name": "Front Bow (Black)",
         "thumb": "briaryoung_front_bow_black",
         "group": "front-bow",
         "select_dlg": [
-            "TODO"
+            "I still haven't figured out how this bow stays on..."
         ]
     }
 }
