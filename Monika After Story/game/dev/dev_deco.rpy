@@ -130,6 +130,20 @@ label dev_deco_tag_test_api:
     call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True)
     m 1eub "should still be hidden"
 
+    m 1euc "now I am going set deco to be shown, but not right away"
+    $ mas_showDecoTag("dev_monika_deco_one")
+    m 1eua "and now i am going to call spaceroom, no scene change"
+    call spaceroom()
+
+    m 2eua "the deco should be shown now"
+    m 1eub "and now i will set deco to be hidden, but not right away"
+    $ mas_hideDecoTag("dev_monika_deco_one")
+    m 1eua "and now I am gonig to call spaceroom, no scene change"
+    call spaceroom()
+
+    m 2eua "deco should be hidden now"
+    m 6wuw "thanks"
+
     return
 
 

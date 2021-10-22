@@ -107,7 +107,7 @@ label import_ddlc_persistent:
                 ddlc_persistent = mas_dockstat.cPickle.loads(ddlc_pfile.read().decode("zlib"))
 
         except Exception as e:
-            store.mas_utils.writelog("Failed to read/decode DDLC persistent: {0}\n".format(e))
+            store.mas_utils.mas_log.error("Failed to read/decode DDLC persistent: {0}".format(e))
 
         else:
             #Bring ddlc_persistent data up to date with current version

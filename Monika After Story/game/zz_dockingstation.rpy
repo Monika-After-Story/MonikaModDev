@@ -18,115 +18,13 @@ init -900 python in mas_ics:
 
     ########################## ISLANDS ########################################
     # islands folder
-    islands_folder = os.path.normcase(
-        renpy.config.basedir + "/game/mod_assets/location/special/"
+    ISLANDS_FOLDER = os.path.normcase(
+        os.path.join(renpy.config.gamedir, "mod_assets/location/special/")
     )
 
     # NOTE: these checksums are BEFORE b64 encoding
 
-    # Night With Frame
-    islands_nwf = (
-        "0ea361ef4c501c15a23eb36b1c47bf1a8eac1b4c2a1bc214e30db9e4f154dbdc"
-    )
-
-    # night without frame
-    islands_nwof = (
-        "fff96da27e029d5bab839bde8b2a00f8d484ad81880522b0e828c8a2cd0a7c97"
-    )
-
-    # day with frame
-    islands_dwf = (
-        "791f379866edf72dc6fd72ae8d7b26af43dd8278b725a0bf2aeb5c72ba04a672"
-    )
-
-    # day withotu frame
-    islands_dwof = (
-        "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
-    )
-
-    # rain with frame
-    islands_rwf = (
-        "5854576632f76d9a99c8c69c8b4a6c2053241c0cb7550c31aa49ab0454635e36"
-    )
-
-    # rain without frame
-    islands_rwof = (
-        "e78eaf99bc56f22f16579c3a22f336db838d36c84ac055f193aec343deb5c9dc"
-    )
-
-    # night rain with frame
-    islands_nrwf = (
-        "68610912a463d267d4bd74400909204b5efe2249e71b348f2cc911b79fea3693"
-    )
-
-    # night rain without frame
-    islands_nrwof = (
-        "37e01bb69418ebb825c2955b645391a1fb99e13c76b1adb47483d6cc02c1d8e3"
-    )
-
-    # overcast with frame
-    islands_owf = (
-        "4917416ab2c390846bdc59fa25a995d2a5be1be0ddbc3860048aef4fe670fa70"
-    )
-
-    # overcast without frame
-    islands_owof = (
-        "4b4dc5ccfa81de15e09ee01ea7ee7ff3a5c498a5a4d660e8579dd5556599ae1b"
-    )
-
-    # night overcast with frame
-    islands_nowf = (
-        "21e8b98faafb24778df5cce17876e0caf822f314c9f80c6d63e7d2a3d68ab54a"
-    )
-
-    # night overcast without frame
-    islands_nowof = (
-        "ac6e6d09cd18aa30a8dd2e33879b0669590f303fe98c9dba8ce1b5dd0c8212ba"
-    )
-
-    # snow with frame
-    islands_swf = (
-        "510a7fc62321f3105c99c74fd53d06f4e20f6e4cc20d794327e3094da7a5d168"
-    )
-
-    # snow without frame
-    islands_swof = (
-        "262242dd67ae539bae0c7022d615696d19acb85fc7723f545a00b65aeb13be24"
-    )
-
-    # night snow with frame
-    islands_nswf = (
-        "c426957bda7740b361bc010a2f6ddb0a8fa2a1a983da9c40249a0648117f45a9"
-    )
-
-    # night snow without frame
-    islands_nswof = (
-        "822ed24c0250a273f6e614790a439473f638ce782e505507e617e56e85ffc17f"
-    )
-
-    # islands dict to map filenames to checksums and real filenames
-    # key: filename of b64 encode
-    # value: tuple:
-    #   [0] - filename to save the image as
-    #   [1] - checksum for that image
-    islands_map = {
-        "nwf": ("night_with_frame.png", islands_nwf),
-        "nwof": ("night_without_frame.png", islands_nwof),
-        "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof),
-        "rwf": ("rain_with_frame.png", islands_rwf),
-        "rwof": ("rain_without_frame.png", islands_rwof),
-        "nrwf": ("night_rain_with_frame.png", islands_nrwf),
-        "nrwof": ("night_rain_without_frame.png", islands_nrwof),
-        "owf": ("overcast_with_frame.png", islands_owf),
-        "owof": ("overcast_without_frame.png", islands_owof),
-        "nowf": ("night_overcast_with_frame.png", islands_nowf),
-        "nowof": ("night_overcast_without_frame.png", islands_nowof),
-        "swf": ("snow_with_frame.png", islands_swf),
-        "swof": ("snow_without_frame.png", islands_swof),
-        "nswf": ("night_snow_with_frame.png", islands_nswf),
-        "nswof": ("night_snow_without_frame.png", islands_nswof)
-    }
+    ISLAND_PKG_CHKSUM = "bd3f4859ce2c7014845700e7d949cc21dcb44d4feb986083f21e67f2d8317f85"
 
     #################################### O31 ##################################
     # cg folder
@@ -191,7 +89,7 @@ init -45 python:
         # 0 - message
         # 1 - docking station as str
         # 2 - exception (if applicable)
-        ERR = "[ERROR] {0} | {1} | {2}\n"
+        ERR = "{0} | {1} | {2}"
         ERR_DEL = "Failure removing package '{0}'."
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
@@ -239,13 +137,16 @@ init -45 python:
             if not os.path.isdir(self.station):
                 try:
                     os.makedirs(self.station)
+
                 except Exception as e:
-                   store.mas_utils.writelog(self.ERR.format(
-                       self.ERR_CREATE.format(self.station),
-                       str(self),
-                       repr(e)
-                   ))
-                   self.enabled = False
+                    store.mas_utils.mas_log.error(
+                        self.ERR.format(
+                            self.ERR_CREATE.format(self.station),
+                            str(self),
+                            repr(e)
+                        )
+                    )
+                    self.enabled = False
 
         def __str__(self):
             """
@@ -333,11 +234,13 @@ init -45 python:
                 return True
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
-                    self.ERR_DEL.format(package_name),
-                    str(self),
-                    repr(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    self.ERR.format(
+                        self.ERR_DEL.format(package_name),
+                        str(self),
+                        repr(e)
+                    )
+                )
                 return False
 
 
@@ -407,7 +310,7 @@ init -45 python:
                 )
 
                 if log is None:
-                    mas_utils.writelog(msg)
+                    store.mas_utils.mas_log.error(msg)
                 else:
                     log.write(msg)
 
@@ -513,11 +416,13 @@ init -45 python:
                 return True
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
-                    self.ERR_SEND.format(package_name),
-                    str(self),
-                    str(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    self.ERR.format(
+                        self.ERR_SEND.format(package_name),
+                        str(self),
+                        str(e)
+                    )
+                )
                 return False
 
             finally:
@@ -608,11 +513,12 @@ init -45 python:
                 return 1
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
-                    self.ERR_SIGNP.format(package_name),
-                    str(self),
-                    str(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    self.ERR.format(
+                        self.ERR_SIGNP.format(package_name),
+                        str(self),
+                        str(e)
+                    ))
                 if contents is not None:
                     contents.close()
                 return 0
@@ -759,9 +665,9 @@ init -45 python:
                 )
 
                 if log is None:
-                    mas_utils.writelog(msg)
+                    store.mas_utils.mas_log.error(msg)
                 else:
-                    log.write(msg)
+                    log.error(msg)
 
                 if contents is None:
                     # only close our internal contents if we made it
@@ -775,11 +681,11 @@ init -45 python:
 
             # get checksum and log
             chk = checklist.hexdigest()
-            msg = "chk: {0}\n".format(chk)
+            msg = "chk: {0}".format(chk)
             if log is None:
-                mas_utils.writelog(msg)
+                store.mas_utils.mas_log.info(msg)
             else:
-                log.write(msg)
+                log.info(msg)
 
             # now check checksum
             if chk != pkg_slip:
@@ -1053,11 +959,13 @@ init -45 python:
                 not_dir = not os.path.isdir(package_path)
 
             except Exception as e:
-                mas_utils.writelog(self.ERR.format(
-                    self.ERR_GET.format(package_path),
-                    str(self),
-                    repr(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    self.ERR.format(
+                        self.ERR_GET.format(package_path),
+                        str(self),
+                        repr(e)
+                    )
+                )
 
                 # in error case, assume failure
                 return self.__bad_check_read(check_read)
@@ -1216,8 +1124,8 @@ init -11 python in mas_dockstat:
                 )
 
             except Exception as e:
-                mas_utils.writelog(
-                    "[ERROR] failed to decode '{0}' | {1}\n".format(
+                store.mas_utils.mas_log.error(
+                    "Failed to decode '{0}' | {1}".format(
                         b64_name,
                         str(e)
                     )
@@ -1323,8 +1231,8 @@ init 200 python in mas_dockstat:
     import random
     import datetime
 
-    cr_log_path = "log/mfgen"
-    rd_log_path = "log/mfread"
+    cr_log_path = "mfgen"
+    rd_log_path = "mfread"
 
     # we set these during init phase if we found a monika
     retmoni_status = None
@@ -1398,7 +1306,7 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             log.write(
-                "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
+                "[ERROR]: failed to pickle data: {0}".format(repr(e))
             )
             return False
 
@@ -1534,8 +1442,8 @@ init 200 python in mas_dockstat:
                     return on_succ
 
             except Exception as e:
-                mas_utils.writelog(
-                    "[WARN]: package slip fail? {0} | {1}\n".format(
+                store.mas_utils.mas_log.warning(
+                    "package slip fail? {0} | {1}".format(
                         pkg_name,
                         repr(e)
                     )
@@ -1567,13 +1475,13 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
-        cr_log = store.mas_utils.logcreate(logpath, flush=True)
+        cr_log = store.mas_logging.init_log(logpath, append=False)
 
-        cr_log.write("\n\nCreating Monika in: {0}\n".format(dockstat.station))
+        cr_log.info("Creating Monika in: {0}".format(dockstat.station))
 
         # sanity check regarding the filepath
         if "temp" in dockstat.station.lower():
-            cr_log.write("[ERROR] temp directory found, aborting.\n")
+            cr_log.error("temp directory found, aborting.")
             return False
 
         ### other stuff we need
@@ -1601,7 +1509,7 @@ init 200 python in mas_dockstat:
             moni_buffer.write(moni_chr.read())
 
         except Exception as e:
-            cr_log.write("[ERROR] mbase copy failed | {0}\n".format(
+            cr_log.error("mbase copy failed | {0}".format(
                 repr(e)
             ))
             moni_buffer.close()
@@ -1617,8 +1525,8 @@ init 200 python in mas_dockstat:
         moni_fbuffer = None
         moni_tbuffer = None
         moni_sum = None
-        try:
 
+        try:
             # First, lets iterate over the data to figure out how many lines
             # we will need, as well as how large this thing will be
             moni_buffer_iter = store.MASDockingStation._blockiter(
@@ -1726,7 +1634,7 @@ init 200 python in mas_dockstat:
             moni_sum = checklist.hexdigest()
 
         except Exception as e:
-            cr_log.write("[ERROR] monibuffer write failed | {0}\n".format(
+            cr_log.error("monibuffer write failed | {0}".format(
                 repr(e)
             ))
 
@@ -1761,7 +1669,7 @@ init 200 python in mas_dockstat:
         moni_pkg = dockstat.getPackage("monika")
         if moni_pkg is None:
             # ALERT ALERT HOW DID WE FAIL
-            cr_log.write("[ERROR] monika not found.\n")
+            cr_log.error("monika not found.")
             mas_utils.trydel(moni_path)
             return False
 
@@ -1769,20 +1677,20 @@ init 200 python in mas_dockstat:
         moni_slip = dockstat.createPackageSlip(moni_pkg, blocksize)
         if moni_slip is None:
             # ALERT ALERT WE FAILED AGAIN
-            cr_log.write("[ERROR] monika could not be validated.\n")
+            cr_log.error("monika could not be validated.")
             mas_utils.trydel(moni_path)
             return False
 
         if moni_slip != moni_sum:
             # WOW SRS THIS IS BAD
-            cr_log.write(
-                "[ERROR] monisums didn't match, did we have write failure?\n"
+            cr_log.critical(
+                "monisums didn't match, did we have write failure?"
             )
             mas_utils.trydel(moni_path)
             return -1
 
         # otherwise, we managed to create a monika! Congrats!
-        cr_log.write("chk: {0}\n".format(moni_sum))
+        cr_log.info("chk: {0}".format(moni_sum))
         return moni_sum
 
 
@@ -1813,13 +1721,9 @@ init 200 python in mas_dockstat:
             [1]: either list of data or persistent object of data. Will be
                 None if no data or errors occured
         """
-        rd_log = store.mas_utils.logcreate(
-            logpath,
-            append=not at_init,
-            flush=True
-        )
+        rd_log = store.mas_logging.init_log(rd_log_path, append=False)
 
-        rd_log.write("\n\nFinding Monika in: {0}\n".format(dockstat.station))
+        rd_log.info("Finding Monika in: {0}".format(dockstat.station))
 
         END_DELIM = "|||"
         PER_DELIM = "per|"
@@ -1880,8 +1784,8 @@ init 200 python in mas_dockstat:
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            rd_log.write(
-                "[!] I found a corrupt monika! {0}\n".format(status)
+            rd_log.info(
+                "I found a corrupt monika! {0}".format(status)
             )
             return (ret_code | MAS_PKG_FO, real_data)
 
@@ -1922,7 +1826,7 @@ init 200 python in mas_dockstat:
             return data_list[:6]
 
         except Exception as e:
-            log.write("[ERROR]: Moni Data parse fail: {0}\n".format(
+            log.error("Moni Data parse fail: {0}".format(
                 repr(e)
             ))
             return None
@@ -1949,8 +1853,8 @@ init 200 python in mas_dockstat:
             return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
-            log.write(
-                "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
+            log.error(
+                "persistent unpickle failed: {0}".format(repr(e))
             )
             return None
 
@@ -2054,11 +1958,8 @@ init 200 python in mas_dockstat:
 
         if checkin_len != checkout_len:
             # mis match logs, please log this.
-            mas_utils.writelog(
-                (
-                    "[WARNING]: checkin is {0}, checkout is {1}. "
-                    "Going to pop.\n"
-                ).format(checkin_len, checkout_len)
+            store.mas_utils.mas_log.warning(
+                "checkin is {0}, checkout is {1}. Going to pop.".format(checkin_len, checkout_len)
             )
 
             # and we will pop extras as well

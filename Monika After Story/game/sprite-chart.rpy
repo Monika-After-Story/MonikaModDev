@@ -4412,8 +4412,8 @@ init -3 python:
                 if arm_key in store.mas_sprites.NUM_ARMS:
                     # NOneify invalid data
                     if not isinstance(arm_data[arm_key], MASArm):
-                        store.mas_utils.writelog(
-                            "Invalid arm data at '{0}'\n".format(arm_key)
+                        store.mas_utils.mas_log.warning(
+                            "Invalid arm data at '{0}'".format(arm_key)
                         )
                         arm_data[arm_key] = None
 

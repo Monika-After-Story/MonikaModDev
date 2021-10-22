@@ -294,34 +294,37 @@ init -1 python in mas_affection:
 
     # affection log rotate
     #  we do rotations every 100 sessions
-    if store.persistent._mas_affection_log_counter is None:
-        # start counter if None
-        store.persistent._mas_affection_log_counter = 0
+    #if store.persistent._mas_affection_log_counter is None:
+    #    # start counter if None
+    #    store.persistent._mas_affection_log_counter = 0
 
-    elif store.persistent._mas_affection_log_counter >= 500:
-        # if 500 sessions, do a logrotate
-        mas_utils.logrotate(
-            os.path.normcase(renpy.config.basedir + "/log/"),
-            "aff_log.txt"
-        )
-        store.persistent._mas_affection_log_counter = 0
+    #elif store.persistent._mas_affection_log_counter >= 500:
+    #    # if 500 sessions, do a logrotate
+    #    mas_utils.logrotate(
+    #        os.path.normcase(renpy.config.basedir + "/log/"),
+    #        "aff_log.txt"
+    #    )
+    #    store.persistent._mas_affection_log_counter = 0
 
-    else:
-        # otherwise increase counter
-        store.persistent._mas_affection_log_counter += 1
+    #else:
+    #    # otherwise increase counter
+    #    store.persistent._mas_affection_log_counter += 1
 
     # affection log setup
-    log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
-    log_open = log.open()
-    log.raw_write = True
-    log.write("VERSION: {0}\n".format(store.persistent.version_number))
+    log = store.mas_logging.init_log(
+        "aff_log",
+        formatter=store.mas_logging.logging.Formatter(
+            fmt="[%(asctime)s]: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        )
+    )
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude | prev -> new
-    _audit = "[{0}]: {1} | {2} | {3} -> {4}\n"
+    _audit = "{0} | {1} | {2} -> {3}"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
-    _audit_f = "[{0}]: {5} | {1} | {2} | {3} -> {4}\n"
+    _audit_f = "{4} | {0} | {1} | {2} -> {3}"
     _freeze_text = "!FREEZE!"
     _bypass_text = "!BYPASS!"
 
@@ -352,7 +355,6 @@ init -1 python in mas_affection:
 
 
             audit_text = _audit_f.format(
-                datetime.datetime.now(),
                 piece_one,
                 change,
                 store._mas_getAffection(),
@@ -362,14 +364,13 @@ init -1 python in mas_affection:
 
         else:
             audit_text = _audit.format(
-                datetime.datetime.now(),
                 piece_one,
                 change,
                 store._mas_getAffection(),
                 new
             )
 
-        log.write(audit_text)
+        log.info(audit_text)
 
 
     def raw_audit(old, new, change, tag):
@@ -382,8 +383,7 @@ init -1 python in mas_affection:
             change - the chnage amount
             tag - a string to label this audit change
         """
-        log.write(_audit.format(
-            datetime.datetime.now(),
+        log.info(_audit.format(
             tag,
             change,
             old,
@@ -399,8 +399,7 @@ init -1 python in mas_affection:
             tag - a string to label thsi audit
             msg - message to show
         """
-        log.write("[{0}]: {1} | {2}\n".format(
-            datetime.datetime.now(),
+        log.info("{0} | {1}".format(
             tag,
             msg
         ))
@@ -659,19 +658,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-        # unlock islands event if seen already
-        if store.seen_event("mas_monika_islands"):
-            if store.mas_cannot_decode_islands:
-                # failed to decode islandds, delay this action
-                store.mas_addDelayedAction(2)
-
-                # lock the island event since we failed to decode images
-                store.mas_lockEventLabel("mas_monika_islands")
-
-            else:
-                # otherwise we can directly unlock this topic
-                store.mas_unlockEventLabel("mas_monika_islands")
-
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -685,10 +671,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to affectionate
         """
-
-        # remove island event delayed actions
-        store.mas_removeDelayedActions(1, 2)
-
         #Change randchat
         store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
@@ -1912,8 +1894,8 @@ init 20 python:
                 mas_apology_reason = reason
             return
         elif mas_getEV(ev_label) is None:
-            store.mas_utils.writelog(
-                "[ERROR]: ev_label does not exist: {0}\n".format(repr(ev_label))
+            store.mas_utils.mas_log.error(
+                "ev_label does not exist: {0}".format(repr(ev_label))
             )
             return
 
