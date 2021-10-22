@@ -1179,7 +1179,7 @@ init -810 python:
             "_mas_pm_owns_car_type": "pm.owns.car_type",
 
             # system
-            "_mas_pm_had_root_access": "pm.system.had_root_access",
+            "_mas_pm_had_root_privileges": "pm.system.had_root_privileges",
 
         },
         use_year_before=True,
