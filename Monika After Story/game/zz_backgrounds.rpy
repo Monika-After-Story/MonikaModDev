@@ -2239,7 +2239,10 @@ init -10 python:
 
                 if (
                         not mas_isDecoTagEnabled(override_tag)
-                        or new_bg.get_deco_info(override_tag) is None
+                        or (
+                            new_bg is not None 
+                            and new_bg.get_deco_info(override_tag) is None
+                        )
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
