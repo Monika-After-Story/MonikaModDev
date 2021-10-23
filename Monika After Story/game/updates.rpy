@@ -1291,7 +1291,7 @@ label v0_11_0(version="v0_11_0"):
         credits_ev = mas_getEV("monika_credits_song")
         if credits_ev:
             credits_ev.random = False
-            credits_ev.prompt = None
+            credits_ev.prompt = credits_ev.eventlabel
             credits_ev.conditional = "store.mas_anni.pastOneMonth()"
             credits_ev.action = EV_ACT_QUEUE
             credits_ev.unlocked = False
@@ -2852,8 +2852,8 @@ label v0_7_4(version="v0_7_4"):
             1200
         )
 
-       # now properly set all farewells as unlocked, since the new system checks
-       # for the unlocked status
+        # now properly set all farewells as unlocked, since the new system checks
+        # for the unlocked status
         for k in evhand.farewell_database:
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
