@@ -981,14 +981,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # ----------- Grouping date-based events since they can never overlap:
-    #O31 stuff
-    # TODO: move this to o31 autoload
-    # NOTE: this does not expect no scene change
-    if persistent._mas_o31_in_o31_mode:
-        $ store.mas_o31ShowVisuals()
-    # ----------- end date-based events
-
     # player bday
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
