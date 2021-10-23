@@ -377,7 +377,10 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.4
 label v0_12_4(version="v0_12_4"):
     python hide:
-        pass
+        mas_setEVLPropValues(
+            'bye_trick_or_treat',
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3))
+        )
     return
 
 # 0.12.3.2

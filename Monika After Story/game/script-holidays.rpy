@@ -1058,7 +1058,6 @@ init 5 python:
             unlocked=False,
             action=EV_ACT_UNLOCK,
             start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
-            # TODO: update script
             end_date=mas_o31+datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.NORMAL, None)
