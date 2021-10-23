@@ -1032,7 +1032,7 @@ init -10 python in mas_selspr:
                         moni_chr.change_hair(new_hair)
 
                     except Exception as e:
-                        mas_utils.writelog("BAD HAIR: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD HAIR: " + repr(e))
                         moni_chr.change_hair(prev_hair)
 
                     return # always quit early since you can only have 1 hair
@@ -1063,7 +1063,7 @@ init -10 python in mas_selspr:
                         )
 
                     except Exception as e:
-                        mas_utils.writelog("BAD CLOTHES: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
 
                     return # quit early since you can only have 1 clothes
