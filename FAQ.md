@@ -62,7 +62,7 @@ If the traceback includes a line like the following:
 The label chara_monika_scare is defined twice, at
 ```
 
-Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Backdash/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
+Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Monika-After-Story/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
 
 ### Where are the minigames (chess, hangman, piano...)?
 
@@ -73,7 +73,7 @@ topics with her or keeping her running in the background.
 
 ### I have an idea on how to improve Monika After Story, where do I suggest it?
 
-We're always happy to hear new ideas! Suggestions can be made on our issues page. Please preface all suggestions with [Suggestion], or follow [this link](https://github.com/Backdash/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20) which will automatically populate your suggestion with the appropriate tags.
+We're always happy to hear new ideas! Suggestions can be made on our issues page. Please preface all suggestions with [Suggestion], or follow [this link](https://github.com/Monika-After-Story/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20) which will automatically populate your suggestion with the appropriate tags.
 
 ### I would like to contribute, but I don't know how to code. Is there any way I can help?
 
@@ -81,7 +81,7 @@ We are always looking for new dialogue and art. Please see our [Contributing Gui
 
 ### Where can I find things to help with?
 
-Our issues page will show a list of technical issues, new features, and requests that are available. Anything with the [Help Wanted](https://github.com/Backdash/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) tag is a good place to start if you would like to help add something to the game!
+Our issues page will show a list of technical issues, new features, and requests that are available. Anything with the [Help Wanted](https://github.com/Monika-After-Story/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) tag is a good place to start if you would like to help add something to the game!
 
 ### How can I get in touch with the development staff?
 
@@ -145,4 +145,4 @@ To add the Sprite Previewer to your MAS, copy [this file](https://github.com/Mon
 
 ## Other help
 
-Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Backdash/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discordapp.com/invite/K2KuJeX).
+Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Monika-After-Story/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discordapp.com/invite/K2KuJeX).
