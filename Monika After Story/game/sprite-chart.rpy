@@ -485,7 +485,7 @@ init -100 python in mas_sprites:
         "front-bow": ACSTemplate(
             "front-bow",
             mux_type=[
-                "TODO" # TODO
+                "front-bow"
             ]
         ),
         "front-hair-flower-crown": ACSTemplate(
