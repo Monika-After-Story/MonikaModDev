@@ -14,7 +14,7 @@ python early:
     renpy.config.name = "Monika After Story"
 
     ## The version of the game.
-    renpy.config.version = "0.12.3.2-unstable.2021.10.21.149"
+    renpy.config.version = "0.12.3.3-unstable.2021.10.22.150"
 
     #Triple space suffix to avoid potential issues with same names in window title
     config.window_title = "Monika After Story   "
