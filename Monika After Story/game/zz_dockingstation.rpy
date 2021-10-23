@@ -2373,7 +2373,7 @@ label mas_dockstat_found_monika:
 
     if persistent._mas_o31_in_o31_mode:
         $ store.mas_globals.show_vignette = True
-        mas_o31ShowVisuals()
+        $ mas_o31ShowVisuals()
         #Force progressive to disabled for o31
         $ mas_changeWeather(mas_weather_thunder, True)
 
