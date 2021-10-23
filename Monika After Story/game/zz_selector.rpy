@@ -960,7 +960,8 @@ init -10 python in mas_selspr:
             new_map,
             select_type,
             use_old=False,
-            outfit_mode=False
+            outfit_mode=False,
+            force_run=False
         ):
         """
         Adjusts an aspect of monika based on the select type
@@ -979,6 +980,8 @@ init -10 python in mas_selspr:
                 (Default: False)
             outfit_mode - True means we are in outfit mode, False if not
                 This is used in the clothing changes
+                (Default: False)
+            force_run - True means run even if we old and new matches.
                 (Default: False)
         """
         if select_type == SELECT_ACS:
@@ -1024,7 +1027,7 @@ init -10 python in mas_selspr:
                     prev_hair = moni_chr.hair
                     new_hair = item.selectable.get_sprobj()
 
-                    if prev_hair == new_hair:
+                    if prev_hair == new_hair and not force_run:
                         # hair is the same? no point in changing
                         return
 
@@ -1052,7 +1055,7 @@ init -10 python in mas_selspr:
                     prev_cloth = moni_chr.clothes
                     new_cloth = item.selectable.get_sprobj()
 
-                    if prev_cloth == new_cloth:
+                    if prev_cloth == new_cloth and not force_run:
                         # we are changing to the what we are wearing? no point
                         return
 
@@ -3374,7 +3377,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         Function(
                             mailbox.send_outfit_checkbox_checked,
                             not ocb_checked
-                        )
+                        ),
+                        Return(True)
                     ]
                     selected ocb_checked
 
@@ -3585,8 +3589,10 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
+        # keep track of changes to outfit checkbox
+        outfit_cbx = mailbox.read_outfit_checkbox_checked()
 
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
 
 
 label mas_selector_sidebar_select_loop:
@@ -3601,13 +3607,16 @@ label mas_selector_sidebar_select_loop:
         )
 
         if preview_selections:
+            new_outfit_cbx = mailbox.read_outfit_checkbox_checked()
             store.mas_selspr._adjust_monika(
                 monika_chr,
                 old_select_map,
                 select_map,
                 select_type,
-                outfit_mode=mailbox.read_outfit_checkbox_checked()
+                outfit_mode=new_outfit_cbx,
+                force_run=new_outfit_cbx != outfit_cbx
             )
+            outfit_cbx = new_outfit_cbx
 
 
 label mas_selector_sidebar_select_midloop:
