@@ -1,0 +1,70 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_shuchiin_academy_uniform",
+    "img_sit": "briaryoung_shuchiin_academy_uniform",
+    "pose_map": {
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "desired-hair-prop": "straight-bangs",
+        "costume": "o31",
+        "cosplay": true
+    },
+    "select_info": {
+        "display_name": "Shuchi'in Academy Uniform",
+        "thumb": "briaryoung_shuchiin_academy_uniform",
+        "group": "clothes",
+        "select_dlg": [
+            "I detect love nearby~"
+        ]
+    },
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
+        }
+    },
+    "giftname": "shuchiinacademyuniform"
+}

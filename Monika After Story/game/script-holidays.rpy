@@ -851,6 +851,51 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     call greeting_o31_cleanup
     return
 
+#Chika intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_briaryoung_shuchiin_academy_uniform",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_briaryoung_shuchiin_academy_uniform:
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+
+    #moni is off-screen
+    if not persistent._mas_o31_relaunch:
+        m "Ugh..."
+        m "How {i}is{/i} this bow supposed to stay there?"
+        m "People can say what they want about my ribbon, but at least it's somewhat practical..."
+        m "...I guess that will work, hopefully it doesn't fall off as soon as--{nw}"
+        m "Time to find out..."
+
+    else:
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Almost ready, [player]..."
+        m "Just trying to figure out how this bow is supposed to stay on."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Hopefully that's good enough!"
+
+    #show moni now
+    call mas_transition_from_emptydesk("monika 2hub")
+
+    m 2hub "Welcome back!"
+    m 2eub "Well, what do you think?"
+    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+
+    if mas_isMoniAff(higher=True):
+        m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
+
+    m 3hua "Ehehe~"
+    m 1eua "Anyway..."
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+
 label greeting_o31_deco:
     m 3eua "Do you like what I've done with the room?"
     m 3eka "One of my favorite parts of Halloween is carving pumpkins..."
