@@ -93,7 +93,7 @@ init -20 python in mas_deco:
         RETURNS: MASDecoration object, or None if not valid name
         """
         if not name.startswith(DECO_PREFIX):
-            name = deco_name_db.get(name, "")
+            name = deco_name_db.get(name, name)
 
         if name:
             return deco_db.get(name, None)
@@ -599,7 +599,7 @@ init -19 python:
                 tag - tag to get img info for
 
             RETURNS: tuple (or None if not found)
-                [0] - tag to use 
+                [0] - tag to use
                 [1] - MASAdvancedDecoFrame to use
             """
             deco_def = store.mas_deco.deco_def_db.get(tag, None)
@@ -613,7 +613,7 @@ init -19 python:
             """
             Gets the tag and MASAdvancedDecoFrame setting to use for a bg for
             a given main tag.
-            NOTE: do not use this for render. Use this for getting raw 
+            NOTE: do not use this for render. Use this for getting raw
             settings.
 
             IN:
@@ -860,7 +860,7 @@ init -19 python:
                 [2] - the override tag (will be the same as deco object's name
                     if no override tag given)
             """
-            for deco_name, deco_obj in self._adv_decos:
+            for deco_name, deco_obj in self._adv_decos.items():
                 yield (
                     deco_obj,
                     self._deco_frame_map[deco_name],
@@ -948,6 +948,7 @@ init -19 python:
             show_now - set to True to show immediately
                 (Deafult: False)
         """
+        # TODO: consider adding a predict?
         store.mas_deco.vis_store[tag] = None
         mas_current_background._deco_add(tag=tag)
 
@@ -959,8 +960,6 @@ init -19 python:
                     adf.show(real_tag)
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_hideDecoTag(tag, hide_now=False):
@@ -989,8 +988,6 @@ init -19 python:
                     adf.hide()
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_isDecoTagEnabled(tag):

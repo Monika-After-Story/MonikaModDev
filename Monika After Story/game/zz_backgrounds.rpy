@@ -24,7 +24,6 @@ init -5 python in mas_background:
 
 #START: Class definition
 init -10 python:
-
     class MASBackgroundFilterTypeException(Exception):
         """
         Type exception for MASBackgroundFilter objects
@@ -460,11 +459,11 @@ init -10 python:
 
         _ERR_PP_STR = (
             "[ERROR] error in slice pp | {0}\n"
-            "=====FROM: {1} -> {2}\n"
+            "=====FROM: {1} -> {2}"
         )
         _ERR_PP_STR_G = (
             "[ERROR] error in global slice pp | {0}\n"
-            "=====FROM: {1} -> {2}\n"
+            "=====FROM: {1} -> {2}"
         )
 
         def __init__(self, is_day, pp, *slices):
@@ -991,12 +990,15 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
+
             except Exception as e:
-                store.mas_utils.writelog(self._ERR_PP_STR.format(
-                    repr(e),
-                    flt_old,
-                    flt_new
-                ))
+                store.mas_utils.mas_log.error(
+                    self._ERR_PP_STR.format(
+                        repr(e),
+                        flt_old,
+                        flt_new
+                    )
+                )
 
         def _priority_fill(self, length, leftovers):
             """
@@ -1153,12 +1155,12 @@ init -10 python:
         _ERR_PP_STR = (
             "[ERROR] error in chunk pp | {0}\n\n"
             "=====FROM:\n{1}\n\n"
-            "=====TO\n{2}\n"
+            "=====TO\n{2}"
         )
         _ERR_PP_STR_G = (
             "[ERROR] error in global chunk pp | {0}\n\n"
             "=====FROM:\n{1}\n\n"
-            "=====TO\n{2}\n"
+            "=====TO\n{2}"
         )
 
         def __init__(self, mn_sr, sr_ss, ss_mn, pp=None):
@@ -1347,12 +1349,15 @@ init -10 python:
                             new_chunk,
                             curr_time
                         )
+
                     except Exception as e:
-                        store.mas_utils.writelog(self._ERR_PP_STR_G.format(
-                            repr(e),
-                            str(curr_chunk),
-                            str(new_chunk),
-                        ))
+                        store.mas_utils.mas_log.error(
+                            self._ERR_PP_STR_G.format(
+                                repr(e),
+                                str(curr_chunk),
+                                str(new_chunk),
+                            )
+                        )
 
                 # then finally reset slice index for the chunk we are leaving
                 curr_chunk.reset_index()
@@ -1646,12 +1651,15 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
+
             except Exception as e:
-                store.mas_utils.writelog(self._ERR_PP_STR.format(
-                    repr(e),
-                    str(chunk_old),
-                    str(chunk_new)
-                ))
+                store.mas_utils.mas_log.error(
+                    self._ERR_PP_STR.format(
+                        repr(e),
+                        str(chunk_old),
+                        str(chunk_new)
+                    )
+                )
 
         def progress(self):
             """
@@ -2103,11 +2111,9 @@ init -10 python:
                 curr_time - see MASFilterableBackground.update
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - bupd\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - bupd", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2125,7 +2131,7 @@ init -10 python:
             self._flt_img_map = self._flt_man.backmap(self._flt_img_anc)
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_NU.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2233,7 +2239,10 @@ init -10 python:
 
                 if (
                         not mas_isDecoTagEnabled(override_tag)
-                        or new_bg.get_deco_info(override_tag) is None
+                        or (
+                            new_bg is not None 
+                            and new_bg.get_deco_info(override_tag) is None
+                        )
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
@@ -2501,11 +2510,9 @@ init -10 python:
             RETURNS: the new filter
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - prog\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - prog", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2529,7 +2536,7 @@ init -10 python:
                 new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_N.format(
                         new_flt,
                         self._flt_man.current(),
@@ -2586,11 +2593,9 @@ init -10 python:
                     (Default: None)
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - upd:\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - upd:", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2600,7 +2605,7 @@ init -10 python:
             self._flt_man.update(curr_time)
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_NU.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2648,10 +2653,11 @@ init -20 python in mas_background:
     BACKGROUND_RETURN = "Nevermind"
     dbg_log = False
     dbg_log_st = False
-    DBG_MSG_C = "\nCurrent: {0} | {1}\n"
-    DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}\n"
-    DBG_MSG_NU = "\nNew: {0} | {1}\n"
+    DBG_MSG_C = "\nCurrent: {0} | {1}"
+    DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}"
+    DBG_MSG_NU = "\nNew: {0} | {1}"
 
+    _bg_log = store.mas_logging.init_log("bg_flt", append=False, header=False)
 
     class MASBackgroundChangeInfo(object):
         """
@@ -2818,29 +2824,17 @@ init -20 python in mas_background:
         if bg_obj is None:
             return
 
-        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
-        if not bg_log.open():
-            # could not log, just abort here
-            return
-
-        # otherwise log output
-        bg_log.raw_write = True
-
         # NOTE: version should already be written out if this is runtime
-        bg_log.write("\n\nBackground Object: {0}\n".format(
-            bg_obj.background_id
-        ))
-        bg_log.write("Filter System:\n\n")
-        bg_log.write(str(bg_obj._flt_man))
-        bg_log.write("\n\nRaw Filter Manager Data:\n")
-        bg_log.write(repr(bg_obj._flt_man))
+        _bg_log.info(
+            "\n\nBackground Object: {0}\nFilter System:\n\n{1}\n\nRaw Filter Manager Data:\n{2}".format(
+                bg_obj.background_id,
+                str(bg_obj._flt_man),
+                repr(bg_obj._flt_man)
+            )
+        )
 
         if exc_info:
-            import traceback
-
-            bg_log.write("\n\n")
-            for tb_line in traceback.format_exception(*exc_info):
-                bg_log.write(tb_line)
+            _bg_log.info("", exc_info=True)
 
 
 #START: BG change functions
@@ -2973,7 +2967,7 @@ init -2 python in mas_background:
         try:
             _gbl_flt_change(old_flt, new_flt, curr_time)
         except Exception as e:
-            store.mas_utils.writelog(
+            store.mas_utils.mas_log.error(
                 store.MASBackgroundFilterChunk._ERR_PP_STR_G.format(
                     repr(e),
                     old_flt,
@@ -2991,7 +2985,8 @@ init -2 python in mas_background:
             new_flt - incoming filter.
             curr_time - current time as datetime.time
         """
-        if new_flt == mspr.FLT_DAY or new_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(new_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -3019,7 +3014,8 @@ init -2 python in mas_background:
             curr_time - current time as datetime.time
         """
         first_flt = new_chunk.first_flt()
-        if first_flt == mspr.FLT_DAY or first_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(first_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",

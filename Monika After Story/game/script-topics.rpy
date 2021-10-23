@@ -772,8 +772,8 @@ label mas_rerandom:
                         rerandom_callback()
 
                     except Exception as ex:
-                        mas_utils.writelog(
-                            "[ERROR]: Failed to call rerandom callback function. Trace message: {0}\n".format(ex.message)
+                        store.mas_utils.mas_log.error(
+                            "Failed to call rerandom callback function. Trace message: {0}".format(ex.message)
                         )
 
             #Pop the derandom
@@ -2758,7 +2758,7 @@ init 5 python:
         flags = EV_FLAG_HFRS
 
     else:
-        flags = 0
+        flags = EV_FLAG_DEF
 
     addEvent(
         Event(

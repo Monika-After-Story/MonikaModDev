@@ -374,10 +374,103 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.4
+label v0_12_4(version="v0_12_4"):
+    python hide:
+        pass
+    return
+
+# 0.12.3.2
+label v0_12_3_2(version="v0_12_3_2"):
+    python hide:
+        import os
+
+        #Delete old utils file
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
+
+        ### LOG MIGRATION
+        def _rename_log_file(old_log_path, new_log_path):
+            """
+            Renames log files
+
+            IN:
+                old_log_path - the path to the old log
+                new_log_path - the path to the new log
+            """
+            try:
+                mas_utils.trydel(new_log_path)
+                os.rename(old_log_path, new_log_path)
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to rename log at '{0}'. {1}".format(old_log_path, ex))
+
+        log_dir = os.path.join(renpy.config.basedir, "log")
+
+        migrating_logs = [
+            mas_utils.mas_log,
+            mas_affection.log,
+            mas_submod_utils.submod_log
+        ]
+        non_migrating_logfiles = [
+            "pnm.txt",
+            "spj.txt"
+        ]
+
+        # These 2 don't always exist
+        for mf_log_name in ("mfgen", "mfread"):
+            if mas_logging.is_inited(mf_log_name):
+                migrating_logs.append(mas_logging.logging.getLogger(mf_log_name))
+
+            else:
+                new_log_path = os.path.join(log_dir, mf_log_name + ".log")
+                old_log_path = os.path.join(log_dir, mf_log_name + ".txt")
+
+                _rename_log_file(old_log_path, new_log_path)
+
+        for log in migrating_logs:
+            new_log_path = os.path.join(log_dir, log.name + ".log")
+            old_log_path = os.path.join(log_dir, log.name + ".txt")
+
+            handlers = list(log.handlers)
+
+            for handler in handlers:
+                handler.close()
+                log.removeHandler(handler)
+
+            try:
+                with open(old_log_path, "a") as mergeto, open(new_log_path, "r") as mergefrom:
+                    for line in mergefrom:
+                        mergeto.write(line)
+
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to update log at '{0}'. {1}".format(old_log_path, ex))
+
+            else:
+                _rename_log_file(old_log_path, new_log_path)
+
+            for handler in handlers:
+                # handler.stream = handler._open()
+                log.addHandler(handler)
+
+        for logfile in non_migrating_logfiles:
+            mas_utils.trydel(os.path.join(log_dir, logfile))
+        ### END LOG MIGRATION
+
+    return
+
 # 0.12.3.1
 label v0_12_3_1(version="v0_12_3_1"):
     python:
-        pass
+        # Set a conditional
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="store.mas_decoded_islands"
+        )
+
+        # Enable late update for this one
+        # (updates islands progression for old players)
+        persistent._mas_zz_lupd_ex_v.append(version)
+
     return
 
 # 0.12.2.3
@@ -2926,6 +3019,18 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_3_1:
+    python:
+        # Unlock for people who has seen the event before
+        if seen_event("mas_monika_islands"):
+            mas_island_event.startProgression()
+            # Technically it's impossible to have this as 0,
+            # So it'll mean the islands were unlocked prior to the revamp
+            persistent._mas_islands_start_lvl = 0
+            mas_island_event.advanceProgression()
+
+    return
+
 label mas_lupd_v0_12_0:
     python:
         #Reset annis as F29 based ones are on the wrong date

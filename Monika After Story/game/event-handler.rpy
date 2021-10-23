@@ -192,7 +192,7 @@ init -998 python in mas_ev_data_ver:
         valid_times = True
     except:
         valid_times = False
-        store.mas_utils.writelog("[EARLY] [ERROR]: Failed to verify mtimes\n")
+        store.mas_utils.mas_log.error("[EARLY]: Failed to verify mtimes")
 
 init -950 python in mas_ev_data_ver:
     import store
@@ -261,8 +261,8 @@ init -950 python in mas_ev_data_ver:
 
             if not _verify_data_line(ev_line):
                 # verification failed! pop this element
-                store.mas_utils.writelog(
-                    "bad data found in {0}\n".format(ev_label)
+                store.mas_utils.mas_log.error(
+                    "bad data found in {0}".format(ev_label)
                 )
                 per_db.pop(ev_label)
 
@@ -1018,9 +1018,7 @@ init -880 python:
             a eval check.
             NOTE: we do not check callable for correctness
         """
-        import store.mas_utils as m_util
-
-        ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
+        ERR_COND = "delayed action has bad conditional '{0}' | {1}"
 
 
         def __init__(self,
@@ -1059,7 +1057,7 @@ init -880 python:
                 try:
                     eval(conditional)
                 except Exception as e:
-                    self.m_util.writelog(self.ERR_COND.format(
+                    store.mas_utils.mas_log.error(self.ERR_COND.format(
                         conditional,
                         str(e)
                     ))
@@ -1116,7 +1114,7 @@ init -880 python:
                         self.executed = self.action(ev=self.ev)
 
             except Exception as e:
-                self.m_util.writelog(self.ERR_COND.format(
+                store.mas_utils.mas_log.error(self.ERR_COND.format(
                     self.conditional,
                     str(e)
                 ))
@@ -1329,21 +1327,21 @@ init -875 python in mas_delact:
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
         # NOTE: commented IDs have been retired
-#        1: _greeting_ourreality_unlock,
-        2: _mas_monika_islands_unlock,
-#        3: _mas_bday_postbday_notimespent_reset,
-#        4: _mas_bday_pool_happy_bday_reset,
-#        5: _mas_bday_surprise_party_cleanup_reset,
-#        6: _mas_bday_surprise_party_hint_reset,
-#        7: _mas_bday_spent_time_with_reset,
-#        8: _mas_d25_holiday_intro_upset_reset,
-#        9: _mas_d25_monika_carolling_reset,
-#        10: _mas_d25_monika_mistletoe_reset,
-#        11: _mas_pf14_monika_lovey_dovey_reset,
-#        12: _mas_f14_monika_vday_colors_reset,
-#        13: _mas_f14_monika_vday_cliches_reset,
-#        14: _mas_f14_monika_vday_chocolates_reset,
-#        15: _mas_f14_monika_vday_origins_reset,
+        # 1: _greeting_ourreality_unlock,
+        # 2: _mas_monika_islands_unlock,
+        # 3: _mas_bday_postbday_notimespent_reset,
+        # 4: _mas_bday_pool_happy_bday_reset,
+        # 5: _mas_bday_surprise_party_cleanup_reset,
+        # 6: _mas_bday_surprise_party_hint_reset,
+        # 7: _mas_bday_spent_time_with_reset,
+        # 8: _mas_d25_holiday_intro_upset_reset,
+        # 9: _mas_d25_monika_carolling_reset,
+        # 10: _mas_d25_monika_mistletoe_reset,
+        # 11: _mas_pf14_monika_lovey_dovey_reset,
+        # 12: _mas_f14_monika_vday_colors_reset,
+        # 13: _mas_f14_monika_vday_cliches_reset,
+        # 14: _mas_f14_monika_vday_chocolates_reset,
+        # 15: _mas_f14_monika_vday_origins_reset,
         16: _mas_birthdate_bad_year_fix,
     }
 
