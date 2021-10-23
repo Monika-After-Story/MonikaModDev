@@ -575,7 +575,7 @@ init -2 python in mas_sprites:
 
             _acs_wear_if_gifted(_moni_chr, "velius94_bunnyscrunchie_blue")
 
-    
+
     def _clothes_briaryoung_shuchiin_academy_uniform_entry(_moni_chr, **kwargs):
         """
         Entry prog point for the shuchiin academy uniform
@@ -596,7 +596,7 @@ init -2 python in mas_sprites:
                 # find ACS and wear for this outfit
                 _acs_wear_if_found(_moni_chr, "briaryoung_front_bow_black")
 
-    
+
     def _clothes_briaryoung_shuchiin_academy_uniform_exit(_moni_chr, **kwargs):
         """
         Exit prog point for the shuchiin academy uniform

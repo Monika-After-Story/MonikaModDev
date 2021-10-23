@@ -11,7 +11,6 @@
     "rec_layer": 5,
     "acs_type": "front-bow",
     "stay_on_start": true,
-    "giftname": "blackfrontbow",
     "dlg_desc": "bow",
     "dlg_plural": false,
     "select_info": {
