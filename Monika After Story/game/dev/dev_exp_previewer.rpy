@@ -18,23 +18,24 @@ label dev_exp_previewer:
     hide monika
     window hide
 
-    $ HKBHideButtons()
-    $ prev_flt = store.mas_sprites.get_filter()
-    #$ store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
-    $ prev_zoom = store.mas_sprites.zoom_level
-    $ store.mas_sprites.reset_zoom()
-    $ prev_moni_state = monika_chr.save_state(True, True, True)
-    $ monika_chr.reset_outfit()
+    python hide:
+        HKBHideButtons()
+        prev_flt = store.mas_sprites.get_filter()
+        # store.mas_sprites.set_filter(store.mas_sprites.FLT_DAY)
+        prev_zoom = store.mas_sprites.zoom_level
+        store.mas_sprites.reset_zoom()
+        prev_moni_state = monika_chr.save_state(True, True, True)
+        monika_chr.reset_outfit()
 
-    $ ui.add(MASExpPreviewer())
-    $ result = ui.interact()
+        ui.add(MASExpPreviewer())
+        result = ui.interact()
 
-    $ monika_chr.reset_outfit()
-    $ monika_chr.load_state(prev_moni_state)
-    $ store.mas_sprites.zoom_level = prev_zoom
-    $ store.mas_sprites.adjust_zoom()
-    $ store.mas_sprites.set_filter(prev_flt)
-    $ HKBShowButtons()
+        monika_chr.reset_outfit()
+        monika_chr.load_state(prev_moni_state)
+        store.mas_sprites.zoom_level = prev_zoom
+        store.mas_sprites.adjust_zoom()
+        store.mas_sprites.set_filter(prev_flt)
+        HKBShowButtons()
 
     show monika at i11
     window auto
@@ -576,7 +577,7 @@ init 999 python:
 
             ### selection map
 
-           # map of directional functions to sprite piece
+            # map of directional functions to sprite piece
             self._selectors = {
                 "arms": self._sel_arms,
                 "blush": self._sel_blush,
@@ -626,7 +627,7 @@ init 999 python:
 
             # need to check which render state we should be in
             if self.spr_tran is None:
-               # dont need to change anything here
+                # dont need to change anything here
                 self.state = self.STATE_INVALID
 
 
@@ -1231,6 +1232,8 @@ init 999 python:
 
                     # Rereender
                     renpy.redraw(self, 0)
+                    # Run gc
+                    renpy.restart_interaction()
 
                 return None
             raise renpy.IgnoreEvent()
