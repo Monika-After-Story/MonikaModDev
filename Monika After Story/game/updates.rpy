@@ -376,13 +376,13 @@ label v0_3_1(version=version): # 0.3.1
 
 # 0.12.4
 label v0_12_4(version="v0_12_4"):
-    python:
+    python hide:
         pass
     return
 
 # 0.12.3.2
 label v0_12_3_2(version="v0_12_3_2"):
-    python:
+    python hide:
         import os
 
         #Delete old utils file
