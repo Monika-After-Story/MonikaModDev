@@ -941,9 +941,18 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
         #   for this background.
-        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
+        if scene_change:
+            if bg_change_info is None or len(bg_change_info) < 1:
+                bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+                mas_current_background._entry_deco(None, bg_change_info)
+
+        elif mas_current_background._deco_man.changed:
+            # not doing scene change, check if deco man changed which means
+            # deco must have been changed somewhere.
             bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._exit_deco(None, bg_change_info)
             mas_current_background._entry_deco(None, bg_change_info)
+            mas_current_background._deco_man.changed = False
 
         # add show/hide statements for decos
         if bg_change_info is not None:
@@ -955,6 +964,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 s_tag_real, s_adf = s_info
                 s_adf.show(s_tag_real)
 
+            if len(bg_change_info) > 0 and not dissolve_all:
+                renpy.with_statement(Dissolve(1.0))
+
+            bg_change_info = None
+            mas_current_background._deco_man.changed = False
+
     # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
@@ -965,14 +980,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
-
-    # ----------- Grouping date-based events since they can never overlap:
-    #O31 stuff
-    # TODO: move this to o31 autoload
-    # NOTE: this does not expect no scene change
-    if persistent._mas_o31_in_o31_mode:
-        $ store.mas_o31ShowVisuals()
-    # ----------- end date-based events
 
     # player bday
     # TODO: move this to bday autoload

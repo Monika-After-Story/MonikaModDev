@@ -261,7 +261,7 @@ init -10 python:
         # lock the event clothes selector
         store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
-         # get back into reasonable clothing, so we queue a change to def
+        # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
             store.queueEvent('mas_change_to_def')
 
@@ -539,13 +539,16 @@ label mas_o31_autoload_check:
 
                 #Vignette on O31
                 store.mas_globals.show_vignette = True
+                # O31 decor
+                mas_o31ShowVisuals()
 
                 #Set by-user to True because we don't want progressive
                 mas_changeWeather(mas_weather_thunder, True)
 
             elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
-                #Setup vignette and thunder on subsequent sessions
+                #Setup vignette, decor, and thunder on subsequent sessions
                 store.mas_globals.show_vignette = True
+                mas_o31ShowVisuals()
                 mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore or we hit dis. It's time to reset
@@ -555,6 +558,7 @@ label mas_o31_autoload_check:
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
             store.mas_globals.show_vignette = True
+            mas_o31ShowVisuals()
             mas_changeWeather(mas_weather_thunder, True)
 
     #Run pbday checks
@@ -696,13 +700,13 @@ label greeting_o31_marisa:
     return
 
 init 5 python:
-   addEvent(
-       Event(
-           persistent.greeting_database,
-           eventlabel="greeting_o31_rin",
-           category=[store.mas_greetings.TYPE_HOL_O31]
-       ),
-       code="GRE"
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_rin",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
     )
 
 label greeting_o31_rin:
@@ -841,6 +845,51 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5kua "Though I might make some exceptions, ehehe~"
     show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eua "Anyway..."
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+
+#Chika intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_briaryoung_shuchiin_academy_uniform",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_briaryoung_shuchiin_academy_uniform:
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+
+    #moni is off-screen
+    if not persistent._mas_o31_relaunch:
+        m "Ugh..."
+        m "How {i}is{/i} this bow supposed to stay there?"
+        m "People can say what they want about my ribbon, but at least it's somewhat practical..."
+        m "...I guess that will work, hopefully it doesn't fall off as soon as--{nw}"
+        m "Time to find out..."
+
+    else:
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Almost ready, [player]..."
+        m "Just trying to figure out how this bow is supposed to stay on."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Hopefully that's good enough!"
+
+    #show moni now
+    call mas_transition_from_emptydesk("monika 2hub")
+
+    m 2hub "Welcome back!"
+    m 2eub "Well, what do you think?"
+    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+
+    if mas_isMoniAff(higher=True):
+        m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
+
+    m 3hua "Ehehe~"
     m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
@@ -1019,9 +1068,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "bye_trick_or_treat",
-       mas_o31,
-       mas_o31 + datetime.timedelta(days=1),
+        "bye_trick_or_treat",
+        mas_o31,
+        mas_o31 + datetime.timedelta(days=1),
     )
 
 label bye_trick_or_treat:
@@ -2501,9 +2550,9 @@ init 5 python:
 
     #Undo Action Rule
     MASUndoActionRule.create_rule_EVL(
-       "mas_d25_monika_carolling",
-       mas_d25c_start,
-       mas_d25p,
+        "mas_d25_monika_carolling",
+        mas_d25c_start,
+        mas_d25p,
     )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
@@ -2560,9 +2609,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_d25_monika_mistletoe",
-       mas_d25c_start,
-       mas_d25p,
+        "mas_d25_monika_mistletoe",
+        mas_d25c_start,
+        mas_d25p,
     )
 
 label mas_d25_monika_mistletoe:
@@ -5491,7 +5540,7 @@ label greeting_returned_home_player_bday:
         call return_home_post_player_bday
 
     if mas_isD25() and not persistent._mas_d25_in_d25_mode:
-         call mas_d25_monika_holiday_intro_rh_rh
+        call mas_d25_monika_holiday_intro_rh_rh
     return
 
 label return_home_post_player_bday:
@@ -5717,7 +5766,7 @@ label mas_pf14_monika_lovey_dovey:
 
 init 5 python:
     addEvent(
-       Event(
+        Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_valentines_intro',
             action=EV_ACT_PUSH,
@@ -5928,9 +5977,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_colors",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_colors",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_colors:
@@ -5973,9 +6022,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_cliches",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_cliches",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_cliches:
@@ -6011,9 +6060,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_chocolates",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_chocolates",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_chocolates:
@@ -6050,9 +6099,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_origins",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_origins",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_origins:
