@@ -70,7 +70,7 @@ init 22 python in mas_compliments:
     
     hair_quips = [
                 _("I'm really happy that you like this hairstyle!"),
-                _("I'm really happy that you like my hair!")
+                _("I'm really happy that you like my hair!"),
                 _("I can't wait until the day you'll be able to run your fingers through it..."),
     ]
             
