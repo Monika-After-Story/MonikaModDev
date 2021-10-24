@@ -8,7 +8,7 @@ init 10 python:
 init -989 python:
     #Log initialized submods
     if store.mas_submod_utils.submod_map:
-        store.mas_submod_utils.writeLog(
+        mas_submod_utils.submod_log.info(
             "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
                     ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
@@ -27,9 +27,9 @@ init -991 python in mas_submod_utils:
 
     persistent = store.persistent
 
-    log = store.mas_utils.getMASLog("log/submod_log", append=True, flush=True)
-    log.write("VERSION: {0}".format(persistent.version_number))
+    submod_log = store.mas_logging.init_log("submod_log")
 
+    @store.mas_utils.deprecated(use_instead="submod_log.debug, submod_log.info, submod_log.warning, submod_log.error, submod_log.exception")
     def writeLog(msg):
         """
         Writes to the submod log if it is open
@@ -37,7 +37,7 @@ init -991 python in mas_submod_utils:
         IN:
             msg - message to write to log
         """
-        log.write(msg)
+        submod_log.info(msg)
 
     submod_map = dict()
 
@@ -398,7 +398,7 @@ init -980 python in mas_submod_utils:
                 try:
                     store.__run(_action, getArgs(key, _action))
                 except Exception as ex:
-                    store.mas_utils.writelog("[ERROR]: function {0} failed because {1}\n".format(_action.__name__, ex))
+                    store.mas_utils.mas_log.error("function {0} failed because {1}".format(_action.__name__, ex))
 
             else:
                 store.__run(_action, getArgs(key, _action))
@@ -435,12 +435,12 @@ init -980 python in mas_submod_utils:
 
         #Verify that the function is callable
         if not callable(_function):
-            store.mas_utils.writelog("[ERROR]: {0} is not callable\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("{0} is not callable".format(_function.__name__))
             return False
 
         #Too many args
         elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.writelog("[ERROR]: Too many args provided for function {0}\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
             return False
 
         #Check for overrides
@@ -506,7 +506,7 @@ init -980 python in mas_submod_utils:
 
         #Too many args provided
         elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.writelog("[ERROR]: Too many args provided for function {0}\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
             return False
 
         #Otherwise we can set
