@@ -6208,13 +6208,15 @@ init 2 python:
         #3 conditions:
 
         #1. Do we even have plushie enabled?
-        #2. Is it f14? (heartchoc gift interferes)
+        #2.1 Is it f14? (heartchoc gift interferes)
+        #2.2 Is it o31? (o31 desk acs interferes)
         #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
             not persistent._mas_acs_enable_quetzalplushie
             or mas_isF14()
+            or mas_isO31()
             or MASConsumable._getCurrentFood()
         ):
             # run the plushie exit PP in case plushie is no longer enabled
