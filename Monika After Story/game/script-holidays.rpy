@@ -196,18 +196,128 @@ init -810 python:
     ))
 
 # Images
-# TODO: export lighting as its own layer
-image mas_o31_deco = ConditionSwitch(
-    "mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/o31/halloween_deco.png",
-    "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+image mas_o31_ceiling_lights = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/ceiling_lights.png",
+    highlight=MASFilterMap(night="0")
 )
 
+image mas_o31_candles = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/candles.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_jack_o_lantern = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/jackolantern.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_wall_candle = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/wall_candle.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_cat_frame:
+    block:
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_0.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-1.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-2.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-3.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-1.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-2.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-3.png")
+
+    30
+    repeat
+
+image mas_o31_garlands = MASFilterSwitch("mod_assets/location/spaceroom/o31/garland.png")
+image mas_o31_cobwebs = MASFilterSwitch("mod_assets/location/spaceroom/o31/wall_webs.png")
+image mas_o31_window_ghost = MASFilterSwitch("mod_assets/location/spaceroom/o31/window_ghost.png")
+image mas_o31_ceiling_deco = MASFilterSwitch("mod_assets/location/spaceroom/o31/ceiling_deco.png")
+image mas_o31_wall_bats = MASFilterSwitch("mod_assets/location/spaceroom/o31/wall_bats.png")
+
+image mas_o31_vignette = Image("mod_assets/location/spaceroom/o31/vignette.png")
+
 init 501 python:
+    #On the wall/window
     MASImageTagDecoDefinition.register_img(
-        "mas_o31_deco",
+        "mas_o31_wall_candle",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_cat_frame",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_wall_bats",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_window_ghost",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_cobwebs",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    #In front of the wall
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_candles",
         store.mas_background.MBG_DEF,
         MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_jack_o_lantern",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_garlands",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    #Middle of the room
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_ceiling_lights",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    #This goes in front of lights
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_ceiling_deco",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=6)
+    )
+
+    #Vignette goes in front of Monika
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_vignette",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=21) #21 to be in front of all cgs
     )
 
 init python:
@@ -240,7 +350,18 @@ init -10 python:
         """
         Shows o31 visuals
         """
-        mas_showDecoTag("mas_o31_deco")
+        mas_showDecoTag("mas_o31_wall_candle")
+        mas_showDecoTag("mas_o31_cat_frame")
+        mas_showDecoTag("mas_o31_wall_bats")
+        mas_showDecoTag("mas_o31_window_ghost")
+        mas_showDecoTag("mas_o31_cobwebs")
+        mas_showDecoTag("mas_o31_candles")
+        mas_showDecoTag("mas_o31_jack_o_lantern")
+        mas_showDecoTag("mmas_o31_garlands")
+        mas_showDecoTag("mas_o31_ceiling_lights")
+        mas_showDecoTag("mas_o31_ceiling_deco")
+        mas_showDecoTag("mas_o31_vignette")
+
         monika_chr.wear_acs(mas_acs_lantern_unlit)
         mas_o31SelectAndWearJoL()
 
@@ -248,10 +369,18 @@ init -10 python:
         """
         Hides o31 visuals + vignette
         """
-        mas_hideDecoTag("mas_o31_deco")
-        renpy.hide("vignette")
-        #Also going to stop vignette from showing on subsequent spaceroom calls
-        store.mas_globals.show_vignette = False
+        mas_hideDecoTag("mas_o31_wall_candle")
+        mas_hideDecoTag("mas_o31_cat_frame")
+        mas_hideDecoTag("mas_o31_wall_bats")
+        mas_hideDecoTag("mas_o31_window_ghost")
+        mas_hideDecoTag("mas_o31_cobwebs")
+        mas_hideDecoTag("mas_o31_candles")
+        mas_hideDecoTag("mas_o31_jack_o_lantern")
+        mas_hideDecoTag("mmas_o31_garlands")
+        mas_hideDecoTag("mas_o31_ceiling_lights")
+        mas_hideDecoTag("mas_o31_ceiling_deco")
+        mas_hideDecoTag("mas_o31_vignette")
+
         #Also, if we're hiding visuals, we're no longer in o31 mode
         store.persistent._mas_o31_in_o31_mode = False
 
@@ -593,8 +722,6 @@ label mas_o31_autoload_check:
                 #Now that we're here, we're in O31 mode
                 persistent._mas_o31_in_o31_mode = True
 
-                #Vignette on O31
-                store.mas_globals.show_vignette = True
                 # O31 decor
                 mas_o31ShowVisuals()
 
@@ -602,8 +729,6 @@ label mas_o31_autoload_check:
                 mas_changeWeather(mas_weather_thunder, True)
 
             elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
-                #Setup vignette, decor, and thunder on subsequent sessions
-                store.mas_globals.show_vignette = True
                 mas_o31ShowVisuals()
                 mas_changeWeather(mas_weather_thunder, True)
 
@@ -614,7 +739,6 @@ label mas_o31_autoload_check:
 
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
-            store.mas_globals.show_vignette = True
             mas_o31ShowVisuals()
             mas_changeWeather(mas_weather_thunder, True)
 
