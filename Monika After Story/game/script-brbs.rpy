@@ -609,10 +609,22 @@ init 5 python:
 
 label monika_idle_homework:
     if mas_isMoniNormal(higher=True):
-        m 1eub "Oh, okay!"
-        m 1hua "I'm proud of you for taking your studies seriously."
-        m 1eka "Don't forget to come back to me when you're done~"
-
+        $ randomresponse = 0
+        $ randomresponse = renpy.random.randomint(1, 3)
+        if randomresponse = 1:
+            m 1eub "Oh, okay!"
+            m 1hua "I'm proud of you for taking your studies seriously."
+            m 1eka "Don't forget to come back to me when you're done~"
+        elif randomresponse = 2:
+            m 2eua "Alright!"
+            m 6lksdlb "I hope you don't have too much work to do!"
+            m 7nua "I'll be rooting for you~"
+        elif randomresponse = 3:
+            m 1hua "Okay!"
+            m 2eksdrb "Just make sure to get it done right rather than fast!"
+            m 3lksdrc "I'd feel horrible if you rushed through it to get back to me and got a bad grade."
+            m 5eubla "I'll wait here as long as it takes you to get done with your work~"
+            
     elif mas_isMoniDis(higher=True):
         m 2euc "Alright...{w=0.5}"
         if random.randint(1,5) == 1:
@@ -628,6 +640,8 @@ label monika_idle_homework:
     return "idle"
 
 label monika_idle_homework_callback:
+    $ homeworkdone = true
+    #Variable that affects Monika's response to the player saying they are either proud of themself, anxious, tired, or hungry. Should either reset in a set amount of time or by the next time the player opens up the game (currently set to 15 minutes--todo)
     if mas_isMoniDis(higher=True):
         m 2esa "All done, [player]?"
 
