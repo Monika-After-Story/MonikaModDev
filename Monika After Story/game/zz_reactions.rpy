@@ -1681,10 +1681,12 @@ label mas_reaction_candy:
         hide screen mas_py_console_teaching
         show monika at t11
 
-    $ mas_receivedGift("mas_reaction_candy")
-    $ gift_ev_cat = mas_getEVLPropValue("mas_reaction_candy", "category")
-    $ store.mas_filereacts.delete_file(gift_ev_cat)
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
+    python hide:
+        mas_receivedGift("mas_reaction_candy")
+        mas_o31SelectAndWearJoL()# NOTE: must be done here
+        gift_ev_cat = mas_getEVLPropValue("mas_reaction_candy", "category")
+        store.mas_filereacts.delete_file(gift_ev_cat)
+        persistent._mas_filereacts_reacted_map.pop(gift_ev_cat, None)
     return
 
 init 5 python:

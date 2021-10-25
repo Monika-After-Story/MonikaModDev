@@ -2673,7 +2673,7 @@ init -1 python:
         ),
         priority=13,
         acs_type="jack_o_lantern",
-        mux_type=["flowers"],
+        mux_type=["flowers", "jack_o_lantern"],
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_candy_jack_empty)
@@ -2691,7 +2691,7 @@ init -1 python:
         ),
         priority=13,
         acs_type="jack_o_lantern",
-        mux_type=["flowers"],
+        mux_type=["flowers", "jack_o_lantern"],
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_candy_jack_half)
@@ -2709,7 +2709,7 @@ init -1 python:
         ),
         priority=13,
         acs_type="jack_o_lantern",
-        mux_type=["flowers"],
+        mux_type=["flowers", "jack_o_lantern"],
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_candy_jack_brim)
@@ -2727,7 +2727,7 @@ init -1 python:
         ),
         priority=13,
         acs_type="lantern",
-        mux_type=store.mas_sprites.DEF_MUX_LD,
+        mux_type=["lantern"] + store.mas_sprites.DEF_MUX_LD,
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_lantern_unlit)
@@ -2745,7 +2745,7 @@ init -1 python:
         ),
         priority=13,
         acs_type="lantern",
-        mux_type=store.mas_sprites.DEF_MUX_LD,
+        mux_type=["lantern"] + store.mas_sprites.DEF_MUX_LD,
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_lantern_lit)

@@ -242,6 +242,7 @@ init -10 python:
         """
         mas_showDecoTag("mas_o31_deco")
         monika_chr.wear_acs(mas_acs_lantern_unlit)
+        mas_o31SelectAndWearJoL()
 
     def mas_o31HideVisuals():
         """
@@ -301,6 +302,24 @@ init -10 python:
 
         for acs_ in o31_desk_acs_tuple:
             monika_chr.remove_acs(acs_)
+
+    def mas_o31SelectAndWearJoL():
+        """
+        Selects appropriate jack of lantern and wears it
+        """
+        total_candy = mas_getGiftStatsForDate("mas_reaction_candy")
+        total_tot = persistent._mas_o31_tt_count
+
+        if total_candy >= 2 and total_tot > 0:
+            acs_ = mas_acs_candy_jack_brim
+
+        elif total_candy >= 1 or total_tot > 0:
+            acs_ = mas_acs_candy_jack_half
+
+        else:
+            acs_ = mas_acs_candy_jack_empty
+
+        monika_chr.wear_acs(acs_)
 
     def mas_o31CapGainAff(amount):
         """
