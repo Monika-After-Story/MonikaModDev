@@ -2660,6 +2660,96 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_roses)
 
+    ### DESK JACK O LANTERN (EMPTY)
+    ## candy_jack_empty
+    # smirk pumpkin to be palced on Monika's desk
+    # Thanks JMO
+    mas_acs_candy_jack_empty = MASAccessory(
+        "candy_jack_empty",
+        "candy_jack_empty",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=13,
+        acs_type="jack_o_lantern",
+        mux_type=["flowers"],
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_candy_jack_empty)
+
+    ### DESK JACK O LANTERN (HALF-FULL)
+    ## candy_jack_half
+    # smirk pumpkin to be palced on Monika's desk
+    # Thanks JMO
+    mas_acs_candy_jack_half = MASAccessory(
+        "candy_jack_half",
+        "candy_jack_half",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=13,
+        acs_type="jack_o_lantern",
+        mux_type=["flowers"],
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_candy_jack_half)
+
+    ### DESK JACK O LANTERN (FULL)
+    ## candy_jack_brim
+    # smirk pumpkin to be palced on Monika's desk
+    # Thanks JMO
+    mas_acs_candy_jack_brim = MASAccessory(
+        "candy_jack_brim",
+        "candy_jack_brim",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=13,
+        acs_type="jack_o_lantern",
+        mux_type=["flowers"],
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_candy_jack_brim)
+
+    ### DESK LANTERN (EXTINGUISHED)
+    ## lantern_unlit
+    # stylish old-school lantern to be palced on Monika's desk
+    # Thanks JMO
+    mas_acs_lantern_unlit = MASAccessory(
+        "lantern_unlit",
+        "lantern_unlit",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=13,
+        acs_type="lantern",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_lantern_unlit)
+
+    ### DESK LANTERN (LIT)
+    ## lantern_lit
+    # stylish old-school lantern to be palced on Monika's desk
+    # Thanks JMO
+    mas_acs_lantern_lit = MASAccessory(
+        "lantern_lit",
+        "lantern_lit",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=13,
+        acs_type="lantern",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_lantern_lit)
+
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
 # please comment the groups and usage like so:
