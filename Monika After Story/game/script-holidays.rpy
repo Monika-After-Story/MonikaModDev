@@ -241,6 +241,7 @@ init -10 python:
         Shows o31 visuals
         """
         mas_showDecoTag("mas_o31_deco")
+        monika_chr.wear_acs(mas_acs_lantern_unlit)
 
     def mas_o31HideVisuals():
         """
@@ -264,6 +265,42 @@ init -10 python:
         # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
             store.queueEvent('mas_change_to_def')
+
+    def mas_hasO31DeskAcs():
+        """
+        Checks if we have any o31 desk acs
+
+        OUT:
+            boolean
+        """
+        o31_desk_acs_tuple = (
+            mas_acs_lantern_unlit,
+            mas_acs_lantern_lit,
+            mas_acs_candy_jack_empty,
+            mas_acs_candy_jack_half,
+            mas_acs_candy_jack_brim
+        )
+
+        for acs_ in o31_desk_acs_tuple:
+            if monika_chr.is_wearing_acs(acs_):
+                return True
+
+        return False
+
+    def mas_o31HideDeskAcs():
+        """
+        Removes o31 desk acs
+        """
+        o31_desk_acs_tuple = (
+            mas_acs_lantern_unlit,
+            mas_acs_lantern_lit,
+            mas_acs_candy_jack_empty,
+            mas_acs_candy_jack_half,
+            mas_acs_candy_jack_brim
+        )
+
+        for acs_ in o31_desk_acs_tuple:
+            monika_chr.remove_acs(acs_)
 
     def mas_o31CapGainAff(amount):
         """
@@ -554,6 +591,7 @@ label mas_o31_autoload_check:
         #It's not O31 anymore or we hit dis. It's time to reset
         elif not mas_isO31() or mas_isMoniDis(lower=True):
             mas_o31Cleanup()
+            mas_o31HideDeskAcs()
 
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
@@ -613,14 +651,41 @@ init 5 python:
     )
 
 label mas_o31_cleanup:
+    python:
+        o31_desk_acs_tuple = (
+            mas_acs_lantern_unlit,
+            mas_acs_lantern_lit,
+            mas_acs_candy_jack_empty,
+            mas_acs_candy_jack_half,
+            mas_acs_candy_jack_brim
+        )
+
     m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            acs_.keep_on_desk = False
+
     call mas_transition_to_emptydesk
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            monika_chr.remove_acs(acs_)
+            acs_.keep_on_desk = True
+
     pause 4.0
+
     $ mas_o31Cleanup()
+
     with dissolve
     pause 1.0
+
     call mas_transition_from_emptydesk("monika 1hua")
+
     m 3hua "All done~"
+
+    $ del o31_desk_acs_tuple
+
     return
 
 ### o31 greetings
@@ -1338,6 +1403,44 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     $ mas_rmallEVL("mas_o31_cleanup")
 
     m 3hua "There we go!"
+    return
+
+label mas_o31_desk_acs_cleanup:
+    python:
+        o31_desk_acs_tuple = (
+            mas_acs_lantern_unlit,
+            mas_acs_lantern_lit,
+            mas_acs_candy_jack_empty,
+            mas_acs_candy_jack_half,
+            mas_acs_candy_jack_brim
+        )
+
+    # Sanity check
+    if not any(map(monika_chr.is_wearing_acs, o31_desk_acs_tuple)):
+        return
+
+    m 1esd "Oh, I should also clean up my desk a bit."
+    m 1eua "Give me a moment, [player].{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            acs_.keep_on_desk = False
+
+    call mas_transition_to_emptydesk
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            monika_chr.remove_acs(acs_)
+            acs_.keep_on_desk = True
+
+        renpy.pause(4.0, hard=True)
+
+    call mas_transition_from_emptydesk("monika 1eua")
+
+    m 1hua "Back!"
+
+    $ del o31_desk_acs_tuple
+
     return
 
 label greeting_trick_or_treat_back_costume:
@@ -5574,6 +5677,7 @@ label return_home_post_player_bday:
         #If player told Moni their birthday on day of (o31)
         if not persistent._mas_player_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
             call mas_o31_ret_home_cleanup(time_out, ret_tt_long=False)
+            call mas_o31_desk_acs_cleanup
 
     $ persistent._mas_player_bday_decor = False
     return
