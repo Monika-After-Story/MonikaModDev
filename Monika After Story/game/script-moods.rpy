@@ -119,24 +119,32 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
-    m 3hub "If you're hungry, go get something to eat, silly."
-    if store.mas_egg_manager.natsuki_enabled():
-        m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
-        # natsuki hungers easter egg
-        call natsuki_name_scare_hungry from _mas_nnsh
+    if homeworkdone = true:
+        m 3hub "Hungry from all that brain usage, [player]?"
+        $ randfood = renpy.random.choice(['dark chocolate', 'mixed nuts', 'berries'])
+        m 4eua "I heard that [ranfood] is good for your brain during and after studying!"
+        m 2eua "I'll wait here if you decide to go and eat something, but don't put it off for too long!"
+        
     else:
-        m 1hua "It'd be bad for you to get all grumpy when you're hungry."
+        
+        m 3hub "If you're hungry, go get something to eat, silly."
+        if store.mas_egg_manager.natsuki_enabled():
+            m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
+            # natsuki hungers easter egg
+            call natsuki_name_scare_hungry from _mas_nnsh
+        else:
+            m 1hua "It'd be bad for you to get all grumpy when you're hungry."
 
-    m 3tku "That wouldn't be any fun, would it, [player]?"
-    m 1eua "If I were there with you, I'd make a salad for us to share."
-    m "But since I'm not, go pick something healthy to eat."
-    m 3eub "They say you are what you eat, and I definitely think that's true."
-    m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
-    m 1euc "Over time, you'd encounter a lot of health problems when you get older."
-    m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
-    m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
-    m 4esa "After all, the healthier you are, the better the chances of you living quite long."
-    m 1hua "Which means more time for us to spend together!~"
+        m 3tku "That wouldn't be any fun, would it, [player]?"
+        m 1eua "If I were there with you, I'd make a salad for us to share."
+        m "But since I'm not, go pick something healthy to eat."
+        m 3eub "They say you are what you eat, and I definitely think that's true."
+        m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
+        m 1euc "Over time, you'd encounter a lot of health problems when you get older."
+        m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
+        m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
+        m 4esa "After all, the healthier you are, the better the chances of you living quite long."
+        m 1hua "Which means more time for us to spend together!~"
     return
 
 init 5 python:
@@ -193,35 +201,45 @@ init 5 python:
     )
 
 label mas_mood_proud:
-    m 2sub "Really? That's exciting!"
-    m 2eub "Was it a major accomplishment, or a minor one?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Was it a major accomplishment, or a minor one?{fast}"
-        "Major.":
-            m 1ekc "You know, [player]..."
-            m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
-            m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
-            m 3eub "There's nothing quite like sharing your accomplishments with the people you care about."
-            m 1eua "I would love nothing more than to hear all of the details!"
-            m "Just the thought of us, in cheerful discussion about what you've done..."
-            m 1lsbsa "My heart is fluttering just thinking about it!"
-            m 1lksdla "Gosh, I'm getting awfully excited about this..."
-            m 3hub "It'll be reality someday..."
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5hubfb "But until then, just know that I'm very proud of you, [mas_get_player_nickname()]!"
+    if homeworkdone = true:
+    #Maybe add different dialogues for the first and subsequent times the player chooses this
+        m 1eua "Is this about your homework being completed, [player]?
+        #Can't decide wether to add a 'yes' or 'no' menu here
+        m 6wub "That's really great!"
+        m 7esa "Even if it's just completing your homework, feeling proud of an accomplishment is important motivation for the future!"
+        m 3esd "I hope that you regularly complete your homework assignments, but if for whatever reason you don't, I hope this encourages you to at least try it more often."
+        m 2eka "If you're ever feeling discouraged, homework or not, come to me."
+        m 5hkbsb "I'll always be here to support you, [mas_get_player_nickname()]~"
+    else:
+        m 2sub "Really? That's exciting!"
+        m 2eub "Was it a major accomplishment, or a minor one?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Was it a major accomplishment, or a minor one?{fast}"
+            "Major.":
+                m 1ekc "You know, [player]..."
+                m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
+                m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
+                m 3eub "There's nothing quite like sharing your accomplishments with the people you care about."
+                m 1eua "I would love nothing more than to hear all of the details!"
+                m "Just the thought of us, in cheerful discussion about what you've done..."
+                m 1lsbsa "My heart is fluttering just thinking about it!"
+                m 1lksdla "Gosh, I'm getting awfully excited about this..."
+                m 3hub "It'll be reality someday..."
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5hubfb "But until then, just know that I'm very proud of you, [mas_get_player_nickname()]!"
 
-        "Minor.":
-            m 2hub "Ahaha!~"
-            m 2hua "That's wonderful!"
-            m 4eua "It's very important to celebrate the small victories in life."
-            m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
-            m 2rksdla "They can be challenging to reach on their own."
-            m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
-            m 4hub "So keep hitting those small goals, [mas_get_player_nickname()]!"
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            m 5hubfb "And remember, I love you, and I'm always cheering you on!"
-            $ mas_ILY()
+            "Minor.":
+                m 2hub "Ahaha!~"
+                m 2hua "That's wonderful!"
+                m 4eua "It's very important to celebrate the small victories in life."
+                m 2esd "It can be very easy to become discouraged if you only focus on the bigger goals you have."
+                m 2rksdla "They can be challenging to reach on their own."
+                m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
+                m 4hub "So keep hitting those small goals, [mas_get_player_nickname()]!"
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+                m 5hubfb "And remember, I love you, and I'm always cheering you on!"
+                $ mas_ILY()
     return
 
 init 5 python:
@@ -294,34 +312,38 @@ label mas_mood_tired:
     # TODO: should we adjust for suntime?
     $ current_time = datetime.datetime.now().time()
     $ current_hour = current_time.hour
+        if homeworkdone = true:
+            m 3eua "You just finished your homework, right?"
+            m 6eub "Go ahead and take a nap. You deserve it."
+            m 1eua "I'll be waiting until you wake up."
+        elif:
+            if 20 <= current_hour < 23:
+                m 1eka "If you're tired now, it's not a bad time to go to bed."
+            m "As fun as it was spending time with you today, I would hate to keep you up too late."
+            m 1hua "If you plan to go to sleep now, sweet dreams!"
+            m 1eua "But maybe you have some things to do first, like getting a bit of a snack or a drink."
+            m 3eua "Having a glass of water before bed helps with your health, and doing the same in the morning helps you wake up."
+            m 1eua "I don't mind staying here with you if you have some things to take care of first."
 
-    if 20 <= current_hour < 23:
-        m 1eka "If you're tired now, it's not a bad time to go to bed."
-        m "As fun as it was spending time with you today, I would hate to keep you up too late."
-        m 1hua "If you plan to go to sleep now, sweet dreams!"
-        m 1eua "But maybe you have some things to do first, like getting a bit of a snack or a drink."
-        m 3eua "Having a glass of water before bed helps with your health, and doing the same in the morning helps you wake up."
-        m 1eua "I don't mind staying here with you if you have some things to take care of first."
+        elif 0 <= current_hour < 3 or 23 <= current_hour < 24:
+            m 2ekd "[player]!"
+            m 2ekc "It's no wonder you're tired- It's the middle of the night!"
+            m 2lksdlc "If you don't go to bed soon, you'll be really tired tomorrow, too..."
+            m 2hksdlb "I wouldn't want you to be tired and miserable tomorrow when we spend time together..."
+            m 3eka "So do us both a favor and get to bed as soon as you can, [player]."
 
-    elif 0 <= current_hour < 3 or 23 <= current_hour < 24:
-        m 2ekd "[player]!"
-        m 2ekc "It's no wonder you're tired- It's the middle of the night!"
-        m 2lksdlc "If you don't go to bed soon, you'll be really tired tomorrow, too..."
-        m 2hksdlb "I wouldn't want you to be tired and miserable tomorrow when we spend time together..."
-        m 3eka "So do us both a favor and get to bed as soon as you can, [player]."
-
-    elif 3 <= current_hour < 5:
-        m 2ekc "[player]!?"
-        m "You're still here?"
-        m 4lksdlc "You should really be in bed right now."
-        m 2dsc "At this point, I'm not even sure if you would call this late or early..."
-        m 2eksdld "...and that just worries me even more, [player]."
-        m "You should {i}really{/i} get to bed before it's time to start the day."
-        m 1eka "I wouldn't want you falling asleep at a bad time."
-        m "So please, sleep so we can be together in your dreams."
-        m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
-        return
-
+        elif 3 <= current_hour < 5:
+            m 2ekc "[player]!?"
+            m "You're still here?"
+            m 4lksdlc "You should really be in bed right now."
+            m 2dsc "At this point, I'm not even sure if you would call this late or early..."
+            m 2eksdld "...and that just worries me even more, [player]."
+            m "You should {i}really{/i} get to bed before it's time to start the day."
+            m 1eka "I wouldn't want you falling asleep at a bad time."
+            m "So please, sleep so we can be together in your dreams."
+            m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
+       return
+    
     elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
         m "It's still early in the morning, so you could go back and rest a little more."
@@ -431,32 +453,40 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
-    m 1euc "[player], are you alright?"
-    m 1ekc "It's worrying for me to hear you this anxious..."
-    m "I wish I could comfort you and help right now..."
-    m 3eka "But I can at the very least help you to calm yourself down."
-    if seen_event("monika_anxious"):
-        m 1eua "After all, I did promise to help you relax if you ever felt anxious."
-    m 3eua "Do you remember when I talked to you about faking confidence?"
-    if not seen_event("monika_confidence"):
-        m 2euc "No?"
-        m 2lksdla "Guess that's for another time then."
-        m 1eka "Anyway..."
-    m 1eua "Keeping up one's appearance helps with faking your own confidence."
-    m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
-    if seen_event("monika_confidence_2"):
-        m "I remember explaining how initiative is an important skill to have as well."
-    m "Maybe you could take things slowly, and do them one at a time."
-    m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
-    m 1hub "You can also try spending a few minutes to meditate!"
-    m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
-    m 1hua "Listening to your favorite music can be counted as meditating too!"
-    m 3eub "I'm serious!"
-    m 3eua "You can try setting aside your work and do something else in the meantime."
-    m "Procrastination isn't {i}always{/i} bad, you know?"
-    m 2esc "Besides..."
-    m 2ekbsa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
-    m 1hubfa "There's nothing to worry about when we're together forever~"
+    if homeworkdone = true:
+        m 2ekc "Aww, [player], is this about school?"
+        m 3ekd "I wish I could help you, but seeing that I'm stuck here, all I can do is try to make you feel a bit better."
+        m 1rkd "Sometimes you just have to remember that failure is a temporary thing, as all bad things are."
+        m 2ekc "I'm sure that there will be chances to raise your grades, if that's what you're worried about."
+        m 3eubsa "In the meantime, I'll be here to support you."
+        
+    else:
+        m 1euc "[player], are you alright?"
+        m 1ekc "It's worrying for me to hear you this anxious..."
+        m "I wish I could comfort you and help right now..."
+        m 3eka "But I can at the very least help you to calm yourself down."
+        if seen_event("monika_anxious"):
+            m 1eua "After all, I did promise to help you relax if you ever felt anxious."
+        m 3eua "Do you remember when I talked to you about faking confidence?"
+       if not seen_event("monika_confidence"):
+            m 2euc "No?"
+            m 2lksdla "Guess that's for another time then."
+            m 1eka "Anyway..."
+        m 1eua "Keeping up one's appearance helps with faking your own confidence."
+        m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
+        if seen_event("monika_confidence_2"):
+            m "I remember explaining how initiative is an important skill to have as well."
+        m "Maybe you could take things slowly, and do them one at a time."
+        m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
+        m 1hub "You can also try spending a few minutes to meditate!"
+        m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
+        m 1hua "Listening to your favorite music can be counted as meditating too!"
+        m 3eub "I'm serious!"
+        m 3eua "You can try setting aside your work and do something else in the meantime."
+        m "Procrastination isn't {i}always{/i} bad, you know?"
+        m 2esc "Besides..."
+        m 2ekbsa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+        m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
 init 5 python:
