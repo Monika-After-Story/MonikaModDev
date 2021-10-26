@@ -73,6 +73,56 @@ python early:
 
         # NOTE: extended classes should impelement the render function.
 
+        def apply_filter(self, img_base, flt=None):
+            """
+            Applies the current filter to the given image base.
+
+            IN:
+                img_base - the image to apply filter to
+                flt - filter to use, leave None to use the internal filter.
+            """
+            if flt is None:
+                flt = self.flt
+            return store.mas_sprites._gen_im(flt, img_base)
+
+        def current_filter(self):
+            """
+            Gets the current filter (not internal)
+
+            RETURNS: the current filter
+            """
+            return store.mas_sprites.get_filter()
+
+        def per_interact(self):
+            """
+            Decides if this displayable should be redrawn on an interaction.
+            """
+            if self.update_filter():
+                renpy.redraw(self, 0)
+
+        def safe_apply_filter(self, img_base):
+            """
+            Updates the filter before applying it.
+
+            IN:
+                img_base - the image to apply filter to
+            """
+            self.update_filter()
+            return self.apply_filter(img_base)
+
+        def update_filter(self):
+            """
+            Updates the internal filter
+
+            RETURNS: True if the filter chagned
+            """
+            new_flt = self.current_filter()
+            if new_flt != self.flt:
+                self.flt = new_flt
+                return True
+
+            return False
+
 
     class MASFilterableSprite(MASFilterable):
         """
@@ -1364,7 +1414,7 @@ init -4 python in mas_sprites:
         """
         if cid == CID_DYNAMIC:
             # dynamic sprites are not cached.
-            return _gen_im(flt, img_base)
+            return img_base
 
         img_cache = _gc(cid)
         if key in img_cache:
@@ -1399,6 +1449,15 @@ init -4 python in mas_sprites:
             render_list - list to add IMs to
         """
         img_key, cid, img_base, hl_base = render_key
+        if cid == CID_DYNAMIC:
+            # add the img and hl directly 
+            if img_base is not None:
+                render_list.append(img_base)
+            if hl_base is not None:
+                render_list.append(hl_base)
+
+            return
+
         img_cache = _gc(cid)
         hl_key = _hlify(img_key, cid)
         if img_key in img_cache:
@@ -1537,7 +1596,7 @@ init -4 python in mas_sprites:
                 return
 
             # ACS enabled for this pose - add the disps
-            rk_list.append((None, CID_DYNAMIC, acs.disp, acs.hl_disp))
+            rk_list.append((None, CID_DYNAMIC, acs.disp, None))
             return
 
         # get arm code if needed
