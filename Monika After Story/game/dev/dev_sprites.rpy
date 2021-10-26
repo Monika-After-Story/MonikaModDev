@@ -489,6 +489,7 @@ init -1 python:
             bat_lvl = self.get_bat_lvl()
             if bat_lvl is None:
                 return renpy.Render(self.width, self.height)
+            self._curr_bat_lvl = bat_lvl
 
             img_base, hl_base = self.gen_ims(bat_lvl)
 
