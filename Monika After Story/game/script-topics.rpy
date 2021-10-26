@@ -3140,7 +3140,7 @@ label monika_cold:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_housewife",category=['monika','romance'],prompt="Would you be my housewife?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_housewife",category=['monika','romance'],prompt="Would you ever want to be a housewife?",pool=True))
 
 label monika_housewife:
     m 3euc "You know, it's funny, because even though I've always had a lot of drive..."
