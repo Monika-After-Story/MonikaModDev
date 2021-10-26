@@ -455,3 +455,128 @@ label dev_closed_eye_tears_test:
 
     m 1wuw "all other closed-eye-tear combinations are not supported"
     return
+
+init -1 python:
+
+    # dynamic
+    class Dev_DynamicACSBattery(store.MASFilterable):
+        def __init__(self):
+            super(Dev_DynamicACSBattery, self).__init__()
+            self._default = "dev/dyn_sprites/battery_base.png",
+            self._bat_base = "dev/dyn_sprites/battery_base_{0}.png"
+            self._bat_lvl = "dev/dyn_sprites/battery_{0}.png"
+            self._curr_bat_lvl = self.get_bat_lvl()
+
+        def get_bat_lvl(self):
+            try:
+                return store.battery_level
+            except:
+                return None
+
+        def gen_ims(self, bat_lvl):
+            # determine file path
+            if 1 <= bat_lvl <= 6:
+                return (
+                    self._bat_base.format(bat_lvl),
+                    self._bat_lvl.format(bat_lvl)
+                )
+
+            return self._default, None
+
+        def render(self, width, height, st, at):
+            self.update_filter()
+
+            bat_lvl = self.get_bat_lvl()
+            if bat_lvl is None:
+                return renpy.Render(self.width, self.height)
+            self._curr_bat_lvl = bat_lvl
+
+            img_base, hl_base = self.gen_ims(bat_lvl)
+
+            img_base = self.apply_filter(img_base)
+            
+            rv = renpy.Render(width, height)
+
+            # start rendering
+            img_base = renpy.render(img_base, width, height, st, at)
+            rv.blit(img_base, (0, 0))
+
+            if hl_base is not None:
+                hl_base = renpy.render(Image(hl_base), width, height, st, at)
+                rv.blit(hl_base, (0, 0))
+
+            return rv
+
+        def per_interact(self):
+            if self.update_filter() or self._curr_bat_lvl != self.get_bat_lvl():
+                renpy.redraw(self, 0)
+
+        def visit(self):
+            curr_flt = self.current_filter()
+
+            bat_lvl = self.get_bat_lvl()
+            if bat_lvl is None:
+                return []
+
+            img_base, hl_base = self.gen_ims(bat_lvl)
+            img_base = self.apply_filter(img_base, curr_flt)
+
+            if hl_base is None:
+                return [img_base]
+
+            return [img_base, Image(hl_base)]
+
+    # test accessory
+    dev_acs_battery = MASDynamicAccessory(
+        "dev_battery",
+        disp=Dev_DynamicACSBattery(),
+        pose_map=MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        acs_type="dev"
+    )
+    store.mas_sprites.init_acs(dev_acs_battery)
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_dynamic_acs_test",
+            category=["dev"],
+            prompt="TEST DYNAMIC ACS",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_dynamic_acs_test:
+    
+    m 6eua "now to test dynamic ACS"
+    $ battery_level = 0
+    $ monika_chr.wear_acs(dev_acs_battery)
+    m 6eub "there is now battery on my right"
+    m "The battery should be filtered, and this is an ACS. Don't believe me?"
+    show monika at t33
+    m "alright. Now I will be counting from 1-6, and the number on the bottom left of this battery will change. There will also be squares unaffected by the current filter appearing in the middle."
+
+    m 6eua "Lets go!"
+    $ battery_level = 1
+    m "1"
+    $ battery_level = 2
+    m "2"
+    $ battery_level = 3
+    m "3"
+    $ battery_level = 4
+    m "4"
+    $ battery_level = 5
+    m "5"
+    $ battery_level = 6
+    m "6"
+    
+    m 6eua "now to take away acs"
+    $ monika_chr.remove_acs(dev_acs_battery)
+
+    m 6wuw "All done!"
+
+    return
