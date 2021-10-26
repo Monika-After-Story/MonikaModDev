@@ -2317,8 +2317,8 @@ default persistent._date_last_given_roses = None
 label mas_reaction_gift_roses:
     python:
         gift_ev_cat = mas_getEVLPropValue("mas_reaction_gift_roses", "category")
-
-        monika_chr.wear_acs(mas_acs_roses)
+        if not mas_isO31():
+            monika_chr.wear_acs(mas_acs_roses)
 
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
@@ -2365,7 +2365,12 @@ label mas_reaction_gift_roses:
                 m 1ekbsa "You're always so sweet."
 
             #Random chance (unless f14) for her to do the ear rose thing
-            if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
+            if (
+                (mas_isSpecialDay() and renpy.random.randint(1,2) == 1)
+                or renpy.random.randint(1,4) == 1
+                or mas_isF14()
+                or mas_isO31()
+            ):
                 if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
                     m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)

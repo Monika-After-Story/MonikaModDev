@@ -990,7 +990,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
-    if datetime.date.today() == persistent._date_last_given_roses:
+    if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
     # dissolving everything means dissolve last

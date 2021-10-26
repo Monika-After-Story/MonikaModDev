@@ -2333,7 +2333,11 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+    if (
+        checkout_time is not None
+        and checkout_time.date() == persistent._date_last_given_roses
+        and not mas_isO31()
+    ):
         $ monika_chr.wear_acs(mas_acs_roses)
 
     # dont want users using our promises
@@ -2349,7 +2353,11 @@ label mas_dockstat_found_monika:
     $ persistent._mas_pm_taken_monika_out = True
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
-    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+    if (
+        checkout_time is not None
+        and checkout_time.date() == persistent._date_last_given_roses
+        and not mas_isO31()
+    ):
         $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
