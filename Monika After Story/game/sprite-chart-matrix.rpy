@@ -929,6 +929,9 @@ init -4 python in mas_sprites:
     CID_HLG = 8
     CID_BG = 9 # TODO: maybe
 
+    # special cache ids - not actually used in the cache table.
+    CID_DYNAMIC = -2
+
     # several caches for images
 
     CACHE_TABLE = {
@@ -1102,15 +1105,20 @@ init -4 python in mas_sprites:
             if render_key[1] == store.mas_sprites.CID_FACE:
                 return None
 
-            # add cache id to front for highlight key
-            hl_key = (render_key[1],) + render_key[0]
+            if render_key[1] == store.mas_sprites.CID_DYNAMIC:
+                # dynamic sprites should just use the "image base" passed in
+                img_base = render_key[3]
 
-            # check highlight cache
-            img_base = store.mas_sprites._cs_im(
-                hl_key,
-                store.mas_sprites.CID_HL,
-                render_key[3]
-            )
+            else:
+                # add cache id to front for highlight key
+                hl_key = (render_key[1],) + render_key[0]
+
+                # check highlight cache
+                img_base = store.mas_sprites._cs_im(
+                    hl_key,
+                    store.mas_sprites.CID_HL,
+                    render_key[3]
+                )
 
             if img_base is not None:
                 render_list.append(renpy.render(
@@ -1136,7 +1144,6 @@ init -4 python in mas_sprites:
 
             RETURNS: rendered surf image to use
             """
-            # render this bitch
             new_surf = renpy.render(
                 store.mas_sprites._cgen_im(
                     self.flt,
@@ -1355,6 +1362,10 @@ init -4 python in mas_sprites:
 
         RETURNS: Image Manipulator for this render
         """
+        if cid == CID_DYNAMIC:
+            # dynamic sprites are not cached.
+            return _gen_im(flt, img_base)
+
         img_cache = _gc(cid)
         if key in img_cache:
             return img_cache[key]
@@ -1516,6 +1527,18 @@ init -4 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
         poseid = acs.pose_map.get(leanpose, None)
+
+        # dynamic check
+        if acs.is_dynamic():
+            # in this case, the poseid is True/False to signify whether or
+            # not its enabled.
+
+            if not poseid:
+                return
+
+            # ACS enabled for this pose - add the disps
+            rk_list.append((None, CID_DYNAMIC, acs.disp, acs.hl_disp))
+            return
 
         # get arm code if needed
         # NOTE: we can be sure that a nonsplit acs will not be used in

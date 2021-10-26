@@ -5252,6 +5252,7 @@ init -3 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.is_custom = False
+            self._dynamic = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -5443,6 +5444,14 @@ init -3 python:
 
             return self.hl_map.keys()
 
+        def is_dynamic(self):
+            """
+            Is this a dynamic sprite?
+
+            REUTRNS: True if this is a dynamic sprite
+            """
+            return self._dynamic
+
         def rmprop(self, prop):
             """
             Removes the prop from this sprite's ex_props, if it exists
@@ -5467,6 +5476,21 @@ init -3 python:
                 return sprite_base.name
 
             return ""
+
+    class MASDynamicSpriteBase(renpy.store.object):
+        """
+        Special sprite type for dynamic sprites - all dynamic based sprites
+        should inherit this as a 2nd type and call dyn_init in init
+
+        PROPERTIES:
+            disp - Displayable to associate with this sprite. Can be dynamic.
+            hl_disp - Displayable to use for highlights. Can be dynamic.
+        """
+
+        def dyn_init(self, disp, hl_disp=None):
+            self.disp = disp
+            self.hl_disp = hl_disp
+            self._dynamic = True
 
     class MASSpriteFallbackBase(MASSpriteBase):
         """
@@ -6494,6 +6518,98 @@ init -3 python:
             RETURNS: True if valid, false if not
             """
             return value in cls.__MHM_KEYS
+
+
+    class MASDynamicAccessory(MASAccessoryBase, MASDynamicSpriteBase):
+        """
+        A Dynamic MAS Accessory
+
+        PROPERTIES:
+            No Additional.
+        See MASAccessory and MASDynamicSpriteBase for inherited properties.
+        """
+
+        def __init__(self,
+                name,
+                disp,
+                pose_map,
+                rec_layer=MASMonika.PST_ACS,
+                priority=10,
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None,
+                acs_type=None,
+                mux_type=None,
+                ex_props=None,
+                dlg_data=None,
+                keep_on_desk=False,
+                hl_disp=None,
+        ):
+            """
+            Dynamic accessory constructor.
+
+            For simplicity, this passes in fake values to the accessory base.
+
+            IN:
+                name - name of this accessory
+                disp - displayable to associate with this accessory. Can be
+                    dynamic.
+                pose_map - MASPoseMap - this is assumed to be in enable/disable
+                    mode.
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                acs_type - type, for ease of organization of acs
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
+                    (Default: None)
+                mux_type - list of acs types that should be
+                    mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
+                    (Default: None)
+                ex_props - dict of additional properties to apply to this
+                    sprite object.
+                    (Default: None)
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                    (Default: None)
+                keep_on_desk - determines if ACS should be shown if monika
+                    leaves
+                    (Default: False)
+                hl_disp - displayable to use fo rhighlights. Can be dynamic.
+            """
+            super(MASDynamicAccessory, self).__init__(
+                name,
+                "",
+                pose_map,
+                rec_layer=rec_layer,
+                priority=priority,
+                stay_on_start=stay_on_start,
+                entry_pp=entry_pp,
+                exit_pp=exit_pp,
+                acs_type=acs_type,
+                mux_type=mux_type,
+                ex_props=ex_props,
+                dlg_data=dlg_data,
+                keep_on_desk=keep_on_desk
+            )
+            self.dyn_init(disp, hl_disp=hl_disp)
 
 
     class MASHair(MASSpriteFallbackBase):
