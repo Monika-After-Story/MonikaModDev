@@ -362,8 +362,8 @@ init -10 python:
         mas_showDecoTag("mas_o31_ceiling_deco")
         mas_showDecoTag("mas_o31_vignette")
 
-        monika_chr.wear_acs(mas_acs_lantern_unlit)
-        mas_o31SelectAndWearJoL()
+        monika_chr.wear_acs(mas_acs_desk_lantern)
+        monika_chr.wear_acs(mas_acs_desk_candy_jack)
 
     def mas_o31HideVisuals():
         """
@@ -404,11 +404,8 @@ init -10 python:
             boolean
         """
         o31_desk_acs_tuple = (
-            mas_acs_lantern_unlit,
-            mas_acs_lantern_lit,
-            mas_acs_candy_jack_empty,
-            mas_acs_candy_jack_half,
-            mas_acs_candy_jack_brim
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
         )
 
         for acs_ in o31_desk_acs_tuple:
@@ -422,33 +419,12 @@ init -10 python:
         Removes o31 desk acs
         """
         o31_desk_acs_tuple = (
-            mas_acs_lantern_unlit,
-            mas_acs_lantern_lit,
-            mas_acs_candy_jack_empty,
-            mas_acs_candy_jack_half,
-            mas_acs_candy_jack_brim
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
         )
 
         for acs_ in o31_desk_acs_tuple:
             monika_chr.remove_acs(acs_)
-
-    def mas_o31SelectAndWearJoL():
-        """
-        Selects appropriate jack of lantern and wears it
-        """
-        total_candy = mas_getGiftStatsForDate("mas_reaction_candy")
-        total_tot = persistent._mas_o31_tt_count
-
-        if total_candy >= 2 and total_tot > 0:
-            acs_ = mas_acs_candy_jack_brim
-
-        elif total_candy >= 1 or total_tot > 0:
-            acs_ = mas_acs_candy_jack_half
-
-        else:
-            acs_ = mas_acs_candy_jack_empty
-
-        monika_chr.wear_acs(acs_)
 
     def mas_o31CapGainAff(amount):
         """
@@ -796,11 +772,8 @@ init 5 python:
 label mas_o31_cleanup:
     python:
         o31_desk_acs_tuple = (
-            mas_acs_lantern_unlit,
-            mas_acs_lantern_lit,
-            mas_acs_candy_jack_empty,
-            mas_acs_candy_jack_half,
-            mas_acs_candy_jack_brim
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
         )
 
     m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
