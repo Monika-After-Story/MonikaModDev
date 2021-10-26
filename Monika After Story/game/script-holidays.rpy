@@ -357,7 +357,7 @@ init -10 python:
         mas_showDecoTag("mas_o31_cobwebs")
         mas_showDecoTag("mas_o31_candles")
         mas_showDecoTag("mas_o31_jack_o_lantern")
-        mas_showDecoTag("mmas_o31_garlands")
+        mas_showDecoTag("mas_o31_garlands")
         mas_showDecoTag("mas_o31_ceiling_lights")
         mas_showDecoTag("mas_o31_ceiling_deco")
         mas_showDecoTag("mas_o31_vignette")
@@ -369,17 +369,17 @@ init -10 python:
         """
         Hides o31 visuals + vignette
         """
-        mas_hideDecoTag("mas_o31_wall_candle")
-        mas_hideDecoTag("mas_o31_cat_frame")
-        mas_hideDecoTag("mas_o31_wall_bats")
-        mas_hideDecoTag("mas_o31_window_ghost")
-        mas_hideDecoTag("mas_o31_cobwebs")
-        mas_hideDecoTag("mas_o31_candles")
-        mas_hideDecoTag("mas_o31_jack_o_lantern")
-        mas_hideDecoTag("mmas_o31_garlands")
-        mas_hideDecoTag("mas_o31_ceiling_lights")
-        mas_hideDecoTag("mas_o31_ceiling_deco")
-        mas_hideDecoTag("mas_o31_vignette")
+        mas_hideDecoTag("mas_o31_wall_candle", hide_now=True)
+        mas_hideDecoTag("mas_o31_cat_frame", hide_now=True)
+        mas_hideDecoTag("mas_o31_wall_bats", hide_now=True)
+        mas_hideDecoTag("mas_o31_window_ghost", hide_now=True)
+        mas_hideDecoTag("mas_o31_cobwebs", hide_now=True)
+        mas_hideDecoTag("mas_o31_candles", hide_now=True)
+        mas_hideDecoTag("mas_o31_jack_o_lantern", hide_now=True)
+        mas_hideDecoTag("mas_o31_garlands", hide_now=True)
+        mas_hideDecoTag("mas_o31_ceiling_lights", hide_now=True)
+        mas_hideDecoTag("mas_o31_ceiling_deco", hide_now=True)
+        mas_hideDecoTag("mas_o31_vignette", hide_now=True)
 
         #Also, if we're hiding visuals, we're no longer in o31 mode
         store.persistent._mas_o31_in_o31_mode = False
@@ -821,7 +821,7 @@ label mas_o31_cleanup:
     $ mas_o31Cleanup()
 
     with dissolve
-    pause 1.0
+    pause 2.0
 
     call mas_transition_from_emptydesk("monika 1hua")
 
@@ -1539,50 +1539,7 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
-    m 1eua "I'll just take these decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
-
-    #Hide vis
-    $ mas_o31HideVisuals()
-    $ mas_rmallEVL("mas_o31_cleanup")
-
-    m 3hua "There we go!"
-    return
-
-label mas_o31_desk_acs_cleanup:
-    python:
-        o31_desk_acs_tuple = (
-            mas_acs_lantern_unlit,
-            mas_acs_lantern_lit,
-            mas_acs_candy_jack_empty,
-            mas_acs_candy_jack_half,
-            mas_acs_candy_jack_brim
-        )
-
-    # Sanity check
-    if not any(map(monika_chr.is_wearing_acs, o31_desk_acs_tuple)):
-        return
-
-    m 1esd "Oh, I should also clean up my desk a bit."
-    m 1eua "Give me a moment, [player].{w=0.3}.{w=0.3}.{w=0.3}{nw}"
-
-    python hide:
-        for acs_ in o31_desk_acs_tuple:
-            acs_.keep_on_desk = False
-
-    call mas_transition_to_emptydesk
-
-    python hide:
-        for acs_ in o31_desk_acs_tuple:
-            monika_chr.remove_acs(acs_)
-            acs_.keep_on_desk = True
-
-        renpy.pause(4.0, hard=True)
-
-    call mas_transition_from_emptydesk("monika 1eua")
-
-    m 1hua "Back!"
-
-    $ del o31_desk_acs_tuple
+    call mas_o31_cleanup
 
     return
 
@@ -5820,7 +5777,6 @@ label return_home_post_player_bday:
         #If player told Moni their birthday on day of (o31)
         if not persistent._mas_player_bday_decor and not mas_isO31() and persistent._mas_o31_in_o31_mode:
             call mas_o31_ret_home_cleanup(time_out, ret_tt_long=False)
-            call mas_o31_desk_acs_cleanup
 
     $ persistent._mas_player_bday_decor = False
     return
