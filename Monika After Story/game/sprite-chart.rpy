@@ -5487,7 +5487,7 @@ init -3 python:
             hl_disp - Displayable to use for highlights. Can be dynamic.
         """
 
-        def dyn_init(self, disp):
+        def dyn_init(self, disp, hl_disp=None):
             self.disp = disp
             self.hl_disp = hl_disp
             self._dynamic = True
