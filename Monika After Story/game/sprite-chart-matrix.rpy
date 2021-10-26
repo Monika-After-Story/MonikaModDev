@@ -1596,7 +1596,7 @@ init -4 python in mas_sprites:
                 return
 
             # ACS enabled for this pose - add the disps
-            rk_list.append((None, CID_DYNAMIC, acs.disp, None))
+            rk_list.append((None, CID_DYNAMIC, acs.disp, acs.hl_disp))
             return
 
         # get arm code if needed

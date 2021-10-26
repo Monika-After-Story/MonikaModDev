@@ -557,7 +557,7 @@ label dev_dynamic_acs_test:
     m 6eub "there is now battery on my right"
     m "The battery should be filtered, and this is an ACS. Don't believe me?"
     show monika at t33
-    m "alright. Now I will be counting from 1-7, and the number on the bottom left of this battery will change. There will also be squares unaffected by the current filter appearing in the middle."
+    m "alright. Now I will be counting from 1-6, and the number on the bottom left of this battery will change. There will also be squares unaffected by the current filter appearing in the middle."
 
     m 6eua "Lets go!"
     $ battery_level = 1

@@ -5484,10 +5484,12 @@ init -3 python:
 
         PROPERTIES:
             disp - Displayable to associate with this sprite. Can be dynamic.
+            hl_disp - Displayable to use for highlights. Can be dynamic.
         """
 
         def dyn_init(self, disp):
             self.disp = disp
+            self.hl_disp = hl_disp
             self._dynamic = True
 
     class MASSpriteFallbackBase(MASSpriteBase):
@@ -6542,7 +6544,8 @@ init -3 python:
                 mux_type=None,
                 ex_props=None,
                 dlg_data=None,
-                keep_on_desk=False
+                keep_on_desk=False,
+                hl_disp=None
         ):
             """
             Dynamic accessory constructor.
@@ -6591,6 +6594,8 @@ init -3 python:
                 keep_on_desk - determines if ACS should be shown if monika
                     leaves
                     (Default: False)
+                hl_disp - displayable to use for Highlights. Can be dynamic.
+                    (Default: None)
             """
             super(MASDynamicAccessory, self).__init__(
                 MASAccessoryBase.ASO_REG, # no support for split
@@ -6608,7 +6613,7 @@ init -3 python:
                 dlg_data=dlg_data,
                 keep_on_desk=keep_on_desk
             )
-            self.dyn_init(disp)
+            self.dyn_init(disp, hl_disp=hl_disp)
 
 
     class MASHair(MASSpriteFallbackBase):
