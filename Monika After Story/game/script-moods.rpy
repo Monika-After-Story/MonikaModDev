@@ -113,9 +113,9 @@ label mas_mood_start:
 
 
 # reset parameters for the brbdone variable
-     if not brbdone = none:
-         wait 900
-         $ brbdone = none
+    if not brbdone = none:
+        pause 900
+        $ brbdone = none
 
 ###############################################################################
 #### Mood events go here:
@@ -125,14 +125,12 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
-    if brbdone = homework
+    if brbdone = homework:
         m 3hub "Hungry from all that brain usage, [player]?"
         $ randfood = renpy.random.choice(['dark chocolate', 'mixed nuts', 'berries'])
         m 4eua "I heard that [ranfood] is good for your brain during and after studying!"
         m 2eua "I'll wait here if you decide to go and eat something, but don't put it off for too long!"
-        
     else:
-        
         m 3hub "If you're hungry, go get something to eat, silly."
         if store.mas_egg_manager.natsuki_enabled():
             m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
@@ -209,7 +207,7 @@ init 5 python:
 label mas_mood_proud:
     if brbdone = homework:
     #Maybe add different dialogues for the first and subsequent times the player chooses this
-        m 1eua "Is this about your homework being completed, [player]?
+        m 1eua "Is this about your homework being completed, [player]?"
         #Can't decide wether to add a 'yes' or 'no' menu here
         m 6wub "That's really great!"
         m 7esa "Even if it's just completing your homework, feeling proud of an accomplishment is important motivation for the future!"
@@ -318,37 +316,38 @@ label mas_mood_tired:
     # TODO: should we adjust for suntime?
     $ current_time = datetime.datetime.now().time()
     $ current_hour = current_time.hour
-        if brbdone = homework:
-            m 3eua "You just finished your homework, right?"
-            m 6eub "Go ahead and take a nap. You deserve it."
-            m 1eua "I'll be waiting until you wake up."
-        elif:
-            if 20 <= current_hour < 23:
-                m 1eka "If you're tired now, it's not a bad time to go to bed."
-            m "As fun as it was spending time with you today, I would hate to keep you up too late."
-            m 1hua "If you plan to go to sleep now, sweet dreams!"
-            m 1eua "But maybe you have some things to do first, like getting a bit of a snack or a drink."
-            m 3eua "Having a glass of water before bed helps with your health, and doing the same in the morning helps you wake up."
-            m 1eua "I don't mind staying here with you if you have some things to take care of first."
+    if brbdone = homework:
+        m 3eua "You just finished your homework, right?"
+        m 6eub "Go ahead and take a nap. You deserve it."
+        m 1eua "I'll be waiting until you wake up."
+    
+    
+    elif 20 <= current_hour < 23:
+        m 1eka "If you're tired now, it's not a bad time to go to bed."
+        m "As fun as it was spending time with you today, I would hate to keep you up too late."
+        m 1hua "If you plan to go to sleep now, sweet dreams!"
+        m 1eua "But maybe you have some things to do first, like getting a bit of a snack or a drink."
+        m 3eua "Having a glass of water before bed helps with your health, and doing the same in the morning helps you wake up."
+        m 1eua "I don't mind staying here with you if you have some things to take care of first."
+ 
+    elif 0 <= current_hour < 3 or 23 <= current_hour < 24:
+        m 2ekd "[player]!"
+        m 2ekc "It's no wonder you're tired- It's the middle of the night!"
+        m 2lksdlc "If you don't go to bed soon, you'll be really tired tomorrow, too..."
+        m 2hksdlb "I wouldn't want you to be tired and miserable tomorrow when we spend time together..."
+        m 3eka "So do us both a favor and get to bed as soon as you can, [player]."
 
-        elif 0 <= current_hour < 3 or 23 <= current_hour < 24:
-            m 2ekd "[player]!"
-            m 2ekc "It's no wonder you're tired- It's the middle of the night!"
-            m 2lksdlc "If you don't go to bed soon, you'll be really tired tomorrow, too..."
-            m 2hksdlb "I wouldn't want you to be tired and miserable tomorrow when we spend time together..."
-            m 3eka "So do us both a favor and get to bed as soon as you can, [player]."
-
-        elif 3 <= current_hour < 5:
-            m 2ekc "[player]!?"
-            m "You're still here?"
-            m 4lksdlc "You should really be in bed right now."
-            m 2dsc "At this point, I'm not even sure if you would call this late or early..."
-            m 2eksdld "...and that just worries me even more, [player]."
-            m "You should {i}really{/i} get to bed before it's time to start the day."
-            m 1eka "I wouldn't want you falling asleep at a bad time."
-            m "So please, sleep so we can be together in your dreams."
-            m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
-       return
+    elif 3 <= current_hour < 5:
+        m 2ekc "[player]!?"
+        m "You're still here?"
+        m 4lksdlc "You should really be in bed right now."
+        m 2dsc "At this point, I'm not even sure if you would call this late or early..."
+        m 2eksdld "...and that just worries me even more, [player]."
+        m "You should {i}really{/i} get to bed before it's time to start the day."
+        m 1eka "I wouldn't want you falling asleep at a bad time."
+        m "So please, sleep so we can be together in your dreams."
+        m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
+        return
     
     elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
@@ -378,7 +377,7 @@ label mas_mood_tired:
         m 3euc "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
         m 3ekd "It can really mess with your health, [player]..."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
-
+    
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
     m "...Ehehe."
     m 2hksdlb "That sounded a bit creepy, sorry."
@@ -474,7 +473,7 @@ label mas_mood_scared:
         if seen_event("monika_anxious"):
             m 1eua "After all, I did promise to help you relax if you ever felt anxious."
         m 3eua "Do you remember when I talked to you about faking confidence?"
-       if not seen_event("monika_confidence"):
+        if not seen_event("monika_confidence"):
             m 2euc "No?"
             m 2lksdla "Guess that's for another time then."
             m 1eka "Anyway..."
