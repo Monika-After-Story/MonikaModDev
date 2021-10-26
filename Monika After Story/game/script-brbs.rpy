@@ -135,15 +135,22 @@ label monika_brb_idle_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
-        m 1hub "Welcome back, [player]. I missed you~"
-        m 1eua "[wb_quip]"
+        response = renpy.random.randint(1, 2)
+            if response = 1:
+                m 1hub "Welcome back, [player]. I missed you~"
+                m 1eua "[wb_quip]"
+            elif response = 2:
+                m 1eub "There you are! {w=0.2} {nw}"
+                extend 1hub "I was starting to get bored!"
+                #May change to 'miss you' or something a bit more passive in the future
+                m 1eua "[wb_quip]"
 
-    elif mas_isMoniNormal(higher=True):
-        m 1hub "Welcome back, [player]!"
-        m 1eua "[wb_quip]"
+        elif mas_isMoniNormal(higher=True):
+            m 1hub "Welcome back, [player]!"
+            m 1eua "[wb_quip]"
 
-    else:
-        call mas_brb_generic_low_aff_callback
+        else:
+            call mas_brb_generic_low_aff_callback
 
     return
 
@@ -171,14 +178,21 @@ label monika_writing_idle:
             m "Oh! You're going to{fast} go write something?"
 
         else:
-            m 1eub "Oh! You're going to go write something?"
-
-        m 1hua "That makes me so glad!"
-        m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
-        extend 3hua "I'd love to read your work, [player]!"
-        m 3eua "Anyway, just let me know when you're done."
-        m 1hua "I'll be waiting right here for you~"
-
+             response = renpy.random.randint (1,2)
+             if response = 1:
+                 m 1eub "Oh! You're going to go write something?"
+                 m 1hua "That makes me so glad!"
+                 m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
+                 extend 3hua "I'd love to read your work, [player]!"
+                 m 3eua "Anyway, just let me know when you're done."
+                 m 1hua "I'll be waiting right here for you~"
+             elif response = 2:
+                 m 2eua "Off to write something?"
+                 m 5hub "Maybe I should do the same!"
+                 m 1lubsa "It's been a while since I wrote a poem for you..."
+                 #Maybe add a variable that counts how long since Monika has last written the player a poem for higher accuracy?
+                 m 7eusdlb "Anyway, make sure to enjoy yourself!"
+                 m 1eua "I'll be here waiting when you finish!"
     elif mas_isMoniUpset():
         m 2esc "Alright."
 
@@ -196,6 +210,8 @@ label monika_writing_idle:
     return "idle"
 
 label monika_writing_idle_callback:
+    $ brbdone = writing
+    #Variable that affects Monika's response to the player saying they are either proud of themself or angry. Should reset in 15 minutes, when the game opens again, or when a new value is assigned (To be added).
 
     if mas_isMoniNormal(higher=True):
         $ wb_quip = mas_brbs.get_wb_quip()
@@ -649,8 +665,8 @@ label monika_idle_homework:
 label monika_idle_homework_callback:
 <<<<<<< HEAD
 =======
-    $ homeworkdone = true
-    #Variable that affects Monika's response to the player saying they are either proud of themself, anxious, tired, or hungry. Should either reset in a set amount of time or by the next time the player opens up the game (currently set to 15 minutes--todo)
+    $ brbdone = homework
+    #Variable that affects Monika's response to the player saying they are either proud of themself, anxious, tired, or hungry. Should reset in 15 minutes, when the game is opened again, or when a new value is assigned to the variable (to be added)
 >>>>>>> parent of 1b1b7b690 (Update script-brbs.rpy)
     if mas_isMoniDis(higher=True):
         m 2esa "All done, [player]?"

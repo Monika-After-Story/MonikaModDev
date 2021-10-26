@@ -111,6 +111,12 @@ label mas_mood_start:
 
 # dev easter eggs go in the dev file
 
+
+# reset parameters for the brbdone variable
+     if not brbdone = none:
+         wait 900
+         $ brbdone = none
+
 ###############################################################################
 #### Mood events go here:
 ###############################################################################
@@ -119,7 +125,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
-    if homeworkdone = true:
+    if brbdone = homework
         m 3hub "Hungry from all that brain usage, [player]?"
         $ randfood = renpy.random.choice(['dark chocolate', 'mixed nuts', 'berries'])
         m 4eua "I heard that [ranfood] is good for your brain during and after studying!"
@@ -201,7 +207,7 @@ init 5 python:
     )
 
 label mas_mood_proud:
-    if homeworkdone = true:
+    if brbdone = homework:
     #Maybe add different dialogues for the first and subsequent times the player chooses this
         m 1eua "Is this about your homework being completed, [player]?
         #Can't decide wether to add a 'yes' or 'no' menu here
@@ -312,7 +318,7 @@ label mas_mood_tired:
     # TODO: should we adjust for suntime?
     $ current_time = datetime.datetime.now().time()
     $ current_hour = current_time.hour
-        if homeworkdone = true:
+        if brbdone = homework:
             m 3eua "You just finished your homework, right?"
             m 6eub "Go ahead and take a nap. You deserve it."
             m 1eua "I'll be waiting until you wake up."
@@ -453,7 +459,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
-    if homeworkdone = true:
+    if brbdone = homework:
         m 2ekc "Aww, [player], is this about school?"
         m 3ekd "I wish I could help you, but seeing that I'm stuck here, all I can do is try to make you feel a bit better."
         m 1rkd "Sometimes you just have to remember that failure is a temporary thing, as all bad things are."
