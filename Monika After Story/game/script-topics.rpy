@@ -17572,46 +17572,49 @@ init 5 python:
 
 label monika_zodiac_starsign:
     m 1lua "Well, I'm pretty sure I'm a Virgo."
+    
     #This next line is just checking the player's starsign based on their birthday.
-    if mas_player_bday.month = 1 and mas_player_bday.day in range (1,19) or if mas_player_bday.month = 12 and mas_player_bday.day in range (22,31):
+
+    if mas_player_bday.month == 1 and 19 <= mas_player_bday.day or if mas_player_bday.month == 12 and 22<= mas_player_bday.day <= 31:
+    #ie. If the player's birthday  is between December 22nd and January 19th.
         m 1rub "And you'd be a... Capricorn, right?"
-        return
-    elif mas_player_bday.month = 1 and mas_player_bday.day in range (20,31) or if masplayer_bday.month = 2 and mas_player_bday.day in range (1,19):
-        m 1rub "And you'd be an Aquarius, I think."
-        return
-    elif mas_player_bday.month = 2 and mas_player_bday.day in range (20,29) or if mas_player_bday.month = 3 and mas_player_bday.day in range (1,20):
+        
+    elif mas_player_bday.month == 1 and 20 <= mas_player_bday.day <= 31 or if masplayer_bday.month == 2 and 1 <= mas_player_bday.day <= 19:
+        m 1rub "And you'd be an Aquarius, I think." #Aquarius is between January 2th and February 19th.
+        
+    elif mas_player_bday.month == 2 and 20 <= mas_player_bday.day <=29 or if mas_player_bday.month == 3 and 1 <= mas_player_bday.day <= 20:
         m 1rub "And I think {i}you'd{/i} be a Pisces."
-        return
-    elif mas_player_bday.month = 3 and mas_player_bday.day in range (21,31) or if mas_player_bday.month = 4 and mas_player_bday.day in range (1-21):
+
+    elif mas_player_bday.month == 3 and 21 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 4 and 1 <= mas_player_bday.day <= 21:
         m 1rub "And I think you're an Aries?"
-        return
-    elif mas_player_bday.month = 4 and mas_player_bday.day in range (22,30) or if mas_player_bday.month = 5 and mas_player_bday.day in range (1,21):
+
+    elif mas_player_bday.month == 4 and 22 <= mas_player_bday.day <= 30 or if mas_player_bday.month == 5 and 1 <= mas_player_bday.day <= 21:
         m 1rub "And you're a Taurus..."
-        return
-    elif mas_player_bday.month = 5 and mas_player_bday.day in range (22,31) or if mas_player_bday.month = 6 and mas_player_bday.day in range (1-21):
+
+    elif mas_player_bday.month = 5 and 22 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 6 and 1 <= mas_player_bday.day <= 21:
         m 1rub "And you're a Gemini, right?"
-        return
-    elif mas_player_bday.month = 6 and mas_player_bday.day in range (22,31) or if mas_player_bday.month = 7 and mas_player_bday.day in range (1-22):
+
+    elif mas_player_bday.month == 6 and 22<= mas_player_bday.day <= 31 or if mas_player_bday.month == 7 and 1 <= mas_player_bday.day <= 22:
         m 1rub "And I think you'd be a Cancer, right?"
-        return
-    elif mas_player_bday.month = 7 and mas_player_bday.day in range (23,31) or if mas_player_bday.month = 8 and mas_player_bday.day in range (1,23):
+
+    elif mas_player_bday.month == 7 and 23 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 8 and 1 <= mas_player_bday.day <= 23:
         m 1rub "And I think you're...a Leo."
-        return
-    elif mas_player_bday.month = 8 and mas_player_bday.day in range (24,31) or if mas_player_bday.month = 9 and mas_player_bday.day in range (1,22):
-        m 1eub "And so are you, (mas_get_player_nickname)!"
-        return
-    elif mas_player_bday.month = 9 and mas_player_bday.day in range (23,30) or if mas_player_bday.month = 10 and mas_player_bday.day in range (1,23):
+
+    elif mas_player_bday.month == 8 and 24 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 9 and 1 <= mas_player_bday.day <= 22:
+        m 1eub "And so are you, [mas_get_player_nickname()]!"
+
+    elif mas_player_bday.month == 9 and 23 <= mas_player_bday.day <= 30 or if mas_player_bday.month == 10 and 1 <= mas_player_bday.day <= 23:
         m 1rub "And you're..."
         extend " I believe you'd be a Libra."
-        return
-    elif mas_player_bday.month = 10 and mas_player_bday.day in range (24,31) or if mas_player_bday.month = 11 and mas_player_bday.day in range (1,22):
+     
+    elif mas_player_bday.month == 10 and 24 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 11 and 1 <= mas_player_bday.day <= 22:
         m 1rub "And I'm pretty sure you're a Scorpio."
-        return
-    elif mas_player_bday.month = 11 and mas_player_bday.day in range (23,31) or if mas_player_bday.month = 12 and mas_player_bday.day in range (1,22):
+      
+    elif mas_player_bday.month == 11 and 23 <= mas_player_bday.day <=31 or if mas_player_bday.month = 12 and 1 <= mas_player_bday.day <= 22:
         m 1rub "You, on the other hand, would be a Sagittarius."
-        return
-    else:
-        return
+    
+       
+       
     #The final part pops up regardless of your sign.
     m 3eka "Although, don't you think it's kind of silly?"
     M 3gkb "I mean, objects in space can't {i}really{/i} affect our personality."
