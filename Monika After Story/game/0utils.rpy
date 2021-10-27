@@ -56,9 +56,6 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-
-            _log = super(MASLogFormatter, self).format(record)
-            renpy.say(store.m, "'{0}'".format(_log.replace('[', '[[')))
             return super(MASLogFormatter, self).format(record)
 
         def update_levelname(self, record):
