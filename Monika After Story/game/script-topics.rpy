@@ -17618,6 +17618,6 @@ label monika_zodiac_starsign:
     m 3ekd "Not to mention the fact that some people take it {i}way{}/i} too far."
     m 3eto "Like, they'll judge potential partners and friends based on their sign!"
     m 3tsc "That's something I could never understand."
-    m 3tsblu "Don't worry, (mas_get_player_nickname),"
+    m 3tsblu "Don't worry, [mas_get_player_nickname()],"
     extend 3tublu " I'd never let any silly old stars come between us."
     return
