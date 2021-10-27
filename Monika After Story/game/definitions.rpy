@@ -8332,12 +8332,12 @@ init python:
                 - False otherwise
         """
 
-        if renpy.windows:
-            try:
+        try:
+            if renpy.windows:
                 import ctypes
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
-            except:
-                return False
-        else:
-            import os
-            return os.geteuid() == 0
+            else:
+                import os
+                return os.geteuid() == 0
+        except:
+            return False
