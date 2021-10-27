@@ -2667,9 +2667,9 @@ init -1 python:
     mas_acs_desk_candy_jack = MASDynamicAccessory(
         "desk_candy_jack",
         ConditionSwitch(
-            "persistent._mas_o31_tt_count > 0 and mas_getGiftStatsForDate('mas_reaction_candy') >= 2",
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 2",
             MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_brim-0.png", None),
-            "persistent._mas_o31_tt_count > 0 or mas_getGiftStatsForDate('mas_reaction_candy') >= 1",
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 0",
             MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_half-0.png", None),
             "True",
             MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_empty-0.png", None)

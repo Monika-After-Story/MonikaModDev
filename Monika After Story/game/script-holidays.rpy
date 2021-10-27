@@ -877,6 +877,7 @@ label greeting_o31_marisa:
     m 3ekbsa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
 
+    call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
@@ -941,9 +942,10 @@ label greeting_o31_rin:
     m 1euc "Along with instructions on how to style your hair to go along with this outfit."
     m 3rtc "Judging by these cat ears, I'm guessing this character is a catgirl."
     m 1dtc "...But why would she push a wheelbarrow around?"
-    m 1hksdlb "Anyway, it was a pain getting my hair done...{w=0.2}{nw}"
+    m 1hksdlb "...Oh and it was {i}such{/i} a pain getting my hair done...{w=0.2}{nw}"
     extend 1eub "so I hope you like the costume!"
 
+    call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
@@ -981,7 +983,6 @@ label greeting_o31_orcaramelo_hatsune_miku:
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
-    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
@@ -1026,7 +1027,6 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5kua "Though I might make some exceptions, ehehe~"
     show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
@@ -1071,19 +1071,20 @@ label greeting_o31_briaryoung_shuchiin_academy_uniform:
         m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
 
     m 3hua "Ehehe~"
-    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
 label greeting_o31_deco:
+    m 1eua "Anyway..."
     m 3eua "Do you like what I've done with the room?"
-    m 3eka "One of my favorite parts of Halloween is carving pumpkins..."
-    m 1hub "It's just so fun trying to make scary faces!"
+    m 3tuu "I just love the creepy ambiance associated with Halloween and tried to create a bit of my own."
+    m 1eud "You can really do a lot just with lighting, you know?"
+    m 3tub "Not to mention sometimes the creepiest things of all are those that are just {i}a bit{/i} off..."
     m 1eua "I think the cobwebs are a nice touch as well..."
     m 1rka "{cps=*2}I'm sure Amy would really like them.{/cps}{nw}"
     $ _history_list.pop()
-    m 3tuu "Really creates a creepy vibe, don't you think?"
+    m 3hub "I'm super happy with how it all turned out!"
     return
 
 label greeting_o31_generic:
