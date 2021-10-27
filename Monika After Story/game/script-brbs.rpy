@@ -110,14 +110,38 @@ label monika_brb_idle:
         show monika at t11
 
         if _return:
-            m 1eua "Oh alright.{w=0.2} {nw}"
-            extend 3hub "Hurry back, I'll be waiting here for you~"
+            $ goodbye = renpy.random.randint(1,2)
+            if goodbye = 1:
+                m 1eua "Oh alright.{w=0.2} {nw}"
+                extend 3hub "Hurry back, I'll be waiting here for you~"
+
+            elif goodbye = 2:
+                m 1eua "Okay."
+                m 3hub "I'll be here when you're done!"
 
         else:
-            m 1hub "Hurry back, I'll be waiting here for you~"
+            $ goodbye = renpy.random.randint(1,3)
+            if goodbye = 1:
+                m 1hub "Hurry back, I'll be waiting here for you~"
+
+            elif goodbye = 2:
+                m 1eua "Alright, [mas_get_player_nickname()]."
+                m 1hsb "Don't let me keep you!"
+
+            elif goodbye = 3:
+                m 6hub "Don't dawdle!"
+
+        else:
+            $ goodbye - renpy.random.randint(1,3)
+            if goodbye = 1:
+                m 1hub "Hurry back, I'll be waiting here for you~"
 
     elif mas_isMoniNormal(higher=True):
-        m 1hub "Hurry back, [player]!"
+        $ goodbye = renpy.random.randomint(1,2)
+        if goodbye = 1:
+            m 1hub "Hurry back, [player]!"
+        if goodbye = 2:
+            m 1eua "I'll be waiting!"
 
     elif mas_isMoniDis(higher=True):
         m 2rsc "Oh...{w=0.5}okay."
@@ -135,8 +159,27 @@ label monika_brb_idle_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
-        m 1hub "Welcome back, [player]. I missed you~"
-        m 1eua "[wb_quip]"
+        $response = renpy.random.randint(1,10)
+        if response <= 9:
+            $response = renpy.random.randomint(1,2)
+            if response = 1:
+                m 1hub "Welcome back, [player]. I missed you~"
+                m 1eua "[wb_quip]"
+
+            elif response = 2:
+                m 1eub "There you are! {w=0.2} {nw}"
+                extend 1hub "I was starting to get bored!"
+                #May change to 'miss you' or something a bit more passive in the future
+                m 1eua "[wb_quip]"
+
+        elif response = 10:
+            m 5hubsa "{i}Hmm hmm hmm...{/i} {w=2} {nw}"
+            extend 5wuo "Ah! {nw}"
+            extend 5wubld "[player]!"
+            m 6lubld "You surprised me!"
+            m 6hkblb "I was kind of deep in thought."
+            m 6gkblb "Umm... {w=0.25} {nw}"
+            extend 6ekblb "[wb_quip]"
 
     elif mas_isMoniNormal(higher=True):
         m 1hub "Welcome back, [player]!"
@@ -171,13 +214,22 @@ label monika_writing_idle:
             m "Oh! You're going to{fast} go write something?"
 
         else:
+        $ response = renpy.random.randint(1,2)
+        if response = 1:
             m 1eub "Oh! You're going to go write something?"
+            m 1hua "That makes me so glad!"
+            m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
+            extend 3hua "I'd love to read your work, [player]!"
+            m 3eua "Anyway, just let me know when you're done."
+            m 1hua "I'll be waiting right here for you~"
 
-        m 1hua "That makes me so glad!"
-        m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
-        extend 3hua "I'd love to read your work, [player]!"
-        m 3eua "Anyway, just let me know when you're done."
-        m 1hua "I'll be waiting right here for you~"
+        elif response = 2:
+            m 2eua "Off to write something?"
+            m 5hub "Maybe I should do the same!"
+            m 1lublb "It's been a while since I wrote a poem for you..."
+            #maybe add a variable that counts how many days since monika has last written the player a poem for higher accuracy?
+            m 7eusdlb "Anyway, make sure to enjoy yourself!"
+            m 1eua "I'll be here waiting when you finish!"
 
     elif mas_isMoniUpset():
         m 2esc "Alright."
@@ -196,11 +248,22 @@ label monika_writing_idle:
     return "idle"
 
 label monika_writing_idle_callback:
-
+    $ brbdone = writing
+    #variable that affects monika's response to the player saying they are either proud or themself or angry in moods.rpy.
+    #should reset in a certain time period (maybe), when the game opens again, or when a new value is assigned (to be added).
+    
     if mas_isMoniNormal(higher=True):
+        $respose = renpy.random.randint(1,2)
         $ wb_quip = mas_brbs.get_wb_quip()
-        m 1eua "Done writing, [player]?"
-        m 1eub "[wb_quip]"
+
+        if response = 1:
+            m 1eua "Done writing, [player]?"
+            m 1eub "[wb_quip]"
+
+        elif response = 2:
+            m 1eub "Finished, [mas_get_player_nickname()]?"
+            m 1hub "I hope you got a lot done!"
+            m 2hub "[wb_quip]
 
     else:
         call mas_brb_generic_low_aff_callback
@@ -609,9 +672,23 @@ init 5 python:
 
 label monika_idle_homework:
     if mas_isMoniNormal(higher=True):
-        m 1eub "Oh, okay!"
-        m 1hua "I'm proud of you for taking your studies seriously."
-        m 1eka "Don't forget to come back to me when you're done~"
+        $ randomresponse = renpy.random.randint(1,3)
+
+        if randomresponse = 1:
+            m 1eub "Oh, okay!"
+            m 1hua "I'm proud of you for taking your studies seriously."
+            m 1eka "Don't forget to come back to me when you're done~"
+
+        elif randomresponse = 2:
+            m 2eua "Alright!"
+            m 6lksdlb "I hope you don't have too much work to do!"
+            m 7nua "I'll be rooting for you~"
+
+        elif randomresponse = 3:
+            m 1hua "Okay!"
+            m 2eksdrb "Just make sure to get it done right rather than fast!"
+            m 3lksdrc "I'd feel horrible if you rushed through your work to get back to me and got a bad grade."
+            m 5eubla " I'l wait here as long as it takes you to get done with your work~"
 
     elif mas_isMoniDis(higher=True):
         m 2euc "Alright...{w=0.5}"
@@ -628,18 +705,26 @@ label monika_idle_homework:
     return "idle"
 
 label monika_idle_homework_callback:
+    $brbdone = homework
+    #variable that affects monika's response to the player saying they are either proud of themself, anxious, tired, or hungry.
+    #should reset in a certain amount of time (maybe) when the game is opened again, or when a new value is assigned to the variable (to be added)
     if mas_isMoniDis(higher=True):
-        m 2esa "All done, [player]?"
 
         if mas_isMoniNormal(higher=True):
-            m 2ekc "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
-            m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together."
-
-            if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
+            $ randomresponse = renpy.random.randomint(1,2)
+            if randomresponse = 1:
+                m 2esa "All done, [player]?"
+                m 2ekc "I wish I could've been there to help you, but there isn't much I can do about that just yet, sadly."
+                m 7eua "I'm sure we could both be a lot more efficient doing homework if we could work together."
+                if mas_isMoniAff(higher=True) and random.randint(1,5) == 1:
                 m 3rkbla "...Although, that's assuming we don't get {i}too{/i} distracted, ehehe..."
-
-            m 1eua "But anyway,{w=0.2} {nw}"
-            extend 3hua "now that you're done, let's enjoy some more time together."
+                m 1eua "But anyway,{w=0.2} {nw}"
+                extend 3hua "now that you're done, let's enjoy some more time together."
+            elif randomresponse = 2:
+                m 2eua "Finished?"
+                m 1hub "Well done!"
+                m 1eub "Hopefully it wasn't too hard!"
+                m 2eus "[wb_quip]"
 
     else:
         m 6ckc "..."
