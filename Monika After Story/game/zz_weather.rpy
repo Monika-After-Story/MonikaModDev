@@ -365,9 +365,6 @@ init -20 python in mas_weather:
                 if_changed=True
             )
 
-        if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
-
     def _weather_rain_exit(_new):
         """
         RAIN stop programming point
@@ -380,9 +377,6 @@ init -20 python in mas_weather:
 
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
-
-        if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = False
 
     def _weather_snow_entry(_old):
         """
@@ -439,15 +433,13 @@ init -20 python in mas_weather:
         """
         Overcast entry programming point
         """
-        if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+        pass
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
-        if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = False
+        pass
 
 
 init -50 python:

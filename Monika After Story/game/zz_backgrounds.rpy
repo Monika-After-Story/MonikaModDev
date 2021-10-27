@@ -2240,7 +2240,7 @@ init -10 python:
                 if (
                         not mas_isDecoTagEnabled(override_tag)
                         or (
-                            new_bg is not None 
+                            new_bg is not None
                             and new_bg.get_deco_info(override_tag) is None
                         )
                 ):
@@ -3219,7 +3219,19 @@ label monika_change_background_loop:
         # default should always be at the top
         backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
 
-        if not persistent._mas_o31_in_o31_mode:
+        #o31 just gets o31 enabled BGs
+        other_backgrounds = list()
+
+        #TODO: I don't really like this, but we limit to only o31 supported bgs during the o31 event
+        if persistent._mas_o31_in_o31_mode:
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_o31_deco_tags, mbg_id)
+            ]
+
+        #Non holiday specific bg sel
+        else:
             # build other backgrounds list
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
@@ -3227,11 +3239,11 @@ label monika_change_background_loop:
                 if mbg_id != "spaceroom" and mbg_obj.unlocked
             ]
 
-            # sort other backgrounds list
-            other_backgrounds.sort()
+        # sort other backgrounds list
+        other_backgrounds.sort()
 
-            # build full list
-            backgrounds.extend(other_backgrounds)
+        # build full list
+        backgrounds.extend(other_backgrounds)
 
         # now add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
