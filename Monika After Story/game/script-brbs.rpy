@@ -263,7 +263,7 @@ label monika_writing_idle_callback:
         elif response = 2:
             m 1eub "Finished, [mas_get_player_nickname()]?"
             m 1hub "I hope you got a lot done!"
-            m 2hub "[wb_quip]
+            m 2hub "[wb_quip]"
 
     else:
         call mas_brb_generic_low_aff_callback
@@ -315,10 +315,17 @@ label monika_idle_shower:
         else:
             m 1hua "I'm glad you're keeping yourself clean, [player]."
             m 1eua "Have a nice shower~"
+                
 
     elif mas_isMoniNormal(higher=True):
-        m 1eub "Going to go shower? Alright."
-        m 1eua "See you when you're done~"
+        $ response = renpy.random.randint(1,2)
+        if response = 1:
+            m 1eub "Going to go shower? Alright."
+            m 1eua "See you when you're done~"
+
+        elif reponse = 2:
+            m 6eua "Sounds good!"
+            m 1hua "Enjoy your shower!~"
 
     elif mas_isMoniUpset():
         m 2esd "Enjoy your shower, [player]..."
@@ -337,6 +344,9 @@ label monika_idle_shower:
     return "idle"
 
 label monika_idle_shower_callback:
+    $ brbdone = shower
+    #thinking about adding some text where if the player told monika about a bad mood before the shower, then tells monika they are happy, she comments on the transition possibly being the shower's doing?
+
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
 
@@ -351,10 +361,15 @@ label monika_idle_shower_callback:
             m 1hub "Ahaha!"
 
         else:
-            m 1hua "I hope you had a nice shower."
-            if mas_getEVL_shown_count("monika_idle_shower") == 1:
-                m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
-                m 1hub "Ahaha!"
+            $ reponse = renpy.random.randint(1,2)
+            if response = 1:
+                m 1hua "I hope you had a nice shower."
+                if mas_getEVL_shown_count("monika_idle_shower") == 1:
+                    m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
+                    m 1hub "Ahaha!"
+            elif response = 2:
+                m 2esb "Welcome back. I hope you enjoyed your shower!"
+                m 1eub "What else shall we do today?"
 
     elif mas_isMoniUpset():
         m 2esc "I hope you enjoyed your shower. {w=0.2}Welcome back, [player]."
@@ -391,21 +406,31 @@ init 5 python:
     )
 
 label monika_idle_game:
-    if mas_isMoniNormal(higher=True):
-        m 1eud "Oh, you're going to play another game?"
-        m 1eka "That's alright, [player]."
-
         label .skip_intro:
         python:
             gaming_quips = [
-                _("Good luck, have fun!"),
+                _("Good luck; have fun!"),
+                #not sure, but shouldn't a semicolon be used here for grammatical purposes?
                 _("Enjoy your game!"),
                 _("I'll be cheering you on!"),
                 _("Do your best!")
             ]
             gaming_quip=renpy.random.choice(gaming_quips)
+        #moved this since there are more dialogue options now
 
-        m 3hub "[gaming_quip]"
+    if mas_isMoniNormal(higher=True):
+        response = renpy.random.randint(1,2)
+        
+        if response = 1:
+            m 1eud "Oh, you're going to play another game?"
+            m 1eka "That's alright, [player]."
+            m 3hub "[gaming_quip]"
+    
+        elif response = 2:
+            m 1etb "Off to play another game?"
+            m 1hub "Alright!"
+            m 7eub "Make sure to take a break every so often!"
+            m 7hub "[gaming_quip]"
 
     elif mas_isMoniUpset():
         m 2tsc "Enjoy your other games."
@@ -422,10 +447,20 @@ label monika_idle_game:
     return "idle"
 
 label monika_idle_game_callback:
+    brbdone = gaming
+    #maybe add a response for 'angry' and 'proud' mood choices? if not i'd rather still have it in to reset values that are no longer relevant due to time.
     if mas_isMoniNormal(higher=True):
-        m 1eub "Welcome back, [player]!"
-        m 1eua "I hope you had fun with your game."
-        m 1hua "Ready to spend some more time together? Ehehe~"
+        response = renpy.random.randint(1,2):
+        
+        if response = 1:
+            m 1eub "Welcome back, [player]!"
+            m 1eua "I hope you had fun with your game."
+            m 1hua "Ready to spend some more time together? Ehehe~"
+
+        elif response = 2:
+            m 5tub "There you are~"
+            m 2eua "I hope you won a lot!"
+            m 1hua "[wb_quip]"
 
     elif mas_isMoniUpset():
         m 2tsc "Had fun, [player]?"
