@@ -17559,15 +17559,17 @@ label monika_ddlcroleplay:
     return
 
 init 5 python:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_zodiac_starsign",
-                category=['monika']['life'],
-                prompt="What's your starsign?",
-                pool=True,
-            )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_zodiac_starsign",
+            prompt="What's your starsign?",
+            category=["monika"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_player_bday is not None"
         )
+    )
+
 label monika_zodiac_starsign:
     m 1lua "Well, I'm pretty sure I'm a Virgo."
     #This next line is just checking the player's starsign based on their birthday.
