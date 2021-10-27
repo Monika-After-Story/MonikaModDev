@@ -1308,7 +1308,8 @@ label mas_reaction_gift_coffee:
 
             #If we're currently brewing/drinking anything, or it's not time for this consumable, we'll just not have it now
             if (
-                not mas_consumable_coffee.isConsTime()
+                mas_isO31()
+                or not mas_consumable_coffee.isConsTime()
                 or bool(MASConsumable._getCurrentDrink())
             ):
                 m 3eua "I'll be sure to have some later!"
@@ -1460,7 +1461,7 @@ label mas_reaction_quetzal_plush:
 
         #Wear plush
         #If we're eating something, the plush space is taken and we'll want to wear center
-        if MASConsumable._getCurrentFood():
+        if MASConsumable._getCurrentFood() or monika_chr.is_wearing_acs(mas_acs_desk_lantern):
             $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
         else:
             $ monika_chr.wear_acs(mas_acs_quetzalplushie)
@@ -1480,7 +1481,7 @@ label mas_reaction_quetzal_plush:
         if mas_isMoniAff(higher=True):
             m 3ekbsa "You always seem to know how to make me smile."
 
-        if MASConsumable._getCurrentFood():
+        if MASConsumable._getCurrentFood() or monika_chr.is_wearing_acs(mas_acs_desk_lantern):
             m 3rksdla "My desk is getting a little full though..."
             m 1eka "I'll just put this away for now."
             $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
@@ -2366,15 +2367,17 @@ label mas_reaction_gift_roses:
 
             #Random chance (unless f14) for her to do the ear rose thing
             if (
-                (mas_isSpecialDay() and renpy.random.randint(1,2) == 1)
-                or renpy.random.randint(1,4) == 1
-                or mas_isF14()
-                or mas_isO31()
+                not monika_chr.is_wearing_acs_with_mux("left-hair-flower-ear")
+                and (
+                    (mas_isSpecialDay() and renpy.random.randint(1,2) == 1)
+                    or renpy.random.randint(1,4) == 1
+                    or mas_isF14()
+                    or mas_isO31()
+                )
             ):
-                if not monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
-                    m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
-                    $ monika_chr.wear_acs(mas_acs_ear_rose)
-                    m 1hub "Ehehe~"
+                m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
+                $ monika_chr.wear_acs(mas_acs_ear_rose)
+                m 1hub "Ehehe~"
 
             if mas_shouldKiss(chance=4, special_day_bypass=True):
                 call monika_kissing_motion_short
@@ -2408,7 +2411,7 @@ label mas_reaction_gift_chocolates:
         $ persistent._mas_given_chocolates_before = True
 
         #If we're eating something already, that takes priority over the acs
-        if not MASConsumable._getCurrentFood():
+        if not MASConsumable._getCurrentFood() and not mas_isO31():
             $ monika_chr.wear_acs(mas_acs_heartchoc)
 
         $ mas_giftCapGainAff(5)
@@ -2424,7 +2427,7 @@ label mas_reaction_gift_chocolates:
                 m 1hkbfa "But while we can't really do that just yet, getting some chocolates as a gift from you, well..."
             m 3ekbfa "It means a lot getting these from you."
 
-        elif renpy.seen_label('monika_date'):
+        elif renpy.seen_label('monika_date') and not mas_isO31():
             m 3rka "I know I mentioned visiting a chocolate store together someday..."
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
             m 1ekc "I really wish we could share them though..."
@@ -2450,7 +2453,8 @@ label mas_reaction_gift_chocolates:
                 else:
                     $ monika_chr.remove_acs(store.mas_acs_quetzalplushie)
 
-                $ monika_chr.wear_acs(mas_acs_heartchoc)
+                if not mas_isO31():
+                    $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             $ mas_giftCapGainAff(3 if mas_isSpecialDay() else 1)
 
@@ -2469,7 +2473,7 @@ label mas_reaction_gift_chocolates:
 
         elif times_chocs_given == 1:
             #Same here
-            if not MASConsumable._getCurrentFood():
+            if not MASConsumable._getCurrentFood() and not mas_isO31():
                 $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             m 1eka "More chocolates, [player]?"
