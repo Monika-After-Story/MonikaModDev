@@ -55,7 +55,7 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record).replace("\n", "\n\r")
+            return super(MASLogFormatter, self).format(record).replace("\n", "\r\n")
 
         def update_levelname(self, record):
             """
