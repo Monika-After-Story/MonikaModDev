@@ -48,7 +48,6 @@ python early in mas_logging:
             if datefmt is None:
                 datefmt = DEF_DATEFMT
 
-            fmt += "\r" #Append \r to make sure we always have a newline at the end of the log in CRLF formatting
             super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
 
         def format(self, record):
@@ -56,7 +55,7 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record)
+            return super(MASLogFormatter, self).format(record).replace("\n", "\n\r")
 
         def update_levelname(self, record):
             """
@@ -84,7 +83,7 @@ python early in mas_logging:
             """
             try:
                 if record.pfx_newline:
-                    return "\r\n" + msg
+                    return "\n" + msg
             except:
                 pass
             return msg
