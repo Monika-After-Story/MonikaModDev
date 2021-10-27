@@ -214,6 +214,21 @@ label mas_mood_proud:
         m 3esd "I hope that you regularly complete your homework assignments, but if for whatever reason you don't, I hope this encourages you to at least try it more often."
         m 2eka "If you're ever feeling discouraged, homework or not, come to me."
         m 5hkbsb "I'll always be here to support you, [mas__player_nickname()]~"
+    
+    elif brbdone = writing:
+        m 1eua "You just finished writing something, correct?"
+        m 7eub "Could that be what you're so proud about?"
+        #again, not sure if a 'yes' or 'no' choice is appropriate (especially before this gets approved lol).
+        m 2hub "I'm glad!"
+        m 3esd "I'm sure you know that writing can take a lot of dedication, especially if you don't have a comeplete idea what direction you want to go in."
+        m 3eua "That's why it's really important to celebrate progress, no matter how small."
+        m 1esb "It may prove useful for when things might not be going so well."
+        m 1hsb "If you're having a hard time getting something down, perseverance is crucial."
+        m 1esc "Remembering times of success is a good way to overcome writer's block."
+        m 1husdlb "Anyway... {w=0.2} {nw}"
+        extend 2eub "Good job."
+        m 7hubsb "I'm proud of you!"
+
     else:
         m 2sub "Really? That's exciting!"
         m 2eub "Was it a major accomplishment, or a minor one?{nw}"

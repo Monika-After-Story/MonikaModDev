@@ -110,7 +110,7 @@ label monika_brb_idle:
         show monika at t11
 
         if _return:
-            $ goodbye = renpy.random.randint(1,2):
+            $ goodbye = renpy.random.randint(1,2)
             if goodbye = 1:
                 m 1eua "Oh alright.{w=0.2} {nw}"
                 extend 3hub "Hurry back, I'll be waiting here for you~"
@@ -129,7 +129,7 @@ label monika_brb_idle:
                 m 6hub "Don't dawdle!"
                 
     elif mas_isMoniNormal(higher=True):
-        $ goodbye = renpy.random.randomint(1,2):
+        $ goodbye = renpy.random.randomint(1,2)
         if goodbye = 1:
             m 1hub "Hurry back, [player]!"
         if goodbye = 2:
@@ -169,7 +169,7 @@ label monika_brb_idle_callback:
                 extend 5wubld "[player]!"
                 m 6lubld "You surprised me!"
                 m 6hkblb "I was kind of deep in thought."
-                m 6gkblb "Umm... {w=0.25} {nw}
+                m 6gkblb "Umm... {w=0.25} {nw}"
                 extend 6ekblb "[wb_quip]"
 
     elif mas_isMoniNormal(higher=True):
