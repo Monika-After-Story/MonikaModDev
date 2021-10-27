@@ -1214,8 +1214,7 @@ init 5 python:
     )
 
 label mas_monika_islands:
-    m 1eub "I'll let you admire the scenery for now."
-    m 1hub "Hope you like it!"
+    m 1eub "Of course I'll let you admire the scenery!"
 
     call mas_islands(force_exp="monika 1eua", scene_change=True)
 
