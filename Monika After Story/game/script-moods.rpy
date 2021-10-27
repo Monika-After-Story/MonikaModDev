@@ -129,7 +129,7 @@ label mas_mood_hungry:
         m 3hub "Hungry from all that brain usage, [player]?"
         $ randfood = renpy.random.choice(['dark chocolate', 'mixed nuts', 'berries'])
         m 4eua "I heard that [randfood] is good for your brain during and after studying!"
-        m 2eua "I'll wait here if you decide to go and eat something, but don't put it off for too long!"
+        m 2eua "I'll wait here if you decide to go and eat something, so don't put it off for too long!"
     else:
         m 3hub "If you're hungry, go get something to eat, silly."
         if store.mas_egg_manager.natsuki_enabled():
