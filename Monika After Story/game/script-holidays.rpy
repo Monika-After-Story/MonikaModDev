@@ -56,6 +56,25 @@ init 10 python:
         for date in daterange:
             mas_addClothesToHolidayMap(clothes, date)
 
+    def mas_doesBackgroundHaveHolidayDeco(deco_tags, background_id=None):
+        """
+        Checks if a background has support for the given deco tag(s)
+
+        IN:
+            deco_tags - list of deco tags to check for
+
+            background_id - id of the background to check if it supports deco
+                If None, mas_current_background's id is used
+                (Default: None)
+        """
+        if background_id is None:
+            background_id = store.mas_current_background.background_id
+
+        for deco_tag in deco_tags:
+            if MASImageTagDecoDefinition.get_adf(background_id, deco_tag):
+                return True
+        return False
+
 init -1 python:
     def mas_checkOverDate(_date):
         """
@@ -330,6 +349,20 @@ init python:
 init -10 python:
     import random
 
+    mas_o31_deco_tags = [
+        "mas_o31_wall_candle",
+        "mas_o31_cat_frame",
+        "mas_o31_wall_bats",
+        "mas_o31_window_ghost",
+        "mas_o31_cobwebs",
+        "mas_o31_candles",
+        "mas_o31_jack_o_lantern",
+        "mas_o31_garlands",
+        "mas_o31_ceiling_lights",
+        "mas_o31_ceiling_deco",
+        "mas_o31_vignette"
+    ]
+
     def mas_isO31(_date=None):
         """
         Returns True if the given date is o31
@@ -350,17 +383,8 @@ init -10 python:
         """
         Shows o31 visuals
         """
-        mas_showDecoTag("mas_o31_wall_candle")
-        mas_showDecoTag("mas_o31_cat_frame")
-        mas_showDecoTag("mas_o31_wall_bats")
-        mas_showDecoTag("mas_o31_window_ghost")
-        mas_showDecoTag("mas_o31_cobwebs")
-        mas_showDecoTag("mas_o31_candles")
-        mas_showDecoTag("mas_o31_jack_o_lantern")
-        mas_showDecoTag("mas_o31_garlands")
-        mas_showDecoTag("mas_o31_ceiling_lights")
-        mas_showDecoTag("mas_o31_ceiling_deco")
-        mas_showDecoTag("mas_o31_vignette")
+        for _tag in mas_o31_deco_tags:
+            mas_showDecoTag(_tag)
 
         monika_chr.wear_acs(mas_acs_desk_lantern)
         monika_chr.wear_acs(mas_acs_desk_candy_jack)
@@ -369,17 +393,8 @@ init -10 python:
         """
         Hides o31 visuals + vignette
         """
-        mas_hideDecoTag("mas_o31_wall_candle", hide_now=True)
-        mas_hideDecoTag("mas_o31_cat_frame", hide_now=True)
-        mas_hideDecoTag("mas_o31_wall_bats", hide_now=True)
-        mas_hideDecoTag("mas_o31_window_ghost", hide_now=True)
-        mas_hideDecoTag("mas_o31_cobwebs", hide_now=True)
-        mas_hideDecoTag("mas_o31_candles", hide_now=True)
-        mas_hideDecoTag("mas_o31_jack_o_lantern", hide_now=True)
-        mas_hideDecoTag("mas_o31_garlands", hide_now=True)
-        mas_hideDecoTag("mas_o31_ceiling_lights", hide_now=True)
-        mas_hideDecoTag("mas_o31_ceiling_deco", hide_now=True)
-        mas_hideDecoTag("mas_o31_vignette", hide_now=True)
+        for _tag in mas_o31_deco_tags:
+            mas_hideDecoTag(_tag, hide_now=True)
 
         #Also, if we're hiding visuals, we're no longer in o31 mode
         store.persistent._mas_o31_in_o31_mode = False
@@ -636,11 +651,12 @@ label mas_o31_autoload_check:
         if mas_isO31() and datetime.datetime.now().hour >= 3 and mas_isMoniNormal(higher=True):
             #Lock the background selector on o31
             #TODO: Replace this with generic room deco framework for event deco
-            store.mas_lockEVL("monika_change_background", "EVE")
+            #store.mas_lockEVL("monika_change_background", "EVE")
             #force to spaceroom
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            mas_changeBackground(mas_background_def, set_persistent=True)
+            if not mas_doesBackgroundHaveHolidayDeco(mas_o31_deco_tags):
+                mas_changeBackground(mas_background_def, set_persistent=True)
 
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
@@ -755,6 +771,8 @@ transform mas_o31_cg_scroll:
     ease 20.0 yoffset 0.0
 
 ### o31 samesesh cleanup
+#TODO: We should check if any of the o31 deco tags are being displayed before calling this
+#To futureproof dialogue to when we expand to allowing all BGs to be supported
 init 5 python:
     addEvent(
         Event(
@@ -1513,6 +1531,8 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
+    #TODO: We should check if any of the o31 deco tags are being displayed before calling this
+    #To futureproof dialogue to when we expand to allowing all BGs to be supported
     call mas_o31_cleanup
 
     return
