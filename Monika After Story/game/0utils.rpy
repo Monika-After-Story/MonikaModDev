@@ -48,7 +48,7 @@ python early in mas_logging:
             if datefmt is None:
                 datefmt = DEF_DATEFMT
 
-            fmt += "\r"
+            fmt += "\r" #Append \r to make sure we always have a newline at the end of the log in CRLF formatting
             super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
 
         def format(self, record):
@@ -196,6 +196,7 @@ python early in mas_logging:
     LOG_MAXSIZE_B = 5242880 #5 mb
 
     #Add the header to each log, including OS info + MAS version number
+    #NOTE: python logging does not auto handle CRLF, so we need to explicitly manage that for the header
     LOG_HEADER = "\r\n\r\n{_date}\r\n{system_info}\r\n{renpy_ver}\r\n\r\nVERSION: {game_ver}\r\n{separator}"
 
     #Unformatted logs use these consts (spj/pnm)
@@ -234,6 +235,7 @@ python early in mas_logging:
                 (Default: True)
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
+                NOTE: IF YOU ARE USING YOUR OWN FORMATTER, YOU ARE EXPECTED TO MANAGE LOGS IN CRLF YOURSELF
                 (Default: None)
             adapter_ctor - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
