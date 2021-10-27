@@ -2681,6 +2681,7 @@ init -1 python:
         priority=13,
         acs_type="desk_jack_o_lantern",
         mux_type=["flowers"],
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_desk_candy_jack)
@@ -2702,6 +2703,7 @@ init -1 python:
         priority=13,
         acs_type="desk_lantern",
         mux_type=store.mas_sprites.DEF_MUX_LD,
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_desk_lantern)
