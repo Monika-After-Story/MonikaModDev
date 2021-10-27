@@ -48,6 +48,7 @@ python early in mas_logging:
             if datefmt is None:
                 datefmt = DEF_DATEFMT
 
+            fmt += "\r"
             super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
 
         def format(self, record):
@@ -55,6 +56,9 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
+
+            _log = super(MASLogFormatter, self).format(record)
+            renpy.say(store.m, "'{0}'".format(_log.replace('[', '[[')))
             return super(MASLogFormatter, self).format(record)
 
         def update_levelname(self, record):
@@ -83,7 +87,7 @@ python early in mas_logging:
             """
             try:
                 if record.pfx_newline:
-                    return "\n" + msg
+                    return "\r\n" + msg
             except:
                 pass
             return msg
@@ -192,7 +196,7 @@ python early in mas_logging:
     LOG_MAXSIZE_B = 5242880 #5 mb
 
     #Add the header to each log, including OS info + MAS version number
-    LOG_HEADER = "\n\n{_date}\n{system_info}\n{renpy_ver}\n\nVERSION: {game_ver}\n{separator}"
+    LOG_HEADER = "\r\n\r\n{_date}\r\n{system_info}\r\n{renpy_ver}\r\n\r\nVERSION: {game_ver}\r\n{separator}"
 
     #Unformatted logs use these consts (spj/pnm)
     MSG_INFO = "[" + LT_INFO + "]: {0}"
