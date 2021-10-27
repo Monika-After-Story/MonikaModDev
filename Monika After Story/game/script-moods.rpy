@@ -211,7 +211,7 @@ label mas_mood_proud:
         #Can't decide wether to add a 'yes' or 'no' menu here
         m 6wub "That's really great!"
         m 7esa "Even if it's just completing your homework, feeling proud of an accomplishment is important motivation for the future!"
-        m 3esd "I hope that you regularly complete your homework assignments, but if for whatever reason you don't, I hope this encourages you to at least try it more often."
+        m 3esd "I hope that you regularly complete your homework assignments, but if for whatever reason you don't, I hope this encourages you to at least try them more often."
         m 2eka "If you're ever feeling discouraged, homework or not, come to me."
         m 5hkbsb "I'll always be here to support you, [mas__player_nickname()]~"
     
