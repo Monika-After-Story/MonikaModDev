@@ -110,14 +110,30 @@ label monika_brb_idle:
         show monika at t11
 
         if _return:
-            m 1eua "Oh alright.{w=0.2} {nw}"
-            extend 3hub "Hurry back, I'll be waiting here for you~"
+            $ goodbye = renpy.random.randint(1,2):
+            if goodbye = 1:
+                m 1eua "Oh alright.{w=0.2} {nw}"
+                extend 3hub "Hurry back, I'll be waiting here for you~"
+            elif goodbye = 2:
+                m 1eua "Okay."
+                m 3hub "I'll be here when you're done!"
 
         else:
-            m 1hub "Hurry back, I'll be waiting here for you~"
-
+            $ goodbye = renpy.random.randint(1,3)
+            if goodbye = 1:
+                m 1hub "Hurry back, I'll be waiting here for you~"
+            elif goodbye = 2:
+                m 1eua "Alright, [mas_get_player_nickname()]."
+                m 1hsb "Don't let me keep you!"
+            elif goodbye = 3:
+                m 6hub "Don't dawdle!"
+                
     elif mas_isMoniNormal(higher=True):
-        m 1hub "Hurry back, [player]!"
+        $ goodbye = renpy.random.randomint(1,2):
+        if goodbye = 1:
+            m 1hub "Hurry back, [player]!"
+        if goodbye = 2:
+            m 1eua "I'll be waiting!"
 
     elif mas_isMoniDis(higher=True):
         m 2rsc "Oh...{w=0.5}okay."
@@ -135,23 +151,34 @@ label monika_brb_idle_callback:
     $ wb_quip = mas_brbs.get_wb_quip()
 
     if mas_isMoniAff(higher=True):
-        $ response = renpy.random.randint(1,2)
-        if response = 1:
-            m 1hub "Welcome back, [player]. I missed you~"
-            m 1eua "[wb_quip]"
-        elif response = 2:
-            m 1eub "There you are! {w=0.2} {nw}"
-            extend 1hub "I was starting to get bored!"
-            #May change to 'miss you' or something a bit more passive in the future
-            m 1eua "[wb_quip]"
+        $ response = renpy.random.randint(1,10)
+        if response <= 9:
+            if response = 1:
+                m 1hub "Welcome back, [player]. I missed you~"
+                m 1eua "[wb_quip]"
 
-        elif mas_isMoniNormal(higher=True):
+            elif response = 2:
+                m 1eub "There you are! {w=0.2} {nw}"
+                extend 1hub "I was starting to get bored!"
+                #May change to 'miss you' or something a bit more passive in the future
+                m 1eua "[wb_quip]"
+
+            elif response = 10:
+                m 5hubsa "{i}Hmm hmm hmm...{/i} {w=2} {nw}"
+                extend 5wuo "Ah! {nw}"
+                extend 5wubld "[player]!"
+                m 6lubld "You surprised me!"
+                m 6hkblb "I was kind of deep in thought."
+                m 6gkblb "Umm... {w=0.25} {nw}
+                extend 6ekblb "[wb_quip]"
+
+    elif mas_isMoniNormal(higher=True):
             m 1hub "Welcome back, [player]!"
             m 1eua "[wb_quip]"
 
-        else:
+    else:
             call mas_brb_generic_low_aff_callback
-
+                
     return
 
 init 5 python:
@@ -214,9 +241,15 @@ label monika_writing_idle_callback:
     #Variable that affects Monika's response to the player saying they are either proud of themself or angry. Should reset in 15 minutes, when the game opens again, or when a new value is assigned (To be added).
 
     if mas_isMoniNormal(higher=True):
+        $ response = renpy.random.randint (1,2)
         $ wb_quip = mas_brbs.get_wb_quip()
-        m 1eua "Done writing, [player]?"
-        m 1eub "[wb_quip]"
+        if response = 1:
+            m 1eua "Done writing, [player]?"
+            m 1eub "[wb_quip]"
+        elif response = 2:
+            m 1eub "Finished, [mas_get_player_nickname()]?"
+            m 1hub "I hope you got a lot done!"
+            m 2eub "[wb_quip]"
 
     else:
         call mas_brb_generic_low_aff_callback

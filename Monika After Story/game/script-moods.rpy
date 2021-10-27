@@ -213,7 +213,7 @@ label mas_mood_proud:
         m 7esa "Even if it's just completing your homework, feeling proud of an accomplishment is important motivation for the future!"
         m 3esd "I hope that you regularly complete your homework assignments, but if for whatever reason you don't, I hope this encourages you to at least try it more often."
         m 2eka "If you're ever feeling discouraged, homework or not, come to me."
-        m 5hkbsb "I'll always be here to support you, [mas_get_player_nickname()]~"
+        m 5hkbsb "I'll always be here to support you, [mas__player_nickname()]~"
     else:
         m 2sub "Really? That's exciting!"
         m 2eub "Was it a major accomplishment, or a minor one?{nw}"

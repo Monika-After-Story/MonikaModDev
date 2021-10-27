@@ -1,7 +1,7 @@
 # Monika's ???? Event
 # deserves it's own file because of how much dialogue these have
 # it basically shows a new screen over everything, and has an image map
-# Monika reacts to he place the player clicks
+# Monika reacts to the places the player clicks
 
 
 python early:

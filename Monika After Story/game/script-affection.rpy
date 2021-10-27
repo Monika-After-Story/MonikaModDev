@@ -39,7 +39,7 @@
 # DISTRESSED (-99 up to -75)
 #     Convinced the player probably doesn't love her and that she may never escape to our reality.
 # BROKEN  (-100 and lower)
-#     Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
+#     Believes that not only does the player not love her but that s/he probably hates her too because of what she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 #############
 
 init python:
