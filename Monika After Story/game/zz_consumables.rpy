@@ -340,6 +340,10 @@ init 5 python:
             if _now is None:
                 _now = datetime.datetime.now()
 
+            # FIXME: temporary disable all consumables on o31
+            if mas_isO31(_now):
+                return False
+
             _chance = random.randint(1, 100)
 
             for start_time, end_time in self.start_end_tuple_list:
@@ -613,6 +617,10 @@ init 5 python:
 
             if _now is None:
                 _now = datetime.datetime.now()
+
+            # FIXME: temporary disable all consumables on o31
+            if mas_isO31(_now):
+                return False
 
             _chance = random.randint(1, 100)
 
