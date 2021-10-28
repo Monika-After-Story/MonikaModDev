@@ -3140,7 +3140,15 @@ label monika_cold:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_housewife",category=['monika','romance'],prompt="Would you be my housewife?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_housewife",
+            category=['monika','romance'],
+            prompt="Would you ever want to be a housewife?",
+            pool=True
+        )
+    )
 
 label monika_housewife:
     m 3euc "You know, it's funny, because even though I've always had a lot of drive..."
@@ -7716,7 +7724,7 @@ label monika_orchestra:
                     "Not much.":
                         $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
                         m 2eka "That's okay, [player]."
-                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 2eua "After all, it's a pretty complicated instrument to pick up."
                         m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
 
                     "I just started.":
