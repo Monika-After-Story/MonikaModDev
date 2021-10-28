@@ -377,7 +377,10 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.4
 label v0_12_4(version="v0_12_4"):
     python hide:
-        pass
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()"
+        )
     return
 
 # 0.12.3.2
