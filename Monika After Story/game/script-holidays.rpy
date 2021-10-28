@@ -1232,7 +1232,7 @@ label mas_o31_lingerie_end:
 
     python:
         #Reset zoom so people can see the outfit
-        prev_zoom = store.mas_sprites.zoom_level
+        mas_temp_zoom_level = store.mas_sprites.zoom_level
         store.mas_sprites.reset_zoom()
 
         store.mas_selspr.unlock_acs(mas_acs_grayhearts_hairclip)
@@ -1258,11 +1258,9 @@ label mas_o31_lingerie_end:
     else:
         m 2rsbla "Hopefully people named Amy aren't the only ones who like spiders, ehehe~"
 
+    #And restore zoom
+    call monika_zoom_transition(mas_temp_zoom_level, 1.0)
     python:
-        #And restore zoom
-        store.mas_sprites.zoom_level = prev_zoom
-        store.mas_sprites.adjust_zoom()
-
         mas_stripEVL("mas_o31_lingerie", list_pop=True)
         mas_lockEVL("greeting_o31_lingerie", "GRE")
 
