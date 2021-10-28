@@ -102,9 +102,11 @@ python early in mas_logging:
             """
             Applies a prefix newline if appropriate.
             """
-            return self.apply_newline_prefix(
-                record,
-                super(MASNewlineLogFormatter, self).format(record)
+            return MASLogFormatter.replace_lf(
+                self.apply_newline_prefix(
+                    record,
+                    super(MASNewlineLogFormatter, self).format(record)
+                )
             )
 
 
