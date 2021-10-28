@@ -42,7 +42,8 @@ python early in mas_logging:
             - uses our own log tags
             - defaults format with time and level name
         """
-        NEWLINE_MATCHER = r"(?<!\r)\n"
+        NEWLINE_MATCHER = re.compile(r"(?<!\r)\n")
+        LINE_TERMINATOR = "\r\n"
 
         def __init__(self, fmt=None, datefmt=None):
             if fmt is None:
@@ -57,7 +58,7 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return MASLogFormatter.replace_lf(
+            return self.replace_lf(
                 super(MASLogFormatter, self).format(record)
             )
 
@@ -68,12 +69,12 @@ python early in mas_logging:
             """
             record.levelname = LT_MAP.get(record.levelno, record.levelname)
 
-        @staticmethod
-        def replace_lf(msg):
+        @classmethod
+        def replace_lf(cls, msg):
             """
             Replaces all line feeds with carriage returns and a line feed
             """
-            return re.sub(MASLogFormatter.NEWLINE_MATCHER, msg, "\r\n")
+            return re.sub(cls.NEWLINE_MATCHER, cls.LINE_TERMINATOR, msg)
 
     class MASNewlineLogFormatter(MASLogFormatter):
         """
@@ -102,7 +103,7 @@ python early in mas_logging:
             """
             Applies a prefix newline if appropriate.
             """
-            return MASLogFormatter.replace_lf(
+            return self.replace_lf(
                 self.apply_newline_prefix(
                     record,
                     super(MASNewlineLogFormatter, self).format(record)
