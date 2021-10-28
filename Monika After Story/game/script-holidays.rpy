@@ -1200,6 +1200,7 @@ init 5 python:
                 "and mas_hasUnlockedClothesWithExprop('lingerie')"
             ),
             unlocked=False,
+            rules={"skip alert": None},
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
             end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
@@ -1212,6 +1213,7 @@ label mas_o31_lingerie:
     python:
         curr_song = songs.current_track
         play_song(None)
+        mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts")
 
     scene black
     pause 2.0
