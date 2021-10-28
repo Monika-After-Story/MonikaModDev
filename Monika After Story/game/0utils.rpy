@@ -10,6 +10,7 @@ python early in mas_logging:
     import os
     import platform
     import store
+    import re
 
     #Thanks python...
     from logging import handlers as loghandlers
@@ -41,6 +42,8 @@ python early in mas_logging:
             - uses our own log tags
             - defaults format with time and level name
         """
+        NEWLINE_MATCHER = re.compile(r"(?<!\r)\n")
+        LINE_TERMINATOR = "\r\n"
 
         def __init__(self, fmt=None, datefmt=None):
             if fmt is None:
@@ -55,7 +58,9 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record)
+            return self.replace_lf(
+                super(MASLogFormatter, self).format(record)
+            )
 
         def update_levelname(self, record):
             """
@@ -64,6 +69,12 @@ python early in mas_logging:
             """
             record.levelname = LT_MAP.get(record.levelno, record.levelname)
 
+        @classmethod
+        def replace_lf(cls, msg):
+            """
+            Replaces all line feeds with carriage returns and a line feed
+            """
+            return re.sub(cls.NEWLINE_MATCHER, cls.LINE_TERMINATOR, msg)
 
     class MASNewlineLogFormatter(MASLogFormatter):
         """
@@ -92,9 +103,11 @@ python early in mas_logging:
             """
             Applies a prefix newline if appropriate.
             """
-            return self.apply_newline_prefix(
-                record,
-                super(MASNewlineLogFormatter, self).format(record)
+            return self.replace_lf(
+                self.apply_newline_prefix(
+                    record,
+                    super(MASNewlineLogFormatter, self).format(record)
+                )
             )
 
 
@@ -192,7 +205,8 @@ python early in mas_logging:
     LOG_MAXSIZE_B = 5242880 #5 mb
 
     #Add the header to each log, including OS info + MAS version number
-    LOG_HEADER = "\n\n{_date}\n{system_info}\n{renpy_ver}\n\nVERSION: {game_ver}\n{separator}"
+    #NOTE: python logging does not auto handle CRLF, so we need to explicitly manage that for the header
+    LOG_HEADER = "\r\n\r\n{_date}\r\n{system_info}\r\n{renpy_ver}\r\n\r\nVERSION: {game_ver}\r\n{separator}"
 
     #Unformatted logs use these consts (spj/pnm)
     MSG_INFO = "[" + LT_INFO + "]: {0}"
@@ -230,6 +244,7 @@ python early in mas_logging:
                 (Default: True)
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
+                NOTE: IF YOU ARE USING YOUR OWN FORMATTER, YOU SHOULD CALL THE `replace_lf` METHOD TO ENSURE YOUR LOGS ARE USING CRLF
                 (Default: None)
             adapter_ctor - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)

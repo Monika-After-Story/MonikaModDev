@@ -441,12 +441,14 @@ init -21 python in mas_sprites_json:
             RETURNS: string to be logged
             """
             self.update_levelname(record)
-            return self.apply_newline_prefix(
-                record,
-                "[{0}]:  {1}{2}".format(
-                    record.levelname,
-                    " " * (record.indent_lvl * 2),
-                    record.msg
+            return self.replace_lf(
+                self.apply_newline_prefix(
+                    record,
+                    "[{0}]:  {1}{2}".format(
+                        record.levelname,
+                        " " * (record.indent_lvl * 2),
+                        record.msg
+                    )
                 )
             )
 
