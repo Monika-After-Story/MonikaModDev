@@ -341,7 +341,7 @@ init 5 python:
                 _now = datetime.datetime.now()
 
             # FIXME: temporary disable all consumables on o31
-            if mas_isO31(_now):
+            if mas_isO31(_now.date()):
                 return False
 
             _chance = random.randint(1, 100)
@@ -619,7 +619,7 @@ init 5 python:
                 _now = datetime.datetime.now()
 
             # FIXME: temporary disable all consumables on o31
-            if mas_isO31(_now):
+            if mas_isO31(_now.date()):
                 return False
 
             _chance = random.randint(1, 100)
