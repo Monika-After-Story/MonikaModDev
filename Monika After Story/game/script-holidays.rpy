@@ -744,7 +744,19 @@ label mas_o31_autoload_check:
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check
 
-## post returned home greeting to setup game relaunch
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_holiday_o31_returned_home_relaunch",
+            conditional="not persistent._mas_o31_in_o31_mode",
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=6)),
+            end_date=mas_o31+datetime.timedelta(days=1)),
+            years=[]
+        ),
+    )
+
 label mas_holiday_o31_returned_home_relaunch:
     m 1eua "So, today is..."
     m 1euc "...wait."
@@ -757,6 +769,7 @@ label mas_holiday_o31_returned_home_relaunch:
     m 1eua "After that you can reopen it."
     m 1hubsa "I have something special in store for you, ehehe~"
     $ persistent._mas_o31_relaunch = True
+    $ mas_rmallEVL("mas_holiday_o31_returned_home_relaunch")
     return "quit"
 
 ### o31 images
@@ -1143,6 +1156,8 @@ label greeting_o31_cleanup(skip_zoom=False):
         HKBShowButtons()
         # 5 - restart music
         mas_startup_song()
+
+        mas_rmallEVL("mas_holiday_o31_returned_home_relaunch")
     return
 
 init 5 python:

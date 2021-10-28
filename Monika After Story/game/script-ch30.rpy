@@ -1771,9 +1771,6 @@ label ch30_day:
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
 
-        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
