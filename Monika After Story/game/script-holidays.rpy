@@ -349,7 +349,7 @@ init python:
 init -10 python:
     import random
 
-    mas_o31_deco_tags = [
+    MAS_O31_DECO_TAGS = [
         "mas_o31_wall_candle",
         "mas_o31_cat_frame",
         "mas_o31_wall_bats",
@@ -383,7 +383,7 @@ init -10 python:
         """
         Shows o31 visuals
         """
-        for _tag in mas_o31_deco_tags:
+        for _tag in MAS_O31_DECO_TAGS:
             mas_showDecoTag(_tag)
 
         monika_chr.wear_acs(mas_acs_desk_lantern)
@@ -393,7 +393,7 @@ init -10 python:
         """
         Hides o31 visuals + vignette
         """
-        for _tag in mas_o31_deco_tags:
+        for _tag in MAS_O31_DECO_TAGS:
             mas_hideDecoTag(_tag, hide_now=True)
 
         #Also, if we're hiding visuals, we're no longer in o31 mode
@@ -655,7 +655,7 @@ label mas_o31_autoload_check:
             #force to spaceroom
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            if not mas_doesBackgroundHaveHolidayDeco(mas_o31_deco_tags):
+            if not mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS):
                 mas_changeBackground(mas_background_def, set_persistent=True)
 
             #NOTE: We do not do O31 deco/amb on first sesh day

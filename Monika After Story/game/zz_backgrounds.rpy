@@ -3227,7 +3227,7 @@ label monika_change_background_loop:
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
                 for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_o31_deco_tags, mbg_id)
+                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
             ]
 
         #Non holiday specific bg sel
