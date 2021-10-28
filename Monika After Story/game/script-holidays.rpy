@@ -752,9 +752,9 @@ init 5 python:
             conditional="not persistent._mas_o31_in_o31_mode",
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=6)),
-            end_date=mas_o31+datetime.timedelta(days=1)),
+            end_date=mas_o31+datetime.timedelta(days=1),
             years=[]
-        ),
+        )
     )
 
 label mas_holiday_o31_returned_home_relaunch:
