@@ -670,11 +670,12 @@ init -25 python in mas_island_event:
             **filter_pairs
         )
 
+    @mas_utils.deprecated()
     def shouldDecodeImages():
         """
+        DEPRECATED
         A united check whether or not we should decode images in this sesh
         """
-        # TODO: add more checks here as needed
         return (
             not store.mas_isO31()
             # and (X or not Y)
@@ -687,9 +688,6 @@ init -25 python in mas_island_event:
         OUT:
             True upon success, False otherwise
         """
-        if not shouldDecodeImages():
-            return False
-
         err_msg = "[ERROR] Failed to decode images: {}.\n"
 
         pkg = islands_station.getPackage("our_reality")
