@@ -448,6 +448,7 @@ label monika_idle_game:
 
 label monika_idle_game_callback:
     brbdone = gaming
+    $ wb_quip = mas_brbs.get_wb_quip()
     #maybe add a response for 'angry' and 'proud' mood choices? if not i'd rather still have it in to reset values that are no longer relevant due to time.
     if mas_isMoniNormal(higher=True):
         response = renpy.random.randint(1,2):
@@ -488,22 +489,30 @@ init 5 python:
 
 label monika_idle_coding:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Oh! Going to code something?"
+        $ response = renpy.random.randint(1,2)
+        if response = 1:
+             m 1eua "Oh! Going to code something?"
 
-        if persistent._mas_pm_has_code_experience is False:
-            m 1etc "I thought you didn't do that."
-            m 1eub "Did you pick up programming since we talked about it last time?"
+            if persistent._mas_pm_has_code_experience is False:
+                m 1etc "I thought you didn't do that."
+                m 1eub "Did you pick up programming since we talked about it last time?"
 
-        elif persistent._mas_pm_has_contributed_to_mas or persistent._mas_pm_wants_to_contribute_to_mas:
-            m 1tua "Something for me, perhaps?"
-            m 1hub "Ahaha~"
+            elif persistent._mas_pm_has_contributed_to_mas or persistent._mas_pm_wants_to_contribute_to_mas:
+                m 1tua "Something for me, perhaps?"
+                m 1hub "Ahaha~"
 
-        else:
-            m 3eub "Do your best to keep your code clean and easy to read."
-            m 3hksdlb "...You'll thank yourself later!"
+            else:
+                m 3eub "Do your best to keep your code clean and easy to read."
+                m 3hksdlb "...You'll thank yourself later!"
 
-        m 1eua "Anyway, just let me know when you're done."
-        m 1hua "I'll be right here, waiting for you~"
+            m 1eua "Anyway, just let me know when you're done."
+            m 1hua "I'll be right here, waiting for you~"
+        
+        elif response = 2:
+            m *** "Going to go code?"
+            m *** "Make sure to take breaks every so often!"
+            m *** "Even getting up to grab a snack or a glass of water can clear your mind!"
+            m *** "Anyway, have fun!"
 
     elif mas_isMoniUpset():
         m 2euc "Oh, you're going to code?"
@@ -521,11 +530,29 @@ label monika_idle_coding:
 
 label monika_idle_coding_callback:
     if mas_isMoniNormal(higher=True):
+
         $ wb_quip = mas_brbs.get_wb_quip()
+
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=20), "monika_idle_coding"):
-            m 1eua "Done for now, [player]?"
+            $ response = renpy.random.randint(1,3)
+
+            if response = 1:
+                m 1eua "Done for now, [player]?"
+           
+            elif response = 2:
+                m *** "Back from coding?"
+
+            elif response = 3:
+                m *** "Welcome back, [mas_get_player_nickname()]!"
         else:
-            m 1eua "Oh, done already, [player]?"
+
+            $ response = renpy.random.randint(1,2)
+            if response = 1:
+                m 1eua "Oh, done already, [player]?"
+            
+            elif response = 2:
+                m *** "Done so soon?"
+                m *** "That's arlight, [player]!"
 
         m 3eub "[wb_quip]"
 
