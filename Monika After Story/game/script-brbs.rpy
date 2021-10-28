@@ -214,7 +214,7 @@ label monika_writing_idle:
             m "Oh! You're going to{fast} go write something?"
 
         else:
-        $ response = renpy.random.randint(1,2)
+        $ response = renpy.random.randint(1,3)
         if response = 1:
             m 1eub "Oh! You're going to go write something?"
             m 1hua "That makes me so glad!"
@@ -230,6 +230,20 @@ label monika_writing_idle:
             #maybe add a variable that counts how many days since monika has last written the player a poem for higher accuracy?
             m 7eusdlb "Anyway, make sure to enjoy yourself!"
             m 1eua "I'll be here waiting when you finish!"
+
+       elif response = 3:
+            if not renpy.seen_label("monika_writing_posture"):
+            call monika_writing_posture
+
+label monika_writing_posture:
+            m *** "Going to get some writing done?"
+            m *** "Sounds good!"
+            m *** "Make sure you're sitting in a way that's comfortable, though."
+            m *** "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
+            m *** "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
+            m *** "Take a break every so often to get up and stretch or grab a glass of water!"
+
+            
 
     elif mas_isMoniUpset():
         m 2esc "Alright."
