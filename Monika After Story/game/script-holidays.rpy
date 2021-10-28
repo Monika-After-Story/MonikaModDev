@@ -1220,7 +1220,7 @@ init 5 python:
             start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
             end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
             years=[]
-        ),
+        )
     )
 
 label mas_o31_lingerie:
