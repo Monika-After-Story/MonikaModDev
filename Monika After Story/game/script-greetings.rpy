@@ -84,6 +84,7 @@ init -1 python in mas_greetings:
         TYPE_GO_SOMEWHERE,
         TYPE_GENERIC_RET,
         TYPE_LONG_ABSENCE,
+        TYPE_HOL_O31_TT
     ]
 
     NTO_TYPES = (
