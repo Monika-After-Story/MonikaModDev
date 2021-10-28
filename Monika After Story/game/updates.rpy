@@ -381,6 +381,11 @@ label v0_12_4(version="v0_12_4"):
             'bye_trick_or_treat',
             start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3))
         )
+
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()"
+        )
     return
 
 # 0.12.3.2

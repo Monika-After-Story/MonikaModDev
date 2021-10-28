@@ -3419,7 +3419,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_ourreality",
-            conditional="store.mas_decoded_islands",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()",
             unlocked=True,
             rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None)
@@ -3480,8 +3480,9 @@ label greeting_ourreality:
 
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
-    # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands", skipeval=True)
+
+    m 1eub "You can admire the scenery for now~"
+    call mas_islands(force_exp="monika 1eua")
     return
 
 init 5 python:

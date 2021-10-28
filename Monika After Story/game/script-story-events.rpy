@@ -2561,3 +2561,50 @@ label mas_covid19:
     m "But since I can't, please do your best to stay safe."
     m 2dkbsu "I need you, [player]~"
     return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_islands_reset",
+            conditional="persistent._mas_islands_start_lvl == 0",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+label mas_islands_reset:
+    m 1rsc "Hmm..."
+    m 1esc "...Hey,{w=0.1} can I get your advice on something?"
+    m 3lkd "Have you ever worked on a project for {i}so{/i} long that when you look at the whole thing, you just see dozens of mistakes or things you want to improve?"
+    m 3ekc "...See,{w=0.1} I've been working on these islands so we could have different places to go...{w=0.3}{nw}"
+    extend 3esd "to have a reality of our own."
+    m 1eud "But now that I've gotten better at coding, I just think I could {i}really{/i} do a better job now."
+    m 1rkc "And to fix all the things I'd like to fix...{w=0.3}{nw}"
+    extend 1rksdld "I think it'd be easier if I started from scratch altogether."
+    m 4ekc "It'll mean that the sky outside will be rather empty for a while,{w=0.1} {nw}"
+    extend 4eua "but I think I can really make it worth the wait."
+    m 1euc "If that's okay with you, [player]?{nw}"
+    $ _history_list.pop()
+
+    menu:
+        m "If that's okay with you, [player]?{fast}"
+
+        "Let's do it.":
+            m 1dsc "Okay, just give me a second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+            play sound "sfx/glitch3.ogg"
+            python:
+                mas_island_event._resetProgression()
+                mas_island_event.startProgression()
+
+            m 3hua "And it's done!"
+            m 1eua "Now I've got a fresh, new canvas."
+            m 3kuu "...And I'll have plenty to keep me busy when you're away, [player]. Ehehe~"
+            m 3hub "Hope you're looking forward to it!"
+
+        "I think they're fine.":
+            m 3eka "Alright, [player]."
+            m 3hua "If you're fine with how they are right now, then I am too.{w=0.2} I'll see what I can do with them as they are~"
+
+    return "no_unlock"
