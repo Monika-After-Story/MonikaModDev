@@ -465,6 +465,7 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_def)
             _moni_chr.wear_acs(store.mas_acs_grayhearts_hairclip)
             _moni_chr.wear_acs(store.mas_acs_ribbon_black_gray)
 
