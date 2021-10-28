@@ -3480,8 +3480,9 @@ label greeting_ourreality:
 
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
-    # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands", skipeval=True)
+
+    m 1eub "You can admire the scenery for now~"
+    call mas_islands(force_exp="monika 1eua")
     return
 
 init 5 python:
