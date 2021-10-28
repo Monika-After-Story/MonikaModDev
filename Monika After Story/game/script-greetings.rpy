@@ -3419,7 +3419,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_ourreality",
-            conditional="mas_canShowIslands(False) and not mas_isSpecialDay()",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()",
             unlocked=True,
             rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None)
