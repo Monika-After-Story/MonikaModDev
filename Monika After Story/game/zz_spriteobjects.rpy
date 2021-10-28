@@ -1114,7 +1114,22 @@ init -1 python:
         },
         entry_pp=store.mas_sprites._clothes_spider_lingerie_entry,
         exit_pp=store.mas_sprites._clothes_spider_lingerie_exit,
-        pose_arms=MASPoseArms({}, def_base=False)
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        )
     )
     store.mas_sprites.init_clothes(mas_clothes_spider_lingerie)
     store.mas_selspr.init_selectable_clothes(
