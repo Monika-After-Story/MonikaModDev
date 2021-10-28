@@ -576,6 +576,35 @@ init -2 python in mas_sprites:
             _acs_wear_if_gifted(_moni_chr, "velius94_bunnyscrunchie_blue")
 
 
+    def _clothes_briaryoung_shuchiin_academy_uniform_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. We need to consider
+        #   how to handle other matching ACS/hair like if kaguya is added
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # wear the straight bangs if found
+            straight_bangs = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "briaryoung_down_straight_bangs"
+            )
+            if straight_bangs is not None:
+                _moni_chr.change_hair(straight_bangs)
+
+                # find ACS and wear for this outfit
+                _acs_wear_if_found(_moni_chr, "briaryoung_front_bow_black")
+
+
+    def _clothes_briaryoung_shuchiin_academy_uniform_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. See above.
+        _acs_remove_if_found(_moni_chr, "briaryoung_front_bow_black")
+
+
     ######### ACS [SPR030] ###########
     # available kwargs:
     #   NONE

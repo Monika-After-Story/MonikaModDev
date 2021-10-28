@@ -1217,7 +1217,7 @@ label mas_monika_islands:
     m 1eub "I'll let you admire the scenery for now."
     m 1hub "Hope you like it!"
 
-    call mas_islands(force_exp="monika 1eua")
+    call mas_islands(force_exp="monika 1eua", scene_change=True)
 
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
@@ -1239,6 +1239,8 @@ label mas_islands(
     python:
         # NOTE: We can't progress filter here, it looks bad
         spaceroom_kwargs.setdefault("progress_filter", False)
+        # Always scene change unless asked not to
+        spaceroom_kwargs.setdefault("scene_change", True)
         is_done = False
         islands_displayable = mas_island_event.getIslandsDisplayable(
             enable_interaction=enable_interaction,

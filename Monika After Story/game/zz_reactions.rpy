@@ -1143,32 +1143,40 @@ label mas_reaction_gift_generic_sprite_json:
 
 # generic reaction for json clothes
 label mas_reaction_gift_generic_clothes_json(sprite_object):
-    python:
-        mas_giftCapGainAff(3)
-        # expandable
-        outfit_quips = [
-            _("I think it's really cute, [player]!"),
-            _("I think it's amazing, [player]!"),
-            _("I just love it, [player]!"),
-            _("I think it's wonderful, [player]!")
-        ]
-        outfit_quip = renpy.random.choice(outfit_quips)
+    $ mas_giftCapGainAff(3)
+    if sprite_object.ex_props.get("costume") == "o31":
+        m 2suo "Oh! {w=0.3}A costume!"
+        m 2hub "That's so neat [player], thanks!"
+        m 7rka "I'd try it on for you, but I think it'd be better to wait for the right occasion..."
+        m 3hub "Ehehe, thanks again!"
 
-    m 1sua "Oh! {w=0.5}A new outfit!"
-    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+    else:
+        python:
+            # expandable
+            outfit_quips = [
+                _("I think it's really cute, [player]!"),
+                _("I think it's amazing, [player]!"),
+                _("I just love it, [player]!"),
+                _("I think it's wonderful, [player]!")
+            ]
+            outfit_quip = renpy.random.choice(outfit_quips)
 
-    # try it on
-    call mas_clothes_change(sprite_object)
+        m 1sua "Oh! {w=0.5}A new outfit!"
+        m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
 
-    m 2eka "Well...{w=0.5} What do you think?"
-    m 2eksdla "Do you like it?"
-    # TODO: outfit randomization should actually get a response here
-    #   should influence monika outfit selection
+        # try it on
+        call mas_clothes_change(sprite_object)
 
-    show monika 3hub
-    $ renpy.say(m, outfit_quip)
+        m 2eka "Well...{w=0.5} What do you think?"
+        m 2eksdla "Do you like it?"
+        # TODO: outfit randomization should actually get a response here
+        #   should influence monika outfit selection
 
-    m 1eua "Thanks again~"
+        show monika 3hub
+        $ renpy.say(m, outfit_quip)
+
+        m 1eua "Thanks again~"
+
     return
 
 ## Hair clip reactions
