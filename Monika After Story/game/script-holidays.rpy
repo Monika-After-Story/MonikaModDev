@@ -1169,6 +1169,14 @@ init 5 python:
     del ev_rules
 
 label greeting_o31_lingerie:
+    # This block is to update styles
+    python:
+        mas_progressFilter()
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(mas_current_background.isFltDay())
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
+
     scene black
     pause 2.0
 
