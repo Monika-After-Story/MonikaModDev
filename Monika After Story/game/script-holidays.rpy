@@ -1208,6 +1208,11 @@ init 5 python:
     )
 
 label mas_o31_lingerie:
+    #Cut the music for the blackout
+    python:
+        curr_song = songs.current_track
+        play_song(None)
+
     scene black
     pause 2.0
     m "Oh no, did the power go out?"
@@ -1226,6 +1231,10 @@ label mas_o31_lingerie_end:
     pause 2.0
 
     python:
+        #Reset zoom so people can see the outfit
+        prev_zoom = store.mas_sprites.zoom_level
+        store.mas_sprites.reset_zoom()
+
         store.mas_selspr.unlock_acs(mas_acs_grayhearts_hairclip)
         store.mas_selspr.unlock_acs(mas_acs_ribbon_black_gray)
         store.mas_selspr.unlock_clothes(mas_clothes_spider_lingerie)
@@ -1250,8 +1259,18 @@ label mas_o31_lingerie_end:
         m 2rsbla "Hopefully people named Amy aren't the only ones who like spiders, ehehe~"
 
     python:
+        #And restore zoom
+        store.mas_sprites.zoom_level = prev_zoom
+        store.mas_sprites.adjust_zoom()
+
         mas_stripEVL("mas_o31_lingerie", list_pop=True)
         mas_lockEVL("greeting_o31_lingerie", "GRE")
+
+        # restart song/sounds that were playing before event
+        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+            play_song(curr_song, 1.0)
+        else:
+            play_song(None, 1.0)
 
     return "no_unlock"
 
