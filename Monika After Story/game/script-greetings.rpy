@@ -3511,10 +3511,6 @@ label greeting_returned_home:
 
     # event checks
 
-    #O31
-    if mas_isO31() and not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay() and mas_isMoniNormal(higher=True):
-        $ pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
     #F14
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14

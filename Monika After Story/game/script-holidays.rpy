@@ -749,11 +749,15 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_holiday_o31_returned_home_relaunch",
-            conditional="not persistent._mas_o31_in_o31_mode",
+            conditional=(
+                "not persistent._mas_o31_in_o31_mode "
+                "and not mas_isFirstSeshDay()"
+            ),
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=6)),
             end_date=mas_o31+datetime.timedelta(days=1),
-            years=[]
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
