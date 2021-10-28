@@ -10,6 +10,7 @@ python early in mas_logging:
     import os
     import platform
     import store
+    import re
 
     #Thanks python...
     from logging import handlers as loghandlers
@@ -41,6 +42,7 @@ python early in mas_logging:
             - uses our own log tags
             - defaults format with time and level name
         """
+        NEWLINE_MATCHER = r"(?<!\r)\n"
 
         def __init__(self, fmt=None, datefmt=None):
             if fmt is None:
@@ -55,7 +57,9 @@ python early in mas_logging:
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return super(MASLogFormatter, self).format(record).replace("\n", "\r\n")
+            return MASLogFormatter.replace_lf(
+                super(MASLogFormatter, self).format(record)
+            )
 
         def update_levelname(self, record):
             """
@@ -64,6 +68,12 @@ python early in mas_logging:
             """
             record.levelname = LT_MAP.get(record.levelno, record.levelname)
 
+        @staticmethod
+        def replace_lf(msg):
+            """
+            Replaces all line feeds with carriage returns and a line feed
+            """
+            return re.sub(MASLogFormatter.NEWLINE_MATCHER, msg, "\r\n")
 
     class MASNewlineLogFormatter(MASLogFormatter):
         """
@@ -231,7 +241,7 @@ python early in mas_logging:
                 (Default: True)
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
-                NOTE: IF YOU ARE USING YOUR OWN FORMATTER, YOU ARE EXPECTED TO MANAGE LOGS IN CRLF YOURSELF
+                NOTE: IF YOU ARE USING YOUR OWN FORMATTER, YOU SHOULD CALL THE `replace_lf` METHOD TO ENSURE YOUR LOGS ARE USING CRLF
                 (Default: None)
             adapter_ctor - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
