@@ -990,7 +990,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
-    if datetime.date.today() == persistent._date_last_given_roses:
+    if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
     # dissolving everything means dissolve last
@@ -1770,9 +1770,6 @@ label ch30_day:
 
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
-
-        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
 
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (

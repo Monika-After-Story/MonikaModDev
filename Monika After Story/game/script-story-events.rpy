@@ -882,7 +882,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ mas_stripEVL('mas_birthdate',True)
+    $ mas_stripEVL('mas_birthdate', list_pop=True)
     return
 
 ##START: Game unlock events

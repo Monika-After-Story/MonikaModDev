@@ -307,6 +307,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that this ACS is a drink
 
+    EXP_A_DYNAMIC = "dynamic"
+    # v: ignored
+    # marks this ACS as dynamic (see: MASDynamicAccessory)
+
     # ---- HAIR ----
 
     EXP_H_TT = "twintails"
@@ -6523,7 +6527,7 @@ init -3 python:
     class MASDynamicAccessory(MASAccessoryBase, MASDynamicSpriteBase):
         """
         A Dynamic MAS Accessory. This can vary an ACS based on displayables.
-        
+
         NOTE: does NOT support split ACS.
 
         PROPERTIES:
