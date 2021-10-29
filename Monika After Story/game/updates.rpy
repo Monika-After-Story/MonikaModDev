@@ -374,6 +374,19 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.4
+label v0_12_4(version="v0_12_4"):
+    python hide:
+        mas_setEVLPropValues(
+            'bye_trick_or_treat',
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()"
+        )
+    return
 
 # 0.12.3.2
 label v0_12_3_2(version="v0_12_3_2"):
@@ -1286,7 +1299,8 @@ label v0_11_0(version="v0_11_0"):
         credits_ev = mas_getEV("monika_credits_song")
         if credits_ev:
             credits_ev.random = False
-            credits_ev.prompt = None
+            # This will be set during runtime as appropriate
+            # credits_ev.prompt = credits_ev.eventlabel
             credits_ev.conditional = "store.mas_anni.pastOneMonth()"
             credits_ev.action = EV_ACT_QUEUE
             credits_ev.unlocked = False
@@ -2847,8 +2861,8 @@ label v0_7_4(version="v0_7_4"):
             1200
         )
 
-       # now properly set all farewells as unlocked, since the new system checks
-       # for the unlocked status
+        # now properly set all farewells as unlocked, since the new system checks
+        # for the unlocked status
         for k in evhand.farewell_database:
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True

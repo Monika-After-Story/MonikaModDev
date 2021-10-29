@@ -2166,7 +2166,7 @@ python early:
                 return_value - Value to return when the button is activated
                     (Default: True)
             """
-
+            super(renpy.Displayable, self).__init__()
             # setup
 #            self.idle_text = idle_text
 #            self.hover_text = hover_text
@@ -2464,6 +2464,7 @@ python early:
                         if not is_over_me:
                             self.hovered = False
                             self._state = self._STATE_IDLE
+                            renpy.redraw(self, 0.0)
 
                         # else remain in hover mode
 
@@ -2473,6 +2474,8 @@ python early:
 
                         if self.hover_sound:
                             self._playHoverSound()
+
+                        renpy.redraw(self, 0.0)
 
                 elif (
                         ev.type == self._button_down
@@ -6208,13 +6211,15 @@ init 2 python:
         #3 conditions:
 
         #1. Do we even have plushie enabled?
-        #2. Is it f14? (heartchoc gift interferes)
+        #2.1 Is it f14? (heartchoc gift interferes)
+        #2.2 Is it o31? (o31 desk acs interferes)
         #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
             not persistent._mas_acs_enable_quetzalplushie
             or mas_isF14()
+            or mas_isO31()
             or MASConsumable._getCurrentFood()
         ):
             # run the plushie exit PP in case plushie is no longer enabled

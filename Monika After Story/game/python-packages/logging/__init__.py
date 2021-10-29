@@ -867,14 +867,14 @@ class StreamHandler(Handler):
         try:
             msg = self.format(record)
             stream = self.stream
-            fs = "%s\n"
+            fs = "%s\r\n"
             if not _unicode: #if no unicode support...
                 stream.write(fs % msg)
             else:
                 try:
                     if (isinstance(msg, unicode) and
                         getattr(stream, 'encoding', None)):
-                        ufs = u'%s\n'
+                        ufs = u'%s\r\n'
                         try:
                             stream.write(ufs % msg)
                         except UnicodeEncodeError:

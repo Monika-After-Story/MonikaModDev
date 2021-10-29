@@ -93,21 +93,21 @@
     },
     "MOD_MAP": {
         "tears": {
-            "streaming": {
-                "closedhappy": "",
-                "closedsad": "",
-                "winkleft": "",
-                "winkright": ""
-            },
-            "up": {
-                "closedhappy": "",
-                "closedsad": "",
-                "winkleft": "",
-                "winkright": ""
-            },
-            "pooled": {
-                "closedhappy": ""
-            }
+            "streaming": [
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright"
+            ],
+            "up": [
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright"
+            ],
+            "pooled": [
+                "closedhappy"
+            ]
         }
     }
 }
