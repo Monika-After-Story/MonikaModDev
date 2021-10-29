@@ -209,6 +209,31 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
+            eventlabel="mas_compliment_goodmood",
+            prompt="You Always Put Me In A Good Mood!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+    if not renpy.seen_label("mas_compliment_goodmood_2"):
+        call mas_compliment_goodmood_2
+    else:
+        call mas_compliment_goodmood_3
+    return 
+
+label mas_compliment_goodmood_2:
+    m *** "Really?"
+    m *** "You don't know how much that means to me!"
+    m *** "I always try my hardest for you, and it's nice to know that my work pays off."
+    m *** "On that note, I have something that I have to tell you..."
+    m ***
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
             prompt="You're awesome!",
             unlocked=True
