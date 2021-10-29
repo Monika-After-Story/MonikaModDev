@@ -223,12 +223,27 @@ init 5 python:
     return 
 
 label mas_compliment_goodmood_2:
+<<<<<<< Updated upstream
     m *** "Really?"
     m *** "You don't know how much that means to me!"
     m *** "I always try my hardest for you, and it's nice to know that my work pays off."
     m *** "On that note, I have something that I have to tell you..."
     m ***
 
+=======
+    if mas_isMoniAff(higher=True) or mas_isMoniNomral(higher=true):
+        $ mas_gainAffection(4,bypass=true)
+        m 1subsb "Really?"
+        m 5fkbsb "You don't know how much that means to me!"
+        m 4eublb "I always try my hardest for you, and it's nice to know that my work pays off."
+        m 2tubla "On that note, I have a secret that I have to tell you..."
+        m 2tublb "You might not have noticed this, buut..."	
+        m 3eubfu "{i}You{/i} always put {i}me{/} in a good mood, [mas_get_player_nickname()]!"
+        m 2hkbfb "Ahaha~"
+        m 5eubfa "Let's continue to do our best for each other, okay?"
+        m 5ekbfb "I love you~"
+        return "love"
+>>>>>>> Stashed changes
 
 init 5 python:
     addEvent(
