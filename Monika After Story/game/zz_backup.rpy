@@ -5,7 +5,9 @@ python early:
     # but we do know is that we might be able to tell if a persistent got
     # screwed by attempting to read it in now, before renpy actually does so.
     mas_corrupted_per = False
+    mas_unstable_per_in_stable = False
     mas_no_backups_found = False
+    mas_no_stable_backups_found = False
     mas_backup_copy_failed = False
     mas_backup_copy_filename = None
     mas_bad_backups = list()
@@ -24,6 +26,7 @@ python early:
         import datetime
         import shutil
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
+        global mas_unstable_per_in_stable, mas_no_stable_backups_found
         global mas_backup_copy_filename, mas_bad_backups
 
         early_log = store.mas_logging.init_log("early", header=False)
@@ -58,14 +61,14 @@ python early:
 
         def tryper(_tp_persistent):
             # tryies a persistent and checks if it is decoded succesfully
-            # returns True on success. raises errors if failure
+            # returns True, version_number on success. raises errors if failure
             per_file = None
             try:
                 per_file = file(_tp_persistent, "rb")
                 per_data = per_file.read().decode("zlib")
                 per_file.close()
                 actual_data = cPickle.loads(per_data)
-                return True
+                return True, actual_data.version_number
 
             except Exception as e:
                 raise e
@@ -77,13 +80,31 @@ python early:
 
         # okay, now let's attempt to read the persistent.
         try:
-            if tryper(per_dir + "/persistent"):
-                return
+            per_read, version = tryper(per_dir + "/persistent")
+            if per_read:
+                if (
+                        # unstable build
+                        not store.mas_utils.is_ver_stable(renpy.config.version)
+
+                        # persistent is from stable
+                        or store.mas_utils.is_ver_stable(version)
+
+                        # persistent vers -> build ver is not a downgrade
+                        or not store.mas_utils._is_downgrade(version, renpy_config.version)
+                ):
+                    return
+
+                # otherwise - this is not a safe persisetnt to load
+                mas_unstable_per_in_stable = True
 
         except Exception as e:
             mas_corrupted_per = True
             early_log.error("persistent was corrupted! : " +repr(e))
             # " this comment is to fix syntax highlighting issues on vim
+
+        # TODO: update documentation -
+        # it is possible to reach here if we are loading an unstable persistent
+        #   in a stable build
 
         # if we got here, we had an exception. Let's attempt to restore from
         # an eariler persistent backup.

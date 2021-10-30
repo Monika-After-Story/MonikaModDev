@@ -624,6 +624,62 @@ python early in mas_utils:
         trydel(old_path)
 
 
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+                return 1
+
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
+
     def copyfile(oldpath, newpath):
         """
         Copies the file at oldpath into a file at newpath
@@ -645,6 +701,56 @@ python early in mas_utils:
         except Exception as e:
             mas_log.error(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
+
+
+    def _get_version(ver_str, nums_only, split_nums=False):
+        """
+        Gets the version from a ver str
+
+        IN:
+            ver_str - version string to get version from
+            nums_only - True to only get ver numbers, False to get full ver
+
+        RETURNS: version str
+        """
+        if nums_only:
+            ver_nums = ver_str.partition("-")[0]
+        
+            if split_nums:
+                return ver_nums.split(".")
+
+            return ver_nums
+
+        return ver_str
+
+
+    def is_ver_stable(ver_str):
+        """
+        Checks if a version number is stable or not.
+        A stable version is generally a 3-tiered version number.
+
+        IN:
+            ver_str - version number string to check
+
+        RETURNS: true if version is stable, False if not.
+        """
+        return len(_get_version(ver_str, True, True)) == 3
+
+
+    def _is_downgrade(from_ver_str, to_ver_str):
+        """
+        Checks if the version transition given is a downgrade
+
+        IN:
+            from_ver_str - starting version (as ver str)
+            to_ver_str - ending version (as ver str)
+
+        RETURNS: true if downgrade, False if not
+        """
+        return compareVersionLists(
+            _get_version(from_ver_str, True, True),
+            _get_version(to_ver_str, True, True)
+        ) > 1
 
 
     def trydel(f_path, log=False):

@@ -317,7 +317,7 @@ style generic_fancy_check_button_dark:
     hover_background Solid("#d9739c")
     selected_background Solid("#CE4A7E")
 
-style generic_fancy_check_button_disabled:
+style generic_fancy_check_button_disabled is generic_fancy_check_button:
     properties gui.button_properties("check_button")
     foreground "generic_fancy_check_button_fg_insensitive"
     selected_foreground "generic_fancy_check_button_fg_selected_insensitive"
@@ -343,8 +343,12 @@ style generic_fancy_check_button_text_dark is gui_button_text_dark:
     outlines []
     yoffset 3
 
-style generic_fancy_check_button_disabled_text is generic_fancy_check_button_text:
+style generic_fancy_check_button_disabled_text is generic_fancy_check_button:
+    properties gui.button_text_properties("generic_fancy_check_button")
+    font "gui/font/Halogen.ttf"
     color "#8C8C8C"
+    outlines []
+    yoffset 3
 
 # START: image definitions
 image menu_bg:

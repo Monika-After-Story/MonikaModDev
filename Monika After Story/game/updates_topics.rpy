@@ -89,65 +89,6 @@ init -2 python in mas_versions:
         topics.clear()
 
 
-    def get_per_version(nums_only=True):
-        """
-        Gets the persistent version (NOTE: this can change depending on the
-        init level this is called at).
-
-        Before 5 - the previous peristent version
-        After 5 - the current persistent version
-
-        IN:
-            nums_only - True to only get ver numbers, False to get full ver
-                (Default: True)
-
-        RETURNS: version str
-        """
-        return _get_version(store.persistent.version_number, nums_only)
-
-
-    def get_version(nums_only=True):
-        """
-        Gets the current version
-
-        IN:
-            nums_only - True to only get ver numbers, False to get full ver
-                (Default: True)
-
-        RETURNS: version str
-        """
-        return _get_version(config.version, nums_only)
-
-
-    def _get_version(ver_str, nums_only):
-        """
-        Gets the version from a ver str
-
-        IN:
-            ver_str - version string to get version from
-            nums_only - True to only get ver numbers, False to get full ver
-
-        RETURNS: version str
-        """
-        if nums_only:
-            return ver_str.partition("-")[0]
-
-        return ver_str
-
-
-    def is_ver_stable(ver_str):
-        """
-        Checks if a version number is stable or not.
-        A stable version is generally a 3-tiered version number.
-
-        IN:
-            ver_str - version number string to check
-
-        RETURNS: true if version is stable, False if not.
-        """
-        return len(_get_version(ver_str, True).split(".")) == 3
-
-
     def init():
         """
         Initializes the update data structures

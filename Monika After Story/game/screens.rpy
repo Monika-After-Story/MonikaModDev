@@ -1392,13 +1392,14 @@ screen preferences():
                     label _("Gameplay")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
-                            if store.mas_versions.is_ver_stable(config.version):
+                            if store.mas_utils.is_ver_stable(config.version):
                                 textbutton _("Unstable"):
                                     action SetField(persistent, "_mas_unstable_mode", False)
                                     selected persistent._mas_unstable_mode
                             else:
                                 textbutton _("Unstable"):
                                     style "generic_fancy_check_button_disabled"
+                                    text_style "generic_fancy_check_button_disabled_text"
                                     action SetField(persistent, "_mas_unstable_mode", True)
                                     selected True
                                     hovered tooltip.Action(layout.MAS_TT_UNSTABLE_DISABLED)
