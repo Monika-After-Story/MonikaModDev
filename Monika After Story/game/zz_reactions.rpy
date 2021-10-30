@@ -1066,11 +1066,10 @@ label mas_reaction_gift_generic:
     return
 
 label mas_reaction_gifts_generic:
-    m 1esd "[player], are you trying to give me stuff?"
-    m 1eksdla "I found them, but I can't bring them here..."
-    m 3rksdlb "I can't seem to read them well enough."
-    m 3eub "But that's alright!"
-    m 3eka "It's the thought that counts after all, right?"
+    m 1esd "Sorry, [player]..."
+    m 3rksdla "I found what you're trying to give me, but I can't seem to read them well enough."
+    m 3eub "That's alright, though!"
+    m 1eka "It's the thought that counts after all~"
     m 1hub "Thanks for being so thoughtful, [player]!"
     return
 
