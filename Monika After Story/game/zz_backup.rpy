@@ -82,7 +82,8 @@ python early:
 
         except Exception as e:
             mas_corrupted_per = True
-            early_log.error("persistent was corrupted!: " + repr(e))
+            early_log.error("persistent was corrupted! : " +repr(e))
+            # " this comment is to fix syntax highlighting issues on vim
 
         # if we got here, we had an exception. Let's attempt to restore from
         # an eariler persistent backup.
@@ -159,7 +160,7 @@ python early:
         # otherwise, lets rename the existence persistent to bad and copy the
         # good persistent into the system
         # also let the log know we found a good one
-        early_log.info("working backup found: " + sel_back)
+        early_log.info("working backup found: " + sel_back) # " more fixes
         _bad_per = os.path.normcase(per_dir + "/persistent_bad")
         _cur_per = os.path.normcase(per_dir + "/persistent")
         _god_per = os.path.normcase(per_dir + "/" + sel_back)
