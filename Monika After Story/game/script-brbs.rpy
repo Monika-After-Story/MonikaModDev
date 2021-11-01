@@ -808,7 +808,7 @@ label monika_idle_homework_callback:
                 m 2eua "Finished?"
                 m 1hub "Well done!"
                 m 1eub "Hopefully it wasn't too hard!"
-                m 2eus "[wb_quip]"
+                m 2eua "[wb_quip]"
 
     else:
         m 6ckc "..."
