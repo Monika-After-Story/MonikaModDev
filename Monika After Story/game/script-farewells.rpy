@@ -1799,7 +1799,7 @@ label bye_eatwithmyfamily:
             m 1hua "See you later!"
         else:
             m 2ekc "Umm...you've been here with me for quite a while, [player]."
-            m 2ekd "Are you sure you've had enough rest for it?"
+            m 2ekd "You should probably take a break!"
             m 2eka "Make sure to eat more~~"
             m2hssdro "If you're not feeling too well, eat... Silly."
             m 1hka "I'll be waiting for you to come back. Stay safe."
