@@ -174,7 +174,7 @@ label monika_brb_idle_callback:
 
         elif response = 10:
             m 5hubsa "{i}Hmm hmm hmm...{/i} {w=2} {nw}"
-            extend 5wuo "Ah! {nw}"
+            extend 5wuo "Ah! {w=0.25}{nw}"
             extend 5wubld "[player]!"
             m 6lubld "You surprised me!"
             m 6hkblb "I was kind of deep in thought."
@@ -233,16 +233,24 @@ label monika_writing_idle:
 
        elif response = 3:
             if not renpy.seen_label("monika_writing_posture"):
-            call monika_writing_posture
-
+                call monika_writing_posture
+            else:
+                m 2esb "Doing a little bit of writing?"
+                m 2hsb "Alright!"
+                m 2eta "I wonder what you're working on?"
+                m 4htb "A romance, perhaps? {w=0.2}{nw}
+                extend 5hub "Ahahaha~"
+                m 5eua "I'll await your return!"
+  
 label monika_writing_posture:
-            m *** "Going to get some writing done?"
-            m *** "Sounds good!"
-            m *** "Make sure you're sitting in a way that's comfortable, though."
-            m *** "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
-            m *** "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
-            m *** "Take a break every so often to get up and stretch or grab a glass of water!"
-
+            m 1eua "Going to get some writing done?"
+            m 1hub "Sounds good!"
+            m 3esd "Make sure you're sitting in a way that's comfortable, though."
+            m 3hsb "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
+            m 3esc "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
+            m 3esb "Take a break every so often to get up and stretch or grab a glass of water!"
+            m 5hsb "I'll be here if you need some time away from your work!"
+            return
             
 
     elif mas_isMoniUpset():
