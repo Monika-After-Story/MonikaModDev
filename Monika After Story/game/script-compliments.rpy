@@ -241,24 +241,25 @@ label mas_compliment_goodmood:
         call mas_compliement_goodmood_bad
 
 label mas_compliment_goodmood_bad:
-    m *** "..."
-    m *** "You say that, but you seem to neglect how I feel." {w=2} {nw}
-    extend *** "Do you enjoy making me feel this way?"
-    $ mas_loseAffection(2)
+    m 1lkc "..."
+    m 2fkc "You say that, but you seem to neglect how I feel." {w=2} {nw}
+    extend 2fktuc "Do you enjoy making me feel this way?"
+    $ mas_loseAffection(3)
     
     return
 label mas_goodmood_2:
 
     if mas_isMoniNormal(higher=true):
-        m *** "Thanks for reminding me again, [mas_get_player_nickname()]."
-        m *** "I really appreciate when you show your gratitude for what I do!"
-        m *** "You know how hard I work to make you happy, so it's nice to see it pay off."
-        m *** "As always, your company is all I need~"
+        m 1hub "Thanks for reminding me again, [mas_get_player_nickname()]."
+        m 7eub "I really appreciate when you show your gratitude for what I do!"
+        m 2eua "You know how hard I work to make you happy, so it's nice to see it pay off."
+        m 1eka "Don't worry about repaying the favor, though."
+        m  "As always, your company is all I need~"
         
 
     else:
-        m *** ".{w=0.25}.{w=0.25}.{w=0.25}"
-        m *** "Thanks."
+        m 2tfc ".{w=0.25}.{w=0.25}.{w=0.25}"
+        m 2tuc "Thanks."
         
     return
 init 5 python:
