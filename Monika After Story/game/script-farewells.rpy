@@ -1741,3 +1741,80 @@ label bye_prompt_hangout:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
     return "quit"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_eatwithmyfamily",
+            unlocked=True,
+            prompt="I'm going to eat dinner with my family",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_eatwithmyfamily:
+    python:
+        import datetime
+        curr_hour = datetime.datetime.now().hour
+    $ session_time = mas_getSessionLength()
+    if mas_isMoniNormal(higher=True):
+        if 18 <= curr_hour < 23:
+            if mas_isMoniNormal(higher=True):
+                m 1eua "Alright, [mas_get_player_nickname()]."
+                m 3eka "Going to a late family diner?"
+                m 1hua "See you after!! I love you [player]!"
+
+            elif mas_isMoniUpset():
+                m 2efc "Have fun."
+                m 2esc "See you."
+
+            elif mas_isMoniDis():
+                m 6rkc "You should go have fun, [player]..."
+                m 6dkc "It might make you--{w=1}us--{w=1}happier."
+
+            else:
+                m 6ckc "..."
+
+            return 'quit'
+
+        if session_time < datetime.timedelta(minutes=20):
+            m 1ekd "Aw, going already?"
+            m 1efp "You haven't even been here for 20 minutes!"
+            m 3hksdlb "I'm just kidding, [mas_get_player_nickname()]."
+            m 2eka "You're so sweet for seeing me even when you have so little time."
+            m 2hub "I just want you to know I really appreciate that!"
+            m 2eka "Eat well! [player], I'm sure that you will enjoy it!"
+            m 2hua "See you when you get back! love you!"
+        elif session_time < datetime.timedelta(hours=1):
+            m 2eua "Alright, thanks for spending some time with me, [player]!"
+            m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
+            m 2hua "Nothing is more important than you're family?"
+            m 3kublu "Maybe me, ehehehehe~~"
+            m "See you soon!"
+        elif session_time < datetime.timedelta(hours=6):
+            m 1hua "Eat well! [player]"
+            m 1eua "I hope that you have fun with them!"
+            m 1hua "See you later!"
+        else:
+            m 2ekc "Umm...you've been here with me for quite a while, [player]."
+            m 2ekd "Are you sure you've had enough rest for it?"
+            m 2eka "Make sure to eat more~~"
+            m2hssdro "If you're not feeling too well, eat... Silly."
+            m 1hka "I'll be waiting for you to come back. Stay safe."
+
+    elif mas_isMoniUpset():
+        m 2esc "Fine, [player]."
+        m "Hopefully you at least eat well."
+        m 2efc "See you."
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh, okay [player]..."
+        m 6lkc "I guess I'll see you after you're diner."
+
+    else:
+        m 6ckc "..."
+
+    return 'quit'
+    
