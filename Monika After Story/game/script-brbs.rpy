@@ -238,7 +238,7 @@ label monika_writing_idle:
                 m 2esb "Doing a little bit of writing?"
                 m 2hsb "Alright!"
                 m 2eta "I wonder what you're working on?"
-                m 4htb "A romance, perhaps? {w=0.2}{nw}
+                m 4htb "A romance, perhaps? {w=0.2}{nw}"
                 extend 5hub "Ahahaha~"
                 m 5eua "I'll await your return!"
   
