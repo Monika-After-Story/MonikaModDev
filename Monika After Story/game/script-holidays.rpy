@@ -401,9 +401,6 @@ init -10 python:
         for _tag in MAS_O31_DECO_TAGS:
             mas_hideDecoTag(_tag, hide_now=True)
 
-        #Also, if we're hiding visuals, we're no longer in o31 mode
-        store.persistent._mas_o31_in_o31_mode = False
-
         #unlock hairdown greet if we don't have hairdown unlocked
         hair = store.mas_selspr.get_sel_hair(store.mas_hair_down)
         if hair is not None and not hair.unlocked:
@@ -607,6 +604,9 @@ init -10 python:
 
         #Hide visuals
         mas_o31HideVisuals()
+
+        #o31 is now over. Reset the o31 mode flag
+        store.persistent._mas_o31_in_o31_mode = False
 
         #rmall for safety
         mas_rmallEVL("mas_o31_cleanup")
@@ -5808,6 +5808,8 @@ label return_home_post_player_bday:
             #If we returned from a date post pbday but have O31 deco
             if not mas_isO31() and persistent._mas_o31_in_o31_mode:
                 $ mas_o31HideVisuals()
+                # Make sure no o31 mode
+                $ store.persistent._mas_o31_in_o31_mode = False
 
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
