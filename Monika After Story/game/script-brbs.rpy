@@ -562,10 +562,10 @@ label monika_idle_coding_callback:
                 m 1eua "Done for now, [player]?"
            
             elif response = 2:
-                m *** "Back from coding?"
+                m 2eub "Back from coding?"
 
             elif response = 3:
-                m *** "Welcome back, [mas_get_player_nickname()]!"
+                m 2hub "Welcome back, [mas_get_player_nickname()]!"
         else:
 
             $ response = renpy.random.randint(1,2)
@@ -573,8 +573,8 @@ label monika_idle_coding_callback:
                 m 1eua "Oh, done already, [player]?"
             
             elif response = 2:
-                m *** "Done so soon?"
-                m *** "That's arlight, [player]!"
+                m 2eka "Done so soon?"
+                m 2eua "That's alright, [player]!"
 
         m 3eub "[wb_quip]"
 
