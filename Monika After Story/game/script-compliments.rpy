@@ -210,28 +210,21 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_goodmood",
-            prompt="You Always Put Me In A Good Mood!",
+            prompt="You always put me in a good mood!",
             unlocked=True
         ),
         code="CMP"
     )
-
-    if not renpy.seen_label("mas_compliment_goodmood_2"):
-        call mas_compliment_goodmood_2
+#will be adding more responses if this pr gets accepted as part of my more responses pr
+    if not renpy.seen_label("mas_compliment_goodmood") or renpy.seen_label("mas_compliment_goodmood_bad"):
+        call mas_compliment_goodmood
     else:
-        call mas_compliment_goodmood_3
+        call mas_compliment_goodmood_2
     return 
 
-label mas_compliment_goodmood_2:
-<<<<<<< Updated upstream
-    m *** "Really?"
-    m *** "You don't know how much that means to me!"
-    m *** "I always try my hardest for you, and it's nice to know that my work pays off."
-    m *** "On that note, I have something that I have to tell you..."
-    m ***
+label mas_compliment_goodmood:
 
-=======
-    if mas_isMoniAff(higher=True) or mas_isMoniNomral(higher=true):
+    if mas_isMoniNormal(higher=true):
         $ mas_gainAffection(4,bypass=true)
         m 1subsb "Really?"
         m 5fkbsb "You don't know how much that means to me!"
@@ -243,8 +236,31 @@ label mas_compliment_goodmood_2:
         m 5eubfa "Let's continue to do our best for each other, okay?"
         m 5ekbfb "I love you~"
         return "love"
->>>>>>> Stashed changes
 
+    elif mas_isMoniUpset()
+        call mas_compliement_goodmood_bad
+
+label mas_compliment_goodmood_bad:
+    m *** "..."
+    m *** "You say that, but you seem to neglect how I feel." {w=2} {nw}
+    extend *** "Do you enjoy making me feel this way?"
+    $ mas_loseAffection(2)
+    
+    return
+label mas_goodmood_2:
+
+    if mas_isMoniNormal(higher=true):
+        m *** "Thanks for reminding me again, [mas_get_player_nickname()]."
+        m *** "I really appreciate when you show your gratitude for what I do!"
+        m *** "You know how hard I work to make you happy, so it's nice to see it pay off."
+        m *** "As always, your company is all I need~"
+        
+
+    else:
+        m *** ".{w=0.25}.{w=0.25}.{w=0.25}"
+        m *** "Thanks."
+        
+    return
 init 5 python:
     addEvent(
         Event(
