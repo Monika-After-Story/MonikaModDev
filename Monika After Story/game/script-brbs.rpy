@@ -531,10 +531,10 @@ label monika_idle_coding:
             m 1hua "I'll be right here, waiting for you~"
         
         elif response = 2:
-            m *** "Going to go code?"
-            m *** "Make sure to take breaks every so often!"
-            m *** "Even getting up to grab a snack or a glass of water can clear your mind!"
-            m *** "Anyway, have fun!"
+            m 1eua "Going to go code?"
+            m 1hua "Make sure to take breaks every so often!"
+            m 3eub "Even getting up to grab a snack or a glass of water can clear your mind!"
+            m 2hublb "Anyway, have fun!"
 
     elif mas_isMoniUpset():
         m 2euc "Oh, you're going to code?"
