@@ -1532,7 +1532,7 @@ label ch30_post_mid_loop_eval:
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
                 store.mas_globals.show_sayori_lightning
-                and persistent._mas_pm_cares_about_dokis
+                and not persistent._mas_pm_cares_about_dokis
                 and mas_current_background.background_id == store.mas_background.MBG_DEF
                 and renpy.random.randint(1, store.mas_globals.sayori_lightning_chance) == 1
             ):
