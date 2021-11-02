@@ -39,6 +39,24 @@ init 10 python in mas_brbs:
         brb_ev = store.mas_getEV(brb_evl)
         return brb_ev and brb_ev.timePassedSinceLastSeen_dt(idle_time)
 
+# quips for generic goodbye that doesn't require any special text (affectionate)
+    def get_goodbye_quip():
+    
+    return renpy.substitute(renpy.random.choice([
+            _(m 1hub "Hurry back, I'll be waiting here for you~"),
+            _(m 1hsb "Don't let me keep you!"),
+            _(m 6hub "Don't dawdle!"),
+        ]))
+
+# quips for normal aff goodbye
+    def get_goodbye_quip_nor():
+
+    return renpy.substitute(renpy.random.choice([
+            _(m 1hub "Hurry back, [player]!"),
+            _(m 1eua "I'll be waiting!"),
+        ]))
+
+
 # label to use if we want to get back into idle from a callback
 label mas_brb_back_to_idle:
     # sanity check
@@ -91,6 +109,8 @@ init 5 python:
 
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
+        $ goodbye_quip = get_goodbye_quip()
+        $ goodbye_quip_nor = get_goodbye_quip_nor()
         m 1eua "Alright, [player]."
 
         show monika 1eta at t21
@@ -110,38 +130,11 @@ label monika_brb_idle:
         show monika at t11
 
         if _return:
-            $ goodbye = renpy.random.randint(1,2)
-            if goodbye = 1:
-                m 1eua "Oh alright.{w=0.2} {nw}"
-                extend 3hub "Hurry back, I'll be waiting here for you~"
-
-            elif goodbye = 2:
-                m 1eua "Okay."
-                m 3hub "I'll be here when you're done!"
-
-        else:
-            $ goodbye = renpy.random.randint(1,3)
-            if goodbye = 1:
-                m 1hub "Hurry back, I'll be waiting here for you~"
-
-            elif goodbye = 2:
-                m 1eua "Alright, [mas_get_player_nickname()]."
-                m 1hsb "Don't let me keep you!"
-
-            elif goodbye = 3:
-                m 6hub "Don't dawdle!"
-
-        else:
-            $ goodbye - renpy.random.randint(1,3)
-            if goodbye = 1:
-                m 1hub "Hurry back, I'll be waiting here for you~"
+                m 1eua "Oh, alright.{w=0.2} {nw}"
+                extend 3hub "[goodbye_quip]"
 
     elif mas_isMoniNormal(higher=True):
-        $ goodbye = renpy.random.randomint(1,2)
-        if goodbye = 1:
-            m 1hub "Hurry back, [player]!"
-        if goodbye = 2:
-            m 1eua "I'll be waiting!"
+        [goodbye_quip_nor]
 
     elif mas_isMoniDis(higher=True):
         m 2rsc "Oh...{w=0.5}okay."
