@@ -149,21 +149,23 @@ label monika_brb_idle:
     return "idle"
 
 label monika_brb_idle_callback:
+    def wb_callback():
+    return renpy.substitute(renpy.random.choice([
+        _(m 1hub "Welcome back, [player]. I missed you~"
+          m 1eua "[wb_quip]"),
+        _(m 1eub "There you are! {w=0.2} {nw}"
+          extend 1hub "I was starting to get bored!"
+          #May change to 'miss you' or something a bit more passive in the future
+          m 1eua "[wb_quip]"),
+    ]))
+
     $ wb_quip = mas_brbs.get_wb_quip()
+    $ wb_dialogue = wb_callback
 
     if mas_isMoniAff(higher=True):
         $response = renpy.random.randint(1,10)
         if response <= 9:
-            $response = renpy.random.randomint(1,2)
-            if response = 1:
-                m 1hub "Welcome back, [player]. I missed you~"
-                m 1eua "[wb_quip]"
-
-            elif response = 2:
-                m 1eub "There you are! {w=0.2} {nw}"
-                extend 1hub "I was starting to get bored!"
-                #May change to 'miss you' or something a bit more passive in the future
-                m 1eua "[wb_quip]"
+            "[wb_dialogue]"
 
         elif response = 10:
             m 5hubsa "{i}Hmm hmm hmm...{/i} {w=2} {nw}"
