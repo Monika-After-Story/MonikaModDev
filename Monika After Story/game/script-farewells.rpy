@@ -1755,16 +1755,14 @@ init 5 python:
     )
 
 label bye_eatwithmyfamily:
-    python:
-        import datetime
-        curr_hour = datetime.datetime.now().hour
+    $ curr_hour = datetime.datetime.now().hour
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if 18 <= curr_hour < 23:
             if mas_isMoniNormal(higher=True):
                 m 1eua "Alright, [mas_get_player_nickname()]."
-                m 3eka "Going to a late family diner?"
-                m 1hua "See you after!! I love you [player]!"
+                m 3eka "Going to a late family dinner?"
+                m 1hua "See you after! I love you [player]!"
 
             elif mas_isMoniUpset():
                 m 2efc "Have fun."
@@ -1779,7 +1777,7 @@ label bye_eatwithmyfamily:
 
             return 'quit'
 
-        if session_time < datetime.timedelta(minutes=20):
+        elif session_time < datetime.timedelta(minutes=20):
             m 1ekd "Aw, going already?"
             m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [mas_get_player_nickname()]."
@@ -1790,8 +1788,8 @@ label bye_eatwithmyfamily:
         elif session_time < datetime.timedelta(hours=1):
             m 2eua "Alright, thanks for spending some time with me, [player]!"
             m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
-            m 2hua "Nothing is more important than you're family?"
-            m 3kublu "Maybe me, ehehehehe~~"
+            m 2hua "Nothing is more important than your family?"
+            m 3kublu "Maybe me, ehehe~~"
             m "See you soon!"
         elif session_time < datetime.timedelta(hours=6):
             m 1hua "Eat well! [player]"
@@ -1801,7 +1799,7 @@ label bye_eatwithmyfamily:
             m 2ekc "Umm...you've been here with me for quite a while, [player]."
             m 2ekd "You should probably take a break!"
             m 2eka "Make sure to eat more~~"
-            m2hssdro "If you're not feeling too well, eat... Silly."
+            m2hssdro "If your not feeling too well, eat... Silly."
             m 1hka "I'll be waiting for you to come back. Stay safe."
 
     elif mas_isMoniUpset():
@@ -1811,7 +1809,7 @@ label bye_eatwithmyfamily:
 
     elif mas_isMoniDis():
         m 6rkc "Oh, okay [player]..."
-        m 6lkc "I guess I'll see you after you're diner."
+        m 6lkc "I guess I'll see you after your dinner."
 
     else:
         m 6ckc "..."
