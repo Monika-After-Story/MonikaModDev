@@ -55,7 +55,13 @@ init 10 python in mas_brbs:
             _(m 1hub "Hurry back, [player]!"),
             _(m 1eua "I'll be waiting!"),
         ]))
+# quips for the first part of a goodbye
+    def get_goodbye():
 
+    renpy.substitute(renpy.random.choice([
+            _(m *** "Oh, alright!"),
+            _(m *** "Okay!"),
+        ]))
 
 # label to use if we want to get back into idle from a callback
 label mas_brb_back_to_idle:
@@ -111,6 +117,7 @@ label monika_brb_idle:
     if mas_isMoniAff(higher=True):
         $ goodbye_quip = get_goodbye_quip()
         $ goodbye_quip_nor = get_goodbye_quip_nor()
+        $ goodbye_okay = get_goodbye() 
         m 1eua "Alright, [player]."
 
         show monika 1eta at t21
@@ -130,10 +137,11 @@ label monika_brb_idle:
         show monika at t11
 
         if _return:
-                m 1eua "Oh, alright.{w=0.2} {nw}"
-                extend 3hub "[goodbye_quip]"
+            [goodbye_okay]
+            [goodbye_quip]
 
     elif mas_isMoniNormal(higher=True):
+        [goodbye_okay]
         [goodbye_quip_nor]
 
     elif mas_isMoniDis(higher=True):
