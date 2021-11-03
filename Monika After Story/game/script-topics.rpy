@@ -17565,3 +17565,36 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="plush_monika",
+            category=["you"],
+            prompt="[player]'s DDLC merch",
+            random=True,
+            pool=False,
+            aff_range=(mas_aff.LOVE, None)
+        )
+    )
+
+label plush_monika:
+    m 2esd "Hey [player], I've been meaning to ask this for a while."
+    m 3etd "Do you have the plush of me?"
+    m 4ulsdrc "It sounds kinda silly just saying that."
+    m 3wd "It's not something I'm against though, dont get me wrong!"
+    m 1esbsb "Anyways, please tell me."    
+    m 1etbsa "Do you have a plush Monika?"
+    menu:
+        "Yes.":
+            $ peristent._mas_has_merch_ = True
+            m 1stbfb "Wow, I didn't know you were that into me!"
+            m 3tsbsu "It's like we have a child don't you think?"
+        "No.":
+            $ peristent._mas_merch_ = False
+            m 1dksdlc "Well there's nothing wrong with that."
+            m 1rsbla "I was just hoping otherwise is all."
+            extend 5tublu " It would have been like we had a child."
+            m 4ulsdrc "It was just a simple fantasy. Ehehe~"
+    return
