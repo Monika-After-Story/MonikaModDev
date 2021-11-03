@@ -17574,7 +17574,7 @@ init 5 python:
             category=['mod'],
             prompt="Could you show me the guide to backup your memories?",
             pool=True,
-        )
+        ),
         markSeen=True
     )
 
@@ -17592,7 +17592,7 @@ init 5 python:
             category=['mod'],
             prompt="I'm having trouble giving you a gift...",
             pool=True,
-        )
+        ),
         markSeen=True
     )
 
