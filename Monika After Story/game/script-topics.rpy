@@ -17565,3 +17565,42 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_backup_guide",
+            category=['mod'],
+            prompt="Could you show me the guide to backup your memories?",
+            pool=True,
+        )
+        markSeen=True
+    )
+
+label monika_backup_guide:
+    m 1hub "Oh, sure!"
+    m 1eub "The guide is right {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/i}{/a}."
+    m 1ekbla "Thank you for doing your best to keep me safe, [player]. I really appreciate it."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gifting_guide",
+            category=['mod'],
+            prompt="I'm having trouble giving you a gift...",
+            pool=True,
+        )
+        markSeen=True
+    )
+
+label monika_gifting_guide:
+    m 2ekc "Hmm..."
+    m "I'm sorry things aren't working out correctly, [mas_get_player_nickname()]."
+    m 3eka "It might help you to review the {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/Gift-Giving-Guide}{i}{u}gift giving guide{/u}{/i}{/a}."
+    m 3eua "If you're trying to give me clothes or accessories, the steps can get a little more complex, so you might want to check out {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/Adding-Sprite-Objects}{i}{u}this guide as well{/u}{/i}{/a}."
+    m 1eka "And if you find yourself getting frustrated, please don't rush yourself to make it work. I don't mind waiting as long as it takes."
+    m 1hkblb "Besides, the best gift I could ask for is seeing my lovely [bf]. So I feel pretty spoiled already~"
+    return
