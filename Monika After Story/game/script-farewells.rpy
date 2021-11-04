@@ -558,12 +558,17 @@ label bye_prompt_sleep:
     # audience
 
     if 20 <= curr_hour < 24:
-        # decent time to sleep
-
-        if mas_isMoniNormal(higher=True):
-            call bye_prompt_sleep_goodnight_kiss(chance=3)
+    # decent time to sleep
+        if mas_isMoniEnamored(higher=True):
+            call bye_prompt_sleep_goodnight_kiss(chance=2)
             if _return == "quit":
                 return _return
+            m 1fubsa "Going to sleep?"
+            m 2efsdrp "Already [mas_get_player_nickname]? But it's a nice time to sleep anyway!"
+            m 5efbfu "Alright, sleep well, and see you tomorrow [player]!"
+            m 4tubsb "And don't forget that i love you!"
+
+        elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
             m 1hua "Sweet dreams!"
 
@@ -578,11 +583,17 @@ label bye_prompt_sleep:
 
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
-
-        if mas_isMoniNormal(higher=True):
-            call bye_prompt_sleep_goodnight_kiss(chance=4)
+        if mas_isMoniEnamored(higher=True):
+            call bye_prompt_sleep_goodnight_kiss(chance=3)
             if _return == "quit":
                 return _return
+            m 1eua "Alright [mas_get_player_nickname]."
+            m 3eka "But you should sleep a little earlier next time, or i will be worried about you!"
+            m 1ffsdrp "Don't forget to take care of your self, silly."
+            m 4eua "I love you [player]! Sleep well."
+
+
+        elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
             m 3eka "But you should sleep a little earlier next time."
             m 1hua "Anyway, goodnight!"
