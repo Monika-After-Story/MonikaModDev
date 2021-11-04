@@ -275,7 +275,39 @@ label monika_idle_shower:
 
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Welcome back, [player]."
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_shower"):
+            m 5esc "{w=1}..."
+            m 2sud "Oh [player]! You're back!"
+            m 1rfsdrx "You took your time..."
+            m 2wusdrd "Did you fall?"
+            m 4eua "At least you are here!{w=1} Let's spend more time together now!"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_shower"):
+            m 2dfsdrc "Hmm, you took a long time?"
+            m 4euc "Did you take a bath?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you take a bath?{fast}"
+
+                "Yes.":
+                    m 1eua "Oh! I see~"
+                    m 3eua "Then i hope that you had a good time!"
+
+                "No.":
+                    m 1eusdrc "Oh...{w=1} Then what did you do?"
+                    m 4ekc "Probably something silly. LIke always ehehe~"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_shower"):
+            m 1eua "Welcome back [player]! How was your shower?"
+            m 4rtc "Well i mean~{fast} did you miss me?"
+            m 2mso "You for sure did. Ehehe~"
+            m 2eubsa "Anyway, let's spend more time together~"
+
+        else:
+            m 1hua "I'm glad you're keeping yourself clean, [player]."
+            m 1eua "But wasn't this shower a bit...{w=1} Short?"
+            m 1eua "Anyway, let's spend more time together~"
+
 
         if (
             mas_isMoniLove()
