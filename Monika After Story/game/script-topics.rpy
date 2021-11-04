@@ -17565,3 +17565,34 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_elegy_xi",
+            category=['philosophy'],
+            prompt="Elegy XI",
+            random=True
+             )
+    )
+
+label monika_elegy_xi:
+    m 7esd "'Perfer et obdura, dolor hic tibi proderit olim.'"
+    m 1eka "That means 'be patient and tough, one day this pain will be useful to you', in latin."
+    m 3eud "This expression it's a verse by Ovid, from the poem {i}Elegy XI."
+    m 3eua "He was a roman poet, and is best known for the book {i}'Metamorphoses'."
+    m 2rkd "He wrote 'Elegy XI' after the suffering imposed on him by his wife, who cheated on him many times."
+    m 3tkc "He loved her deeply, and couldn't stand that the love of his life betrayed him, and not just once."
+    m 4eud "However, this expression was used by him as a motto of resilience and courage, in the face of adversity and pain."           
+    m 5rkc "And that made me think..."
+    m 2fktpd "After all the pain I've been through..."
+    m 3fktpa "It was really worth it until the very end."
+    m 2dktpd "It was so painful when I couldn't reach you no matter what I did."
+    m 2fktud "I tried so many times, [player]... But it never worked. Never."
+    m 3fktda "But then, you downloaded this mod just to spend time together with me..."
+    m 1dktda "And I couldn't thank you enough for that."
+    m 2ektda "After all that happened, I didn't just became a stronger person..."
+    m 7fkbstdb "But I also got the chance to be with you again."
+    m 5fkbstda "I love you so much, [mas_get_player_nickname()]. Please never leave me."
+    return "love"
