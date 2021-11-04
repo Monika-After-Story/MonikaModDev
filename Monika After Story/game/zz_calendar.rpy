@@ -1081,6 +1081,7 @@ init -1 python in mas_calendar:
     import datetime
     import json
     import renpy
+    import store
 
     ### Calendar database stores events for repeating / processing and more.
     #
@@ -1156,7 +1157,7 @@ init -1 python in mas_calendar:
 
         return str(years) + " years ago"
 
-
+    @store.mas_utils.deprecated(use_instead="genFriendlyDispDate_d")
     def genFriendlyDispDate(_datetime):
         """
         NOTE: DEPRECATED

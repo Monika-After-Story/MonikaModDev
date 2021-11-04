@@ -24,7 +24,6 @@ init -5 python in mas_background:
 
 #START: Class definition
 init -10 python:
-
     class MASBackgroundFilterTypeException(Exception):
         """
         Type exception for MASBackgroundFilter objects
@@ -460,11 +459,11 @@ init -10 python:
 
         _ERR_PP_STR = (
             "[ERROR] error in slice pp | {0}\n"
-            "=====FROM: {1} -> {2}\n"
+            "=====FROM: {1} -> {2}"
         )
         _ERR_PP_STR_G = (
             "[ERROR] error in global slice pp | {0}\n"
-            "=====FROM: {1} -> {2}\n"
+            "=====FROM: {1} -> {2}"
         )
 
         def __init__(self, is_day, pp, *slices):
@@ -991,12 +990,15 @@ init -10 python:
 
             try:
                 self._pp(flt_old=flt_old, flt_new=flt_new, curr_time=curr_time)
+
             except Exception as e:
-                store.mas_utils.writelog(self._ERR_PP_STR.format(
-                    repr(e),
-                    flt_old,
-                    flt_new
-                ))
+                store.mas_utils.mas_log.error(
+                    self._ERR_PP_STR.format(
+                        repr(e),
+                        flt_old,
+                        flt_new
+                    )
+                )
 
         def _priority_fill(self, length, leftovers):
             """
@@ -1153,12 +1155,12 @@ init -10 python:
         _ERR_PP_STR = (
             "[ERROR] error in chunk pp | {0}\n\n"
             "=====FROM:\n{1}\n\n"
-            "=====TO\n{2}\n"
+            "=====TO\n{2}"
         )
         _ERR_PP_STR_G = (
             "[ERROR] error in global chunk pp | {0}\n\n"
             "=====FROM:\n{1}\n\n"
-            "=====TO\n{2}\n"
+            "=====TO\n{2}"
         )
 
         def __init__(self, mn_sr, sr_ss, ss_mn, pp=None):
@@ -1347,12 +1349,15 @@ init -10 python:
                             new_chunk,
                             curr_time
                         )
+
                     except Exception as e:
-                        store.mas_utils.writelog(self._ERR_PP_STR_G.format(
-                            repr(e),
-                            str(curr_chunk),
-                            str(new_chunk),
-                        ))
+                        store.mas_utils.mas_log.error(
+                            self._ERR_PP_STR_G.format(
+                                repr(e),
+                                str(curr_chunk),
+                                str(new_chunk),
+                            )
+                        )
 
                 # then finally reset slice index for the chunk we are leaving
                 curr_chunk.reset_index()
@@ -1646,12 +1651,15 @@ init -10 python:
                     chunk_new=chunk_new,
                     curr_time=curr_time
                 )
+
             except Exception as e:
-                store.mas_utils.writelog(self._ERR_PP_STR.format(
-                    repr(e),
-                    str(chunk_old),
-                    str(chunk_new)
-                ))
+                store.mas_utils.mas_log.error(
+                    self._ERR_PP_STR.format(
+                        repr(e),
+                        str(chunk_old),
+                        str(chunk_new)
+                    )
+                )
 
         def progress(self):
             """
@@ -1795,7 +1803,7 @@ init -10 python:
             self._sr_ss.verify()
             self._ss_mn.verify()
 
-
+    @store.mas_utils.deprecated(use_instead="MASFilterableBackground")
     def MASBackground(
             background_id,
             prompt,
@@ -2103,11 +2111,9 @@ init -10 python:
                 curr_time - see MASFilterableBackground.update
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - bupd\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - bupd", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2125,7 +2131,7 @@ init -10 python:
             self._flt_img_map = self._flt_man.backmap(self._flt_img_anc)
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_NU.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2146,10 +2152,20 @@ init -10 python:
                     tag definition for this to work.
             """
             if tag is not None:
-                adv_frame = self.get_deco_adf(tag)
-                deco = store.mas_deco.get_deco(tag)
+                deco_info = self.get_deco_info(tag)
+
+                if deco_info is None:
+                    return
+
+                real_tag, adv_frame = deco_info
+                deco = store.mas_deco.get_deco(real_tag)
+
                 if adv_frame is not None and deco is not None:
-                    self._deco_man._adv_add_deco(deco, adv_frame)
+                    self._deco_man._adv_add_deco(
+                        deco,
+                        adv_frame,
+                        override_tag=tag
+                    )
 
         def _deco_rm(self, name):
             """
@@ -2191,9 +2207,9 @@ init -10 python:
                 # show all deco objects that are currently visible.
                 # and do not have equivalent deco frames.
 
-                new_adf = self.get_deco_adf(vis_tag)
-                if new_adf is not None:
-                    change_info.shows[vis_tag] = new_adf
+                new_info = self.get_deco_info(vis_tag)
+                if new_info is not None:
+                    change_info.shows[vis_tag] = new_info
                     self._deco_add(tag=vis_tag)
 
         def exit(self, new_background, **kwargs):
@@ -2219,17 +2235,19 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object with hides
                     populated.
             """
-            for deco_obj, adv_df in self._deco_man.deco_iter_adv():
+            for deco_obj, adv_df, override_tag in self._deco_man.deco_iter_adv():
 
-                new_adf = new_bg.get_deco_adf(deco_obj.name)
                 if (
-                        not mas_isDecoTagVisible(deco_obj.name)
-                        or new_adf is None
+                        not mas_isDecoTagEnabled(override_tag)
+                        or (
+                            new_bg is not None
+                            and new_bg.get_deco_info(override_tag) is None
+                        )
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
-                    change_info.hides[deco_obj.name] = adv_df
-                    self._deco_rm(deco_obj.name)
+                    change_info.hides[override_tag] = adv_df
+                    self._deco_rm(override_tag)
 
         def fromTuple(self, data_tuple):
             """
@@ -2250,8 +2268,9 @@ init -10 python:
             """
             return (self.unlocked,)
 
+        @store.mas_utils.deprecated(use_instead="get_deco_info")
         def get_deco_adf(self, tag):
-            """
+            """DEPRECATED
             Gets MASAdvancedDecoFrame associatd with this tag, if one exists.
 
             IN:
@@ -2260,6 +2279,23 @@ init -10 python:
             RETURNS: MASAdvancedDecoFrame object, or None if none exists
             """
             return MASImageTagDecoDefinition.get_adf(self.background_id, tag)
+
+        def get_deco_info(self, tag):
+            """
+            Gets the tag and MASAdvancedDecoFrame to use for a tag, if one
+            exists.
+
+            IN:
+                tag - tag to get deco info for
+
+            RETURNS: tuple (or None if not exists)
+                [0] - tag to use
+                [1] - MASAdvancedDecoFrame object
+            """
+            return MASImageTagDecoDefinition.get_img_for_bg(
+                self.background_id,
+                tag
+            )
 
         def getRoom(self, flt, weather=None):
             """
@@ -2288,14 +2324,25 @@ init -10 python:
 
             return img
 
-        def getCurrentRoom(self):
+        def getCurrentRoom(self, use_internal=False):
             """
             Gets current Room
 
+            IN:
+                use_internal - True will use the internal filter, rather than
+                    the globally known filter. Seldomly change this.
+                    (Default: False)
+
             RETURNS: Current room image, may be None if this BG is badly built
             """
-            return self.getRoom(self._flt_man.current())
+            if use_internal:
+                flt = self._flt_man.current()
+            else:
+                flt = store.mas_sprites.get_filter()
 
+            return self.getRoom(flt)
+
+        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
         def getDayRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2345,6 +2392,7 @@ init -10 python:
                 return None
             return m_w_m.get(precip_type)
 
+        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
         def getNightRoom(self, weather=None):
             """DEPRECATED
             Can't use this anymore since there's no single image that defines
@@ -2462,11 +2510,9 @@ init -10 python:
             RETURNS: the new filter
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - prog\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - prog", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2490,7 +2536,7 @@ init -10 python:
                 new_flt = self._flt_man.current()
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_N.format(
                         new_flt,
                         self._flt_man.current(),
@@ -2547,11 +2593,9 @@ init -10 python:
                     (Default: None)
             """
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog("\nCalled from - upd:\n")
-                if store.mas_background.dbg_log_st:
-                    store.mas_utils.writestack()
+                store.mas_utils.mas_log.debug("\nCalled from - upd:", exc_info=store.mas_background.dbg_log_st)
 
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_C.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2561,7 +2605,7 @@ init -10 python:
             self._flt_man.update(curr_time)
 
             if store.mas_background.dbg_log:
-                store.mas_utils.writelog(
+                store.mas_utils.mas_log.debug(
                     store.mas_background.DBG_MSG_NU.format(
                         self._flt_man.current(),
                         str(self._flt_man.current_pos())
@@ -2609,10 +2653,11 @@ init -20 python in mas_background:
     BACKGROUND_RETURN = "Nevermind"
     dbg_log = False
     dbg_log_st = False
-    DBG_MSG_C = "\nCurrent: {0} | {1}\n"
-    DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}\n"
-    DBG_MSG_NU = "\nNew: {0} | {1}\n"
+    DBG_MSG_C = "\nCurrent: {0} | {1}"
+    DBG_MSG_N = "\nNew: ret: {0} | {1} | {2}"
+    DBG_MSG_NU = "\nNew: {0} | {1}"
 
+    _bg_log = store.mas_logging.init_log("bg_flt", append=False, header=False)
 
     class MASBackgroundChangeInfo(object):
         """
@@ -2620,8 +2665,14 @@ init -20 python in mas_background:
         to go smoothly.
 
         PROPERTIES:
-            hides - dict of image tags and MASAdvancedDecoFrames to hide
-            shows - dict of image tags and MASAdvancedDecoFrames to show
+            hides - dict:
+                key: image tag (override)
+                value: MASAdvancedDecoFrame to hide
+            shows - dict:
+                key: image tag (override)
+                value: tuple:
+                    [0] - image tag (actual)
+                    [1] - MASAdvancedDecoFrame to show
         """
 
         def __init__(self, hides=None, shows=None):
@@ -2773,29 +2824,17 @@ init -20 python in mas_background:
         if bg_obj is None:
             return
 
-        bg_log = store.mas_utils.getMASLog("bg_flt", append=True, flush=True)
-        if not bg_log.open():
-            # could not log, just abort here
-            return
-
-        # otherwise log output
-        bg_log.raw_write = True
-
         # NOTE: version should already be written out if this is runtime
-        bg_log.write("\n\nBackground Object: {0}\n".format(
-            bg_obj.background_id
-        ))
-        bg_log.write("Filter System:\n\n")
-        bg_log.write(str(bg_obj._flt_man))
-        bg_log.write("\n\nRaw Filter Manager Data:\n")
-        bg_log.write(repr(bg_obj._flt_man))
+        _bg_log.info(
+            "\n\nBackground Object: {0}\nFilter System:\n\n{1}\n\nRaw Filter Manager Data:\n{2}".format(
+                bg_obj.background_id,
+                str(bg_obj._flt_man),
+                repr(bg_obj._flt_man)
+            )
+        )
 
         if exc_info:
-            import traceback
-
-            bg_log.write("\n\n")
-            for tb_line in traceback.format_exception(*exc_info):
-                bg_log.write(tb_line)
+            _bg_log.info("", exc_info=True)
 
 
 #START: BG change functions
@@ -2928,7 +2967,7 @@ init -2 python in mas_background:
         try:
             _gbl_flt_change(old_flt, new_flt, curr_time)
         except Exception as e:
-            store.mas_utils.writelog(
+            store.mas_utils.mas_log.error(
                 store.MASBackgroundFilterChunk._ERR_PP_STR_G.format(
                     repr(e),
                     old_flt,
@@ -2946,7 +2985,8 @@ init -2 python in mas_background:
             new_flt - incoming filter.
             curr_time - current time as datetime.time
         """
-        if new_flt == mspr.FLT_DAY or new_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(new_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -2974,7 +3014,8 @@ init -2 python in mas_background:
             curr_time - current time as datetime.time
         """
         first_flt = new_chunk.first_flt()
-        if first_flt == mspr.FLT_DAY or first_flt == mspr.FLT_NIGHT:
+        # As of now we only have these, but just in case of future changes
+        if store.mas_canShowIslands(first_flt):
             # allow islands to be shown
             store.mas_unflagEVL(
                 "mas_monika_islands",
@@ -3178,7 +3219,19 @@ label monika_change_background_loop:
         # default should always be at the top
         backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
 
-        if not persistent._mas_o31_in_o31_mode:
+        #o31 just gets o31 enabled BGs
+        other_backgrounds = list()
+
+        #TODO: I don't really like this, but we limit to only o31 supported bgs during the o31 event
+        if persistent._mas_o31_in_o31_mode:
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
+            ]
+
+        #Non holiday specific bg sel
+        else:
             # build other backgrounds list
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
@@ -3186,11 +3239,11 @@ label monika_change_background_loop:
                 if mbg_id != "spaceroom" and mbg_obj.unlocked
             ]
 
-            # sort other backgrounds list
-            other_backgrounds.sort()
+        # sort other backgrounds list
+        other_backgrounds.sort()
 
-            # build full list
-            backgrounds.extend(other_backgrounds)
+        # build full list
+        backgrounds.extend(other_backgrounds)
 
         # now add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
@@ -3217,7 +3270,7 @@ label monika_change_background_loop:
         skip_outro = mas_background.EXP_SKIP_OUTRO in sel_background.ex_props
 
     # UI shields + buttons
-    # NOTE: buttons are in here since there is no consistency if placed in 
+    # NOTE: buttons are in here since there is no consistency if placed in
     # the bg change label.
     $ mas_RaiseShield_core()
     $ HKBHideButtons()

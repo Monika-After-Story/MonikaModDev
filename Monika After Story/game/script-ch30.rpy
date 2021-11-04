@@ -508,7 +508,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -535,7 +535,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
@@ -786,6 +786,17 @@ init python:
         return derandlist
 
 
+    def mas_safeToRefDokis():
+        """
+        Checks if it is safe for us to reference the dokis in a potentially
+        sensitive matter. The user must have responded to the question
+        regarding dokis - if the user hasn't responded, then we assume it is
+        NEVER safe to reference dokis.
+
+        RETURNS: True if safe to reference dokis
+        """
+        return store.persistent._mas_pm_cares_about_dokis is False
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -902,6 +913,8 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
+                # NOTE: if Monika jumps when this is called, make sure to
+                #   dissolve all
                 renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
@@ -928,9 +941,18 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
         #   for this background.
-        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
+        if scene_change:
+            if bg_change_info is None or len(bg_change_info) < 1:
+                bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+                mas_current_background._entry_deco(None, bg_change_info)
+
+        elif mas_current_background._deco_man.changed:
+            # not doing scene change, check if deco man changed which means
+            # deco must have been changed somewhere.
             bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._exit_deco(None, bg_change_info)
             mas_current_background._entry_deco(None, bg_change_info)
+            mas_current_background._deco_man.changed = False
 
         # add show/hide statements for decos
         if bg_change_info is not None:
@@ -938,8 +960,15 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 for h_adf in bg_change_info.hides.itervalues():
                     h_adf.hide()
 
-            for s_tag, s_adf in bg_change_info.shows.iteritems():
-                s_adf.show(s_tag)
+            for s_tag, s_info in bg_change_info.shows.iteritems():
+                s_tag_real, s_adf = s_info
+                s_adf.show(s_tag_real)
+
+            if len(bg_change_info) > 0 and not dissolve_all:
+                renpy.with_statement(Dissolve(1.0))
+
+            bg_change_info = None
+            mas_current_background._deco_man.changed = False
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -951,25 +980,17 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
-    else:
-        $ store.mas_surpriseBdayHideVisuals(cake=True)
-
-    # ----------- Grouping date-based events since they can never overlap:
-    #O31 stuff
-    # TODO: move this to o31 autoload
-    # NOTE: this does not expect no scene change
-    if persistent._mas_o31_in_o31_mode:
-        $ store.mas_o31ShowVisuals()
-    # ----------- end date-based events
 
     # player bday
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
-    else:
+
+    # both 922 and pbday share the same visual funcs, so need to check both before hiding
+    if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
-    if datetime.date.today() == persistent._date_last_given_roses:
+    if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
     # dissolving everything means dissolve last
@@ -1203,10 +1224,7 @@ label mas_ch30_post_holiday_check:
     $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if (
-            persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.yuri_enabled():
         call yuri_name_scare from _call_yuri_name_scare
 
         # this skips greeting algs
@@ -1513,8 +1531,7 @@ label ch30_post_mid_loop_eval:
             ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    not persistent._mas_sensitive_mode
-                    and store.mas_globals.show_s_light
+                    store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
@@ -1754,9 +1771,6 @@ label ch30_day:
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
 
-        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
@@ -1771,6 +1785,10 @@ label ch30_day:
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        # Once per day Monika does stuff on the islands
+        store.mas_island_event.advanceProgression()
+
     return
 
 
@@ -1796,7 +1814,7 @@ label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
+        if mas_egg_manager.sayori_enabled() or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
             store.mas_globals.show_s_light = True
 
     python:
@@ -2068,6 +2086,10 @@ label ch30_reset:
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
+
+    # Did Monika make any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -2081,4 +2103,5 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
+
     return

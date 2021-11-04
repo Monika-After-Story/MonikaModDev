@@ -1,0 +1,23 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 1,
+    "name": "briaryoung_down_straight_bangs",
+    "img_sit": "briaryoung_down_straight_bangs",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "no-tails": true,
+        "straight-bangs": true
+    },
+    "select_info": {
+        "display_name": "Down (Straight Bangs)",
+        "thumb": "briaryoung_down_straight_bangs",
+        "group": "hair"
+    },
+    "unlock": true
+}
