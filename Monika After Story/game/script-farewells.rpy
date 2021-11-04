@@ -563,10 +563,11 @@ label bye_prompt_sleep:
             call bye_prompt_sleep_goodnight_kiss(chance=2)
             if _return == "quit":
                 return _return
-            m 1fubsa "Going to sleep?"
-            m 2efsdrp "Already [mas_get_player_nickname]? But it's a nice time to sleep anyway!"
-            m 5efbfu "Alright, sleep well, and see you tomorrow [player]!"
-            m 4tubsb "And don't forget that i love you!"
+            m 1ekd "Oh, okay [mas_get_player_nickname()]..."
+            m 2rksdrp "I'll miss you, {w=0.2}{nw}"
+            extend 7ekbsa "but I'm glad you're going to sleep at a good time..."
+            m 3ekbsb "Sleep well, I'll see you tomorrow!"
+            m 3hubsu "Don't forget that I love you~"
 
         elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
@@ -587,11 +588,10 @@ label bye_prompt_sleep:
             call bye_prompt_sleep_goodnight_kiss(chance=3)
             if _return == "quit":
                 return _return
-            m 1eua "Alright [mas_get_player_nickname]."
-            m 3eka "But you should sleep a little earlier next time, or i will be worried about you!"
-            m 1ffsdrp "Don't forget to take care of your self, silly."
-            m 4eua "I love you [player]! Sleep well."
-
+            m 1eud "Alright, [mas_get_player_nickname]."
+            m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
+            m 3tub "Don't forget to take care of your self, silly!"
+            m 1ekbsa "I love you [player], sleep well~"
 
         elif mas_isMoniNormal(higher=True):
             m 1eua "Alright, [mas_get_player_nickname()]."
