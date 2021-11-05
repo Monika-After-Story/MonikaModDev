@@ -17584,7 +17584,7 @@ label monika_zodiac_starsign:
     m 1rta "Well, I'm pretty sure I'm a Virgo."
 
     #This next line is just checking the player's starsign based on their birthday.
-    if player_zodiac_sign != "virgo":
+    if player_zodiac_sign != "Virgo":
         m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
     else:
@@ -17598,4 +17598,5 @@ label monika_zodiac_starsign:
     m 1luc "That's something I could never understand."
     m 1eua "Don't worry, [mas_get_player_nickname()], {w=0.2}{nw}"
     extend 1eublu "I'd never let any silly old stars come between us."
+    $ del player_zodiac_sign
     return
