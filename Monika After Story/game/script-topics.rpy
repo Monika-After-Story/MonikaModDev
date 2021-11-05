@@ -17574,61 +17574,28 @@ init 5 python:
             prompt="What's your starsign?",
             category=["monika"],
             action=EV_ACT_POOL,
-            conditional="persistent._mas_player_bday is not None"
+            conditional="mas_getPlayerBday() is not None"
         )
     )
 
 label monika_zodiac_starsign:
-    m 1lua "Well, I'm pretty sure I'm a Virgo."
-    
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(mas_getPlayerBday()).capitalize()
+
+    m 1rta "Well, I'm pretty sure I'm a Virgo."
+
     #This next line is just checking the player's starsign based on their birthday.
+    if player_zodiac_sign != "virgo":
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
-    if mas_player_bday.month == 1 and 19 <= mas_player_bday.day or if mas_player_bday.month == 12 and 22<= mas_player_bday.day <= 31:
-    #ie. If the player's birthday  is between December 22nd and January 19th.
-        m 1rub "And you'd be a... Capricorn, right?"
-        
-    elif mas_player_bday.month == 1 and 20 <= mas_player_bday.day <= 31 or if masplayer_bday.month == 2 and 1 <= mas_player_bday.day <= 19:
-        m 1rub "And you'd be an Aquarius, I think." #Aquarius is between January 2th and February 19th.
-        
-    elif mas_player_bday.month == 2 and 20 <= mas_player_bday.day <=29 or if mas_player_bday.month == 3 and 1 <= mas_player_bday.day <= 20:
-        m 1rub "And I think {i}you'd{/i} be a Pisces."
+    else:
+        m 3eub "And so you are, [mas_get_player_nickname()]!"
 
-    elif mas_player_bday.month == 3 and 21 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 4 and 1 <= mas_player_bday.day <= 21:
-        m 1rub "And I think you're an Aries?"
-
-    elif mas_player_bday.month == 4 and 22 <= mas_player_bday.day <= 30 or if mas_player_bday.month == 5 and 1 <= mas_player_bday.day <= 21:
-        m 1rub "And you're a Taurus..."
-
-    elif mas_player_bday.month = 5 and 22 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 6 and 1 <= mas_player_bday.day <= 21:
-        m 1rub "And you're a Gemini, right?"
-
-    elif mas_player_bday.month == 6 and 22<= mas_player_bday.day <= 31 or if mas_player_bday.month == 7 and 1 <= mas_player_bday.day <= 22:
-        m 1rub "And I think you'd be a Cancer, right?"
-
-    elif mas_player_bday.month == 7 and 23 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 8 and 1 <= mas_player_bday.day <= 23:
-        m 1rub "And I think you're...a Leo."
-
-    elif mas_player_bday.month == 8 and 24 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 9 and 1 <= mas_player_bday.day <= 22:
-        m 1eub "And so are you, [mas_get_player_nickname()]!"
-
-    elif mas_player_bday.month == 9 and 23 <= mas_player_bday.day <= 30 or if mas_player_bday.month == 10 and 1 <= mas_player_bday.day <= 23:
-        m 1rub "And you're..."
-        extend " I believe you'd be a Libra."
-     
-    elif mas_player_bday.month == 10 and 24 <= mas_player_bday.day <= 31 or if mas_player_bday.month == 11 and 1 <= mas_player_bday.day <= 22:
-        m 1rub "And I'm pretty sure you're a Scorpio."
-      
-    elif mas_player_bday.month == 11 and 23 <= mas_player_bday.day <=31 or if mas_player_bday.month = 12 and 1 <= mas_player_bday.day <= 22:
-        m 1rub "You, on the other hand, would be a Sagittarius."
-    
-       
-       
     #The final part pops up regardless of your sign.
-    m 3eka "Although, don't you think it's kind of silly?"
-    M 3gkb "I mean, objects in space can't {i}really{/i} affect our personality."
-    m 3ekd "Not to mention the fact that some people take it {i}way{}/i} too far."
-    m 3eto "Like, they'll judge potential partners and friends based on their sign!"
-    m 3tsc "That's something I could never understand."
-    m 3tsblu "Don't worry, [mas_get_player_nickname()],"
-    extend 3tublu " I'd never let any silly old stars come between us."
+    m 1eta "Although, don't you think it's kind of silly?"
+    m 3esa "I mean, objects in space can't {i}really{/i} affect our personality."
+    m 1esc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4eud "Like, they'll judge potential partners and friends based on their sign!"
+    m 1luc "That's something I could never understand."
+    m 1eua "Don't worry, [mas_get_player_nickname()], {w=0.2}{nw}"
+    extend 1eublu "I'd never let any silly old stars come between us."
     return
