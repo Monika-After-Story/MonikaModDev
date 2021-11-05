@@ -6295,15 +6295,6 @@ init 2 python:
 
         return mas_getPlayerAge(_date) >= 18
 
-    def mas_getPlayerBday():
-        """
-        Gets the player birthdate
-
-        OUT:
-            datetime.date or None
-        """
-        return persistent._mas_player_bday
-
     def mas_getPlayerAge(_date=None):
         """
         Gets the player age
@@ -6343,7 +6334,7 @@ init 2 python:
                 - Raw affection value to be greater than or equal to
             grace:
                 - a grace period passed in as a timedelta
-                    defaults to 1 week
+                  defaults to 1 week
 
         OUT:
             boolean:

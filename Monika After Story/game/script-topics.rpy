@@ -17574,12 +17574,12 @@ init 5 python:
             prompt="What's your starsign?",
             category=["monika"],
             action=EV_ACT_POOL,
-            conditional="mas_getPlayerBday() is not None"
+            conditional="persistent._mas_player_bday is not None"
         )
     )
 
 label monika_zodiac_starsign:
-    $ player_zodiac_sign = mas_calendar.getZodiacSign(mas_getPlayerBday()).capitalize()
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
 
     m 1rta "Well, I'm pretty sure I'm a Virgo."
 
