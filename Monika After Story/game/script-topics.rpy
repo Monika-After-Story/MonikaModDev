@@ -772,8 +772,8 @@ label mas_rerandom:
                         rerandom_callback()
 
                     except Exception as ex:
-                        mas_utils.writelog(
-                            "[ERROR]: Failed to call rerandom callback function. Trace message: {0}\n".format(ex.message)
+                        store.mas_utils.mas_log.error(
+                            "Failed to call rerandom callback function. Trace message: {0}".format(ex.message)
                         )
 
             #Pop the derandom
@@ -2758,7 +2758,7 @@ init 5 python:
         flags = EV_FLAG_HFRS
 
     else:
-        flags = 0
+        flags = EV_FLAG_DEF
 
     addEvent(
         Event(
@@ -3140,7 +3140,15 @@ label monika_cold:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_housewife",category=['monika','romance'],prompt="Would you be my housewife?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_housewife",
+            category=['monika','romance'],
+            prompt="Would you ever want to be a housewife?",
+            pool=True
+        )
+    )
 
 label monika_housewife:
     m 3euc "You know, it's funny, because even though I've always had a lot of drive..."
@@ -4539,7 +4547,7 @@ label monika_birthday:
         m 2rksdlb "I don't actually know when yours is, ahaha!"
         m 2eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
-        $ mas_stripEVL('mas_birthdate',True)
+        $ mas_stripEVL('mas_birthdate', list_pop=True)
     return
 
 init 5 python:
@@ -7716,7 +7724,7 @@ label monika_orchestra:
                     "Not much.":
                         $ persistent._mas_pm_has_piano_experience = mas_PIANO_EXP_SOME
                         m 2eka "That's okay, [player]."
-                        m 2eua "After all, it's pretty a pretty complicated instrument to pick up."
+                        m 2eua "After all, it's a pretty complicated instrument to pick up."
                         m 4hua "But even if you don't have much experience, I'm sure we could learn together~"
 
                     "I just started.":

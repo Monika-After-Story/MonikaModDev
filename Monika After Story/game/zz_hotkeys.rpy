@@ -17,7 +17,7 @@ init -10 python in mas_hotkeys:
         """
         return allow_dismiss
 
-    
+
     def set_dismiss(value):
         """
         Sets dismiss to the given value, if it is not locked.
@@ -62,9 +62,9 @@ init -1 python in mas_hotkeys:
     # True means dont allow windows to be hidden
     no_window_hiding = False
 
-    # settings is special, so to make things easier regarding hotkeys 
-    # while in the middle of dialogue, this is used to block all 
-    # other hotkeys - PLEASE DONT FORGET TO CHECK THIS via 
+    # settings is special, so to make things easier regarding hotkeys
+    # while in the middle of dialogue, this is used to block all
+    # other hotkeys - PLEASE DONT FORGET TO CHECK THIS via
     # mas_HKIsSettingsClosed
     game_menu_is_opening = False
 
