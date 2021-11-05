@@ -17588,7 +17588,7 @@ label monika_zodiac_starsign:
         m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
     else:
-        m 3eub "And so you are, [mas_get_player_nickname()]!"
+        m 3eub "And so are you, [mas_get_player_nickname()]!"
 
     #The final part pops up regardless of your sign.
     m 1eta "Although, don't you think it's kind of silly?"
