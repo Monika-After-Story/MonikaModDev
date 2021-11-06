@@ -533,8 +533,8 @@ init -20 python in mas_island_event:
             x=0,
             y=0,
             z=15000,
-            min_zoom=1.1,
-            max_zoom=4.1,
+            min_zoom=1.05,
+            max_zoom=4.05,
             on_click="mas_island_sky"
         )
     )
