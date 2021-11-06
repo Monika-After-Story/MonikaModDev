@@ -1663,12 +1663,17 @@ screen mas_islands(islands_displayable, show_return_button=True):
     layer "screens"
     zorder mas_island_event.DEF_SCREEN_ZORDER
 
+    default is_showing_ui = show_return_button is True
+
     if show_return_button:
         key "K_ESCAPE" action Return(False)
 
+    if show_return_button:
+        key "noshift_K_h" action ToggleScreenVariable("is_showing_ui")
+
     add islands_displayable
 
-    if show_return_button:
+    if is_showing_ui:
         # Unsure why, but w/o a hbox renpy won't apply the style prefix
         hbox:
             align (0.5, 0.98)
