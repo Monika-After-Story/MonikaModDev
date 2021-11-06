@@ -402,6 +402,10 @@ label bye_going_to_sleep:
                 call bye_prompt_sleep_goodnight_kiss(chance=3)
                 m 7eka "I'll be seeing you in your dreams."
 
+                #Going to sleep, so we should set the greet type and timeout
+                $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
+                $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
+
             "Not yet.":
                 m 1eka "Okay. {w=0.3}Have a good evening~"
 
@@ -962,6 +966,10 @@ label bye_goodnight:
                 m 1eka "I'll see you tomorrow, okay?"
                 m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
                 m 1ekbsa "I love you~"
+
+                #Going to sleep, so we should set the greet type and timeout
+                $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
+                $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
 
             "Not yet.":
                 m 1eka "Okay, [mas_get_player_nickname()]..."
