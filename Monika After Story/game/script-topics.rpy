@@ -17601,3 +17601,33 @@ label monika_utterson:
     m 5ekbfa "Especially since I live in a world where I can love you, [mas_get_player_nickname()]!"
     m 5hsbfb "Ehehe~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hedonism",
+            category=['philsophy'],
+            prompt="Hedonism",
+            conditional= "mas_seenLabels(['monika_utterson'])",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_hedonism:
+    m 1esd "Hey, [mas_get_player_nickname()], remember when we talked about {i}The Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
+    m 1lud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
+    m 3wub "Which has it's own ties to philsophy! Specifically, the belief of Hedonism."
+    m 3esd "At it's core, Hedonism is the belief that morals should base around pleasure."
+    m 3rsc "There are two main types of Hedonism; Altruistic Hedonism and Egotistical Hedonism."
+    m 4wuo "The two are wildly different!"
+    m 7rsd "Egotistical Hedonism, as you could guess, is the believe that ones own pleasure is the only thing that determines morals."
+    m 7esd "This is the type of Hedonism Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
+    m 2rfc "It's really ruthless... to think such a way..."
+    m 2eud "On the other hand, ALtruistic Hedonism is the belief that morality should be based on everyone's pleasure alone."
+    m 3wud "It sounds like a good idea at first, but then you realize it doesn't account for anything else..."
+    m 3lkc "Freedom, health, safety..."
+    m 3ekc "Hedonism, at it's core, ignores everything but pleasure."
+    m 1ekd "Which is why most people don't have that belief... It's too simple, when morality is complicated."
+    m 1esc "It makes sense why Oscar Wilde portrayed Hedonism in a bad light, really..."
+    return
