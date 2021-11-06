@@ -399,7 +399,8 @@ label bye_going_to_sleep:
             m "Are you going to sleep, [p_nickname]?{fast}"
 
             "Yeah.":
-                m 1eka "I'll be seeing you in your dreams."
+                call bye_prompt_sleep_goodnight_kiss(chance=3)
+                m 7eka "I'll be seeing you in your dreams."
 
             "Not yet.":
                 m 1eka "Okay. {w=0.3}Have a good evening~"
@@ -549,193 +550,206 @@ init 5 python:
     )
 
 label bye_prompt_sleep:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Alright, [mas_get_player_nickname()]."
+        m 1hua "Sweet dreams!~"
 
-    python:
-        import datetime
-        curr_hour = datetime.datetime.now().hour
+    elif mas_isMoniUpset():
+        m 2esc "Goodnight, [player]."
 
-    # these conditions are in order of most likely to happen with our target
-    # audience
+    elif mas_isMoniDis():
+        m 6ekc "Okay...{w=0.3} Goodnight, [player]."
 
-    if 20 <= curr_hour < 24:
-    # decent time to sleep
-        if mas_isMoniEnamored(higher=True):
-            call bye_prompt_sleep_goodnight_kiss(chance=2)
-            if _return == "quit":
-                return _return
-            m 1ekd "Oh, okay [mas_get_player_nickname()]..."
-            m 2rksdrp "I'll miss you, {w=0.2}{nw}"
-            extend 7ekbsa "but I'm glad you're going to sleep at a good time..."
-            m 3ekbsb "Sleep well, I'll see you tomorrow!"
-            m 3hubsu "Don't forget that I love you~"
-
-        elif mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [mas_get_player_nickname()]."
-            m 1hua "Sweet dreams!"
-
-        elif mas_isMoniUpset():
-            m 2esc "Goodnight, [player]."
-
-        elif mas_isMoniDis():
-            m 6ekc "Okay...{w=1} Goodnight, [player]."
-
-        else:
-            m 6ckc "..."
-
-    elif 0 <= curr_hour < 3:
-        # somewhat late to sleep
-        if mas_isMoniEnamored(higher=True):
-            call bye_prompt_sleep_goodnight_kiss(chance=3)
-            if _return == "quit":
-                return _return
-            m 1eud "Alright, [mas_get_player_nickname]."
-            m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
-            m 3tub "Don't forget to take care of your self, silly!"
-            m 1ekbsa "I love you [player], sleep well~"
-
-        elif mas_isMoniNormal(higher=True):
-            m 1eua "Alright, [mas_get_player_nickname()]."
-            m 3eka "But you should sleep a little earlier next time."
-            m 1hua "Anyway, goodnight!"
-
-        elif mas_isMoniUpset():
-            m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
-            m 2esc "Goodnight."
-
-        elif mas_isMoniDis():
-            m 6rkc "Maybe you should start going to bed a little earlier, [player]..."
-            m 6dkc "It might make you--{w=1}us--{w=1}happier."
-
-        else:
-            m 6ckc "..."
-
-    elif 3 <= curr_hour < 5:
-        # pretty late to sleep
-
-        if mas_isMoniNormal(higher=True):
-            call bye_prompt_sleep_goodnight_kiss(chance=5)
-            if _return == "quit":
-                return _return
-            m 1euc "[player]..."
-            m "Make sure you get enough rest, okay?"
-            m 1eka "I don't want you to get sick."
-            m 1hub "Goodnight!"
-            m 1hksdlb "Or morning, rather. Ahaha~"
-            m 1hua "Sweet dreams!"
-
-        elif mas_isMoniUpset():
-            m 2efc "[player]!"
-            m 2tfc "You {i}really{/i} need to get more rest..."
-            m "The last thing I need is you getting sick."
-            m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
-            $ _history_list.pop()
-            m 2efc "Goodnight."
-
-        elif mas_isMoniDis():
-            m 6ekc "[player]..."
-            m 6rkc "You really should try to go to sleep earlier..."
-            m 6lkc "I don't want you to get sick."
-            m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
-
-        else:
-            m 6ckc "..."
-
-    elif 5 <= curr_hour < 12:
-        # you probably stayed up the whole night
-        if mas_isMoniBroken():
-            m 6ckc "..."
-
-        else:
-            show monika 2dsc
-            pause 0.7
-            m 2tfd "[player]!"
-            m "You stayed up the entire night!"
-
-            $ first_pass = True
-
-            label .reglitch:
-                hide screen mas_background_timed_jump
-
-            if first_pass:
-                m 2tfu "I bet you can barely keep your eyes open.{nw}"
-                $ first_pass = False
-
-            show screen mas_background_timed_jump(4, "bye_prompt_sleep.reglitch")
-            $ _history_list.pop()
-            menu:
-                m "[glitchtext(41)]{fast}"
-                "[glitchtext(15)]":
-                    pass
-                "[glitchtext(12)]":
-                    pass
-
-            hide screen mas_background_timed_jump
-            m 2tku "I thought so.{w=0.2} Go get some rest, [player]."
-
-            if mas_isMoniNormal(higher=True):
-                m 2ekc "I wouldn't want you to get sick."
-                m 7eka "Sleep earlier next time, okay?"
-                m 1hua "Sweet dreams!"
-
-    elif 12 <= curr_hour < 18:
-        # afternoon nap
-        if mas_isMoniNormal(higher=True):
-            m 1eua "Taking an afternoon nap, I see."
-            # TODO: monika says she'll join you, use sleep sprite here
-            # and setup code for napping
-            m 1hub "Ahaha~{w=0.1} {nw}"
-            extend 1hua "Have a good nap, [player]."
-
-        elif mas_isMoniUpset():
-            m 2esc "Taking a nap, [player]?"
-            m 2tsc "Yeah, that's probably a good idea."
-
-        elif mas_isMoniDis():
-            m 6ekc "Going to take a nap, [player]?"
-            m 6dkc "Okay...{w=1}don't forget to visit me when you wake up..."
-
-        else:
-            m 6ckc "..."
-
-    elif 18 <= curr_hour < 20:
-        # little early to sleep
-        if mas_isMoniNormal(higher=True):
-            m 1ekc "Already going to bed?"
-            m "It's a little early, though..."
-
-            m 1lksdla "Care to spend a little more time with me?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Care to spend a little more time with me?{fast}"
-                "Of course!":
-                    m 1hua "Yay!"
-                    m "Thanks, [player]."
-                    return
-                "Sorry, I'm really tired.":
-                    m 1eka "Aw, that's okay."
-                    m 1hua "Goodnight, [mas_get_player_nickname()]."
-                # TODO: now that is tied we may also add more dialogue?
-                "No.":
-                    $ mas_loseAffection()
-                    m 2dsd "..."
-                    m "Fine."
-
-        elif mas_isMoniUpset():
-            m 2esc "Going to bed already?"
-            m 2tud "Well, it does seem like you could use the extra sleep..."
-            m 2tsc "Goodnight."
-
-        elif mas_isMoniDis():
-            m 6rkc "Oh...{w=1}it seems a little early to be going to sleep, [player]."
-            m 6dkc "I hope you aren't just going to sleep to get away from me."
-            m 6lkc "Goodnight."
-
-        else:
-            m 6ckc "..."
     else:
-        # otheerwise
-        m 1eua "Alright, [player]."
-        m 1hua "Sweet dreams!"
+        m 6ckc "..."
+
+    #TODO: TC-O integration
+    # python:
+    #     import datetime
+    #     curr_hour = datetime.datetime.now().hour
+
+    # # these conditions are in order of most likely to happen with our target
+    # # audience
+
+    # if 20 <= curr_hour < 24:
+    # # decent time to sleep
+    #     if mas_isMoniEnamored(higher=True):
+    #         call bye_prompt_sleep_goodnight_kiss(chance=2)
+    #         if _return == "quit":
+    #             return _return
+    #         m 1ekd "Oh, okay [mas_get_player_nickname()]..."
+    #         m 2rksdrp "I'll miss you, {w=0.2}{nw}"
+    #         extend 7ekbsa "but I'm glad you're going to sleep at a good time..."
+    #         m 3ekbsb "Sleep well, I'll see you tomorrow!"
+    #         m 3hubsu "Don't forget that I love you~"
+
+    #     elif mas_isMoniNormal(higher=True):
+    #         m 1eua "Alright, [mas_get_player_nickname()]."
+    #         m 1hua "Sweet dreams!"
+
+    #     elif mas_isMoniUpset():
+    #         m 2esc "Goodnight, [player]."
+
+    #     elif mas_isMoniDis():
+    #         m 6ekc "Okay...{w=1} Goodnight, [player]."
+
+    #     else:
+    #         m 6ckc "..."
+
+    # elif 0 <= curr_hour < 3:
+    #     # somewhat late to sleep
+    #     if mas_isMoniEnamored(higher=True):
+    #         call bye_prompt_sleep_goodnight_kiss(chance=3)
+    #         if _return == "quit":
+    #             return _return
+    #         m 1eud "Alright, [mas_get_player_nickname]."
+    #         m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
+    #         m 3tub "Don't forget to take care of your self, silly!"
+    #         m 1ekbsa "I love you [player], sleep well~"
+
+    #     elif mas_isMoniNormal(higher=True):
+    #         m 1eua "Alright, [mas_get_player_nickname()]."
+    #         m 3eka "But you should sleep a little earlier next time."
+    #         m 1hua "Anyway, goodnight!"
+
+    #     elif mas_isMoniUpset():
+    #         m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
+    #         m 2esc "Goodnight."
+
+    #     elif mas_isMoniDis():
+    #         m 6rkc "Maybe you should start going to bed a little earlier, [player]..."
+    #         m 6dkc "It might make you--{w=1}us--{w=1}happier."
+
+    #     else:
+    #         m 6ckc "..."
+
+    # elif 3 <= curr_hour < 5:
+    #     # pretty late to sleep
+
+    #     if mas_isMoniNormal(higher=True):
+    #         call bye_prompt_sleep_goodnight_kiss(chance=5)
+    #         if _return == "quit":
+    #             return _return
+    #         m 1euc "[player]..."
+    #         m "Make sure you get enough rest, okay?"
+    #         m 1eka "I don't want you to get sick."
+    #         m 1hub "Goodnight!"
+    #         m 1hksdlb "Or morning, rather. Ahaha~"
+    #         m 1hua "Sweet dreams!"
+
+    #     elif mas_isMoniUpset():
+    #         m 2efc "[player]!"
+    #         m 2tfc "You {i}really{/i} need to get more rest..."
+    #         m "The last thing I need is you getting sick."
+    #         m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
+    #         $ _history_list.pop()
+    #         m 2efc "Goodnight."
+
+    #     elif mas_isMoniDis():
+    #         m 6ekc "[player]..."
+    #         m 6rkc "You really should try to go to sleep earlier..."
+    #         m 6lkc "I don't want you to get sick."
+    #         m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
+
+    #     else:
+    #         m 6ckc "..."
+
+    # elif 5 <= curr_hour < 12:
+    #     # you probably stayed up the whole night
+    #     if mas_isMoniBroken():
+    #         m 6ckc "..."
+
+    #     else:
+    #         show monika 2dsc
+    #         pause 0.7
+    #         m 2tfd "[player]!"
+    #         m "You stayed up the entire night!"
+
+    #         $ first_pass = True
+
+    #         label .reglitch:
+    #             hide screen mas_background_timed_jump
+
+    #         if first_pass:
+    #             m 2tfu "I bet you can barely keep your eyes open.{nw}"
+    #             $ first_pass = False
+
+    #         show screen mas_background_timed_jump(4, "bye_prompt_sleep.reglitch")
+    #         $ _history_list.pop()
+    #         menu:
+    #             m "[glitchtext(41)]{fast}"
+    #             "[glitchtext(15)]":
+    #                 pass
+    #             "[glitchtext(12)]":
+    #                 pass
+
+    #         hide screen mas_background_timed_jump
+    #         m 2tku "I thought so.{w=0.2} Go get some rest, [player]."
+
+    #         if mas_isMoniNormal(higher=True):
+    #             m 2ekc "I wouldn't want you to get sick."
+    #             m 7eka "Sleep earlier next time, okay?"
+    #             m 1hua "Sweet dreams!"
+
+    # elif 12 <= curr_hour < 18:
+    #     # afternoon nap
+    #     if mas_isMoniNormal(higher=True):
+    #         m 1eua "Taking an afternoon nap, I see."
+    #         # TODO: monika says she'll join you, use sleep sprite here
+    #         # and setup code for napping
+    #         m 1hub "Ahaha~{w=0.1} {nw}"
+    #         extend 1hua "Have a good nap, [player]."
+
+    #     elif mas_isMoniUpset():
+    #         m 2esc "Taking a nap, [player]?"
+    #         m 2tsc "Yeah, that's probably a good idea."
+
+    #     elif mas_isMoniDis():
+    #         m 6ekc "Going to take a nap, [player]?"
+    #         m 6dkc "Okay...{w=1}don't forget to visit me when you wake up..."
+
+    #     else:
+    #         m 6ckc "..."
+
+    # elif 18 <= curr_hour < 20:
+    #     # little early to sleep
+    #     if mas_isMoniNormal(higher=True):
+    #         m 1ekc "Already going to bed?"
+    #         m "It's a little early, though..."
+
+    #         m 1lksdla "Care to spend a little more time with me?{nw}"
+    #         $ _history_list.pop()
+    #         menu:
+    #             m "Care to spend a little more time with me?{fast}"
+    #             "Of course!":
+    #                 m 1hua "Yay!"
+    #                 m "Thanks, [player]."
+    #                 return
+    #             "Sorry, I'm really tired.":
+    #                 m 1eka "Aw, that's okay."
+    #                 m 1hua "Goodnight, [mas_get_player_nickname()]."
+    #             # TODO: now that is tied we may also add more dialogue?
+    #             "No.":
+    #                 $ mas_loseAffection()
+    #                 m 2dsd "..."
+    #                 m "Fine."
+
+    #     elif mas_isMoniUpset():
+    #         m 2esc "Going to bed already?"
+    #         m 2tud "Well, it does seem like you could use the extra sleep..."
+    #         m 2tsc "Goodnight."
+
+    #     elif mas_isMoniDis():
+    #         m 6rkc "Oh...{w=1}it seems a little early to be going to sleep, [player]."
+    #         m 6dkc "I hope you aren't just going to sleep to get away from me."
+    #         m 6lkc "Goodnight."
+
+    #     else:
+    #         m 6ckc "..."
+    # else:
+    #     # otheerwise
+    #     m 1eua "Alright, [player]."
+    #     m 1hua "Sweet dreams!"
 
 
     # TODO:
