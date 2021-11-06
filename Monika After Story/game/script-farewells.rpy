@@ -555,7 +555,7 @@ init 5 python:
 
 label bye_prompt_sleep:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Alright, [mas_get_player_nickname()]."
+        m 1eua "Okay, [mas_get_player_nickname()]."
         m 1hua "Sweet dreams!~"
 
     elif mas_isMoniUpset():
@@ -1455,8 +1455,6 @@ label bye_prompt_eat:
 
     else:
         m 6ckc "..."
-
-    return "quit"
 
     # $ _now = datetime.datetime.now().time()
     # if mas_isMNtoSR(_now):
