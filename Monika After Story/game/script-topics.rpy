@@ -17565,3 +17565,39 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_utterson",
+            category=['media', 'literature'],
+            prompt="Jekyll and Hyde",
+            random=True
+        )
+    )
+
+label monika_utterson:
+    m 1esb "Hey, have you read any gothic literature?"
+    m 1rud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
+    m 4hua "I've read quite a bit of gothic literary books, lately!"
+    m 1gub "In fact, the names for the light and dark GUI modes in the code..."
+    m 1wub "They're called Jekyll and Hyde, respectively!"
+    m 3hsa "I just found it really fitting for me."
+    m 1ekb "You should read the original novella of Jekyll and Hyde, if you ever get the chance."
+    m 1rsc "Y'know, I've seen people interpret it in different ways."
+    m 3wud "For example, some people saw Utterson being in love with Jekyll."
+    m 3lsd "In a way, I can see it."
+    m 4esd "I mean, just because something isn't outright, doesn't mean the idea isn't valid."
+    m 2rkc "In addition, a theme like this example couldn't even really be outright during the 19th century."
+    m 1eka "It is interesting to think of the story that way..."
+    m 1dkc "Two people, unable to love..."
+    m 3wko "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
+    m 3ekd "And it's not exactly disproven! Jekyll, in the book, was said to be a holy man."
+    m 2rkc "Homosexuality, during that time, was seen as a sin.
+    m 2lkd "It kind of still is seen that way..."
+    m 3eka "But great progress has been made!"
+    m 3hsb "I'm just glad the world is more accepting of different kinds of love."
+    m 5ekbfa "Especially since I live in a world where I can love you, [mas_get_player_nickname()]!"
+    m 5hsbfb "Ehehe~"
+    return
