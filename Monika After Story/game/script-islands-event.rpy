@@ -1220,6 +1220,64 @@ label mas_monika_islands:
     return
 
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_islands_progress_small",
+            conditional=(
+                "mas_island_event.getProgression() in (2, 3) "
+                "and mas_timePastSince(mas_getEVL_last_seen('mas_monika_islands'), datetime.timedelta(weeks=1))"
+            ),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        restartBlacklist=True
+    )
+
+label mas_monika_islands_progress_small:
+    m 1eub "[player], I have rather exciting news for you!"
+    m 3hub "I made some new additions on the islands!"
+    m 1rua "And I thought maybe you'd like to take a look."
+    m 1hublb "They are {i}our{/i} islands after all~"
+
+    m 3eua "What do you say?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What do you say?{fast}"
+
+        "Sure, [m_name].":
+            $ mas_gainAffection(3)
+            m 2hub "Yay!"
+
+            call mas_islands(force_exp="monika 1hua")
+
+            m "Hope you liked it~"
+            m 1lusdlb "I know it's far from being done, {w=0.3}{nw}"
+            extend 1eka "but I really wanted to showcase my progress to you."
+            m 2lsp "I'm still learning how to code and this engine being inconsistent doesn't help me..."
+            m 7hub "But I think I made quite a bit of progress so far!"
+            $ mas_moni_idle_disp.force_by_code("1hua", duration=10, skip_dissolve=True)
+
+        "I'm not interested.":
+            $ mas_loseAffection(25)
+            m 2ekc "Oh..."
+            m 6rktpc "I..."
+            m 6fktpd "I worked really hard on this..."
+            m 2rktdc "You...{w=0.5}You must just be busy..."
+            $ mas_setEventPause(60*10)
+            $ mas_moni_idle_disp.force_by_code("2ekc", duration=60*10, skip_dissolve=True)
+
+        "Maybe later.":
+            m 2ekc "Oh...{w=0.5}{nw}"
+            extend 2eka "alright."
+            m 7eka "Just don't keep me waiting too long~"
+            $ mas_setEventPause(20)
+            $ mas_moni_idle_disp.force_by_code("1euc", duration=20, skip_dissolve=True)
+
+    return
+
+
 label mas_islands(
     fade_in=True,
     fade_out=True,
