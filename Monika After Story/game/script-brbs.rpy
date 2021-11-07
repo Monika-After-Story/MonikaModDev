@@ -276,16 +276,6 @@ label monika_idle_shower:
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
         if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_shower"):
-            m 2wud "Oh, [player]! {w=0.5}You're back!"
-            m 1rksdlc "You sure took your time..."
-            m 2rksdld "Did you {cps=*2}fall?{/cps}{nw}"
-            $ _history_list.pop()
-            m 2rksdlb "Did you {fast}{cps=*2}enjoy yourself?{/cps}{nw}"
-            $ _history_list.pop()
-            m "Did you {fast}get distracted?"
-            m 7hub "At least you're here, now!"
-
-        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=30), "monika_idle_shower"):
             m 2rksdlb "That sure was a long time for a shower..."
 
             m 2eud "Did you take a bath instead?{nw}"
@@ -303,6 +293,7 @@ label monika_idle_shower_callback:
                     m 1hub "...Or maybe I'm overthinking this and you just didn't come back right away, ahaha!"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_shower"):
+            m 1eua "Welcome back, [player]."
             if (
                 mas_isMoniLove()
                 and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
@@ -314,7 +305,7 @@ label monika_idle_shower_callback:
                 m 1hub "Ahaha!"
 
             else:
-                m 7hua "I hope you had a nice shower."
+                m 3hua "I hope you had a nice shower."
                 if mas_getEVL_shown_count("monika_idle_shower") == 1:
                     m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
                     m 1hub "Ahaha!"
