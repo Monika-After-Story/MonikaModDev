@@ -606,7 +606,7 @@ label bye_prompt_sleep:
     #         call bye_prompt_sleep_goodnight_kiss(chance=3)
     #         if _return == "quit":
     #             return _return
-    #         m 1eud "Alright, [mas_get_player_nickname]."
+    #         m 1eud "Alright, [mas_get_player_nickname()]."
     #         m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
     #         m 3tub "Don't forget to take care of your self, silly!"
     #         m 1ekbsa "I love you [player], sleep well~"
