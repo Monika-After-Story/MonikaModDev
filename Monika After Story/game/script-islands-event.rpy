@@ -1219,6 +1219,8 @@ label mas_monika_islands:
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
     return
 
+default persistent._mas_pm_cares_island_progress = None
+# pm var re: player caring about Moni's island progress
 
 init 5 python:
     addEvent(
@@ -1237,8 +1239,8 @@ init 5 python:
 
 label mas_monika_islands_progress_small:
     m 1eub "[player], I have rather exciting news for you!"
-    m 3hub "I made some new additions on the islands!"
-    m 1rua "And I thought maybe you'd like to take a look."
+    m 3hub "I made some new additions on the islands, {w=0.2}{nw}"
+    extend 1rua "and I thought maybe you'd like to take a look."
     m 1hublb "They are {i}our{/i} islands after all~"
 
     m 3eua "What do you say?{nw}"
@@ -1247,24 +1249,26 @@ label mas_monika_islands_progress_small:
         m "What do you say?{fast}"
 
         "Sure, [m_name].":
-            $ mas_gainAffection(3)
+            $ persistent._mas_pm_cares_island_progress = True
+            $ mas_gainAffection(3, bypass=True)
             m 2hub "Yay!"
 
             call mas_islands(force_exp="monika 1hua")
 
             m "Hope you liked it~"
-            m 1lusdlb "I know it's far from being done, {w=0.3}{nw}"
+            m 1lusdlb "I know it's far from being done, {w=0.2}{nw}"
             extend 1eka "but I really wanted to showcase my progress to you."
             m 2lsp "I'm still learning how to code and this engine being inconsistent doesn't help me..."
             m 7hub "But I think I made quite a bit of progress so far!"
             $ mas_moni_idle_disp.force_by_code("1hua", duration=10, skip_dissolve=True)
 
         "I'm not interested.":
+            $ persistent._mas_pm_cares_island_progress = False
             $ mas_loseAffection(25)
             m 2ekc "Oh..."
             m 6rktpc "I..."
             m 6fktpd "I worked really hard on this..."
-            m 2rktdc "You...{w=0.5}You must just be busy..."
+            m 2rktdc "You...{w=0.5} You must just be busy..."
             $ mas_setEventPause(60*10)
             $ mas_moni_idle_disp.force_by_code("2ekc", duration=60*10, skip_dissolve=True)
 
