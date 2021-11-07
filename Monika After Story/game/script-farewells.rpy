@@ -399,6 +399,7 @@ label bye_going_to_sleep:
             m "Are you going to sleep, [p_nickname]?{fast}"
 
             "Yeah.":
+                # NOTE: We don't quit even after getting a kiss in this flow
                 call bye_prompt_sleep_goodnight_kiss(chance=4)
 
                 m 7eka "I'll be seeing you in your dreams."
@@ -557,6 +558,9 @@ init 5 python:
 label bye_prompt_sleep:
     if mas_isMoniNormal(higher=True):
         call bye_prompt_sleep_goodnight_kiss(chance=3)
+        # kissed? quit
+        if _return:
+            return "quit"
 
         m 1eua "Okay, [mas_get_player_nickname()]."
         m 1hua "Sweet dreams!~"
@@ -582,6 +586,9 @@ label bye_prompt_sleep:
     # # decent time to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=2)
+    #         # kissed? quit
+    #         if _return:
+    #             return "quit"
     #         m 1ekd "Oh, okay [mas_get_player_nickname()]..."
     #         m 2rksdrp "I'll miss you, {w=0.2}{nw}"
     #         extend 7ekbsa "but I'm glad you're going to sleep at a good time..."
@@ -605,6 +612,9 @@ label bye_prompt_sleep:
     #     # somewhat late to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=3)
+    #         # kissed? quit
+    #         if _return:
+    #             return "quit"
     #         m 1eud "Alright, [mas_get_player_nickname()]."
     #         m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
     #         m 3tub "Don't forget to take care of your self, silly!"
@@ -631,6 +641,9 @@ label bye_prompt_sleep:
 
     #     if mas_isMoniNormal(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=5)
+    #         # kissed? quit
+    #         if _return:
+    #             return "quit"
     #         m 1euc "[player]..."
     #         m "Make sure you get enough rest, okay?"
     #         m 1eka "I don't want you to get sick."
@@ -760,6 +773,13 @@ label bye_prompt_sleep:
     return 'quit'
 
 #TODO: Maybe generalize this?
+# Checks if Monika wants to get a goodnight kiss
+#
+# IN:
+#     chance - int chance to get a kiss
+#
+# OUT:
+#     boolean - True if ran the kiss flow, False if not (skipped)
 label bye_prompt_sleep_goodnight_kiss(chance=3):
     if mas_shouldKiss(chance, cooldown=datetime.timedelta(minutes=5)):
         m 1eublsdla "Think I could...{w=0.3}{nw}"
@@ -806,9 +826,9 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
 
         $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
-        $ renpy.pop_call()
-        return "quit"
-    return None
+        return True
+
+    return False
 
 init 5 python:
     addEvent(
@@ -961,6 +981,9 @@ label bye_goodnight:
 
             "Yeah.":
                 call bye_prompt_sleep_goodnight_kiss(chance=4)
+                # kissed? quit
+                if _return:
+                    return "quit"
 
                 m 1eua "Goodnight, [mas_get_player_nickname()]."
                 m 1eka "I'll see you tomorrow, okay?"
@@ -1630,7 +1653,6 @@ label bye_prompt_eat:
 
                 # #Snack gets a shorter time than full meal
                 # $ persistent._mas_greeting_type_timeout = datetime.timedelta(minutes=30)
-    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
     return 'quit'
 
 label bye_dinner_noon_to_mn:
