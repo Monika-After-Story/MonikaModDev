@@ -399,8 +399,10 @@ label bye_going_to_sleep:
             m "Are you going to sleep, [p_nickname]?{fast}"
 
             "Yeah.":
-                # NOTE: We don't quit even after getting a kiss in this flow
                 call bye_prompt_sleep_goodnight_kiss(chance=4)
+                # If denied her kiss, quit here
+                if _return is False:
+                    return "quit"
 
                 m 7eka "I'll be seeing you in your dreams."
 
@@ -558,8 +560,8 @@ init 5 python:
 label bye_prompt_sleep:
     if mas_isMoniNormal(higher=True):
         call bye_prompt_sleep_goodnight_kiss(chance=3)
-        # kissed? quit
-        if _return:
+        # Quit if ran the flow
+        if _return is not None:
             return "quit"
 
         m 1eua "Okay, [mas_get_player_nickname()]."
@@ -586,8 +588,8 @@ label bye_prompt_sleep:
     # # decent time to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=2)
-    #         # kissed? quit
-    #         if _return:
+    #         # Quit if ran the flow
+    #         if _return is not None:
     #             return "quit"
     #         m 1ekd "Oh, okay [mas_get_player_nickname()]..."
     #         m 2rksdrp "I'll miss you, {w=0.2}{nw}"
@@ -612,8 +614,8 @@ label bye_prompt_sleep:
     #     # somewhat late to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=3)
-    #         # kissed? quit
-    #         if _return:
+    #         # Quit if ran the flow
+    #         if _return is not None:
     #             return "quit"
     #         m 1eud "Alright, [mas_get_player_nickname()]."
     #         m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
@@ -641,8 +643,8 @@ label bye_prompt_sleep:
 
     #     if mas_isMoniNormal(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=5)
-    #         # kissed? quit
-    #         if _return:
+    #         # Quit if ran the flow
+    #         if _return is not None:
     #             return "quit"
     #         m 1euc "[player]..."
     #         m "Make sure you get enough rest, okay?"
@@ -779,8 +781,12 @@ label bye_prompt_sleep:
 #     chance - int chance to get a kiss
 #
 # OUT:
-#     boolean - True if ran the kiss flow, False if not (skipped)
+#     True if Monika got her kiss
+#     False if not
+#     None if the flow was skipped (failed the chance check/etc)
 label bye_prompt_sleep_goodnight_kiss(chance=3):
+    $ got_goodnight_kiss = False
+
     if mas_shouldKiss(chance, cooldown=datetime.timedelta(minutes=5)):
         m 1eublsdla "Think I could...{w=0.3}{nw}"
         extend 1rublsdlu "get a goodnight kiss?{nw}"
@@ -789,6 +795,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
             m "Think I could...get a goodnight kiss?{fast}"
 
             "Sure, [m_name].":
+                $ got_goodnight_kiss = True
                 show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                 pause 2.0
                 call monika_kissing_motion_short
@@ -807,6 +814,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                         m "Can I please get a goodnight kiss?{fast}"
 
                         "Okay.":
+                            $ got_goodnight_kiss = True
                             show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                             pause 2.0
                             call monika_kissing_motion_short
@@ -826,9 +834,10 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
 
         $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
-        return True
 
-    return False
+        return got_goodnight_kiss
+
+    return None
 
 init 5 python:
     addEvent(
@@ -981,8 +990,8 @@ label bye_goodnight:
 
             "Yeah.":
                 call bye_prompt_sleep_goodnight_kiss(chance=4)
-                # kissed? quit
-                if _return:
+                # Quit if ran the flow
+                if _return is not None:
                     return "quit"
 
                 m 1eua "Goodnight, [mas_get_player_nickname()]."
