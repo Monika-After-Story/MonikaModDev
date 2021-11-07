@@ -399,7 +399,8 @@ label bye_going_to_sleep:
             m "Are you going to sleep, [p_nickname]?{fast}"
 
             "Yeah.":
-                call bye_prompt_sleep_goodnight_kiss(chance=3)
+                call bye_prompt_sleep_goodnight_kiss(chance=4)
+
                 m 7eka "I'll be seeing you in your dreams."
 
                 #Going to sleep, so we should set the greet type and timeout
@@ -555,6 +556,8 @@ init 5 python:
 
 label bye_prompt_sleep:
     if mas_isMoniNormal(higher=True):
+        call bye_prompt_sleep_goodnight_kiss(chance=3)
+
         m 1eua "Okay, [mas_get_player_nickname()]."
         m 1hua "Sweet dreams!~"
 
@@ -579,8 +582,6 @@ label bye_prompt_sleep:
     # # decent time to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=2)
-    #         if _return == "quit":
-    #             return _return
     #         m 1ekd "Oh, okay [mas_get_player_nickname()]..."
     #         m 2rksdrp "I'll miss you, {w=0.2}{nw}"
     #         extend 7ekbsa "but I'm glad you're going to sleep at a good time..."
@@ -604,8 +605,6 @@ label bye_prompt_sleep:
     #     # somewhat late to sleep
     #     if mas_isMoniEnamored(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=3)
-    #         if _return == "quit":
-    #             return _return
     #         m 1eud "Alright, [mas_get_player_nickname()]."
     #         m 3eka "But you should try to sleep a little earlier, {w=0.2}I don't want to have to worry about you!"
     #         m 3tub "Don't forget to take care of your self, silly!"
@@ -632,8 +631,6 @@ label bye_prompt_sleep:
 
     #     if mas_isMoniNormal(higher=True):
     #         call bye_prompt_sleep_goodnight_kiss(chance=5)
-    #         if _return == "quit":
-    #             return _return
     #         m 1euc "[player]..."
     #         m "Make sure you get enough rest, okay?"
     #         m 1eka "I don't want you to get sick."
@@ -809,6 +806,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
 
         $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
         $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
+        $ renpy.pop_call()
         return "quit"
     return None
 
@@ -962,6 +960,8 @@ label bye_goodnight:
             m "Going to sleep?{fast}"
 
             "Yeah.":
+                call bye_prompt_sleep_goodnight_kiss(chance=4)
+
                 m 1eua "Goodnight, [mas_get_player_nickname()]."
                 m 1eka "I'll see you tomorrow, okay?"
                 m 3eka "Remember, 'sleep tight, don't let the bedbugs bite,' ehehe."
