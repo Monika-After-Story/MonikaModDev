@@ -17382,7 +17382,7 @@ label monika_speedreading:
     m 2esb "That said, most novels range from between 40,000 to 150,000 words."
     m 2ekc "Three or four hours {i}minimum{/i} can seem like a lot of time to invest in a story you might not end up enjoying."
     m 7esd "You've probably heard of speed reading before..."
-    m 7rkc "Which was a bit of a fad around 1960 when Eveyln Wood claimed she could read 2,700 words a minute, and then opened up institutes to teach other people."
+    m 7rkc "Which was a bit of a fad around 1960 when Evelyn Wood claimed she could read 2,700 words a minute, and then opened up institutes to teach other people."
     m 6eksdru "Since we're not all using her method well over fifty years later, I think it's safe to say that it's not really achievable."
     m 7eua "Still, there are lots of new technologies that are aiming to improve both reading speed and comprehension."
     m 7eub "Since most people read using digital formats..."
