@@ -52,7 +52,7 @@ init -1 python in mas_stories:
     #Override maps to have special conditionals for specific story types
     NEW_STORY_CONDITIONAL_OVERRIDE = {
         TYPE_SCARY: (
-            "mas_stories.has_new_stories_for_type(mas_stories.TYPE_SCARY, ignore_cooldown=store.mas_isO31())"
+            "mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY, ignore_cooldown=store.mas_isO31())"
         ),
     }
 
