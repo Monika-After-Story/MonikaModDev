@@ -95,13 +95,13 @@ init -1 python in mas_stories:
 
     def get_new_stories_for_type(story_type):
         """
-        Checks if we have a new story of the given type
+        Gets all new (unseen) stories of the given ype
 
         IN:
-            story_type - story type to check if we have more to unlock
+            story_type - story type to get
 
         OUT:
-            list of unlocked stories for the given story type
+            list of locked stories for the given story type
         """
         return store.Event.filterEvents(
             story_database,
