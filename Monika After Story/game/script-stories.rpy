@@ -78,8 +78,8 @@ init -1 python in mas_stories:
             return False
 
         can_show_new_story = ((
-                new_story_ls is None and store.seen_event(first_story)
-                or (
+                store.seen_event(first_story)
+                and (
                     ignore_cooldown or
                     (not ignore_cooldown and store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS)))
                 )
