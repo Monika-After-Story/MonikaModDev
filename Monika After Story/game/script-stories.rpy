@@ -80,8 +80,8 @@ init -1 python in mas_stories:
         can_show_new_story = ((
                 store.seen_event(first_story)
                 and (
-                    ignore_cooldown or
-                    (not ignore_cooldown and store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS)))
+                    ignore_cooldown
+                    or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
                 )
             )
             and len(get_new_stories_for_type(story_type)) > 0
