@@ -1011,7 +1011,7 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w=1}or so he would."
+    m 1dsd "...{w=1}or so he thought."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
     m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
     m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
@@ -1044,13 +1044,13 @@ init 5 python:
 
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m 3eud "There once was a beautiful woman, who was the wife of a samurai."
+    m 3eud "There once was a beautiful woman who was the wife of a samurai."
     m 3eub "She was as incredibly beautiful as she was vain, welcoming the attention of any man prepared to offer it to her."
     m 1tsu "And often, would ask men to appraise her appearance."
     m 1euc "The woman was prone to cheat on her husband multiple times and was soon found out about her affairs."
     m 1esc "When he confronted her, he was beyond infuriated as she was damaging their status as nobles, humiliating him."
     m 2dsc "He then brutally punished her by cutting her mouth from ear to ear, disfiguring her delicate beauty."
-    m 4efd "'Who will think you as beautiful now?' were his salt to her horrifying wound."
+    m 4efd "'Who will think you as beautiful now?' was the salt to her horrifying wound."
     m 2dsd "Shortly after, the woman died."
     m "She couldn't live further after she was tarnished and treated like a freak by everyone around her."
     m 1esc "Her husband, denounced by his cruelty, committed seppuku shortly after."
@@ -1322,7 +1322,7 @@ label mas_scary_story_jack_o_lantern:
     m "The next year, Jack ran into the Devil again. This time he tricked him into climbing into a tree to pick a piece of fruit."
     m 3esd "While he was in the tree, Jack surrounded it with white crosses so that the Devil could not come down."
     m "Once the Devil promised not to bother him again for another 10 years, Jack removed them. When Jack died, he went to Heaven."
-    m 1eud "When he arrived, he was told he could not enter for how poorly a life he had lived on Earth."
+    m 1eud "When he arrived, he was told he could not enter for how poorly he had lived his life on Earth."
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
