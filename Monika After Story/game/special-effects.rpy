@@ -1087,8 +1087,8 @@ label monika_kissing_motion(
     return
 
 # short kiss version
-label monika_kissing_motion_short:
-    call monika_kissing_motion(duration=0.5, initial_exp="6hua", fade_duration=0.5)
+label monika_kissing_motion_short(exp="6hua"):
+    call monika_kissing_motion(duration=0.5, initial_exp=exp, fade_duration=0.5)
     return
 
 # Zoom Transition label
