@@ -288,9 +288,9 @@ label monika_idle_shower_callback:
                     m 3eua "I hope it was nice and relaxing!"
 
                 "No.":
-                    m 7eusdrc "Oh...{w=0.3}maybe you just like really long showers..."
+                    m 7rua "Oh...{w=0.3}maybe you just like really long showers..."
                     m 3duu "Sometimes it can be nice just to feel the water rushing over you...{w=0.3}it can be really soothing."
-                    m 1hub "...Or maybe I'm overthinking this and you just didn't come back right away, ahaha!"
+                    m 1hksdlb "...Or maybe I'm overthinking this and you just didn't come back right away, ahaha!"
 
         elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_shower"):
             m 1eua "Welcome back, [player]."
