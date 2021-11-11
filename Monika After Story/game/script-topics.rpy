@@ -17592,11 +17592,12 @@ label monika_zodiac_starsign:
 
     #The final part pops up regardless of your sign.
     m 1eta "Although, don't you think it's kind of silly?"
-    m 3esa "I mean, objects in space can't {i}really{/i} affect our personality."
-    m 1esc "Not to mention the fact that some people take it {i}way{/i} too far."
-    m 4eud "Like, they'll judge potential partners and friends based on their sign!"
-    m 1luc "That's something I could never understand."
-    m 1eua "Don't worry, [mas_get_player_nickname()], {w=0.2}{nw}"
+    m 3esd "I mean, objects in space can't {i}really{/i} affect our personality..."
+    m 1tuc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4wud "Like, they'll even judge potential partners and friends based on their sign!"
+    m 2luc "...That's something I'll never understand."
+    $ p_nickname = mas_get_player_nickname()
+    m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
     extend 1eublu "I'd never let any silly old stars come between us."
     $ del player_zodiac_sign
     return
