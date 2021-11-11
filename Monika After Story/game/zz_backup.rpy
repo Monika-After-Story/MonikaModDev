@@ -1,16 +1,150 @@
 # module that does some file backup work
 
-python early:
-    # sometimes we have persistent issues. Why? /shrug.
-    # but we do know is that we might be able to tell if a persistent got
-    # screwed by attempting to read it in now, before renpy actually does so.
+# NOTE: these shoudl never be true for a standard persistent.
+
+# only set if the forced update from a persistent incompatibility occurs
+default persistent._mas_incompat_per_forced_update = False
+
+# only set if the forced update fails in the updater (not on disk)
+default persistent._mas_incompat_per_forced_update_failed = False
+
+python early in mas_per_check:
+    import __main__
+    import cPickle
+    import os
+    import datetime
+    import shutil
+    import renpy
+    import store
+    import store.mas_utils as mas_utils
+
+    early_log = store.mas_logging.init_log("early", header=False)
+
+    # special var
     mas_corrupted_per = False
-    mas_unstable_per_in_stable = False
     mas_no_backups_found = False
-    mas_no_stable_backups_found = False
     mas_backup_copy_failed = False
     mas_backup_copy_filename = None
     mas_bad_backups = list()
+
+    # unstable specific
+    mas_unstable_per_in_stable = False
+    mas_per_version = ""
+    per_unstable = "persistent_unstable"
+    mas_sp_per_created = False
+    mas_sp_per_found = False
+
+    INCOMPAT_PER_MSG = (
+        "Failed to move incompatible persistent. Either replace the persistent "
+        "with one that is compatible with {0} or install a version of MAS "
+        "compatible with a persistent version of {1}."
+    )
+    INCOMPAT_PER_LOG = (
+        "persistent is from version {0} and is incompatible with {1}"
+    )
+    COMPAT_PER_MSG = (
+        "Failed to load compatible persistent. "
+        "Replace {0} with {1} and restart."
+    )
+
+
+    def tryper(_tp_persistent, get_data=False):
+        """
+        Tries to read a persistent.
+        raises exceptions if they occur
+
+        IN:
+            _tp_persistent - the full path to the persistent file
+            get_data - pass True to get the acutal data instead of just
+                a version number.
+
+        RETURNS: tuple
+            [0] - True if the persistent was read and decoded, False if not
+            [1] - the version number, or the persistent data if get_data is
+                True
+        """
+        per_file = None
+        try:
+            per_file = file(_tp_persistent, "rb")
+            per_data = per_file.read().decode("zlib")
+            per_file.close()
+            actual_data = cPickle.loads(per_data)
+
+            if get_data:
+                return True, actual_data
+
+            return True, actual_data.version_number
+
+        except Exception as e:
+            raise e
+
+        finally:
+            if per_file is not None:
+                per_file.close()
+
+
+    def is_version_compatible(per_version, cur_version):
+        """
+        Checks if a persistent version can work with the current version
+
+        IN:
+            per_version - the persisten version to check
+            cur_version - the current version to check.
+
+        RETURNS: True if the per version can work with the current version
+        """
+        return (
+            # build is unstable
+            not store.mas_utils.is_ver_stable(cur_version)
+
+            # persistent is stable
+            or store.mas_utils.is_ver_stable(per_version)
+
+            # persistent version to build version is not downgrade
+            or not store.mas_utils._is_downgrade(per_version, cur_version)
+        )
+
+
+    def is_per_bad():
+        """
+        Is the persistent bad? this only works after early.
+
+        RETURNS: True if the per is bad, False if not
+        """
+        return mas_corrupted_per or mas_unstable_per_in_stable
+
+
+    def should_show_chibika_persistent():
+        """
+        Should we show the chibika persistent dialogue? 
+
+        RETURNS: True if we should show the chibika persistent dialogue
+        """
+        return (
+            mas_unstable_per_in_stable
+            or (
+                mas_corrupted_per
+                and (mas_no_backups_found or mas_backup_copy_failed)
+            )
+        )
+
+
+    # sort number list
+    def wraparound_sort(_numlist):
+        """
+        Sorts a list of numbers using a special wraparound sort.
+        Basically if all the numbers are between 0 and 98, then we sort
+        normally. If we have 99 in there, then we need to make the wrap
+        around numbers (the single digit ints in the list) be sorted
+        as larger than 99.
+        """
+        if 99 in _numlist:
+            for index in range(0, len(_numlist)):
+                if _numlist[index] < 10:
+                    _numlist[index] += 100
+
+        _numlist.sort()
+
 
     def _mas_earlyCheck():
         """
@@ -20,94 +154,130 @@ python early:
         NOTE: we don't have many functions available here. However, we can
         import __main__ and gain access to core functions.
         """
-        import __main__
-        import cPickle
-        import os
-        import datetime
-        import shutil
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
-        global mas_unstable_per_in_stable, mas_no_stable_backups_found
+        global mas_unstable_per_in_stable, mas_per_version
+        global mas_sp_per_found, mas_sp_per_created
         global mas_backup_copy_filename, mas_bad_backups
 
-        early_log = store.mas_logging.init_log("early", header=False)
-
         per_dir = __main__.path_to_saves(renpy.config.gamedir)
+        _cur_per = os.path.normcase(per_dir + "/persistent")
+        _sp_per = os.path.normcase(per_dir + "/" + per_unstable)
 
-        # first, check if we even have a persistent
+        # first, check if we have a special persistent
+        if os.access(_sp_per, os.F_OK):
+            #  we have one, so check if its valid 
+            try:
+                per_read, version = tryper(_sp_ver)
+
+            except:
+                # this is a corrupted per, delete it.
+                os.remove(_sp_ver)
+                per_read = None
+                version = ""
+
+            # this should be outside of the try/except above so we don't
+            # overzealously delete the special persistent.
+            if per_read is not None:
+                if is_version_compatible(version, renpy.config.version):
+                    # this is a good version, so take the sp per and copy it
+                    # to the main per.
+                    try:
+                        shutil.copy(_sp_per, _cur_per)
+                        os.remove(_sp_ver)
+                    except:
+                        # faild to copy or remove the sp per? hardstop
+                        # the user needs to handle this.
+                        raise Exception(COMPAT_PER_MSG.format(
+                            _cur_per,
+                            _sp_per
+                        ))
+
+                else:
+                    # not a compatible version
+                    # this generally means that a forced update failed, so
+                    # we'll set the appropriate vars to get the forced updater
+                    # to run again.
+                    # these may get undone when the actual persistent is
+                    # checked.
+                    mas_unstable_per_in_stable = True
+                    mas_per_version = version
+                    mas_sp_per_found = True
+                    early_log.error(INCOMPAT_PER_LOG.format(
+                        version,
+                        renpy.config.version
+                    ))
+
+        # check for persistent existence
         if not os.access(os.path.normcase(per_dir + "/persistent"), os.F_OK):
             # NO ERROR TO REPORT!
             return
 
-        def trywrite(_path, msg, first=False):
-            # attempt to write, no worries if no worko
-            if first:
-                mode = "w"
-            else:
-                mode = "a"
-
-            _fileobj = None
+        # special rules apply if we found a special persistent
+        if mas_sp_per_found:
             try:
-                _fileobj = open(_path, mode)
-                _fileobj.write("[{0}]: {1}\n".format(
-                    datetime.datetime.now(),
-                    msg
-                ))
+                per_read, per_data = tryper(_cur_per, get_data=True)
+                if not per_read:
+                    raise Exception("bad")
+
+                if is_version_compatible(
+                        per_data.version_number,
+                        renpy.config.version
+                ):
+                    
             except:
+                # if persistent errors occured, then standard forced update
+                # should be ok.
                 pass
-            finally:
-                if _fileobj is not None:
-                    _fileobj.close()
 
-
-        def tryper(_tp_persistent):
-            # tryies a persistent and checks if it is decoded succesfully
-            # returns True, version_number on success. raises errors if failure
-            per_file = None
-            try:
-                per_file = file(_tp_persistent, "rb")
-                per_data = per_file.read().decode("zlib")
-                per_file.close()
-                actual_data = cPickle.loads(per_data)
-                return True, actual_data.version_number
-
-            except Exception as e:
-                raise e
-
-            finally:
-                if per_file is not None:
-                    per_file.close()
-
+            return
 
         # okay, now let's attempt to read the persistent.
         try:
-            per_read, version = tryper(per_dir + "/persistent")
+            per_read, version = tryper(_cur_per)
             if per_read:
-                if (
-                        # unstable build
-                        not store.mas_utils.is_ver_stable(renpy.config.version)
-
-                        # persistent is from stable
-                        or store.mas_utils.is_ver_stable(version)
-
-                        # persistent vers -> build ver is not a downgrade
-                        or not store.mas_utils._is_downgrade(version, renpy_config.version)
-                ):
+                if is_version_compatible(version, renpy.config.version):
                     return
 
                 # otherwise - this is not a safe persisetnt to load
                 mas_unstable_per_in_stable = True
+                mas_per_version = version
+                mas_sp_per_created = True
+                early_log.error(INCOMPAT_PER_LOG.format(
+                    version,
+                    renpy.config.version
+                ))
 
         except Exception as e:
             mas_corrupted_per = True
             early_log.error("persistent was corrupted! : " +repr(e))
             # " this comment is to fix syntax highlighting issues on vim
 
-        # TODO: update documentation -
-        # it is possible to reach here if we are loading an unstable persistent
-        #   in a stable build
+        # if we got here, we had an exception OR we are loading 
+        # unstable in stable.
 
-        # if we got here, we had an exception. Let's attempt to restore from
-        # an eariler persistent backup.
+        # in unstable cases, we should move the persistent to a special case
+        # and make sure appropriate vars are loaded.
+        if mas_unstable_per_in_stable:
+            try:
+                shutil.copy(_cur_per, _sp_per)
+                os.remove(_cur_per) 
+
+                # and then close out of here - the game should generate a fresh
+                # persistent.
+                return
+
+            except Exception as e:
+                early_log.error(
+                    "Failed to copy persistent to unstable: " + repr(e)
+                )
+
+                # need to hardstop here
+                raise Exception(INCOMPAT_PER_MSG.format(
+                    renpy.config.version,
+                    version
+                ))
+
+        # Let's attempt to restore from an eariler persistent backup.
 
         # lets get all the persistent files here.
         per_files = os.listdir(per_dir)
@@ -137,22 +307,6 @@ python early:
             mas_no_backups_found = True
             return
 
-        # sort number list
-        def wraparound_sort(_numlist):
-            """
-            Sorts a list of numbers using a special wraparound sort.
-            Basically if all the numbers are between 0 and 98, then we sort
-            normally. If we have 99 in there, then we need to make the wrap
-            around numbers (the single digit ints in the list) be sorted
-            as larger than 99.
-            """
-            if 99 in _numlist:
-                for index in range(0, len(_numlist)):
-                    if _numlist[index] < 10:
-                        _numlist[index] += 100
-
-            _numlist.sort()
-
         # using the special sort function
         wraparound_sort(file_nums)
 
@@ -161,10 +315,11 @@ python early:
         while sel_back is None and len(file_nums) > 0:
             _this_num = file_nums.pop() % 100
             _this_file = file_map.get(_this_num, None)
+
             if _this_file is not None:
                 try:
-                    if tryper(per_dir + "/" + _this_file):
-                        sel_back = _this_file
+                    per_read, version = tryper(per_dir + "/" + _this_file)
+
                 except Exception as e:
                     early_log.error(
                         "'{0}' was corrupted: {1}".format(_this_file, repr(e))
@@ -183,7 +338,6 @@ python early:
         # also let the log know we found a good one
         early_log.info("working backup found: " + sel_back) # " more fixes
         _bad_per = os.path.normcase(per_dir + "/persistent_bad")
-        _cur_per = os.path.normcase(per_dir + "/persistent")
         _god_per = os.path.normcase(per_dir + "/" + sel_back)
 
         # we should at least try to keep a copy of the current persistent
@@ -210,8 +364,14 @@ python early:
 
         # well, hopefully we were successful!
 
+python early:
+    # sometimes we have persistent issues. Why? /shrug.
+    # but we do know is that we might be able to tell if a persistent got
+    # screwed by attempting to read it in now, before renpy actually does so.
+    import store.mas_per_check
+
     # now call this
-    _mas_earlyCheck()
+    store.mas_per_check._mas_earlyCheck()
 
 
 init -900 python:
@@ -409,14 +569,17 @@ init -900 python:
 
 
     # run the backup system if persistents arent screwd
-    if not mas_corrupted_per and persistent._mas_moni_chksum is None:
+    if (
+            not store.mas_per_check.is_per_bad()
+            and persistent._mas_moni_chksum is None
+    ):
         __mas__memoryCleanup()
         __mas__memoryBackup()
 
 
 ### now for some dialogue bits courtesy of chibika
 
-label mas_backups_you_have_corrupted_persistent:
+label mas_backups_you_have_bad_persistent:
     #TODO: Decide whether or not text speed should be enforced here.
     $ quick_menu = False
     scene black
@@ -424,13 +587,24 @@ label mas_backups_you_have_corrupted_persistent:
     show chibika smile at mas_chdropin(300, travel_time=1.5)
     pause 1.5
 
+    python:
+        # helper abstractions for readability
+        def is_per_corrupt():
+            return store.mas_per_check.mas_corrupted_per
+
+        def is_per_incompatible():
+            return store.mas_per_check.mas_unstable_per_in_stable
+
+    if is_per_incompatible():
+        jump mas_backups_incompat_start
+
     show chibika 3 at sticker_hop
     "Hello there!"
     show chibika sad
     "I hate to be the bringer of bad news..."
     "But unfortunately, your persistent file is corrupt."
 
-    if mas_no_backups_found:
+    if store.mas_per_check.mas_no_backups_found:
         "And what's even worse is..."
         show chibika at sticker_move_n
         "I was unable to find a working backup persistent."
@@ -545,3 +719,78 @@ label mas_backups_dont_tell:
     "So keep quiet about me, and I'll make sure your Monika is safe and comfy!"
 
     return
+
+label mas_backups_incompat_start:
+    # "your per wont work with this MAS"
+
+    if persistent._mas_incompat_per_forced_update_failed:
+        # a forced update failed in the updater.
+        # assume the user did something to fix and try update again
+        show chibika smile at mas_chflip_s(1)
+        "Hello there!"
+        "Let's try updating again!"
+        jump mas_backups_incompat_updater_start
+
+    elif persistent._mas_incompat_per_forced_update:
+        # a forced update failed OUTSIDE of the updater.
+        #   - this is because failed will be True if the updater fails.
+        # this is unexpected so we have some dialogue before trying again
+        jump mas_backups_incompat_updater_failed
+
+    # otherwise, this might be the first time a user sees this
+
+    show chibika 3 at sticker_hop
+    "Hello there!"
+
+    menu:
+        "What happened?":
+            pass
+        "Take me to the updater.":
+            show chibika smile at sticker_hop
+            "Ok!"
+            jump mas_backups_incompat_updater_start
+
+    show chibika sad at mas_chflip_s(-1)
+    "Unfortunately, your persistent is running version v[mas_per_version], which is incompatible with this build of MAS (v[config.version])."
+    "The only way I can fix this is if you update MAS or 
+
+label mas_backups_incompat_updater_failed:
+    show chibika sad
+    "Oh no!"
+    "It seems that the updater failed to update MAS."
+
+    show chibika smile at mas_chflip_s(1)
+    "Lets try again!"
+
+    # fall through
+
+label mas_backups_incompat_updater_start:
+    
+    # setup for unstable 
+    $ persistent._mas_unstable_mode = True
+    $ mas_updater.force = True
+    $ mas_updater.lock_cancel = True
+
+    # call the update label
+    $ persistent._mas_incompat_per_forced_update = True
+    $ persistent._mas_incompat_per_forced_update_failed = False
+    call update_now
+    $ persistent._mas_incompat_per_forced_update_failed = True
+
+    # NOTE: if we got here, we assume that the updater failed to update for
+    #   whatever reason. The actual reasons could be:
+    #   1. couldn't move the update folder
+    #   2. renpy couldn't update for some reason
+    #   3. update check timed out and user hit cancel
+
+    show chibika 3 at sticker_hop
+    "Oh!"
+    show chibika sad at mas_chflip_s(-1)
+    "It seems that the updater failed to update."
+    "Make sure to fix any updater issues and try again."
+    show chibika 3
+    "Good luck!"
+
+    jump _quit
+
+

@@ -15,6 +15,7 @@ define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
+define mas_updater.lock_cancel = False
 
 # transform for the sliding updater
 transform mas_updater_slide:
@@ -104,7 +105,7 @@ init -1 python:
         STATE_BAD_JSON = 5
 
 
-        def __init__(self, update_link):
+        def __init__(self, update_link, lock_cancel=False):
             """
             Constructor
             """
@@ -247,15 +248,15 @@ init -1 python:
             )
 
             # grouped buttons
-            self._checking_buttons = [
-                self._button_update,
-                self._button_cancel
-            ]
+            self._checking_buttons = [self._button_update]
+            if not lock_cancel:
+                self._checking_buttons.append(self._button_cancel)
+
             self._behind_buttons = self._checking_buttons
             self._updated_buttons = [self._button_ok]
             self._timeout_buttons = [
                 self._button_retry,
-                self._button_cancel
+                self._button_cancel, # always allow cancel on timeout
             ]
 
             # inital state
@@ -912,7 +913,7 @@ label update_now:
 
         # call the updater displayable
         python:
-            ui.add(MASUpdaterDisplayable(update_link))
+            ui.add(MASUpdaterDisplayable(update_link, mas_updater.lock_cancel))
             updater_selection = ui.interact()
 
 #        "hold up"
