@@ -46,6 +46,10 @@ python early in mas_per_check:
         "Failed to load compatible persistent. "
         "Replace {0} with {1} and restart."
     )
+    SP_PER_DEL_MSG = (
+        "Found erroneous persistent but was unable to delete it. "
+        "Delete the persistent at {0} and restart."
+    )
 
 
     def tryper(_tp_persistent, get_data=False):
@@ -214,22 +218,50 @@ python early in mas_per_check:
 
         # special rules apply if we found a special persistent
         if mas_sp_per_found:
+            # generally speaking, we should only get here if we found a special
+            # persistent but it could not be used as a regular persistent.
+
             try:
                 per_read, per_data = tryper(_cur_per, get_data=True)
+
                 if not per_read:
-                    raise Exception("bad")
+                    raise Exception("bad") # should do standard forced update
 
                 if is_version_compatible(
                         per_data.version_number,
                         renpy.config.version
                 ):
+                    # current persistent is compatible
+                    
+                    if per_data._mas_incompat_per_forced_update:
+                        # this means the current persistent was loaded
+                        #   when an unstable forced update occured.
+                        # which also means that the sp per was expectedly
+                        #   created by us.
+
+                        # in this case, we should let the forced update
+                        # try again.
+                        return
+
+                    else:
+                        # this means we have a special persistent but we
+                        #   didn't make it because of a forced update.
+                        # Perhaps the user is trying to break something by
+                        # adding the sp per? We should be hardstopping when
+                        # a delete fails, anyway, so in this case, we should
+                        # just delete the sp per and act normally.
+                        try:
+                            os.remove(_sp_ver):
+                        except:
+                            raise Exception(SP_PER_DEL_MSG.format(_sp_ver))
+
+                # if the current persistent is incompatible, then ignore the
+                # sp per and treat the current persistent as the real one.
                     
             except:
                 # if persistent errors occured, then standard forced update
                 # should be ok.
-                pass
-
-            return
+                return
 
         # okay, now let's attempt to read the persistent.
         try:
@@ -746,13 +778,34 @@ label mas_backups_incompat_start:
         "What happened?":
             pass
         "Take me to the updater.":
-            show chibika smile at sticker_hop
-            "Ok!"
-            jump mas_backups_incompat_updater_start
+            jump mas_backups_incompat_updater_start_intro
 
     show chibika sad at mas_chflip_s(-1)
     "Unfortunately, your persistent is running version v[mas_per_version], which is incompatible with this build of MAS (v[config.version])."
-    "The only way I can fix this is if you update MAS or 
+    "The only way I can fix this is if you update MAS or you restore with a compatible persistent."
+
+    show chibika sad at mas_chflip_s(1)
+    "What would you like to do?{nw}"
+    $ _history_list.pop()
+    menu:
+        "What would you like to do?{fast}"
+        "Update MAS.":
+            jump mas_backups_incompat_updater_start_intro
+        "Restore a compatible persistent".:
+            show chibika smile at sticker_hop
+            "Alright!"
+
+            $ _sp_per = os.path.normcase(renpy.config.savedir + "/" + mas_per_check)
+            "Please copy a compatible persistent into '[renpy.config.savedir]' and then delete '[_sp_per]'."
+
+            show chibika smile at mas_chflip_s(-1)
+            "Good luck!"
+            jump _quit
+
+label mas_backups_incompat_updater_start_intro:
+    show chibika smile at sticker_hop
+    "Ok!"
+    jump mas_backups_incompat_updater_start
 
 label mas_backups_incompat_updater_failed:
     show chibika sad
