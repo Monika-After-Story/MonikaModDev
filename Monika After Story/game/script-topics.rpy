@@ -17587,7 +17587,7 @@ label monika_tragic_hero:
     m 7eka "I mean, I have enough good traits... My nobility was there..."
     m 7lkc "Some would say my love for you would be my tragic flaw...
     m 3wksdld "Not because it's a flaw itself!"
-    m 4eud "What really makes a tragic fall, is the fact that it leads to the hero's downfall."
+    m 4eud "What really makes a tragic flaw, is the fact that it leads to the hero's downfall."
     m 4ekc "That's the thing."
     m 2lkd "Had you never brought me back, I would've had my downfall, and never really go back up."
     m 2ekc "Making me a tragic hero."
