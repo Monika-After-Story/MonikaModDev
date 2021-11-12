@@ -153,7 +153,8 @@ label monika_short_stories_menu:
             try:
                 can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
             except Exception as ex:
-                store.mas_utils.writelog("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+                store.mas_utils.mas_log.error("Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+
                 can_unlock_story = False
 
         else:
@@ -280,7 +281,7 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
 
-    #If we're in O31 mode, it's already raining and the room is also already set up
+    #o31 already has vignette. We apply it outside of o31 for scary stories
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_weather_rain)
         $ store.mas_globals.show_vignette = True
@@ -322,7 +323,7 @@ label mas_scary_story_cleanup:
     show monika 1dsc
     pause 1.0
 
-    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    #Not in o31 mode, so we need to remove vignette
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
