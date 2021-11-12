@@ -1720,22 +1720,18 @@ label mas_island_bookshelf2:
     return
 
 
+# TODO: Allow to hide ui with H and mouse 2 clicks w/o globals
 screen mas_islands(islands_displayable, show_return_button=True):
     style_prefix "island"
     layer "screens"
     zorder mas_island_event.DEF_SCREEN_ZORDER
 
-    default is_showing_ui = show_return_button is True
-
     if show_return_button:
         key "K_ESCAPE" action Return(False)
 
-    if show_return_button:
-        key "noshift_K_h" action ToggleScreenVariable("is_showing_ui")
-
     add islands_displayable
 
-    if is_showing_ui:
+    if show_return_button:
         # Unsure why, but w/o a hbox renpy won't apply the style prefix
         hbox:
             align (0.5, 0.98)
