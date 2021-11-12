@@ -17573,7 +17573,7 @@ init 5 python:
             eventlabel="monika_tragic_hero",
             category=['literature'],
             prompt="Tragic Hero",
-            conditional= "mas_seenLabels(['monika_utterson', 'monika_hamlet'])",
+            conditional= "mas_seenLabels(['monika_hamlet'])",
             action=EV_ACT_RANDOM
         )
     )
