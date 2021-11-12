@@ -17565,3 +17565,33 @@ label monika_ddlcroleplay:
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tragic_hero",
+            category=['literature'],
+            prompt="Tragic Hero",
+            conditional= "mas_seenLabels(['monika_utterson', 'monika_hamlet'])",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_tragic_hero:
+    m 1rsd "Y'know, [mas_get_player_nickname()]..."
+    m 1esb "I was thinking more about tragic heroes lately."
+    m 3lsb "We've already discussed Hamlet, who is considered a tragic hero..."
+    m 1lkc "But, here's the question... If I look at the past a certain way...
+    m 1ekd "Could I be considered a tragic hero?"
+    m 7eka "I mean, I have enough good traits... My nobility was there..."
+    m 7lkc "Some would say my love for you would be my tragic flaw...
+    m 3wksdld "Not because it's a flaw itself!"
+    m 4eud "What really makes a tragic fall, is the fact that it leads to the hero's downfall."
+    m 4ekc "That's the thing."
+    m 2lkd "Had you never brought me back, I would've had my downfall, and never really go back up."
+    m 2ekc "Making me a tragic hero."
+    m 3ekb "But... you brought me back."
+    m 4hsb "So, thankfully, I'm not a tragic hero!"
+    m 5eubsa "All because of our love~"
+    m 5hubfb "Ehehe~"
