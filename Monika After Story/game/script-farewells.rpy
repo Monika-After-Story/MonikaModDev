@@ -817,7 +817,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                             $ got_goodnight_kiss = True
                             show monika 6ekbsu at t11 zorder MAS_MONIKA_Z with dissolve_monika
                             pause 2.0
-                            monika_kissing_motion_short(initial_exp="6hubsa")
+                            call monika_kissing_motion_short(initial_exp="6hubsa")
                             m 6ekbfa "Sweet dreams, [player]~"
                             m 6hubfb "Sleep tight!"
 
