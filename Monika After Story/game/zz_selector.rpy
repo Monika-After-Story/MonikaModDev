@@ -3940,18 +3940,22 @@ label monika_clothes_select:
             # need to get a list of clothes that have been gifted
             # so we will get a list of all clothes and then remove the event_clothes
             gifted_clothes = mas_selspr.filter_clothes(True)
+            ev_outfits = persistent._mas_event_clothes_map.get(datetime.date.today(), ())
 
             for index in range(len(gifted_clothes)-1, -1, -1):
                 spr_obj = gifted_clothes[index].get_sprobj()
                 if (
-                        not spr_obj.is_custom
-                        and spr_obj != mas_clothes_def
-                        and spr_obj != mas_clothes_blazerless
+                        spr_obj.name in ev_outfits
+                        or (
+                                not spr_obj.is_custom
+                                and spr_obj != mas_clothes_def
+                                and spr_obj != mas_clothes_blazerless
+                        )
                 ):
                     gifted_clothes.pop(index)
 
             #Now we handle holiday clothes
-            clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
+            clothes_to_add = ev_outfits
 
             #If there's something for today, then we'll add it to be unlocked
             if clothes_to_add:

@@ -29,11 +29,6 @@ init 10 python:
         if clothes is None:
             return
 
-        #If this is a spritepack outfit that has been gifted, we should ignore it
-        for sel_clothes in mas_selspr.filter_clothes(unlocked=True):
-            if sel_clothes.get_sprobj() == clothes:
-                return
-
         if key is None:
             key = datetime.date.today()
 
