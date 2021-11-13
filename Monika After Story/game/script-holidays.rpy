@@ -7032,7 +7032,6 @@ label mas_bday_spent_time_with:
         m 1eud "Well it gives me hope that maybe it's not too late for us."
         m "Perhaps today can be the start of something really special.."
         m 3eka "That would be the be the best gift I could ever ask for."
-        return
 
     else:
         $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
@@ -7048,6 +7047,8 @@ label mas_bday_spent_time_with:
             m 3ekbsa "You really made my birthday complete~"
 
         $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
+
+    return
 
 
 init 5 python:
@@ -7076,6 +7077,7 @@ label mas_bday_spent_time_with_wrapup:
         m 3eka "I know it can't be easy."
 
     m 1dku "..."
+
     if mas_isMoniEnamored(higher=True):
         m 1dktpu "..."
         m 1ektpu "Ahaha, sorry, [player]!"
