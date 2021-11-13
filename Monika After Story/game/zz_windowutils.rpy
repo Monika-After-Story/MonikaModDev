@@ -41,6 +41,9 @@ init python in mas_windowutils:
     import store
     #The initial setup
 
+    # The window object, used on Linux systems, otherwise always None
+    MAS_WINDOW = None
+
     #We can only do this on windows
     if renpy.windows:
         #We need to extend the sys path to see our packages
@@ -72,7 +75,7 @@ init python in mas_windowutils:
             store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
-            store.mas_utils.writelog("[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("win32api/win32gui failed to be imported, disabling notifications.")
 
     elif renpy.linux:
         #Get session type
@@ -82,7 +85,7 @@ init python in mas_windowutils:
         if session_type == "wayland":
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.writelog("[WARNING]: Wayland is not yet supported, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling notifications.")
 
         #X11 however is fine
         elif session_type == "x11":
@@ -99,13 +102,13 @@ init python in mas_windowutils:
                 store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
 
-                store.mas_utils.writelog("[WARNING]: Xlib failed to be imported, disabling notifications.\n")
+                store.mas_utils.mas_log.warning("Xlib failed to be imported, disabling notifications.")
 
         else:
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
 
-            store.mas_utils.writelog("[WARNING]: Cannot detect current session type, disabling notifications.\n")
+            store.mas_utils.mas_log.warning("Cannot detect current session type, disabling notifications.")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -177,8 +180,7 @@ init python in mas_windowutils:
                 transient_for = win.get_wm_transient_for()
                 winname = win.get_wm_name()
 
-                #NOTE: This must be config.name as we call this during init time, where config.name is None
-                if transient_for is None and winname and renpy.config.window_title == winname:
+                if transient_for is None and winname and store.mas_getWindowTitle() == winname:
                     return win
 
         except BadWindow:
@@ -201,7 +203,7 @@ init python in mas_windowutils:
             """
             Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
             """
-            if renpy.config.window_title == win32gui.GetWindowText(hwnd):
+            if store.mas_getWindowTitle() == win32gui.GetWindowText(hwnd):
                 raise MASWindowFoundException(hwnd)
 
         try:
@@ -223,7 +225,10 @@ init python in mas_windowutils:
         """
         #If win is None, then we should just return a None here
         if win is None:
-            return None
+            # This handles some odd issues with setting window on Linux
+            win = _setMASWindow()
+            if win is None:
+                return None
 
         try:
             geom = win.get_geometry()
@@ -248,11 +253,19 @@ init python in mas_windowutils:
     def _setMASWindow():
         """
         Sets the MAS_WINDOW global on Linux systems
+
+        OUT:
+            the window object
         """
         global MAS_WINDOW
 
         if renpy.linux:
             MAS_WINDOW = __getMASWindowLinux()
+
+        else:
+            MAS_WINDOW = None
+
+        return MAS_WINDOW
 
     #Next, the active window handle getters
     def _getActiveWindowHandle_Windows():
@@ -666,7 +679,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == config.window_title
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == store.mas_getWindowTitle()
 
     def mas_isInActiveWindow(regexp, active_window_handle=None):
         """

@@ -25,7 +25,8 @@ python early:
         import shutil
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
         global mas_backup_copy_filename, mas_bad_backups
-        early_log_path = os.path.normcase(renpy.config.basedir + "/early.log")
+
+        early_log = store.mas_logging.init_log("early", header=False)
 
         per_dir = __main__.path_to_saves(renpy.config.gamedir)
 
@@ -81,7 +82,7 @@ python early:
 
         except Exception as e:
             mas_corrupted_per = True
-            trywrite(early_log_path, "persistent was corrupted!: " + repr(e))
+            early_log.error("persistent was corrupted!: " + repr(e))
 
         # if we got here, we had an exception. Let's attempt to restore from
         # an eariler persistent backup.
@@ -91,7 +92,7 @@ python early:
         per_files = [x for x in per_files if x.startswith("persistent")]
 
         if len(per_files) == 0:
-            trywrite(early_log_path, "no backups available")
+            early_log.error("no backups available")
             mas_no_backups_found = True
             return
 
@@ -110,7 +111,7 @@ python early:
                 file_map[num] = p_file
 
         if len(file_nums) == 0:
-            trywrite(early_log_path, "no backups available")
+            early_log.error("no backups available")
             mas_no_backups_found = True
             return
 
@@ -143,8 +144,7 @@ python early:
                     if tryper(per_dir + "/" + _this_file):
                         sel_back = _this_file
                 except Exception as e:
-                    trywrite(
-                        early_log_path,
+                    early_log.error(
                         "'{0}' was corrupted: {1}".format(_this_file, repr(e))
                     )
                     sel_back = None
@@ -152,14 +152,14 @@ python early:
 
         # did we get any?
         if sel_back is None:
-            trywrite(early_log_path, "no working backups found")
+            early_log.error("no working backups found")
             mas_no_backups_found = True
             return
 
         # otherwise, lets rename the existence persistent to bad and copy the
         # good persistent into the system
         # also let the log know we found a good one
-        trywrite(early_log_path, "working backup found: " + sel_back)
+        early_log.info("working backup found: " + sel_back)
         _bad_per = os.path.normcase(per_dir + "/persistent_bad")
         _cur_per = os.path.normcase(per_dir + "/persistent")
         _god_per = os.path.normcase(per_dir + "/" + sel_back)
@@ -170,8 +170,7 @@ python early:
             shutil.copy(_cur_per, _bad_per)
 
         except Exception as e:
-            trywrite(
-                early_log_path,
+            early_log.error(
                 "Failed to rename existing persistent: " + repr(e)
             )
 
@@ -183,8 +182,7 @@ python early:
         except Exception as e:
             mas_backup_copy_failed = True
             mas_backup_copy_filename = sel_back
-            trywrite(
-                early_log_path,
+            early_log.error(
                 "Failed to copy backup persistent: " + repr(e)
             )
 
@@ -337,10 +335,12 @@ init -900 python:
             try:
                 os.remove(numnum_del_path)
             except Exception as e:
-                mas_utils.writelog(mas_utils._mas_failrm.format(
-                    numnum_del_path,
-                    str(e)
-                ))
+                store.mas_utils.mas_log.error(
+                    mas_utils._mas__failrm.format(
+                        numnum_del_path,
+                        str(e)
+                    )
+                )
 
         return (numbernumber, numbernumber_del)
 
@@ -357,7 +357,7 @@ init -900 python:
             __mas__backupAndDelete(p_savedir, cal_name, numnum=numnum)
 
         except Exception as e:
-            mas_utils.writelog("[ERROR]: {0}".format(str(e)))
+            store.mas_utils.mas_log.error(str(e))
 
 
     def __mas__memoryCleanup():
