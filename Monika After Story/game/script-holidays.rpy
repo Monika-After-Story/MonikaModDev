@@ -7015,7 +7015,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
-            conditional="mas_recognizedBday()",
+            conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')",
             action=EV_ACT_PUSH,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
             end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
@@ -7046,6 +7046,17 @@ label mas_bday_spent_time_with:
             m 1dku "Knowing that you're thinking about me even when you can't see me..."
             m 1ekbsa "Well, it truly means a lot to me."
             m 3ekbsa "You really made my birthday complete~"
+
+        $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_spent_time_with_wrapup"
+        )
+    )
 
 label mas_bday_spent_time_with_wrapup:
     $ mas_rmallEVL("mas_bday_spent_time_with")
@@ -7566,7 +7577,7 @@ label greeting_returned_home_bday:
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
                 m 3duu "As soon as you showed up, my day was complete."
-                jump mas_bday_spent_time_with_wrapup
+                $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
 
     return
 

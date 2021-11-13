@@ -379,7 +379,8 @@ label v0_12_3_1(version="v0_12_3_1"):
     python:
         mas_setEVLPropValues(
             "mas_bday_spent_time_with",
-            action=EV_ACT_PUSH
+            action=EV_ACT_PUSH,
+            conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')"
             )
 
         mas_setEVLPropValues(
