@@ -374,10 +374,102 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.5
+label v0_12_5(version="v0_12_5"):
+    python hide:
+        pass
+    return
+
+# 0.12.4
+label v0_12_4(version="v0_12_4"):
+    python hide:
+        mas_setEVLPropValues(
+            'bye_trick_or_treat',
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()"
+        )
+    return
+
 # 0.12.3.2
 label v0_12_3_2(version="v0_12_3_2"):
-    python:
-        pass
+    python hide:
+        import os
+
+        #Delete old utils file
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
+
+        ### LOG MIGRATION
+        def _rename_log_file(old_log_path, new_log_path):
+            """
+            Renames log files
+
+            IN:
+                old_log_path - the path to the old log
+                new_log_path - the path to the new log
+            """
+            try:
+                mas_utils.trydel(new_log_path)
+                os.rename(old_log_path, new_log_path)
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to rename log at '{0}'. {1}".format(old_log_path, ex))
+
+        log_dir = os.path.join(renpy.config.basedir, "log")
+
+        migrating_logs = [
+            mas_utils.mas_log,
+            mas_affection.log,
+            mas_submod_utils.submod_log
+        ]
+        non_migrating_logfiles = [
+            "pnm.txt",
+            "spj.txt"
+        ]
+
+        # These 2 don't always exist
+        for mf_log_name in ("mfgen", "mfread"):
+            if mas_logging.is_inited(mf_log_name):
+                migrating_logs.append(mas_logging.logging.getLogger(mf_log_name))
+
+            else:
+                new_log_path = os.path.join(log_dir, mf_log_name + ".log")
+                old_log_path = os.path.join(log_dir, mf_log_name + ".txt")
+
+                _rename_log_file(old_log_path, new_log_path)
+
+        for log in migrating_logs:
+            new_log_path = os.path.join(log_dir, log.name + ".log")
+            old_log_path = os.path.join(log_dir, log.name + ".txt")
+
+            handlers = list(log.handlers)
+
+            for handler in handlers:
+                handler.close()
+                log.removeHandler(handler)
+
+            try:
+                with open(old_log_path, "a") as mergeto, open(new_log_path, "r") as mergefrom:
+                    for line in mergefrom:
+                        mergeto.write(line)
+
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to update log at '{0}'. {1}".format(old_log_path, ex))
+
+            else:
+                _rename_log_file(old_log_path, new_log_path)
+
+            for handler in handlers:
+                # handler.stream = handler._open()
+                log.addHandler(handler)
+
+        for logfile in non_migrating_logfiles:
+            mas_utils.trydel(os.path.join(log_dir, logfile))
+        ### END LOG MIGRATION
+
     return
 
 # 0.12.3.1
@@ -1213,7 +1305,8 @@ label v0_11_0(version="v0_11_0"):
         credits_ev = mas_getEV("monika_credits_song")
         if credits_ev:
             credits_ev.random = False
-            credits_ev.prompt = None
+            # This will be set during runtime as appropriate
+            # credits_ev.prompt = credits_ev.eventlabel
             credits_ev.conditional = "store.mas_anni.pastOneMonth()"
             credits_ev.action = EV_ACT_QUEUE
             credits_ev.unlocked = False
@@ -2774,8 +2867,8 @@ label v0_7_4(version="v0_7_4"):
             1200
         )
 
-       # now properly set all farewells as unlocked, since the new system checks
-       # for the unlocked status
+        # now properly set all farewells as unlocked, since the new system checks
+        # for the unlocked status
         for k in evhand.farewell_database:
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True

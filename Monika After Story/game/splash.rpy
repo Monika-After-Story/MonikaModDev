@@ -376,4 +376,6 @@ label quit:
         # xp calc
         store.mas_xp.grant()
 
+        # finish logs
+        store.mas_logging.logging.shutdown()
     return

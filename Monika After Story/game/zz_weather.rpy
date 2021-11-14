@@ -366,7 +366,8 @@ init -20 python in mas_weather:
             )
 
         if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+            store.mas_showDecoTag("mas_o31_vignette")
+
 
     def _weather_rain_exit(_new):
         """
@@ -382,7 +383,8 @@ init -20 python in mas_weather:
             renpy.music.stop(channel="background", fadeout=1.0)
 
         if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = False
+            store.mas_hideDecoTag("mas_o31_vignette")
+
 
     def _weather_snow_entry(_old):
         """
@@ -440,14 +442,15 @@ init -20 python in mas_weather:
         Overcast entry programming point
         """
         if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
+            store.mas_showDecoTag("mas_o31_vignette")
+
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
         if store.persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = False
+            store.mas_hideDecoTag("mas_o31_vignette")
 
 
 init -50 python:

@@ -5,12 +5,8 @@ define config.developer = False
 
 python early:
     import io
-    import singleton
     import datetime
     import traceback
-
-
-    me = singleton.SingleInstance()
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -2170,7 +2166,7 @@ python early:
                 return_value - Value to return when the button is activated
                     (Default: True)
             """
-
+            super(renpy.Displayable, self).__init__()
             # setup
 #            self.idle_text = idle_text
 #            self.hover_text = hover_text
@@ -2468,6 +2464,7 @@ python early:
                         if not is_over_me:
                             self.hovered = False
                             self._state = self._STATE_IDLE
+                            renpy.redraw(self, 0.0)
 
                         # else remain in hover mode
 
@@ -2477,6 +2474,8 @@ python early:
 
                         if self.hover_sound:
                             self._playHoverSound()
+
+                        renpy.redraw(self, 0.0)
 
                 elif (
                         ev.type == self._button_down
@@ -4197,9 +4196,9 @@ init -995 python in mas_utils:
     from contextlib import contextmanager
 
     # LOG messges
-    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
-    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
-    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}"
 
     # bad text dict
     BAD_TEXT = {
@@ -4610,16 +4609,6 @@ init -995 python in mas_utils:
             return os.access(os.path.normcase(filepath), os.F_OK)
         except:
             return False
-
-    # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
-        mas_log = getMASLog("log/mas_log", append=True, flush=True)
-    else:
-        mas_log = getMASLog("log/mas_log")
-
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
-    mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
     def weightedChoice(choice_weight_tuple_list):
         """
@@ -5390,6 +5379,7 @@ init -100 python in mas_utils:
 
 
 init -985 python:
+    import datetime
     # global stuff that should be defined somewhat early
 
     def mas_getSessionLength():
@@ -5503,6 +5493,15 @@ init -985 python:
         NOTE: TT detection occurs at init -890
         """
         return store.mas_globals.tt_detected
+
+    def mas_getWindowTitle():
+        """
+        Returns current windows title set by RenPy
+
+        OUT:
+            str
+        """
+        return renpy.game.interface.window_caption
 
 init -101 python:
     def is_file_present(filename):
@@ -6212,13 +6211,15 @@ init 2 python:
         #3 conditions:
 
         #1. Do we even have plushie enabled?
-        #2. Is it f14? (heartchoc gift interferes)
+        #2.1 Is it f14? (heartchoc gift interferes)
+        #2.2 Is it o31? (o31 desk acs interferes)
         #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
             not persistent._mas_acs_enable_quetzalplushie
             or mas_isF14()
+            or mas_isO31()
             or MASConsumable._getCurrentFood()
         ):
             # run the plushie exit PP in case plushie is no longer enabled
@@ -6698,34 +6699,35 @@ init 21 python:
         return ""
 
 # Music
-define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
-define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
-define audio.t2g = "bgm/2g.ogg"
-define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
-define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
-define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
-define audio.t3g = "<to 15.255>bgm/3g.ogg"
-define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
-define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
-define audio.t3m = "<loop 4.618>bgm/3.ogg"
-define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
-define audio.t4g = "<loop 1.000>bgm/4g.ogg"
-define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
-define audio.t5b = "<loop 4.444>bgm/5.ogg"
-define audio.t5c = "<loop 4.444>bgm/5.ogg"
-define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
-define audio.t6g = "<loop 10.893>bgm/6g.ogg"
-define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
-define audio.t6s = "<loop 43.572>bgm/6s.ogg"
-define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
-define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
-define audio.t7g = "<loop 31.880>bgm/7g.ogg"
-define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
-define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
-define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
-define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
-define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
-define audio.td = "<loop 36.782>bgm/d.ogg"
+init -1:
+    define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
+    define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
+    define audio.t2g = "bgm/2g.ogg"
+    define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
+    define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
+    define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
+    define audio.t3g = "<to 15.255>bgm/3g.ogg"
+    define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
+    define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
+    define audio.t3m = "<loop 4.618>bgm/3.ogg"
+    define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
+    define audio.t4g = "<loop 1.000>bgm/4g.ogg"
+    define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
+    define audio.t5b = "<loop 4.444>bgm/5.ogg"
+    define audio.t5c = "<loop 4.444>bgm/5.ogg"
+    define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
+    define audio.t6g = "<loop 10.893>bgm/6g.ogg"
+    define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
+    define audio.t6s = "<loop 43.572>bgm/6s.ogg"
+    define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
+    define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
+    define audio.t7g = "<loop 31.880>bgm/7g.ogg"
+    define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
+    define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
+    define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
+    define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
+    define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
+    define audio.td = "<loop 36.782>bgm/d.ogg"
 
 define audio.m1 = "bgm/m1.ogg"
 define audio.mend = "<loop 6.424>bgm/monika-end.ogg"
