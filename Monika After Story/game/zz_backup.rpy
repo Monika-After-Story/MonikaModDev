@@ -115,7 +115,34 @@ python early in mas_per_check:
 
         RETURNS: True if the per is bad, False if not
         """
-        return mas_corrupted_per or mas_unstable_per_in_stable
+        return is_per_corrupt() or is_per_incompatible()
+
+
+    def is_per_corrupt():
+        """
+        Is the persistent corrupt? this only works after early.
+
+        RETURNS: True if the persistent is corrupt.
+        """
+        return mas_corrupted_per
+
+
+    def is_per_incompatible():
+        """
+        Is the persistent incompatible? this onyl works after early.
+
+        RETURNS: True if the persistent is incompatible.
+        """
+        return mas_unstable_per_in_stable
+
+
+    def no_backups():
+        """
+        Do we not have backups or did backup fail?
+
+        RETURNS: True if no backups or backups failed.
+        """
+        return mas_no_backups_found or mas_backup_copy_failed
 
 
     def should_show_chibika_persistent():
@@ -126,10 +153,7 @@ python early in mas_per_check:
         """
         return (
             mas_unstable_per_in_stable
-            or (
-                mas_corrupted_per
-                and (mas_no_backups_found or mas_backup_copy_failed)
-            )
+            or (is_per_corrupt() and no_backups())
         )
 
 
@@ -251,7 +275,7 @@ python early in mas_per_check:
                         # a delete fails, anyway, so in this case, we should
                         # just delete the sp per and act normally.
                         try:
-                            os.remove(_sp_ver):
+                            os.remove(_sp_ver)
                         except:
                             raise Exception(SP_PER_DEL_MSG.format(_sp_ver))
 
@@ -619,15 +643,7 @@ label mas_backups_you_have_bad_persistent:
     show chibika smile at mas_chdropin(300, travel_time=1.5)
     pause 1.5
 
-    python:
-        # helper abstractions for readability
-        def is_per_corrupt():
-            return store.mas_per_check.mas_corrupted_per
-
-        def is_per_incompatible():
-            return store.mas_per_check.mas_unstable_per_in_stable
-
-    if is_per_incompatible():
+    if store.mas_per_check.is_per_incompatible():
         jump mas_backups_incompat_start
 
     show chibika 3 at sticker_hop
@@ -680,7 +696,7 @@ label mas_backups_have_none:
     show chibika 3 at sticker_move_n
     "And I promise I'll do my best to not mess up the files again!"
     "Good luck with Monika!"
-    $ mas_corrupted_per = False
+    $ store.mas_per_check.mas_corrupted_per = False
     return
 
 
@@ -791,7 +807,7 @@ label mas_backups_incompat_start:
         "What would you like to do?{fast}"
         "Update MAS.":
             jump mas_backups_incompat_updater_start_intro
-        "Restore a compatible persistent".:
+        "Restore a compatible persistent.":
             show chibika smile at sticker_hop
             "Alright!"
 
