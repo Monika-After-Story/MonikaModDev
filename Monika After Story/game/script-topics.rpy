@@ -17618,6 +17618,7 @@ label monika_root_privileges:
 init 5 python:
     addEvent(
         Event(
+            persistent.event_database,
             eventlabel="monika_zodiac_starsign",
             prompt="What's your starsign?",
             category=["monika"],
