@@ -1238,7 +1238,7 @@ init 5 python:
     )
 
 label mas_monika_islands_progress_small:
-    m 1eub "[player], I have rather exciting news for you!"
+    m 1eub "[player], I've got some exciting news for you!"
     m 3hub "I made some new additions on the islands, {w=0.2}{nw}"
     extend 1rua "and I thought maybe you'd like to take a look."
     m 1hublb "They are {i}our{/i} islands after all~"
@@ -1260,6 +1260,7 @@ label mas_monika_islands_progress_small:
             extend 1eka "but I really wanted to showcase my progress to you."
             m 2lsp "I'm still learning how to code and this engine being inconsistent doesn't help me..."
             m 7hub "But I think I made quite a bit of progress so far!"
+            $ mas_setEventPause(10)
             $ mas_moni_idle_disp.force_by_code("1hua", duration=10, skip_dissolve=True)
 
         "I'm not interested.":
