@@ -911,25 +911,29 @@ init 5 python:
     )
 
 label mas_fun_fact_maplesyrup:
-    m 3hsa "Here's another {w=0.2}{i}sweet {/i} fact for you~"
-    m 1esa "Every type maple sap can be used to make maple syrup... {w=0.5}{nw}"
-    extend 1esb "but commercially-made syrup usually comes from the sugar maple."
-    m 1eua "You can most easily tell what variety of maple a tree is from the shape of the leaves." 
-    m 3eub "And you might be able to recognize a sugar maple leaf already, because it's the one featured on the Canadian flag!"
-    m 1eua "That said,{w=0.5}{nw}"
-    extend 1esa " the sugar maple has a limited native range and doesn't grow in {i}all{/i} of Canada."
-    m 1wud "Yet Canada produces over three quarters of the world's maple syrup!"
-    m 1luc "That's a lot of syrup already..."
-    m 3eud "But did you know that to make just one gallon of maple syrup it takes {w=0.2}{nw}"
-    extend 3wud "{i}40{/i}  gallons of maple sap?"
-    m 1wuc "It takes a lot more effort to produce it than I was expecting!"
+    m 3hksdlb "Here's another {w=0.2}{i}sweet {/i} {w=0.2}fact for you..."
+    m 1eua "Every type of maple tree produces sap that can be used to make maple syrup, {w=0.3}{nw}"
+    extend 1eud "but commercially-made syrup usually comes from the sugar maple."
+    m 3eua "You can most easily tell the specific type of maple tree from the shape of the leaves..."
+    m 3eub "You might be able to recognize a sugar maple leaf already, because it's the one featured on the Canadian flag!"
+    m 1euc "That said, the sugar maple has a limited native range and doesn't grow in {i}all{/i} of Canada."
+    m 1wud "...Yet Canada produces over three quarters of the world's maple syrup!"
+    m 3wud "And it may even be more surprising to learn that to make just one gallon of maple syrup it takes {i}40{/i} gallons of sap!"
+    m 1eua "It also takes a lot more effort to produce it than I was expecting..."
     m 1esc "The sap has to be boiled down to make it into syrup... which obviously takes a while, given how much is needed."
-    m 1esc "Also, {w=0.5}{nw}"
-    extend 1esa "I've heard that if you boil it just a little bit more and then pour it out on a fresh bed of snow... {w=0.2}{nw}"
-    extend 3hua " you can even make a candy!"
-    m 3hub "Sounds like a fun thing we could try together!"
-    m 1etc "It might be a while before we get a chance though."
-    m 1eua "It's alright if I have to wait a bit longer.{w=0.3}.{w=0.3}. {w=0.3}{nw}"
-    extend 1hubla "you're already sweet enough for me~"
+    m 3eud "Also, I've heard that if you boil it just a little bit more and then pour it out on a fresh bed of snow...{w=0.2}{nw}"
+    extend 3hub "you can even make a candy!"
+
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_gets_snow is not False:
+            m 3euu "Sounds like a fun thing we could try together!"
+            m 1etc "It might be a while before we get a chance, though..."
+            m 1eua "But it's alright if I have to wait a bit longer...{w=0.3}{nw}"
+            extend 1hublu "you're already sweet enough for me~"
+
+        else:
+            m 1eua "Sure seems like that would be extremely sweet..."
+            m 1rkblu "But nowhere near as sweet as you, ehehe~"
+
     call mas_fun_facts_end
     return
