@@ -8,6 +8,12 @@ default persistent._mas_incompat_per_forced_update = False
 # only set if the forced update fails in the updater (not on disk)
 default persistent._mas_incompat_per_forced_update_failed = False
 
+# only set if the user says that they will restore a persistent
+default persistent._mas_incompat_per_user_will_restore = False
+
+# only set if the user entered the incompat flow at all
+default persistent._mas_incompat_per_entered = True
+
 python early in mas_per_check:
     import __main__
     import cPickle
@@ -50,6 +56,16 @@ python early in mas_per_check:
         "Found erroneous persistent but was unable to delete it. "
         "Delete the persistent at {0} and restart."
     )
+
+
+    def reset_incompat_per_flags():
+        """
+        Resets the incompat per flags that are conditional (not the main one
+        that determines if we are valid)
+        """
+        store.persistent._mas_incompat_per_forced_update = False
+        store.persistent._mas_incompat_per_forced_update_failed = False
+        store.persistent._mas_incompat_per_user_will_restore = False
 
 
     def tryper(_tp_persistent, get_data=False):
@@ -197,8 +213,9 @@ python early in mas_per_check:
             try:
                 per_read, version = tryper(_sp_per)
 
-            except:
+            except Exception as e:
                 # this is a corrupted per, delete it.
+                raise e
                 os.remove(_sp_per)
                 per_read = None
                 version = ""
@@ -257,9 +274,10 @@ python early in mas_per_check:
                 ):
                     # current persistent is compatible
                     
-                    if per_data._mas_incompat_per_forced_update:
-                        # this means the current persistent was loaded
-                        #   when an unstable forced update occured.
+                    if per_data._mas_incompat_per_entered:
+                        # this means the current persistent was generated
+                        #   when a persistent incompatibility was 
+                        #   detected.
                         # which also means that the sp per was expectedly
                         #   created by us.
 
@@ -429,6 +447,11 @@ python early:
     # now call this
     store.mas_per_check._mas_earlyCheck()
 
+init -999 python:
+    # set incompatible persistent vars now in case game crashes before
+    # the chibika dialogue
+    if store.mas_per_check.mas_unstable_per_in_stable:
+        persistent._mas_incompat_per_entered = True
 
 init -900 python:
     import os
@@ -778,18 +801,26 @@ label mas_backups_incompat_start:
         show chibika smile at mas_chflip_s(1)
         "Hello there!"
         "Let's try updating again!"
+        $ store.mas_per_check.reset_incompat_per_flags()
         jump mas_backups_incompat_updater_start
 
     elif persistent._mas_incompat_per_forced_update:
         # a forced update failed OUTSIDE of the updater.
         #   - this is because failed will be True if the updater fails.
         # this is unexpected so we have some dialogue before trying again
+        $ store.mas_per_check.reset_incompat_per_flags()
         jump mas_backups_incompat_updater_failed
+
+    elif persistent._mas_incompat_per_user_will_restore:
+        # user was supposed to restore the persistent, but it didn't work
+        #   or they just didn't do anythig.
+        $ store.mas_per_check.reset_incompat_per_flags()
+        jump mas_backups_incompat_user_will_restore_again
 
     # otherwise, this might be the first time a user sees this
 
     show chibika 3 at sticker_hop
-    "Hello there!"
+    "Hello there!{nw}"
     # cannot pop history, no history for some reason
     menu:
         "Hello there!{fast}"
@@ -802,28 +833,53 @@ label mas_backups_incompat_start:
     "Unfortunately, your persistent is running version v[mas_per_check.mas_per_version], which is incompatible with this build of MAS (v[config.version])."
     "The only way I can fix this is if you update MAS or you restore with a compatible persistent."
 
+    # fall through
+
+label mas_backups_incompat_what_do:
+    # selection label to determine what to do next
+
     show chibika sad at mas_chflip_s(1)
-    "What would you like to do?"
+    "What would you like to do?{nw}"
     # cannot pop history, no history for some reason
     menu:
         "What would you like to do?{fast}"
         "Update MAS.":
             jump mas_backups_incompat_updater_start_intro
         "Restore a compatible persistent.":
-            show chibika smile at sticker_hop
-            "Alright!"
+            jump mas_backups_incompat_user_will_restore
 
-            $ _sp_per = os.path.normcase(renpy.config.savedir + "/" + mas_per_check)
-            "Please copy a compatible persistent into '[renpy.config.savedir]' and then delete '[_sp_per]'."
 
-            show chibika smile at mas_chflip_s(-1)
-            "Good luck!"
-            jump _quit
+label mas_backups_incompat_user_will_restore:
+    $ persistent._mas_incompat_per_user_will_restore = True
+    show chibika smile at sticker_hop
+    "Alright!"
+
+    $ _sp_per = os.path.normcase(renpy.config.savedir + "/" + mas_per_check.per_unstable)
+    "Please copy a compatible persistent into '[renpy.config.savedir]'."
+    "Then delete the file called '[mas_per_check.per_unstable]'."
+
+    show chibika smile at mas_chflip_s(-1)
+    "Good luck!"
+    jump _quit
+
+
+label mas_backups_incompat_user_will_restore_again:
+    show chibika sad at mas_chflip_s(-1)
+    "Oh no!"
+
+    # NOTE: don't want say that restoring didn't work in case the user just
+    #   didn't do anything.
+    "It seems that this persistent is running version v[mas_per_check.mas_per_version], which is still incompatible with this build of MAS (v[config.version])."
+
+    # loop back to the selection label
+    jump mas_backups_incompat_what_do
+
 
 label mas_backups_incompat_updater_start_intro:
     show chibika smile at sticker_hop
     "Ok!"
     jump mas_backups_incompat_updater_start
+
 
 label mas_backups_incompat_updater_failed:
     show chibika sad
@@ -840,21 +896,45 @@ label mas_backups_incompat_updater_start:
     # setup for unstable 
     $ persistent._mas_unstable_mode = True
     $ mas_updater.force = True
-    $ mas_updater.lock_cancel = True
 
     # call the update label
     $ persistent._mas_incompat_per_forced_update = True
     $ persistent._mas_incompat_per_forced_update_failed = False
     call update_now
     $ persistent._mas_incompat_per_forced_update_failed = True
+    $ updater_rv = _return
 
     # NOTE: if we got here, we assume that the updater failed to update for
     #   whatever reason. The actual reasons could be:
-    #   1. couldn't move the update folder
-    #   2. renpy couldn't update for some reason
-    #   3. update check timed out and user hit cancel
+    #   1. couldn't move the update folder - RET_VAL_MOVE_FOLDER is returned
+    #   2. renpy couldn't update for some reason - None is returned
+    #   3. user had to hit cancel from the updater menu, because they timed
+    #       out or had connection issues - RET_VAL_RETRY_CANCEL is returend
+    #   4. user hit cancel for their own reasons - RET_VAL_CANCEL is returned
+    #       NOTE: why don't we lock or remove the cancel button? The user
+    #       might have their own reasons for canceling the update check:
+    #       - maybe they are on low bandwidth/metered connections?
+    #       - maybe they actually want to stay on stable and have a backup 
+    #           persistent to us?
+    #       - maybe its maybelline?
+    #       either way, since the user has an unstable per, no need for 
+    #       extravagant handholding.
 
+    pause 1.0
     show chibika 3 at sticker_hop
+    pause 0.5
+
+    if updater_rv == MASUpdaterDisplayable.RET_VAL_CANCEL:
+        # user just hit cancel because they wanted to.
+        $ store.mas_per_check.reset_incompat_per_flags()
+
+        pause 0.5
+        "Hey!"
+        show chibika sad at mas_chflip_s(-1)
+        "Don't cancel out of the updater! You need to update MAS!"
+        jump mas_backups_incompat_what_do
+
+    # all other cases are messed up updater
     "Oh!"
     show chibika sad at mas_chflip_s(-1)
     "It seems that the updater failed to update."
