@@ -9767,11 +9767,12 @@ label monika_natsuki_letter:
     return "derandom"
 
 # TODO possible tie this with affection?
+# TODO uncomment once TCO is implemented
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -17597,3 +17598,35 @@ label monika_elegy_xi:
     m 7fkbstdb "But I also got the chance to be with you again."
     m 5fkbstda "I love you so much, [mas_get_player_nickname()]. Please, never leave me."
     return "love"
+
+            eventlabel="monika_zodiac_starsign",
+            prompt="What's your starsign?",
+            category=["monika"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_player_bday is not None"
+        )
+    )
+
+label monika_zodiac_starsign:
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
+
+    m 1rta "Well, I'm pretty sure I'm a Virgo."
+
+    #This next line is just checking the player's starsign based on their birthday.
+    if player_zodiac_sign != "Virgo":
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
+
+    else:
+        m 3eub "And so are you, [mas_get_player_nickname()]!"
+
+    #The final part pops up regardless of your sign.
+    m 1eta "Although, don't you think it's kind of silly?"
+    m 3esd "I mean, objects in space can't {i}really{/i} affect our personality..."
+    m 1tuc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4wud "Like, they'll even judge potential partners and friends based on their sign!"
+    m 2luc "...That's something I'll never understand."
+    $ p_nickname = mas_get_player_nickname()
+    m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
+    extend 1eublu "I'd never let any silly old stars come between us."
+    $ del player_zodiac_sign
+    return

@@ -3742,6 +3742,7 @@ init 5 python:
 #   we can get in pm vars here. It's just too variable.
 
 label greeting_back_from_game:
+    # TODO: TC-O
     if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
@@ -3945,6 +3946,7 @@ init 5 python:
     )
 
 label greeting_back_from_eat:
+    # TODO: TC-O
     $ _now = datetime.datetime.now().time()
     if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         if mas_isMoniNormal(higher=True):
