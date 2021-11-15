@@ -1066,7 +1066,8 @@ init -810 python:
 
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
-
+            "_mas_pm_read_cask_of_amontillado": "pm.actions.books.read_cask_of_amontillado",
+            
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
