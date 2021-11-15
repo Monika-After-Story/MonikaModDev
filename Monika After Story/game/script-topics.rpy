@@ -17572,7 +17572,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_elegy_xi",
-            category=['philosophy'],
+            category=['philosophy', 'literature'],
             prompt="Elegy XI",
             aff_range=(mas_aff.ENAMORED, None),
             random=True
