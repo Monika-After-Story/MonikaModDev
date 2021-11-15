@@ -195,11 +195,11 @@ python early in mas_per_check:
         if os.access(_sp_per, os.F_OK):
             #  we have one, so check if its valid 
             try:
-                per_read, version = tryper(_sp_ver)
+                per_read, version = tryper(_sp_per)
 
             except:
                 # this is a corrupted per, delete it.
-                os.remove(_sp_ver)
+                os.remove(_sp_per)
                 per_read = None
                 version = ""
 
@@ -211,7 +211,7 @@ python early in mas_per_check:
                     # to the main per.
                     try:
                         shutil.copy(_sp_per, _cur_per)
-                        os.remove(_sp_ver)
+                        os.remove(_sp_per)
                     except:
                         # faild to copy or remove the sp per? hardstop
                         # the user needs to handle this.
@@ -275,9 +275,9 @@ python early in mas_per_check:
                         # a delete fails, anyway, so in this case, we should
                         # just delete the sp per and act normally.
                         try:
-                            os.remove(_sp_ver)
+                            os.remove(_sp_per)
                         except:
-                            raise Exception(SP_PER_DEL_MSG.format(_sp_ver))
+                            raise Exception(SP_PER_DEL_MSG.format(_sp_per))
 
                 # if the current persistent is incompatible, then ignore the
                 # sp per and treat the current persistent as the real one.
@@ -770,6 +770,7 @@ label mas_backups_dont_tell:
 
 label mas_backups_incompat_start:
     # "your per wont work with this MAS"
+    $ mas_darkMode(True) # required for the updater
 
     if persistent._mas_incompat_per_forced_update_failed:
         # a forced update failed in the updater.
@@ -789,20 +790,21 @@ label mas_backups_incompat_start:
 
     show chibika 3 at sticker_hop
     "Hello there!"
-
+    # cannot pop history, no history for some reason
     menu:
+        "Hello there!{fast}"
         "What happened?":
             pass
         "Take me to the updater.":
             jump mas_backups_incompat_updater_start_intro
 
     show chibika sad at mas_chflip_s(-1)
-    "Unfortunately, your persistent is running version v[mas_per_version], which is incompatible with this build of MAS (v[config.version])."
+    "Unfortunately, your persistent is running version v[mas_per_check.mas_per_version], which is incompatible with this build of MAS (v[config.version])."
     "The only way I can fix this is if you update MAS or you restore with a compatible persistent."
 
     show chibika sad at mas_chflip_s(1)
-    "What would you like to do?{nw}"
-    $ _history_list.pop()
+    "What would you like to do?"
+    # cannot pop history, no history for some reason
     menu:
         "What would you like to do?{fast}"
         "Update MAS.":

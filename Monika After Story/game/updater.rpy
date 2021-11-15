@@ -268,6 +268,9 @@ init -1 python:
             # inital time
             self._prev_time = time.time()
 
+            # lock cancel
+            self._lock_cancel = lock_cancel
+
             # thread stuff
             self._check_thread = None
             self._thread_result = list()
@@ -304,6 +307,7 @@ init -1 python:
                     target=MASUpdaterDisplayable._sendRequest,
                     args=(self.update_link, self._thread_result)
                 )
+                self._check_thread.daemon = True
                 self._check_thread.start()
                 self._state = self.STATE_CHECKING
 
@@ -610,7 +614,10 @@ init -1 python:
                     ):
                     # checking for an update state
 
-                    if self._button_cancel.event(ev, x, y, st):
+                    if (
+                            not self.lock_cancel
+                            and self._button_cancel.event(ev, x, y, st)
+                    ):
                         # cancel clicked! return -1
                         return -1
 
@@ -757,6 +764,7 @@ init 10 python:
         the_thread = threading.Thread(
             target=_mas_backgroundUpdateCheck
         )
+        the_thread.daemon = True
         the_thread.start()
 
 # Update cleanup flow:

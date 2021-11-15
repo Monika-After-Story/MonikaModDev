@@ -750,7 +750,7 @@ python early in mas_utils:
         return compareVersionLists(
             _get_version(from_ver_str, True, True),
             _get_version(to_ver_str, True, True)
-        ) > 1
+        ) > 0
 
 
     def trydel(f_path, log=False):
