@@ -58,6 +58,23 @@ python early in mas_per_check:
     )
 
 
+    # custom exceptions
+    class PersistentMoveFailedError(Exception):
+        """
+        Persistent failed to be moved (aka copied, then deleted)
+        """
+
+    class PersistentDeleteFailedError(Exception):
+        """
+        Persistent failed to be deleted
+        """
+
+    class IncompatiblePersistentError(Exception):
+        """
+        Persistent is incompatible
+        """
+
+
     def reset_incompat_per_flags():
         """
         Resets the incompat per flags that are conditional (not the main one
@@ -215,7 +232,6 @@ python early in mas_per_check:
 
             except Exception as e:
                 # this is a corrupted per, delete it.
-                raise e
                 os.remove(_sp_per)
                 per_read = None
                 version = ""
@@ -232,7 +248,7 @@ python early in mas_per_check:
                     except:
                         # faild to copy or remove the sp per? hardstop
                         # the user needs to handle this.
-                        raise Exception(COMPAT_PER_MSG.format(
+                        raise PersistentMoveFailedError(COMPAT_PER_MSG.format(
                             _cur_per,
                             _sp_per
                         ))
@@ -242,8 +258,6 @@ python early in mas_per_check:
                     # this generally means that a forced update failed, so
                     # we'll set the appropriate vars to get the forced updater
                     # to run again.
-                    # these may get undone when the actual persistent is
-                    # checked.
                     mas_unstable_per_in_stable = True
                     mas_per_version = version
                     mas_sp_per_found = True
@@ -257,81 +271,68 @@ python early in mas_per_check:
             # NO ERROR TO REPORT!
             return
 
-        # special rules apply if we found a special persistent
-        if mas_sp_per_found:
-            # generally speaking, we should only get here if we found a special
-            # persistent but it could not be used as a regular persistent.
-
-            try:
-                per_read, per_data = tryper(_cur_per, get_data=True)
-
-                if not per_read:
-                    raise Exception("bad") # should do standard forced update
-
-                if is_version_compatible(
-                        per_data.version_number,
-                        renpy.config.version
-                ):
-                    # current persistent is compatible
-                    
-                    if per_data._mas_incompat_per_entered:
-                        # this means the current persistent was generated
-                        #   when a persistent incompatibility was 
-                        #   detected.
-                        # which also means that the sp per was expectedly
-                        #   created by us.
-
-                        # in this case, we should let the forced update
-                        # try again.
-                        return
-
-                    else:
-                        # this means we have a special persistent but we
-                        #   didn't make it because of a forced update.
-                        # Perhaps the user is trying to break something by
-                        # adding the sp per? We should be hardstopping when
-                        # a delete fails, anyway, so in this case, we should
-                        # just delete the sp per and act normally.
-                        try:
-                            os.remove(_sp_per)
-                        except:
-                            raise Exception(SP_PER_DEL_MSG.format(_sp_per))
-
-                # if the current persistent is incompatible, then ignore the
-                # sp per and treat the current persistent as the real one.
-                    
-            except:
-                # if persistent errors occured, then standard forced update
-                # should be ok.
-                return
-
         # okay, now let's attempt to read the persistent.
         try:
-            per_read, version = tryper(_cur_per)
-            if per_read:
-                if is_version_compatible(version, renpy.config.version):
-                    return
+            per_read, per_data = tryper(_cur_per)
+            version = per_data.version_number
 
-                # otherwise - this is not a safe persisetnt to load
+            if not per_read:
+                # shouldn't get here without an exception
+                raise Exception("Failed to load persistent")
+
+            if is_version_compatible(version, renpy.config.version):
+                # current persistent is compatible
+
+                if mas_sp_per_found and not per_data._mas_incompat_per_entered:
+                    # this means we have a special persistent but we
+                    #   didn't make it because of a forced update.
+                    # Perhaps the user is trying to break something by
+                    # adding the sp per? We should be hardstopping when
+                    # a delete fails, anyway, so in this case, we should
+                    # just delete the sp per and act normally.
+                    try:
+                        os.remove(_sp_per)
+                    except:
+                        raise PersistentDeleteFailedError(
+                            SP_PER_DEL_MSG.format(_sp_per)
+                        )
+
+                # how did we get here? 3 possibilities:
+                #   mas_sp_per_found is False - we didn't find a special
+                #       persistent. this is basically a normal load.
+                #   _mas_incompat_per_entered is True - this persistent was
+                #       loaded when chibika incompatibility dialogue was
+                #       reached. This means that the current persistent must
+                #       have been generated because of an incompatible
+                #       persistent, and therefore the special persistent was
+                #       created by us. However, this means that the updater
+                #       might have failed, so quit early here and let the
+                #       forced updater run (vars should have been already set)
+                #   otherwise - the special persistent was deleted. Treat
+                #       as normal load.
+                return
+
+            else:
+                # otherwise - this is an incompatible persistent.
                 mas_unstable_per_in_stable = True
                 mas_per_version = version
-                mas_sp_per_created = True
-                early_log.error(INCOMPAT_PER_LOG.format(
-                    version,
-                    renpy.config.version
-                ))
+                raise IncompatiblePersistentError()
 
-        except Exception as e:
-            mas_corrupted_per = True
-            early_log.error("persistent was corrupted! : " +repr(e))
-            # " this comment is to fix syntax highlighting issues on vim
+        except PersistentDeleteFailedError as e:
+            # always raise delete failures
+            raise e
 
-        # if we got here, we had an exception OR we are loading 
-        # unstable in stable.
+        except IncompatiblePersistentError as e:
+            # in unstable cases, we should move the persistent to a special case
+            # and make sure appropriate vars are loaded.
+            mas_sp_per_created = True
+            early_log.error(INCOMPAT_PER_LOG.format(
+                mas_per_version,
+                renpy.config.version
+            ))
 
-        # in unstable cases, we should move the persistent to a special case
-        # and make sure appropriate vars are loaded.
-        if mas_unstable_per_in_stable:
+            # NOTE: special persistent will be overwritten if it exists
+
             try:
                 shutil.copy(_cur_per, _sp_per)
                 os.remove(_cur_per) 
@@ -342,15 +343,28 @@ python early in mas_per_check:
 
             except Exception as e:
                 early_log.error(
-                    "Failed to copy persistent to unstable: " + repr(e)
+                    "Failed to copy persistent to special: " + repr(e)
                 )
 
                 # need to hardstop here
-                raise Exception(INCOMPAT_PER_MSG.format(
+                raise PersistentMoveFailedError(INCOMPAT_PER_MSG.format(
                     renpy.config.version,
-                    version
+                    mas_per_version
                 ))
 
+        except Exception as e:
+
+            if mas_sp_per_found:
+                # if persistent errors occured, then standard forced update
+                # might be ok if we found an existing special persistent.
+                return
+
+            # regular corruption flow
+            mas_corrupted_per = True
+            early_log.error("persistent was corrupted! : " +repr(e))
+            # " this comment is to fix syntax highlighting issues on vim
+
+        # if we got here, we had a corrupted persistent.
         # Let's attempt to restore from an eariler persistent backup.
 
         # lets get all the persistent files here.
@@ -919,6 +933,8 @@ label mas_backups_incompat_updater_start:
     #       - maybe its maybelline?
     #       either way, since the user has an unstable per, no need for 
     #       extravagant handholding.
+
+    #"hol up" # use this to debug cancel returns
 
     pause 1.0
     show chibika 3 at sticker_hop

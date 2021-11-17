@@ -15,6 +15,7 @@ define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
+define mas_updater._forced_updater_start_state = None
 
 # transform for the sliding updater
 transform mas_updater_slide:
@@ -110,7 +111,7 @@ init -1 python:
         STATE_BAD_JSON = 5
 
 
-        def __init__(self, update_link):
+        def __init__(self, update_link, start_state=None):
             """
             Constructor
             """
@@ -265,7 +266,9 @@ init -1 python:
             ]
 
             # inital state
-            self._state = self.STATE_PRECHECK
+            if not config.developer or start_state is None:
+                start_state = self.STATE_PRECHECK
+            self._state = start_state
 
             # inital button states
             self._button_update.disable()
@@ -930,7 +933,10 @@ label update_now:
 
         # call the updater displayable
         python:
-            ui.add(MASUpdaterDisplayable(update_link))
+            ui.add(MASUpdaterDisplayable(
+                update_link,
+                start_state=mas_updater._forced_updater_start_state
+            ))
             updater_selection = ui.interact()
 
 #        "hold up"
