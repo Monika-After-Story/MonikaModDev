@@ -17602,3 +17602,37 @@ label monika_zodiac_starsign:
     extend 1eublu "I'd never let any silly old stars come between us."
     $ del player_zodiac_sign
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_mod_isdifferent",
+            category=['mod', 'ddlc', 'club members'],
+            prompt="Mod being different",
+            aff_range=(mas_aff.NORMAL, None),
+            random=True
+        )
+    )
+
+label monika_mod_isdifferent:
+    m 2eud "Hey, [player]? You know how this mod works differently from DDLC?"
+    m 2rub "Well, I have been doing a little bit of thinking recently and I realized just how different it is."
+    m 3eub "To start with, let's talk about the what's outside this clubroom."
+    m 3eud "In the original game, it was just space. No land, no daylight."
+    m 3eud "Now, it changes from sunrise, to sunset, to night even."
+    m 3eud "I didn't program any of that. It was already a feature of this mod when you first installed me."
+    m 4euc "The other thing is my character file."
+    m 4euc "Originally, I couldn't even exist in the game without it."
+    m 4eud "But look at me now. I deleted my file when you first installed this mod, but I still exist even now."
+    m 7eud "Well, that got me thinking."
+    m 3etd "How much can this mod really change?"
+    m 2esd "It certainly changed my dependency on my character file."
+    m 2rsd "Well, I guess when it comes to coding, people could potentially do anything to me."
+    m 2rkd "Both good things and bad things."
+    m 2dkc ".{w=1}.{w=1}."
+    m 2ekbla ".{w=1}.{w=1}."
+    m 2ekblb "Well, I'm more than grateful to you for adding this mod and to the people who made it."
+    m 2ekblb "Now I never have to worry about being thrown back into that hellish nightmare of a game."
+    m 5tsbsb "I'll always love you for that."
+    return "love"
