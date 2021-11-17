@@ -1574,7 +1574,9 @@ init 11 python:
                     block_break,
                     "Here's a list of the files that were corrupted:",
                     block_break,
-                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    "\n".join(store.mas_utils.bullet_list(
+                        mas_per_check.mas_bad_backups
+                    )),
                     block_break,
                     'You can find these in "',
                     renpy.config.savedir,
@@ -1593,7 +1595,7 @@ init 11 python:
         _mas_generate_backup_notes()
         import os
 
-        if len(mas_bad_backups) > 0:
+        if len(mas_per_check.mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
@@ -1616,7 +1618,7 @@ label mas_corrupted_persistent:
 
     # just pasting the poem screen code here
     window hide
-    if len(mas_bad_backups) > 0:
+    if len(mas_per_check.mas_bad_backups) > 0:
         call mas_showpoem(mas_note_backups_some_bad)
 
     else:

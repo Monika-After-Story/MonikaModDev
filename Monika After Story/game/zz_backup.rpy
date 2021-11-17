@@ -258,9 +258,16 @@ python early in mas_per_check:
                     # this generally means that a forced update failed, so
                     # we'll set the appropriate vars to get the forced updater
                     # to run again.
+                    # this is checked in the corruption flow, and may be
+                    # unset.
                     mas_unstable_per_in_stable = True
                     mas_per_version = version
                     mas_sp_per_found = True
+
+                    # NOTE: yes, this can log twice since we can reach the
+                    #   incompatible persistent error flow. nbd.
+                    #   would have to functionize or make copies to move this
+                    #   elsewhere - not worth.
                     early_log.error(INCOMPAT_PER_LOG.format(
                         version,
                         renpy.config.version
@@ -292,6 +299,12 @@ python early in mas_per_check:
                     # just delete the sp per and act normally.
                     try:
                         os.remove(_sp_per)
+
+                        # reset to normal
+                        mas_unstable_per_in_stable = False
+                        mas_per_version = ""
+                        mas_sp_per_found = False
+
                     except:
                         raise PersistentDeleteFailedError(
                             SP_PER_DEL_MSG.format(_sp_per)
