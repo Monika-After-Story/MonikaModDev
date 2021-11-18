@@ -232,9 +232,15 @@ python early in mas_per_check:
 
             except Exception as e:
                 # this is a corrupted per, delete it.
-                os.remove(_sp_per)
-                per_read = None
-                version = ""
+
+                try: # TEST_CASE_B
+                    os.remove(_sp_per)
+                    per_read = None
+                    version = ""
+                except:
+                    raise PersistentDeleteFailedError(
+                        SP_PER_DEL_MSG.format(_sp_per)
+                    )
 
             # this should be outside of the try/except above so we don't
             # overzealously delete the special persistent.
@@ -242,7 +248,7 @@ python early in mas_per_check:
                 if is_version_compatible(version, renpy.config.version):
                     # this is a good version, so take the sp per and copy it
                     # to the main per.
-                    try: # TEST_CASE_B
+                    try: # TEST_CASE_C
                         shutil.copy(_sp_per, _cur_per)
                         os.remove(_sp_per)
                     except:
@@ -279,7 +285,7 @@ python early in mas_per_check:
             return
 
         # okay, now let's attempt to read the persistent.
-        try: # TEST_CASE_C
+        try: # TEST_CASE_D
             per_read, per_data = tryper(_cur_per, get_data=True)
             version = per_data.version_number
 
@@ -297,7 +303,7 @@ python early in mas_per_check:
                     # adding the sp per? We should be hardstopping when
                     # a delete fails, anyway, so in this case, we should
                     # just delete the sp per and act normally.
-                    try: # TEST_CASE_D
+                    try: # TEST_CASE_E
                         os.remove(_sp_per)
 
                         # reset to normal
@@ -346,7 +352,7 @@ python early in mas_per_check:
 
             # NOTE: special persistent will be overwritten if it exists
 
-            try: # TEST_CASE_E
+            try: # TEST_CASE_F
                 shutil.copy(_cur_per, _sp_per)
                 os.remove(_cur_per) 
 
