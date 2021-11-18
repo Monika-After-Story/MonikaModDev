@@ -227,7 +227,7 @@ python early in mas_per_check:
         # first, check if we have a special persistent
         if os.access(_sp_per, os.F_OK):
             #  we have one, so check if its valid 
-            try:
+            try: # TEST_CASE_A
                 per_read, version = tryper(_sp_per)
 
             except Exception as e:
@@ -242,7 +242,7 @@ python early in mas_per_check:
                 if is_version_compatible(version, renpy.config.version):
                     # this is a good version, so take the sp per and copy it
                     # to the main per.
-                    try:
+                    try: # TEST_CASE_B
                         shutil.copy(_sp_per, _cur_per)
                         os.remove(_sp_per)
                     except:
@@ -279,7 +279,7 @@ python early in mas_per_check:
             return
 
         # okay, now let's attempt to read the persistent.
-        try:
+        try: # TEST_CASE_C
             per_read, per_data = tryper(_cur_per, get_data=True)
             version = per_data.version_number
 
@@ -297,7 +297,7 @@ python early in mas_per_check:
                     # adding the sp per? We should be hardstopping when
                     # a delete fails, anyway, so in this case, we should
                     # just delete the sp per and act normally.
-                    try:
+                    try: # TEST_CASE_D
                         os.remove(_sp_per)
 
                         # reset to normal
@@ -346,7 +346,7 @@ python early in mas_per_check:
 
             # NOTE: special persistent will be overwritten if it exists
 
-            try:
+            try: # TEST_CASE_E
                 shutil.copy(_cur_per, _sp_per)
                 os.remove(_cur_per) 
 
