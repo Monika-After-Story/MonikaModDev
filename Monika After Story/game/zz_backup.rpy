@@ -280,7 +280,7 @@ python early in mas_per_check:
 
         # okay, now let's attempt to read the persistent.
         try:
-            per_read, per_data = tryper(_cur_per)
+            per_read, per_data = tryper(_cur_per, get_data=True)
             version = per_data.version_number
 
             if not per_read:
@@ -420,6 +420,8 @@ python early in mas_per_check:
             if _this_file is not None:
                 try:
                     per_read, version = tryper(per_dir + "/" + _this_file)
+                    if per_read:
+                        sel_back = _this_file
 
                 except Exception as e:
                     early_log.error(
