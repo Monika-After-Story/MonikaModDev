@@ -309,7 +309,7 @@ init 10 python in mas_anni:
         _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
         _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
         _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
-        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
+#        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
 
         unlock_past_annis()
 
