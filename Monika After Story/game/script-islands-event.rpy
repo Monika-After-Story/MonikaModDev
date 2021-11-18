@@ -572,6 +572,7 @@ init -25 python in mas_island_event:
     import functools
     import math
     from zipfile import ZipFile
+    import datetime
 
     import store
     from store import (
@@ -1018,9 +1019,7 @@ init -25 python in mas_island_event:
 
     def __unlocks_for_lvl_8():
         # TODO: me
-        # _lock("decal_glitch")
-        # _unlock("decal_house")
-        # Update monika_why_spaceroom when the islands are finished
+        # Also update monika_why_spaceroom
         return
 
     # # # END
@@ -1038,6 +1037,47 @@ init -25 python in mas_island_event:
             if callback is not None:
                 callback()
 
+    def _calcProgress(curr_lvl, start_lvl):
+        """
+        Returns islands progress for the given current and start levels
+        NOTE: this has no sanity checks, don't use this directly
+
+        IN:
+            curr_lvl - int, current level
+            start_lvl - int, start level
+
+        OUT:
+            int, progress
+        """
+        lvl_difference = curr_lvl - start_lvl
+
+        if lvl_difference < 0:
+            return DEF_PROGRESS
+
+        if store.mas_isMoniEnamored(higher=True):
+            if store.mas_isMoniLove(higher=True):
+                max_progress = MAX_PROGRESS_LOVE
+
+            else:
+                max_progress = MAX_PROGRESS_ENAM
+
+            modifier = 1.0
+
+            if persistent._mas_pm_cares_island_progress is True:
+                modifier -= 0.1
+
+            elif persistent._mas_pm_cares_island_progress is False:
+                modifier += 0.2
+
+            progress_factor = PROGRESS_FACTOR * modifier
+
+            progress = min(int(lvl_difference / progress_factor), max_progress)
+
+        else:
+            progress = DEF_PROGRESS
+
+        return progress
+
     def advanceProgression():
         """
         Increments the lvl of progression of the islands event,
@@ -1048,25 +1088,29 @@ init -25 python in mas_island_event:
         if persistent._mas_islands_start_lvl is None:
             return
 
-        lvl_difference = store.mas_xp.level() - persistent._mas_islands_start_lvl
-        # This should never happen
-        if lvl_difference < 0:
+        new_progress = _calcProgress(store.mas_xp.level(), persistent._mas_islands_start_lvl)
+
+        if new_progress == DEF_PROGRESS:
             return
 
-        if store.mas_isMoniEnamored(higher=True):
-            if store.mas_isMoniLove(higher=True):
-                max_progress = MAX_PROGRESS_LOVE
-
-            else:
-                max_progress = MAX_PROGRESS_ENAM
-
-            new_progress = min(int(lvl_difference // PROGRESS_FACTOR), max_progress)
-
-        else:
-            new_progress = DEF_PROGRESS
+        curr_progress = persistent._mas_islands_progress
+        # I hate this, but we have to push the ev from here
+        if (
+            # Has progress means has new unlocks
+            new_progress > curr_progress
+            # Not the first lvls, not the last lvl
+            and DEF_PROGRESS + 1 < new_progress < MAX_PROGRESS_LOVE - 1
+            # Hasn't seen the event yet
+            and persistent._mas_pm_cares_island_progress is None
+            and not store.seen_event("mas_monika_islands_progress")
+            # Hasn't visited the islands for a few days
+            and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=3))
+        ):
+            store.pushEvent("mas_monika_islands_progress")
 
         # Now set new level
-        persistent._mas_islands_progress = min(max(new_progress, persistent._mas_islands_progress), MAX_PROGRESS_LOVE)
+        persistent._mas_islands_progress = min(max(new_progress, curr_progress), MAX_PROGRESS_LOVE)
+        # Run unlock callbacks
         __handleUnlocks()
 
         return
@@ -1226,18 +1270,12 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_monika_islands_progress_small",
-            conditional=(
-                "mas_island_event.getProgression() in (2, 3) "
-                "and mas_timePastSince(mas_getEVL_last_seen('mas_monika_islands'), datetime.timedelta(weeks=1))"
-            ),
-            action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.ENAMORED, None)
+            eventlabel="mas_monika_islands_progress"
         ),
         restartBlacklist=True
     )
 
-label mas_monika_islands_progress_small:
+label mas_monika_islands_progress:
     m 1eub "[player], I've got some exciting news for you!"
     m 3hub "I made some new additions on the islands, {w=0.2}{nw}"
     extend 1rua "and I thought maybe you'd like to take a look."
