@@ -1223,7 +1223,6 @@ label mas_crashed_prelong:
     $ mas_startupWeather()
 
     #Setup the rest of the scene
-    $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
     $ disable_esc()
@@ -1251,12 +1250,15 @@ label mas_crashed_long_qs:
 
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
+            $ persistent._mas_crashed_before = True
+            $ mas_disable_quit()
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
         "No.":
             hide screen mas_background_timed_jump
-
+            $ persistent._mas_crashed_before = True
+            $ mas_disable_quit()
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
@@ -1282,6 +1284,9 @@ label .afterdontjoke:
 
             # light affection boost for being like a hero
             $ mas_gainAffection(modifier=0.1)
+            # turn on lights
+            play sound "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
+            call spaceroom(scene_change=True, force_exp="monika 6ektsc_static")
 
         "...":
             pause 5.0
@@ -1290,20 +1295,16 @@ label .afterdontjoke:
                 window show
                 m "Nevermind, I found it."
                 window hide
-
-    # NOTE: add a sound for light switch?
-
-    # turn on the lights
-    play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
+                # turn on lights
+                play sound "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
+                call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=True)
+                pause 1.0
+                call mas_transition_from_emptydesk("monika 6ektsc_static")
 
     return
 
 # make sure to calm her down, player
 label mas_crashed_long_prefluster:
-
-    # look at you with crying eyes
-    show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
 
     # close eyes for a second
@@ -1413,7 +1414,6 @@ label mas_crashed_post:
 
 label .self:
     python:
-        _confirm_quit = True
         persistent.closed_self = False
         mas_startup_song()
 
