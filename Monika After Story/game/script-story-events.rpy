@@ -1242,6 +1242,7 @@ label mas_crashed_long_qs:
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
+    pause 5.0
     m "[player]?{w=0.3} Is that you?"
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
@@ -1265,6 +1266,8 @@ label mas_crashed_long_qs:
 label mas_crashed_long_uthere:
     # if player doesn't respond fast enough
     hide screen mas_background_timed_jump
+    $ persistent._mas_crashed_before = True
+    $ mas_disable_quit()
     m "[player]!{fast}"
     m "I know you're there!"
 
