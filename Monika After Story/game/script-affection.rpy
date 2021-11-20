@@ -1753,13 +1753,24 @@ init 20 python:
             mas_curr_affection_group = new_affg
 
 
-    # Used to increment affection whenever something positive happens.
     def mas_gainAffection(
-            amount=None,
-            modifier=1,
-            bypass=False
-        ):
+        amount=None,
+        modifier=1,
+        bypass=False
+    ):
+        """
+        Grants some affection whenever something positive happens
 
+        IN:
+            amount - int, float, None - amount of affection to grant,
+                If None, uses the default value for the current aff
+                (Default: None)
+            modifier - int, float - modifier for the amount value
+                (Default: 1)
+            bypass - bool - whether or not we should bypass the cap,
+                for example during special events
+                (Default: False)
+        """
         if amount is None:
             amount = _mas_getGoodExp()
 
@@ -1772,9 +1783,20 @@ init 20 python:
         # calculate new value
         frozen = persistent._mas_affection_goodexp_freeze
         change = (amount * modifier)
+
+        # First, a few basic sanity checks
+        if change <= 0:
+            raise ValueError("Invalid value for affection: {}".format(change))
+        change = min(change, 50)
+
+        # Can't get more unless special bypass
+        if not bypass:
+            remaining_exp = 9 - _mas_getTodayExp()
+            change = max(min(change, remaining_exp), 0)
+
+        # And now sanity check for max aff value
         new_value = _mas_getAffection() + change
-        if new_value > 1000000:
-            new_value = 1000000
+        new_value = min(new_value, 1000000)
 
         # audit the attempted change
         affection.audit(change, new_value, frozen, bypass)
