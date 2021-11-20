@@ -4271,7 +4271,7 @@ label mas_nye_monika_nyd:
 
                     #Revert back to old affection if we haven't already done this
                     if not mas_HistVerifyAll_k(True, "pm.actions.monika.failed_fresh_start"):
-                        $ mas_setAffection(persistent._mas_aff_before_fresh_start)
+                        $ _mas_setAffection(persistent._mas_aff_before_fresh_start)
 
                 elif curr_aff < persistent._mas_aff_before_fresh_start:
                     m 2rfc "I guess you couldn't really keep that promise...could you."
@@ -4332,7 +4332,7 @@ label mas_nye_monika_nyd_fresh_start:
             $ persistent._mas_aff_before_fresh_start = _mas_getAffection()
 
             # reset affection and save it
-            $ mas_setAffection(0)
+            $ _mas_setAffection(0)
             $ _mas_AffSave()
             $ renpy.save_persistent()
 
@@ -4348,7 +4348,7 @@ label mas_nye_monika_nyd_fresh_start:
             $ persistent._mas_pm_got_a_fresh_start = False
 
             # set affection to broken
-            $ mas_setAffection(store.mas_affection.AFF_BROKEN_MIN - 1)
+            $ _mas_setAffection(store.mas_affection.AFF_BROKEN_MIN - 1)
             $ _mas_AffSave()
             $ renpy.save_persistent()
 

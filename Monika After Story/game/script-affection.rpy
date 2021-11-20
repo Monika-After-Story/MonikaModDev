@@ -1816,7 +1816,6 @@ init 20 python:
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
-
     def mas_loseAffection(
         amount=None,
         modifier=1,
@@ -1874,7 +1873,7 @@ init 20 python:
         frozen = persistent._mas_affection_badexp_freeze
         change = (amount * modifier)
 
-        if change >= 0:
+        if change <= 0:
             raise ValueError("Invalid value for affection: {}".format(change))
 
         new_value = _mas_getAffection() - change
@@ -1890,26 +1889,22 @@ init 20 python:
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
-
-    def mas_setAffection(amount=None, logmsg="SET"):
+    def _mas_setAffection(amount=None, logmsg="SET"):
         """
         Sets affection to a value
 
         NOTE: never use this to add / lower affection unless its to
-          strictly set affection to a level for some reason.
+            strictly set affection to a level for some reason.
 
         IN:
             amount - amount to set affection to
             logmsg - msg to show in the log
                 (Default: SET)
         """
-
-#        frozen = (
-#            persistent._mas_affection_badexp_freeze
-#            or persistent._mas_affection_goodexp_freeze
-#        )
         if amount is None:
             amount = _mas_getAffection()
+
+        amount = max(min(amount, 1000000), -1000000)
 
         # audit the change (or attempt)
         affection.audit(amount, amount, False, ldsv=logmsg)
@@ -1919,6 +1914,10 @@ init 20 python:
         persistent._mas_affection["affection"] = amount
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
+
+    @store.mas_utils.deprecated()
+    def mas_setAffection(*args, **kwargs):
+        pass
 
     def mas_setApologyReason(
         reason=None,
@@ -2019,16 +2018,17 @@ init 20 python:
             # we skip this for devs since we sometimes use older
             # persistents and only apply after 1 week
             if (
-                    not config.developer
-                    and time_difference >= datetime.timedelta(weeks = 1)
-                ):
-                new_aff = _mas_getAffection() - (
-                    0.5 * time_difference.days
-                )
-                if new_aff < affection.AFF_TIME_CAP:
+                not config.developer
+                and time_difference >= datetime.timedelta(weeks=1)
+            ):
+                curr_aff = _mas_getAffection()
+                calc_loss = 0.5 * time_difference.days
+                new_aff = curr_aff - calc_loss
+
+                if new_aff < affection.AFF_TIME_CAP and curr_aff > affection.AFF_TIME_CAP:
                     #We can only lose so much here
                     store.mas_affection.txt_audit("ABS", "capped loss")
-                    mas_setAffection(affection.AFF_TIME_CAP)
+                    mas_loseAffection(abs(affection.AFF_TIME_CAP - curr_aff))
 
                     #If over 10 years, then we need to FF
                     if time_difference >= datetime.timedelta(days=(365 * 10)):
@@ -2037,7 +2037,7 @@ init 20 python:
 
                 else:
                     store.mas_affection.txt_audit("ABS", "she missed you")
-                    mas_setAffection(new_aff)
+                    mas_loseAffection(calc_loss)
 
 
 # Unlocked when affection level reaches 50.
