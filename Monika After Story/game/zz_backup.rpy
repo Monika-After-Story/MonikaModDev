@@ -12,7 +12,7 @@ default persistent._mas_incompat_per_forced_update_failed = False
 default persistent._mas_incompat_per_user_will_restore = False
 
 # only set if the user entered the incompat flow at all
-default persistent._mas_incompat_per_entered = True
+default persistent._mas_incompat_per_entered = False
 
 python early in mas_per_check:
     import __main__
