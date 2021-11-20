@@ -1392,7 +1392,7 @@ init 20 python:
             lower and upper affection limits, False otherwise.
             If low is greater than high, False is returned.
         """
-        return affection._betweenAff(aff_low, aff_check, aff_high)
+        return mas_affection._betweenAff(aff_low, aff_check, aff_high)
 
 
     def mas_compareAff(aff_1, aff_2):
@@ -1409,7 +1409,7 @@ init 20 python:
             postitive number if aff_1 > aff_2
             Returns 0 if a non affection state was provided
         """
-        return affection._compareAff(aff_1, aff_2)
+        return mas_affection._compareAff(aff_1, aff_2)
 
 
     def mas_compareAffG(affg_1, affg_2):
@@ -1426,7 +1426,7 @@ init 20 python:
             positive numbre if affg_1 > affg_2
             Returns 0 if a non affection group was provided
         """
-        return affection._compareAffG(affg_1, affg_2)
+        return mas_affection._compareAffG(affg_1, affg_2)
 
 
     ## afffection state functions
@@ -1446,7 +1446,7 @@ init 20 python:
         RETURNS:
             True if monika is broke, False otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.BROKEN,
             higher=higher
@@ -1469,7 +1469,7 @@ init 20 python:
         RETURNS:
             True if monika is distressed, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.DISTRESSED,
             lower=lower,
@@ -1492,7 +1492,7 @@ init 20 python:
         RETURNS:
             True if monika is upset, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.UPSET,
             lower=lower,
@@ -1515,7 +1515,7 @@ init 20 python:
         RETURNS:
             True if monika is normal, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.NORMAL,
             lower=lower,
@@ -1538,7 +1538,7 @@ init 20 python:
         RETURNS:
             True if monika is happy, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.HAPPY,
             lower=lower,
@@ -1561,7 +1561,7 @@ init 20 python:
         RETURNS:
             True if monika is affectionate, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.AFFECTIONATE,
             lower=lower,
@@ -1584,7 +1584,7 @@ init 20 python:
         RETURNS:
             True if monika is enamored, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.ENAMORED,
             lower=lower,
@@ -1607,7 +1607,7 @@ init 20 python:
         RETURNS:
             True if monika in love, false otherwise
         """
-        return affection._isMoniState(
+        return mas_affection._isMoniState(
             mas_curr_affection,
             store.mas_affection.LOVE,
             lower=lower
@@ -1630,7 +1630,7 @@ init 20 python:
         RETURNS:
             True if monika in sad group, false otherwise
         """
-        return affection._isMoniStateG(
+        return mas_affection._isMoniStateG(
             mas_curr_affection_group,
             store.mas_affection.G_SAD,
             higher=higher
@@ -1652,7 +1652,7 @@ init 20 python:
         RETURNS:
             True if monika is in normal group, false otherwise
         """
-        return affection._isMoniStateG(
+        return mas_affection._isMoniStateG(
             mas_curr_affection_group,
             store.mas_affection.G_NORMAL,
             lower=lower,
@@ -1675,7 +1675,7 @@ init 20 python:
         RETURNS:
             True if monika is in happy group, false otherwise
         """
-        return affection._isMoniStateG(
+        return mas_affection._isMoniStateG(
             mas_curr_affection_group,
             store.mas_affection.G_HAPPY,
             lower=lower
@@ -1691,65 +1691,65 @@ init 20 python:
         curr_affection = _mas_getAffection()
 
         # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
-        if  affection.AFF_MIN_POS_TRESH <= curr_affection:
+        if  mas_affection.AFF_MIN_POS_TRESH <= curr_affection:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
 
         # If affection is between AFF_MAX_NEG_TRESH and AFF_MIN_NEG_TRESH, update both exps. Simulates erosion of affection.
-        elif affection.AFF_MAX_NEG_TRESH < curr_affection <= affection.AFF_MIN_NEG_TRESH:
+        elif mas_affection.AFF_MAX_NEG_TRESH < curr_affection <= mas_affection.AFF_MIN_NEG_TRESH:
             persistent._mas_affection["goodexp"] = 0.5
             persistent._mas_affection["badexp"] = 3
 
         # If affection is less than AFF_MIN_NEG_TRESH, update bad exp. Simulates increasing loss of affection.
-        elif curr_affection <= affection.AFF_MAX_NEG_TRESH:
+        elif curr_affection <= mas_affection.AFF_MAX_NEG_TRESH:
             persistent._mas_affection["badexp"] = 5
 
         # Defines an easy current affection statement to refer to so points aren't relied upon.
         new_aff = mas_curr_affection
-        if curr_affection <= affection.AFF_BROKEN_MIN:
-            new_aff = affection.BROKEN
+        if curr_affection <= mas_affection.AFF_BROKEN_MIN:
+            new_aff = mas_affection.BROKEN
 
-        elif affection.AFF_BROKEN_MIN < curr_affection <= affection.AFF_DISTRESSED_MIN:
-            new_aff = affection.DISTRESSED
+        elif mas_affection.AFF_BROKEN_MIN < curr_affection <= mas_affection.AFF_DISTRESSED_MIN:
+            new_aff = mas_affection.DISTRESSED
 
-        elif affection.AFF_DISTRESSED_MIN < curr_affection <= affection.AFF_UPSET_MIN:
-            new_aff = affection.UPSET
+        elif mas_affection.AFF_DISTRESSED_MIN < curr_affection <= mas_affection.AFF_UPSET_MIN:
+            new_aff = mas_affection.UPSET
 
-        elif affection.AFF_UPSET_MIN < curr_affection < affection.AFF_HAPPY_MIN:
-            new_aff = affection.NORMAL
+        elif mas_affection.AFF_UPSET_MIN < curr_affection < mas_affection.AFF_HAPPY_MIN:
+            new_aff = mas_affection.NORMAL
 
-        elif affection.AFF_HAPPY_MIN <= curr_affection < affection.AFF_AFFECTIONATE_MIN:
+        elif mas_affection.AFF_HAPPY_MIN <= curr_affection < mas_affection.AFF_AFFECTIONATE_MIN:
             new_aff = store.mas_affection.HAPPY
 
-        elif affection.AFF_AFFECTIONATE_MIN <= curr_affection < affection.AFF_ENAMORED_MIN:
-            new_aff = affection.AFFECTIONATE
+        elif mas_affection.AFF_AFFECTIONATE_MIN <= curr_affection < mas_affection.AFF_ENAMORED_MIN:
+            new_aff = mas_affection.AFFECTIONATE
 
-        elif affection.AFF_ENAMORED_MIN <= curr_affection < affection.AFF_LOVE_MIN:
-            new_aff = affection.ENAMORED
+        elif mas_affection.AFF_ENAMORED_MIN <= curr_affection < mas_affection.AFF_LOVE_MIN:
+            new_aff = mas_affection.ENAMORED
 
-        elif curr_affection >= affection.AFF_LOVE_MIN:
-            new_aff = affection.LOVE
+        elif curr_affection >= mas_affection.AFF_LOVE_MIN:
+            new_aff = mas_affection.LOVE
 
         # run affection programming points
         if new_aff != mas_curr_affection:
             if not skipPP:
-                affection.runAffPPs(mas_curr_affection, new_aff)
+                mas_affection.runAffPPs(mas_curr_affection, new_aff)
             mas_curr_affection = new_aff
 
         # A group version for general sadness or happiness
         new_affg = mas_curr_affection_group
-        if curr_affection <= affection.AFF_MOOD_SAD_MIN:
-            new_affg = affection.G_SAD
+        if curr_affection <= mas_affection.AFF_MOOD_SAD_MIN:
+            new_affg = mas_affection.G_SAD
 
-        elif curr_affection >= affection.AFF_MOOD_HAPPY_MIN:
-            new_affg = affection.G_HAPPY
+        elif curr_affection >= mas_affection.AFF_MOOD_HAPPY_MIN:
+            new_affg = mas_affection.G_HAPPY
 
         else:
-            new_affg = affection.G_NORMAL
+            new_affg = mas_affection.G_NORMAL
 
         if new_affg != mas_curr_affection_group:
             if not skipPP:
-                affection.runAffGPPs(mas_curr_affection_group, new_affg)
+                mas_affection.runAffGPPs(mas_curr_affection_group, new_affg)
             mas_curr_affection_group = new_affg
 
 
@@ -1799,7 +1799,7 @@ init 20 python:
         new_value = min(new_value, 1000000)
 
         # audit the attempted change
-        affection.audit(change, new_value, frozen, bypass)
+        mas_affection.audit(change, new_value, frozen, bypass)
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
@@ -1880,7 +1880,7 @@ init 20 python:
         new_value = max(new_value, -1000000)
 
         # audit this attempted change
-        affection.audit(change, new_value, frozen)
+        mas_affection.audit(change, new_value, frozen)
 
         if not frozen:
             # Otherwise, use the value passed in the argument.
@@ -1907,7 +1907,7 @@ init 20 python:
         amount = max(min(amount, 1000000), -1000000)
 
         # audit the change (or attempt)
-        affection.audit(amount, amount, False, ldsv=logmsg)
+        mas_affection.audit(amount, amount, False, ldsv=logmsg)
 
         # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
@@ -2025,10 +2025,10 @@ init 20 python:
                 calc_loss = 0.5 * time_difference.days
                 new_aff = curr_aff - calc_loss
 
-                if new_aff < affection.AFF_TIME_CAP and curr_aff > affection.AFF_TIME_CAP:
+                if new_aff < mas_affection.AFF_TIME_CAP and curr_aff > mas_affection.AFF_TIME_CAP:
                     #We can only lose so much here
                     store.mas_affection.txt_audit("ABS", "capped loss")
-                    mas_loseAffection(abs(affection.AFF_TIME_CAP - curr_aff))
+                    mas_loseAffection(abs(mas_affection.AFF_TIME_CAP - curr_aff))
 
                     #If over 10 years, then we need to FF
                     if time_difference >= datetime.timedelta(days=(365 * 10)):
