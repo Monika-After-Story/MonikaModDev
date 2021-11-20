@@ -1817,39 +1817,68 @@ init 20 python:
             mas_updateAffectionExp()
 
 
-    # Used to subtract affection whenever something negative happens.
-    # A reason can be specified and used for the apology dialogue
-    # if the default value is used Monika won't comment on the reason,
-    # and slightly will recover affection
-    # if None is passed she won't acknowledge that there was need for an apology.
-    # DEFAULTS reason to an Empty String mostly because when this one is called
-    # is intended to be used for something the player can apologize for, but it's
-    # not totally necessary.
-    #NEW BITS:
-    #prompt: the prompt shown in the menu for apologizing
-    #expirydatetime:
-    #generic: do we want this to be persistent? or not
     def mas_loseAffection(
-            amount=None,
-            modifier=1,
-            reason=None,
-            ev_label=None,
-            apology_active_expiry=datetime.timedelta(hours=3),
-            apology_overall_expiry=datetime.timedelta(weeks=1),
-        ):
+        amount=None,
+        modifier=1,
+        reason=None,
+        ev_label=None,
+        apology_active_expiry=datetime.timedelta(hours=3),
+        apology_overall_expiry=datetime.timedelta(weeks=1),
+    ):
+        """
+        Subtracts some affection whenever something negative happens
 
+        A reason can be specified and used for the apology dialogue
+        if the default value is used Monika won't comment on the reason,
+        and slightly will recover affection
+        if None is passed she won't acknowledge that there was need for an apology.
+        DEFAULTS reason to an Empty String mostly because when this one is called
+        is intended to be used for something the player can apologize for, but it's
+        not totally necessary.
+        NEW BITS:
+        prompt: the prompt shown in the menu for apologizing
+        expirydatetime:
+        generic: do we want this to be persistent? or not
+
+        IN:
+            amount - int, float, None - amount of affection to subtract,
+                If None, uses the default value for the current aff
+                (Default: None)
+            modifier - int, float - modifier for the amount value
+                (Default: 1)
+            reason - int, None, - a constant for the reason for the apology
+                See mas_setApologyReason
+                (Default: None)
+            ev_label - string, None - the label for the apology event
+                See mas_setApologyReason
+                (Default: None)
+            apology_active_expiry - datetime.timedelta - the amount of session time
+                for the apology to expire
+                (Default: 3 hours)
+            apology_overall_expiry - datetime.timedelta - the amount of overall time
+                for the apology to expire
+                (Default: 1 week)
+        """
         if amount is None:
             amount = _mas_getBadExp()
 
         #set apology flag
-        mas_setApologyReason(reason=reason,ev_label=ev_label,apology_active_expiry=apology_active_expiry,apology_overall_expiry=apology_overall_expiry)
+        mas_setApologyReason(
+            reason=reason,
+            ev_label=ev_label,
+            apology_active_expiry=apology_active_expiry,
+            apology_overall_expiry=apology_overall_expiry
+        )
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
         change = (amount * modifier)
+
+        if change >= 0:
+            raise ValueError("Invalid value for affection: {}".format(change))
+
         new_value = _mas_getAffection() - change
-        if new_value < -1000000:
-            new_value = -1000000
+        new_value = max(new_value, -1000000)
 
         # audit this attempted change
         affection.audit(change, new_value, frozen)
