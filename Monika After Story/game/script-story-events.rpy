@@ -1284,12 +1284,8 @@ label .afterdontjoke:
     menu:
         "Turn on the light.":
             hide screen mas_background_timed_jump
-
             # light affection boost for being like a hero
             $ mas_gainAffection(modifier=0.1)
-            # turn on lights
-            play sound "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
-            call spaceroom(scene_change=True, force_exp="monika 6ektsc_static")
 
         "...":
             pause 5.0
@@ -1298,11 +1294,12 @@ label .afterdontjoke:
                 window show
                 m "Nevermind, I found it."
                 window hide
-                # turn on lights
-                play sound "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
-                call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=True)
-                pause 1.0
-                call mas_transition_from_emptydesk("monika 6ektsc_static")
+
+    # turn on lights
+    play sound "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
+    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=True)
+    pause 2.0
+    call mas_transition_from_emptydesk("monika 6ektsc_static")
 
     return
 
