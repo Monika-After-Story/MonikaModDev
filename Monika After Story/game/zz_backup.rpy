@@ -178,6 +178,15 @@ python early in mas_per_check:
         return mas_no_backups_found or mas_backup_copy_failed
 
 
+    def has_backups():
+        """
+        Do we have backups, and backups did not fail?
+
+        RETURNS: True if have backups and backups did not fail
+        """
+        return not no_backups()
+
+
     def should_show_chibika_persistent():
         """
         Should we show the chibika persistent dialogue? 
