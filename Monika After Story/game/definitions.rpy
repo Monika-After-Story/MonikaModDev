@@ -6747,7 +6747,7 @@ define audio.fall = "sfx/fall.ogg"
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # light switch sound from https://www.freesoundslibrary.com/light-switch-sound-effect/
-define light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
+define audio.light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
 
 # Backgrounds
 image black = "#000000"

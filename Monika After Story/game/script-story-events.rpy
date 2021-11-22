@@ -1411,9 +1411,6 @@ label mas_crashed_post:
         store.songs.enabled = True
         HKBShowButtons()
         set_keymaps()
-
-label .self:
-    python:
         persistent.closed_self = False
         mas_startup_song()
 
