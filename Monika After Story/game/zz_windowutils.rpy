@@ -299,7 +299,8 @@ init python in mas_windowutils:
             active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
 
             if active_winname_prop is not None:
-                active_winname = unicode(active_winname_prop.value)
+                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
+                active_winname = active_winname.replace("—","\b\0")
                 return active_winname.replace("\n", "")
 
             else:
