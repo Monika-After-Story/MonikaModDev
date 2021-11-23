@@ -300,7 +300,9 @@ init python in mas_windowutils:
 
             if active_winname_prop is not None:
                 active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
-                active_winname = active_winname.replace("—","\b\0")
+                reversed_winname = active_winname[::-1]
+                terminating_index_buffer = len(active_winname) - reversed_winname.index("—")
+                active_winname = active_winname[:terminating_index_buffer - 2]
                 return active_winname.replace("\n", "")
 
             else:
