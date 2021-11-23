@@ -1297,7 +1297,7 @@ label .afterdontjoke:
 
     # turn on lights
     play sound light_switch
-    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=True)
+    call spaceroom(hide_monika=True, show_emptydesk=True)
     pause 2.0
     call mas_transition_from_emptydesk("monika 6ektsc_static")
 
