@@ -988,6 +988,58 @@ label mas_story_tanabata:
     $ mas_unlockEVL("monika_tanabata", "EVE")
     return "love"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_living_puppet",
+            prompt="The Living Puppet",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_living_puppet:
+    call mas_story_begin
+    m 1eud "There was once a girl who lived on the streets."
+    m 2ekc "Hated by all who saw her, and having pick through the trash every day..."
+    m "It was no doubt difficult for her to live."
+    m 3eud "However, one thing she had was this magical power that awakened in her one day."
+    m 1eud "One thing that was precious to her was a puppet she had."
+    m 2eka "It never hated her, blamed her, or judged her...{w=0.5}and it was very dear to her."
+    m 1euc "She one day decided to use her magic to bring that puppet to life."
+    m 1eua "It wasn't perfect, but it could move around on its own and talk to her."
+    m 2eud "What was once no more than trash that filled the gutters, was now a living being brought to life."
+    m 1eud "Satisfied with what she made, she created an artificial world retreat to, away from all the people who hated and scared her."
+    m 1eua "She filled this world with all the things she ever loved to keep her and her puppet happy."
+    m 3ekc "But still, she was only a human, and eventually grew to miss the company of other people, even despite how they treated her."
+    m 2rksdlc "It was at this point, where she started attempting to turn her puppets into more realistic human beings."
+    m 3efd "Blinded by this pursuit, she took children from the real world to research and experiment on, in order to be able to turn inanimate objects into human beings."
+    m 1euc "Giving basic life and sentience was simple enough, but turning things into real humans, with skin and soul, was much different."
+    m 2ekd "She had no understanding of this power, and ended up putting herself in a comatose state before she could truly perfect it."
+    m 1euc "She was brought back into her artificial world by her favorite puppet, who at that point, was indistinguishable from a real human, as a result of the girl's hard work."
+    m 1eud "He cared for the girl as time went on, but couldn't wake her."
+    m 1euc "Over time, he was filled with rage and grew to hate humanity."
+    m 1efc "He blamed humanity for what they put him and the girl through, and wanted to flip their world upside down."
+    m 3efd "And so, while he tended to the girl, he let her dark magic spread all throughout the real world."
+    m 2ekc "Still, he was miserable living without her, and wanted to see her wake up more than anything."
+    m 2rksdlc "He did know of one possible way of undoing the curse."
+    m 1eud "In actuality, he could have done it long ago, but chose not to."
+    m 1eka "The reason for this is because he wanted to spend more time with her, and well...{w=0.5}{nw}"
+    extend 1rksdla "that one way of curing her would be to sacrifice himself."
+    m 2ekd "Until he was given life, and until this very moment, he had never understood what it meant to die."
+    m 2ekc "He was scared."
+    m 3eka "But to be able to be given life and live a human life made him happier than he had ever been."
+    m 1eka "He went through with undoing the curse, and upon waking up, the first thing the girl saw was her favorite puppet, next to her."
+    m 2eka "It was no longer alive, and was reduced back to its original form, but she still loved it all the same."
+    m 1eua "In a way, it felt like he was still there, watching over her."
+    m 1hua "The magic was gone, and her world was slowly fading, but with a newfound strength, she went back out into the world with her puppet, and carried on living with it."
+    m 1eua "I hope you liked that story, [player]."
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "If I had to, I would give myself for you~"
+    return
+
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
