@@ -2228,7 +2228,7 @@ label mas_holiday_d25c_autoload_check:
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
         and (
-            mas_doesBackgroundHaveHolidayDeco(MAS_D25_DECO_TAGS, persistent._mas_current_background)
+            mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, persistent._mas_current_background)
             # If it's d25 and we still didn't setup d25 stuff, we should do it now
             # (we'll force spaceroom if needed)
             or mas_isD25()
@@ -2269,7 +2269,7 @@ label mas_holiday_d25c_autoload_check:
                     mas_changeWeather(mas_weather_snow, by_user=True)
 
                     #Only change bg if the current is not supported
-                    if mas_doesBackgroundHaveHolidayDeco(MAS_D25_DECO_TAGS):
+                    if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
                         store.mas_d25_utils.has_changed_bg = True
                         mas_changeBackground(mas_background_def, set_persistent=True)
 
