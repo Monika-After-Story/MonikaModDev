@@ -5895,7 +5895,7 @@ init 20 python:
         poem_id = "poem_pbday_4",
         category = "pbday",
         prompt = "My [player]",
-        title = " My dearest [player],",
+        title = " My [player],",
         text = """\
  How our love has grown.
  Another year,
