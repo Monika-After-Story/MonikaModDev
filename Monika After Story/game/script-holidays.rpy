@@ -1682,7 +1682,6 @@ init -810 python:
 
 
 init -10 python:
-
     def mas_isD25(_date=None):
         """
         Returns True if the given date is d25
@@ -1998,6 +1997,16 @@ init -10 python in mas_d25_utils:
     import store
     import store.mas_filereacts as mas_frs
 
+    has_changed_bg = False
+
+    DECO_TAGS = [
+        "mas_d25_banners",
+        "mas_d25_tree",
+        "mas_d25_garlands",
+        "mas_d25_lights",
+        "mas_d25_gifts",
+    ]
+
     def shouldUseD25ReactToGifts():
         """
         checks whether or not we should use the d25 react to gifts method
@@ -2219,7 +2228,7 @@ label mas_holiday_d25c_autoload_check:
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
         and (
-            persistent._mas_current_background == store.mas_background.MBG_DEF
+            mas_doesBackgroundHaveHolidayDeco(MAS_D25_DECO_TAGS, persistent._mas_current_background)
             # If it's d25 and we still didn't setup d25 stuff, we should do it now
             # (we'll force spaceroom if needed)
             or mas_isD25()
@@ -2258,7 +2267,11 @@ label mas_holiday_d25c_autoload_check:
                 #If we're loading in for the first time on D25, then we're gonna make it snow
                 if mas_isD25():
                     mas_changeWeather(mas_weather_snow, by_user=True)
-                    mas_changeBackground(mas_background_def, set_persistent=True)
+
+                    #Only change bg if the current is not supported
+                    if mas_doesBackgroundHaveHolidayDeco(MAS_D25_DECO_TAGS):
+                        store.mas_d25_utils.has_changed_bg = True
+                        mas_changeBackground(mas_background_def, set_persistent=True)
 
     #This is d25 SEASON exit
     elif mas_run_d25s_exit or mas_isMoniDis(lower=True):
@@ -2281,9 +2294,12 @@ label mas_holiday_d25c_autoload_check:
         python:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
+            #Change if bg isn't supported
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            mas_changeBackground(mas_background_def, set_persistent=True)
+            if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+                store.mas_d25_utils.has_changed_bg = True
+                mas_changeBackground(mas_background_def, set_persistent=True)
 
     #If we are at normal and we've not gifted another outfit, change back to Santa next load
     if (
@@ -2437,10 +2453,6 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
-    $ changed_bg = False
-    if mas_current_background != mas_background_def:
-        $ changed_bg = True
-
     if not persistent._mas_d25_deco_active:
         if mas_isplayer_bday():
             window hide
@@ -2494,8 +2506,8 @@ label mas_d25_monika_holiday_intro:
     m 3eua "Do you like what I've done with the place?"
     m 1hua "I must say that I'm pretty proud of it."
 
-    if changed_bg:
-        m 3rksdla "I only had enough decorations for one room, so I decided on the classroom...{w=0.2}I hope that's okay."
+    if mas_d25_utils.has_changed_bg = True:
+        m 3rksdla "I couldn't really get the decorations to work right in our other room, so I decided to decorate the classroom...{w=0.2}I hope that's okay."
         m "But anyway..."
 
     m 3eua "Christmas time has always been one of my favorite occasions of the year..."
