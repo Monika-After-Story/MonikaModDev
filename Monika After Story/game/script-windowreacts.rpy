@@ -620,3 +620,37 @@ label mas_wrs_word_processor:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_word_processor')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_crunchyroll",
+            category=[r"(?i)crunchyroll"],
+            rules={
+                "notif-group": "Window Reactions",
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            },
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_crunchyroll:
+    python:
+        if persistent._mas_pm_watch_mangime is None:
+            crunchyroll_quips = ["Oh! So you like anime, [player]?"]
+        else:
+            crunchyroll_quips = [
+                "What anime are we watching today, [player]?",
+                "Watching some anime, [player]?",
+                "I can't wait to watch anime with you!~"
+            ]
+        wrs_success = mas_display_notif(m_name, crunchyroll_quips, 'Window Reactions')
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_crunchyroll')
+    return
