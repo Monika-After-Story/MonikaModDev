@@ -6490,6 +6490,7 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    #TODO: Add minutes param for verbosity + new function for clearing pause
     def mas_setEventPause(seconds=60):
         """
         Sets a pause 'til next event
