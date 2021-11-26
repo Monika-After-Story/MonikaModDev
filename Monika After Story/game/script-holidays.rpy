@@ -2620,8 +2620,11 @@ label mas_d25_monika_holiday_intro_deco:
         persistent._mas_d25_deco_active = True
         mas_d25ShowVisuals()
 
+        change_info = None
         # change to spaceroom
-        change_info = mas_changeBackground(mas_background_def, set_persistent=True)
+        if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+            mas_d25_utils.has_changed_bg = True
+            change_info = mas_changeBackground(mas_background_def, set_persistent=True)
 
     # now we can do spacroom call
     call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
