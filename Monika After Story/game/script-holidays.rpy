@@ -2506,7 +2506,7 @@ label mas_d25_monika_holiday_intro:
     m 3eua "Do you like what I've done with the place?"
     m 1hua "I must say that I'm pretty proud of it."
 
-    if mas_d25_utils.has_changed_bg = True:
+    if mas_d25_utils.has_changed_bg:
         m 3rksdla "I couldn't really get the decorations to work right in our other room, so I decided to decorate the classroom...{w=0.2}I hope that's okay."
         m "But anyway..."
 
