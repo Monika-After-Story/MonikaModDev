@@ -1251,14 +1251,12 @@ label mas_crashed_long_qs:
 
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
-            $ persistent._mas_crashed_before = True
             $ mas_disable_quit()
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
         "No.":
             hide screen mas_background_timed_jump
-            $ persistent._mas_crashed_before = True
             $ mas_disable_quit()
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
