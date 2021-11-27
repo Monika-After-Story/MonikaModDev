@@ -6922,7 +6922,7 @@ init -1 python:
                 or (
                     _datetime.month == mas_monika_birthday.month
                     and _datetime.day == mas_monika_birthday.day + 1
-                    and _datetime.hour <= _extend
+                    and _datetime.hour < _extend
                 )
             )
 
