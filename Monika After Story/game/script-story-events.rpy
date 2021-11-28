@@ -1248,7 +1248,6 @@ label mas_crashed_long_qs:
     menu:
         "Yes.":
             hide screen mas_background_timed_jump
-
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
             $ mas_disable_quit()
