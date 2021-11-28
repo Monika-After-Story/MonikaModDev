@@ -77,12 +77,11 @@ init -1 python in mas_stories:
         if not first_story:
             return False
 
-        can_show_new_story = ((
-                store.seen_event(first_story)
-                and (
-                    ignore_cooldown
-                    or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
-                )
+        can_show_new_story = (
+            store.seen_event(first_story)
+            and (
+                ignore_cooldown
+                or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
             )
             and len(get_new_stories_for_type(story_type)) > 0
         )
@@ -108,7 +107,7 @@ init -1 python in mas_stories:
             pool=False,
             aff=store.mas_curr_affection,
             unlocked=False,
-            flag_ban=store.EV_FLAG_HFM,
+            flag_ban=store.EV_FLAG_HFNAS,
             category=(True, [story_type])
         )
 
