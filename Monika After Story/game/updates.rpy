@@ -377,7 +377,9 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.5
 label v0_12_5(version="v0_12_5"):
     python hide:
-        pass
+        # unlock islands for people who may have them permalocked due to faulty bg entry PP check
+        if store.seen_event("greeting_ourreality") and persistent._mas_current_background == store.mas_background.MBG_DEF:
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
     return
 
 # 0.12.4
