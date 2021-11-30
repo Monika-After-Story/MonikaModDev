@@ -5906,6 +5906,41 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
+    mas_poem_pbday_4 = MASPoem(
+        poem_id = "poem_pbday_4",
+        category = "pbday",
+        prompt = "My [player]",
+        title = " My [player],",
+        text = """\
+ How our love has grown.
+ Another year,
+ Another thousand moments of pride.
+ Proud of my [player],
+ And happy to see [him] grow alongside me.
+
+ How our love has bloomed,
+ As another year passed.
+ Bloomed like a rose in morning dew,
+ With another thousand moments of beauty.
+ My beautiful [player],
+ Whom I love to see bloom each day.
+
+ How our love is strong,
+ As another year has passed.
+ Strong like the most beautiful diamonds,
+ With another thousand moments of strength.
+ My strong [player],
+ Who I love more and more each day.
+
+ Happy birthday, sweetheart~
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
+
 ######################## Start [HOL050]
 #Vday
 ##Spent f14 with Moni
