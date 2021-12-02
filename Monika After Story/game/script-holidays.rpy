@@ -6899,7 +6899,22 @@ image mas_bday_balloons = MASFilterSwitch(
 
 ############### [HOL060]: METHODS
 init -1 python:
-    def mas_isMonikaBirthday(_datetime=None, _extend=0):
+    def mas_isMonikaBirthday(_date=None):
+        """
+        checks if the given date is monikas birthday
+        converts date to datetime and runs thru mas_isMonikaBirthday_dt
+        IN:
+            _date - date to check. If not passed in, we use today.
+        """
+        if _date is None:
+            _date = datetime.date.today()
+
+        _datetime = datetime.datetime.combine(_date, datetime.time())
+
+        mas_isMonikaBirthday_dt(_datetime=_datetime)
+
+
+    def mas_isMonikaBirthday_dt(_datetime=None, _extend=0):
         """
         checks if the given date is monikas birthday
 
@@ -6922,7 +6937,7 @@ init -1 python:
                 or (
                     _datetime.month == mas_monika_birthday.month
                     and _datetime.day == mas_monika_birthday.day + 1
-                    and _datetime.hour <= _extend
+                    and _datetime.hour < _extend
                 )
             )
 
