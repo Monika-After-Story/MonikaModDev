@@ -6911,7 +6911,7 @@ init -1 python:
 
         _datetime = datetime.datetime.combine(_date, datetime.time())
 
-        mas_isMonikaBirthday_dt(_datetime=_datetime)
+        return mas_isMonikaBirthday_dt(_datetime=_datetime)
 
 
     def mas_isMonikaBirthday_dt(_datetime=None, _extend=0):
