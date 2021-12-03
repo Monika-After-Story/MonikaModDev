@@ -100,6 +100,7 @@ label monika_brb_idle:
                 (_("I'm going to get something."), True, False, False),
                 (_("I'm going to do something."), True, False, False),
                 (_("I'm going to make something."), True, False, False),
+                (_("I'm going to work on something."), True, False, False),
                 (_("I have to check something."), True, False, False),
                 (_("Someone's at the door."), True, False, False),
                 (_("Nope."), None, False, False),
