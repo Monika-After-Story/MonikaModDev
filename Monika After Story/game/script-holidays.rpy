@@ -6902,7 +6902,7 @@ init -1 python:
     def mas_isMonikaBirthday(_date=None):
         """
         checks if the given date is monikas birthday
-        converts date to datetime and runs thru mas_isMonikaBirthday_dt
+        Comparison is done solely with month and day
         IN:
             _date - date to check. If not passed in, we use today.
         """
@@ -6916,7 +6916,8 @@ init -1 python:
 
     def mas_isMonikaBirthday_dt(_datetime=None, _extend=0):
         """
-        checks if the given date is monikas birthday
+        checks if the given date is monikas birthday.
+        Takes hours beyond the date into account via the `_extend` param.
 
         IN:
             _datetime - datetime to check. If not passed in, we use now.
@@ -6926,22 +6927,11 @@ init -1 python:
         if _datetime is None:
             _datetime = datetime.datetime.now()
 
-        is_bday = (
+        return (
             _datetime.month == mas_monika_birthday.month
-            and _datetime.day == mas_monika_birthday.day
+            and _datetime.day == (mas_monika_birthday.day + int(_extend > 0))
+            and (_extend <= 0 or _datetime.hour < _extend)
         )
-
-        if _extend > 0:
-            return (
-                is_bday
-                or (
-                    _datetime.month == mas_monika_birthday.month
-                    and _datetime.day == mas_monika_birthday.day + 1
-                    and _datetime.hour < _extend
-                )
-            )
-
-        return is_bday
 
 
     def mas_getNextMonikaBirthday():
