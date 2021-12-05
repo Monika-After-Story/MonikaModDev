@@ -377,9 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.5
 label v0_12_5(version="v0_12_5"):
     python hide:
-        local_now = mas_utils.utc_to_local(datetime.datetime.utcnow())
 
-        if local_now.date() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
+        if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
             persistent._mas_nye_spent_nye = False
             mas_history._store(True, "nye.actions.spent_nye", 2020)
 
