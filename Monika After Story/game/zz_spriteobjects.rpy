@@ -627,6 +627,22 @@ init -2 python in mas_sprites:
         # NOTE: this prog point is chika specific. See above.
         _acs_remove_if_found(_moni_chr, "briaryoung_front_bow_black")
 
+    def _clothes_briaryoung_tuxedo_black_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for the black tuxedo
+        """
+        #NOTE: prog point is black tux specific. Need to build a selector for bowties
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _acs_wear_if_found(_moni_chr, "briaryoung_bowtie_black")
+
+    def _clothes_briaryoung_tuxedo_black_exit(_moni_chr, **kwargs):
+        """
+        exit progpoint for briaryoung_tuxedo_black
+        """
+        #Also black tux specific. See above.
+        _acs_remove_if_found(_moni_chr, "briaryoung_bowtie_black")
 
     ######### ACS [SPR030] ###########
     # available kwargs:

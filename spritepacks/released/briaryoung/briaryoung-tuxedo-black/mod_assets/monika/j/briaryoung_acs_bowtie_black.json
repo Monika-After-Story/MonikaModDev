@@ -1,0 +1,29 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_bowtie_black",
+    "img_sit": "briaryoung_bowtie_black",
+    "pose_map": {
+        "p1": "1",
+        "p2": "2",
+        "p3": "3",
+        "p4": "4",
+        "p5": "5",
+        "p7": "7"
+    },
+    "rec_layer": 6,
+    "acs_type": "bow-tie",
+    "mux_type": [
+        "bow-tie"
+    ],
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Bowtie (Black)",
+        "thumb": "briaryoung_bowtie_black",
+        "group": "bow-tie",
+        "select_dlg": [
+            "Fashionable!"
+        ]
+    }
+}
