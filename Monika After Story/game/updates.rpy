@@ -389,6 +389,11 @@ label v0_12_5(version="v0_12_5"):
             "bye_goodevening",
             conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)"
         )
+        if seen_event("monika_affection_nickname"):
+            mas_setEVLPropValues(
+                "monika_affection_nickname",
+                prompt="Can I call you a different nickname?"
+            )
     return
 
 # 0.12.4
