@@ -703,25 +703,16 @@ python early in mas_utils:
         return False
 
 
-    def _get_version(ver_str, nums_only, split_nums=False):
+    def _get_version_nums(ver_str):
         """
-        Gets the version from a ver str
+        Gets version numbers from a version string
 
         IN:
             ver_str - version string to get version from
-            nums_only - True to only get ver numbers, False to get full ver
 
-        RETURNS: version str
+        RETURNS: version numbers as a list of ints
         """
-        if nums_only:
-            ver_nums = ver_str.partition("-")[0]
-        
-            if split_nums:
-                return ver_nums.split(".")
-
-            return ver_nums
-
-        return ver_str
+        return map(int, ver_str.partition("-")[0].split("."))
 
 
     def is_ver_stable(ver_str):
@@ -734,7 +725,7 @@ python early in mas_utils:
 
         RETURNS: true if version is stable, False if not.
         """
-        return len(_get_version(ver_str, True, True)) == 3
+        return len(_get_version_nums(ver_str)) == 3
 
 
     def _is_downgrade(from_ver_str, to_ver_str):
@@ -748,8 +739,8 @@ python early in mas_utils:
         RETURNS: true if downgrade, False if not
         """
         return compareVersionLists(
-            _get_version(from_ver_str, True, True),
-            _get_version(to_ver_str, True, True)
+            _get_version_nums(from_ver_str),
+            _get_version_nums(to_ver_str)
         ) > 0
 
 
