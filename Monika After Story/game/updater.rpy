@@ -845,7 +845,7 @@ label mas_updater_rpy_issue:
             m 1hua "Sure!"
 
             #Delete files
-            call mas_rpy_file_delete
+            call mas_rpy_file_delete()
 
             m 3hub "There we go!"
             #Hide screen

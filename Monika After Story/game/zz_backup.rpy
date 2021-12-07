@@ -11,6 +11,9 @@ default persistent._mas_incompat_per_forced_update_failed = False
 # only set if the user says that they will restore a persistent
 default persistent._mas_incompat_per_user_will_restore = False
 
+# only set if update failed because rpy files
+default persistent._mas_incompat_per_rpy_files_found = False
+
 # only set if the user entered the incompat flow at all
 default persistent._mas_incompat_per_entered = False
 
@@ -83,6 +86,7 @@ python early in mas_per_check:
         store.persistent._mas_incompat_per_forced_update = False
         store.persistent._mas_incompat_per_forced_update_failed = False
         store.persistent._mas_incompat_per_user_will_restore = False
+        store.persistent._mas_incompat_per_rpy_files_found = False
 
 
     def tryper(_tp_persistent, get_data=False):
@@ -839,9 +843,19 @@ label mas_backups_incompat_start:
     # "your per wont work with this MAS"
     $ mas_darkMode(True) # required for the updater
 
-    if persistent._mas_incompat_per_forced_update_failed:
+    if (
+            persistent._mas_incompat_per_rpy_files_found 
+            and mas_hasRPYFiles()
+    ):
+        # user said they would delete the RPY files, but we still have them
+        jump mas_backups_incompat_updater_cannot_because_rpy_again
+
+    elif persistent._mas_incompat_per_forced_update_failed:
         # a forced update failed in the updater.
         # assume the user did something to fix and try update again
+        if mas_hasRPYFiles():
+            jump mas_backups_incompat_updater_cannot_because_rpy
+
         show chibika smile at mas_chflip_s(1)
         "Hello there!"
         "Let's try updating again!"
@@ -919,13 +933,85 @@ label mas_backups_incompat_user_will_restore_again:
     jump mas_backups_incompat_what_do
 
 
+label mas_backups_incompat_updater_cannot_because_rpy:
+    $ persistent._mas_incompat_per_rpy_files_found = True
+
+    show chibika sad at sticker_hop
+    "Unfortunately the updater won't work because you have RPY files in your game directory."
+
+    "I'll have to delete those files for this to work. Is that okay?{nw}"
+    menu:
+        "I'll have to delete those files for this to work. Is that okay?{fast}"
+        "Yes, delete them.":
+            jump mas_backups_incompat_rpy_yes_del
+        "No, don't delete them.":
+            jump mas_backups_incompat_rpy_no_del
+
+
+label mas_backups_incompat_updater_cannot_because_rpy_again:
+    show chibika sad at mas_chflip_s(-1)
+    "Oh no!"
+
+    "It seems that there are still RPY files in your game directory."
+    "Would you like me to try deleting them again?{nw}"
+    menu:
+        "Would you like me to try deleting them again?{fast}"
+        "Yes.":
+            jump mas_backups_incompat_rpy_yes_del
+        "No.":
+            jump mas_backups_incompat_rpy_no_del
+
+
+label mas_backups_incompat_rpy_yes_del:
+    show chibika smile at sticker_hop
+    "Ok!"
+
+    call mas_rpy_file_delete(False)
+    hide screen mas_py_console_teaching
+
+    if mas_hasRPYFiles():
+        show chibika sad at mas_chflip_s(-1)
+        "Oh no!"
+        "It seems that I was unable to delete all of the RPY files."
+        "You will have to delete them manually."
+        show chibika smile at mas_chflip_s(1)
+        "Good luck!"
+        jump _quit
+
+    # otherwise, no rpy files found now, so we good
+    $ persistent._mas_incompat_per_rpy_files_found = False
+
+    show chibika 3 at sticker_hop
+    "Done!"
+    "Let's try updating now!"
+    jump mas_backups_incompat_updater_start   
+
+
+label mas_backups_incompat_rpy_no_del:
+    # set to False since the user doesn't want to delete.
+    # but if they hit update again, they will get this.
+    $ persistent._mas_incompat_per_rpy_files_found = False
+
+    show chibika sad at mas_chflip_s(-1)
+    "Oh..."
+    "Well the updater won't work while those files exist, so I guess your only option is to restore a persistent backup."
+    jump mas_backups_incompat_user_will_restore
+
+
 label mas_backups_incompat_updater_start_intro:
+
+    if mas_hasRPYFiles():
+        jump mas_backups_incompat_updater_cannot_because_rpy
+
     show chibika smile at sticker_hop
     "Ok!"
     jump mas_backups_incompat_updater_start
 
 
 label mas_backups_incompat_updater_failed:
+    if mas_hasRPYFiles():
+        jump mas_backups_incompat_updater_cannot_because_rpy
+
     show chibika sad
     "Oh no!"
     "It seems that the updater failed to update MAS."
