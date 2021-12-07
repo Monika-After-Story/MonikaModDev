@@ -385,6 +385,10 @@ label v0_12_5(version="v0_12_5"):
             "bye_enjoyyourafternoon",
             conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)"
         )
+        mas_setEVLPropValues(
+            "bye_goodevening",
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)"
+        )
     return
 
 # 0.12.4
