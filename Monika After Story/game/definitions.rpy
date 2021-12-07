@@ -6505,6 +6505,33 @@ init 2 python:
         else:
             mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
 
+    def mas_getCurrentMoniExp(layer="master"):
+        """
+        Returns Monika's current expression
+
+        IN:
+            layer - the layer to check for Monika's displayable
+                You probably shouldn't change this
+                (Default: 'master')
+
+        OUT:
+            string with sprite code
+            or None if we couldn't get the exp (e.g. if Monika isn't on the screen)
+        """
+        # It can be really problematic to get this, easier to just use try/except
+        try:
+            current_exp = renpy.game.context().images.get_attributes(layer, "monika")[0]
+
+        except:
+            current_exp = None
+
+        else:
+            # If we're showing idle, we should fetch the spr code from it directly
+            if current_exp == "idle":
+                current_exp = mas_moni_idle_disp.current_exp.code
+
+        return current_exp
+
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
         """
