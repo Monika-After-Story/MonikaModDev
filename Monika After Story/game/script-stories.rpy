@@ -51,16 +51,20 @@ init -1 python in mas_stories:
 
     #Override maps to have special conditionals for specific story types
     NEW_STORY_CONDITIONAL_OVERRIDE = {
-        TYPE_SCARY: "mas_isO31() or mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
+        TYPE_SCARY: (
+            "mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY, ignore_cooldown=store.mas_isO31())"
+        ),
     }
 
-    def check_can_unlock_new_story(story_type=TYPE_NORMAL):
+    def check_can_unlock_new_story(story_type=TYPE_NORMAL, ignore_cooldown=False):
         """
         Checks if it has been at least one day since we've seen the last story or the initial story
 
         IN:
             story_type - story type to check if we can unlock a new one
                 (Default: TYPE_NORMAL)
+            ignore_cooldown - Whether or not we ignore the cooldown or time between new stories
+                (Default: False)
         """
         global TIME_BETWEEN_UNLOCKS
 
@@ -73,20 +77,13 @@ init -1 python in mas_stories:
         if not first_story:
             return False
 
-        can_show_new_story = ((
-                store.seen_event(first_story) if new_story_ls is None
-                else store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
+        can_show_new_story = (
+            store.seen_event(first_story)
+            and (
+                ignore_cooldown
+                or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
             )
-            and len(
-                store.Event.filterEvents(
-                    story_database,
-                    pool=False,
-                    aff=store.mas_curr_affection,
-                    unlocked=False,
-                    flag_ban=store.EV_FLAG_HFM,
-                    category=(True, [story_type])
-                )
-            ) > 0
+            and len(get_new_stories_for_type(story_type)) > 0
         )
 
         #If we're showing a new story, randomize the time between unlocks again
@@ -94,6 +91,25 @@ init -1 python in mas_stories:
             TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
 
         return can_show_new_story
+
+    def get_new_stories_for_type(story_type):
+        """
+        Gets all new (unseen) stories of the given ype
+
+        IN:
+            story_type - story type to get
+
+        OUT:
+            list of locked stories for the given story type
+        """
+        return store.Event.filterEvents(
+            story_database,
+            pool=False,
+            aff=store.mas_curr_affection,
+            unlocked=False,
+            flag_ban=store.EV_FLAG_HFNAS,
+            category=(True, [story_type])
+        )
 
     def get_and_unlock_random_story(story_type=TYPE_NORMAL):
         """
@@ -104,13 +120,7 @@ init -1 python in mas_stories:
                 (Default: TYPE_NORMAL)
         """
         #Get locked stories
-        stories = store.Event.filterEvents(
-            story_database,
-            unlocked=False,
-            pool=False,
-            aff=store.mas_curr_affection,
-            category=(True, [story_type])
-        )
+        stories = get_new_stories_for_type(story_type)
 
         #Grab one of the stories
         story = renpy.random.choice(stories.values())
