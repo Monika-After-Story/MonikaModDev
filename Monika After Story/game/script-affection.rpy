@@ -2092,7 +2092,7 @@ label monika_affection_nickname:
 
                 elif lowername == m_name.lower():
                     m 1euc "..."
-                    m 1hksdlb "I thought we were choosing a new name, silly."
+                    m 1hksdlb "I thought we were choosing a new nickname, silly."
                     m 1eka "Try again~"
 
                 elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
@@ -2115,7 +2115,7 @@ label monika_affection_nickname:
                             m 3hua "Ehehe, back to the classics I see~"
 
                         elif good_monika_nickname_comp.search(inputname):
-                            m 1wuo "Oh! That's a wonderful name!"
+                            m 1wuo "Oh! That's a wonderful nickname!"
                             m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
