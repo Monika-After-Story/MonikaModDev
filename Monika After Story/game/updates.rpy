@@ -394,6 +394,19 @@ label v0_12_5(version="v0_12_5"):
                 "monika_affection_nickname",
                 prompt="Can I call you a different nickname?"
             )
+
+        if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
+            persistent._mas_nye_spent_nye = False
+            mas_history._store(True, "nye.actions.spent_nye", 2020)
+
+            date_count = persistent._mas_nye_nye_date_count
+            persistent._mas_nye_nye_date_count = 0
+            old_date_count = mas_HistLookup("nye.actions.went_out_nye", 2020)[1]
+            if old_date_count is not None:
+                date_count += old_date_count
+
+            mas_history._store(date_count, "nye.actions.went_out_nye", 2020)
+
     return
 
 # 0.12.4

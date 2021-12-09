@@ -3230,6 +3230,14 @@ label monika_change_background_loop:
                 if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
             ]
 
+        #D25 supporting bgs
+        elif persistent._mas_d25_deco_active:
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, mbg_id)
+            ]
+
         #Non holiday specific bg sel
         else:
             # build other backgrounds list
