@@ -122,17 +122,6 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
-    RANDCHAT_RANGE_MAP = {
-        BROKEN: 1,
-        DISTRESSED: 2,
-        UPSET: 3,
-        NORMAL: 4,
-        HAPPY: 4,
-        AFFECTIONATE: 5,
-        ENAMORED: 6,
-        LOVE: 6
-    }
-
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -418,6 +407,20 @@ init -1 python in mas_affection:
             return "monika 1esc_static"
 
         return FORCE_EXP_MAP.get(curr_aff, "monika idle")
+
+# This needs to be defined a bit later
+init 5 python in mas_affection:
+    # Rand chatter settings map
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: store.mas_randchat.RARELY,
+        DISTRESSED: store.mas_randchat.OCCASIONALLY,
+        UPSET: store.mas_randchat.LESS_OFTEN,
+        NORMAL: store.mas_randchat.NORMAL,
+        HAPPY: store.mas_randchat.NORMAL,
+        AFFECTIONATE: store.mas_randchat.OFTEN,
+        ENAMORED: store.mas_randchat.VERY_OFTEN,
+        LOVE: store.mas_randchat.VERY_OFTEN
+    }
 
 
 # need these utility functiosn post event_handler
