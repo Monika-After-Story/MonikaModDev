@@ -1421,6 +1421,7 @@ screen preferences():
                 style_prefix "slider"
                 box_wrap True
 
+                # TODO: clean this up, we should not exucute py code in screens
                 python:
                     ### random chatter preprocessing
                     if mas_randchat_prev != persistent._mas_randchat_freq:
