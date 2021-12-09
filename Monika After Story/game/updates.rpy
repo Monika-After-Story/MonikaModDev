@@ -377,6 +377,23 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.5
 label v0_12_5(version="v0_12_5"):
     python hide:
+        # unlock islands for people who may have them permalocked due to faulty bg entry PP check
+        if store.seen_event("greeting_ourreality") and persistent._mas_current_background == store.mas_background.MBG_DEF:
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+        mas_setEVLPropValues(
+            "bye_enjoyyourafternoon",
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)"
+        )
+        mas_setEVLPropValues(
+            "bye_goodevening",
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)"
+        )
+        if seen_event("monika_affection_nickname"):
+            mas_setEVLPropValues(
+                "monika_affection_nickname",
+                prompt="Can I call you a different nickname?"
+            )
 
         if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
             persistent._mas_nye_spent_nye = False

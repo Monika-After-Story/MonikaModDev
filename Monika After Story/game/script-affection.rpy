@@ -2039,7 +2039,7 @@ label monika_affection_nickname:
         python:
             if aff_nickname_ev:
                 # change the prompt for this event
-                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                aff_nickname_ev.prompt = _("Can I call you a different nickname?")
                 Event.lockInit("prompt", ev=aff_nickname_ev)
                 persistent._mas_offered_nickname = True
 
@@ -2067,13 +2067,13 @@ label monika_affection_nickname:
                         _("So what do you want to call me?"),
                         allow=name_characters_only,
                         length=10,
-                        screen_kwargs={"use_return_button": True}
+                        screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "cancel_input":
+                if lowername == "nevermind":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
@@ -2081,7 +2081,7 @@ label monika_affection_nickname:
 
                 elif not lowername:
                     m 1lksdla "..."
-                    m 1hksdrb "You have to give me a name, [player]!"
+                    m 1hksdrb "You have to give me a nickname, [player]!"
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
 
@@ -2092,7 +2092,7 @@ label monika_affection_nickname:
 
                 elif lowername == m_name.lower():
                     m 1euc "..."
-                    m 1hksdlb "I thought we were choosing a new name, silly."
+                    m 1hksdlb "I thought we were choosing a new nickname, silly."
                     m 1eka "Try again~"
 
                 elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
@@ -2115,14 +2115,14 @@ label monika_affection_nickname:
                             m 3hua "Ehehe, back to the classics I see~"
 
                         elif good_monika_nickname_comp.search(inputname):
-                            m 1wuo "Oh! That's a wonderful name!"
+                            m 1wuo "Oh! That's a wonderful nickname!"
                             m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
                             label .neutral_accept:
                                 pass
 
-                            m 1duu "[inputname]... That's a pretty nice name."
+                            m 1duu "[inputname]... That's a pretty nice nickname."
                             m 3ekbsa "Thank you [player], you're so sweet~"
 
                         $ persistent._mas_monika_nickname = inputname
