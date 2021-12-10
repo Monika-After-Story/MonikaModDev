@@ -6490,6 +6490,7 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    #TODO: Add minutes param for verbosity + new function for clearing pause
     def mas_setEventPause(seconds=60):
         """
         Sets a pause 'til next event
@@ -8086,7 +8087,7 @@ init -1 python in mas_randchat:
         """
         Reduces the randchat setting if we're too high for the current affection level
         """
-        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP.get(aff_level, RARELY)
 
         if store.persistent._mas_randchat_freq > max_setting_for_level:
             adjustRandFreq(max_setting_for_level)
@@ -8125,12 +8126,7 @@ init -1 python in mas_randchat:
             displayable string that reprsents the current random chatter
             setting
         """
-        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
-
-        if slider_value is None:
-            return "Never"
-
-        return randchat_disp
+        return SLIDER_MAP_DISP.get(slider_value, "UNKNOWN")
 
 
     def setWaitingTime():

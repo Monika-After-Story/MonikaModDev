@@ -3037,7 +3037,7 @@ init -2 python in mas_background:
         """
         Entry programming point for default background
         """
-        if store.seen_event("mas_monika_islands"):
+        if store.seen_event("greeting_ourreality"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
         #NOTE: We check if _old here because it acts as a check for whether or not we're in the init phase
@@ -3228,6 +3228,14 @@ label monika_change_background_loop:
                 (mbg_obj.prompt, mbg_obj, False, False)
                 for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
                 if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
+            ]
+
+        #D25 supporting bgs
+        elif persistent._mas_d25_deco_active:
+            other_backgrounds = [
+                (mbg_obj.prompt, mbg_obj, False, False)
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, mbg_id)
             ]
 
         #Non holiday specific bg sel

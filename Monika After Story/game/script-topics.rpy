@@ -1819,6 +1819,7 @@ label monika_horror:
 
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
+            $ persistent._mas_pm_likes_spoops = False
             m 2eka "I can understand. It's definitely not for everyone."
 
     m 3eua "I remember we talked about this a little bit when you first joined the club."
@@ -9767,11 +9768,12 @@ label monika_natsuki_letter:
     return "derandom"
 
 # TODO possible tie this with affection?
+# TODO uncomment once TCO is implemented
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -17564,4 +17566,40 @@ label monika_ddlcroleplay:
     extend 1hksdlb "maybe I can take it as flattery, in a way?"
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_zodiac_starsign",
+            prompt="What's your starsign?",
+            category=["monika"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_player_bday is not None"
+        )
+    )
+
+label monika_zodiac_starsign:
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
+
+    m 1rta "Well, I'm pretty sure I'm a Virgo."
+
+    #This next line is just checking the player's starsign based on their birthday.
+    if player_zodiac_sign != "Virgo":
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
+
+    else:
+        m 3eub "And so are you, [mas_get_player_nickname()]!"
+
+    #The final part pops up regardless of your sign.
+    m 1eta "Although, don't you think it's kind of silly?"
+    m 3esd "I mean, objects in space can't {i}really{/i} affect our personality..."
+    m 1tuc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4wud "Like, they'll even judge potential partners and friends based on their sign!"
+    m 2luc "...That's something I'll never understand."
+    $ p_nickname = mas_get_player_nickname()
+    m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
+    extend 1eublu "I'd never let any silly old stars come between us."
+    $ del player_zodiac_sign
     return
