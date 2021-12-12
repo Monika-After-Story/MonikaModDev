@@ -1,6 +1,6 @@
 # just resetting the d25 events
 
-init python:
+init 999 python:
     if persistent._mas_override_d25_gift_react is None:
         persistent._mas_override_d25_gift_react = config.developer
 
