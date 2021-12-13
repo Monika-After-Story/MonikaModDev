@@ -254,14 +254,3 @@ init -980 python in mas_api_keys:
     # load keys on start
     load_keys()
 
-
-init 999 python in mas_api_keys:
-    import store
-
-    # remove persistent api keys that were not registered
-    # TODO - re-evaluate if good idea - this is kind of annoying tbh
-#    for feature in store.persistent._mas_api_keys.keys():
-#        if not feature_registered(feature):
-#            store.persistent._mas_api_keys.pop(feature)
-
-
