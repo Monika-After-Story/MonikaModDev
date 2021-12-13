@@ -40,6 +40,10 @@ init -200 python in mas_ui:
     light_button_text_hover_color = "#fa9"
     light_button_text_insensitive_color = "#8C8C8C"
 
+    TEXT_FIELD_BG = "#ffaa99aa"
+
+    MONO_FONT = "mod_assets/font/mplus-1mn-medium.ttf"
+
     # ---- files ----
 
     # confirm screen
