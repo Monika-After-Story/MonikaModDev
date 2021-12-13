@@ -889,7 +889,7 @@ label monika_ptod_tip010:
 # NOTE: base the solids off of hangman. That should help us out
 
 image cn_frame = "mod_assets/console/cn_frame.png"
-define mas_ptod.font = "mod_assets/font/mplus-1mn-medium.ttf"
+define mas_ptod.font = mas_ui.MONO_FONT
 
 # NOTE: Console text:
 # style console_text (for regular console text)

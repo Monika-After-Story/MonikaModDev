@@ -833,6 +833,9 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
+        if len(store.mas_api_keys.registered_api_keys) > 0:
+            textbutton _("API Keys") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
+
         textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
         #textbutton _("About") action ShowMenu("about")
@@ -2728,7 +2731,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
         ypos left_area[1] - 55
         xsize right_area[0] - left_area[0] + right_area[2]# 530
         ysize 40
-        background Solid("#ffaa99aa")
+        background Solid(store.mas_ui.TEXT_FIELD_BG)
 
         viewport:
             draggable False
@@ -3070,3 +3073,61 @@ screen submods():
         xalign 0 yalign 1.0
         xoffset 300 yoffset -10
         style "main_menu_version"
+
+
+screen mas_apikeys():
+
+    tag menu
+
+    use game_menu(_("API Keys"), scroll="viewport"):
+
+        if len(store.mas_api_keys.registered_api_keys) < 1:
+            text _("No API keys accepted"): # NOTE: the game menu screen shouldn't have let us get here.
+                style "main_menu_version"
+
+        else:
+
+            vbox:
+                spacing 30
+                
+                for feature_data in store.mas_api_keys.features_for_display():
+                    hbox:
+                        spacing 20
+                        
+                        label feature_data[0]: # name
+                            xalign 0
+                            xmaximum 400
+                            xsize 400
+                            text_text_align 0.0
+
+                        frame:
+                            xmaximum 600
+                            xsize 600
+                            xfill True
+                            ysize 40
+                            ymaximum 40
+                            yalign 0.5
+                            background Solid(store.mas_ui.TEXT_FIELD_BG)
+
+                            if feature_data[2]:
+                                hbox:
+                                    spacing 10
+
+                                    textbutton _("Clear"):
+                                        style "confirm_button"
+                                        action Function(store.mas_api_keys.screen_clear, feature_data[1])
+
+                                    text feature_data[2]: # api key
+                                        xalign 0
+                                        yalign 0.5
+                                        size 20
+                                        ymaximum 40
+                                        layout "nobreak"
+                                        color mas_globals.button_text_insensitive_color
+                                        font mas_ui.MONO_FONT
+
+                            else:
+                                textbutton _("Paste"):
+                                    style "confirm_button"
+                                    action Function(store.mas_api_keys.screen_paste, feature_data[1])
+
