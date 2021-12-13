@@ -153,6 +153,7 @@ init python:
     build.classify('/game/10', None)
     build.classify('/game/cache/*.*', None)
     build.classify('**.rpa',None)
+    build.classify("game/mod_assets/api_keys.json", None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
