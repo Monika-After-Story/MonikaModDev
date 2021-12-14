@@ -4,6 +4,13 @@ init -1500 python:
     import singleton
     me = singleton.SingleInstance()
 
+    # ssl hack
+    try:
+        mas_utils._load_ssl()
+    except ImportError as e:
+        mas_utils.mas_log.error("Failed to import ssl {0}".format(repr(e)))
+        # TODO: include api for checking this somewhere
+
 python early in mas_logging:
     import datetime
     import logging
@@ -701,3 +708,32 @@ python early in mas_utils:
             return int(value)
         except:
             return default
+
+
+    def _load_ssl():
+        """
+        Loads the SSL library and adjusts httplib
+
+        This is a hack.
+        """
+        ssl_pkg = "python-packages/ssl"
+        new_ssl = None
+        if platform.system() == "Windows":
+            sys.path.append(os.path.normcase(os.path.join(
+                renpy.config.gamedir,
+                ssl_pkg,
+                "windows/",
+            )))
+
+            import win_ssl
+            new_ssl = win_ssl
+
+        else:
+            # TODO - others
+            pass
+
+        if new_ssl is not None:
+            sys.modules["ssl"] = new_ssl
+            import httplib
+            httplib.ssl = new_ssl
+
