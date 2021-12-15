@@ -2045,6 +2045,12 @@ init -10 python in mas_d25_utils:
         d25_gen = []
         mas_frs.process_gifts(d25_giftnames, d25_evb, d25_gsp, d25_gen)
 
+        # TODO: so the reason why d25 gifts are not reacted to is because 
+        # the nd25 gifts (non-d25) are passed into the build_gift_react_labels`
+        # function below. To make gift feedback to work, we should probably
+        # pass something else into the `ending_label` and then juump to
+        # mas_reaction_end.
+
         # parse non_d25_gifts for types
         non_d25_giftnames = [x for x in found_map]
         non_d25_giftnames.sort()
