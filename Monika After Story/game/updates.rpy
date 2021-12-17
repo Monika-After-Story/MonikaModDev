@@ -377,7 +377,58 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.6
 label v0_12_6(version="v0_12_6"):
     python hide:
-        pass
+
+        ##### PUT YOUR UPDATE SCRIPT CODE AFTER THIS 0.11.1 BLOCK
+        # We need to MAKE SURE this shit runs.
+
+        # sets an updated conditional for the credits song
+        # NOTE: because the topic does not unlock, it is a 1-time only
+        #   topic and therefore should NOT be reset if already seen
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if (
+                credits_song_ev
+                and credits_song_ev.action
+                and credits_song_ev.shown_count == 0 # NEW
+        ):
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
+        # enable twintails if users have it installed.
+        # NOTE: I don't think there's any harm in running this again.
+        #   lmk if you disagree
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        # grandfathers Monika nicknames that became awkard in 0.11.1.
+        # NOTE: since we obvi don't want to overwrite people's grandfathered
+        #   nickname, we only do this if we didn't set the grandfathered
+        #   nickname before.
+        if (
+                persistent._mas_grandfathered_nickname is None # NEW
+                and persistent._mas_monika_nickname != "Monika"
+                and mas_awk_name_comp.search(persistent._mas_monika_nickname)
+        ):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        # convert bad name to a pm var
+        # NOTE: again, don't want to overwrite, so only setting if the old
+        #   var is still set (which means it wasn't deleted)
+        if persistent._mas_called_moni_a_bad_name is not None: # NEW
+            persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+            safeDel("_mas_called_moni_a_bad_name")
+
+        # penname should default to none
+        # NOTE: no changes made here, resetting to None if the bool value is
+        #   False is fine to do in current. penname will be set to either
+        #   a string or None now.
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
+        ##### END 0.11.1 BLOCK
+        # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.6 VERSION BELOW HERE
+
     return
 
 # 0.12.5
@@ -1133,14 +1184,15 @@ label v0_11_1(version="v0_11_1"):
                 chess_unlock_ev.shown_count = 1
 
         # add missing xp for new users
-        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+        session_count = mas_getTotalSessions()
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)) and session_count > 0:
             # only care about users who basically started with 0.11.0 + week
-            # ago
+            # ago and have actual session data (aka people who started 0.6.0)
 
             # calc avg hr per session
             ahs = (
                 store.mas_utils.td2hr(mas_getTotalPlaytime())
-                / float(mas_getTotalSessions())
+                / float(session_count)
             )
 
             # only care about users with under 2 hour session time avg
