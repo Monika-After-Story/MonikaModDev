@@ -3037,7 +3037,7 @@ init -2 python in mas_background:
         """
         Entry programming point for default background
         """
-        if store.seen_event("mas_monika_islands"):
+        if store.seen_event("greeting_ourreality"):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
         #NOTE: We check if _old here because it acts as a check for whether or not we're in the init phase

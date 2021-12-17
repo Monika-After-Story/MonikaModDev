@@ -1372,7 +1372,7 @@ init -3 python in mas_piano_keys:
 
                 # log warnings
                 for _warn in _msg:
-                    log.warn("    " + _warn)
+                    log.warning("    " + _warn)
 
                 # verse check
                 if real_pnm.verse < 0 or real_pnm.verse >= len(_pnm_list):

@@ -6505,6 +6505,33 @@ init 2 python:
         else:
             mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
 
+    def mas_getCurrentMoniExp(layer="master"):
+        """
+        Returns Monika's current expression
+
+        IN:
+            layer - the layer to check for Monika's displayable
+                You probably shouldn't change this
+                (Default: 'master')
+
+        OUT:
+            string with sprite code
+            or None if we couldn't get the exp (e.g. if Monika isn't on the screen)
+        """
+        # It can be really problematic to get this, easier to just use try/except
+        try:
+            current_exp = renpy.game.context().images.get_attributes(layer, "monika")[0]
+
+        except:
+            current_exp = None
+
+        else:
+            # If we're showing idle, we should fetch the spr code from it directly
+            if current_exp == "idle":
+                current_exp = mas_moni_idle_disp.current_exp.code
+
+        return current_exp
+
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
         """
@@ -8087,7 +8114,7 @@ init -1 python in mas_randchat:
         """
         Reduces the randchat setting if we're too high for the current affection level
         """
-        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP.get(aff_level, RARELY)
 
         if store.persistent._mas_randchat_freq > max_setting_for_level:
             adjustRandFreq(max_setting_for_level)
@@ -8126,12 +8153,7 @@ init -1 python in mas_randchat:
             displayable string that reprsents the current random chatter
             setting
         """
-        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
-
-        if slider_value is None:
-            return "Never"
-
-        return randchat_disp
+        return SLIDER_MAP_DISP.get(slider_value, "UNKNOWN")
 
 
     def setWaitingTime():
