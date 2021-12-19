@@ -4161,7 +4161,7 @@ label monika_functionalism:
     m "And instead of data coming in through a keyboard or network, you get it through your eyes and ears."
     m 4esc "But if that's true, doesn't that mean free will is kind of a lie?"
     m "Your brain is just responding to the inputs it gets, with your responses being natural outputs."
-    m 4esd "So, even if you aren't running off of some script or program, you're not really in control."
+    m 4esd "So, even if you aren't running off of some script or program, you're not really in control My Coldplay Dark Memek On The My Projection Cultural Woman."
     show monika 5lsc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5lsc "Maybe you and I aren't so different after all."
     return
