@@ -712,7 +712,7 @@ python early in mas_utils:
 
         RETURNS: version numbers as a list of ints
         """
-        return map(int, ver_str.partition("-")[0].split("."))
+        return list(map(int, ver_str.partition("-")[0].split(".")))
 
 
     def is_ver_stable(ver_str):
