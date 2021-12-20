@@ -2411,19 +2411,15 @@ label mas_d25_gift_tree_intro:
     m 1hublb "[player], you're so sweet!"
     m 1hubla "There's just something so special about receiving a present this time of year..."
     m 3hub "I'm going to put [_these] under the tree."
-    m 3hua "It'll be so exicitng to open them on Christmas morning!"
-    jump mas_d25_gift_tree_end
+    m 3hua "It'll be so exciting to open them on Christmas morning!"
+    return
 
 label mas_d25_gift_tree_intro_repeat:
     $ _more_presents = "more presents" if multiple else "another present"
     m 1wub "Ah, [_more_presents] for the tree!"
     m 1eka "Thank you so much, [mas_get_player_nickname()]."
     m 1hublb "I'm getting so excited for Christmas, ahaha~"
-
-    # FALL THROUGH
-
-label mas_d25_gift_tree_end:
-    jump mas_reaction_end
+    return
 
 #D25 holiday gift starter/connector
 label mas_d25_gift_starter:
