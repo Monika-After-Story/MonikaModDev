@@ -2387,7 +2387,7 @@ label mas_d25_gift_tree_intro_1_1:
     call mas_d25_gift_tree_intro(False, True)
     return
    
-label mas_d25_gift_tree_intro(d25_multiple, nd25_any)
+label mas_d25_gift_tree_intro(d25_multiple, nd25_any):
 
     if nd25_any:
         m 6wuw "And here we have..." # TODO add appropriate expression"
@@ -2411,7 +2411,7 @@ label mas_d25_gift_tree_intro(d25_multiple, nd25_any)
     m 3hua "It'll be so exciting to open them on Christmas morning!"
     return
 
-label mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any)
+label mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any):
     $ _more_presents = "more presents" if d25_multiple else "another present"
     m 1wub "Ah, [_more_presents] for the tree!"
     m 1eka "Thank you so much, [mas_get_player_nickname()]."
