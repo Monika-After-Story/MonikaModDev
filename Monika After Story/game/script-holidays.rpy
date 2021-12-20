@@ -2381,13 +2381,13 @@ label mas_d25_gift_tree_intro_1_0:
 
 # multiple d25, non-d25 > 0
 label mas_d25_gift_tree_intro_2_1:
-    $ multiple = True
+    $ d25_multiple = True
     $ nd25_any = True
     jump mas_d25_gift_tree_intro
 
 # single d25, non-d25 > 0
 label mas_d25_gift_tree_intro_1_1:
-    $ multiple = False
+    $ d25_multiple = False
     $ nd25_any = True
     jump mas_d25_gift_tree_intro
    
@@ -2400,7 +2400,7 @@ label mas_d25_gift_tree_intro:
         jump mas_d25_gift_tree_intro_repeat
 
     python:
-        if multiple:
+        if d25_multiple:
             _these = "these"
             _gifts = "Gifts"
         else:
@@ -2415,7 +2415,7 @@ label mas_d25_gift_tree_intro:
     return
 
 label mas_d25_gift_tree_intro_repeat:
-    $ _more_presents = "more presents" if multiple else "another present"
+    $ _more_presents = "more presents" if d25_multiple else "another present"
     m 1wub "Ah, [_more_presents] for the tree!"
     m 1eka "Thank you so much, [mas_get_player_nickname()]."
     m 1hublb "I'm getting so excited for Christmas, ahaha~"
