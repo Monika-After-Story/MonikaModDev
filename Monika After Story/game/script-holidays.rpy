@@ -2045,12 +2045,6 @@ init -10 python in mas_d25_utils:
         d25_gen = []
         mas_frs.process_gifts(d25_giftnames, d25_evb, d25_gsp, d25_gen)
 
-        # TODO: so the reason why d25 gifts are not reacted to is because 
-        # the nd25 gifts (non-d25) are passed into the build_gift_react_labels`
-        # function below. To make gift feedback to work, we should probably
-        # pass something else into the `ending_label` and then juump to
-        # mas_reaction_end.
-
         # parse non_d25_gifts for types
         non_d25_giftnames = [x for x in found_map]
         non_d25_giftnames.sort()
@@ -2083,13 +2077,22 @@ init -10 python in mas_d25_utils:
         mas_frs.register_sp_grds(nd25_gsp)
         mas_frs.register_gen_grds(nd25_gen)
 
+        # prepare the end label to actually use
+        d25_gift_count = len(d25_evb) + len(d25_gsp)
+        if d25_gift_count > 1:
+            end_label = "mas_d25_gift_tree_intro_multiple"
+        elif d25_gift_count > 0:
+            end_label = "mas_d25_gift_tree_intro_single"
+        else:
+            end_label = "mas_reaction_end"
+
         # now build the reaction labels for standard gifts
         return mas_frs.build_gift_react_labels(
             nd25_evb,
             nd25_gsp,
             nd25_gen,
             mas_frs.gift_connectors,
-            "mas_reaction_end",
+            end_label,
             mas_frs._pick_starter_label()
         )
 
@@ -2355,6 +2358,39 @@ label mas_d25_season_exit:
 
         mas_d25ReactToGifts()
     return
+
+# pre-d25 gift handling
+label mas_d25_gift_tree_intro_multiple:
+    $ multiple = True
+    jump mas_d25_gift_tree_intro
+
+label mas_d25_gift_tree_intro_single:
+    $ multiple  = False
+   
+label mas_d25_gift_tree_intro:
+
+    # TODO: alreayd seen
+
+    # "Gift/s? for me?" # TODO
+    m 1hublb "[player], you're so sweet!"
+    m 1hubla "There's just something so special about receiving a present this time of year..."
+
+    $ _these = "these" if multiple else "this"
+
+    m 3hub "I'm going to put [_these] under the tree."
+    m 3hua "It'll be so exicitng to open them on Christmas morning!"
+    jump mas_d25_gift_tree_intro_repeat
+
+label mas_d25_gift_tree_intro_repeat:
+    $ _more_presents = "more presents" if multiple else "another present"
+    m 1wub "Ah, [_more_presents] for the tree!"
+    m 1eka "Thank you so much, [mas_get_player_nickname()]."
+    m 1hublb "I'm getting so excited for Christmas, ahaha~"
+
+    # FALL THROUGH
+
+label mas_d25_gift_tree_end:
+    jump mas_reaction_end
 
 #D25 holiday gift starter/connector
 label mas_d25_gift_starter:
