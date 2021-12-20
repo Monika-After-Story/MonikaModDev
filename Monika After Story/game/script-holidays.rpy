@@ -2369,35 +2369,32 @@ label mas_d25_season_exit:
 #   this is the quickest way without adding an extra per var.
 # multiple d25, no non-d25
 label mas_d25_gift_tree_intro_2_0:
-    $ d25_multiple = True
-    $ nd25_any = False
-    jump mas_d25_gift_tree_intro
+    call mas_d25_gift_tree_intro(True, False)
+    return
 
 # single d25, no non-d25
 label mas_d25_gift_tree_intro_1_0:
-    $ d25_multiple = False
-    $ nd25_any = False
-    jump mas_d25_gift_tree_intro
+    call mas_d25_gift_tree_intro(False, False)
+    return
 
 # multiple d25, non-d25 > 0
 label mas_d25_gift_tree_intro_2_1:
-    $ d25_multiple = True
-    $ nd25_any = True
-    jump mas_d25_gift_tree_intro
+    call mas_d25_gift_tree_intro(True, True)
+    return
 
 # single d25, non-d25 > 0
 label mas_d25_gift_tree_intro_1_1:
-    $ d25_multiple = False
-    $ nd25_any = True
-    jump mas_d25_gift_tree_intro
+    call mas_d25_gift_tree_intro(False, True)
+    return
    
-label mas_d25_gift_tree_intro:
+label mas_d25_gift_tree_intro(d25_multiple, nd25_any)
 
     if nd25_any:
         m 6wuw "And here we have..." # TODO add appropriate expression"
 
     if renpy.seen_label("mas_d25_gift_tree_intro"):
-        jump mas_d25_gift_tree_intro_repeat
+        call mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any)
+        return
 
     python:
         if d25_multiple:
@@ -2414,7 +2411,7 @@ label mas_d25_gift_tree_intro:
     m 3hua "It'll be so exciting to open them on Christmas morning!"
     return
 
-label mas_d25_gift_tree_intro_repeat:
+label mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any)
     $ _more_presents = "more presents" if d25_multiple else "another present"
     m 1wub "Ah, [_more_presents] for the tree!"
     m 1eka "Thank you so much, [mas_get_player_nickname()]."
