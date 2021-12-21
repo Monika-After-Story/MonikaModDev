@@ -4,12 +4,81 @@ init -1500 python:
     import singleton
     me = singleton.SingleInstance()
 
+
+init -1500 python in mas_utils:
+    # ssl-specific stuff
+
+    ssl_enabled = False
+
+
+    def _load_ssl():
+        """
+        Loads the SSL library and adjusts httplib
+
+        This is a hack.
+        """
+        ssl_pkg = "python-packages/ssl"
+        bit64 = "x86_64"
+        bit32 = "i686"
+        new_ssl = None
+
+        if platform.system() == "Windows":
+            sys.path.append(os.path.normcase(os.path.join(
+                renpy.config.gamedir,
+                ssl_pkg,
+                "windows/32/",
+            )))
+
+            import win32_ssl
+            new_ssl = win32_ssl
+
+        elif platform.system() == "Linux":
+
+            if platform.machine() == bit64:
+                sys.path.append(os.path.normcase(os.path.join(
+                    renpy.config.gamedir,
+                    ssl_pkg,
+                    "linux/64/",
+                )))
+
+                import linux64_ssl
+                new_ssl = linux64_ssl
+
+            elif platform.machine() == bit32:
+                sys.path.append(os.path.normcase(os.path.join(
+                    renpy.config.gamedir,
+                    ssl_pkg,
+                    "linux/32/",
+                )))
+
+                import linux32_ssl
+                new_ssl = linux32_ssl
+
+        elif platform.system() == "Darwin" and platform.machine() == bit64:
+            sys.path.append(os.path.normcase(os.path.join(
+                renpy.config.gamedir,
+                ssl_pkg,
+                "mac/64/",
+            )))
+
+            import mac64_ssl
+            new_ssl = mac64_ssl
+
+        # overwrties httplib's ssl ref so later HTTPS will work.
+        if new_ssl is not None:
+            sys.modules["ssl"] = new_ssl
+            import httplib
+            httplib.ssl = new_ssl
+
+
     # ssl hack
     try:
-        mas_utils._load_ssl()
+        _load_ssl()
+        ssl_enabled = True
     except ImportError as e:
-        mas_utils.mas_log.error("Failed to import ssl {0}".format(repr(e)))
-        # TODO: include api for checking this somewhere
+        mas_log.error("Failed to import ssl {0}".format(repr(e)))
+        ssl_enabled = False
+
 
 python early in mas_logging:
     import datetime
@@ -708,32 +777,4 @@ python early in mas_utils:
             return int(value)
         except:
             return default
-
-
-    def _load_ssl():
-        """
-        Loads the SSL library and adjusts httplib
-
-        This is a hack.
-        """
-        ssl_pkg = "python-packages/ssl"
-        new_ssl = None
-        if platform.system() == "Windows":
-            sys.path.append(os.path.normcase(os.path.join(
-                renpy.config.gamedir,
-                ssl_pkg,
-                "windows/",
-            )))
-
-            import win_ssl
-            new_ssl = win_ssl
-
-        else:
-            # TODO - others
-            pass
-
-        if new_ssl is not None:
-            sys.modules["ssl"] = new_ssl
-            import httplib
-            httplib.ssl = new_ssl
 

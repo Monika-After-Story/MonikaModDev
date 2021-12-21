@@ -2,7 +2,10 @@
 
 import platform
 
-if platform.system() == "Windows": # TODO- add all acceptable packages here
+if (
+        platform.system() in ("Windows", "Linux")
+        or (platform.system() == "Darwin" and platform.machine() == "x86_64") # 64-bit mac
+):
     pass
 else:
     raise ImportError
