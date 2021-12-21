@@ -2,8 +2,8 @@
     "__author": "briaryoung",
     "version": 3,
     "type": 2,
-    "name": "briaryoung_vcut_crossed_straps_tanktop",
-    "img_sit": "briaryoung_vcut_crossed_straps_tanktop",
+    "name": "briaryoung_tied_crop_top_black",
+    "img_sit": "briaryoung_tied_crop_top_black",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -11,17 +11,17 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "bare-shoulders": true
+        "compat-downtiedstrand": true
     },
     "select_info": {
-        "display_name": "V-cut Crossed Straps Tanktop (White)",
-        "thumb": "briaryoung_vcut_crossed_straps_tanktop",
+        "display_name": "Tied Crop Top (Black)",
+        "thumb": "briaryoung_tied_crop_top_black",
         "group": "clothes",
         "select_dlg": [
             "How do I look, [player]?",
             "Perfect for a hot day."
         ]
     },
-    "giftname": "briaryoung_vcut_crossed_straps_tanktop",
+    "giftname": "tied_crop_top_black",
     "pose_arms": {}
 }
