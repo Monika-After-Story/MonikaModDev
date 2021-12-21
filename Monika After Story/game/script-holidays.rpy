@@ -2390,7 +2390,7 @@ label mas_d25_gift_tree_intro_1_1:
 label mas_d25_gift_tree_intro(d25_multiple, nd25_any):
 
     if nd25_any:
-        m 6wuw "And here we have..." # TODO add appropriate expression"
+        m 3hub "And here we have..."
 
     if renpy.seen_label("mas_d25_gift_tree_intro"):
         call mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any)
@@ -2404,7 +2404,7 @@ label mas_d25_gift_tree_intro(d25_multiple, nd25_any):
             _these = "this"
             _gifts = "A gift"
 
-    m 6wuw "[_gifts]? For me?" # TODO add appropriate expression
+    m 1wublb "[_gifts]? For me?"
     m 1hublb "[player], you're so sweet!"
     m 1hubla "There's just something so special about receiving a present this time of year..."
     m 3hub "I'm going to put [_these] under the tree."
