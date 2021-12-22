@@ -16079,14 +16079,14 @@ label monika_wabi_sabi:
     m 7ekc "Maybe they grew into something that they're just not proud of."
     m 2dkd "It can be crushing to be worried about both looks and personality..."
 
-    if persistent._mas_pm_love_yourself:
+    if persistent._mas_pm_love_yourself is False:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    else:
         m 2eka "I hope you don't feel too insecure about yourself, [player]."
         m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
         m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
-
-    else:
-        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
-        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
 
     m 3hua "We'll overcome any problems you feel you have together."
     m 1hub "That's my wabi-sabi promise!"
