@@ -2,8 +2,8 @@
     "__author": "briaryoung",
     "version": 3,
     "type": 2,
-    "name": "briaryoung_sleeveless_turtleneck",
-    "img_sit": "briaryoung_sleeveless_turtleneck",
+    "name": "briaryoung_sleeveless_turtleneck_black",
+    "img_sit": "briaryoung_sleeveless_turtleneck_black",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -14,14 +14,14 @@
         "compat-downtiedstrand": true
     },
     "select_info": {
-        "display_name": "Sleeveless Turtleneck",
-        "thumb": "briaryoung_sleeveless_turtleneck",
+        "display_name": "Sleeveless Turtleneck (Black)",
+        "thumb": "briaryoung_sleeveless_turtleneck_black",
         "group": "clothes",
         "select_dlg": [
             "How do I look, [player]?",
             "Perfect for a hot day."
         ]
     },
-    "giftname": "sleeveless_turtleneck",
+    "giftname": "sleevelessturtleneckblack",
     "pose_arms": {}
 }

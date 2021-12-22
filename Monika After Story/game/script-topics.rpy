@@ -4720,7 +4720,7 @@ init 5 python:
 
 label monika_ribbon:
     # TODO: We need a better handling for this
-    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon", "mini-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
