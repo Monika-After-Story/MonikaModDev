@@ -17587,6 +17587,7 @@ label monika_zodiac_starsign:
 
     #This next line is just checking the player's starsign based on their birthday.
     if player_zodiac_sign != "Virgo":
+        # TODO: handle a/an here, potential solution is in eeb4b3a3a
         m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
     else:
