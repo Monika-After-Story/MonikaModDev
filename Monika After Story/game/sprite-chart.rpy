@@ -398,6 +398,7 @@ init -100 python in mas_sprites:
         "hat",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for ribbon-based items.
 
@@ -454,6 +455,7 @@ init -100 python in mas_sprites:
         "ribbon",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for hats
 
@@ -567,6 +569,13 @@ init -100 python in mas_sprites:
         ),
         "s-type-ribbon": ACSTemplate(
             "s-type-ribbon",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+            }
+        ),
+        "mini-ribbon": ACSTemplate(
+            "mini-ribbon",
             mux_type=DEF_MUX_RB,
             ex_props={
                 EXP_A_RBL: True,
