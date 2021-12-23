@@ -17582,14 +17582,12 @@ init 5 python:
 
 label monika_zodiac_starsign:
     $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
-    $ article_end = "" if mas_a_an(player_zodiac_sign) == "a" else "n"
 
     m 1rta "Well, I'm pretty sure I'm a Virgo."
 
     #This next line is just checking the player's starsign based on their birthday.
     if player_zodiac_sign != "Virgo":
-        m 3eub "And you'd be aaaa{nw}"
-        extend 3eua "[article_end] [player_zodiac_sign], right?"
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
     else:
         m 3eub "And so are you, [mas_get_player_nickname()]!"
@@ -17603,5 +17601,5 @@ label monika_zodiac_starsign:
     $ p_nickname = mas_get_player_nickname()
     m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
     extend 1eublu "I'd never let any silly old stars come between us."
-    $ del player_zodiac_sign, article_end, p_nickname
+    $ del player_zodiac_sign
     return
