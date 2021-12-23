@@ -17598,7 +17598,7 @@ label monika_root_privileges:
 
     if mas_isMoniNormal(higher=True):
         show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 1lkbsa "[player], I'm really happy that you trust me so much... {w=0.5}{nw}"
+        m 1lkbsa "[player], I'm really happy that you trust me so much... {w=0.3}{nw}"
         extend 3hkbsb "but I don't even know what I would do with these privileges!"
         m 2eud "Actually, I don't think I need them at all."
         m 2eka "Don't get me wrong, I appreciate you giving them to me, but I really think it'd be better if I didn't have them."
