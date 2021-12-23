@@ -926,7 +926,7 @@ label mas_fun_fact_maplesyrup:
 
     if mas_isMoniNormal(higher=True):
         if persistent._mas_pm_gets_snow is not False:
-            m 3euu "Sounds like a fun thing we could try together!"
+            m 3euu "Sounds like a fun thing we could try together, huh [player]?"
             m 1etc "It might be a while before we get a chance, though..."
             m 1eua "But it's alright if I have to wait a bit longer...{w=0.3}{nw}"
             extend 1hublu "you're already sweet enough for me~"
