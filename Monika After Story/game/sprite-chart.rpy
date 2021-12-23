@@ -488,6 +488,7 @@ init -100 python in mas_sprites:
                 "bare neck": True
             }
         ),
+        # TODO - add earrings here
         "front-bow": ACSTemplate(
             "front-bow",
             mux_type=[
