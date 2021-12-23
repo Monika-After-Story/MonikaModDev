@@ -920,7 +920,7 @@ label mas_fun_fact_maplesyrup:
     m 1wud "...Yet Canada produces over three quarters of the world's maple syrup!"
     m 3wud "And it may even be more surprising to learn that to make just one gallon of maple syrup it takes {i}40{/i} gallons of sap!"
     m 1eua "It also takes a lot more effort to produce it than I was expecting..."
-    m 1esc "The sap has to be boiled down to make it into syrup... which obviously takes a while, given how much is needed."
+    m 1esc "The sap has to be boiled down to make it into syrup...which obviously takes a while, given how much is needed."
     m 3eud "Also, I've heard that if you boil it just a little bit more and then pour it out on a fresh bed of snow...{w=0.2}{nw}"
     extend 3hub "you can even make a candy!"
 
