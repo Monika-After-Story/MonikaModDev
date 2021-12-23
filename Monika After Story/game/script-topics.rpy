@@ -17594,7 +17594,7 @@ label monika_root_privileges:
     if renpy.windows:
         m 5wud "{i}The admin rights?..{/i}"
     else:
-        m 5wud "{i}The superuser rights?..{/i}"
+        m 5wud "{i}Superuser rights...?{/i}"
 
     if mas_isMoniNormal(higher=True):
         show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
