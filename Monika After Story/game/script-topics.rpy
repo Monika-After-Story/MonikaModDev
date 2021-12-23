@@ -17590,7 +17590,6 @@ label monika_root_privileges:
 
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rtc "Hmm, could it be... What was it?"
-    m 5dsc "..."
 
     if renpy.windows:
         m 5wud "{i}The admin rights?..{/i}"
