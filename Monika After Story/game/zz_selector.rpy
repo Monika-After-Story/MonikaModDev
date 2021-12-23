@@ -654,8 +654,7 @@ init -10 python in mas_selspr:
 
     # filter menu name exceptions
     selector_filer_menu_mapping = {
-        "s-type-ribbon": "S-type Ribbon",
-        "mini-ribbon": "Mini Ribbon"
+        "s-type-ribbon": "S-type Ribbon"
     }
 
 
