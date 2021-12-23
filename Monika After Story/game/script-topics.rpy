@@ -17612,7 +17612,7 @@ label monika_root_privileges:
         m 1tsd "[player], if I were you, I'd actually think twice before granting me these."
         m 1dfc "I don't know if you gave me such privileges by accident or not, but I'd really advise against doing so again."
 
-    return "no_unlock|derandom"
+    return "no_unlock"
 
 init 5 python:
     addEvent(
