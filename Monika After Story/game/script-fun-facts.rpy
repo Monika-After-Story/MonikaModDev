@@ -912,7 +912,7 @@ init 5 python:
 
 label mas_fun_fact_maplesyrup:
     m 3hksdlb "Here's another {w=0.2}{i}sweet {/i} {w=0.2}fact for you..."
-    m 1eua "Every type of maple tree produces sap that can be used to make maple syrup, {w=0.3}{nw}"
+    m 1eua "Every type of maple tree produces sap that can be used to make maple syrup, {w=0.1}{nw}"
     extend 1eud "but commercially-made syrup usually comes from the sugar maple."
     m 3eua "You can most easily tell the specific type of maple tree from the shape of the leaves..."
     m 3eub "You might be able to recognize a sugar maple leaf already, because it's the one featured on the Canadian flag!"
