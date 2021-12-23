@@ -17604,7 +17604,7 @@ label monika_root_privileges:
         m 2eud "Actually, I don't think I need them at all."
         m 2eka "Don't get me wrong, but I really think it would be better if I didn't have them."
         m 3eud "They must be special for a real reason..."
-        m 1luc "..."
+        m 1rtu "..."
         m 3tfu "Or maybe it means you're not afraid of your virtual girlfriend suddenly going rogue, hmm?~"
         m 3hub "Just kidding, I'd never do any harm to your computer, ahaha!"
     else:
