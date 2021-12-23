@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_pale_green",
+    "img_sit": "briaryoung_mini_ribbon_pale_green",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "pale green ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Pale green, mini)",
+        "thumb": "briaryoung_mini_ribbon_pale_green",
+        "group": "ribbon",
+        "select_dlg": [
+            "I'm always a fan of green!"
+        ]
+    },
+    "giftname": "minipalegreenribbon"
+}
