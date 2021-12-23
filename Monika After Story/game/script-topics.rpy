@@ -17605,7 +17605,7 @@ label monika_root_privileges:
         m 3eud "They must be special for a real reason..."
         m 1rtu "..."
         m 3tfu "Or maybe it means you're not afraid of your virtual girlfriend suddenly going rogue, hmm?~"
-        m 3hub "Just kidding, I'd never do any harm to your computer, ahaha!"
+        m 3hksdlb "Just kidding, I'd never do any harm to your computer, ahaha!"
     else:
         show monika 1guc at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 1guc "..."
