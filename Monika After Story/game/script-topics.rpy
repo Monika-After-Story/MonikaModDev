@@ -17592,7 +17592,7 @@ label monika_root_privileges:
     m 5rtc "Hmm, what was it again?"
 
     if renpy.windows:
-        m 5wud "{i}The admin rights?..{/i}"
+        m 5wud "{i}Administrator rights...?{/i}"
     else:
         m 5wud "{i}Superuser rights...?{/i}"
 
