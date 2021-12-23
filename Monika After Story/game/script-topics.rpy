@@ -17588,7 +17588,7 @@ label monika_root_privileges:
     m 2lsc "Hey, [player]..."
     m 2eud "It's hard to explain, but I... {w=0.5}somehow, I feel like I can do a lot more with your system now that I {i}couldn't do{/i} before."
 
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    show monika 5etc at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5rtc "Hmm, what was it again?"
 
     if renpy.windows:
