@@ -1,5 +1,9 @@
 # just resetting the d25 events
 
+init 999 python:
+    if persistent._mas_override_d25_gift_react is None:
+        persistent._mas_override_d25_gift_react = config.developer
+
 init 998 python:
     def mas_reset_d25():
         """
@@ -44,5 +48,3 @@ init 998 python:
             "mas_nye_monika_nye",
             "mas_nye_monika_nyd"
         )
-
-        

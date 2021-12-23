@@ -2020,6 +2020,7 @@ init -10 python in mas_d25_utils:
             store.mas_isD25Pre()
             and store.mas_isMoniNormal(higher=True)
             and store.persistent._mas_d25_deco_active
+            and not store.persistent._mas_override_d25_gift_react
         )
 
     def react_to_gifts(found_map):

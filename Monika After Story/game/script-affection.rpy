@@ -2095,6 +2095,8 @@ label monika_affection_nickname:
                     m 1hksdlb "I thought we were choosing a new nickname, silly."
                     m 1eka "Try again~"
 
+
+                #TODO: FIX THIS elif re.findall(r"mon[-_'\s]+ika|[^-_'\s]+monica", lowername):\
                 elif re.findall(r"mon[-_'\s]+ika|monica", lowername):
                     m 2ttc "..."
                     m 2tsd "Try again."
