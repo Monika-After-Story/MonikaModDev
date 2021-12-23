@@ -11,7 +11,7 @@
     "rec_layer": 3,
     "acs_type": "mini-ribbon",
     "stay_on_start": true,
-    "dlg_desc": "mini royal blue ribbon",
+    "dlg_desc": "royal blue ribbon",
     "dlg_plural": false,
     "select_info": {
         "display_name": "Ribbon (Royal blue, mini)",
