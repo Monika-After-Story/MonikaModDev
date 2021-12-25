@@ -2380,7 +2380,7 @@ label mas_d25_gift_starter:
 
     #Safe-pop the last index so we remove gifts from under the tree as we go
     if persistent._mas_d25_gifts_given:
-        persistent._mas_d25_gifts_given.pop()
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_connector:
