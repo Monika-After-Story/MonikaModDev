@@ -2270,7 +2270,7 @@ label mas_holiday_d25c_autoload_check:
                     mas_changeWeather(mas_weather_snow, by_user=True)
 
                     #Only change bg if the current is not supported
-                    if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+                    if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
                         store.mas_d25_utils.has_changed_bg = True
                         mas_changeBackground(mas_background_def, set_persistent=True)
 
@@ -2298,7 +2298,7 @@ label mas_holiday_d25c_autoload_check:
             #Change if bg isn't supported
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+            if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
                 store.mas_d25_utils.has_changed_bg = True
                 mas_changeBackground(mas_background_def, set_persistent=True)
 
