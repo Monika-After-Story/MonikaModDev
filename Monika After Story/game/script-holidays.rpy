@@ -1912,6 +1912,7 @@ init -10 python:
         # queue the reacts
         if len(react_labels) > 0:
             for react_label in react_labels:
+                mas_rmallEVL(react_label)
                 pushEvent(react_label,skipeval=True)
 
     def mas_d25SilentReactToGifts():
