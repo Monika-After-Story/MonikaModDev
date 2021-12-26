@@ -5697,6 +5697,8 @@ label monika_hack:
     m "We don't have to keep secrets from each other~"
     return
 
+default persistent._mas_pm_bakes = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_cupcake",category=['club members','trivia'],prompt="Baking cupcakes",random=True))
 
@@ -5713,31 +5715,30 @@ label monika_cupcake:
     m 3esa "Resulting in a craving for stronger tastes like chocolate."
     m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [mas_get_player_nickname()]?"
-    m 1eua "Do you know how to bake?"
-    
+
+    m 1eua "Do you know how to bake?{nw}"
     menu:
-          m 1eua "Do you know how to bake?{fast}"
-  
-          "I do":
-              m 1wub "Oh?"
-              m 1hua "Well, I'm sure your cupcakes would taste just as good."
-              m 1lub "Maybe even better!"
-              m 1rua "I'm sure someday I'll get to try them, but for now..."
-              m 1hubsb "I'll just settle for the sweetness of your love~"
-              return
-  
-          "I don't":
-              m 1eka "So we're both beginners."
-              m 7ekb "But that just means we could learn together, right?"
-              m 7esb "Even if you don't have much of a sweet tooth,"
-              extend 7hub " there are plenty of savory things we could bake!"
-              m 5dsa "Imagine the two of us poring over a recipe..."
-              m 5dub "Laughing at our mistakes..."
-              extend 5dkb " tasting the results..."
-              M 5kub "Sounds pretty romantic, right?"
-              return 
-          return 
-          
+        m "Do you know how to bake?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_bakes = True
+            m 1sub "Really?"
+            m 3hua "Well, I'm sure your cupcakes would taste just as good."
+            m 1hub "...Maybe even better!"
+            m 1eka "I'm sure someday I'll get to try them, but for now...{w=0.3}{nw}"
+            extend 1hubsu "I'll just settle for the sweetness of your love~"
+
+        "I don't.":
+            $ persistent._mas_pm_bakes = False
+            m 1eka "So we're both beginners."
+            m 3ekb "But that just means we could learn together, right?"
+            m 3esb "Even if you don't have much of a sweet tooth, there are plenty of savory things we could bake!"
+            m 5dksdla "Imagine the two of us bumbling through a recipe...{w=0.3}{nw}"
+            extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
+            extend 5eub "tasting the results..."
+            m 5kuu "Sounds pretty amazing, right?"
+    return
+
 # You're not a hater right?
 default persistent._mas_pm_a_hater = None
 
