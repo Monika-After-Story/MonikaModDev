@@ -2347,6 +2347,7 @@ label monika_rain_holdme:
     if mas_is_raining or mas_isMoniAff(higher=True):
         call monika_holdme_prep
         m 1eua "Of course, [mas_get_player_nickname()]."
+        $ start_hold_time = datetime.datetime.now()
         call monika_holdme_start
 
         call monika_holdme_reactions
@@ -2355,15 +2356,19 @@ label monika_rain_holdme:
         # small affection increase so people don't farm affection with this one.
         python:
             # Monika likes being held for long periods of time, the longer the better
-            if elapsed_time <= datetime.timedelta(minutes=10):
+            # We COULD use elapsed_time for this, but as it's a common var, we shouldn't
+            # in case it is being used by something else, so:
+            # TODO: zero-out, `del`, or `None`-ify elapsed_time when done with it in `monika_holdme_reactions`
+            delta_time = datetime.datetime.now() - start_hold_time
+            if delta_time <= datetime.timedelta(minutes=10):
                 mod = 0.25
-            elif ((elapsed_time > datetime.timedelta(minutes=10)) and (elapsed_time <= datetime.timedelta(minutes=30))):
+            elif ((delta_time > datetime.timedelta(minutes=10)) and (delta_time <= datetime.timedelta(minutes=30))):
                 mod = 0.45
-            elif ((elapsed_time > datetime.timedelta(minutes=30)) and (elapsed_time <= datetime.timedelta(minutes=60))):
+            elif ((delta_time > datetime.timedelta(minutes=30)) and (delta_time <= datetime.timedelta(minutes=60))):
                 mod = 0.65
-            elif ((elapsed_time > datetime.timedelta(minutes=60)) and (elapsed_time <= datetime.timedelta(minutes=100))):
+            elif ((delta_time > datetime.timedelta(minutes=60)) and (delta_time <= datetime.timedelta(minutes=100))):
                 mod = 0.75
-            elif ((elapsed_time > datetime.timedelta(minutes=100)) and (elapsed_time <= datetime.timedelta(minutes=150))):
+            elif ((delta_time > datetime.timedelta(minutes=100)) and (delta_time <= datetime.timedelta(minutes=150))):
                 mod = 0.85
             else:
                 mod = 1.0
