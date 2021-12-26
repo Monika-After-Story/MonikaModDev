@@ -1,0 +1,26 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_tied_crop_top_white",
+    "img_sit": "briaryoung_tied_crop_top_white",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "compat-downtiedstrand": true
+    },
+    "select_info": {
+        "display_name": "Tied Crop Top (White)",
+        "thumb": "briaryoung_tied_crop_top_white",
+        "group": "clothes",
+        "select_dlg": [
+            "Cute and casual!"
+        ]
+    },
+    "giftname": "tiedcroptopwhite",
+    "pose_arms": {}
+}

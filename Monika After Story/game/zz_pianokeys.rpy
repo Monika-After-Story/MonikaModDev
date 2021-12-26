@@ -611,22 +611,38 @@ init -3 python in mas_piano_keys:
     JSON_KEYMAP = {
         "F4": F4,
         "F4SH": F4SH,
+        "F#4": F4SH,
+        "Gb4": F4SH,
         "G4": G4,
         "G4SH": G4SH,
+        "G#4": G4SH,
+        "Ab4": G4SH,
         "A4": A4,
         "A4SH": A4SH,
+        "A#4": A4SH,
+        "Bb4": A4SH,
         "B4": B4,
         "C5": C5,
         "C5SH": C5SH,
+        "C#5": C5SH,
+        "Db5": C5SH,
         "D5": D5,
         "D5SH": D5SH,
+        "D#5": D5SH,
+        "Eb5": D5SH,
         "E5": E5,
         "F5": F5,
         "F5SH": F5SH,
+        "F#5": F5SH,
+        "Gb5": F5SH,
         "G5": G5,
         "G5SH": G5SH,
+        "G#5": G5SH,
+        "Ab5": G5SH,
         "A5": A5,
         "A5SH": A5SH,
+        "A#5": A5SH,
+        "Bb5": A5SH,
         "B5": B5,
         "C6": C6
     }
@@ -1372,7 +1388,7 @@ init -3 python in mas_piano_keys:
 
                 # log warnings
                 for _warn in _msg:
-                    log.warn("    " + _warn)
+                    log.warning("    " + _warn)
 
                 # verse check
                 if real_pnm.verse < 0 or real_pnm.verse >= len(_pnm_list):
