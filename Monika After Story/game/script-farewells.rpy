@@ -1741,14 +1741,14 @@ label bye_prompt_hangout:
     $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=8)
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HANGOUT
     return "quit"
-    
+
 init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
             eventlabel="bye_eatwithmyfamily",
             unlocked=True,
-            prompt="I'm going to eat dinner with my family",
+            prompt="I'm going to eat dinner with my family.",
             pool=True
         ),
         code="BYE"
@@ -1775,8 +1775,6 @@ label bye_eatwithmyfamily:
             else:
                 m 6ckc "..."
 
-            return 'quit'
-
         elif session_time < datetime.timedelta(minutes=20):
             m 1ekd "Aw, going already?"
             m 1efp "You haven't even been here for 20 minutes!"
@@ -1785,16 +1783,19 @@ label bye_eatwithmyfamily:
             m 2hub "I just want you to know I really appreciate that!"
             m 2eka "Eat well! [player], I'm sure that you will enjoy it!"
             m 2hua "See you when you get back! love you!"
+
         elif session_time < datetime.timedelta(hours=1):
             m 2eua "Alright, thanks for spending some time with me, [player]!"
             m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
             m 2hua "Nothing is more important than your family?"
             m 3kublu "Maybe me, ehehe~~"
             m "See you soon!"
+
         elif session_time < datetime.timedelta(hours=6):
             m 1hua "Eat well! [player]"
             m 1eua "I hope that you have fun with them!"
             m 1hua "See you later!"
+
         else:
             m 2ekc "Umm...you've been here with me for quite a while, [player]."
             m 2ekd "You should probably take a break!"
@@ -1815,4 +1816,3 @@ label bye_eatwithmyfamily:
         m 6ckc "..."
 
     return 'quit'
-    
