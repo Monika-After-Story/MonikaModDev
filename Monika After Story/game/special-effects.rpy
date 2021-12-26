@@ -1087,8 +1087,14 @@ label monika_kissing_motion(
     return
 
 # short kiss version
-label monika_kissing_motion_short:
-    call monika_kissing_motion(duration=0.5, initial_exp="6hua", fade_duration=0.5)
+# Default duration 0.5
+# Default init exp 6hua
+label monika_kissing_motion_short(**kwargs):
+    python:
+        kwargs.setdefault("duration", 0.5)
+        kwargs.setdefault("fade_duration", 0.5)
+        kwargs.setdefault("initial_exp", "6hua")
+    call monika_kissing_motion(**kwargs)
     return
 
 # Zoom Transition label

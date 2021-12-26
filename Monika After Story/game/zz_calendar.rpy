@@ -1080,6 +1080,8 @@ init -10 python in mas_calendar:
 init -1 python in mas_calendar:
     import datetime
     import json
+    import bisect
+
     import renpy
     import store
 
@@ -1112,6 +1114,26 @@ init -1 python in mas_calendar:
         13: "th"
     }
 
+    def getZodiacSign(date):
+        """
+        Gets a zodiac sign for a date
+        Idea from https://stackoverflow.com/questions/3274597
+
+        IN:
+            date - datetime.date
+
+        OUT:
+            string with the sign
+        """
+        zodiac_signs = [
+            (1, 19, "capricorn"), (2, 18, "aquarius"), (3, 20, "pisces"), (4, 19, "aries"),
+            (5, 20, "taurus"), (6 ,21, "gemini"), (7, 22, "cancer"), (8, 22, "leo"),
+            (9, 22, "virgo"), (10, 22, "libra"), (11, 22, "scorpio"), (12, 21, "sagittarius"),
+            (12, 31, "capricorn")
+        ]
+        index = bisect.bisect(zodiac_signs, (date.month, date.day))
+
+        return zodiac_signs[index][-1]
 
     def _formatDay(day):
         """

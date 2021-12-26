@@ -1819,6 +1819,7 @@ label monika_horror:
 
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
+            $ persistent._mas_pm_likes_spoops = False
             m 2eka "I can understand. It's definitely not for everyone."
 
     m 3eua "I remember we talked about this a little bit when you first joined the club."
@@ -4719,7 +4720,7 @@ init 5 python:
 
 label monika_ribbon:
     # TODO: We need a better handling for this
-    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon", "mini-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
@@ -9767,11 +9768,12 @@ label monika_natsuki_letter:
     return "derandom"
 
 # TODO possible tie this with affection?
+# TODO uncomment once TCO is implemented
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -16077,14 +16079,14 @@ label monika_wabi_sabi:
     m 7ekc "Maybe they grew into something that they're just not proud of."
     m 2dkd "It can be crushing to be worried about both looks and personality..."
 
-    if persistent._mas_pm_love_yourself:
+    if persistent._mas_pm_love_yourself is False:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    else:
         m 2eka "I hope you don't feel too insecure about yourself, [player]."
         m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
         m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
-
-    else:
-        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
-        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
 
     m 3hua "We'll overcome any problems you feel you have together."
     m 1hub "That's my wabi-sabi promise!"
@@ -17564,6 +17566,43 @@ label monika_ddlcroleplay:
     extend 1hksdlb "maybe I can take it as flattery, in a way?"
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_zodiac_starsign",
+            prompt="What's your starsign?",
+            category=["monika"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_player_bday is not None"
+        )
+    )
+
+label monika_zodiac_starsign:
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
+
+    m 1rta "Well, I'm pretty sure I'm a Virgo."
+
+    #This next line is just checking the player's starsign based on their birthday.
+    if player_zodiac_sign != "Virgo":
+        # TODO: handle a/an here, potential solution is in eeb4b3a3a
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
+
+    else:
+        m 3eub "And so are you, [mas_get_player_nickname()]!"
+
+    #The final part pops up regardless of your sign.
+    m 1eta "Although, don't you think it's kind of silly?"
+    m 3esd "I mean, objects in space can't {i}really{/i} affect our personality..."
+    m 1tuc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4wud "Like, they'll even judge potential partners and friends based on their sign!"
+    m 2luc "...That's something I'll never understand."
+    $ p_nickname = mas_get_player_nickname()
+    m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
+    extend 1eublu "I'd never let any silly old stars come between us."
+    $ del player_zodiac_sign
     return
 
 init 5 python:
