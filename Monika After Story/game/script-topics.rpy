@@ -2362,13 +2362,13 @@ label monika_rain_holdme:
             delta_time = datetime.datetime.now() - start_hold_time
             if delta_time <= datetime.timedelta(minutes=10):
                 mod = 0.25
-            elif ((delta_time > datetime.timedelta(minutes=10)) and (delta_time <= datetime.timedelta(minutes=30))):
+            elif delta_time <= datetime.timedelta(minutes=30):
                 mod = 0.45
-            elif ((delta_time > datetime.timedelta(minutes=30)) and (delta_time <= datetime.timedelta(minutes=60))):
+            elif delta_time <= datetime.timedelta(minutes=60):
                 mod = 0.65
-            elif ((delta_time > datetime.timedelta(minutes=60)) and (delta_time <= datetime.timedelta(minutes=100))):
+            elif delta_time <= datetime.timedelta(minutes=100):
                 mod = 0.75
-            elif ((delta_time > datetime.timedelta(minutes=100)) and (delta_time <= datetime.timedelta(minutes=150))):
+            elif delta_time <= datetime.timedelta(minutes=150):
                 mod = 0.85
             else:
                 mod = 1.0
