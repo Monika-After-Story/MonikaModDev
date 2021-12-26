@@ -8590,7 +8590,8 @@ label monika_hamlet:
     m 1euc "Now there's only one thing left to answer, [player]..."
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
-    $ mas_unlockEVL("monika_tragic_hero","EVE")
+    if persistent.monika_kill:
+        $ mas_unlockEVL("monika_tragic_hero","EVE")
     return
 
 # Note: The following internal commentary should not be removed.

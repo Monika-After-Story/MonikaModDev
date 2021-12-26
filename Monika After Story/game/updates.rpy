@@ -377,7 +377,7 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.7
 label v0_12_7(version="v0_12_7"):
     python hide:
-        if store.seen_event("monika_hamlet"):
+        if store.seen_event("monika_hamlet") and persistent.monika_kill:
             mas_unlockEVL("monika_tragic_hero","EVE")
     return
 
