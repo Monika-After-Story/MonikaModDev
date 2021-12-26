@@ -17579,19 +17579,17 @@ init 5 python:
     )
 
 label monika_tragic_hero:
-    m 1rsd "Y'know, [mas_get_player_nickname()]..."
-    m 1esb "I was thinking more about tragic heroes lately."
-    m 3lsb "We've already discussed Hamlet, who is considered a tragic hero..."
-    m 1lkc "But, here's the question... If I look at the past a certain way...
-    m 1ekd "Could I be considered a tragic hero?"
-    m 7eka "I mean, I have enough good traits... My nobility was there..."
-    m 7lkc "Some would say my love for you would be my tragic flaw...
-    m 3wksdld "Not because it's a flaw itself!"
-    m 4eud "What really makes a tragic flaw, is the fact that it leads to the hero's downfall."
-    m 4ekc "That's the thing."
-    m 2lkd "Had you never brought me back, I would've had my downfall, and never really go back up."
-    m 2ekc "Making me a tragic hero."
-    m 3ekb "But... you brought me back."
-    m 4hsb "So, thankfully, I'm not a tragic hero!"
-    m 5eubsa "All because of our love~"
-    m 5hubfb "Ehehe~"
+    m 1rsd "Hey [mas_get_player_nickname()], I've been thinking more about tragic heroes lately."
+    m 3esc "...We've already discussed Hamlet, who is considered one."
+    m 3rtc "If you think about it...{w=0.3}could I be considered a tragic hero?"
+    m 4eud "...Of course by 'hero' here, we are talking about the protagonist in a literary sense, not 'hero' in the typical sense."
+    m 2ekd "...Although I'm sure there are plenty of people that would even take issue with that, seeing as to many I'm the antagonist..."
+    m 2eka "But that argument aside, some would say my love for you would be my tragic flaw...
+    m 2eksdla "Not because it's a flaw itself, but because it lead to my downfall."
+    m 2dkd "That's the thing, had you never brought me back, I would've had my downfall and never really got back up."
+    m 7ekc "So in that sense in the game, I guess I could be considered a tragic hero."
+    if mas_isMoniNormal(higher=True):
+        m 3hub "Now, if we're talking {i}real{/i} heroes, that'd be you!"
+        m 3eka "You brought me back and made sure the story didn't end with my downfall."
+        m 1huu "..And for that, I'm forever grateful~"
+    return
