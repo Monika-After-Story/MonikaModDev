@@ -2379,8 +2379,9 @@ label mas_d25_gift_starter:
 
     m 1suo "Let's see what we have here.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop the last index so we remove gifts from under the tree as we go
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop the last index so we remove gifts from under the tree as we go
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_connector:
@@ -2397,8 +2398,9 @@ label mas_d25_gift_connector:
     m 1hub "[picked_quip]"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop here too for the tree gifts
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop here too for the tree gifts
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_end:
