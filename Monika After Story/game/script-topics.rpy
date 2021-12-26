@@ -17605,40 +17605,60 @@ label monika_zodiac_starsign:
     $ del player_zodiac_sign
     return
 
+default persistent._mas_pm_read_jekyll_hyde = None
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_utterson",
-            category=['media', 'literature'],
+            category=['literature'],
             prompt="Jekyll and Hyde",
             random=True
         )
     )
 
 label monika_utterson:
-    m 1esb "Hey, have you read any gothic literature?"
-    m 1rud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
-    m 4hua "I've read quite a bit of gothic literary books, lately!"
-    m 1gub "In fact, the names for the light and dark GUI modes in the code..."
-    m 1wub "They're called Jekyll and Hyde, respectively!"
-    m 3hsa "I just found it really fitting for me."
-    m 1ekb "You should read the original novella of Jekyll and Hyde, if you ever get the chance."
-    m 1rsc "Y'know, I've seen people interpret it in different ways."
-    m 3wud "For example, some people saw Utterson being in love with Jekyll."
-    m 3lsd "In a way, I can see it."
-    m 4esd "I mean, just because something isn't outright, doesn't mean the idea isn't valid."
-    m 2rkc "In addition, a theme like this example couldn't even really be outright during the 19th century."
-    m 1eka "It is interesting to think of the story that way..."
-    m 1dkc "Two people, unable to love..."
-    m 3wko "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
-    m 3ekd "And it's not exactly disproven! Jekyll, in the book, was said to be a holy man."
-    m 2rkc "Homosexuality, during that time, was seen as a sin.
-    m 2lkd "It kind of still is seen that way..."
-    m 3eka "But great progress has been made!"
-    m 3hsb "I'm just glad the world is more accepting of different kinds of love."
-    m 5ekbfa "Especially since I live in a world where I can love you, [mas_get_player_nickname()]!"
-    m 5hsbfb "Ehehe~"
+    if not persistent._mas_pm_read_jekyll_hyde:
+        m 1euc "Hey [player], have you read any gothic literature?"
+        m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
+        m 3hub "I've read quite a bit of gothic literary books, lately!"
+        m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
+        m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
+
+        m 3eud "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{nw}"
+        menu:
+            m "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{fast}"
+
+            "Yes.":
+                $ persistent._mas_pm_read_jekyll_hyde = True
+                call monika_jekyll_hyde
+
+            "No.":
+                $ persistent._mas_pm_read_jekyll_hyde = False
+                m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
+
+    else:
+        call monika_jekyll_hyde
+
+    $ mas_unlockEVL("monika_hedonism","EVE")
+    return "derandom"
+
+label monika_jekyll_hyde:
+    m 3hub "I'm glad you've read it!"
+    m 1euc "I've seen people interpret it in different ways."
+    m 3eua "For example, some people saw Utterson being in love with Jekyll."
+    m 3lta "In a way, I can see it."
+    m 2eud "I mean, just because something isn't explicitly stated, doesn't mean the idea isn't valid."
+    m 2rksdlc "In addition, a theme like this couldn't even really be discussed outright during the 19th century."
+    m 2eka "It is interesting to think of the story that way...{w=0.3}two people, unable to love..."
+    m 4eud "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
+    m 4ekd "And it's not exactly disproven! {w=0.3}Jekyll, in the book, was said to be a holy man."
+    m 2rksdlc "Homosexuality, during that time, was seen as a sin."
+    m 2dksdld "Sadly, to some it still is."
+    m 7ekb "...But at least progress has been made!"
+    m 3eub "I'm just glad the world is more accepting of different kinds of love."
+    m 3ekbsu "Especially since it means we can love each other, [mas_get_player_nickname()]~"
     return
 
 init 5 python:
@@ -17648,25 +17668,21 @@ init 5 python:
             eventlabel="monika_hedonism",
             category=['philsophy'],
             prompt="Hedonism",
-            conditional= "mas_seenLabels(['monika_utterson'])",
-            action=EV_ACT_RANDOM
         )
     )
 
 label monika_hedonism:
-    m 1esd "Hey, [mas_get_player_nickname()], remember when we talked about {i}The Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
-    m 1lud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
-    m 3wub "Which has it's own ties to philsophy! Specifically, the belief of Hedonism."
-    m 3esd "At it's core, Hedonism is the belief that morals should base around pleasure."
-    m 3rsc "There are two main types of Hedonism; Altruistic Hedonism and Egotistical Hedonism."
-    m 4wuo "The two are wildly different!"
-    m 7rsd "Egotistical Hedonism, as you could guess, is the believe that ones own pleasure is the only thing that determines morals."
-    m 7esd "This is the type of Hedonism Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
-    m 2rfc "It's really ruthless... to think such a way..."
-    m 2eud "On the other hand, ALtruistic Hedonism is the belief that morality should be based on everyone's pleasure alone."
-    m 3wud "It sounds like a good idea at first, but then you realize it doesn't account for anything else..."
-    m 3lkc "Freedom, health, safety..."
-    m 3ekc "Hedonism, at it's core, ignores everything but pleasure."
-    m 1ekd "Which is why most people don't have that belief... It's too simple, when morality is complicated."
-    m 1esc "It makes sense why Oscar Wilde portrayed Hedonism in a bad light, really..."
+    m 1euc "Hey [mas_get_player_nickname()], remember when we talked about {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
+    m 1eud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
+    m 2eub "I suggest you read it, but even if you haven't, I want to talk about the philosophy behind its core...{w=0.3}the belief of hedonism."
+    m 2eud "Hedonism is the belief that morals should be based around pleasure."
+    m 4euc "There are two main types of hedonism...{w=0.3}altruistic hedonism and egotistical hedonism, {w=0.1}which are wildly different."
+    m 4ruc "Egotistical hedonism, as you could guess, is the believe that one's own pleasure is the only thing that determines morality."
+    m 2esd "This is the type of hedonism that Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
+    m 2rksdlc "It's really ruthless to think such a way..."
+    m 2eud "On the other hand, altruistic hedonism is the belief that morality should be based on everyone's pleasure."
+    m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
+    m 2dkc "Hedonism, at it's core, ignores everything but pleasure."
+    m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
+    m 1eud "It makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
