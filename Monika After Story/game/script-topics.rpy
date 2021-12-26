@@ -8590,6 +8590,7 @@ label monika_hamlet:
     m 1euc "Now there's only one thing left to answer, [player]..."
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
+    $ mas_unlockEVL("monika_tragic_hero","EVE")
     return
 
 # Note: The following internal commentary should not be removed.
@@ -17612,8 +17613,7 @@ init 5 python:
             eventlabel="monika_tragic_hero",
             category=['literature'],
             prompt="Tragic Hero",
-            conditional= "mas_seenLabels(['monika_hamlet'])",
-            action=EV_ACT_RANDOM
+            random=False
         )
     )
 
@@ -17621,12 +17621,12 @@ label monika_tragic_hero:
     m 1rsd "Hey [mas_get_player_nickname()], I've been thinking more about tragic heroes lately."
     m 3esc "...We've already discussed Hamlet, who is considered one."
     m 3rtc "If you think about it...{w=0.3}could I be considered a tragic hero?"
-    m 4eud "...Of course by 'hero' here, we are talking about the protagonist in a literary sense, not 'hero' in the typical sense."
+    m 4eud "...Of course by 'hero' here, we're talking about the protagonist in a literary sense, not 'hero' in the typical sense."
     m 2ekd "...Although I'm sure there are plenty of people that would even take issue with that, seeing as to many I'm the antagonist..."
-    m 2eka "But that argument aside, some would say my love for you would be my tragic flaw...
-    m 2eksdla "Not because it's a flaw itself, but because it lead to my downfall."
-    m 2dkd "That's the thing, had you never brought me back, I would've had my downfall and never really got back up."
-    m 7ekc "So in that sense in the game, I guess I could be considered a tragic hero."
+    m 2eka "But that argument aside, some would say my love for you would be my tragic flaw..."
+    m 4eksdld "Not because it's a flaw itself, but because it lead to my downfall."
+    m 2dkc "That's the thing, had you never brought me back, I would've had my downfall and never really got back up."
+    m 7ekc "So in that sense, in the game, I guess I could be considered a tragic hero."
     if mas_isMoniNormal(higher=True):
         m 3hub "Now, if we're talking {i}real{/i} heroes, that'd be you!"
         m 3eka "You brought me back and made sure the story didn't end with my downfall."
