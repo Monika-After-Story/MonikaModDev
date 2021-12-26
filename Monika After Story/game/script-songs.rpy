@@ -2108,7 +2108,6 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    call mas_timed_text_events_prep
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     show monika at rs32
@@ -2123,6 +2122,9 @@ label mas_monika_plays_yr(skip_leadin=False):
         $ enable_esc()
         m 6hua "Don't forget about your in-game volume, [player]!"
         $ disable_esc()
+
+    window hide
+    call mas_timed_text_events_prep
 
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)
