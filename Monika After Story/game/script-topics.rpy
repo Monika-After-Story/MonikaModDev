@@ -17619,10 +17619,13 @@ init 5 python:
     )
 
 label monika_utterson:
-    if not persistent._mas_pm_read_jekyll_hyde:
+    if persistent._mas_pm_read_jekyll_hyde:
+        call monika_jekyll_hyde
+
+    else:
         m 1euc "Hey [player], have you read any gothic literature?"
         m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
-        m 3hub "I've read quite a bit of gothic literary books, lately!"
+        m 3hub "I've read quite a bit of gothic literary books lately!"
         m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
         m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
 
@@ -17638,10 +17641,7 @@ label monika_utterson:
                 $ persistent._mas_pm_read_jekyll_hyde = False
                 m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
 
-    else:
-        call monika_jekyll_hyde
-
-    $ mas_unlockEVL("monika_hedonism","EVE")
+    $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
     return "derandom"
 
 label monika_jekyll_hyde:
@@ -17684,5 +17684,5 @@ label monika_hedonism:
     m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
     m 2dkc "Hedonism, at it's core, ignores everything but pleasure."
     m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
-    m 1eud "It makes sense why Oscar Wilde portrayed hedonism in a bad light."
+    m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
