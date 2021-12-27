@@ -17633,3 +17633,85 @@ label monika_tragic_hero:
         m 3eka "You brought me back and made sure the story didn't end with my downfall."
         m 1huu "...And for that, I'm forever grateful~"
     return
+
+default persistent._mas_pm_read_jekyll_hyde = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_utterson",
+            category=['literature'],
+            prompt="Jekyll and Hyde",
+            random=True
+        )
+    )
+
+label monika_utterson:
+    if persistent._mas_pm_read_jekyll_hyde:
+        call monika_jekyll_hyde
+
+    else:
+        m 1euc "Hey [player], have you read any gothic literature?"
+        m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
+        m 3hub "I've read quite a bit of gothic literary books lately!"
+        m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
+        m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
+
+        m 3eud "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{nw}"
+        menu:
+            m "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{fast}"
+
+            "Yes.":
+                $ persistent._mas_pm_read_jekyll_hyde = True
+                call monika_jekyll_hyde
+
+            "No.":
+                $ persistent._mas_pm_read_jekyll_hyde = False
+                m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
+
+    $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
+    return "derandom"
+
+label monika_jekyll_hyde:
+    m 3hub "I'm glad you've read it!"
+    m 1euc "I've seen people interpret it in different ways."
+    m 3eua "For example, some people saw Utterson being in love with Jekyll."
+    m 3lta "In a way, I can see it."
+    m 2eud "I mean, just because something isn't explicitly stated, doesn't mean the idea isn't valid."
+    m 2rksdlc "In addition, a theme like this couldn't even really be discussed outright during the 19th century."
+    m 2eka "It is interesting to think of the story that way...{w=0.3}two people, unable to love..."
+    m 4eud "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
+    m 4ekd "And it's not exactly disproven! {w=0.3}Jekyll, in the book, was said to be a holy man."
+    m 2rksdlc "Homosexuality, during that time, was seen as a sin."
+    m 2dksdld "Sadly, to some it still is."
+    m 7ekb "...But at least progress has been made!"
+    m 3eub "I'm just glad the world is more accepting of different kinds of love."
+    m 3ekbsu "Especially since it means we can love each other, [mas_get_player_nickname()]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hedonism",
+            category=['philsophy'],
+            prompt="Hedonism",
+        )
+    )
+
+label monika_hedonism:
+    m 1euc "Hey [mas_get_player_nickname()], remember when we talked about {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
+    m 1eud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
+    m 2eub "I suggest you read it, but even if you haven't, I want to talk about the philosophy behind its core...{w=0.3}the belief of hedonism."
+    m 2eud "Hedonism is the belief that morals should be based around pleasure."
+    m 4euc "There are two main types of hedonism...{w=0.3}altruistic hedonism and egotistical hedonism, {w=0.1}which are wildly different."
+    m 4ruc "Egotistical hedonism, as you could guess, is the believe that one's own pleasure is the only thing that determines morality."
+    m 2esd "This is the type of hedonism that Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
+    m 2rksdlc "It's really ruthless to think such a way..."
+    m 2eud "On the other hand, altruistic hedonism is the belief that morality should be based on everyone's pleasure."
+    m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
+    m 2dkc "Hedonism, at it's core, ignores everything but pleasure."
+    m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
+    m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
+    return
