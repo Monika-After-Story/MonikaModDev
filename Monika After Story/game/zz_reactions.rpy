@@ -257,19 +257,26 @@ init -11 python in mas_filereacts:
             labels.extend(gsp_labels)
 
         # and lastlly is generics
-        if len(gen_details) > 0:
+        num_gen_gifts = len(gen_details)
+        if num_gen_gifts > 0:
             gen_labels = []
-            for gen_detail in gen_details:
+
+            if num_gen_gifts == 1:
                 gen_labels.append("mas_reaction_gift_generic")
+            else:
+                gen_labels.append("mas_reaction_gifts_generic")
 
-                if gift_cntrs is not None:
-                    gen_labels.append(gift_cntrs.quip()[1])
+            if gift_cntrs is not None:
+                gen_labels.append(gift_cntrs.quip()[1])
 
+            for gen_detail in gen_details:
                 if prepare_data:
                     store.persistent._mas_filereacts_reacted_map.pop(
                         gen_detail.c_gift_name,
                         None
                     )
+
+                    store.mas_filereacts.delete_file(gen_detail.c_gift_name)
 
             labels.extend(gen_labels)
 
@@ -1049,22 +1056,21 @@ label mas_reaction_generic:
 #    addReaction("mas_reaction_gift_generic", None)
 
 label mas_reaction_gift_generic:
-    if random.randint(1,2) == 1:
-        m 1esd "[player], are you trying to give me something?"
-        m 1rssdlb "I found it, but I can't bring it here..."
-        m "I can't seem to read it well enough."
-        m 3esa "But that's alright!"
-        m 1esa "It's the thought that counts after all, right?"
-        m "Thanks for being so thoughtful, [player]~"
-    else:
-        m 2dkd "{i}*sigh*{/i}"
-        m 4ekc "I'm sorry, [player]."
-        m 1ekd "I know you're trying to give me something."
-        m 2rksdld "But for some reason I can't read the file."
-        m 3euc "Don't get me wrong, however."
-        m 3eka "I still appreciate that you tried giving something to me."
-        m 1hub "And for that, I'm thankful~"
-    $ store.mas_filereacts.delete_file(None)
+    m 2dkd "{i}*sigh*{/i}"
+    m 4ekc "I'm sorry, [player]."
+    m 1ekd "I know you're trying to give me something."
+    m 2rksdld "But for some reason I can't read the file."
+    m 3euc "Don't get me wrong, however."
+    m 3eka "I still appreciate that you tried giving something to me."
+    m 1hub "And for that, I'm thankful~"
+    return
+
+label mas_reaction_gifts_generic:
+    m 1esd "Sorry, [player]..."
+    m 3rksdla "I found what you're trying to give me, but I can't seem to read them well enough."
+    m 3eub "That's alright, though!"
+    m 1eka "It's the thought that counts after all~"
+    m 1hub "Thanks for being so thoughtful, [player]!"
     return
 
 #init 5 python:
