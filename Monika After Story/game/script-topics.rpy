@@ -5733,11 +5733,12 @@ label monika_cupcake:
             m 1eka "So we're both beginners."
             m 3ekb "But that just means we could learn together, right?"
             m 3esb "Even if you don't have much of a sweet tooth, there are plenty of savory things we could bake!"
+            show monika 5dksdla at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5dksdla "Imagine the two of us bumbling through a recipe...{w=0.3}{nw}"
             extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
             extend 5eub "tasting the results..."
             m 5kuu "Sounds pretty amazing, right?"
-    return
+    return "derandom"
 
 # You're not a hater right?
 default persistent._mas_pm_a_hater = None
