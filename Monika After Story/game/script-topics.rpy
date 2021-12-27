@@ -17624,9 +17624,9 @@ label monika_rpg:
       m 1esb "And there is something that caught my eyes..."
     else:
       m 1esa "I was thinking about what kind of game we could be in."
-      m 1esc "It might be not the best option - "
-      extend 1rtc "at least for me - "
-      m 1esc "but I still find this genre interesting to discuss..."
+      m 1esc "It might be not the best option -{w=0.5}{nw}"
+      extend 1rtc "at least for me - {w=0.5}{nw}"
+      extend 1esc "but I still find this genre interesting to discuss..."
     m 3eua "Roleplaying games, or, to put it shortly, RPG!"
     m 7esd "It's one of the oldest and varied genres. Text-based games, turn-based games, real-time action games..." 
     m 7esb "But out of all classifications, I'd choose story-driven RPGs. No matter if it's fantasy, sci-fi, or something else." 
