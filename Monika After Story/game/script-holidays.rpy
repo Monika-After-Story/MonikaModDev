@@ -6914,25 +6914,25 @@ init -1 python:
         return mas_isMonikaBirthday_dt(_datetime=_datetime)
 
 
-    def mas_isMonikaBirthday_dt(_datetime=None, _extend=0):
+    def mas_isMonikaBirthday_dt(_datetime=None, extend_by=0):
         """
         checks if the given date is monikas birthday.
         Takes hours beyond the date into account via the `_extend` param.
 
         IN:
             _datetime - datetime to check. If not passed in, we use now.
-            _extend - int of how many hours we want to extend past 922
+            extend_by - hours we want to extend past 922
                 defaults to 0
         """
         if _datetime is None:
             _datetime = datetime.datetime.now()
 
-        return (
-            _datetime.month == mas_monika_birthday.month
-            and _datetime.day == (mas_monika_birthday.day + int(_extend > 0))
-            and (_extend <= 0 or _datetime.hour < _extend)
-        )
+        moni_bd_start = datetime.datetime.combine(mas_monika_birthday, datetime.time())
+        moni_bd_start = moni_bd_start.replace(year=_datetime.year)
 
+        moni_bd_end = moni_bd_start + datetime.timedelta(days=1, hours=extend_by)
+
+        return moni_bd_start <= _datetime < moni_bd_end
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
