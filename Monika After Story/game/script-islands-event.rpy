@@ -533,8 +533,8 @@ init -20 python in mas_island_event:
             x=0,
             y=0,
             z=15000,
-            min_zoom=1.1,
-            max_zoom=4.1,
+            min_zoom=1.02,
+            max_zoom=4.02,
             on_click="mas_island_sky"
         )
     )
@@ -572,6 +572,7 @@ init -25 python in mas_island_event:
     import functools
     import math
     from zipfile import ZipFile
+    import datetime
 
     import store
     from store import (
@@ -1018,9 +1019,7 @@ init -25 python in mas_island_event:
 
     def __unlocks_for_lvl_8():
         # TODO: me
-        # _lock("decal_glitch")
-        # _unlock("decal_house")
-        # Update monika_why_spaceroom when the islands are finished
+        # Also update monika_why_spaceroom
         return
 
     # # # END
@@ -1038,6 +1037,47 @@ init -25 python in mas_island_event:
             if callback is not None:
                 callback()
 
+    def _calcProgress(curr_lvl, start_lvl):
+        """
+        Returns islands progress for the given current and start levels
+        NOTE: this has no sanity checks, don't use this directly
+
+        IN:
+            curr_lvl - int, current level
+            start_lvl - int, start level
+
+        OUT:
+            int, progress
+        """
+        lvl_difference = curr_lvl - start_lvl
+
+        if lvl_difference < 0:
+            return DEF_PROGRESS
+
+        if store.mas_isMoniEnamored(higher=True):
+            if store.mas_isMoniLove(higher=True):
+                max_progress = MAX_PROGRESS_LOVE
+
+            else:
+                max_progress = MAX_PROGRESS_ENAM
+
+            modifier = 1.0
+
+            if persistent._mas_pm_cares_island_progress is True:
+                modifier -= 0.1
+
+            elif persistent._mas_pm_cares_island_progress is False:
+                modifier += 0.2
+
+            progress_factor = PROGRESS_FACTOR * modifier
+
+            progress = min(int(lvl_difference / progress_factor), max_progress)
+
+        else:
+            progress = DEF_PROGRESS
+
+        return progress
+
     def advanceProgression():
         """
         Increments the lvl of progression of the islands event,
@@ -1048,25 +1088,29 @@ init -25 python in mas_island_event:
         if persistent._mas_islands_start_lvl is None:
             return
 
-        lvl_difference = store.mas_xp.level() - persistent._mas_islands_start_lvl
-        # This should never happen
-        if lvl_difference < 0:
+        new_progress = _calcProgress(store.mas_xp.level(), persistent._mas_islands_start_lvl)
+
+        if new_progress == DEF_PROGRESS:
             return
 
-        if store.mas_isMoniEnamored(higher=True):
-            if store.mas_isMoniLove(higher=True):
-                max_progress = MAX_PROGRESS_LOVE
-
-            else:
-                max_progress = MAX_PROGRESS_ENAM
-
-            new_progress = min(int(lvl_difference // PROGRESS_FACTOR), max_progress)
-
-        else:
-            new_progress = DEF_PROGRESS
+        curr_progress = persistent._mas_islands_progress
+        # I hate this, but we have to push the ev from here
+        if (
+            # Has progress means has new unlocks
+            new_progress > curr_progress
+            # Not the first lvls, not the last lvl
+            and DEF_PROGRESS + 1 < new_progress < MAX_PROGRESS_LOVE - 1
+            # Hasn't seen the event yet
+            and persistent._mas_pm_cares_island_progress is None
+            and not store.seen_event("mas_monika_islands_progress")
+            # Hasn't visited the islands for a few days
+            and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=3))
+        ):
+            store.pushEvent("mas_monika_islands_progress")
 
         # Now set new level
-        persistent._mas_islands_progress = min(max(new_progress, persistent._mas_islands_progress), MAX_PROGRESS_LOVE)
+        persistent._mas_islands_progress = min(max(new_progress, curr_progress), MAX_PROGRESS_LOVE)
+        # Run unlock callbacks
         __handleUnlocks()
 
         return
@@ -1217,6 +1261,63 @@ label mas_monika_islands:
     call mas_islands(force_exp="monika 1eua", scene_change=True)
 
     m 1eua "I hope you liked it, [mas_get_player_nickname()]~"
+    return
+
+default persistent._mas_pm_cares_island_progress = None
+# pm var re: player caring about Moni's island progress
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_islands_progress"
+        ),
+        restartBlacklist=True
+    )
+
+label mas_monika_islands_progress:
+    m 1eub "[player], I've got some exciting news for you!"
+    m 3hub "I made some new additions on the islands, {w=0.2}{nw}"
+    extend 1rua "and I thought maybe you'd like to take a look."
+    m 1hublb "They are {i}our{/i} islands after all~"
+
+    m 3eua "What do you say?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What do you say?{fast}"
+
+        "Sure, [m_name].":
+            $ persistent._mas_pm_cares_island_progress = True
+            $ mas_gainAffection(3, bypass=True)
+            m 2hub "Yay!"
+
+            call mas_islands(force_exp="monika 1hua")
+
+            m "Hope you liked it~"
+            m 1lusdlb "I know it's far from being done, {w=0.2}{nw}"
+            extend 1eka "but I really wanted to showcase my progress to you."
+            m 2lsp "I'm still learning how to code and this engine being inconsistent doesn't help me..."
+            m 7hub "But I think I made quite a bit of progress so far!"
+            $ mas_setEventPause(10)
+            $ mas_moni_idle_disp.force_by_code("1hua", duration=10, skip_dissolve=True)
+
+        "I'm not interested.":
+            $ persistent._mas_pm_cares_island_progress = False
+            $ mas_loseAffection(25)
+            m 2ekc "Oh..."
+            m 6rktpc "I..."
+            m 6fktpd "I worked really hard on this..."
+            m 2rktdc "You...{w=0.5} You must just be busy..."
+            $ mas_setEventPause(60*10)
+            $ mas_moni_idle_disp.force_by_code("2ekc", duration=60*10, skip_dissolve=True)
+
+        "Maybe later.":
+            m 2ekc "Oh...{w=0.5}{nw}"
+            extend 2eka "alright."
+            m 7eka "Just don't keep me waiting too long~"
+            $ mas_setEventPause(20)
+            $ mas_moni_idle_disp.force_by_code("1euc", duration=20, skip_dissolve=True)
+
     return
 
 
@@ -1658,6 +1759,7 @@ label mas_island_bookshelf2:
     return
 
 
+# TODO: Allow to hide ui with H and mouse 2 clicks w/o globals
 screen mas_islands(islands_displayable, show_return_button=True):
     style_prefix "island"
     layer "screens"
