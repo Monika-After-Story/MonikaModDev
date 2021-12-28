@@ -904,6 +904,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_enjoyyourafternoon",
             unlocked=True,
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)",
             rules=rules
         ),
         code="BYE"
@@ -939,6 +940,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_goodevening",
             unlocked=True,
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)",
             rules=rules
         ),
         code="BYE"

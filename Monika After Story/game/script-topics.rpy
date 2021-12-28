@@ -1819,6 +1819,7 @@ label monika_horror:
 
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
+            $ persistent._mas_pm_likes_spoops = False
             m 2eka "I can understand. It's definitely not for everyone."
 
     m 3eua "I remember we talked about this a little bit when you first joined the club."
@@ -4719,7 +4720,7 @@ init 5 python:
 
 label monika_ribbon:
     # TODO: We need a better handling for this
-    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon", "mini-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
@@ -16078,14 +16079,14 @@ label monika_wabi_sabi:
     m 7ekc "Maybe they grew into something that they're just not proud of."
     m 2dkd "It can be crushing to be worried about both looks and personality..."
 
-    if persistent._mas_pm_love_yourself:
+    if persistent._mas_pm_love_yourself is False:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    else:
         m 2eka "I hope you don't feel too insecure about yourself, [player]."
         m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
         m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
-
-    else:
-        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
-        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
 
     m 3hua "We'll overcome any problems you feel you have together."
     m 1hub "That's my wabi-sabi promise!"
@@ -17586,6 +17587,7 @@ label monika_zodiac_starsign:
 
     #This next line is just checking the player's starsign based on their birthday.
     if player_zodiac_sign != "Virgo":
+        # TODO: handle a/an here, potential solution is in eeb4b3a3a
         m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
 
     else:
