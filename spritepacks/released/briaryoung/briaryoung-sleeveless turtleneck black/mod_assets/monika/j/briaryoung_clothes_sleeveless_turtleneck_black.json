@@ -1,0 +1,26 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_sleeveless_turtleneck_black",
+    "img_sit": "briaryoung_sleeveless_turtleneck_black",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "compat-downtiedstrand": true
+    },
+    "select_info": {
+        "display_name": "Sleeveless Turtleneck (Black)",
+        "thumb": "briaryoung_sleeveless_turtleneck_black",
+        "group": "clothes",
+        "select_dlg": [
+            "I love this look!"
+        ]
+    },
+    "giftname": "sleevelessturtleneckblack",
+    "pose_arms": {}
+}

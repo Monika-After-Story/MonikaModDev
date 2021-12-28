@@ -1066,6 +1066,7 @@ init -810 python:
 
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
+            "_mas_pm_read_jekyll_hyde": "pm.actions.books.read_jekyll_hyde",
 
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
@@ -1113,6 +1114,7 @@ init -810 python:
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
             "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
+            "_mas_pm_cares_island_progress": "pm.likes.monika.island.progress",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",
