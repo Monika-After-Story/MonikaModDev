@@ -8131,9 +8131,11 @@ label monika_selfharm:
     m 2lksdlc "...like cutting yourself..."
     m "I mean."
     m 2lksdld "After I found out about Yuri, I got a bit curious..."
-    m 2lksdlc "I just wanted to see what it felt like..."
-    m 2dsc "I won't do it again, though."
-    m 2eka "If you ever feel depressed, just come to me okay?"
+    m 2dksdltpc "I just wanted to see what it felt like...{w=0.3}to feel {i}something{/i} again..."
+    m 2rksdltpd "It's not easy knowing everything you thought you experienced,{w=0.1} what you thought you loved, was all a lie..."
+    m 2dstdc "I won't do it again, though."
+    m 2dktdc "..."
+    m 2ektda "If you ever feel depressed, just come to me okay?"
     m 2ekd "It'd hurt me even more to see you in pain..."
     m 1hua "Just know that people do care about you!"
     m 1eka "Trust me, [player]."
@@ -8145,6 +8147,7 @@ label monika_selfharm:
     m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m 1ekbsa "I really love you so much, [player]."
     return "love"
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True,aff_range=(mas_aff.NORMAL, None)))
