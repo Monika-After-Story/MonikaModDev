@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_dark_pink",
+    "img_sit": "briaryoung_mini_ribbon_dark_pink",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "dark pink ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Dark pink, mini)",
+        "thumb": "briaryoung_mini_ribbon_dark_pink",
+        "group": "ribbon",
+        "select_dlg": [
+            "Such a pretty color!"
+        ]
+    },
+    "giftname": "minidarkpinkribbon"
+}

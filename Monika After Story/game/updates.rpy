@@ -374,8 +374,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.6
-label v0_12_6(version="v0_12_6"):
+# 0.12.7
+label v0_12_7(version="v0_12_7"):
     python hide:
 
         ##### PUT YOUR UPDATE SCRIPT CODE AFTER THIS 0.11.1 BLOCK
@@ -427,7 +427,10 @@ label v0_12_6(version="v0_12_6"):
             persistent._mas_penname = None
 
         ##### END 0.11.1 BLOCK
-        # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.6 VERSION BELOW HERE
+        # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.7 VERSION BELOW HERE
+
+        if store.seen_event("monika_hamlet") and persistent.monika_kill:
+            mas_unlockEVL("monika_tragic_hero","EVE")
 
     return
 
