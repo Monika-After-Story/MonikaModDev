@@ -1032,10 +1032,6 @@ init -810 python:
             # actions / d25
             "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
 
-            # actions / nye-nyd
-            "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
-            "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
-
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
 

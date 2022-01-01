@@ -3158,15 +3158,8 @@ label mas_d25_spent_time_monika:
         #Show the poem
         call mas_showpoem(poem=mas_poems.getRandomPoem("d25"), background_action_label="mas_d25_poem_mistletoe")
 
-        if d25_gifts_good > 0 or d25_gifts_neutral > 0:
-            m 1ekbsa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
-        elif d25_gifts_bad>0:
-            #only if all gifts were bad
-            m 1ekbsa "I really mean it [player], although you got me some...{w=1}odd gifts, it doesn't matter..."
-        else:
-            m 1ekbsa "I really mean that [player], I don't care that you didn't get me any presents for Christmas..."
         m 1dku "..."
-        m 1ektpu "Just having you spending time with me...{w=1}that's all I ever wanted."
+        m 1ektpu "I know I keep saying it, but just having you spending time with me...{w=1}that's all I ever wanted."
         m 6dktua "You truly are my entire world, [player]...{w=1}your love is all I need..."
         window hide
         menu:
@@ -4111,7 +4104,10 @@ init -810 python:
             "_mas_nye_nye_date_count": "nye.actions.went_out_nye",
             "_mas_nye_nyd_date_count": "nye.actions.went_out_nyd",
 
-            "_mas_nye_date_aff_gain": "nye.aff.date_gain"
+            "_mas_nye_date_aff_gain": "nye.aff.date_gain",
+
+            "_mas_nye_accomplished_resolutions": "nye.actions.did_new_years_resolutions",
+            "_mas_nye_has_new_years_res": "nye.actions.made_new_years_resolutions"
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 31),
@@ -4370,9 +4366,9 @@ init 5 python:
         skipCalendar=True
     )
 
-default persistent._mas_pm_accomplished_resolutions = None
+default persistent._mas_nye_accomplished_resolutions = None
 #True if user has accomplished new years resolutions
-default persistent._mas_pm_has_new_years_res = None
+default persistent._mas_nye_has_new_years_res = None
 #True if user has resolutuons
 
 label monika_resolutions:
@@ -4405,10 +4401,10 @@ label monika_resolutions:
                         m 3eka "There's nothing wrong with that. I don't think you really needed to change anyway."
 
                 else:
-                    m 2rkc "You probably should make one this year [player]..."
+                    m 2rkc "You probably should make one this year, [player]..."
 
     #If we made a resolution last year, then we should ask if the player accomplished it
-    elif mas_HistVerifyLastYear_k(True, "pm.actions.made_new_years_resolutions"):
+    elif mas_HistVerifyLastYear_k(True, "nye.actions.made_new_years_resolutions"):
         call monika_resolutions_accomplished_resolutions_menu("Since you made a resolution last year, did you accomplish it?")
 
     #This path will be the first thing you see if you didn't make a resolution last year
@@ -4417,17 +4413,17 @@ label monika_resolutions:
     menu:
         m "Do you have any resolutions for next year?{fast}"
         "Yes.":
-            $ persistent._mas_pm_has_new_years_res = True
+            $ persistent._mas_nye_has_new_years_res = True
 
             m 1eub "That's great!"
             m 3eka "Even if they can be hard to reach or maintain..."
             m 1hua "I'll be here to help you, if need be!"
 
         "No.":
-            $ persistent._mas_pm_has_new_years_res = False
+            $ persistent._mas_nye_has_new_years_res = False
             m 1eud "Oh, is that so?"
             if mas_isMoniNormal(higher=True):
-                if persistent._mas_pm_accomplished_resolutions:
+                if persistent._mas_nye_accomplished_resolutions:
                     if mas_isMoniHappy(higher=True):
                         m 1eka "You don't have to change. I think you're wonderful the way you are."
                     else:
@@ -4458,7 +4454,7 @@ label monika_resolutions_accomplished_resolutions_menu(question):
         m "[question]{fast}"
 
         "Yes.":
-            $ persistent._mas_pm_accomplished_resolutions = True
+            $ persistent._mas_nye_accomplished_resolutions = True
             if mas_isMoniNormal(higher=True):
                 m 4hub "I'm glad to hear that, [player]!"
                 m 2eka "It's great that you managed to do that."
@@ -4472,7 +4468,7 @@ label monika_resolutions_accomplished_resolutions_menu(question):
             return True
 
         "No.":
-            $ persistent._mas_pm_accomplished_resolutions = False
+            $ persistent._mas_nye_accomplished_resolutions = False
             if mas_isMoniNormal(higher=True):
                 m 2eka "Aw...well, sometimes things just don't work out like we plan them to."
 
@@ -4709,7 +4705,7 @@ label mas_nye_monika_nye_dress_intro:
         $ curr_year = curr_year - 1
         $ curr_date = datetime.date(curr_year, 12, 31)
 
-    if mas_SELisUnlocked(mas_clothes_dress_newyears) and mas_isMoniEnamored(lower=True):
+    if mas_SELisUnlocked(mas_clothes_dress_newyears):
         m 3hub "Hey [player], can you believe it's New Year's again?!"
         m 1tuu "I think it's time to dust off one of my favorite outfits.{w=0.5}.{w=0.5}.{nw}"
 
@@ -4717,9 +4713,9 @@ label mas_nye_monika_nye_dress_intro:
 
         m 3hub "And there we go, I just love this dress! {w=0.2}{nw}"
         extend 3eua "It's always nice to dress up now and then."
-        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [curr_year+1]!"
+        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [(curr_year+1)]!"
 
-    elif not mas_SELisUnlocked(mas_clothes_dress_newyears):
+    else:
         m 3hub "Hey [player], I have something in store for you this year~"
         m 3eua "Just let me go change.{w=0.5}.{w=0.5}.{nw}"
 
