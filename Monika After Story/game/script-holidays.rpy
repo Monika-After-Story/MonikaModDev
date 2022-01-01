@@ -4719,7 +4719,7 @@ label mas_nye_monika_nye_dress_intro:
 
         m 3hub "And there we go, I just love this dress! {w=0.2}{nw}"
         extend 3eua "It's always nice to dress up now and then."
-        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [curr_year+1]!"
+        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [(curr_year+1)]!"
 
     elif not mas_SELisUnlocked(mas_clothes_dress_newyears):
         m 3hub "Hey [player], I have something in store for you this year~"
