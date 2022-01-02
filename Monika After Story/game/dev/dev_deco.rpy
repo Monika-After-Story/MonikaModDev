@@ -67,6 +67,14 @@ init -1 python:
 
 
 init 501 python:
+
+    # uncoment this to test register_img_same init exception
+#    MASImageTagDecoDefinition.register_img_same(
+#        "dev_monika_deco_one",
+#        store.mas_background.MBG_DEF,
+#        "dev_mas_bg_1"
+#    )
+
     # spaceroom will be default position
     MASImageTagDecoDefinition.register_img(
         "dev_monika_deco_one",
