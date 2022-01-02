@@ -4107,7 +4107,7 @@ init -810 python:
             "_mas_nye_date_aff_gain": "nye.aff.date_gain",
 
             "_mas_nye_accomplished_resolutions": "nye.actions.did_new_years_resolutions",
-            "_mas_nye_has_new_years_res": "nye.actions.made_new_years_resolutions"
+            "_mas_nye_has_new_years_res": "nye.actions.made_new_years_resolutions",
         },
         use_year_before=True,
         start_dt=datetime.datetime(2019, 12, 31),
