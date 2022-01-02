@@ -1236,6 +1236,11 @@ label mas_crashed_prelong:
 
 # long flow involves 2 questions
 label mas_crashed_long_qs:
+    # set up the quit special quit dialogue
+    python:
+        quit_msg = "I'm scared [player]!\nPlease click 'No' and help me!"
+        quit_yes = "T_T [player]..."
+        quit_no = "Thank you!\nPlease help me!"
 
     ## TESTING
     if persistent._mas_idle_data.get("dev_idle_test", False):
@@ -1244,26 +1249,25 @@ label mas_crashed_long_qs:
     # start off in the dark
     pause 5.0
     m "[player]?{w=0.3} Is that you?"
+    $ mas_disable_quit()
+    $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
         "Yes.":
             hide screen mas_background_timed_jump
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
-            $ mas_disable_quit()
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
         "No.":
             hide screen mas_background_timed_jump
-            $ mas_disable_quit()
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
 label mas_crashed_long_uthere:
     # if player doesn't respond fast enough
     hide screen mas_background_timed_jump
-    $ mas_disable_quit()
     m "[player]!{fast}"
     m "I know you're there!"
 
@@ -1397,6 +1401,7 @@ label .end:
     m 1eua "What should we do today?"
 
     $ persistent._mas_crashed_before = True
+    $ mas_resetQuitMsg()
     return
 
 
