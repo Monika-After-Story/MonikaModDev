@@ -3,8 +3,8 @@ init 100 python:
     layout.UNSTABLE = store.mas_layout.UNSTABLE
 
 init -1 python:
-    layout.QUIT_YES = _("Please don't close the game on me!")
-    layout.QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
+    layout.QUIT_YES = store.mas_layout.QUIT_YES
+    layout.QUIT_NO = store.mas_layout.QUIT_NO
 
     # tooltips
     layout.MAS_TT_SENS_MODE = (
@@ -41,12 +41,12 @@ init -1 python:
     )
 
 
-init python in mas_layout:
+init -2 python in mas_layout:
     import store
     import store.mas_affection as aff
 
-    QUIT_YES = store.layout.QUIT_YES
-    QUIT_NO = store.layout.QUIT_NO
+    QUIT_YES = _("Please don't close the game on me!")
+    QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
     QUIT = _("Leaving without saying goodbye, [player]?")
     UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
@@ -116,6 +116,22 @@ init python in mas_layout:
         return msg
 
 
+    def set_quit_msg(quit_msg=None, quit_yes=None, quit_no=None):
+        """
+        Sets text for the quit dialogue box
+
+        For documentation, see mas_setQuitMsg
+        """
+        if quit_msg is not None:
+            store.layout.QUIT = quit_msg
+
+        if quit_yes is not None:
+            store.layout.QUIT_YES = quit_yes
+
+        if quit_no is not None:
+            store.layout.QUIT_NO = quit_no
+
+
     def setupQuits():
         """
         Sets up quit message based on the current affection state
@@ -133,14 +149,40 @@ init python in mas_layout:
         if quit_no is None:
             quit_no = findMsg(curr_aff_state, 2)
 
-        store.layout.QUIT = quit_msg
-        store.layout.QUIT_YES = quit_yes
-        store.layout.QUIT_NO = quit_no
+        set_quit_msg(quit_msg, quit_yes, quit_no)
+
+
+init python:
+    import store.mas_layout
+
+
+    def mas_resetQuitMsg():
+        """
+        Resets quit messages to the ones appropriate for the current affection.
+        """
+        store.mas_layout.setupQuits()
+
+
+    def mas_setQuitMsg(quit_msg=None, quit_yes=None, quit_no=None):
+        """
+        Sets text for the quit dialogue box
+
+        IN:
+            quit_msg - text to show as the quit dialogue box message. Not set
+                if None.
+                (Default: None)
+            quit_yes - text to show when YES is clicked in the quit dialogue
+                box. Not set if None.
+                (Default: None)
+            quit_no - text to show when NO is clicked in the quit dialogue box.
+                Not set if None.
+                (Default: None)
+        """
+        store.mas_layout.set_quit_msg(quit_msg, quit_yes, quit_no)
 
 
 init 900 python:
-    import store.mas_layout
-    store.mas_layout.setupQuits()
+    mas_resetQuitMsg()
 
 
 ## Initialization
