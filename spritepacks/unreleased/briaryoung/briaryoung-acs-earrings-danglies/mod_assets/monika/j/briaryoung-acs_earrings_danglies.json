@@ -1,0 +1,28 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_earrings_danglies",
+    "img_sit": "briaryoung_earrings_danglies",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 10,
+    "acs_type": "earrings",
+    "mux_type": [
+        "earrings"
+    ],
+    "stay_on_start": true,
+    "giftname": "danglyearrings",
+    "dlg_desc": "dangly earrings",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Dangly earrings",
+        "thumb": "briaryoung_earrings_danglies",
+        "group": "earrings",
+        "select_dlg": [
+            "Cute huh?"
+        ]
+    }
+}

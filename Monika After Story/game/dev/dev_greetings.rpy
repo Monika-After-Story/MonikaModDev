@@ -3,7 +3,7 @@
 # TODO Delete this *Insert Monika with a handgun*
 # Seriously this is for testing only
 
-init python:
+init 999 python:
     if persistent._mas_fastgreeting is None:
         persistent._mas_fastgreeting = config.developer
 
