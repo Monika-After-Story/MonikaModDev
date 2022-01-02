@@ -182,7 +182,7 @@ init -860 python in mas_history:
         Internali version of mas_HistVerify
         """
         if len(years_list) == 0:
-            years_list = range(2017, datetime.date.today().year+1)
+            years_list = _valid_year_range()
 
         found_data = lookup_otl(key, years_list)
         years_found = []
@@ -194,6 +194,15 @@ init -860 python in mas_history:
                 years_found.append(year)
 
         return (len(years_found) > 0, years_found)
+
+
+    def _valid_year_range():
+        """
+        generates the range of years that are valid for historical lookups.
+
+        RETURNS: range of years from 2017 to todays year.
+        """
+        return range(2017, datetime.date.today().year + 1)
 
 
     ### archive saving functions: (NOT PUBLIC)
@@ -209,6 +218,21 @@ init -860 python in mas_history:
             year - year to store value
         """
         store.persistent._mas_history_archives[year][key] = value
+
+
+    def _store_all(year_data, key):
+        """
+        Stores multiple year's worth of data in the historical archives.
+
+        NOTE: will OVERWRITE data that already exists.
+
+        IN:
+            year_data - dictionary of the following format:
+                year: data tuple from mas_HistLookup
+            key - data key to store values
+        """
+        for year in year_data:
+            _store(year_data[year], key, year)
 
 
     ### history saver data save/load
@@ -279,6 +303,22 @@ init -850 python:
                 we could not find year or key
         """
         return store.mas_history.lookup(key, year)
+
+
+    def mas_HistLookup_all(key):
+        """
+        Looks up all historical data for a specific key.
+
+        IN:
+            key - data key to look up
+
+        RETURNS: dictionary of the following format:
+            year: data tuple from mas_HistLookup
+        """
+        return store.mas_history.lookup_otl(
+            key,
+            store.mas_history._valid_year_range()
+        )
 
 
     def mas_HistLookup_k(year, *keys):
