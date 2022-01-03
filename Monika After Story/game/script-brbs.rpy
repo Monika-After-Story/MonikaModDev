@@ -172,7 +172,7 @@ label monika_writing_idle:
 
         else:
         $ response = renpy.random.randint(1,3)
-        if response = 1:
+        if response == 1:
             m 1eub "Oh! You're going to go write something?"
             m 1hua "That makes me so glad!"
             m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
@@ -180,7 +180,7 @@ label monika_writing_idle:
             m 3eua "Anyway, just let me know when you're done."
             m 1hua "I'll be waiting right here for you~"
 
-        elif response = 2:
+        elif response == 2:
             m 2eua "Off to write something?"
             m 5hub "Maybe I should do the same!"
             m 1lublb "It's been a while since I wrote a poem for you..."
@@ -188,7 +188,7 @@ label monika_writing_idle:
             m 7eusdlb "Anyway, make sure to enjoy yourself!"
             m 1eua "I'll be here waiting when you finish!"
 
-       elif response = 3:
+       elif response == 3:
             if not renpy.seen_label("monika_writing_posture"):
                 call monika_writing_posture
             else:
