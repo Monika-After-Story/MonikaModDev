@@ -188,7 +188,7 @@ label monika_writing_idle:
             m 7eusdlb "Anyway, make sure to enjoy yourself!"
             m 1eua "I'll be here waiting when you finish!"
 
-       elif response == 3:
+        elif response == 3:
             if not renpy.seen_label("monika_writing_posture"):
                 call monika_writing_posture
             else:
