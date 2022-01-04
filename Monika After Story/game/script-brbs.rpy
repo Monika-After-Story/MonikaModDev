@@ -170,15 +170,15 @@ label monika_writing_idle:
             $ _history_list.pop()
             m "Oh! You're going to{fast} go write something?"
 
-        else:
-        $ response = renpy.random.randint(1,3)
-        if response == 1:
-            m 1eub "Oh! You're going to go write something?"
-            m 1hua "That makes me so glad!"
-            m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
-            extend 3hua "I'd love to read your work, [player]!"
-            m 3eua "Anyway, just let me know when you're done."
-            m 1hua "I'll be waiting right here for you~"
+            else:
+                $ response = renpy.random.randint(1,3)
+                if response == 1:
+                m 1eub "Oh! You're going to go write something?"
+                m 1hua "That makes me so glad!"
+                m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
+                extend 3hua "I'd love to read your work, [player]!"
+                m 3eua "Anyway, just let me know when you're done."
+                m 1hua "I'll be waiting right here for you~"
 
         elif response == 2:
             m 2eua "Off to write something?"
