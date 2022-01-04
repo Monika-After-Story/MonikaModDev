@@ -198,16 +198,6 @@ label monika_writing_idle:
                 m 4htb "A romance, perhaps? {w=0.2}{nw}"
                 extend 5hub "Ahahaha~"
                 m 5eua "I'll await your return!"
-  
-label monika_writing_posture:
-            m 1eua "Going to get some writing done?"
-            m 1hub "Sounds good!"
-            m 3esd "Make sure you're sitting in a way that's comfortable, though."
-            m 3hsb "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
-            m 3esc "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
-            m 3esb "Take a break every so often to get up and stretch or grab a glass of water!"
-            m 5hsb "I'll be here if you need some time away from your work!"
-            return
             
 
     elif mas_isMoniUpset():
@@ -224,6 +214,16 @@ label monika_writing_posture:
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_writing"] = True
     return "idle"
+
+label monika_writing_posture:
+    m 1eua "Going to get some writing done?"
+    m 1hub "Sounds good!"
+    m 3esd "Make sure you're sitting in a way that's comfortable, though."
+    m 3hsb "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
+    m 3esc "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
+    m 3esb "Take a break every so often to get up and stretch or grab a glass of water!"
+    m 5hsb "I'll be here if you need some time away from your work!"
+    return
 
 label monika_writing_idle_callback:
 
