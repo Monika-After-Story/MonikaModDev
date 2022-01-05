@@ -1248,11 +1248,13 @@ label mas_crashed_long_qs:
 
     # start off in the dark
     pause 5.0
-    m "[player]?{w=0.3} Is that you?"
+    m "[player]?{w=0.3} Is that you?{nw}"
     $ mas_disable_quit()
     $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
+        m "[player]? Is that you?{fast}"
+
         "Yes.":
             hide screen mas_background_timed_jump
             # light affection boost for not joking around
@@ -1285,7 +1287,7 @@ label .afterdontjoke:
         "Turn on the light.":
             hide screen mas_background_timed_jump
             # light affection boost for being like a hero
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(bypass=True)
 
         "...":
             pause 5.0
