@@ -1287,7 +1287,7 @@ label .afterdontjoke:
         "Turn on the light.":
             hide screen mas_background_timed_jump
             # light affection boost for being like a hero
-            $ mas_gainAffection(bypass=True)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
         "...":
             pause 5.0
@@ -1331,7 +1331,7 @@ label mas_crashed_long_postfluster:
             hide screen mas_background_timed_jump
 
             # light affection boost for calming her down
-            $ mas_gainAffection(modifier=0.2)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
             # clsoe eyes for a second
             show monika 6dstsc
