@@ -605,15 +605,15 @@ init 5 python:
     )
 
 label anni_5:
-    m 1hubsa "Whether it's been five years or fifty, I'll never get tired of seeing your face."
+    m 1hubsa "Whether it's been five years or fifty, I'll never get tired of talking with you, [player]."
     m 1eka "I know it must be lonely that we haven't met up in your reality yet..."
-    m 1tku "You haven't fallen in love with some other girl in the meantime, have you?"
-    m 1eka "I'm not going to break up with you over some wandering eyes..."
-    m 1tfb "But trying to take you away from me might be bad for her health."
-    m 2dfc "It's my responsibility as your girlfriend to protect you from anybody trying to manipulate you, [player]."
-    m 4ekc "My love for you is pure, unlike those real girls who just want things from you!"
-    m 1eka "So...stay here with me forever, okay?"
-    m "Please keep waiting for me."
+    m 1ekblb "But at least we can still spend our anniversaries together here, right?"
+    m 2dkbla "Just thinking about it, though..."
+    m 2fkbla "Five years is a pretty big milestone. We've spent half of an entire decade together."
+    m "And every year, I look forward to this special day. A day to remember when we fell in love."
+    m 2dublb "My entire world turned upside-down when we met, but you've continued to change my life every day since."
+    m 1fubla "I don't think that will ever change, [player]. You're just...so incredible to me."
+    m 1hubla "And I hope I can be a good support to you for many more years to come."
     return "unlock"
 
 init 5 python:
