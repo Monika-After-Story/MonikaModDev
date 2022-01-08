@@ -16,6 +16,9 @@ init -1 python:
         "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
     )
+    layout.MAS_TT_UNSTABLE_DISABLED = (
+        "Unstable cannot be disabled until the next stable release."
+    )
     layout.MAS_TT_REPEAT = _(
         "Enable this to let Monika repeat topics that you have already seen."
     )
@@ -49,10 +52,12 @@ init python in mas_layout:
     QUIT_NO = store.layout.QUIT_NO
     QUIT = _("Leaving without saying goodbye, [player]?")
     UNSTABLE = (
-        "WARNING: Enabling unstable mode will download updates from the " +
-        "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistents before enabling this mode. Please report " +
-        "issues found here with an [[UNSTABLE] tag."
+        "WARNING: Enabling unstable mode will download updates from the "
+        "experimental unstable branch. "
+        "THIS IS NOT EASILY REVERSIBLE. "
+        "It is HIGHLY recommended to make a backup of your persistents "
+        "before enabling this mode. "
+        "Please report issues found here with an [[UNSTABLE] tag."
     )
 
     # quit yes messages affection scaled
@@ -1387,9 +1392,17 @@ screen preferences():
                     label _("Gameplay")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
-                            textbutton _("Unstable"):
-                                action SetField(persistent, "_mas_unstable_mode", False)
-                                selected persistent._mas_unstable_mode
+                            if store.mas_utils.is_ver_stable(config.version):
+                                textbutton _("Unstable"):
+                                    action SetField(persistent, "_mas_unstable_mode", False)
+                                    selected persistent._mas_unstable_mode
+                            else:
+                                textbutton _("Unstable"):
+                                    style "generic_fancy_check_button_disabled"
+                                    text_style "generic_fancy_check_button_disabled_text"
+                                    action SetField(persistent, "_mas_unstable_mode", True)
+                                    selected True
+                                    hovered tooltip.Action(layout.MAS_TT_UNSTABLE_DISABLED)
 
                         else:
                             textbutton _("Unstable"):

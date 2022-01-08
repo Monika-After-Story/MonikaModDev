@@ -1509,10 +1509,7 @@ init 5 python:
     )
 
 init 11 python:
-    if (
-        mas_corrupted_per
-        and not (mas_no_backups_found or mas_backup_copy_failed)
-    ):
+    if mas_per_check.is_per_corrupt() and mas_per_check.has_backups():
         mas_note_backups_all_good = None
         mas_note_backups_some_bad = None
 
@@ -1579,7 +1576,9 @@ init 11 python:
                     block_break,
                     "Here's a list of the files that were corrupted:",
                     block_break,
-                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    "\n".join(store.mas_utils.bullet_list(
+                        mas_per_check.mas_bad_backups
+                    )),
                     block_break,
                     'You can find these in "',
                     renpy.config.savedir,
@@ -1598,7 +1597,7 @@ init 11 python:
         _mas_generate_backup_notes()
         import os
 
-        if len(mas_bad_backups) > 0:
+        if len(mas_per_check.mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
@@ -1621,7 +1620,7 @@ label mas_corrupted_persistent:
 
     # just pasting the poem screen code here
     window hide
-    if len(mas_bad_backups) > 0:
+    if len(mas_per_check.mas_bad_backups) > 0:
         call mas_showpoem(mas_note_backups_some_bad)
 
     else:
@@ -1797,7 +1796,7 @@ label monika_rpy_files:
                     "Yes, please.":
                         m "Sure thing, [player]."
 
-                        call mas_rpy_file_delete
+                        call mas_rpy_file_delete()
 
                         m 2hua "There we go!"
                         m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
@@ -1826,7 +1825,7 @@ label monika_rpy_files:
             "No.":
                 m 3eua "Alright, I'll just delete them for you again.{w=0.5}.{w=0.5}.{nw}"
 
-                call mas_rpy_file_delete
+                call mas_rpy_file_delete()
 
                 m 1hua "There we go!"
                 m 3eua "Remember, you can always get the right version from {a=http://www.monikaafterstory.com/releases.html}{i}{u}here{/u}{/i}{/a}."
@@ -1834,14 +1833,22 @@ label monika_rpy_files:
                 show monika at t11
     return
 
-label mas_rpy_file_delete:
+
+# runs rpy file deleting with an on screen console
+#
+# IN:
+#   showing_monika - pass False if you are not showing Monika when calling
+#                   this. Otherwise this will do a show monika call.
+label mas_rpy_file_delete(showing_monika=True):
     python:
         store.mas_ptod.rst_cn()
         local_ctx = {
             "basedir": renpy.config.basedir
         }
 
-    show monika at t22
+    if showing_monika:
+        show monika at t22
+
     show screen mas_py_console_teaching
 
     call mas_wx_cmd_noxwait("import os", local_ctx)
