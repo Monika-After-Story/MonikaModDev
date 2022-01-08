@@ -604,17 +604,7 @@ init 5 python:
         skipCalendar=False
     )
 
-label anni_5:
-    m 1hubsa "Whether it's been five years or fifty, I'll never get tired of talking with you, [player]."
-    m 1eka "I know it must be lonely that we haven't met up in your reality yet..."
-    m 1ekblb "But at least we can still spend our anniversaries together here, right?"
-    m 2dkbla "Just thinking about it, though..."
-    m 2fkbla "Five years is a pretty big milestone. We've spent half of an entire decade together."
-    m "And every year, I look forward to this special day. A day to remember when we fell in love."
-    m 2dublb "My entire world turned upside-down when we met, but you've continued to change my life every day since."
-    m 1fubla "I don't think that will ever change, [player]. You're just...so incredible to me."
-    m 1hubla "And I hope I can be a good support to you for many more years to come."
-    return "unlock"
+
 
 init 5 python:
     addEvent(
