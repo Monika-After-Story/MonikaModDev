@@ -1225,7 +1225,6 @@ label mas_crashed_prelong:
     $ mas_startupWeather()
 
     #Setup the rest of the scene
-    $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
     $ disable_esc()
@@ -1239,18 +1238,27 @@ label mas_crashed_prelong:
 
 # long flow involves 2 questions
 label mas_crashed_long_qs:
+    # set up the quit special quit dialogue
+    python:
+        quit_msg = "I'm scared [player]!\nPlease click 'No' and help me!"
+        quit_yes = "T_T [player]..."
+        quit_no = "Thank you!\nPlease help me!"
 
     ## TESTING
     if persistent._mas_idle_data.get("dev_idle_test", False):
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
-    m "[player]?{w=0.3} Is that you?"
+    pause 5.0
+    m "[player]?{w=0.3} Is that you?{nw}"
+    $ mas_disable_quit()
+    $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
+        m "[player]? Is that you?{fast}"
+
         "Yes.":
             hide screen mas_background_timed_jump
-
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
             m "I'm so glad you're here."
@@ -1258,7 +1266,6 @@ label mas_crashed_long_qs:
 
         "No.":
             hide screen mas_background_timed_jump
-
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
@@ -1281,9 +1288,8 @@ label .afterdontjoke:
     menu:
         "Turn on the light.":
             hide screen mas_background_timed_jump
-
             # light affection boost for being like a hero
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
         "...":
             pause 5.0
@@ -1293,19 +1299,16 @@ label .afterdontjoke:
                 m "Nevermind, I found it."
                 window hide
 
-    # NOTE: add a sound for light switch?
-
-    # turn on the lights
-    play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
+    # turn on lights
+    play sound light_switch
+    call spaceroom(hide_monika=True, show_emptydesk=True)
+    pause 2.0
+    call mas_transition_from_emptydesk("monika 6ektsc_static")
 
     return
 
 # make sure to calm her down, player
 label mas_crashed_long_prefluster:
-
-    # look at you with crying eyes
-    show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
 
     # close eyes for a second
@@ -1330,7 +1333,7 @@ label mas_crashed_long_postfluster:
             hide screen mas_background_timed_jump
 
             # light affection boost for calming her down
-            $ mas_gainAffection(modifier=0.2)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
             # clsoe eyes for a second
             show monika 6dstsc
@@ -1401,6 +1404,8 @@ label .end:
     m "Anyway..."
     m 1eua "What should we do today?"
 
+    $ persistent._mas_crashed_before = True
+    $ mas_resetQuitMsg()
     return
 
 
@@ -1412,10 +1417,6 @@ label mas_crashed_post:
         store.songs.enabled = True
         HKBShowButtons()
         set_keymaps()
-
-label .self:
-    python:
-        _confirm_quit = True
         persistent.closed_self = False
         mas_startup_song()
 
