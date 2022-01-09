@@ -2119,7 +2119,24 @@ label greeting_french:
     m 1hub "Ahaha!"
     m 3hksdlb "I'm practicing some French. I just told you that you have very beautiful eyes~"
     m 1eka "It's such a romantic language, [player]."
-    m 1hua "Maybe both of us can practice it sometime, mon amour~"
+    m 4esa "Do you speak French [player]{nw}?"
+    $ _history_list.pop()
+    if persistent._mas_pm_lang_other is not False:
+        menu:
+            m "Do you speak French [player]?"
+            "Yes.":
+                m 2wud "Oh!"
+                m 1rkbsc "Maybe you could...{w=0.4}teach me one day?"
+                m 5tkbsu "I'm sure you will. I love you [player]."
+
+            "No.":
+                m 1eua "That's alright!"
+                m 2eua "I'm not a good at french too!"
+                m 3eublb "We will learn it together one day!"
+
+            "Oui oui baguette.":
+                m 2efo "Uh...{w=0.4}are you okay [player]?"
+                m 1efw "I'll skip that!"
     return
 
 init 5 python:
