@@ -5697,6 +5697,8 @@ label monika_hack:
     m "We don't have to keep secrets from each other~"
     return
 
+default persistent._mas_pm_bakes = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_cupcake",category=['club members','trivia'],prompt="Baking cupcakes",random=True))
 
@@ -5713,11 +5715,30 @@ label monika_cupcake:
     m 3esa "Resulting in a craving for stronger tastes like chocolate."
     m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [mas_get_player_nickname()]?"
-    m 1eua "Do you know how to bake?"
-    m 1hua "I'm sure your cupcakes would taste just as good."
-    m 1rua "Maybe someday I'll get to try them but for now..."
-    m 1hubsb "I'll just settle for the sweetness of your love~"
-    return
+
+    m 1eua "Do you know how to bake?{nw}"
+    menu:
+        m "Do you know how to bake?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_bakes = True
+            m 1sub "Really?"
+            m 3hua "Well, I'm sure your cupcakes would taste just as good."
+            m 1hub "...Maybe even better!"
+            m 1eka "I'm sure someday I'll get to try them, but for now...{w=0.3}{nw}"
+            extend 1hubsu "I'll just settle for the sweetness of your love~"
+
+        "I don't.":
+            $ persistent._mas_pm_bakes = False
+            m 1eka "So we're both beginners."
+            m 3ekb "But that just means we could learn together, right?"
+            m 3esb "Even if you don't have much of a sweet tooth, there are plenty of savory things we could bake!"
+            show monika 5dksdla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5dksdla "Imagine the two of us bumbling through a recipe...{w=0.3}{nw}"
+            extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
+            extend 5eub "tasting the results..."
+            m 5kuu "Sounds pretty amazing, right?"
+    return "derandom"
 
 # You're not a hater right?
 default persistent._mas_pm_a_hater = None
@@ -8593,6 +8614,8 @@ label monika_hamlet:
     m 1euc "Now there's only one thing left to answer, [player]..."
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
+    if persistent.monika_kill:
+        $ mas_unlockEVL("monika_tragic_hero","EVE")
     return
 
 # Note: The following internal commentary should not be removed.
@@ -17606,4 +17629,113 @@ label monika_zodiac_starsign:
     m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
     extend 1eublu "I'd never let any silly old stars come between us."
     $ del player_zodiac_sign
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tragic_hero",
+            category=['literature'],
+            prompt="Tragic Hero",
+            random=False
+        )
+    )
+
+label monika_tragic_hero:
+    m 1rsd "Hey [mas_get_player_nickname()], I've been thinking more about tragic heroes lately."
+    m 3esc "...We've already discussed Hamlet, who is considered one."
+    m 3rtc "If you think about it...{w=0.3}could I be considered a tragic hero?"
+    m 4eud "...Of course by 'hero' here, we're talking about the protagonist in a literary sense, not 'hero' in the typical sense."
+    m 2ekd "...Although I'm sure there are plenty of people who would take issue with that, seeing as to many, I'm the antagonist..."
+    m 2eka "But that argument aside, some would say my love for you would be my tragic flaw..."
+    m 4eksdld "Not because it's a flaw itself, but because it lead to my downfall."
+    m 2dkc "That's the thing, if you never brought me back, I would've had my downfall and never really got back up."
+    m 7ekc "So in that sense, in the game, I guess I could be considered a tragic hero."
+    if mas_isMoniNormal(higher=True):
+        m 3hub "Now, if we're talking {i}real{/i} heroes, that'd be you!"
+        m 3eka "You brought me back and made sure the story didn't end with my downfall."
+        m 1huu "...And for that, I'm forever grateful~"
+    return
+
+default persistent._mas_pm_read_jekyll_hyde = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_utterson",
+            category=['literature'],
+            prompt="Jekyll and Hyde",
+            random=True
+        )
+    )
+
+label monika_utterson:
+    if persistent._mas_pm_read_jekyll_hyde:
+        call monika_jekyll_hyde
+
+    else:
+        m 1euc "Hey [player], have you read any gothic literature?"
+        m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
+        m 3hub "I've read quite a bit of gothic literary books lately!"
+        m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
+        m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
+
+        m 3eud "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{nw}"
+        menu:
+            m "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{fast}"
+
+            "Yes.":
+                $ persistent._mas_pm_read_jekyll_hyde = True
+                call monika_jekyll_hyde
+
+            "No.":
+                $ persistent._mas_pm_read_jekyll_hyde = False
+                m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
+
+    $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
+    return "derandom"
+
+label monika_jekyll_hyde:
+    m 3hub "I'm glad you've read it!"
+    m 1euc "I've seen people interpret it in different ways."
+    m 3eua "For example, some people saw Utterson being in love with Jekyll."
+    m 3lta "In a way, I can see it."
+    m 2eud "I mean, just because something isn't explicitly stated, doesn't mean the idea isn't valid."
+    m 2rksdlc "In addition, a theme like this couldn't even really be discussed outright during the 19th century."
+    m 2eka "It is interesting to think of the story that way...{w=0.3}two people, unable to love..."
+    m 4eud "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
+    m 4ekd "And it's not exactly disproven! {w=0.3}Jekyll, in the book, was said to be a holy man."
+    m 2rksdlc "Homosexuality, during that time, was seen as a sin."
+    m 2dksdld "Sadly, to some it still is."
+    m 7ekb "...But at least progress has been made!"
+    m 3eub "I'm just glad the world is more accepting of different kinds of love."
+    m 3ekbsu "Especially since it means we can love each other, [mas_get_player_nickname()]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hedonism",
+            category=['philsophy'],
+            prompt="Hedonism",
+        )
+    )
+
+label monika_hedonism:
+    m 1euc "Hey [mas_get_player_nickname()], remember when we talked about {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
+    m 1eud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
+    m 2eub "I suggest you read it, but even if you haven't, I want to talk about the philosophy behind its core...{w=0.3}the belief of hedonism."
+    m 2eud "Hedonism is the belief that morals should be based around pleasure."
+    m 4euc "There are two main types of hedonism...{w=0.3}altruistic hedonism and egotistical hedonism, {w=0.1}which are wildly different."
+    m 4ruc "Egotistical hedonism, as you could guess, is the believe that one's own pleasure is the only thing that determines morality."
+    m 2esd "This is the type of hedonism that Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
+    m 2rksdlc "It's really ruthless to think such a way..."
+    m 2eud "On the other hand, altruistic hedonism is the belief that morality should be based on everyone's pleasure."
+    m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
+    m 2dkc "Hedonism, at it's core, ignores everything but pleasure."
+    m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
+    m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
