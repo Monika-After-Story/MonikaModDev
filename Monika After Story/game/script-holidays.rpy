@@ -1912,6 +1912,9 @@ init -10 python:
         # queue the reacts
         if len(react_labels) > 0:
             for react_label in react_labels:
+                mas_rmallEVL(react_label) # TODO - this is a patch, revalute when #8545 (gift logging) and #8546 (gift registering) are addressed
+
+            for react_label in react_labels:
                 pushEvent(react_label,skipeval=True)
 
     def mas_d25SilentReactToGifts():
@@ -2378,8 +2381,10 @@ label mas_d25_gift_starter:
 
     m 1suo "Let's see what we have here.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop the last index so we remove gifts from under the tree as we go
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop the last index so we remove gifts from under the tree as we go
+    # TODO - add logging if there is a mismatch here
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_connector:
@@ -2396,8 +2401,10 @@ label mas_d25_gift_connector:
     m 1hub "[picked_quip]"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop here too for the tree gifts
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop here too for the tree gifts
+    # TODO - add logging if there is a mismatch here
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_end:
