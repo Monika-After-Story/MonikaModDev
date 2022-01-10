@@ -8615,7 +8615,7 @@ label monika_hamlet:
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
     if persistent.monika_kill:
-        $ mas_showEVL("monika_tragic_hero", "EVE", _random=True)
+        $ mas_protectedShowEVL("monika_tragic_hero", "EVE", _random=True)
     return
 
 # Note: The following internal commentary should not be removed.
