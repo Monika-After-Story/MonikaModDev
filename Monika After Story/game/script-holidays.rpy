@@ -2273,7 +2273,7 @@ label mas_holiday_d25c_autoload_check:
                     mas_changeWeather(mas_weather_snow, by_user=True)
 
                     #Only change bg if the current is not supported
-                    if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+                    if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
                         store.mas_d25_utils.has_changed_bg = True
                         mas_changeBackground(mas_background_def, set_persistent=True)
 
@@ -2301,7 +2301,7 @@ label mas_holiday_d25c_autoload_check:
             #Change if bg isn't supported
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            if mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+            if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
                 store.mas_d25_utils.has_changed_bg = True
                 mas_changeBackground(mas_background_def, set_persistent=True)
 
@@ -4724,7 +4724,7 @@ label mas_nye_monika_nye_dress_intro:
 
         m 3hub "And there we go, I just love this dress! {w=0.2}{nw}"
         extend 3eua "It's always nice to dress up now and then."
-        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [curr_year+1]!"
+        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [(curr_year+1)]!"
 
     elif not mas_SELisUnlocked(mas_clothes_dress_newyears):
         m 3hub "Hey [player], I have something in store for you this year~"

@@ -430,7 +430,7 @@ label v0_12_7(version="v0_12_7"):
         # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.7 VERSION BELOW HERE
 
         if store.seen_event("monika_hamlet") and persistent.monika_kill:
-            mas_unlockEVL("monika_tragic_hero","EVE")
+            mas_showEVL("monika_tragic_hero", "EVE", _random=True)
 
     return
 
