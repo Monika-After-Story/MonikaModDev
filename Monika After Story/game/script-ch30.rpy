@@ -1365,7 +1365,10 @@ label ch30_post_exp_check:
     $ mas_checkApologies()
 
     # corruption check
-    if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
+    if (
+            store.mas_per_check.is_per_corrupt()
+            and not renpy.seen_label("mas_corrupted_persistent")
+    ):
         $ pushEvent("mas_corrupted_persistent")
 
     # push greeting if we have one
