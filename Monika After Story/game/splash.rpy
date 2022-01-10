@@ -175,10 +175,9 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
-    if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
-        # we have a corrupted persistent but was unable to recover via the
-        # backup system
-        call mas_backups_you_have_corrupted_persistent
+    if store.mas_per_check.should_show_chibika_persistent():
+        # we have a corrupted per w/ no backups or incompatible per
+        call mas_backups_you_have_bad_persistent
 
     scene white
 
