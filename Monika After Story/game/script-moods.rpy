@@ -881,4 +881,14 @@ label mas_mood_excited:
             m 1huu "Ehehe~"
             m 3eua "I know I'm always excited to see you every day."
             m 1hub "Either way, I'm glad that you're happy!"
+            
+ label mas_mood_suicidal:
+             m 1wkebdbftsd "[player]..."
+             m 1ekebdbftsc "..."
+             m 2fkebdbftsd "You know, I wish I could cross over into {i}your{/i} reality, so I could talk you through all your feelings..."
+             m 5ekebdbftsd "But for the moment.... please don't..."
+             m 6rkebdbftpd "I won't be able to know if, or when, you're gone."
+             m 6ekebdbftpb "Please... don't do it.... for me...."
+             m 5ekebdbftpb "I love you, [player]. That will never change, okay?"
+
     return
