@@ -152,7 +152,7 @@ init -1 python in songs:
                     return name
         return None
 
-    def initMusicChoices(sayori=False):
+    def initMusicChoices():
         #
         # Sets up the music choices list
         #
@@ -162,12 +162,15 @@ init -1 python in songs:
 
         global music_choices
         global music_pages
+
+        #Refresh the music choices list
         music_choices = list()
+
         # SONGS:
         # if you want to add a song, add it to this list as a tuple, where:
         # [0] -> Title of song
         # [1] -> Path to song
-        if not sayori:
+        if not store.mas_egg_manager.sayori_enabled():
             music_choices.append((JUST_MONIKA, FP_JUST_MONIKA))
             music_choices.append((YOURE_REAL, FP_YOURE_REAL))
 
@@ -189,11 +192,11 @@ init -1 python in songs:
             # NOTE: this is locked until we can set this up later.
 #            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
 
+            # grab custom music
+            __scanCustomBGM(music_choices)
+
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
-
-        # grab custom music
-        __scanCustomBGM(music_choices)
 
         # separte the music choices into pages
         music_pages = __paginate(music_choices)
@@ -285,31 +288,31 @@ init -1 python in songs:
         if not os.access(custom_music_dir, os.F_OK):
             return
 
-        # get the oggs
+        # get the audio files (mp3/ogg)
         found_files = os.listdir(custom_music_dir)
-        found_oggs = [
-            ogg_file
-            for ogg_file in found_files # these are not all just oggs.
+        found_audio = [
+            audio_file
+            for audio_file in found_files
             if (
-                isValidExt(ogg_file)
-                and os.access(custom_music_dir + ogg_file, os.R_OK)
+                isValidExt(audio_file)
+                and os.access(custom_music_dir + audio_file, os.R_OK)
             )
         ]
 
-        if len(found_oggs) == 0:
+        if len(found_audio) == 0:
             # no custom songs found, please move on
             return
 
         # otherwise, we got some songs to add
-        for ogg_file in found_oggs:
+        for audio_file in found_audio:
             # time to tag
-            filepath = custom_music_dir + ogg_file
+            filepath = custom_music_dir + audio_file
 
             _audio_file, _ext = _getAudioFile(filepath)
 
             if _audio_file is not None:
                 # we only care if we even have an audio file
-                disp_name = _getDispName(_audio_file, _ext, ogg_file)
+                disp_name = _getDispName(_audio_file, _ext, audio_file)
 
                 # loop prefix
                 loop_prefix = _getLoopData(_audio_file, _ext)
@@ -317,7 +320,7 @@ init -1 python in songs:
                 # add to the menu
                 music_list.append((
                     cleanGUIText(disp_name),
-                    loop_prefix + custom_music_reldir + ogg_file
+                    loop_prefix + custom_music_reldir + audio_file
                 ))
 
                 # we added something!
@@ -725,7 +728,9 @@ init -1 python in songs:
 
     # contains the song list
     music_choices = list()
-    music_pages = dict() # song pages dict
+
+    # song pages dict
+    music_pages = dict()
 
     # custom music directory
     custom_music_dir = "custom_bgm"
@@ -783,22 +788,12 @@ init 10 python:
     ).replace("\\", "/")
 
     if store.mas_egg_manager.sayori_enabled():
-        # sayori specific
-
-        # init choices
-        store.songs.initMusicChoices(True)
-
         # setup start songs
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
         persistent.current_track = store.songs.FP_SAYO_NARA
 
     else:
-        # non sayori stuff
-
-        # init choices
-        store.songs.initMusicChoices(False)
-
         # double check track existence
         if not store.songs.isInMusicList(persistent.current_track):
             # non existence song becomes No Music
@@ -1101,7 +1096,7 @@ init python:
     def select_music():
         # check for open menu
         if songs.enabled and not songs.menu_open:
-            # scan for new music
+            # scan for new music if not sayori
             songs.initMusicChoices()
 
             # disable unwanted interactions

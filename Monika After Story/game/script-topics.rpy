@@ -13373,19 +13373,19 @@ label monika_add_custom_music_instruct:
     $ persistent._seen_ever["monika_load_custom_music"] = True
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_load_custom_music",
-            category=['mod',"media", "music"],
-            prompt="Can you check for new music?",
-            conditional="persistent._mas_pm_added_custom_bgm",
-            action=EV_ACT_UNLOCK,
-            pool=True,
-            rules={"no_unlock": None}
-        )
-    )
+# init 5 python:
+#     addEvent(
+#         Event(
+#             persistent.event_database,
+#             eventlabel="monika_load_custom_music",
+#             category=['mod',"media", "music"],
+#             prompt="Can you check for new music?",
+#             conditional="persistent._mas_pm_added_custom_bgm",
+#             action=EV_ACT_UNLOCK,
+#             pool=True,
+#             rules={"no_unlock": None}
+#         )
+#     )
 
 label monika_load_custom_music:
     m 1hua "Sure!"
