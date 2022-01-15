@@ -17692,7 +17692,7 @@ label monika_utterson:
 
             "No.":
                 $ persistent._mas_pm_read_jekyll_hyde = False
-                m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
+                m 3eub "Okay [player]...{w=0.3}let me know if you ever do and we can discuss it!"
 
     $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
     return "derandom"
