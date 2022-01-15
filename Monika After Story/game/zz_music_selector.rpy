@@ -1101,6 +1101,8 @@ init python:
     def select_music():
         # check for open menu
         if songs.enabled and not songs.menu_open:
+            # scan for new music
+            songs.initMusicChoices()
 
             # disable unwanted interactions
             mas_RaiseShield_mumu()
