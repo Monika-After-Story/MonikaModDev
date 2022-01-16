@@ -96,6 +96,9 @@ init -1 python in mas_globals:
     # A datetime object when the pause between events ends. None if there's no pause currently.
     event_unpause_dt = None
 
+    event_context = store.mas_utils.FlexiProp()
+    # event context object
+
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
@@ -1519,8 +1522,9 @@ label ch30_post_mid_loop_eval:
         if not mas_HKBIsEnabled():
             $ mas_HKBDropShield()
 
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # Just finished a topic, so we set clear current topic in case user
+    # quits and restarts
+    $ MASEventList.clear_current()
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
@@ -1797,6 +1801,9 @@ label ch30_day:
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
 
+    # sync up current_monikatopic and eli data
+    $ MASEventList.sync_current()
+
     python:
         # xp fixes and adjustments
         if persistent._mas_xp_lvl < 0:
@@ -1838,11 +1845,11 @@ label ch30_reset:
         if not persistent._mas_pm_has_rpy:
             if mas_hasRPYFiles():
                 if not mas_inEVL("monika_rpy_files"):
-                    queueEvent("monika_rpy_files")
+                    MASEventList.queue("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
-                    persistent.current_monikatopic = 0
+                    MASEventList.clear_current()
                 mas_rmallEVL("monika_rpy_files")
 
     python:
@@ -2018,22 +2025,7 @@ label ch30_reset:
     $ mas_check_player_derand()
 
     # clean up the event list of baka events
-    python:
-        for index in range(len(persistent.event_list)-1, -1, -1):
-            item = persistent.event_list[index]
-
-            # type check
-            if type(item) != tuple:
-                new_data = (item, False)
-            else:
-                new_data = item
-
-            # label check
-            if renpy.has_label(new_data[0]):
-                persistent.event_list[index] = new_data
-
-            else:
-                persistent.event_list.pop(index)
+    $ MASEventList.clean()
 
     #Now we undo actions for evs which need them undone
     $ MASUndoActionRule.check_persistent_rules()
