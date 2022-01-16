@@ -1809,6 +1809,37 @@ init python:
     import datetime
 
 
+    class MASEventContext(mas_utils.FlexProp):
+        """
+        Context for events. Supports flexible attributes (like persistent).
+
+        To get the current event context, call MASEventContext.get.
+        """
+
+        @staticmethod
+        def get():
+            """
+            Gets current event context.
+            """
+            if mas_globals._this_ev_ctx is None:
+                mas_globals._this_ev_ctx = MASEventContext()
+
+            return mas_globals._this_ev_ctx
+
+        @staticmethod
+        def _set(eli):
+            """
+            Sets current event context - only for internal use.
+
+            IN:
+                eli - EventListItem object. Use None to clear.
+            """
+            if eli is None:
+                mas_globals._this_ev_ctx = None
+            else:
+                mas_globals._this_ev_ctx = eli.ctx()
+
+
     class MASEventList(object):
         """
         representation of persistent.event_list*
@@ -2874,9 +2905,7 @@ label call_next_event:
         # to recover data - see restartEvent()
         renpy.save_persistent()
 
-        # TODO: event data
-
-    if event_label and renpy.has_label(event_label):
+    if _ev_list_item and renpy.has_label(_ev_list_item.evl()):
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
@@ -2886,10 +2915,10 @@ label call_next_event:
 
         $ mas_RaiseShield_dlg()
 
-        $ ev = mas_getEV(event_label)
+        $ ev = mas_getEV(_ev_list_item.evl())
 
         if (
-            notify
+            _ev_list_item.notify()
             and (ev is None or ("skip alert" not in ev.rules))
         ):
             #Create a new notif
@@ -2902,27 +2931,31 @@ label call_next_event:
         if ev is not None and "keep_idle_exp" not in ev.rules:
             $ mas_moni_idle_disp.unforce_all(skip_dissolve=True)
 
+        # pre-event setup
         $ mas_globals.this_ev = ev
-        call expression event_label from _call_expression
+        $ MASEventContext._set(_ev_list_item)
+
+        call expression _ev_list_item.evl() from _call_expression
+
+        # post-event cleanup
         $ MASEventList.clear_current()
+        $ MASEventContext._set(None)
         $ mas_globals.this_ev = None
+
         # Handle idle exp
         $ mas_moni_idle_disp.do_after_topic_logic()
 
-        #if this is a random topic, make sure it's unlocked for prompts
-        $ ev = evhand.event_database.get(event_label, None)
         if ev is not None:
-            if ev.random and not ev.unlocked:
+
+            # if this is a random topic, make sure it's unlocked for prompts
+            if (
+                    ev.event_label in evhand.event_database
+                    and ev.random and not ev.unlocked
+            ):
                 python:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
-        else:
-            # othrewise, pull an ev from the all event database
-            # so we can log some data
-            $ ev = mas_getEV(event_label)
-
-        if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()

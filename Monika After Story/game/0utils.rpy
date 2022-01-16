@@ -624,7 +624,7 @@ python early in mas_utils:
         trydel(old_path)
 
 
-    class FlexiProp(object):
+    class FlexProp(object):
         """
         class that supports flexible attributes.
         Basically like persistent but simplified.
