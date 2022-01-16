@@ -1946,7 +1946,7 @@ init python:
 
             is_paused = mas_areEventsPaused()
 
-            for item, index in MASEventList.rev_enum_iter():
+            for index, item in MASEventList.rev_enum_iter():
                 ev = mas_getEV(item.evl())
 
                 if (
@@ -2090,11 +2090,11 @@ init python:
             ASSUMES persistent.event_list is valid
 
             RETURNS: reverse enumerated iterable:
-                [0] - EventListItem
-                [1] - index 
+                [0] - index 
+                [1] - EventListItem
             """
             return (
-                evhand.EventListItem(persistent.event_list[index]), index
+                index, evhand.EventListItem(persistent.event_list[index])
                 for index in MASEventList.rev_idx_iter()
             )
 
@@ -2669,7 +2669,7 @@ init python:
         """
         Iterates through the event list and removes items which shouldn't be restarted
         """
-        for item, index in MASEventList.rev_enum_iter():
+        for index, item in MASEventList.rev_enum_iter():
             if mas_isRstBlk(item.evl()):
                 mas_rmEVL(item.evl())
 
