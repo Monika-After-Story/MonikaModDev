@@ -1482,7 +1482,7 @@ init -1 python in evhand:
             IN:
                 data - the data directly from event list
             """
-            self._eli = eli
+            self._eli = data
 
         @staticmethod
         def build(evl, *args):
@@ -1545,7 +1545,7 @@ init -1 python in evhand:
 
             RETURNS: context (MASEventContext object)
             """
-            ctx - self._eli[2]
+            ctx = self._eli[2]
             if ctx is None:
                 return store.MASEventContext()
 
@@ -2432,7 +2432,7 @@ init python:
 
 
     @store.mas_utils.deprecated("MASEventList.push")
-    def pushEvent(event_label, skipeval=False, notify=False)
+    def pushEvent(event_label, skipeval=False, notify=False):
         """
         This pushes high priority or time sensitive events onto the top of
         the event list
@@ -2949,7 +2949,7 @@ label call_next_event:
 
             # if this is a random topic, make sure it's unlocked for prompts
             if (
-                    ev.event_label in evhand.event_database
+                    ev.eventlabel in evhand.event_database
                     and ev.random and not ev.unlocked
             ):
                 python:
