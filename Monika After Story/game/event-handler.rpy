@@ -2125,7 +2125,7 @@ init python:
                 [1] - EventListItem
             """
             return (
-                index, evhand.EventListItem(persistent.event_list[index])
+                (index, evhand.EventListItem(persistent.event_list[index]))
                 for index in MASEventList.rev_idx_iter()
             )
 
