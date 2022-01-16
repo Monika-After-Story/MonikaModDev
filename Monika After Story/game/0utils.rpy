@@ -667,6 +667,68 @@ python early in mas_utils:
             self.__setattr__(key, value)
 
 
+    class IsolatedFlexProp(FlexProp):
+        """
+        Like FlexProp except all attributes that are set are stored in a 
+        separate internal structure. Supports a few additional behaviors
+        because of this.
+
+        Supports:
+            - extracting the vars that were manually set into a dict format
+                - _to_dict/_from_dict
+            - clearing all vars that were manually set
+                - _clear
+        """
+
+        def __init__(self, default_val=None):
+            """
+            Constructor
+
+            IN:
+                default_val - see FlexProp constructor
+            """
+            super(IsolatedFlexProp, self).__init__(default_val=default_val)
+            self._set_vars = {}
+
+        def __contains__(self, item):
+            return item in self._set_vars
+
+        def __getattr__(self, name):
+            if name.startswith("_"):
+                return FlexProp.__getattr__(self, name)
+            return self._set_vars.get(name, self._default_val)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                FlexProp.__setattr__(self, name, value)
+            else:
+                self._set_vars[name] = value
+
+        def _clear(self):
+            """
+            Clears manually set attributes
+            """
+            self._set_vars.clear()
+
+        def _from_dict(self, data):
+            """
+            sets internal data using a dict
+
+            IN:
+                data - dictionary to load from
+            """
+            for key in data:
+                self[key] = data[key]
+
+        def _to_dict(self):
+            """
+            Returns manually set data in raw format for persistent
+
+            RETURNS: dict of the manually set data (shallow copy)
+            """
+            return dict(self._set_vars)
+
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker

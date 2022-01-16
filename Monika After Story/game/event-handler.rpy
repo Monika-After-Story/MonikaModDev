@@ -1475,6 +1475,10 @@ init -1 python in evhand:
 
         ITEM_LEN = len(DEFAULT_VALUES) + 1 # defaults + event label
 
+        IDX_EVENT_LABEL = 0
+        IDX_NOTIFY = 1
+        IDX_CONTEXT = 2
+
         def __init__(self, data):
             """
             Constructor
@@ -1506,7 +1510,16 @@ init -1 python in evhand:
 
             RETURNS: raw data
             """
-            return (evl, ) + args + EventListItem.DEFAULT_VALUES[len(args):]
+            data = list(
+                (evl, ) + args + EventListItem.DEFAULT_VALUES[len(args):]
+            )
+
+            # adjust context to be persistntable
+            ctx = data[EventListItem.IDX_CONTEXT]
+            if ctx is not None:
+                data[EventListItem.IDX_CONTEXT] = ctx._to_dict()
+
+            return tuple(data)
 
         def _raw(self):
             """
@@ -1529,7 +1542,7 @@ init -1 python in evhand:
             """
             Alias for event_label
             """
-            return self._eli[0]
+            return self._eli[self.IDX_EVENT_LABEL]
 
         def notify(self):
             """
@@ -1537,7 +1550,7 @@ init -1 python in evhand:
 
             RETURNS: notify
             """
-            return self._eli[1]
+            return self._eli[self.IDX_NOTIFY]
 
         def context(self):
             """
@@ -1545,11 +1558,7 @@ init -1 python in evhand:
 
             RETURNS: context (MASEventContext object)
             """
-            ctx = self._eli[2]
-            if ctx is None:
-                return store.MASEventContext()
-
-            return ctx
+            return store.MASEventContext(self._eli[self.IDX_CONTEXT])
 
         def ctx(self):
             """
@@ -1809,12 +1818,24 @@ init python:
     import datetime
 
 
-    class MASEventContext(mas_utils.FlexProp):
+    class MASEventContext(mas_utils.IsolatedFlexProp):
         """
         Context for events. Supports flexible attributes (like persistent).
 
         To get the current event context, call MASEventContext.get.
         """
+
+        def __init__(self, ctx_data=None):
+            """
+            Constructor
+
+            IN:
+                ctx_data - context data directly from event list. Optional.
+                    (Default: None)
+            """
+            super(MASEventContext, self).__init__()
+            if ctx_data is not None:
+                self._from_dict(ctx_data)
 
         @staticmethod
         def get():
@@ -1933,7 +1954,7 @@ init python:
                     # 1st-gen event list (only event labels)
                     new_item = evhand.EventListItem.build(item_raw)
 
-                elif len(item) < evhand.EventListItem.ITEM_LEN:
+                elif len(item_raw) < evhand.EventListItem.ITEM_LEN:
                     # 2gen+ event list (not enough items)
                     new_item = evhand.EventListItem.build(*item_raw)
 
