@@ -1895,20 +1895,20 @@ init python:
             appropriate length and have a valid label.
             """
             for index in MASEventList.rev_idx_iter():
-                item = persistent.event_list[index]
+                item_raw = persistent.event_list[index]
 
                 # type check
-                if not isinstance(item, tuple):
+                if not isinstance(item_raw, tuple):
                     # 1st-gen event list (only event labels)
-                    new_item = evhand.EventListItem.build(item)
+                    new_item = evhand.EventListItem.build(item_raw)
 
                 elif len(item) < evhand.EventListItem.ITEM_LEN:
                     # 2gen+ event list (not enough items)
-                    new_item = evhand.EventListItem.build(*item)
+                    new_item = evhand.EventListItem.build(*item_raw)
 
                 else:
                     # current
-                    new_item = evhand.EventListItem(item)
+                    new_item = evhand.EventListItem(item_raw)
 
                 # label check
                 if renpy.has_label(new_item.evl()):
@@ -1921,6 +1921,8 @@ init python:
         def iter():
             """
             an iterable over event list that yields EventListITem objects
+
+            ASSUMES event list data is valid
 
             RETURNS: generator/iterable over persistent.event_list
             """
@@ -1944,8 +1946,7 @@ init python:
 
             is_paused = mas_areEventsPaused()
 
-            for index in MASEventList.rev_idx_iter():
-                item = persistent.event_list[index]
+            for item, index in MASEventList.rev_enum_iter():
                 ev = mas_getEV(item.evl())
 
                 if (
@@ -2082,6 +2083,22 @@ init python:
             persistent.event_list.insert(0, eli._raw())
 
         @staticmethod
+        def rev_enum_iter():
+            """
+            Reverse enumerated iterable for event list.
+
+            ASSUMES persistent.event_list is valid
+
+            RETURNS: reverse enumerated iterable:
+                [0] - EventListItem
+                [1] - index 
+            """
+            return (
+                evhand.EventListItem(persistent.event_list[index]), index
+                for index in MASEventList.rev_idx_iter()
+            )
+
+        @staticmethod
         def rev_idx_iter():
             """
             Reverse index iterable. If you want index iterable, please use
@@ -2090,12 +2107,6 @@ init python:
             RETURNS: reverse index iterable for event list
             """
             return range(len(persistent.event_list)-1, -1, -1)
-
-        @staticmethod
-        def rev_iter():
-            """
-            REverse
-            """
 
 
     def addEvent(
@@ -2559,8 +2570,8 @@ init python:
 
         RETURNS: index of the event in teh even tlist, -1 if not found
         """
-        for index in range(len(persistent.event_list)):
-            if persistent.event_list[index][0] == event_label:
+        for index, item in enumerate(list(MASEventList.iter())):
+            if item.evl() == event_label:
                 return index
 
         return -1
@@ -2575,8 +2586,8 @@ init python:
 
         RETURNS: True if in event list, False if not
         """
-        for ev_data in persistent.event_list:
-            if ev_data[0] == event_label:
+        for item in MASEventList.iter():
+            if item.evl() == event_label:
                 return True
 
         return False
@@ -2658,10 +2669,9 @@ init python:
         """
         Iterates through the event list and removes items which shouldn't be restarted
         """
-        for index in MASEventList.rev_idx_iter():
-            item = 
-            if mas_isRstBlk(persistent.event_list[index][0]):
-                mas_rmEVL(persistent.event_list[index][0])
+        for item, index in MASEventList.rev_enum_iter():
+            if mas_isRstBlk(item.evl()):
+                mas_rmEVL(item.evl())
 
     def mas_cleanJustSeen(eventlist, db):
         """
