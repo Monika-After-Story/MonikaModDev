@@ -624,6 +624,49 @@ python early in mas_utils:
         trydel(old_path)
 
 
+    class FlexiProp(object):
+        """
+        class that supports flexible attributes.
+        Basically like persistent but simplified.
+
+        Supports:
+            - direct attribute get/set (obj.attribute)
+            - key-based get/set (obj[key])
+                Don't use this to access built-ins.
+            - attribute existence ("attribute" in obj)
+        """
+
+        def __init__(self, default_val=None):
+            """
+            Constructor
+
+            IN:
+                default_val - the value to return as default when retrieving
+                    a prop that does not exist.
+                    (Default: None)
+            """
+            self._default_val = default_val
+
+        def __contains__(self, item):
+            return item in self.__dict__
+
+        def __getattr__(self, name):
+            return self.__dict__.get(name, self._default_val)
+
+        def __setattr__(self, name, value):
+            # docs say to use object:
+            # https://docs.python.org/2.7/reference/datamodel.html#object.__setattr__
+            # see also https://bugs.python.org/issue21814
+            # This will allow setting even when not in constructor.
+            object.__setattr__(self, name, value)
+
+        def __getitem__(self, key):
+            return self.__getattr__(key)
+
+        def __setitem__(self, key, value):
+            self.__setattr__(key, value)
+
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker
