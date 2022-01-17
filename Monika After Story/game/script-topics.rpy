@@ -13359,10 +13359,9 @@ label monika_add_custom_music:
     return
 
 label monika_add_custom_music_instruct:
-    m 4eua "First,{w=0.5} make sure the music that you want to add is in MP3, OGG/VORBIS, or OPUS format."
-    m "Next,{w=0.5} create a new folder named \"custom_bgm\" in your \"DDLC\" directory."
-    m "Put your music files in that folder..."
-    m "Then either let me know that you added some music or restart the game."
+    m 4eua "First,{w=0.5} make sure the music that you want to add is in MP3, OGG/VORBIS, or OPUS format..."
+    m "Next,{w=0.5} create a new folder named \"custom_bgm\" in your \"DDLC\" directory..."
+    m "Then put your music files in that folder..."
     m 3eua "And that's it! Your music will be available to listen to, right here with me, simply by pressing the 'm' key."
     m 3hub "See, [player]? I told you it was easy, ahaha!"
 
