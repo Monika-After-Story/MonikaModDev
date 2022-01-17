@@ -17580,10 +17580,10 @@ init 5 python:
     )
 
 # Ever had root access/admin rights?
-default persistent._mas_pm_had_root_privileges = False
+default persistent._mas_pm_gave_root_privileges_before = False
 
 label monika_root_privileges:
-    $ persistent._mas_pm_had_root_privileges = True
+    $ persistent._mas_pm_gave_root_privileges_before = True
 
     m 2lsc "Hey, [player]..."
     m 2eud "It's hard to explain, but I... {w=0.5}somehow, I feel like I can do a lot more with your system now that I {i}couldn't do{/i} before."
