@@ -1516,7 +1516,7 @@ init -1 python in evhand:
 
             # adjust context to be persistntable
             ctx = data[EventListItem.IDX_CONTEXT]
-            if ctx is not None:
+            if isinstance(ctx, store.MASEventContext):
                 data[EventListItem.IDX_CONTEXT] = ctx._to_dict()
 
             return tuple(data)

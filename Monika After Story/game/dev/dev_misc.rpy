@@ -64,10 +64,41 @@ label bye_dev_ev_ctx:
     m "BYE"
     return "quit"
 
-# TODO: restart context
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_ev_ctx_restart_start",
+            category=["dev"],
+            prompt="TEST EVENT CONTEXT (restart)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
 default persistent._dev_ev_ctx_test = False
 
+label dev_ev_ctx_restart_start:
+    m 1eua "hi there, im going to crash the game but make sure a topic that is currently running restarts with context."
+    $ _some_string = "this restart str"
+    $ _some_var = 1023
+    m "the context will be '[_some_string]' set in 'str_test' and '[_some_var]' set in 'var_test'"
+
+    $ ctx = MASEventContext()
+    $ ctx.str_test = _some_string
+    $ ctx.var_test = _some_var
+    $ MASEventList.push("dev_ev_ctx_restart", skipeval=True, context=ctx)
+
+    m 6wuw "an event that will be restarted with context has been pushed"
+    return
+
 label dev_ev_ctx_restart:
-    $ persistent._dev_ev_ctx_test = True
-    $ persistent._dev_ev_ctx_test = False
+    if persistent._dev_ev_ctx_test:
+        call dev_ev_ctx_end
+        $ persistent._dev_ev_ctx_test = False
+    else:
+        m 1eua "i am now going to crash. restart the game afterwards"
+        $ persistent._dev_ev_ctx_test = True
+        $ renpy.save_persistent()
+        $ raise Exception("fake crash")
     return
