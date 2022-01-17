@@ -8339,7 +8339,6 @@ init python:
                 import ctypes
                 return ctypes.windll.shell32.IsUserAnAdmin() != 0
             else:
-                import os
                 return os.geteuid() == 0
         except:
             return False
