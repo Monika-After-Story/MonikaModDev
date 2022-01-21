@@ -6452,8 +6452,8 @@ init 5 python:
     #Create the undo action rule
     MASUndoActionRule.create_rule_EVL(
         "mas_f14_pool_happy_vday",
-        mas_monika_birthday,
-        mas_monika_birthday + datetime.timedelta(1)
+        mas_monika_f14,
+        mas_monika_f14 + datetime.timedelta(1)
     )
 
 label mas_f14_pool_happy_vday:
