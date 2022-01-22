@@ -1012,7 +1012,7 @@ init 5 python:
 
 label mas_story_mindthegap:
     call mas_story_begin
-    m 3eud "This is actually a true story that occurred in London in 2013."
+    m 3eud "This is actually a true story that occurred in London, England in 2013."
     m 2dkd "It begins with a woman named Margaret McCollum crying in the middle of the Embankment train station."
     m 2ekd "When approached to ask about her great distress, she asked the staff where 'the voice' had gone."
     m "She clarified that she meant the announcement that played when each train arrived, warning passengers to 'mind the gap.'"
