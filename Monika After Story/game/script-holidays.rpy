@@ -6977,7 +6977,7 @@ init -1 python:
     def mas_isMonikaBirthday_dt(_datetime=None, extend_by=0):
         """
         checks if the given date is monikas birthday.
-        Takes hours beyond the date into account via the `_extend` param.
+        Takes hours beyond the date into account via the `extend_by` param.
 
         IN:
             _datetime - datetime to check. If not passed in, we use now.
