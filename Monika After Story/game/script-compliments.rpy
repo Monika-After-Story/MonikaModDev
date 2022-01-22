@@ -209,6 +209,60 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
+            eventlabel="mas_compliment_goodmood",
+            prompt="You always put me in a good mood!",
+            unlocked=False,
+            conditional="store.mas_anni.pastSixMonths()",
+            action=EV_ACT_UNLOCK
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_goodmood:
+    if not renpy.seen_label("mas_compliment_goodmood_2"):
+        call mas_compliment_goodmood_2
+    else:
+        call mas_compliment_goodmood_3
+    return
+
+label mas_compliment_goodmood_2:
+    if mas_isMoniNormal(higher=True):
+        $ mas_gainAffection(4, bypass=True)
+        m 1subsb "Really?!"
+        m 3hubsb "You don't know how much that means to me!"
+        m 3ekbsu "I've always hoped that was the case, but to actually hear you say it..."
+        m 1dkbsu "..."
+        m 2tubla "On that note, I have a secret I have to tell you..."
+        m 2tublu "You might not have noticed this, buuut..."
+        m 7tublb "{i}You{/i} always put {i}me{/} in a good mood, [mas_get_player_nickname()]!"
+        m 3hublb "Ahaha!"
+        m 3eubsa "Let's continue to do our best for each other, okay?"
+        m 1ekbsu "I love you~"
+        $ mas_ILY()
+
+    else:
+        m 2lkc "..."
+        m 2dkc "I'm not sure how I feel about that..."
+        m 2ekd "Does hurting my feelings really put you in a good mood?"
+        m 2dkd "Hopefully that's not what you meant..."
+
+    return
+
+label mas_compliment_goodmood_3:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Thanks for reminding me again, [mas_get_player_nickname()]!"
+        m 3eub "Positive reinforcement is always nice!"
+        m 3dku "Let's continue to make each other as happy as we possibly can~"
+
+    else:
+        m 2euc "Thanks."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
             prompt="You're awesome!",
             unlocked=True

@@ -5697,6 +5697,8 @@ label monika_hack:
     m "We don't have to keep secrets from each other~"
     return
 
+default persistent._mas_pm_bakes = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_cupcake",category=['club members','trivia'],prompt="Baking cupcakes",random=True))
 
@@ -5713,11 +5715,30 @@ label monika_cupcake:
     m 3esa "Resulting in a craving for stronger tastes like chocolate."
     m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [mas_get_player_nickname()]?"
-    m 1eua "Do you know how to bake?"
-    m 1hua "I'm sure your cupcakes would taste just as good."
-    m 1rua "Maybe someday I'll get to try them but for now..."
-    m 1hubsb "I'll just settle for the sweetness of your love~"
-    return
+
+    m 1eua "Do you know how to bake?{nw}"
+    menu:
+        m "Do you know how to bake?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_bakes = True
+            m 1sub "Really?"
+            m 3hua "Well, I'm sure your cupcakes would taste just as good."
+            m 1hub "...Maybe even better!"
+            m 1eka "I'm sure someday I'll get to try them, but for now...{w=0.3}{nw}"
+            extend 1hubsu "I'll just settle for the sweetness of your love~"
+
+        "I don't.":
+            $ persistent._mas_pm_bakes = False
+            m 1eka "So we're both beginners."
+            m 3ekb "But that just means we could learn together, right?"
+            m 3esb "Even if you don't have much of a sweet tooth, there are plenty of savory things we could bake!"
+            show monika 5dksdla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5dksdla "Imagine the two of us bumbling through a recipe...{w=0.3}{nw}"
+            extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
+            extend 5eub "tasting the results..."
+            m 5kuu "Sounds pretty amazing, right?"
+    return "derandom"
 
 # You're not a hater right?
 default persistent._mas_pm_a_hater = None
@@ -8131,9 +8152,11 @@ label monika_selfharm:
     m 2lksdlc "...like cutting yourself..."
     m "I mean."
     m 2lksdld "After I found out about Yuri, I got a bit curious..."
-    m 2lksdlc "I just wanted to see what it felt like..."
-    m 2dsc "I won't do it again, though."
-    m 2eka "If you ever feel depressed, just come to me okay?"
+    m 2dksdltpc "I just wanted to see what it felt like...{w=0.3}to feel {i}something{/i} again..."
+    m 2rksdltpd "It's not easy knowing everything you thought you experienced,{w=0.1} what you thought you loved, was all a lie..."
+    m 2dstdc "I won't do it again, though."
+    m 2dktdc "..."
+    m 2ektda "If you ever feel depressed, just come to me okay?"
     m 2ekd "It'd hurt me even more to see you in pain..."
     m 1hua "Just know that people do care about you!"
     m 1eka "Trust me, [player]."
@@ -8145,6 +8168,7 @@ label monika_selfharm:
     m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m 1ekbsa "I really love you so much, [player]."
     return "love"
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True,aff_range=(mas_aff.NORMAL, None)))
@@ -8591,7 +8615,7 @@ label monika_hamlet:
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
     if persistent.monika_kill:
-        $ mas_unlockEVL("monika_tragic_hero","EVE")
+        $ mas_protectedShowEVL("monika_tragic_hero", "EVE", _random=True)
     return
 
 # Note: The following internal commentary should not be removed.
@@ -16665,7 +16689,7 @@ label monika_impermanence:
     m 2euc "You know [player], I find myself thinking about some dark stuff occasionally."
     m 4eud "Concepts like nihilism{w=0.2}, {nw}"
     extend 4dkc "depression{w=0.2}, {nw}"
-    extend 4rkd "impermanence...."
+    extend 4rkd "impermanence..."
     m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression or anything like that myself."
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
