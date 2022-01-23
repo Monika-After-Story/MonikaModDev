@@ -6004,8 +6004,12 @@ label mas_f14_autoload_check:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
 
-            #Force sundress
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+            if not mas_SELisUnlocked(mas_clothes_sundress_white) or (mas_SELisUnlocked(mas_clothes_blackpink_dress_dress) and renpy.random.randint(1,2) == 1):
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+
+            else:
+                monika_chr.change_clothes(mas_clothes_blackpink_dress_dress, by_user=False, outfit_mode=True)
+
             monika_chr.save()
             renpy.save_persistent()
 
@@ -6091,15 +6095,18 @@ label mas_f14_monika_valentines_intro:
             m "Thanks for visiting me, I hope you have a good day."
         return
 
-    $ lingerie_eligible = (
-        mas_canShowRisque()
-        and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
-        and mas_SELisUnlocked(mas_clothes_sundress_white)
-    )
+    python:
+        has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
+        has_shoulderless = mas_SELisUnlocked(mas_clothes_blackpink_dress)
+        lingerie_eligible = (
+            mas_canShowRisque()
+            and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+            and has_sundress
+        )
 
-    $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
-    #rmall this because reset runs before we've registered this outfit
-    $ mas_rmallEVL("mas_change_to_def")
+        mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+        #rmall this because reset runs before we've registered this outfit
+        mas_rmallEVL("mas_change_to_def")
 
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -6131,12 +6138,12 @@ label mas_f14_monika_valentines_intro:
             call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress or non-first time seeing lingerie
-        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or lingerie_eligible:
+        elif not has_sundress or not has_shoulderless or lingerie_eligible:
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
             # lingerie
-            if mas_SELisUnlocked(mas_clothes_sundress_white):
+            if lingerie_eligible:
                 call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
                 pause 2.0
                 show monika 2ekbsu
@@ -6150,6 +6157,10 @@ label mas_f14_monika_valentines_intro:
                 m 2rkbssdla "I have to say, I was pretty nervous the first time I wore something like this..."
                 m 2hubsb "But now that I've done it before, I really enjoy dressing like this for you!"
                 m 3tkbsu "I hope you enjoy it too~"
+
+            # shoulderless dress
+            elif has_sundress:
+                call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
 
             # sundress
             else:
@@ -6166,6 +6177,7 @@ label mas_f14_monika_valentines_intro:
             # don't currently have access to sundress or wearing inappropraite outfit for f14
             if (
                 monika_chr.clothes != mas_clothes_sundress_white
+                or monika_chr.clothes != mas_clothes_blackpink_dress_dress
                 and (
                     monika_chr.is_wearing_clothes_with_exprop("costume")
                     or monika_chr.clothes == mas_clothes_def
@@ -6215,12 +6227,7 @@ label mas_f14_monika_valentines_intro:
 
     # not returning from a date, not getting lingerie
     else:
-        # already have sundress unlocked
-        if mas_SELisUnlocked(mas_clothes_sundress_white):
-            call mas_f14_intro_generic
-
-        # first time getting sundress
-        else:
+        if not has_sundress:
             python:
                 store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
                 # TODO: generalize this under one function
@@ -6234,6 +6241,12 @@ label mas_f14_monika_valentines_intro:
             m 2tsu "..."
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
             call mas_f14_sun_dress_outro
+
+        elif not has_shoulderless:
+            call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
+
+        else:
+            call mas_f14_intro_generic
 
     m 1fkbsu "I love you so much."
     m 1hubfb "Happy Valentine's Day, [player]~"

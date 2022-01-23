@@ -328,6 +328,17 @@ init -2 python in mas_sprites:
 
         store.mas_unlockEVL("mas_compliment_outfit", "CMP")
 
+    def _clothes_blackpink_dress_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for blackpink dress
+        """
+        outfit_mode = kwargs.get("outfit_mode")
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_diamond_necklace_pink)
+            _moni_chr.wear_acs(store.mas_acs_pinkdiamonds_hairclip)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_black_pink)
 
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
@@ -965,6 +976,36 @@ init -1 python:
         mas_clothes_blackdress,
         "Black Dress",
         "blackdress",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "Are we going somewhere special, [player]?"
+        ]
+    )
+
+
+    ### Black and pink dress
+    ## blackpinkdress
+    # Used for f14
+    # thanks SovietSpartan/BriarYoung
+    mas_clothes_blackpink_dress = MASClothes(
+        "blackpinkdress",
+        "blackpinkdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_blackpink_dress_entry,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackpink_dress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackpink_dress,
+        "Black and Pink Dress",
+        "blackpinkdress",
         "clothes",
         visible_when_locked=False,
         select_dlg=[
@@ -1730,6 +1771,31 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
 
+    ### Diamond necklace (Pink)
+    ## diamond_necklace_pink
+    # For use with _blackpink_dress
+    # thanks BriarYoung
+    mas_acs_diamond_necklace_pink = MASSplitAccessory(
+        "diamond_necklace_pink",
+        "diamond_necklace_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="necklace",
+        mux_type=["necklace"],
+        ex_props={
+            "bare collar": True,
+        },
+        rec_layer=MASMonika.BSE_ACS,
+        arm_split=MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_acs(mas_acs_diamond_necklace_pink)
+
     ### Marisa Strandbow
     ## marisa_strandbow
     # Bow to go on Moni's hair strand in the Marisa outfit
@@ -1865,6 +1931,33 @@ init -1 python:
         select_dlg=[
             "My heart beats for you, [player]~",
             "Full of love, just like you~"
+        ]
+    )
+
+    ### Pink Diamonds Hairclip
+    ## pinkdiamonds_hairclip
+    # pink diamonds hairclip to go with the
+    # Thanks BriarYoung
+    mas_acs_pinkdiamonds_hairclip = MASAccessory(
+        "pinkdiamonds_hairclip",
+        "pinkdiamonds_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_pinkdiamonds_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_pinkdiamonds_hairclip,
+        "Hairclip (Pink diamonds)",
+        "pinkdiamonds_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "Cute!"
         ]
     )
 
@@ -2098,6 +2191,36 @@ init -1 python:
         ],
         select_dlg=[
             "This goes with so many different outfits!"
+        ]
+    )
+
+    ### BLACK/PINK RIBBON
+    ## ribbon_black_pink
+    # Black/pink ribbon used as part of blackpink f14 outfit
+    # thanks Briar
+    mas_acs_ribbon_black_pink = MASAccessory(
+        "ribbon_black_pink",
+        "ribbon_black_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_pink,
+        "Ribbon (Black/pink)",
+        "ribbon_black_pink",
+        "ribbon",
+        select_dlg=[
+            "So cute!"
         ]
     )
 
