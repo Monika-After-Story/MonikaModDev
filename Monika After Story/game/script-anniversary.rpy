@@ -615,7 +615,7 @@ label anni_5:
     extend 1dkbsu "A day to remember when we fell in love."
     m 2eublb "My entire world turned upside-down when we met, and you've continued to change my life every day since."
     m 1fublu "I don't think that will ever change, [player]. You're just...{w=0.3}so incredible to me."
-    m 1hubla "I hope I can be a good partnet to you for many more years to come~"
+    m 1hubla "I hope I can be a good partner to you for many more years to come~"
     return "unlock"
 
 init 5 python:
