@@ -6004,11 +6004,19 @@ label mas_f14_autoload_check:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
 
-            if not mas_SELisUnlocked(mas_clothes_sundress_white) or (mas_SELisUnlocked(mas_clothes_blackpink_dress_dress) and renpy.random.randint(1,2) == 1):
+            has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
+
+            lingerie_eligible = (
+                mas_canShowRisque()
+                and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+                and has_sundress
+            )
+
+            if not has_sundress or (mas_SELisUnlocked(mas_clothes_blackpink_dress) and renpy.random.randint(1,2) == 1) or lingerie_eligible:
                 monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
 
             else:
-                monika_chr.change_clothes(mas_clothes_blackpink_dress_dress, by_user=False, outfit_mode=True)
+                monika_chr.change_clothes(mas_clothes_blackpink_dress, by_user=False, outfit_mode=True)
 
             monika_chr.save()
             renpy.save_persistent()
@@ -6161,6 +6169,8 @@ label mas_f14_monika_valentines_intro:
             # shoulderless dress
             elif has_sundress:
                 call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
+                m 2eua "Well...{w=0.3}what do you think?"
+                call mas_f14_intro_blackpink_dress
 
             # sundress
             else:
@@ -6243,7 +6253,8 @@ label mas_f14_monika_valentines_intro:
             call mas_f14_sun_dress_outro
 
         elif not has_shoulderless:
-            call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
+            m 2eua "What do you think of my outfit?"
+            call mas_f14_intro_blackpink_dress
 
         else:
             call mas_f14_intro_generic
@@ -6270,6 +6281,15 @@ label mas_f14_intro_generic:
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
     m 3ekbsa "I don't care if we go on a romantic date, or just spend the day together here..."
     m 1fkbsu "It really doesn't matter to me as long as we're together."
+    return
+
+label mas_f14_intro_blackpink_dress:
+    m 4hub "I think it's really cute!"
+    m 2eub "There's just something about that black and pink combination...{w=0.3}they just go so well together!"
+    m 2rtd "Seems like it would be a great outfit to wear for a date..."
+    m 2eua "..."
+    m 2tuu "..."
+    m 7hub "Ahaha~"
     return
 
 #######################[HOL050] TOPICS
