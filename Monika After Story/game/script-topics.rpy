@@ -17755,10 +17755,10 @@ init 5 python:
 label monika_last_man:
     m 7eua "Alright, [player], this will be a short one."
 #adding efect of room getting dark
-    m 1tua "…"
+    m 1tua "..."
     m 1tub "The last man on Earth sat alone in a room."
     m 1tfu "There was a knock on the door..."
-    m "…"
+    m "..."
 #lights come back
     m 4hub "And that's it!"
     m 4rusdrb "I said it was short, didn't I?"
@@ -17767,8 +17767,8 @@ label monika_last_man:
     m 1lsd "Though, considering how meaningful those two lines are, it makes sense to me."
     m 1eud "How you would feel in the feet of the story's protagonist?"
     m 2ekc "Most people would be terrified."
-    m 2dkc "Frozen between the fear of not wanting to look at what's on the other side of the door, while at the same time feeling too curious and worried about not checking."
+    m 2dkc "Frozen between the fear of not wanting to know what's on the other side of the door, while at the same time feeling too curious and worried about not checking."
     m 7fud "Such is human's fear of the unknown."
-    m 1fublu "Though, on my experience…"
+    m 1fublu "Though, on my experience..."
     m 5fkbfu "If whatever or whomever it's on the other side it's at least half as charming as you, [player], it would be worth it to take the risk."
     return
