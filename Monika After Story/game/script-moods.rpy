@@ -856,11 +856,7 @@ label mas_mood_grateful:
         m "What are you grateful for, [chosen_nickname]?{fast}"
 
         "For you.":
-            m 1ekbla "Oh, [player]...{w=0.3}Thank you so much for saying that."
-            m 1dkbla "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
-            m 1hubla "I hope you know that I'm so grateful for you too."
-            m "I love you, [player]."
-            $ mas_ILY()
+            call monika_gratefulforyou
 
         "For someone.":
             m 1hub "Aww, that's wonderful to hear."
@@ -882,3 +878,12 @@ label mas_mood_grateful:
             m 1hublb "Hmm...{w=0.2}Now that I'm thinking about it, I feel pretty grateful myself."
             m "After all, I'm spending another day with my wonderful [bf]~"
     return
+
+label monika_gratefulforyou:
+    if mas_getEVL_shown_count("monika_gratefulforyou") < 1:
+        $ mas_gainAffection(3,bypass=True)
+    m 1ekbla "Oh, [player]...{w=0.3}Thank you so much for saying that."
+    m 1dkbla "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
+    m 1hubla "I hope you know that I'm so grateful for you too."
+    m "I love you, [player]."
+    return "love"
