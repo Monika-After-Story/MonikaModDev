@@ -17739,3 +17739,36 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_last_man",
+            category=["literature"],
+            prompt="The last man on Earth",
+			pool=True
+            random=False
+        )
+    )
+
+label monika_last_man:
+    m 7eua "Alright, [player], this will be a short one."
+#adding efect of room getting dark
+    m 1tua "…"
+    m 1tub "The last man on Earth sat alone in a room."
+    m 1tfu "There was a knock on the door..."
+    m "…"
+#lights come back
+    m 4hub "And that's it!"
+    m 4rusdrb "I said it was short, didn't I?"
+    m 7fub "'The last man on Earth' is actually just a fragment of Fredric Brown's short story 'Knock'."
+    m 7fua "Curiously, thanks to the internet, said fragment became almost better known than the actual story from where it came from."
+    m 1lsd "Though, considering how meaningful those two lines are, it makes sense to me."
+    m 1eud "How you would feel in the feet of the story's protagonist?"
+    m 2ekc "Most people would be terrified."
+    m 2dkc "Frozen between the fear of not wanting to look at what's on the other side of the door, while at the same time feeling too curious and worried about not checking."
+    m 7fud "Such is human's fear of the unknown."
+    m 1fublu "Though, on my experience…"
+    m 5fkbfu "If whatever or whomever it's on the other side it's at least half as charming as you, [player], it would be worth it to take the risk."
+    return
