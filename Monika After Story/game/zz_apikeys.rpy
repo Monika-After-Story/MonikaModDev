@@ -80,12 +80,17 @@ init -980 python in mas_api_keys:
     # key: unique feature name
     # value: API key
 
-
-    FILEPATH_KEYS = os.path.normcase(
-        os.path.join(renpy.config.gamedir, "mod_assets/api_keys.json")
-    )
-
     MAX_KEY_SIZE_DISP = 39
+
+
+    def _generate_fp():
+        """
+        Generates filepath for keys.
+        Must be function because savedir may be empty during init -980
+        """
+        return os.path.normcase(
+            os.path.join(renpy.config.savedir, "/api_keys.json")
+        )
 
 
     def feature_registered(feature):
@@ -226,6 +231,7 @@ init -980 python in mas_api_keys:
         """
         Loads API keys from config file
         """
+        FILEPATH_KEYS = _generate_fp()
         try:
             with open(FILEPATH_KEYS, "r") as keys:
                 loaded_keys = json.load(keys)
@@ -234,20 +240,27 @@ init -980 python in mas_api_keys:
 
         except Exception as e:
             mas_utils.mas_log.warning(
-                "problem loading api key json {0}".format(repr(e))
+                "problem loading api key json {0} from {1}".format(
+                    repr(e),
+                    FILEPATH_KEYS
+                )
             )
 
     def save_keys():
         """
         Saves API keys to disk
         """
+        FILEPATH_KEYS = _generate_fp()
         try:
             with open(FILEPATH_KEYS, "w") as keys:
                 json.dump(api_keys, keys)
 
         except Exception as e:
             mas_utils.mas_log.warning(
-                "problem saving api key json {0}".format(repr(e))
+                "problem saving api key json {0} in {1}".format(
+                    repr(e),
+                    FILEPATH_KEYS
+                )
             )
 
 
