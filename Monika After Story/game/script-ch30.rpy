@@ -93,10 +93,6 @@ init -1 python in mas_globals:
     this_ev = None
     # the current topic, but as event object. may be None.
 
-    _this_ev_ctx = None
-    # the current event's context object - DO NOT ACCESS DIRECTLY.
-    # use MASEventContext
-
     # A datetime object when the pause between events ends. None if there's no pause currently.
     event_unpause_dt = None
 

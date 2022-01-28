@@ -1824,6 +1824,7 @@ init python:
 
         To get the current event context, call MASEventContext.get.
         """
+        __this_ev_ctx = None
 
         def __init__(self, ctx_data=None):
             """
@@ -1842,10 +1843,10 @@ init python:
             """
             Gets current event context.
             """
-            if mas_globals._this_ev_ctx is None:
-                mas_globals._this_ev_ctx = MASEventContext()
+            if MASEventContext.__this_ev_ctx is None:
+                MASEventContext.__this_ev_ctx = MASEventContext()
 
-            return mas_globals._this_ev_ctx
+            return MASEventContext.__this_ev_ctx
 
         @staticmethod
         def _set(eli):
@@ -1856,9 +1857,9 @@ init python:
                 eli - EventListItem object. Use None to clear.
             """
             if eli is None:
-                mas_globals._this_ev_ctx = None
+                MASEventContext.__this_ev_ctx = None
             else:
-                mas_globals._this_ev_ctx = eli.ctx()
+                MASEventContext.__this_ev_ctx = eli.ctx()
 
 
     class MASEventList(object):
