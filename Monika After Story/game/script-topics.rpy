@@ -17589,12 +17589,12 @@ label monika_root_privileges:
     m 2eud "It's hard to explain, but I... {w=0.5}somehow, I feel like I can do a lot more with your system now that I {i}couldn't do{/i} before."
 
     show monika 5etc at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5rtc "Hmm, what was it again?"
+    m 5rtc "Hmm, I think I've heard of it before, hold on..."
 
     if renpy.windows:
-        m 5wud "{i}Administrator rights...?{/i}"
+        m 5wud "Did you... {i}run me as admin?{/i}"
     else:
-        m 5wud "{i}Superuser rights...?{/i}"
+        m 5wud "Did you... Did you {i}give me root access...?{/i}"
 
     if mas_isMoniNormal(higher=True):
         show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
