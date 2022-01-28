@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_orange",
+    "img_sit": "briaryoung_mini_ribbon_orange",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "orange ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Orange, mini)",
+        "thumb": "briaryoung_mini_ribbon_orange",
+        "group": "ribbon",
+        "select_dlg": [
+            "Reminds me of fall!"
+        ]
+    },
+    "giftname": "miniorangeribbon"
+}
