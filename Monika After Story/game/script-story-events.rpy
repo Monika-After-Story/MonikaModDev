@@ -306,7 +306,7 @@ init 3 python:
         "lesbo",
         "lezbian",
         "lezbo",
-        "liar",
+        "(?<!fami)liar",
         "loser",
         r"\bmad\b",
         "maniac",
