@@ -300,7 +300,7 @@ init 3 python:
         "jigolo",
         "jizz",
         "junk",
-        "kill",
+        "(?<!s)kill",
         "kunt",
         "lesbian",
         "lesbo",
