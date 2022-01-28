@@ -1809,3 +1809,34 @@ label mas_scary_story_flowered_lantern_3:
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_last_man",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="The Last Man On Earth",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_last_man:
+    m 7eua "This will be a short one."
+    call mas_scary_story_setup
+    m 1tub "The last man on Earth sat alone in a room."
+    m 1tfu "There was a knock on the door..."
+    m "..."
+    call mas_scary_story_cleanup
+    m 4rusdrb "I said it was short, didn't I?"
+    m 7fub "'The last man on Earth' it's actually just a fragment of Fredric Brown's short story 'Knock'."
+    m 7fua "Curiously, thanks to the internet, this little piece became better known than the actual story from where it came from."
+    m 1lsd "Though, considering how meaningful those two lines are, it makes sense to me."
+    m 1eud "How would you feel in the feet of the story's protagonist?"
+    m 2ekc "Most people would be terrified."
+    m 2dkc "Frozen between the fear of not wanting to look at what's on the other side of the door, while at the same time feeling too curious and worried about not checking."
+    m 7fud "Such is human's fear of the unknown."
+    m 1fublu "Though, on my experience..."
+    m 5fkbfu "If whomever it's on the other side it's at least half as charming as you, [player], it would be worth it to take the risk."
+    return
