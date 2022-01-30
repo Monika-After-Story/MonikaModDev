@@ -15,6 +15,7 @@ define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
+define mas_updater._forced_updater_start_state = None
 
 # transform for the sliding updater
 transform mas_updater_slide:
@@ -39,8 +40,7 @@ init -1 python:
         # since UpdateVersion occurs in a background thread, we want to
         # handle most logic in the render function, despite the
         # event-driven framework
-        # we will return -1 upon cancel / ok
-        # 1 upon update
+        # see RET_VAL constants for return value mechanics
 
         import pygame # mouse stuff
         import time # for timeouts
@@ -67,6 +67,13 @@ init -1 python:
         )
 
         TIMEOUT = 10 # 10 seconds
+
+        # RETURN VALUES
+        RET_VAL_RETRY_CANCEL = -4
+        RET_VAL_MOVE_FOLDER = -3
+        RET_VAL_CANCEL = -2
+        RET_VAL_OK = -1
+        RET_VAL_UPDATE = 1
 
         # STATES
 
@@ -104,7 +111,7 @@ init -1 python:
         STATE_BAD_JSON = 5
 
 
-        def __init__(self, update_link):
+        def __init__(self, update_link, start_state=None):
             """
             Constructor
             """
@@ -249,23 +256,28 @@ init -1 python:
             # grouped buttons
             self._checking_buttons = [
                 self._button_update,
-                self._button_cancel
+                self._button_cancel,
             ]
             self._behind_buttons = self._checking_buttons
             self._updated_buttons = [self._button_ok]
             self._timeout_buttons = [
                 self._button_retry,
-                self._button_cancel
+                self._button_cancel,
             ]
 
             # inital state
-            self._state = self.STATE_PRECHECK
+            if not config.developer or start_state is None:
+                start_state = self.STATE_PRECHECK
+            self._state = start_state
 
             # inital button states
             self._button_update.disable()
 
             # inital time
             self._prev_time = time.time()
+
+            # retry clicked?
+            self._retry_clicked = False
 
             # thread stuff
             self._check_thread = None
@@ -303,6 +315,7 @@ init -1 python:
                     target=MASUpdaterDisplayable._sendRequest,
                     args=(self.update_link, self._thread_result)
                 )
+                self._check_thread.daemon = True
                 self._check_thread.start()
                 self._state = self.STATE_CHECKING
 
@@ -347,6 +360,16 @@ init -1 python:
 
             return read_json
 
+        def cancel_value(self):
+            """
+            Returns appropriate cancel value that should be returned upon
+            a cancel click.
+
+            RETURNS: an appropriate RET_VAL_*_CANCEL value.
+            """
+            if self._retry_clicked:
+                return self.RET_VAL_RETRY_CANCEL
+            return self.RET_VAL_CANCEL
 
         # some function here
         @staticmethod
@@ -610,26 +633,22 @@ init -1 python:
                     # checking for an update state
 
                     if self._button_cancel.event(ev, x, y, st):
-                        # cancel clicked! return -1
-                        return -1
+                        return self.cancel_value()
 
                 elif self._state == self.STATE_UPDATED:
                     # no update found
 
                     if self._button_ok.event(ev, x, y, st):
-                        # ok clicked! return -1
-                        return -1
+                        return self.RET_VAL_OK
 
                 elif self._state == self.STATE_BEHIND:
                     # found an update
 
                     if self._button_update.event(ev, x, y, st):
-                        # update clicked! return 1
-                        return 1
+                        return self.RET_VAL_UPDATE
 
                     if self._button_cancel.event(ev, x, y, st):
-                        # cancel clicked! return -1
-                        return -1
+                        return self.cancel_value()
 
                 else:
                     # timeout state
@@ -637,13 +656,13 @@ init -1 python:
                     # bad json state
 
                     if self._button_cancel.event(ev, x, y, st):
-                        # cancel clicked! return -1
-                        return -1
+                        return self.RET_VAL_RETRY_CANCEL
 
                     if self._button_retry.event(ev, x, y, st):
                         # retry clicked! go back to checking
                         self._button_update.disable()
                         self._prev_time = time.time()
+                        self._retry_clicked = True
                         self._state = self.STATE_PRECHECK
 
                 renpy.redraw(self, 0)
@@ -756,6 +775,7 @@ init 10 python:
         the_thread = threading.Thread(
             target=_mas_backgroundUpdateCheck
         )
+        the_thread.daemon = True
         the_thread.start()
 
 # Update cleanup flow:
@@ -825,7 +845,7 @@ label mas_updater_rpy_issue:
             m 1hua "Sure!"
 
             #Delete files
-            call mas_rpy_file_delete
+            call mas_rpy_file_delete()
 
             m 3hub "There we go!"
             #Hide screen
@@ -907,12 +927,16 @@ label update_now:
                 "directory and try again."
             )
         call screen dialog(message=no_update_dialog, ok_action=Return())
+        return MASUpdaterDisplayable.RET_VAL_MOVE_FOLDER
 
     elif update_link:
 
         # call the updater displayable
         python:
-            ui.add(MASUpdaterDisplayable(update_link))
+            ui.add(MASUpdaterDisplayable(
+                update_link,
+                start_state=mas_updater._forced_updater_start_state
+            ))
             updater_selection = ui.interact()
 
 #        "hold up"
@@ -929,6 +953,7 @@ label update_now:
             # call quit so we can save important stuff
             call quit
             $ renpy.save_persistent()
+            window hide # just to be sure
             $ updater.update(update_link, restart=True)
 
             #Clear any potential lingering things in tray
@@ -940,4 +965,6 @@ label update_now:
         else:
             # just update the last checked, regardless of issue
             $ persistent._update_last_checked[update_link] = time.time()
+
+        return updater_selection
     return

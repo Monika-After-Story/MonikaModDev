@@ -979,6 +979,7 @@ init -810 python:
             "_mas_pm_is_trans": "pm.lifestyle.is_trans",
             "_mas_pm_social_personality": "pm.lifestyle.social_personality",
             "_mas_pm_swear_frequency": "pm.lifestyle.swear_frequency",
+            "_mas_pm_bakes": "pm.lifestyle.bakes",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -1066,6 +1067,7 @@ init -810 python:
 
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
+            "_mas_pm_read_jekyll_hyde": "pm.actions.books.read_jekyll_hyde",
 
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
@@ -1113,6 +1115,7 @@ init -810 python:
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
             "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
+            "_mas_pm_cares_island_progress": "pm.likes.monika.island.progress",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",

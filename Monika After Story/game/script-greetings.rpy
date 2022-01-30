@@ -84,6 +84,7 @@ init -1 python in mas_greetings:
         TYPE_GO_SOMEWHERE,
         TYPE_GENERIC_RET,
         TYPE_LONG_ABSENCE,
+        TYPE_HOL_O31_TT
     ]
 
     NTO_TYPES = (
@@ -3453,7 +3454,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_ourreality",
-            conditional="store.mas_decoded_islands",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()",
             unlocked=True,
             rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None)
@@ -3514,8 +3515,9 @@ label greeting_ourreality:
 
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
-    # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands", skipeval=True)
+
+    m 1eub "You can admire the scenery for now~"
+    call mas_islands(force_exp="monika 1eua")
     return
 
 init 5 python:
@@ -3542,10 +3544,6 @@ label greeting_returned_home:
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
     # event checks
-
-    #O31
-    if mas_isO31() and not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay() and mas_isMoniNormal(higher=True):
-        $ pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
 
     #F14
     if persistent._mas_f14_on_date:
@@ -3778,6 +3776,7 @@ init 5 python:
 #   we can get in pm vars here. It's just too variable.
 
 label greeting_back_from_game:
+    # TODO: TC-O
     if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
@@ -3981,6 +3980,7 @@ init 5 python:
     )
 
 label greeting_back_from_eat:
+    # TODO: TC-O
     $ _now = datetime.datetime.now().time()
     if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         if mas_isMoniNormal(higher=True):

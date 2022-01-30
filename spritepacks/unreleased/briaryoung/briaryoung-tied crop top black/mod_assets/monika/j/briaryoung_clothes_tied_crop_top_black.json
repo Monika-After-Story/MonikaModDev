@@ -1,0 +1,26 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_tied_crop_top_black",
+    "img_sit": "briaryoung_tied_crop_top_black",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "compat-downtiedstrand": true
+    },
+    "select_info": {
+        "display_name": "Tied Crop Top (Black)",
+        "thumb": "briaryoung_tied_crop_top_black",
+        "group": "clothes",
+        "select_dlg": [
+            "Cute and casual!"
+        ]
+    },
+    "giftname": "tiedcroptopblack",
+    "pose_arms": {}
+}
