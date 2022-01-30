@@ -9,7 +9,7 @@ label sayori_name_scare:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
         play_song(FP_SAYO_NARA, set_per=True)
-        store.mas_globals.show_s_light = True
+        store.mas_globals.show_sayori_lightning = True
     return
 
 # yuri scare
@@ -290,7 +290,7 @@ init -1 python in mas_egg_manager:
         """
         return not store.persistent._mas_disable_eggs
 
-    
+
     def natsuki_enabled():
         """
         Checks if the natsuki egg should be enabled

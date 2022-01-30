@@ -57,10 +57,10 @@ init -1 python in mas_globals:
     # True means show lightning, False means do not
 
     lightning_chance = 16
-    lightning_s_chance = 10
+    sayori_lightning_chance = 10
     # lightning chances
 
-    show_s_light = False
+    show_sayori_lightning = False
     # set to True to show s easter egg.
 
     text_speed_enabled = False
@@ -928,9 +928,18 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # always generate bg change info if scene is changing.
         #   NOTE: generally, this will just show all deco that is appropraite
         #   for this background.
-        if scene_change and (bg_change_info is None or len(bg_change_info) < 1):
+        if scene_change:
+            if bg_change_info is None or len(bg_change_info) < 1:
+                bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+                mas_current_background._entry_deco(None, bg_change_info)
+
+        elif mas_current_background._deco_man.changed:
+            # not doing scene change, check if deco man changed which means
+            # deco must have been changed somewhere.
             bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._exit_deco(None, bg_change_info)
             mas_current_background._entry_deco(None, bg_change_info)
+            mas_current_background._deco_man.changed = False
 
         # add show/hide statements for decos
         if bg_change_info is not None:
@@ -941,6 +950,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
             for s_tag, s_info in bg_change_info.shows.iteritems():
                 s_tag_real, s_adf = s_info
                 s_adf.show(s_tag_real)
+
+            if len(bg_change_info) > 0 and not dissolve_all:
+                renpy.with_statement(Dissolve(1.0))
+
+            bg_change_info = None
+            mas_current_background._deco_man.changed = False
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -953,14 +968,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # ----------- Grouping date-based events since they can never overlap:
-    #O31 stuff
-    # TODO: move this to o31 autoload
-    # NOTE: this does not expect no scene change
-    if persistent._mas_o31_in_o31_mode:
-        $ store.mas_o31ShowVisuals()
-    # ----------- end date-based events
-
     # player bday
     # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
@@ -970,7 +977,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
-    if datetime.date.today() == persistent._date_last_given_roses:
+    if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
     # dissolving everything means dissolve last
@@ -1337,7 +1344,10 @@ label ch30_post_exp_check:
     $ mas_checkApologies()
 
     # corruption check
-    if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
+    if (
+            store.mas_per_check.is_per_corrupt()
+            and not renpy.seen_label("mas_corrupted_persistent")
+    ):
         $ pushEvent("mas_corrupted_persistent")
 
     # push greeting if we have one
@@ -1506,16 +1516,15 @@ label ch30_post_mid_loop_eval:
 
         # Thunder / lightning if enabled
         if (
-                store.mas_globals.show_lightning
-                and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
-            ):
+            store.mas_globals.show_lightning
+            and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
+        ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    store.mas_globals.show_s_light
-                    and renpy.random.randint(
-                        1, store.mas_globals.lightning_s_chance
-                    ) == 1
-                ):
+                (mas_egg_manager.sayori_enabled() or (store.mas_globals.show_sayori_lightning and not persistent._mas_pm_cares_about_dokis))
+                and mas_current_background.background_id == store.mas_background.MBG_DEF
+                and renpy.random.randint(1, store.mas_globals.sayori_lightning_chance) == 1
+            ):
                 $ renpy.show("mas_lightning_s", zorder=light_zorder)
             else:
                 $ renpy.show("mas_lightning", zorder=light_zorder)
@@ -1751,9 +1760,6 @@ label ch30_day:
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
 
-        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
@@ -1797,8 +1803,8 @@ label ch30_reset:
 
     python:
         # name eggs
-        if mas_egg_manager.sayori_enabled() or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
-            store.mas_globals.show_s_light = True
+        if mas_egg_manager.sayori_enabled() or mas_isO31():
+            store.mas_globals.show_sayori_lightning = True
 
     python:
         # apply ACS defaults

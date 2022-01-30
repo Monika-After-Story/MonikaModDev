@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_sky_blue",
+    "img_sit": "briaryoung_mini_ribbon_sky_blue",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "sky blue ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Sky blue, mini)",
+        "thumb": "briaryoung_mini_ribbon_sky_blue",
+        "group": "ribbon",
+        "select_dlg": [
+            "Just like the sky!"
+        ]
+    },
+    "giftname": "miniskyblueribbon"
+}

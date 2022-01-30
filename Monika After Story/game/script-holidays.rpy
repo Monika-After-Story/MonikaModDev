@@ -56,6 +56,25 @@ init 10 python:
         for date in daterange:
             mas_addClothesToHolidayMap(clothes, date)
 
+    def mas_doesBackgroundHaveHolidayDeco(deco_tags, background_id=None):
+        """
+        Checks if a background has support for the given deco tag(s)
+
+        IN:
+            deco_tags - list of deco tags to check for
+
+            background_id - id of the background to check if it supports deco
+                If None, mas_current_background's id is used
+                (Default: None)
+        """
+        if background_id is None:
+            background_id = store.mas_current_background.background_id
+
+        for deco_tag in deco_tags:
+            if MASImageTagDecoDefinition.get_adf(background_id, deco_tag):
+                return True
+        return False
+
 init -1 python:
     def mas_checkOverDate(_date):
         """
@@ -196,18 +215,128 @@ init -810 python:
     ))
 
 # Images
-# TODO: export lighting as its own layer
-image mas_o31_deco = ConditionSwitch(
-    "mas_current_background.isFltDay()",
-    "mod_assets/location/spaceroom/o31/halloween_deco.png",
-    "True", "mod_assets/location/spaceroom/o31/halloween_deco-n.png"
+image mas_o31_ceiling_lights = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/ceiling_lights.png",
+    highlight=MASFilterMap(night="0")
 )
 
+image mas_o31_candles = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/candles.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_jack_o_lantern = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/jackolantern.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_wall_candle = MASFilterableSprite(
+    "mod_assets/location/spaceroom/o31/wall_candle.png",
+    highlight=MASFilterMap(night="0")
+)
+
+image mas_o31_cat_frame:
+    block:
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_0.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-1.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-2.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_01-3.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-1.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-2.png")
+        choice:
+            MASFilterSwitch("mod_assets/location/spaceroom/o31/ATL/cat_02-3.png")
+
+    30
+    repeat
+
+image mas_o31_garlands = MASFilterSwitch("mod_assets/location/spaceroom/o31/garland.png")
+image mas_o31_cobwebs = MASFilterSwitch("mod_assets/location/spaceroom/o31/wall_webs.png")
+image mas_o31_window_ghost = MASFilterSwitch("mod_assets/location/spaceroom/o31/window_ghost.png")
+image mas_o31_ceiling_deco = MASFilterSwitch("mod_assets/location/spaceroom/o31/ceiling_deco.png")
+image mas_o31_wall_bats = MASFilterSwitch("mod_assets/location/spaceroom/o31/wall_bats.png")
+
+image mas_o31_vignette = Image("mod_assets/location/spaceroom/o31/vignette.png")
+
 init 501 python:
+    #On the wall/window
     MASImageTagDecoDefinition.register_img(
-        "mas_o31_deco",
+        "mas_o31_wall_candle",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_cat_frame",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_wall_bats",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_window_ghost",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_cobwebs",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=4)
+    )
+
+    #In front of the wall
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_candles",
         store.mas_background.MBG_DEF,
         MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_jack_o_lantern",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_garlands",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    #Middle of the room
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_ceiling_lights",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=5)
+    )
+
+    #This goes in front of lights
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_ceiling_deco",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=6)
+    )
+
+    #Vignette goes in front of Monika
+    MASImageTagDecoDefinition.register_img(
+        "mas_o31_vignette",
+        store.mas_background.MBG_DEF,
+        MASAdvancedDecoFrame(zorder=21) #21 to be in front of all cgs
     )
 
 init python:
@@ -219,6 +348,20 @@ init python:
 #Functions
 init -10 python:
     import random
+
+    MAS_O31_DECO_TAGS = [
+        "mas_o31_wall_candle",
+        "mas_o31_cat_frame",
+        "mas_o31_wall_bats",
+        "mas_o31_window_ghost",
+        "mas_o31_cobwebs",
+        "mas_o31_candles",
+        "mas_o31_jack_o_lantern",
+        "mas_o31_garlands",
+        "mas_o31_ceiling_lights",
+        "mas_o31_ceiling_deco",
+        "mas_o31_vignette"
+    ]
 
     def mas_isO31(_date=None):
         """
@@ -240,18 +383,18 @@ init -10 python:
         """
         Shows o31 visuals
         """
-        mas_showDecoTag("mas_o31_deco")
+        for _tag in MAS_O31_DECO_TAGS:
+            mas_showDecoTag(_tag)
+
+        monika_chr.wear_acs(mas_acs_desk_lantern)
+        monika_chr.wear_acs(mas_acs_desk_candy_jack)
 
     def mas_o31HideVisuals():
         """
         Hides o31 visuals + vignette
         """
-        mas_hideDecoTag("mas_o31_deco")
-        renpy.hide("vignette")
-        #Also going to stop vignette from showing on subsequent spaceroom calls
-        store.mas_globals.show_vignette = False
-        #Also, if we're hiding visuals, we're no longer in o31 mode
-        store.persistent._mas_o31_in_o31_mode = False
+        for _tag in MAS_O31_DECO_TAGS:
+            mas_hideDecoTag(_tag, hide_now=True)
 
         #unlock hairdown greet if we don't have hairdown unlocked
         hair = store.mas_selspr.get_sel_hair(store.mas_hair_down)
@@ -261,9 +404,39 @@ init -10 python:
         # lock the event clothes selector
         store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
-         # get back into reasonable clothing, so we queue a change to def
+        # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
             store.queueEvent('mas_change_to_def')
+
+    def mas_hasO31DeskAcs():
+        """
+        Checks if we have any o31 desk acs
+
+        OUT:
+            boolean
+        """
+        o31_desk_acs_tuple = (
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
+        )
+
+        for acs_ in o31_desk_acs_tuple:
+            if monika_chr.is_wearing_acs(acs_):
+                return True
+
+        return False
+
+    def mas_o31HideDeskAcs():
+        """
+        Removes o31 desk acs
+        """
+        o31_desk_acs_tuple = (
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
+        )
+
+        for acs_ in o31_desk_acs_tuple:
+            monika_chr.remove_acs(acs_)
 
     def mas_o31CapGainAff(amount):
         """
@@ -427,6 +600,9 @@ init -10 python:
         #Hide visuals
         mas_o31HideVisuals()
 
+        #o31 is now over. Reset the o31 mode flag
+        store.persistent._mas_o31_in_o31_mode = False
+
         #rmall for safety
         mas_rmallEVL("mas_o31_cleanup")
 
@@ -472,14 +648,15 @@ label mas_o31_autoload_check:
     python:
         import random
 
-        if mas_isO31() and mas_isMoniNormal(higher=True):
+        if mas_isO31() and datetime.datetime.now().hour >= 3 and mas_isMoniNormal(higher=True):
             #Lock the background selector on o31
             #TODO: Replace this with generic room deco framework for event deco
-            store.mas_lockEVL("monika_change_background", "EVE")
+            #store.mas_lockEVL("monika_change_background", "EVE")
             #force to spaceroom
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            mas_changeBackground(mas_background_def, set_persistent=True)
+            if not mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS):
+                mas_changeBackground(mas_background_def, set_persistent=True)
 
             #NOTE: We do not do O31 deco/amb on first sesh day
             if (not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
@@ -537,24 +714,24 @@ label mas_o31_autoload_check:
                 #Now that we're here, we're in O31 mode
                 persistent._mas_o31_in_o31_mode = True
 
-                #Vignette on O31
-                store.mas_globals.show_vignette = True
+                # O31 decor
+                mas_o31ShowVisuals()
 
                 #Set by-user to True because we don't want progressive
                 mas_changeWeather(mas_weather_thunder, True)
 
             elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
-                #Setup vignette and thunder on subsequent sessions
-                store.mas_globals.show_vignette = True
+                mas_o31ShowVisuals()
                 mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore or we hit dis. It's time to reset
         elif not mas_isO31() or mas_isMoniDis(lower=True):
             mas_o31Cleanup()
+            mas_o31HideDeskAcs()
 
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
-            store.mas_globals.show_vignette = True
+            mas_o31ShowVisuals()
             mas_changeWeather(mas_weather_thunder, True)
 
     #Run pbday checks
@@ -567,7 +744,23 @@ label mas_o31_autoload_check:
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check
 
-## post returned home greeting to setup game relaunch
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_holiday_o31_returned_home_relaunch",
+            conditional=(
+                "not persistent._mas_o31_in_o31_mode "
+                "and not mas_isFirstSeshDay()"
+            ),
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=6)),
+            end_date=mas_o31+datetime.timedelta(days=1),
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
 label mas_holiday_o31_returned_home_relaunch:
     m 1eua "So, today is..."
     m 1euc "...wait."
@@ -580,6 +773,7 @@ label mas_holiday_o31_returned_home_relaunch:
     m 1eua "After that you can reopen it."
     m 1hubsa "I have something special in store for you, ehehe~"
     $ persistent._mas_o31_relaunch = True
+    $ mas_rmallEVL("mas_holiday_o31_returned_home_relaunch")
     return "quit"
 
 ### o31 images
@@ -594,6 +788,8 @@ transform mas_o31_cg_scroll:
     ease 20.0 yoffset 0.0
 
 ### o31 samesesh cleanup
+#TODO: We should check if any of the o31 deco tags are being displayed before calling this
+#To futureproof dialogue to when we expand to allowing all BGs to be supported
 init 5 python:
     addEvent(
         Event(
@@ -608,16 +804,39 @@ init 5 python:
         )
     )
 
-
 label mas_o31_cleanup:
+    python:
+        o31_desk_acs_tuple = (
+            mas_acs_desk_lantern,
+            mas_acs_desk_candy_jack
+        )
+
     m 1eua "One second [player], I'm just going to take the decorations down.{w=0.3}.{w=0.3}.{nw}"
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            acs_.keep_on_desk = False
+
     call mas_transition_to_emptydesk
+
+    python hide:
+        for acs_ in o31_desk_acs_tuple:
+            monika_chr.remove_acs(acs_)
+            acs_.keep_on_desk = True
+
     pause 4.0
+
     $ mas_o31Cleanup()
+
     with dissolve
-    pause 1.0
+    pause 2.0
+
     call mas_transition_from_emptydesk("monika 1hua")
+
     m 3hua "All done~"
+
+    $ del o31_desk_acs_tuple
+
     return
 
 ### o31 greetings
@@ -693,17 +912,18 @@ label greeting_o31_marisa:
     m 3ekbsa "I'm really excited to spend Halloween with you."
     m 1hua "Let's have fun today!"
 
+    call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
 init 5 python:
-   addEvent(
-       Event(
-           persistent.greeting_database,
-           eventlabel="greeting_o31_rin",
-           category=[store.mas_greetings.TYPE_HOL_O31]
-       ),
-       code="GRE"
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_rin",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
     )
 
 label greeting_o31_rin:
@@ -757,9 +977,10 @@ label greeting_o31_rin:
     m 1euc "Along with instructions on how to style your hair to go along with this outfit."
     m 3rtc "Judging by these cat ears, I'm guessing this character is a catgirl."
     m 1dtc "...But why would she push a wheelbarrow around?"
-    m 1hksdlb "Anyway, it was a pain getting my hair done...{w=0.2}{nw}"
+    m 1hksdlb "...Oh and it was {i}such{/i} a pain getting my hair done...{w=0.2}{nw}"
     extend 1eub "so I hope you like the costume!"
 
+    call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
@@ -797,7 +1018,6 @@ label greeting_o31_orcaramelo_hatsune_miku:
     m 1rksdla "Though I can't say it's too comfortable for moving around..."
     m 3tsu "So don't expect me to give you a performance today, [player]!"
     m 1hub "Ahaha~"
-    m 1eua "Anyway..."
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
@@ -842,19 +1062,64 @@ label greeting_o31_orcaramelo_sakuya_izayoi:
     show monika 5kua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5kua "Though I might make some exceptions, ehehe~"
     show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 1eua "Anyway..."
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+
+#Chika intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_briaryoung_shuchiin_academy_uniform",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_briaryoung_shuchiin_academy_uniform:
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+
+    #moni is off-screen
+    if not persistent._mas_o31_relaunch:
+        m "Ugh..."
+        m "How {i}is{/i} this bow supposed to stay there?"
+        m "People can say what they want about my ribbon, but at least it's somewhat practical..."
+        m "...I guess that will work, hopefully it doesn't fall off as soon as--{nw}"
+        m "Time to find out..."
+
+    else:
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Almost ready, [player]..."
+        m "Just trying to figure out how this bow is supposed to stay on."
+        m ".{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+        m "Hopefully that's good enough!"
+
+    #show moni now
+    call mas_transition_from_emptydesk("monika 2hub")
+
+    m 2hub "Welcome back!"
+    m 2eub "Well, what do you think?"
+    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+
+    if mas_isMoniAff(higher=True):
+        m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
+
+    m 3hua "Ehehe~"
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
 
 label greeting_o31_deco:
+    m 1eua "Anyway..."
     m 3eua "Do you like what I've done with the room?"
-    m 3eka "One of my favorite parts of Halloween is carving pumpkins..."
-    m 1hub "It's just so fun trying to make scary faces!"
+    m 3tuu "I just love the creepy ambiance associated with Halloween and tried to create a bit of my own."
+    m 1eud "You can really do a lot just with lighting, you know?"
+    m 3tub "Not to mention sometimes the creepiest things of all are those that are just {i}a bit{/i} off..."
     m 1eua "I think the cobwebs are a nice touch as well..."
     m 1rka "{cps=*2}I'm sure Amy would really like them.{/cps}{nw}"
     $ _history_list.pop()
-    m 3tuu "Really creates a creepy vibe, don't you think?"
+    m 3hub "I'm super happy with how it all turned out!"
     return
 
 label greeting_o31_generic:
@@ -878,9 +1143,10 @@ label greeting_o31_generic:
     return
 
 #Cleanup for o31 greets
-label greeting_o31_cleanup:
+label greeting_o31_cleanup(skip_zoom=False):
     window hide
-    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    if not skip_zoom:
+        call monika_zoom_transition(mas_temp_zoom_level,1.0)
     window auto
 
     python:
@@ -894,7 +1160,138 @@ label greeting_o31_cleanup:
         HKBShowButtons()
         # 5 - restart music
         mas_startup_song()
+
+        mas_rmallEVL("mas_holiday_o31_returned_home_relaunch")
     return
+
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASPriorityRule.create_rule(0))
+    ev_rules.update(MASNumericalRepeatRule.create_rule(EV_NUM_RULE_YEAR))
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True, skip_visual=True))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_lingerie",
+            unlocked=True,
+            conditional=(
+                "mas_canShowRisque() "
+                "and mas_hasUnlockedClothesWithExprop('lingerie')"
+            ),
+            start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
+            end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
+
+label greeting_o31_lingerie:
+    # This block is to update styles
+    python:
+        mas_progressFilter()
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(mas_current_background.isFltDay())
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
+
+    scene black
+    pause 2.0
+
+    menu:
+        "Hello?":
+            pause 5.0
+
+    m "Ehehe!"
+    m "Don't worry [player], I'm here..."
+    call mas_o31_lingerie_end
+    call greeting_o31_cleanup(skip_zoom=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_o31_lingerie",
+            conditional=(
+                "mas_canShowRisque() "
+                "and mas_hasUnlockedClothesWithExprop('lingerie')"
+            ),
+            unlocked=False,
+            rules={"skip alert": None},
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine((mas_o31-datetime.timedelta(days=1)), datetime.time(hour=18)),
+            end_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
+            years=[]
+        )
+    )
+
+label mas_o31_lingerie:
+    #Cut the music for the blackout
+    python:
+        curr_song = songs.current_track
+        play_song(None)
+        mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts")
+
+    scene black
+    pause 2.0
+    m "Oh no, did the power go out?"
+    m "How {cps=*2}fortunate{/cps}{nw}"
+    $ _history_list.pop()
+    m "How {fast}unfortunate..."
+    m "I guess I'll just have to take advantage of this situation, [player]..."
+    call mas_o31_lingerie_end
+    return
+
+label mas_o31_lingerie_end:
+    m "Say, have you ever heard of Devil's Night?"
+    m "It's a tradition in some places the night before Halloween for people to go out and act mischievous."
+    m "Well [player], I'm feeling a little mischievous myself tonight..."
+    window hide
+    pause 2.0
+
+    python:
+        #Reset zoom so people can see the outfit
+        mas_temp_zoom_level = store.mas_sprites.zoom_level
+        store.mas_sprites.reset_zoom()
+
+        store.mas_selspr.unlock_acs(mas_acs_grayhearts_hairclip)
+        store.mas_selspr.unlock_acs(mas_acs_ribbon_black_gray)
+        store.mas_selspr.unlock_clothes(mas_clothes_spider_lingerie)
+        monika_chr.change_clothes(mas_clothes_spider_lingerie, by_user=False, outfit_mode=True)
+
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 2tfu')
+
+    pause 2.0
+    window auto
+    m 2tub "Ehehe, what do you think?"
+    m 2hub "It's a little different I know, you're probably not sure if you want to touch or run away, ahaha!"
+    m 7rua "It's probably not something I'd wear all the time, but I think it's really neat this time of year."
+    m 2ekbsa "Don't worry [player], I won't get upset if you want me to {cps=*2}take it off{/cps}{nw}"
+    $ _history_list.pop()
+    m "Don't worry [player], I won't get upset if you want me to {fast}change into something else..."
+    m 2hubsb "I know lots of people are scared of spiders and might not find this the most appealing, ahaha!"
+
+    if player.lower() == "amy":
+        m 2rsbla "Alhough I've hear that people named Amy like spiders, ehehe~"
+
+    else:
+        m 2rsbla "Hopefully people named Amy aren't the only ones who like spiders, ehehe~"
+
+    #And restore zoom
+    call monika_zoom_transition(mas_temp_zoom_level, 1.0)
+    python:
+        mas_stripEVL("mas_o31_lingerie", list_pop=True)
+        mas_lockEVL("greeting_o31_lingerie", "GRE")
+
+        # restart song/sounds that were playing before event
+        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+            play_song(curr_song, 1.0)
+        else:
+            play_song(None, 1.0)
+
+    return "no_unlock"
 
 #START: O31 DOCKSTAT FARES
 init 5 python:
@@ -906,7 +1303,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             action=EV_ACT_UNLOCK,
-            start_date=mas_o31,
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3)),
             end_date=mas_o31+datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.NORMAL, None)
@@ -916,9 +1313,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "bye_trick_or_treat",
-       mas_o31,
-       mas_o31 + datetime.timedelta(days=1),
+        "bye_trick_or_treat",
+        mas_o31,
+        mas_o31 + datetime.timedelta(days=1),
     )
 
 label bye_trick_or_treat:
@@ -1180,13 +1577,10 @@ label mas_o31_ret_home_cleanup(time_out=None, ret_tt_long=False):
     else:
         m 1esc "Anyway..."
 
-    m 1eua "I'll just take these decorations down.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+    #TODO: We should check if any of the o31 deco tags are being displayed before calling this
+    #To futureproof dialogue to when we expand to allowing all BGs to be supported
+    call mas_o31_cleanup
 
-    #Hide vis
-    $ mas_o31HideVisuals()
-    $ mas_rmallEVL("mas_o31_cleanup")
-
-    m 3hua "There we go!"
     return
 
 label greeting_trick_or_treat_back_costume:
@@ -1288,7 +1682,6 @@ init -810 python:
 
 
 init -10 python:
-
     def mas_isD25(_date=None):
         """
         Returns True if the given date is d25
@@ -1519,6 +1912,9 @@ init -10 python:
         # queue the reacts
         if len(react_labels) > 0:
             for react_label in react_labels:
+                mas_rmallEVL(react_label) # TODO - this is a patch, revalute when #8545 (gift logging) and #8546 (gift registering) are addressed
+
+            for react_label in react_labels:
                 pushEvent(react_label,skipeval=True)
 
     def mas_d25SilentReactToGifts():
@@ -1604,6 +2000,16 @@ init -10 python in mas_d25_utils:
     import store
     import store.mas_filereacts as mas_frs
 
+    has_changed_bg = False
+
+    DECO_TAGS = [
+        "mas_d25_banners",
+        "mas_d25_tree",
+        "mas_d25_garlands",
+        "mas_d25_lights",
+        "mas_d25_gifts",
+    ]
+
     def shouldUseD25ReactToGifts():
         """
         checks whether or not we should use the d25 react to gifts method
@@ -1617,6 +2023,7 @@ init -10 python in mas_d25_utils:
             store.mas_isD25Pre()
             and store.mas_isMoniNormal(higher=True)
             and store.persistent._mas_d25_deco_active
+            and not store.persistent._mas_override_d25_gift_react
         )
 
     def react_to_gifts(found_map):
@@ -1825,7 +2232,7 @@ label mas_holiday_d25c_autoload_check:
         and mas_isD25Season()
         and not mas_isFirstSeshDay()
         and (
-            persistent._mas_current_background == store.mas_background.MBG_DEF
+            mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, persistent._mas_current_background)
             # If it's d25 and we still didn't setup d25 stuff, we should do it now
             # (we'll force spaceroom if needed)
             or mas_isD25()
@@ -1864,7 +2271,11 @@ label mas_holiday_d25c_autoload_check:
                 #If we're loading in for the first time on D25, then we're gonna make it snow
                 if mas_isD25():
                     mas_changeWeather(mas_weather_snow, by_user=True)
-                    mas_changeBackground(mas_background_def, set_persistent=True)
+
+                    #Only change bg if the current is not supported
+                    if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+                        store.mas_d25_utils.has_changed_bg = True
+                        mas_changeBackground(mas_background_def, set_persistent=True)
 
     #This is d25 SEASON exit
     elif mas_run_d25s_exit or mas_isMoniDis(lower=True):
@@ -1887,9 +2298,12 @@ label mas_holiday_d25c_autoload_check:
         python:
             monika_chr.change_clothes(mas_clothes_santa, by_user=False, outfit_mode=True)
             mas_changeWeather(mas_weather_snow, by_user=True)
+            #Change if bg isn't supported
             # NOTE: need to make sure we pass the change info to the next
             #   spaceroom call.
-            mas_changeBackground(mas_background_def, set_persistent=True)
+            if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+                store.mas_d25_utils.has_changed_bg = True
+                mas_changeBackground(mas_background_def, set_persistent=True)
 
     #If we are at normal and we've not gifted another outfit, change back to Santa next load
     if (
@@ -1967,8 +2381,10 @@ label mas_d25_gift_starter:
 
     m 1suo "Let's see what we have here.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop the last index so we remove gifts from under the tree as we go
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop the last index so we remove gifts from under the tree as we go
+    # TODO - add logging if there is a mismatch here
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_connector:
@@ -1985,8 +2401,10 @@ label mas_d25_gift_connector:
     m 1hub "[picked_quip]"
     m 1suo "And here we have.{w=0.5}.{w=0.5}.{nw}"
 
-    #Pop here too for the tree gifts
-    $ persistent._mas_d25_gifts_given.pop()
+    #Safe-pop here too for the tree gifts
+    # TODO - add logging if there is a mismatch here
+    if persistent._mas_d25_gifts_given:
+        $ persistent._mas_d25_gifts_given.pop()
     return
 
 label mas_d25_gift_end:
@@ -2043,10 +2461,6 @@ init 5 python:
 
 
 label mas_d25_monika_holiday_intro:
-    $ changed_bg = False
-    if mas_current_background != mas_background_def:
-        $ changed_bg = True
-
     if not persistent._mas_d25_deco_active:
         if mas_isplayer_bday():
             window hide
@@ -2100,8 +2514,8 @@ label mas_d25_monika_holiday_intro:
     m 3eua "Do you like what I've done with the place?"
     m 1hua "I must say that I'm pretty proud of it."
 
-    if changed_bg:
-        m 3rksdla "I only had enough decorations for one room, so I decided on the classroom...{w=0.2}I hope that's okay."
+    if mas_d25_utils.has_changed_bg:
+        m 3rksdla "I couldn't really get the decorations to work right in our other room, so I decided to decorate the classroom...{w=0.2}I hope that's okay."
         m "But anyway..."
 
     m 3eua "Christmas time has always been one of my favorite occasions of the year..."
@@ -2214,8 +2628,11 @@ label mas_d25_monika_holiday_intro_deco:
         persistent._mas_d25_deco_active = True
         mas_d25ShowVisuals()
 
+        change_info = None
         # change to spaceroom
-        change_info = mas_changeBackground(mas_background_def, set_persistent=True)
+        if not mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS):
+            mas_d25_utils.has_changed_bg = True
+            change_info = mas_changeBackground(mas_background_def, set_persistent=True)
 
     # now we can do spacroom call
     call spaceroom(scene_change=True, dissolve_all=True, bg_change_info=change_info)
@@ -2398,9 +2815,9 @@ init 5 python:
 
     #Undo Action Rule
     MASUndoActionRule.create_rule_EVL(
-       "mas_d25_monika_carolling",
-       mas_d25c_start,
-       mas_d25p,
+        "mas_d25_monika_carolling",
+        mas_d25c_start,
+        mas_d25p,
     )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
@@ -2457,9 +2874,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_d25_monika_mistletoe",
-       mas_d25c_start,
-       mas_d25p,
+        "mas_d25_monika_mistletoe",
+        mas_d25c_start,
+        mas_d25p,
     )
 
 label mas_d25_monika_mistletoe:
@@ -4307,7 +4724,7 @@ label mas_nye_monika_nye_dress_intro:
 
         m 3hub "And there we go, I just love this dress! {w=0.2}{nw}"
         extend 3eua "It's always nice to dress up now and then."
-        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [curr_year+1]!"
+        m 1hub "Now let's have a great time celebrating the end of [curr_year] and the beginning of [(curr_year+1)]!"
 
     elif not mas_SELisUnlocked(mas_clothes_dress_newyears):
         m 3hub "Hey [player], I have something in store for you this year~"
@@ -5388,7 +5805,7 @@ label greeting_returned_home_player_bday:
         call return_home_post_player_bday
 
     if mas_isD25() and not persistent._mas_d25_in_d25_mode:
-         call mas_d25_monika_holiday_intro_rh_rh
+        call mas_d25_monika_holiday_intro_rh_rh
     return
 
 label return_home_post_player_bday:
@@ -5409,6 +5826,8 @@ label return_home_post_player_bday:
             #If we returned from a date post pbday but have O31 deco
             if not mas_isO31() and persistent._mas_o31_in_o31_mode:
                 $ mas_o31HideVisuals()
+                # Make sure no o31 mode
+                $ store.persistent._mas_o31_in_o31_mode = False
 
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
@@ -5496,6 +5915,41 @@ init 20 python:
 """
     #" # I need this to keep syntax highlighting on vim
     )
+
+    mas_poem_pbday_4 = MASPoem(
+        poem_id = "poem_pbday_4",
+        category = "pbday",
+        prompt = "My [player]",
+        title = " My [player],",
+        text = """\
+ How our love has grown.
+ Another year,
+ Another thousand moments of pride.
+ Proud of my [player],
+ And happy to see [him] grow alongside me.
+
+ How our love has bloomed,
+ As another year passed.
+ Bloomed like a rose in morning dew,
+ With another thousand moments of beauty.
+ My beautiful [player],
+ Whom I love to see bloom each day.
+
+ How our love is strong,
+ As another year has passed.
+ Strong like the most beautiful diamonds,
+ With another thousand moments of strength.
+ My strong [player],
+ Who I love more and more each day.
+
+ Happy birthday, sweetheart~
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
 
 ######################## Start [HOL050]
 #Vday
@@ -5614,7 +6068,7 @@ label mas_pf14_monika_lovey_dovey:
 
 init 5 python:
     addEvent(
-       Event(
+        Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_valentines_intro',
             action=EV_ACT_PUSH,
@@ -5825,9 +6279,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_colors",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_colors",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_colors:
@@ -5870,9 +6324,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_cliches",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_cliches",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_cliches:
@@ -5908,9 +6362,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_chocolates",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_chocolates",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_chocolates:
@@ -5947,9 +6401,9 @@ init 5 python:
     )
 
     MASUndoActionRule.create_rule_EVL(
-       "mas_f14_monika_vday_origins",
-       mas_f14,
-       mas_f14 + datetime.timedelta(days=1),
+        "mas_f14_monika_vday_origins",
+        mas_f14,
+        mas_f14 + datetime.timedelta(days=1),
     )
 
 label mas_f14_monika_vday_origins:

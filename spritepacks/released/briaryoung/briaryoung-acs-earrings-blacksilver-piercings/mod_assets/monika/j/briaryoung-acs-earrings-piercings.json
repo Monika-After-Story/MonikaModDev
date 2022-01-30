@@ -1,0 +1,28 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_blacksilver_piercings",
+    "img_sit": "briaryoung_blacksilver_piercings",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 10,
+    "acs_type": "earrings",
+    "mux_type": [
+        "earrings"
+    ],
+    "stay_on_start": true,
+    "giftname": "blacksilverpiercings",
+    "dlg_desc": "black silver piercings",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Piercings (Black-silver)",
+        "thumb": "briaryoung_blacksilver_piercings",
+        "group": "earrings",
+        "select_dlg": [
+            "Cute huh?"
+        ]
+    }
+}

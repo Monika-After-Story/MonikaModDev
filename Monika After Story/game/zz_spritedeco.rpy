@@ -93,7 +93,7 @@ init -20 python in mas_deco:
         RETURNS: MASDecoration object, or None if not valid name
         """
         if not name.startswith(DECO_PREFIX):
-            name = deco_name_db.get(name, "")
+            name = deco_name_db.get(name, name)
 
         if name:
             return deco_db.get(name, None)
@@ -102,6 +102,32 @@ init -20 python in mas_deco:
 
 
 init -19 python:
+
+
+    class MASRegImgSameDecoTagDefNotFoundException(Exception):
+        """
+        Exception for when a deco tag definition is not found while regisering
+        an image using `register_img_same`
+        """
+        MSG = (
+            "Cannot register tag '{0}' for BG '{1}'. \n"
+            "Tag definition for source BG '{2}' does not exist. \n"
+            "Try registering at a later init level."
+        )
+
+        def __init__(self, tag, bg_id_src, bg_id_dest):
+            """
+            Constructor
+
+            IN:
+                tag - the tag being registered
+                bg_id_src - the ID of the source BG that the deco tag
+                    definition could not be located for
+                bg_id_dest - the ID of the destination BG being registered
+            """
+            super(MASRegImgSameDecoTagDefNotFoundException, self).__init__(
+                self.MSG.format(tag, bg_id_dest, bg_id_src)
+            )
 
 
     class MASDecorationBase(MASExtraPropable):
@@ -599,7 +625,7 @@ init -19 python:
                 tag - tag to get img info for
 
             RETURNS: tuple (or None if not found)
-                [0] - tag to use 
+                [0] - tag to use
                 [1] - MASAdvancedDecoFrame to use
             """
             deco_def = store.mas_deco.deco_def_db.get(tag, None)
@@ -613,7 +639,7 @@ init -19 python:
             """
             Gets the tag and MASAdvancedDecoFrame setting to use for a bg for
             a given main tag.
-            NOTE: do not use this for render. Use this for getting raw 
+            NOTE: do not use this for render. Use this for getting raw
             settings.
 
             IN:
@@ -697,14 +723,22 @@ init -19 python:
                 bg_id_src,
                 tag
             )
-            if img_info is not None:
-                replace_tag, adf = img_info
-                MASImageTagDecoDefinition.register_img(
+
+            # always raise errors if src img data not found
+            if img_info is None:
+                raise MASRegImgSameDecoTagDefNotFoundException(
                     tag,
-                    bg_id_dest,
-                    adf,
-                    replace_tag=replace_tag
+                    bg_id_src,
+                    bg_id_dest
                 )
+
+            replace_tag, adf = img_info
+            MASImageTagDecoDefinition.register_img(
+                tag,
+                bg_id_dest,
+                adf,
+                replace_tag=replace_tag
+            )
 
 
     class MASDecoManager(object):
@@ -860,7 +894,7 @@ init -19 python:
                 [2] - the override tag (will be the same as deco object's name
                     if no override tag given)
             """
-            for deco_name, deco_obj in self._adv_decos:
+            for deco_name, deco_obj in self._adv_decos.items():
                 yield (
                     deco_obj,
                     self._deco_frame_map[deco_name],
@@ -948,6 +982,7 @@ init -19 python:
             show_now - set to True to show immediately
                 (Deafult: False)
         """
+        # TODO: consider adding a predict?
         store.mas_deco.vis_store[tag] = None
         mas_current_background._deco_add(tag=tag)
 
@@ -959,8 +994,6 @@ init -19 python:
                     adf.show(real_tag)
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_hideDecoTag(tag, hide_now=False):
@@ -989,8 +1022,6 @@ init -19 python:
                     adf.hide()
         else:
             mas_current_background._deco_man.changed = True
-            store.mas_idle_mailbox.send_scene_change()
-            store.mas_idle_mailbox.send_dissolve_all()
 
 
     def mas_isDecoTagEnabled(tag):
