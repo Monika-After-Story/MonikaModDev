@@ -7,8 +7,11 @@ init -1500 python:
 
 init -1500 python in mas_utils:
     # ssl-specific stuff
+    import store
 
     ssl_enabled = False
+    certifi_enabled = False
+    cert_available = False
 
 
     def _load_ssl():
@@ -79,6 +82,13 @@ init -1500 python in mas_utils:
         mas_log.error("Failed to import ssl {0}".format(repr(e)))
         ssl_enabled = False
 
+
+    def _load_certifi():
+        """
+        Loads the certifi library and sets flags. 
+
+        This will check for the cert but will NOT update it.
+        """
 
 python early in mas_logging:
     import datetime
