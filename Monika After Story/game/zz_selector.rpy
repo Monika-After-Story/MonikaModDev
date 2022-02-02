@@ -85,6 +85,12 @@ init -100 python in mas_selspr:
             "change": "Can you tie your hair with something else?",
             "wear": "Can you tie your hair with something else?",
         },
+        "necklace": {
+            "_ev": "monika_necklace_select",
+            "_min-items": 1,
+            "change": "Can you change your necklace?",
+            "wear": "Can you wear a necklace?",
+        }
     }
 
 
@@ -4306,4 +4312,24 @@ label monika_earrings_select:
 
 #### end earrings
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_necklace_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("necklace", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_necklace_select:
+    call mas_selector_generic_sidebar_select_acs("necklace", idle_exp="monika 6eua")
+    return
+#### end necklace selector
 ############### END SELECTOR TOPICS ###########################################

@@ -6169,6 +6169,9 @@ label mas_f14_monika_valentines_intro:
             # shoulderless dress
             elif has_sundress:
                 call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
+                $ mas_selspr.json_sprite_unlock(mas_acs_diamond_necklace_pink)
+                $ mas_selspr.json_sprite_unlock(mas_acs_pinkdiamonds_hairclip)
+                $ mas_selspr.json_sprite_unlock(mas_acs_ribbon_black_pink)
                 m 2eua "Well...{w=0.3}what do you think?"
                 call mas_f14_intro_blackpink_dress
 

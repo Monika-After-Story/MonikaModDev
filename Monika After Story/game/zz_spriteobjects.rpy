@@ -340,6 +340,17 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(store.mas_acs_pinkdiamonds_hairclip)
             _moni_chr.wear_acs(store.mas_acs_ribbon_black_pink)
 
+    def _clothes_blackpink_dress_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for blackpink dress
+        """
+        outfit_mode = kwargs.get("outfit_mode")
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_diamond_necklace_pink)
+            _moni_chr.remove_acs(store.mas_acs_pinkdiamonds_hairclip)
+            _moni_chr.remove_acs(store.mas_acs_ribbon_black_pink)
+
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
         Entry programming point for rin clothes
@@ -997,6 +1008,7 @@ init -1 python:
         ),
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_blackpink_dress_entry,
+        exit_pp=store.mas_sprites._clothes_blackpink_dress_exit,
         ex_props={
             store.mas_sprites.EXP_C_BS: True,
         }
@@ -1770,6 +1782,12 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_musicnote_necklace_gold,
+        display_name="Golden Music Note",
+        thumb="musicnote_necklace_gold",
+        group="necklace",
+    )
 
     ### Diamond necklace (Pink)
     ## diamond_necklace_pink
@@ -1795,6 +1813,12 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_diamond_necklace_pink)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_diamond_necklace_pink,
+        display_name="Pink Diamond",
+        thumb="musicnote_necklace_gold",
+        group="necklace",
+    )
 
     ### Marisa Strandbow
     ## marisa_strandbow

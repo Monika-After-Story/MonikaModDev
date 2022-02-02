@@ -374,6 +374,13 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+label v0_12_8(version="v0_12_8"):
+    python:
+        if mas_selspr.get_sel(mas_clothes_sundress_white).unlocked:
+            store.mas_selspr.unlock_acs(mas_acs_musicnote_necklace_gold)
+
+    return
+
 # 0.12.7.1
 label v0_12_7_1(version="v0_12_7_1"):
     python hide:
