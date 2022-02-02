@@ -17679,12 +17679,13 @@ label monika_utterson:
         m 1euc "Hey [player], have you read any gothic literature?"
         m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
         m 3hub "I've read quite a bit of gothic literary books lately!"
-        m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
+        m 1eua "You should try the original novella {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i} if you ever get the chance."
         m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
 
-        m 3eud "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{nw}"
+        m 3eud "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{nw}"
+        $ _history_list.pop()
         menu:
-            m "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{fast}"
+            m "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{fast}"
 
             "Yes.":
                 $ persistent._mas_pm_read_jekyll_hyde = True
