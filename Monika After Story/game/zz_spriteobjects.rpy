@@ -339,6 +339,7 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(store.mas_acs_diamond_necklace_pink)
             _moni_chr.wear_acs(store.mas_acs_pinkdiamonds_hairclip)
             _moni_chr.wear_acs(store.mas_acs_ribbon_black_pink)
+            _moni_chr.wear_acs(store.mas_acs_earrings_diamond_pink)
 
     def _clothes_blackpink_dress_exit(_moni_chr, **kwargs):
         """
@@ -350,6 +351,7 @@ init -2 python in mas_sprites:
             _moni_chr.remove_acs(store.mas_acs_diamond_necklace_pink)
             _moni_chr.remove_acs(store.mas_acs_pinkdiamonds_hairclip)
             _moni_chr.remove_acs(store.mas_acs_ribbon_black_pink)
+            _moni_chr.remove_acs(store.mas_acs_earrings_diamond_pink)
 
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
@@ -2870,6 +2872,34 @@ init -1 python:
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_desk_lantern)
+
+    ### PINK DIAMOND EARRINGS
+    ## earrings_diamond_pink
+    # pink diamond earrings
+    # Thanks Briar
+    mas_acs_earrings_diamond_pink = MASAccessory(
+        "earrings_diamond_pink",
+        "earrings_diamond_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="earrings",
+        mux_type=["earrings"],
+        rec_layer=MASMonika.BAT_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_earrings_diamond_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_earrings_diamond_pink,
+        "Earrings (Pink Diamond)",
+        "earrings_diamond_pink",
+        "earrings",
+        select_dlg=[
+            "Pretty in pink!",
+            "Shining like a diamond~"
+        ]
+    )
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
