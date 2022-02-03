@@ -620,6 +620,7 @@ init -10 python in mas_selspr:
         "left-hair-clip",
         "left-hair-flower",
         "ribbon",
+        "necklace",
     ]
 
     # generic select dlg quips go here

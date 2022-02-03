@@ -1818,7 +1818,7 @@ init -1 python:
     store.mas_selspr.init_selectable_acs(
         acs=mas_acs_diamond_necklace_pink,
         display_name="Pink Diamond",
-        thumb="musicnote_necklace_gold",
+        thumb="diamond_necklace_pink",
         group="necklace",
     )
 
