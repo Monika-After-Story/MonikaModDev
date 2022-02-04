@@ -312,7 +312,7 @@ label mas_fun_fact_king_snakes:
     m 1dsc "Hmm..."
     m 3eub "Did you know that if a snake has the word 'king' in its name, it devours other snakes?"
     m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
-    m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
+    m 1tfu "Does that mean if I eat you up, I would become Queen Monika?"
     m 1hksdlb "Ahaha, I'm just kidding, [player]."
     m 1hub "Sorry for being a little weird~"
     #Call the end
