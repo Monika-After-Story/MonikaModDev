@@ -6005,7 +6005,7 @@ label mas_f14_autoload_check:
             persistent._mas_f14_in_f14_mode = True
 
             has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
-
+            has_shoulderless = mas_SELisUnlocked(mas_clothes_blackpink_dress)
             #TODO: Generalize this
             lingerie_eligible = (
                 mas_canShowRisque()
@@ -6017,7 +6017,7 @@ label mas_f14_autoload_check:
             #(handled within f14 intro pathing)
             if (
                 not has_sundress
-                or (mas_SELisUnlocked(mas_clothes_blackpink_dress) and renpy.random.randint(1,2) == 1)
+                or (has_shoulderless and random.random() > 0.5)
                 or lingerie_eligible
             ):
                 monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
