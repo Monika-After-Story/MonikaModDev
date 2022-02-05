@@ -6303,6 +6303,9 @@ label mas_f14_intro_blackpink_dress:
         for item in items_to_unlock:
             mas_selspr.json_sprite_unlock(item)
 
+        #Add to holiday map
+        mas_addClothesToHolidayMap(mas_clothes_blackpink_dress)
+
         #Save
         mas_selspr.save_selectables()
         renpy.save_persistent()
