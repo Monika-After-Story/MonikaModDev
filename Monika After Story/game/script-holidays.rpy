@@ -6013,7 +6013,7 @@ label mas_f14_autoload_check:
                 and has_sundress
             )
 
-            #NOTE: This lingerie_eligible check is so we don't grant lingeire on the same F14 we did sundress
+            #NOTE: This lingerie_eligible check is so we don't grant lingeire on the same F14 we did black/pink dress
             #(handled within f14 intro pathing)
             if (
                 not has_sundress
