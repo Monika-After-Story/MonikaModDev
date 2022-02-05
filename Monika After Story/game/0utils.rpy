@@ -1,3 +1,27 @@
+
+init -1000 python in mas_can_import:
+    import store.mas_utils as mas_utils
+    # import checks - use these to check if a library can be imported.
+
+
+    def certifi():
+        """
+        Checks if certifi can be imported
+
+        RETURNS: True if certifi can be imported
+        """
+        return mas_utils._certifi_enabled
+
+
+    def ssl():
+        """
+        Checks if ssl can be imported.
+
+        RETURNS: True if ssl can be imported.
+        """
+        return mas_utils._ssl_enabled
+
+
 #NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
 init -1500 python:
     import os
@@ -9,9 +33,24 @@ init -1500 python in mas_utils:
     # ssl-specific stuff
     import store
 
-    ssl_enabled = False
-    certifi_enabled = False
-    cert_available = False
+    _ssl_enabled = False
+    _certifi_enabled = False
+    _cert_available = False
+
+
+    def can_use_https():
+        """
+        Checks if we can safely use https in general - this combines several
+        checks, mainly:
+            - ssl
+            - a cert
+
+        NOTE: https can still be used with sites that do not require SSL verify
+        even if no cert is found.
+
+        RETURNS: True if https can be used.
+        """
+        return _ssl_enabled and _cert_available
 
 
     def _load_ssl():
@@ -77,18 +116,27 @@ init -1500 python in mas_utils:
     # ssl hack
     try:
         _load_ssl()
-        ssl_enabled = True
+        _ssl_enabled = True
     except ImportError as e:
         mas_log.error("Failed to import ssl {0}".format(repr(e)))
-        ssl_enabled = False
+        _ssl_enabled = False
 
 
-    def _load_certifi():
-        """
-        Loads the certifi library and sets flags. 
+    # certifi check
+    try:
+        import certifi
+        _certifi_enabled = True
+        _cert_available = certifi.has_cert()
+    except (ImportError, AttributeError) as e:
+        mas_log.error("Failed to import cerifi {0}".format(repr(e))
+        _certifi_enabled = False
+        _cert_available = False
 
-        This will check for the cert but will NOT update it.
-        """
+
+    # cert update
+    if _certifi_enabled:
+        # TODO
+
 
 python early in mas_logging:
     import datetime
