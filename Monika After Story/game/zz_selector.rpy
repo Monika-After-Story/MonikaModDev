@@ -106,10 +106,10 @@ init -100 python in mas_selspr:
             _not_group=False,
     ):
         """
-        Adds a prompt to the prompt map - basically like registering a 
+        Adds a prompt to the prompt map - basically like registering a
         selector.
 
-        NOTE: this is private for now - should consider an actual 
+        NOTE: this is private for now - should consider an actual
         "register selector" function as a public API instead.
 
         NOTE: this will overwrite existing data
@@ -202,41 +202,27 @@ init -100 python in mas_selspr:
         return key in PROMPT_MAP
 
 
-    def iter_prompt(get_all=False):
+    def iter_prompt():
         """
         Creates an interable of prompt keys
 
-        IN:
-            get_all - True to get all prompt keys, including ones that are
-                marked should be skipped
-                (Default: False)
-
         RETURNS: iter (generator) of prompt keys
         """
-        return (
-            prompt_key
-            for prompt_key, prompt_data in iter_prompt_data(get_all)
-        )
+        for prompt_key, prompt_data in iter_prompt_data():
+            yield prompt_key
 
 
-    def iter_prompt_data(get_all=False):
+    def iter_prompt_data():
         """
         Creates an iterable of prompt map data
-
-        IN:
-            get_all - True to get all prompt map data, including ones that
-                are marked should be skipped
-                (Default: False)
 
         RETURNS: iter (generator) of tuples:
             [0]: prompt key
             [1]: prompt data
         """
-        return (
-            (prompt_key, PROMPT_MAP[prompt_key])
-            for prompt_key in PROMPT_MAP
-            if "_not_group" not in PROMPT_MAP[prompt_key]
-        )
+        for prompt_key in PROMPT_MAP:
+            if "_not_group" not in PROMPT_MAP[prompt_key]:
+                yield (prompt_key, PROMPT_MAP[prompt_key])
 
 
     def lock_prompt(key):
