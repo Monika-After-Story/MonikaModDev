@@ -6024,6 +6024,8 @@ label mas_f14_autoload_check:
 
             else:
                 monika_chr.change_clothes(mas_clothes_blackpink_dress, by_user=False, outfit_mode=True)
+                #Add to hol map as a failsafe if we don't have new clothes and this has already been seen, and player is < 1k aff
+                mas_addClothesToHolidayMap(mas_clothes_blackpink_dress)
 
             monika_chr.save()
             renpy.save_persistent()
