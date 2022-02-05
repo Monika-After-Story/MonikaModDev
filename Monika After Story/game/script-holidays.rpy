@@ -6006,13 +6006,20 @@ label mas_f14_autoload_check:
 
             has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
 
+            #TODO: Generalize this
             lingerie_eligible = (
                 mas_canShowRisque()
                 and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
                 and has_sundress
             )
 
-            if not has_sundress or (mas_SELisUnlocked(mas_clothes_blackpink_dress) and renpy.random.randint(1,2) == 1) or lingerie_eligible:
+            #NOTE: This lingerie_eligible check is so we don't grant lingeire on the same F14 we did sundress
+            #(handled within f14 intro pathing)
+            if (
+                not has_sundress
+                or (mas_SELisUnlocked(mas_clothes_blackpink_dress) and renpy.random.randint(1,2) == 1)
+                or lingerie_eligible
+            ):
                 monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
 
             else:
@@ -6145,7 +6152,7 @@ label mas_f14_monika_valentines_intro:
         if lingerie_eligible and not mas_hasUnlockedClothesWithExprop("lingerie"):
             call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
-        # first time seeing sundress or non-first time seeing lingerie
+        # first time seeing sundress/shoulderless or non-first time seeing lingerie
         elif not has_sundress or not has_shoulderless or lingerie_eligible:
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
@@ -6169,15 +6176,6 @@ label mas_f14_monika_valentines_intro:
             # shoulderless dress
             elif has_sundress:
                 call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
-                python:
-                    items_to_unlock = (
-                        mas_acs_diamond_necklace_pink,
-                        mas_acs_pinkdiamonds_hairclip,
-                        mas_acs_ribbon_black_pink,
-                        mas_acs_earrings_diamond_pink
-                    )
-                    for item in items_to_unlock:
-                        mas_selspr.json_sprite_unlock(item)
                 m 2eua "Well...{w=0.3}what do you think?"
                 call mas_f14_intro_blackpink_dress
 
@@ -6196,7 +6194,7 @@ label mas_f14_monika_valentines_intro:
             # don't currently have access to sundress or wearing inappropraite outfit for f14
             if (
                 monika_chr.clothes != mas_clothes_sundress_white
-                or monika_chr.clothes != mas_clothes_blackpink_dress_dress
+                or monika_chr.clothes != mas_clothes_blackpink_dress
                 and (
                     monika_chr.is_wearing_clothes_with_exprop("costume")
                     or monika_chr.clothes == mas_clothes_def
@@ -6293,6 +6291,22 @@ label mas_f14_intro_generic:
     return
 
 label mas_f14_intro_blackpink_dress:
+    #Do all unlocks here as a common path
+    python:
+        items_to_unlock = (
+            mas_clothes_blackpink_dress,
+            mas_acs_diamond_necklace_pink,
+            mas_acs_pinkdiamonds_hairclip,
+            mas_acs_ribbon_black_pink,
+            mas_acs_earrings_diamond_pink
+        )
+        for item in items_to_unlock:
+            mas_selspr.json_sprite_unlock(item)
+
+        #Save
+        mas_selspr.save_selectables()
+        renpy.save_persistent()
+
     m 4hub "I think it's really cute!"
     m 2eub "There's just something about that black and pink combination...{w=0.3}they just go so well together!"
     m 2rtd "Seems like it would be a great outfit to wear for a date..."
