@@ -6103,7 +6103,7 @@ init 5 python:
 label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
-    $ mas_gainAffection(5, bypass=True)
+    $ mas_gainAffection(10, bypass=True)
 
     #Prevent nts stuff for upset- since they don't get the rest of the event.
     if mas_isMoniUpset(lower=True):
@@ -6195,12 +6195,10 @@ label mas_f14_monika_valentines_intro:
         else:
             # don't currently have access to sundress or wearing inappropraite outfit for f14
             if (
-                monika_chr.clothes != mas_clothes_sundress_white
-                or monika_chr.clothes != mas_clothes_blackpink_dress
+                monika_chr.clothes not in (mas_clothes_sundress_white, mas_clothes_blackpink_dress)
                 and (
                     monika_chr.is_wearing_clothes_with_exprop("costume")
-                    or monika_chr.clothes == mas_clothes_def
-                    or monika_chr.clothes == mas_clothes_blazerless
+                    or monika_chr.clothes in (mas_clothes_def, mas_clothes_blazerless)
                     or mas_isMoniEnamored(lower=True)
                 )
             ):
