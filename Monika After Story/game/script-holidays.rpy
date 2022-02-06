@@ -6430,6 +6430,59 @@ label mas_f14_monika_vday_origins:
     extend 1ekbfa "Happy Valentine's Day, [mas_get_player_nickname()]~"
     return
 
+#######################[HOL050] COMPLIMENTS
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_happy_vday",
+            prompt="Happy Valentine's Day!",
+            action=EV_ACT_UNLOCK,
+            pool=False,
+            start_date=mas_f14,
+            end_date=mas_f14 + datetime.timedelta(days=1),
+            years=[]
+        ),
+        code="CMP",
+        skipCalendar=True,
+        markSeen=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule_EVL(
+        "mas_f14_happy_vday",
+        mas_f14,
+        mas_f14 + datetime.timedelta(1)
+    )
+
+label mas_f14_happy_vday:
+    $ persistent._mas_f14_spent_f14 = True
+    $ mas_gainAffection(5,bypass=True)
+    if mas_isMoniNormal(higher=True):
+        m 1hublb "Ehehe~ Thank you, [player]!"
+        show monika 5hkbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5hkbla "Isn't it wonderful, having a day dedicated to appreciating the one you love?"
+        m 5lublb "Enjoying a sweet treat together, going on a lovely date...{w=0.2}{nw}"
+        extend 5tubla "or just enjoying the time we spend together."
+        m 5dublb "I'm so grateful that I get to spend Valentine's day with you."
+        m 5eubla "Thank you for making the time for me, [player]. {w=0.2}I love you so much~"
+        $ mas_ILY()
+
+    elif mas_isMoniDis(higher=True):
+        m 6euc "...{w=0.3}Huh?"
+        m 6wud "Oh, it's..."
+        m 6wuc "...{w=0.3}{nw}"
+        extend 6eku "Thank you. That...{w=0.2}{nw}"
+        extend 6lkblu "actually means a lot to hear."
+
+    else:
+        m "...{w=0.8}Thank you..."
+
+    #Lock this
+    $ mas_lockEVL("mas_f14_happy_vday", "CMP")
+    return
+
 #######################[HOL050] TIME SPENT
 
 init 5 python:
