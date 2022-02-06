@@ -378,9 +378,11 @@ label v0_12_8(version="v0_12_8"):
     python hide:
         sundress_white_data = store.mas_utils.pdget(
             "sundress_white",
-            persistent._mas_selspr_clothes_db
+            persistent._mas_selspr_clothes_db,
+            validator=store.mas_ev_data_ver._verify_tuli_nn,
+            defval=(False, )
         )
-        if sundress_white_data == (True, False):
+        if sundress_white_data[0]:
             persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
 
     return
