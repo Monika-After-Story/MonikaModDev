@@ -2887,7 +2887,7 @@ init -1 python:
         stay_on_start=True,
         acs_type="earrings",
         mux_type=["earrings"],
-        rec_layer=MASMonika.BAT_ACS
+        rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_earrings_diamond_pink)
     store.mas_selspr.init_selectable_acs(
