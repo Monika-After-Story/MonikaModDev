@@ -375,11 +375,12 @@ label v0_3_1(version=version): # 0.3.1
 # non generic updates go here
 # 0.12.8
 label v0_12_8(version="v0_12_8"):
-    python:
-        if (
-            "sundress_white" in persistent._mas_selspr_clothes_db
-            and persistent._mas_selspr_clothes_db["sundress_white"] == (True, False)
-        ):
+    python hide:
+        sundress_white_data = store.mas_utils.pdget(
+            "sundress_white",
+            persistent._mas_selspr_clothes_db
+        )
+        if sundress_white_data == (True, False):
             persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
 
     return
