@@ -6184,6 +6184,7 @@ label mas_f14_monika_valentines_intro:
             # sundress
             else:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
+                $ mas_selspr.json_sprite_unlock(mas_acs_musicnote_necklace_gold)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdlb "Ahaha...{w=1}{nw}"
@@ -6247,6 +6248,7 @@ label mas_f14_monika_valentines_intro:
         if not has_sundress:
             python:
                 store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+                mas_selspr.json_sprite_unlock(mas_acs_musicnote_necklace_gold)
                 # TODO: generalize this under one function
                 store.mas_selspr.save_selectables()
                 renpy.save_persistent()

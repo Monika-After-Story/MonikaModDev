@@ -373,11 +373,14 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
-
+# 0.12.8
 label v0_12_8(version="v0_12_8"):
     python:
-        if mas_selspr.get_sel(mas_clothes_sundress_white).unlocked:
-            store.mas_selspr.unlock_acs(mas_acs_musicnote_necklace_gold)
+        if (
+            "sundress_white" in persistent._mas_selspr_clothes_db
+            and persistent._mas_selspr_clothes_db["sundress_white"] == (True, False)
+        ):
+            persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
 
     return
 
