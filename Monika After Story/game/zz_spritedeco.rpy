@@ -104,6 +104,32 @@ init -20 python in mas_deco:
 init -19 python:
 
 
+    class MASRegImgSameDecoTagDefNotFoundException(Exception):
+        """
+        Exception for when a deco tag definition is not found while regisering
+        an image using `register_img_same`
+        """
+        MSG = (
+            "Cannot register tag '{0}' for BG '{1}'. \n"
+            "Tag definition for source BG '{2}' does not exist. \n"
+            "Try registering at a later init level."
+        )
+
+        def __init__(self, tag, bg_id_src, bg_id_dest):
+            """
+            Constructor
+
+            IN:
+                tag - the tag being registered
+                bg_id_src - the ID of the source BG that the deco tag
+                    definition could not be located for
+                bg_id_dest - the ID of the destination BG being registered
+            """
+            super(MASRegImgSameDecoTagDefNotFoundException, self).__init__(
+                self.MSG.format(tag, bg_id_dest, bg_id_src)
+            )
+
+
     class MASDecorationBase(MASExtraPropable):
         """
         Base class for decortaions objects.
@@ -697,14 +723,22 @@ init -19 python:
                 bg_id_src,
                 tag
             )
-            if img_info is not None:
-                replace_tag, adf = img_info
-                MASImageTagDecoDefinition.register_img(
+
+            # always raise errors if src img data not found
+            if img_info is None:
+                raise MASRegImgSameDecoTagDefNotFoundException(
                     tag,
-                    bg_id_dest,
-                    adf,
-                    replace_tag=replace_tag
+                    bg_id_src,
+                    bg_id_dest
                 )
+
+            replace_tag, adf = img_info
+            MASImageTagDecoDefinition.register_img(
+                tag,
+                bg_id_dest,
+                adf,
+                replace_tag=replace_tag
+            )
 
 
     class MASDecoManager(object):
