@@ -600,10 +600,14 @@ init -2 python in mas_sprites:
         """
         Exit programming point for sundress white
         """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
+
         # TODO: add selectors for these items so they dont have to be
         #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
-        _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_velius94_dress_whitenavyblue_entry(_moni_chr, **kwargs):
