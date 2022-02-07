@@ -170,14 +170,35 @@ label monika_writing_idle:
             $ _history_list.pop()
             m "Oh! You're going to{fast} go write something?"
 
-        else:
-            m 1eub "Oh! You're going to go write something?"
+            else:
+                $ response = renpy.random.randint(1,3)
+                if response == 1:
+                m 1eub "Oh! You're going to go write something?"
+                m 1hua "That makes me so glad!"
+                m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
+                extend 3hua "I'd love to read your work, [player]!"
+                m 3eua "Anyway, just let me know when you're done."
+                m 1hua "I'll be waiting right here for you~"
 
-        m 1hua "That makes me so glad!"
-        m 3eua "Maybe someday you could share it with me...{w=0.3} {nw}"
-        extend 3hua "I'd love to read your work, [player]!"
-        m 3eua "Anyway, just let me know when you're done."
-        m 1hua "I'll be waiting right here for you~"
+        elif response == 2:
+            m 2eua "Off to write something?"
+            m 5hub "Maybe I should do the same!"
+            m 1lublb "It's been a while since I wrote a poem for you..."
+            #maybe add a variable that counts how many days since monika has last written the player a poem for higher accuracy?
+            m 7eusdlb "Anyway, make sure to enjoy yourself!"
+            m 1eua "I'll be here waiting when you finish!"
+
+        elif response == 3:
+            if not renpy.seen_label("monika_writing_posture"):
+                call monika_writing_posture
+            else:
+                m 2esb "Doing a little bit of writing?"
+                m 2hsb "Alright!"
+                m 2eta "I wonder what you're working on?"
+                m 4htb "A romance, perhaps? {w=0.2}{nw}"
+                extend 5hub "Ahahaha~"
+                m 5eua "I'll await your return!"
+            
 
     elif mas_isMoniUpset():
         m 2esc "Alright."
@@ -188,12 +209,21 @@ label monika_writing_idle:
 
     else:
         m 6ckc "..."
-
     #Set up the callback label
     $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
     #Then the idle data
     $ persistent._mas_idle_data["monika_idle_writing"] = True
     return "idle"
+
+label monika_writing_posture:
+    m 1eua "Going to get some writing done?"
+    m 1hub "Sounds good!"
+    m 3esd "Make sure you're sitting in a way that's comfortable, though."
+    m 3hsb "Yuri had back pain because of her 'reading posture,' remember? Ahaha~"
+    m 3esc "On a serious note, though, bad posture can cause all sorts of nasty health issues over time."
+    m 3esb "Take a break every so often to get up and stretch or grab a glass of water!"
+    m 5hsb "I'll be here if you need some time away from your work!"
+    return
 
 label monika_writing_idle_callback:
 
