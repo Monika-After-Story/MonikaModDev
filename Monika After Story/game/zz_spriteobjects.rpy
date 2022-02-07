@@ -2897,7 +2897,7 @@ init -1 python:
         "earrings",
         select_dlg=[
             "Pretty in pink!",
-            "Shining like a diamond~"
+            "I'm shining like a diamond~"
         ]
     )
 
