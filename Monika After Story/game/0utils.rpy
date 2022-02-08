@@ -665,7 +665,7 @@ python early in mas_utils:
 
         def __setattr__(self, name, value):
             if name.startswith("_"):
-                setattr(self, name, value)
+                super(IsolatedFlexProp, self).__setattr__(name, value)
             else:
                 self._set_vars[name] = value
 
