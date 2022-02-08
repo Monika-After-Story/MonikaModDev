@@ -1534,17 +1534,22 @@ init -1 python in evhand:
             """
             return self._eli
 
+        @property
         def event_label(self):
             """
             Gets the event label from this EventListItem
+
+            Aliases: ev_label, evl
 
             RETURNS: event label
             """
             return self._eli[self.IDX_EVENT_LABEL]
 
-        # an alias
+        # aliases
         ev_label = event_label
+        evl = event_label
 
+        @property
         def notify(self):
             """
             Gets the notify value from this EventListItem
@@ -1553,14 +1558,18 @@ init -1 python in evhand:
             """
             return self._eli[self.IDX_NOTIFY]
 
+        @property
         def context(self):
             """
             Gets the context from this EventListItem
+
+            Aliases: ctx
 
             RETURNS: context (MASEventContext object)
             """
             return store.MASEventContext(self._eli[self.IDX_CONTEXT])
 
+        # aliases
         ctx = context
 
 
@@ -1821,7 +1830,7 @@ init python:
 
         To get the current event context, call MASEventContext.get.
         """
-        __this_ev_ctx = None
+        _this_ev_ctx = None # no one mess with this please i swear
 
         def __init__(self, ctx_data=None):
             """
@@ -1840,10 +1849,10 @@ init python:
             """
             Gets current event context.
             """
-            if cls.__this_ev_ctx is None:
-                cls.__this_ev_ctx = cls()
+            if cls._this_ev_ctx is None:
+                cls._this_ev_ctx = cls()
 
-            return cls.__this_ev_ctx
+            return cls._this_ev_ctx
 
         @classmethod
         def _set(cls, eli):
@@ -1854,9 +1863,9 @@ init python:
                 eli - EventListItem object. Use None to clear.
             """
             if eli is None:
-                cls.__this_ev_ctx = None
+                cls._this_ev_ctx = None
             else:
-                cls.__this_ev_ctx = eli.ctx()
+                cls._this_ev_ctx = eli.ctx
 
 
     class MASEventList(object):
@@ -1904,10 +1913,10 @@ init python:
             """
             if eli is None:
                 new_eli_data = None
-                new_curr_moni_topic = 0
+                new_curr_moni_topic = None 
             else:
                 new_eli_data = eli._raw()
-                new_curr_moni_topic = eli.evl()
+                new_curr_moni_topic = eli.evl
 
             persistent._mas_curr_eli_data = new_eli_data
             persistent.current_monikatopic = new_curr_moni_topic
@@ -1961,7 +1970,7 @@ init python:
                     new_item = evhand.EventListItem(item_raw)
 
                 # label check
-                if renpy.has_label(new_item.evl()):
+                if renpy.has_label(new_item.evl):
                     persistent.event_list[index] = new_item._raw()
 
                 else:
@@ -1980,6 +1989,22 @@ init python:
                 yield evhand.EventListItem(data)
 
         @staticmethod
+        def is_paused():
+            """
+            Checks if events are paused - also updates the event pause dt vars.
+
+            RETURNS: True if events are paused, False otherwise.
+            """
+            if mas_globals.event_unpause_dt is None:
+                return False
+
+            if datetime.datetime.utcnow() < mas_globals.event_unpause_dt:
+                return True
+
+            mas_globals.event_unpause_dt = None
+            return False
+
+        @staticmethod
         def _next():
             """
             Gets the next event's data and its location in the event_list.
@@ -1992,10 +2017,10 @@ init python:
             if len(persistent.event_list) < 1:
                 return None, -1
 
-            is_paused = mas_areEventsPaused()
+            is_paused = MASEventList.is_paused()
 
             for index, item in MASEventList.rev_enum_iter():
-                ev = mas_getEV(item.evl())
+                ev = mas_getEV(item.evl)
 
                 if (
                         not is_paused
@@ -2008,7 +2033,7 @@ init python:
 
                         if (
                                 (ev is not None and ev.show_in_idle)
-                                or item.evl() in evhand.IDLE_WHITELIST
+                                or item.evl in evhand.IDLE_WHITELIST
                         ):
                             return item, index
 
@@ -2616,8 +2641,8 @@ init python:
 
         RETURNS: index of the event in teh even tlist, -1 if not found
         """
-        for index, item in enumerate(list(MASEventList.iter())):
-            if item.evl() == event_label:
+        for index, item in enumerate(MASEventList.iter()):
+            if item.evl == event_label:
                 return index
 
         return -1
@@ -2633,7 +2658,7 @@ init python:
         RETURNS: True if in event list, False if not
         """
         for item in MASEventList.iter():
-            if item.evl() == event_label:
+            if item.evl == event_label:
                 return True
 
         return False
@@ -2675,7 +2700,7 @@ init python:
             return
 
         # don't push greetings back on the stack
-        if not mas_isRstBlk(curr_eli.evl()):
+        if not mas_isRstBlk(curr_eli.evl):
             MASEventList._push_eli(curr_eli)
             MASEventList.push('continue_event', skipeval=True)
 
@@ -2716,8 +2741,8 @@ init python:
         Iterates through the event list and removes items which shouldn't be restarted
         """
         for index, item in MASEventList.rev_enum_iter():
-            if mas_isRstBlk(item.evl()):
-                mas_rmEVL(item.evl())
+            if mas_isRstBlk(item.evl):
+                mas_rmEVL(item.evl)
 
     def mas_cleanJustSeen(eventlist, db):
         """
@@ -2817,22 +2842,6 @@ init python:
         return u_count != count
 
 
-    def mas_areEventsPaused():
-        """
-        Checks if events are paused - also updates the event pause dt vars.
-
-        RETURNS: True if events are paused, False otherwise.
-        """
-        if mas_globals.event_unpause_dt is None:
-            return False
-
-        if datetime.datetime.utcnow() < mas_globals.event_unpause_dt:
-            return True
-
-        mas_globals.event_unpause_dt = None
-        return False
-
-
 init 1 python in evhand:
     # mainly to contain action-based functions and fill an appropriate action
     # map
@@ -2920,7 +2929,7 @@ label call_next_event:
         # to recover data - see restartEvent()
         renpy.save_persistent()
 
-    if _ev_list_item and renpy.has_label(_ev_list_item.evl()):
+    if _ev_list_item and renpy.has_label(_ev_list_item.evl):
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
@@ -2930,10 +2939,10 @@ label call_next_event:
 
         $ mas_RaiseShield_dlg()
 
-        $ ev = mas_getEV(_ev_list_item.evl())
+        $ ev = mas_getEV(_ev_list_item.evl)
 
         if (
-            _ev_list_item.notify()
+            _ev_list_item.notify
             and (ev is None or ("skip alert" not in ev.rules))
         ):
             #Create a new notif
@@ -2950,7 +2959,7 @@ label call_next_event:
         $ mas_globals.this_ev = ev
         $ MASEventContext._set(_ev_list_item)
 
-        call expression _ev_list_item.evl() from _call_expression
+        call expression _ev_list_item.evl from _call_expression
 
         # post-event cleanup
         $ MASEventList.clear_current()
@@ -2959,6 +2968,9 @@ label call_next_event:
 
         # Handle idle exp
         $ mas_moni_idle_disp.do_after_topic_logic()
+
+        # refetch just in case
+        $ ev = mas_getEV(_ev_list_item.evl)
 
         if ev is not None:
 
