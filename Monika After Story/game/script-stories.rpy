@@ -1838,5 +1838,5 @@ label mas_scary_story_last_man:
     m 2dkc "Frozen between the fear of not wanting to look at what's on the other side of the door, while at the same time feeling too curious and worried about not checking."
     m 7fud "Such is human's fear of the unknown."
     m 1fublu "Though, on my experience..."
-    m 5fkbfu "If whomever it's on the other side it's at least half as charming as you, [player], it would be worth it to take the risk."
+    m 5fkbfu "If whoever on the other side is at least as charming as you, [player], it would be worth it to take the risk."
     return
