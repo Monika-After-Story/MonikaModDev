@@ -624,17 +624,24 @@ python early in mas_utils:
         trydel(old_path)
 
 
-    class FlexProp(object):
+    class IsolatedFlexProp(object):
         """
         class that supports flexible attributes.
-        Basically like persistent but simplified.
+        all attributes that are set are stored in a 
+        separate internal structure. Supports a few additional behaviors
+        because of this.
 
         Supports:
+            - extracting the vars that were manually set into a dict format
+                - _to_dict/_from_dict
+            - clearing all vars that were manually set
+                - _clear
             - direct attribute get/set (obj.attribute)
             - key-based get/set (obj[key])
                 Don't use this to access built-ins.
             - attribute existence ("attribute" in obj)
         """
+        __slots__ = ("_default_val", "_set_vars")
 
         def __init__(self, default_val=None):
             """
@@ -646,48 +653,6 @@ python early in mas_utils:
                     (Default: None)
             """
             self._default_val = default_val
-
-        def __contains__(self, item):
-            return item in self.__dict__
-
-        def __getattr__(self, name):
-            return self.__dict__.get(name, self._default_val)
-
-        def __setattr__(self, name, value):
-            # docs say to use object:
-            # https://docs.python.org/2.7/reference/datamodel.html#object.__setattr__
-            # see also https://bugs.python.org/issue21814
-            # This will allow setting even when not in constructor.
-            object.__setattr__(self, name, value)
-
-        def __getitem__(self, key):
-            return self.__getattr__(key)
-
-        def __setitem__(self, key, value):
-            self.__setattr__(key, value)
-
-
-    class IsolatedFlexProp(FlexProp):
-        """
-        Like FlexProp except all attributes that are set are stored in a 
-        separate internal structure. Supports a few additional behaviors
-        because of this.
-
-        Supports:
-            - extracting the vars that were manually set into a dict format
-                - _to_dict/_from_dict
-            - clearing all vars that were manually set
-                - _clear
-        """
-
-        def __init__(self, default_val=None):
-            """
-            Constructor
-
-            IN:
-                default_val - see FlexProp constructor
-            """
-            super(IsolatedFlexProp, self).__init__(default_val=default_val)
             self._set_vars = {}
 
         def __contains__(self, item):
@@ -695,14 +660,20 @@ python early in mas_utils:
 
         def __getattr__(self, name):
             if name.startswith("_"):
-                return FlexProp.__getattr__(self, name)
+                return getattr(self, name)
             return self._set_vars.get(name, self._default_val)
 
         def __setattr__(self, name, value):
             if name.startswith("_"):
-                FlexProp.__setattr__(self, name, value)
+                setattr(self, name, value)
             else:
                 self._set_vars[name] = value
+
+        def __getitem__(self, key):
+            return self.__getattr__(key)
+
+        def __setitem__(self, key, value):
+            self.__setattr__(key, value)
 
         def _clear(self):
             """
