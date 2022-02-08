@@ -1536,13 +1536,10 @@ init -1 python in evhand:
 
             RETURNS: event label
             """
-            return self.evl()
-
-        def evl(self):
-            """
-            Alias for event_label
-            """
             return self._eli[self.IDX_EVENT_LABEL]
+
+        # an alias
+        ev_label = event_label
 
         def notify(self):
             """
@@ -1560,11 +1557,7 @@ init -1 python in evhand:
             """
             return store.MASEventContext(self._eli[self.IDX_CONTEXT])
 
-        def ctx(self):
-            """
-            Alias for context
-            """
-            return self.context()
+        ctx = context
 
 
     # as well as special functions
@@ -1838,18 +1831,18 @@ init python:
             if ctx_data is not None:
                 self._from_dict(ctx_data)
 
-        @staticmethod
-        def get():
+        @classmethod
+        def get(cls):
             """
             Gets current event context.
             """
-            if MASEventContext.__this_ev_ctx is None:
-                MASEventContext.__this_ev_ctx = MASEventContext()
+            if cls.__this_ev_ctx is None:
+                cls.__this_ev_ctx = cls()
 
-            return MASEventContext.__this_ev_ctx
+            return cls.__this_ev_ctx
 
-        @staticmethod
-        def _set(eli):
+        @classmethod
+        def _set(cls, eli):
             """
             Sets current event context - only for internal use.
 
@@ -1857,9 +1850,9 @@ init python:
                 eli - EventListItem object. Use None to clear.
             """
             if eli is None:
-                MASEventContext.__this_ev_ctx = None
+                cls.__this_ev_ctx = None
             else:
-                MASEventContext.__this_ev_ctx = eli.ctx()
+                cls.__this_ev_ctx = eli.ctx()
 
 
     class MASEventList(object):
@@ -1979,10 +1972,8 @@ init python:
 
             RETURNS: generator/iterable over persistent.event_list
             """
-            return (
-                evhand.EventListItem(data)
-                for data in persistent.event_list
-            )
+            for data in persistent.event_list:
+                yield evhand.EventListItem(data)
 
         @staticmethod
         def _next():
@@ -2135,8 +2126,8 @@ init python:
             """
             persistent.event_list.insert(0, eli._raw())
 
-        @staticmethod
-        def rev_enum_iter():
+        @classmethod
+        def rev_enum_iter(cls):
             """
             Reverse enumerated iterable for event list.
 
@@ -2146,10 +2137,8 @@ init python:
                 [0] - index 
                 [1] - EventListItem
             """
-            return (
-                (index, evhand.EventListItem(persistent.event_list[index]))
-                for index in MASEventList.rev_idx_iter()
-            )
+            for index in cls.rev_idx_iter():
+                yield (index, evhand.EventListItem(persistent.event_list[index]))
 
         @staticmethod
         def rev_idx_iter():
