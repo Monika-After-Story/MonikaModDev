@@ -3144,6 +3144,15 @@ screen mas_apikeys():
 
             vbox:
                 spacing 30
+
+                textbutton _("Update Certificate")
+                    style "confirm_button"
+                    # TODO - button info
+                    # TODO - visual button response
+                    action Function(store.mas_utils.update_cert, True)
+
+                #textbutton _("Test Certificate")
+                #    style "confirm_button"
                 
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:

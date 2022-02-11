@@ -32,6 +32,7 @@ init -1500 python:
 init -1500 python in mas_utils:
     # ssl-specific stuff
     import store
+    import datetime
 
     _ssl_enabled = False
     _certifi_enabled = False
@@ -113,6 +114,37 @@ init -1500 python in mas_utils:
             httplib.ssl = new_ssl
 
 
+    def update_cert(force=False):
+        """
+        Updates the cert and sets appropriate vars.
+
+        Certs will only be updated if the last cert update was at least
+        6 months ago.
+
+        IN:
+            force - True to force the cert to update right now
+        """
+        last_update = store.persistent._mas_last_cert_update
+        if last_update is None:
+            last_update = datetime.datetime.utcnow()
+
+        if _certifi_enabled:
+            if (
+                    force
+                    or (
+                        datetime.datetime.utcnow() - last_update
+                    ) > datetime.timedelta(days=180)
+            ):
+                import certifi
+
+                rv, response = certifi.check_update()
+                if rv in (certifi.RV_SUCCESS, certifi.RV_NO_UPDATE):
+                    global _certifi_available
+                    _certifi_available = certifi.has_cert()
+
+                store.persistent._mas_last_cert_update = last_update
+
+
     # ssl hack
     try:
         _load_ssl()
@@ -127,15 +159,11 @@ init -1500 python in mas_utils:
         import certifi
         _certifi_enabled = True
         _cert_available = certifi.has_cert()
+        update_cert()
     except (ImportError, AttributeError) as e:
         mas_log.error("Failed to import cerifi {0}".format(repr(e))
         _certifi_enabled = False
         _cert_available = False
-
-
-    # cert update
-    if _certifi_enabled:
-        # TODO
 
 
 python early in mas_logging:
