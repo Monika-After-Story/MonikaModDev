@@ -17764,13 +17764,17 @@ label monika_convention:
         m "have you ever been to a comic convention or anime convention?"
         # TODO: responses
         "Comic convention":
-            pass
+            $ persistent._mas_pm_gone_to_comic_con = True
+            $ persistent._mas_pm_gone_to_anime_con = False
         "Anime convention":
-            pass
+            $ persistent._mas_pm_gone_to_comic_con = False
+            $ persistent._mas_pm_gone_to_anime_con = True
         "Both!":
-            pass
+            $ persistent._mas_pm_gone_to_comic_con = True
+            $ persistent._mas_pm_gone_to_anime_con = True
         "Neither":
-            pass
+            $ persistent._mas_pm_gone_to_comic_con = False
+            $ persistent._mas_pm_gone_to_anime_con = False
 
     # TODO - consider asking if go regularly?
 
