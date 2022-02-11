@@ -17740,3 +17740,27 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_influencers", # TODO - or instagram models?
+            category=['socialmedia? TODO'],
+            prompt="Influencers",
+            random=True,
+        )
+    )
+
+label monika_influencers:
+    # TODO: sprite codes
+    m "Do you follow any models on social media? I find the culture around online 'models' so interesting."
+    m "Before the age of social media people would only see these types of models and personalities on television or in magazines."
+    m "Models were hired by big companies and were told exactly what they would wear and do, they never had a say."
+    m "Nowadays Instagram models are completely in charge of their outfits and what they chose to do!"
+    m "It seems a lot more ethical now if you ask me. Even with the online sex work industry, these models are completely in charge of what type of NSFW content they’re making and how much money they’re making. "
+    m "While it’s mentally it’s probably better for these online celebrities, I think it does have a negative impact on the regular everyday person."
+    m "Just like in the olden days, models are still heavily editing their photos making themselves look unrealistic."
+    m "I think this could be damaging to young girls or even young men who think all women should look like these altered versions of women."
+    m "I have often thought down on myself because of this, but thankfully you like me just the way I am hehe~"
+    return
