@@ -17740,3 +17740,42 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_convention",
+            category=['conventions? TODO'],
+            prompt="Convention",
+            random=True,
+        )
+    )
+
+
+default persistent._mas_pm_gone_to_comic_con = None
+default persistent._mas_pm_gone_to_anime_con = None
+
+label monika_convention:
+    # TODO - sprite codes
+    m "Say [mas_get_player_nickname()],"
+    m "have you ever been to a comic convention or anime convention?{fast}{nw}"
+    menu:
+        m "have you ever been to a comic convention or anime convention?"
+        # TODO: responses
+        "Comic convention":
+            pass
+        "Anime convention":
+            pass
+        "Both!":
+            pass
+        "Neither":
+            pass
+
+    # TODO - consider asking if go regularly?
+
+    m "They look like they would be super fun! A place for everyone to just be themselves and enjoy their interests without being judged."
+    m "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions."
+    m "It’s crazy what some people think of! I also hear there’s a lot of fun activities like idol dance shows, trivia, and other things to do there."
+    m "It’s almost like an amusement park for geeks, haha. I would love to go to one with you someday, [mas_get_player_nickname()]" 
+    return

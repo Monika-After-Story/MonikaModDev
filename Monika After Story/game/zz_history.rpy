@@ -1073,6 +1073,12 @@ init -810 python:
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
 
+            # actions / events / comic con
+            "_mas_pm_gone_to_comic_con": "pm.actions.events.comic_con.went",
+
+            # actions / events / anime / con
+            "_mas_pm_gone_to_anime_con": "pm.actions.events.anime.con.went",
+
             # actions / mas
             "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
 
