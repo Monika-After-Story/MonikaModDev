@@ -17758,7 +17758,7 @@ default persistent._mas_pm_gone_to_anime_con = None
 
 label monika_convention:
     # TODO - sprite codes
-    m "Say [mas_get_player_nickname()],"
+    m 1eua "Say [mas_get_player_nickname()],"
     m "have you ever been to a comic convention or anime convention?{fast}{nw}"
     menu:
         m "have you ever been to a comic convention or anime convention?"
@@ -17778,8 +17778,10 @@ label monika_convention:
 
     # TODO - consider asking if go regularly?
 
-    m "They look like they would be super fun! A place for everyone to just be themselves and enjoy their interests without being judged."
-    m "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions."
-    m "It’s crazy what some people think of! I also hear there’s a lot of fun activities like idol dance shows, trivia, and other things to do there."
-    m "It’s almost like an amusement park for geeks, haha. I would love to go to one with you someday, [mas_get_player_nickname()]" 
+    m 3hub "They look like they would be super fun! A place for everyone to just be themselves and enjoy their interests without being judged."
+    m 6wuo "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions.
+    extend "It’s crazy what some people think of!"
+    m 3mua "I also hear there’s a lot of fun activities like idol dance shows, trivia, and other things to do there."
+    extend "It’s almost like an amusement park for geeks, haha."
+    m 5nubsa "I would love to go to one with you someday, [mas_get_player_nickname()]" 
     return
