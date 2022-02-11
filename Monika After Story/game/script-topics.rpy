@@ -5738,6 +5738,10 @@ label monika_cupcake:
             extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
             extend 5eub "tasting the results..."
             m 5kuu "Sounds pretty amazing, right?"
+
+    # TODO - this make sense? I think it does since its related.
+    $ mas_unlockEVL("monika_cupcake_favorite", "EVE")
+
     return "derandom"
 
 # You're not a hater right?
@@ -17739,4 +17743,42 @@ label monika_hedonism:
     m 2dkc "Hedonism, at its core, ignores everything but pleasure."
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cupcake_favorite",
+            category=["food? TODO"],
+            prompt="What's your favorite flavor cupcake?",
+            # TODO - should this be locked until the other cupcake topic?
+        )
+    )
+
+label monika_cupcake_favorite:
+    # TODO - sprite codes
+    # TODO: evaluate for doki_cares
+    m "That’s a great question!"
+    m "I really like all sorts of different kinds, it’s hard to choose just one."
+
+    $ cupcake_lead_in = ""
+    if mas_getEVL_shown_count("monika_cupcake") > 0:
+        $ cupcake_lead_in = "As you know, "
+    m "[cupcake_lead_in]I miss Natsuki’s cupcakes so much."
+
+    m "One time she made this really strange mint chocolate chip flavored cupcake."
+    m "It had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
+    m "It was the strangest thing I’ve ever tasted haha!"
+    m "It didn’t really taste at all like how mint chocolate chip ice cream tastes, even though that’s one of my all time favorites."
+    m "It sorta tasted like toothpaste!"
+    m "I was really expecting it to be my favorite cupcake flavor too. It was nice she tried to make me something unique I would like...sometimes I miss her a lot."
+
+
+    # TODO: evaluate for doki cares
+    m "..."
+    m "..."
+    m "Oh, sorry. I got lost in thought. What was the question again?"
+    # TODO - probably shouldn't leave this with an open Q without a menu response
+    #   or just don't have an open Q at the end?
     return
