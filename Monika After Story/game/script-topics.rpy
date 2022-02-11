@@ -17757,7 +17757,7 @@ init 5 python:
 
 label monika_influencers:
     # TODO: sprite codes
-    m "Do you follow any models on social media?{fast}{nw}"
+    m 1eua "Do you follow any models on social media?{fast}{nw}"
     # TODO: consider adding quanitifable answers - do they follow a lot (like a lifestyle)
     #   or do they follow a few (like a like/want)?
     menu:
@@ -17767,13 +17767,15 @@ label monika_influencers:
         "No.":
             pass
 
-    m "I find the culture around online 'models' so interesting."
+    m 7eud "I find the culture around online 'models' so interesting."
     m "Before the age of social media people would only see these types of models and personalities on television or in magazines."
     m "Models were hired by big companies and were told exactly what they would wear and do, they never had a say."
-    m "Nowadays Instagram models are completely in charge of their outfits and what they chose to do!"
+    m 6eua "Nowadays Instagram models are completely in charge of their outfits and what they chose to do!"
     m "It seems a lot more ethical now if you ask me. Even with the online sex work industry, these models are completely in charge of what type of NSFW content they’re making and how much money they’re making. "
-    m "While it’s mentally it’s probably better for these online celebrities, I think it does have a negative impact on the regular everyday person."
+    m 2ekc "While it’s mentally it’s probably better for these online celebrities, I think it does have a negative impact on the regular everyday person."
     m "Just like in the olden days, models are still heavily editing their photos making themselves look unrealistic."
     m "I think this could be damaging to young girls or even young men who think all women should look like these altered versions of women."
-    m "I have often thought down on myself because of this, but thankfully you like me just the way I am hehe~"
+    m "I have often thought down on myself because of this,"
+    show monika 5eubfa
+    extend "but thankfully you like me just the way I am hehe~"
     return
