@@ -17740,3 +17740,25 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_esports",
+            category=['gaming'],
+            prompt="What do you think of esports?",
+            pool=True,
+        )
+    )
+
+label monika_esports:
+    # TODO - sprite codes
+    m "That’s funny you ask, I was researching this the other day while you were gone!"
+    m "I find it really interesting how the entire way we perceive watching sports is changing."
+    m "Esports viewership continues to rival that of traditional sporting events."
+    m "It may even outpace sports audiences within the next 5 to 10 years, it’s that fascinating?"
+    m "Back in the day, people thought down on playing video games like it was a waste of time."
+    m "Some of these players are making millions of dollars." 
+    m "It really goes to show you can do what you love for a job. If this was possible, anything is~" 
+    return
