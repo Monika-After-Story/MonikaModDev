@@ -17779,7 +17779,7 @@ label monika_convention:
     # TODO - consider asking if go regularly?
 
     m 3hub "They look like they would be super fun! A place for everyone to just be themselves and enjoy their interests without being judged."
-    m 6wuo "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions.
+    m 6wuo "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions."
     extend "It’s crazy what some people think of!"
     m 3mua "I also hear there’s a lot of fun activities like idol dance shows, trivia, and other things to do there."
     extend "It’s almost like an amusement park for geeks, haha."
