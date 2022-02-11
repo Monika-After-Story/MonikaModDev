@@ -17758,6 +17758,8 @@ init 5 python:
 label monika_influencers:
     # TODO: sprite codes
     m "Do you follow any models on social media?{fast}{nw}"
+    # TODO: consider adding quanitifable answers - do they follow a lot (like a lifestyle)
+    #   or do they follow a few (like a like/want)?
     menu:
         m "Do you follow any models on social media?"
         "Yes.":
