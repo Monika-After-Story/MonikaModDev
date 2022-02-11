@@ -17752,9 +17752,20 @@ init 5 python:
         )
     )
 
+# TODO:
+# the follow any models Q should be pm - but which?
+
 label monika_influencers:
     # TODO: sprite codes
-    m "Do you follow any models on social media? I find the culture around online 'models' so interesting."
+    m "Do you follow any models on social media?{fast}{nw}"
+    menu:
+        m "Do you follow any models on social media?"
+        "Yes.":
+            pass
+        "No.":
+            pass
+
+    m "I find the culture around online 'models' so interesting."
     m "Before the age of social media people would only see these types of models and personalities on television or in magazines."
     m "Models were hired by big companies and were told exactly what they would wear and do, they never had a say."
     m "Nowadays Instagram models are completely in charge of their outfits and what they chose to do!"
