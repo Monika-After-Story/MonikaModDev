@@ -17759,24 +17759,24 @@ init 5 python:
 label monika_cupcake_favorite:
     # TODO - sprite codes
     # TODO: evaluate for doki_cares
-    m "That’s a great question!"
+    m 1eub "That’s a great question!"
     m "I really like all sorts of different kinds, it’s hard to choose just one."
 
     $ cupcake_lead_in = ""
     if mas_getEVL_shown_count("monika_cupcake") > 0:
         $ cupcake_lead_in = "As you know, "
-    m "[cupcake_lead_in]I miss Natsuki’s cupcakes so much."
+    m 6hua "[cupcake_lead_in]I miss Natsuki’s cupcakes so much."
 
     m "One time she made this really strange mint chocolate chip flavored cupcake."
     m "It had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
-    m "It was the strangest thing I’ve ever tasted haha!"
+    m 4lup "It was the strangest thing I’ve ever tasted haha!"
     m "It didn’t really taste at all like how mint chocolate chip ice cream tastes, even though that’s one of my all time favorites."
     m "It sorta tasted like toothpaste!"
-    m "I was really expecting it to be my favorite cupcake flavor too. It was nice she tried to make me something unique I would like...sometimes I miss her a lot."
+    m 6dkc "I was really expecting it to be my favorite cupcake flavor too. It was nice she tried to make me something unique I would like...sometimes I miss her a lot."
 
 
     # TODO: evaluate for doki cares
-    m "..."
+    m 1euc "..."
     m "..."
     m "Oh, sorry. I got lost in thought. What was the question again?"
     # TODO - probably shouldn't leave this with an open Q without a menu response
