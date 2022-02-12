@@ -3,7 +3,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pinterest",
-            category=["Pinterest"],
+            category=["^(?!.*PINS).*Pinterest.*"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -36,7 +36,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_duolingo",
-            category=["Duolingo"],
+            category=["^(?!.*DUOL).*Duolingo.*"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
@@ -527,7 +527,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_netflix",
-            category=["Netflix"],
+            category=["^(?!.*NFLX).*Netflix.*"],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
