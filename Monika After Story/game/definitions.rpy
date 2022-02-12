@@ -5,12 +5,8 @@ define config.developer = False
 
 python early:
     import io
-    import singleton
     import datetime
     import traceback
-
-
-    me = singleton.SingleInstance()
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -2170,7 +2166,7 @@ python early:
                 return_value - Value to return when the button is activated
                     (Default: True)
             """
-
+            super(renpy.Displayable, self).__init__()
             # setup
 #            self.idle_text = idle_text
 #            self.hover_text = hover_text
@@ -2468,6 +2464,7 @@ python early:
                         if not is_over_me:
                             self.hovered = False
                             self._state = self._STATE_IDLE
+                            renpy.redraw(self, 0.0)
 
                         # else remain in hover mode
 
@@ -2477,6 +2474,8 @@ python early:
 
                         if self.hover_sound:
                             self._playHoverSound()
+
+                        renpy.redraw(self, 0.0)
 
                 elif (
                         ev.type == self._button_down
@@ -4197,9 +4196,9 @@ init -995 python in mas_utils:
     from contextlib import contextmanager
 
     # LOG messges
-    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
-    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
-    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}"
 
     # bad text dict
     BAD_TEXT = {
@@ -4210,60 +4209,6 @@ init -995 python in mas_utils:
     # timezone cache
     _tz_cache = None
 
-    def compareVersionLists(curr_vers, comparative_vers):
-        """
-        Generic version number checker
-
-        IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
-        """
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-            IN:
-                smaller_vers_list - the smol list to adjust
-                larger_vers_list - the list we will adjust the smol list to
-
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-        #Let's verify that the lists are the same length
-        if len(curr_vers) < len(comparative_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
-                return 1
-
-            elif curr_vers[index] < comparative_vers[index]:
-                #Comparative version is greater, the rest of this is irrelevant
-                return -1
 
     def all_none(data=None, lata=None):
         """
@@ -4610,16 +4555,6 @@ init -995 python in mas_utils:
             return os.access(os.path.normcase(filepath), os.F_OK)
         except:
             return False
-
-    # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
-        mas_log = getMASLog("log/mas_log", append=True, flush=True)
-    else:
-        mas_log = getMASLog("log/mas_log")
-
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
-    mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
     def weightedChoice(choice_weight_tuple_list):
         """
@@ -5417,6 +5352,7 @@ init -100 python in mas_utils:
 
 
 init -985 python:
+    import datetime
     # global stuff that should be defined somewhat early
 
     def mas_getSessionLength():
@@ -5530,6 +5466,15 @@ init -985 python:
         NOTE: TT detection occurs at init -890
         """
         return store.mas_globals.tt_detected
+
+    def mas_getWindowTitle():
+        """
+        Returns current windows title set by RenPy
+
+        OUT:
+            str
+        """
+        return renpy.game.interface.window_caption
 
 init -101 python:
     def is_file_present(filename):
@@ -6239,13 +6184,15 @@ init 2 python:
         #3 conditions:
 
         #1. Do we even have plushie enabled?
-        #2. Is it f14? (heartchoc gift interferes)
+        #2.1 Is it f14? (heartchoc gift interferes)
+        #2.2 Is it o31? (o31 desk acs interferes)
         #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
             not persistent._mas_acs_enable_quetzalplushie
             or mas_isF14()
+            or mas_isO31()
             or MASConsumable._getCurrentFood()
         ):
             # run the plushie exit PP in case plushie is no longer enabled
@@ -6516,6 +6463,7 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    #TODO: Add minutes param for verbosity + new function for clearing pause
     def mas_setEventPause(seconds=60):
         """
         Sets a pause 'til next event
@@ -6529,6 +6477,33 @@ init 2 python:
 
         else:
             mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
+
+    def mas_getCurrentMoniExp(layer="master"):
+        """
+        Returns Monika's current expression
+
+        IN:
+            layer - the layer to check for Monika's displayable
+                You probably shouldn't change this
+                (Default: 'master')
+
+        OUT:
+            string with sprite code
+            or None if we couldn't get the exp (e.g. if Monika isn't on the screen)
+        """
+        # It can be really problematic to get this, easier to just use try/except
+        try:
+            current_exp = renpy.game.context().images.get_attributes(layer, "monika")[0]
+
+        except:
+            current_exp = None
+
+        else:
+            # If we're showing idle, we should fetch the spr code from it directly
+            if current_exp == "idle":
+                current_exp = mas_moni_idle_disp.current_exp.code
+
+        return current_exp
 
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
@@ -6725,34 +6700,35 @@ init 21 python:
         return ""
 
 # Music
-define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
-define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
-define audio.t2g = "bgm/2g.ogg"
-define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
-define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
-define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
-define audio.t3g = "<to 15.255>bgm/3g.ogg"
-define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
-define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
-define audio.t3m = "<loop 4.618>bgm/3.ogg"
-define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
-define audio.t4g = "<loop 1.000>bgm/4g.ogg"
-define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
-define audio.t5b = "<loop 4.444>bgm/5.ogg"
-define audio.t5c = "<loop 4.444>bgm/5.ogg"
-define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
-define audio.t6g = "<loop 10.893>bgm/6g.ogg"
-define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
-define audio.t6s = "<loop 43.572>bgm/6s.ogg"
-define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
-define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
-define audio.t7g = "<loop 31.880>bgm/7g.ogg"
-define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
-define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
-define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
-define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
-define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
-define audio.td = "<loop 36.782>bgm/d.ogg"
+init -1:
+    define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
+    define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
+    define audio.t2g = "bgm/2g.ogg"
+    define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
+    define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
+    define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
+    define audio.t3g = "<to 15.255>bgm/3g.ogg"
+    define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
+    define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
+    define audio.t3m = "<loop 4.618>bgm/3.ogg"
+    define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
+    define audio.t4g = "<loop 1.000>bgm/4g.ogg"
+    define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
+    define audio.t5b = "<loop 4.444>bgm/5.ogg"
+    define audio.t5c = "<loop 4.444>bgm/5.ogg"
+    define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
+    define audio.t6g = "<loop 10.893>bgm/6g.ogg"
+    define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
+    define audio.t6s = "<loop 43.572>bgm/6s.ogg"
+    define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
+    define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
+    define audio.t7g = "<loop 31.880>bgm/7g.ogg"
+    define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
+    define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
+    define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
+    define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
+    define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
+    define audio.td = "<loop 36.782>bgm/d.ogg"
 
 define audio.m1 = "bgm/m1.ogg"
 define audio.mend = "<loop 6.424>bgm/monika-end.ogg"
@@ -6770,6 +6746,10 @@ define audio.fall = "sfx/fall.ogg"
 # custom audio
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
+
+# light switch sound created by SPANAC from
+# https://www.freesoundslibrary.com/light-switch-sound-effect/
+define audio.light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
 
 # Backgrounds
 image black = "#000000"
@@ -8111,7 +8091,7 @@ init -1 python in mas_randchat:
         """
         Reduces the randchat setting if we're too high for the current affection level
         """
-        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP.get(aff_level, RARELY)
 
         if store.persistent._mas_randchat_freq > max_setting_for_level:
             adjustRandFreq(max_setting_for_level)
@@ -8150,12 +8130,7 @@ init -1 python in mas_randchat:
             displayable string that reprsents the current random chatter
             setting
         """
-        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
-
-        if slider_value is None:
-            return "Never"
-
-        return randchat_disp
+        return SLIDER_MAP_DISP.get(slider_value, "UNKNOWN")
 
 
     def setWaitingTime():
