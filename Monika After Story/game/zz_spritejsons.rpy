@@ -654,6 +654,12 @@ init -21 python in mas_sprites_json:
     GR_FOUND = "reaction label found for {0} sprite '{1}', giftname '{2}'"
     GR_GEN = "using generic reaction for {0} sprite '{1}', giftname '{2}'"
 
+    ## outfit extras
+    OE_LOADING = "loading outfit mode data..."
+    OE_SUCCESS = "outfit mode data loaded successfully!"
+    OE_INVALID_HAIR = "hair '{0}' does not exist, ignoring"
+    OE_INVALID_ACS = "ACS '{0}' does not exist, ignoring"
+
 
     ### CONSTANTS
     SP_ACS = 0
@@ -2643,7 +2649,7 @@ init 189 python in mas_sprites_json:
         if len(outfit_extras) == 0:
             return
 
-        # TODO: log start
+        log.info(OE_LOADING, pfx_newline=True)
 
         for sp_name in outfit_extras:
             outfit_hair = outfit_extras[sp_name]["hair"]
@@ -2653,8 +2659,11 @@ init 189 python in mas_sprites_json:
                 if outfit_hair in HAIR_MAP:
                     CLOTH_MAP[sp_name].outfit_hair = HAIR_MAP[outfit_hair]
                 else:
-                    pass
-                    # TODO: log invalid and dont set (warning)
+                    parsewritelog((
+                        MSG_WARN_T,
+                        1,
+                        OE_INVALID_HAIR.format(outfit_hair),
+                    ))
 
             if outfit_acs is not None:
                 actual_acs = []
@@ -2662,13 +2671,16 @@ init 189 python in mas_sprites_json:
                     if acs_name in ACS_MAP:
                         actual_acs.append(ACS_MAP[acs_name])
                     else:
-                        pass
-                        # TODO: log invalid and dont set (warning)
+                        parsewritelog((
+                            MSG_WARN_T,
+                            1,
+                            OE_INVALID_ACS.format(acs_name),
+                        ))
 
                 if len(actual_acs) > 0:
                     CLOTH_MAP[sp_name].outfit_acs = actual_acs
 
-        # TODO: log success
+        log.info(OE_SUCCESS)
 
 
     def _addGift(giftname, indent_lvl):
