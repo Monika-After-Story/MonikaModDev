@@ -219,6 +219,36 @@ init -980 python in mas_api_keys:
             )
 
 
+    def screen_update_cert():
+        """
+        Called when the update cert button is used on the api key screen
+        """
+        rv = mas_utils.update_cert(force=True)
+        if rv is None or not store.mas_can_import.certifi():
+            # no certifi enabled - the button shouldn't be visible
+            return
+
+        import certifi
+
+        if rv == certifi.RV_SUCCESS:
+            msg = "Certificate updated!"
+        elif rv == certifi.RV_NO_UPDATE:
+            msg = "Certificate already up to date!"
+        elif rv == certifi.RV_ERR_CERT_WRITE:
+            msg = (
+                "Error saving cert to disk - "
+                "check permissions or manually update the cert"
+            )
+        else:
+            msg = "An error occured. Try again later or manually update the cert"
+
+        store.renpy.show_screen(
+            "dialog",
+            message=msg,
+            ok_action=store.Hide("dialog")
+        )
+
+
     def load_keys():
         """
         Loads API keys from config file

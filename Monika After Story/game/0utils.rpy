@@ -123,10 +123,15 @@ init -1500 python in mas_utils:
 
         IN:
             force - True to force the cert to update right now
+
+        RETURNS: certifi RV value of the check_update function, or None if
+            the check_update function could not run.
         """
         last_update = store.persistent._mas_last_cert_update
         if last_update is None:
             last_update = datetime.datetime.utcnow()
+
+        rv = None
 
         if _certifi_enabled:
             if (
@@ -137,12 +142,14 @@ init -1500 python in mas_utils:
             ):
                 import certifi
 
-                rv, response = certifi.check_update()
+                rv, response = certifi.check_update(renpy.config.gamedir)
                 if rv in (certifi.RV_SUCCESS, certifi.RV_NO_UPDATE):
                     global _certifi_available
                     _certifi_available = certifi.has_cert()
 
                 store.persistent._mas_last_cert_update = last_update
+
+        return rv
 
 
     # ssl hack
@@ -161,7 +168,7 @@ init -1500 python in mas_utils:
         _cert_available = certifi.has_cert()
         update_cert()
     except (ImportError, AttributeError) as e:
-        mas_log.error("Failed to import cerifi {0}".format(repr(e))
+        mas_log.error("Failed to import cerifi {0}".format(repr(e)))
         _certifi_enabled = False
         _cert_available = False
 
@@ -482,6 +489,7 @@ python early in mas_logging:
             name - log name
         """
         return name in LOG_MAP
+
 
 python early in mas_utils:
     import codecs

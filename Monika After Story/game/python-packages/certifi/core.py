@@ -20,13 +20,23 @@ RV_NO_UPDATE = 1
 
 RV_ERR_BAD_SSL = -1
 RV_ERR_BAD_SSL_LIB = -2
-RV_ERR = -5
+RV_ERR_CERT_WRITE = -3
+RV_ERR = -4
 
 
-def where():
+def where(prefix=""):
+    """
+    Returns the normcase'd path to the cert file
+
+    IN:
+        prefix - path prefix to use
+            (Default: "")
+
+    RETURNS: cert file path (relative)
+    """
     f = os.path.dirname(__file__)
 
-    return os.path.join(f, 'cacert.pem')
+    return os.path.normcase(os.path.join(prefix, f, 'cacert.pem'))
 
 
 def ssl_ctx():
@@ -71,14 +81,22 @@ def has_cert():
 
     RETURNS: True if we have a cert, False if not
     """
-    return os.access(where(), os.F_OK)
+    try:
+        return os.access(where(), os.F_OK)
+    except IOError:
+        return False
 
 
-def check_update():
+def check_update(pkg_parent_path=""):
     """
     Checks for a cert update, dls it, and saves it if updated.
 
     ONLY CALL THIS IN RUNTIME
+
+    IN:
+        pkg_parent_path - path to the parent dir containing this package.
+            This is important for writing the cert to the correct place.
+            (Default: "")
 
     RETURNS: tuple:
         [0] - RV_SUCCESS if success
@@ -86,16 +104,19 @@ def check_update():
               RV_ERR if some error occured
               RV_ERR_BAD_SSL if an SSL error occured 
               RV_ERR_BAD_SSL_LIB if no SSL library
-        [1] - server response if [0] is RV_ERR, otherwise None
+              RV_ERR_CERT_WRITE if downloaded cert could not be written to disk
+        [1] - server response if [0] is RV_ERR, 
+            the IOexception if [0] is RV_ERR_CERT_WRITE,
+            otherwise None
     """
     try:
-        return _check_update()
+        return _check_update(pkg_parent_path)
     except (ImportError, AttributeError):
         # no ssl lib or ssl not loaded
         return RV_ERR_BAD_SSL_LIB, None
 
 
-def _check_update():
+def _check_update(pkg_parent_path):
     """
     Internal check_update. This is import errors can be caught
 
@@ -124,7 +145,7 @@ def _check_update():
         if has_cert():
             new_cert_hash = hashlib.sha256(cert_data)
 
-            with open(where(), "r") as curr_cert:
+            with open(where(pkg_parent_path), "r") as curr_cert:
                 curr_cert_hash = hashlib.sha256(curr_cert.read())
 
                 if new_cert_hash.hexdigest() == curr_cert_hash.hexdigest():
@@ -132,10 +153,14 @@ def _check_update():
                     return RV_NO_UPDATE, None
 
         # save the cert to our location
-        with open(where(), "w") as new_cert:
+        with open(where(pkg_parent_path), "w") as new_cert:
             new_cert.write(cert_data)
 
         return RV_SUCCESS, None
+
+    except IOError as e:
+        # error writing.
+        return RV_ERR_CERT_WRITE, e
 
     except ssl.SSLError:
         # site demanded SSL but no cert
