@@ -17762,19 +17762,44 @@ label monika_convention:
     m "have you ever been to a comic convention or anime convention?{fast}{nw}"
     menu:
         m "have you ever been to a comic convention or anime convention?"
-        # TODO: responses
         "Comic convention":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = False
+            m "Ah, I see! {w=0.2)I hope you had a lot of fun."
+            m "Comics are a really interesting medium in literature, maybe I should read some more."
+            m "But on the topic of conventions..."
         "Anime convention":
             $ persistent._mas_pm_gone_to_comic_con = False
             $ persistent._mas_pm_gone_to_anime_con = True
+            if persistent._mas_pm_watch_mangime:
+                m "I had a feeling you would have!"
+                m "They really struck me as something that you might enjoy."
+            else:
+                m "Really? That's surprising!"
+                m "Ah, but maybe you went with some friends!"
+                m "Or it's possible you went for another reason--an interest in gaming, perhaps?"
         "Both!":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = True
+            if persistent._mas_pm_watch_mangime:
+                m "Oh! I knew you liked anime already, but you like comics too?"
+                m "They're a really interesting medium in literature, maybe I should read some more..."
+            else:
+                m "Oh! I didn't think you liked anime, but it looks like you're a convention fan anyway!"
+                m "Not that it's too surprising, the atmosphere of them seems like it could be enjoyable for anyone."
         "Neither":
             $ persistent._mas_pm_gone_to_comic_con = False
             $ persistent._mas_pm_gone_to_anime_con = False
+            if persistent._mas_pm_watch_mangime and persistent._mas_pm_social_personality == mas_SP_EXTROVERT:
+                m "Really?"
+                m "I'm surprised! When I learned about anime conventions, I immediately thought of you."
+                m "Although, I guess the travel expenses can get pretty high depending on where you are."
+                m "Even so..."
+            else:
+                m "Ah, I see."
+                m "I suppose that regardless of interest, conventions can be a bit tricky."
+                m "Depending on where you live, they might require quite a bit of travel expense."
+                m "Even so..."
 
     # TODO - consider asking if go regularly?
 
