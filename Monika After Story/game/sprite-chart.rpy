@@ -7098,8 +7098,13 @@ init -3 python:
                 outfit_hair - MASHair object that should be used with these
                     clothes in outfit mode
                     (Default: None)
-                outfit_acs - MASAccessory object that should be used with
-                    these clothes in outfit mode
+                outfit_acs - MASAccessory objects that should be used with
+                    these clothes in outfit mode. The following types are
+                    accepted:
+                        1 - dictionary
+                            key: acs name
+                            value: acs object
+                        2 - list of acs names/acs objects - mixed types allowed
                     (Default: None)
             """
             super(MASClothes, self).__init__(
@@ -7119,7 +7124,7 @@ init -3 python:
             self.hair_map = hair_map
             self.pose_arms = pose_arms
             self.outfit_hair = outfit_hair
-            self.outfit_acs = outfit_acs
+            self.outfit_acs = MASClothes._format_outfit_acs(outfit_acs)
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -7176,6 +7181,36 @@ init -3 python:
                 return None
 
             return (cls.__MHM_KEYS, hl_def, hl_mapping)
+
+        @staticmethod
+        def _format_outfit_acs(outfit_acs_data):
+            """
+            Formats the given data so its ready for outfit_acs property.
+
+            This also validates the data with the ACS map.
+
+            IN:
+                outfit_acs_data - outfit acs data to format
+
+            RETURNS: data ready for the outfit_acs property
+            """
+            data = {}
+
+            for acs_name_or_obj in outfit_acs_data:
+                if isinstance(acs_name_or_obj, MASAccessoryBase):
+                    # direct add if obj
+                    data[acs_name_or_obj.name] = acs_name_or_obj
+
+                elif acs_name_or_obj in store.mas_sprites.ACS_MAP:
+                    # lookup ACS otherwise
+                    acs = store.mas_sprites.ACS_MAP[acs_name_or_obj]
+                    if acs is not None:
+                        data[acs.name] = acs
+
+            if len(data) > 0:
+                return data
+
+            return None
 
         def build_loadstrs(self, prefix):
             """

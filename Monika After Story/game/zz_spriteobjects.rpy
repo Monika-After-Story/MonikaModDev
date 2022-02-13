@@ -308,13 +308,6 @@ init -2 python in mas_sprites:
         """
         Entry programming point for def clothes
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            # ponytail and white ribbon
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_def)
-
         store.mas_lockEVL("mas_compliment_outfit", "CMP")
 
         # TODO: need to add ex prop checking and more
@@ -328,41 +321,6 @@ init -2 python in mas_sprites:
 
         store.mas_unlockEVL("mas_compliment_outfit", "CMP")
 
-    def _clothes_blackpink_dress_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for blackpink dress
-        """
-        outfit_mode = kwargs.get("outfit_mode")
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_diamond_necklace_pink)
-            _moni_chr.wear_acs(store.mas_acs_pinkdiamonds_hairclip)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_black_pink)
-            _moni_chr.wear_acs(store.mas_acs_earrings_diamond_pink)
-
-    def _clothes_blackpink_dress_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for blackpink dress
-        """
-        outfit_mode = kwargs.get("outfit_mode")
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_diamond_necklace_pink)
-            _moni_chr.remove_acs(store.mas_acs_pinkdiamonds_hairclip)
-            _moni_chr.remove_acs(store.mas_acs_ribbon_black_pink)
-            _moni_chr.remove_acs(store.mas_acs_earrings_diamond_pink)
-
-    def _clothes_rin_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for rin clothes
-        """
-        outfit_mode = kwargs.get("outfit_mode")
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_braided)
-            _moni_chr.wear_acs(store.mas_acs_rin_ears)
-
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
         """
@@ -371,28 +329,11 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_rin_ears)
 
 
-    def _clothes_marisa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for marisa clothes
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_downtiedstrand)
-            _moni_chr.wear_acs(store.mas_acs_marisa_strandbow)
-            _moni_chr.wear_acs(store.mas_acs_marisa_witchhat)
-
-
     def _clothes_marisa_exit(_moni_chr, **kwargs):
         """
         Exit programming point for marisa clothes
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
         _moni_chr.remove_acs(store.mas_acs_marisa_strandbow)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
@@ -482,73 +423,6 @@ init -2 python in mas_sprites:
         )
 
 
-    def _clothes_spider_lingerie_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for spider lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_grayhearts_hairclip)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_black_gray)
-
-
-    def _clothes_spider_lingerie_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for spider lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_grayhearts_hairclip)
-            _moni_chr.remove_acs(store.mas_acs_ribbon_black_gray)
-
-
-    def _clothes_santa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for santa clothes
-        """
-        store.mas_selspr.unlock_acs(store.mas_acs_holly_hairclip)
-
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
-            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for santa clothes
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_lingerie_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for santa lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_lingerie_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for santa lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
-
-
     def _clothes_dress_newyears_entry(_moni_chr, **kwargs):
         """
         entry progpoint for dress_newyears
@@ -585,26 +459,11 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_flower_crown)
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
 
-    def _clothes_sundress_white_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for sundress white
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
-            _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
-
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
-
         # TODO: add selectors for these items so they dont have to be
         #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
@@ -2483,7 +2342,11 @@ init -1 python:
         ),
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_def_entry,
-        exit_pp=store.mas_sprites._clothes_def_exit
+        exit_pp=store.mas_sprites._clothes_def_exit,
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_ribbon_def,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
     store.mas_selspr.init_selectable_clothes(
@@ -2541,11 +2404,16 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_blackpink_dress_entry,
-        exit_pp=store.mas_sprites._clothes_blackpink_dress_exit,
         ex_props={
             store.mas_sprites.EXP_C_BS: True,
-        }
+        },
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_diamond_necklace_pink,
+            mas_acs_pinkdiamonds_hairclip,
+            mas_acs_ribbon_black_pink,
+            mas_acs_earrings_diamond_pink,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_blackpink_dress)
     store.mas_selspr.init_selectable_clothes(
@@ -2629,13 +2497,17 @@ init -1 python:
             }
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_marisa_entry,
         exit_pp=store.mas_sprites._clothes_marisa_exit,
         ex_props={
             store.mas_sprites.EXP_C_C_DTS: True,
             store.mas_sprites.EXP_C_COST: "o31",
             store.mas_sprites.EXP_C_COSP: True,
-        }
+        },
+        outfit_hair=mas_hair_downtiedstrand,
+        outfit_acs=[
+            mas_acs_marisa_strandbow,
+            mas_acs_marisa_witchhat,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(
@@ -2662,13 +2534,16 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_rin_entry,
         exit_pp=store.mas_sprites._clothes_rin_exit,
         ex_props={
             store.mas_sprites.EXP_C_COST: "o31",
             store.mas_sprites.EXP_C_COSP: True,
             "rin": True #NOTE: This is very very temp until we sort out the hair to work better w/ other outfits
-        }
+        },
+        outfit_hair=mas_hair_braided,
+        outfit_acs=[
+            mas_acs_rin_ears,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
     store.mas_selspr.init_selectable_clothes(
@@ -2700,8 +2575,6 @@ init -1 python:
             store.mas_sprites.EXP_C_BS: True,
             "lingerie": "o31"
         },
-        entry_pp=store.mas_sprites._clothes_spider_lingerie_entry,
-        exit_pp=store.mas_sprites._clothes_spider_lingerie_exit,
         pose_arms=MASPoseArms(
             {
                 1: MASArmBoth(
@@ -2717,7 +2590,12 @@ init -1 python:
                     }
                 ),
             }
-        )
+        ),
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_grayhearts_hairclip,
+            mas_acs_ribbon_black_gray,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_spider_lingerie)
     store.mas_selspr.init_selectable_clothes(
@@ -2747,11 +2625,14 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_santa_entry,
-        exit_pp=store.mas_sprites._clothes_santa_exit,
         ex_props={
             "costume": "d25"
         },
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_ribbon_wine,
+            mas_acs_holly_hairclip,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_santa)
     store.mas_selspr.init_selectable_clothes(
@@ -2784,9 +2665,10 @@ init -1 python:
             store.mas_sprites.EXP_C_BS: True,
             "lingerie": "d25"
         },
-        entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
-        exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
-        pose_arms=MASPoseArms({}, def_base=False)
+        pose_arms=MASPoseArms({}, def_base=False),
+        outfit_acs=[
+            mas_acs_holly_hairclip,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
     store.mas_selspr.init_selectable_clothes(
@@ -2853,13 +2735,16 @@ init -1 python:
             use_reg_for_l=True,
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_sundress_white_entry,
         exit_pp=store.mas_sprites._clothes_sundress_white_exit,
         pose_arms=MASPoseArms({}, def_base=False),
         ex_props={
             store.mas_sprites.EXP_C_BLS: True,
             store.mas_sprites.EXP_C_BRS: True,
-        }
+        },
+        outfit_acs=[
+            mas_acs_hairties_bracelet_brown,
+            mas_acs_musicnote_necklace_gold,
+        ]
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
     store.mas_selspr.init_selectable_clothes(
