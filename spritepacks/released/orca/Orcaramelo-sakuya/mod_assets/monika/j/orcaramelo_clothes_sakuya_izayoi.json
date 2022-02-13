@@ -68,5 +68,10 @@
             "tag": "def",
             "layers": "5"
         }
-    }
+    },
+    "outfit_hair": "orcaramelo_bunbraid",
+    "outfit_acs": [
+        "orcaramelo_sakuya_izayoi_headband",
+        "orcaramelo_sakuya_isayoi_strandbow"
+    ]
 }

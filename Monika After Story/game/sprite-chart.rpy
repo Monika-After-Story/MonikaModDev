@@ -2859,7 +2859,7 @@ init -3 python:
 
             # then ACS
             for acs_name, change in outfit_change_data._acs_change.items():
-                if change:
+                if change and acs_name in outfit_change_data._acs:
                     self.set_acs(outfit_change_data._acs[acs_name], wear)
 
         def change_clothes(
@@ -7483,7 +7483,10 @@ init -3 python:
             IN:
                 acs_name - the name of the ACS to check
             """
-            return self._acs_change.get(acs_name, False)
+            return (
+                self._acs_change.get(acs_name, False)
+                and acs_name in self._acs
+            )
 
         def set_hair_change(self, value):
             """
