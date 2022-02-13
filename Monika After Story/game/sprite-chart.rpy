@@ -7194,6 +7194,9 @@ init -3 python:
 
             RETURNS: data ready for the outfit_acs property
             """
+            if outfit_acs_data is None:
+                return None
+
             data = {}
 
             for acs_name_or_obj in outfit_acs_data:
