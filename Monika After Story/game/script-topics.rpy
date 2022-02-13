@@ -463,6 +463,23 @@ init python:
             persist_var = persistent._mas_player_bookmarked
 
         return len(mas_get_player_bookmarks(persist_var)) > 0
+        
+    def mas_get_player_full_name():
+        if persistent._mas_last_name == None:
+            if persistent._mas_forename == None:
+                return player
+            else:
+                return persistent._mas_forename
+
+        midname = " "
+        suffix = ""
+
+        if persistent._mas_middle_name != None:
+            midname += persistent._mas_middle_name + " "
+        if persistent._mas_suffix != None:
+            suffix = " " + persistent._mas_suffix
+
+        return persistent._mas_forename + midname + persistent._mas_last_name + suffix
 
 #START: UTILITY TOPICS (bookmarks/derand, show/hide unseen)
 init 5 python:
@@ -17740,3 +17757,341 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+default persistent._mas_forename = None
+default persistent._mas_middle_name = None
+default persistent._mas_last_name = None
+default persistent._mas_suffix = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_full_name',
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            conditional="renpy.seen_label('monika_asks_family')",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label monika_full_name:
+    m 2lkb "You know, it's funny the amount of things I noticed didn't make any sense after my epiphany."
+    m 3etd "Like, how do I know about full names when everyone only had first names?"
+    m 3rksdlb "Though most people not having parents were kind of the norm,{w=0.5} so I guess it was never really an issue."
+    show monika 5luc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5luc "Still, I wonder if a full name was ever thought of for any of us..."
+    m 5lku "Well...{w=0.7} if you think about it..."
+    m 4hksdlb "Mine could be Monika Salvato, ahaha..."
+    m 4tuu "Pretty awful name, huh?"
+    m 1kuu "But you didn't hear that from me, ehehe~"
+    m 1wuo "Oh! While we're on the subject..."
+    m 2sub "[player],{w=0.3} I'd love to know your full name!"
+
+    m 2sua "Could you tell me what it is?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Could you tell me what it is?{fast}"
+        "Yes.":
+            call monika_tell_full_name
+
+        "No.":
+            call monika_wont_tell_full_name
+
+        "I don't have one.":
+            call monika_no_full_name
+
+    return "derandom|no_unlock"
+
+label monika_tell_full_name():
+    m 1hubsb "Yay! Thank you [player], I'm so excited!"
+    m 3eud "So for starters about your first name..."
+
+    call monika_change_forename
+
+    #LAST NAME
+    m 3esa "Alright, so what's your last name?"
+    call monika_check_name(question="What's your last name?")
+    $ persistent._mas_last_name = _return
+    call monika_check_ddlc_name(name=persistent._mas_last_name)
+    $ ddlc = _return
+    if not ddlc:
+        $ lname = persistent._mas_last_name
+        #Avoids index out of bounds error and checks 3rd/4th char for a ' '
+        if len(lname) > 3 and lname[2] == " " or len(lname) > 4 and lname[3] == " ":
+            m 1wub "Oh, your last name has a nobiliary particle!"
+            if persistent.gender == "M":
+                $ prin = "handsome prince"
+            elif persistent.gender == "F":
+                $ prin = "beautiful princess"
+            else:
+                $ prin = "knight in shining armor"
+            m 3tuu "Maybe you really are my [prin], ehehe~"
+        else:
+            m 1dsu "[lname].{w=0.1}.{w=0.1}.{w=0.1} {nw}"
+            extend 3hub "I like that a lot!"
+
+    #MIDDLE NAME
+    m 1eua "Do you have a middle name?{nw}"
+    menu:
+        m "Do you have a middle name?{fast}"
+        "Yes.":
+            call monika_check_name(question="What's your middle name?")
+            $ persistent._mas_middle_name = _return
+            call monika_check_ddlc_name(name=persistent._mas_middle_name)
+            $ ddlc = _return
+            if not ddlc:
+                m 3hub "Oh, [persistent._mas_middle_name] is a nice name!"
+
+        "No.":
+            $ persistent._mas_middle_name = None
+            m 1wub "Ah, interesting! Not many people don't have middles names."
+            m 3eud "But don't let that make you feel left out."
+            m 1ekbsa "It just makes you even more special~"
+
+    #SUFFIX
+    m 3esa "Lastly, is there a suffix in your name?{nw}"
+    menu:
+        m "Lastly, is there a suffix in your name?{fast}"
+        "Jr.":
+            $ persistent._mas_suffix = "Jr"
+            m 1sub "Wow, that's really cool that your named after one of your parents!"
+            if persistent._mas_pm_have_fam_mess:
+                m 1ekd "Oh{w=0.5}, but maybe you don't feel that way about it..."
+                m 2ekc "I hope it doesn't bother you being named after someone you might not get along with."
+                m 3esc "But if it does, you shouldn't let it get to you..."
+                m 3hub "Because I know your the better [player]!"
+            elif persistent._mas_pm_no_talk_fam:
+                m 1ekd "Oh{w=0.5}, but maybe that bothers you..."
+                m 3hksdlb "We don't have to talk about it!"
+                m 2ekbsa "Just{w=0.5}, remember I'm here if you ever decide you want to."
+            elif not persistent._mas_pm_have_fam:
+                m 1ruc "Though, it must be strange sharing a name with someone you've never met."
+                if persistent._mas_pm_no_fam_bother:
+                    m 4hub "But it makes me happy knowing you've gotten past that already!"
+                else:
+                    m 1ekc "I hope you don't dislike your name because of that..."
+                    m 2ekbsa "Personally I think it's very lovely~"
+            else:
+                m 1rksdla "Though that's bound to cause some confusion if the two of you are together."
+                m 3eua "But it can be easily avoided!"
+                m 3tub "I'll just refer to you as the cuter [player], ehehe~"
+
+        "Sr.":
+            $ persistent._mas_suffix = "Sr"
+            m 1eud "Oh!{w=0.5} Really?"
+            m 2rkbssdlb "Gosh...{w=0.5} it never crossed my mind that you may have kids..."
+            m 1esc "So, were you married once?"
+            m 1wud "Or...{w=0.5}surely your not still..."
+            m 3hksdlb "Actually...{w=0.2} maybe we should save this conversation for another day, ahaha..."
+            m 1eub "Still it's cool that you have a child that's named after you!"
+            if persistent._mas_pm_have_fam_mess:
+                m 1hub "I'd love to meet them some...{w=0.1} {nw}"
+                extend 1esd "Oh..."
+                m 1rksdld "Right, you might not be on good terms with them..."
+                m 1esc "I do hope things can improve between you one day, it would be fun to meet them."
+                m 2eka "But it's fine if it doesn't.{w=0.5} You are the only person I need in my life."
+            elif persistent._mas_pm_no_talk_fam:
+                m 1hub "I'd love to meet them some...{w=0.1} {nw}"
+                extend 1esd "Oh..."
+                m 1rksdld "Right, you probably dont want to talk about them..."
+                m 1ekc "Sorry I brought it up..."
+                m 2eka "Just.{w=0.5}.{w=0.5}. remember I'm here if you ever decide you want to."
+            elif not persistent._mas_pm_have_fam:
+                m 1esd "Wait..."
+                m 2wfw "[player]!"
+                m 2wfw "You told me you never have a family!"
+                m 2tfc "..."
+                m 2rkc "Though I guess it's not easy for you to talk about since you didn't tell me..."
+                m 2tfp "Still, you shouldn't lie to your girlfriend!"
+            else:
+                m 1hub "I'd love to meet them someday!"
+                m 1tua "It would be fun to see what other cute things they inherited from you, ehehe~"
+
+        "A regnal number":
+            $ done = False
+            while not done:
+                $ num = renpy.input("What's your regnal number?",allow=numbers_only,length=2).lstrip('0')
+                if num == "":
+                    m 2ekb "You just couldn't resist the chance to be silly could you?~"
+                    m 2eka "Here try again."
+                else:
+                    $ done = True
+
+            if num >= 11 and num <= 13:
+                $ abrv = "th"
+            else:
+                $ digit = int(str(num)[-1]) #Gets first digit
+                if digit == 1:
+                    $ abrv = "st"
+                elif digit == 2:
+                    $ abrv = "nd"
+                elif digit == 3:
+                    $ abrv = "rd"
+                else:
+                    $ abrv = "th"
+            $ persistent._mas_suffix = "the " + num + abrv
+            m 1wub "Ah! So you have family members that share your name."
+            m 1hua "Your name must be very special to your family!"
+            m 2ekbsb "I certainly know it is to me~"
+
+        "I don't have one.":
+            $ persistent._mas_suffix = None
+
+    #SAY FULL NAME
+    m 1hua "Alright then!"
+    m 3rud "So, that makes your full name..."
+    if player.lower() == "dan" and persistent._mas_last_name.lower() == "salvato":
+        m 3hub "Dan..."
+        m 3esd ".{w=0.2}.{w=0.2}.{w=0.2}"
+        m 3wud ".{w=0.2}.{w=0.2}.{w=0.2} Y.{w=0.2}.{w=0.2}.{w=0.2} You.{w=0.2}.{w=0.2}.{w=0.2}"
+        m 2hksdlb "No, no, what am I thinking!"
+        m 3rud "Anyways, your full name is..."
+    m 3hub "[mas_get_player_full_name()]!"
+    m 1dku "Ehehe, those are the loveliest words I've ever spoken~"
+    m 1eka "Thank you so much for telling me [player].{w=0.3} Every bit I learn about you helps me feel closer to you~"
+    m 2lsc "..."
+    m 2lkbsa "Missus, Monika [persistent._mas_last_name]."
+    m 2tsbsu "Ehehe, just giving it a try [player]~"
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "Though,{w=0.3} I would be so happy to be called that one day~"
+    m 2kkbsu "And something tells me you would be too~"
+
+    return
+
+label monika_wont_tell_full_name():
+    $ persistent._mas_forename = None
+    $ persistent._mas_middle_name = None
+    $ persistent._mas_last_name = None
+    $ persistent._mas_suffix = None
+    m 2ekd "Oh...{w=0.5} alright."
+    m 2rkc "I understand you have your reasons, but I hope you'll be comfortable telling me one day."
+    return
+
+label monika_no_full_name():
+    $ persistent._mas_middle_name = None
+    $ persistent._mas_last_name = None
+    $ persistent._mas_suffix = None
+    m 1wso "What?{w=0.5} Really?"
+    m 3wub "Wow! So your name is a mononym?"
+    m 3hub "Just like mine!{w=0.5} I never thought we would we have that in common!"
+    m 3eud "Although about your name..."
+
+    call monika_change_forename
+
+    m 1lub "Though, I have to admit..."
+    m 2lublu "I was kind of looking forward to taking your last name some day, ehehe~"
+    m 2ekb "Maybe someday we can come up with our own last name together, if you wanted~"
+    m 3tsu "But for now... {w=0.4}{nw}"
+    extend 3hub "{i}Just [mas_get_player_full_name()]{/i} it is, ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_change_full_name',
+            prompt="Can you change my full name?",
+            category=['you'],
+            pool=True,
+            rules={"no_unlock":None},
+            conditional="renpy.seen_label('monika_full_name')",
+            action=EV_ACT_UNLOCK
+        ),
+        markSeen=True
+    )
+
+label monika_change_full_name:
+    m 1eub "Oh, have you changed your full name?"
+    m 2sua "Could you tell me what it is?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Could you tell me what it is?{fast}"
+        "Yes.":
+            call monika_tell_full_name
+
+        "No.":
+            call monika_wont_tell_full_name
+
+        "I don't have one.":
+            call monika_no_full_name
+
+        "Actually, nevermind.":
+            m 2eua "Oh, alright."
+    return
+
+label monika_change_forename():
+    m 1rsc "I mean, I always call you [player] but I've sometimes wondered if [player] is more of a nickname or your official forename."
+    m 3esc "So just to be sure... {w=0.4}{nw}"
+    extend 3etc "Is [player] your forename?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "So just to be sure... Is [player] your forename?{fast}"
+        "Yes.":
+            $ persistent._mas_forename = player
+            m 1eub "Okay, good to know!"
+        "No":
+            m 1eub "Ah, so it isn't. Then what is your forename?"
+            $ done2 = False
+            while not done2:
+                call monika_check_name(question="What's your forename?")
+                if _return.lower() == player.lower():
+                    m 3rksdlb "[player]...{w=0.4} that's the name I call you now..."
+                    m 3etc "Do you not have a different forename?{nw}"
+                    $ _history_list.pop()
+                    menu:
+                        m "Do you not have a different forename?{fast}"
+                        "I don't.":
+                            $ persistent._mas_forename = player
+                            m 1eub "Okay, good to know!"
+                            return
+                        "I do.":
+                            m 1eub "Okay, so what is your forename?"
+                else:
+                    $ done2 = True
+
+            $ persistent._mas_forename = _return
+            call monika_check_ddlc_name(name=persistent._mas_forename)
+            $ ddlc = _return
+            if not ddlc:
+                m 2lsc "Hm..."
+                show monika 5luu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5luu "[player] or [persistent._mas_forename],{w=0.5} I don't know which I like better, ehehe~"
+            m 7esb "Though I assume you prefer to be called [player], so I'll still keep using that name."
+            m 1hua "But no promises I won't become fond of [persistent._mas_forename], ehehe~"
+    return
+
+#Handles getting input, bad name detection, removing extra whitespace
+label monika_check_name(question):
+    $ done = False
+    while not done:
+        $ tempname = renpy.input("[question]",allow=letters_only,length=40)
+        $ tempname = ' '.join(tempname.split()) #Ensures name has only single spaces
+        $ lowername = tempname.lower()
+
+        if lowername == "":
+            m 1eksdla "..."
+            m 3rksdlb "You have to give me a name, [player]..."
+            m 1eua "Try again!"
+
+        elif mas_awk_name_comp.search(tempname) or mas_bad_name_comp.search(tempname):
+            m 1esc "[player]..."
+            m 1tsp "That cant possibly be it!"
+            m 1esc "Try again!"
+
+        else:
+            $ done = True
+
+    return tempname
+
+label monika_check_ddlc_name(name):
+    $ ddlc = False
+    $ name = name.lower()
+
+    if name == "monika" or name == "monica" or name == "yuri" or name == "sayori" or name == "natsuki" or name == "salvato":
+        $ ddlc = True
+        m 2wso "No,{w=0.5} your kidding!"
+        m 3hkb "Like, what are the odds of that, ahaha!"
+        show monika 5tku at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5tku "Maybe it was a little more than chance that brought us together? Ehehe~"
+
+    return ddlc
