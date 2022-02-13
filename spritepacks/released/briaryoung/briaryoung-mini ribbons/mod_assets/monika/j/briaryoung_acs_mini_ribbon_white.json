@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_white",
+    "img_sit": "briaryoung_mini_ribbon_white",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "white ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (White, mini)",
+        "thumb": "briaryoung_mini_ribbon_white",
+        "group": "ribbon",
+        "select_dlg": [
+            "A new take on a classic!"
+        ]
+    },
+    "giftname": "miniwhiteribbon"
+}

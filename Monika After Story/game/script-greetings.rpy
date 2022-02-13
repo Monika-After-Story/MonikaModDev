@@ -84,6 +84,7 @@ init -1 python in mas_greetings:
         TYPE_GO_SOMEWHERE,
         TYPE_GENERIC_RET,
         TYPE_LONG_ABSENCE,
+        TYPE_HOL_O31_TT
     ]
 
     NTO_TYPES = (
@@ -1219,8 +1220,6 @@ label i_greeting_monikaroom:
     # FALL THROUGH
 label monikaroom_greeting_choice:
     $ _opendoor_text = "...Gently open the door."
-    if persistent._mas_sensitive_mode:
-        $ _opendoor_text = "Open the door."
 
     if mas_isMoniBroken():
         pause 4.0
@@ -1858,10 +1857,12 @@ label monikaroom_greeting_opendoor:
     m 2eud_static "..."
     show monika 1eua_static at t33
     m 1eud_static "...and..."
-    if mas_isMorning():
+
+    if mas_current_background.isFltDay():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
+
     show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:
@@ -2316,6 +2317,7 @@ label greeting_stillsickresting:
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
+        $ mas_ILY()
 
     else:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
@@ -2989,7 +2991,6 @@ label greeting_back_from_school:
                 m 2ekd "I'm really sorry you had such a bad day today..."
                 m 2eka "I'm just glad you came to me, [player]."
 
-        m 3ekc "If you don't mind me asking, was there something in particular that happened?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -3001,7 +3002,8 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
+        m "If you don't mind me asking, was there something in particular that happened?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
@@ -3109,6 +3111,9 @@ label greeting_back_from_school:
 
     return
 
+default persistent._mas_pm_last_promoted_d = None
+# date when player last got promotion
+
 init 5 python:
     addEvent(
         Event(
@@ -3129,17 +3134,51 @@ label greeting_back_from_work:
         menu:
             m "How was work today?{fast}"
 
-            "Amazing.":
+            "Amazing!":
+                if not persistent._mas_pm_last_promoted_d:
+                    $ promoted_recently = False
+                else:
+                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_last_promoted_d + datetime.timedelta(days=180)
+
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
+
+                m 1sua "What made it such an amazing day?{nw}"
+                menu:
+                    m "What made it such an amazing day?{fast}"
+
+                    "I moved up!":
+                        if promoted_recently:
+                            m 3suo "Wow! Again?!"
+                            m 3sub "You got promoted pretty recently too...{w=0.3}you must really be doing amazing work!"
+                            m 1huu "I'm so, {w=0.2}so proud of you, [mas_get_player_nickname()]~"
+
+                        else:
+                            $ player_nick = mas_get_player_nickname()
+                            m 3suo "Wow! Congratulations [player_nick], {w=0.1}{nw}"
+                            extend 3hub "I'm so proud of you!"
+                            m 1euu "I knew you could do it~"
+                            $ promoted_recently = True
+
+                        $ persistent._mas_pm_last_promoted_d = datetime.date.today()
+
+                    "I got a lot done!":
+                        m 3hub "That's great, [mas_get_player_nickname()]!"
+
+                    "It was just an amazing day.":
+                        m 3hub "That's great to hear!"
+
                 m 3eua "I can only imagine how well you must work on days like that."
-                m 1hua "...Maybe you'll even move up a bit soon!"
+                if not promoted_recently:
+                    m 1hub "...Maybe you'll even move up a bit soon!"
                 m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
+
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
                     m 3tubsu "Would you like your dinner, your bath, or..."
                     m 1hubfb "Ahaha~ Just kidding."
                 else:
-                    m 3eub "Let's enjoy some time together!"
+                    m 3msb "What better way to wrap up an amazing day than with your amazing girlfriend?~"
+
                 return
 
             "Good.":
@@ -3373,83 +3412,60 @@ label greeting_siat:
     return "love"
 
 init 5 python:
-    if not mas_cannot_decode_islands:
-        ev_rules = {}
-        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
-        ev_rules.update(MASPriorityRule.create_rule(40))
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True))
+    ev_rules.update(MASPriorityRule.create_rule(40))
 
-        addEvent(
-            Event(
-                persistent.greeting_database,
-                eventlabel="greeting_ourreality",
-                unlocked=True,
-                rules=ev_rules,
-                aff_range=(mas_aff.ENAMORED, None),
-            ),
-            code="GRE"
-        )
-        del ev_rules
-
-
-init -876 python in mas_delact:
-    # this greeting requires a delayed action, since we cannot ensure that
-    # the sprites for this were decoded correctly
-
-    # NOTE: we dont need this anymore
-    #   We originally needed this since aff_range was not used by greetings
-    #   so we wanted to get this to unlock if we are only able to decode
-    #   islands. Now that aff range is part of gre parsing, the only thing
-    #   that matters is whether or not the event is active, which in this
-    #   case, only happens if the islands were decoded and aff is enamored+
-    def _greeting_ourreality_unlock():
-        return store.MASDelayedAction(
-            1,
-            store.mas_getEV("greeting_ourreality"),
-            (
-                "not store.mas_cannot_decode_islands"
-                " and mas_isMoniEnamored(higher=True)"
-            ),
-            store.EV_ACT_UNLOCK,
-            store.MAS_FC_START
-        )
-
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_ourreality:
+    # Unlock islands
+    $ store.mas_island_event.startProgression()
+
     m 1hub "Hi, [player]!"
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
+
     if persistent._mas_current_background != "spaceroom":
         m 4eub "...But we need to go back to the spaceroom for the best view."
         m 1hua "Let's head over, [player]."
         call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
         m 1eua "Here we are!"
         m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     else:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
     m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
-    $ mas_OVLHide()
-    $ disable_esc()
-    if mas_current_background.isFltDay():
-        show mas_island_frame_day zorder 20
-    else:
-        show mas_island_frame_night zorder 20
+
+    call mas_islands(fade_out=False, drop_shields=False, enable_interaction=False)
+
+    pause 4.0
     m "Well..."
     m "What do you think?"
     m "I worked really hard on this."
     m "A place just for the both of us."
     m "It's also where I can keep practicing my programming skills."
-    $ mas_OVLShow()
-    $ enable_esc()
-    if mas_current_background.isFltDay():
-        hide mas_island_frame_day
-    else:
-        hide mas_island_frame_night
+
+    call mas_islands(fade_in=False, raise_shields=False, enable_interaction=False, force_exp="monika 1lsc")
+
     #Transition back to Monika
     m 1lsc "Being in the classroom all day can be dull."
     m 1ekc "Plus, I get really lonely waiting for you to return."
@@ -3462,13 +3478,12 @@ label greeting_ourreality:
     m 1eua "Why don't we just make our own reality?"
     m 1lksdla "Well, it's not exactly perfect yet."
     m 1hua "But it's a start."
-    # m 1eub "I'll let you admire the scenery for now."
-    # m 1hub "Hope you like it!"
+
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
 
-    # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",skipeval=True)
+    m 1eub "You can admire the scenery for now~"
+    call mas_islands(force_exp="monika 1eua")
     return
 
 init 5 python:
@@ -3495,10 +3510,6 @@ label greeting_returned_home:
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
     # event checks
-
-    #O31
-    if mas_isO31() and not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay() and mas_isMoniNormal(higher=True):
-        $ pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
 
     #F14
     if persistent._mas_f14_on_date:
@@ -3731,6 +3742,7 @@ init 5 python:
 #   we can get in pm vars here. It's just too variable.
 
 label greeting_back_from_game:
+    # TODO: TC-O
     if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
@@ -3877,6 +3889,7 @@ label greeting_back_from_game:
             m 2hksdlb "You were gone for a long time..."
 
             m 1eka "Did you have fun?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Did you have fun?{fast}"
                 "Yes.":
@@ -3933,6 +3946,7 @@ init 5 python:
     )
 
 label greeting_back_from_eat:
+    # TODO: TC-O
     $ _now = datetime.datetime.now().time()
     if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         if mas_isMoniNormal(higher=True):
@@ -4312,15 +4326,16 @@ label greeting_spacing_out:
         spacing_out_pause = PauseDisplayableWithEvents()
         events = list()
         next_event_time = 0
-        right_smug = (renpy.partial(renpy.show, "monika 1gsbsu"), renpy.restart_interaction)
-        left_smug = (renpy.partial(renpy.show, "monika 1msbsu"), renpy.restart_interaction)
+        right_smug = renpy.partial(renpy.show, "monika 1gsbsu")
+        left_smug = renpy.partial(renpy.show, "monika 1msbsu")
 
         # Make the events which will change exps
         for i in range(random.randint(4, 6)):
             events.append(
                 PauseDisplayableEvent(
                     datetime.timedelta(seconds=next_event_time),
-                    right_smug if use_right_smug else left_smug
+                    right_smug if use_right_smug else left_smug,
+                    restart_interaction=True
                 )
             )
             next_event_time += random.uniform(0.9, 1.8)
@@ -4329,7 +4344,8 @@ label greeting_spacing_out:
         events.append(
             PauseDisplayableEvent(
                 datetime.timedelta(seconds=next_event_time),
-                (renpy.partial(renpy.show, "monika 1tsbsu"), renpy.restart_interaction)
+                renpy.partial(renpy.show, "monika 1tsbsu"),
+                restart_interaction=True
             )
         )
         next_event_time += 0.7
@@ -4340,8 +4356,8 @@ label greeting_spacing_out:
                 spacing_out_pause.stop
             )
         )
-        spacing_out_pause.events[:] = events
 
+        spacing_out_pause.set_events(events)
         spacing_out_pause.start()
 
     # Small pause so people don't skip this line

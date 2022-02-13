@@ -45,6 +45,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear a choker?",
         },
         "clothes": {
+            "_not_group": True,
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
             # TODO: min-items
@@ -56,6 +57,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear earrings?",
         },
         "hair": {
+            "_not_group": True,
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
             # TODO: min-items
@@ -78,6 +80,12 @@ init -100 python in mas_selspr:
             "change": "Can you change the flower in your hair?",
             "wear": "Can you wear a flower in your hair?",
         },
+        "necklace": {
+            "_ev": "monika_necklace_select",
+            "_min-items": 1,
+            "change": "Can you change your necklace?",
+            "wear": "Can you wear a necklace?",
+        },
         "ribbon": {
             "_ev": "monika_ribbon_select",
             "_min-items": 1,
@@ -86,6 +94,54 @@ init -100 python in mas_selspr:
             "wear": "Can you tie your hair with something else?",
         },
     }
+
+
+    def _add_prompt(
+            key,
+            ev_label,
+            change,
+            wear,
+            _min_items=1,
+            _rule=None,
+            _not_group=False,
+    ):
+        """
+        Adds a prompt to the prompt map - basically like registering a
+        selector.
+
+        NOTE: this is private for now - should consider an actual
+        "register selector" function as a public API instead.
+
+        NOTE: this will overwrite existing data
+
+        IN:
+            key - the prompt key - for ACS, this should be group type
+            ev_label - event label associated with the selector
+            change - prompt to use when Monika currently wearing the ACS
+            wear - prompt to use when Monika not wearing the ACS
+            _min_items - minimum number of items to unlock the selector
+                (Default: 1)
+            _rule - function evaluated whenever unocking a selector -
+                should return True if the selector should be unlocked
+                (Default: None)
+            _not_group - True if this is prompt is not associated with an ACS
+                group
+                (Default: False)
+        """
+        data = {
+            "_ev": ev_label,
+            "_min-items": _min_items,
+            "change": change,
+            "wear": wear,
+        }
+
+        if _rule is not None:
+            data["_rule"] = _rule
+
+        if _not_group:
+            data["_not_group"] = True
+
+        PROMPT_MAP[key] = data
 
 
     def check_prompt(key):
@@ -146,6 +202,29 @@ init -100 python in mas_selspr:
         return key in PROMPT_MAP
 
 
+    def iter_prompt():
+        """
+        Creates an interable of prompt keys
+
+        RETURNS: iter (generator) of prompt keys
+        """
+        for prompt_key, prompt_data in iter_prompt_data():
+            yield prompt_key
+
+
+    def iter_prompt_data():
+        """
+        Creates an iterable of prompt map data
+
+        RETURNS: iter (generator) of tuples:
+            [0]: prompt key
+            [1]: prompt data
+        """
+        for prompt_key in PROMPT_MAP:
+            if "_not_group" not in PROMPT_MAP[prompt_key]:
+                yield (prompt_key, PROMPT_MAP[prompt_key])
+
+
     def lock_prompt(key):
         """
         Locks ev with the given key
@@ -202,7 +281,7 @@ init -100 python in mas_selspr:
             set_prompt("ribbon", "wear")
 
         # now for the rest
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             if group != "ribbon":
                 if store.monika_chr.is_wearing_acs_type(group):
                     set_prompt(group, "change")
@@ -607,14 +686,6 @@ init -10 python in mas_selspr:
     HAIR_SEL_SL = []
     CLOTH_SEL_SL = []
 
-    GRP_TOPIC_LIST = [
-        "choker",
-        "earrings",
-        "hat",
-        "left-hair-clip",
-        "left-hair-flower",
-        "ribbon",
-    ]
 
     # generic select dlg quips go here
     # should be as neutral as possible to go with any kind of acs
@@ -652,6 +723,11 @@ init -10 python in mas_selspr:
         ],
     }
 
+    # filter menu name exceptions
+    selector_filer_menu_mapping = {
+        "s-type-ribbon": "S-type Ribbon"
+    }
+
 
     def selectable_key(selectable):
         """
@@ -673,7 +749,7 @@ init -10 python in mas_selspr:
         NOTE: also checks the prompt rule
         """
         #ACS
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             min_items = get_minitems(group, 1)
             if (
                     check_prompt(group)
@@ -686,9 +762,9 @@ init -10 python in mas_selspr:
 
     def _switch_to_wear_prompts():
         """
-        Switches all prompts for grp_topic_list topics to use their wear prompt.
+        Switches all prompts for groups to use their wear prompt.
         """
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             set_prompt(group, "wear")
 
 
@@ -955,7 +1031,8 @@ init -10 python in mas_selspr:
             new_map,
             select_type,
             use_old=False,
-            outfit_mode=False
+            outfit_mode=False,
+            force_run=False
         ):
         """
         Adjusts an aspect of monika based on the select type
@@ -974,6 +1051,8 @@ init -10 python in mas_selspr:
                 (Default: False)
             outfit_mode - True means we are in outfit mode, False if not
                 This is used in the clothing changes
+                (Default: False)
+            force_run - True means run even if we old and new matches.
                 (Default: False)
         """
         if select_type == SELECT_ACS:
@@ -1019,7 +1098,7 @@ init -10 python in mas_selspr:
                     prev_hair = moni_chr.hair
                     new_hair = item.selectable.get_sprobj()
 
-                    if prev_hair == new_hair:
+                    if prev_hair == new_hair and not force_run:
                         # hair is the same? no point in changing
                         return
 
@@ -1027,7 +1106,7 @@ init -10 python in mas_selspr:
                         moni_chr.change_hair(new_hair)
 
                     except Exception as e:
-                        mas_utils.writelog("BAD HAIR: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD HAIR: " + repr(e))
                         moni_chr.change_hair(prev_hair)
 
                     return # always quit early since you can only have 1 hair
@@ -1047,7 +1126,7 @@ init -10 python in mas_selspr:
                     prev_cloth = moni_chr.clothes
                     new_cloth = item.selectable.get_sprobj()
 
-                    if prev_cloth == new_cloth:
+                    if prev_cloth == new_cloth and not force_run:
                         # we are changing to the what we are wearing? no point
                         return
 
@@ -1058,7 +1137,7 @@ init -10 python in mas_selspr:
                         )
 
                     except Exception as e:
-                        mas_utils.writelog("BAD CLOTHES: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
 
                     return # quit early since you can only have 1 clothes
@@ -1265,7 +1344,6 @@ init -10 python in mas_selspr:
             CLOTH_SEL_MAP
         )
 
-
     def _filter_sel_single(item, unlocked, group):
         """
         Checks if the given item matches the given criteria
@@ -1285,7 +1363,6 @@ init -10 python in mas_selspr:
             return False
 
         return True
-
 
     def _filter_sel(select_list, unlocked, group=None):
         """
@@ -1589,7 +1666,7 @@ init -10 python in mas_selspr:
         """
         _unlock_item(hair, SELECT_HAIR)
 
-
+    @store.mas_utils.deprecated(use_instead="unlock_prompt", should_raise=True)
     def unlock_selector(group):
         """DEPRECATED - Use unlock_prompt instead
         Unlocks the selector of the given group.
@@ -1766,11 +1843,33 @@ init -10 python in mas_selspr:
         # Get the screen to pass events into
         scr = renpy.get_screen("mas_selector_sidebar")
         if scr is not None:
+            scr.scope["mailbox"].search_text = search_query
             # Search
-            flt_items = _selector_search_items(scr.scope["items"], search_query)
-            scr.scope["flt_items"] = flt_items if flt_items is not None else scr.scope["items"]
+            flt_items = _selector_search_items(scr.scope["menu_filtered_items"], search_query)
+            scr.scope["search_filtered_items"] = flt_items if flt_items is not None else scr.scope["menu_filtered_items"]
         # Update the screen
         renpy.restart_interaction()
+
+
+    def mas_item_name_format(item_name):
+        """
+        Formats acs name to be sentence case, with spaces, and pluralized
+
+        IN:
+            item_name - the text to be formatted
+        OUT:
+            item_name - formatted
+        """
+
+        # manually change items that include "-" else replace "-" with a space
+        if item_name in selector_filer_menu_mapping:
+            item_name = selector_filer_menu_mapping[item_name]
+        else:
+            item_name = item_name.replace("-", " ")
+            # capitalise
+            item_name = item_name.capitalize()
+
+        return item_name
 
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
@@ -1791,6 +1890,11 @@ init -10 python in mas_selspr:
             self.send_conf_enable(False)
             self.send_restore_enable(False)
             self.send_frame_vsize(SB_VIEWPORT_BOUNDS_H)
+            # NOTE: THESE ARE NOT SETTINGS. These are state vars for the selector screen
+            self.item_type = None
+            self.item_type_old = None
+            self.show_filter = False
+            self.search_text = None
 
         def _get(self, headline):
             """
@@ -3028,7 +3132,6 @@ init -1 python:
 init 200 python in mas_selspr:
     load_selectables()
 
-
 # now these tranforms are for the selector sidebar screen
 transform mas_selector_sidebar_tr_show:
     xpos 1280 xanchor 0 ypos 10 yanchor 0
@@ -3046,6 +3149,128 @@ style mas_selector_sidebar_vbar:
     bar_vertical True
     bar_invert True
 
+# Filter dropdown button styles
+style filter_dropdown_down is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_down_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_up is generic_button_light:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+style filter_dropdown_up_dark is generic_button_dark:
+    kerning 0.2
+    xysize (130, 40)
+    padding (5, 5, 5, 5)
+    align (0.5, 0.2)
+    child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+    hover_child Fixed(
+        HBox(
+            Null(width=8),
+            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Null(width=12),
+            Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3),
+            xalign=0.5,
+            yalign=0.1
+        ),
+        xalign=0.5,
+        yalign=0.2
+    )
+
+
 # the selector screen sidebar version should be shown, not called.
 # note that we do tons of calls here, so just be ready to do tons of loop overs
 # every couple of seconds.
@@ -3057,12 +3282,88 @@ style mas_selector_sidebar_vbar:
 #   cancel - label to jump to when canceling
 #   restore - label to jump to when restoring
 #   remover - remover display item, if appropriate. Can be None
-screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None):
+#   filter_map - list of filter categories shown in the menu. Can be None
+screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=None, filter_map=None):
     zorder 50
-#    modal True
 
     $ sel_frame_vsize = mailbox.read_frame_vsize()
-    default flt_items = items
+
+    # only add menu if filter_map is provided and has more than one option
+    if filter_map is not None and len(filter_map) > 1:
+
+        #filter dropdown button
+        frame:
+            area (960, 3, 50, 40)
+            background None
+
+            button:
+                if mailbox.show_filter:
+                    style "filter_dropdown_down"
+                else:
+                    style "filter_dropdown_up"
+                action ToggleField(mailbox, "show_filter")
+
+        if mailbox.show_filter:
+            # Categories Menu
+            frame:
+                area (750, 45, 300, 500)
+                background None
+
+                vbox:
+                    xsize 300
+                    xalign 0.5
+
+                    viewport id "sidebar_scroll_acs":
+                        mousewheel True
+                        yfill False
+
+                        vbox:
+                            xsize 300
+                            spacing 5
+                            first_spacing 0
+                            null height 1
+
+                            textbutton _("Show All"):
+                                style "hkb_button"
+                                xysize (300, 40)
+                                xalign 0.8
+                                selected mailbox.item_type is None
+                                action [
+                                    SetField(mailbox,'item_type', None),
+                                    SetField(mailbox,'item_type_old', mailbox.item_type),
+                                ]
+
+                            # Only need keys
+                            for item_type_name in sorted(filter_map.keys()):
+                                textbutton _(item_type_name):
+                                    style "hkb_button"
+                                    xysize (300, 40)
+                                    xalign 0.8
+                                    selected mailbox.item_type == item_type_name
+                                    action [
+                                        SetField(mailbox,'item_type', item_type_name),
+                                        SetField(mailbox,'item_type_old', mailbox.item_type),
+                                    ]
+
+                            null height 1
+
+                    null height 5
+
+                bar:
+                    value YScrollValue("sidebar_scroll_acs")
+                    style "classroom_vscrollbar"
+                    xoffset -25
+
+    else:
+        $ mailbox.item_type = None
+
+    if mailbox.item_type:
+        $ menu_filtered_items = filter_map[mailbox.item_type]
+
+    else:
+        $ menu_filtered_items = items
+
+    default search_filtered_items = menu_filtered_items
 
     # Search bar
     frame:
@@ -3087,12 +3388,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 length 50
                 xalign 0.0
                 layout "nobreak"
-                first_indent (0 if flt_items is items else 10)
+                first_indent (0 if not mailbox.search_text else 10)
                 # allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _"
                 changed store.mas_selspr.selector_search_callback
 
-        # NOTE: we do need an instance check here
-        if flt_items is items:
+        if not mailbox.search_text:
             text "Search for...":
                 text_align 0.0
                 layout "nobreak"
@@ -3100,6 +3400,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 first_indent 10
                 line_leading 1
                 outlines []
+
+    # Run when filter is changed
+    if mailbox.item_type != mailbox.item_type_old:
+        $ mailbox.item_type_old = mailbox.item_type
+        $ store.mas_selspr.selector_search_callback(mailbox.search_text)
 
     frame:
         area (1075, 50, 200, sel_frame_vsize - 45)
@@ -3124,7 +3429,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         add remover:
                             xalign 0.5
 
-                    for selectable in flt_items:
+                    for selectable in search_filtered_items:
                         add selectable:
                             # xoffset 5
                             xalign 0.5
@@ -3143,7 +3448,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         Function(
                             mailbox.send_outfit_checkbox_checked,
                             not ocb_checked
-                        )
+                        ),
+                        Return(True)
                     ]
                     selected ocb_checked
 
@@ -3161,7 +3467,9 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 textbutton _("Restore"):
                     style "hkb_button"
                     xalign 0.5
+                    selected False
                     action Jump(restore)
+
             else:
                 textbutton _("Restore"):
                     style "hkb_button"
@@ -3175,6 +3483,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
+            unscrollable "hide"
             xoffset -25
 
 # GENERAL sidebar selector label
@@ -3207,15 +3516,18 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
 #       (Default: False)
 #   remover_name - name to use for the remover.
 #       (Default: None)
+#   filter_map - list of selectables for each category  to display in the menu.
+#       (Defailt: None)
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
 #
 # RETURNS True if we are confirming the changes, False if not.
-label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
     python:
+
         if not store.mas_selspr.valid_select_type(select_type):
             raise Exception(
                 "invalid selection constant: {0}".format(select_type)
@@ -3251,14 +3563,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             mailbox.read_frame_vsize(),
             store.mas_selspr.SB_VIEWPORT_BOUNDS_BS
         )
-
-        # if in outfit mode, apply the outfit before launching
-        if mailbox.read_outfit_checkbox_checked():
-            monika_chr.change_clothes(
-                monika_chr.clothes,
-                by_user=True,
-                outfit_mode=True
-            )
 
     # sanity check to avoid crashes
     if len(items) < 1:
@@ -3319,6 +3623,15 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
                 for item in items
             ]
 
+        # make filter_map items MASSelectableImageButtonDisplayable
+        if filter_map:
+            filter_map_selbtn = collections.defaultdict(list)
+            for d_item in disp_items:
+                for filter_items in filter_map:
+                    if d_item.selectable in filter_map[filter_items]:
+                        filter_map_selbtn[filter_items].append(d_item)
+            filter_map = filter_map_selbtn
+
         # fill select map
         item_found = store.mas_selspr._fill_select_map_and_set_remover(
             monika_chr,
@@ -3347,7 +3660,11 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item)
+        # keep track of changes to outfit checkbox
+        outfit_cbx = mailbox.read_outfit_checkbox_checked()
+
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
+
 
 label mas_selector_sidebar_select_loop:
     python:
@@ -3361,13 +3678,16 @@ label mas_selector_sidebar_select_loop:
         )
 
         if preview_selections:
+            new_outfit_cbx = mailbox.read_outfit_checkbox_checked()
             store.mas_selspr._adjust_monika(
                 monika_chr,
                 old_select_map,
                 select_map,
                 select_type,
-                outfit_mode=mailbox.read_outfit_checkbox_checked()
+                outfit_mode=new_outfit_cbx,
+                force_run=new_outfit_cbx != outfit_cbx
             )
+            outfit_cbx = new_outfit_cbx
 
 
 label mas_selector_sidebar_select_midloop:
@@ -3523,9 +3843,9 @@ label mas_selector_sidebar_select_cancel:
 # NOTE: select_type is not a param here.
 #
 # RETURNS: True if we are confirming the changes, False if not
-label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None, filter_map=None):
 
-    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name, filter_map)
 
     return _return
 
@@ -3553,6 +3873,19 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 #
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}, add_remover=False, remover_name=None):
+
+    # Possible idea for clothes / hair filtering, this works but would require more meaningful ex_props to be added to all items,
+    # and would require extra filtering to remove "internal ex_props". This could be incorporated into AOC to show what is in each category?
+    #python:
+    #    # generate filter map
+    #    mapping = {}
+    #    for item in items:
+    #        ex_props = mas_selspr.mas_item_name_format(item.get_sprobj().ex_props)
+    #        for ex_prop in ex_props:
+    #            if ex_prop in mapping:
+    #                mapping[ex_prop].append(item)
+    #            else:
+    #                mapping[ex_prop] = [item]
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map, add_remover, remover_name)
 
@@ -3678,26 +4011,28 @@ label monika_clothes_select:
             # need to get a list of clothes that have been gifted
             # so we will get a list of all clothes and then remove the event_clothes
             gifted_clothes = mas_selspr.filter_clothes(True)
+            clothes_id_to_add = persistent._mas_event_clothes_map.get(datetime.date.today(), None)
 
             for index in range(len(gifted_clothes)-1, -1, -1):
                 spr_obj = gifted_clothes[index].get_sprobj()
                 if (
+                    spr_obj.name == clothes_id_to_add
+                    or (
                         not spr_obj.is_custom
                         and spr_obj != mas_clothes_def
                         and spr_obj != mas_clothes_blazerless
+                    )
                 ):
                     gifted_clothes.pop(index)
 
-            #Now we handle holiday clothes
-            clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
 
             #If there's something for today, then we'll add it to be unlocked
-            if clothes_to_add:
+            if clothes_id_to_add:
                 #Get the outfit selector and add it
                 gifted_clothes.append(mas_selspr.get_sel_clothes(
                     mas_sprites.get_sprite(
                         mas_sprites.SP_CLOTHES,
-                        clothes_to_add
+                        clothes_id_to_add
                     )
                 ))
                 gifted_clothes.sort(key=mas_selspr.selectable_key)
@@ -3851,6 +4186,7 @@ label monika_ribbon_select:
         # if we are not using a force ribbon hair, add a remover.
 #        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
+        #get selected acs_types
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
         # remove non-compatible acs
@@ -3863,7 +4199,13 @@ label monika_ribbon_select:
             ):
                 use_acs.pop(index)
 
-        # make sure ot use ribbon for remover type
+        # generate filter map
+        mapping = collections.defaultdict(list)
+        for acs_sel in use_acs:
+            acs_type_tc = mas_selspr.mas_item_name_format(acs_sel.get_sprobj().acs_type)
+            mapping[acs_type_tc].append(acs_sel)
+
+        # make sure to use ribbon for remover type
         use_acs.append(store.mas_selspr.create_selectable_remover(
             "ribbon",
             "ribbon",
@@ -3875,14 +4217,13 @@ label monika_ribbon_select:
         )
         sel_map = {}
 
-    m 1eua "Sure [player]!"
-
 #    if monika_chr.hair.name != mas_hair_def.name:
 #        m "But im going to change my clothes and hair back to normal."
 #        $ monika_chr.reset_outfit(False)
 
+    m 1eua "Sure [player]!"
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True, filter_map=mapping)
 
     if not _return:
         m 1eka "Oh, alright."
@@ -3891,6 +4232,7 @@ label monika_ribbon_select:
 
     return
 #### End Ribbon change topic
+
 
 #### Monika hairclips
 init 5 python:
@@ -4035,4 +4377,24 @@ label monika_earrings_select:
 
 #### end earrings
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_necklace_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("necklace", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_necklace_select:
+    call mas_selector_generic_sidebar_select_acs("necklace", idle_exp="monika 6eua")
+    return
+#### end necklace selector
 ############### END SELECTOR TOPICS ###########################################

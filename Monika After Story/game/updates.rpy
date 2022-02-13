@@ -301,7 +301,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
@@ -316,7 +316,7 @@ init 10 python:
         persistent.version_number = config.version
 
         # and clear update data
-        clearUpdateStructs()
+        mas_versions.clear()
 
 
     ### special function for resetting versions
@@ -374,10 +374,289 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.8.1
+label v0_12_8_1(version="v0_12_8_1"):
+    python hide:
+        pass
+    return
+
+# 0.12.8
+label v0_12_8(version="v0_12_8"):
+    python hide:
+        sundress_white_data = store.mas_utils.pdget(
+            "sundress_white",
+            persistent._mas_selspr_clothes_db,
+            validator=store.mas_ev_data_ver._verify_tuli_nn,
+            defval=(False, )
+        )
+        if len(sundress_white_data) > 0 and sundress_white_data[0]:
+            persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
+
+    return
+
+# 0.12.7
+label v0_12_7(version="v0_12_7"):
+    python hide:
+
+        ##### PUT YOUR UPDATE SCRIPT CODE AFTER THIS 0.11.1 BLOCK
+        # We need to MAKE SURE this shit runs.
+
+        # sets an updated conditional for the credits song
+        # NOTE: because the topic does not unlock, it is a 1-time only
+        #   topic and therefore should NOT be reset if already seen
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if (
+                credits_song_ev
+                and credits_song_ev.action
+                and credits_song_ev.shown_count == 0 # NEW
+        ):
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
+        # enable twintails if users have it installed.
+        # NOTE: I don't think there's any harm in running this again.
+        #   lmk if you disagree
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        # grandfathers Monika nicknames that became awkard in 0.11.1.
+        # NOTE: since we obvi don't want to overwrite people's grandfathered
+        #   nickname, we only do this if we didn't set the grandfathered
+        #   nickname before.
+        if (
+                persistent._mas_grandfathered_nickname is None # NEW
+                and persistent._mas_monika_nickname != "Monika"
+                and mas_awk_name_comp.search(persistent._mas_monika_nickname)
+        ):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        # convert bad name to a pm var
+        # NOTE: again, don't want to overwrite, so only setting if the old
+        #   var is still set (which means it wasn't deleted)
+        if persistent._mas_called_moni_a_bad_name is not None: # NEW
+            persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+            safeDel("_mas_called_moni_a_bad_name")
+
+        # penname should default to none
+        # NOTE: no changes made here, resetting to None if the bool value is
+        #   False is fine to do in current. penname will be set to either
+        #   a string or None now.
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
+        ##### END 0.11.1 BLOCK
+        # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.7 VERSION BELOW HERE
+
+        if store.seen_event("monika_hamlet") and persistent.monika_kill:
+            mas_showEVL("monika_tragic_hero", "EVE", _random=True)
+
+    return
+
+# 0.12.5
+label v0_12_5(version="v0_12_5"):
+    python hide:
+        # unlock islands for people who may have them permalocked due to faulty bg entry PP check
+        if store.seen_event("greeting_ourreality") and persistent._mas_current_background == store.mas_background.MBG_DEF:
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+        mas_setEVLPropValues(
+            "bye_enjoyyourafternoon",
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)"
+        )
+        mas_setEVLPropValues(
+            "bye_goodevening",
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)"
+        )
+        if seen_event("monika_affection_nickname"):
+            mas_setEVLPropValues(
+                "monika_affection_nickname",
+                prompt="Can I call you a different nickname?"
+            )
+
+        if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
+            persistent._mas_nye_spent_nye = False
+            mas_history._store(True, "nye.actions.spent_nye", 2020)
+
+            date_count = persistent._mas_nye_nye_date_count
+            persistent._mas_nye_nye_date_count = 0
+            old_date_count = mas_HistLookup("nye.actions.went_out_nye", 2020)[1]
+            if old_date_count is not None:
+                date_count += old_date_count
+
+            mas_history._store(date_count, "nye.actions.went_out_nye", 2020)
+
+    return
+
+# 0.12.4
+label v0_12_4(version="v0_12_4"):
+    python hide:
+        mas_setEVLPropValues(
+            'bye_trick_or_treat',
+            start_date=datetime.datetime.combine(mas_o31, datetime.time(hour=3))
+        )
+
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()"
+        )
+    return
+
+# 0.12.3.2
+label v0_12_3_2(version="v0_12_3_2"):
+    python hide:
+        import os
+
+        #Delete old utils file
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpy")
+        store.mas_utils.trydel(renpy.config.gamedir + "/00utils.rpyc")
+
+        ### LOG MIGRATION
+        def _rename_log_file(old_log_path, new_log_path):
+            """
+            Renames log files
+
+            IN:
+                old_log_path - the path to the old log
+                new_log_path - the path to the new log
+            """
+            try:
+                mas_utils.trydel(new_log_path)
+                os.rename(old_log_path, new_log_path)
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to rename log at '{0}'. {1}".format(old_log_path, ex))
+
+        log_dir = os.path.join(renpy.config.basedir, "log")
+
+        migrating_logs = [
+            mas_utils.mas_log,
+            mas_affection.log,
+            mas_submod_utils.submod_log
+        ]
+        non_migrating_logfiles = [
+            "pnm.txt",
+            "spj.txt"
+        ]
+
+        # These 2 don't always exist
+        for mf_log_name in ("mfgen", "mfread"):
+            if mas_logging.is_inited(mf_log_name):
+                migrating_logs.append(mas_logging.logging.getLogger(mf_log_name))
+
+            else:
+                new_log_path = os.path.join(log_dir, mf_log_name + ".log")
+                old_log_path = os.path.join(log_dir, mf_log_name + ".txt")
+
+                _rename_log_file(old_log_path, new_log_path)
+
+        for log in migrating_logs:
+            new_log_path = os.path.join(log_dir, log.name + ".log")
+            old_log_path = os.path.join(log_dir, log.name + ".txt")
+
+            handlers = list(log.handlers)
+
+            for handler in handlers:
+                handler.close()
+                log.removeHandler(handler)
+
+            try:
+                with open(old_log_path, "a") as mergeto, open(new_log_path, "r") as mergefrom:
+                    for line in mergefrom:
+                        mergeto.write(line)
+
+            except Exception as ex:
+                mas_utils.mas_log.error("Failed to update log at '{0}'. {1}".format(old_log_path, ex))
+
+            else:
+                _rename_log_file(old_log_path, new_log_path)
+
+            for handler in handlers:
+                # handler.stream = handler._open()
+                log.addHandler(handler)
+
+        for logfile in non_migrating_logfiles:
+            mas_utils.trydel(os.path.join(log_dir, logfile))
+        ### END LOG MIGRATION
+
+    return
+
+# 0.12.3.1
+label v0_12_3_1(version="v0_12_3_1"):
+    python:
+        # Set a conditional
+        mas_setEVLPropValues(
+            "greeting_ourreality",
+            conditional="store.mas_decoded_islands"
+        )
+
+        # Enable late update for this one
+        # (updates islands progression for old players)
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.12.2.3
+label v0_12_2_3(version="v0_12_2_3"):
+    python:
+        if seen_event("monika_fanfiction"):
+            mas_protectedShowEVL('monika_ddlcroleplay', 'EVE', _random=True)
+
+        if seen_event("monika_back_ups"):
+            mas_protectedShowEVL("monika_murphys_law","EVE", _random=True)
+    return
+
+# 0.12.2.2
+label v0_12_2_2(version="v0_12_2_2"):
+    python:
+        if seen_event("monika_nihilism"):
+            mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
+    return
+
+# 0.12.2
+label v0_12_2(version="v0_12_2"):
+    python:
+        if persistent.ever_won:
+            persistent._mas_ever_won.update(persistent.ever_won)
+
+        if mas_getEVLPropValue("mas_compliment_chess", "conditional"):
+            mas_setEVLPropValues(
+                "mas_compliment_chess",
+                conditional="persistent._mas_chess_stats.get('losses', 0) > 5"
+            )
+
+        # added due to a potential crash in the 0.8.13 update that may have caused this to not update
+        # the other events updated in that script have been updated since then and don't need to be done again
+        mas_setEVLPropValues(
+            'mas_d25_monika_christmas_eve',
+            start_date = datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+            end_date = mas_d25
+        )
+
+        # Use more appropriate naming
+        if persistent.has_merged is not None:
+            persistent._mas_imported_saves = persistent.has_merged
+        # For some reason this var may still be False even after import
+        # One way to "fix" it is to check persistent.clear
+        # At least one item would be True if the player's seen a cg
+        if persistent.clear is not None and any(persistent.clear):
+            persistent._mas_imported_saves = True
+        safeDel("has_merged")
+
+        # Reverse the value of this var because its naming is bad
+        persistent.first_run = not persistent.first_run
+
+    return
+
 # 0.12.1.2
 label v0_12_1_2(version="v0_12_1_2"):
     python:
-        pass
+        if mas_getEVLPropValue("monika_dystopias", "action"):
+            mas_setEVLPropValues(
+                "monika_dystopias",
+                conditional="mas_seenLabels(['monika_1984', 'monika_fahrenheit451', 'monika_brave_new_world', 'monika_we'], seen_all=True)"
+            )
+
     return
 
 # 0.12.1
@@ -928,14 +1207,15 @@ label v0_11_1(version="v0_11_1"):
                 chess_unlock_ev.shown_count = 1
 
         # add missing xp for new users
-        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+        session_count = mas_getTotalSessions()
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)) and session_count > 0:
             # only care about users who basically started with 0.11.0 + week
-            # ago
+            # ago and have actual session data (aka people who started 0.6.0)
 
             # calc avg hr per session
             ahs = (
                 store.mas_utils.td2hr(mas_getTotalPlaytime())
-                / float(mas_getTotalSessions())
+                / float(session_count)
             )
 
             # only care about users with under 2 hour session time avg
@@ -1135,7 +1415,8 @@ label v0_11_0(version="v0_11_0"):
         credits_ev = mas_getEV("monika_credits_song")
         if credits_ev:
             credits_ev.random = False
-            credits_ev.prompt = None
+            # This will be set during runtime as appropriate
+            # credits_ev.prompt = credits_ev.eventlabel
             credits_ev.conditional = "store.mas_anni.pastOneMonth()"
             credits_ev.action = EV_ACT_QUEUE
             credits_ev.unlocked = False
@@ -2166,7 +2447,8 @@ label v0_8_13(version="v0_8_13"):
                     datetime.time(hour=20)
                 )
 
-                d25_sp_tim.end_date = datetime.datetime.combine(
+                # NOTE: Here was a crash because of undefined var, fixed in 0.12.1 typos
+                d25_sp_tm.end_date = datetime.datetime.combine(
                     mas_d25p,
                     datetime.time(hour=1)
                 )
@@ -2695,8 +2977,8 @@ label v0_7_4(version="v0_7_4"):
             1200
         )
 
-       # now properly set all farewells as unlocked, since the new system checks
-       # for the unlocked status
+        # now properly set all farewells as unlocked, since the new system checks
+        # for the unlocked status
         for k in evhand.farewell_database:
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
@@ -2862,6 +3144,18 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_12_3_1:
+    python:
+        # Unlock for people who has seen the event before
+        if seen_event("mas_monika_islands"):
+            mas_island_event.startProgression()
+            # Technically it's impossible to have this as 0,
+            # So it'll mean the islands were unlocked prior to the revamp
+            persistent._mas_islands_start_lvl = 0
+            mas_island_event.advanceProgression()
+
+    return
+
 label mas_lupd_v0_12_0:
     python:
         #Reset annis as F29 based ones are on the wrong date

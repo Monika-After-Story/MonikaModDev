@@ -668,11 +668,11 @@ label game_chess:
                     )
 
                 else:
-                    store.mas_utils.writelog("Failed to access quickfile.\n")
+                    mas_utils.mas_log.error("Failed to access quickfile.")
                     quicksaved_file = None
 
             except Exception as e:
-                store.mas_utils.writelog("QUICKFILE: {0}\n".format(e))
+                mas_utils.mas_log.exception(e)
                 quicksaved_file = None
 
         # failure reading the saved game from text
@@ -694,11 +694,11 @@ label game_chess:
                             )
 
                         else:
-                            store.mas_utils.writelog("Failed to access quickfile.\n")
+                            mas_utils.mas_log.error("Failed to access quickfile.")
                             quicksaved_file = None
 
                     except Exception as e:
-                        store.mas_utils.writelog("QUICKFILE: {0}\n".format(e))
+                        mas_utils.mas_log.exception(e)
                         quicksaved_file = None
 
                 if quicksaved_file is None:
@@ -1015,7 +1015,7 @@ label mas_chess_start_chess:
             m 1eka "Aw, looks like we have a stalemate."
             $ line_start = "But on the bright side"
 
-        if not persistent.ever_won.get("chess"):
+        if not persistent._mas_ever_won["chess"]:
             m 3hub "[line_start], you're getting closer and closer to beating me, [player]~"
 
         else:
@@ -1037,8 +1037,8 @@ label mas_chess_start_chess:
             persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
 
             #Give player XP if this is their first win
-            if not persistent.ever_won['chess']:
-                persistent.ever_won['chess'] = True
+            if not persistent._mas_ever_won['chess']:
+                persistent._mas_ever_won['chess'] = True
 
         #Main dialogue
         if practice_mode:
@@ -1259,7 +1259,7 @@ label mas_chess_dlg_game_monika_wins_often:
     m 1ekc "I hope you'll at least keep trying though."
     m 1eua "Let's play again soon, okay?"
 
-    if not persistent.ever_won.get("chess"):
+    if not persistent._mas_ever_won["chess"]:
         m 1hua "You'll beat me someday~"
     return
 
@@ -1351,7 +1351,7 @@ label mas_chess_save_migration:
                         try:
                             os.remove(os.path.normcase(game_path))
                         except:
-                            mas_utils.writelog("Failed to remove game at: {0}\n".format(game_path))
+                            mas_utils.mas_log.error("Failed to remove game at: {0}".format(game_path))
 
         # we have one game, so return the game
         elif game_count == 1:
@@ -1862,7 +1862,7 @@ init python:
             mas_chess.CHESS_SAVE_PATH = file_path
 
         except:
-            store.mas_utils.writelog("Chess game folder could not be created '{0}'\n".format(file_path))
+            mas_utils.mas_log.error("Chess game folder could not be created '{0}'".format(file_path))
 
 
     #START: DISPLAYABLES AND RELATED CLASSES
@@ -3347,12 +3347,12 @@ init python:
                         except Exception as ex:
                             os_err = ex
 
-                    store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(os_err))
+                    mas_utils.mas_log.exception(os_err)
                     renpy.jump("mas_chess_cannot_work_embarrassing")
 
                 #Basically a last resort jump. If this happens it pretty much means you launched MAS from commandline
                 except Exception as ex:
-                    store.mas_utils.writelog("[CHESS ERROR]: Failed to open stockfish - {0}\n".format(ex))
+                    mas_utils.mas_log.exception(ex)
                     renpy.jump("mas_chess_cannot_work_embarrassing")
 
             # Launch the appropriate version based on the architecture and OS.

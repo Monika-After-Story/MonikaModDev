@@ -11,16 +11,16 @@
     "rec_layer": 3,
     "acs_type": "ribbon",
     "stay_on_start": true,
-    "dlg_desc": "transexual-pride-themed ribbon",
+    "dlg_desc": "transgender-pride-themed ribbon",
     "dlg_plural": false,
     "ex_props": {
         "transexualpride": true,
         "ribbon-multicolor": true
     },
     "select_info": {
-        "display_name": "Ribbon (Transexual Pride Themed)",
+        "display_name": "Ribbon (Transgender Pride Themed)",
         "thumb": "anonymioo_ribbon_transexualpride",
         "group": "ribbon"
     },
-    "giftname": "transexualpridethemedribbon"
+    "giftname": "transgenderpridethemedribbon"
 }

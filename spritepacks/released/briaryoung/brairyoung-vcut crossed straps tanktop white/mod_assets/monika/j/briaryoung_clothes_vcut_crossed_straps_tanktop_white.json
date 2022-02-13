@@ -1,0 +1,27 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_vcut_crossed_straps_tanktop_white",
+    "img_sit": "briaryoung_vcut_crossed_straps_tanktop_white",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "bare-shoulders": true
+    },
+    "select_info": {
+        "display_name": "V-cut Crossed Straps Tanktop (White)",
+        "thumb": "briaryoung_vcut_crossed_straps_tanktop_white",
+        "group": "clothes",
+        "select_dlg": [
+            "How do I look?",
+            "Perfect for a summer day."
+        ]
+    },
+    "giftname": "vcutcrossedstrapstanktopwhite",
+    "pose_arms": {}
+}

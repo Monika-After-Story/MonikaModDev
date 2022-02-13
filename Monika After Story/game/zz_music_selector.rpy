@@ -190,11 +190,7 @@ init -1 python in songs:
 #            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
 
         # sayori only allows this
-        if store.persistent._mas_sensitive_mode:
-            sayonara_name = SAYO_NARA_SENS
-        else:
-            sayonara_name = SAYO_NARA
-        music_choices.append((sayonara_name, FP_SAYO_NARA))
+        music_choices.append((SAYO_NARA, FP_SAYO_NARA))
 
         # grab custom music
         __scanCustomBGM(music_choices)
@@ -786,10 +782,7 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if (
-            persistent.playername.lower() == "sayori"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.sayori_enabled():
         # sayori specific
 
         # init choices
@@ -845,37 +838,21 @@ style music_menu_label_dark is game_menu_label_dark
 style music_menu_label_text is game_menu_label_text
 style music_menu_label_text_dark is game_menu_label_text_dark
 
-style music_menu_return_button is return_button:
-    xminimum 0
-    xmaximum 200
-    xfill False
+style music_menu_return_button is return_button
 
-style music_menu_return_button_dark is return_button:
-    xminimum 0
-    xmaximum 200
-    xfill False
+style music_menu_return_button_dark is return_button
 
 style music_menu_return_button_text is navigation_button_text
 
 style music_menu_return_button_text_dark is navigation_button_text_dark
 
-style music_menu_prev_button is return_button:
-    xminimum 0
-    xmaximum 135
-    xfill False
+style music_menu_prev_button is return_button
 
-style music_menu_prev_button_dark is return_button:
-    xminimum 0
-    xmaximum 135
-    xfill False
+style music_menu_prev_button_dark is return_button
 
-style music_menu_prev_button_text is navigation_button_text:
-    min_width 135
-    text_align 1.0
+style music_menu_prev_button_text is navigation_button_text
 
-style music_menu_prev_button_text_dark is navigation_button_text_dark:
-    min_width 135
-    text_align 1.0
+style music_menu_prev_button_text_dark is navigation_button_text_dark
 
 style music_menu_outer_frame is game_menu_outer_frame:
     background "mod_assets/music_menu.png"
@@ -883,11 +860,7 @@ style music_menu_outer_frame is game_menu_outer_frame:
 style music_menu_outer_frame_dark is game_menu_outer_frame_dark:
     background "mod_assets/music_menu_d.png"
 
-style music_menu_button is navigation_button:
-    size_group "navigation"
-    properties gui.button_properties("navigation_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
+style music_menu_button is navigation_button
 
 style music_menu_button_text is navigation_button_text:
     properties gui.button_text_properties("navigation_button")
@@ -970,8 +943,9 @@ screen music_menu(music_page, page_num=0, more_pages=False):
                     action Return(page_num - 1)
 
             else:
-                textbutton _( " "):
+                textbutton _(""):
                     style "music_menu_prev_button"
+                    xsize 126
                     sensitive False
 
 #                if more_pages:
@@ -1041,10 +1015,7 @@ init python:
             persistent.playername
         """
         # sayori cannot make the volume quieter
-        if (
-            persistent.playername.lower() != "sayori"
-            or persistent._mas_sensitive_mode
-        ):
+        if not store.mas_egg_manager.sayori_enabled():
             songs.adjustVolume(up=False)
 
 
@@ -1067,10 +1038,7 @@ init python:
         # sayori cannot mute
         if (
                 curr_volume > 0.0
-                and (
-                    persistent.playername.lower() != "sayori"
-                    or persistent._mas_sensitive_mode
-                )
+                and not store.mas_egg_manager.sayori_enabled()
                 and mute_enabled
             ):
             songs.music_volume = curr_volume
