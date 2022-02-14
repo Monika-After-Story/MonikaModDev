@@ -4,20 +4,21 @@ define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 ###R7+ Config Var adjustments
-##7.3.3
-#Only devs need this, NOTE: This was removed in r8
-#define config.report_extraneous_attributes = False
+init 999:
+    ##7.3.3
+    #Only devs need this, NOTE: This was removed in r8
+    define config.report_extraneous_attributes = False
 
-##7.3.0, NOTE: This was removed in r8
-#define config.keyword_after_python = True
+    ##7.3.0, NOTE: This was removed in r8
+    define config.keyword_after_python = True
 
-##7.1.1
-#Fix menu textbox issues
-define config.menu_showed_window = True
-#Fix textbox sometimes disappearing
-define config.window_auto_show = ["say"]
-#Fix textbox flickering
-define config.window_auto_hide = ["scene", "call screen"]
+    ##7.1.1
+    #Fix menu textbox issues
+    define config.menu_showed_window = True
+    #Fix textbox sometimes disappearing
+    define config.window_auto_show = ["say"]
+    #Fix textbox flickering
+    define config.window_auto_hide = ["scene", "call screen"]
 
 ##7.0
 #Fixes spaceroom masks from restarting every interaction
