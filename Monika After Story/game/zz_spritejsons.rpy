@@ -2760,6 +2760,7 @@ init 189 python in mas_sprites_json:
 
 init 190 python in mas_sprites_json:
     # NOTE: must be before 200, which is when saved selector data is loaded
+    import store
 
     def runSpriteObjAlg():
         # prepare the alg
@@ -2773,5 +2774,7 @@ init 190 python in mas_sprites_json:
         verifyHairs()
         processGifts()
         processOutfitExtras(post_proc_data)
+        store.MASClothes.process_delayed_outfits()
+
 
     runSpriteObjAlg()

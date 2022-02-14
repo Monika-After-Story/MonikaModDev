@@ -7031,6 +7031,9 @@ init -3 python:
         """
         import store.mas_sprites as mas_sprites
 
+        delay_outfit_validation = True
+        # global flag - set to False once sprite jsons have been loaded.
+
         __MHM_KEYS = store.mas_sprites._genLK(("0", "1"))
 
         def __init__(self,
@@ -7120,11 +7123,13 @@ init -3 python:
                 MASClothes._prepare_hl_data(hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
+            self.__outfit_proc_acs = {}
+            self.__outfit_proc_hair = None
 
             self.hair_map = hair_map
             self.pose_arms = pose_arms
-            self.outfit_hair = MASClothes._format_outfit_hair(outfit_hair)
-            self.outfit_acs = MASClothes._format_outfit_acs(outfit_acs)
+            self.outfit_hair = self._format_outfit_hair(outfit_hair)
+            self.outfit_acs = self._format_outfit_acs(outfit_acs)
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -7182,12 +7187,11 @@ init -3 python:
 
             return (cls.__MHM_KEYS, hl_def, hl_mapping)
 
-        @staticmethod
-        def _format_outfit_acs(outfit_acs_data):
+        def _format_outfit_acs(self, outfit_acs_data):
             """
             Formats the given data so its ready for outfit_acs property.
-
-            This also validates the data with the ACS map.
+            This also validates the data with the ACS map, and will delay
+            validation until later if needed.
 
             IN:
                 outfit_acs_data - outfit acs data to format
@@ -7204,6 +7208,10 @@ init -3 python:
                     # direct add if obj
                     data[acs_name_or_obj.name] = acs_name_or_obj
 
+                elif self.delay_outfit_validation:
+                    # save off for lookup later if still in startup
+                    self.__outfit_proc_acs[acs_name_or_obj] = True
+
                 elif acs_name_or_obj in store.mas_sprites.ACS_MAP:
                     # lookup ACS otherwise
                     acs = store.mas_sprites.get_sprite(
@@ -7218,12 +7226,11 @@ init -3 python:
 
             return None
 
-        @staticmethod
-        def _format_outfit_hair(outfit_hair_data):
+        def _format_outfit_hair(self, outfit_hair_data):
             """
             Formats the given data so its ready for the outfit_hair property.
-
-            This also validates the data with the HAIR map.
+            This also validates the data with the HAIR map, and will delay
+            validation until later if needed.
 
             IN:
                 outfit_hair_data - outfit hair data to format
@@ -7237,10 +7244,56 @@ init -3 python:
                 # direct obj, this is ok
                 return outfit_hair_data
 
+            if self.delay_outfit_validation:
+                # save off for lookup later if still in startup
+                self.__outfit_proc_hair = outfit_hair_data
+                return None
+
             return store.mas_sprites.get_sprite(
                 store.mas_sprites.SP_HAIR,
                 outfit_hair_data
             )
+
+        def _proc_delayed_outfit_data(self):
+            """
+            Proccesses any delayed outfit hair/acs
+            """
+            # outfit_hair
+            if self.__outfit_proc_hair is not None:
+                self.outfit_hair = store.mas_sprites.get_sprite(
+                    store.mas_sprites.SP_HAIR,
+                    self.__outfit_proc_hair
+                )
+                self.__outfit_proc_hair = None
+
+            # outfit acs
+            data = {}
+            for acs_name in self.__outfit_proc_acs:
+                acs = store.mas_sprites.get_sprite(
+                    store.mas_sprites.SP_ACS,
+                    acs_name
+                )
+                if acs is not None:
+                    data[acs.name] = acs
+
+            self.__outfit_proc_acs = None
+
+            # store delayed outfit acs into outfit_acs
+            if len(data) > 0:
+                if self.outfit_acs is None:
+                    self.outfit_acs = data
+                else:
+                    self.outfit_acs.update(data)
+
+        @classmethod
+        def process_delayed_outfits(cls):
+            """
+            Processes all the delayed outfits data for all clothes.
+            Also sets the delayed outfit validation flag.
+            """
+            cls.delay_outfit_validation = False
+            for c_name in mas_sprites.CLOTH_MAP:
+                mas_sprites.CLOTH_MAP[c_name]._proc_delayed_outfit_data()
 
         def build_loadstrs(self, prefix):
             """
