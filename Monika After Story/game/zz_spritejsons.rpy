@@ -2595,7 +2595,7 @@ init 189 python in mas_sprites_json:
         for j_obj in json_files:
             j_path = sprite_station.station + j_obj
             try:
-                addSpriteObject(j_path)
+                addSpriteObject(j_path, post_proc_data)
             except Exception as e:
                 log.exception(e)
 

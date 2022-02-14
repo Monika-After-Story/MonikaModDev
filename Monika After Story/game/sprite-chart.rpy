@@ -7237,7 +7237,7 @@ init -3 python:
                 # direct obj, this is ok
                 return outfit_hair_data
 
-            return store.mas_sprites.get_sprites(
+            return store.mas_sprites.get_sprite(
                 store.mas_sprites.SP_HAIR,
                 outfit_hair_data
             )
