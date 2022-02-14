@@ -276,23 +276,48 @@ label monika_idle_shower:
 
 label monika_idle_shower_callback:
     if mas_isMoniNormal(higher=True):
-        m 1eua "Welcome back, [player]."
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=60), "monika_idle_shower"):
+            m 2rksdlb "That sure was a long time for a shower..."
 
-        if (
-            mas_isMoniLove()
-            and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
-            and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
-            and renpy.random.randint(1,20) == 1
-        ):
-            m 3tubsb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
-            m 1hubsa "You could just relax with me some more~"
-            m 1hub "Ahaha!"
+            m 2eud "Did you take a bath instead?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you take a bath instead?{fast}"
+
+                "Yes.":
+                    m 7hub "Oh! {w=0.3}I see!"
+                    m 3eua "I hope it was nice and relaxing!"
+
+                "No.":
+                    m 7rua "Oh...{w=0.3}maybe you just like really long showers..."
+                    m 3duu "Sometimes it can be nice just to feel the water rushing over you...{w=0.3}it can be really soothing."
+                    m 1hksdlb "...Or maybe I'm overthinking this and you just didn't come back right away, ahaha!"
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_shower"):
+            m 1eua "Welcome back, [player]."
+            if (
+                mas_isMoniLove()
+                and renpy.seen_label("monikaroom_greeting_ear_bathdinnerme")
+                and mas_getEVL_shown_count("monika_idle_shower") != 1 #Since the else block has a one-time only line, we force it on first use
+                and renpy.random.randint(1,20) == 1
+            ):
+                m 3tubsb "Now that you've had your shower, would you like your dinner, or maybe{w=0.5}.{w=0.5}.{w=0.5}."
+                m 1hubsa "You could just relax with me some more~"
+                m 1hub "Ahaha!"
+
+            else:
+                m 3hua "I hope you had a nice shower."
+                if mas_getEVL_shown_count("monika_idle_shower") == 1:
+                    m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
+                    m 1hub "Ahaha!"
+                else:
+                    m 3rkbsa "Did you miss me?"
+                    m 1huu "Of course you did, ehehe~"
 
         else:
-            m 1hua "I hope you had a nice shower."
-            if mas_getEVL_shown_count("monika_idle_shower") == 1:
-                m 3eub "Now we can get back to having some good, {i}clean{/i} fun together..."
-                m 1hub "Ahaha!"
+            m 7rksdlb "That was a pretty short shower, [player]..."
+            m 3hub "I guess you must just be really efficient, ahaha!"
+            m 1euu "I certainly can't complain, it just means more time together~"
 
     elif mas_isMoniUpset():
         m 2esc "I hope you enjoyed your shower. {w=0.2}Welcome back, [player]."

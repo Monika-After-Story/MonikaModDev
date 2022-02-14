@@ -46,6 +46,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear a choker?",
         },
         "clothes": {
+            "_not_group": True,
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
             # TODO: min-items
@@ -57,6 +58,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear earrings?",
         },
         "hair": {
+            "_not_group": True,
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
             # TODO: min-items
@@ -79,6 +81,12 @@ init -100 python in mas_selspr:
             "change": "Can you change the flower in your hair?",
             "wear": "Can you wear a flower in your hair?",
         },
+        "necklace": {
+            "_ev": "monika_necklace_select",
+            "_min-items": 1,
+            "change": "Can you change your necklace?",
+            "wear": "Can you wear a necklace?",
+        },
         "ribbon": {
             "_ev": "monika_ribbon_select",
             "_min-items": 1,
@@ -87,6 +95,54 @@ init -100 python in mas_selspr:
             "wear": "Can you tie your hair with something else?",
         },
     }
+
+
+    def _add_prompt(
+            key,
+            ev_label,
+            change,
+            wear,
+            _min_items=1,
+            _rule=None,
+            _not_group=False,
+    ):
+        """
+        Adds a prompt to the prompt map - basically like registering a
+        selector.
+
+        NOTE: this is private for now - should consider an actual
+        "register selector" function as a public API instead.
+
+        NOTE: this will overwrite existing data
+
+        IN:
+            key - the prompt key - for ACS, this should be group type
+            ev_label - event label associated with the selector
+            change - prompt to use when Monika currently wearing the ACS
+            wear - prompt to use when Monika not wearing the ACS
+            _min_items - minimum number of items to unlock the selector
+                (Default: 1)
+            _rule - function evaluated whenever unocking a selector -
+                should return True if the selector should be unlocked
+                (Default: None)
+            _not_group - True if this is prompt is not associated with an ACS
+                group
+                (Default: False)
+        """
+        data = {
+            "_ev": ev_label,
+            "_min-items": _min_items,
+            "change": change,
+            "wear": wear,
+        }
+
+        if _rule is not None:
+            data["_rule"] = _rule
+
+        if _not_group:
+            data["_not_group"] = True
+
+        PROMPT_MAP[key] = data
 
 
     def check_prompt(key):
@@ -147,6 +203,29 @@ init -100 python in mas_selspr:
         return key in PROMPT_MAP
 
 
+    def iter_prompt():
+        """
+        Creates an interable of prompt keys
+
+        RETURNS: iter (generator) of prompt keys
+        """
+        for prompt_key, prompt_data in iter_prompt_data():
+            yield prompt_key
+
+
+    def iter_prompt_data():
+        """
+        Creates an iterable of prompt map data
+
+        RETURNS: iter (generator) of tuples:
+            [0]: prompt key
+            [1]: prompt data
+        """
+        for prompt_key in PROMPT_MAP:
+            if "_not_group" not in PROMPT_MAP[prompt_key]:
+                yield (prompt_key, PROMPT_MAP[prompt_key])
+
+
     def lock_prompt(key):
         """
         Locks ev with the given key
@@ -203,7 +282,7 @@ init -100 python in mas_selspr:
             set_prompt("ribbon", "wear")
 
         # now for the rest
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             if group != "ribbon":
                 if store.monika_chr.is_wearing_acs_type(group):
                     set_prompt(group, "change")
@@ -608,14 +687,6 @@ init -10 python in mas_selspr:
     HAIR_SEL_SL = []
     CLOTH_SEL_SL = []
 
-    GRP_TOPIC_LIST = [
-        "choker",
-        "earrings",
-        "hat",
-        "left-hair-clip",
-        "left-hair-flower",
-        "ribbon",
-    ]
 
     # generic select dlg quips go here
     # should be as neutral as possible to go with any kind of acs
@@ -679,7 +750,7 @@ init -10 python in mas_selspr:
         NOTE: also checks the prompt rule
         """
         #ACS
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             min_items = get_minitems(group, 1)
             if (
                     check_prompt(group)
@@ -692,9 +763,9 @@ init -10 python in mas_selspr:
 
     def _switch_to_wear_prompts():
         """
-        Switches all prompts for grp_topic_list topics to use their wear prompt.
+        Switches all prompts for groups to use their wear prompt.
         """
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             set_prompt(group, "wear")
 
 
@@ -961,7 +1032,8 @@ init -10 python in mas_selspr:
             new_map,
             select_type,
             use_old=False,
-            outfit_mode=False
+            outfit_mode=False,
+            force_run=False
         ):
         """
         Adjusts an aspect of monika based on the select type
@@ -980,6 +1052,8 @@ init -10 python in mas_selspr:
                 (Default: False)
             outfit_mode - True means we are in outfit mode, False if not
                 This is used in the clothing changes
+                (Default: False)
+            force_run - True means run even if we old and new matches.
                 (Default: False)
         """
         if select_type == SELECT_ACS:
@@ -1025,7 +1099,7 @@ init -10 python in mas_selspr:
                     prev_hair = moni_chr.hair
                     new_hair = item.selectable.get_sprobj()
 
-                    if prev_hair == new_hair:
+                    if prev_hair == new_hair and not force_run:
                         # hair is the same? no point in changing
                         return
 
@@ -1033,7 +1107,7 @@ init -10 python in mas_selspr:
                         moni_chr.change_hair(new_hair)
 
                     except Exception as e:
-                        mas_utils.writelog("BAD HAIR: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD HAIR: " + repr(e))
                         moni_chr.change_hair(prev_hair)
 
                     return # always quit early since you can only have 1 hair
@@ -1053,7 +1127,7 @@ init -10 python in mas_selspr:
                     prev_cloth = moni_chr.clothes
                     new_cloth = item.selectable.get_sprobj()
 
-                    if prev_cloth == new_cloth:
+                    if prev_cloth == new_cloth and not force_run:
                         # we are changing to the what we are wearing? no point
                         return
 
@@ -1064,7 +1138,7 @@ init -10 python in mas_selspr:
                         )
 
                     except Exception as e:
-                        mas_utils.writelog("BAD CLOTHES: " + repr(e))
+                        store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
 
                     return # quit early since you can only have 1 clothes
@@ -3375,7 +3449,8 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                         Function(
                             mailbox.send_outfit_checkbox_checked,
                             not ocb_checked
-                        )
+                        ),
+                        Return(True)
                     ]
                     selected ocb_checked
 
@@ -3490,14 +3565,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             store.mas_selspr.SB_VIEWPORT_BOUNDS_BS
         )
 
-        # if in outfit mode, apply the outfit before launching
-        if mailbox.read_outfit_checkbox_checked():
-            monika_chr.change_clothes(
-                monika_chr.clothes,
-                by_user=True,
-                outfit_mode=True
-            )
-
     # sanity check to avoid crashes
     if len(items) < 1:
         return False
@@ -3594,8 +3661,10 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # setup prev line
         prev_line = ""
 
-    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
+        # keep track of changes to outfit checkbox
+        outfit_cbx = mailbox.read_outfit_checkbox_checked()
 
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", "mas_selector_sidebar_select_restore", remover=remover_disp_item, filter_map=filter_map)
 
 
 label mas_selector_sidebar_select_loop:
@@ -3610,13 +3679,16 @@ label mas_selector_sidebar_select_loop:
         )
 
         if preview_selections:
+            new_outfit_cbx = mailbox.read_outfit_checkbox_checked()
             store.mas_selspr._adjust_monika(
                 monika_chr,
                 old_select_map,
                 select_map,
                 select_type,
-                outfit_mode=mailbox.read_outfit_checkbox_checked()
+                outfit_mode=new_outfit_cbx,
+                force_run=new_outfit_cbx != outfit_cbx
             )
+            outfit_cbx = new_outfit_cbx
 
 
 label mas_selector_sidebar_select_midloop:
@@ -3940,26 +4012,28 @@ label monika_clothes_select:
             # need to get a list of clothes that have been gifted
             # so we will get a list of all clothes and then remove the event_clothes
             gifted_clothes = mas_selspr.filter_clothes(True)
+            clothes_id_to_add = persistent._mas_event_clothes_map.get(datetime.date.today(), None)
 
             for index in range(len(gifted_clothes)-1, -1, -1):
                 spr_obj = gifted_clothes[index].get_sprobj()
                 if (
+                    spr_obj.name == clothes_id_to_add
+                    or (
                         not spr_obj.is_custom
                         and spr_obj != mas_clothes_def
                         and spr_obj != mas_clothes_blazerless
+                    )
                 ):
                     gifted_clothes.pop(index)
 
-            #Now we handle holiday clothes
-            clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
 
             #If there's something for today, then we'll add it to be unlocked
-            if clothes_to_add:
+            if clothes_id_to_add:
                 #Get the outfit selector and add it
                 gifted_clothes.append(mas_selspr.get_sel_clothes(
                     mas_sprites.get_sprite(
                         mas_sprites.SP_CLOTHES,
-                        clothes_to_add
+                        clothes_id_to_add
                     )
                 ))
                 gifted_clothes.sort(key=mas_selspr.selectable_key)
@@ -4304,4 +4378,24 @@ label monika_earrings_select:
 
 #### end earrings
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_necklace_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("necklace", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_necklace_select:
+    call mas_selector_generic_sidebar_select_acs("necklace", idle_exp="monika 6eua")
+    return
+#### end necklace selector
 ############### END SELECTOR TOPICS ###########################################

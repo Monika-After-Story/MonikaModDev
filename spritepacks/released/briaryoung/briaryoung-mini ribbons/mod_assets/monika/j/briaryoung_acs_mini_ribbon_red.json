@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_red",
+    "img_sit": "briaryoung_mini_ribbon_red",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "red ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Red, mini)",
+        "thumb": "briaryoung_mini_ribbon_red",
+        "group": "ribbon",
+        "select_dlg": [
+            "Bold!"
+        ]
+    },
+    "giftname": "miniredribbon"
+}

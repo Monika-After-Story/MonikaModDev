@@ -4,8 +4,8 @@ init 100 python:
     layout.UNSTABLE = store.mas_layout.UNSTABLE
 
 init -1 python:
-    layout.QUIT_YES = _("Please don't close the game on me!")
-    layout.QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
+    layout.QUIT_YES = store.mas_layout.QUIT_YES
+    layout.QUIT_NO = store.mas_layout.QUIT_NO
 
     # tooltips
     layout.MAS_TT_SENS_MODE = (
@@ -16,6 +16,9 @@ init -1 python:
         "Unstable mode downloads updates from the experimental unstable "
         "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
+    )
+    layout.MAS_TT_UNSTABLE_DISABLED = (
+        "Unstable cannot be disabled until the next stable release."
     )
     layout.MAS_TT_REPEAT = _(
         "Enable this to let Monika repeat topics that you have already seen."
@@ -42,18 +45,20 @@ init -1 python:
     )
 
 
-init python in mas_layout:
+init -2 python in mas_layout:
     import store
     import store.mas_affection as aff
 
-    QUIT_YES = store.layout.QUIT_YES
-    QUIT_NO = store.layout.QUIT_NO
+    QUIT_YES = _("Please don't close the game on me!")
+    QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
     QUIT = _("Leaving without saying goodbye, [player]?")
     UNSTABLE = (
-        "WARNING: Enabling unstable mode will download updates from the " +
-        "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistents before enabling this mode. Please report " +
-        "issues found here with an [[UNSTABLE] tag."
+        "WARNING: Enabling unstable mode will download updates from the "
+        "experimental unstable branch. "
+        "THIS IS NOT EASILY REVERSIBLE. "
+        "It is HIGHLY recommended to make a backup of your persistents "
+        "before enabling this mode. "
+        "Please report issues found here with an [[UNSTABLE] tag."
     )
 
     # quit yes messages affection scaled
@@ -117,6 +122,22 @@ init python in mas_layout:
         return msg
 
 
+    def set_quit_msg(quit_msg=None, quit_yes=None, quit_no=None):
+        """
+        Sets text for the quit dialogue box
+
+        For documentation, see mas_setQuitMsg
+        """
+        if quit_msg is not None:
+            store.layout.QUIT = quit_msg
+
+        if quit_yes is not None:
+            store.layout.QUIT_YES = quit_yes
+
+        if quit_no is not None:
+            store.layout.QUIT_NO = quit_no
+
+
     def setupQuits():
         """
         Sets up quit message based on the current affection state
@@ -134,14 +155,40 @@ init python in mas_layout:
         if quit_no is None:
             quit_no = findMsg(curr_aff_state, 2)
 
-        store.layout.QUIT = quit_msg
-        store.layout.QUIT_YES = quit_yes
-        store.layout.QUIT_NO = quit_no
+        set_quit_msg(quit_msg, quit_yes, quit_no)
+
+
+init python:
+    import store.mas_layout
+
+
+    def mas_resetQuitMsg():
+        """
+        Resets quit messages to the ones appropriate for the current affection.
+        """
+        store.mas_layout.setupQuits()
+
+
+    def mas_setQuitMsg(quit_msg=None, quit_yes=None, quit_no=None):
+        """
+        Sets text for the quit dialogue box
+
+        IN:
+            quit_msg - text to show as the quit dialogue box message. Not set
+                if None.
+                (Default: None)
+            quit_yes - text to show when YES is clicked in the quit dialogue
+                box. Not set if None.
+                (Default: None)
+            quit_no - text to show when NO is clicked in the quit dialogue box.
+                Not set if None.
+                (Default: None)
+        """
+        store.mas_layout.set_quit_msg(quit_msg, quit_yes, quit_no)
 
 
 init 900 python:
-    import store.mas_layout
-    store.mas_layout.setupQuits()
+    mas_resetQuitMsg()
 
 
 ## Initialization
@@ -368,6 +415,7 @@ style frame_dark:
 
 screen say(who, what):
     style_prefix "say"
+    zorder 60
 
     window:
         id "window"
@@ -850,13 +898,11 @@ screen navigation():
             textbutton _("Return") action Return()
 
 style navigation_button is gui_button:
-    size_group "navigation"
     properties gui.button_properties("navigation_button")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
 style navigation_button_dark is gui_button:
-    size_group "navigation"
     properties gui.button_properties("navigation_button_dark")
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
@@ -1351,7 +1397,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "radio"
+                        style_prefix "generic_fancy_check"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1365,10 +1411,15 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Graphics")
+
+                    # this is a normal button
+                    textbutton _("Change Renderer"):
+                        style "check_button"
+                        action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
-                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
                     #Handle buttons
                     textbutton _("UI: Night Mode"):
@@ -1380,13 +1431,21 @@ screen preferences():
 
 
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _("Gameplay")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
-                            textbutton _("Unstable"):
-                                action SetField(persistent, "_mas_unstable_mode", False)
-                                selected persistent._mas_unstable_mode
+                            if store.mas_utils.is_ver_stable(config.version):
+                                textbutton _("Unstable"):
+                                    action SetField(persistent, "_mas_unstable_mode", False)
+                                    selected persistent._mas_unstable_mode
+                            else:
+                                textbutton _("Unstable"):
+                                    style "generic_fancy_check_button_disabled"
+                                    text_style "generic_fancy_check_button_disabled_text"
+                                    action SetField(persistent, "_mas_unstable_mode", True)
+                                    selected True
+                                    hovered tooltip.Action(layout.MAS_TT_UNSTABLE_DISABLED)
 
                         else:
                             textbutton _("Unstable"):
@@ -1401,7 +1460,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "check"
+                    style_prefix "generic_fancy_check"
                     label _(" ")
 #                    textbutton _("Sensitive Mode"):
 #                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1418,6 +1477,7 @@ screen preferences():
                 style_prefix "slider"
                 box_wrap True
 
+                # TODO: clean this up, we should not exucute py code in screens
                 python:
                     ### random chatter preprocessing
                     if mas_randchat_prev != persistent._mas_randchat_freq:
@@ -1535,39 +1595,20 @@ screen preferences():
                     bar value Preference("auto-forward time")
 
                 vbox:
+                    label _("Music Volume")
+                    hbox:
+                        bar value Preference("music volume")
 
-                    if config.has_music:
-                        label _("Music Volume")
-
-                        hbox:
-                            bar value Preference("music volume")
-
-                    if config.has_sound:
-
-                        label _("Sound Volume")
-
-                        hbox:
-                            bar value Preference("sound volume")
-
-                            if config.sample_sound:
-                                textbutton _("Test") action Play("sound", config.sample_sound)
+                    label _("Sound Volume")
+                    hbox:
+                        bar value Preference("sound volume")
 
 
-                    if config.has_voice:
-                        label _("Voice Volume")
+                    null height gui.pref_spacing
 
-                        hbox:
-                            bar value Preference("voice volume")
-
-                            if config.sample_voice:
-                                textbutton _("Test") action Play("voice", config.sample_voice)
-
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
-
-                        textbutton _("Mute All"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
+                    textbutton _("Mute All"):
+                        style "generic_fancy_check_button"
+                        action Preference("all mute", "toggle")
 
 
             hbox:
@@ -1746,7 +1787,7 @@ screen notif_settings():
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             hbox:
                 spacing 25
                 textbutton _("Use Notifications"):
@@ -1762,7 +1803,7 @@ screen notif_settings():
             label _("Alert Filters")
 
         hbox:
-            style_prefix "check"
+            style_prefix "generic_fancy_check"
             box_wrap True
             spacing 25
 

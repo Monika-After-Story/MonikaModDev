@@ -123,17 +123,6 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
-    RANDCHAT_RANGE_MAP = {
-        BROKEN: 1,
-        DISTRESSED: 2,
-        UPSET: 3,
-        NORMAL: 4,
-        HAPPY: 4,
-        AFFECTIONATE: 5,
-        ENAMORED: 6,
-        LOVE: 6
-    }
-
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -295,34 +284,38 @@ init -1 python in mas_affection:
 
     # affection log rotate
     #  we do rotations every 100 sessions
-    if store.persistent._mas_affection_log_counter is None:
-        # start counter if None
-        store.persistent._mas_affection_log_counter = 0
+    #if store.persistent._mas_affection_log_counter is None:
+    #    # start counter if None
+    #    store.persistent._mas_affection_log_counter = 0
 
-    elif store.persistent._mas_affection_log_counter >= 500:
-        # if 500 sessions, do a logrotate
-        mas_utils.logrotate(
-            os.path.normcase(renpy.config.basedir + "/log/"),
-            "aff_log.txt"
-        )
-        store.persistent._mas_affection_log_counter = 0
+    #elif store.persistent._mas_affection_log_counter >= 500:
+    #    # if 500 sessions, do a logrotate
+    #    mas_utils.logrotate(
+    #        os.path.normcase(renpy.config.basedir + "/log/"),
+    #        "aff_log.txt"
+    #    )
+    #    store.persistent._mas_affection_log_counter = 0
 
-    else:
-        # otherwise increase counter
-        store.persistent._mas_affection_log_counter += 1
+    #else:
+    #    # otherwise increase counter
+    #    store.persistent._mas_affection_log_counter += 1
 
     # affection log setup
-    log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
-    log_open = log.open()
-    log.raw_write = True
-    log.write("VERSION: {0}\n".format(store.persistent.version_number))
+    log = store.mas_logging.init_log(
+        "aff_log",
+        formatter=store.mas_logging.logging.Formatter(
+            fmt="[%(asctime)s]: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        ),
+        rotations=50
+    )
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude | prev -> new
-    _audit = "[{0}]: {1} | {2} | {3} -> {4}\n"
+    _audit = "{0} | {1} | {2} -> {3}"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
-    _audit_f = "[{0}]: {5} | {1} | {2} | {3} -> {4}\n"
+    _audit_f = "{4} | {0} | {1} | {2} -> {3}"
     _freeze_text = "!FREEZE!"
     _bypass_text = "!BYPASS!"
 
@@ -353,7 +346,6 @@ init -1 python in mas_affection:
 
 
             audit_text = _audit_f.format(
-                datetime.datetime.now(),
                 piece_one,
                 change,
                 store._mas_getAffection(),
@@ -363,14 +355,13 @@ init -1 python in mas_affection:
 
         else:
             audit_text = _audit.format(
-                datetime.datetime.now(),
                 piece_one,
                 change,
                 store._mas_getAffection(),
                 new
             )
 
-        log.write(audit_text)
+        log.info(audit_text)
 
 
     def raw_audit(old, new, change, tag):
@@ -383,8 +374,7 @@ init -1 python in mas_affection:
             change - the chnage amount
             tag - a string to label this audit change
         """
-        log.write(_audit.format(
-            datetime.datetime.now(),
+        log.info(_audit.format(
             tag,
             change,
             old,
@@ -400,8 +390,7 @@ init -1 python in mas_affection:
             tag - a string to label thsi audit
             msg - message to show
         """
-        log.write("[{0}]: {1} | {2}\n".format(
-            datetime.datetime.now(),
+        log.info("{0} | {1}".format(
             tag,
             msg
         ))
@@ -419,6 +408,20 @@ init -1 python in mas_affection:
             return "monika 1esc_static"
 
         return FORCE_EXP_MAP.get(curr_aff, "monika idle")
+
+# This needs to be defined a bit later
+init 5 python in mas_affection:
+    # Rand chatter settings map
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: store.mas_randchat.RARELY,
+        DISTRESSED: store.mas_randchat.OCCASIONALLY,
+        UPSET: store.mas_randchat.LESS_OFTEN,
+        NORMAL: store.mas_randchat.NORMAL,
+        HAPPY: store.mas_randchat.NORMAL,
+        AFFECTIONATE: store.mas_randchat.OFTEN,
+        ENAMORED: store.mas_randchat.VERY_OFTEN,
+        LOVE: store.mas_randchat.VERY_OFTEN
+    }
 
 
 # need these utility functiosn post event_handler
@@ -660,19 +663,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-        # unlock islands event if seen already
-        if store.seen_event("mas_monika_islands"):
-            if store.mas_cannot_decode_islands:
-                # failed to decode islandds, delay this action
-                store.mas_addDelayedAction(2)
-
-                # lock the island event since we failed to decode images
-                store.mas_lockEventLabel("mas_monika_islands")
-
-            else:
-                # otherwise we can directly unlock this topic
-                store.mas_unlockEventLabel("mas_monika_islands")
-
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -686,10 +676,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to affectionate
         """
-
-        # remove island event delayed actions
-        store.mas_removeDelayedActions(1, 2)
-
         #Change randchat
         store.mas_randchat.reduceRandchatForAff(AFFECTIONATE)
 
@@ -1913,8 +1899,8 @@ init 20 python:
                 mas_apology_reason = reason
             return
         elif mas_getEV(ev_label) is None:
-            store.mas_utils.writelog(
-                "[ERROR]: ev_label does not exist: {0}\n".format(repr(ev_label))
+            store.mas_utils.mas_log.error(
+                "ev_label does not exist: {0}".format(repr(ev_label))
             )
             return
 
@@ -2054,7 +2040,7 @@ label monika_affection_nickname:
         python:
             if aff_nickname_ev:
                 # change the prompt for this event
-                aff_nickname_ev.prompt = _("Can I call you a different name?")
+                aff_nickname_ev.prompt = _("Can I call you a different nickname?")
                 Event.lockInit("prompt", ev=aff_nickname_ev)
                 persistent._mas_offered_nickname = True
 
@@ -2082,13 +2068,13 @@ label monika_affection_nickname:
                         _("So what do you want to call me?"),
                         allow=name_characters_only,
                         length=10,
-                        screen_kwargs={"use_return_button": True}
+                        screen_kwargs={"use_return_button": True, "return_button_value": "nevermind"}
                     ).strip(' \t\n\r')
 
                     lowername = inputname.lower()
 
                 # lowername isn't detecting player or m_name?
-                if lowername == "cancel_input":
+                if lowername == "nevermind":
                     m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
                     m 3eka "But that's okay. I like '[m_name]' anyway."
@@ -2096,7 +2082,7 @@ label monika_affection_nickname:
 
                 elif not lowername:
                     m 1lksdla "..."
-                    m 1hksdrb "You have to give me a name, [player]!"
+                    m 1hksdrb "You have to give me a nickname, [player]!"
                     m "I swear you're just so silly sometimes."
                     m 1eka "Try again!"
 
@@ -2107,13 +2093,13 @@ label monika_affection_nickname:
 
                 elif lowername == m_name.lower():
                     m 1euc "..."
-                    m 1hksdlb "I thought we were choosing a new name, silly."
+                    m 1hksdlb "I thought we were choosing a new nickname, silly."
                     m 1eka "Try again~"
 
-                elif re.findall("mon(-|\\s)+ika", lowername):
-                    m 2tfc "..."
-                    m 2esc "Try again."
-                    show monika 1eua
+                elif re.findall(r"mon[-_'\s]+ika|^monica|[-_'\s]+monica", lowername):
+                    m 2ttc "..."
+                    m 2tsd "Try again."
+                    show monika 1esc
 
                 elif persistent._mas_grandfathered_nickname and lowername == persistent._mas_grandfathered_nickname.lower():
                     jump .neutral_accept
@@ -2125,18 +2111,19 @@ label monika_affection_nickname:
 
                 else:
                     if not mas_bad_name_comp.search(inputname) and lowername not in ["yuri", "sayori", "natsuki"]:
-                        if inputname == "Monika":
+                        if lowername == "monika":
+                            $ inputname = inputname.capitalize()
                             m 3hua "Ehehe, back to the classics I see~"
 
                         elif good_monika_nickname_comp.search(inputname):
-                            m 1wuo "Oh! That's a wonderful name!"
+                            m 1wuo "Oh! That's a wonderful nickname!"
                             m 3ekbsa "Thank you, [player]. You're such a sweetheart!~"
 
                         else:
                             label .neutral_accept:
                                 pass
 
-                            m 1duu "[inputname]... That's a pretty nice name."
+                            m 1duu "[inputname]... That's a pretty nice nickname."
                             m 3ekbsa "Thank you [player], you're so sweet~"
 
                         $ persistent._mas_monika_nickname = inputname
