@@ -1,4 +1,3 @@
-rpy python 3
 ## calendar testing
 
 init 5 python:

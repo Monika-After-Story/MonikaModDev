@@ -1,4 +1,3 @@
-rpy python 3
 # testing module ofr idle
 
 init 5 python:

@@ -1,4 +1,3 @@
-rpy python 3
 # dev related greetings
 
 # TODO Delete this *Insert Monika with a handgun*

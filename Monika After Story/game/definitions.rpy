@@ -1,4 +1,3 @@
-rpy python 3
 define persistent.demo = False
 
 define config.developer = False

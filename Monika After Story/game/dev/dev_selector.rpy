@@ -1,4 +1,3 @@
-rpy python 3
 # selector testing
 
 init -100 python:

@@ -1,4 +1,3 @@
-rpy python 3
 # basic dev tool stuff
 
 init 800 python:

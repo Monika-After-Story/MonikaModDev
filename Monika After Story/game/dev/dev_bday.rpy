@@ -1,4 +1,3 @@
-rpy python 3
 # test bday art
 
 init 5 python:

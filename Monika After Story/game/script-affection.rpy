@@ -1,4 +1,3 @@
-rpy python 3
 # AFF010 is progpoints
 #
 # Affection module:

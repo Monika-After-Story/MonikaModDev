@@ -1,4 +1,3 @@
-rpy python 3
 # Monika's ???? Event
 # deserves it's own file because of how much dialogue these have
 # it basically shows a new screen over everything, and has an image map

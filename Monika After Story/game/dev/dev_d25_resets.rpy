@@ -1,4 +1,3 @@
-rpy python 3
 # just resetting the d25 events
 
 init 999 python:

@@ -1,4 +1,3 @@
-rpy python 3
 ## overlay testing
 
 init 5 python:

@@ -1,4 +1,3 @@
-rpy python 3
 ##This page holds all of the random greetings that Monika can give you after you've gone through all of her "reload" scripts
 
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup

@@ -1,4 +1,3 @@
-rpy python 3
 # deco testing
 
 
@@ -203,7 +202,7 @@ init 5 python:
     )
 
 label dev_deco_tag_test_api_same:
-    
+
     m 1eub "TIME TO TEST `register_img_same`"
     $ mas_showDecoTag("dev_monika_deco_thr", show_now=True)
 

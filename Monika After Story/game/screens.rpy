@@ -1,4 +1,3 @@
-rpy python 3
 init 100 python:
     layout.QUIT = store.mas_layout.QUIT
     layout.UNSTABLE = store.mas_layout.UNSTABLE

@@ -1,4 +1,3 @@
-rpy python 3
 #Create an apology db for storing our times
 #Stores the event label as a key, its corresponding data is a tuple where:
 #   [0] -> timedelta defined by: current total playtime + apology_active_expiry time

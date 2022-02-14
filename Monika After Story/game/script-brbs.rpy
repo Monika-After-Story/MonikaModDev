@@ -1,4 +1,3 @@
-rpy python 3
 ## This script file holds all of the brb topics
 # Some conventions:
 #   - All brbs should have their markSeen set to True so they don't show up in unseen

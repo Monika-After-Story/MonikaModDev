@@ -1,4 +1,3 @@
-rpy python 3
 # sprite testing code
 
 init 100 python:
@@ -495,7 +494,7 @@ init -1 python:
             img_base, hl_base = self.gen_ims(bat_lvl)
 
             img_base = self.apply_filter(img_base)
-            
+
             rv = renpy.Render(width, height)
 
             # start rendering
@@ -552,7 +551,7 @@ init 5 python:
     )
 
 label dev_dynamic_acs_test:
-    
+
     m 6eua "now to test dynamic ACS"
     $ battery_level = 0
     $ monika_chr.wear_acs(dev_acs_battery)
@@ -574,7 +573,7 @@ label dev_dynamic_acs_test:
     m "5"
     $ battery_level = 6
     m "6"
-    
+
     m 6eua "now to take away acs"
     $ monika_chr.remove_acs(dev_acs_battery)
 

@@ -1,4 +1,3 @@
-rpy python 3
 # Affection related checks
 
 default persistent._mas_disable_sorry = None

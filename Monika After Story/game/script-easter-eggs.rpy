@@ -1,4 +1,3 @@
-rpy python 3
 # script stuff that is actually easter eggs
 
 # sayori music chnage/scare

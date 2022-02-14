@@ -1,4 +1,3 @@
-rpy python 3
 ## holiday info goes here
 #
 # TOC

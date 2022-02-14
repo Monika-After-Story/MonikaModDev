@@ -1,4 +1,3 @@
-rpy python 3
 #Persistent event database for fun facts
 default persistent._mas_fun_facts_database = dict()
 

@@ -1,4 +1,3 @@
-rpy python 3
 ## special functions to check integrity of systems
 
 init python:
@@ -243,8 +242,8 @@ init python in dev_mas_shared:
         def __init__(self, in_char):
             """
             IN:
-                in_char - pass True if the persisten file is int 
-                eh user's charactesr dir. Otherwise we use the 
+                in_char - pass True if the persisten file is int
+                eh user's charactesr dir. Otherwise we use the
                 loaded persistent
             """
             self.in_char = in_char
@@ -274,7 +273,7 @@ init python in dev_mas_shared:
                 for prop_name in store.Event.T_EVENT_NAMES:
                     prop_value = getattr(ev_data, prop_name)
 
-                    # listables need to be split into parts                    
+                    # listables need to be split into parts
                     # except affection
                     if ver._verify_tuli(prop_value, allow_none=False) and prop_name != "aff_range":
                         for item in prop_value:
@@ -330,7 +329,7 @@ init python in dev_mas_shared:
                 only_incl=None
         ):
             """
-            Does get_all_for_prop but saves the results directly to file 
+            Does get_all_for_prop but saves the results directly to file
 
             See get_all_for_prop for param doc
             """
@@ -350,7 +349,7 @@ init python in dev_mas_shared:
 
                 prop_value = getattr(curr_data, prop)
 
-                # this is just so we dont have to print out of loop 
+                # this is just so we dont have to print out of loop
                 if prop_value is None:
                     last_value = ""
                 else:
@@ -378,7 +377,7 @@ init python in dev_mas_shared:
                     False to sort descending
                     None to not sort
                     (Default: None)
-                only_incl - pass this in as a dictionary of eventlabels to 
+                only_incl - pass this in as a dictionary of eventlabels to
                     only include these in the prop
 
             RETURNS: tuple:
@@ -416,7 +415,7 @@ init python in dev_mas_shared:
             IN:
                 prop - the property to get
                 value - the value to get
-                only_incl - if passed in, only include entries with 
+                only_incl - if passed in, only include entries with
                     eventlabel in this dict
 
             RETURNS: dictionary containing all items that match the value for

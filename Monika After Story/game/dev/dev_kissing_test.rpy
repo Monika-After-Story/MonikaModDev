@@ -1,4 +1,3 @@
-rpy python 3
 # test kiss transition
 
 init 5 python:

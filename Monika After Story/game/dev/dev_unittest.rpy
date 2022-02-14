@@ -1,4 +1,3 @@
-rpy python 3
 # unit testing module
 # NOTE: no framework for now
 

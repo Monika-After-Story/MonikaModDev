@@ -1,4 +1,3 @@
-rpy python 3
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:

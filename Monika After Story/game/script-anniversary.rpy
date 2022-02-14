@@ -1,4 +1,3 @@
-rpy python 3
 init -2 python in mas_anni:
     import store
     import datetime

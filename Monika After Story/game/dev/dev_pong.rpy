@@ -1,4 +1,3 @@
-rpy python 3
 ## here we run some test cases
 
 init 999 python:

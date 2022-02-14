@@ -1,4 +1,3 @@
-rpy python 3
 # module that adds a tiny mouse tracker overlay
 
 init -1 python:

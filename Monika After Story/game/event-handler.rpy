@@ -1,4 +1,3 @@
-rpy python 3
 # Module that defines functions for story event handling
 # Assumes:
 #   persistent.event_list

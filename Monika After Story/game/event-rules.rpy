@@ -1,4 +1,3 @@
-rpy python 3
 # Module that defines static classes used to create the rule tuples used in the
 # Event class.
 # The static classes are the ones used to manipulate the rule tuples
