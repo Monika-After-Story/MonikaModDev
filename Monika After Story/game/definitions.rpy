@@ -5,8 +5,8 @@ define config.developer = False
 
 ###R7+ Config Var adjustments
 ##7.3.3
-#Only devs need this
-define config.report_extraneous_attributes = False
+#Only devs need this, NOTE: This was removed in r8
+#define config.report_extraneous_attributes = False
 ##7.3.0
 define config.keyword_after_python = True
 ##7.1.1
