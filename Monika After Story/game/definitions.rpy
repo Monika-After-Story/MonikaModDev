@@ -6,10 +6,10 @@ define config.developer = False
 ###R7+ Config Var adjustments
 init 999:
     ##7.3.3
-    #Only devs need this, NOTE: This was removed in r8
+    #Only devs need this
     define config.report_extraneous_attributes = False
 
-    ##7.3.0, NOTE: This was removed in r8
+    ##7.3.0
     define config.keyword_after_python = True
 
     ##7.1.1
@@ -20,12 +20,12 @@ init 999:
     #Fix textbox flickering
     define config.window_auto_hide = ["scene", "call screen"]
 
-##7.0
-#Fixes spaceroom masks from restarting every interaction
-define config.replay_movie_sprites = False
+    ##7.0
+    #Fixes spaceroom masks from restarting every interaction
+    define config.replay_movie_sprites = False
 
-##6.99.13
-define config.atl_one_frame = False
+    ##6.99.13
+    define config.atl_one_frame = False
 
 
 python early:
