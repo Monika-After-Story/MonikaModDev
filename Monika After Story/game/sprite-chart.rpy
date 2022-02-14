@@ -7123,7 +7123,7 @@ init -3 python:
 
             self.hair_map = hair_map
             self.pose_arms = pose_arms
-            self.outfit_hair = outfit_hair
+            self.outfit_hair = MASClothes._format_outfit_hair(outfit_hair)
             self.outfit_acs = MASClothes._format_outfit_acs(outfit_acs)
 
             # add defaults if we need them
@@ -7206,7 +7206,10 @@ init -3 python:
 
                 elif acs_name_or_obj in store.mas_sprites.ACS_MAP:
                     # lookup ACS otherwise
-                    acs = store.mas_sprites.ACS_MAP[acs_name_or_obj]
+                    acs = store.mas_sprites.get_sprite(
+                        store.mas_sprites.SP_ACS,
+                        acs_name_or_obj
+                    )
                     if acs is not None:
                         data[acs.name] = acs
 
@@ -7214,6 +7217,30 @@ init -3 python:
                 return data
 
             return None
+
+        @staticmethod
+        def _format_outfit_hair(outfit_hair_data):
+            """
+            Formats the given data so its ready for the outfit_hair property.
+
+            This also validates the data with the HAIR map.
+
+            IN:
+                outfit_hair_data - outfit hair data to format
+
+            RETURNS: data ready for the outfit_hair property
+            """
+            if outfit_hair_data is None:
+                return None
+
+            if isinstance(outfit_hair_data, MASHair):
+                # direct obj, this is ok
+                return outfit_hair_data
+
+            return store.mas_sprites.get_sprites(
+                store.mas_sprites.SP_HAIR,
+                outfit_hair_data
+            )
 
         def build_loadstrs(self, prefix):
             """
