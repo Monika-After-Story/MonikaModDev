@@ -1,4 +1,3 @@
-rpy python 3
 # Module for turning json formats into sprite objects
 # NOTE: This DEPENDS on sprite-chart.rpy and sprite-chart-matrix.rpy
 #

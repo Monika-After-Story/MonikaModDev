@@ -1,4 +1,3 @@
-rpy python 3
 #Here's where we store our background data
 default persistent._mas_background_MBGdata = {}
 

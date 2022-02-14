@@ -1,4 +1,3 @@
-rpy python 3
 default persistent._mas_game_database = dict()
 
 init -10 python in mas_games:

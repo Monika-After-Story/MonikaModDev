@@ -1,4 +1,3 @@
-rpy python 3
 # Module that contains both work-flow specific shield functions and
 # generalized shield functions.
 #

@@ -1,4 +1,3 @@
-rpy python 3
 # Module that provides an interface for loading / saving files that we interact with
 #
 # NOTE: this is meant purely for reading / writing files into base64 with

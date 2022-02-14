@@ -1,4 +1,3 @@
-rpy python 3
 # Calendar module
 # A custom made Calendar like UI to help managing date based events
 # Contains also a store named mas_calendar which includes helper functions

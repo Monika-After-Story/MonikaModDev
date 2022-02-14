@@ -1,4 +1,3 @@
-rpy python 3
 # Monika's sprites!
 # To add new images, use the sprite adder tool in MonikaModDev/tools/toolsmenu
 #

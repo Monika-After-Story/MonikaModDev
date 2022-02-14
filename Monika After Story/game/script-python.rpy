@@ -1,4 +1,3 @@
-rpy python 3
 # Monika's Python Tip of the Day (PTOD)
 #
 # I probably will be adding many of these, so For the sake of organization

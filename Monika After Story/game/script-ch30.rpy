@@ -1,4 +1,3 @@
-rpy python 3
 default persistent.monika_reload = 0
 # Has the player tried to skip?
 # (this is None because the player might tried to skip, but hasn't merged the saves yet)

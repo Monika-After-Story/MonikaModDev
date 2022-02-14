@@ -1,4 +1,3 @@
-rpy python 3
 # Module that contains a modified version of the poem minigame so we can use
 # it seamlessly in topics
 #

@@ -1,4 +1,3 @@
-rpy python 3
 # module containing what we call interactive modes (extras)
 # basically things like headpats and other mouse-based interactions should be
 # defined here

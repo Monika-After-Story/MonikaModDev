@@ -1,4 +1,3 @@
-rpy python 3
 # Module that defines changed topics between versions
 # this should run before updates.rpy
 

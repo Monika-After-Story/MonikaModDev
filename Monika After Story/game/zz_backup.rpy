@@ -1,4 +1,3 @@
-rpy python 3
 # module that does some file backup work
 
 # NOTE: these shoudl never be true for a standard persistent.
@@ -194,7 +193,7 @@ python early in mas_per_check:
 
     def should_show_chibika_persistent():
         """
-        Should we show the chibika persistent dialogue? 
+        Should we show the chibika persistent dialogue?
 
         RETURNS: True if we should show the chibika persistent dialogue
         """
@@ -240,7 +239,7 @@ python early in mas_per_check:
 
         # first, check if we have a special persistent
         if os.access(_sp_per, os.F_OK):
-            #  we have one, so check if its valid 
+            #  we have one, so check if its valid
             try: # TEST_CASE_A
                 per_read, version = tryper(_sp_per)
 
@@ -368,7 +367,7 @@ python early in mas_per_check:
 
             try: # TEST_CASE_F
                 shutil.copy(_cur_per, _sp_per)
-                os.remove(_cur_per) 
+                os.remove(_cur_per)
 
                 # and then close out of here - the game should generate a fresh
                 # persistent.
@@ -845,7 +844,7 @@ label mas_backups_incompat_start:
     $ mas_darkMode(True) # required for the updater
 
     if (
-            persistent._mas_incompat_per_rpy_files_found 
+            persistent._mas_incompat_per_rpy_files_found
             and mas_hasRPYFiles()
     ):
         # user said they would delete the RPY files, but we still have them
@@ -985,7 +984,7 @@ label mas_backups_incompat_rpy_yes_del:
     show chibika 3 at sticker_hop
     "Done!"
     "Let's try updating now!"
-    jump mas_backups_incompat_updater_start   
+    jump mas_backups_incompat_updater_start
 
 
 label mas_backups_incompat_rpy_no_del:
@@ -1023,8 +1022,8 @@ label mas_backups_incompat_updater_failed:
     # fall through
 
 label mas_backups_incompat_updater_start:
-    
-    # setup for unstable 
+
+    # setup for unstable
     $ persistent._mas_unstable_mode = True
     $ mas_updater.force = True
 
@@ -1045,10 +1044,10 @@ label mas_backups_incompat_updater_start:
     #       NOTE: why don't we lock or remove the cancel button? The user
     #       might have their own reasons for canceling the update check:
     #       - maybe they are on low bandwidth/metered connections?
-    #       - maybe they actually want to stay on stable and have a backup 
+    #       - maybe they actually want to stay on stable and have a backup
     #           persistent to us?
     #       - maybe its maybelline?
-    #       either way, since the user has an unstable per, no need for 
+    #       either way, since the user has an unstable per, no need for
     #       extravagant handholding.
 
     #"hol up" # use this to debug cancel returns
@@ -1076,5 +1075,3 @@ label mas_backups_incompat_updater_start:
     "Good luck!"
 
     jump _quit
-
-

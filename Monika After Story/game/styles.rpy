@@ -1,4 +1,3 @@
-rpy python 3
 # START: vars
 # Whether dark mode is enabled or not
 default persistent._mas_dark_mode_enabled = False

@@ -1,4 +1,3 @@
-rpy python 3
 # data migration module
 
 init -999 python in _mas_dm_dm:

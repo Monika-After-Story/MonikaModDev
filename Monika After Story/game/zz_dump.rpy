@@ -1,4 +1,3 @@
-rpy python 3
 ## dumps file for unstablers
 
 init 999 python:

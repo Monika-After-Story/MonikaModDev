@@ -1,4 +1,3 @@
-rpy python 3
 # graphics selection menu
 # we do this instead of the actual one because the real one breaks everything
 

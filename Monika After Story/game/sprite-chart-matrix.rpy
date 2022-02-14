@@ -1,4 +1,3 @@
-rpy python 3
 # sprite generation using matrix for night sprites
 # TODO: look at adding a highlight option to ACS/Clothes/Hair
 
@@ -1451,7 +1450,7 @@ init -4 python in mas_sprites:
         """
         img_key, cid, img_base, hl_base = render_key
         if cid == CID_DYNAMIC:
-            # add the img and hl directly 
+            # add the img and hl directly
             if img_base is not None:
                 render_list.append(img_base)
             if hl_base is not None:

@@ -1,4 +1,3 @@
-rpy python 3
 init:
 
     python:

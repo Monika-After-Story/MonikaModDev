@@ -1,4 +1,3 @@
-rpy python 3
 # This is used for top-level game strucutre.
 # Should not include any actual events or scripting; only logic and calling other labels.
 #

@@ -1,4 +1,3 @@
-rpy python 3
 #This file will include short story events that don't require their own file.
 
 #An event is crated by only adding a label and adding a requirement (see comment below).

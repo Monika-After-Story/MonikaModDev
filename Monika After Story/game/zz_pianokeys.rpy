@@ -1,4 +1,3 @@
-rpy python 3
 # Module that lets you play the piano
 #
 # Adding custom Piano Songs:

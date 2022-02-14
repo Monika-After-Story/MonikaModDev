@@ -1,4 +1,3 @@
-rpy python 3
 ## module that contains a workable selection screen?
 #
 # NOTE: i have no idea how generic this can get.

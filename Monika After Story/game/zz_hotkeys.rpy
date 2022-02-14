@@ -1,4 +1,3 @@
-rpy python 3
 # Module that is just for hotkeys and other keymaps
 #
 

@@ -1,4 +1,3 @@
-rpy python 3
 ## This splash screen is the first thing that Renpy will show the player
 ##
 ## Before load, check to be sure that the archive files were found.

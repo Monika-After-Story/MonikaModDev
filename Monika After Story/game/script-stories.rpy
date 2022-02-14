@@ -1,4 +1,3 @@
-rpy python 3
 # Module for Monika story telling
 #
 # Stories will get unlocked one at by session

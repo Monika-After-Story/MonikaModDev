@@ -1,4 +1,3 @@
-rpy python 3
 # Module that handles updates between versions
 # Assumes:
 #   updates.topics

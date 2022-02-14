@@ -1,4 +1,3 @@
-rpy python 3
 ## seasonal module.
 # contains season functions and seasonal programming points.
 

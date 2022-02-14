@@ -1,4 +1,3 @@
-rpy python 3
 # test module for backgrounds
 
 init 100 python:

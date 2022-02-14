@@ -1,4 +1,3 @@
-rpy python 3
 #Dict holding seen poems and amount of times seen
 #poem_id:shown_count
 default persistent._mas_poems_seen = dict()

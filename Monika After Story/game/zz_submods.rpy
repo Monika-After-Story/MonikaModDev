@@ -1,4 +1,3 @@
-rpy python 3
 init -999:
     default persistent._mas_submod_version_data = dict()
 

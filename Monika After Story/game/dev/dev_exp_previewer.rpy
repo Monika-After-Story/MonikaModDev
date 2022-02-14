@@ -1,4 +1,3 @@
-rpy python 3
 # special module that contains a screen dedicated to expression prevewing.
 # we really needed this lol.
 

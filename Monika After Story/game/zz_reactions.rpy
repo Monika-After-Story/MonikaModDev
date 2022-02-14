@@ -1,4 +1,3 @@
-rpy python 3
 # FileReactions framework.
 # not too different from events
 
