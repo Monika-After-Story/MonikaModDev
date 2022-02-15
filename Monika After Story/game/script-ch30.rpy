@@ -1112,10 +1112,8 @@ init 999 python in mas_reset:
         mod_d25c_end = store.mas_d25c_end + datetime.timedelta(days=28)
         today = datetime.date.today()
 
-        if (
-                store.mas_isInDateRange(today, mod_d25c_start, store.mas_nye, True, True)
-                or store.mas_isInDateRange(today, store.mas_nyd, mod_d25c_end)
-        ):
+        if store.mas_isInDateRange(today, mod_d25c_end, mod_d25c_start, True, True):
+            # outside of d25 season
             store.mas_d25HideVisuals()
 
 
@@ -1129,7 +1127,8 @@ init 999 python in mas_reset:
         mod_o31_end = store.mas_o31 + datetime.timedelta(days=7)
         today = datetime.date.today()
 
-        if store.mas_isInDateRange(today, mod_o31_start, mod_o31_end, True, True):
+        if not store.mas_isInDateRange(today, mod_o31_start, mod_o31_end, True, True):
+            # outside of the o31 season
             store.mas_o31HideVisuals()
 
 
