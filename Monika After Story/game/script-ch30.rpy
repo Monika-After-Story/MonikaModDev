@@ -807,13 +807,18 @@ init 999 python in mas_reset:
     import random
 
     import store
+    import store.mas_background as mas_background
     import store.mas_egg_manager as mas_egg_manager
+    import store.mas_dockstat as mas_dockstat
     import store.mas_games as mas_games
     import store.mas_globals as mas_globals
+    import store.mas_island_event as mas_island_event
+    import store.mas_randchat as mas_randchat
     import store.mas_selspr as mas_selspr
     import store.mas_songs as mas_songs
     import store.mas_sprites as mas_sprites
     import store.mas_utils as mas_utils
+    import store.mas_windowutils as mas_windowutils
     import store.mas_xp as mas_xp
 
 
@@ -997,6 +1002,14 @@ init 999 python in mas_reset:
         mas_selspr.startup_prompt_check()
 
 
+    def random_chatter():
+        """
+        Runs reset code for random chatter
+        """
+        ## random chatter frequency reset
+        mas_randchat.adjustRandFreq(store.persistent._mas_randchat_freq)
+
+
     def returned_home():
         """
         Runs reset code for returned home
@@ -1132,13 +1145,13 @@ init 999 python in mas_reset:
             store.persistent._mas_filereacts_reacted_map = dict()
 
         #Let's see if someone did a time travel
-        if persistent._mas_filereacts_last_aff_gained_reset_date > today:
-            $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+        if store.persistent._mas_filereacts_last_aff_gained_reset_date > today:
+            store.persistent._mas_filereacts_last_aff_gained_reset_date = today
 
         #See if we need to reset the daily gift aff amt
-        if persistent._mas_filereacts_last_aff_gained_reset_date < today:
-            $ persistent._mas_filereacts_gift_aff_gained = 0
-            $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+        if store.persistent._mas_filereacts_last_aff_gained_reset_date < today:
+            store.persistent._mas_filereacts_gift_aff_gained = 0
+            store.persistent._mas_filereacts_last_aff_gained_reset_date = today
 
 
     def events():
@@ -1172,6 +1185,12 @@ init 999 python in mas_reset:
             store.persistent._mas_strip_dates_rules
         )
 
+        if store.seen_event('mas_gender'):
+            store.mas_unlockEVL("monika_gender_redo","EVE")
+
+        if store.seen_event('mas_preferredname'):
+            store.mas_unlockEVL("monika_changename","EVE")
+
 
     def songs():
         """
@@ -1183,6 +1202,73 @@ init 999 python in mas_reset:
         #Now check the analysis ev
         mas_songs.checkSongAnalysisDelegate()
 
+
+    def holidays():
+        """
+        Runs reset code for holidays that do not fall under the other
+        categories.
+        """
+        #Run a confirmed party check within a week of Moni's bday
+        store.mas_confirmedParty()
+
+        # If it's past d25, not within the gift range, and we haven't
+        # reacted to gifts, let's silently do that now
+        if (
+            store.persistent._mas_d25_gifts_given
+            and not store.mas_isD25GiftHold()
+            and not mas_globals.returned_home_this_sesh
+        ):
+            store.mas_d25SilentReactToGifts()
+
+
+    def backgrounds():
+        """
+        Runs reset code for backgrounds
+        """
+        #Set our TOD var
+        store.mas_setTODVars()
+
+        #Check BGSel topic unlocked state
+        store.mas_checkBackgroundChangeDelegate()
+
+        # verify suntimes are correct
+        # NOTE: must be before background build update
+        store.mas_validate_suntimes()
+
+        # build background filter data and update the current filter progression
+        mas_background.buildupdate()
+
+
+    def window_reactions():
+        """
+        Runs reset code for window reactions
+        """
+        #set MAS window global
+        mas_windowutils._setMASWindow()
+
+
+    def islands():
+        """
+        Runs reset code for islands
+        """
+        # Did Monika make any progress on the islands?
+        mas_island_event.advanceProgression()
+
+
+    def final():
+        """
+        Runs reset code that should run after everythign else
+        """
+        if mas_dockstat.retmoni_status is not None:
+            store.monika_chr.remove_acs(store.mas_acs_quetzalplushie)
+
+            # We don't want to set up any drink vars/evs if we're potentially
+            # returning home this sesh
+            store.MASConsumable._reset()
+
+            #Let's also push the event to get rid of the thermos too
+            if not store.mas_inEVL("mas_consumables_remove_thermos"):
+                store.queueEvent("mas_consumables_remove_thermos")
 
 
 # IN:
@@ -2183,6 +2269,8 @@ label ch30_day:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+    # NOTE: these are all separate lines so if one crashes it wont fuck with
+    #   the other ones.
 
     $ store.mas_reset.xp()
 
@@ -2196,8 +2284,7 @@ label ch30_reset:
 
     $ store.mas_reset.sprites()
 
-    ## random chatter frequency reset
-    $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
+    $ store.mas_reset.random_chatter()
 
     $ store.mas_reset.returned_home()
 
@@ -2215,55 +2302,14 @@ label ch30_reset:
 
     $ store.mas_reset.songs()
 
-    #Run a confirmed party check within a week of Moni's bday
-    $ mas_confirmedParty()
+    $ store.mas_reset.holidays()
 
-    #If it's past d25, not within the gift range, and we haven't reacted to gifts, let's silently do that now
-    if (
-        persistent._mas_d25_gifts_given
-        and not mas_isD25GiftHold()
-        and not mas_globals.returned_home_this_sesh
-    ):
-        $ mas_d25SilentReactToGifts()
+    $ store.mas_reset.backgrounds()
 
-    #Set our TOD var
-    $ mas_setTODVars()
+    $ store.mas_reset.window_reactions()
 
-    python:
-        if seen_event('mas_gender'):
-            mas_unlockEVL("monika_gender_redo","EVE")
+    $ store.mas_reset.islands()
 
-        if seen_event('mas_preferredname'):
-            mas_unlockEVL("monika_changename","EVE")
-
-    #Check BGSel topic unlocked state
-    $ mas_checkBackgroundChangeDelegate()
-
-    # verify suntimes are correct
-    # NOTE: must be before background build update
-    $ store.mas_validate_suntimes()
-
-    # build background filter data and update the current filter progression
-    $ store.mas_background.buildupdate()
-
-    #set MAS window global
-    $ mas_windowutils._setMASWindow()
-
-    # Did Monika make any progress on the islands?
-    $ store.mas_island_event.advanceProgression()
-
-    ## certain things may need to be reset if we took monika out
-    # NOTE: this should be at the end of this label, much of this code might
-    # undo stuff from above
-    python:
-        if store.mas_dockstat.retmoni_status is not None:
-            monika_chr.remove_acs(mas_acs_quetzalplushie)
-
-            #We don't want to set up any drink vars/evs if we're potentially returning home this sesh
-            MASConsumable._reset()
-
-            #Let's also push the event to get rid of the thermos too
-            if not mas_inEVL("mas_consumables_remove_thermos"):
-                queueEvent("mas_consumables_remove_thermos")
+    $ store.mas_reset.final()
 
     return
