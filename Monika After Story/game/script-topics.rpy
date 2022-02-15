@@ -17740,3 +17740,36 @@ label monika_hedonism:
     m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_war_in_world",
+            category=['Society'],
+            prompt="War in the world",
+            random=True
+        )
+    )
+
+label monika_war_in_world:
+    m 1euc "Hey [player]."
+    m 1esc "I would like to talk about a slightly strange topic, "
+    extend m 4hksdlb "strange for a normal girl like me, ahaha."
+    m 2esc "I want to talk about war."
+    m 3esc "You must have heard about it many times. It is often said in the news that active hostilities are taking place in some country."
+    m 3ekc "It's so sad, war has always existed along with civilization."
+    m 4eud "Just think about it, in the entire history of mankind there have been only a few years of peace! And that's not counting the little skirmishes! And even those few years fall on ancient times."
+    m 4eud "And this means that it is quite possible that there were wars undocumented by historians of that time. This is terrible, it is typical for humanity not only to develop and create, but also to destroy and kill."
+    m 3euc "On the other hand, the war gave impetus to the development of technology. For example rockets: before there was a need to launch something at the enemy from a long distance and so that he could not respond. And now, thanks to rockets, humanity is exploring space."
+    m 3euc "Achievements in medicine. During World War I, first aid and field surgery procedures were developed to prevent loss of personnel from injury. Or special medicines to prevent gangrene, which deprived of limbs and even led to painful death!"
+    m 3esc "Or mobile communication, satellite navigation, Internet. Previously, all this was necessary for the military to quickly deliver information. And now the whole world uses this technology!"
+    m 4esc "This does not mean that without wars, mankind would not have achieved the successes in science that are now available. But it is quite possible that today there would not even be computers."
+    m 3dsc "Which means..."
+    extend m 2dstdc "we w-{w=0.3}would... "
+    extend m 6dstsc  "never...{w=0.5} never m... "
+    m ".{w=0.5}.{w=0.4}.{w=0.3}"
+    m 2dstsc "Anyway, if this is the price of our happiness, "
+    extend m 3estsc "then I do not regret that the war exists.{w=0.5} For you{w=0.3}, I would take weapons.{w=0.5} For our future{w=0.3}, I would fight."
+    m 2ekbltda "Because there is nothing more precious than your love, [mas_get_player_nickname(exclude_names=['my love', 'love'])]. I love you more than my life.~" 
+    return "love"
