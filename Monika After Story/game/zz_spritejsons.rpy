@@ -657,8 +657,8 @@ init -21 python in mas_sprites_json:
     ## outfit extras
     OE_LOADING = "loading outfit mode data..."
     OE_SUCCESS = "outfit mode data loaded successfully!"
-    OE_INVALID_HAIR = "hair '{0}' does not exist, ignoring"
-    OE_INVALID_ACS = "ACS '{0}' does not exist, ignoring"
+    OE_INVALID_HAIR = "hair '{0}' does not exist, ignoring for clothes '{1}'"
+    OE_INVALID_ACS = "ACS '{0}' does not exist, ignoring for clothes '{1}'"
 
 
     ### CONSTANTS
@@ -2662,7 +2662,7 @@ init 189 python in mas_sprites_json:
                     parsewritelog((
                         MSG_WARN_T,
                         1,
-                        OE_INVALID_HAIR.format(outfit_hair),
+                        OE_INVALID_HAIR.format(outfit_hair, sp_name),
                     ))
 
             if outfit_acs is not None:
@@ -2674,7 +2674,7 @@ init 189 python in mas_sprites_json:
                         parsewritelog((
                             MSG_WARN_T,
                             1,
-                            OE_INVALID_ACS.format(acs_name),
+                            OE_INVALID_ACS.format(acs_name, sp_name),
                         ))
 
                 if len(actual_acs) > 0:
