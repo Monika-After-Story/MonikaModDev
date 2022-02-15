@@ -1103,14 +1103,34 @@ init 999 python in mas_reset:
         """
         Runs reset code for d25 deco
         """
-        #TODO
+        # d25 deco should be reset if outside of d25 season - but this does
+        # not need to be super strict since user could return monika after
+        # d25 season ends.
+        # therefore, we'll do a 28 day grace period around the actual
+        # d25 season values (4 weeks)
+        mod_d25c_start = store.mas_d25c_start - datetime.timedelta(days=28)
+        mod_d25c_end = store.mas_d25c_end + datetime.timedelta(days=28)
+        today = datetime.date.today()
+
+        if (
+                store.mas_isInDateRange(today, mod_d25c_start, store.mas_nye, True, True)
+                or store.mas_isInDateRange(today, store.mas_nyd, mod_d25c_end)
+        ):
+            store.mas_d25HideVisuals()
 
 
     def _deco_o31():
         """
         Runs reset code for o31 deco
         """
-        # TODO
+        # o31 deco should be reset if outside of o31 - again this does not have
+        # to be super strict, so doing 1 week grace period
+        mod_o31_start = store.mas_o31 - datetime.timedelta(days=7)
+        mod_o31_end = store.mas_o31 + datetime.timedelta(days=7)
+        today = datetime.date.today()
+
+        if store.mas_isInDateRange(today, mod_o31_start, mod_o31_end, True, True):
+            store.mas_o31HideVisuals()
 
 
     def farewells():
