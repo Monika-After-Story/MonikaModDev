@@ -908,8 +908,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            # TODO: req ex-prop store.mas_sprites.EXP_C_BRS
-            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_WET,
+            store.mas_sprites.EXP_H_RQCP: [store.mas_sprites.EXP_C_WET, store.mas_sprites.EXP_C_BRS],
             store.mas_sprites.EXP_H_NT: True,
             store.mas_sprites.EXP_H_WET: True
         },
@@ -1379,7 +1378,6 @@ init -1 python:
         ),
         stay_on_start=True,
         ex_props={
-            # TODO: req ex-prop store.mas_sprites.EXP_H_WET
             store.mas_sprites.EXP_C_BRS: True,
             store.mas_sprites.EXP_C_WET: True
         },
