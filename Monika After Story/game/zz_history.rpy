@@ -155,7 +155,7 @@ init -860 python in mas_history:
 
         RETURNS: SEE lookup_ot_l
         """
-        return lookup_ot_l(key, years)
+        return lookup_otl(key, years)
 
 
     def lookup_otl(key, years_list):
