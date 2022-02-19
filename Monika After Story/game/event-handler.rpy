@@ -101,6 +101,10 @@ init -999 python in mas_ev_data_ver:
         return isinstance(val, __builtin__.list) or isinstance(val, tuple)
 
 
+    def _verify_tuli_nn(val):
+        return _verify_tuli(val, False)
+
+
     def _verify_tuli_aff(val, allow_none=True):
         if val is None:
             return allow_none

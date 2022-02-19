@@ -6004,8 +6004,29 @@ label mas_f14_autoload_check:
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
 
-            #Force sundress
-            monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+            has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
+            has_shoulderless = mas_SELisUnlocked(mas_clothes_blackpink_dress)
+            #TODO: Generalize this
+            lingerie_eligible = (
+                mas_canShowRisque()
+                and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+                and has_sundress
+            )
+
+            #NOTE: This lingerie_eligible check is so we don't grant lingeire on the same F14 we did black/pink dress
+            #(handled within f14 intro pathing)
+            if (
+                not has_sundress
+                or (has_shoulderless and random.random() > 0.5)
+                or lingerie_eligible
+            ):
+                monika_chr.change_clothes(mas_clothes_sundress_white, by_user=False, outfit_mode=True)
+
+            else:
+                monika_chr.change_clothes(mas_clothes_blackpink_dress, by_user=False, outfit_mode=True)
+                #Add to hol map as a failsafe if we don't have new clothes and this has already been seen, and player is < 1k aff
+                mas_addClothesToHolidayMap(mas_clothes_blackpink_dress)
+
             monika_chr.save()
             renpy.save_persistent()
 
@@ -6082,7 +6103,7 @@ init 5 python:
 label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
-    $ mas_gainAffection(5, bypass=True)
+    $ mas_gainAffection(10, bypass=True)
 
     #Prevent nts stuff for upset- since they don't get the rest of the event.
     if mas_isMoniUpset(lower=True):
@@ -6091,15 +6112,18 @@ label mas_f14_monika_valentines_intro:
             m "Thanks for visiting me, I hope you have a good day."
         return
 
-    $ lingerie_eligible = (
-        mas_canShowRisque()
-        and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
-        and mas_SELisUnlocked(mas_clothes_sundress_white)
-    )
+    python:
+        has_sundress = mas_SELisUnlocked(mas_clothes_sundress_white)
+        has_shoulderless = mas_SELisUnlocked(mas_clothes_blackpink_dress)
+        lingerie_eligible = (
+            mas_canShowRisque()
+            and not mas_SELisUnlocked(mas_clothes_vday_lingerie)
+            and has_sundress
+        )
 
-    $ mas_addClothesToHolidayMap(mas_clothes_sundress_white)
-    #rmall this because reset runs before we've registered this outfit
-    $ mas_rmallEVL("mas_change_to_def")
+        mas_addClothesToHolidayMap(mas_clothes_sundress_white)
+        #rmall this because reset runs before we've registered this outfit
+        mas_rmallEVL("mas_change_to_def")
 
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -6130,13 +6154,13 @@ label mas_f14_monika_valentines_intro:
         if lingerie_eligible and not mas_hasUnlockedClothesWithExprop("lingerie"):
             call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
 
-        # first time seeing sundress or non-first time seeing lingerie
-        elif not mas_SELisUnlocked(mas_clothes_sundress_white) or lingerie_eligible:
+        # first time seeing sundress/shoulderless or non-first time seeing lingerie
+        elif not has_sundress or not has_shoulderless or lingerie_eligible:
             m 3wub "Oh!"
             m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
             # lingerie
-            if mas_SELisUnlocked(mas_clothes_sundress_white):
+            if lingerie_eligible:
                 call mas_clothes_change(outfit=mas_clothes_vday_lingerie, outfit_mode=True, exp="monika 2rkbsu", restore_zoom=False, unlock=True)
                 pause 2.0
                 show monika 2ekbsu
@@ -6151,9 +6175,16 @@ label mas_f14_monika_valentines_intro:
                 m 2hubsb "But now that I've done it before, I really enjoy dressing like this for you!"
                 m 3tkbsu "I hope you enjoy it too~"
 
+            # shoulderless dress
+            elif has_sundress:
+                call mas_clothes_change(mas_clothes_blackpink_dress, unlock=True, outfit_mode=True)
+                m 2eua "Well...{w=0.3}what do you think?"
+                call mas_f14_intro_blackpink_dress
+
             # sundress
             else:
                 call mas_clothes_change(mas_clothes_sundress_white, unlock=True, outfit_mode=True)
+                $ mas_selspr.json_sprite_unlock(mas_acs_musicnote_necklace_gold)
                 m 2eua "..."
                 m 2eksdla "..."
                 m 2rksdlb "Ahaha...{w=1}{nw}"
@@ -6165,11 +6196,10 @@ label mas_f14_monika_valentines_intro:
         else:
             # don't currently have access to sundress or wearing inappropraite outfit for f14
             if (
-                monika_chr.clothes != mas_clothes_sundress_white
+                monika_chr.clothes not in (mas_clothes_sundress_white, mas_clothes_blackpink_dress)
                 and (
                     monika_chr.is_wearing_clothes_with_exprop("costume")
-                    or monika_chr.clothes == mas_clothes_def
-                    or monika_chr.clothes == mas_clothes_blazerless
+                    or monika_chr.clothes in (mas_clothes_def, mas_clothes_blazerless)
                     or mas_isMoniEnamored(lower=True)
                 )
             ):
@@ -6215,14 +6245,10 @@ label mas_f14_monika_valentines_intro:
 
     # not returning from a date, not getting lingerie
     else:
-        # already have sundress unlocked
-        if mas_SELisUnlocked(mas_clothes_sundress_white):
-            call mas_f14_intro_generic
-
-        # first time getting sundress
-        else:
+        if not has_sundress:
             python:
                 store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+                mas_selspr.json_sprite_unlock(mas_acs_musicnote_necklace_gold)
                 # TODO: generalize this under one function
                 store.mas_selspr.save_selectables()
                 renpy.save_persistent()
@@ -6234,6 +6260,13 @@ label mas_f14_monika_valentines_intro:
             m 2tsu "..."
             m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
             call mas_f14_sun_dress_outro
+
+        elif not has_shoulderless:
+            m 2eua "What do you think of my outfit?"
+            call mas_f14_intro_blackpink_dress
+
+        else:
+            call mas_f14_intro_generic
 
     m 1fkbsu "I love you so much."
     m 1hubfb "Happy Valentine's Day, [player]~"
@@ -6257,6 +6290,34 @@ label mas_f14_intro_generic:
     m 3ekbsu "Spending time with the one you love, {w=0.2}that's all anyone can ask for on Valentine's Day."
     m 3ekbsa "I don't care if we go on a romantic date, or just spend the day together here..."
     m 1fkbsu "It really doesn't matter to me as long as we're together."
+    return
+
+label mas_f14_intro_blackpink_dress:
+    #Do all unlocks here as a common path
+    python:
+        items_to_unlock = (
+            mas_clothes_blackpink_dress,
+            mas_acs_diamond_necklace_pink,
+            mas_acs_pinkdiamonds_hairclip,
+            mas_acs_ribbon_black_pink,
+            mas_acs_earrings_diamond_pink
+        )
+        for item in items_to_unlock:
+            mas_selspr.json_sprite_unlock(item)
+
+        #Add to holiday map
+        mas_addClothesToHolidayMap(mas_clothes_blackpink_dress)
+
+        #Save
+        mas_selspr.save_selectables()
+        renpy.save_persistent()
+
+    m 4hub "I think it's really cute!"
+    m 2eub "There's just something about that black and pink combination...{w=0.3}they just go so well together!"
+    m 2rtd "Seems like it would be a great outfit to wear for a date..."
+    m 2eua "..."
+    m 2tuu "..."
+    m 7hub "Ahaha~"
     return
 
 #######################[HOL050] TOPICS
@@ -6428,6 +6489,59 @@ label mas_f14_monika_vday_origins:
     m 1ekbsa "Despite it having started out a little depressing, I think it's really sweet."
     m 1ekbsu "I'm glad we're able to share such a magical day together.{w=0.2} {nw}"
     extend 1ekbfa "Happy Valentine's Day, [mas_get_player_nickname()]~"
+    return
+
+#######################[HOL050] COMPLIMENTS
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_happy_vday",
+            prompt="Happy Valentine's Day!",
+            action=EV_ACT_UNLOCK,
+            pool=False,
+            start_date=mas_f14,
+            end_date=mas_f14 + datetime.timedelta(days=1),
+            years=[]
+        ),
+        code="CMP",
+        skipCalendar=True,
+        markSeen=True
+    )
+
+    #Create the undo action rule
+    MASUndoActionRule.create_rule_EVL(
+        "mas_f14_happy_vday",
+        mas_f14,
+        mas_f14 + datetime.timedelta(1)
+    )
+
+label mas_f14_happy_vday:
+    $ persistent._mas_f14_spent_f14 = True
+    $ mas_gainAffection(5,bypass=True)
+    if mas_isMoniNormal(higher=True):
+        m 1hublb "Ehehe~ Thank you, [player]!"
+        show monika 5hkbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 5hkbla "Isn't it wonderful, having a day dedicated to appreciating the one you love?"
+        m 5lublb "Enjoying a sweet treat together, going on a lovely date...{w=0.2}{nw}"
+        extend 5tubla "or just enjoying the time we spend together."
+        m 5dublb "I'm so grateful that I get to spend Valentine's day with you."
+        m 5eubla "Thank you for making the time for me, [player]. {w=0.2}I love you so much~"
+        $ mas_ILY()
+
+    elif mas_isMoniDis(higher=True):
+        m 6euc "...{w=0.3}Huh?"
+        m 6wud "Oh, it's..."
+        m 6wuc "...{w=0.3}{nw}"
+        extend 6eku "Thank you. That...{w=0.2}{nw}"
+        extend 6lkblu "actually means a lot to hear."
+
+    else:
+        m "...{w=0.8}Thank you..."
+
+    #Lock this
+    $ mas_lockEVL("mas_f14_happy_vday", "CMP")
     return
 
 #######################[HOL050] TIME SPENT
