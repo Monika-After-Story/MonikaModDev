@@ -377,7 +377,14 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.8.1
 label v0_12_8_1(version="v0_12_8_1"):
     python hide:
-        pass
+        # transfer history vars
+        # only overwrite if not set.
+        if persistent._mas_nye_accomplished_resolutions is None:
+            persistent._mas_nye_accomplished_resolutions = persistent._mas_pm_accomplished_resolutions
+            safeDel("_mas_pm_accomplished_resolutions")
+        if persistent._mas_nye_has_new_years_res is None:
+            persistent._mas_nye_has_new_years_res = persistent._mas_pm_has_new_years_res
+            safeDel("_mas_pm_has_new_years_res")
     return
 
 # 0.12.8
