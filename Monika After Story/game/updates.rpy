@@ -374,14 +374,28 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.7.1
-label v0_12_7_1(version="v0_12_7_1"):
+# 0.12.8.1
+label v0_12_8_1(version="v0_12_8_1"):
     python hide:
         # Label names of these events were inconsistent
         mas_transferTopicData("monika_idle_brb", "monika_brb_idle", persistent.event_database)
         mas_transferTopicSeen("monika_brb_idle_callback", "monika_idle_brb_callback")
         mas_transferTopicData("monika_idle_writing", "monika_writing_idle", persistent.event_database)
         mas_transferTopicSeen("monika_writing_idle_callback", "monika_idle_writing_callback")
+    return
+
+# 0.12.8
+label v0_12_8(version="v0_12_8"):
+    python hide:
+        sundress_white_data = store.mas_utils.pdget(
+            "sundress_white",
+            persistent._mas_selspr_clothes_db,
+            validator=store.mas_ev_data_ver._verify_tuli_nn,
+            defval=(False, )
+        )
+        if len(sundress_white_data) > 0 and sundress_white_data[0]:
+            persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
+
     return
 
 # 0.12.7

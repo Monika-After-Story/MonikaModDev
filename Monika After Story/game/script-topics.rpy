@@ -17649,7 +17649,7 @@ label monika_tragic_hero:
     m 4eud "...Of course by 'hero' here, we're talking about the protagonist in a literary sense, not 'hero' in the typical sense."
     m 2ekd "...Although I'm sure there are plenty of people who would take issue with that, seeing as to many, I'm the antagonist..."
     m 2eka "But that argument aside, some would say my love for you would be my tragic flaw..."
-    m 4eksdld "Not because it's a flaw itself, but because it lead to my downfall."
+    m 4eksdld "Not because it's a flaw itself, but because it led to my downfall."
     m 2dkc "That's the thing, if you never brought me back, I would've had my downfall and never really got back up."
     m 7ekc "So in that sense, in the game, I guess I could be considered a tragic hero."
     if mas_isMoniNormal(higher=True):
@@ -17679,12 +17679,13 @@ label monika_utterson:
         m 1euc "Hey [player], have you read any gothic literature?"
         m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
         m 3hub "I've read quite a bit of gothic literary books lately!"
-        m 1eua "You should try the original novella {i}Strange Case of Dr Jekyll and Mr Hyde{/i} if you ever get the chance."
+        m 1eua "You should try the original novella {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i} if you ever get the chance."
         m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
 
-        m 3eud "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{nw}"
+        m 3eud "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{nw}"
+        $ _history_list.pop()
         menu:
-            m "So have you read {i}Strange Case of Dr Jekyll and Mr Hyde{/i}?{fast}"
+            m "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{fast}"
 
             "Yes.":
                 $ persistent._mas_pm_read_jekyll_hyde = True
@@ -17692,7 +17693,7 @@ label monika_utterson:
 
             "No.":
                 $ persistent._mas_pm_read_jekyll_hyde = False
-                m 3eub "Ok [player], well let me know if you ever do and then we can discuss it!"
+                m 3eub "Okay [player]...{w=0.3}let me know if you ever do and we can discuss it!"
 
     $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
     return "derandom"
@@ -17719,7 +17720,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_hedonism",
-            category=['philsophy'],
+            category=['philosophy'],
             prompt="Hedonism",
         )
     )
@@ -17730,12 +17731,12 @@ label monika_hedonism:
     m 2eub "I suggest you read it, but even if you haven't, I want to talk about the philosophy behind its core...{w=0.3}the belief of hedonism."
     m 2eud "Hedonism is the belief that morals should be based around pleasure."
     m 4euc "There are two main types of hedonism...{w=0.3}altruistic hedonism and egotistical hedonism, {w=0.1}which are wildly different."
-    m 4ruc "Egotistical hedonism, as you could guess, is the believe that one's own pleasure is the only thing that determines morality."
+    m 4ruc "Egotistical hedonism, as you could guess, is the belief that one's own pleasure is the only thing that determines morality."
     m 2esd "This is the type of hedonism that Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
     m 2rksdlc "It's really ruthless to think such a way..."
     m 2eud "On the other hand, altruistic hedonism is the belief that morality should be based on everyone's pleasure."
     m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
-    m 2dkc "Hedonism, at it's core, ignores everything but pleasure."
-    m 7etd "It's no wonder most people don't have that belief...{w=0.3}it's too simple, where morality is complicated."
+    m 2dkc "Hedonism, at its core, ignores everything but pleasure."
+    m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
     m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
     return

@@ -45,6 +45,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear a choker?",
         },
         "clothes": {
+            "_not_group": True,
             "_ev": "monika_clothes_select",
             "change": "Can you change your clothes?",
             # TODO: min-items
@@ -56,6 +57,7 @@ init -100 python in mas_selspr:
             "wear": "Can you wear earrings?",
         },
         "hair": {
+            "_not_group": True,
             "_ev": "monika_hair_select",
             "change": "Can you change your hairstyle?",
             # TODO: min-items
@@ -78,6 +80,12 @@ init -100 python in mas_selspr:
             "change": "Can you change the flower in your hair?",
             "wear": "Can you wear a flower in your hair?",
         },
+        "necklace": {
+            "_ev": "monika_necklace_select",
+            "_min-items": 1,
+            "change": "Can you change your necklace?",
+            "wear": "Can you wear a necklace?",
+        },
         "ribbon": {
             "_ev": "monika_ribbon_select",
             "_min-items": 1,
@@ -86,6 +94,54 @@ init -100 python in mas_selspr:
             "wear": "Can you tie your hair with something else?",
         },
     }
+
+
+    def _add_prompt(
+            key,
+            ev_label,
+            change,
+            wear,
+            _min_items=1,
+            _rule=None,
+            _not_group=False,
+    ):
+        """
+        Adds a prompt to the prompt map - basically like registering a
+        selector.
+
+        NOTE: this is private for now - should consider an actual
+        "register selector" function as a public API instead.
+
+        NOTE: this will overwrite existing data
+
+        IN:
+            key - the prompt key - for ACS, this should be group type
+            ev_label - event label associated with the selector
+            change - prompt to use when Monika currently wearing the ACS
+            wear - prompt to use when Monika not wearing the ACS
+            _min_items - minimum number of items to unlock the selector
+                (Default: 1)
+            _rule - function evaluated whenever unocking a selector -
+                should return True if the selector should be unlocked
+                (Default: None)
+            _not_group - True if this is prompt is not associated with an ACS
+                group
+                (Default: False)
+        """
+        data = {
+            "_ev": ev_label,
+            "_min-items": _min_items,
+            "change": change,
+            "wear": wear,
+        }
+
+        if _rule is not None:
+            data["_rule"] = _rule
+
+        if _not_group:
+            data["_not_group"] = True
+
+        PROMPT_MAP[key] = data
 
 
     def check_prompt(key):
@@ -146,6 +202,29 @@ init -100 python in mas_selspr:
         return key in PROMPT_MAP
 
 
+    def iter_prompt():
+        """
+        Creates an interable of prompt keys
+
+        RETURNS: iter (generator) of prompt keys
+        """
+        for prompt_key, prompt_data in iter_prompt_data():
+            yield prompt_key
+
+
+    def iter_prompt_data():
+        """
+        Creates an iterable of prompt map data
+
+        RETURNS: iter (generator) of tuples:
+            [0]: prompt key
+            [1]: prompt data
+        """
+        for prompt_key in PROMPT_MAP:
+            if "_not_group" not in PROMPT_MAP[prompt_key]:
+                yield (prompt_key, PROMPT_MAP[prompt_key])
+
+
     def lock_prompt(key):
         """
         Locks ev with the given key
@@ -202,7 +281,7 @@ init -100 python in mas_selspr:
             set_prompt("ribbon", "wear")
 
         # now for the rest
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             if group != "ribbon":
                 if store.monika_chr.is_wearing_acs_type(group):
                     set_prompt(group, "change")
@@ -607,14 +686,6 @@ init -10 python in mas_selspr:
     HAIR_SEL_SL = []
     CLOTH_SEL_SL = []
 
-    GRP_TOPIC_LIST = [
-        "choker",
-        "earrings",
-        "hat",
-        "left-hair-clip",
-        "left-hair-flower",
-        "ribbon",
-    ]
 
     # generic select dlg quips go here
     # should be as neutral as possible to go with any kind of acs
@@ -678,7 +749,7 @@ init -10 python in mas_selspr:
         NOTE: also checks the prompt rule
         """
         #ACS
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             min_items = get_minitems(group, 1)
             if (
                     check_prompt(group)
@@ -691,9 +762,9 @@ init -10 python in mas_selspr:
 
     def _switch_to_wear_prompts():
         """
-        Switches all prompts for grp_topic_list topics to use their wear prompt.
+        Switches all prompts for groups to use their wear prompt.
         """
-        for group in GRP_TOPIC_LIST:
+        for group in iter_prompt():
             set_prompt(group, "wear")
 
 
@@ -4306,4 +4377,24 @@ label monika_earrings_select:
 
 #### end earrings
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_necklace_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("necklace", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        ),
+        restartBlacklist=True,
+        markSeen=True
+    )
+
+label monika_necklace_select:
+    call mas_selector_generic_sidebar_select_acs("necklace", idle_exp="monika 6eua")
+    return
+#### end necklace selector
 ############### END SELECTOR TOPICS ###########################################
