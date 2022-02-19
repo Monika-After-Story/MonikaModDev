@@ -295,7 +295,9 @@ style generic_button_text_dark is generic_button_text_base:
     insensitive_color mas_ui.dark_button_text_insensitive_color
 
 image generic_fancy_check_button_fg = Image("mod_assets/buttons/checkbox/fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_insensitive = Image("mod_assets/buttons/checkbox/insensitive_fancy_check.png", yoffset=4)
 image generic_fancy_check_button_fg_selected = Image("mod_assets/buttons/checkbox/selected_fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_selected_insensitive = Image("mod_assets/buttons/checkbox/selected_insensitive_fancy_check.png", yoffset=4)
 
 # fancy checkbox buttons lose the box when selected
 # and the entire frame gets colored
@@ -303,6 +305,7 @@ style generic_fancy_check_button:
     properties gui.button_properties("check_button")
     foreground "generic_fancy_check_button_fg"
     selected_foreground "generic_fancy_check_button_fg_selected"
+    selected_insensitive_foreground "generic_fancy_check_button_fg_selected_insensitive"
     hover_background Solid("#ffe6f4")
     selected_background Solid("#FFBDE1")
 
@@ -310,8 +313,15 @@ style generic_fancy_check_button_dark:
     properties gui.button_properties("check_button_dark")
     foreground "generic_fancy_check_button_fg"
     selected_foreground "generic_fancy_check_button_fg_selected"
+    selected_insensitive_foreground "generic_fancy_check_button_fg_selected_insensitive"
     hover_background Solid("#d9739c")
     selected_background Solid("#CE4A7E")
+
+style generic_fancy_check_button_disabled is generic_fancy_check_button:
+    properties gui.button_properties("check_button")
+    foreground "generic_fancy_check_button_fg_insensitive"
+    selected_foreground "generic_fancy_check_button_fg_selected_insensitive"
+    selected_background Solid("1b1b1b")
 
 style generic_fancy_check_button_text is gui_button_text:
     properties gui.button_text_properties("generic_fancy_check_button")
@@ -319,6 +329,7 @@ style generic_fancy_check_button_text is gui_button_text:
     color "#BFBFBF"
     hover_color "#000000"
     selected_color "#000000"
+    insensitive_color mas_ui.light_button_text_insensitive_color
     outlines []
     yoffset 3
 
@@ -328,6 +339,14 @@ style generic_fancy_check_button_text_dark is gui_button_text_dark:
     color "#BFBFBF"
     hover_color "#FFAA99"
     selected_color "#FFAA99"
+    insensitive_color mas_ui.dark_button_text_insensitive_color
+    outlines []
+    yoffset 3
+
+style generic_fancy_check_button_disabled_text is generic_fancy_check_button:
+    properties gui.button_text_properties("generic_fancy_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
     outlines []
     yoffset 3
 

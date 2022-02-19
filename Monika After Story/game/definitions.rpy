@@ -4209,60 +4209,6 @@ init -995 python in mas_utils:
     # timezone cache
     _tz_cache = None
 
-    def compareVersionLists(curr_vers, comparative_vers):
-        """
-        Generic version number checker
-
-        IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
-        """
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-            IN:
-                smaller_vers_list - the smol list to adjust
-                larger_vers_list - the list we will adjust the smol list to
-
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-        #Let's verify that the lists are the same length
-        if len(curr_vers) < len(comparative_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
-                return 1
-
-            elif curr_vers[index] < comparative_vers[index]:
-                #Comparative version is greater, the rest of this is irrelevant
-                return -1
 
     def all_none(data=None, lata=None):
         """
@@ -6773,6 +6719,10 @@ define audio.fall = "sfx/fall.ogg"
 # custom audio
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
+
+# light switch sound created by SPANAC from
+# https://www.freesoundslibrary.com/light-switch-sound-effect/
+define audio.light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
 
 # Backgrounds
 image black = "#000000"
