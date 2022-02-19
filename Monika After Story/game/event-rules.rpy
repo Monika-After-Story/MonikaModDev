@@ -814,13 +814,13 @@ init -1 python:
                 dict containing the rule
             """
             if not isinstance(timedelta, datetime.timedelta):
-                raise Exception(
-                    "MASTimedeltaRepeatRule expects a datetime.timedelta object, got: '{0}'.".format(timedelta)
+                raise TypeError(
+                    "Expected a datetime.timedelta object, got: '{0}'.".format(timedelta)
                 )
 
             elif not timedelta:
-                raise Exception(
-                    "MASTimedeltaRepeatRule expects a datetime.timedelta object with a non-null value."
+                raise ValueError(
+                    "Expected a datetime.timedelta object with a non-null value."
                 )
 
             rule = {EV_RULE_RP_TIMEDELTA: timedelta}
