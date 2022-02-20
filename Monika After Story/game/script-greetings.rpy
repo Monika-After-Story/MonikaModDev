@@ -4563,11 +4563,11 @@ label mas_after_bath_cleanup_change_outfit:
         if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
             force_hair_change = True
 
-            # Let's restore the previosu outfit and acs
-            monika_chr.restore(persistent._mas_previous_moni_state)
+            # Let's restore the previous outfit and acs
+            monika_chr.load_state(persistent._mas_previous_moni_state, as_prims=True)
 
             # Fallback just in case
-            if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
+            if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
                 if mas_isMoniHappy(higher=True):
                     new_clothes = mas_clothes_blazerless
 
