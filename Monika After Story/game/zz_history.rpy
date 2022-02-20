@@ -232,7 +232,9 @@ init -860 python in mas_history:
             key - data key to store values
         """
         for year in year_data:
-            _store(year_data[year], key, year)
+            lookup_const, data = year_data[year]
+            if lookup_const == L_FOUND:
+                _store(data, key, year)
 
 
     ### history saver data save/load
