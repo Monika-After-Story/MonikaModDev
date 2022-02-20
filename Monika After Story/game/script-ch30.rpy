@@ -656,19 +656,6 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
-    def mas_resetIdleMode():
-        """
-        Resets specific idle mode vars.
-
-        This is meant to basically clear idle mode for holidays or other
-        things that hijack main flow
-        """
-        store.mas_globals.in_idle_mode = False
-        persistent._mas_in_idle_mode = False
-        persistent._mas_idle_data = {}
-        mas_idle_mailbox.get_idle_cb()
-
-
     def mas_enableTextSpeed():
         """
         Enables text speed
