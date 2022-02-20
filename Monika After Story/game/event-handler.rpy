@@ -2657,11 +2657,7 @@ init python:
 
         RETURNS: True if in event list, False if not
         """
-        for item in MASEventList.iter():
-            if item.evl == event_label:
-                return True
-
-        return False
+        return mas_findEVL(event_label) > -1
 
 
     def mas_rmEVL(event_label):
