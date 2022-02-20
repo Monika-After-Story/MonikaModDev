@@ -655,6 +655,13 @@ python early in mas_utils:
             self._default_val = default_val
             self._set_vars = {}
 
+        def __repr__(self):
+            return "<{}: (def value: {}, data: {})>".format(
+                type(self).__name__,
+                self._default_val,
+                self._set_vars
+            )
+
         def __contains__(self, item):
             return item in self._set_vars
 
