@@ -660,7 +660,7 @@ python early in mas_utils:
 
         def __getattr__(self, name):
             if name.startswith("_"):
-                return getattr(self, name)
+                return super(IsolatedFlexProp, self).__getattribute__(name)
             return self._set_vars.get(name, self._default_val)
 
         def __setattr__(self, name, value):
