@@ -1583,6 +1583,12 @@ init -1 python in evhand:
             """
             self._eli = data
 
+        def __repr__(self):
+            return "<{}: (data: {})>".format(
+                type(self).__name__,
+                self._eli
+            )
+
         @staticmethod
         def build(evl, *args):
             """
@@ -1983,14 +1989,14 @@ init python:
             if recur_error:
                 # log recursion error
                 store.mas_utils.mas_log.error(cls.__ERR_RECUR.format(
-                    type(thing),
+                    type(thing).__name__,
                     context
                 ))
                     
             else:
                 # log disallowed object
                 store.mas_utils.mas_log.error(cls.__ERR_NON_PICKLE.format(
-                    type(thing),
+                    type(thing).__name__,
                     context
                 ))
 
