@@ -4584,14 +4584,14 @@ label mas_after_bath_cleanup_change_outfit:
             force_hair_change
             or monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
         ):
-            available_hair = [
-                hair_obj
-                for hair_obj in mas_sprites.HAIR_MAP.itervalues()
-                if (
+            available_hair = mas_sprites.get_installed_hair(
+                predicate=lambda hair_obj: (
                     not hair_obj.hasprop(mas_sprites.EXP_H_WET)
                     and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
+                    and mas_selspr.get_sel_hair(hair_obj) is not None
+                    and mas_selspr.get_sel_hair(hair_obj).unlocked
                 )
-            ]
+            )
             # We should always have *something*, but just to make this extra foolproof
             if available_hair:
                 new_hair = random.choice(available_hair)

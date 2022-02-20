@@ -1354,6 +1354,80 @@ init -5 python in mas_sprites:
         # otherwise we have a map
         return sprite_map.get(sprite_name, None)
 
+    def get_installed_sprites(sprite_type, predicate=None):
+        """
+        Returns ALL available sprite objects
+        NOTE: Runtime only
+
+        IN:
+            sprite_type - the sprite type constant
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of sprite objects
+        """
+        sprite_map = SP_MAP.get(sprite_type, None)
+
+        if predicate:
+            return [
+                spr_object
+                for spr_object in sprite_map.itervalues()
+                if predicate(spr_object)
+            ]
+
+        else:
+            return sprite_map.values()
+
+    def get_installed_acs(predicate=None):
+        """
+        get_installed_sprites for acs objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of acs sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_ACS,
+            predicate=predicate
+        )
+
+    def get_installed_hair(predicate=None):
+        """
+        get_installed_sprites for hair objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of hair sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_HAIR,
+            predicate=predicate
+        )
+
+    def get_installed_clothes(predicate=None):
+        """
+        get_installed_sprites for clothes objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of clothes sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_CLOTHES,
+            predicate=predicate
+        )
+
+
 
 ##### special mas monika functions (hooks)
     # NOTE: set flag "abort" to True in prechange points to prevent
