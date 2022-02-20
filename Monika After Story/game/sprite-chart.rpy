@@ -1369,6 +1369,9 @@ init -5 python in mas_sprites:
         """
         sprite_map = SP_MAP.get(sprite_type, None)
 
+        if not sprite_map:
+            return []
+
         if predicate:
             return [
                 spr_object
