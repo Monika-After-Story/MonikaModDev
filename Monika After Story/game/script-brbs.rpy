@@ -153,7 +153,7 @@ init 10 python in mas_brbs:
         ],
         max_uses=1,
         aff_range=(store.mas_aff.AFFECTIONATE, None),
-        weight=3,
+        weight=10,
         tag="idle_mode_exps"
     )
 
