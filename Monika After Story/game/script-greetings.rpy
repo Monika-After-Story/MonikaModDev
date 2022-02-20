@@ -4418,6 +4418,11 @@ init 5 python:
             datetime.timedelta(days=3)
         )
     )
+    ev_rules.update(
+        MASSelectiveRepeatRule.create_rule(
+            hours=list(range(9, 20))
+        )
+    )
 
     addEvent(
         Event(
