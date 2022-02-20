@@ -1950,6 +1950,13 @@ init python:
             if ctx_data is not None:
                 self._from_dict(ctx_data)
 
+        def __setattr__(self, name, value):
+            """
+            We don't allow types that cannot be saved to persistent
+            """
+            if MASEventContext.is_allowed_data(value):
+                super(MASEventContext, self).__setattr__(name, value)
+
         @classmethod
         def is_allowed_data(cls, thing):
             """

@@ -102,3 +102,36 @@ label dev_ev_ctx_restart:
         $ renpy.save_persistent()
         $ raise Exception("fake crash")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_ev_ctx_invalid_start",
+            category=["dev"],
+            prompt="TEST EVENT CONTEXT (invalid ctx data)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_ev_ctx_invalid_start:
+    m 1eua "hi there, im going to attempt to add data that should not be allowed to the context."
+    m "the game should {b}NOT{/b} crash"
+
+    $ ctx = MASEventContext()
+    $ ctx.this_is_bad = object()
+    $ ctx.this_is_worse = mas_hair_def
+    $ ctx.oh_my_god = store.mas_ev_data_ver._strict_can_pickle # functions cannot be pickled
+
+    m 2eub "done - no crash should have happend"
+    m "now to check that these have no data"
+
+    if ctx.this_is_bad is None and ctx.this_is_worse is None and ctx.oh_my_god is None:
+        m 1hua "Yay it worked"
+        m "the bad values will also be logged to mas_log"
+    else:
+        m 6hftsc "{b}NO IT DID NOT WORK{/b}"
+
+    m 6wuw "ok we done now"
+    return
