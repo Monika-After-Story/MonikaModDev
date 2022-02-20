@@ -4558,34 +4558,46 @@ label mas_after_bath_cleanup:
 label mas_after_bath_cleanup_change_outfit:
     # TODO: Rng outfit selection wen
     python hide:
+        force_hair_change = False# If we changed the outfit, we always change hair
+
         if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
-            prev_clothes = mas_sprites.get_sprite(mas_sprites.SP_CLOTHES, persistent._mas_previous_moni_state[0])
+            force_hair_change = True
+
+            # Let's restore the previosu outfit and acs
+            monika_chr.restore(persistent._mas_previous_moni_state)
+
             # Fallback just in case
-            if prev_clothes is None or prev_clothes.hasprop(mas_sprites.EXP_C_WET):
+            if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
                 if mas_isMoniHappy(higher=True):
-                    prev_clothes = mas_clothes_blazerless
+                    new_clothes = mas_clothes_blazerless
 
                 else:
-                    prev_clothes = mas_clothes_def
+                    new_clothes = mas_clothes_def
 
-            monika_chr.change_clothes(
-                prev_clothes,
-                by_user=False,
-                outfit_mode=True
-            )
+                monika_chr.change_clothes(
+                    new_clothes,
+                    by_user=False,
+                    outfit_mode=True
+                )
 
-        if monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET):
-            # I think it's better to always select new random hair, even after using outfit mode
-            prev_hair = random.choice(
-                [
-                    hair_obj
-                    for hair_obj in mas_sprites.HAIR_MAP.itervalues()
-                    if not hair_obj.hasprop(mas_sprites.EXP_H_WET) and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
-                ]
-            )
-            monika_chr.change_hair(
-                prev_hair,
-                by_user=False
-            )
+        if (
+            force_hair_change
+            or monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+        ):
+            available_hair = [
+                hair_obj
+                for hair_obj in mas_sprites.HAIR_MAP.itervalues()
+                if (
+                    not hair_obj.hasprop(mas_sprites.EXP_H_WET)
+                    and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
+                )
+            ]
+            # We should always have *something*, but just to make this extra foolproof
+            if available_hair:
+                new_hair = random.choice(available_hair)
+                monika_chr.change_hair(
+                    new_hair,
+                    by_user=False
+                )
 
     return
