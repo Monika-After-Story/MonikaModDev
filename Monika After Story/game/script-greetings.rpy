@@ -4491,7 +4491,7 @@ label greeting_after_bath:
         m 7lubsb "I just finished [bathing_showering]...{w=0.3}{nw}"
         extend 1ekbfa "you don't mind me being in my towel, do you?~"
         m 1hubfb "Ahaha~"
-        m 3hubsa "I'll be getting ready for the [mas_globals.time_of_day_4state] soon."
+        m 3hubsa "I'll get ready soon, let me wait for my hair to dry off a little more first."
 
     # Gets used to it
     else:
@@ -4503,7 +4503,7 @@ label greeting_after_bath:
             m 1hubfb "Ahaha~"
 
         else:
-            m 1eua "I'll be getting ready for the [mas_globals.time_of_day_4state] soon."
+            m 1eua "I'll get dressed soon~"
 
     python:
         # enable music menu and music hotkeys
