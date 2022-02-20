@@ -37,6 +37,97 @@ init -999 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
+    import renpy
+
+
+    def _strict_can_pickle(val):
+        """
+        Checks if this value can be pickled safely into persistent.
+
+        This is VERY strict. we only allow types, not isinstance checks.
+        no ducks here
+
+        This will check structures recursively and will catch recursion errors.
+
+        IN:
+            val - value to check
+
+        RETURNS: tuple of the following format:
+            [0] - True if the value can be safely pickled, False if recursion
+                error or not picklable.
+            [1] - True if recursion error, False otherwise
+        """
+        try:
+            return __strict_can_pickle(val), False
+        except RuntimeError as re:
+            # yes, this how to check for recursion in python < 3.5
+            # NOTE: this also handles renpy's recursion error 
+            #   (tom includes more text)
+            if "maximum recursion depth exceeded" not in re.args[0]:
+                raise
+            return False, True
+
+
+    def __strict_can_pickle(val):
+        """
+        Recursive strict pickle check. See _strict_can_pickle for more info.
+
+        Will raise recursion error if appropriate.
+
+        IN:
+            val - value to check
+
+        RETURNS: True if value can be safely pickled, False otherwise.
+        """
+        if val is None:
+            return True
+
+        # non-structure types
+        val_type = type(val)
+        if val_type in (
+                str,
+                unicode,
+                bool,
+                int,
+                float,
+                long,
+                complex,
+                datetime.timedelta,
+                datetime.date,
+        ):
+            return True
+
+        # time-based needs to have tzinfo none
+        if val_type in (datetime.datetime, datetime.time):
+            return val.tzinfo is None
+
+        # list types
+        if val_type in (
+                __builtin__.list,
+                renpy.python.RevertableList,
+                __builtin__.set,
+                __builtin__.frozenset,
+                renpy.python.RevertableSet,
+                tuple,
+        ):
+            for sub_val in val:
+                if not __strict_can_pickle(sub_val):
+                    return False
+            return True
+
+        # dict types
+        if val_type in (__builtin__.dict, renpy.python.RevertableDict):
+            for sub_key in val:
+                if (
+                        not __strict_can_pickle(sub_key)
+                        or not __strict_can_pickle(val[sub_key])
+                ):
+                    return False
+            return True
+
+        # anything else probably bad
+        return False
+
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -1546,6 +1637,7 @@ init -1 python in evhand:
             return self._eli[self.IDX_EVENT_LABEL]
 
         # aliases
+        eventlabel = event_label # because Event
         ev_label = event_label
         evl = event_label
 
@@ -1828,9 +1920,23 @@ init python:
         """
         Context for events. Supports flexible attributes (like persistent).
 
+        However, only picklable primitive datatypes are allowed.
+        See mas_ev_data_ver._strict_can_pickle for more info.
+        In general, DO NOT USE OBJECTS - they will be denied entry.
+
         To get the current event context, call MASEventContext.get.
         """
         _this_ev_ctx = None # no one mess with this please i swear
+
+        ## string constants
+        __CTX_CTX = "current event: {0}"
+        __ERR_NON_PICKLE = (
+            "object of type '{0}' cannot be added to context | {1}"
+        )
+        __ERR_RECUR = (
+            "recursion error hit while adding object of type '{0}' to context "
+            "| {1}"
+        )
 
         def __init__(self, ctx_data=None):
             """
@@ -1843,6 +1949,43 @@ init python:
             super(MASEventContext, self).__init__()
             if ctx_data is not None:
                 self._from_dict(ctx_data)
+
+        @classmethod
+        def is_allowed_data(cls, thing):
+            """
+            Checks if the given thing is allowed to be used in context.
+
+            IN:
+                thing - thing to check
+
+            RETURNS: True if the thing can be used, False otherwise
+            """
+            can_pickle, recur_error = store.mas_ev_data_ver._strict_can_pickle(thing)
+            if can_pickle:
+                return True
+
+            # otherwise - we are going to log this as an error but no crash.
+            # we'll give the current ev in the message as ctx if it exists.
+            if store.mas_globals.this_ev is None:
+                context = ""
+            else:
+                context = cls.__CTX_CTX.format(
+                    store.mas_globals.this_ev.eventlabel
+                )
+
+            if recur_error:
+                # log recursion error
+                store.mas_utils.mas_log.error(cls.__ERR_RECUR.format(
+                    type(thing),
+                    context
+                ))
+                    
+            else:
+                # log disallowed object
+                store.mas_utils.mas_log.error(cls.__ERR_NON_PICKLE.format(
+                    type(thing),
+                    context
+                ))
 
         @classmethod
         def get(cls):
