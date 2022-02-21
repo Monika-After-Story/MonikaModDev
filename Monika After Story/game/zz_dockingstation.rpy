@@ -71,7 +71,7 @@ init -45 python:
         """
         import hashlib  # sha256 signatures
         import base64   # "packing" shipments involve base64
-        from io import StringIO
+        from io import BytesIO, StringIO
 
         import store.mas_utils as mas_utils # logging
 
@@ -344,7 +344,7 @@ init -45 python:
             """
             box = None
             try:
-                box = self.StringIO()
+                box = self.BytesIO()
 
                 return (box, self._pack(contents, box, True, pkg_slip))
 
@@ -590,7 +590,7 @@ init -45 python:
 
             # internalize contents so we can do proper file closing
             if contents is None:
-                _contents = self.StringIO()
+                _contents = self.BytesIO()
             else:
                 _contents = contents
 
@@ -698,7 +698,7 @@ init -45 python:
         def unpackPackage(self, package, pkg_slip=None):
             """
             Unpacks a package
-            (decodes a base64 file into a regular StringIO buffer)
+            (decodes a base64 file into a regular BytesIO buffer)
 
             NOTE: may throw exceptions
 
@@ -711,7 +711,7 @@ init -45 python:
                     (Default: None)
 
             RETURNS:
-                StringIO buffer containing the package decoded
+                BytesIO buffer containing the package decoded
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
@@ -721,7 +721,7 @@ init -45 python:
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
-                contents = self.StringIO()
+                contents = self.BytesIO()
 
                 _pkg_slip = self._unpack(
                     package,
