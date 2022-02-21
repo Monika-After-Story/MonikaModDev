@@ -76,7 +76,7 @@ def menu(menu_opts, defindex=None):
             defval = None
             footer = MENU_END.format("[0]")
 
-    except:
+    except Exception:
         # if we failed, None everything so we dont do foolish things later
         defindex = None
         defval = None
@@ -111,7 +111,7 @@ def menu(menu_opts, defindex=None):
         print(footer + "\n")
 
         # and then prompt!
-        user_input = raw_input(prompt)
+        user_input = input(prompt)
 
         # NOTE: if blank, we just return the default value
         if len(user_input) <= 0:
@@ -125,11 +125,11 @@ def menu(menu_opts, defindex=None):
                 # and user input is valid, return the result
                 return menu_opts[user_input][1]
 
-            elif user_input == 0:
+            if user_input == 0:
                 # user wants to go back
                 return None
 
-        except:
+        except Exception:
             # bad user input
             pass
 
@@ -194,7 +194,7 @@ def paginate(title, items, per_page=20, str_func=str):
             print(PAGE_ENTRY.format(str_func(item)))
 
         # action string and user input
-        user_input = raw_input(PAGE_BAR.join(action_bar)).lower()
+        user_input = input(PAGE_BAR.join(action_bar)).lower()
 
         # process user input
         if user_input == __QUIT:
@@ -209,11 +209,11 @@ def paginate(title, items, per_page=20, str_func=str):
                 page += 1
 
         elif user_input == __GOTO:
-            page_input = raw_input(PAGE_GOTO_PROMPT.format(last_page+1))
+            page_input = input(PAGE_GOTO_PROMPT.format(last_page+1))
             try:
                 page = int(page_input)-1
 
-            except:
+            except Exception:
                 # bad page input
                 pass
 
@@ -246,7 +246,7 @@ def ask(question, def_no=True):
         yes = "Y"
         no = "n"
 
-    choice = raw_input("{0}? ({1}/{2}): ".format(question, yes, no)).lower()
+    choice = input("{0}? ({1}/{2}): ".format(question, yes, no)).lower()
 
     # check default
     if len(choice) <= 0:
@@ -270,7 +270,7 @@ def e_pause():
     """
     Generic enter to continue
     """
-    abc = raw_input("\n\n (Press Enter to continue)")
+    abc = input("\n\n (Press Enter to continue)")
 
 
 def header(title):

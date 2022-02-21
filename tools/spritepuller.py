@@ -63,7 +63,7 @@ def is_sprite_line(line):
     Checks if the given line is a sprite line
 
     NOTE: a sprite line is a line that starts with "image monika"
-    
+
     NOTE: does not strip the given line.
 
     IN:
@@ -131,7 +131,7 @@ def pull_sprite_list(as_dict=False):
     if as_dict:
         # do we want a dict instead?
         sprite_dict = dict()
-        
+
         for sprite in sprite_list:
             sprite_dict[sprite] = 0
 
@@ -180,7 +180,7 @@ def write_spritecodes(sprites):
 
 def write_spritestats(sprites):
     """
-    Writes out a sprite file that just contains each sprite code with its 
+    Writes out a sprite file that just contains each sprite code with its
     value, one sprite code per line
 
     IN:
@@ -222,7 +222,7 @@ def write_zz_sprite_opt(sprites):
         # 1 last footer needed
         if open_list:
             outfile.write(__ZZ_SP_OPT_LINE_END)
-        
+
         outfile.write(__ZZ_SP_OPT_FOOTER)
 
 

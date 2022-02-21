@@ -1,8 +1,6 @@
 # makes sprites
 # can also load sprites
 
-from __future__ import print_function
-
 import os
 import gamedir as GDIR
 import menutils
@@ -19,7 +17,7 @@ _need_to_gen_sprites = False
 
 # classes
 
-class SortedKeySpriteDBIter(object):
+class SortedKeySpriteDBIter():
     """
     Iterator over a sprite db. This iterates so that the StaticSprites are
     in key order (aka from the given list of keys)
@@ -39,6 +37,7 @@ class SortedKeySpriteDBIter(object):
         self.__default_fs.invalid = True
 
     def __iter__(self):
+        # This is wrong, but somehow works?
         return self
 
     def next(self):
@@ -140,7 +139,7 @@ class FilterSprite(StaticSprite):
         if otherStaticSprite.invalid:
             return False
 
-        for flt in self.__filter_eq_map.itervalues():
+        for flt in self.__filter_eq_map.values():
             if not flt(otherStaticSprite):
                 return False
 
@@ -736,7 +735,7 @@ def make_sprite_bc(sprite_db, sprite_db_keys):
     while not_valid_code:
         menutils.clear_screen()
         print("\n\n")
-        trycode = raw_input("Enter a sprite code: ")
+        trycode = input("Enter a sprite code: ")
 
         # build a static sprite with the code
         new_sprite = StaticSprite(trycode)
