@@ -7073,18 +7073,36 @@ init -1 python:
         """
         checks if the given date is monikas birthday
         Comparison is done solely with month and day
-
         IN:
             _date - date to check. If not passed in, we use today.
         """
         if _date is None:
             _date = datetime.date.today()
 
-        return (
-            _date.month == mas_monika_birthday.month
-            and _date.day == mas_monika_birthday.day
-        )
+        _datetime = datetime.datetime.combine(_date, datetime.time())
 
+        return mas_isMonikaBirthday_dt(_datetime=_datetime)
+
+
+    def mas_isMonikaBirthday_dt(_datetime=None, extend_by=0):
+        """
+        checks if the given date is monikas birthday.
+        Takes hours beyond the date into account via the `extend_by` param.
+
+        IN:
+            _datetime - datetime to check. If not passed in, we use now.
+            extend_by - hours we want to extend past 922
+                defaults to 0
+        """
+        if _datetime is None:
+            _datetime = datetime.datetime.now()
+
+        moni_bd_start = datetime.datetime.combine(mas_monika_birthday, datetime.time())
+        moni_bd_start = moni_bd_start.replace(year=_datetime.year)
+
+        moni_bd_end = moni_bd_start + datetime.timedelta(days=1, hours=extend_by)
+
+        return moni_bd_start <= _datetime < moni_bd_end
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -7320,7 +7338,7 @@ init 5 python:
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             start_date=mas_monika_birthday,
-            end_date=mas_monika_birthday + datetime.timedelta(days=1),
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
             years=[]
         ),
         code="CMP",
@@ -7339,8 +7357,14 @@ label mas_bday_pool_happy_bday:
     $ mas_gainAffection(5,bypass=True)
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
-        m 3eka "I was waiting for you to say those magic words~"
-        m 1eub "{i}Now{/i} we can call it a birthday celebration!"
+
+        if persistent._mas_bday_said_happybday:
+            m 3eka "First you sang it to me and now you've said it..."
+
+        else:
+            m 3eka "I was waiting for you to say those magic words~"
+            m 1eub "{i}Now{/i} we can call it a birthday celebration!"
+
         m 1eka "You really made this occasion so special, [player]."
         m 1ekbsa "I can't thank you enough for loving me this much..."
 
@@ -7560,8 +7584,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
-            conditional="mas_recognizedBday()",
-            action=EV_ACT_QUEUE,
+            conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')",
+            action=EV_ACT_PUSH,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(18)),
             end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=3)),
             years=[]
@@ -7577,7 +7601,6 @@ label mas_bday_spent_time_with:
         m 1eud "Well it gives me hope that maybe it's not too late for us."
         m "Perhaps today can be the start of something really special.."
         m 3eka "That would be the be the best gift I could ever ask for."
-        return
 
     else:
         $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
@@ -7592,8 +7615,22 @@ label mas_bday_spent_time_with:
             m 1ekbsa "Well, it truly means a lot to me."
             m 3ekbsa "You really made my birthday complete~"
 
+        $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
+
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_spent_time_with_wrapup"
+        )
+    )
+
 label mas_bday_spent_time_with_wrapup:
     $ mas_rmallEVL("mas_bday_spent_time_with")
+    $ mas_rmallEVL("mas_bday_postbday_notimespent")
     $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
 
     if gave_gifts > 0:
@@ -7609,6 +7646,7 @@ label mas_bday_spent_time_with_wrapup:
         m 3eka "I know it can't be easy."
 
     m 1dku "..."
+
     if mas_isMoniEnamored(higher=True):
         m 1dktpu "..."
         m 1ektpu "Ahaha, sorry, [player]!"
@@ -7684,7 +7722,7 @@ init 5 python:
                 "and not persistent._mas_bday_gone_over_bday"
             ),
             action=EV_ACT_PUSH,
-            start_date=mas_monika_birthday+datetime.timedelta(days=1),
+            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
             end_date=mas_monika_birthday+datetime.timedelta(days=8),
             years=[]
         ),
@@ -8110,7 +8148,7 @@ label greeting_returned_home_bday:
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
                 m 3duu "As soon as you showed up, my day was complete."
-                jump mas_bday_spent_time_with_wrapup
+                $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
 
     return
 
