@@ -392,6 +392,30 @@ label v0_12_8_1(version="v0_12_8_1"):
             "mas_bday_postbday_notimespent",
             start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
         )
+
+        # transfer history vars
+        # only overwrite if not set.
+        if persistent._mas_nye_accomplished_resolutions is None:
+            persistent._mas_nye_accomplished_resolutions = persistent._mas_pm_accomplished_resolutions
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.did_new_years_resolutions"),
+                "nye.actions.did_new_years_resolutions"
+            )
+            safeDel("_mas_pm_accomplished_resolutions")
+
+        if persistent._mas_nye_has_new_years_res is None:
+            persistent._mas_nye_has_new_years_res = persistent._mas_pm_has_new_years_res
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.made_new_years_resolutions"),
+                "nye.actions.made_new_years_resolutions"
+            )
+            safeDel("_mas_pm_has_new_years_res")
+
+        # Label names of these events were inconsistent
+        mas_transferTopicData("monika_idle_brb", "monika_brb_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_brb_idle_callback", "monika_idle_brb_callback")
+        mas_transferTopicData("monika_idle_writing", "monika_writing_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_writing_idle_callback", "monika_idle_writing_callback")
     return
 
 # 0.12.8
@@ -625,6 +649,7 @@ label v0_12_2_2(version="v0_12_2_2"):
     python:
         if seen_event("monika_nihilism"):
             mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
+
     return
 
 # 0.12.2
