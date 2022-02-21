@@ -329,14 +329,12 @@ init -1 python:
                 new_url - the redirect we want to connect to
             Returns read_json if we got a connection, Nnone otherwise
             """
-            import httplib
+            from http.client import HTTPConnection, HTTPException
 
             _http, double_slash, url = new_url.partition("//")
             url, single_slash, req_uri = url.partition("/")
             read_json = None
-            h_conn = httplib.HTTPConnection(
-                url
-            )
+            h_conn = HTTPConnection(url)
 
             try:
                 # make connection
@@ -352,7 +350,7 @@ init -1 python:
 
                 read_json = server_response.read()
 
-            except httplib.HTTPException:
+            except HTTPException:
                 # we assume a timeout / connection error
                 return None
 
@@ -382,7 +380,7 @@ init -1 python:
                 _thread_result
                     appends appropriate state for use
             """
-            import httplib
+            from http.client import HTTPConnection, HTTPException
             import json
 
             # separate the update link parts
@@ -390,9 +388,7 @@ init -1 python:
             _http, double_slash, url = update_link.partition("//")
             url, single_slash, json_file = url.partition("/")
             read_json = None
-            h_conn = httplib.HTTPConnection(
-                url
-            )
+            h_conn = HTTPConnection(url)
 
             try:
                 # make connection and attempt to connect
@@ -430,7 +426,7 @@ init -1 python:
                     # good status, lets get the value
                     read_json = server_response.read()
 
-            except httplib.HTTPException:
+            except HTTPException:
                 # we assume a timeout / connection error
                 thread_result.append(MASUpdaterDisplayable.STATE_TIMEOUT)
                 return
