@@ -64,7 +64,7 @@ init -991 python in mas_submod_utils:
         FB_VERS_STR = "0.0.0"
 
         #Regular expression representing a valid author and name
-        AN_REGEXP = re.compile(ur'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+        AN_REGEXP = re.compile(r'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
 
         def __init__(
             self,
