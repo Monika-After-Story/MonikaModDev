@@ -114,6 +114,9 @@ init -1200 python:
     renpy.config.gl_test_image = "white"
 
 ################START: INIT TIME CONFIGS
+init -999 python:
+    #DEBUG: test w/o a config var lock
+    config.locked = False
 
 ## Uncomment the following line to set an audio file that will be played while
 ## the player is at the main menu. This file will continue playing into the
