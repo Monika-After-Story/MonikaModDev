@@ -377,6 +377,24 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.8.1
 label v0_12_8_1(version="v0_12_8_1"):
     python hide:
+        # transfer history vars
+        # only overwrite if not set.
+        if persistent._mas_nye_accomplished_resolutions is None:
+            persistent._mas_nye_accomplished_resolutions = persistent._mas_pm_accomplished_resolutions
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.did_new_years_resolutions"),
+                "nye.actions.did_new_years_resolutions"
+            )
+            safeDel("_mas_pm_accomplished_resolutions")
+
+        if persistent._mas_nye_has_new_years_res is None:
+            persistent._mas_nye_has_new_years_res = persistent._mas_pm_has_new_years_res
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.made_new_years_resolutions"),
+                "nye.actions.made_new_years_resolutions"
+            )
+            safeDel("_mas_pm_has_new_years_res")
+
         # Label names of these events were inconsistent
         mas_transferTopicData("monika_idle_brb", "monika_brb_idle", persistent.event_database)
         mas_transferTopicSeen("monika_brb_idle_callback", "monika_idle_brb_callback")
