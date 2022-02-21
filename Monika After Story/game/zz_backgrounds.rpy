@@ -3227,7 +3227,7 @@ label monika_change_background_loop:
         if persistent._mas_o31_in_o31_mode:
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.items()
                 if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
             ]
 
@@ -3235,7 +3235,7 @@ label monika_change_background_loop:
         elif persistent._mas_d25_deco_active:
             other_backgrounds = [
                 (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.items()
                 if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, mbg_id)
             ]
 

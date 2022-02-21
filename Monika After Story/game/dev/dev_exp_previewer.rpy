@@ -154,14 +154,14 @@ init 999 python:
         REVERSE_IMG_NAMES_MAP = {
             key: {
                 v: k
-                for k, v in sub_map.iteritems()
+                for k, v in sub_map.items()
             }
-            for key, sub_map in IMG_NAMES_MAP.iteritems()
+            for key, sub_map in IMG_NAMES_MAP.items()
         }
         # And also handle the keys from the mod map
         # (different keys that actually correspond to the same sprite letters)
-        for key, sub_map in MOD_MAP.iteritems():
-            for k, v in sub_map.iteritems():
+        for key, sub_map in MOD_MAP.items():
+            for k, v in sub_map.items():
                 spr_code_letter = REVERSE_IMG_NAMES_MAP[key][k]
                 for mod_str in v:
                     REVERSE_IMG_NAMES_MAP[key][k + mod_str] = spr_code_letter
@@ -1051,7 +1051,7 @@ init 999 python:
                 # Add bits that might not be present in the given code
                 exp_kwargs.setdefault(key, None)
 
-            for key, value in exp_kwargs.iteritems():
+            for key, value in exp_kwargs.items():
                 # Skip the keys we don't need
                 if (
                     key in self.SPRITE_CODE_MAP

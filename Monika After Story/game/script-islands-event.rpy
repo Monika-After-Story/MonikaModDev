@@ -232,7 +232,7 @@ init -20 python in mas_island_event:
             # FIXME: py3 update
             return {
                 id_: data.default_unlocked
-                for id_, data in cls._data_map.iteritems()
+                for id_, data in cls._data_map.items()
             }
 
         @classmethod
@@ -246,7 +246,7 @@ init -20 python in mas_island_event:
             # FIXME: py3 update
             return {
                 id_: data.fp_map
-                for id_, data in cls._data_map.iteritems()
+                for id_, data in cls._data_map.items()
                 if data.type == type_ and data.fp_map
             }
 
@@ -714,8 +714,8 @@ init -25 python in mas_island_event:
                 map_ - the map to get filenames from, and which will be overriden
             """
             # FIXME: py3 update
-            for name, path_map in map_.iteritems():
-                for sprite_type, path in path_map.iteritems():
+            for name, path_map in map_.items():
+                for sprite_type, path in path_map.items():
                     raw_data = zip_file.read(path)
                     img = store.MASImageData(raw_data, "{}_{}.png".format(name, sprite_type))
                     path_map[sprite_type] = img
@@ -761,7 +761,7 @@ init -25 python in mas_island_event:
         global island_disp_map, decal_disp_map, obj_disp_map, bg_disp_map, overlay_disp_map
 
         # Build the islands
-        for island_name, img_map in island_imgs_maps.iteritems():
+        for island_name, img_map in island_imgs_maps.items():
             disp = IslandFilterWeatherDisplayable(
                 day=MASWeatherMap(
                     {
@@ -792,7 +792,7 @@ init -25 python in mas_island_event:
             island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
-        for decal_name, img_map in decal_imgs_maps.iteritems():
+        for decal_name, img_map in decal_imgs_maps.items():
             disp = IslandFilterWeatherDisplayable(
                 day=MASWeatherMap(
                     {
@@ -823,7 +823,7 @@ init -25 python in mas_island_event:
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
-        for bg_name, img_map in bg_imgs_maps.iteritems():
+        for bg_name, img_map in bg_imgs_maps.items():
             disp = IslandFilterWeatherDisplayable(
                 day=MASWeatherMap(
                     {
@@ -858,7 +858,7 @@ init -25 python in mas_island_event:
             "overlay_rain": 0.8,
             "overlay_snow": 3.5
         }
-        for overlay_name, img_map in overlay_imgs_maps.iteritems():
+        for overlay_name, img_map in overlay_imgs_maps.items():
             # Overlays are just dynamic displayables
             partial_disp = IslandsImageDefinition.getDataFor(overlay_name).partial_disp
             overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
@@ -1171,7 +1171,7 @@ init -25 python in mas_island_event:
         sub_displayables = list()
 
         # Add all unlocked islands
-        for key, disp in island_disp_map.iteritems():
+        for key, disp in island_disp_map.items():
             if _isUnlocked(key):
                 _reset_parallax_disp(disp)
                 sub_displayables.append(disp)
