@@ -250,7 +250,7 @@ init:
             # Recomputes the position of the ball, handles bounces, and
             # draws the screen.
             def render(self, width, height, st, at):
-
+                global lose_on_purpose
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
 
@@ -295,7 +295,6 @@ init:
 
                 # Moves Monika's paddle. It wants to go to self.by, but
                 # may be limited by it's speed limit.
-                global lose_on_purpose
                 if lose_on_purpose and self.bx >= self.COURT_WIDTH * 0.75:
                     if self.bx <= self.PADDLE_X_MONIKA:
                         if self.ctargety > self.computery:
@@ -324,6 +323,8 @@ init:
                     global win_streak_counter
                     global loss_streak_counter
                     global instant_loss_streak_counter
+                    global pong_angle_last_shot
+                    global ball_paddle_bounces
 
                     # Render the paddle image. We give it an 1280x720 area
                     # to render into, knowing that images will render smaller.
@@ -362,13 +363,11 @@ init:
                             elif angle < -self.MAX_ANGLE:
                                 angle =  -self.MAX_ANGLE;
 
-                            global pong_angle_last_shot
                             pong_angle_last_shot = angle;
 
                             self.bdy = .5 * math.sin(angle)
                             self.bdx = math.copysign(.5 * math.cos(angle), -self.bdx)
 
-                            global ball_paddle_bounces
                             ball_paddle_bounces += 1
 
                             # Changes where the computer aims after a hit.

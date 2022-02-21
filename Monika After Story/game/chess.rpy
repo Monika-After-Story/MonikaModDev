@@ -1849,7 +1849,7 @@ init python:
     import random
     import pygame
     import threading
-    import StringIO
+    from io import StringIO
     import os
 
     #Only add the chess_games folder if we can even do chess

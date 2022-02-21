@@ -71,7 +71,6 @@ init -45 python:
         """
         import hashlib  # sha256 signatures
         import base64   # "packing" shipments involve base64
-        from StringIO import StringIO as StringIO
         from io import StringIO
 
         import store.mas_utils as mas_utils # logging
