@@ -1179,7 +1179,7 @@ init -11 python in mas_dockstat:
 
 init python in mas_dockstat:
     import store
-    import cPickle
+    import pickle
 
     # previous vars dict
     previous_vars = dict()
@@ -1300,7 +1300,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
+            _outbuffer.write(codecs.encode(pickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1849,8 +1849,8 @@ init 200 python in mas_dockstat:
             # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
             splitted = data_line.split("|||per|")
             if(len(splitted)>0):
-                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
-            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
+                return pickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return pickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             log.error(

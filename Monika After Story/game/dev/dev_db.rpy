@@ -215,7 +215,7 @@ init python:
 
 
 init python in dev_mas_shared:
-    import cPickle
+    import pickle
     import store
     import store.mas_ev_data_ver as ver
 
@@ -257,7 +257,7 @@ init python in dev_mas_shared:
             # select persistent to load
             if self.in_char:
                 pkg = store.mas_docking_station.getPackage("persistent")
-                pdata = cPickle.loads(pkg.read().decode("zlib"))
+                pdata = pickle.loads(pkg.read().decode("zlib"))
                 pkg.close()
             else:
                 pdata = store.persistent

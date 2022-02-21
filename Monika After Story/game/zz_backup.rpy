@@ -19,7 +19,7 @@ default persistent._mas_incompat_per_entered = False
 
 python early in mas_per_check:
     import __main__
-    import cPickle
+    import pickle
     import os
     import datetime
     import shutil
@@ -109,7 +109,7 @@ python early in mas_per_check:
             per_file = file(_tp_persistent, "rb")
             per_data = per_file.read().decode("zlib")
             per_file.close()
-            actual_data = cPickle.loads(per_data)
+            actual_data = pickle.loads(per_data)
 
             if get_data:
                 return True, actual_data

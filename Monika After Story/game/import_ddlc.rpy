@@ -104,7 +104,7 @@ label import_ddlc_persistent:
         ddlc_persistent = None
         try:
             with open(ddlc_save_path, "rb") as ddlc_pfile:
-                ddlc_persistent = mas_dockstat.cPickle.loads(ddlc_pfile.read().decode("zlib"))
+                ddlc_persistent = mas_dockstat.pickle.loads(ddlc_pfile.read().decode("zlib"))
 
         except Exception as e:
             store.mas_utils.mas_log.error("Failed to read/decode DDLC persistent: {0}".format(e))
