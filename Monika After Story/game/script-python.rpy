@@ -1024,10 +1024,10 @@ init -1 python in mas_ptod:
         IN:
             cmd - the command to write to the console
         """
+        global cn_line, cn_cmd, state, stack_level
+
         if state == STATE_OFF:
             return
-
-        global cn_line, cn_cmd, state, stack_level
 
         if state == STATE_MULTI:
             # this is bad! You should execute the previous command first!
@@ -1203,13 +1203,13 @@ init -1 python in mas_ptod:
                 locals here.
                 If None, then we use the local_ctx.
         """
+        global cn_cmd, cn_line, state, stack_level, blk_cmd
+
         if state == STATE_OFF:
             return
 
         if context is None:
             context = local_ctx
-
-        global cn_cmd, cn_line, state, stack_level, blk_cmd
 
         ################### setup some initial conditions ################
 

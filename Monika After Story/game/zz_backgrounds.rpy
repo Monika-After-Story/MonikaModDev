@@ -2855,8 +2855,9 @@ init 800 python:
             **kwargs:
                 Additional kwargs to send to the prog points
         """
+        global mas_current_background
+
         if _background != mas_current_background:
-            global mas_current_background
             old_background = mas_current_background
             mas_current_background = _background
             mas_current_background.entry(old_background, **kwargs)

@@ -388,7 +388,7 @@ default persistent._mas_sprites_json_gifted_sprites = {}
 
 
 init -21 python in mas_sprites_json:
-    import __builtin__
+    import builtins
     import json
     import store
     import store.mas_utils as mas_utils
@@ -460,8 +460,8 @@ init -21 python in mas_sprites_json:
         adapter_ctor=SpriteJsonLogAdapter
     )
 
-    py_list = __builtin__.list
-    py_dict = __builtin__.dict
+    py_list = builtins.list
+    py_dict = builtins.dict
 
     sprite_station = store.MASDockingStation(
         renpy.config.basedir + "/game/mod_assets/monika/j/"

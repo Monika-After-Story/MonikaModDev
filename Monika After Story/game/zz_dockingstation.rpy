@@ -71,8 +71,8 @@ init -45 python:
         """
         import hashlib  # sha256 signatures
         import base64   # "packing" shipments involve base64
-        from StringIO import StringIO as slowIO
-        from cStringIO import StringIO as fastIO
+        from StringIO import StringIO as StringIO
+        from io import StringIO
 
         import store.mas_utils as mas_utils # logging
 
@@ -345,7 +345,7 @@ init -45 python:
             """
             box = None
             try:
-                box = self.fastIO()
+                box = self.StringIO()
 
                 return (box, self._pack(contents, box, True, pkg_slip))
 
@@ -482,8 +482,8 @@ init -45 python:
 
                 ### we have a package, lets unpack it
                 if keep_contents:
-                    # use slowIO since we dont know contents unpacked
-                    contents = slowIO()
+                    # use StringIO since we dont know contents unpacked
+                    contents = StringIO()
 
                 # we always want a package slip in this case
                 # we only want to unpack if we are keeping contents
@@ -591,7 +591,7 @@ init -45 python:
 
             # internalize contents so we can do proper file closing
             if contents is None:
-                _contents = self.slowIO()
+                _contents = self.StringIO()
             else:
                 _contents = contents
 
@@ -722,7 +722,7 @@ init -45 python:
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
-                contents = self.slowIO()
+                contents = self.StringIO()
 
                 _pkg_slip = self._unpack(
                     package,
@@ -1224,7 +1224,7 @@ init 200 python in mas_dockstat:
     import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
     import store.evhand as evhand
-    from cStringIO import StringIO as fastIO
+    from cStringIO import StringIO as StringIO
     import codecs
     import re
     import os
@@ -1486,7 +1486,7 @@ init 200 python in mas_dockstat:
 
         ### other stuff we need
         # inital buffer
-        moni_buffer = fastIO()
+        moni_buffer = StringIO()
         moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
@@ -1550,7 +1550,7 @@ init 200 python in mas_dockstat:
                 moni_buffer,
                 blocksize
             )
-            moni_tbuffer = fastIO()
+            moni_tbuffer = StringIO()
             moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:

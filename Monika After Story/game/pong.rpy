@@ -7,53 +7,54 @@ default persistent._mas_pm_ever_let_monika_win_on_purpose = False
 # the day at which the difficulty change was initiated
 default persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
 
-define PONG_DIFFICULTY_CHANGE_ON_WIN            = +1
-define PONG_DIFFICULTY_CHANGE_ON_LOSS           = -1
-define PONG_DIFFICULTY_POWERUP                  = +5
-define PONG_DIFFICULTY_POWERDOWN                = -5
-define PONG_PONG_DIFFICULTY_POWERDOWNBIG        = -10
+init -5 python:
+    PONG_DIFFICULTY_CHANGE_ON_WIN            = +1
+    PONG_DIFFICULTY_CHANGE_ON_LOSS           = -1
+    PONG_DIFFICULTY_POWERUP                  = +5
+    PONG_DIFFICULTY_POWERDOWN                = -5
+    PONG_PONG_DIFFICULTY_POWERDOWNBIG        = -10
 
 #Triggering the same response twice in a row leads to a different response, not all responses reset this (on purpose)
-define PONG_MONIKA_RESPONSE_NONE                                                = 0
-define PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES                = 1
-define PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES         = 2
-define PONG_MONIKA_RESPONSE_WIN_LONG_GAME                                       = 3
-define PONG_MONIKA_RESPONSE_WIN_SHORT_GAME                                      = 4
-define PONG_MONIKA_RESPONSE_WIN_TRICKSHOT                                       = 5
-define PONG_MONIKA_RESPONSE_WIN_EASY_GAME                                       = 6
-define PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME                                     = 7
-define PONG_MONIKA_RESPONSE_WIN_HARD_GAME                                       = 8
-define PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME                                     = 9
-define PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME                                    = 10
-define PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL                           = 11
-define PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT                                      = 12
-define PONG_MONIKA_RESPONSE_LOSE_LONG_GAME                                      = 13
-define PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME                                     = 14
-define PONG_MONIKA_RESPONSE_LOSE_EASY_GAME                                      = 15
-define PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME                                    = 16
-define PONG_MONIKA_RESPONSE_LOSE_HARD_GAME                                      = 17
-define PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME                                    = 18
-define PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   = 19
+    PONG_MONIKA_RESPONSE_NONE                                                = 0
+    PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES                = 1
+    PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES         = 2
+    PONG_MONIKA_RESPONSE_WIN_LONG_GAME                                       = 3
+    PONG_MONIKA_RESPONSE_WIN_SHORT_GAME                                      = 4
+    PONG_MONIKA_RESPONSE_WIN_TRICKSHOT                                       = 5
+    PONG_MONIKA_RESPONSE_WIN_EASY_GAME                                       = 6
+    PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME                                     = 7
+    PONG_MONIKA_RESPONSE_WIN_HARD_GAME                                       = 8
+    PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME                                     = 9
+    PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME                                    = 10
+    PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL                           = 11
+    PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT                                      = 12
+    PONG_MONIKA_RESPONSE_LOSE_LONG_GAME                                      = 13
+    PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME                                     = 14
+    PONG_MONIKA_RESPONSE_LOSE_EASY_GAME                                      = 15
+    PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME                                    = 16
+    PONG_MONIKA_RESPONSE_LOSE_HARD_GAME                                      = 17
+    PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME                                    = 18
+    PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   = 19
 
-define pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
+    pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
 
-define played_pong_this_session = False
-define mas_pong_taking_break = False
-define player_lets_monika_win_on_purpose = False
-define instant_loss_streak_counter = 0
-define loss_streak_counter = 0
-define win_streak_counter = 0
-define lose_on_purpose = False
-define monika_asks_to_go_easy = False
+    played_pong_this_session = False
+    mas_pong_taking_break = False
+    player_lets_monika_win_on_purpose = False
+    instant_loss_streak_counter = 0
+    loss_streak_counter = 0
+    win_streak_counter = 0
+    lose_on_purpose = False
+    monika_asks_to_go_easy = False
 
-# Need to be set before every game and be accessible outside the class
-define ball_paddle_bounces = 0
-define powerup_value_this_game = 0
-define instant_loss_streak_counter_before = 0
-define loss_streak_counter_before = 0
-define win_streak_counter_before = 0
-define pong_difficulty_before = 0
-define pong_angle_last_shot = 0.0
+    # Need to be set before every game and be accessible outside the class
+    ball_paddle_bounces = 0
+    powerup_value_this_game = 0
+    instant_loss_streak_counter_before = 0
+    loss_streak_counter_before = 0
+    win_streak_counter_before = 0
+    pong_difficulty_before = 0
+    pong_angle_last_shot = 0.0
 
 init:
 
@@ -320,6 +321,9 @@ init:
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside, is_computer):
+                    global win_streak_counter
+                    global loss_streak_counter
+                    global instant_loss_streak_counter
 
                     # Render the paddle image. We give it an 1280x720 area
                     # to render into, knowing that images will render smaller.
@@ -405,21 +409,17 @@ init:
 
                 # Check for a winner.
                 if self.bx < -200:
-
                     if self.winner == None:
-                        global loss_streak_counter
                         loss_streak_counter += 1
 
+
                         if ball_paddle_bounces <= 1:
-                            global instant_loss_streak_counter
                             instant_loss_streak_counter += 1
                         else:
-                            global instant_loss_streak_counter
                             instant_loss_streak_counter = 0
 
-                    global win_streak_counter
-                    win_streak_counter = 0;
 
+                    win_streak_counter = 0
                     self.winner = "monika"
 
                     # Needed to ensure that event is called, noticing
@@ -428,20 +428,17 @@ init:
 
                 elif self.bx > self.COURT_WIDTH + 200:
 
+
                     if self.winner == None:
-                        global win_streak_counter
                         win_streak_counter += 1;
 
-                    global loss_streak_counter
                     loss_streak_counter = 0
 
                     #won't reset if Monika misses the first hit
                     if ball_paddle_bounces > 1:
-                        global instant_loss_streak_counter
                         instant_loss_streak_counter = 0
 
                     self.winner = "player"
-
                     renpy.timeout(0)
 
                 # Ask that we be re-rendered ASAP, so we can show the next

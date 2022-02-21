@@ -4627,7 +4627,7 @@ init -100 python in mas_utils:
     import random
     import os
     import math
-    from cStringIO import StringIO as fastIO
+    from io import StringIO
 
     __secInDay = 24 * 60 * 60
 
@@ -5138,9 +5138,9 @@ init -100 python in mas_utils:
                 (Default: None)
 
         RETURNS:
-            a cStringIO buffer of the random blob
+            a StringIO buffer of the random blob
         """
-        data = fastIO()
+        data = StringIO()
         _byte_count = 0
         curr_state = None
 
@@ -5170,9 +5170,9 @@ init -100 python in mas_utils:
             size - size in bytes of the blob to make
 
         RETURNS:
-            a cStringIO buffer of the random blob
+            a StringIO buffer of the random blob
         """
-        data = fastIO()
+        data = StringIO()
         _byte_limit = 4 * (1024**2) # 4MB
 
         while size > 0:

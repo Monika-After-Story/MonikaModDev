@@ -30,7 +30,7 @@ init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
-    import __builtin__
+    import builtins
 
     # special store dedicated to verification of Event-based data
     import datetime
@@ -42,11 +42,11 @@ init -999 python in mas_ev_data_ver:
 
 
     def _verify_dict(val, allow_none=True):
-        return _verify_item(val, __builtin__.dict, allow_none)
+        return _verify_item(val, builtins.dict, allow_none)
 
 
     def _verify_list(val, allow_none=True):
-        return _verify_item(val, __builtin__.list, allow_none)
+        return _verify_item(val, builtins.list, allow_none)
 
 
     def _verify_dt(val, allow_none=True):
@@ -98,7 +98,7 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
 
-        return isinstance(val, __builtin__.list) or isinstance(val, tuple)
+        return isinstance(val, builtins.list) or isinstance(val, tuple)
 
 
     def _verify_tuli_nn(val):
