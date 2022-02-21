@@ -188,10 +188,11 @@ init -1 python in mas_hangman:
 
     def _add_monika_words(wordlist):
         for word in MONI_WORDS:
-            wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
+            wordlist.append(renpy.store.MASPoemWord(sPoint=0,yPoint=0,nPoint=0, mPoint=4, word=word))
 
 
     # file names
+    EASY_LIST = "mod_assets/games/hangman/poemwords.txt"
     NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
     HARD_LIST = "mod_assets/games/hangman/1000poemwords.txt"
 
@@ -244,10 +245,25 @@ init -1 python in mas_hangman:
         easy_list = all_hm_words[EASY_MODE]
 
         # lets start with Non Monika words
-        easy_list[:] = [
-            store.MASPoemWord._build(word, 0)._hangman()
-            for word in store.full_wordlist
-        ]
+        with open(renpy.config.gamedir + "/" + EASY_LIST, "r") as poemwords:
+            for line in poemwords:
+                line = line.strip()
+
+                #Ignore line if commented/empty
+                if line == '' or line[0] == '#':
+                    continue
+
+                # add the word
+                splitword = line.split(',')
+                print(splitword)
+                easy_list.append(store.MASPoemWord(
+                    splitword[0],
+                    float(splitword[1]),
+                    float(splitword[2]),
+                    float(splitword[3]),
+                    0
+                ))
+
 
         # now for monika words
         moni_list = list()
@@ -256,7 +272,6 @@ init -1 python in mas_hangman:
             easy_list.append(store.MASPoemWord._build(m_word, 4)._hangman())
 
         copyWordsList(EASY_MODE)
-
 
     def buildNormalList():
         """

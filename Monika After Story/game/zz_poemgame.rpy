@@ -142,24 +142,26 @@ init -4 python:
 
 
         def readInFile(self, wordfile):
-            # copied from poemgame (with adjustments)
-            #
-            # Reads in a file into the wordlist
-            #
-            # NOTE: On the poemwords file
-            #   The file must consist of the following format:
-            #       word,#1,#2,#3,#4
-            #   WHERE:
-            #       word - the word we want in the poem
-            #       #1 - the points this word gives to sayori
-            #       #2 - the points this word gives to natsuki
-            #       #3 - the points this word gives to yuri
-            #       #4 - the points this word gives to monika
-            #   (LINES that strat with # are ignored)
-            #
-            # IN:
-            #   wordfile - the filename/path of the file to read words
-            with renpy.file(wordfile) as words:
+            """
+            copied from poemgame (with adjustments)
+
+            Reads in a file into the wordlist
+
+            NOTE: On the poemwords file
+                The file must consist of the following format:
+                    word,#1,#2,#3,#4
+                WHERE:
+                    word - the word we want in the poem
+                    #1 - the points this word gives to sayori
+                    #2 - the points this word gives to natsuki
+                    #3 - the points this word gives to yuri
+                    #4 - the points this word gives to monika
+                (LINES that strat with # are ignored)
+
+            IN:
+                wordfile - the filename/path of the file to read words
+            """
+            with open(f"{renpy.config.gamedir}/{wordfile}", "r") as words:
                 for line in words:
 
                     line = line.strip()
