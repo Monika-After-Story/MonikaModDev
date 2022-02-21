@@ -13,7 +13,7 @@ python early in mas_logging:
     import re
 
     #Thanks python...
-    from logging import handlers as loghandlers
+    import logging.handlers as loghandlers
 
     # log tags
     LT_INFO = "info"
