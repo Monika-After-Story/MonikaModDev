@@ -339,6 +339,10 @@ init -100 python in mas_sprites:
     #v: ignored
     #marks the hair as a twinbraid hairstyle
 
+    # Value: ignored
+    # Marks that a hair obj is wet (appropriate for a bath/shower/pool/etc)
+    EXP_H_WET = "wet"
+
     EXP_H_SB = "straight-bangs"
     # v: ignored
     # marks that a hair style has straight bangs
@@ -377,6 +381,10 @@ init -100 python in mas_sprites:
     EXP_C_LING = "lingerie"
     # v: ignored
     # marks that a clothing item is lingerie
+
+    # Value: ignored
+    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+    EXP_C_WET = "wet"
 
     # --- default exprops ---
 
@@ -1345,6 +1353,83 @@ init -5 python in mas_sprites:
 
         # otherwise we have a map
         return sprite_map.get(sprite_name, None)
+
+    def get_installed_sprites(sprite_type, predicate=None):
+        """
+        Returns ALL available sprite objects
+        NOTE: Runtime only
+
+        IN:
+            sprite_type - the sprite type constant
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of sprite objects
+        """
+        sprite_map = SP_MAP.get(sprite_type, None)
+
+        if not sprite_map:
+            return []
+
+        if predicate:
+            return [
+                spr_object
+                for spr_object in sprite_map.itervalues()
+                if predicate(spr_object)
+            ]
+
+        else:
+            return sprite_map.values()
+
+    def get_installed_acs(predicate=None):
+        """
+        get_installed_sprites for acs objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of acs sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_ACS,
+            predicate=predicate
+        )
+
+    def get_installed_hair(predicate=None):
+        """
+        get_installed_sprites for hair objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of hair sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_HAIR,
+            predicate=predicate
+        )
+
+    def get_installed_clothes(predicate=None):
+        """
+        get_installed_sprites for clothes objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of clothes sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_CLOTHES,
+            predicate=predicate
+        )
+
 
 
 ##### special mas monika functions (hooks)
