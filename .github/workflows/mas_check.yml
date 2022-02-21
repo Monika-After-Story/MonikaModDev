@@ -16,7 +16,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    name: build deps and lint
+    name: ci_build
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -34,8 +34,6 @@ jobs:
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
           python-version: 2.7.18 # optional, default is 3.x
-          # The target architecture (x86, x64) of the Python interpreter.
-          architecture: x86 # optional
 
       # dl renpy src
       - name: Download rpy source
@@ -46,28 +44,37 @@ jobs:
           rm $renpysdk
           mv ${renpysdk/.tar.bz2/} renpy
 
-      # download base mas
+      # get/download base mas
+      - name: cache base MAS
+        id: cache-mas
+        uses: actions/cache@v2
+        with:
+          path: mas0105/
+          key: ${{ runner.os }}-mas
+
       - name: Download base MAS
+        if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
           wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
           mkdir mas0105
           unzip mas.zip -d mas0105
 
       # copy over gh files to base
-      - name: copy gh files to base
+      - name: copy source over
         run: cp -Rf Monika\ After\ Story/* mas0105/
 
       # run sprite checkers
       - name: check sprites
-        run: python tools/travis.py
+        run: python tools/ghactions.py
 
       # lint renpy
       - name: rpy lint
         run: |
-          ./renpy/renpy.sh "mas0105/" lint > renpy_output
-          python tools/renpy_lint_parser.py
-          cat renpy_output_clean
+          cd renpy
+          ./renpy.sh "../mas0105/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
       # distribute
       - name: rpy distribute
-        run: ./renpy/renpy.sh launcher distribute "mas0105/"
+        run: |
+          cd renpy
+          ./renpy.sh launcher distribute "../mas0105/" --package Mod
