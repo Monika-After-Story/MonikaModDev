@@ -45,15 +45,15 @@ jobs:
           mv ${renpysdk/.tar.bz2/} renpy
 
       # get/download base mas
-      - name: cache base MAS
-        id: cache-mas
-        uses: actions/cache@v2
-        with:
-          path: mas0105/
-          key: ${{ runner.os }}-mas
+      # - name: cache base MAS
+      #   id: cache-mas
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: mas0105/
+      #     key: ${{ runner.os }}-mas
 
       - name: Download base MAS
-        if: steps.cache-mas.outputs.cache-hit != 'true'
+      #  if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
           wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
           mkdir mas0105
