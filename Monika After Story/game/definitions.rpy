@@ -32,6 +32,7 @@ python early:
     import io
     import datetime
     import traceback
+    import string
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -172,7 +173,7 @@ python early:
 
             # otherwise just get the reference
             else:
-                first, rest = field_name._formatter_field_name_split()
+                first, rest = string._string.formatter_field_name_split(field_name)
 
                 obj = self.get_value(first, args, kwargs)
 

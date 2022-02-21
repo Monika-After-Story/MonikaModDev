@@ -339,7 +339,7 @@ init -45 python:
 
             RETURNS:
                 tuple of the following format:
-                [0] - base64 version of the given data, in a cStringIO buffer
+                [0] - base64 version of the given data, in a BytesIO buffer
                 [1] - sha256 checksum if pkg_slip is True, None otherwise
             """
             box = None
@@ -1223,7 +1223,7 @@ init 200 python in mas_dockstat:
     import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
     import store.evhand as evhand
-    from cStringIO import StringIO as StringIO
+    from io import StringIO
     import codecs
     import re
     import os

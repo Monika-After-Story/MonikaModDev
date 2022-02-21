@@ -657,3 +657,14 @@ init 25 python in mas_ui:
             scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
         # Update the screen
         renpy.restart_interaction()
+
+##BASE DDLC Console Styles
+style console_text:
+    font "gui/font/F25_Bank_Printer.ttf"
+    color "#fff"
+    size 18
+    outlines []
+
+
+style console_text_console is console_text:
+    slow_cps 30

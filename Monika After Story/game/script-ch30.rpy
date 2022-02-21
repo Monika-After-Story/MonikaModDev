@@ -39,7 +39,7 @@ init -890 python in mas_globals:
         store.persistent._mas_pm_has_went_back_in_time = True
 
     #Internal renpy version check
-    is_r7 = renpy.version(True)[0] == 7
+    is_at_least_r7 = renpy.version(True)[0] >= 7
 
     # Check whether or not the user uses a steam install
     is_steam = "steamapps" in renpy.config.basedir.lower()
