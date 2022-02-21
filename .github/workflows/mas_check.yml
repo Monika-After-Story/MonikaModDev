@@ -39,7 +39,7 @@ jobs:
       - name: Download rpy source
         run: |
           renpysdk=$(wget -qO- https://nightly.renpy.org/current-8/index.html | grep -P -m 1 -o '(?<=href=").*\.tar\.bz2(?=".*)')
-          wget https://nightly.renpy.org/current/$renpysdk
+          wget https://nightly.renpy.org/current-8/$renpysdk
           tar xf $renpysdk
           rm $renpysdk
           mv ${renpysdk/.tar.bz2/} renpy
