@@ -56,8 +56,8 @@ init python in mas_sprite_decoder:
             SWEAT_MAP = jobj["sweat"]
             MOD_MAP = jobj["MOD_MAP"]
             # Convert lists into sets for speed
-            for sub_map in MOD_MAP.itervalues():
-                for key, value in sub_map.iteritems():
+            for sub_map in MOD_MAP.values():
+                for key, value in sub_map.items():
                     sub_map[key] = set(value)
 
             #Since tuples aren't supported in json, we need to do some conversion here
