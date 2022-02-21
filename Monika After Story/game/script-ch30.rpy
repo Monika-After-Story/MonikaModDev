@@ -664,19 +664,6 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
-    def mas_resetIdleMode():
-        """
-        Resets specific idle mode vars.
-
-        This is meant to basically clear idle mode for holidays or other
-        things that hijack main flow
-        """
-        store.mas_globals.in_idle_mode = False
-        persistent._mas_in_idle_mode = False
-        persistent._mas_idle_data = {}
-        mas_idle_mailbox.get_idle_cb()
-
-
     def mas_enableTextSpeed():
         """
         Enables text speed
@@ -1527,8 +1514,9 @@ label ch30_post_mid_loop_eval:
         if not mas_HKBIsEnabled():
             $ mas_HKBDropShield()
 
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # Just finished a topic, so we set clear current topic in case user
+    # quits and restarts
+    $ MASEventList.clear_current()
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
@@ -1809,6 +1797,9 @@ label ch30_reset:
         if persistent._mas_unstable_mode:
             pass
 
+    # sync up current_monikatopic and eli data
+    $ MASEventList.sync_current()
+
     python:
         # xp fixes and adjustments
         if persistent._mas_xp_lvl < 0:
@@ -1850,11 +1841,11 @@ label ch30_reset:
         if not persistent._mas_pm_has_rpy:
             if mas_hasRPYFiles():
                 if not mas_inEVL("monika_rpy_files"):
-                    queueEvent("monika_rpy_files")
+                    MASEventList.queue("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
-                    persistent.current_monikatopic = 0
+                    MASEventList.clear_current()
                 mas_rmallEVL("monika_rpy_files")
 
     python:
@@ -2030,22 +2021,7 @@ label ch30_reset:
     $ mas_check_player_derand()
 
     # clean up the event list of baka events
-    python:
-        for index in range(len(persistent.event_list)-1, -1, -1):
-            item = persistent.event_list[index]
-
-            # type check
-            if type(item) != tuple:
-                new_data = (item, False)
-            else:
-                new_data = item
-
-            # label check
-            if renpy.has_label(new_data[0]):
-                persistent.event_list[index] = new_data
-
-            else:
-                persistent.event_list.pop(index)
+    $ MASEventList.clean()
 
     #Now we undo actions for evs which need them undone
     $ MASUndoActionRule.check_persistent_rules()
@@ -2097,6 +2073,22 @@ label ch30_reset:
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
+
+    # Handle cleanup for the bath greeting
+    $ bath_cleanup_ev = mas_getEV("mas_after_bath_cleanup")
+    if (
+        bath_cleanup_ev is not None
+        and bath_cleanup_ev.start_date is not None
+    ):
+        # Moni was alone for at least 10 minutes
+        # And it is the time to run the cleanup event
+        if (
+            mas_dockstat.retmoni_status is None
+            and mas_getAbsenceLength() >= datetime.timedelta(minutes=10)
+            and bath_cleanup_ev.start_date > datetime.datetime.now()
+        ):
+            call mas_after_bath_cleanup_change_outfit
+            $ mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
