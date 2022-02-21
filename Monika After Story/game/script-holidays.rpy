@@ -340,9 +340,9 @@ init 501 python:
     )
 
 init python:
-    MAS_O31_COSTUME_CG_MAP = {
-        mas_clothes_marisa: "o31mcg",
-        mas_clothes_rin: "o31rcg"
+    MAS_O31_COSTUME_CG_MAP: dict[str, str] = {
+        mas_clothes_marisa.name: "o31mcg",
+        mas_clothes_rin.name: "o31rcg"
     }
 
 #Functions
@@ -523,8 +523,8 @@ init -10 python:
 
             if wearing_costume:
                 #Check if the current costume is in the cg map, and if so, prep the cg
-                if monika_chr.clothes in MAS_O31_COSTUME_CG_MAP:
-                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes])
+                if monika_chr.clothes.name in MAS_O31_COSTUME_CG_MAP:
+                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes.name])
 
                 return monika_chr.clothes
             return None
@@ -549,8 +549,8 @@ init -10 python:
             random_outfit = random.choice(selection_pool)
 
         #Setup the image decode
-        if random_outfit in MAS_O31_COSTUME_CG_MAP:
-            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit])
+        if random_outfit.name in MAS_O31_COSTUME_CG_MAP:
+            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit.name])
 
         #And return the outfit
         return random_outfit
