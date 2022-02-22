@@ -255,7 +255,6 @@ init -1 python in mas_hangman:
 
                 # add the word
                 splitword = line.split(',')
-                print(splitword)
                 easy_list.append(store.MASPoemWord(
                     splitword[0],
                     float(splitword[1]),
