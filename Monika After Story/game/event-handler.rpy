@@ -61,7 +61,7 @@ init -999 python in mas_ev_data_ver:
             return __strict_can_pickle(val), False
         except RuntimeError as re:
             # yes, this how to check for recursion in python < 3.5
-            # NOTE: this also handles renpy's recursion error 
+            # NOTE: this also handles renpy's recursion error
             #   (tom includes more text)
             if "maximum recursion depth exceeded" not in re.args[0]:
                 raise
@@ -1992,7 +1992,7 @@ init python:
                     type(thing).__name__,
                     context
                 ))
-                    
+
             else:
                 # log disallowed object
                 store.mas_utils.mas_log.error(cls.__ERR_NON_PICKLE.format(
@@ -2044,7 +2044,7 @@ init python:
         @staticmethod
         def load_current():
             """
-            Loads the current event as an EventListItem, which is stored in 
+            Loads the current event as an EventListItem, which is stored in
             persistent eli data.
 
             RETURNS: EventListItem of the current event, or None if no current
@@ -2069,7 +2069,7 @@ init python:
             """
             if eli is None:
                 new_eli_data = None
-                new_curr_moni_topic = None 
+                new_curr_moni_topic = None
             else:
                 new_eli_data = eli._raw()
                 new_curr_moni_topic = eli.evl
@@ -2207,7 +2207,7 @@ init python:
 
             This will respect pausing and other next event restrictions.
 
-            Does NOT set additional vars that pop does - please use pop 
+            Does NOT set additional vars that pop does - please use pop
             when actually planning to execute an event.
 
             RETURNS: EventListItem object for the next event, or None if no
@@ -2255,7 +2255,7 @@ init python:
                 notify - True will trigger a notification if appropriate. False
                     will not
                     (Default: False)
-                context - set to a MASEventContext object to supply extra 
+                context - set to a MASEventContext object to supply extra
                     context to the event
                     (accessible via MASEventContext.get())
                     (Default: None)
@@ -2290,7 +2290,7 @@ init python:
                 notify - True will trigger a notification if appropriate, False
                     will not
                     (Default: False)
-                context - set to a MASEventContext object to supply extra 
+                context - set to a MASEventContext object to supply extra
                     context to the event
                     (accessible via MASEventContext.get())
                     (Default: None)
@@ -2319,7 +2319,7 @@ init python:
             ASSUMES persistent.event_list is valid
 
             RETURNS: reverse enumerated iterable:
-                [0] - index 
+                [0] - index
                 [1] - EventListItem
             """
             for index in cls.rev_idx_iter():
@@ -2652,7 +2652,7 @@ init python:
     def queueEvent(event_label, notify=False):
         """
         This adds low priority or order-sensitive events onto the bottom of
-        the event list. This is slow, but rarely called and list should be 
+        the event list. This is slow, but rarely called and list should be
         small.
 
         IN:
@@ -2761,7 +2761,7 @@ init python:
         return evhand._isPresent(ev)
 
 
-    @store.mas_utils.deprecated("MASEventList.pop", should_raise=True) 
+    @store.mas_utils.deprecated("MASEventList.pop", should_raise=True)
     def popEvent(remove=True):
         """
         DO NOT USE.
@@ -3158,7 +3158,7 @@ label call_next_event:
                 $ mas_rebuildEventLists()
 
             if "idle" in ret_items:
-                $ mas_setupIdleMode(brb_label=event_label)
+                $ mas_setupIdleMode(brb_label=ev.eventlabel)
 
             if "love" in ret_items:
                 $ mas_ILY()
