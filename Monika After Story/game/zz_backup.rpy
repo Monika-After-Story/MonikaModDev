@@ -20,6 +20,7 @@ default persistent._mas_incompat_per_entered = False
 python early in mas_per_check:
     import __main__
     import pickle
+    import codecs
     import os
     import datetime
     import shutil
@@ -106,8 +107,8 @@ python early in mas_per_check:
         """
         per_file = None
         try:
-            per_file = file(_tp_persistent, "rb")
-            per_data = per_file.read().decode("zlib")
+            per_file = open(_tp_persistent, "rb")
+            per_data = codecs.decode(per_file.read(), "zlib")
             per_file.close()
             actual_data = pickle.loads(per_data)
 
