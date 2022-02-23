@@ -159,7 +159,7 @@ init -991 python in mas_submod_utils:
             OUT:
                 List of integers representing the version number
             """
-            return map(int, self.version.split('.'))
+            return tuple(map(int, self.version.split('.')))
 
         def hasUpdated(self):
             """
@@ -177,7 +177,7 @@ init -991 python in mas_submod_utils:
                 return False
 
             try:
-                old_vers = map(int, old_vers.split('.'))
+                old_vers = tuple(map(int, old_vers.split('.')))
 
             #Persist data was bad, we'll replace it with something safe and return False as we need not check more
             except:
@@ -257,7 +257,7 @@ init -991 python in mas_submod_utils:
 
                 NOTE: Does not handle errors as to get here, formats must be correct regardless
                 """
-                return map(int, version.split('.'))
+                return tuple(map(int, version.split('.')))
 
             for submod in submod_map.values():
                 for dependency, minmax_version_tuple in submod.dependencies.items():
