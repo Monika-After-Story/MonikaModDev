@@ -3385,7 +3385,7 @@ init -3 python:
             """
             for mux_type in mux_types:
                 acs_with_mux = self._acs_type_map.get(mux_type, {})
-                for acs_name in acs_with_mux.keys():
+                for acs_name in tuple(acs_with_mux.keys()):
                     self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
         def remove_acs_in(self, accessory, acs_layer):
