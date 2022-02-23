@@ -922,12 +922,12 @@ init 189 python in mas_sprites_json:
             _sel_list = sml.CLOTH_SEL_SL
 
         # remvoe from sprite object map
-        if sp_name in _item_map:
+        if sp_name in tuple(_item_map.keys()):
             _item_map.pop(sp_name)
 
         if sml.get_sel(sp_obj) is not None:
             # remove from selectable map
-            if sp_name in _sel_map:
+            if sp_name in tuple(_sel_map.keys()):
                 _sel_map.pop(sp_name)
 
             # remove from selectable list
@@ -1794,7 +1794,7 @@ init 189 python in mas_sprites_json:
             hair_map = obj_based.pop("hair_map")
             is_bad = False
 
-            for hair_key,hair_value in hair_map.items():
+            for hair_key, hair_value in hair_map.items():
                 # start with type validations
 
                 # key

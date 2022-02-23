@@ -5046,7 +5046,7 @@ init -3 python:
 
             # verify other params
             isbad = False
-            for prop_name in json_obj.keys():
+            for prop_name in tuple(json_obj.keys()):
                 prop_val = json_obj.pop(prop_name)
                 if prop_name in cls.CONS_PARAM_NAMES:
                     if not cls._verify_mpm_item(
