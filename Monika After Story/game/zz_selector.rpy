@@ -1056,8 +1056,8 @@ init -10 python in mas_selspr:
                 (Default: False)
         """
         if select_type == SELECT_ACS:
-            old_map_view = old_map.viewkeys()
-            new_map_view = new_map.viewkeys()
+            old_map_view = old_map.keys()
+            new_map_view = new_map.keys()
 
             # determine which map is the "old" and which is "new"
             # we want to remove what is excess from the desired map
@@ -1277,8 +1277,8 @@ init -10 python in mas_selspr:
         map.
 
         IN:
-            old_map_view - viewkeys view of the old map
-            new_map_view - viewkeys view of the new map
+            old_map_view - dict_keys view of the old map
+            new_map_view - dict_keys view of the new map
 
         RETURNS:
             True if the maps are the same, false if different.
@@ -3645,8 +3645,8 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         old_select_map = dict(select_map)
 
         # also create views that we use for comparisons
-        old_view = old_select_map.viewkeys()
-        new_view = select_map.viewkeys()
+        old_view = old_select_map.keys()
+        new_view = select_map.keys()
 
         # disable menu interactions to prevent bugs
         disable_esc()
