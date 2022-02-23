@@ -2235,14 +2235,13 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object with hides
                     populated.
             """
-            for deco_obj, adv_df, override_tag in self._deco_man.deco_iter_adv():
-
+            for deco_obj, adv_df, override_tag in tuple(self._deco_man.deco_iter_adv()):
                 if (
-                        not mas_isDecoTagEnabled(override_tag)
-                        or (
-                            new_bg is not None
-                            and new_bg.get_deco_info(override_tag) is None
-                        )
+                    not mas_isDecoTagEnabled(override_tag)
+                    or (
+                        new_bg is not None
+                        and new_bg.get_deco_info(override_tag) is None
+                    )
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
