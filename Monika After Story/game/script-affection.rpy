@@ -50,6 +50,10 @@ init python:
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
 init -900 python in mas_affection:
+    import struct
+    import binascii
+    import store
+    from store import mas_utils
     # this is very early because they are importnat constants
 
     # numerical constants of affection levels
@@ -121,6 +125,21 @@ init -900 python in mas_affection:
         ENAMORED: "monika 1hua_static",
         LOVE: "monika 1hua_static",
     }
+
+    RANDCHAT_RANGE_MAP = {
+        BROKEN: 1,
+        DISTRESSED: 2,
+        UPSET: 3,
+        NORMAL: 4,
+        HAPPY: 4,
+        AFFECTIONATE: 5,
+        ENAMORED: 6,
+        LOVE: 6
+    }
+
+    __STRUCT_FMT = "!d d d d"
+    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0)
+    __STRUCT = struct.Struct(__STRUCT_FMT)
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
@@ -248,6 +267,124 @@ init -900 python in mas_affection:
             return True
 
         return _compareAff(low, high) <= 0
+
+    def _set_pers_data(value):
+        # TODO: value verification here
+        persistent._mas_affection = value
+
+    def _get_pers_data():
+        # TODO: save getter here
+        return persistent._mas_affection
+
+    def __to_struct(*args):
+        """
+        Packs passed args into a struct
+
+        IN:
+            *args - the arguments to pass into the struct
+
+        OUT:
+            PY2:
+                str
+            PY3:
+                bytes
+        """
+        return __STRUCT.pack(*args)
+
+    def __from_struct(struct_):
+        """
+        Upacks passed struct into a tuple of values
+
+        IN:
+            struct_ - bytes - the struct to unpack
+
+        OUT:
+            tuple with values
+        """
+        return __STRUCT.unpack(*args)
+
+    def __hexlify(bytes_):
+        """
+        Converts binary data into a hexadecimal string
+        """
+        return binascii.hexlify(bytes_)
+
+    def __unhexlify(bytes_):
+        """
+        Converts a hexadecimal string into pure binary data
+        """
+        return binascii.unhexlify(bytes_)
+
+    def __handle_str2bytes(value):
+        """
+        Verifies we return the expected type,
+        if not, converts it
+        TODO: ME
+        """
+        return value
+
+    def _decode_data(data):
+        """
+        Returns decoded data
+        In case the data has been corrupted in a way,
+            returns default values
+
+        OUT:
+            tuple with the data
+        """
+        try:
+            data = __from_struct(
+                __unhexlify(data)
+            )
+
+        except struct.error as e:
+            mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
+
+        except (binascii.Incomplete binascii.Error) as e:
+            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+
+        except Exception as e:
+            mas_utils.mas_log("Failed to decode data: {}".format(e))
+
+        else:
+            # Everything is correct, return
+            return data
+
+        # Fallback in case of an exception
+        return __STRUCT_DEF_VALUES
+
+    def _encode_data(*data):
+        """
+        Encodes data
+        If it's unable to encode data, returns None
+
+        OUT:
+            bytes/None
+        """
+        try:
+            encoded_data = __hexlify(
+                __to_struct(*data)
+            )
+
+        except struct.error as e:
+            mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
+
+        except (binascii.Incomplete binascii.Error) as e:
+            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+
+        except Exception as e:
+            mas_utils.mas_log("Failed to read pers data: {}".format(e))
+
+        else:
+            return encoded_data
+
+        return None
+
+    def _get_default_value():
+        """
+        Returns default value for aff when first loading the mod
+        """
+        return _encode_data(*__STRUCT_DEF_VALUES)
 
 
     # thresholds values
