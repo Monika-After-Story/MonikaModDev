@@ -52,6 +52,8 @@ init python:
 init -900 python in mas_affection:
     import struct
     import binascii
+    import datetime
+
     import store
     from store import mas_utils
     # this is very early because they are importnat constants
@@ -272,11 +274,11 @@ init -900 python in mas_affection:
 
     def _set_pers_data(value):
         # TODO: value verification here
-        persistent._mas_affection = value
+        persistent._mas_affection_data = value
 
     def _get_pers_data():
-        # TODO: save getter here
-        return persistent._mas_affection
+        # TODO: safe getter here
+        return persistent._mas_affection_data
 
     def __to_struct(*args):
         """
@@ -439,13 +441,16 @@ init -900 python in mas_affection:
         """
         return __decode_data(_get_pers_data())
 
-    def _grant_aff(amount, bypass):
+    def _grant_aff(amount, bypass, reason=None):
         """
         Grants some affection
 
         IN:
             amount - float - amount of affection to grant
             bypass - bool - is this bypass gain or not
+            reason - str/None - the reason for this bonus,
+                MUST be current topic label or None
+                (Default: None)
         """
         curr_data = list(__decode_data(_get_pers_data()))
         freeze_date = datetime.date.fromtimestamp(data[4])
@@ -465,7 +470,8 @@ init -900 python in mas_affection:
         bank_amount = 0.0
 
         if bypass:
-            bypass_available = 100.0 - data[3]
+            bypass_limit = 100.0 if store.mas_isSpecialDay() else 15.0
+            bypass_available = bypass_limit - data[3]
             if amount > bypass_available:
                 bank_amount = min(amount-bypass_available, max(100.0-data[1], 0.0))
                 # This isn't a mistake, we should recalc the value
@@ -479,9 +485,7 @@ init -900 python in mas_affection:
         amount = min(amount, max_gain)
         new_value = data[0] + amount
 
-        # audit the attempted change
-        # TODO: better audit
-        # mas_affection.audit(amount, new_value, frozen, bypass)
+        mas_affection.audit(amount, data[0], new_value, frozen=frozen, bypass=bypass)
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
@@ -496,12 +500,15 @@ init -900 python in mas_affection:
 
             _set_pers_data(__encode_data(*data))
 
-    def _remove_aff(amount):
+    def _remove_aff(amount, reason=None):
         """
         Removes some affection
 
         IN:
             amount - float - amount of affection to remove
+            reason - str/None - the reason for this lose,
+                MUST be current topic label or None
+                (Default: None)
         """
         curr_data = list(__decode_data(_get_pers_data()))
 
@@ -511,12 +518,31 @@ init -900 python in mas_affection:
         new_value = data[0] - amount
         new_value = max(new_value, -1000000)
 
-        # audit this attempted change
-        # TODO: better audit
-        # mas_affection.audit(amount, new_value, frozen)
+        mas_affection.audit(amount, data[0], new_value, frozen=frozen)
 
         data[0] = new_value
         _set_pers_data(__encode_data(*data))
+
+    def _set_aff(amount, reason="SET"):
+        """
+        Sets affection to a value
+
+        NOTE: never use this to add / lower affection unless its to
+            strictly set affection to a level for some reason.
+
+        IN:
+            amount - amount to set affection to
+            logmsg - msg to show in the log
+                (Default: 'SET')
+        """
+        curr_data = list(__decode_data(_get_pers_data()))
+        amount = max(min(amount, 1000000), -1000000)
+
+        mas_affection.audit(curr_data[0]-amount, curr_data[0], amount, ldsv=logmsg)
+
+        curr_data[0] = amount
+        _set_pers_data(__encode_data(*data))
+
 
     # thresholds values
 
@@ -543,7 +569,7 @@ init -900 python in mas_affection:
     AFF_TIME_CAP = -101
 
 
-init -1 python in mas_affection:
+init -500 python in mas_affection:
     import os
     import datetime
     import store.mas_utils as mas_utils
@@ -579,14 +605,15 @@ init -1 python in mas_affection:
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude | prev -> new
-    _audit = "{0} | {1} | {2} -> {3}"
+    _AUDIT_FMT = "{0} | {1} | {2} -> {3}"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
-    _audit_f = "{4} | {0} | {1} | {2} -> {3}"
-    _freeze_text = "!FREEZE!"
-    _bypass_text = "!BYPASS!"
+    _AUDIT_FREEZE_FMT = "{4} | {0} | {1} | {2} -> {3}"
+    _FREEZE_TEXT = "!FREEZE!"
+    _BYPASS_TEXT = "!BYPASS!"
 
-    def audit(change, new, frozen=False, bypass=False, ldsv=None):
+
+    def audit(change, old, new, frozen=False, bypass=False, ldsv=None):
         """
         Audits a change in affection.
 
@@ -607,29 +634,28 @@ init -1 python in mas_affection:
 
             # decide what piece 5 is
             if bypass:
-                piece_five = _bypass_text
+                piece_five = _BYPASS_TEXT
             else:
-                piece_five = _freeze_text
+                piece_five = _FREEZE_TEXT
 
 
-            audit_text = _audit_f.format(
+            audit_text = _AUDIT_FREEZE_FMT.format(
                 piece_one,
                 change,
-                store._mas_getAffection(),
+                old,
                 new,
                 piece_five
             )
 
         else:
-            audit_text = _audit.format(
+            audit_text = _AUDIT_FMT.format(
                 piece_one,
                 change,
-                store._mas_getAffection(),
+                old,
                 new
             )
 
         log.info(audit_text)
-
 
     def raw_audit(old, new, change, tag):
         """
@@ -641,13 +667,12 @@ init -1 python in mas_affection:
             change - the chnage amount
             tag - a string to label this audit change
         """
-        log.info(_audit.format(
+        log.info(_AUDIT_FMT.format(
             tag,
             change,
             old,
             new
         ))
-
 
     def txt_audit(tag, msg):
         """
@@ -662,8 +687,26 @@ init -1 python in mas_affection:
             msg
         ))
 
+    def audit_save(current_value):
+        """
+        Auditing aff save in the aff log
 
-    # forced expression logic function
+        IN:
+            current_value - float - current aff
+        """
+        log.info("SAVE | {0}".format(current_value))
+
+    def audit_backup(old_value, new_value):
+        """
+        Auditing backing up in the aff log
+
+        IN:
+            old_value - float - old backup
+            new_value - float - new backup
+        """
+        log.info("SET BACKUP | {0} -> {1}".format(old_value, new_value))
+
+    @mas_utils.deprecated()
     def _force_exp():
         """
         Determines appropriate forced expression for current affection.
@@ -1470,15 +1513,13 @@ init -10 python:
         persistent._mas_pctadeibe = None
 
         # audit this change
-        store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
+        mas_affection.audit_save(aff_value)
 
         # backup this value
         if persistent._mas_aff_backup != aff_value:
-            store.mas_affection.raw_audit(
+            mas_affection.audit_backup(
                 persistent._mas_aff_backup,
-                aff_value,
-                aff_value,
-                "SET BACKUP"
+                aff_value
             )
             persistent._mas_aff_backup = aff_value
 
@@ -1532,7 +1573,7 @@ init -10 python:
             store.mas_affection.txt_audit("LOAD", "Loading from system")
 
         # audit the amount loaded
-        store.mas_affection.raw_audit(0, new_value, new_value, "LOAD?")
+        store.mas_affection.raw_audit(0.0, new_value, new_value, "LOAD?")
 
         # if the back is None, set the backup
         if persistent._mas_aff_backup is None:
@@ -1564,7 +1605,7 @@ init -10 python:
                 new_value = persistent._mas_aff_backup
 
         # audit this change
-        store.mas_affection.audit(new_value, new_value, ldsv="LOAD COMPLETE")
+        mas_affection.txt_audit("LOAD COMPLETE", new_value)
 
         # and set what we got
         persistent._mas_affection["affection"] = new_value
