@@ -388,6 +388,114 @@ init -900 python in mas_affection:
         """
         return _encode_data(*__STRUCT_DEF_VALUES)
 
+    def __update_pers_data(
+        old_data=None,
+        new_aff=None,
+        new_today_gain=None,
+        new_today_bypass_gain=None,
+        new_freeze_ts=None
+    ):
+        """
+        Updates given data with new provided values
+        If a value is None, it won't be updated
+
+        IN:
+            old_data - tuple/None - tuple with current data which we will update
+                If None, we fetch it here
+                (Default: None)
+            new_aff - float/None - new aff value
+                (Default: None)
+            new_today_gain - float/None - new gain value
+                (Default: None)
+            new_today_bypass_gain - float/None - new bypass gain value
+                (Default: None)
+            new_freeze_ts - float/None - new freeze ts value
+                (Default: None)
+        """
+        if old_data is None:
+            old_data = _decode_data(_get_pers_data())
+
+        new_data = list(old_data)
+
+        if new_aff is not None:
+            new_data[0] = new_aff
+        if new_today_gain is not None:
+            new_data[1] = new_today_gain
+        if new_today_bypass_gain is not None:
+            new_data[2] = new_today_bypass_gain
+        if new_freeze_ts is not None:
+            new_data[3] = new_freeze_ts
+
+        return tuple(new_data)
+
+    def _grant_aff(amount, bypass):
+        """
+        Grants some affection
+
+        IN:
+            amount - float - amount of affection to grant
+            bypass - bool - is this bypass gain or not
+        """
+        curr_data = list(_decode_data(_get_pers_data()))
+
+        freeze_date = datetime.date.fromtimestamp(data[3])
+        if store.mas_pastOneDay(freeze_date):
+            data[1] = 0.0
+            data[2] = 0.0
+            data[3] = time.time()
+
+        frozen = data[1] >= 7.0
+
+        # Sanity checks
+        if amount <= 0:
+            raise ValueError("Invalid value for affection: {}".format(change))
+        amount = min(amount, 50.0)
+
+        # Can't get more unless special bypass
+        if not bypass:
+            amount = max(min(amount, 9.0-data[1]), 0.0)
+
+        # And now sanity check for max aff value
+        new_value = data[0] + amount
+        new_value = min(new_value, 1000000)
+
+        # audit the attempted change
+        # TODO: better audit
+        # mas_affection.audit(amount, new_value, frozen, bypass)
+
+        # if we're not freezed or if the bypass flag is True
+        if not frozen or bypass:
+            data[0] = new_value
+
+            if not bypass:
+                data[1] += amount
+
+            else:
+                data[2] += amount
+
+            _set_pers_data(_encode_data(*data))
+
+    def _remove_aff(amount):
+        """
+        Removes some affection
+
+        IN:
+            amount - float - amount of affection to remove
+        """
+        curr_data = list(_decode_data(_get_pers_data()))
+
+        if amount <= 0:
+            raise ValueError("Invalid value for affection: {}".format(change))
+
+        new_value = data[0] - change
+        new_value = max(new_value, -1000000)
+
+        # audit this attempted change
+        # TODO: better audit
+        # mas_affection.audit(change, new_value, frozen)
+
+        data[0] = new_value
+        _set_pers_data(_encode_data(*data))
 
     # thresholds values
 
