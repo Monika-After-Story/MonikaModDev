@@ -138,9 +138,9 @@ init -900 python in mas_affection:
     }
 
     # Uning big-endian
-    # aff, today gain, today bypass gain, freeze ts
-    __STRUCT_FMT = "!d d d d"
-    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0)
+    # aff, bank, today gain, today bypass gain, freeze ts
+    __STRUCT_FMT = "!d d d d d"
+    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0, 0.0)
     __STRUCT = struct.Struct(__STRUCT_FMT)
 
     # compare functions for affection / group
@@ -325,7 +325,7 @@ init -900 python in mas_affection:
         """
         return value
 
-    def _decode_data(data):
+    def __decode_data(data):
         """
         Returns decoded data
         In case the data has been corrupted in a way,
@@ -355,7 +355,7 @@ init -900 python in mas_affection:
         # Fallback in case of an exception
         return __STRUCT_DEF_VALUES
 
-    def _encode_data(*data):
+    def __encode_data(*data):
         """
         Encodes data
         If it's unable to encode data, returns None
@@ -386,11 +386,12 @@ init -900 python in mas_affection:
         """
         Returns default data for aff when first loading the mod
         """
-        return _encode_data(*__STRUCT_DEF_VALUES)
+        return __encode_data(*__STRUCT_DEF_VALUES)
 
-    def __update_pers_data(
-        old_data=None,
+    def __update_data(
+        data=None,
         new_aff=None,
+        new_bank=None,
         new_today_gain=None,
         new_today_bypass_gain=None,
         new_freeze_ts=None
@@ -405,6 +406,8 @@ init -900 python in mas_affection:
                 (Default: None)
             new_aff - float/None - new aff value
                 (Default: None)
+            new_bank - float/None - new bank value
+                (Default: None)
             new_today_gain - float/None - new gain value
                 (Default: None)
             new_today_bypass_gain - float/None - new bypass gain value
@@ -413,20 +416,28 @@ init -900 python in mas_affection:
                 (Default: None)
         """
         if old_data is None:
-            old_data = _decode_data(_get_pers_data())
+            old_data = __decode_data(_get_pers_data())
 
         new_data = list(old_data)
 
         if new_aff is not None:
             new_data[0] = new_aff
+        if new_bank is not None:
+            new_data[1] = new_bank
         if new_today_gain is not None:
-            new_data[1] = new_today_gain
+            new_data[2] = new_today_gain
         if new_today_bypass_gain is not None:
-            new_data[2] = new_today_bypass_gain
+            new_data[3] = new_today_bypass_gain
         if new_freeze_ts is not None:
-            new_data[3] = new_freeze_ts
+            new_data[4] = new_freeze_ts
 
         return tuple(new_data)
+
+    def _get_stats():
+        """
+        Returns current stats
+        """
+        return __decode_data(_get_pers_data())
 
     def _grant_aff(amount, bypass):
         """
@@ -436,28 +447,37 @@ init -900 python in mas_affection:
             amount - float - amount of affection to grant
             bypass - bool - is this bypass gain or not
         """
-        curr_data = list(_decode_data(_get_pers_data()))
+        curr_data = list(__decode_data(_get_pers_data()))
+        freeze_date = datetime.date.fromtimestamp(data[4])
 
-        freeze_date = datetime.date.fromtimestamp(data[3])
         if store.mas_pastOneDay(freeze_date):
-            data[1] = 0.0
             data[2] = 0.0
-            data[3] = time.time()
+            data[3] = 0.0
+            data[4] = time.time()
 
-        frozen = data[1] >= 7.0
+        frozen = data[2] >= 7.0
 
         # Sanity checks
         if amount <= 0:
-            raise ValueError("Invalid value for affection: {}".format(change))
+            raise ValueError("Invalid value for affection: {}".format(amount))
+
         amount = min(amount, 50.0)
+        bank_amount = 0.0
 
-        # Can't get more unless special bypass
-        if not bypass:
-            amount = max(min(amount, 9.0-data[1]), 0.0)
+        if bypass:
+            bypass_available = 100.0 - data[3]
+            if amount > bypass_available:
+                bank_amount = min(amount-bypass_available, max(100.0-data[1], 0.0))
+                # This isn't a mistake, we should recalc the value
+                amount -= (amount - bypass_available)
 
-        # And now sanity check for max aff value
+        else:
+            nonbypass_available = 9.0 - data[2]
+            amount = max(min(amount, nonbypass_available), 0.0)
+
+        max_gain = max(1000000 - data[0], 0.0)
+        amount = min(amount, max_gain)
         new_value = data[0] + amount
-        new_value = min(new_value, 1000000)
 
         # audit the attempted change
         # TODO: better audit
@@ -465,15 +485,16 @@ init -900 python in mas_affection:
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
-            data[0] = new_value
+            data[0] += amount
+            data[1] += bank_amount
 
             if not bypass:
-                data[1] += amount
-
-            else:
                 data[2] += amount
 
-            _set_pers_data(_encode_data(*data))
+            else:
+                data[3] += amount
+
+            _set_pers_data(__encode_data(*data))
 
     def _remove_aff(amount):
         """
@@ -482,20 +503,20 @@ init -900 python in mas_affection:
         IN:
             amount - float - amount of affection to remove
         """
-        curr_data = list(_decode_data(_get_pers_data()))
+        curr_data = list(__decode_data(_get_pers_data()))
 
         if amount <= 0:
-            raise ValueError("Invalid value for affection: {}".format(change))
+            raise ValueError("Invalid value for affection: {}".format(amount))
 
-        new_value = data[0] - change
+        new_value = data[0] - amount
         new_value = max(new_value, -1000000)
 
         # audit this attempted change
         # TODO: better audit
-        # mas_affection.audit(change, new_value, frozen)
+        # mas_affection.audit(amount, new_value, frozen)
 
         data[0] = new_value
-        _set_pers_data(_encode_data(*data))
+        _set_pers_data(__encode_data(*data))
 
     # thresholds values
 
