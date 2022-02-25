@@ -55,7 +55,10 @@ init -900 python in mas_affection:
     import datetime
 
     import store
-    from store import mas_utils
+    from store import (
+        persistent,
+        mas_utils
+    )
     # this is very early because they are importnat constants
 
     # numerical constants of affection levels
@@ -334,7 +337,8 @@ init -900 python in mas_affection:
             returns default values
 
         OUT:
-            tuple with the data
+            - tuple with the data
+            - None if an error happened
         """
         try:
             data = __from_struct(
@@ -354,8 +358,7 @@ init -900 python in mas_affection:
             # Everything is correct, return
             return data
 
-        # Fallback in case of an exception
-        return __STRUCT_DEF_VALUES
+        return None
 
     def __encode_data(*data):
         """
@@ -390,6 +393,26 @@ init -900 python in mas_affection:
         """
         return __encode_data(*__STRUCT_DEF_VALUES)
 
+    def __get_data():
+        """
+        Returns current data (decoded)
+
+        OUT:
+            - tuple with the data
+            - None if an error happened
+        """
+        data = _get_pers_data()
+        if not data:
+            mas_utils.mas_log.critical("Aff data is invalid")
+            return None
+
+        data = __decode_data(data)
+        if not data:
+            mas_utils.mas_log.critical("Failed to decode aff data")
+            return None
+
+        return data
+
     def __update_data(
         data=None,
         new_aff=None,
@@ -418,7 +441,9 @@ init -900 python in mas_affection:
                 (Default: None)
         """
         if old_data is None:
-            old_data = __decode_data(_get_pers_data())
+            old_data = __get_data()
+            if old_data is None:
+                return None
 
         new_data = list(old_data)
 
@@ -435,12 +460,6 @@ init -900 python in mas_affection:
 
         return tuple(new_data)
 
-    def _get_stats():
-        """
-        Returns current stats
-        """
-        return __decode_data(_get_pers_data())
-
     def _grant_aff(amount, bypass, reason=None):
         """
         Grants some affection
@@ -452,7 +471,10 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        curr_data = list(__decode_data(_get_pers_data()))
+        curr_data = __get_data()
+        if not curr_data:
+            return
+        curr_data = list(curr_data)
         freeze_date = datetime.date.fromtimestamp(data[4])
 
         if store.mas_pastOneDay(freeze_date):
@@ -509,7 +531,10 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        curr_data = list(__decode_data(_get_pers_data()))
+        curr_data = __get_data()
+        if not curr_data:
+            return
+        curr_data = list(curr_data)
 
         if amount <= 0:
             raise ValueError("Invalid value for affection: {}".format(amount))
@@ -534,7 +559,10 @@ init -900 python in mas_affection:
             logmsg - msg to show in the log
                 (Default: 'SET')
         """
-        curr_data = list(__decode_data(_get_pers_data()))
+        curr_data = __get_data()
+        if not curr_data:
+            return
+        curr_data = list(curr_data)
         amount = max(min(amount, 1000000), -1000000)
 
         mas_affection.audit(curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
@@ -542,6 +570,49 @@ init -900 python in mas_affection:
         curr_data[0] = amount
         _set_pers_data(__encode_data(*data))
 
+    def backup_aff():
+        """
+        Runs backup algo for affection
+        """
+        backups = persistent._mas_affection_backups
+        today = datetime.date.today()
+
+        if not backups or backups[-1][0] < today:
+            data = _get_pers_data()
+            backup = (today, data)
+            backups.append(backup)
+
+    def restore_aff():
+        """
+        Uses available aff backup
+        Use wisely
+
+        OUT:
+            boolean - whether or not a backup was restored
+        """
+        backups = persistent._mas_affection_backups
+        if not backups:
+            log.info("NO BACKUPS FOUND")
+            return False
+
+        curr_value = __get_data()
+        if curr_value is None:
+            curr_value = "invalid"
+
+        while backups:
+            backup = backups.pop()
+            backup_data = __decode_data(backup[1])
+
+            if backup_data is None:
+                log.info("CORRUPTED BACKUP")
+                continue
+
+            log.info("RESTORED | {} -> {}".format(curr_value, backup_data[0]))
+            _set_pers_data(backup[1])
+            return True
+
+        log.info("NO WORKING BACKUPS FOUND")
+        return False
 
     # thresholds values
 
