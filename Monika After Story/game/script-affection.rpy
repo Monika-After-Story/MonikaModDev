@@ -481,11 +481,10 @@ init -900 python in mas_affection:
             nonbypass_available = 9.0 - data[2]
             amount = max(min(amount, nonbypass_available), 0.0)
 
-        max_gain = max(1000000 - data[0], 0.0)
+        max_gain = max(1000000-data[0], 0.0)
         amount = min(amount, max_gain)
-        new_value = data[0] + amount
 
-        mas_affection.audit(amount, data[0], new_value, frozen=frozen, bypass=bypass)
+        mas_affection.audit(amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
@@ -515,12 +514,12 @@ init -900 python in mas_affection:
         if amount <= 0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
-        new_value = data[0] - amount
-        new_value = max(new_value, -1000000)
+        max_lose = data[0] + 1000000
+        amount = min(amount, max_lose)
 
-        mas_affection.audit(amount, data[0], new_value, frozen=frozen)
+        mas_affection.audit(amount, data[0], data[0]-amount, frozen=frozen, ldsv=reason)
 
-        data[0] = new_value
+        data[0] -= new_value
         _set_pers_data(__encode_data(*data))
 
     def _set_aff(amount, reason="SET"):
@@ -538,7 +537,7 @@ init -900 python in mas_affection:
         curr_data = list(__decode_data(_get_pers_data()))
         amount = max(min(amount, 1000000), -1000000)
 
-        mas_affection.audit(curr_data[0]-amount, curr_data[0], amount, ldsv=logmsg)
+        mas_affection.audit(curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
 
         curr_data[0] = amount
         _set_pers_data(__encode_data(*data))
