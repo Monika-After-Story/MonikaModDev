@@ -2064,74 +2064,43 @@ init 20 python:
 
     def mas_gainAffection(
         amount=None,
-        modifier=1,
-        bypass=False
+        modifier=1.0,
+        bypass=False,
+        current_label=None
     ):
         """
         Grants some affection whenever something positive happens
 
         IN:
-            amount - int, float, None - amount of affection to grant,
+            amount - float, None - amount of affection to grant,
                 If None, uses the default value for the current aff
                 (Default: None)
-            modifier - int, float - modifier for the amount value
-                (Default: 1)
+            modifier - float - modifier for the amount value
+                (Default: 1.0)
             bypass - bool - whether or not we should bypass the cap,
                 for example during special events
                 (Default: False)
+            current_label - str/None - the topic that caused this aff gain,
+                MUST be current topic label or None.
+                You probably DO NOT want to use this
+                (Default: None)
         """
         if amount is None:
             amount = _mas_getGoodExp()
+        change = amount*modifier
 
-        # is it a new day?
-        if mas_pastOneDay(persistent._mas_affection.get("freeze_date")):
-            persistent._mas_affection["freeze_date"] = datetime.date.today()
-            persistent._mas_affection["today_exp"] = 0
-            mas_UnfreezeGoodAffExp()
-
-        # calculate new value
-        frozen = persistent._mas_affection_goodexp_freeze
-        change = (amount * modifier)
-
-        # First, a few basic sanity checks
-        if change <= 0:
-            raise ValueError("Invalid value for affection: {}".format(change))
-        change = min(change, 50)
-
-        # Can't get more unless special bypass
-        if not bypass:
-            remaining_exp = 9 - _mas_getTodayExp()
-            change = max(min(change, remaining_exp), 0)
-
-        # And now sanity check for max aff value
-        new_value = _mas_getAffection() + change
-        new_value = min(new_value, 1000000)
-
-        # audit the attempted change
-        mas_affection.audit(change, new_value, frozen, bypass)
-
-        # if we're not freezed or if the bypass flag is True
-        if not frozen or bypass:
-            # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] = new_value
-
-            if not bypass:
-                persistent._mas_affection["today_exp"] = (
-                    _mas_getTodayExp() + change
-                )
-                if persistent._mas_affection["today_exp"] >= 7:
-                    mas_FreezeGoodAffExp()
-
-            # Updates the experience levels if necessary.
-            mas_updateAffectionExp()
+        mas_affection._grant_aff(change, bypass, current_label)
+        # Updates the experience levels if necessary.
+        mas_updateAffectionExp()
 
     def mas_loseAffection(
         amount=None,
-        modifier=1,
+        modifier=1.0,
         reason=None,
         ev_label=None,
         apology_active_expiry=datetime.timedelta(hours=3),
         apology_overall_expiry=datetime.timedelta(weeks=1),
+        current_label=None
     ):
         """
         Subtracts some affection whenever something negative happens
@@ -2149,11 +2118,11 @@ init 20 python:
         generic: do we want this to be persistent? or not
 
         IN:
-            amount - int, float, None - amount of affection to subtract,
+            amount - float, None - amount of affection to subtract,
                 If None, uses the default value for the current aff
                 (Default: None)
-            modifier - int, float - modifier for the amount value
-                (Default: 1)
+            modifier - float - modifier for the amount value
+                (Default: 1.0)
             reason - int, None, - a constant for the reason for the apology
                 See mas_setApologyReason
                 (Default: None)
@@ -2166,9 +2135,14 @@ init 20 python:
             apology_overall_expiry - datetime.timedelta - the amount of overall time
                 for the apology to expire
                 (Default: 1 week)
+            current_label - str/None - the topic that caused this aff gain,
+                MUST be current topic label or None.
+                You probably DO NOT want to use this
+                (Default: None)
         """
         if amount is None:
             amount = _mas_getBadExp()
+        change = amount*modifier
 
         #set apology flag
         mas_setApologyReason(
@@ -2178,49 +2152,7 @@ init 20 python:
             apology_overall_expiry=apology_overall_expiry
         )
 
-        # calculate new vlaue
-        frozen = persistent._mas_affection_badexp_freeze
-        change = (amount * modifier)
-
-        if change <= 0:
-            raise ValueError("Invalid value for affection: {}".format(change))
-
-        new_value = _mas_getAffection() - change
-        new_value = max(new_value, -1000000)
-
-        # audit this attempted change
-        mas_affection.audit(change, new_value, frozen)
-
-        if not frozen:
-            # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] = new_value
-
-            # Updates the experience levels if necessary.
-            mas_updateAffectionExp()
-
-    def _mas_setAffection(amount=None, logmsg="SET"):
-        """
-        Sets affection to a value
-
-        NOTE: never use this to add / lower affection unless its to
-            strictly set affection to a level for some reason.
-
-        IN:
-            amount - amount to set affection to
-            logmsg - msg to show in the log
-                (Default: SET)
-        """
-        if amount is None:
-            amount = _mas_getAffection()
-
-        amount = max(min(amount, 1000000), -1000000)
-
-        # audit the change (or attempt)
-        mas_affection.audit(amount, amount, False, ldsv=logmsg)
-
-        # NOTE: we should NEVER freeze set affection.
-        # Otherwise, use the value passed in the argument.
-        persistent._mas_affection["affection"] = amount
+        mas_affection._remove_aff(change, current_label)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
