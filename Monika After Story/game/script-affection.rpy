@@ -303,7 +303,7 @@ init -900 python in mas_affection:
         OUT:
             tuple with values
         """
-        return __STRUCT.unpack(*args)
+        return __STRUCT.unpack(struct_)
 
     def __hexlify(bytes_):
         """
@@ -340,13 +340,13 @@ init -900 python in mas_affection:
             )
 
         except (binascii.Incomplete, binascii.Error) as e:
-            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+            mas_utils.mas_log.error("Failed to convert hex data: {}".format(e))
 
         except struct.error as e:
-            mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
+            mas_utils.mas_log.error("Failed to unpack struct data: {}".format(e))
 
         except Exception as e:
-            mas_utils.mas_log("Failed to decode data: {}".format(e))
+            mas_utils.mas_log.error("Failed to decode data: {}".format(e))
 
         else:
             # Everything is correct, return
@@ -369,13 +369,13 @@ init -900 python in mas_affection:
             )
 
         except (binascii.Incomplete, binascii.Error) as e:
-            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+            mas_utils.mas_log.error("Failed to convert hex data: {}".format(e))
 
         except struct.error as e:
-            mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
+            mas_utils.mas_log.error("Failed to unpack struct data: {}".format(e))
 
         except Exception as e:
-            mas_utils.mas_log("Failed to read pers data: {}".format(e))
+            mas_utils.mas_log.error("Failed to encode pers data: {}".format(e))
 
         else:
             return encoded_data
