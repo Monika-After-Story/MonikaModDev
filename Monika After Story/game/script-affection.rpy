@@ -137,6 +137,8 @@ init -900 python in mas_affection:
         LOVE: 6
     }
 
+    # Uning big-endian
+    # aff, today gain, today bypass gain, freeze ts
     __STRUCT_FMT = "!d d d d"
     __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0)
     __STRUCT = struct.Struct(__STRUCT_FMT)
@@ -337,11 +339,11 @@ init -900 python in mas_affection:
                 __unhexlify(data)
             )
 
+        except (binascii.Incomplete, binascii.Error) as e:
+            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+
         except struct.error as e:
             mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
-
-        except (binascii.Incomplete binascii.Error) as e:
-            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
 
         except Exception as e:
             mas_utils.mas_log("Failed to decode data: {}".format(e))
@@ -366,11 +368,11 @@ init -900 python in mas_affection:
                 __to_struct(*data)
             )
 
+        except (binascii.Incomplete, binascii.Error) as e:
+            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
+
         except struct.error as e:
             mas_utils.mas_log("Failed to unpack struct data: {}".format(e))
-
-        except (binascii.Incomplete binascii.Error) as e:
-            mas_utils.mas_log("Failed to convert hex data: {}".format(e))
 
         except Exception as e:
             mas_utils.mas_log("Failed to read pers data: {}".format(e))
@@ -380,9 +382,9 @@ init -900 python in mas_affection:
 
         return None
 
-    def _get_default_value():
+    def get_default_data():
         """
-        Returns default value for aff when first loading the mod
+        Returns default data for aff when first loading the mod
         """
         return _encode_data(*__STRUCT_DEF_VALUES)
 
