@@ -136,7 +136,7 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
-    DEF_AFF_GAIN_MAP {
+    DEF_AFF_GAIN_MAP = {
         BROKEN: 0.25,
         DISTRESSED: 0.5,
         UPSET: 0.75,
@@ -146,7 +146,7 @@ init -900 python in mas_affection:
         ENAMORED: 2.5,
         LOVE: 2.0
     }
-    DEF_AFF_LOSE_MAP {
+    DEF_AFF_LOSE_MAP = {
         BROKEN: 15.0,
         DISTRESSED: 15.0,
         UPSET: 10.0,
@@ -156,7 +156,7 @@ init -900 python in mas_affection:
         ENAMORED: 20.0,
         LOVE: 50.0
     }
-    DEF_AFF_FRACTION_LOSE_MAP {
+    DEF_AFF_FRACTION_LOSE_MAP = {
         BROKEN: 15.0,
         DISTRESSED: 10.0,
         UPSET: 10.0,

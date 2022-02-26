@@ -7951,14 +7951,14 @@ default persistent.sessions = {
     "first_session": datetime.datetime.now()
 }
 default persistent.random_seen = 0
-default persistent._mas_affection = {
-    "affection":0,#done
-    "goodexp":1,
-    "badexp":1,
-    "apologyflag":False,# done
-    "freeze_date": None,# done
-    "today_exp":0# done
-}
+# default persistent._mas_affection = {
+#     "affection":0,
+#     "goodexp":1,
+#     "badexp":1,
+#     "apologyflag":False,
+#     "freeze_date": None,
+#     "today_exp":0
+# }
 default persistent._mas_affection_version = 2
 default persistent._mas_affection_data =  mas_affection.get_default_data()
 default persistent._mas_affection_should_apologise = False
