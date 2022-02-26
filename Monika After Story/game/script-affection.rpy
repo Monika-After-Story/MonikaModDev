@@ -136,15 +136,35 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
-    RANDCHAT_RANGE_MAP = {
-        BROKEN: 1,
-        DISTRESSED: 2,
-        UPSET: 3,
-        NORMAL: 4,
-        HAPPY: 4,
-        AFFECTIONATE: 5,
-        ENAMORED: 6,
-        LOVE: 6
+    DEF_AFF_GAIN_MAP {
+        BROKEN: 0.25,
+        DISTRESSED: 0.5,
+        UPSET: 0.75,
+        NORMAL: 1.0,
+        HAPPY: 1.25,
+        AFFECTIONATE: 1.5,
+        ENAMORED: 2.5,
+        LOVE: 2.0
+    }
+    DEF_AFF_LOSE_MAP {
+        BROKEN: 15.0,
+        DISTRESSED: 15.0,
+        UPSET: 10.0,
+        NORMAL: 5.0,
+        HAPPY: 10.0,
+        AFFECTIONATE: 15.0,
+        ENAMORED: 20.0,
+        LOVE: 50.0
+    }
+    DEF_AFF_FRACTION_LOSE_MAP {
+        BROKEN: 15.0,
+        DISTRESSED: 10.0,
+        UPSET: 10.0,
+        NORMAL: 10.0,
+        HAPPY: 10.0,
+        AFFECTIONATE: 15.0,
+        ENAMORED: 15.0,
+        LOVE: 10.0
     }
 
     # Uning big-endian
@@ -1767,26 +1787,29 @@ init 20 python:
     import store.mas_affection as affection
     import store.mas_utils as mas_utils
 
-    # Functions to freeze exp progression for story events, use wisely.
+    @store.mas_utils.deprecated()
     def mas_FreezeGoodAffExp():
-        persistent._mas_affection_goodexp_freeze = True
+        pass
 
+    @store.mas_utils.deprecated()
     def mas_FreezeBadAffExp():
-        persistent._mas_affection_badexp_freeze = True
+        pass
 
+    @store.mas_utils.deprecated()
     def mas_FreezeBothAffExp():
-        mas_FreezeGoodAffExp()
-        mas_FreezeBadAffExp()
+        pass
 
+    @store.mas_utils.deprecated()
     def mas_UnfreezeBadAffExp():
-        persistent._mas_affection_badexp_freeze = False
+        pass
 
+    @store.mas_utils.deprecated()
     def mas_UnfreezeGoodAffExp():
-        persistent._mas_affection_goodexp_freeze = False
+        pass
 
+    @store.mas_utils.deprecated()
     def mas_UnfreezeBothExp():
-        mas_UnfreezeBadAffExp()
-        mas_UnfreezeGoodAffExp()
+        pass
 
     def _mas_getAffection():
         """
@@ -1797,12 +1820,15 @@ init 20 python:
         """
         return mas_affection._get_aff()
 
+    @store.mas_utils.deprecated("_get_current_aff_lose")
     def _mas_getBadExp():
-        return 1.0
+        return _get_current_aff_lose()
 
+    @store.mas_utils.deprecated("_get_current_aff_gain")
     def _mas_getGoodExp():
-        return 1.0
+        return _get_current_aff_gain()
 
+    @store.mas_utils.deprecated()
     def _mas_getTodayExp():
         return 0.0
 
@@ -2195,6 +2221,23 @@ init 20 python:
                 mas_affection.runAffGPPs(mas_curr_affection_group, new_affg)
             mas_curr_affection_group = new_affg
 
+    def _get_current_aff_gain():
+        return mas_affection.DEF_AFF_GAIN_MAP.get(
+            mas_curr_affection,
+            1.0
+        )
+
+    def _get_current_aff_lose():
+        return mas_affection.DEF_AFF_LOSE_MAP.get(
+            mas_curr_affection,
+            1.0
+        )
+
+    def _get_current_aff_fraction_lose():
+        return mas_affection.DEF_AFF_FRACTION_LOSE_MAP.get(
+            mas_curr_affection,
+            10.0
+        )
 
     def mas_gainAffection(
         amount=None,
@@ -2220,7 +2263,7 @@ init 20 python:
                 (Default: None)
         """
         if amount is None:
-            amount = _mas_getGoodExp()
+            amount = _get_current_aff_gain()
         change = amount*modifier
 
         mas_affection._grant_aff(change, bypass, current_label)
@@ -2275,7 +2318,7 @@ init 20 python:
                 (Default: None)
         """
         if amount is None:
-            amount = _mas_getBadExp()
+            amount = _get_current_aff_lose()
         change = amount*modifier
 
         #set apology flag
@@ -2289,6 +2332,49 @@ init 20 python:
         mas_affection._remove_aff(change, current_label)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
+
+    def mas_loseAffectionFraction(
+        fraction=None,
+        min_amount=None,
+        modifier=1.0,
+        reason=None,
+        ev_label=None,
+        apology_active_expiry=datetime.timedelta(hours=3),
+        apology_overall_expiry=datetime.timedelta(weeks=1),
+        current_label=None
+    ):
+        """
+        See mas_loseAffection for more info
+        Subtracts portion of affection whenever something negative happens
+
+        IN:
+            fraction - float, None - portion of affection to subtracts,
+                If None, uses the default value for the current aff
+                (Default: None)
+            min_amount - float, None - minimal amount of affection to substruct,
+                allows to verify that you take at least this amount, but no more
+                than the provided fraction
+                If None, uses the default value for the current aff
+                (Default: None)
+            modifier - float - modifier for the amount value
+                (Default: 1.0)
+        """
+        if fraction is None:
+            fraction = _get_current_aff_fraction_lose()
+        if min_amount is None:
+            min_amount = _get_current_aff_lose()
+        curr_aff = abs(_mas_getAffection())
+        change = max(min_amount*modifier, curr_aff*fraction)
+
+        mas_loseAffection(
+            change,
+            modifier=1.0,
+            reason=reason,
+            ev_label=None,
+            apology_active_expiry=apology_active_expiry,
+            apology_overall_expiry=apology_overall_expiry,
+            current_label=current_label
+        )
 
     @store.mas_utils.deprecated()
     def mas_setAffection(*args, **kwargs):
