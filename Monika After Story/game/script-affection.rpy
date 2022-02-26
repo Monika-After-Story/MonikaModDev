@@ -898,11 +898,11 @@ init -500 python in mas_affection:
     )
 
     # LOG messages
-    # [current datetime]: monikatopic | magnitude/attempted magnitude | prev -> new
-    _AUDIT_FMT = "{0} | {1} | {2} | {3} -> {4}"
+    # [current datetime]: monikatopic | attempted magnitude -> magnitude | prev -> new
+    _AUDIT_FMT = "{0} | {1} -> {2} | {3} -> {4}"
 
-    # [current_datetime]: !FREEZE! | monikatopic | magnitude/attempted magnitude | prev -> new
-    _AUDIT_FREEZE_FMT = "{5} | {0} | {1} | {2} | {3} -> {4}"
+    # [current_datetime]: !FREEZE! | monikatopic | attempted magnitude -> magnitude | prev -> new
+    _AUDIT_FREEZE_FMT = "{5} | {0} | {1} -> {2} | {3} -> {4}"
     _FREEZE_TEXT = "!FREEZE!"
     _BYPASS_TEXT = "!BYPASS!"
 
@@ -946,8 +946,8 @@ init -500 python in mas_affection:
 
             audit_text = _AUDIT_FREEZE_FMT.format(
                 piece_one,
-                change,
                 attempted_change,
+                change,
                 old,
                 new,
                 piece_six
@@ -956,8 +956,8 @@ init -500 python in mas_affection:
         else:
             audit_text = _AUDIT_FMT.format(
                 piece_one,
-                change,
                 attempted_change,
+                change,
                 old,
                 new
             )
