@@ -1006,7 +1006,7 @@ label monika_idle_sleep:
         if mas_isMoniLove(higher=True):
             m 3ekbla "I wish I could join you, but this is the next best thing."
         m 1ekbla "I hope it helps you feel secure, having me here with you."
-        if mas_getEVL_shown_count("monika_idle_sleep") < 1
+        if mas_getEVL_shown_count("monika_idle_sleep") < 1:
             m 1ekc "Though, you should make sure not to have a bright monitor shining on you while you sleep."
             m 1ekb "Make sure it'll time out and go into sleep mode for me, okay?"
         ### (for if we implement sleep for moni)
