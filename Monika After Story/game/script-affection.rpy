@@ -367,7 +367,8 @@ init -900 python in mas_affection:
         If it's unable to encode data, returns None
 
         OUT:
-            bytes/None
+            - bytes
+            - None if an error happened
         """
         try:
             encoded_data = __hexlify(
@@ -391,6 +392,9 @@ init -900 python in mas_affection:
     def get_default_data():
         """
         Returns default data for aff when first loading the mod
+
+        OUT:
+            bytes
         """
         return __encode_data(*__STRUCT_DEF_VALUES)
 
@@ -440,6 +444,10 @@ init -900 python in mas_affection:
                 (Default: None)
             new_freeze_ts - float/None - new freeze ts value
                 (Default: None)
+
+        OUT:
+            - tuple with the updated data
+            - None if an error happened
         """
         if old_data is None:
             old_data = __get_data()
