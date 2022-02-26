@@ -985,6 +985,162 @@ label monika_idle_reading_callback:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_idle_sleep",
+            prompt="I'm going to sleep",
+            conditional="seen_event('mas_mood_tired')",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        ),
+        markSeen=True
+    )
+
+label monika_idle_sleep:
+    if mas_isMoniNormal(higher=True):
+        m 1hub "Oh, okay!"
+        m 3hub "I told you before I'd watch over you while you sleep, didn't I?"
+        if mas_isMoniLove(higher=True):
+            m 3ekbla "I wish I could join you, but this is the next best thing."
+        m 1ekbla "I hope it helps you feel secure, having me here with you."
+        if mas_getEVL_shown_count("monika_idle_sleep") < 1
+            m 1ekc "Though, you should make sure not to have a bright monitor shining on you while you sleep."
+            m 1ekb "Make sure it'll time out and go into sleep mode for me, okay?"
+        ### (for if we implement sleep for moni)
+        ### m "If you come back and I'm not at the desk, I'll be sleeping where I can hear you."
+        ### m "So feel free to call for me."
+        m 1hua "Sweet dreams, [mas_get_player_nickname()]."
+
+
+    elif mas_isMoniUpset():
+        m 2eud "Alright, I'll be here."
+        m 2euc "Sleep well, [player]."
+
+    elif mas_isMoniDis():
+        m 6ekc "Alright..."
+
+    else:
+        m 6ckc "..."
+
+    $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
+    $ persistent._mas_idle_data["monika_idle_sleep"] = True
+    return "idle"
+
+label monika_idle_sleep_callback:
+    if mas_isMoniNormal(higher=True):
+        $ wb_quip = mas_brbs.get_wb_quip()
+        if mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=12), "monika_idle_sleep"):
+            m 1wud "[player], you were asleep for a {i}long{/i} time!"
+            m 1hksdlb "You had me a bit worried, ahaha..."
+            m 1lksdlb "But maybe you had a rough night, or just forgot to check in when you woke up."
+            m 1eka "Whatever the case may be, I hope you got plenty of rest, [mas_get_player_nickname()]."
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=6), "monika_idle_sleep"):
+            m 1fubla "Good morning, [player]."
+            m 1fublb "I'm glad you got a full night's rest."
+            m 1hubfb "I wonder if you dreamt of me. Ehehe~"
+            m 3hubfb "Let's enjoy another wonderful day together, [mas_get_player_nickname()]."
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(hours=3), "monika_idle_sleep"):
+            m 1eud "[player]?"
+            m 1hkb "Ah, you woke up a lot sooner than I thought you would."
+            m 1ekb "Is everything okay?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Is everything okay?{fast}"
+
+                "I just took a really long nap.":
+                    m 1wud "Oh!"
+                    m 2rksdlb "That's a {i}really{/i} long nap, [player]!"
+                    m 2hksdlb "I guess you really needed the rest, ahaha~"
+                    m 2eka "I hope you're feeling better now."
+
+                "I had to wake up early.":
+                    m 2ekd "[player], {w=0.2}if that's the case you should have slept a little earlier..."
+                    m 2dksdld "I really hope you won't feel too tired later today."
+                    m 1eka "Promise me you'll make extra-sure to sleep enough tonight, okay?"
+                    m 1lka "Or maybe you're already planning to take a nap when you can. {w=0.2}That would be good too."
+                    m 1eka "But for now, let's get ready for the day."
+
+                "I feel pretty rested.":
+                    m 1eud "Oh, really?"
+                    m 1lka "Hmm, I suppose some nights you just don't need as much sleep."
+                    m 3hua "As long as you're feeling alright, and you're keeping good habits, I think it should be okay."
+                    m 3hub "Okay, let's get ready for another great day~"
+
+                "I didn't sleep well.":
+                    m 1fkd "Oh, no...{w=0.3}I'm sorry, [player]."
+                    m 1ekc "I hope you're feeling okay."
+                    m 1tksdlc "A bad night of sleep can make the whole day tough to trudge through..."
+                    m 1eksdlb "If you can, I hope you can sneak in a little extra sleep."
+                    m 1eka "If not, well...I'll do what I can to help with the stress of the day, okay?"
+
+
+        elif mas_brbs.was_idle_for_at_least(datetime.timedelta(minutes=5), "monika_idle_sleep"):
+            m 1eud "Hmm? Are you okay?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Hmm? Are you okay?{fast}"
+
+                "I can't sleep.":
+                m 1ekc "Ah, is that so?"
+                m 3eka "Do you think it'll be easier if I leave you to sleep?{nw}"
+                $ _history_list.pop{}
+                menu:
+                    m "Do you think it'll be easier if I leave you to sleep?{fast}"
+
+                    "Yeah, I think so.":
+                    m 3hua "Okay. That's alright, I can get some sleep too."
+                    m 1ekbla "I hope you sleep well, [mas_get_player_nickname()]."
+                    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
+                    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
+                    return 'quit'
+
+                    "No, I want you to stay.":
+                    m 3ekb "Of course, [mas_get_player_nickname()]."
+                    m "Maybe you could get something to drink, that might help you sleep."
+                    m 1dka "Try to breathe slow and deep. {w=0.2}Imagine me holding your hand, or rubbing your back."
+                    m 1hksdlb "Ah--but we shouldn't keep talking, that'll just keep you up longer."
+                    m 1hkblsdla "Ehehe~"
+                    $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
+                    $ persistent._mas_idle_data["monika_idle_sleep"] = True
+                    return "idle"
+
+                    "No, I'm going to get up for a bit.":
+                    m 1ekc "Well, alright."
+                    m 1eka "So long as you'll get enough hours of sleep, I guess it's okay."
+                    m 2ekb "We can talk a little longer, until you feel tired."
+                    m 2eksdla "But you should try not to stay up {i}too{/i} late, okay [mas_get_player_nickname()]?"
+                
+                "I just needed a nap.":
+                m 1hub "Oh! Alright, [player]."
+                m 1hua "I hope you feel rested after your little nap."
+                m [wb_quip]
+
+                "I just wanted to say I love you.":
+                m 1fkbsa "[player]..."
+                m 1hkbsa "I love you too, [mas_get_player_nickname()]."
+                m "Now, let's get some rest so we can spend another wonderful day together."
+                $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
+                $ persistent._mas_idle_data["monika_idle_sleep"] = True
+                return "idle"
+
+
+        else:
+            m 1euc "Oh, did you change your mind?"
+            m 1eka "That's alright."
+            m [wb_quip]
+
+    elif mas_isMoniUpset():
+        m 2esc "Morning, [player]."
+
+    else:
+        call mas_brb_generic_low_aff_callback
+
+    return
 
 #Rai's og game idle
 #label monika_idle_game:
