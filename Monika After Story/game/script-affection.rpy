@@ -49,6 +49,10 @@ init python:
     mas_curr_affection = store.mas_affection.NORMAL
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
+init 50 python:
+    persistent._mas_affection_version = 1
+    mas_affection._transfer_aff_2nd_gen()
+
 init -900 python in mas_affection:
     import struct
     import binascii
@@ -407,12 +411,12 @@ init -900 python in mas_affection:
             - None if an error happened
         """
         data = _get_pers_data()
-        if not data:
+        if data is None:
             mas_utils.mas_log.critical("Aff data is invalid")
             return None
 
         data = __decode_data(data)
-        if not data:
+        if data is None:
             mas_utils.mas_log.critical("Failed to decode aff data")
             return None
 
@@ -494,7 +498,7 @@ init -900 python in mas_affection:
         if data is None:
             return (0.0, 0.0)
 
-        return data[1:3]
+        return data[2:4]
 
     def _grant_aff(amount, bypass, reason=None):
         """
@@ -507,10 +511,10 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        curr_data = __get_data()
-        if not curr_data:
+        data = __get_data()
+        if not data:
             return
-        curr_data = list(curr_data)
+        data = list(data)
         freeze_date = datetime.date.fromtimestamp(data[4])
 
         if store.mas_pastOneDay(freeze_date):
@@ -542,7 +546,7 @@ init -900 python in mas_affection:
         max_gain = max(1000000-data[0], 0.0)
         amount = min(amount, max_gain)
 
-        mas_affection.audit(amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
+        audit(amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
@@ -567,10 +571,10 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        curr_data = __get_data()
-        if not curr_data:
+        data = __get_data()
+        if not data:
             return
-        curr_data = list(curr_data)
+        data = list(data)
 
         if amount <= 0:
             raise ValueError("Invalid value for affection: {}".format(amount))
@@ -578,7 +582,7 @@ init -900 python in mas_affection:
         max_lose = data[0] + 1000000
         amount = min(amount, max_lose)
 
-        mas_affection.audit(amount, data[0], data[0]-amount, frozen=frozen, ldsv=reason)
+        audit(amount, data[0], data[0]-amount, frozen=frozen, ldsv=reason)
 
         data[0] -= new_value
         _set_pers_data(__encode_data(*data))
@@ -604,7 +608,12 @@ init -900 python in mas_affection:
         new_data.append(0.0)
         new_data.append(old_data.get("today_exp", 0.0))
         new_data.append(0.0)
-        new_data.append(old_data.get("freeze_date", time.time()))
+        freeze_date = old_data.get("freeze_date", None)
+        if freeze_date is None:
+            freeze_ts = time.time()
+        else:
+            freeze_ts = time.mktime(freeze_date.timetuple())
+        new_data.append(freeze_ts)
 
         new_data = __encode_data(*new_data)
 
@@ -629,7 +638,7 @@ init -900 python in mas_affection:
         curr_data = list(curr_data)
         amount = max(min(amount, 1000000), -1000000)
 
-        mas_affection.audit(curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
+        audit(curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
 
         curr_data[0] = amount
         _set_pers_data(__encode_data(*data))
@@ -649,7 +658,7 @@ init -900 python in mas_affection:
         persistent._mas_pctadeibe = None
 
         # audit this change
-        audit_save(_get_aff())
+        log.info("SAVE | {0}".format(_get_aff()))
 
         # Always backup on quit
         if has_mismatch():
@@ -688,8 +697,6 @@ init -900 python in mas_affection:
         persistent._mas_pctaneibe = None
         persistent._mas_pctadeibe = None
 
-        txt_audit("LOAD", "Loading from system")
-
         data = __get_data()
         aff = 0.0
         # Check if the data is valid
@@ -700,6 +707,7 @@ init -900 python in mas_affection:
                 txt_audit("LOAD", "Loading from backup")
 
             else:
+                # Bad bad bad bad
                 _set_pers_data(get_default_data())
                 txt_audit("LOAD", "DATA HAS BEEN RESET")
 
@@ -735,10 +743,19 @@ init -900 python in mas_affection:
         today = datetime.date.today()
 
         if force or not backups or backups[-1][0] < today:
-            data = _get_pers_data()
-            if data is not None:
-                log.info("SET BACKUP | {0} -> {1}".format(old_value, new_value))
-                backup = (today, data)
+            curr_raw_data = _get_pers_data()
+            curr_data = __decode_data(curr_raw_data)
+
+            if curr_data is not None:
+                curr_value = curr_data[0]
+                if backups:
+                    backup_value = __decode_data(backups[-1][-1])[0]
+
+                else:
+                    backup_value = None
+
+                log.info("SET BACKUP | {0} -> {1}".format(backup_value, curr_value))
+                backup = (today, curr_raw_data)
                 backups.append(backup)
 
             else:
@@ -936,15 +953,6 @@ init -500 python in mas_affection:
             tag,
             msg
         ))
-
-    def audit_save(current_value):
-        """
-        Auditing aff save in the aff log
-
-        IN:
-            current_value - float - current aff
-        """
-        log.info("SAVE | {0}".format(current_value))
 
     @mas_utils.deprecated()
     def _force_exp():
