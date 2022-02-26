@@ -1222,7 +1222,7 @@ label mas_ch30_post_holiday_check:
     # post holiday checks
 
     # TODO should the apology check be only for when she's not affectionate?
-    if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+    if _mas_getAffection() <= -50 and seen_event("mas_affection_apology"):
         # no dissolves here since we want the player to be instantly aware
         # that something is wrong.
 
@@ -2001,14 +2001,6 @@ label ch30_reset:
                     store.mas_dockstat.setMoniSize(
                         persistent.sessions["total_playtime"]
                     )
-
-    ## reset future freeze times for exp
-    python:
-        # reset freeze date to today if it is in the future
-        if persistent._mas_affection is not None:
-            freeze_date = persistent._mas_affection.get("freeze_date", None)
-            if freeze_date is not None and freeze_date > today:
-                persistent._mas_affection["freeze_date"] = today
 
     #Do startup checks
     # call plushie logic

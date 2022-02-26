@@ -4130,7 +4130,10 @@ init -1 python in _mas_root:
         }
 
         # affection
-        renpy.game.persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection = None
+        renpy.game.persistent._mas_affection_data = store.mas_affection.get_default_data()
+        renpy.game.persistent._mas_affection_should_apologise = False
+        renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=60)
 
 
     def initialSessionData():
@@ -6323,7 +6326,7 @@ init 2 python:
                 - Raw affection value to be greater than or equal to
             grace:
                 - a grace period passed in as a timedelta
-                  defaults to 1 week
+                defaults to 1 week
 
         OUT:
             boolean:
@@ -6339,7 +6342,7 @@ init 2 python:
         return (
             persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and persistent._mas_affection.get("affection", 0) >= aff_thresh
+            and _mas_getAffection() >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):

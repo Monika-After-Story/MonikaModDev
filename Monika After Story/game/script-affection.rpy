@@ -534,12 +534,18 @@ init -900 python in mas_affection:
         if not data:
             return
         data = list(data)
-        freeze_date = datetime.date.fromtimestamp(data[4])
 
+        now_= time.time()
+        # If you didn't time travel, I wouldn't need to fix this smh
+        if data[4] > now_:
+            penalty = max(min(data[4]-now_, 86400*7), 86400)
+            data[4] = now_ + penalty
+
+        freeze_date = datetime.date.fromtimestamp(data[4])
         if store.mas_pastOneDay(freeze_date):
             data[2] = 0.0
             data[3] = 0.0
-            data[4] = time.time()
+            data[4] = now_
 
         frozen = data[2] >= 7.0
 
@@ -618,6 +624,7 @@ init -900 python in mas_affection:
 
         old_data = persistent._mas_affection
         if old_data is None:
+            persistent._mas_affection_version += 1
             return
 
         new_data = list()
@@ -1784,33 +1791,33 @@ init -10 python:
         mas_affection.load_aff()
 
 # need to have affection initlaized post event_handler
-init 20 python:
+init python:
 
     import datetime
     import store.mas_affection as affection
     import store.mas_utils as mas_utils
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_FreezeGoodAffExp():
         pass
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_FreezeBadAffExp():
         pass
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_FreezeBothAffExp():
         pass
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_UnfreezeBadAffExp():
         pass
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_UnfreezeGoodAffExp():
         pass
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def mas_UnfreezeBothExp():
         pass
 
@@ -1823,15 +1830,15 @@ init 20 python:
         """
         return mas_affection._get_aff()
 
-    @store.mas_utils.deprecated("_get_current_aff_lose")
+    @mas_utils.deprecated("_get_current_aff_lose")
     def _mas_getBadExp():
         return _get_current_aff_lose()
 
-    @store.mas_utils.deprecated("_get_current_aff_gain")
+    @mas_utils.deprecated("_get_current_aff_gain")
     def _mas_getGoodExp():
         return _get_current_aff_gain()
 
-    @store.mas_utils.deprecated()
+    @mas_utils.deprecated()
     def _mas_getTodayExp():
         return 0.0
 
@@ -2162,20 +2169,6 @@ init 20 python:
         # store the value for easiercomparisons
         curr_affection = _mas_getAffection()
 
-        # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
-        if  mas_affection.AFF_MIN_POS_TRESH <= curr_affection:
-            persistent._mas_affection["goodexp"] = 3
-            persistent._mas_affection["badexp"] = 1
-
-        # If affection is between AFF_MAX_NEG_TRESH and AFF_MIN_NEG_TRESH, update both exps. Simulates erosion of affection.
-        elif mas_affection.AFF_MAX_NEG_TRESH < curr_affection <= mas_affection.AFF_MIN_NEG_TRESH:
-            persistent._mas_affection["goodexp"] = 0.5
-            persistent._mas_affection["badexp"] = 3
-
-        # If affection is less than AFF_MIN_NEG_TRESH, update bad exp. Simulates increasing loss of affection.
-        elif curr_affection <= mas_affection.AFF_MAX_NEG_TRESH:
-            persistent._mas_affection["badexp"] = 5
-
         # Defines an easy current affection statement to refer to so points aren't relied upon.
         new_aff = mas_curr_affection
         if curr_affection <= mas_affection.AFF_BROKEN_MIN:
@@ -2269,7 +2262,7 @@ init 20 python:
             amount = _get_current_aff_gain()
         change = amount*modifier
 
-        mas_affection._grant_aff(change, bypass, current_label)
+        mas_affection._grant_aff(change, bypass, reason=current_label)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
@@ -2332,7 +2325,7 @@ init 20 python:
             apology_overall_expiry=apology_overall_expiry
         )
 
-        mas_affection._remove_aff(change, current_label)
+        mas_affection._remove_aff(change, reason=current_label)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 

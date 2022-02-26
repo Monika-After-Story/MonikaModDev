@@ -1266,11 +1266,7 @@ init 200 python in mas_dockstat:
 #                    num_2.format(first_sesh_dt.day)
 #                ])
 
-        if store.persistent._mas_affection is not None:
-            _affection = store.persistent._mas_affection.get("affection", None)
-
-            if _affection is not None:
-                affection_val = num_f.format(_affection)
+        affection_val = num_f.format(_mas_getAffection())
 
         # build metadata list
         _outbuffer.write("|".join([
