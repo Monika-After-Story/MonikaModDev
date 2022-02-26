@@ -655,7 +655,7 @@ init -900 python in mas_affection:
         og_amount = amount
         amount = max(min(amount, 1000000), -1000000)
 
-        audit(og_amount, curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
+        audit(abs(og_amount-curr_data[0]), abs(amount-curr_data[0]), curr_data[0], amount, ldsv=reason)
 
         __is_dirty = True
         curr_data[0] = amount
@@ -899,10 +899,10 @@ init -500 python in mas_affection:
 
     # LOG messages
     # [current datetime]: monikatopic | magnitude/attempted magnitude | prev -> new
-    _AUDIT_FMT = "{0} | {1}/{2} | {3} -> {4}"
+    _AUDIT_FMT = "{0} | {1} | {2} | {3} -> {4}"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude/attempted magnitude | prev -> new
-    _AUDIT_FREEZE_FMT = "{5} | {0} | {1}/{2} | {3} -> {4}"
+    _AUDIT_FREEZE_FMT = "{5} | {0} | {1} | {2} | {3} -> {4}"
     _FREEZE_TEXT = "!FREEZE!"
     _BYPASS_TEXT = "!BYPASS!"
 
