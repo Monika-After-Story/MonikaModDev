@@ -1896,6 +1896,9 @@ label ch30_reset:
             if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)
 
+            else:
+                mas_lockGame(game_name)
+
 
     #### SPRITES
 
