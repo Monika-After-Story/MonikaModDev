@@ -469,6 +469,33 @@ init -900 python in mas_affection:
 
         return tuple(new_data)
 
+    def _get_aff():
+        """
+        Private getter that handles errors,
+        you should probably use public version
+
+        OUT:
+            float - current affection
+        """
+        data = __get_data()
+        if data is None:
+            return 0.0
+
+        return data[0]
+
+    def _get_today_cap():
+        """
+        Returns today's aff caps
+
+        OUT:
+            tuple[float, float] - current aff caps
+        """
+        data = __get_data()
+        if data is None:
+            return (0.0, 0.0)
+
+        return data[1:3]
+
     def _grant_aff(amount, bypass, reason=None):
         """
         Grants some affection
@@ -607,17 +634,125 @@ init -900 python in mas_affection:
         curr_data[0] = amount
         _set_pers_data(__encode_data(*data))
 
-    def backup_aff():
+    def save_aff():
+        """
+        Runs saving logic
+        """
+        #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
+        #persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        #persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        #persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+
+        # reset
+        persistent._mas_pctaieibe = None
+        persistent._mas_pctaneibe = None
+        persistent._mas_pctadeibe = None
+
+        # audit this change
+        audit_save(_get_aff())
+
+        # Always backup on quit
+        if has_mismatch():
+            make_backup(True)
+
+    def load_aff():
+        """
+        Runs loading logic
+        """
+        #new_value = 0
+        #if (
+        #        persistent._mas_pctaieibe is not None
+        #        and persistent._mas_pctaneibe is not None
+        #        and persistent._mas_pctadeibe is not None
+        #    ):
+        #    try:
+        #        inum = mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
+        #        )
+        #        nnum = mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
+        #        )
+        #        dnum = float(mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
+        #        ))
+        #        if inum < 0:
+        #            new_value = inum - (nnum / dnum)
+        #        else:
+        #            new_value = inum + (nnum / dnum)
+        #    except:
+        #        # dont break me yo
+        #        new_value = 0
+
+        # reset
+        persistent._mas_pctaieibe = None
+        persistent._mas_pctaneibe = None
+        persistent._mas_pctadeibe = None
+
+        txt_audit("LOAD", "Loading from system")
+
+        data = __get_data()
+        aff = 0.0
+        # Check if the data is valid
+        if data is None:
+            # Bad
+            success = restore_backup()
+            if success:
+                txt_audit("LOAD", "Loading from backup")
+
+            else:
+                _set_pers_data(get_default_data())
+                txt_audit("LOAD", "DATA HAS BEEN RESET")
+
+            aff = _get_aff()
+
+        else:
+            # Good
+            aff = data[0]
+            txt_audit("LOAD", "Loading from system")
+
+            raw_audit(0.0, aff, aff, "LOAD?")
+
+            if has_mismatch():
+                # Mismatch means the game has crashed, let's restore
+                persistent._mas_aff_mismatches += 1
+                txt_audit("MISMATCHES", persistent._mas_aff_mismatches)
+                restore_backup()
+                aff = _get_aff()
+
+            # Good loading, make a daily backup
+            make_backup()
+
+        txt_audit("LOAD COMPLETE", aff)
+
+    def make_backup(force=False):
         """
         Runs backup algo for affection
+
+        IN:
+            force - boolean - should we force this?
         """
         backups = persistent._mas_affection_backups
         today = datetime.date.today()
 
-        if not backups or backups[-1][0] < today:
+        if force or not backups or backups[-1][0] < today:
             data = _get_pers_data()
-            backup = (today, data)
-            backups.append(backup)
+            if data is not None:
+                log.info("SET BACKUP | {0} -> {1}".format(old_value, new_value))
+                backup = (today, data)
+                backups.append(backup)
+
+            else:
+                log.info("FAILED TO BACKUP, CURRENT DATA IS BAD")
+
+    def has_mismatch():
+        """
+        Checks if the last backup mismatches with the current aff
+        """
+        backups = persistent._mas_affection_backups
+        if not backups:
+            return False
+
+        return backups[-1][1] != _get_pers_data()
 
     def remove_backups():
         """
@@ -627,7 +762,7 @@ init -900 python in mas_affection:
         if backups:
             backups.clear()
 
-    def restore_aff():
+    def restore_backup():
         """
         Uses available aff backup
         Use wisely
@@ -810,16 +945,6 @@ init -500 python in mas_affection:
             current_value - float - current aff
         """
         log.info("SAVE | {0}".format(current_value))
-
-    def audit_backup(old_value, new_value):
-        """
-        Auditing backing up in the aff log
-
-        IN:
-            old_value - float - old backup
-            new_value - float - new backup
-        """
-        log.info("SET BACKUP | {0} -> {1}".format(old_value, new_value))
 
     @mas_utils.deprecated()
     def _force_exp():
@@ -1604,127 +1729,28 @@ init 15 python in mas_affection:
         return _("What would you like to play?")
 
 
-
 default persistent._mas_long_absence = False
 default persistent._mas_pctaieibe = None
 default persistent._mas_pctaneibe = None
 default persistent._mas_pctadeibe = None
 default persistent._mas_aff_backup = None
+default persistent._mas_aff_mismatches = 0
 
 init -10 python:
     if persistent._mas_aff_mismatches is None:
         persistent._mas_aff_mismatches = 0
 
     def _mas_AffSave():
-        aff_value = _mas_getAffection()
-        #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
-        #persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
-        #persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
-        #persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
-
-        # reset
-        persistent._mas_pctaieibe = None
-        persistent._mas_pctaneibe = None
-        persistent._mas_pctadeibe = None
-
-        # audit this change
-        mas_affection.audit_save(aff_value)
-
-        # backup this value
-        if persistent._mas_aff_backup != aff_value:
-            mas_affection.audit_backup(
-                persistent._mas_aff_backup,
-                aff_value
-            )
-            persistent._mas_aff_backup = aff_value
-
+        """
+        Runs saving algo for affection
+        """
+        mas_affection.save_aff()
 
     def _mas_AffLoad():
-        #new_value = 0
-        #if (
-        #        persistent._mas_pctaieibe is not None
-        #        and persistent._mas_pctaneibe is not None
-        #        and persistent._mas_pctadeibe is not None
-        #    ):
-        #    try:
-        #        inum = mas_utils._IStoi(
-        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
-        #        )
-        #        nnum = mas_utils._IStoi(
-        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
-        #        )
-        #        dnum = float(mas_utils._IStoi(
-        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
-        #        ))
-        #        if inum < 0:
-        #            new_value = inum - (nnum / dnum)
-        #        else:
-        #            new_value = inum + (nnum / dnum)
-#
-#            except:
-#                # dont break me yo
-#                new_value = 0
-#
-        # reset
-        persistent._mas_pctaieibe = None
-        persistent._mas_pctaneibe = None
-        persistent._mas_pctadeibe = None
-
-        # pull numerical afffection for audting
-        if (
-                persistent._mas_affection is None
-                or "affection" not in persistent._mas_affection
-            ):
-            if persistent._mas_aff_backup is None:
-                new_value = 0
-                store.mas_affection.txt_audit("LOAD", "No backup found")
-
-            else:
-                new_value = persistent._mas_aff_backup
-                store.mas_affection.txt_audit("LOAD", "Loading from backup")
-
-        else:
-            new_value = persistent._mas_affection["affection"]
-            store.mas_affection.txt_audit("LOAD", "Loading from system")
-
-        # audit the amount loaded
-        store.mas_affection.raw_audit(0.0, new_value, new_value, "LOAD?")
-
-        # if the back is None, set the backup
-        if persistent._mas_aff_backup is None:
-            persistent._mas_aff_backup = new_value
-
-            # audit
-            store.mas_affection.raw_audit(
-                "None",
-                new_value,
-                new_value,
-                "NEW BACKUP"
-            )
-
-
-        else:
-            # restore from backup if we have a mismatch
-            if new_value != persistent._mas_aff_backup:
-                persistent._mas_aff_mismatches += 1
-                store.mas_affection.txt_audit(
-                    "MISMATCHES",
-                    persistent._mas_aff_mismatches
-                )
-                store.mas_affection.raw_audit(
-                    new_value,
-                    persistent._mas_aff_backup,
-                    persistent._mas_aff_backup,
-                    "RESTORE"
-                )
-                new_value = persistent._mas_aff_backup
-
-        # audit this change
-        mas_affection.txt_audit("LOAD COMPLETE", new_value)
-
-        # and set what we got
-        persistent._mas_affection["affection"] = new_value
-
+        """
+        Runs loading algo for affection
+        """
+        mas_affection.load_aff()
 
 # need to have affection initlaized post event_handler
 init 20 python:
@@ -1754,47 +1780,32 @@ init 20 python:
         mas_UnfreezeBadAffExp()
         mas_UnfreezeGoodAffExp()
 
-
-    # getter
     def _mas_getAffection():
-        if persistent._mas_affection is not None:
-            return persistent._mas_affection.get(
-                "affection",
-                persistent._mas_aff_backup
-            )
+        """
+        Tries to return current affection
 
-        return persistent._mas_aff_backup
-
+        OUT:
+            float
+        """
+        return mas_affection._get_aff()
 
     def _mas_getBadExp():
-        if persistent._mas_affection is not None:
-            return persistent._mas_affection.get(
-                "badexp",
-                1
-            )
-        return 1
-
+        return 1.0
 
     def _mas_getGoodExp():
-        if persistent._mas_affection is not None:
-            return persistent._mas_affection.get(
-                "goodexp",
-                1
-            )
-        return 1
-
+        return 1.0
 
     def _mas_getTodayExp():
-        if persistent._mas_affection is not None:
-            return persistent._mas_affection.get("today_exp", 0)
+        return 0.0
 
-        return 0
-
-
-    # numerical affection check
     def mas_isBelowZero():
-        return _mas_getAffection() < 0
+        """
+        Checks if affection is negative
 
+        OUT:
+            boolean
+        """
+        return _mas_getAffection() < 0.0
 
     ## affection comparison
     # [AFF020] Affection comparTos
@@ -2106,7 +2117,7 @@ init 20 python:
         )
 
 
-   # Used to adjust the good and bad experience factors that are used to adjust affection levels.
+    # Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def mas_updateAffectionExp(skipPP=False):
         global mas_curr_affection
         global mas_curr_affection_group
