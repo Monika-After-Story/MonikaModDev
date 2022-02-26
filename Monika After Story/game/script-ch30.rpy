@@ -1344,17 +1344,18 @@ label ch30_post_restartevent_check:
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
-            away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
+            away_experience_time = datetime.datetime.now()-persistent.sessions['last_session_end']
+            # Only give bonuses if no crash
+            if not persistent._mas_game_crashed:
+                #Reset the idlexp total if monika has had at least 6 hours of rest
+                if away_experience_time.total_seconds() >= times.REST_TIME:
 
-            #Reset the idlexp total if monika has had at least 6 hours of rest
-            if away_experience_time.total_seconds() >= times.REST_TIME:
+                    #Grant good exp for closing the game correctly.
+                    mas_gainAffection(current_evlabel="happy to see you")
 
-                #Grant good exp for closing the game correctly.
-                mas_gainAffection()
-
-            # unlock extra pool topics if we can
-            while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
-                persistent._mas_pool_unlocks -= 1
+                # unlock extra pool topics if we can
+                while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
+                    persistent._mas_pool_unlocks -= 1
 
         else:
             # Grant bad exp for closing the game incorrectly.

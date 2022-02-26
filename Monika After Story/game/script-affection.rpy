@@ -61,6 +61,8 @@ init -900 python in mas_affection:
         persistent,
         mas_utils
     )
+
+    __is_dirty = False
     # this is very early because they are importnat constants
 
     # numerical constants of affection levels
@@ -102,6 +104,7 @@ init -900 python in mas_affection:
         LOVE: ENAMORED
     }
 
+    __runtime_backup = None
 
     # numerical constants of affection groups
     G_SAD = -1
@@ -298,12 +301,27 @@ init -900 python in mas_affection:
         return _compareAff(low, high) <= 0
 
     def _set_pers_data(value):
-        # TODO: value verification here
-        persistent._mas_affection_data = value
+        global __is_dirty, __runtime_backup
+
+        if not isinstance(value, (str, unicode, bytes)) or not __is_dirty:
+            return
+        __is_dirty = False
+        __runtime_backup = persistent._mas_affection_data = value
 
     def _get_pers_data():
-        # TODO: safe getter here
-        return persistent._mas_affection_data
+        global __runtime_backup
+
+        if __runtime_backup is None:
+            __runtime_backup = persistent._mas_affection_data
+
+        elif __runtime_backup != persistent._mas_affection_data:
+            # bad bad bad
+            log.info("DATA CORRUPTION")
+            success = _restore_backup()
+            if not success:
+                __runtime_backup = persistent._mas_affection_data = get_default_data()
+
+        return __runtime_backup
 
     def __to_struct(*args):
         """
@@ -412,7 +430,7 @@ init -900 python in mas_affection:
 
     def get_default_data():
         """
-        Returns default data for aff when first loading the mod
+        Returns default encoded data for aff when first loading the mod
 
         OUT:
             bytes
@@ -438,57 +456,6 @@ init -900 python in mas_affection:
             return None
 
         return data
-
-    def __update_data(
-        data=None,
-        new_aff=None,
-        new_bank=None,
-        new_today_gain=None,
-        new_today_bypass_gain=None,
-        new_freeze_ts=None
-    ):
-        """
-        Updates given data with new provided values
-        If a value is None, it won't be updated
-
-        IN:
-            old_data - tuple/None - tuple with current data which we will update
-                If None, we fetch it here
-                (Default: None)
-            new_aff - float/None - new aff value
-                (Default: None)
-            new_bank - float/None - new bank value
-                (Default: None)
-            new_today_gain - float/None - new gain value
-                (Default: None)
-            new_today_bypass_gain - float/None - new bypass gain value
-                (Default: None)
-            new_freeze_ts - float/None - new freeze ts value
-                (Default: None)
-
-        OUT:
-            - tuple with the updated data
-            - None if an error happened
-        """
-        if old_data is None:
-            old_data = __get_data()
-            if old_data is None:
-                return None
-
-        new_data = list(old_data)
-
-        if new_aff is not None:
-            new_data[0] = new_aff
-        if new_bank is not None:
-            new_data[1] = new_bank
-        if new_today_gain is not None:
-            new_data[2] = new_today_gain
-        if new_today_bypass_gain is not None:
-            new_data[3] = new_today_bypass_gain
-        if new_freeze_ts is not None:
-            new_data[4] = new_freeze_ts
-
-        return tuple(new_data)
 
     def _get_aff():
         """
@@ -528,7 +495,7 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        amount = float(amount)
+        global __is_dirty
 
         data = __get_data()
         if not data:
@@ -550,9 +517,11 @@ init -900 python in mas_affection:
         frozen = data[2] >= 7.0
 
         # Sanity checks
+        amount = float(amount)
         if amount <= 0.0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
+        og_amount = amount
         amount = min(amount, 50.0)
         bank_amount = 0.0
 
@@ -571,10 +540,11 @@ init -900 python in mas_affection:
         max_gain = max(1000000-data[0], 0.0)
         amount = min(amount, max_gain)
 
-        audit(amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
+        audit(og_amount, amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
 
         # if we're not freezed or if the bypass flag is True
         if not frozen or bypass:
+            __is_dirty = True
             data[0] += amount
             data[1] += bank_amount
 
@@ -596,29 +566,41 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
-        amount = float(amount)
+        global __is_dirty
 
         data = __get_data()
         if not data:
             return
         data = list(data)
 
+        amount = float(amount)
         if amount <= 0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
         max_lose = data[0] + 1000000
+        og_amount = amount
         amount = min(amount, max_lose)
 
-        audit(amount, data[0], data[0]-amount, ldsv=reason)
+        audit(og_amount, amount, data[0], data[0]-amount, ldsv=reason)
 
-        data[0] -= new_value
+        __is_dirty = True
+        data[0] -= amount
         _set_pers_data(__encode_data(*data))
+
+    def _reset_aff():
+        """
+        Resets aff value (and only it)
+        This is a dangerous func, use with care
+        """
+        __set_aff(0.0, "RESET")
 
     def _transfer_aff_2nd_gen():
         """
         Transfers aff from the first gen to the second gen
         This may be dangerous, use wisely, don't fook up
         """
+        global __is_dirty
+
         if persistent._mas_affection_version >= 2:
             return
 
@@ -630,7 +612,7 @@ init -900 python in mas_affection:
         new_data = list()
 
         aff = old_data.get("affection", 0.0)
-        if aff > 50000:
+        if aff > 100000:
             aff = 0.0
         new_data.append(aff)
         new_data.append(0.0)
@@ -645,10 +627,11 @@ init -900 python in mas_affection:
 
         new_data = __encode_data(*new_data)
 
+        __is_dirty = True
         _set_pers_data(new_data)
         persistent._mas_affection_version += 1
 
-    def _set_aff(amount, reason="SET"):
+    def __set_aff(amount, reason="SET"):
         """
         Sets affection to a value
 
@@ -660,18 +643,25 @@ init -900 python in mas_affection:
             logmsg - msg to show in the log
                 (Default: 'SET')
         """
-        amount = float(amount)
+        global __is_dirty
 
         curr_data = __get_data()
         if not curr_data:
             return
         curr_data = list(curr_data)
+        amount = float(amount)
+        og_amount = amount
         amount = max(min(amount, 1000000), -1000000)
 
-        audit(curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
+        audit(og_amount, curr_data[0]-amount, curr_data[0], amount, ldsv=reason)
 
+        __is_dirty = True
         curr_data[0] = amount
-        _set_pers_data(__encode_data(*data))
+        _set_pers_data(__encode_data(*curr_data))
+
+    def _set_aff(value, reason):
+        if store.config.developer:
+            __set_aff(value, reason)
 
     def save_aff():
         """
@@ -698,6 +688,7 @@ init -900 python in mas_affection:
         """
         Runs loading logic
         """
+        global __is_dirty
         #new_value = 0
         #if (
         #        persistent._mas_pctaieibe is not None
@@ -732,12 +723,13 @@ init -900 python in mas_affection:
         # Check if the data is valid
         if data is None:
             # Bad
-            success = restore_backup()
+            success = _restore_backup()
             if success:
                 txt_audit("LOAD", "Loading from backup")
 
             else:
                 # Bad bad bad bad
+                __is_dirty = True
                 _set_pers_data(get_default_data())
                 txt_audit("LOAD", "DATA HAS BEEN RESET")
 
@@ -754,7 +746,7 @@ init -900 python in mas_affection:
                 # Mismatch means the game has crashed, let's restore
                 persistent._mas_aff_mismatches += 1
                 txt_audit("MISMATCHES", persistent._mas_aff_mismatches)
-                restore_backup()
+                _restore_backup()
                 aff = _get_aff()
 
             # Good loading, make a daily backup
@@ -801,7 +793,7 @@ init -900 python in mas_affection:
 
         return backups[-1][1] != _get_pers_data()
 
-    def remove_backups():
+    def _remove_backups():
         """
         Removes all backups
         """
@@ -809,7 +801,7 @@ init -900 python in mas_affection:
         if backups:
             backups.clear()
 
-    def restore_backup():
+    def _restore_backup():
         """
         Uses available aff backup
         Use wisely
@@ -817,6 +809,8 @@ init -900 python in mas_affection:
         OUT:
             boolean - whether or not a backup was restored
         """
+        global __is_dirty
+
         backups = persistent._mas_affection_backups
         if not backups:
             log.info("NO BACKUPS FOUND")
@@ -831,10 +825,11 @@ init -900 python in mas_affection:
             backup_data = __decode_data(backup[1])
 
             if backup_data is None:
-                log.info("CORRUPTED BACKUP")
+                log.info("FOUND CORRUPTED BACKUP")
                 continue
 
             log.info("RESTORED | {} -> {}".format(curr_value, backup_data[0]))
+            __is_dirty = True
             _set_pers_data(backup[1])
             return True
 
@@ -901,21 +896,32 @@ init -500 python in mas_affection:
     )
 
     # LOG messages
-    # [current datetime]: monikatopic | magnitude | prev -> new
-    _AUDIT_FMT = "{0} | {1} | {2} -> {3}"
+    # [current datetime]: monikatopic | magnitude/attempted magnitude | prev -> new
+    _AUDIT_FMT = "{0} | {1}/{2} | {3} -> {4}"
 
-    # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
-    _AUDIT_FREEZE_FMT = "{4} | {0} | {1} | {2} -> {3}"
+    # [current_datetime]: !FREEZE! | monikatopic | magnitude/attempted magnitude | prev -> new
+    _AUDIT_FREEZE_FMT = "{5} | {0} | {1}/{2} | {3} -> {4}"
     _FREEZE_TEXT = "!FREEZE!"
     _BYPASS_TEXT = "!BYPASS!"
 
+    _RAW_AUDIT_FMT = "{0} | {1} | {2} -> {3}"
 
-    def audit(change, old, new, frozen=False, bypass=False, ldsv=None):
+    def audit(
+        attempted_change,
+        change,
+        old,
+        new,
+        frozen=False,
+        bypass=False,
+        ldsv=None
+    ):
         """
         Audits a change in affection.
 
         IN:
+            attempted_change - the attempted aff change
             change - the amount we are changing by
+            old -the old value of affection
             new - what the new affection value will be
             frozen - True means we were frozen, false measn we are not
             bypass - True means we bypassed, false means we did not
@@ -931,23 +937,25 @@ init -500 python in mas_affection:
 
             # decide what piece 5 is
             if bypass:
-                piece_five = _BYPASS_TEXT
+                piece_six = _BYPASS_TEXT
             else:
-                piece_five = _FREEZE_TEXT
+                piece_six = _FREEZE_TEXT
 
 
             audit_text = _AUDIT_FREEZE_FMT.format(
                 piece_one,
                 change,
+                attempted_change,
                 old,
                 new,
-                piece_five
+                piece_six
             )
 
         else:
             audit_text = _AUDIT_FMT.format(
                 piece_one,
                 change,
+                attempted_change,
                 old,
                 new
             )
@@ -964,7 +972,7 @@ init -500 python in mas_affection:
             change - the chnage amount
             tag - a string to label this audit change
         """
-        log.info(_AUDIT_FMT.format(
+        log.info(_RAW_AUDIT_FMT.format(
             tag,
             change,
             old,
@@ -2239,7 +2247,7 @@ init python:
         amount=None,
         modifier=1.0,
         bypass=False,
-        current_label=None
+        current_evlabel=None
     ):
         """
         Grants some affection whenever something positive happens
@@ -2253,7 +2261,7 @@ init python:
             bypass - bool - whether or not we should bypass the cap,
                 for example during special events
                 (Default: False)
-            current_label - str/None - the topic that caused this aff gain,
+            current_evlabel - str/None - the topic that caused this aff gain,
                 MUST be current topic label or None.
                 You probably DO NOT want to use this
                 (Default: None)
@@ -2262,7 +2270,7 @@ init python:
             amount = _get_current_aff_gain()
         change = amount*modifier
 
-        mas_affection._grant_aff(change, bypass, reason=current_label)
+        mas_affection._grant_aff(change, bypass, reason=current_evlabel)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
@@ -2273,7 +2281,7 @@ init python:
         ev_label=None,
         apology_active_expiry=datetime.timedelta(hours=3),
         apology_overall_expiry=datetime.timedelta(weeks=1),
-        current_label=None
+        current_evlabel=None
     ):
         """
         Subtracts some affection whenever something negative happens
@@ -2308,7 +2316,7 @@ init python:
             apology_overall_expiry - datetime.timedelta - the amount of overall time
                 for the apology to expire
                 (Default: 1 week)
-            current_label - str/None - the topic that caused this aff gain,
+            current_evlabel - str/None - the topic that caused this aff gain,
                 MUST be current topic label or None.
                 You probably DO NOT want to use this
                 (Default: None)
@@ -2325,7 +2333,7 @@ init python:
             apology_overall_expiry=apology_overall_expiry
         )
 
-        mas_affection._remove_aff(change, reason=current_label)
+        mas_affection._remove_aff(change, reason=current_evlabel)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
@@ -2337,11 +2345,12 @@ init python:
         ev_label=None,
         apology_active_expiry=datetime.timedelta(hours=3),
         apology_overall_expiry=datetime.timedelta(weeks=1),
-        current_label=None
+        current_evlabel=None
     ):
         """
         See mas_loseAffection for more info
         Subtracts portion of affection whenever something negative happens
+        USE VERY WISELY
 
         IN:
             fraction - float, None - portion of affection to subtracts,
@@ -2359,18 +2368,61 @@ init python:
             fraction = _get_current_aff_fraction_lose()
         if min_amount is None:
             min_amount = _get_current_aff_lose()
-        curr_aff = abs(_mas_getAffection())
-        change = max(min_amount*modifier, curr_aff*fraction)
+
+        curr_aff = _mas_getAffection()
+        min_change = min_amount * modifier
+        if cur_aff > 0.0:
+            change = curr_aff * fraction
+        else:
+            change = abs(-100.0 - curr_aff)*fraction
+
+        final_change = max(min_change, change)
 
         mas_loseAffection(
-            change,
+            final_change,
             modifier=1.0,
             reason=reason,
             ev_label=None,
             apology_active_expiry=apology_active_expiry,
             apology_overall_expiry=apology_overall_expiry,
-            current_label=current_label
+            current_evlabel=current_evlabel
         )
+
+    def _mas_revertFreshStart():
+        """
+        Revert affection to before the fresh start
+        """
+        curr_aff = _mas_getAffection()
+        prev_aff = persistent._mas_aff_before_fresh_start
+        if prev_aff is None:
+            return
+
+        change = curr_aff - prev_aff
+        if change < 0.0:
+            return
+
+        mas_loseAffection(change)
+
+    def _mas_shatterAffection():
+        """
+        Sets affection to the lowest value
+        """
+        curr_aff = _mas_getAffection()
+        if curr_aff <= -101.0:
+            return
+
+        mas_loseAffection(curr_aff+101.0)
+
+    def _mas_resetAffection():
+        """
+        Resets affection
+        """
+        if (
+            persistent._mas_aff_before_fresh_start is None
+            or not persistent._mas_pm_got_a_fresh_start
+        ):
+            return
+        mas_affection._reset_aff()
 
     @store.mas_utils.deprecated()
     def mas_setAffection(*args, **kwargs):

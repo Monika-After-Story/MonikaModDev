@@ -383,8 +383,8 @@ label v0_12_9_1(version="v0_12_9_1"):
         # If you see this label, you need to be transferred
         persistent._mas_affection_version = 1
         mas_affection._transfer_aff_2nd_gen()
-        mas_affection.remove_backups()
-        mas_affection.backup_aff()
+        mas_affection._remove_backups()
+        mas_affection.make_backup()
 
         old_data = persistent._mas_affection
         if old_data and "apologyflag" in old_data:
