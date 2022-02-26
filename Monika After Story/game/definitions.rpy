@@ -4659,7 +4659,7 @@ init -100 python in mas_utils:
         """
         return [bullet + " " + str(item) for item in _list]
 
-    
+
     def nested_defaultdict(final_factory=None, levels=1):
         """
         Generates a nested defaultdict. Basically good for creating an n-level
@@ -7955,11 +7955,13 @@ default persistent._mas_affection = {
     "affection":0,#done
     "goodexp":1,
     "badexp":1,
-    "apologyflag":False,
+    "apologyflag":False,# done
     "freeze_date": None,# done
     "today_exp":0# done
 }
+default persistent._mas_affection_version = 2
 default persistent._mas_affection_data =  mas_affection.get_default_data()
+default persistent._mas_affection_should_apologise = False
 default persistent._mas_affection_backups = collections.deque(maxlen=30)
 default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False

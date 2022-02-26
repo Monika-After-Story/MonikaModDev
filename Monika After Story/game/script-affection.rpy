@@ -53,6 +53,7 @@ init -900 python in mas_affection:
     import struct
     import binascii
     import datetime
+    import time
 
     import store
     from store import (
@@ -546,6 +547,34 @@ init -900 python in mas_affection:
 
         data[0] -= new_value
         _set_pers_data(__encode_data(*data))
+
+    def _transfer_aff_2nd_gen():
+        """
+        Transfers aff from the first gen to the second gen
+        This may be dangerous, use wisely, don't fook up
+        """
+        if persistent._mas_affection_version >= 2:
+            return
+
+        old_data = persistent._mas_affection
+        if old_data is None:
+            return
+
+        new_data = list()
+
+        aff = old_data.get("affection", 0.0)
+        if aff > 50000:
+            aff = 0.0
+        new_data.append(aff)
+        new_data.append(0.0)
+        new_data.append(old_data.get("today_exp", 0.0))
+        new_data.append(0.0)
+        new_data.append(old_data.get("freeze_date", time.time()))
+
+        new_data = __encode_data(*new_data)
+
+        _set_pers_data(new_data)
+        persistent._mas_affection_version += 1
 
     def _set_aff(amount, reason="SET"):
         """
@@ -3022,7 +3051,7 @@ label mas_affection_apology:
     m "I can't let this go any further, [player]."
     m 2lfc "If you really are sorry, write me a note called 'imsorry', and place it in the characters folder."
     m 2dfd "Until then, goodbye..."
-    $ persistent._mas_affection["apologyflag"] = True
+    $ persistent._mas_affection_should_apologise = True
     return 'quit'
 
 label mas_affection_noapology:

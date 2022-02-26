@@ -1227,21 +1227,21 @@ label mas_ch30_post_holiday_check:
         # that something is wrong.
 
         #If the conditions are met and Monika expects an apology, jump to this label.
-        if persistent._mas_affection["apologyflag"] and not is_apology_present():
+        if persistent._mas_affection_should_apologise and not is_apology_present():
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_noapology
 
         #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
-        elif persistent._mas_affection["apologyflag"] and is_apology_present():
-            $ persistent._mas_affection["apologyflag"] = False
+        elif persistent._mas_affection_should_apologise and is_apology_present():
+            $ persistent._mas_affection_should_apologise = False
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_yesapology
 
         #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
-        elif not persistent._mas_affection["apologyflag"] and not is_apology_present():
-            $ persistent._mas_affection["apologyflag"] = True
+        elif not persistent._mas_affection_should_apologise and not is_apology_present():
+            $ persistent._mas_affection_should_apologise = True
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_apologydeleted
