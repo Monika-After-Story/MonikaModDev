@@ -245,6 +245,7 @@ init 3 python:
         "bully",
         "bung",
         "butt(?!er|on)",
+        "bloodsucker",
         "cheater",
         "cock",
         "conceited",
@@ -263,6 +264,7 @@ init 3 python:
         "demon",
         "dick",
         "dilf",
+        "dimwit",
         "dirt",
         "disgusting",
         "douche",
@@ -312,6 +314,7 @@ init 3 python:
         "maniac",
         "masochist",
         "milf",
+        "mistake",
         "monster",
         "moron",
         "murder",
@@ -337,6 +340,7 @@ init 3 python:
         "repulsive",
         "retard",
         "rogue",
+        "rubbish",
         "rump",
         "sadist",
         "selfish",
@@ -361,6 +365,7 @@ init 3 python:
         "tool",
         "torment",
         "torture",
+        "toxic",
         "toy",
         "trap",
         "trash",
@@ -419,7 +424,7 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
-        r"\b(step[-\s]*)?bro(ther|thah?)?",
+        r"\b(step[-\s]*)?bro(ther|thah?)?(?!ok)",
         r"\b(step[-\s]*)?sis(ter|tah?)?",
         r"\bdad\b",
         r"\bloli\b",
