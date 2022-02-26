@@ -1025,7 +1025,6 @@ label monika_idle_sleep:
     else:
         m 6ckc "..."
 
-    $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
     $ persistent._mas_idle_data["monika_idle_sleep"] = True
     return "idle"
 
@@ -1105,7 +1104,6 @@ label monika_idle_sleep_callback:
                     m 1dka "Try to breathe slow and deep. {w=0.2}Imagine me holding your hand, or rubbing your back."
                     m 1hksdlb "Ah--but we shouldn't keep talking, that'll just keep you up longer."
                     m 1hkblsdla "Ehehe~"
-                    $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
                     $ persistent._mas_idle_data["monika_idle_sleep"] = True
                     return "idle"
 
@@ -1118,13 +1116,12 @@ label monika_idle_sleep_callback:
                 "I just needed a nap.":
                 m 1hub "Oh! Alright, [player]."
                 m 1hua "I hope you feel rested after your little nap."
-                m [wb_quip]
+                m "[wb_quip]"
 
                 "I just wanted to say I love you.":
                 m 1fkbsa "[player]..."
                 m 1hkbsa "I love you too, [mas_get_player_nickname()]."
                 m "Now, let's get some rest so we can spend another wonderful day together."
-                $ mas_idle_mailbox.send_idle_cb("monika_idle_sleep_callback")
                 $ persistent._mas_idle_data["monika_idle_sleep"] = True
                 return "idle"
 
@@ -1132,7 +1129,7 @@ label monika_idle_sleep_callback:
         else:
             m 1euc "Oh, did you change your mind?"
             m 1eka "That's alright."
-            m [wb_quip]
+            m "[wb_quip]"
 
     elif mas_isMoniUpset():
         m 2esc "Morning, [player]."
