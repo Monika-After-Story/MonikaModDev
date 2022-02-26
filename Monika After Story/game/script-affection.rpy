@@ -49,9 +49,6 @@ init python:
     mas_curr_affection = store.mas_affection.NORMAL
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
-init 50 python:
-    persistent._mas_affection_version = 1
-    mas_affection._transfer_aff_2nd_gen()
 
 init -900 python in mas_affection:
     import struct
@@ -531,6 +528,8 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
+        amount = float(amount)
+
         data = __get_data()
         if not data:
             return
@@ -545,7 +544,7 @@ init -900 python in mas_affection:
         frozen = data[2] >= 7.0
 
         # Sanity checks
-        if amount <= 0:
+        if amount <= 0.0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
         amount = min(amount, 50.0)
@@ -591,6 +590,8 @@ init -900 python in mas_affection:
                 MUST be current topic label or None
                 (Default: None)
         """
+        amount = float(amount)
+
         data = __get_data()
         if not data:
             return
@@ -602,7 +603,7 @@ init -900 python in mas_affection:
         max_lose = data[0] + 1000000
         amount = min(amount, max_lose)
 
-        audit(amount, data[0], data[0]-amount, frozen=frozen, ldsv=reason)
+        audit(amount, data[0], data[0]-amount, ldsv=reason)
 
         data[0] -= new_value
         _set_pers_data(__encode_data(*data))
@@ -652,6 +653,8 @@ init -900 python in mas_affection:
             logmsg - msg to show in the log
                 (Default: 'SET')
         """
+        amount = float(amount)
+
         curr_data = __get_data()
         if not curr_data:
             return
