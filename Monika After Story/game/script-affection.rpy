@@ -611,6 +611,14 @@ init -900 python in mas_affection:
             backup = (today, data)
             backups.append(backup)
 
+    def remove_backups():
+        """
+        Removes all backups
+        """
+        backups = persistent._mas_affection_backups
+        if backups:
+            backups.clear()
+
     def restore_aff():
         """
         Uses available aff backup
