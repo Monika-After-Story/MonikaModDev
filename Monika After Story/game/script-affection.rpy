@@ -51,9 +51,10 @@ init python:
 
 
 init -900 python in mas_affection:
-    import struct
     import binascii
+    import collections
     import datetime
+    import struct
     import time
 
     import store
@@ -629,6 +630,7 @@ init -900 python in mas_affection:
 
         __is_dirty = True
         _set_pers_data(new_data)
+        persistent._mas_affection = collections.defaultdict(float)
         persistent._mas_affection_version += 1
 
     def __set_aff(amount, reason="SET"):
@@ -2369,9 +2371,12 @@ init python:
         if min_amount is None:
             min_amount = _get_current_aff_lose()
 
+        if fraction < 0.0 or min_amount < 0.0 or modifier < 0.0:
+            raise ValueError("Invalid value for affection")
+
         curr_aff = _mas_getAffection()
         min_change = min_amount * modifier
-        if cur_aff > 0.0:
+        if curr_aff > 0.0:
             change = curr_aff * fraction
         else:
             change = abs(-100.0 - curr_aff)*fraction
