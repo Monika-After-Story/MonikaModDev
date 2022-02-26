@@ -424,7 +424,7 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
-        r"\b(step[-\s]*)?bro(ther|thah?)?",
+        r"\b(step[-\s]*)?bro(ther|thah?)?(?!ok)",
         r"\b(step[-\s]*)?sis(ter|tah?)?",
         r"\bdad\b",
         r"\bloli\b",
