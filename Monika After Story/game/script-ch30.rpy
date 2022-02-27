@@ -1351,7 +1351,7 @@ label ch30_post_restartevent_check:
                 if away_experience_time.total_seconds() >= times.REST_TIME:
 
                     #Grant good exp for closing the game correctly.
-                    mas_gainAffection(current_evlabel="happy to see you")
+                    mas_gainAffection(current_evlabel="[rested]")
 
                 # unlock extra pool topics if we can
                 while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -1821,6 +1821,9 @@ label ch30_day:
         # Once per day Monika does stuff on the islands
         store.mas_island_event.advanceProgression()
 
+        # Give the bonus
+        mas_affection._withdraw_aff()
+
     return
 
 
@@ -2121,6 +2124,9 @@ label ch30_reset:
 
     # Did Monika make any progress on the islands?
     $ store.mas_island_event.advanceProgression()
+
+    # Give the bonus
+    $ mas_affection._withdraw_aff()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

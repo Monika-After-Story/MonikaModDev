@@ -168,10 +168,8 @@ init -900 python in mas_affection:
         LOVE: 10.0
     }
 
-    # Uning big-endian
-    # aff, bank, today gain, today bypass gain, freeze ts
-    __STRUCT_FMT = "!d d d d d"
-    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0, 0.0)
+    __STRUCT_FMT = "!d d d d d d"
+    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     __STRUCT = struct.Struct(__STRUCT_FMT)
 
     # compare functions for affection / group
@@ -304,9 +302,14 @@ init -900 python in mas_affection:
     def _set_pers_data(value):
         global __is_dirty, __runtime_backup
 
-        if not isinstance(value, (str, unicode, bytes)) or not __is_dirty:
+        if not __is_dirty:
             return
+
         __is_dirty = False
+
+        if not isinstance(value, (str, unicode, bytes)):
+            return
+
         __runtime_backup = persistent._mas_affection_data = value
 
     def _get_pers_data():
@@ -440,7 +443,8 @@ init -900 python in mas_affection:
 
     def __get_data():
         """
-        Returns current data (decoded)
+        Returns current data (decoded),
+        ALWAYS use this accessor
 
         OUT:
             - tuple with the data
@@ -474,16 +478,27 @@ init -900 python in mas_affection:
 
     def _get_today_cap():
         """
-        Returns today's aff caps
+        Returns today's aff cap
 
         OUT:
-            tuple[float, float] - current aff caps
+            tuple[float, float] - current aff cap
         """
         data = __get_data()
         if data is None:
             return (0.0, 0.0)
 
         return data[2:4]
+
+    def __verify_ts(ts, now_ts):
+        """
+        Verifies the given time against current time
+        """
+        # If you didn't time travel, I wouldn't need to fix this
+        if ts > now_ts:
+            penalty = max(min(ts-now_ts, 86400*7), 86400)
+            ts = now_ts + penalty
+
+        return ts
 
     def _grant_aff(amount, bypass, reason=None):
         """
@@ -503,11 +518,8 @@ init -900 python in mas_affection:
             return
         data = list(data)
 
-        now_= time.time()
-        # If you didn't time travel, I wouldn't need to fix this smh
-        if data[4] > now_:
-            penalty = max(min(data[4]-now_, 86400*7), 86400)
-            data[4] = now_ + penalty
+        now_ = time.time()
+        data[4] = __verify_ts(data[4], now_)
 
         freeze_date = datetime.date.fromtimestamp(data[4])
         if store.mas_pastOneDay(freeze_date):
@@ -575,18 +587,94 @@ init -900 python in mas_affection:
         data = list(data)
 
         amount = float(amount)
-        if amount <= 0:
+        if amount <= 0.0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
         max_lose = data[0] + 1000000
         og_amount = amount
         amount = min(amount, max_lose)
 
-        audit(og_amount, amount, data[0], data[0]-amount, ldsv=reason)
+        if data[1] > 0.0:
+            base_change = amount * 0.3
+            bank_change = amount - base_change
+
+            if data[1] < bank_change:
+                bank_change = data[1]
+                base_change = amount - bank_change
+
+        else:
+            base_change = amount
+            bank_change = 0.0
+
+        audit(og_amount, base_change, data[0], data[0]-base_change, ldsv=reason)
 
         __is_dirty = True
-        data[0] -= amount
+        data[0] -= base_change
+        data[1] -= bank_change
         _set_pers_data(__encode_data(*data))
+
+    def _withdraw_aff():
+        """
+        Withdraws some aff daily
+        """
+        global __is_dirty
+
+        data = __get_data()
+        if not data:
+            return
+        data = list(data)
+
+        if not data[1]:
+            return
+
+        now_ = time.time()
+        data[5] = __verify_ts(data[5], now_)
+
+        withdraw_date = datetime.date.fromtimestamp(data[5])
+        if not store.mas_pastOneDay(withdraw_date):
+            return
+
+        data[5] = now_
+
+        if data[1] <= 1.0:
+            change = data[1]
+
+        else:
+            change = min(data[1] * 0.1, 5.0)
+
+        audit(change, change, data[0], data[0]+change, ldsv="[withdraw]")
+
+        __is_dirty = True
+        data[0] += change
+        data[1] -= change
+        _set_pers_data(__encode_data(*data))
+
+    def _absence_withdraw_aff():
+        """
+        Withdraws some aff during absence
+        """
+        global __is_dirty
+
+        data = __get_data()
+        if not data:
+            return
+        data = list(data)
+
+        if not data[1]:
+            return
+
+        seconds = persistent._mas_absence_time.total_seconds()
+        if seconds > 86400*3:
+            if data[1] <= 1.0:
+                change = data[1]
+
+            else:
+                rate = 0.05 if not persistent._mas_long_absence else 0.025
+                change = data[1] * min(0.05*seconds/86400, 1.0)
+
+            __is_dirty = True
+            data[1] -= change
+            _set_pers_data(__encode_data(*data))
 
     def _reset_aff():
         """
@@ -625,6 +713,7 @@ init -900 python in mas_affection:
         else:
             freeze_ts = time.mktime(freeze_date.timetuple())
         new_data.append(freeze_ts)
+        new_data.append(time.time())
 
         new_data = __encode_data(*new_data)
 
@@ -818,10 +907,6 @@ init -900 python in mas_affection:
             log.info("NO BACKUPS FOUND")
             return False
 
-        curr_value = __get_data()
-        if curr_value is None:
-            curr_value = "invalid"
-
         while backups:
             backup = backups.pop()
             backup_data = __decode_data(backup[1])
@@ -830,7 +915,7 @@ init -900 python in mas_affection:
                 log.info("FOUND CORRUPTED BACKUP")
                 continue
 
-            log.info("RESTORED | {} -> {}".format(curr_value, backup_data[0]))
+            log.info("RESTORED | {}".format(backup_data[0]))
             __is_dirty = True
             _set_pers_data(backup[1])
             return True
@@ -2509,6 +2594,38 @@ init python:
     # Nothing to apologize for now
     mas_apology_reason = None
 
+    def __long_absence_check():
+        # This must be called first
+        mas_affection._absence_withdraw_aff()
+
+        if persistent._mas_long_absence:
+            return
+
+        time_difference = persistent._mas_absence_time
+        # we skip this for devs since we sometimes use older
+        # persistents and only apply after 1 week
+        if (
+            not config.developer
+            and time_difference >= datetime.timedelta(weeks=1)
+        ):
+            curr_aff = _mas_getAffection()
+            calc_loss = 0.5 * time_difference.days
+            new_aff = curr_aff - calc_loss
+
+            if new_aff < mas_affection.AFF_TIME_CAP and curr_aff > mas_affection.AFF_TIME_CAP:
+                #We can only lose so much here
+                store.mas_affection.txt_audit("ABS", "capped loss")
+                mas_loseAffection(abs(mas_affection.AFF_TIME_CAP - curr_aff))
+
+                #If over 10 years, then we need to FF
+                if time_difference >= datetime.timedelta(days=(365 * 10)):
+                    store.mas_affection.txt_audit("ABS", "10 year diff")
+                    mas_loseAffection(200)
+
+            else:
+                store.mas_affection.txt_audit("ABS", "she missed you")
+                mas_loseAffection(calc_loss)
+
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
         # failure to load means we reset to 0. No excuses
@@ -2527,31 +2644,8 @@ init python:
             persistent._mas_absence_time = datetime.timedelta(days=0)
 
         # Monika's initial affection based on start-up.
-        if not persistent._mas_long_absence:
-            time_difference = persistent._mas_absence_time
-            # we skip this for devs since we sometimes use older
-            # persistents and only apply after 1 week
-            if (
-                not config.developer
-                and time_difference >= datetime.timedelta(weeks=1)
-            ):
-                curr_aff = _mas_getAffection()
-                calc_loss = 0.5 * time_difference.days
-                new_aff = curr_aff - calc_loss
+        __long_absence_check()
 
-                if new_aff < mas_affection.AFF_TIME_CAP and curr_aff > mas_affection.AFF_TIME_CAP:
-                    #We can only lose so much here
-                    store.mas_affection.txt_audit("ABS", "capped loss")
-                    mas_loseAffection(abs(mas_affection.AFF_TIME_CAP - curr_aff))
-
-                    #If over 10 years, then we need to FF
-                    if time_difference >= datetime.timedelta(days=(365 * 10)):
-                        store.mas_affection.txt_audit("ABS", "10 year diff")
-                        mas_loseAffection(200)
-
-                else:
-                    store.mas_affection.txt_audit("ABS", "she missed you")
-                    mas_loseAffection(calc_loss)
 
 
 # Unlocked when affection level reaches 50.
