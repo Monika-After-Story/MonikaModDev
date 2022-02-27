@@ -1085,45 +1085,45 @@ label monika_idle_sleep_callback:
                 m "Hmm? Are you okay?{fast}"
 
                 "I can't sleep.":
-                m 1ekc "Ah, is that so?"
-                m 3eka "Do you think it'll be easier if I leave you to sleep?{nw}"
-                $ _history_list.pop{}
-                menu:
-                    m "Do you think it'll be easier if I leave you to sleep?{fast}"
+                    m 1ekc "Ah, is that so?"
+                    m 3eka "Do you think it'll be easier if I leave you to sleep?{nw}"
+                    $ _history_list.pop{}
+                    menu:
+                        m "Do you think it'll be easier if I leave you to sleep?{fast}"
 
-                    "Yeah, I think so.":
-                    m 3hua "Okay. That's alright, I can get some sleep too."
-                    m 1ekbla "I hope you sleep well, [mas_get_player_nickname()]."
-                    $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
-                    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
-                    return 'quit'
+                        "Yeah, I think so.":
+                            m 3hua "Okay. That's alright, I can get some sleep too."
+                            m 1ekbla "I hope you sleep well, [mas_get_player_nickname()]."
+                            $ persistent._mas_greeting_type_timeout = datetime.timedelta(hours=13)
+                            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
+                            return 'quit'
 
-                    "No, I want you to stay.":
-                    m 3ekb "Of course, [mas_get_player_nickname()]."
-                    m "Maybe you could get something to drink, that might help you sleep."
-                    m 1dka "Try to breathe slow and deep. {w=0.2}Imagine me holding your hand, or rubbing your back."
-                    m 1hksdlb "Ah--but we shouldn't keep talking, that'll just keep you up longer."
-                    m 1hkblsdla "Ehehe~"
-                    $ persistent._mas_idle_data["monika_idle_sleep"] = True
-                    return "idle"
+                        "No, I want you to stay.":
+                            m 3ekb "Of course, [mas_get_player_nickname()]."
+                            m "Maybe you could get something to drink, that might help you sleep."
+                            m 1dka "Try to breathe slow and deep. {w=0.2}Imagine me holding your hand, or rubbing your back."
+                            m 1hksdlb "Ah--but we shouldn't keep talking, that'll just keep you up longer."
+                            m 1hkblsdla "Ehehe~"
+                            $ persistent._mas_idle_data["monika_idle_sleep"] = True
+                            return "idle"
 
-                    "No, I'm going to get up for a bit.":
-                    m 1ekc "Well, alright."
-                    m 1eka "So long as you'll get enough hours of sleep, I guess it's okay."
-                    m 2ekb "We can talk a little longer, until you feel tired."
-                    m 2eksdla "But you should try not to stay up {i}too{/i} late, okay [mas_get_player_nickname()]?"
+                        "No, I'm going to get up for a bit.":
+                            m 1ekc "Well, alright."
+                            m 1eka "So long as you'll get enough hours of sleep, I guess it's okay."
+                            m 2ekb "We can talk a little longer, until you feel tired."
+                            m 2eksdla "But you should try not to stay up {i}too{/i} late, okay [mas_get_player_nickname()]?"
                 
                 "I just needed a nap.":
-                m 1hub "Oh! Alright, [player]."
-                m 1hua "I hope you feel rested after your little nap."
-                m "[wb_quip]"
+                    m 1hub "Oh! Alright, [player]."
+                    m 1hua "I hope you feel rested after your little nap."
+                    m "[wb_quip]"
 
                 "I just wanted to say I love you.":
-                m 1fkbsa "[player]..."
-                m 1hkbsa "I love you too, [mas_get_player_nickname()]."
-                m "Now, let's get some rest so we can spend another wonderful day together."
-                $ persistent._mas_idle_data["monika_idle_sleep"] = True
-                return "idle"
+                    m 1fkbsa "[player]..."
+                    m 1hkbsa "I love you too, [mas_get_player_nickname()]."
+                    m "Now, let's get some rest so we can spend another wonderful day together."
+                    $ persistent._mas_idle_data["monika_idle_sleep"] = True
+                    return "idle"
 
 
         else:
