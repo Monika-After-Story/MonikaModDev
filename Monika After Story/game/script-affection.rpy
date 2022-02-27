@@ -670,7 +670,7 @@ init -900 python in mas_affection:
 
             else:
                 rate = 0.05 if not persistent._mas_long_absence else 0.025
-                change = data[1] * min(0.05*seconds/86400, 1.0)
+                change = data[1] * min(rate*seconds/86400, 1.0)
 
             __is_dirty = True
             data[1] -= change
