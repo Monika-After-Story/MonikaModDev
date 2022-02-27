@@ -11,6 +11,7 @@ init -1 python in mas_dev_unit_tests:
         ("MASHistorySaver - correct_pbday_mhs", "dev_unit_test_mhs_cpm", False, False),
         ("UTC APIs", "dev_unit_test_utc_api", False, False),
         ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
+        ("strict_can_pickle", "dev_unit_test_strict_can_pickle", False, False),
     ]
 
     class MASUnitTest(object):
@@ -2593,4 +2594,143 @@ label dev_unit_test_wrs_regexpchecks:
         )
 
     call dev_unit_tests_finish_test(wrs_tester)
+    return
+
+label dev_unit_test_strict_can_pickle:
+    m "Running tests..."
+
+    python:
+        # setup
+        scp = store.mas_ev_data_ver._strict_can_pickle
+
+        can_pickle = (True, False)
+        cannot_pickle = (False, False)
+        recur_error = (False, True)
+
+        good_iter_data = [1, 2, True, "test"]
+        bad_iter_data = [1, 2, True, MASEventContext(), "test"]
+
+        good_dict_data = { 1: 2, True: "test" }
+        bad_dict_data_key = { 1: 2, mas_hair_def: True, "test": 100 }
+        bad_dict_data_val = { 1: 2, True: MASEventContext(), "test": 100}
+
+        recur_dict = {}
+        recur_list = [ recur_dict ]
+        recur_dict[10] = recur_list
+
+        class FakeTzInfo(datetime.tzinfo):
+            
+            def utcoffset(self, dt):
+                return datetime.timedelta()
+
+            def dst(self, dt):
+                return datetime.timedelta()
+
+            def tzname(self, dt):
+                return "Fake/Timezone"
+
+        # begin tests
+        scp_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+        # none check
+        scp_tester.prepareTest("None check")
+        scp_tester.assertEqual(can_pickle, scp(None))
+
+        # non-structure types
+        scp_tester.prepareTest("strings check")
+        scp_tester.assertEqual(can_pickle, scp(str("test")))
+        scp_tester.assertEqual(can_pickle, scp(unicode("test")))
+
+        scp_tester.prepareTest("bool check")
+        scp_tester.assertEqual(can_pickle, scp(bool(1)))
+
+        scp_tester.prepareTest("numbers check")
+        scp_tester.assertEqual(can_pickle, scp(int(1)))
+        scp_tester.assertEqual(can_pickle, scp(float(1)))
+        scp_tester.assertEqual(can_pickle, scp(long(1)))
+        scp_tester.assertEqual(can_pickle, scp(complex(1)))
+
+        scp_tester.prepareTest("date, timedelta check")
+        scp_tester.assertEqual(can_pickle, scp(datetime.timedelta()))
+        scp_tester.assertEqual(can_pickle, scp(datetime.date.today()))
+
+        # datetime special
+        scp_tester.prepareTest("datetime, time - no tzinfo")
+        scp_tester.assertEqual(can_pickle, scp(datetime.datetime.utcnow()))
+        scp_tester.assertEqual(can_pickle, scp(datetime.time()))
+
+        scp_tester.prepareTest("datetime, time - with tzinfo")
+        scp_tester.assertEqual(
+            cannot_pickle,
+            scp(datetime.datetime.now(FakeTzInfo()))
+        )
+        scp_tester.assertEqual(
+            cannot_pickle,
+            scp(datetime.time(tzinfo=FakeTzInfo()))
+        )
+
+        # lists
+        scp_tester.prepareTest("lists - empty")
+        scp_tester.assertEqual(can_pickle, scp(
+            store.mas_ev_data_ver.__builtin__.list()
+        ))
+        scp_tester.assertEqual(can_pickle, scp(list()))
+        scp_tester.assertEqual(can_pickle, scp([]))
+        scp_tester.assertEqual(can_pickle, scp(renpy.python.RevertableList()))
+
+        scp_tester.prepareTest("list - with good values")
+        scp_tester.assertEqual(can_pickle, scp(good_iter_data))
+
+        scp_tester.prepareTest("list - with bad values")
+        scp_tester.assertEqual(cannot_pickle, scp(bad_iter_data))
+
+        scp_tester.prepareTest("list - recursion")
+        scp_tester.assertEqual(recur_error, scp(recur_list))
+
+        # sets
+        scp_tester.prepareTest("sets - empty")
+        scp_tester.assertEqual(can_pickle, scp(
+            store.mas_ev_data_ver.__builtin__.set()
+        ))
+        scp_tester.assertEqual(can_pickle, scp(
+            store.mas_ev_data_ver.__builtin__.frozenset()
+        ))
+        scp_tester.assertEqual(can_pickle, scp(set()))
+        scp_tester.assertEqual(can_pickle, scp(frozenset()))
+        scp_tester.assertEqual(can_pickle, scp(renpy.python.RevertableSet()))
+
+        scp_tester.prepareTest("sets - with good values")
+        scp_tester.assertEqual(can_pickle, scp(set(good_iter_data)))
+
+        scp_tester.prepareTest("sets - with bad values")
+        scp_tester.assertEqual(cannot_pickle, scp(set(bad_iter_data)))
+
+        # tuple
+        scp_tester.prepareTest("tuple - with good values")
+        scp_tester.assertEqual(can_pickle, scp(tuple(good_iter_data)))
+
+        scp_tester.prepareTest("tuple - with bad values")
+        scp_tester.assertEqual(cannot_pickle, scp(tuple(bad_iter_data)))
+
+        # dicts
+        scp_tester.prepareTest("dict - empty")
+        scp_tester.assertEqual(can_pickle, scp(
+            store.mas_ev_data_ver.__builtin__.dict()
+        ))
+        scp_tester.assertEqual(can_pickle, scp({}))
+        scp_tester.assertEqual(can_pickle, scp(dict()))
+        scp_tester.assertEqual(can_pickle, scp(renpy.python.RevertableDict()))
+
+        scp_tester.prepareTest("dict - with good values")
+        scp_tester.assertEqual(can_pickle, scp(good_dict_data))
+
+        scp_tester.prepareTest("dict - with bad values")
+        scp_tester.assertEqual(cannot_pickle, scp(bad_dict_data_key))
+        scp_tester.assertEqual(cannot_pickle, scp(bad_dict_data_val))
+
+        scp_tester.prepareTest("dict - recursion")
+        scp_tester.assertEqual(recur_error, scp(recur_dict))
+
+    call dev_unit_tests_finish_test(scp_tester)
+
     return
