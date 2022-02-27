@@ -69,10 +69,5 @@
             "layers": "5^10"
         }
     },
-    "giftname": "hatsunemikucosplay",
-    "outfit_hair": "orcaramelo_twintails",
-    "outfit_acs": [
-        "orcaramelo_hatsune_miku_headset",
-        "orcaramelo_hatsune_miku_twinsquares"
-    ]
+    "giftname": "hatsunemikucosplay"
 }

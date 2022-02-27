@@ -318,6 +318,7 @@ init -2 python in mas_sprites:
         """
         Exit programming point for def clothes
         """
+
         store.mas_unlockEVL("mas_compliment_outfit", "CMP")
 
 
@@ -340,19 +341,24 @@ init -2 python in mas_sprites:
         Entry pp for orcaramelo miku
         """
         outfit_mode = kwargs.get("outfit_mode", False)
-        outfit_entry_data = kwargs["outfit_entry_data"]
 
         if outfit_mode:
-            # don't wear acs if not changing to twin tails.
-            if not outfit_entry_data.will_hair_change():
-                # mark ACS for not wearing
-                outfit_entry_data.set_acs_change(
-                    "orcaramelo_hatsune_miku_headset",
-                    False
+            # swap to bun braid if found. if not, dont wear acs.
+            twintails = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_twintails"
+            )
+            if twintails is not None:
+                _moni_chr.change_hair(twintails)
+
+                # find acs and wear for this outfit
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_hatsune_miku_headset"
                 )
-                outfit_entry_data.set_acs_change(
-                    "orcaramelo_hatsune_miku_twinsquares",
-                    False
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_hatsune_miku_twinsquares"
                 )
 
 
@@ -360,7 +366,6 @@ init -2 python in mas_sprites:
         """
         Exit pp for orcaramelo miku
         """
-        # NOTE: keeping this around for compatibility purposes.
         # find and remove acs if found
         _acs_remove_if_found(
             _moni_chr,
@@ -377,33 +382,36 @@ init -2 python in mas_sprites:
         Entry pp for orcaramelo sakuya
         """
         outfit_mode = kwargs.get("outfit_mode", False)
-        outfit_entry_data = kwargs["outfit_entry_data"]
 
         if outfit_mode:
-            # check if will be wearing bunbraid
-            if outfit_entry_data.will_hair_change():
+            # swap to bun braid if found. if not, dont wear acs.
+            bunbraid = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "orcaramelo_bunbraid"
+            )
+            if bunbraid is not None:
+                _moni_chr.change_hair(bunbraid)
+
+                # find acs and wear for this outfit
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_headband"
+                )
+                _acs_wear_if_found(
+                    _moni_chr,
+                    "orcaramelo_sakuya_izayoi_strandbow"
+                )
+
                 #Remove ribbon so we just get the intended costume since the correct hairstyle is present
                 ribbon_acs = _moni_chr.get_acs_of_type("ribbon")
                 if ribbon_acs is not None:
                     _moni_chr.remove_acs(ribbon_acs)
-
-            else:
-                # mark ACS for not wearing
-                outfit_entry_data.set_acs_change(
-                    "orcaramelo_sakuya_izayoi_headband",
-                    False
-                )
-                outfit_entry_data.set_acs_change(
-                    "orcaramelo_sakuya_izayoi_strandbow",
-                    False
-                )
 
 
     def _clothes_orcaramelo_sakuya_izayoi_exit(_moni_chr, **kwargs):
         """
         Exit pp for orcaramelo sakuya
         """
-        # NOTE: keeping this around for compatibility purposes.
         # find and remove acs if found
         _acs_remove_if_found(
             _moni_chr,
