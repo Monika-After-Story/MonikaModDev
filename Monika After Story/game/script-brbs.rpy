@@ -1087,7 +1087,7 @@ label monika_idle_sleep_callback:
                 "I can't sleep.":
                     m 1ekc "Ah, is that so?"
                     m 3eka "Do you think it'll be easier if I leave you to sleep?{nw}"
-                    $ _history_list.pop{}
+                    $ _history_list.pop()
                     menu:
                         m "Do you think it'll be easier if I leave you to sleep?{fast}"
 
