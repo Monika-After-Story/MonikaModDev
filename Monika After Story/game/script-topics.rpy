@@ -5739,9 +5739,6 @@ label monika_cupcake:
             extend 5eub "tasting the results..."
             m 5kuu "Sounds pretty amazing, right?"
 
-    # TODO - this make sense? I think it does since its related.
-    $ mas_unlockEVL("monika_cupcake_favorite", "EVE")
-
     return "derandom"
 
 # You're not a hater right?
@@ -17750,35 +17747,23 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_cupcake_favorite",
-            category=["food? TODO"],
-            prompt="What's your favorite flavor cupcake?",
-            # TODO - should this be locked until the other cupcake topic?
+            category=["monika"],
+            prompt="What's your favorite cupcake flavor?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="mas_seenLabels(['monika_cupcake', 'monika_icecream'], seen_all=True)",
+            action=EV_ACT_UNLOCK
         )
     )
 
 label monika_cupcake_favorite:
-    # TODO - sprite codes
-    # TODO: evaluate for doki_cares
-    m 1eub "That’s a great question!"
-    m "I really like all sorts of different kinds, it’s hard to choose just one."
-
-    $ cupcake_lead_in = ""
-    if mas_getEVL_shown_count("monika_cupcake") > 0:
-        $ cupcake_lead_in = "As you know, "
-    m 6hua "[cupcake_lead_in]I miss Natsuki’s cupcakes so much."
-
-    m "One time she made this really strange mint chocolate chip flavored cupcake."
-    m "It had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
-    m 4lup "It was the strangest thing I’ve ever tasted haha!"
-    m "It didn’t really taste at all like how mint chocolate chip ice cream tastes, even though that’s one of my all time favorites."
-    m "It sorta tasted like toothpaste!"
-    m 6dkc "I was really expecting it to be my favorite cupcake flavor too. It was nice she tried to make me something unique I would like...sometimes I miss her a lot."
-
-
-    # TODO: evaluate for doki cares
-    m 1euc "..."
-    m "..."
-    m "Oh, sorry. I got lost in thought. What was the question again?"
-    # TODO - probably shouldn't leave this with an open Q without a menu response
-    #   or just don't have an open Q at the end?
+    m 1rta "Hmm, I'm not sure I really have one..."
+    m 1hub "I like all sorts of different kinds, so it's hard to choose just one!"
+    m 3ekd "I think I've mentioned before how much I miss Natsuki's cupcakes..."
+    m 3eua "One time she made this really strange mint chocolate chip flavored cupcake...{w=0.3}it had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
+    m 4rksdlb "It was one of the strangest things I've ever tasted haha!"
+    m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
+    m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
+    m 7eka "Oh well, it was nice she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
     return
