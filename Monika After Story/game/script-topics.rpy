@@ -7920,6 +7920,8 @@ label monika_otaku:
     m 1lfu "I wouldn't want to be replaced by some two-dimensional cutout."
     m 1eua "Besides, if you ever want to escape from reality..."
     m 1hubsa "I can be your real-life fantasy instead~"
+
+    $ mas_protectedShowEVL("monika_conventions", "EVE", _random=True)
     return "derandom"
 
 ### START WRITING TIPS
@@ -17745,68 +17747,64 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_convention",
-            category=['conventions? TODO'],
-            prompt="Convention",
+            eventlabel="monika_conventions",
+            category=['you'],
+            prompt="Conventions",
             random=True,
         )
     )
 
-
 default persistent._mas_pm_gone_to_comic_con = None
 default persistent._mas_pm_gone_to_anime_con = None
 
-label monika_convention:
-    # TODO - sprite codes
-    m 1eua "Say [mas_get_player_nickname()],"
-    m "have you ever been to a comic convention or anime convention?{fast}{nw}"
+label monika_conventions:
+    m 1eud "Say [player], I've been wondering..."
+    m 3eua "Have you ever been to a comic or anime convention?{fast}{nw}"
+    $ _history_list.pop()
     menu:
-        m "have you ever been to a comic convention or anime convention?"
-        "Comic convention":
+        m "Have you ever been to a comic or anime convention?"
+
+        "Comic convention.":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = False
-            m "Ah, I see! {w=0.2)I hope you had a lot of fun."
-            m "Comics are a really interesting medium in literature, maybe I should read some more."
-            m "But on the topic of conventions..."
-        "Anime convention":
+            m 1hub "Ah, I see! {w=0.2}I hope you had a lot of fun."
+            m 3eua "Comics are a really interesting medium in literature, maybe I should read some more."
+
+        "Anime convention.":
             $ persistent._mas_pm_gone_to_comic_con = False
             $ persistent._mas_pm_gone_to_anime_con = True
             if persistent._mas_pm_watch_mangime:
-                m "I had a feeling you would have!"
-                m "They really struck me as something that you might enjoy."
+                m 3eub "I had a feeling you would have! {w=0.2}They really struck me as something that you might enjoy."
             else:
-                m "Really? That's surprising!"
-                m "Ah, but maybe you went with some friends!"
-                m "Or it's possible you went for another reason--an interest in gaming, perhaps?"
+                m 2wub "Really? That's surprising!"
+                m 7eta "Ah, but maybe you went with some friends?"
+                m 3etd "...Or it's possible you went for another reason...{w=0.3}an interest in gaming, perhaps?"
+
         "Both!":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = True
             if persistent._mas_pm_watch_mangime:
-                m "Oh! I knew you liked anime already, but you like comics too?"
-                m "They're a really interesting medium in literature, maybe I should read some more..."
+                m 1hub "Oh! I knew you liked anime already, but you like comics too?"
+                m 3eua "They're a really interesting medium in literature, maybe I should read some more..."
             else:
-                m "Oh! I didn't think you liked anime, but it looks like you're a convention fan anyway!"
-                m "Not that it's too surprising, the atmosphere of them seems like it could be enjoyable for anyone."
-        "Neither":
+                m 1wub "Oh! {w=0.3}I didn't think you liked anime, but it looks like you're a convention fan anyway!"
+                m 3eua "Not that it's too surprising, the atmosphere of them seems like it could be enjoyable for anyone."
+
+        "No.":
             $ persistent._mas_pm_gone_to_comic_con = False
             $ persistent._mas_pm_gone_to_anime_con = False
             if persistent._mas_pm_watch_mangime and persistent._mas_pm_social_personality == mas_SP_EXTROVERT:
-                m "Really?"
-                m "I'm surprised! When I learned about anime conventions, I immediately thought of you."
-                m "Although, I guess the travel expenses can get pretty high depending on where you are."
-                m "Even so..."
+                m 2etd "Really?"
+                m 7eub "I'm surprised! {w=0.3}When I learned about anime conventions, I immediately thought of you."
+                m 3eud "Although, I guess the travel expenses can get pretty high depending on where you are."
             else:
-                m "Ah, I see."
-                m "I suppose that regardless of interest, conventions can be a bit tricky."
-                m "Depending on where you live, they might require quite a bit of travel expense."
-                m "Even so..."
+                m 2eud "Ah, I see."
+                m 7eua "I suppose that regardless of interest, conventions can be a bit tricky."
+                m 3eud "Depending on where you live, they might require quite a bit of a travel expense."
 
-    # TODO - consider asking if go regularly?
-
-    m 3hub "They look like they would be super fun! A place for everyone to just be themselves and enjoy their interests without being judged."
-    m 6wuo "I love looking at photos online of all the talented cosplayers and their insane outfits they make for these conventions."
-    extend "It’s crazy what some people think of!"
-    m 3mua "I also hear there’s a lot of fun activities like idol dance shows, trivia, and other things to do there."
-    extend "It’s almost like an amusement park for geeks, haha."
-    m 5nubsa "I would love to go to one with you someday, [mas_get_player_nickname()]" 
+    m 3hua "I've always thought conventions would be super fun! {w=0.3}A place for everyone to just be themselves and enjoy their interests without being judged."
+    m 3eub "I love looking at photos of all the talented cosplayers and the insane outfits they made."
+    m 1wuo "It's crazy what people can do when they're passionate about something!"
+    m 3eua "I also hear there's a lot of fun activities like idol dance shows, trivia, and other things to do there."
+    m 1eubsa "I would love to go to one with you someday, [mas_get_player_nickname()]~"
     return
