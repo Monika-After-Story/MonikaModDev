@@ -17759,16 +17759,17 @@ default persistent._mas_pm_gone_to_anime_con = None
 
 label monika_conventions:
     m 1eud "Say [player], I've been wondering..."
-    m 3eua "Have you ever been to a comic or anime convention?{fast}{nw}"
+    m 3eua "Have you ever been to a comic or anime convention?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you ever been to a comic or anime convention?"
+        m "Have you ever been to a comic or anime convention?{fast}"
 
         "Comic convention.":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = False
             m 1hub "Ah, I see! {w=0.2}I hope you had a lot of fun!"
-            m 3eua "Comics are a really interesting medium in literature, maybe I should read some more."
+            m 3eua "Comics are a really interesting medium in literature,{w=0.1} {nw}"
+            extend 3rta "maybe I should read some more..."
 
         "Anime convention.":
             $ persistent._mas_pm_gone_to_comic_con = False
@@ -17777,10 +17778,10 @@ label monika_conventions:
                 m 3eub "I had a feeling you would have! {w=0.2}They really struck me as something that you might enjoy."
             else:
                 m 2wub "Really? That's surprising!"
-                m 7eta "Ah, but maybe you went with some friends?"
+                m 7eta "Ah,{w=0.1} maybe you went with some friends?"
                 m 3etd "...Or it's possible you went for another reason...{w=0.3}an interest in gaming, perhaps?"
 
-        "Both!":
+        "I've been to both!":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = True
             if persistent._mas_pm_watch_mangime:
@@ -17800,7 +17801,7 @@ label monika_conventions:
             else:
                 m 2eud "Ah, I see."
                 m 7eua "I suppose that regardless of interest, conventions can be a bit tricky."
-                m 3eud "Depending on where you live, they might require quite a bit of a travel expense."
+                m 3eud "Depending on where you live, they can be quite the travel expense."
 
     m 3hua "I've always thought conventions would be super fun! {w=0.3}A place for everyone to just be themselves and enjoy their interests without being judged."
     m 3eub "I love looking at photos of all the talented cosplayers and the insane outfits they made."
