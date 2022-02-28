@@ -1070,8 +1070,6 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
             "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
-            "_mas_pm_gone_to_comic_con": "pm.actions.gone_to_comic_con",
-            "_mas_pm_gone_to_anime_con": "pm.actions.gone_to_anime_con",
 
             # actions / d25
             "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
@@ -1114,10 +1112,10 @@ init -810 python:
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
 
             # actions / events / comic con
-            "_mas_pm_gone_to_comic_con": "pm.actions.events.comic_con.went",
+            "_mas_pm_gone_to_comic_con": "pm.actions.gone_to_comic_con",
 
             # actions / events / anime / con
-            "_mas_pm_gone_to_anime_con": "pm.actions.events.anime.con.went",
+            "_mas_pm_gone_to_anime_con": "pm.actions.gone_to_anime_con",
 
             # actions / mas
             "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
