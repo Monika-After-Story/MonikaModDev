@@ -17767,7 +17767,7 @@ label monika_conventions:
         "Comic convention.":
             $ persistent._mas_pm_gone_to_comic_con = True
             $ persistent._mas_pm_gone_to_anime_con = False
-            m 1hub "Ah, I see! {w=0.2}I hope you had a lot of fun."
+            m 1hub "Ah, I see! {w=0.2}I hope you had a lot of fun!"
             m 3eua "Comics are a really interesting medium in literature, maybe I should read some more."
 
         "Anime convention.":
