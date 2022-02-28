@@ -1070,6 +1070,8 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
             "_mas_pm_has_been_to_amusement_park": "pm.actions.been_to_amusement_park",
+            "_mas_pm_gone_to_comic_con": "pm.actions.gone_to_comic_con",
+            "_mas_pm_gone_to_anime_con": "pm.actions.gone_to_anime_con",
 
             # actions / d25
             "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
