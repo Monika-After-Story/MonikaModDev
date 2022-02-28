@@ -299,7 +299,26 @@ init -900 python in mas_affection:
 
         return _compareAff(low, high) <= 0
 
-    def _set_pers_data(value):
+    def __verify_data():
+        global __runtime_backup
+
+        if __runtime_backup is None:
+            __runtime_backup = persistent._mas_affection_data
+
+        elif __runtime_backup != persistent._mas_affection_data:
+            # bad bad bad
+            log.info("DATA CORRUPTION")
+            success = _restore_backup()
+            if success:
+                _make_backup()
+            else:
+                __runtime_backup = persistent._mas_affection_data = get_default_data()
+
+            return False
+
+        return True
+
+    def __set_pers_data(value):
         global __is_dirty, __runtime_backup
 
         if not __is_dirty:
@@ -310,20 +329,16 @@ init -900 python in mas_affection:
         if not isinstance(value, (str, unicode, bytes)):
             return
 
-        __runtime_backup = persistent._mas_affection_data = value
+        if not __verify_data():
+            return
 
-    def _get_pers_data():
+        __runtime_backup = persistent._mas_affection_data = value
+        _make_backup()
+
+    def __get_pers_data():
         global __runtime_backup
 
-        if __runtime_backup is None:
-            __runtime_backup = persistent._mas_affection_data
-
-        elif __runtime_backup != persistent._mas_affection_data:
-            # bad bad bad
-            log.info("DATA CORRUPTION")
-            success = _restore_backup()
-            if not success:
-                __runtime_backup = persistent._mas_affection_data = get_default_data()
+        __verify_data()
 
         return __runtime_backup
 
@@ -441,6 +456,15 @@ init -900 python in mas_affection:
         """
         return __encode_data(*__STRUCT_DEF_VALUES)
 
+    def _reset_pers_data():
+        """
+        Resets pers data to the default value
+        Dangerous, think twice before using
+        """
+        global __is_dirty
+        __is_dirty = True
+        __set_pers_data(get_default_data())
+
     def __get_data():
         """
         Returns current data (decoded),
@@ -450,7 +474,7 @@ init -900 python in mas_affection:
             - tuple with the data
             - None if an error happened
         """
-        data = _get_pers_data()
+        data = __get_pers_data()
         if data is None:
             mas_utils.mas_log.critical("Aff data is invalid")
             return None
@@ -567,7 +591,7 @@ init -900 python in mas_affection:
             else:
                 data[3] += amount
 
-            _set_pers_data(__encode_data(*data))
+            __set_pers_data(__encode_data(*data))
 
     def _remove_aff(amount, reason=None):
         """
@@ -611,7 +635,7 @@ init -900 python in mas_affection:
         __is_dirty = True
         data[0] -= base_change
         data[1] -= bank_change
-        _set_pers_data(__encode_data(*data))
+        __set_pers_data(__encode_data(*data))
 
     def _withdraw_aff():
         """
@@ -647,7 +671,7 @@ init -900 python in mas_affection:
         __is_dirty = True
         data[0] += change
         data[1] -= change
-        _set_pers_data(__encode_data(*data))
+        __set_pers_data(__encode_data(*data))
 
     def _absence_withdraw_aff():
         """
@@ -674,7 +698,7 @@ init -900 python in mas_affection:
 
             __is_dirty = True
             data[1] -= change
-            _set_pers_data(__encode_data(*data))
+            __set_pers_data(__encode_data(*data))
 
     def _reset_aff():
         """
@@ -718,8 +742,8 @@ init -900 python in mas_affection:
         new_data = __encode_data(*new_data)
 
         __is_dirty = True
-        _set_pers_data(new_data)
-        persistent._mas_affection = collections.defaultdict(float)
+        __set_pers_data(new_data)
+        # persistent._mas_affection = collections.defaultdict(float)
         persistent._mas_affection_version += 1
 
     def __set_aff(amount, reason="SET"):
@@ -748,7 +772,7 @@ init -900 python in mas_affection:
 
         __is_dirty = True
         curr_data[0] = amount
-        _set_pers_data(__encode_data(*curr_data))
+        __set_pers_data(__encode_data(*curr_data))
 
     def _set_aff(value, reason):
         if store.config.developer:
@@ -772,14 +796,13 @@ init -900 python in mas_affection:
         log.info("SAVE | {0}".format(_get_aff()))
 
         # Always backup on quit
-        if has_mismatch():
-            make_backup(True)
+        if _has_mismatch():
+            _make_backup(True)
 
     def load_aff():
         """
         Runs loading logic
         """
-        global __is_dirty
         #new_value = 0
         #if (
         #        persistent._mas_pctaieibe is not None
@@ -817,11 +840,11 @@ init -900 python in mas_affection:
             success = _restore_backup()
             if success:
                 txt_audit("LOAD", "Loading from backup")
+                _make_backup()
 
             else:
                 # Bad bad bad bad
-                __is_dirty = True
-                _set_pers_data(get_default_data())
+                _reset_pers_data()
                 txt_audit("LOAD", "DATA HAS BEEN RESET")
 
             aff = _get_aff()
@@ -833,7 +856,7 @@ init -900 python in mas_affection:
 
             raw_audit(0.0, aff, aff, "LOAD?")
 
-            if has_mismatch():
+            if _has_mismatch():
                 # Mismatch means the game has crashed, let's restore
                 persistent._mas_aff_mismatches += 1
                 txt_audit("MISMATCHES", persistent._mas_aff_mismatches)
@@ -841,11 +864,11 @@ init -900 python in mas_affection:
                 aff = _get_aff()
 
             # Good loading, make a daily backup
-            make_backup()
+            _make_backup()
 
         txt_audit("LOAD COMPLETE", aff)
 
-    def make_backup(force=False):
+    def _make_backup(force=False):
         """
         Runs backup algo for affection
 
@@ -856,7 +879,7 @@ init -900 python in mas_affection:
         today = datetime.date.today()
 
         if force or not backups or backups[-1][0] < today:
-            curr_raw_data = _get_pers_data()
+            curr_raw_data = __get_pers_data()
             curr_data = __decode_data(curr_raw_data)
 
             if curr_data is not None:
@@ -874,7 +897,7 @@ init -900 python in mas_affection:
             else:
                 log.info("FAILED TO BACKUP, CURRENT DATA IS BAD")
 
-    def has_mismatch():
+    def _has_mismatch():
         """
         Checks if the last backup mismatches with the current aff
         """
@@ -882,7 +905,7 @@ init -900 python in mas_affection:
         if not backups:
             return False
 
-        return backups[-1][1] != _get_pers_data()
+        return backups[-1][1] != __get_pers_data()
 
     def _remove_backups():
         """
@@ -917,7 +940,7 @@ init -900 python in mas_affection:
 
             log.info("RESTORED | {}".format(backup_data[0]))
             __is_dirty = True
-            _set_pers_data(backup[1])
+            __set_pers_data(backup[1])
             return True
 
         log.info("NO WORKING BACKUPS FOUND")
