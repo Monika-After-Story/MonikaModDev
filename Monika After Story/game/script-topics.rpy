@@ -17765,5 +17765,5 @@ label monika_cupcake_favorite:
     m 4rksdlb "It was one of the strangest things I've ever tasted ahaha!"
     m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
     m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
-    m 7eka "Oh well, it was nice she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
+    m 7eka "Oh well, it was nice that she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
     return
