@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.8.3
 label v0_12_8_3(version="v0_12_8_3"):
     python hide:
-        pass
+        if seen_event("monika_otaku"):
+            mas_protectedShowEVL("monika_conventions", "EVE", _random=True)
     return
 
 
