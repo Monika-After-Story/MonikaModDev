@@ -16434,7 +16434,6 @@ label monika_eating_meat:
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
     m 3ekd "And as is the case with many vegetarians, my body doesn't digest meat as easily anymore.{w=0.3}{nw}"
     extend 3dksdlc "If I had too much, I could actually get pretty sick."
-    m 3rksdla "I don't {i}hate{/i} the taste of meat, but I don't think I'd want it to be a major part of my meal, either."
     m 1eka "...But if you prepared something with meat, I could try a little bit as a side dish... {w=0.3}{nw}"
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
