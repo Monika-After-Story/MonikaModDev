@@ -1037,6 +1037,42 @@ label mas_story_mindthegap:
     m 1ekbla "This story reminds me to treasure every moment, and not to take any piece of our time together for granted."
     m 1dkblu "I'll always treasure you, [player]."
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_malin_kundang",
+            prompt="Malin Kundang",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_malin_kundang:
+    call mas_story_begin
+    m 3eub "Once upon a time, there was a poor woman who worked as a fisherwoman."
+    m "She had a son, named Malin Kundang."
+    m 3eud "When Malin grew up, he went to a city to work."
+    m "He met a rich merchant and got married to his beautiful daughter."
+    m 1ekd "Malin never visited his mother in the village."
+    m 1dkd "His mother really missed him."
+    m 3eud "One day Malin and his wife went by ship, but there was something wrong with the boat that they had to stop at the village where Malin was born and raised."
+    m 3eka "Malin's mother saw Malin."
+    m 1eka "She ran and hugged Malin dearly, 'Oh Malin, finally you are home!'"
+    m 1etc "His wife was shocked, 'Is she your mom?' She said."
+    m 2efd"'No, she is not my mom. I have no mom like her.' Malin felt so embarrased."
+    m 3efd "Hearing that, his mom was so angry."
+    m 7efo "'What a wicked son! I curse you to become a stone!' shout Malin's mother angrily."
+    m 3wuo "In a short time, the sky became dark, the thunder rumbled."
+    m 3wud "No light then after the last thundering sound."
+    m 1eud "After everything in normal condition, there was a big stone of Malin and his ship."
+    m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
+    m 3eka "The moral of this story is: 'respect your mother.'"
+    m 3ekb "Because she's the one who raised you since you are born and nothing could exchange her love for you."
+    m 1hub "I hope you like the story, [player]."
+    return
 
 #START: SCARY STORIES
 init 5 python:
