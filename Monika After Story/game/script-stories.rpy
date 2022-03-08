@@ -1069,8 +1069,7 @@ label mas_story_malin_kundang:
     m 3wud "No light then after the last thundering sound."
     m 1eud "After everything in normal condition, there was a big stone of Malin and his ship."
     m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
-    m 3eka "The moral of this story is: 'respect your mother.'"
-    m 3ekb "Because she's the one who raised you since you are born and nothing could exchange her love for you."
+    m 3eka "The moral of this story is: 'Respect the person who raised you, because they gave everything in their power to make you happy'."
     m 1hub "I hope you like the story, [player]."
     return
 
