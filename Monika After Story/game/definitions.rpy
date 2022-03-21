@@ -8181,12 +8181,16 @@ define MAS_PRONOUN_GENDER_MAP = {
 label mas_set_gender:
     jump mas_set_pronouns
 
-label mas_set_pronouns:
+label mas_set_pronouns(gender=None):
     python hide:
-        gender = persistent.gender
+        if gender is None:
+            gender = persistent.gender
 
         for word, sub_map in MAS_PRONOUN_GENDER_MAP.items():
-            value = sub_map[gender]
+            if gender in sub_map:
+                value = sub_map[gender]
+            else:
+                value = sub_map["X"]
             setattr(store, word, value)
 
     return
