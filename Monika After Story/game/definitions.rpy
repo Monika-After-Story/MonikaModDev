@@ -8156,7 +8156,6 @@ init -1 python in mas_randchat:
 init 4 python:
     import store.mas_randchat as mas_randchat
 
-return
 
 #Gender specific word replacement
 #Those are to be used like this "It is [his] pen." Output:
@@ -8165,64 +8164,33 @@ return
 #"It is their pen." (if player's gender is not declared)
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
+define MAS_PRONOUN_GENDER_MAP = {
+    "his": {"M": "his", "G": "her", "X": "their"},
+    "he": {"M": "he", "G": "she", "X": "they"},
+    "hes": {"M": "he's", "G": "she's", "X": "they're"},
+    "heis": {"M": "he is", "G": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "G": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "G": "woman", "X": "person"},
+    "boy": {"M": "boy", "G": "girl", "X": "person"},
+    "guy": {"M": "guy", "G": "girl", "X": "person"},
+    "him": {"M": "him", "G": "her", "X": "them"},
+    "himself": {"M": "himself", "G": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "G": "heroine", "X": "hero"}
+}
+# Deprecated
 label mas_set_gender:
-    python:
-        pronoun_gender_map = {
-            "M": {
-                "his": "his",
-                "he": "he",
-                "hes": "he's",
-                "heis": "he is",
-                "bf": "boyfriend",
-                "man": "man",
-                "boy": "boy",
-                "guy": "guy",
-                "him": "him",
-                "himself": "himself",
-                "hero": "hero"
-            },
-            "F": {
-                "his": "her",
-                "he": "she",
-                "hes": "she's",
-                "heis": "she is",
-                "bf": "girlfriend",
-                "man": "woman",
-                "boy": "girl",
-                "guy": "girl",
-                "him": "her",
-                "himself": "herself",
-                "hero": "heroine"
-            },
-            "X": {
-                "his": "their",
-                "he": "they",
-                "hes": "they're",
-                "heis": "they are",
-                "bf": "partner",
-                "man": "person",
-                "boy": "person",
-                "guy": "person",
-                "him": "them",
-                "himself": "themselves",
-                "hero": "hero"
-            }
-        }
+    jump mas_set_pronouns
 
-        pronouns = pronoun_gender_map[persistent.gender]
+label mas_set_pronouns:
+    python hide:
+        gender = persistent.gender
 
-        his = pronouns["his"]
-        he = pronouns["he"]
-        hes = pronouns["hes"]
-        heis = pronouns["heis"]
-        bf = pronouns["bf"]
-        man = pronouns["man"]
-        boy = pronouns["boy"]
-        guy = pronouns["guy"]
-        him = pronouns["him"]
-        himself = pronouns["himself"]
-        hero = pronouns["hero"]
+        for word, sub_map in MAS_PRONOUN_GENDER_MAP.items():
+            value = sub_map[gender]
+            setattr(store, word, value)
+
     return
+
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
