@@ -246,6 +246,7 @@ init -10 python:
 
     mas_idle_mailbox = MASIdleMailbox()
 
+
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -289,12 +290,25 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-init python:
 
+# Gender specific word replacement
+define MAS_PRONOUN_GENDER_MAP = {
+    "his": {"M": "his", "G": "her", "X": "their"},
+    "he": {"M": "he", "G": "she", "X": "they"},
+    "hes": {"M": "he's", "G": "she's", "X": "they're"},
+    "heis": {"M": "he is", "G": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "G": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "G": "woman", "X": "person"},
+    "boy": {"M": "boy", "G": "girl", "X": "person"},
+    "guy": {"M": "guy", "G": "girl", "X": "person"},
+    "him": {"M": "him", "G": "her", "X": "them"},
+    "himself": {"M": "himself", "G": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "G": "heroine", "X": "hero"}
+}
+
+init python:
     import subprocess
     import os
     import eliza      # mod specific
@@ -783,6 +797,33 @@ init python:
         RETURNS: True if safe to reference dokis
         """
         return store.persistent._mas_pm_cares_about_dokis is False
+
+    def mas_set_pronouns(gender=None):
+        """
+        Sets gender specific word replacements
+
+        Few examples:
+            "It is his pen." (if the player's gender is declared as male)
+            "It is her pen." (if the player's gender is declared as female)
+            "It is their pen." (if player's gender is not declared)
+
+        For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
+
+        IN:
+            gender - Optional[Literal["M", "G", "X"]] - gender to set the pronouns for
+                If None, uses persistent.gender
+        """
+        store = renpy.store
+
+        if gender is None:
+            gender = store.persistent.gender
+
+        for word, sub_map in MAS_PRONOUN_GENDER_MAP.items():
+            if gender in sub_map:
+                value = sub_map[gender]
+            else:
+                value = sub_map["X"]
+            setattr(store, word, value)
 
 
 # IN:

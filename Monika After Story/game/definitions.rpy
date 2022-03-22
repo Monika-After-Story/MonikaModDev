@@ -8157,42 +8157,9 @@ init 4 python:
     import store.mas_randchat as mas_randchat
 
 
-#Gender specific word replacement
-#Those are to be used like this "It is [his] pen." Output:
-#"It is his pen." (if the player's gender is declared as male)
-#"It is her pen." (if the player's gender is decalred as female)
-#"It is their pen." (if player's gender is not declared)
-#Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
-#Please remember to update the list if you add more gender exclusive words. ^
-define MAS_PRONOUN_GENDER_MAP = {
-    "his": {"M": "his", "G": "her", "X": "their"},
-    "he": {"M": "he", "G": "she", "X": "they"},
-    "hes": {"M": "he's", "G": "she's", "X": "they're"},
-    "heis": {"M": "he is", "G": "she is", "X": "they are"},
-    "bf": {"M": "boyfriend", "G": "girlfriend", "X": "partner"},
-    "man": {"M": "man", "G": "woman", "X": "person"},
-    "boy": {"M": "boy", "G": "girl", "X": "person"},
-    "guy": {"M": "guy", "G": "girl", "X": "person"},
-    "him": {"M": "him", "G": "her", "X": "them"},
-    "himself": {"M": "himself", "G": "herself", "X": "themselves"},
-    "hero": {"M": "hero", "G": "heroine", "X": "hero"}
-}
-# Deprecated
+# Deprecated, call mas_set_pronouns directly
 label mas_set_gender:
-    jump mas_set_pronouns
-
-label mas_set_pronouns(gender=None):
-    python hide:
-        if gender is None:
-            gender = persistent.gender
-
-        for word, sub_map in MAS_PRONOUN_GENDER_MAP.items():
-            if gender in sub_map:
-                value = sub_map[gender]
-            else:
-                value = sub_map["X"]
-            setattr(store, word, value)
-
+    $ mas_set_pronouns()
     return
 
 
