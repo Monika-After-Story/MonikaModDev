@@ -798,7 +798,7 @@ init python:
         """
         return store.persistent._mas_pm_cares_about_dokis is False
 
-    def mas_set_pronouns(gender=None):
+    def mas_set_pronouns(key=None):
         """
         Sets gender specific word replacements
 
@@ -810,17 +810,17 @@ init python:
         For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
 
         IN:
-            gender - Optional[Literal["M", "G", "X"]] - gender to set the pronouns for
+            key - Optional[Literal["M", "G", "X"]] - key (perhaps current gender) to set the pronouns for
                 If None, uses persistent.gender
         """
         store = renpy.store
 
-        if gender is None:
-            gender = store.persistent.gender
+        if key is None:
+            key = store.persistent.gender
 
         for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
-            if gender in sub_map:
-                value = sub_map[gender]
+            if key in sub_map:
+                value = sub_map[key]
             else:
                 value = sub_map["X"]
             setattr(store, word, value)

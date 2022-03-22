@@ -2757,7 +2757,6 @@ label dev_unit_test_mas_set_pronouns:
             pronouns_tester.assertTrue("X" in sub_map)
 
         pronouns_tester.prepareTest("Check global pronouns variables")
-        all_vars = store.MAS_PRONOUN_GENDER_MAP.keys()
         for gender in ("M", "G", "X"):
             # Verify the func works
             mas_set_pronouns(gender)
