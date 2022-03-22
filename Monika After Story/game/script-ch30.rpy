@@ -818,7 +818,7 @@ init python:
         if gender is None:
             gender = store.persistent.gender
 
-        for word, sub_map in MAS_PRONOUN_GENDER_MAP.items():
+        for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
             if gender in sub_map:
                 value = sub_map[gender]
             else:
