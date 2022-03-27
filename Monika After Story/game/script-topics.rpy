@@ -17842,22 +17842,23 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_esports",
-            category=['gaming'],
+            category=['media', 'life'],
             prompt="What do you think of esports?",
             pool=True,
         )
     )
 
 label monika_esports:
-    # TODO - sprite codes
     if mas_isFirstSeshDay():
-        m 1eud "Hmm, that's a good question..."
+        m 1rtd "Hmm, that's a good question..."
     else:
-        m 3eub "It's funny you ask, I was looking into them the other day while you were gone!"
-    m 2hub "I think it's really interesting how the entire way we perceive watching sports is changing..."
+        m 1eub "It's funny you ask, I was looking into them the other day while you were gone!"
+    m 3eua "I think it's really interesting how the entire way we perceive watching sports is changing..."
     m 3euc "Esports viewership continues to rival traditional sporting events,{w=0.1} {nw}"
     extend 3wud "and it might even overtake them within the next 5 to 10 years!"
-    m 6tsd "Back in the day, people thought down on playing video games like it was a waste of time."
-    m 1eua "And now some of these players are making millions of dollars playing some of their favorite games."
-    m "It really goes to show you can do what you love for a job. If this was possible, anything is~"
+    m 2tsd "Not so long ago, people looked down on playing video games like it was a waste of time, {w=0.1}{nw}"
+    extend 7hub "but now some of these players are making millions of dollars playing some of their favorite games!"
+    m 3eua "It really goes to show you can do whatever you love for a job...{w=0.3}even things people may scoff at."
+    m 3eud "Just because something isn't popular or mainstream doesn't mean it'll stay that way forever..."
+    m 1huu "Don't be afraid to go against the trend, {w=0.1}whatever you're passionate about may just be looking for that one pioneer to help bring it to the forefront~"
     return
