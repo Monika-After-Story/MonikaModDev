@@ -656,19 +656,6 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
-    def mas_resetIdleMode():
-        """
-        Resets specific idle mode vars.
-
-        This is meant to basically clear idle mode for holidays or other
-        things that hijack main flow
-        """
-        store.mas_globals.in_idle_mode = False
-        persistent._mas_in_idle_mode = False
-        persistent._mas_idle_data = {}
-        mas_idle_mailbox.get_idle_cb()
-
-
     def mas_enableTextSpeed():
         """
         Enables text speed
@@ -820,6 +807,15 @@ init 999 python in mas_reset:
     import store.mas_utils as mas_utils
     import store.mas_windowutils as mas_windowutils
     import store.mas_xp as mas_xp
+
+
+    def start():
+        """
+        Reset code that should always be first
+        """
+        # sync up current_monikatopic and eli data
+        # ALWAYS FIRST - this is core and important.
+        store.MASEventList.sync_current()
 
 
     def xp():
@@ -1274,6 +1270,27 @@ init 999 python in mas_reset:
         mas_island_event.advanceProgression()
 
 
+    def bath_cleanup():
+        """
+        Cleanup code for bath stuff
+        """
+        # Handle cleanup for the bath greeting
+        bath_cleanup_ev = store.mas_getEV("mas_after_bath_cleanup")
+        if (
+            bath_cleanup_ev is not None
+            and bath_cleanup_ev.start_date is not None
+        ):
+            # Moni was alone for at least 10 minutes
+            # And it is the time to run the cleanup event
+            if (
+                mas_dockstat.retmoni_status is None
+                and store.mas_getAbsenceLength() >= datetime.timedelta(minutes=10)
+                and bath_cleanup_ev.start_date > datetime.datetime.now()
+            ):
+                store.mas_after_bath_cleanup_change_outfit()
+                store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
+
+
     def final():
         """
         Runs reset code that should run after everythign else
@@ -1288,6 +1305,10 @@ init 999 python in mas_reset:
             #Let's also push the event to get rid of the thermos too
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
                 store.queueEvent("mas_consumables_remove_thermos")
+
+        # clean up the event list of baka events
+        # ALWAYS LAST
+        store.MASEventList.clean()
 
 
 # IN:
@@ -2011,8 +2032,9 @@ label ch30_post_mid_loop_eval:
         if not mas_HKBIsEnabled():
             $ mas_HKBDropShield()
 
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # Just finished a topic, so we set clear current topic in case user
+    # quits and restarts
+    $ MASEventList.clear_current()
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
@@ -2291,6 +2313,8 @@ label ch30_reset:
     # NOTE: these are all separate lines so if one crashes it wont fuck with
     #   the other ones.
 
+    $ store.mas_reset.start()
+
     $ store.mas_reset.xp()
 
     $ store.mas_reset.name_eggs()
@@ -2328,6 +2352,8 @@ label ch30_reset:
     $ store.mas_reset.window_reactions()
 
     $ store.mas_reset.islands()
+
+    $ store.mas_reset.bath_cleanup()
 
     $ store.mas_reset.final()
 
