@@ -5500,6 +5500,19 @@ init -1 python:
 
         RETURNS: True if a proccess in proc_list is running, False otherwise
         """
+        if renpy.linux:
+            for proc in proc_list:
+                import subprocess
+                try:
+                    output = subprocess.call(["pidof", proc])
+
+                    # 0: Success
+                    # 1: Did not find
+                    if output == 0:
+                        return True
+                except:
+                    pass
+        
         running_procs = get_procs()
         if len(running_procs) == 0:
             return False
