@@ -1071,8 +1071,16 @@ init 999 python in mas_reset:
         Runs reset code for deco
         """
         _deco_bday()
-        _deco_d25()
-        _deco_o31()
+
+        # NOTE: to future self - no, simply running hide visuals will not be
+        #   enough to make deco reset. The problem is that the main vars that
+        #   can trigger the deco are not reset, and since deco is set in 
+        #   complicated logic chains in the holidays code, this would have to
+        #   change those vars to make the code follow the right path.
+        #   Recommend making a flowchart or something to determine how to
+        #   actually reset deco when you decide to actually address this.
+        #_deco_d25()
+        #_deco_o31()
 
 
     def _deco_bday():
