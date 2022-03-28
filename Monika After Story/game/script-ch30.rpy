@@ -921,12 +921,12 @@ init 999 python in mas_reset:
 
         # reset hair / clothes
         # the default options should always be available.
-        mas_selspr.unlock_hair(mas_hair_def)
+        mas_selspr.unlock_hair(store.mas_hair_def)
     #    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
-        mas_selspr.unlock_clothes(mas_clothes_def)
+        mas_selspr.unlock_clothes(store.mas_clothes_def)
 
         # def ribbon always unlocked
-        mas_selspr.unlock_acs(mas_acs_ribbon_def)
+        mas_selspr.unlock_acs(store.mas_acs_ribbon_def)
 
         ## custom sprite objects
         mas_selspr._validate_group_topics()
