@@ -3,6 +3,7 @@
 init -1500 python in mas_can_import:
     # run checks
 
+    check_imports()
 
 
 init -1505 python in mas_can_import:
@@ -235,7 +236,7 @@ init -1510 python in mas_can_import:
             """
             mas_log = mas_logging.init_log("mas_log")
             mas_log.error(self._IMPORT_ERR.format(
-                self.module_name
+                self.module_name,
                 "" if exp is None else repr(exp)
             ))
 
