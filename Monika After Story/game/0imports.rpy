@@ -285,12 +285,12 @@ init -1510 python in mas_can_import:
             a try-except block around the base call.
             """
             try:
-                self.__enabled = self.import_try():
+                self.__enabled = self.import_try()
 
             except ImportError as e:
                 self.__enabled = False
                 self.log_import_error(e)
-                self.import_except():
+                self.import_except()
 
             except Exception as e:
                 self.__enabled = False
