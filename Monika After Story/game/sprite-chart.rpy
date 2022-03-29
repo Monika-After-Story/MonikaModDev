@@ -339,6 +339,10 @@ init -100 python in mas_sprites:
     #v: ignored
     #marks the hair as a twinbraid hairstyle
 
+    # Value: ignored
+    # Marks that a hair obj is wet (appropriate for a bath/shower/pool/etc)
+    EXP_H_WET = "wet"
+
     EXP_H_SB = "straight-bangs"
     # v: ignored
     # marks that a hair style has straight bangs
@@ -377,6 +381,10 @@ init -100 python in mas_sprites:
     EXP_C_LING = "lingerie"
     # v: ignored
     # marks that a clothing item is lingerie
+
+    # Value: ignored
+    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+    EXP_C_WET = "wet"
 
     # --- default exprops ---
 
@@ -1345,6 +1353,83 @@ init -5 python in mas_sprites:
 
         # otherwise we have a map
         return sprite_map.get(sprite_name, None)
+
+    def get_installed_sprites(sprite_type, predicate=None):
+        """
+        Returns ALL available sprite objects
+        NOTE: Runtime only
+
+        IN:
+            sprite_type - the sprite type constant
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of sprite objects
+        """
+        sprite_map = SP_MAP.get(sprite_type, None)
+
+        if not sprite_map:
+            return []
+
+        if predicate:
+            return [
+                spr_object
+                for spr_object in sprite_map.itervalues()
+                if predicate(spr_object)
+            ]
+
+        else:
+            return sprite_map.values()
+
+    def get_installed_acs(predicate=None):
+        """
+        get_installed_sprites for acs objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of acs sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_ACS,
+            predicate=predicate
+        )
+
+    def get_installed_hair(predicate=None):
+        """
+        get_installed_sprites for hair objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of hair sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_HAIR,
+            predicate=predicate
+        )
+
+    def get_installed_clothes(predicate=None):
+        """
+        get_installed_sprites for clothes objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of clothes sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_CLOTHES,
+            predicate=predicate
+        )
+
 
 
 ##### special mas monika functions (hooks)
@@ -7389,6 +7474,7 @@ init -3 python:
 python early:
 # # # START: Idle disp stuff
     import random
+    import collections
 
     class IdleExpException(Exception):
         """
@@ -7419,7 +7505,7 @@ python early:
         MIN_WEIGHT = 1
         MAX_WEIGHT = 100
 
-        exp_tags_map = dict()
+        exp_tags_map = collections.defaultdict(list)
         _conditional_cache = dict()
 
         def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
@@ -7428,7 +7514,10 @@ python early:
 
             IN:
                 code - exp code
-                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                duration - duration for this exp in seconds. This can be a single number or a tuple of 2 number. If it's a tuple,
+                    the duration is being chosen at random between 2 values.
+                    If the numbers are floats, we use random.uniform, otherwise random.randint.
+                    NOTE: Do not mix ints with floats.
                     (Default: tuple (20, 30))
                 aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
                     Values can be None to not limit lower or upper bounds
@@ -7454,23 +7543,23 @@ python early:
                 _len = len(duration)
                 if _len != 2:
                     raise IdleExpException(
-                        "Expected a tuple/list of 2 items for the duration property. Got the tuple/list of {0} item{1} instead.".format(
+                        "Expected a tuple of 2 items for the duration property. Got a tuple of {0} item{1} instead.".format(
                             _len,
                             "s" if _len != 1 else ""
                         )
                     )
 
-                elif duration[0] < 1 or duration[1] < 1:
+                elif duration[0] <= 0 or duration[1] <= 0:
                     raise IdleExpException(
-                        "Duration for idle expression must be at least one second long. Got: {0} and {1}.".format(
+                        "Duration for idle expression must be a positive number. Got: {0} and {1}.".format(
                             duration[0],
                             duration[1]
                         )
                     )
 
-            elif duration < 1:
+            elif duration <= 0:
                 raise IdleExpException(
-                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
+                    "Duration for idle expression must be a positive number. Got: {0}.".format(
                         duration[0]
                     )
                 )
@@ -7501,18 +7590,17 @@ python early:
 
             if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
                 raise IdleExpException(
-                    "Weight must be between 0 and 100. Got {0}.".format(
+                    "The weight property must be between {0} and {1}. Got {2}.".format(
+                        MASMoniIdleExp.MIN_WEIGHT,
+                        MASMoniIdleExp.MAX_WEIGHT,
                         weight
                     )
                 )
             self.weight = weight
 
             if tag is not None and add_to_tag_map:
-                if tag in MASMoniIdleExp.exp_tags_map:
-                    MASMoniIdleExp.exp_tags_map[tag].append(self)
+                MASMoniIdleExp.exp_tags_map[tag].append(self)
 
-                else:
-                    MASMoniIdleExp.exp_tags_map[tag] = [self]
             self.tag = tag
             self._add_to_tag_map = add_to_tag_map
 
@@ -7543,10 +7631,14 @@ python early:
             A method to select duration for this exp
 
             OUT:
-                int in range of the duration property of this exp, or the prop itself if it's not a range
+                int/float
             """
             if isinstance(self.duration, tuple):
+                if isinstance(self.duration[0], float) and isinstance(self.duration[1], float):
+                    return random.uniform(self.duration[0], self.duration[1])
+
                 return random.randint(self.duration[0], self.duration[1])
+
             return self.duration
 
         def check_aff(self, aff=None):
@@ -8032,8 +8124,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.add(
                 MASMoniIdleExp(code, **kwargs),
@@ -8164,8 +8255,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.force(
                 MASMoniIdleExp(code, **kwargs),
