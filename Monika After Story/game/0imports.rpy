@@ -5,6 +5,11 @@ init -1500 python in mas_can_import:
 
     check_imports()
 
+    # set importables
+
+    certifi = imports["certifi"]
+    ssl = imports["ssl"]
+
 
 init -1505 python in mas_can_import:
     import os
