@@ -1,27 +1,4 @@
 
-init -1000 python in mas_can_import:
-    import store.mas_utils as mas_utils
-    # import checks - use these to check if a library can be imported.
-
-
-    def certifi():
-        """
-        Checks if certifi can be imported
-
-        RETURNS: True if certifi can be imported
-        """
-        return mas_utils._certifi_enabled
-
-
-    def ssl():
-        """
-        Checks if ssl can be imported.
-
-        RETURNS: True if ssl can be imported.
-        """
-        return mas_utils._ssl_enabled
-
-
 #NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
 init -1500 python:
     import os
@@ -30,13 +7,7 @@ init -1500 python:
 
 
 init -1500 python in mas_utils:
-    # ssl-specific stuff
-    import store
-    import datetime
-
-    _ssl_enabled = False
-    _certifi_enabled = False
-    _cert_available = False
+    # ssl/https usage checks
 
 
     def can_use_https():
@@ -51,67 +22,10 @@ init -1500 python in mas_utils:
 
         RETURNS: True if https can be used.
         """
-        return _ssl_enabled and _cert_available
-
-
-    def _load_ssl():
-        """
-        Loads the SSL library and adjusts httplib
-
-        This is a hack.
-        """
-        ssl_pkg = "python-packages/ssl"
-        bit64 = "x86_64"
-        bit32 = "i686"
-        new_ssl = None
-
-        if platform.system() == "Windows":
-            sys.path.append(os.path.normcase(os.path.join(
-                renpy.config.gamedir,
-                ssl_pkg,
-                "windows/32/",
-            )))
-
-            import win32_ssl
-            new_ssl = win32_ssl
-
-        elif platform.system() == "Linux":
-
-            if platform.machine() == bit64:
-                sys.path.append(os.path.normcase(os.path.join(
-                    renpy.config.gamedir,
-                    ssl_pkg,
-                    "linux/64/",
-                )))
-
-                import linux64_ssl
-                new_ssl = linux64_ssl
-
-            elif platform.machine() == bit32:
-                sys.path.append(os.path.normcase(os.path.join(
-                    renpy.config.gamedir,
-                    ssl_pkg,
-                    "linux/32/",
-                )))
-
-                import linux32_ssl
-                new_ssl = linux32_ssl
-
-        elif platform.system() == "Darwin" and platform.machine() == bit64:
-            sys.path.append(os.path.normcase(os.path.join(
-                renpy.config.gamedir,
-                ssl_pkg,
-                "mac/64/",
-            )))
-
-            import mac64_ssl
-            new_ssl = mac64_ssl
-
-        # overwrties httplib's ssl ref so later HTTPS will work.
-        if new_ssl is not None:
-            sys.modules["ssl"] = new_ssl
-            import httplib
-            httplib.ssl = new_ssl
+        return (
+            store.mas_can_import.ssl()
+            and store.mas_can_import.certifi.cert_available
+        )
 
 
     def update_cert(force=False):
@@ -127,50 +41,7 @@ init -1500 python in mas_utils:
         RETURNS: certifi RV value of the check_update function, or None if
             the check_update function could not run.
         """
-        last_update = store.persistent._mas_last_cert_update
-        if last_update is None:
-            last_update = datetime.datetime.utcnow()
-
-        rv = None
-
-        if _certifi_enabled:
-            if (
-                    force
-                    or (
-                        datetime.datetime.utcnow() - last_update
-                    ) > datetime.timedelta(days=180)
-            ):
-                import certifi
-
-                rv, response = certifi.check_update(renpy.config.gamedir)
-                if rv in (certifi.RV_SUCCESS, certifi.RV_NO_UPDATE):
-                    global _certifi_available
-                    _certifi_available = certifi.has_cert()
-
-                store.persistent._mas_last_cert_update = last_update
-
-        return rv
-
-
-    # ssl hack
-    try:
-        _load_ssl()
-        _ssl_enabled = True
-    except ImportError as e:
-        mas_log.error("Failed to import ssl {0}".format(repr(e)))
-        _ssl_enabled = False
-
-
-    # certifi check
-    try:
-        import certifi
-        _certifi_enabled = True
-        _cert_available = certifi.has_cert()
-        update_cert()
-    except (ImportError, AttributeError) as e:
-        mas_log.error("Failed to import cerifi {0}".format(repr(e)))
-        _certifi_enabled = False
-        _cert_available = False
+        return store.mas_can_import.certifi.update_cert(force=force)
 
 
 python early in mas_logging:
@@ -406,6 +277,7 @@ python early in mas_logging:
     def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None, rotations=5):
         """
         Initializes a logger with a handler with the name and files given.
+        Will return existing log object if already init.
 
         IN:
             name - name of the logger, this will be the same as the file, with the file appending '.txt'
@@ -424,7 +296,12 @@ python early in mas_logging:
 
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
         All logs flush and rotate once they're 5 mb in size.
+
+        RETURNS: logger object
         """
+        if is_inited(name):
+            return LOG_MAP[name]
+
         _kwargs = {
             "filename": os.path.join(LOG_PATH, name + '.log'),
             "mode": ("a" if append else "w"),
