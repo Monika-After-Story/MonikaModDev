@@ -13,6 +13,8 @@ import hashlib
 __CERT_URL = "raw.githubusercontent.com"
 __CERT_PATH = "certifi/python-certifi/master/certifi/cacert.pem"
 
+_parent_dir = ""
+
 
 ### return values
 RV_SUCCESS = 0
@@ -29,11 +31,15 @@ def where(prefix=""):
     Returns the normcase'd path to the cert file
 
     IN:
-        prefix - path prefix to use
+        prefix - path prefix to use. If not passed in,
+            we use the known parent dir. use set_parent_dir to adjust.
             (Default: "")
 
     RETURNS: cert file path (relative)
     """
+    if len(prefix) < 1:
+        prefix = _parent_dir
+
     f = os.path.dirname(__file__)
 
     return os.path.normcase(os.path.join(prefix, f, 'cacert.pem'))
@@ -73,6 +79,18 @@ def _ssl_ctx():
 
     except ssl.SSLError:
         return RV_ERR_BAD_SSL, None
+
+
+def set_parent_dir(parent_dir):
+    """
+    Sets the parent dir (aka prefix).
+    Used with where, so use what you would use with where()
+
+    IN:
+        parent_dir - parent dir string
+    """
+    global _parent_dir
+    _parent_dir = parent_dir
 
 
 def has_cert():

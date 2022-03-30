@@ -34,7 +34,7 @@ init -1505 python in mas_can_import:
             self._cert_available = False
 
         @property
-        def cert_available():
+        def cert_available(self):
             """
             True if cert is available.
             """
@@ -45,6 +45,7 @@ init -1505 python in mas_can_import:
             Also checks if a cert is available.
             """
             import certifi
+            certifi.set_parent_dir(renpy.config.gamedir)
             self._cert_available = certifi.has_cert()
             self.update_cert()
             return True
@@ -77,7 +78,7 @@ init -1505 python in mas_can_import:
                 ):
                     import certifi
 
-                    rv, response = certifi.check_update(renpy.config.gamedir)
+                    rv, response = certifi.check_update()
                     if rv in (certifi.RV_SUCCESS, certifi.RV_NO_UPDATE):
                         self._cert_available = certifi.has_cert()
 
@@ -163,7 +164,7 @@ init -1505 python in mas_can_import:
 
 
 init -1510 python in mas_can_import:
-    import store.mas_logging as mas_loggging
+    import store.mas_logging as mas_logging
 
     # new data pattern
     import store.mas_can_import_data as Data
