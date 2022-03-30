@@ -15,14 +15,32 @@ init -1505 python in mas_can_import:
     import os
     import platform
     import datetime
+    import threading
 
     import store
+    from store.mas_threading import MASAsyncWrapper
 
     # initialize known imports.
 
     class MASImport_certifi(MASImport):
         """
         certifi import
+
+        This also can do cert updating:
+            1. call `start_cert_update` to begin the cert update.
+                - this will return the promise, but you can also use
+                    the following cert update functions to check the status
+                    if you don't want to keep the promise.
+            2. call `check_cert_update` to determine if the update is still
+                running or is completed.
+                - once the update is completed, all appropriate vars will be
+                    set automatically.
+            3. call `get_cert_update` to get the returned value from the 
+                cert update promise.
+            4. call `reset_cert_update` to cleanup the cert updater thread.
+                this must be called before doing another cert update.
+
+        Auto (startup) cert updating happens once every 6 months. 
         """
 
         def __init__(self):
@@ -31,14 +49,20 @@ init -1505 python in mas_can_import:
             """
             super(MASImport_certifi, self).__init__("certifi")
 
-            self._cert_available = False
+            self.__cert_available = False
+            self.__cert_update_promise = MASAsyncWrapper(self._update_cert)
+
+            self.__cert_available_lock = threading.Lock()
+            self.__cert_available_cond = threading.Condition(
+                self.__cert_available_lock
+            )
 
         @property
         def cert_available(self):
             """
             True if cert is available.
             """
-            return self._cert_available
+            return self.__th_get_cert_avail()
 
         def import_try(self):
             """
@@ -46,22 +70,101 @@ init -1505 python in mas_can_import:
             """
             import certifi
             certifi.set_parent_dir(renpy.config.gamedir)
-            self._cert_available = certifi.has_cert()
-            self.update_cert()
+            self.__th_set_cert_avail(certifi.has_cert())
+
+            # start the cert update - this will be checked later.
+            self.start_cert_update()
+
             return True
 
         def import_except(self):
-            self._cert_available = False
+            # kill the update thread and mark unavailble cert
+            # updater thread probably failed so we just wont bother with it.
+            self.__th_set_cert_avail(False)
 
         def load(self):
             try:
                 super(MASImport_certifi, self).load()
             except AttributeError as e:
-                self._cert_available = False
+                self.__th_set_cert_avail(False)
 
-        def update_cert(self, force=False):
+        def start_cert_update(self, force=False):
             """
-            See mas_utils.update_cert
+            Starts the cert update process. 
+
+            NOTE: will NOT start the process if the updater is currently
+                running. The promise is still returned though.
+
+            IN:
+                force - True to force the cert to update now.
+
+            RETURNS: the cert update promise
+            """
+            if not self.__cert_update_promise.ready:
+                return self.__cert_update_promise
+
+            # update force arg
+            self.__cert_update_promise._th_kwargs = {"force": force}
+
+            # begin update
+            self.__cert_update_promise.start()
+            return self.__cert_update_promise
+
+        def check_cert_update(self):
+            """
+            checks the status of the cert update.
+
+            RETURNS: True if the cert update is done, False if not
+            """
+            return self.__cert_update_promise.done()
+
+        def get_cert_update(self):
+            """
+            Gets the result from the cert update.
+
+            RETURNS: certifi RV value of the check_update function, or None if
+                the check_update function could not run. THIS WILL ALSO RETURN
+                NONE IF THE CERT UPDATE IS NOT FINISHED.
+                Use `check_cert_update` to check that the update is done
+                before calling this.
+            """
+            return self.__cert_update_promise.get()
+
+        def reset_cert_update(self):
+            """
+            Resets the cert update thread. This may fail if the cert update is
+            not done yet.
+            """
+            self.__cert_update_promise.end()
+
+        def ch30_day_cert_update(self):
+            """
+            Call this during ch30_day to handle cert update checks
+            """
+            if not self.__cert_update_promise.ready:
+
+                if not self.check_cert_update():
+                    # cert thread done - assume thread is running and will
+                    # finish later
+                    return 
+
+                # reset cert update so we can start the thread
+                self.reset_cert_update()
+
+            self.start_cert_update()
+
+        def _update_cert(self, force=False):
+            """
+            Updates the cert and sets appropriate vars.
+
+            Certs will only be updated if the last cert update was at least
+            6 months ago.
+
+            IN:
+                force - True to force the cert to update right now
+
+            RETURNS: certifi RV value of the check_update function, or None if
+                the check_update function could not run.
             """
             last_update = store.persistent._mas_last_cert_update
             if last_update is None:
@@ -80,11 +183,34 @@ init -1505 python in mas_can_import:
 
                     rv, response = certifi.check_update()
                     if rv in (certifi.RV_SUCCESS, certifi.RV_NO_UPDATE):
-                        self._cert_available = certifi.has_cert()
+                        self.__th_set_cert_avail(certifi.has_cert())
 
                     store.persistent._mas_last_cert_update = last_update
 
             return rv
+
+        def __th_get_cert_avail(self):
+            """
+            thread-safe get cert available - for internal use only
+
+            RETURNS: cert_available value
+            """
+            self.__cert_available_cond.acquire()
+            cert_avail = self.__cert_available
+            self.__cert_available_cond.release()
+
+            return cert_avail
+
+        def __th_set_cert_avail(self, value):
+            """
+            Thread-safe set cert available - for internal use only
+
+            IN:
+                value - value to set to cert_available
+            """
+            self.__cert_available_cond.acquire()
+            self.__cert_available = value
+            self.__cert_available_cond.release()
 
 
     class MASImport_ssl(MASImport):

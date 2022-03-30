@@ -1779,6 +1779,10 @@ label ch30_day:
         # Once per day Monika does stuff on the islands
         store.mas_island_event.advanceProgression()
 
+        # do cert updates if certifi enabled
+        if store.mas_can_import.certifi():
+            store.mas_can_import.certifi.ch30_day_cert_update()
+
     return
 
 

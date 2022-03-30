@@ -28,22 +28,6 @@ init -1500 python in mas_utils:
         )
 
 
-    def update_cert(force=False):
-        """
-        Updates the cert and sets appropriate vars.
-
-        Certs will only be updated if the last cert update was at least
-        6 months ago.
-
-        IN:
-            force - True to force the cert to update right now
-
-        RETURNS: certifi RV value of the check_update function, or None if
-            the check_update function could not run.
-        """
-        return store.mas_can_import.certifi.update_cert(force=force)
-
-
 python early in mas_logging:
     import datetime
     import logging

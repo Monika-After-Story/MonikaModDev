@@ -1,5 +1,5 @@
 
-init -750 python in mas_threading:
+init -2000 python in mas_threading:
     # threading related vars
     import threading
 
