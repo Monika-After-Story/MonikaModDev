@@ -190,6 +190,43 @@ init 900 python:
     mas_resetQuitMsg()
 
 
+init -800 python in mas_layout:
+
+    class MASScreenData(object):
+        """
+        Want a data/behavior object abstraction for screens that lets you do
+        more things without globals? extend this class.
+
+        Use properties, and define whatever functions you want.
+
+        Only 1 main function:
+            - loop - this should be called in the loop to do processing.
+        """
+
+        def __init__(self, screen_name):
+            """
+            Constructor
+
+            IN:
+                screen_name - name of this screen this data is for. ACts like
+                    an identifier, but is currently only used for repr
+            """
+            self._screen_name = screen_name
+
+        def __repr__(self):
+            return "data for screen {0}".format(self._screen_name)
+
+        def loop(self):
+            """
+            If you use this, only call it once in your screen code.
+            Expect this to be called multiple times by renpy as apart of 
+            screen execution.
+
+            This should be used to avoid screen code clutter.
+            """
+            pass
+
+
 ## Initialization
 ################################################################################
 
@@ -880,7 +917,7 @@ screen navigation():
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
-        if len(store.mas_api_keys.registered_api_keys) > 0:
+        if store.mas_api_keys.has_features():
             textbutton _("API Keys") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
 
         textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
@@ -3136,7 +3173,7 @@ screen mas_apikeys():
 
     use game_menu(_("API Keys"), scroll="viewport"):
 
-        if len(store.mas_api_keys.registered_api_keys) < 1:
+        if not store.mas_api_keys.has_features():
             text _("No API keys accepted"): # NOTE: the game menu screen shouldn't have let us get here.
                 style "main_menu_version"
 
@@ -3147,11 +3184,8 @@ screen mas_apikeys():
 
                 if store.mas_can_import.certifi():
                     textbutton _("Update Certificate"):
-                        style "confirm_button"
+                        style "mas_button_simple"
                         action Function(store.mas_api_keys.screen_update_cert)
-
-                #textbutton _("Test Certificate")
-                #    style "confirm_button"
                 
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:
@@ -3167,30 +3201,32 @@ screen mas_apikeys():
                             xmaximum 600
                             xsize 600
                             xfill True
-                            ysize 40
-                            ymaximum 40
+                            ysize 43
+                            ymaximum 43
                             yalign 0.5
                             background Solid(store.mas_ui.TEXT_FIELD_BG)
 
-                            if feature_data[2]:
-                                hbox:
-                                    spacing 10
+                            hbox:
+                                spacing 10
 
+                                if feature_data[2]:
                                     textbutton _("Clear"):
-                                        style "confirm_button"
-                                        action Function(store.mas_api_keys.screen_clear, feature_data[1])
-
-                                    text feature_data[2]: # api key
-                                        xalign 0
+                                        style "mas_button_simple"
                                         yalign 0.5
-                                        size 20
-                                        ymaximum 40
-                                        layout "nobreak"
-                                        color mas_globals.button_text_insensitive_color
-                                        font mas_ui.MONO_FONT
+                                        action Function(store.mas_api_keys.screen_clear, feature_data[1])
+                                else:
+                                    textbutton _("Paste"):
+                                        style "mas_button_simple"
+                                        yalign 0.5
+                                        action Function(store.mas_api_keys.screen_paste, feature_data[1])
 
-                            else:
-                                textbutton _("Paste"):
-                                    style "confirm_button"
-                                    action Function(store.mas_api_keys.screen_paste, feature_data[1])
+                                text feature_data[2]: # api key
+                                    xalign 0
+                                    yalign 0.5
+                                    size 20
+                                    ymaximum 43
+                                    layout "nobreak"
+                                    color mas_globals.button_text_insensitive_color
+                                    font mas_ui.MONO_FONT
+
 

@@ -137,14 +137,22 @@ init -1505 python in mas_can_import:
             """
             self.__cert_update_promise.end()
 
+        def is_cert_update_running(self):
+            """
+            Determines if the cert update is running.
+
+            RETURNS: True if the cert update is running.
+            """
+            return not self.check_cert_update()
+
         def ch30_day_cert_update(self):
             """
             Call this during ch30_day to handle cert update checks
             """
             if not self.__cert_update_promise.ready:
 
-                if not self.check_cert_update():
-                    # cert thread done - assume thread is running and will
+                if self.is_cert_update_running():
+                    # cert thread not done - assume thread is running and will
                     # finish later
                     return 
 
