@@ -1817,3 +1817,57 @@ label mas_consumables_candycane_finish_having:
         else:
             m 1eua "Okay, what else should we do today?"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_consumables_check",
+            category=['consumables'],
+            prompt="Can you check if you are running out of any consumables?",
+            conditional="MASConsumable._getEnabledConsumables()",
+            pool=True,
+            unlocked=False,
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock": None},
+        )
+    )
+
+label monika_consumables_check:
+    #Firstly, let's get what we're low on.
+    $ low_cons = MASConsumable._getLowCons()
+
+    m 1hua "Sure!"
+    m 3eub "Give me a moment to check.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+
+    #Monika goes off screen
+    call mas_transition_to_emptydesk
+
+    pause 5.0
+
+    call mas_transition_from_emptydesk("monika 1eua")
+
+    m 1hua "Back!"
+
+    if len(low_cons) > 2:
+        $ mas_generateShoppingList(low_cons)
+        m 3rksdla "I've been running out of a few things in here..."
+        m 3eua "So I hope you don't mind, but I left you a list of things in the characters folder."
+        m 1eka "You wouldn't mind getting them for me, would you?"
+
+    elif len(low_cons) > 0:
+        python:
+            items_running_out_of = ""
+            if len(low_cons) == 2:
+                items_running_out_of = "{0} and {1}".format(low_cons[0].disp_name, low_cons[1].disp_name)
+            else:
+                items_running_out_of = low_cons[0].disp_name
+
+        m 3rksdla "I'm running out of [items_running_out_of]."
+        m 1eka "You wouldn't mind getting some more for me, would you?"
+
+    else:
+        m 3eub "I'm not running out of anything at the moment."
+        m 3eua "But if I run out of something, I'll let you know."
+
+    return
