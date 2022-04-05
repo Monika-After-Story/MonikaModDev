@@ -131,7 +131,7 @@ label mas_mood_hungry:
     m 1eua "If I were there with you, I'd make a salad for us to share."
     m "But since I'm not, go pick something healthy to eat."
     m 3eub "It's so important to pay attention to your body's needs, you know."
-    m 3hub "That doesn't just mean getting enough veggies, of course. {w=0.2}All sorts of foods are important to keep yourself nourished."
+    m 3hub "That doesn't just mean getting enough veggies, of course. {w=0.2}All sorts of foods are necessary to keep yourself nourished."
     m 3eka "So I want you to make sure you're not depriving yourself of important vitamins, okay?"
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
