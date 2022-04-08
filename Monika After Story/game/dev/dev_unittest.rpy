@@ -2743,18 +2743,28 @@ label dev_unit_test_mas_set_pronouns:
 
     python hide:
         pronouns_tester.prepareTest("Validate map size and keys")
-        map_size = None
-        for sub_map in store.MAS_PRONOUN_GENDER_MAP.values():
+        expected_map_size = None
+        for key, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
             sub_map = dict(sub_map)
 
-            if map_size is None:
-                map_size = len(sub_map)
+            if expected_map_size is None:
+                expected_map_size = len(sub_map)
             else:
-                pronouns_tester.assertTrue(map_size == len(sub_map))
+                sub_map_size = len(sub_map)
+                pronouns_tester.prepareTest(
+                    "Validating map size for key {}, expected {}, got {}".format(
+                        key,
+                        expected_map_size,
+                        sub_map_size
+                    )
+                )
+                pronouns_tester.assertEqual(expected_map_size, sub_map_size)
 
-            pronouns_tester.assertTrue("M" in sub_map)
-            pronouns_tester.assertTrue("G" in sub_map)
-            pronouns_tester.assertTrue("X" in sub_map)
+            for k in ("M", "G", "X"):
+                pronouns_tester.prepareTest(
+                    "Validating the key {} is in the map".format(k)
+                )
+                pronouns_tester.assertTrue(k in sub_map)
 
         pronouns_tester.prepareTest("Check global pronouns variables")
         for gender in ("M", "G", "X"):
@@ -2766,6 +2776,13 @@ label dev_unit_test_mas_set_pronouns:
                 # Verify the func set correct values
                 global_value = getattr(store, word, fallback)
                 map_value = sub_map[gender]
+                pronouns_tester.prepareTest(
+                    "Check global pronouns variable match: {}, expected {}, got {}".format(
+                        word,
+                        map_value,
+                        global_value
+                    )
+                )
                 pronouns_tester.assertEqual(global_value, map_value)
 
         # This is just to reset pronouns
