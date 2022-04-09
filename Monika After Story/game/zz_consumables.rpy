@@ -1837,6 +1837,20 @@ label monika_consumables_check:
     #Firstly, let's get what we're low on.
     $ low_cons = MASConsumable._getLowCons()
 
+    # Quick path if Monika needs 1 or none of consumables
+    if len(low_cons) < 2 and random.random() > 0.5:
+        if not low_cons:
+            m 3eua "Oh{w=0.1}, I'm not running out of anything at the moment, [player]...{w=0.3}{nw}"
+            extend 3hua "but I'll be sure to let you know if I do~"
+
+        else:
+            $ items_running_out_of = low_cons[0].disp_name
+            m 3rusdlb "Oh{w=0.1}, good you asked!"
+            m 1rksdla "I've been running out of [items_running_out_of]."
+            m 1eka "I'd appreciate if you could get some for me~"
+
+        return
+
     m 1rtd "Umm...{w=0.3}{nw}"
     extend 3eua "let me check.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
 
