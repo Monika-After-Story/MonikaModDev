@@ -1823,8 +1823,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_consumables_check",
-            category=['consumables'],
-            prompt="Can you check if you are running out of any consumables?",
+            category=['supplies'],
+            prompt="Are you running out of anything?",
             conditional="MASConsumable._getEnabledConsumables()",
             pool=True,
             unlocked=False,
@@ -1837,8 +1837,8 @@ label monika_consumables_check:
     #Firstly, let's get what we're low on.
     $ low_cons = MASConsumable._getLowCons()
 
-    m 1hua "Sure!"
-    m 3eub "Give me a moment to check.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+    m 1rtd "Umm...{w=0.3}{nw}"
+    extend 3eua "let me check.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
 
     #Monika goes off screen
     call mas_transition_to_emptydesk
@@ -1847,12 +1847,12 @@ label monika_consumables_check:
 
     call mas_transition_from_emptydesk("monika 1eua")
 
-    m 1hua "Back!"
+    m 1hub "Back!"
 
     if len(low_cons) > 2:
         $ mas_generateShoppingList(low_cons)
-        m 3rksdla "I've been running out of a few things in here..."
-        m 3eua "So I hope you don't mind, but I left you a list of things in the characters folder."
+        m 3rksdla "I'm actually running out of a few things..."
+        m 3eua "I hope you don't mind, but I left you a list of things in the characters folder."
         m 1eka "You wouldn't mind getting them for me, would you?"
 
     elif len(low_cons) > 0:
@@ -1867,7 +1867,7 @@ label monika_consumables_check:
         m 1eka "You wouldn't mind getting some more for me, would you?"
 
     else:
-        m 3eub "I'm not running out of anything at the moment."
-        m 3eua "But if I run out of something, I'll let you know."
+        m 3eua "I'm not running out of anything at the moment, [player]...{w=0.3}{nw}"
+        extend 3hua "but I'll be sure to let you know if I do~"
 
     return
