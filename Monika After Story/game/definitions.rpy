@@ -5502,7 +5502,6 @@ init -1 python:
         """
         if renpy.linux:
             for proc in proc_list:
-                import subprocess
                 try:
                     output = subprocess.call(["pidof", proc])
 
