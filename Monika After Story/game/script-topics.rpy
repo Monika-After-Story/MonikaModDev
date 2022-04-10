@@ -16340,9 +16340,8 @@ label monika_why_do_you_read:
     m 3eua "Unlike novels, poetry didn't require as much time to read and its conciseness also made it easier to share with others.{w=0.3} {nw}"
     extend 4eub "It really was the perfect outlet!"
     m 3eua "...And that's how I grew more and more into it I guess."
-    m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
-    extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
-    m 3eub "As we kept on discussing, we eventually came up with the idea for the Literature Club."
+    m 1eud "I eventually came up with the idea to start the Literature Club, and with Sayori's help we got it off the ground."
+    m 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
     m 1eua "...Which brings us to where we are now."
     m 1etc "To be honest, I don't think I've ever had as much time to read before."
 
