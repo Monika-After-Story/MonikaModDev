@@ -5510,16 +5510,16 @@ init -1 python:
                     # 1: Did not find
                     if output == 0:
                         return True
-                except:
-                    pass
-        
-        running_procs = get_procs()
-        if len(running_procs) == 0:
-            return False
-
-        for proc in proc_list:
-            if proc in running_procs:
-                return True
+                except Exception:
+                    return False # If it didn't work here, it probably won't work again, so lets bail here.
+        elif renpy.windows:        
+            running_procs = get_procs()
+            if len(running_procs) == 0:
+                return False
+    
+            for proc in proc_list:
+                if proc in running_procs:
+                    return True
 
         # otherwise, not found
         return False
