@@ -1,0 +1,27 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_bralette_red_ruffles",
+    "img_sit": "briaryoung_bralette_red_ruffles",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "bare-shoulders": true
+    },
+    "select_info": {
+        "display_name": "Bralette (Red, Ruffles)",
+        "thumb": "briaryoung_bralette_red_ruffles",
+        "group": "clothes",
+        "select_dlg": [
+            "How do I look?",
+            "Very dark and stunning~"
+        ]
+    },
+    "giftname": "braletteredruffles",
+    "pose_arms": {}
+}
