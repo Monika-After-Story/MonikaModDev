@@ -1037,6 +1037,35 @@ label mas_story_mindthegap:
     m 1ekbla "This story reminds me to treasure every moment, and not to take any piece of our time together for granted."
     m 1dkblu "I'll always treasure you, [player]."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_wellofmadness",
+            prompt="The Well of Madness",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_wellofmadness:
+    call mas_story_begin
+    m 1esd "A powerful wizard, who wanted to destroy an entire kingdom, placed a magic potion in the well from which all the inhabitants drank.{w=0.2} Whoever drank that water would go mad."
+    m 1esc "The following morning, the whole population drank from the well and they all went mad." 
+    m 1ekd "Except the king and his family, who had a well set aside for them alone, which the magician had not managed to poison."
+    m 1ekd "The king was worried and tried to control the population by issuing a series of edicts governing security and public health."
+    m 3ekc "The policemen and inspectors, however, had also drunk the poisoned water, and they thought the king’s decisions were absurd and resolved to take no notice of them."
+    m 2eud "When the inhabitants of the kingdom heard these decrees, they became convinced that the king had gone mad and was now giving nonsensical orders."
+    m 3ekc "They marched on the castle and called for his abdication."
+    m 1ekc "In despair the king prepared to step down from the throne, but the queen stopped him, saying:{w=0.3} {nw}" 
+    extend 1ekb "'Let us go and drink from the communal well.'" 
+    m 1ekb "'Then we will be the same as them.'"
+    m 1eud "The king and the queen drank the water of madness and immediately began talking nonsense."
+    m 3etc "Their subjects repented at once;{w=0.3} {nw}" 
+    extend 3rta "Now that the king was displaying such wisdom, why not allow him to continue ruling the country?"
+    return
 
 #START: SCARY STORIES
 init 5 python:
