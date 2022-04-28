@@ -2222,7 +2222,7 @@ init python:
         IN:
             event_label - event lable to check
 
-        RETURNS: index of the event in teh even tlist, -1 if not found
+        RETURNS: index of the event in the event list, -1 if not found
         """
         for index in range(len(persistent.event_list)):
             if persistent.event_list[index][0] == event_label:
