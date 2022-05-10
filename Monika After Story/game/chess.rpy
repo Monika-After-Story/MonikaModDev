@@ -18,8 +18,9 @@ default persistent._mas_chess_stats = {
 #2000 = Master
 #2400 = Grandmaster
 #3000 = Probably the human limit
-#Here we limit Monika's ELO Rating in 200~2500 the range, and give her a 850 as the default setting.
-default persistent._mas_chess_elo = 850
+#Here we limit Monika's ELO Rating in 200~2500 the range.
+#Considering that many MAS players are just looking for fun, we set the default below the Beginner: 600
+default persistent._mas_chess_elo = 600
 
 # pgn as a string
 default persistent._mas_chess_quicksave = ""
