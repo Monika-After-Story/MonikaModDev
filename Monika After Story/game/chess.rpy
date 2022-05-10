@@ -3388,6 +3388,7 @@ init python:
                 self.stockfish.stdin.write("setoption name UCI_Elo value {0}\n".format(persistent._mas_chess_elo))
             else:
                 skill_level = max(6 - (1350 - persistent._mas_chess_elo) // 160, 0)
+                self.stockfish.stdin.write("setoption name MultiPV value 4\n")
                 self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(skill_level))
 
             #And set up facilities for asynchronous communication
