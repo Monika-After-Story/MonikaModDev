@@ -999,9 +999,8 @@ label mas_chess_start_chess:
                 call mas_chess_dlg_game_monika_wins_sometimes
                 m 1eua "Anyway..."
 
-        if not is_surrender:
-            #Monika plays a little easier if you didn't just surrender
-            $ mas_chess._decrement_chess_difficulty()
+        #Since you have lost the game, Monika goes easier on you.
+        $ mas_chess._decrement_chess_difficulty()
 
     #Always save in progress games unless they're over
     elif game_result == mas_chess.IS_ONGOING:
