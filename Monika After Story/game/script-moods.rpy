@@ -896,7 +896,7 @@ init 5 python:
     )
 
 label mas_mood_burnt:
-        m 1wud "Oh!"
+            m 1wud "Oh!"
 	    m 1ekd "I'm so sorry to hear you feel that way, [player]..."
 	    m 2esc "But, if that's the case..."
 	    extend "you really should consider taking a break, if you can."
