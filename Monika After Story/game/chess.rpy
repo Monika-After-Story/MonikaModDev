@@ -3370,7 +3370,7 @@ init python:
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
                 self.stockfish = open_stockfish(
-                    'mod_assets/games/chess/stockfish_{0}.exe'.format("15_x64_popcnt" if is_64_bit else "14_32bit"),
+                    'mod_assets/games/chess/stockfish_{0}.exe'.format("15_x64" if is_64_bit else "14_32bit"),
                     startupinfo
                 )
 
