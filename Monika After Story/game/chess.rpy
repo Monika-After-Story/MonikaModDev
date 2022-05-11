@@ -3383,7 +3383,7 @@ init python:
             #NOTE: The lower ELO limit of Stockfish is 1350, so when the ELO is lower than 1350, we are actually using "Skill Level" to set difficulty.
             #      We consider Skill Level 6 as ELO 1350. Skill Level is decreased every time the ELO decreases by 160.
             self.stockfish.stdin.write("uci\n")
-            self.stockfish.stdin.write("setoption name MultiPV value 4\n")
+            self.stockfish.stdin.write("setoption name MultiPV value 8\n")
             if persistent._mas_chess_elo >= 1350:
                 self.stockfish.stdin.write("setoption name UCI_LimitStrength value true\n")
                 self.stockfish.stdin.write("setoption name UCI_Elo value {0}\n".format(persistent._mas_chess_elo))
