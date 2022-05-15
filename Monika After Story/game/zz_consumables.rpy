@@ -1845,7 +1845,7 @@ label monika_consumables_check:
 
         else:
             $ items_running_out_of = low_cons[0].disp_name
-            m 3rusdlb "Oh{w=0.1}, good you asked!"
+            m 3rusdlb "Oh{w=0.1}, glad you asked!"
             m 1rksdla "I've been running out of [items_running_out_of]."
             m 1eka "I'd appreciate if you could get some for me~"
 
