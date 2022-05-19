@@ -7,6 +7,7 @@ python early:
     import io
     import datetime
     import traceback
+    from collections import defaultdict # this will be availalable anywhere now
 
     # define the zorders
     MAS_MONIKA_Z = 10

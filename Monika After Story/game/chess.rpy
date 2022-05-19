@@ -17,7 +17,7 @@ default persistent._mas_chess_difficulty = (0, 1)
 default persistent._mas_chess_quicksave = ""
 
 # dict containing action counts:
-default persistent._mas_chess_dlg_actions = {}
+default persistent._mas_chess_dlg_actions = defaultdict(int)
 
 # when we need to disable chess for a period of time
 default persistent._mas_chess_timed_disable = None

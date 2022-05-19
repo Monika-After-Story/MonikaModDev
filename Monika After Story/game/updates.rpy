@@ -377,7 +377,12 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.8.4
 label v0_12_8_4(version="v0_12_8_4"):
     python hide:
-        pass
+        # chess actions fix
+        if not isinstance(persistent._mas_chess_dlg_actions, defaultdict):
+            replacement = defaultdict(int)
+            replacement.update(persistent._mas_chess_dlg_actions)
+            persistent._mas_chess_dlg_actions = replacement
+
     return
 
 # 0.12.8.3
