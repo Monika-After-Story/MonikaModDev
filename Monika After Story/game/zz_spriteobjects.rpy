@@ -997,7 +997,6 @@ init -1 python:
         "ahoge_heart",
         "ahoge_heart",
         MASPoseMap(
->>>>>>> content
             default="0",
             l_default="5"
         ),
