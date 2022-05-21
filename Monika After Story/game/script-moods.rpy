@@ -130,12 +130,13 @@ label mas_mood_hungry:
     m 3tku "That wouldn't be any fun, would it, [player]?"
     m 1eua "If I were there with you, I'd make a salad for us to share."
     m "But since I'm not, go pick something healthy to eat."
-    m 3eub "They say you are what you eat, and I definitely think that's true."
-    m "Eating too much junk food on a regular basis can lead to all kinds of diseases."
+    m 3eub "It's so important to pay attention to your body's needs, you know."
+    m 3hub "That doesn't just mean getting enough veggies, of course. {w=0.2}All sorts of foods are necessary to keep yourself nourished."
+    m 3eka "So I want you to make sure you're not depriving yourself of important vitamins, okay?"
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
     m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
-    m 4esa "After all, the healthier you are, the better the chances of you living quite long."
+    m 4eub "After all, the healthier you are, the better the chances you'll live a long life!"
     m 1hua "Which means more time for us to spend together!~"
     return
 
