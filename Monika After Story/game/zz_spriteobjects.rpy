@@ -2355,31 +2355,6 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_water_drops)
 
-    ### DESK JACK O LANTERN
-    ## desk_candy_jack
-    # smirk pumpkin to be placed on Monika's desk
-    # Thanks JMO
-    mas_acs_desk_candy_jack = MASDynamicAccessory(
-        "desk_candy_jack",
-        ConditionSwitch(
-            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 2",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_brim-0.png", None),
-            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 0",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_half-0.png", None),
-            "True",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_empty-0.png", None)
-        ),
-        MASPoseMap(
-            default=True,
-            l_default=True
-        ),
-        priority=13,
-        acs_type="desk_jack_o_lantern",
-        mux_type=["flowers"],
-        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
-        keep_on_desk=True
-    )
-    store.mas_sprites.init_acs(mas_acs_desk_candy_jack)
 
 
 init -1 python:
