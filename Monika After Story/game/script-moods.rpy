@@ -898,43 +898,44 @@ init 5 python:
 
 label mas_mood_grateful:
     $ chosen_nickname = mas_get_player_nickname()
-    m 1eub "Oh? That's nice to hear!"
+    m 1eub "Oh? {w=0.3}That's nice to hear!"
 
-    m "What are you grateful for, [chosen_nickname]?{nw}"
+    m 3eua "What are you grateful for, [chosen_nickname]?{nw}"
     $ _history_list.pop()
     menu:
         m "What are you grateful for, [chosen_nickname]?{fast}"
 
         "For you.":
+            if not renpy.seen_label("mas_mood_grateful_gratefulforyou"):
+                $ mas_gainAffection(3,bypass=True)
             call mas_mood_grateful_gratefulforyou
 
         "For someone.":
-            m 1hub "Aww, that's wonderful to hear."
-            m "I'm really glad that you have supportive people in your life."
-            m 3eua "But as nice as it is for me to hear it...{w=0.3}I think you should make sure that {i}they{/i} know it too."
-            m "I'm sure it would really brighten their day to know that they made a difference for someone else."
-            m 3fua "If nothing else, you can thank them on my behalf. Anyone who makes you happier is a good person in my books."
-            m 1hua "But in any case, I'm really happy for you, [mas_get_player_nickname()]."
+            m 3eka "Aww, that's wonderful to hear."
+            m 1hua "I'm really glad that you have supportive people in your life."
+            m 3eud "But as nice as it is for me to hear it...{w=0.3}I think you should make sure that {i}they{/i} know it too."
+            m 3hua "I'm sure it would really brighten their day to know that they made a difference for someone else."
+            m 3euu "If nothing else, you can thank them on my behalf. {w=0.3}Anyone who makes you happier is a good person in my book."
+            m 1huu "But in any case, I'm really happy for you, [mas_get_player_nickname()]~"
 
         "For something.":
-            m 1hua "I'm glad to hear it, [mas_get_player_nickname()]."
-            m 3hua "Consciously taking the time to think about the good things in your life can be great for your mental health."
-            m 3eub "So whatever that thing might be, take the time to appreciate and enjoy it!"
-            m 1hublb "Thank you for sharing your happiness with me, [mas_get_player_nickname()]."
+            m 3hub "I'm glad to hear it, [mas_get_player_nickname()]!"
+            m 1eud "Consciously taking the time to think about the good things in your life can be great for your mental health."
+            m 3hub "So whatever that thing might be, take the time to appreciate and enjoy it!"
+            m 1euu "Thank you for sharing your happiness with me, [mas_get_player_nickname()]~"
 
         "Nothing specific.":
-            m 1eub "Ah, just feeling happy about life?"
-            m 1eua "It's nice to take a bit to reflect and feel content, isn't it?"
-            m 1hublb "Hmm...{w=0.2}Now that I'm thinking about it, I feel pretty grateful myself."
-            m "After all, I'm spending another day with my wonderful [bf]~"
+            m 3eua "Ah, just feeling happy about life?"
+            m 1eud "It's nice to take a bit to reflect and feel content, isn't it?"
+            m 1rtd "Hmmm...{w=0.2}Now that I'm thinking about it, {w=0.1}{nw}"
+            extend 3hua "I feel pretty grateful myself."
+            m 3eubsu"After all, I'm spending another day with my wonderful [bf]~"
     return
 
 label mas_mood_grateful_gratefulforyou:
-    if mas_getEVL_shown_count("mas_mood_grateful_gratefulforyou") == 0:
-        $ mas_gainAffection(3,bypass=True)
     m 1ekbla "Oh, [player]...{w=0.3}Thank you so much for saying that."
-    m 1dkbla "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
-    m 1hubla "I hope you know that I'm so grateful for you too."
-    m "I love you, [player]."
+    m 1dkblu "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
+    m 1hublu "I hope you know that I'm so grateful for you too."
+    m 3ekbla "I love you, [player]~"
     $ mas_ILY()
     return
