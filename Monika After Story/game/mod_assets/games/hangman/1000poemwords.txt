@@ -385,7 +385,6 @@ explanation,3,4,2,1
 betray,2,4,3,1
 suspicious,3,4,2,1
 fox,2,4,3,1
-retarded,1,4,3,2
 extract,1,4,3,2
 absence,1,4,3,2
 shore,1,4,3,2

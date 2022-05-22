@@ -109,6 +109,8 @@ default persistent._mas_acs_bbh_list = []
 default persistent._mas_acs_bse_list = []
 default persistent._mas_acs_bba_list = []
 default persistent._mas_acs_ase_list = []
+default persistent._mas_acs_bmh_list = []
+default persistent._mas_acs_mmh_list = []
 default persistent._mas_acs_bat_list = []
 default persistent._mas_acs_mat_list = []
 default persistent._mas_acs_mab_list = []
@@ -305,6 +307,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that this ACS is a drink
 
+    EXP_A_DYNAMIC = "dynamic"
+    # v: ignored
+    # marks this ACS as dynamic (see: MASDynamicAccessory)
+
     # ---- HAIR ----
 
     EXP_H_TT = "twintails"
@@ -333,6 +339,14 @@ init -100 python in mas_sprites:
     #v: ignored
     #marks the hair as a twinbraid hairstyle
 
+    # Value: ignored
+    # Marks that a hair obj is wet (appropriate for a bath/shower/pool/etc)
+    EXP_H_WET = "wet"
+
+    EXP_H_SB = "straight-bangs"
+    # v: ignored
+    # marks that a hair style has straight bangs
+
     # ---- CLOTHES ----
 
     EXP_C_BLS = "bare-left-shoulder"
@@ -352,7 +366,7 @@ init -100 python in mas_sprites:
 
     EXP_C_C_DTS = "compat-downtiedstrand"
     # v: ignored
-    # compatibilty exprop saying that these clothes work with the 
+    # compatibilty exprop saying that these clothes work with the
     # downtiedstrand hair style
     # NOTE: THIS IS AN EXCEPTION. We should not be doing exprops like this.
 
@@ -367,6 +381,10 @@ init -100 python in mas_sprites:
     EXP_C_LING = "lingerie"
     # v: ignored
     # marks that a clothing item is lingerie
+
+    # Value: ignored
+    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+    EXP_C_WET = "wet"
 
     # --- default exprops ---
 
@@ -388,6 +406,7 @@ init -100 python in mas_sprites:
         "hat",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for ribbon-based items.
 
@@ -444,6 +463,7 @@ init -100 python in mas_sprites:
         "ribbon",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for hats
 
@@ -475,6 +495,13 @@ init -100 python in mas_sprites:
             ex_props={
                 "bare neck": True
             }
+        ),
+        # TODO - add earrings here
+        "front-bow": ACSTemplate(
+            "front-bow",
+            mux_type=[
+                "front-bow"
+            ]
         ),
         "front-hair-flower-crown": ACSTemplate(
             "front-hair-flower-crown",
@@ -551,6 +578,13 @@ init -100 python in mas_sprites:
         ),
         "s-type-ribbon": ACSTemplate(
             "s-type-ribbon",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+            }
+        ),
+        "mini-ribbon": ACSTemplate(
+            "mini-ribbon",
             mux_type=DEF_MUX_RB,
             ex_props={
                 EXP_A_RBL: True,
@@ -741,12 +775,17 @@ init -5 python in mas_sprites:
     # keys
     FHAIR = "front"
     BHAIR = "back"
+    MHAIR = "mid"
+
+    # head
+    HEAD = "head"
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
     SHADOW_SUFFIX = ART_DLM + "s"
     FHAIR_SUFFIX  = ART_DLM + FHAIR
     BHAIR_SUFFIX = ART_DLM + BHAIR
+    MHAIR_SUFFIX = ART_DLM + MHAIR
     HLITE_SUFFIX = ART_DLM + "h"
     FILE_EXT = ".png"
 
@@ -1049,7 +1088,7 @@ init -5 python in mas_sprites:
             return allow_none
         return _verify_uprightpose(val) or _verify_leaningpose(val)
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def acs_lean_mode(sprite_list, lean):
         """
         NOTE: DEPRECATED
@@ -1314,6 +1353,83 @@ init -5 python in mas_sprites:
 
         # otherwise we have a map
         return sprite_map.get(sprite_name, None)
+
+    def get_installed_sprites(sprite_type, predicate=None):
+        """
+        Returns ALL available sprite objects
+        NOTE: Runtime only
+
+        IN:
+            sprite_type - the sprite type constant
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of sprite objects
+        """
+        sprite_map = SP_MAP.get(sprite_type, None)
+
+        if not sprite_map:
+            return []
+
+        if predicate:
+            return [
+                spr_object
+                for spr_object in sprite_map.itervalues()
+                if predicate(spr_object)
+            ]
+
+        else:
+            return sprite_map.values()
+
+    def get_installed_acs(predicate=None):
+        """
+        get_installed_sprites for acs objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of acs sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_ACS,
+            predicate=predicate
+        )
+
+    def get_installed_hair(predicate=None):
+        """
+        get_installed_sprites for hair objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of hair sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_HAIR,
+            predicate=predicate
+        )
+
+    def get_installed_clothes(predicate=None):
+        """
+        get_installed_sprites for clothes objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of clothes sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_CLOTHES,
+            predicate=predicate
+        )
+
 
 
 ##### special mas monika functions (hooks)
@@ -2209,8 +2325,10 @@ init -3 python:
         MAB_ACS = 7 # between middle arms and boobs
         BSE_ACS = 8 # between base and clothes
         ASE_ACS = 9 # between base arms and clothes
-        BAT_ACS = 10 # between base arms and table
+        BAT_ACS = 10 # between mid hair and table
         MAT_ACS = 11 # between middle arms and table
+        BMH_ACS = 12 # between back arms and mid hair
+        MMH_ACS = 13 # between mid hair and head
 
         # valid rec layers
         # NOTE: this MUST be in the same order as save_state/load_State
@@ -2230,6 +2348,8 @@ init -3 python:
             ASE_ACS,
             BAT_ACS,
             MAT_ACS,
+            BMH_ACS,
+            MMH_ACS,
         )
 
         # split layers
@@ -2245,6 +2365,8 @@ init -3 python:
             BSE_ACS,
             BBA_ACS,
             ASE_ACS,
+            BMH_ACS,
+            MMH_ACS,
             BAT_ACS,
             MAT_ACS,
             MAB_ACS,
@@ -2288,7 +2410,13 @@ init -3 python:
                 # accessories to be rendered after base arms, before arm clothes
                 self.ASE_ACS: [],
 
-                # accessories to be rendered after back arms, before table
+                # accessories to be rendered after back arms, before mid hair
+                self.BMH_ACS: [],
+
+                # accessories to be rendered after mid hair, before head
+                self.MMH_ACS: [],
+
+                # accessories to be rendered after head, before table
                 self.BAT_ACS: [],
 
                 # accessories to be rendered after table, before middle arms
@@ -2357,6 +2485,8 @@ init -3 python:
                 "BSE",
                 "BBA",
                 "ASE",
+                "BMH",
+                "MMH",
                 "BAT",
                 "MAT",
                 "MAB",
@@ -2652,6 +2782,8 @@ init -3 python:
                 _acs_ase_names,
                 _acs_bat_names,
                 _acs_mat_names,
+                _acs_bmh_names,
+                _acs_mmh_names,
                 startup=False
             ):
             """
@@ -2674,6 +2806,8 @@ init -3 python:
                 _acs_ase_names - list of ase acs names to load
                 _acs_bat_names - list of bat acs names to load
                 _acs_mat_names - list of mat acs names to load
+                _acs_bmh_names - list of bmh acs names to load
+                _acs_mmh_names - list of mmh acs names to load
                 startup - True if we are loading on start, False if not
                     (Default: False)
             """
@@ -2691,6 +2825,8 @@ init -3 python:
             self._load_acs(_acs_bse_names, self.BSE_ACS)
             self._load_acs(_acs_bba_names, self.BBA_ACS)
             self._load_acs(_acs_ase_names, self.ASE_ACS)
+            self._load_acs(_acs_bmh_names, self.BMH_ACS)
+            self._load_acs(_acs_mmh_names, self.MMH_ACS)
             self._load_acs(_acs_bat_names, self.BAT_ACS)
             self._load_acs(_acs_mat_names, self.MAT_ACS)
             self._load_acs(_acs_mab_names, self.MAB_ACS)
@@ -3238,6 +3374,8 @@ init -3 python:
                 store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bat_list,
                 store.persistent._mas_acs_mat_list,
+                store.persistent._mas_acs_bmh_list,
+                store.persistent._mas_acs_mmh_list,
                 startup=startup
             )
 
@@ -3263,6 +3401,8 @@ init -3 python:
                     [11]: ase acs data
                     [12]: bat acs data
                     [13]: mat acs data
+                    [14]: bmh acs data
+                    [15]: mmh acs data
                 as_prims - True if this data was saved as primitive data types,
                     false if as objects
                     (Default: False)
@@ -3523,6 +3663,22 @@ init -3 python:
                 self.ASE_ACS,
                 force_acs
             )
+            store.persistent._mas_acs_bmh_list = self._save_acs(
+                self.BMH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mmh_list = self._save_acs(
+                self.MMH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bat_list = self._save_acs(
+                self.BAT_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mat_list = self._save_acs(
+                self.MAT_ACS,
+                force_acs
+            )
             store.persistent._mas_acs_mab_list = self._save_acs(
                 self.MAB_ACS,
                 force_acs
@@ -3602,6 +3758,8 @@ init -3 python:
                 [11]: ase acs data (Default: [])
                 [12]: bat acs data (Default: [])
                 [13]: mat acs data (Default: [])
+                [14]: bmh acs data (Default: [])
+                [15]: mmh acs data (Default: [])
             """
             # determine which clothes to save
             if force_clothes or self.clothes.stay_on_start:
@@ -3741,6 +3899,7 @@ init -3 python:
                     acs_layer
                 )
 
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pre(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre body accessory mode
@@ -3750,7 +3909,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.PRE_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bbh(self, acs):
             """DEPRECATED
             Wears the given accessory in the post back hair accessory loc
@@ -3760,7 +3919,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BBH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_bfh(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre front hair accesory log
@@ -3770,7 +3929,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BFH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_afh(self, acs):
             """DEPRECATED
             Wears the given accessory in the between front hair and arms
@@ -3781,7 +3940,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.AFH_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_mid(self, acs):
             """DEPRECATED
             Wears the given accessory in the mid body acessory mode
@@ -3791,7 +3950,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.MID_ACS)
 
-
+        @store.mas_utils.deprecated("wear_acs_in")
         def wear_acs_pst(self, acs):
             """DEPRECATED
             Wears the given accessory in the post body accessory mode
@@ -4352,8 +4511,8 @@ init -3 python:
                 if arm_key in store.mas_sprites.NUM_ARMS:
                     # NOneify invalid data
                     if not isinstance(arm_data[arm_key], MASArm):
-                        store.mas_utils.writelog(
-                            "Invalid arm data at '{0}'\n".format(arm_key)
+                        store.mas_utils.mas_log.warning(
+                            "Invalid arm data at '{0}'".format(arm_key)
                         )
                         arm_data[arm_key] = None
 
@@ -5192,6 +5351,7 @@ init -3 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.is_custom = False
+            self._dynamic = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -5383,6 +5543,14 @@ init -3 python:
 
             return self.hl_map.keys()
 
+        def is_dynamic(self):
+            """
+            Is this a dynamic sprite?
+
+            REUTRNS: True if this is a dynamic sprite
+            """
+            return self._dynamic
+
         def rmprop(self, prop):
             """
             Removes the prop from this sprite's ex_props, if it exists
@@ -5407,6 +5575,21 @@ init -3 python:
                 return sprite_base.name
 
             return ""
+
+    class MASDynamicSpriteBase(renpy.store.object):
+        """
+        Special sprite type for dynamic sprites - all dynamic based sprites
+        should inherit this as a 2nd type and call dyn_init in init
+
+        PROPERTIES:
+            disp - Displayable to associate with this sprite. Can be dynamic.
+            hl_disp - Displayable to use for highlights. Can be dynamic.
+        """
+
+        def dyn_init(self, disp, hl_disp=None):
+            self.disp = disp
+            self.hl_disp = hl_disp
+            self._dynamic = True
 
     class MASSpriteFallbackBase(MASSpriteBase):
         """
@@ -5728,6 +5911,7 @@ init -3 python:
             """
             return acs.priority
 
+        @store.mas_utils.deprecated()
         def get_arm_split_code(self, poseid):
             """DEPRECATED
             NOTE: we are keeping this around for compatiblity purposes
@@ -6435,6 +6619,102 @@ init -3 python:
             return value in cls.__MHM_KEYS
 
 
+    class MASDynamicAccessory(MASAccessoryBase, MASDynamicSpriteBase):
+        """
+        A Dynamic MAS Accessory. This can vary an ACS based on displayables.
+
+        NOTE: does NOT support split ACS.
+
+        PROPERTIES:
+            No Additional.
+        See MASAccessory and MASDynamicSpriteBase for inherited properties.
+        """
+
+        def __init__(self,
+                name,
+                disp,
+                pose_map,
+                rec_layer=MASMonika.PST_ACS,
+                priority=10,
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None,
+                acs_type=None,
+                mux_type=None,
+                ex_props=None,
+                dlg_data=None,
+                keep_on_desk=False,
+                hl_disp=None
+        ):
+            """
+            Dynamic accessory constructor.
+
+            For simplicity, this passes in fake values to the accessory base.
+
+            IN:
+                name - name of this accessory
+                disp - displayable to associate with this accessory. Can be
+                    dynamic.
+                pose_map - MASPoseMap - this is assumed to be in enable/disable
+                    mode.
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                acs_type - type, for ease of organization of acs
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
+                    (Default: None)
+                mux_type - list of acs types that should be
+                    mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
+                    (Default: None)
+                ex_props - dict of additional properties to apply to this
+                    sprite object.
+                    (Default: None)
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                    (Default: None)
+                keep_on_desk - determines if ACS should be shown if monika
+                    leaves
+                    (Default: False)
+                hl_disp - displayable to use for Highlights. Can be dynamic.
+                    (Default: None)
+            """
+            super(MASDynamicAccessory, self).__init__(
+                MASAccessoryBase.ASO_REG, # no support for split
+                name,
+                "",
+                pose_map,
+                rec_layer=rec_layer,
+                priority=priority,
+                stay_on_start=stay_on_start,
+                entry_pp=entry_pp,
+                exit_pp=exit_pp,
+                acs_type=acs_type,
+                mux_type=mux_type,
+                ex_props=ex_props,
+                dlg_data=dlg_data,
+                keep_on_desk=keep_on_desk
+            )
+            self.dyn_init(disp, hl_disp=hl_disp)
+
+
     class MASHair(MASSpriteFallbackBase):
         """
         MASHair objects
@@ -6449,12 +6729,18 @@ init -3 python:
                 keys:
                     "front" - front hair
                     "back" - back hair
+                    "mid" - mid hair
                     "<lean>|front" - front hair for a leaning type
                         NOTE: can be multiple of this format
                     "<lean>|back" - back hair for a leaning type
                         NOTE: can be multiple of this format
+                    "<lean>|mid" - mid hair for a leaning type
+                        NOTE: can be multiple of this format
                 values:
                     MASFilterMap objects
+            mpm_mid - MASPoseMap for mid hair layer.
+                Determines if the mid layer should be used for a pose.
+                This is the enable/disable type
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -6462,7 +6748,7 @@ init -3 python:
             Use an empty string to
         """
 
-        __MHM_KEYS = store.mas_sprites._genLK(("front", "back"))
+        __MHM_KEYS = store.mas_sprites._genLK(("front", "back", "mid"))
 
         def __init__(self,
                 name,
@@ -6475,7 +6761,8 @@ init -3 python:
                 exit_pp=None,
                 split=None,
                 ex_props=None,
-                hl_data=None
+                hl_data=None,
+                mpm_mid=None
             ):
             """
             MASHair constructor
@@ -6516,6 +6803,10 @@ init -3 python:
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
+                mpm_mid - MASPoseMap for mid hair usage.
+                    Determines if a mid layer should be used for a pose.
+                    Should be enable/disable type or else we crash
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6534,7 +6825,15 @@ init -3 python:
             if split is not None and type(split) != MASPoseMap:
                 raise Exception("split MUST be PoseMap")
 
+            if (
+                    mpm_mid is not None
+                    and not isinstance(mpm_mid, MASPoseMap)
+                    and mpm_mid._mpm_type != MASPoseMap.MPM_TYPE_ED
+            ):
+                raise Exception("mpm_mid must be MASPoseMap of type ED / 0")
+
             self.split = split
+            self.mpm_mid = mpm_mid
 
         def __repr__(self):
             return "<Hair: {0}>".format(self.name)
@@ -6634,9 +6933,21 @@ init -3 python:
                     back_img = new_img + [store.mas_sprites.BHAIR_SUFFIX]
                     front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
 
+                    # mid images as well
+                    if (
+                            self.mpm_mid is not None
+                            and self.mpm_mid.get(leanpose, False)
+                    ):
+                        mid_img = new_img + [store.mas_sprites.MHAIR_SUFFIX]
+
+                    else:
+                        mid_img = None
+
                     # add them to list
                     loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])
                     loadstrs.append(front_img + [store.mas_sprites.FILE_EXT])
+                    if mid_img is not None:
+                        loadstrs.append(mid_img + [store.mas_sprites.FILE_EXT])
 
                     # highlights
                     loadstrs.extend(self.__build_loadstrs_hl(
@@ -6647,6 +6958,11 @@ init -3 python:
                         front_img,
                         hl_key.format(store.mas_sprites.FHAIR)
                     ))
+                    if mid_img is not None:
+                        loadstrs.extend(self.__build_loadstrs_hl(
+                            mid_img,
+                            hl_key.format(store.mas_sprites.MHAIR)
+                        ))
 
             return loadstrs
 
@@ -7158,6 +7474,7 @@ init -3 python:
 python early:
 # # # START: Idle disp stuff
     import random
+    import collections
 
     class IdleExpException(Exception):
         """
@@ -7188,7 +7505,7 @@ python early:
         MIN_WEIGHT = 1
         MAX_WEIGHT = 100
 
-        exp_tags_map = dict()
+        exp_tags_map = collections.defaultdict(list)
         _conditional_cache = dict()
 
         def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
@@ -7197,7 +7514,10 @@ python early:
 
             IN:
                 code - exp code
-                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                duration - duration for this exp in seconds. This can be a single number or a tuple of 2 number. If it's a tuple,
+                    the duration is being chosen at random between 2 values.
+                    If the numbers are floats, we use random.uniform, otherwise random.randint.
+                    NOTE: Do not mix ints with floats.
                     (Default: tuple (20, 30))
                 aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
                     Values can be None to not limit lower or upper bounds
@@ -7223,23 +7543,23 @@ python early:
                 _len = len(duration)
                 if _len != 2:
                     raise IdleExpException(
-                        "Expected a tuple/list of 2 items for the duration property. Got the tuple/list of {0} item{1} instead.".format(
+                        "Expected a tuple of 2 items for the duration property. Got a tuple of {0} item{1} instead.".format(
                             _len,
                             "s" if _len != 1 else ""
                         )
                     )
 
-                elif duration[0] < 1 or duration[1] < 1:
+                elif duration[0] <= 0 or duration[1] <= 0:
                     raise IdleExpException(
-                        "Duration for idle expression must be at least one second long. Got: {0} and {1}.".format(
+                        "Duration for idle expression must be a positive number. Got: {0} and {1}.".format(
                             duration[0],
                             duration[1]
                         )
                     )
 
-            elif duration < 1:
+            elif duration <= 0:
                 raise IdleExpException(
-                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
+                    "Duration for idle expression must be a positive number. Got: {0}.".format(
                         duration[0]
                     )
                 )
@@ -7270,18 +7590,17 @@ python early:
 
             if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
                 raise IdleExpException(
-                    "Weight must be between 0 and 100. Got {0}.".format(
+                    "The weight property must be between {0} and {1}. Got {2}.".format(
+                        MASMoniIdleExp.MIN_WEIGHT,
+                        MASMoniIdleExp.MAX_WEIGHT,
                         weight
                     )
                 )
             self.weight = weight
 
             if tag is not None and add_to_tag_map:
-                if tag in MASMoniIdleExp.exp_tags_map:
-                    MASMoniIdleExp.exp_tags_map[tag].append(self)
+                MASMoniIdleExp.exp_tags_map[tag].append(self)
 
-                else:
-                    MASMoniIdleExp.exp_tags_map[tag] = [self]
             self.tag = tag
             self._add_to_tag_map = add_to_tag_map
 
@@ -7312,10 +7631,14 @@ python early:
             A method to select duration for this exp
 
             OUT:
-                int in range of the duration property of this exp, or the prop itself if it's not a range
+                int/float
             """
             if isinstance(self.duration, tuple):
+                if isinstance(self.duration[0], float) and isinstance(self.duration[1], float):
+                    return random.uniform(self.duration[0], self.duration[1])
+
                 return random.randint(self.duration[0], self.duration[1])
+
             return self.duration
 
         def check_aff(self, aff=None):
@@ -7801,8 +8124,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.add(
                 MASMoniIdleExp(code, **kwargs),
@@ -7933,8 +8255,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.force(
                 MASMoniIdleExp(code, **kwargs),
