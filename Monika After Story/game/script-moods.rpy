@@ -929,7 +929,7 @@ label mas_mood_grateful:
             m 1eud "It's nice to take a bit to reflect and feel content, isn't it?"
             m 1rtd "Hmmm...{w=0.2}Now that I'm thinking about it, {w=0.1}{nw}"
             extend 3hua "I feel pretty grateful myself."
-            m 3eubsu"After all, I'm spending another day with my wonderful [bf]~"
+            m 3eubsu "After all, I'm spending another day with my wonderful [bf]~"
     return
 
 label mas_mood_grateful_gratefulforyou:
