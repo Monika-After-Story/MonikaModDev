@@ -927,13 +927,13 @@ label mas_mood_grateful:
         "Nothing specific.":
             m 3eua "Ah, just feeling happy about life?"
             m 1eud "It's nice to take a bit to reflect and feel content, isn't it?"
-            m 1rtd "Hmmm...{w=0.2}Now that I'm thinking about it, {w=0.1}{nw}"
+            m 1rtd "Hmmm...{w=0.2}now that I'm thinking about it, {w=0.1}{nw}"
             extend 3hua "I feel pretty grateful myself."
             m 3eubsu "After all, I'm spending another day with my wonderful [bf]~"
     return
 
 label mas_mood_grateful_gratefulforyou:
-    m 1ekbla "Oh, [player]...{w=0.3}Thank you so much for saying that."
+    m 1ekbla "Oh, [player]...{w=0.3}thank you so much for saying that."
     m 1dkblu "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
     m 1hublu "I hope you know that I'm so grateful for you too."
     m 3ekbla "I love you, [player]~"
