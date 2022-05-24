@@ -887,7 +887,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_mood_database,
-            eventlabel="mas_mood_burnt",
+            eventlabel="mas_mood_burnt_out",
             prompt="...burnt out.",
             category=[store.mas_moods.TYPE_BAD],
             unlocked=True
