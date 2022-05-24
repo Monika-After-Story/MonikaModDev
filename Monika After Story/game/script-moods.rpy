@@ -895,7 +895,7 @@ init 5 python:
         code="MOO"
     )
 
-label mas_mood_burnt:
+label mas_mood_burnt_out:
     m 1wud "Oh!"
     m 1ekd "I'm so sorry to hear you feel that way, [player]..."
     m 2esc "But, if that's the case...{w=0.3}{nw}"
