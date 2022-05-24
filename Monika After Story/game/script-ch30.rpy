@@ -295,17 +295,17 @@ image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 # Gender specific word replacement
 define MAS_PRONOUN_GENDER_MAP = {
-    "his": {"M": "his", "G": "her", "X": "their"},
-    "he": {"M": "he", "G": "she", "X": "they"},
-    "hes": {"M": "he's", "G": "she's", "X": "they're"},
-    "heis": {"M": "he is", "G": "she is", "X": "they are"},
-    "bf": {"M": "boyfriend", "G": "girlfriend", "X": "partner"},
-    "man": {"M": "man", "G": "woman", "X": "person"},
-    "boy": {"M": "boy", "G": "girl", "X": "person"},
-    "guy": {"M": "guy", "G": "girl", "X": "person"},
-    "him": {"M": "him", "G": "her", "X": "them"},
-    "himself": {"M": "himself", "G": "herself", "X": "themselves"},
-    "hero": {"M": "hero", "G": "heroine", "X": "hero"}
+    "his": {"M": "his", "F": "her", "X": "their"},
+    "he": {"M": "he", "F": "she", "X": "they"},
+    "hes": {"M": "he's", "F": "she's", "X": "they're"},
+    "heis": {"M": "he is", "F": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "F": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "F": "woman", "X": "person"},
+    "boy": {"M": "boy", "F": "girl", "X": "person"},
+    "guy": {"M": "guy", "F": "girl", "X": "person"},
+    "him": {"M": "him", "F": "her", "X": "them"},
+    "himself": {"M": "himself", "F": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "F": "heroine", "X": "hero"}
 }
 
 init python:
@@ -810,7 +810,7 @@ init python:
         For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
 
         IN:
-            key - Optional[Literal["M", "G", "X"]] - key (perhaps current gender) to set the pronouns for
+            key - Optional[Literal["M", "F", "X"]] - key (perhaps current gender) to set the pronouns for
                 If None, uses persistent.gender
         """
         store = renpy.store

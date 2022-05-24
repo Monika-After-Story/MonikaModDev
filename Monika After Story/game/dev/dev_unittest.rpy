@@ -2760,14 +2760,14 @@ label dev_unit_test_mas_set_pronouns:
                 )
                 pronouns_tester.assertEqual(expected_map_size, sub_map_size)
 
-            for k in ("M", "G", "X"):
+            for k in ("M", "F", "X"):
                 pronouns_tester.prepareTest(
                     "Validating the key {} is in the map".format(k)
                 )
                 pronouns_tester.assertTrue(k in sub_map)
 
         pronouns_tester.prepareTest("Check global pronouns variables")
-        for gender in ("M", "G", "X"):
+        for gender in ("M", "F", "X"):
             # Verify the func works
             mas_set_pronouns(gender)
 
