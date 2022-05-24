@@ -901,7 +901,7 @@ label mas_mood_burnt:
     m 2esc "But, if that's the case..."
     extend "you really should consider taking a break, if you can."
    m 1eua "Anything to help you relax and get your mind off things."
-	    m 3hub "I know I could certainly help with that, ahaha!"
+   m 3hub "I know I could certainly help with that, ahaha!"
 	    m 7ekbsa "Feel free to let me help calm your nerves if you wish, [player]."
 	    m 5hubsa "I'll do whatever I can to make you happy."
 	return
