@@ -927,7 +927,7 @@ init -1 python:
     ### WET HAIR
     ## wet
     # Wet hairdown (this isn't selectable by user)
-    # Thanks Orca/Briar
+    # Thanks Orca/Briar/Mocca
     mas_hair_wet = MASHair(
         "wet",
         "wet",

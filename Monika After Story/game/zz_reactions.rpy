@@ -1442,7 +1442,7 @@ label mas_thermos_mug_handler(thermos_acs, disp_name, giftname, ignore_case=True
         m 1hub "Thanks so much, [player], I can't wait to use it!"
 
     else:
-        m 1wud "Oh!{w=0.3} [mas_a_an_str(disp_name, ignore_case).capitalize()] thermos!"
+        m 1wud "Oh!{w=0.3} It's [mas_a_an_str(disp_name, ignore_case)] thermos!"
         m 1hua "Now I can bring something to drink when we go out together~"
         m 1hub "Thanks so much, [player]!"
         $ persistent._mas_given_thermos_before = True
