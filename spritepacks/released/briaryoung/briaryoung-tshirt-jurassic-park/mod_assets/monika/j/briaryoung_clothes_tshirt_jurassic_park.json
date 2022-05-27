@@ -7,8 +7,8 @@
     },
     "version": 3,
     "type": 2,
-    "name": "briaryoung_jazz_pattern_tshirt",
-    "img_sit": "briaryoung_jazz_pattern_tshirt",
+    "name": "briaryoung_tshirt_jurassic_park",
+    "img_sit": "briaryoung_tshirt_jurassic_park",
     "pose_map": {
         "mpm_type": 0,
         "default": false,
@@ -23,15 +23,15 @@
     },
     "stay_on_start": true,
     "select_info": {
-        "display_name": "Jazz Pattern T-Shirt",
-        "thumb": "briaryoung_jazz_pattern_tshirt",
+        "display_name": "T-Shirt (Jurassic park)",
+        "thumb": "briaryoung_tshirt_jurassic_park",
         "group": "clothes",
         "select_dlg": [
-            "Isn't it a lovely pattern? Or are you looking at something else~?",
-            "Great choice, [player]!"
+            "Dinosaurs are so fascinating!",
+            "Well [player]? Do I look... prehistoric? Ahaha!"
         ]
     },
-    "giftname": "jazzpatterntshirt",
+    "giftname": "tshirtjurassicpark",
     "pose_arms": {
         "crossed": {
             "tag": "crossed",
