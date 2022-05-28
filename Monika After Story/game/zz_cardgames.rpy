@@ -355,9 +355,9 @@ init 5 python in mas_nou:
         # It has only one key - 0 - because it doesn't make sense to keep track of series of this
         REACTIONS_MAP_MONIKA_PLAYED_WILD = {
             0: [
-                (_("I think I'll set.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.monika.chosen_color] color!"),),
-                (_("I want [store.mas_nou.game.monika.chosen_color] color."),),
-                (_("I choose [store.mas_nou.game.monika.chosen_color] color."),),
+                (_("I think I'll pick.{w=0.2}.{w=0.2}.{w=0.2}[store.mas_nou.game.monika.chosen_color]!"),),
+                (_("I want [store.mas_nou.game.monika.chosen_color]."),),
+                (_("I choose [store.mas_nou.game.monika.chosen_color]."),),
                 (_("Hmm.{w=0.1}.{w=0.1}.{w=0.1} I choose [store.mas_nou.game.monika.chosen_color]!"),)
             ]
         }
@@ -373,16 +373,16 @@ init 5 python in mas_nou:
         # this modifier used when Monika reflects a d2
         # used for seen count 0
         REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2 = [
-            (_("Ehehe~ I'm not going to draw all these cards!"),),
-            (_("All these cards will suit you~"),)
+            (_("Ehehe~ Good thing I'm not drawing all those cards!"),),
+            (_("A deck that big suits you~"),)
         ]
 
         # this modifier used when Monika reflects a skip turn/reverse
         # used for seen count 0
         REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3 = [
-            (_("{i}No, you{/i} will skip this turn~"),),
+            (_("{i}No,{w=0.1} you{/i} will skip this turn~"),),
             (_("Ahaha~"), _("Nope, [player]!")),
-            (_("I think you're still going to skip this turn~"),)
+            (_("No, I think you're going to skip this turn too~"),)
         ]
 
         # this modifier only works when you play with stackable cards
@@ -392,7 +392,7 @@ init 5 python in mas_nou:
 
         # this modifier only works when Monika wants green color
         REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1 = [
-            (_("Just let me choose the best color~"),)
+            (_("Let me choose the best color~"),)
         ]
 
         # # # Now the player's reactions
@@ -400,16 +400,16 @@ init 5 python in mas_nou:
         # again, general map for all reflects
         REACTIONS_MAP_PLAYER_REFLECTED_CARD = {
             0: [
-                (_("Aww, I wasn't expecting this!"),),
+                (_("Aw, I wasn't expecting that!"),),
                 (_("Just once, [player]...once!~"),)
             ],
             1: [
-                (_("Alright,{w=0.1} this time you won..."),),
+                (_("Alright,{w=0.1} alright...{w=0.3} You win this time."),),
                 (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3}but just this time!"),),
                 (_("You're pretty lucky!"),)
             ],
             2: [
-                (_("You...{w=0.3}could go a bit easier on your girlfriend~"), _("Ahaha~"))
+                (_("You...{w=0.3}{i}could{/i} go a bit easier on your girlfriend, you know~"), _("Ahaha~"))
             ]
         }
 
@@ -422,7 +422,7 @@ init 5 python in mas_nou:
             1: [
                 (_("Jeez, I can't believe you had another card!"),),
                 (_("Jeez, you're really trying to win!"),),
-                (_("Can't let it go, huh?"),)
+                (_("Can't let go, huh?"),)
             ],
             2: [
                 (_("Oh my gosh!{w=0.2} How many of these do you have?!"),),
@@ -436,7 +436,7 @@ init 5 python in mas_nou:
                 (_("Well{w=0.2}...so be it, [player]!"),)
             ],
             1: [
-                (_("Alright, alright!~"), _("{i}This{/i} time you won~")),
+                (_("Alright, alright!~"), _("You win this time~")),
                 (_("Alright...{w=0.2}this time {i}you{/i} choose the color~"),)
             ],
             2: [
@@ -446,7 +446,7 @@ init 5 python in mas_nou:
 
         REACTIONS_MAP_PLAYER_REFLECTED_WD4 = {
             0: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[0]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[0]) + [
-                (_("Hmm, I wasn't prepared for this!"),)
+                (_("Hmm, I wasn't prepared for that!"),)
             ],
             1: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[1]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[1]) + [
                 (_("I'll remember this~"), _("Watch out, [player]!~")),
@@ -454,7 +454,7 @@ init 5 python in mas_nou:
                 (_("Jeez!{w=0.2} How many of these do you have?!"),)
             ],
             2: list(REACTIONS_MAP_PLAYER_REFLECTED_ACT[2]) + list(REACTIONS_MAP_PLAYER_REFLECTED_WCC[2]) + [
-                (_("...{w=0.3}How did you do that?"), _("If you keep playing like that, I won't have a chance to win!"))
+                (_("...{w=0.3}How did you do that?"), _("If you keep playing like that, I won't have a chance!"))
             ]
         }
 
