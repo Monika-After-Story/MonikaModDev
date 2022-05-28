@@ -158,8 +158,8 @@ init 5 python:
 
 label mas_fun_fact_morpheus:
     m 3wub "Oh! A language based fact. I always like these."
-    m 1eua "The word 'morphine' is based on the greek god Morpheus."
-    m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
+    m 1eua "The word 'morphine' is based on the Greek god Morpheus."
+    m 1euc "He was the Greek god of dreams so to have a word based on him makes sense."
     m 3ekc "But then again...wasn't his father Hypnos the god of sleep?"
     m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
     m 4ekc "...So wouldn't it make more sense to name it after Hypnos then?"
@@ -312,7 +312,7 @@ label mas_fun_fact_king_snakes:
     m 1dsc "Hmm..."
     m 3eub "Did you know that if a snake has the word 'king' in its name, it devours other snakes?"
     m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
-    m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
+    m 1tfu "Does that mean if I eat you up, I would become Queen Monika?"
     m 1hksdlb "Ahaha, I'm just kidding, [player]."
     m 1hub "Sorry for being a little weird~"
     #Call the end
@@ -852,5 +852,88 @@ label mas_fun_fact_monochrome_dreams:
     m 1esd "It just goes to show that the content you absorb can have all kinds of effects on your mind, even if it's trivial."
     m 3eua "I think if there's a lesson to be learned here, it's that we should be very careful about the kind of media we consume, okay [player]?"
     #Call the end
+    call mas_fun_facts_end
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_fun_fact_round_earth",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_round_earth:
+    m 1rsa "Hmm..."
+    m 1eua "[player], do you think the Earth is round or flat?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[player], do you think the Earth is round or flat?{fast}"
+
+        "Round.":
+            m 3hua "Right! Pretty much everyone agrees on that nowadays."
+
+        "Flat.":
+            m 3hksdlb "Oh come on, [player]! Are you making fun of me?"
+
+    m 1eua "Actually, the Earth being round is something that has been known for a pretty long time."
+    m 3esd "Aristotle taught that the Earth was round in the fourth century BC."
+    m 3esa "He knew that because different stars could be seen from different parts of the world, which wouldn't happen if the Earth was just a flat surface."
+    m 1eua "Ancient astronomers and mathematicians around the world had figured out that the Earth was round long before anyone had actually travelled all the way around it."
+    m 7rksdla "But Earth being the center of the universe?{w=0.2} {nw}"
+    extend 4hksdlb "Oh man!"
+    m 7dsd "People fought about that so hard and for so long, it became a matter of life and death."
+    m 1dkd "The astronomer Galileo was put on trial for heresy just because he said the Earth was not the center of the universe.{w=0.2} {nw}"
+    extend 1esc "He was placed under house arrest for the rest of his life."
+    m 3euc "But as astronomers got better at tracking the movement of planets, it became kind of difficult to reconcile with the Earth being at the center."
+    m 1eud "People had to come up with crazy complex models to explain why planets seemed to zig-zag back and forth across the night sky if they were really going around the Earth."
+
+    if renpy.seen_label("monika_science"):
+        m 3eua "And like we discussed before, it's also known that the sun isn't the center of the universe{nw}"
+
+    else:
+        m 3eua "And now, it's even known that the sun isn't at the center of the universe{nw}"
+
+    extend "--it's just one of many stars in the galaxy."
+    m 1msblu "But do you know where science says the center of the universe is now?"
+    m 3kubsu "It's you.{w=0.2} You're the center of {i}my{/i} universe, [mas_get_player_nickname()]."
+    m 3hubsb "Ahaha!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_maplesyrup",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_maplesyrup:
+    m 3hksdlb "Here's another {w=0.2}{i}sweet {/i}{w=0.2} fact for you..." #double space is intentional due to ital/no ital spacing
+    m 1eua "Every type of maple tree produces sap that can be used to make maple syrup, {w=0.1}{nw}"
+    extend 1eud "but commercially-made syrup usually comes from the sugar maple."
+    m 3eua "You can most easily tell the specific type of maple tree from the shape of the leaves..."
+    m 3eub "You might be able to recognize a sugar maple leaf already, because it's the one featured on the Canadian flag!"
+    m 1euc "That said, the sugar maple has a limited native range and doesn't grow in {i}all{/i} of Canada."
+    m 1wud "...Yet Canada produces over three quarters of the world's maple syrup!"
+    m 3wud "And it may even be more surprising to learn that to make just one gallon of maple syrup it takes {i}40{/i} gallons of sap!"
+    m 1eua "It also takes a lot more effort to produce it than I was expecting..."
+    m 1esc "The sap has to be boiled down to make it into syrup...which obviously takes a while, given how much is needed."
+    m 3eud "Also, I've heard that if you boil it just a little bit more and then pour it out on a fresh bed of snow...{w=0.2}{nw}"
+    extend 3hub "you can even make a candy!"
+
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_gets_snow is not False:
+            m 3euu "Sounds like a fun thing we could try together, huh [player]?"
+            m 1etc "It might be a while before we get a chance, though..."
+            m 1eua "But it's alright if I have to wait a bit longer...{w=0.3}{nw}"
+            extend 1hublu "you're already sweet enough for me~"
+
+        else:
+            m 1eua "Sure seems like that would be extremely sweet..."
+            m 1rkblu "But nowhere near as sweet as you, ehehe~"
+
     call mas_fun_facts_end
     return

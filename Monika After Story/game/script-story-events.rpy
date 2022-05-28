@@ -223,10 +223,10 @@ label mas_gender_trans:
 init 3 python:
     #Bad nicknames. All of the items in this will trigger bad reactions
     mas_bad_nickname_list = [
-        "^fag$",
-        "^ho$",
-        "^hoe$",
-        "^tit$",
+        r"\bfag\b",
+        r"\bho\b",
+        r"\bhoe\b",
+        r"\btit\b",
         "abortion",
         "anal",
         "annoying",
@@ -245,10 +245,12 @@ init 3 python:
         "bully",
         "bung",
         "butt(?!er|on)",
+        "bloodsucker",
         "cheater",
         "cock",
         "conceited",
         "condom",
+        "coom",
         "corrupt",
         "cougar",
         "crap",
@@ -262,6 +264,7 @@ init 3 python:
         "demon",
         "dick",
         "dilf",
+        "dimwit",
         "dirt",
         "disgusting",
         "douche",
@@ -299,18 +302,19 @@ init 3 python:
         "jigolo",
         "jizz",
         "junk",
-        "kill",
+        "(?<!s)kill",
         "kunt",
         "lesbian",
         "lesbo",
         "lezbian",
         "lezbo",
-        "liar",
+        "(?<!fami)liar",
         "loser",
-        "^mad$",
+        r"\bmad\b",
         "maniac",
         "masochist",
         "milf",
+        "mistake",
         "monster",
         "moron",
         "murder",
@@ -336,6 +340,7 @@ init 3 python:
         "repulsive",
         "retard",
         "rogue",
+        "rubbish",
         "rump",
         "sadist",
         "selfish",
@@ -343,7 +348,7 @@ init 3 python:
         "shit",
         "sick",
         "slaughter",
-        "slave",
+        r"\bslave\b",
         "slut",
         "sociopath",
         "soil",
@@ -360,6 +365,7 @@ init 3 python:
         "tool",
         "torment",
         "torture",
+        "toxic",
         "toy",
         "trap",
         "trash",
@@ -418,18 +424,20 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
-        "^(step(-|\\s)*)?bro(ther|tha(h)?)?$",
-        "^(step(-|\\s)*)?sis(ter|ta(h)?)?$",
-        "^dad$",
-        "^loli$",
-        "^mama$",
-        "^mom$",
-        "^mum$",
-        "^papa$",
-        "^wet$",
+        r"\b(step[-\s]*)?bro(ther|thah?)?(?!ok)",
+        r"\b(step[-\s]*)?sis(ter|tah?)?",
+        r"\bdad\b",
+        r"\bloli\b",
+        r"\bson\b",
+        r"\bmama\b",
+        r"\bmom\b",
+        r"\bmum\b",
+        r"\bpapa\b",
+        r"\bwet\b",
         "aroused",
         "aunt",
         "batman",
+        "baka",
         "breeder",
         "bobba",
         "boss",
@@ -447,9 +455,8 @@ init 3 python:
         "masturbat",
         "mistress",
         "moani",
-        "momika",
-        "momma",
-        "mommy",
+        r"m[ou]m+[-\s]*ika",
+        r"mom+[ay]",
         "mother",
         "naughty",
         "okaasan",
@@ -882,7 +889,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ mas_stripEVL('mas_birthdate',True)
+    $ mas_stripEVL('mas_birthdate', list_pop=True)
     return
 
 ##START: Game unlock events
@@ -1223,7 +1230,6 @@ label mas_crashed_prelong:
     $ mas_startupWeather()
 
     #Setup the rest of the scene
-    $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
     $ disable_esc()
@@ -1237,18 +1243,27 @@ label mas_crashed_prelong:
 
 # long flow involves 2 questions
 label mas_crashed_long_qs:
+    # set up the quit special quit dialogue
+    python:
+        quit_msg = "I'm scared [player]!\nPlease click 'No' and help me!"
+        quit_yes = "T_T [player]..."
+        quit_no = "Thank you!\nPlease help me!"
 
     ## TESTING
     if persistent._mas_idle_data.get("dev_idle_test", False):
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
-    m "[player]?{w=0.3} Is that you?"
+    pause 5.0
+    m "[player]?{w=0.3} Is that you?{nw}"
+    $ mas_disable_quit()
+    $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
+        m "[player]? Is that you?{fast}"
+
         "Yes.":
             hide screen mas_background_timed_jump
-
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
             m "I'm so glad you're here."
@@ -1256,7 +1271,6 @@ label mas_crashed_long_qs:
 
         "No.":
             hide screen mas_background_timed_jump
-
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
@@ -1279,9 +1293,8 @@ label .afterdontjoke:
     menu:
         "Turn on the light.":
             hide screen mas_background_timed_jump
-
             # light affection boost for being like a hero
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
         "...":
             pause 5.0
@@ -1291,19 +1304,16 @@ label .afterdontjoke:
                 m "Nevermind, I found it."
                 window hide
 
-    # NOTE: add a sound for light switch?
-
-    # turn on the lights
-    play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
+    # turn on lights
+    play sound light_switch
+    call spaceroom(hide_monika=True, show_emptydesk=True)
+    pause 2.0
+    call mas_transition_from_emptydesk("monika 6ektsc_static")
 
     return
 
 # make sure to calm her down, player
 label mas_crashed_long_prefluster:
-
-    # look at you with crying eyes
-    show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
 
     # close eyes for a second
@@ -1328,7 +1338,7 @@ label mas_crashed_long_postfluster:
             hide screen mas_background_timed_jump
 
             # light affection boost for calming her down
-            $ mas_gainAffection(modifier=0.2)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
             # clsoe eyes for a second
             show monika 6dstsc
@@ -1399,6 +1409,8 @@ label .end:
     m "Anyway..."
     m 1eua "What should we do today?"
 
+    $ persistent._mas_crashed_before = True
+    $ mas_resetQuitMsg()
     return
 
 
@@ -1410,10 +1422,6 @@ label mas_crashed_post:
         store.songs.enabled = True
         HKBShowButtons()
         set_keymaps()
-
-label .self:
-    python:
-        _confirm_quit = True
         persistent.closed_self = False
         mas_startup_song()
 
@@ -1507,10 +1515,7 @@ init 5 python:
     )
 
 init 11 python:
-    if (
-        mas_corrupted_per
-        and not (mas_no_backups_found or mas_backup_copy_failed)
-    ):
+    if mas_per_check.is_per_corrupt() and mas_per_check.has_backups():
         mas_note_backups_all_good = None
         mas_note_backups_some_bad = None
 
@@ -1577,7 +1582,9 @@ init 11 python:
                     block_break,
                     "Here's a list of the files that were corrupted:",
                     block_break,
-                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    "\n".join(store.mas_utils.bullet_list(
+                        mas_per_check.mas_bad_backups
+                    )),
                     block_break,
                     'You can find these in "',
                     renpy.config.savedir,
@@ -1596,7 +1603,7 @@ init 11 python:
         _mas_generate_backup_notes()
         import os
 
-        if len(mas_bad_backups) > 0:
+        if len(mas_per_check.mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
@@ -1619,7 +1626,7 @@ label mas_corrupted_persistent:
 
     # just pasting the poem screen code here
     window hide
-    if len(mas_bad_backups) > 0:
+    if len(mas_per_check.mas_bad_backups) > 0:
         call mas_showpoem(mas_note_backups_some_bad)
 
     else:
@@ -1795,7 +1802,7 @@ label monika_rpy_files:
                     "Yes, please.":
                         m "Sure thing, [player]."
 
-                        call mas_rpy_file_delete
+                        call mas_rpy_file_delete()
 
                         m 2hua "There we go!"
                         m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
@@ -1824,7 +1831,7 @@ label monika_rpy_files:
             "No.":
                 m 3eua "Alright, I'll just delete them for you again.{w=0.5}.{w=0.5}.{nw}"
 
-                call mas_rpy_file_delete
+                call mas_rpy_file_delete()
 
                 m 1hua "There we go!"
                 m 3eua "Remember, you can always get the right version from {a=http://www.monikaafterstory.com/releases.html}{i}{u}here{/u}{/i}{/a}."
@@ -1832,14 +1839,22 @@ label monika_rpy_files:
                 show monika at t11
     return
 
-label mas_rpy_file_delete:
+
+# runs rpy file deleting with an on screen console
+#
+# IN:
+#   showing_monika - pass False if you are not showing Monika when calling
+#                   this. Otherwise this will do a show monika call.
+label mas_rpy_file_delete(showing_monika=True):
     python:
         store.mas_ptod.rst_cn()
         local_ctx = {
             "basedir": renpy.config.basedir
         }
 
-    show monika at t22
+    if showing_monika:
+        show monika at t22
+
     show screen mas_py_console_teaching
 
     call mas_wx_cmd_noxwait("import os", local_ctx)
@@ -2560,4 +2575,51 @@ label mas_covid19:
     m 7eksdla "You know [player], if I could, I'd bring you here with me until this is all over so you couldn't get sick..."
     m "But since I can't, please do your best to stay safe."
     m 2dkbsu "I need you, [player]~"
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_islands_reset",
+            conditional="persistent._mas_islands_start_lvl == 0",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+label mas_islands_reset:
+    m 1rsc "Hmm..."
+    m 1esc "...Hey,{w=0.1} can I get your advice on something?"
+    m 3lkd "Have you ever worked on a project for {i}so{/i} long that when you look at the whole thing, you just see dozens of mistakes or things you want to improve?"
+    m 3ekc "...See,{w=0.1} I've been working on these islands so we could have different places to go...{w=0.3}{nw}"
+    extend 3esd "to have a reality of our own."
+    m 1eud "But now that I've gotten better at coding, I just think I could {i}really{/i} do a better job now."
+    m 1rkc "And to fix all the things I'd like to fix...{w=0.3}{nw}"
+    extend 1rksdld "I think it'd be easier if I started from scratch altogether."
+    m 4ekc "It'll mean that the sky outside will be rather empty for a while,{w=0.1} {nw}"
+    extend 4eua "but I think I can really make it worth the wait."
+    m 1euc "If that's okay with you, [player]?{nw}"
+    $ _history_list.pop()
+
+    menu:
+        m "If that's okay with you, [player]?{fast}"
+
+        "Let's do it.":
+            m 1dsc "Okay, just give me a second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+            play sound "sfx/glitch3.ogg"
+            python:
+                mas_island_event._resetProgression()
+                mas_island_event.startProgression()
+
+            m 3hua "And it's done!"
+            m 1eua "Now I've got a fresh, new canvas."
+            m 3kuu "...And I'll have plenty to keep me busy when you're away, [player]. Ehehe~"
+            m 3hub "Hope you're looking forward to it!"
+
+        "I think they're fine.":
+            m 3eka "Alright, [player]."
+            m 3hua "If you're fine with how they are right now, then I am too.{w=0.2} I'll see what I can do with them as they are~"
+
     return "no_unlock"

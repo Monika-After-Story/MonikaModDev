@@ -60,11 +60,40 @@ These guidelines are not necessarily exhaustive. If you wish to work on anything
 
 Thank you for taking the time to understand the IP Guidelines. We chose to publish these guidelines not to restrict artists, but to express our desire to allow them to produce DDLC-related content. We wish to encourage artistic freedom and hope to see fans enjoy DDLC in many different ways.
 
+## Monika After Story specific info
+
+In general, we are very open to assets and code from *Monika After Story* being used in other projects. However, there are some restrictions.
+
+All assets and code from *Monika After Story* **cannot be used to make a mod or fork intended as a replacement for Monika After Story.** If you would like to add new features or content to the game, please make those contributions to the original project. We are very open to suggestions and contributions, and odds are that anything added would be welcomed. If, for some reason, your new features conflict with the direction for Monika After Story consider developing your changes in the form of a "submod" which can be added to Monika After Story.
+
+Please follow Team Salvato's [IP Guidelines](http://teamsalvato.com/ip-guidelines/) for any project which includes our work.
+
+Please give credit to Monika After Story for the work that you use and link back to our project at http://www.monikaafterstory.com/. Do not claim ownership of the work others have done. Where applicable, please give individual credit for things like art assets used.
+
+Further restrictions are listed below:
+
+**Art**
+* **All Monika After Story art used outside of Monika After Story must be credited back to us or the creator of said art.**
+* Only blazer (uniform) sprites **from versions 0.12.1 and earlier** can be used outside of *Monika After Story* without permission. This does **NOT** include facial expressions.
+     * Blazer (uniform) sprites from **0.12.1.x/0.12.2 and newer** are considered "other Monika After Story art" below.
+* Sprites from an earlier version of *Monika After Story* are in the community folder for r/DDLCMods, and are free to use outside of *Monika After Story* without permission.
+* **All other Monika After Story art cannot be distributed or used outside of Monika After Story without express consent from the Monika After Story team or the creator of said art. In the event of a disagreement of consent between the Monika After Story team and the creator of said art, the creator's consent or restriction on the usage of said art takes precedence.**
+* DDLC art used in Monika After Story is exempt from these restrictions but is covered under Team Salvato's [IP Guidelines](http://teamsalvato.com/ip-guidelines/).
+
+**Music**
+* **All Monika After Story music used outside of Monika After Story must be credited back to us or the creator of said music.**
+* **All Monika After Story music cannot be distributed or used outside of Monika After Story without express consent from the Monika After Story team or creator of said music. In the event of a disagreement of consent between the Monika After Story team and the creator of said music, the creator's consent or restriction on the usage of said music takes precedence.**
+* Royalty-free music/sounds used in Monika After Story are exempt from these restrictions.
+* DDLC music/sounds used in Monika After Story are exempt from these restrictions but are covered under Team Salvato's [IP Guidelines](http://teamsalvato.com/ip-guidelines/).
+
+**Code**
+* **All Monika After Story code used outside of Monika After Story must be credited back to us.**
+* **All Monika After Story code cannot be distributed or used outside of Monika After Story without express consent from the Monika After Story team.**
+* External libraries and packages (i.e: some of the libraries in the `python-packages` folder) that are **not created by the Monika After Story team** should not be considered "Monika After Story code" and therefore are **exempt** from these restrictions.
+
 ## tl;dr (Plain language summary)
 
 In summary, we don't own DDLC, but Team Salvato is okay with us modifying their game as long as we don't use it to make a profit, promote it as an alternative to DDLC, or distribute this mod as a standalone game. They can change their mind on this at any time, but we don't expect they will.
-
-For more information on using Monika After Story-specific art, music, and code outside of Monika After Story, see [here](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#can-i-use-parts-of-monika-after-story-in-my-own-project).
 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

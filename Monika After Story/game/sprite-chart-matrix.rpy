@@ -73,6 +73,56 @@ python early:
 
         # NOTE: extended classes should impelement the render function.
 
+        def apply_filter(self, img_base, flt=None):
+            """
+            Applies the current filter to the given image base.
+
+            IN:
+                img_base - the image to apply filter to
+                flt - filter to use, leave None to use the internal filter.
+            """
+            if flt is None:
+                flt = self.flt
+            return store.mas_sprites._gen_im(flt, img_base)
+
+        def current_filter(self):
+            """
+            Gets the current filter (not internal)
+
+            RETURNS: the current filter
+            """
+            return store.mas_sprites.get_filter()
+
+        def per_interact(self):
+            """
+            Decides if this displayable should be redrawn on an interaction.
+            """
+            if self.update_filter():
+                renpy.redraw(self, 0)
+
+        def safe_apply_filter(self, img_base):
+            """
+            Updates the filter before applying it.
+
+            IN:
+                img_base - the image to apply filter to
+            """
+            self.update_filter()
+            return self.apply_filter(img_base)
+
+        def update_filter(self):
+            """
+            Updates the internal filter
+
+            RETURNS: True if the filter chagned
+            """
+            new_flt = self.current_filter()
+            if new_flt != self.flt:
+                self.flt = new_flt
+                return True
+
+            return False
+
 
     class MASFilterableSprite(MASFilterable):
         """
@@ -107,7 +157,7 @@ python early:
                 image_path - MUST be an image path string.
                 highlight - MASFilterMap object of highlights to apply
             """
-            super(MASFilterable, self).__init__(
+            super(MASFilterableSprite, self).__init__(
                 focus=focus,
                 default=default,
                 style=style,
@@ -117,6 +167,8 @@ python early:
             self.img_path = image_path
             self.img_obj = Image(image_path)
             self.highlight = highlight
+
+            self._last_flt = self.flt
 
         def __gen_hl(self):
             """
@@ -190,6 +242,15 @@ python early:
 
             # save
             return rv
+
+        def per_interact(self):
+            """
+            Decides whether or no we should redraw this displayable
+            on an interaction
+            """
+            if self._last_flt != self.flt:
+                self._last_flt = self.flt
+                renpy.redraw(self, 0.0)
 
         def visit(self):
             self.flt = store.mas_sprites.get_filter()
@@ -542,7 +603,7 @@ init 1 python in mas_sprites:
             mfwm_id - ID of the MASFilterWeatherMap object
             mfwm - MASFilterWeatherMap object to verify
         """
-        if mwfm.use_fb:
+        if mfwm.use_fb:
             # fallback-based
 
             # contains all flts that have a valid default fallback somewhere.
@@ -783,10 +844,8 @@ init -99 python in mas_sprites:
         """
         # check init
         if __ignore_filters:
-            mas_utils.writelog(
-                "[Warning!]: Cannot add filter '{0}' after init -1\n".format(
-                    flt_enum
-                )
+            store.mas_utils.mas_log.warning(
+                "Cannot add filter '{0}' after init -1".format(flt_enum)
             )
             return
 
@@ -797,11 +856,8 @@ init -99 python in mas_sprites:
         # check base if given
         if base is not None:
             if base not in FILTERS:
-                mas_utils.writelog(
-                    (
-                        "[Warning!]: Cannot add filter '{0}' with base '{1}', "
-                        "base flt not exist\n"
-                    ).format(flt_enum, base)
+                store.mas_utils.mas_log.warning(
+                    "Cannot add filter '{0}' with base '{1}', base flt does not exist".format(flt_enum, base)
                 )
                 return
 
@@ -882,11 +938,8 @@ init -99 python in mas_sprites:
             eval(flt_enum, fake_context)
             return True
         except:
-            mas_utils.writelog(
-                (
-                    "[Warning!]: Cannot add filter '{0}'. Name is not "
-                    "python syntax friendly\n"
-                ).format(flt_enum)
+            store.mas_utils.mas_log.warning(
+                "Cannot add filter '{0}'. Name is not python syntax friendly".format(flt_enum)
             )
 
         return False
@@ -925,6 +978,9 @@ init -4 python in mas_sprites:
     CID_HL = 7
     CID_HLG = 8
     CID_BG = 9 # TODO: maybe
+
+    # special cache ids - not actually used in the cache table.
+    CID_DYNAMIC = -2
 
     # several caches for images
 
@@ -1099,15 +1155,20 @@ init -4 python in mas_sprites:
             if render_key[1] == store.mas_sprites.CID_FACE:
                 return None
 
-            # add cache id to front for highlight key
-            hl_key = (render_key[1],) + render_key[0]
+            if render_key[1] == store.mas_sprites.CID_DYNAMIC:
+                # dynamic sprites should just use the "image base" passed in
+                img_base = render_key[3]
 
-            # check highlight cache
-            img_base = store.mas_sprites._cs_im(
-                hl_key,
-                store.mas_sprites.CID_HL,
-                render_key[3]
-            )
+            else:
+                # add cache id to front for highlight key
+                hl_key = (render_key[1],) + render_key[0]
+
+                # check highlight cache
+                img_base = store.mas_sprites._cs_im(
+                    hl_key,
+                    store.mas_sprites.CID_HL,
+                    render_key[3]
+                )
 
             if img_base is not None:
                 render_list.append(renpy.render(
@@ -1133,7 +1194,6 @@ init -4 python in mas_sprites:
 
             RETURNS: rendered surf image to use
             """
-            # render this bitch
             new_surf = renpy.render(
                 store.mas_sprites._cgen_im(
                     self.flt,
@@ -1352,6 +1412,10 @@ init -4 python in mas_sprites:
 
         RETURNS: Image Manipulator for this render
         """
+        if cid == CID_DYNAMIC:
+            # dynamic sprites are not cached.
+            return img_base
+
         img_cache = _gc(cid)
         if key in img_cache:
             return img_cache[key]
@@ -1385,6 +1449,15 @@ init -4 python in mas_sprites:
             render_list - list to add IMs to
         """
         img_key, cid, img_base, hl_base = render_key
+        if cid == CID_DYNAMIC:
+            # add the img and hl directly 
+            if img_base is not None:
+                render_list.append(img_base)
+            if hl_base is not None:
+                render_list.append(hl_base)
+
+            return
+
         img_cache = _gc(cid)
         hl_key = _hlify(img_key, cid)
         if img_key in img_cache:
@@ -1513,6 +1586,18 @@ init -4 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
         poseid = acs.pose_map.get(leanpose, None)
+
+        # dynamic check
+        if acs.is_dynamic():
+            # in this case, the poseid is True/False to signify whether or
+            # not its enabled.
+
+            if not poseid:
+                return
+
+            # ACS enabled for this pose - add the disps
+            rk_list.append((None, CID_DYNAMIC, acs.disp, acs.hl_disp))
+            return
 
         # get arm code if needed
         # NOTE: we can be sure that a nonsplit acs will not be used in
@@ -2658,7 +2743,7 @@ init -4 python in mas_sprites:
         return rk_list
 
 
-init -10 python:
+init -50 python:
 
     class MASFilterMap(object):
         """SEALED

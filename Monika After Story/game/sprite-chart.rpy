@@ -307,6 +307,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that this ACS is a drink
 
+    EXP_A_DYNAMIC = "dynamic"
+    # v: ignored
+    # marks this ACS as dynamic (see: MASDynamicAccessory)
+
     # ---- HAIR ----
 
     EXP_H_TT = "twintails"
@@ -334,6 +338,14 @@ init -100 python in mas_sprites:
     EXP_H_TB = "twinbraid"
     #v: ignored
     #marks the hair as a twinbraid hairstyle
+
+    # Value: ignored
+    # Marks that a hair obj is wet (appropriate for a bath/shower/pool/etc)
+    EXP_H_WET = "wet"
+
+    EXP_H_SB = "straight-bangs"
+    # v: ignored
+    # marks that a hair style has straight bangs
 
     # ---- CLOTHES ----
 
@@ -370,6 +382,10 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a clothing item is lingerie
 
+    # Value: ignored
+    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+    EXP_C_WET = "wet"
+
     # --- default exprops ---
 
     DEF_EXP_TT_EXCL = [EXP_H_TT]
@@ -390,6 +406,7 @@ init -100 python in mas_sprites:
         "hat",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for ribbon-based items.
 
@@ -446,6 +463,7 @@ init -100 python in mas_sprites:
         "ribbon",
         "s-type-ribbon",
         "twin-ribbons",
+        "mini-ribbon"
     ]
     # default mux types for hats
 
@@ -477,6 +495,13 @@ init -100 python in mas_sprites:
             ex_props={
                 "bare neck": True
             }
+        ),
+        # TODO - add earrings here
+        "front-bow": ACSTemplate(
+            "front-bow",
+            mux_type=[
+                "front-bow"
+            ]
         ),
         "front-hair-flower-crown": ACSTemplate(
             "front-hair-flower-crown",
@@ -553,6 +578,13 @@ init -100 python in mas_sprites:
         ),
         "s-type-ribbon": ACSTemplate(
             "s-type-ribbon",
+            mux_type=DEF_MUX_RB,
+            ex_props={
+                EXP_A_RBL: True,
+            }
+        ),
+        "mini-ribbon": ACSTemplate(
+            "mini-ribbon",
             mux_type=DEF_MUX_RB,
             ex_props={
                 EXP_A_RBL: True,
@@ -1321,6 +1353,83 @@ init -5 python in mas_sprites:
 
         # otherwise we have a map
         return sprite_map.get(sprite_name, None)
+
+    def get_installed_sprites(sprite_type, predicate=None):
+        """
+        Returns ALL available sprite objects
+        NOTE: Runtime only
+
+        IN:
+            sprite_type - the sprite type constant
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of sprite objects
+        """
+        sprite_map = SP_MAP.get(sprite_type, None)
+
+        if not sprite_map:
+            return []
+
+        if predicate:
+            return [
+                spr_object
+                for spr_object in sprite_map.itervalues()
+                if predicate(spr_object)
+            ]
+
+        else:
+            return sprite_map.values()
+
+    def get_installed_acs(predicate=None):
+        """
+        get_installed_sprites for acs objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of acs sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_ACS,
+            predicate=predicate
+        )
+
+    def get_installed_hair(predicate=None):
+        """
+        get_installed_sprites for hair objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of hair sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_HAIR,
+            predicate=predicate
+        )
+
+    def get_installed_clothes(predicate=None):
+        """
+        get_installed_sprites for clothes objects
+
+        IN:
+            predicate - the predicate function
+                (Default: None)
+
+        OUT:
+            list of clothes sprite objects
+        """
+        return get_installed_sprites(
+            sprite_type=store.mas_sprites_json.SP_CLOTHES,
+            predicate=predicate
+        )
+
 
 
 ##### special mas monika functions (hooks)
@@ -4402,8 +4511,8 @@ init -3 python:
                 if arm_key in store.mas_sprites.NUM_ARMS:
                     # NOneify invalid data
                     if not isinstance(arm_data[arm_key], MASArm):
-                        store.mas_utils.writelog(
-                            "Invalid arm data at '{0}'\n".format(arm_key)
+                        store.mas_utils.mas_log.warning(
+                            "Invalid arm data at '{0}'".format(arm_key)
                         )
                         arm_data[arm_key] = None
 
@@ -5242,6 +5351,7 @@ init -3 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.is_custom = False
+            self._dynamic = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -5433,6 +5543,14 @@ init -3 python:
 
             return self.hl_map.keys()
 
+        def is_dynamic(self):
+            """
+            Is this a dynamic sprite?
+
+            REUTRNS: True if this is a dynamic sprite
+            """
+            return self._dynamic
+
         def rmprop(self, prop):
             """
             Removes the prop from this sprite's ex_props, if it exists
@@ -5457,6 +5575,21 @@ init -3 python:
                 return sprite_base.name
 
             return ""
+
+    class MASDynamicSpriteBase(renpy.store.object):
+        """
+        Special sprite type for dynamic sprites - all dynamic based sprites
+        should inherit this as a 2nd type and call dyn_init in init
+
+        PROPERTIES:
+            disp - Displayable to associate with this sprite. Can be dynamic.
+            hl_disp - Displayable to use for highlights. Can be dynamic.
+        """
+
+        def dyn_init(self, disp, hl_disp=None):
+            self.disp = disp
+            self.hl_disp = hl_disp
+            self._dynamic = True
 
     class MASSpriteFallbackBase(MASSpriteBase):
         """
@@ -6486,6 +6619,102 @@ init -3 python:
             return value in cls.__MHM_KEYS
 
 
+    class MASDynamicAccessory(MASAccessoryBase, MASDynamicSpriteBase):
+        """
+        A Dynamic MAS Accessory. This can vary an ACS based on displayables.
+
+        NOTE: does NOT support split ACS.
+
+        PROPERTIES:
+            No Additional.
+        See MASAccessory and MASDynamicSpriteBase for inherited properties.
+        """
+
+        def __init__(self,
+                name,
+                disp,
+                pose_map,
+                rec_layer=MASMonika.PST_ACS,
+                priority=10,
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None,
+                acs_type=None,
+                mux_type=None,
+                ex_props=None,
+                dlg_data=None,
+                keep_on_desk=False,
+                hl_disp=None
+        ):
+            """
+            Dynamic accessory constructor.
+
+            For simplicity, this passes in fake values to the accessory base.
+
+            IN:
+                name - name of this accessory
+                disp - displayable to associate with this accessory. Can be
+                    dynamic.
+                pose_map - MASPoseMap - this is assumed to be in enable/disable
+                    mode.
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                acs_type - type, for ease of organization of acs
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
+                    (Default: None)
+                mux_type - list of acs types that should be
+                    mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
+                    (Default: None)
+                ex_props - dict of additional properties to apply to this
+                    sprite object.
+                    (Default: None)
+                dlg_data - tuple of the following format:
+                    [0] - string to use for dlg_desc
+                    [1] - boolean value for dlg_plur
+                    (Default: None)
+                keep_on_desk - determines if ACS should be shown if monika
+                    leaves
+                    (Default: False)
+                hl_disp - displayable to use for Highlights. Can be dynamic.
+                    (Default: None)
+            """
+            super(MASDynamicAccessory, self).__init__(
+                MASAccessoryBase.ASO_REG, # no support for split
+                name,
+                "",
+                pose_map,
+                rec_layer=rec_layer,
+                priority=priority,
+                stay_on_start=stay_on_start,
+                entry_pp=entry_pp,
+                exit_pp=exit_pp,
+                acs_type=acs_type,
+                mux_type=mux_type,
+                ex_props=ex_props,
+                dlg_data=dlg_data,
+                keep_on_desk=keep_on_desk
+            )
+            self.dyn_init(disp, hl_disp=hl_disp)
+
+
     class MASHair(MASSpriteFallbackBase):
         """
         MASHair objects
@@ -7245,6 +7474,7 @@ init -3 python:
 python early:
 # # # START: Idle disp stuff
     import random
+    import collections
 
     class IdleExpException(Exception):
         """
@@ -7275,7 +7505,7 @@ python early:
         MIN_WEIGHT = 1
         MAX_WEIGHT = 100
 
-        exp_tags_map = dict()
+        exp_tags_map = collections.defaultdict(list)
         _conditional_cache = dict()
 
         def __init__(self, code, duration=(20, 30), aff_range=None, conditional=None, weight=50, tag=None, repeatable=True, add_to_tag_map=True):
@@ -7284,7 +7514,10 @@ python early:
 
             IN:
                 code - exp code
-                duration - duration for this exp in seconds. This can be int or a tuple of 2 ints. If it's a tuple, the duration is being choosen at random between 2 values
+                duration - duration for this exp in seconds. This can be a single number or a tuple of 2 number. If it's a tuple,
+                    the duration is being chosen at random between 2 values.
+                    If the numbers are floats, we use random.uniform, otherwise random.randint.
+                    NOTE: Do not mix ints with floats.
                     (Default: tuple (20, 30))
                 aff_range - affection range for this exp. If not None, assuming it's a tuple of 2 aff constants.
                     Values can be None to not limit lower or upper bounds
@@ -7310,23 +7543,23 @@ python early:
                 _len = len(duration)
                 if _len != 2:
                     raise IdleExpException(
-                        "Expected a tuple/list of 2 items for the duration property. Got the tuple/list of {0} item{1} instead.".format(
+                        "Expected a tuple of 2 items for the duration property. Got a tuple of {0} item{1} instead.".format(
                             _len,
                             "s" if _len != 1 else ""
                         )
                     )
 
-                elif duration[0] < 1 or duration[1] < 1:
+                elif duration[0] <= 0 or duration[1] <= 0:
                     raise IdleExpException(
-                        "Duration for idle expression must be at least one second long. Got: {0} and {1}.".format(
+                        "Duration for idle expression must be a positive number. Got: {0} and {1}.".format(
                             duration[0],
                             duration[1]
                         )
                     )
 
-            elif duration < 1:
+            elif duration <= 0:
                 raise IdleExpException(
-                    "Duration for idle expression must be at least one second long. Got: {0}.".format(
+                    "Duration for idle expression must be a positive number. Got: {0}.".format(
                         duration[0]
                     )
                 )
@@ -7357,18 +7590,17 @@ python early:
 
             if weight is not None and not MASMoniIdleExp.MIN_WEIGHT <= weight <= MASMoniIdleExp.MAX_WEIGHT:
                 raise IdleExpException(
-                    "Weight must be between 0 and 100. Got {0}.".format(
+                    "The weight property must be between {0} and {1}. Got {2}.".format(
+                        MASMoniIdleExp.MIN_WEIGHT,
+                        MASMoniIdleExp.MAX_WEIGHT,
                         weight
                     )
                 )
             self.weight = weight
 
             if tag is not None and add_to_tag_map:
-                if tag in MASMoniIdleExp.exp_tags_map:
-                    MASMoniIdleExp.exp_tags_map[tag].append(self)
+                MASMoniIdleExp.exp_tags_map[tag].append(self)
 
-                else:
-                    MASMoniIdleExp.exp_tags_map[tag] = [self]
             self.tag = tag
             self._add_to_tag_map = add_to_tag_map
 
@@ -7399,10 +7631,14 @@ python early:
             A method to select duration for this exp
 
             OUT:
-                int in range of the duration property of this exp, or the prop itself if it's not a range
+                int/float
             """
             if isinstance(self.duration, tuple):
+                if isinstance(self.duration[0], float) and isinstance(self.duration[1], float):
+                    return random.uniform(self.duration[0], self.duration[1])
+
                 return random.randint(self.duration[0], self.duration[1])
+
             return self.duration
 
         def check_aff(self, aff=None):
@@ -7888,8 +8124,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.add(
                 MASMoniIdleExp(code, **kwargs),
@@ -8020,8 +8255,7 @@ python early:
                     (Default: False)
                 kwargs - additional kwargs that will be passed into MASMoniIdleExp
             """
-            if "add_to_tag_map" not in kwargs:
-                kwargs["add_to_tag_map"] = False
+            kwargs.setdefault("add_to_tag_map", False)
 
             self.force(
                 MASMoniIdleExp(code, **kwargs),

@@ -297,6 +297,14 @@ init -2 python in mas_sprites:
         #Always remove rin ears
         _moni_chr.remove_acs(store.mas_acs_rin_ears)
 
+    def _hair_wet_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for wet hair
+        """
+        # We remove ahoge as it doesn't make sense on wet hair
+        # We don't restore it on hair change either
+        _moni_chr._set_ahoge(None)
+
     ######### CLOTHES [SPR020] ###########
     # available kwargs:
     #   entry:
@@ -328,6 +336,30 @@ init -2 python in mas_sprites:
 
         store.mas_unlockEVL("mas_compliment_outfit", "CMP")
 
+    def _clothes_blackpink_dress_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for blackpink dress
+        """
+        outfit_mode = kwargs.get("outfit_mode")
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_diamond_necklace_pink)
+            _moni_chr.wear_acs(store.mas_acs_pinkdiamonds_hairclip)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_black_pink)
+            _moni_chr.wear_acs(store.mas_acs_earrings_diamond_pink)
+
+    def _clothes_blackpink_dress_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for blackpink dress
+        """
+        outfit_mode = kwargs.get("outfit_mode")
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_diamond_necklace_pink)
+            _moni_chr.remove_acs(store.mas_acs_pinkdiamonds_hairclip)
+            _moni_chr.remove_acs(store.mas_acs_ribbon_black_pink)
+            _moni_chr.remove_acs(store.mas_acs_earrings_diamond_pink)
 
     def _clothes_rin_entry(_moni_chr, **kwargs):
         """
@@ -458,6 +490,29 @@ init -2 python in mas_sprites:
         )
 
 
+    def _clothes_spider_lingerie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for spider lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_def)
+            _moni_chr.wear_acs(store.mas_acs_grayhearts_hairclip)
+            _moni_chr.wear_acs(store.mas_acs_ribbon_black_gray)
+
+
+    def _clothes_spider_lingerie_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for spider lingerie
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_grayhearts_hairclip)
+            _moni_chr.remove_acs(store.mas_acs_ribbon_black_gray)
+
+
     def _clothes_santa_entry(_moni_chr, **kwargs):
         """
         Entry programming point for santa clothes
@@ -553,10 +608,14 @@ init -2 python in mas_sprites:
         """
         Exit programming point for sundress white
         """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
+
         # TODO: add selectors for these items so they dont have to be
         #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
-        _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_velius94_dress_whitenavyblue_entry(_moni_chr, **kwargs):
@@ -574,6 +633,52 @@ init -2 python in mas_sprites:
                 _moni_chr.change_hair(store.mas_hair_def)
 
             _acs_wear_if_gifted(_moni_chr, "velius94_bunnyscrunchie_blue")
+
+    def _clothes_bath_towel_white_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for bath towel
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_wet, by_user=False)
+        # Always add water drops, otherwise why would you wear a towel
+        _moni_chr.wear_acs(store.mas_acs_water_drops)
+
+    def _clothes_bath_towel_white_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for bath towel
+        """
+        # Remove water drops
+        _moni_chr.remove_acs(store.mas_acs_water_drops)
+
+    def _clothes_briaryoung_shuchiin_academy_uniform_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. We need to consider
+        #   how to handle other matching ACS/hair like if kaguya is added
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # wear the straight bangs if found
+            straight_bangs = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "briaryoung_down_straight_bangs"
+            )
+            if straight_bangs is not None:
+                _moni_chr.change_hair(straight_bangs)
+
+                # find ACS and wear for this outfit
+                _acs_wear_if_found(_moni_chr, "briaryoung_front_bow_black")
+
+
+    def _clothes_briaryoung_shuchiin_academy_uniform_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. See above.
+        _acs_remove_if_found(_moni_chr, "briaryoung_front_bow_black")
 
 
     ######### ACS [SPR030] ###########
@@ -819,6 +924,26 @@ init -1 python:
         ]
     )
 
+    ### WET HAIR
+    ## wet
+    # Wet hairdown (this isn't selectable by user)
+    # Thanks Orca/Briar/Mocca
+    mas_hair_wet = MASHair(
+        "wet",
+        "wet",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        ex_props={
+            store.mas_sprites.EXP_H_RQCP: [store.mas_sprites.EXP_C_WET, store.mas_sprites.EXP_C_BRS],
+            store.mas_sprites.EXP_H_NT: True,
+            store.mas_sprites.EXP_H_WET: True
+        },
+        entry_pp=store.mas_sprites._hair_wet_entry
+    )
+    store.mas_sprites.init_hair(mas_hair_wet)
+
     ### CUSTOM
     ## custom
     # Not a real hair object. If an outfit uses this, it's assumed that the
@@ -913,6 +1038,37 @@ init -1 python:
         mas_clothes_blackdress,
         "Black Dress",
         "blackdress",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "Are we going somewhere special, [player]?"
+        ]
+    )
+
+
+    ### Black and pink dress
+    ## blackpinkdress
+    # Used for f14
+    # thanks SovietSpartan/BriarYoung
+    mas_clothes_blackpink_dress = MASClothes(
+        "blackpinkdress",
+        "blackpinkdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_blackpink_dress_entry,
+        exit_pp=store.mas_sprites._clothes_blackpink_dress_exit,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackpink_dress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackpink_dress,
+        "Black and Pink Dress",
+        "blackpinkdress",
         "clothes",
         visible_when_locked=False,
         select_dlg=[
@@ -1046,6 +1202,55 @@ init -1 python:
             "Nya!"
         ]
     )
+
+    ### SPIDER LINGERIE
+    # thanks BriarYoung
+    mas_clothes_spider_lingerie = MASClothes(
+        "spider_lingerie",
+        "spider_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+            "lingerie": "o31"
+        },
+        entry_pp=store.mas_sprites._clothes_spider_lingerie_entry,
+        exit_pp=store.mas_sprites._clothes_spider_lingerie_exit,
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_spider_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_spider_lingerie,
+        "Lingerie (Spider)",
+        "spider_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Caught you in my web~",
+            "Don't be scared~",
+            "Don't worry, I don't bite..."
+        ]
+    )
+
 
     ### SANTA MONIKA
     ## santa
@@ -1218,6 +1423,28 @@ init -1 python:
             "Do you like what you see, [player]?"
         ]
     )
+
+    ### Towel (White)
+    ## bath_towel_white
+    # Bath towel for Monika (this isn't selectable by user)
+    # Thanks Briar
+    mas_clothes_bath_towel_white = MASClothes(
+        "bath_towel_white",
+        "bath_towel_white",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_WET: True
+        },
+        entry_pp=store.mas_sprites._clothes_bath_towel_white_entry,
+        exit_pp=store.mas_sprites._clothes_bath_towel_white_exit,
+        pose_arms=MASPoseArms({}, def_base=False)
+    )
+    store.mas_sprites.init_clothes(mas_clothes_bath_towel_white)
 
 init -1 python:
     # ACCESSORIES (SPR130)
@@ -1628,6 +1855,43 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_musicnote_necklace_gold,
+        display_name="Golden Music Note",
+        thumb="musicnote_necklace_gold",
+        group="necklace",
+    )
+
+    ### Diamond necklace (Pink)
+    ## diamond_necklace_pink
+    # For use with _blackpink_dress
+    # thanks BriarYoung
+    mas_acs_diamond_necklace_pink = MASSplitAccessory(
+        "diamond_necklace_pink",
+        "diamond_necklace_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="necklace",
+        mux_type=["necklace"],
+        ex_props={
+            "bare collar": True,
+        },
+        rec_layer=MASMonika.BSE_ACS,
+        arm_split=MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_acs(mas_acs_diamond_necklace_pink)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_diamond_necklace_pink,
+        display_name="Pink Diamond",
+        thumb="diamond_necklace_pink",
+        group="necklace",
+    )
 
     ### Marisa Strandbow
     ## marisa_strandbow
@@ -1666,7 +1930,7 @@ init -1 python:
         # muxtype handled by defaults
         ex_props={
             store.mas_sprites.EXP_A_RQHP: store.mas_sprites.EXP_H_NT,
-            store.mas_sprites.EXP_A_EXCLHP: store.mas_sprites.EXP_H_TB
+            store.mas_sprites.EXP_A_EXCLHP: [store.mas_sprites.EXP_H_TB, store.mas_sprites.EXP_H_WET]
         },
         rec_layer=MASMonika.AFH_ACS
     )
@@ -1738,6 +2002,61 @@ init -1 python:
         priority=5
     )
     store.mas_sprites.init_acs(mas_acs_rin_ears)
+
+    ### Gray hearts Hairclip
+    ## grayhearts_hairclip
+    # black hearst hairclip to go with the spider_lingerie outfit
+    # Thanks BriarYoung
+    mas_acs_grayhearts_hairclip = MASAccessory(
+        "grayhearts_hairclip",
+        "grayhearts_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_grayhearts_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_grayhearts_hairclip,
+        "Hairclip (Gray hearts)",
+        "grayhearts_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "My heart beats for you, [player]~",
+            "Full of love, just like you~"
+        ]
+    )
+
+    ### Pink Diamonds Hairclip
+    ## pinkdiamonds_hairclip
+    # pink diamonds hairclip to go with the
+    # Thanks BriarYoung
+    mas_acs_pinkdiamonds_hairclip = MASAccessory(
+        "pinkdiamonds_hairclip",
+        "pinkdiamonds_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_pinkdiamonds_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_pinkdiamonds_hairclip,
+        "Hairclip (Pink diamonds)",
+        "pinkdiamonds_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "Cute!"
+        ]
+    )
 
     ### Holly Hairclip
     ## holly_hairclip
@@ -1919,7 +2238,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_black)
@@ -1933,6 +2255,69 @@ init -1 python:
         ],
         select_dlg=[
             "Are we going somewhere special, [player]?"
+        ]
+    )
+
+    ### BLACK/GRAY RIBBON
+    ## ribbon_black_gray
+    # Black/gray ribbon used as part of spider lingerie outfit
+    # thanks Briar
+    mas_acs_ribbon_black_gray = MASAccessory(
+        "ribbon_black_gray",
+        "ribbon_black_gray",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_gray)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_gray,
+        "Ribbon (Black/gray)",
+        "ribbon_black_gray",
+        "ribbon",
+        hover_dlg=[
+            "Very versatile."
+        ],
+        select_dlg=[
+            "This goes with so many different outfits!"
+        ]
+    )
+
+    ### BLACK/PINK RIBBON
+    ## ribbon_black_pink
+    # Black/pink ribbon used as part of blackpink f14 outfit
+    # thanks Briar
+    mas_acs_ribbon_black_pink = MASAccessory(
+        "ribbon_black_pink",
+        "ribbon_black_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_pink,
+        "Ribbon (Black/pink)",
+        "ribbon_black_pink",
+        "ribbon",
+        select_dlg=[
+            "So cute!"
         ]
     )
 
@@ -2510,6 +2895,100 @@ init -1 python:
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_roses)
+
+    ### Water drops
+    ## water_drops
+    # Water drops on Monika's body
+    # Thanks Orca
+    mas_acs_water_drops = MASAccessory(
+        "water_drops",
+        "water_drops",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        acs_type="water-drops",
+        priority=1,
+        stay_on_start=True,
+        rec_layer=MASMonika.MAB_ACS,
+    )
+    store.mas_sprites.init_acs(mas_acs_water_drops)
+
+    ### DESK JACK O LANTERN
+    ## desk_candy_jack
+    # smirk pumpkin to be placed on Monika's desk
+    # Thanks JMO
+    mas_acs_desk_candy_jack = MASDynamicAccessory(
+        "desk_candy_jack",
+        ConditionSwitch(
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 2",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_brim-0.png", None),
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 0",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_half-0.png", None),
+            "True",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_empty-0.png", None)
+        ),
+        MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        priority=13,
+        acs_type="desk_jack_o_lantern",
+        mux_type=["flowers"],
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_desk_candy_jack)
+
+    ### DESK LANTERN
+    ## desk_lantern
+    # stylish old-school lantern to be placed on Monika's desk
+    # Thanks JMO
+    mas_acs_desk_lantern = MASDynamicAccessory(
+        "desk_lantern",
+        ConditionSwitch(
+            "store.mas_isNightNow()", "mod_assets/monika/a/acs-desk_lantern_lit-0.png",
+            "True", MASFilterableSprite("mod_assets/monika/a/acs-desk_lantern_unlit-0.png", None)
+        ),
+        MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        priority=13,
+        acs_type="desk_lantern",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_desk_lantern)
+
+    ### PINK DIAMOND EARRINGS
+    ## earrings_diamond_pink
+    # pink diamond earrings
+    # Thanks Briar
+    mas_acs_earrings_diamond_pink = MASAccessory(
+        "earrings_diamond_pink",
+        "earrings_diamond_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="earrings",
+        mux_type=["earrings"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_earrings_diamond_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_earrings_diamond_pink,
+        "Earrings (Pink Diamond)",
+        "earrings_diamond_pink",
+        "earrings",
+        select_dlg=[
+            "Pretty in pink!",
+            "I'm shining like a diamond~"
+        ]
+    )
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
