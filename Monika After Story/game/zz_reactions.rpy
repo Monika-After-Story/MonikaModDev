@@ -2827,14 +2827,14 @@ label mas_reaction_gift_noudeck:
                 call mas_reaction_gift_noudeck_have_played
 
             "No.":
-                m 3tuu "How about 'UNO' then, ahaha?{nw}"
+                m 3tuu "How about 'UNO' then, ehehe?{nw}"
                 $ _history_list.pop()
                 menu:
-                    m "How about 'UNO' then, ahaha?{fast}"
+                    m "How about 'UNO' then, ehehe?{fast}"
 
                     "Yes.":
                         m 3hub "Great! {w=0.3}{nw}"
-                        extend 3tuu "'NOU' is {i}very{/i} similar, ahaha..."
+                        extend 3tub "'NOU' is {i}very{/i} similar, ahaha..."
                         call mas_reaction_gift_noudeck_have_played
 
                     "No.":
