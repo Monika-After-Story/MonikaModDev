@@ -1,9 +1,7 @@
 {
     "__author": "Briar Young",
     "ex_props": {
-        "bare-shoulders": true,
-        "home": true,
-        "date": true
+        "home": true
     },
     "version": 3,
     "type": 2,

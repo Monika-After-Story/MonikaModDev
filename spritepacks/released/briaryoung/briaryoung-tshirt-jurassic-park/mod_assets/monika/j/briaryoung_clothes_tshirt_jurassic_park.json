@@ -1,9 +1,7 @@
 {
     "__author": "Briar Young",
     "ex_props": {
-        "bare-shoulders": true,
-        "home": true,
-        "date": true
+        "home": true
     },
     "version": 3,
     "type": 2,
@@ -23,12 +21,15 @@
     },
     "stay_on_start": true,
     "select_info": {
-        "display_name": "T-Shirt (Jurassic park)",
+        "display_name": "T-Shirt (Jurassic Park)",
         "thumb": "briaryoung_tshirt_jurassic_park",
         "group": "clothes",
         "select_dlg": [
-            "Dinosaurs are so fascinating!",
-            "Well [player]? Do I look... prehistoric? Ahaha!"
+            "Life finds a way...",
+            "Does this make me a clever girl?",
+            "Clever [boy]~",
+            "Welcome to Jurassic Park!",
+            "I promise I won't bite~"
         ]
     },
     "giftname": "tshirtjurassicpark",
