@@ -175,7 +175,7 @@ init 5 python in mas_nou:
             _("NOU, [player]!"),
             _("I have only one card left, [player]! NOU!"),
             _("NOU! Keep up, [player]!~"),
-            _("NOU, [player], ehehe~"),
+            _("NOU [player], ehehe~"),
             _("NOU, [player]~"),
             _("NOU~"),
             _("Just one card left! NOU, [player]~"),
@@ -187,8 +187,8 @@ init 5 python in mas_nou:
             _("But [player], I've said 'NOU'!"),
             _("I've already said 'NOU,' [player]!"),
             _("Silly, I already did that!~"),
-            _("[player]... How did you miss that? I already said 'NOU!'"),
-            _("Uh, [player]...{w=0.3} I already said 'NOU!'")
+            _("[player]... How did you miss that? I already said 'NOU'!"),
+            _("Uh, [player]...{w=0.3} I already said 'NOU'!")
         )
         # Quips when you ask her to yell NoU, but she has more than 1 card
         QUIPS_MONIKA_DONT_NEED_YELL_NOU = (
@@ -249,17 +249,17 @@ init 5 python in mas_nou:
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
-            _("You thought I wouldn't notice?~ You should've said 'NOU!'"),
+            _("You thought I wouldn't notice?~ You should've said 'NOU'!"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
-            _("I caught you! You didn't say 'NOU!'"),
-            _("You didn't say 'NOU!' And now you must take 2 cards!~")
+            _("I caught you! You didn't say 'NOU'!"),
+            _("You didn't say 'NOU'! Now you must take 2 cards!~")
         )
         # Quips when the player said nou, but didn't play a card afterwards
         QUIPS_PLAYER_FALSE_NOU = (
             _("You should say 'NOU' only if you're going to play a card, [player]."),
             _("Why didn't you play a card?"),
-            _("Eh, [player]? You should play a card after saying 'NOU!'"),
+            _("Eh, [player]? You should play a card after saying 'NOU'!"),
             _("Don't say 'NOU' if you're not going to play a card."),
             _("[player], don't yell 'NOU' for no reason..."),
             _("[player], you can be so silly sometimes~")
@@ -3521,7 +3521,7 @@ init 5 python:
     )
 
 label monika_explain_nou_rules:
-    m 1hua "Of cource, [player]."
+    m 1hua "Of course, [player]."
     m 3eub "The game looks complicated at first, {w=0.1}{nw}"
     extend 4eub "but it's actually pretty simple."
     m 4eua "I'm sure if we play a few more games, you'll get the hang of it."
@@ -3553,10 +3553,10 @@ label monika_explain_nou_rules:
     m 7hub "But you can press a button to let me know!"
     m 1eua "If one of us forgot to say 'NOU,' the other can {i}remind{/i} them. That will make the unlucky person draw 2 more cards."
     m 3eub "Besides the {i}Number{/i} cards, there are also special cards known as {i}Action{/i} and {i}Wild{/i} cards."
-    m 3eua "You can distinguish an Action card by its symbol, and a Wild card by its black color."
+    m 3eua "You can distinguish an {i}Action{/i} card by its symbol, and a {i}Wild{/i} card by its black color."
     m 1eua "These cards can make your opponent skip their turn or even draw more cards."
     m 1tsu "And by more, I mean 12 cards in a row."
-    m 1eua "Wild cards don't have a color which means they can be placed on any card."
+    m 1eua "{i}Wild{/i} cards don't have a color which means they can be placed on any card."
 
     if not persistent._mas_game_nou_house_rules["unrestricted_wd4"]:
         m 3eua "If you have no other cards with the color of the discard pile, that is."
@@ -3564,9 +3564,9 @@ label monika_explain_nou_rules:
     else:
         m 3eua "Usually, you can only play them if you have no other cards of the same color in the discard pile, but we're playing with our own rules."
 
-    m 1eua "When you play any Wild card, you should choose what color you want to set for it."
-    m "As powerful as Wild and Action cards may look, you can still save yourself from them."
-    m 1eub "For example you can mirror a Wild Draw Four by playing a Draw Two with the new color."
+    m 1eua "When you play any {i}Wild{/i} card, you should choose what color you want to set for it."
+    m "As powerful as {i}Wild{/i} and {i}Action{/i} cards may look, you can still save yourself from them."
+    m 1eub "For example you can mirror a {i}Wild Draw Four{/i} by playing a {i}Draw Two{/i} with the new color."
     m 3eua "...Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
     m 1eku "But I don't think it's really about winning anyway."
@@ -4114,7 +4114,7 @@ label mas_nou_reaction_monika_wins_round:
             m 1hua "I won again~"
 
         elif store.mas_nou.player_win_streak > 1:
-            m 1sub "Finally I won~"
+            m 1sub "Finally, I won~"
 
         else:
             m 1hua "I won~"

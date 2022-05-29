@@ -2824,20 +2824,21 @@ label mas_reaction_gift_noudeck:
             "Yes.":
                 m 1rksdlb "Ahaha..."
                 m 1eksdla "Of course you have, you gave me the deck after all."
-                m 1eua "Then you probably already know that some people play with house rules."
-                m 3eub "And if you'd like to, we can make our own rules too."
-                m 3eua "Alternatively, if you don't remember the rules, I can always remind you, just ask."
-                python:
-                    mas_unlockEVL("monika_change_nou_house_rules", "EVE")
-                    persistent._seen_ever["monika_introduce_nou_house_rules"] = True
-                    persistent._seen_ever["monika_explain_nou_rules"] = True
+                call mas_reaction_gift_noudeck_have_played
 
             "No.":
-                m 1eka "Oh, that's fine."
-                m 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
-                m 1rssdlb "That might sound quite obvious, ahaha~"
-                m 3eub "But it's a really fun game to play with friends and loved ones~"
-                m 1eua "I'll explain the basic rules for you later, just ask."
+                m 3tuu "How about 'UNO' then, ahaha?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "How about 'UNO' then, ahaha?{fast}"
+
+                    "Yes.":
+                        m 3hub "Great! {w=0.3}{nw}"
+                        extend 3tuu "'NOU' is {i}very{/i} similar, ahaha..."
+                        call mas_reaction_gift_noudeck_have_played
+
+                    "No.":
+                        call mas_reaction_gift_noudeck_havent_played
 
         m 3hub "I can't wait to play it with you!"
 
@@ -2856,3 +2857,23 @@ label mas_reaction_gift_noudeck:
         gift_ev = mas_getEV("mas_reaction_gift_noudeck")
         if gift_ev:
             store.mas_filereacts.delete_file(gift_ev.category)
+
+    return
+
+label mas_reaction_gift_noudeck_havent_played:
+    m 1eka "Oh, that's fine."
+    m 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
+    m 1rssdlb "That might sound quite obvious, ahaha~"
+    m 3eub "But it's a really fun game to play with friends and loved ones~"
+    m 1eua "I'll explain the basic rules for you later, just ask."
+    return
+
+label mas_reaction_gift_noudeck_have_played:
+    m 1eua "You probably already know that some people play with house rules."
+    m 3eub "And if you'd like to, we can make our own rules too."
+    m 3eua "Alternatively, if you don't remember the rules, I can always remind you, just ask."
+    python:
+        mas_unlockEVL("monika_change_nou_house_rules", "EVE")
+        persistent._seen_ever["monika_introduce_nou_house_rules"] = True
+        persistent._seen_ever["monika_explain_nou_rules"] = True
+    return
