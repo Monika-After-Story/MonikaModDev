@@ -1412,7 +1412,7 @@ init 5 python in mas_nou:
                     elif event.type == "click":
                         if (
                             event.stack is self.monika.hand
-                            and renpy.random.randint(1, 10) == 1# 1/10
+                            and renpy.random.randint(1, 5) == 1# 1/5
                         ):
                             self.__say_quip(
                                 self.QUIPS_PLAYER_CLICKS_MONIKA_CARDS
@@ -3543,7 +3543,7 @@ label monika_explain_nou_rules:
         m 3eub "After you play a card or skip your turn, my turn begins and so on until someone wins the game."
         m 1esa "Such scoring makes the game quicker and more casual."
 
-    m 3eub "One important rule is before playing your second last card, {w=0.2}{nw}"
+    m 3eub "One important rule is {i}before{/i} playing your second last card, {w=0.2}{nw}"
     extend 7eub "you should yell 'NOU' so I can know that you're close to victory!"
     m 2rksdla "Well, I guess yelling won't work in our case..."
     m 7hub "But you can press a button to let me know!"
@@ -3558,7 +3558,7 @@ label monika_explain_nou_rules:
         m 3eua "If you have no other cards with the color of the discard pile, that is."
 
     else:
-        m 3eua "Usually, you can only play them if you have no other cards of the same color in the discard pile, but we're playing with our own rules."
+        m 3eua "Usually, you can only play them if you have no other cards of the same color as the discard pile, but we're playing with our own rules."
 
     m 1eua "When you play any {i}Wild{/i} card, you should choose what color you want to set for it."
     m "As powerful as {i}Wild{/i} and {i}Action{/i} cards may look, you can still save yourself from them."
@@ -3574,6 +3574,21 @@ label monika_explain_nou_rules:
 # The game handling label
 label mas_nou_game_start:
     if (
+        (
+            persistent._mas_game_nou_abandoned > 1
+            or store.mas_nou.monika_win_streak > 2
+        )
+        and random.random() > 0.5
+    ):
+        m 1kua "I'm sure you'll win this time!"
+
+    elif (
+        store.mas_nou.player_win_streak > 2
+        and random.random() > 0.5
+    ):
+        m 1tuu "You better be ready, I'm not going easy on you this time~"
+
+    elif (
         persistent._mas_game_nou_house_rules["points_to_win"]
         and (
             persistent._mas_game_nou_points["Monika"] > 0
