@@ -15,6 +15,8 @@ default persistent._mas_game_nou_house_rules = {
 
 # NOU CLASS DEF
 init 5 python in mas_nou:
+    import random
+
     from store import m, persistent, Solid
     from store.mas_cardgames import *
 
@@ -475,9 +477,9 @@ init 5 python in mas_nou:
         # Chances to get a reaction depend on its seen_count
         # This is a map between seen_count and the odds
         REACTION_CHANCES_MAP = {
-            0: 33,
-            1: 66,
-            2: 90
+            0: 0.33,
+            1: 0.66,
+            2: 0.9
         }
 
         def __init__(self):
@@ -1183,7 +1185,7 @@ init 5 python in mas_nou:
                 next_player = self.player
 
             else:
-                if renpy.random.randint(0, 1):
+                if random.random() > 0.5:
                     current_player = self.player
                     next_player = self.monika
 
@@ -1412,7 +1414,7 @@ init 5 python in mas_nou:
                     elif event.type == "click":
                         if (
                             event.stack is self.monika.hand
-                            and renpy.random.randint(1, 5) == 1# 1/5
+                            and random.random() < 0.2
                         ):
                             self.__say_quip(
                                 self.QUIPS_PLAYER_CLICKS_MONIKA_CARDS
@@ -1561,7 +1563,7 @@ init 5 python in mas_nou:
 
                 else:
                     # 1/4 to say something so she doesn't spam you lol
-                    if renpy.random.randint(1, 4) == 1:
+                    if random.random() < 0.25:
                         self.__say_quip(self.QUIPS_PLAYER_YELLS_NOU, new_context=True)
 
                     self.player.yelled_nou = True
@@ -1665,9 +1667,9 @@ init 5 python in mas_nou:
             """
             MIN_THONK_TIME = 0.2
             MAX_THONK_TIME = 0.8
-            SHUFFLING_CHANCE = 15
-            LOW_MISSING_NOU_CHANCE = 10
-            HIGHT_MISSING_NOU_CHANCE = 25
+            SHUFFLING_CHANCE = 0.15
+            LOW_MISSING_NOU_CHANCE = 0.1
+            HIGHT_MISSING_NOU_CHANCE = 0.25
 
             def __init__(self, game, leftie=False):
                 """
@@ -1775,8 +1777,7 @@ init 5 python in mas_nou:
                     and self.game.game_log[-2]["played_card"].type == "wild"
                     and (
                         not persistent._mas_game_nou_house_rules["unrestricted_wd4"]
-                        # 1/4
-                        or renpy.random.randint(1, 4) == 1
+                        or random.random() < 0.25
                     )
                     and len(self.game.discardpile) > 1
                 ):
@@ -2031,8 +2032,7 @@ init 5 python in mas_nou:
                     # no point in doing anything
                     return
 
-                rng = renpy.random.randint(1, 100)
-                if rng > self.SHUFFLING_CHANCE:
+                if random.random() > self.SHUFFLING_CHANCE:
                     # we failed, return
                     return
 
@@ -2271,7 +2271,7 @@ init 5 python in mas_nou:
                                             )
                                             or (
                                                 self.player_cards_data["has_color"] is None
-                                                and renpy.random.randint(1, 3) == 1# 1/3
+                                                and random.random() < 0.3
                                             )
                                         )
                                     )
@@ -2309,7 +2309,7 @@ init 5 python in mas_nou:
                             )
                             and (
                                 this_color != self.game.discardpile[-1].color# no reason not to play this card if it has the current color
-                                or renpy.random.randint(1, 5) == 1# 1/5 to take the risk anyway
+                                or random.random() < 0.2# 1/5 to take the risk anyway
                             )
                         )
 
@@ -2335,7 +2335,7 @@ init 5 python in mas_nou:
                         reserved_card is not None# Do we have a reserved variant to play?
                         and (
                             total_cards < 4# play if we may win soon
-                            or renpy.random.randint(1, 4) == 1# 1/4 to play anyway
+                            or random.random() < 0.25# 1/4 to play anyway
                         )
                     ):
                         return reserved_card
@@ -2601,7 +2601,7 @@ init 5 python in mas_nou:
                                     # play if the player may have that color
                                     or self.game.discardpile[-1].color not in self.player_cards_data["lacks_colors"]
                                     # 1/5 to play anyway
-                                    or renpy.random.randint(1, 5) == 1
+                                    or random.random() < 0.2
                                 )
                             ):
                                 # Set the color if needed
@@ -2984,9 +2984,9 @@ init 5 python in mas_nou:
                                     and monika_win_streak > 2
                                 )
                             )
-                            and renpy.random.randint(1, 100) <= self.HIGHT_MISSING_NOU_CHANCE
+                            and random.random() < self.HIGHT_MISSING_NOU_CHANCE
                         )
-                        or renpy.random.randint(1, 100) <= self.LOW_MISSING_NOU_CHANCE
+                        or random.random() < self.LOW_MISSING_NOU_CHANCE
                     )
 
                 # Predefine as False
@@ -3069,7 +3069,7 @@ init 5 python in mas_nou:
                     chance_to_trigger = self.game.REACTION_CHANCES_MAP[chances_to_be_shown]
                     if (
                         reaction["type"] == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
-                        or renpy.random.randint(1, 100) <= chance_to_trigger# otherwise do rng check
+                        or random.random() < chance_to_trigger# otherwise do rng check
                     ):
                         # if we passed all checks, mark this reaction as shown
                         reaction["shown"] = True
@@ -4138,10 +4138,9 @@ label mas_nou_reaction_monika_wins_game:
         m 1eub "And this time I won the game!"
         if store.mas_nou.get_player_points_percentage("Player") < 0.3:
             m 4eub "You were quite close, though!"
-            if renpy.random.randint(1, 15) < 15:
+            if random.random() < 0.7:
                 m 4hua "I'm sure you'll win next time."
 
-            # 1/15
             else:
                 m 7ttu "Did you let me win on purpose?"
                 m 1huu "Ehehe~"
