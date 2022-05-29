@@ -12,10 +12,6 @@ default persistent._mas_game_nou_house_rules = {
     "unrestricted_wd4": False
 }
 
-# FIXME: make persistent.ever_won a defaultdict instead
-init 10 python:
-    if "nou" not in persistent.ever_won:
-        persistent.ever_won["nou"] = False
 
 # NOU CLASS DEF
 init 5 python in mas_nou:
@@ -3661,7 +3657,7 @@ label mas_nou_game_end:
             store.mas_nou.player_wins_this_sesh += 1
             store.mas_nou.player_win_streak += 1
             store.mas_nou.monika_win_streak = 0
-            persistent.ever_won["nou"] = True
+            persistent._mas_ever_won["nou"] = True
 
         if (
             persistent._mas_game_nou_house_rules["points_to_win"]
