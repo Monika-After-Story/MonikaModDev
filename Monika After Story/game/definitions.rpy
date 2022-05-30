@@ -7907,8 +7907,10 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
-#TODO: Add a couple functions to register new items to this and check safely. Assuming the key not being present is a False ever won.
-default persistent.ever_won = collections.defaultdict(bool)
+# NOTE: For convenience this will automatically add new keys as we add new games, the default value is False
+default persistent._mas_ever_won = collections.defaultdict(bool)
+# TODO: Delete this as depricated
+# default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions = {
     "last_session_end": None,
     "current_session_start": None,
