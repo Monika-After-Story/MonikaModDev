@@ -11,7 +11,7 @@
     "rec_layer": 8,
     "acs_type": "choker",
     "stay_on_start": true,
-    "priority": 8,
+    "priority": 15,
     "dlg_desc": "choker",
     "dlg_plural": false,
     "select_info": {
