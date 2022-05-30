@@ -177,7 +177,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_nou",
-            prompt="NOU!",
+            prompt="NOU",
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="GME",
