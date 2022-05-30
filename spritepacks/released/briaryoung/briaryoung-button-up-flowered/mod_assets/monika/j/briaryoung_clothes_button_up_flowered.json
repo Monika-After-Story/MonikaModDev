@@ -1,6 +1,7 @@
 {
     "__author": "Briar Young",
     "ex_props": {
+        "compat-downtiedstrand": true,
         "home": true,
         "date": true
     },
