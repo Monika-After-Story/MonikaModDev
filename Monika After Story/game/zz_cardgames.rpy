@@ -118,7 +118,7 @@ init 5 python in mas_nou:
         )
         QUIPS_PLAYER_DRAWS_CARDS = (
             _("Go ahead and draw your cards, ehehe~"),
-            _("Oops, you must draw more cards.")
+            _("Oops, looks like you have to draw more cards.")
         )
 
         # Quips if you pervert are trying to touch her hand
@@ -251,7 +251,7 @@ init 5 python in mas_nou:
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
             _("I caught you! You didn't say 'NOU'!"),
-            _("You didn't say 'NOU'! Now you must take 2 cards!~")
+            _("You didn't say 'NOU'! Take 2 cards!~")
         )
         # Quips when the player said nou, but didn't play a card afterwards
         QUIPS_PLAYER_FALSE_NOU = (
