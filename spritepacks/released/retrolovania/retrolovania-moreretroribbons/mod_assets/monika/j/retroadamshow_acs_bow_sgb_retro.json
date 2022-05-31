@@ -1,0 +1,32 @@
+{
+    "__author": "retroadamshow",
+    "version": 3,
+    "type": 0,
+    "name": "retro_bow_sgb",
+    "img_sit": "retro_bow_sgb",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "mux_type": [
+        "ribbon",
+        "bow"
+    ],
+    "stay_on_start": true,
+    "giftname": "sgbbow",
+    "ex_props": {
+        "ribbon-like": true
+    },
+    "dlg_desc": "classic bow",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Super Game Boy",
+        "thumb": "retro_bow_sgb",
+        "group": "ribbon",
+        "select_dlg": [
+            "How nostalgic"   
+        ]
+    }
+}
