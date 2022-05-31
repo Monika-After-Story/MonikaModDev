@@ -883,3 +883,59 @@ label mas_mood_excited:
             m 3eua "I know I'm always excited to see you every day."
             m 1hub "Either way, I'm glad that you're happy!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_grateful",
+            prompt="...grateful.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_grateful:
+    $ chosen_nickname = mas_get_player_nickname()
+    m 1eub "Oh? {w=0.3}That's nice to hear!"
+
+    m 3eua "What are you grateful for, [chosen_nickname]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What are you grateful for, [chosen_nickname]?{fast}"
+
+        "For you.":
+            if not renpy.seen_label("mas_mood_grateful_gratefulforyou"):
+                $ mas_gainAffection(3,bypass=True)
+            call mas_mood_grateful_gratefulforyou
+
+        "For someone.":
+            m 3eka "Aww, that's wonderful to hear."
+            m 1hua "I'm really glad that you have supportive people in your life."
+            m 3eud "But as nice as it is for me to hear it...{w=0.3}I think you should make sure that {i}they{/i} know it too."
+            m 3hua "I'm sure it would really brighten their day to know that they made a difference for someone else."
+            m 3euu "If nothing else, you can thank them on my behalf. {w=0.3}Anyone who makes you happier is a good person in my book."
+            m 1huu "But in any case, I'm really happy for you, [mas_get_player_nickname()]~"
+
+        "For something.":
+            m 3hub "I'm glad to hear it, [mas_get_player_nickname()]!"
+            m 1eud "Consciously taking the time to think about the good things in your life can be great for your mental health."
+            m 3hub "So whatever that thing might be, take the time to appreciate and enjoy it!"
+            m 1euu "Thank you for sharing your happiness with me, [mas_get_player_nickname()]~"
+
+        "Nothing specific.":
+            m 3eua "Ah, just feeling happy about life?"
+            m 1eud "It's nice to take a bit to reflect and feel content, isn't it?"
+            m 1rtd "Hmmm...{w=0.2}now that I'm thinking about it, {w=0.1}{nw}"
+            extend 3hua "I feel pretty grateful myself."
+            m 3eubsu "After all, I'm spending another day with my wonderful [bf]~"
+    return
+
+label mas_mood_grateful_gratefulforyou:
+    m 1ekbla "Oh, [player]...{w=0.3}thank you so much for saying that."
+    m 1dkblu "It means so much to hear that I've helped you, or that I've made you happier. {w=0.2}It's what I strive for every day."
+    m 1hublu "I hope you know that I'm so grateful for you too."
+    m 3ekbla "I love you, [player]~"
+    $ mas_ILY()
+    return
