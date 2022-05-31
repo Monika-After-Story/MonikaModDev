@@ -67,7 +67,7 @@
         },
         "def|right-def": {
             "tag": "def",
-            "layers": "5"
+            "layers": "5^10"
         }
     }
 }
