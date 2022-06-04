@@ -1,0 +1,22 @@
+{
+    "__author": "Briar Young",
+    "version": 3,
+    "type": 1,
+    "name": "briaryoung-ponytail-middle",
+    "img_sit": "briaryoung-ponytail-middle",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "ribbon": true
+    },
+    "select_info": {
+        "display_name": "Ponytail (Middle)",
+        "thumb": "briaryoung-ponytail-middle",
+        "group": "hair"
+    },
+    "unlock": true
+}
