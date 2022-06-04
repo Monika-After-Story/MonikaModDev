@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-hair-down-twin-buns",
-    "img_sit": "briaryoung-hair-down-twin-buns",
+    "name": "briaryoung-pigtails",
+    "img_sit": "briaryoung-pigtails",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -15,8 +15,8 @@
         "twintails": true
     },
     "select_info": {
-        "display_name": "Hair Down (Twin Buns)",
-        "thumb": "briaryoung-hair-down-twin-buns",
+        "display_name": "Pigtails",
+        "thumb": "briaryoung-pigtails",
         "group": "hair"
     },
     "unlock": true
