@@ -2,28 +2,21 @@
     "__author": "retroadamshow",
     "version": 3,
     "type": 0,
-    "name": "retro_bow_purple",
-    "img_sit": "retro_bow_purple",
+    "name": "retro_ribbon_amdek_amber",
+    "img_sit": "retro_ribbon_amdek_amber",
     "pose_map": {
         "default": "0",
         "l_default": "5"
     },
     "rec_layer": 3,
     "acs_type": "ribbon",
-    "mux_type": [
-        "ribbon",
-        "bow"
-    ],
     "stay_on_start": true,
-    "giftname": "8purplebow",
-    "ex_props": {
-        "ribbon-like": true
-    },
-    "dlg_desc": "classic purple bow",
+    "giftname": "amdekamberribbon",
+    "dlg_desc": "Amdek-style amber ribbon",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "NES-Style Purple",
-        "thumb": "retro_bow_purple",
+        "display_name": "Ribbon (Amdek Amber)",
+        "thumb": "retro_ribbon_amdek_amber",
         "group": "ribbon",
         "select_dlg": [
             "How nostalgic!"   

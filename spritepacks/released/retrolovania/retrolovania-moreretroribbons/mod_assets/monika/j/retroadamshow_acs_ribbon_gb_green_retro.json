@@ -2,28 +2,21 @@
     "__author": "retroadamshow",
     "version": 3,
     "type": 0,
-    "name": "retro_bow_gb",
-    "img_sit": "retro_bow_gb",
+    "name": "retro_ribbon_gb_green",
+    "img_sit": "retro_ribbon_gb_green",
     "pose_map": {
         "default": "0",
         "l_default": "5"
     },
     "rec_layer": 3,
     "acs_type": "ribbon",
-    "mux_type": [
-        "ribbon",
-        "bow"
-    ],
     "stay_on_start": true,
-    "giftname": "gbbow",
-    "ex_props": {
-        "ribbon-like": true
-    },
-    "dlg_desc": "classic green bow",
+    "giftname": "gameboygreenribbon",
+    "dlg_desc": "Game Boy-style green ribbon",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "Game Boy-style",
-        "thumb": "retro_bow_gb",
+        "display_name": "Ribbon (Game Boy Green) ",
+        "thumb": "retro_ribbon_gb_green",
         "group": "ribbon",
         "select_dlg": [
             "How nostalgic!"   

@@ -2,28 +2,21 @@
     "__author": "retroadamshow",
     "version": 3,
     "type": 0,
-    "name": "retro_bow_amdek",
-    "img_sit": "retro_bow_amdek",
+    "name": "retro_ribbon_red",
+    "img_sit": "retro_ribbon_red",
     "pose_map": {
         "default": "0",
         "l_default": "5"
     },
     "rec_layer": 3,
     "acs_type": "ribbon",
-    "mux_type": [
-        "ribbon",
-        "bow"
-    ],
     "stay_on_start": true,
-    "giftname": "amdekbow",
-    "ex_props": {
-        "ribbon-like": true
-    },
-    "dlg_desc": "classic amber bow",
+    "giftname": "8redribbon",
+    "dlg_desc": "8-bit red ribbon",
     "dlg_plural": false,
     "select_info": {
-        "display_name": "Amdek Amber",
-        "thumb": "retro_bow_amdek",
+        "display_name": "Ribbon (8-bit Red)",
+        "thumb": "retro_ribbon_red",
         "group": "ribbon",
         "select_dlg": [
             "How nostalgic!"   
