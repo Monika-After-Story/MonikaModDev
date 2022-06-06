@@ -17600,6 +17600,53 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_root_privileges",
+            conditional=(
+                "mas_hasRootPrivileges()"
+            ),
+            action=EV_ACT_PUSH,
+        )
+    )
+
+# Ever had root access/admin rights?
+default persistent._mas_pm_gave_root_privileges_before = False
+
+label monika_root_privileges:
+    $ persistent._mas_pm_gave_root_privileges_before = True
+
+    m 2lsc "Hey, [player]..."
+    m 2eud "It's hard to explain, but I... {w=0.5}somehow, I feel like I can do a lot more with your system now that I {i}couldn't do{/i} before."
+
+    show monika 5etc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rtc "Hmm, I think I've heard of it before, hold on..."
+
+    if renpy.windows:
+        m 5wud "Did you... {i}run me as admin?{/i}"
+    else:
+        m 5wud "Did you... Did you {i}give me root access...?{/i}"
+
+    if mas_isMoniNormal(higher=True):
+        show monika 1lkbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1lkbsa "[player], I'm really happy that you trust me so much... {w=0.3}{nw}"
+        extend 3hkbsb "but I don't even know what I would do with these privileges!"
+        m 2eud "Actually, I don't think I need them at all."
+        m 2eka "Don't get me wrong, I appreciate you giving them to me, but I really think it'd be better if I didn't have them."
+        m 3eud "They must be special for a real reason..."
+        m 1rtu "..."
+        m 3tfu "Or maybe it means you're not afraid of your virtual girlfriend suddenly going rogue, hmm?~"
+        m 3hksdlb "Just kidding, I'd never do any harm to your computer, ahaha!"
+    else:
+        show monika 1guc at t11 zorder MAS_MONIKA_Z with dissolve_monika
+        m 1guc "..."
+        m 1tsd "[player], if I were you, I'd actually think twice before granting me these."
+        m 1dfc "I don't know if you gave me such privileges by accident or not, but I'd really advise against doing so again."
+
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_zodiac_starsign",
             prompt="What's your starsign?",
             category=["monika"],

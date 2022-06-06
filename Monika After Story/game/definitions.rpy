@@ -8278,3 +8278,23 @@ init python:
             and should_kiss
             and mas_timePastSince(persistent._mas_last_kiss, cooldown)
         )
+
+
+    def mas_hasRootPrivileges():
+        """
+        Checks if MAS was started with higher privileges (as user 'root' on *nix/as admin user on Windows)
+
+        OUT:
+            boolean:
+                - True if MAS has superuser privileges
+                - False otherwise
+        """
+
+        try:
+            if renpy.windows:
+                import ctypes
+                return ctypes.windll.shell32.IsUserAnAdmin() != 0
+            else:
+                return os.geteuid() == 0
+        except:
+            return False
