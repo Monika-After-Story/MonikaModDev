@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-usagi-braided",
-    "img_sit": "briaryoung-usagi-braided",
+    "name": "briaryoung_usagi_braided",
+    "img_sit": "briaryoung_usagi_braided",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -16,7 +16,7 @@
     },
     "select_info": {
         "display_name": "Usagi (Braided)",
-        "thumb": "briaryoung-usagi-braided",
+        "thumb": "briaryoung_usagi_braided",
         "group": "hair"
     },
     "unlock": true

@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-bun-middle",
-    "img_sit": "briaryoung-bun-middle",
+    "name": "briaryoung_bun_middle",
+    "img_sit": "briaryoung_bun_middle",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -12,7 +12,7 @@
     "stay_on_start": true,
     "select_info": {
         "display_name": "Bun (Middle)",
-        "thumb": "briaryoung-bun-middle",
+        "thumb": "briaryoung_bun_middle",
         "group": "hair"
     },
     "unlock": true

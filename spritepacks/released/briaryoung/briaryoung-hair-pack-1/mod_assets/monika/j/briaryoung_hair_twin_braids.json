@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-twin-braids",
-    "img_sit": "briaryoung-twin-braids",
+    "name": "briaryoung_twin_braids",
+    "img_sit": "briaryoung_twin_braids",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -16,7 +16,7 @@
     },
     "select_info": {
         "display_name": "Twin Braids",
-        "thumb": "briaryoung-twin-braids",
+        "thumb": "briaryoung_twin_braids",
         "group": "hair"
     },
     "unlock": true

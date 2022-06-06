@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-short",
-    "img_sit": "briaryoung-short",
+    "name": "briaryoung_short",
+    "img_sit": "briaryoung_short",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -12,7 +12,7 @@
     "stay_on_start": true,
     "select_info": {
         "display_name": "Pixie Cut",
-        "thumb": "briaryoung-short",
+        "thumb": "briaryoung_short",
         "group": "hair"
     },
     "unlock": true

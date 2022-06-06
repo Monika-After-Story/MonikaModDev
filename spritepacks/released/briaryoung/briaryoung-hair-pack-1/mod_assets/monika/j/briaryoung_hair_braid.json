@@ -2,8 +2,8 @@
     "__author": "Briar Young",
     "version": 3,
     "type": 1,
-    "name": "briaryoung-braid",
-    "img_sit": "briaryoung-braid",
+    "name": "briaryoung_braid",
+    "img_sit": "briaryoung_braid",
     "pose_map": {
         "mpm_type": 0,
         "default": true,
@@ -15,7 +15,7 @@
     },
     "select_info": {
         "display_name": "Braid",
-        "thumb": "briaryoung-braid",
+        "thumb": "briaryoung_braid",
         "group": "hair"
     },
     "unlock": true
