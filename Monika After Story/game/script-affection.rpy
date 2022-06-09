@@ -148,22 +148,22 @@ init -900 python in mas_affection:
         LOVE: 2.0
     }
     DEF_AFF_LOSE_MAP = {
-        BROKEN: 15.0,
+        BROKEN: 20.0,
         DISTRESSED: 15.0,
         UPSET: 10.0,
         NORMAL: 5.0,
         HAPPY: 10.0,
         AFFECTIONATE: 15.0,
-        ENAMORED: 20.0,
-        LOVE: 50.0
+        ENAMORED: 30.0,
+        LOVE: 60.0
     }
     DEF_AFF_FRACTION_LOSE_MAP = {
-        BROKEN: 15.0,
-        DISTRESSED: 10.0,
+        BROKEN: 20.0,
+        DISTRESSED: 15.0,
         UPSET: 10.0,
-        NORMAL: 10.0,
-        HAPPY: 10.0,
-        AFFECTIONATE: 15.0,
+        NORMAL: 5.0,
+        HAPPY: 5.0,
+        AFFECTIONATE: 10.0,
         ENAMORED: 15.0,
         LOVE: 10.0
     }
