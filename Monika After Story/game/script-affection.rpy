@@ -2519,6 +2519,7 @@ init python:
                 If None, uses the default value for the current aff
                 (Default: None)
             modifier - float - modifier for the amount value
+                NOTE: the modifier is being applied AFTER min_amount
                 (Default: 1.0)
         """
         if fraction is None:
@@ -2530,17 +2531,18 @@ init python:
             raise ValueError("Invalid value for affection")
 
         curr_aff = _mas_getAffection()
-        min_change = min_amount * modifier
-        if curr_aff > 0.0:
-            change = curr_aff * fraction
-        else:
-            change = abs(-100.0 - curr_aff)*fraction
+        change = (curr_aff + 100.0)*fraction
 
-        final_change = max(min_change, change)
+        if change < 0.0:
+            # This is only possible if you're at -100
+            # In which case you've lost her already
+            change = abs(change)
+
+        change = max(min_amount, change)
 
         mas_loseAffection(
-            final_change,
-            modifier=1.0,
+            change,
+            modifier=modifier,
             reason=reason,
             ev_label=None,
             apology_active_expiry=apology_active_expiry,
