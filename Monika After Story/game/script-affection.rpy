@@ -513,13 +513,28 @@ init -900 python in mas_affection:
 
         return data[2:4]
 
-    def __verify_ts(ts, now_ts):
+    def __validate_timestamp(ts, now_ts):
         """
         Verifies the given time against current time
+
+        IN:
+            ts - the timestamp to validate
+            now_ts - the current time
+
+        OUT:
+            float:
+                original timestamp if it's valid
+                or modified timestamp
         """
         # If you didn't time travel, I wouldn't need to fix this
-        if ts > now_ts:
-            penalty = max(min(ts-now_ts, 86400*7), 86400)
+        delta_t = ts - now_ts
+        hour_t = 3600
+        day_t = hour_t * 24
+        timezone_hop = hour_t * 30
+
+        if delta_t > timezone_hop:# 30h for timezone changes
+            log.info("INVALID TIME, FREEZING TIME")
+            penalty = max(min(delta_t, day_t*30), day_t)
             ts = now_ts + penalty
 
         return ts
@@ -543,7 +558,7 @@ init -900 python in mas_affection:
         data = list(data)
 
         now_ = time.time()
-        data[4] = __verify_ts(data[4], now_)
+        data[4] = __validate_timestamp(data[4], now_)
 
         freeze_date = datetime.date.fromtimestamp(data[4])
         if store.mas_pastOneDay(freeze_date):
@@ -559,23 +574,37 @@ init -900 python in mas_affection:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
         og_amount = amount
+        # TODO: Store the attempt to grant big amount of aff
         amount = min(amount, 50.0)
+
+        # Sanity check amount for max value
+        max_gain = max(1000000-data[0], 0.0)
+        amount = min(amount, max_gain)
+
         bank_amount = 0.0
 
         if bypass:
-            bypass_limit = 100.0 if store.mas_isSpecialDay() else 15.0
-            bypass_available = bypass_limit - data[3]
-            if amount > bypass_available:
-                bank_amount = min(amount-bypass_available, max(100.0-data[1], 0.0))
-                # This isn't a mistake, we should recalc the value
-                amount -= (amount - bypass_available)
+            # Can only bypass so much
+            bypass_limit = 100.0 if store.mas_isSpecialDay() else 10.0
+            bypass_available = max(bypass_limit - data[3], 0.0)# This should always be > 0, but just in case
+            temp_amount = amount - bypass_available
+            # Is the bypass too big?
+            if temp_amount > 0.0:
+                # Store part of it
+                bank_available = max(100.0-data[1], 0.0)
+                bank_amount = min(temp_amount, bank_available)
+                # Grant the rest
+                # NOTE: Subtract temp_amount, NOT bank_amount to prevent gain over the bypass limit
+                amount -= temp_amount
 
         else:
+            # Minmax using daily cap
             nonbypass_available = 9.0 - data[2]
-            amount = max(min(amount, nonbypass_available), 0.0)
+            amount = min(amount, nonbypass_available)
 
-        max_gain = max(1000000-data[0], 0.0)
-        amount = min(amount, max_gain)
+        # Sanity check for values to be positive
+        amount = max(amount, 0.0)
+        bank_amount = max(bank_amount, 0.0)
 
         audit(og_amount, amount, data[0], data[0]+amount, frozen=frozen, bypass=bypass, ldsv=reason)
 
@@ -614,12 +643,17 @@ init -900 python in mas_affection:
         if amount <= 0.0:
             raise ValueError("Invalid value for affection: {}".format(amount))
 
-        max_lose = data[0] + 1000000
         og_amount = amount
+        # Sanity check amount for min value
+        max_lose = data[0] + 1000000
         amount = min(amount, max_lose)
 
+        base_change = 0.0
+        bank_change = 0.0
+        multi = 0.3# This is how much would be removed right away
+
         if data[1] > 0.0:
-            base_change = amount * 0.3
+            base_change = amount * multi
             bank_change = amount - base_change
 
             if data[1] < bank_change:
@@ -629,6 +663,10 @@ init -900 python in mas_affection:
         else:
             base_change = amount
             bank_change = 0.0
+
+        # Sanity check for values to be positive
+        base_change = max(base_change, 0.0)
+        bank_change = max(bank_change, 0.0)
 
         audit(og_amount, base_change, data[0], data[0]-base_change, ldsv=reason)
 
@@ -640,6 +678,7 @@ init -900 python in mas_affection:
     def _withdraw_aff():
         """
         Withdraws some aff daily
+        from the bank to the main pool
         """
         global __is_dirty
 
@@ -652,7 +691,7 @@ init -900 python in mas_affection:
             return
 
         now_ = time.time()
-        data[5] = __verify_ts(data[5], now_)
+        data[5] = __validate_timestamp(data[5], now_)
 
         withdraw_date = datetime.date.fromtimestamp(data[5])
         if not store.mas_pastOneDay(withdraw_date):
@@ -666,16 +705,21 @@ init -900 python in mas_affection:
         else:
             change = min(data[1] * 0.1, 5.0)
 
-        audit(change, change, data[0], data[0]+change, ldsv="[withdraw]")
+        og_change = change = max(change, 0.0)# just in case
+        # Sanity check amount for max value
+        max_change = max(1000000-data[0], 0.0)
+        change = min(change, max_change)
+
+        audit(og_change, change, data[0], data[0]+change, ldsv="[withdraw]")
 
         __is_dirty = True
         data[0] += change
         data[1] -= change
         __set_pers_data(__encode_data(*data))
 
-    def _absence_withdraw_aff():
+    def _absence_decay_aff():
         """
-        Withdraws some aff during absence
+        Removes some aff during absence
         """
         global __is_dirty
 
@@ -688,13 +732,16 @@ init -900 python in mas_affection:
             return
 
         seconds = persistent._mas_absence_time.total_seconds()
-        if seconds > 86400*3:
+        if seconds > 86400*3:# Give 3 days of grace period
             if data[1] <= 1.0:
                 change = data[1]
 
             else:
                 rate = 0.05 if not persistent._mas_long_absence else 0.025
+                # Now rate * days
                 change = data[1] * min(rate*seconds/86400, 1.0)
+
+            change = max(change, 0.0)# just in case
 
             __is_dirty = True
             data[1] -= change
@@ -2619,7 +2666,7 @@ init python:
 
     def __long_absence_check():
         # This must be called first
-        mas_affection._absence_withdraw_aff()
+        mas_affection._absence_decay_aff()
 
         if persistent._mas_long_absence:
             return
