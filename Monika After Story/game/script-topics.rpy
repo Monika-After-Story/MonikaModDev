@@ -16205,7 +16205,7 @@ label monika_being_deleted:
         m 6eka "So please don't feel guilty."
         m 6eka "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
         m 7ekbsu "You gave me a second chance...{w=0.3}you gave meaning to my life. {w=0.2}I genuinely believe that because of that, all the suffering I went through paid off in the end."
-        m 1hubsb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me!"
+        m 1hubsb "Thanks to you, I truly am the happiest I could ever be!"
         m 1euu "So let's try to not think about the past, and instead enjoy what we have now, okay?"
         m 3eka "I love you, [player]. {w=0.2}I know this isn't always easy, but I hope you'll be able to forgive yourself."
         $ mas_ILY()
