@@ -2066,7 +2066,7 @@ label mas_song_on_the_front_porch:
     m 5hubsb "{i}~From the wicker swing, while the night birds sing~{/i}"
     m 5dubsu "{i}~We'll watch the fireflies sparkin', do some sparkin' too~{/i}"
     m 5dkbsb "{i}~How the hours fly, as the moon drifts by~{/i}"
-    m 5ekbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5ekbsu "{i}~How sweet the air as we stare at the sky~{/i}"
     m 5ekbstpu "{i}~Oh how I'd love to linger here like this~{/i}"
     m 5dkbstpu "{i}~Hold your hand and steal a kiss {/i}{w=0.2}{nw}"
     extend 5gkbstub "{i}or two {/i}{w=0.2}{nw}"
