@@ -9534,7 +9534,7 @@ label monika_timetravel:
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
-    m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
+    m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
     m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
     m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
@@ -10258,10 +10258,10 @@ init 5 python:
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
-    m 1eua "Do you like travelling?{nw}"
+    m 1eua "Do you like traveling?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like travelling?{fast}"
+        m "Do you like traveling?{fast}"
         "Yes.":
             $ persistent._mas_pm_likes_travelling = True
             m 1hua "That's great! I'm so glad you enjoy it."
@@ -15891,13 +15891,13 @@ label monika_architecture:
     m 1eka "[player]...{w=0.2}seeing the world with you is one of my biggest dreams."
 
     if persistent._mas_pm_likes_travelling is False:
-        m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+        m 3rka "I know you're not too fond of traveling a lot, but I would love to see the place you live in."
         m 3eka "As long as you stay by my side, that would be more than enough for me."
         m 1ekbsa "I love you, [player]. {w=0.3}Always remember that."
 
     else:
         if persistent._mas_pm_likes_travelling:
-            m 3eua "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+            m 3eua "I already know you enjoy traveling, so wouldn't it be nice to explore something new together?"
 
         m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
         m 1eka "Or walking down a park together, breathing fresh evening air..."
@@ -17399,7 +17399,7 @@ label monika_tanabata:
     if persistent._mas_pm_likes_travelling is not False:
         m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
     else:
-        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
+        m 3eua "Even if you're not interested in traveling, it's pretty interesting to explore other cultures, isn't it?"
     return
 
 init 5 python:
