@@ -5738,6 +5738,7 @@ label monika_cupcake:
             extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
             extend 5eub "tasting the results..."
             m 5kuu "Sounds pretty amazing, right?"
+
     return "derandom"
 
 # You're not a hater right?
@@ -16339,9 +16340,8 @@ label monika_why_do_you_read:
     m 3eua "Unlike novels, poetry didn't require as much time to read and its conciseness also made it easier to share with others.{w=0.3} {nw}"
     extend 4eub "It really was the perfect outlet!"
     m 3eua "...And that's how I grew more and more into it I guess."
-    m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
-    extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
-    m 3eub "As we kept on discussing, we eventually came up with the idea for the Literature Club."
+    m 1eud "I eventually came up with the idea to start the Literature Club, and with Sayori's help we got it off the ground."
+    m 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
     m 1eua "...Which brings us to where we are now."
     m 1etc "To be honest, I don't think I've ever had as much time to read before."
 
@@ -17809,4 +17809,56 @@ label monika_conventions:
     m 1wuo "It's crazy what people can do when they're passionate about something!"
     m 3eua "I also hear there's a lot of fun activities like idol dance shows, trivia, and other things to do there."
     m 1eubsa "I would love to go to one with you someday, [mas_get_player_nickname()]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cupcake_favorite",
+            category=["monika"],
+            prompt="What's your favorite cupcake flavor?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="mas_seenLabels(['monika_cupcake', 'monika_icecream'], seen_all=True)",
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_cupcake_favorite:
+    m 1rta "Hmm, I'm not sure I really have one..."
+    m 1hub "I like all sorts of different kinds, so it's hard to choose just one!"
+    m 3ekd "I think I've mentioned before how much I miss Natsuki's cupcakes..."
+    m 3eua "One time she made this really strange mint chocolate chip flavored cupcake...{w=0.3}it had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
+    m 4rksdlb "It was one of the strangest things I've ever tasted ahaha!"
+    m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
+    m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
+    m 7eka "Oh well, it was nice that she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_esports",
+            category=['media', 'life'],
+            prompt="What do you think of esports?",
+            pool=True,
+        )
+    )
+
+label monika_esports:
+    if mas_isFirstSeshDay():
+        m 1rtd "Hmm, that's a good question..."
+    else:
+        m 1eub "It's funny you ask, I was looking into them the other day while you were gone!"
+    m 3eua "I think it's really interesting how the entire way we perceive watching sports is changing..."
+    m 3euc "Esports viewership continues to rival traditional sporting events,{w=0.1} {nw}"
+    extend 3wud "and it might even overtake them within the next 5 to 10 years!"
+    m 2tsd "Not so long ago, people looked down on playing video games like it was a waste of time, {w=0.1}{nw}"
+    extend 7hub "but now some of these players are making millions of dollars playing some of their favorite games!"
+    m 3eua "It really goes to show you can do whatever you love for a job...{w=0.3}even things people may scoff at."
+    m 3eud "Just because something isn't popular or mainstream doesn't mean it'll stay that way forever..."
+    m 1huu "Don't be afraid to go against the trend, {w=0.1}whatever you're passionate about may just be looking for that one pioneer to help bring it to the forefront~"
     return
