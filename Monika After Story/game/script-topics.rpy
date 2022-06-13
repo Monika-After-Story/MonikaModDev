@@ -17831,7 +17831,7 @@ label monika_cupcake_favorite:
     m 1hub "I like all sorts of different kinds, so it's hard to choose just one!"
     m 3ekd "I think I've mentioned before how much I miss Natsuki's cupcakes..."
     m 3eua "One time she made this really strange mint chocolate chip flavored cupcake...{w=0.3}it had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
-    m 4rksdlb "It was one of the strangest things I've ever tasted ahaha!"
+    m 4rksdlb "It was one of the strangest things I've ever tasted, ahaha!"
     m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
     m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
     m 7eka "Oh well, it was nice that she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
