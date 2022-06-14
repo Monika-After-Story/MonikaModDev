@@ -17,6 +17,8 @@ default persistent._mas_chess_difficulty = (0, 1)
 default persistent._mas_chess_quicksave = ""
 
 # dict containing action counts:
+# Currently using keys from 0 to 5 inclusively
+# Check 'dlg actions' constants defined below
 default persistent._mas_chess_dlg_actions = defaultdict(int)
 
 # when we need to disable chess for a period of time
