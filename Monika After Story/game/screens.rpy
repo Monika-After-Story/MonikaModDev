@@ -1466,7 +1466,7 @@ screen preferences():
 #                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
                     if store.mas_windowreacts.can_do_windowreacts:
-                        textbutton _("Window Reacts"):
+                        textbutton _("Window Detect"):
                             action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
                             hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
 

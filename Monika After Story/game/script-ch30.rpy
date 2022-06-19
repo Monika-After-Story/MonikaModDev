@@ -246,6 +246,7 @@ init -10 python:
 
     mas_idle_mailbox = MASIdleMailbox()
 
+
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -289,12 +290,25 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-init python:
 
+# Gender specific word replacement
+define MAS_PRONOUN_GENDER_MAP = {
+    "his": {"M": "his", "F": "her", "X": "their"},
+    "he": {"M": "he", "F": "she", "X": "they"},
+    "hes": {"M": "he's", "F": "she's", "X": "they're"},
+    "heis": {"M": "he is", "F": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "F": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "F": "woman", "X": "person"},
+    "boy": {"M": "boy", "F": "girl", "X": "person"},
+    "guy": {"M": "guy", "F": "girl", "X": "person"},
+    "him": {"M": "him", "F": "her", "X": "them"},
+    "himself": {"M": "himself", "F": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "F": "heroine", "X": "hero"}
+}
+
+init python:
     import subprocess
     import os
     import eliza      # mod specific
@@ -784,6 +798,33 @@ init python:
         """
         return store.persistent._mas_pm_cares_about_dokis is False
 
+    def mas_set_pronouns(key=None):
+        """
+        Sets gender specific word replacements
+
+        Few examples:
+            "It is his pen." (if the player's gender is declared as male)
+            "It is her pen." (if the player's gender is declared as female)
+            "It is their pen." (if player's gender is not declared)
+
+        For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
+
+        IN:
+            key - Optional[Literal["M", "F", "X"]] - key (perhaps current gender) to set the pronouns for
+                If None, uses persistent.gender
+        """
+        store = renpy.store
+
+        if key is None:
+            key = store.persistent.gender
+
+        for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
+            if key in sub_map:
+                value = sub_map[key]
+            else:
+                value = sub_map["X"]
+            setattr(store, word, value)
+
 
 init 999 python in mas_reset:
     # this should hold reset functions
@@ -889,6 +930,7 @@ init 999 python in mas_reset:
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
+            "nou": "mas_reaction_gift_noudeck",
         }
         store.mas_unlockGame("pong") # always unlock pong
 

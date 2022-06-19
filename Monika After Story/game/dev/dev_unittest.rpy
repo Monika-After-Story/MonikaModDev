@@ -12,6 +12,7 @@ init -1 python in mas_dev_unit_tests:
         ("UTC APIs", "dev_unit_test_utc_api", False, False),
         ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
         ("strict_can_pickle", "dev_unit_test_strict_can_pickle", False, False),
+        ("mas_set_pronouns", "dev_unit_test_mas_set_pronouns", False, False)
     ]
 
     class MASUnitTest(object):
@@ -2619,7 +2620,7 @@ label dev_unit_test_strict_can_pickle:
         recur_dict[10] = recur_list
 
         class FakeTzInfo(datetime.tzinfo):
-            
+
             def utcoffset(self, dt):
                 return datetime.timedelta()
 
@@ -2732,5 +2733,62 @@ label dev_unit_test_strict_can_pickle:
         scp_tester.assertEqual(recur_error, scp(recur_dict))
 
     call dev_unit_tests_finish_test(scp_tester)
+
+    return
+
+label dev_unit_test_mas_set_pronouns:
+    m "Running tests..."
+
+    $ pronouns_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+    python hide:
+        pronouns_tester.prepareTest("Validate map size and keys")
+        expected_map_size = None
+        for key, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
+            sub_map = dict(sub_map)
+
+            if expected_map_size is None:
+                expected_map_size = len(sub_map)
+            else:
+                sub_map_size = len(sub_map)
+                pronouns_tester.prepareTest(
+                    "Validating map size for key {}, expected {}, got {}".format(
+                        key,
+                        expected_map_size,
+                        sub_map_size
+                    )
+                )
+                pronouns_tester.assertEqual(expected_map_size, sub_map_size)
+
+            for k in ("M", "F", "X"):
+                pronouns_tester.prepareTest(
+                    "Validating the key {} is in the map".format(k)
+                )
+                pronouns_tester.assertTrue(k in sub_map)
+
+        pronouns_tester.prepareTest("Check global pronouns variables")
+        for gender in ("M", "F", "X"):
+            # Verify the func works
+            mas_set_pronouns(gender)
+
+            fallback = object()
+            for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
+                # Verify the func set correct values
+                global_value = getattr(store, word, fallback)
+                map_value = sub_map[gender]
+                pronouns_tester.prepareTest(
+                    "Check global pronouns variable match: {}, expected {}, got {}".format(
+                        word,
+                        map_value,
+                        global_value
+                    )
+                )
+                pronouns_tester.assertEqual(global_value, map_value)
+
+        # This is just to reset pronouns
+        mas_set_pronouns()
+
+    call dev_unit_tests_finish_test(pronouns_tester)
+    $ del pronouns_tester
 
     return
