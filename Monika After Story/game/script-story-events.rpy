@@ -2141,7 +2141,7 @@ label mas_notification_windowreact:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
             m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
             m 3eua "So I'll only look at what you're doing if you're okay with it."
-            m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+            m 2eua "If you enable 'Window Detect' in the settings menu, that'll tell me you're fine with me looking around."
 
             if mas_isMoniNormal(higher=True):
                 m 1tuu "It's not like you have anything to hide from your girlfriend..."
