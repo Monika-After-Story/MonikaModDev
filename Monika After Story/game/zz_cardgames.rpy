@@ -1096,16 +1096,19 @@ init 5 python in mas_nou:
                 amount = self.HAND_CARDS_LIMIT - player_cards
 
             for i in range(amount):
-                player.hand.append(self.drawpile[-1])
+                card = self.drawpile[-1]
+                player.hand.append(card)
 
                 if player.isAI:
-                    self.table.set_rotate(player.hand[-1], -180)
+                    self.table.set_rotate(card, -180)
+                    faceup = False
                     offset = self.MONIKA_CARDS_OFFSET
 
                 else:
-                    self.table.set_faceup(player.hand[-1], True)
+                    faceup = True
                     offset = self.PLAYER_CARDS_OFFSET
 
+                self.table.set_faceup(card, faceup)
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
