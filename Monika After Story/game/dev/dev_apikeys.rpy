@@ -9,8 +9,20 @@ init python:
         dev_api_test = key
 
 
-    def dev_api_key_2_tester(key):
+    def dev_api_key_tester_error(key):
         return False, "Error Message"
+
+
+    def dev_api_key_tester_returns_not_tuple(key):
+        return "not tuple"
+
+
+    def dev_api_key_tester_returns_not_long_enough(key):
+        return ("not long enough", )
+
+
+    def dev_api_key_tester_false_not_valid_error_msg(key):
+        return False, 123123
 
 
     mas_registerAPIKey(
@@ -21,7 +33,7 @@ init python:
     mas_registerAPIKey(
         "dev-api-key-2",
         "Crash when setting",
-        on_change=dev_api_key_2_tester
+        on_change=dev_api_key_tester_error
     )
     mas_registerAPIKey(
         "dev-api-key-3",
@@ -30,6 +42,21 @@ init python:
     mas_registerAPIKey(
         "dev-api-key-4",
         "Nook Inc. Account API Token"
+    )
+    mas_registerAPIKey(
+        "dev-api-key-not-tuple",
+        "Not tuple msg logged",
+        on_change=dev_api_key_tester_returns_not_tuple
+    )
+    mas_registerAPIKey(
+        "dev-api-key-not-long-enough",
+        "Short tuple msg logged",
+        on_change=dev_api_key_tester_returns_not_long_enough
+    )
+    mas_registerAPIKey(
+        "dev-api-key-not-valid-error-msg",
+        "Invalid error msg type msg logged",
+        on_change=dev_api_key_tester_false_not_valid_error_msg
     )
 
     def dev_register_multipleAPI(count):

@@ -402,23 +402,37 @@ init -980 python in mas_api_keys:
         """
         on_change = Data.registered_api_keys[feature][1]
         if on_change is not None:
+
+            # guarded on change execution
             try:
                 rv = on_change(api_key)
 
-                if not isinstance(rv, tuple) or len(rv) < 2:
-                    return True, ""
+            except Exception as e:
+                mas_utils.mas_log.error(
+                    Data.ERR_ON_CHG_CRASH.format(feature, repr(e))
+                )
+
+                return False, Data.ERR_ON_CHG_MSG
+
+            # type check
+            try:
+                if not isinstance(rv, tuple):
+                    raise TypeError(Data.ERR_ON_CHG_TYPE_NOT_TUPLE.format(rv))
+
+                if len(rv) < 2:
+                    raise TypeError(Data.ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
+
+                # only check error message if on_change is returning false
+                if not rv[0] and not isinstance(rv[1], (str, unicode)):
+                    raise TypeError(Data.ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(rv[1]))
 
                 return rv
 
-            except Exception as e:
+            except TypeError as e:
                 mas_utils.mas_log.error(
-                    "crash when running on_change for feature {0} - {1}".format(
-                        feature,
-                        repr(e)
-                    )
+                    Data.ERR_ON_CHG_TYPE.format(feature, str(e)) # str used since msg says type error
                 )
-
-                return False, "on-change crash - see logs"
+                return False, Data.ERR_ON_CHG_TYPE_MSG
 
         return True, ""
 
@@ -461,7 +475,9 @@ init -980 python in mas_api_keys:
         new_key = clean_key(new_key)
 
         # on change
-        key_valid, err_msg = _run_on_change(feature, new_key)
+        onchange_rv = _run_on_change(feature, new_key)
+        key_valid = onchange_rv[0]
+        err_msg = onchange_rv[1]
 
         if key_valid:
             # set key
@@ -554,3 +570,12 @@ init -981 python in mas_api_keys_data:
     FILEPATH_KEYS = os.path.normcase(renpy.config.savedir + "/api_keys.json")
 
     MAX_KEY_SIZE_DISP = 39
+
+    # error messages
+    ERR_ON_CHG_CRASH = "crash when running on_change for feature {0} - {1}"
+    ERR_ON_CHG_CRASH_MSG = "on-change crash  - see logs"
+    ERR_ON_CHG_TYPE = "invalid return value from on_change for feature {0} - {1}"
+    ERR_ON_CHG_TYPE_MSG = "invalid value from on-change - see logs"
+    ERR_ON_CHG_TYPE_NOT_TUPLE = "expected tuple, got '{0}'"
+    ERR_ON_CHG_TYPE_BAD_TUP_SIZE = "expected tuple of at least size 2, got one of size {0}"
+    ERR_ON_CHG_TYPE_BAD_ERR_MSG = "invalid type for value at index 1 in return value: expected str, got {0}"
