@@ -1138,6 +1138,10 @@ init 5 python in mas_nou:
                 if player.should_draw_cards:
                     player.should_draw_cards -= amount
 
+                if drawpile_cards == amount:
+                    # TODO: might need to use new context here
+                    self.__update_drawpile()
+
             # there're not enough cards
             else:
                 # deal as much as we can
@@ -1537,6 +1541,7 @@ init 5 python in mas_nou:
                 the player didn't start to play their turn
             """
             self.set_sensitive(False)
+
             if player == "monika":
                 if self.monika.yelled_nou:
                     self.__say_quip(self.QUIPS_MONIKA_ALREADY_YELLED_NOU, new_context=True)
@@ -1569,6 +1574,7 @@ init 5 python in mas_nou:
                     self.player.yelled_nou = True
                     self.player.should_play_card = True
                     self.player.nou_reminder_timeout = 0
+
             self.set_sensitive(True)
 
         class __Card(object):
