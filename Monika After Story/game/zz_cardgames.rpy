@@ -796,6 +796,10 @@ init 5 python in mas_nou:
             while len(self.discardpile) > 1:
                 card = self.discardpile[1]
 
+                # Reset wild cards
+                if card.type == "wild":
+                    card.color = None
+
                 self.table.set_faceup(card, False)
                 self.table.set_rotate(card, 0)
                 self.table.get_card(card).set_offset(0, 0)
