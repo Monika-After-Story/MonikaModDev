@@ -2623,3 +2623,45 @@ label mas_islands_reset:
             m 3hua "If you're fine with how they are right now, then I am too.{w=0.2} I'll see what I can do with them as they are~"
 
     return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_gift_hint_noudeck",
+            conditional="store.mas_xp.level() >= 8 and not seen_event('mas_reaction_gift_noudeck')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            show_in_idle=True,
+            rules={"skip alert": None}
+        )
+    )
+
+label mas_gift_hint_noudeck:
+    # If you somehow gifted while getting this event, abort this
+    if seen_event("mas_reaction_gift_noudeck"):
+        return
+    # The idea is next time the player visits the folder, they will find a new note and probably read it
+    # This is NOT to guarantee anything, but rather "best effort" to give this hint
+    python hide:
+        note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
+        note_text = renpy.substitute("""\
+Hi [player]!
+
+I see you're making Monika really happy, and I want to help you with that!
+I added a new card deck, you can gift it to Monika. I'm sure together you will find out how to play it.
+
+To give it to her, create a new file 'noudeck.gift' in the 'characters' folder.
+
+Keep up being a good [boy] and good luck with Monika!
+
+P.S: Don't tell her about me!\
+""")
+
+        renpy.invoke_in_thread(
+            mas_utils.trywrite,
+            note_path,
+            note_text,
+            log=True
+        )
+    return

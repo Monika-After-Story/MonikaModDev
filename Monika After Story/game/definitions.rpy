@@ -4,8 +4,12 @@ define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    # We want these to be available globally, please don't remove
+    # Add more as needed
     import io
+    import os
     import datetime
+    import random
     import traceback
 
     # define the zorders

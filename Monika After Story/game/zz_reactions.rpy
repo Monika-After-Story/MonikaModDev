@@ -2790,7 +2790,7 @@ label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
 
 init 5 python:
     # TODO: Add a way to generalize this
-    if not renpy.seen_label("mas_reaction_gift_noudeck"):
+    if not seen_event("mas_reaction_gift_noudeck"):
         addReaction("mas_reaction_gift_noudeck", "noudeck", is_good=True)
 
 label mas_reaction_gift_noudeck:
