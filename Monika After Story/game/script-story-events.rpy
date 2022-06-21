@@ -2648,8 +2648,11 @@ label mas_gift_hint_noudeck:
     # The idea is next time the player visits the folder, they will find a new note and probably read it
     # This is NOT to guarantee anything, but rather "best effort" to give this hint
     python hide:
-        note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
-        note_text = renpy.substitute("""\
+        def write_and_hide():
+            import time
+
+            note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
+            note_text = renpy.substitute("""\
 Hi [player]!
 
 I see you're making Monika really happy, and I want to help you with that!
@@ -2662,10 +2665,25 @@ Keep up being a good [boy] and good luck with Monika!
 P.S: Don't tell her about me!\
 """)
 
-        renpy.invoke_in_thread(
-            mas_utils.trywrite,
-            note_path,
-            note_text,
-            log=True
-        )
-    return
+            mas_utils.trywrite(note_path, note_text, log=True)
+            time.sleep(20)
+            renpy.hide("chibika 3")
+
+        renpy.invoke_in_thread(write_and_hide)
+    # We can show chibi to give another hint something is happening
+    show chibika 3:
+        subpixel True
+        rotate_pad True
+        zoom 0.5
+        anchor (0.5, 0.5)
+        pos (0.4, 1.15)
+        around (0.475, 0.9)
+
+        parallel:
+            linear 15.0 pos (1.15, 0.55) clockwise circles 0
+        parallel:
+            rotate 0
+            linear 5.0 rotate 360
+            repeat
+
+    return "pause: 30"
