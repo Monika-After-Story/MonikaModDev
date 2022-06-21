@@ -2633,7 +2633,11 @@ init 5 python:
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None),
             show_in_idle=True,
-            rules={"skip alert": None}
+            rules={
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            }
         )
     )
 
