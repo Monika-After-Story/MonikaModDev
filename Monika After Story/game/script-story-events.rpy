@@ -2629,7 +2629,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_gift_hint_noudeck",
-            conditional="store.mas_xp.level() >= 8 and not seen_event('mas_reaction_gift_noudeck')",
+            conditional="store.mas_xp.level() >= 8 and not mas_seenEvent('mas_reaction_gift_noudeck')",
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.AFFECTIONATE, None),
             show_in_idle=True,
@@ -2639,7 +2639,7 @@ init 5 python:
 
 label mas_gift_hint_noudeck:
     # If you somehow gifted while getting this event, abort this
-    if seen_event("mas_reaction_gift_noudeck"):
+    if mas_seenEvent("mas_reaction_gift_noudeck"):
         return
     # The idea is next time the player visits the folder, they will find a new note and probably read it
     # This is NOT to guarantee anything, but rather "best effort" to give this hint
