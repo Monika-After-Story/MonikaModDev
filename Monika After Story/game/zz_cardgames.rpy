@@ -794,7 +794,7 @@ init 5 python in mas_nou:
             renpy.pause(0.5, hard=True)
 
             while len(self.discardpile) > 1:
-                card = self.discardpile[1]
+                card = self.discardpile[0]
 
                 # Reset wild cards
                 if card.type == "wild":
