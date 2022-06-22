@@ -138,7 +138,7 @@ label monika_ptod_tip000:
     # enable tip 1
     $ tip_label = "monika_ptod_tip001"
     $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
-    $ pushEvent(tip_label,skipeval=True)
+    $ MASEventList.push(tip_label,skipeval=True)
     return
 
 ###############################################################################

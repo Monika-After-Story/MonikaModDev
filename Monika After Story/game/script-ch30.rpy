@@ -1389,15 +1389,15 @@ label ch30_post_exp_check:
             store.mas_per_check.is_per_corrupt()
             and not renpy.seen_label("mas_corrupted_persistent")
     ):
-        $ pushEvent("mas_corrupted_persistent")
+        $ MASEventList.push("mas_corrupted_persistent")
 
     # push greeting if we have one
     if selected_greeting:
         # before greeting, we should push idle clean if in idle mode
         if persistent._mas_in_idle_mode:
-            $ pushEvent("mas_idle_mode_greeting_cleanup")
+            $ MASEventList.push("mas_idle_mode_greeting_cleanup")
 
-        $ pushEvent(selected_greeting)
+        $ MASEventList.push(selected_greeting)
 
     #Now we check if we should drink
     $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
@@ -1645,7 +1645,7 @@ label mas_ch30_select_unseen:
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate, otherwise stay slient
             if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -1674,7 +1674,7 @@ label mas_ch30_select_seen:
                 len(mas_rev_mostseen) == 0
                 and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
             ):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop
@@ -1916,7 +1916,7 @@ label ch30_reset:
 
     # change back to def if we aren't wearing def at Normal-
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
-        $ pushEvent("mas_change_to_def",skipeval=True)
+        $ MASEventList.push("mas_change_to_def",skipeval=True)
 
     if not mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")

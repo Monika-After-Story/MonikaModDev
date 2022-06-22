@@ -3680,7 +3680,7 @@ label mas_nou_game_end:
             store.mas_nou.winner != "Surrendered"
             and not seen_event("monika_introduce_nou_house_rules")
         ):
-            pushEvent("monika_introduce_nou_house_rules")
+            MASEventList.push("monika_introduce_nou_house_rules")
 
     if store.mas_nou.winner == "Player":
         call mas_nou_reaction_player_wins_round

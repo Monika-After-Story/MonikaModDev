@@ -511,7 +511,7 @@ init 15 python in mas_affection:
 
         # even on special event days, if going to dis, change to def
         if store.monika_chr.clothes != store.mas_clothes_def:
-            store.pushEvent("mas_change_to_def",skipeval=True)
+            store.MASEventList.push("mas_change_to_def",skipeval=True)
 
         # Update idle exp
         store.mas_moni_idle_disp.update()
@@ -597,7 +597,7 @@ init 15 python in mas_affection:
 
         # if not wearing def, change to def
         if store.monika_chr.clothes != store.mas_clothes_def and not store.mas_hasSpecialOutfit():
-            store.pushEvent("mas_change_to_def",skipeval=True)
+            store.MASEventList.push("mas_change_to_def",skipeval=True)
 
         #Check the song analysis delegate
         store.mas_songs.checkSongAnalysisDelegate(NORMAL)

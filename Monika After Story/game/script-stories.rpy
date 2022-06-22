@@ -248,7 +248,7 @@ label monika_short_stories_menu:
                         story_to_push = mas_stories.get_and_unlock_random_story(story_type)
 
             #Then push
-            $ pushEvent(story_to_push, skipeval=True)
+            $ MASEventList.push(story_to_push, skipeval=True)
 
             show monika at t11
 

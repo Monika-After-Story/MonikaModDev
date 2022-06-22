@@ -259,7 +259,7 @@ label mas_pick_a_game:
             else:
                 m 3hub "[game_quip]"
 
-        $ pushEvent(selected_game, skipeval=True)
+        $ MASEventList.push(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
         show monika idle at t11
