@@ -400,7 +400,7 @@ init -20 python in mas_weather:
             and not store.persistent.event_list
             and not store.mas_getEVL_shown_count("monika_auroras")
         ):
-            store.queueEvent("monika_auroras", notify=True)
+            store.MASEventList.queue("monika_auroras", notify=True)
 
 
     def _weather_snow_exit(_new):

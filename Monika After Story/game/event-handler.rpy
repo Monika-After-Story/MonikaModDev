@@ -3026,7 +3026,7 @@ init 1 python in evhand:
         IN:
             ev - event to queue to event stack
         """
-        store.queueEvent(ev.eventlabel, notify=True)
+        store.MASEventList.queue(ev.eventlabel, notify=True)
 
 
     def actionUnlock(ev, **kwargs):

@@ -299,7 +299,7 @@ init python in mas_windowutils:
             active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
 
             if active_winname_prop is not None:
-                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")    
+                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
                 return active_winname.replace("\n", "")
 
             else:
@@ -730,7 +730,7 @@ init python:
                 and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
             ):
-                queueEvent(ev_label)
+                MASEventList.queue(ev_label)
                 ev.unlocked = False
 
                 #Add the blacklist

@@ -2035,7 +2035,7 @@ label ch30_reset:
     ## reactions fix
     python:
         if persistent._mas_filereacts_just_reacted:
-            queueEvent("mas_reaction_end")
+            MASEventList.queue("mas_reaction_end")
 
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
@@ -2138,6 +2138,6 @@ label ch30_reset:
 
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
-                queueEvent("mas_consumables_remove_thermos")
+                MASEventList.queue("mas_consumables_remove_thermos")
 
     return

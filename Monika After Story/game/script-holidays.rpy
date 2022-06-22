@@ -406,7 +406,7 @@ init -10 python:
 
         # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
-            store.queueEvent('mas_change_to_def')
+            store.MASEventList.queue('mas_change_to_def')
 
     def mas_hasO31DeskAcs():
         """
@@ -3472,7 +3472,7 @@ init 10 python:
         datetime.date.today() == mas_d25e - datetime.timedelta(days=1)
         and not mas_lastSeenInYear("mas_d25_spider_tinsel")
     ):
-        queueEvent("mas_d25_spider_tinsel")
+        MASEventList.queue("mas_d25_spider_tinsel")
 
 label mas_d25_spider_tinsel:
     m 1esa "Hey, [player]..."
@@ -8097,7 +8097,7 @@ label greeting_returned_home_bday:
         $ persistent._mas_bday_in_bday_mode = False
 
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
-            $ queueEvent('mas_change_to_def')
+            $ MASEventList.queue('mas_change_to_def')
 
         if time_out > mas_five_minutes:
             m 1hua "..."

@@ -567,7 +567,7 @@ init 15 python in mas_affection:
 
         # queue the blazerless intro event
         if not store.seen_event("mas_blazerless_intro") and not store.mas_hasSpecialOutfit():
-            store.queueEvent("mas_blazerless_intro")
+            store.MASEventList.queue("mas_blazerless_intro")
 
         # unlock blazerless for use
         store.mas_selspr.unlock_clothes(store.mas_clothes_blazerless)
@@ -1921,21 +1921,21 @@ init 20 python:
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
-            queueEvent("mas_affection_upsetwarn", notify=True)
+            MASEventList.queue("mas_affection_upsetwarn", notify=True)
 
         # If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         # This is an indicator you are heading in a positive direction.
         elif 15 <= curr_affection and not seen_event("mas_affection_happynotif"):
-            queueEvent("mas_affection_happynotif", notify=True)
+            MASEventList.queue("mas_affection_happynotif", notify=True)
 
         # If affection level is greater than 100 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif curr_affection >= 100 and not seen_event("monika_affection_nickname"):
-            queueEvent("monika_affection_nickname", notify=True)
+            MASEventList.queue("monika_affection_nickname", notify=True)
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
-                queueEvent("mas_affection_apology", notify=True)
+                MASEventList.queue("mas_affection_apology", notify=True)
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
