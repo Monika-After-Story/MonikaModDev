@@ -170,7 +170,7 @@ label dev_acs_pose_test:
     m "First, I'll clear all current accessories."
     $ monika_chr.remove_all_acs()
     m 6sub "I'm going to put on the ring now~"
-    $ monika_chr.wear_acs_pst(mas_acs_promisering)
+    $ monika_chr.wear_acs(mas_acs_promisering)
     m 1eua "You should see it now!"
     m 2eua "And it's gone."
     m 3eua "Here it is!"
@@ -494,7 +494,7 @@ init -1 python:
             img_base, hl_base = self.gen_ims(bat_lvl)
 
             img_base = self.apply_filter(img_base)
-            
+
             rv = renpy.Render(width, height)
 
             # start rendering
@@ -551,7 +551,7 @@ init 5 python:
     )
 
 label dev_dynamic_acs_test:
-    
+
     m 6eua "now to test dynamic ACS"
     $ battery_level = 0
     $ monika_chr.wear_acs(dev_acs_battery)
@@ -573,7 +573,7 @@ label dev_dynamic_acs_test:
     m "5"
     $ battery_level = 6
     m "6"
-    
+
     m 6eua "now to take away acs"
     $ monika_chr.remove_acs(dev_acs_battery)
 

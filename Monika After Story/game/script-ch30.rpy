@@ -1019,7 +1019,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
-        $ monika_chr.wear_acs_pst(mas_acs_roses)
+        $ monika_chr.wear_acs(mas_acs_roses)
 
     # dissolving everything means dissolve last
     if dissolve_all and not hide_mask:
@@ -1955,7 +1955,7 @@ label ch30_reset:
     python:
         if persistent._mas_acs_enable_promisering:
             # TODO: need to be able to add a different promise ring
-            monika_chr.wear_acs_pst(mas_acs_promisering)
+            monika_chr.wear_acs(mas_acs_promisering)
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
