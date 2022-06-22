@@ -786,15 +786,20 @@ init 5 python in mas_nou:
                             self.__load_card_asset(card)
                             self.drawpile.append(card)
 
-        def __update_drawpile(self):
+        def __update_drawpile(self, smooth=True):
             """
             Moves all - except the top one - cards from the discardpile
             onto the drawpile, then shuffles drawpile
             """
-            renpy.pause(0.5, hard=True)
+            if smooth:
+                renpy.pause(0.5, hard=True)
 
             while len(self.discardpile) > 1:
-                card = self.discardpile[1]
+                card = self.discardpile[0]
+
+                # Reset wild cards
+                if card.type == "wild":
+                    card.color = None
 
                 self.table.set_faceup(card, False)
                 self.table.set_rotate(card, 0)
@@ -802,14 +807,15 @@ init 5 python in mas_nou:
 
                 self.drawpile.append(card)
 
-            renpy.pause(0.2, hard=True)
+            if smooth:
+                renpy.pause(0.2, hard=True)
 
             # align the last card
             last_card = self.table.get_card(self.discardpile[0])
             self.table.set_rotate(last_card.value, 90)
             last_card.set_offset(0, 0)
 
-            self.shuffle_drawpile()
+            self.shuffle_drawpile(smooth=smooth)
 
         def __update_game_log(self, current_player, next_player):
             """
@@ -1092,16 +1098,19 @@ init 5 python in mas_nou:
                 amount = self.HAND_CARDS_LIMIT - player_cards
 
             for i in range(amount):
-                player.hand.append(self.drawpile[-1])
+                card = self.drawpile[-1]
+                player.hand.append(card)
 
                 if player.isAI:
-                    self.table.set_rotate(player.hand[-1], -180)
+                    self.table.set_rotate(card, -180)
+                    faceup = False
                     offset = self.MONIKA_CARDS_OFFSET
 
                 else:
-                    self.table.set_faceup(player.hand[-1], True)
+                    faceup = True
                     offset = self.PLAYER_CARDS_OFFSET
 
+                self.table.set_faceup(card, faceup)
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
@@ -1138,6 +1147,10 @@ init 5 python in mas_nou:
                 if player.should_draw_cards:
                     player.should_draw_cards -= amount
 
+                if drawpile_cards == amount:
+                    # TODO: might need to use new context here
+                    self.__update_drawpile(smooth=smooth)
+
             # there're not enough cards
             else:
                 # deal as much as we can
@@ -1147,7 +1160,7 @@ init 5 python in mas_nou:
                 if player.should_draw_cards:
                     player.should_draw_cards -= drawpile_cards
 
-                self.__update_drawpile()
+                self.__update_drawpile(smooth=smooth)
                 drawpile_cards = len(self.drawpile)
 
                 # we should never get here, but just in case
@@ -1477,7 +1490,7 @@ init 5 python in mas_nou:
             """
             return self.table.sensitive
 
-        def shuffle_drawpile(self):
+        def shuffle_drawpile(self, smooth=True):
             """
             Shuffles the drawpile and animates cards shuffling
 
@@ -1492,7 +1505,8 @@ init 5 python in mas_nou:
                 k = renpy.random.randint(0, 9)
                 # we want to shuffle a bit faster than doing other card interactions
                 self.table.springback = 0.2
-                renpy.pause(0.2, hard=True)
+                if smooth:
+                    renpy.pause(0.2, hard=True)
 
                 for i in range(7):
                     card_id = renpy.random.randint(0, total_cards - 2)
@@ -1508,19 +1522,22 @@ init 5 python in mas_nou:
 
                     card.set_offset(x_offset, y_offset)
                     card.springback()
-                    renpy.pause(0.15, hard=True)
+                    if smooth:
+                        renpy.pause(0.15, hard=True)
 
                     self.drawpile.insert(insert_id, card.value)
 
                     card.set_offset(0, 0)
                     card.springback()
-                    renpy.pause(0.15, hard=True)
+                    if smooth:
+                        renpy.pause(0.15, hard=True)
 
                 # reset speed
                 self.table.springback = 0.3
 
             self.drawpile.shuffle()
-            renpy.pause(0.2, hard=True)
+            if smooth:
+                renpy.pause(0.2, hard=True)
 
         def handle_nou_logic(self, player):
             """
@@ -1537,6 +1554,7 @@ init 5 python in mas_nou:
                 the player didn't start to play their turn
             """
             self.set_sensitive(False)
+
             if player == "monika":
                 if self.monika.yelled_nou:
                     self.__say_quip(self.QUIPS_MONIKA_ALREADY_YELLED_NOU, new_context=True)
@@ -1569,6 +1587,7 @@ init 5 python in mas_nou:
                     self.player.yelled_nou = True
                     self.player.should_play_card = True
                     self.player.nou_reminder_timeout = 0
+
             self.set_sensitive(True)
 
         class __Card(object):
