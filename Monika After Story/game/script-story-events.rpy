@@ -2655,8 +2655,8 @@ label mas_gift_hint_noudeck:
             note_text = renpy.substitute("""\
 Hi [player]!
 
-I see you're making Monika really happy, and I want to help you with that!
-I added a new card deck, you can gift it to Monika. I'm sure together you will find out how to play it.
+I see you're making Monika really happy and I want to help any way I can!
+I added a new deck of cards that you can give to Monika. I'm sure you two can figure out how to play the game.
 
 To give it to her, create a new file 'noudeck.gift' in the 'characters' folder.
 
