@@ -786,12 +786,13 @@ init 5 python in mas_nou:
                             self.__load_card_asset(card)
                             self.drawpile.append(card)
 
-        def __update_drawpile(self):
+        def __update_drawpile(self, smooth=True):
             """
             Moves all - except the top one - cards from the discardpile
             onto the drawpile, then shuffles drawpile
             """
-            renpy.pause(0.5, hard=True)
+            if smooth:
+                renpy.pause(0.5, hard=True)
 
             while len(self.discardpile) > 1:
                 card = self.discardpile[0]
@@ -806,14 +807,15 @@ init 5 python in mas_nou:
 
                 self.drawpile.append(card)
 
-            renpy.pause(0.2, hard=True)
+            if smooth:
+                renpy.pause(0.2, hard=True)
 
             # align the last card
             last_card = self.table.get_card(self.discardpile[0])
             self.table.set_rotate(last_card.value, 90)
             last_card.set_offset(0, 0)
 
-            self.shuffle_drawpile()
+            self.shuffle_drawpile(smooth=smooth)
 
         def __update_game_log(self, current_player, next_player):
             """
@@ -1147,7 +1149,7 @@ init 5 python in mas_nou:
 
                 if drawpile_cards == amount:
                     # TODO: might need to use new context here
-                    self.__update_drawpile()
+                    self.__update_drawpile(smooth=smooth)
 
             # there're not enough cards
             else:
@@ -1158,7 +1160,7 @@ init 5 python in mas_nou:
                 if player.should_draw_cards:
                     player.should_draw_cards -= drawpile_cards
 
-                self.__update_drawpile()
+                self.__update_drawpile(smooth=smooth)
                 drawpile_cards = len(self.drawpile)
 
                 # we should never get here, but just in case
@@ -1488,7 +1490,7 @@ init 5 python in mas_nou:
             """
             return self.table.sensitive
 
-        def shuffle_drawpile(self):
+        def shuffle_drawpile(self, smooth=True):
             """
             Shuffles the drawpile and animates cards shuffling
 
@@ -1503,7 +1505,8 @@ init 5 python in mas_nou:
                 k = renpy.random.randint(0, 9)
                 # we want to shuffle a bit faster than doing other card interactions
                 self.table.springback = 0.2
-                renpy.pause(0.2, hard=True)
+                if smooth:
+                    renpy.pause(0.2, hard=True)
 
                 for i in range(7):
                     card_id = renpy.random.randint(0, total_cards - 2)
@@ -1519,19 +1522,22 @@ init 5 python in mas_nou:
 
                     card.set_offset(x_offset, y_offset)
                     card.springback()
-                    renpy.pause(0.15, hard=True)
+                    if smooth:
+                        renpy.pause(0.15, hard=True)
 
                     self.drawpile.insert(insert_id, card.value)
 
                     card.set_offset(0, 0)
                     card.springback()
-                    renpy.pause(0.15, hard=True)
+                    if smooth:
+                        renpy.pause(0.15, hard=True)
 
                 # reset speed
                 self.table.springback = 0.3
 
             self.drawpile.shuffle()
-            renpy.pause(0.2, hard=True)
+            if smooth:
+                renpy.pause(0.2, hard=True)
 
         def handle_nou_logic(self, player):
             """
