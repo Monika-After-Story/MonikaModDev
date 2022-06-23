@@ -5,12 +5,7 @@
 default persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_abandoned = 0
-default persistent._mas_game_nou_house_rules = {
-    "points_to_win": 200,
-    "starting_cards": 7,
-    "stackable_d2": False,
-    "unrestricted_wd4": False
-}
+default persistent._mas_game_nou_house_rules = store.mas_nou.get_default_rules()
 
 
 # NOU CLASS DEF
@@ -20,7 +15,16 @@ init 5 python in mas_nou:
     from store import m, persistent, Solid
     from store.mas_cardgames import *
 
+
     ASSETS = "mod_assets/games/nou/"
+
+    DEF_RULES_VALUES = {
+        "points_to_win": 200,
+        "starting_cards": 7,
+        "stackable_d2": False,
+        "unrestricted_wd4": False
+    }
+
 
     # stats for curr sesh
     player_wins_this_sesh = 0
@@ -40,6 +44,7 @@ init 5 python in mas_nou:
     # and disable them 'til next one
     disable_remind_button = False
     disable_yell_button = False
+
 
     class NoU(object):
         """
@@ -3197,6 +3202,62 @@ init 5 python in mas_nou:
 
 # UTIL FUNCTIONS
 init 5 python in mas_nou:
+    def get_default_rules():
+        """
+        Returns default house rules
+
+        OUT:
+            dict
+        """
+        return dict(DEF_RULES_VALUES)
+
+    def get_house_rule(name):
+        """
+        Returns a house rule for the given name
+
+        This WILL raise KeyError if you enter invalid name
+
+        But this WILL try to fall back to a sane value if the key isn't
+        in the persistent for some reason
+
+        IN:
+            name - the string with the rule key
+
+        OUT:
+            rule value
+            or None in the worst case
+        """
+        data = persistent._mas_game_nou_house_rules
+        if data is None:
+            return None
+
+        if name in data:
+            return data[name]
+
+        if name in DEF_RULES_VALUES:
+            return DEF_RULES_VALUES[name]
+
+        raise KeyError("Unknown name for a house rule: {}".format(name))
+
+    def set_house_rule(name, value):
+        """
+        Sets a new value for a house rule
+
+        This WILL raise KeyError if you enter invalid name
+
+        IN:
+            name - the string with the rule key
+            value - the new value for the rule
+        """
+        data = persistent._mas_game_nou_house_rules
+        if data is None:
+            return
+
+        if name not in DEF_RULES_VALUES:
+            raise KeyError("Unknown name for a house rule: {}".format(name))
+
+        data[name] = value
+
     def give_points():
         """
         Gives points to the winner
