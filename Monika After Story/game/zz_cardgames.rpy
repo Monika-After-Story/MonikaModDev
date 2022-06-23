@@ -3147,7 +3147,13 @@ init 5 python in mas_nou:
                             additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1
 
                         elif (
-                            reaction["type"] in (self.game.PLAYER_REFLECTED_ACT, self.game.PLAYER_REFLECTED_WDF)
+                            (
+                                (
+                                    reaction["type"] == self.game.PLAYER_REFLECTED_ACT
+                                    and reaction["monika_card"].label == "Draw Two"
+                                )
+                                or reaction["type"] == self.game.PLAYER_REFLECTED_WDF
+                            )
                             and chances_to_be_shown == 2
                             and len(self.hand) > 4
                             and persistent._mas_game_nou_house_rules["stackable_d2"]
