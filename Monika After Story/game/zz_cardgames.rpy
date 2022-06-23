@@ -1229,7 +1229,7 @@ init 5 python in mas_nou:
             self.shuffle_drawpile()
 
             # Deal 14 cards or whatever you asked her for
-            total_cards = persistent._mas_game_nou_house_rules["starting_cards"] * 2 + 1
+            total_cards = get_house_rule("starting_cards") * 2 + 1
             for i in range(1, total_cards):
                 if not i % 2:
                     temp_player = next_player
@@ -3407,7 +3407,7 @@ label monika_change_nou_house_rules:
 
             if not (
                 mas_nou.get_house_rule("points_to_win") == 200
-                and persistent._mas_game_nou_house_rules["starting_cards"] == 7
+                and mas_nou.get_house_rule("starting_cards") == 7
                 and persistent._mas_game_nou_house_rules["stackable_d2"] == False
                 and mas_nou.get_house_rule("unrestricted_wd4") == False
             ):
@@ -3464,7 +3464,7 @@ label monika_change_nou_house_rules:
 
             python:
                 mas_nou.set_house_rule("points_to_win", 200)
-                persistent._mas_game_nou_house_rules["starting_cards"] = 7
+                mas_nou.set_house_rule("starting_cards", 7)
                 persistent._mas_game_nou_house_rules["stackable_d2"] = False
                 mas_nou.set_house_rule("unrestricted_wd4", False)
 
@@ -3597,7 +3597,7 @@ label .change_starting_cards_loop:
                 m "Let's start with at least 4 cards?{fast}"
 
                 "Alright.":
-                    $ persistent._mas_game_nou_house_rules["starting_cards"] = 4
+                    $ mas_nou.set_house_rule("starting_cards", 4)
                     $ ready = True
 
                 "Nah.":
@@ -3611,7 +3611,7 @@ label .change_starting_cards_loop:
                 m "Let's leave it at 20 cards?{fast}"
 
                 "Alright.":
-                    $ persistent._mas_game_nou_house_rules["starting_cards"] = 20
+                    $ mas_nou.set_house_rule("starting_cards", 20)
                     $ ready = True
 
                 "Nah.":
@@ -3620,7 +3620,7 @@ label .change_starting_cards_loop:
         else:
             $ _round = _("round") if mas_nou.get_house_rule("points_to_win") else _("game")
             m 3eub "Okay, from now on, we will start each [_round!t] with [starting_cards] cards!"
-            $ persistent._mas_game_nou_house_rules["starting_cards"] = starting_cards
+            $ mas_nou.set_house_rule("starting_cards", starting_cards)
             $ ready = True
 
     $ del ready, starting_cards
@@ -3650,7 +3650,7 @@ label monika_explain_nou_rules:
     extend 4eub "but it's actually pretty simple."
     m 4eua "I'm sure if we play a few more games, you'll get the hang of it."
 
-    if persistent._mas_game_nou_house_rules["starting_cards"] == 7:
+    if mas_nou.get_house_rule("starting_cards") == 7:
         m 7esa "So we start the game with 7 cards."
 
     else:
