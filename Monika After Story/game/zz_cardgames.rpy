@@ -3251,7 +3251,11 @@ init 5 python in mas_nou:
             ASSUMES:
                 persistent._mas_game_nou_house_rules['points_to_win'] > 0
             """
-            return float(persistent._mas_game_nou_points[player_persist_key]) / float(persistent._mas_game_nou_house_rules["points_to_win"])
+            p2w = persistent._mas_game_nou_house_rules["points_to_win"]
+            if p2w == 0:
+                return 1.0
+            return float(persistent._mas_game_nou_points[player_persist_key]) / float(p2w)
+
 
 # Our events
 init 5 python:
