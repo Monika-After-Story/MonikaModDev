@@ -1087,7 +1087,7 @@ init 5 python in mas_nou:
                 if self.discardpile[-1].label == "Draw Two":
                     next_player.should_draw_cards = 2
 
-                    if persistent._mas_game_nou_house_rules["stackable_d2"]:
+                    if get_house_rule("stackable_d2"):
                         next_player.should_draw_cards += current_player.should_draw_cards
 
                     current_player.should_draw_cards = 0
@@ -3122,7 +3122,7 @@ init 5 python in mas_nou:
                         if reaction["type"] == self.game.MONIKA_REFLECTED_ACT:
                             if (
                                 chances_to_be_shown == 2
-                                and persistent._mas_game_nou_house_rules["stackable_d2"]
+                                and get_house_rule("stackable_d2")
                             ):
                                 additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
 
@@ -3140,7 +3140,7 @@ init 5 python in mas_nou:
                         elif (
                             reaction["type"] == self.game.MONIKA_REFLECTED_WDF
                             and chances_to_be_shown == 2
-                            and persistent._mas_game_nou_house_rules["stackable_d2"]
+                            and get_house_rule("stackable_d2")
                         ):
                             additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
 
@@ -3161,7 +3161,7 @@ init 5 python in mas_nou:
                             )
                             and chances_to_be_shown == 2
                             and len(self.hand) > 4
-                            and persistent._mas_game_nou_house_rules["stackable_d2"]
+                            and get_house_rule("stackable_d2")
                         ):
                             if reaction["type"] == self.game.PLAYER_REFLECTED_ACT:
                                 additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1
@@ -3392,7 +3392,7 @@ label monika_change_nou_house_rules:
                     False
                 ),
                 (
-                    _("I'd like to play with stackable Draw 2's.") if not persistent._mas_game_nou_house_rules["stackable_d2"] else _("I'd like to play with non-stackable Draw 2's."),
+                    _("I'd like to play with stackable Draw 2's.") if not mas_nou.get_house_rule("stackable_d2") else _("I'd like to play with non-stackable Draw 2's."),
                     "stackable_d2",
                     False,
                     False
@@ -3408,7 +3408,7 @@ label monika_change_nou_house_rules:
             if not (
                 mas_nou.get_house_rule("points_to_win") == 200
                 and mas_nou.get_house_rule("starting_cards") == 7
-                and persistent._mas_game_nou_house_rules["stackable_d2"] == False
+                and mas_nou.get_house_rule("stackable_d2") == False
                 and mas_nou.get_house_rule("unrestricted_wd4") == False
             ):
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
@@ -3440,14 +3440,14 @@ label monika_change_nou_house_rules:
             call monika_change_nou_house_rules.change_starting_cards_loop
 
         elif _return == "stackable_d2":
-            if not persistent._mas_game_nou_house_rules["stackable_d2"]:
+            if not mas_nou.get_house_rule("stackable_d2"):
                 m 1tub "Okay, but I must warn you that that might go against you~"
 
             else:
                 m 1ttu "Afraid that I'll make you draw all the cards?~"
                 m 1hub "Ahaha~ I'm just kidding!"
 
-            $ persistent._mas_game_nou_house_rules["stackable_d2"] = not persistent._mas_game_nou_house_rules["stackable_d2"]
+            $ mas_nou.reverse_house_rule("stackable_d2")
 
         elif _return == "unrestricted_wd4":
             if not mas_nou.get_house_rule("unrestricted_wd4"):
@@ -3465,7 +3465,7 @@ label monika_change_nou_house_rules:
             python:
                 mas_nou.set_house_rule("points_to_win", 200)
                 mas_nou.set_house_rule("starting_cards", 7)
-                persistent._mas_game_nou_house_rules["stackable_d2"] = False
+                mas_nou.set_house_rule("stackable_d2", False)
                 mas_nou.set_house_rule("unrestricted_wd4", False)
 
                 store.mas_nou.reset_points()
