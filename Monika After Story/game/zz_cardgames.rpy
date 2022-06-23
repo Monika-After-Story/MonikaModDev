@@ -5,7 +5,8 @@
 default persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_abandoned = 0
-default persistent._mas_game_nou_house_rules = store.mas_nou.get_default_rules()
+# This needs to be defined later because renpy is dum
+default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_rules()
 
 
 # NOU CLASS DEF
@@ -3654,7 +3655,7 @@ label monika_explain_nou_rules:
         m 7esa "So we start the game with 7 cards."
 
     else:
-        m 7esa "So since we're playing with house rules, we start the game with [persistent._mas_game_nou_house_rules[starting_cards]] cards."
+        m 7esa "So since we're playing with house rules, we start the game with [mas_nou.get_house_rule('starting_cards')] cards."
 
     m 1esa "Your goal is to play all your cards before I play all of mine."
     m 3eub "To play a card you need to match it by the color or the text with the top card on the discard pile."
@@ -3664,7 +3665,7 @@ label monika_explain_nou_rules:
     if mas_nou.get_house_rule("points_to_win"):
         m 3eub "After you played a card or skipped your turn, my turn begins. And so on until someone wins the round."
         m 1eua "The winner is awarded with the points equal to the remaining cards in the opponent's hand."
-        m "Then we play more rounds until one of us reaches the goal - [persistent._mas_game_nou_house_rules[points_to_win]] points."
+        m "Then we play more rounds until one of us reaches the goal - [mas_nou.get_house_rule('points_to_win')] points."
         m 1esa "Such scoring makes the game more competitive and strategic."
 
     else:
@@ -4113,7 +4114,7 @@ label mas_nou_reaction_player_wins_game:
             m 1hua "That was fun!"
 
     else:
-        m 4eub "...And you're the first who reached [persistent._mas_game_nou_house_rules[points_to_win]] points!"
+        m 4eub "...And you're the first who reached [mas_nou.get_house_rule('points_to_win')] points!"
         m 1hua "Congrats, [player]~"
     return
 
@@ -4299,7 +4300,7 @@ label mas_nou_reaction_monika_wins_game:
         m 1hub "Thanks for playing with me, [player]~"
 
     else:
-        m 3eub "And I'm the first who reached [persistent._mas_game_nou_house_rules[points_to_win]] points!"
+        m 3eub "And I'm the first who reached [mas_nou.get_house_rule('points_to_win')] points!"
         m 1hua "I won this time~"
     return
 
