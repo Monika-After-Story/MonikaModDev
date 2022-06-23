@@ -3197,64 +3197,64 @@ init 5 python in mas_nou:
 
 # UTIL FUNCTIONS
 init 5 python in mas_nou:
-        def give_points():
-            """
-            Gives points to the winner
+    def give_points():
+        """
+        Gives points to the winner
 
-            ASSUMES:
-                mas_nou.game
-                mas_nou.winner
-            """
-            if winner in ("Monika", "Surrendered"):
-                persist_key = "Monika"
-                loser = game.player
+        ASSUMES:
+            mas_nou.game
+            mas_nou.winner
+        """
+        if winner in ("Monika", "Surrendered"):
+            persist_key = "Monika"
+            loser = game.player
 
-            elif winner == "Player":
-                persist_key = "Player"
-                loser = game.monika
+        elif winner == "Player":
+            persist_key = "Player"
+            loser = game.monika
 
-            # this should never happen
-            else:
-                return
+        # this should never happen
+        else:
+            return
 
-            # we don't forget to add points if you win the game with a d2 or wd4
-            if loser.should_draw_cards:
-                game.deal_cards(
-                    player=loser,
-                    amount=loser.should_draw_cards,
-                    smooth=False,
-                    mark_as_drew_card=False,
-                    reset_nou_var=False
-                )
+        # we don't forget to add points if you win the game with a d2 or wd4
+        if loser.should_draw_cards:
+            game.deal_cards(
+                player=loser,
+                amount=loser.should_draw_cards,
+                smooth=False,
+                mark_as_drew_card=False,
+                reset_nou_var=False
+            )
 
-            for card in loser.hand:
-                persistent._mas_game_nou_points[persist_key] += card.value
+        for card in loser.hand:
+            persistent._mas_game_nou_points[persist_key] += card.value
 
-        def reset_points():
-            """
-            Resets the persistent var to 0 for both Monika and the player
-            """
-            persistent._mas_game_nou_points["Monika"] = 0
-            persistent._mas_game_nou_points["Player"] = 0
+    def reset_points():
+        """
+        Resets the persistent var to 0 for both Monika and the player
+        """
+        persistent._mas_game_nou_points["Monika"] = 0
+        persistent._mas_game_nou_points["Player"] = 0
 
-        def get_player_points_percentage(player_persist_key):
-            """
-            Returns proportion of the corrent points of a player to the maximum possible score
+    def get_player_points_percentage(player_persist_key):
+        """
+        Returns proportion of the corrent points of a player to the maximum possible score
 
-            IN:
-                player_persist_key - persistent key for the player
-                    ('Monika' or 'Player')
+        IN:
+            player_persist_key - persistent key for the player
+                ('Monika' or 'Player')
 
-            OUT:
-                float as proportion (0.0 - 1.0)
+        OUT:
+            float as proportion (0.0 - 1.0)
 
-            ASSUMES:
-                persistent._mas_game_nou_house_rules['points_to_win'] > 0
-            """
-            p2w = persistent._mas_game_nou_house_rules["points_to_win"]
-            if p2w == 0:
-                return 1.0
-            return float(persistent._mas_game_nou_points[player_persist_key]) / float(p2w)
+        ASSUMES:
+            persistent._mas_game_nou_house_rules['points_to_win'] > 0
+        """
+        p2w = persistent._mas_game_nou_house_rules["points_to_win"]
+        if p2w == 0:
+            return 1.0
+        return float(persistent._mas_game_nou_points[player_persist_key]) / float(p2w)
 
 
 # Our events
