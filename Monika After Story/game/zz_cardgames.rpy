@@ -3258,6 +3258,17 @@ init 5 python in mas_nou:
 
         data[name] = value
 
+    def reverse_house_rule(name):
+        """
+        Reversed a value of a house rule
+        Only useful for bools
+        """
+        old_value = get_house_rule(name)
+        if not isinstance(old_value, bool):
+            raise TypeError("reverse_house_rule can only be used for boolean rules")
+
+        set_house_rule(name, not old_value)
+
     def give_points():
         """
         Gives points to the winner
