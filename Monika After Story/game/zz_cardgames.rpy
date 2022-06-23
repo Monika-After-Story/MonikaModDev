@@ -6,7 +6,7 @@ default persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
 default persistent._mas_game_nou_abandoned = 0
 # This needs to be defined later because renpy is dum
-default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_rules()
+default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_house_rules()
 
 
 # NOU CLASS DEF
@@ -3203,7 +3203,7 @@ init 5 python in mas_nou:
 
 # UTIL FUNCTIONS
 init 5 python in mas_nou:
-    def get_default_rules():
+    def get_default_house_rules():
         """
         Returns default house rules
 
@@ -3211,6 +3211,21 @@ init 5 python in mas_nou:
             dict
         """
         return dict(DEF_RULES_VALUES)
+
+    def update_house_rules(force=False):
+        """
+        Adds keys from the def values dict to the persistent dict
+        Useful after updates
+
+        IN:
+            force - bool, do we want to rewrite existing keys?
+        """
+        if persistent._mas_game_nou_house_rules is None:
+            persistent._mas_game_nou_house_rules = {}
+
+        for k, v in DEF_RULES_VALUES.items():
+            if k not in persistent._mas_game_nou_house_rules or force:
+                persistent._mas_game_nou_house_rules[k] = v
 
     def get_house_rule(name):
         """
