@@ -1016,7 +1016,7 @@ init 5 python in mas_nou:
                     or (
                         card.label == "Wild Draw Four"
                         and (
-                                persistent._mas_game_nou_house_rules["unrestricted_wd4"]
+                                get_house_rule("unrestricted_wd4")
                                 or not has_color(player.hand, self.discardpile[-1].color)
                         )
                     )
@@ -1815,7 +1815,7 @@ init 5 python in mas_nou:
                     self.game.game_log[-2]["played_card"] is not None
                     and self.game.game_log[-2]["played_card"].type == "wild"
                     and (
-                        not persistent._mas_game_nou_house_rules["unrestricted_wd4"]
+                        not get_house_rule("unrestricted_wd4")
                         or random.random() < 0.25
                     )
                     and len(self.game.discardpile) > 1
@@ -3398,7 +3398,7 @@ label monika_change_nou_house_rules:
                     False
                 ),
                 (
-                    _("I'd like to play with unrestricted Wild Draw 4's.") if not persistent._mas_game_nou_house_rules["unrestricted_wd4"] else _("I'd like to play with restricted Wild Draw 4's."),
+                    _("I'd like to play with unrestricted Wild Draw 4's.") if not mas_nou.get_house_rule("unrestricted_wd4") else _("I'd like to play with restricted Wild Draw 4's."),
                     "unrestricted_wd4",
                     False,
                     False
@@ -3409,7 +3409,7 @@ label monika_change_nou_house_rules:
                 mas_nou.get_house_rule("points_to_win") == 200
                 and persistent._mas_game_nou_house_rules["starting_cards"] == 7
                 and persistent._mas_game_nou_house_rules["stackable_d2"] == False
-                and persistent._mas_game_nou_house_rules["unrestricted_wd4"] == False
+                and mas_nou.get_house_rule("unrestricted_wd4") == False
             ):
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
 
@@ -3450,14 +3450,14 @@ label monika_change_nou_house_rules:
             $ persistent._mas_game_nou_house_rules["stackable_d2"] = not persistent._mas_game_nou_house_rules["stackable_d2"]
 
         elif _return == "unrestricted_wd4":
-            if not persistent._mas_game_nou_house_rules["unrestricted_wd4"]:
+            if not mas_nou.get_house_rule("unrestricted_wd4"):
                 # m "Oh, you better be ready for this one, [player]~"
                 m 1eua "That sounds fun."
 
             else:
                 m 1eua "Back to the classic, I see."
 
-            $ persistent._mas_game_nou_house_rules["unrestricted_wd4"] = not persistent._mas_game_nou_house_rules["unrestricted_wd4"]
+            $ mas_nou.reverse_house_rule("unrestricted_wd4")
 
         elif _return == "restore":
             m 3eub "Okay! Then settled!"
@@ -3466,7 +3466,7 @@ label monika_change_nou_house_rules:
                 mas_nou.set_house_rule("points_to_win", 200)
                 persistent._mas_game_nou_house_rules["starting_cards"] = 7
                 persistent._mas_game_nou_house_rules["stackable_d2"] = False
-                persistent._mas_game_nou_house_rules["unrestricted_wd4"] = False
+                mas_nou.set_house_rule("unrestricted_wd4", False)
 
                 store.mas_nou.reset_points()
 
@@ -3682,7 +3682,7 @@ label monika_explain_nou_rules:
     m 1tsu "And by more, I mean 12 cards in a row."
     m 1eua "{i}Wild{/i} cards don't have a color which means they can be placed on any card."
 
-    if not persistent._mas_game_nou_house_rules["unrestricted_wd4"]:
+    if not mas_nou.get_house_rule("unrestricted_wd4"):
         m 3eua "If you have no other cards with the color of the discard pile, that is."
 
     else:
