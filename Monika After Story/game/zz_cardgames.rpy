@@ -292,7 +292,8 @@ init 5 python in mas_nou:
             1: [
                 (_("Still nope!"),),
                 (_("Ehehe~ I was ready!"),),
-                (_("Not this time, [player]!"),)
+                (_("Not this time, [player]!"),),
+                (_("Peace was never an option!"),)
             ],
             2: [
                 (_("I read you as an open book."), _("Ahaha~")),
@@ -313,7 +314,8 @@ init 5 python in mas_nou:
                 (_("What about this one?~"),)
             ],
             2: [
-                (_("Will you{w=0.2} still love me after this?~"), _("Ahaha~"))
+                (_("Will you{w=0.2} still love me after this?~"), _("Ahaha~")),
+                (_("I have more in store for you~"),)
             ]
         }
 
@@ -424,7 +426,8 @@ init 5 python in mas_nou:
             ],
             2: [
                 (_("Oh my gosh!{w=0.2} How many of these do you have?!"),),
-                (_("Ehehe~ I thought this was a simple game between lovers, not a competition..."), _("Guess I was wrong~"))
+                (_("Ehehe~ I thought this was a simple game between lovers, not a competition..."), _("Guess I was wrong~")),
+                (_("{color=#d31f1f}{font=gui/font/VerilySerifMono.otf}Monika will remember this.{/font}{/color}"),)
             ]
         }
 
@@ -461,6 +464,18 @@ init 5 python in mas_nou:
             REACTIONS_MAP_PLAYER_REFLECTED_ACT[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
             REACTIONS_MAP_PLAYER_REFLECTED_WCC[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
             REACTIONS_MAP_PLAYER_REFLECTED_WD4[i] += list(REACTIONS_MAP_PLAYER_REFLECTED_CARD[i])
+
+        # # # Modifiers for the reactions quips, which only apply under certain conditions
+
+        # this modifier only works when you play with stackable cards
+        # and Monika has at least 4 cards already
+        # used for seen count 2
+        REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1 = [
+            (_("Oh, good, now I'm holding the whole deck in my hands."), _("Thanks, love!"))
+        ]
+
+        # Same as d2
+        REACTIONS_MAP_PLAYER_REFLECTED_WD4_MODIFIER_1 = list(REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1)
 
         # Map between reactions ids and dicts of lists of quips
         REACTIONS_MAP = {
@@ -3130,6 +3145,18 @@ init 5 python in mas_nou:
                             and self.chosen_color == "green"
                         ):
                             additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1
+
+                        elif (
+                            reaction["type"] in (self.game.PLAYER_REFLECTED_ACT, self.game.PLAYER_REFLECTED_WDF)
+                            and chances_to_be_shown == 2
+                            and len(self.hand) > 4
+                            and persistent._mas_game_nou_house_rules["stackable_d2"]
+                        ):
+                            if reaction["type"] == self.game.PLAYER_REFLECTED_ACT:
+                                additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1
+
+                            else:
+                                additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_WD4_MODIFIER_1
 
                         # add modifiers if any
                         if additional_quips is not None:
