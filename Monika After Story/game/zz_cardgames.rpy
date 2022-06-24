@@ -3203,6 +3203,8 @@ init 5 python in mas_nou:
 
 # UTIL FUNCTIONS
 init 5 python in mas_nou:
+    import datetime
+
     def get_default_house_rules():
         """
         Returns default house rules
@@ -3284,6 +3286,40 @@ init 5 python in mas_nou:
             raise TypeError("reverse_house_rule can only be used for boolean rules")
 
         set_house_rule(name, not old_value)
+
+    def visit_game_ev():
+        """
+        Updates game ev props like if it was seen by the player now
+        Increments show count
+        Sets last seen
+        """
+        with store.MAS_EVL("mas_nou") as game_ev:
+            game_ev.shown_count += 1
+            game_ev.last_seen = datetime.datetime.now()
+
+    def does_want_suggest_play():
+        """
+        A func to check if Monika wants to suggest play nou
+        Yes if:
+            NEVER played nou before
+            played in the last 15 mins
+            NOT played in the past 3 days
+            otherwise 30% to say yes
+
+        OUT:
+            bool
+        """
+        last_played = store.mas_getEVL_last_seen("mas_nou")
+        if last_played is None:
+            return True
+
+        now_dt = datetime.datetime.now()
+        delta_t = now_dt - last_played
+        return (
+            delta_t < datetime.timedelta(minutes=15)
+            or delta_t > datetime.timedelta(days=3)
+            or random.random() < 0.3
+        )
 
     def give_points():
         """
@@ -3518,7 +3554,21 @@ label monika_change_nou_house_rules:
             jump monika_change_nou_house_rules.menu_loop
 
         "No.":
-            m 2eub "Then let's play together soon~"
+            if mas_nou.does_want_suggest_play():
+                m "Then maybe we could play now?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Then maybe we could play now?{nw}"
+
+                    "Sure.":
+                        $ mas_nou.visit_game_ev()
+                        jump mas_nou_game_loop
+
+                    "Maybe later.":
+                        m 2eub "Alright, let's play together soon~"
+
+            else:
+                m 2eub "Then let's play together soon~"
 
     $ del menu_items, final_items
 
@@ -3836,7 +3886,7 @@ label mas_nou_game_end:
                     show monika 1hua zorder MAS_MONIKA_Z
                     python:
                         store.mas_nou.game.reset_game()
-                        mas_assignModifyEVLPropValue("mas_nou", "shown_count", "+=", 1)
+                        mas_nou.visit_game_ev()
 
                     jump mas_nou_game_loop
 
@@ -3874,7 +3924,7 @@ label mas_nou_game_end:
                     show monika 1hua zorder MAS_MONIKA_Z
                     python:
                         store.mas_nou.game.reset_game()
-                        mas_assignModifyEVLPropValue("mas_nou", "shown_count", "+=", 1)
+                        mas_nou.visit_game_ev()
 
                     jump mas_nou_game_loop
 
@@ -3909,7 +3959,7 @@ label mas_nou_game_end:
             show monika 1hua zorder MAS_MONIKA_Z
             python:
                 store.mas_nou.game.reset_game()
-                mas_assignModifyEVLPropValue("mas_nou", "shown_count", "+=", 1)
+                mas_nou.visit_game_ev()
 
             jump mas_nou_game_loop
 
