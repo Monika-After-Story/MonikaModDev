@@ -960,12 +960,11 @@ init 5 python in mas_nou:
             IN:
                 player - the player we check
             """
+            global winner
             if player.hand:
                 return
 
             self.set_sensitive(False)
-
-            global winner
 
             if player.isAI:
                 winner = "Monika"
@@ -1709,7 +1708,7 @@ init 5 python in mas_nou:
             MAX_THONK_TIME = 0.8
             SHUFFLING_CHANCE = 0.15
             LOW_MISSING_NOU_CHANCE = 0.1
-            HIGHT_MISSING_NOU_CHANCE = 0.25
+            HIGH_MISSING_NOU_CHANCE = 0.25
 
             def __init__(self, game, leftie=False):
                 """
@@ -3013,7 +3012,7 @@ init 5 python in mas_nou:
                     return (
                         (
                             (
-                                persistent._mas_game_nou_abandoned > 2
+                                persistent._mas_game_nou_abandoned > 1
                                 or (
                                     get_house_rule("points_to_win") > 0
                                     and get_player_points_percentage("Player") <= 0.2
@@ -3021,10 +3020,13 @@ init 5 python in mas_nou:
                                 )
                                 or (
                                     get_house_rule("points_to_win") == 0
-                                    and monika_win_streak > 2
+                                    and (
+                                        monika_win_streak > 2
+                                        or monika_wins_this_sesh - player_wins_this_sesh > 4
+                                    )
                                 )
                             )
-                            and random.random() < self.HIGHT_MISSING_NOU_CHANCE
+                            and random.random() < self.HIGH_MISSING_NOU_CHANCE
                         )
                         or random.random() < self.LOW_MISSING_NOU_CHANCE
                     )
@@ -3560,9 +3562,10 @@ label monika_change_nou_house_rules:
                 m "Then maybe we could play now?{nw}"
                 $ _history_list.pop()
                 menu:
-                    m "Then maybe we could play now?{nw}"
+                    m "Then maybe we could play now?{fast}"
 
                     "Sure.":
+                        show monika 1hua zorder MAS_MONIKA_Z
                         $ mas_nou.visit_game_ev()
                         jump mas_nou_game_loop
 
@@ -4353,7 +4356,7 @@ label mas_nou_reaction_monika_wins_game:
             m 1eka "I hope you had fun too."
             # TODO: move this out of the RNG selection to 100% get it?
             if (
-                persistent._mas_game_nou_wins["Monika"] + persistent._mas_game_nou_wins["Player"] < 20
+                persistent._mas_game_nou_wins["Monika"] + persistent._mas_game_nou_wins["Player"] < 40
                 and persistent._mas_game_nou_wins["Monika"] > persistent._mas_game_nou_wins["Player"]
             ):
                 m 3hua "I'm sure if we play more games you'll win too."
