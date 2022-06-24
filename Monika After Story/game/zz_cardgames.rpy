@@ -3009,27 +3009,27 @@ init 5 python in mas_nou:
                         persistent._mas_game_nou_house_rules
                         persistent._mas_game_nou_points['Player']
                     """
-                    return (
-                        (
-                            (
-                                persistent._mas_game_nou_abandoned > 1
-                                or (
-                                    get_house_rule("points_to_win") > 0
-                                    and get_player_points_percentage("Player") <= 0.2
-                                    and get_player_points_percentage("Monika") >= 0.8
-                                )
-                                or (
-                                    get_house_rule("points_to_win") == 0
-                                    and (
-                                        monika_win_streak > 2
-                                        or monika_wins_this_sesh - player_wins_this_sesh > 4
-                                    )
-                                )
-                            )
-                            and random.random() < self.HIGH_MISSING_NOU_CHANCE
+                    if (
+                        persistent._mas_game_nou_abandoned > 1
+                        or (
+                            get_house_rule("points_to_win") > 0
+                            and get_player_points_percentage("Player") <= 0.2
+                            and get_player_points_percentage("Monika") >= 0.8
                         )
-                        or random.random() < self.LOW_MISSING_NOU_CHANCE
-                    )
+                        or (
+                            get_house_rule("points_to_win") == 0
+                            and (
+                                monika_win_streak > 2
+                                or monika_wins_this_sesh - player_wins_this_sesh > 4
+                            )
+                        )
+                    ):
+                        chance = self.HIGH_MISSING_NOU_CHANCE
+
+                    else:
+                        chance = self.LOW_MISSING_NOU_CHANCE
+
+                    return random.random() < chance
 
                 # Predefine as False
                 has_yelled_nou = False
