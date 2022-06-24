@@ -3294,8 +3294,10 @@ init 5 python in mas_nou:
         Sets last seen
         """
         with store.MAS_EVL("mas_nou") as game_ev:
-            game_ev.shown_count += 1
-            game_ev.last_seen = datetime.datetime.now()
+            # Sanity check just in case
+            if game_ev.unlocked:
+                game_ev.shown_count += 1
+                game_ev.last_seen = datetime.datetime.now()
 
     def does_want_suggest_play():
         """
