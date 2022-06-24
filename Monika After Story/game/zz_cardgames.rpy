@@ -4674,6 +4674,18 @@ init -10 python in mas_cardgames:
         """
         BLIT_COORDS = (0, 0)
 
+        def __init__(self, **props):
+            """
+            Constructor
+
+            IN:
+                **props - general props for renpy displayable
+            """
+            super(DeskSpriteSwitch, self).__init__(**props)
+            # Store the object itself, not id
+            # Because mas_current_background can be None when we define this disp
+            self._last_bg = store.mas_current_background
+
         def render(self, width, height, st, at):
             """
             Render of this disp
@@ -4686,6 +4698,19 @@ init -10 python in mas_cardgames:
             main_render.blit(desk_render, DeskSpriteSwitch.BLIT_COORDS)
 
             return main_render
+
+        def per_interact(self):
+            """
+            Interact callback
+            While technically I doubt the background can be changed while the game is on
+            and the disp seems to update when switching the bg
+            (probably because of a different filter)
+            I think it's more safe to just redraw after every interaction
+            """
+            bg = store.mas_current_background
+            if self._last_bg != bg:
+                self._last_bg = bg
+                renpy.redraw(self, 0.0)
 
         def visit(self):
             """
