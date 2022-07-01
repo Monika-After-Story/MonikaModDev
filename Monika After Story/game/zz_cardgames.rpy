@@ -3158,6 +3158,7 @@ init 5 python in mas_nou:
                             (
                                 (
                                     reaction["type"] == self.game.PLAYER_REFLECTED_ACT
+                                    and reaction["monika_card"] is not None
                                     and reaction["monika_card"].label == "Draw Two"
                                 )
                                 or reaction["type"] == self.game.PLAYER_REFLECTED_WDF
