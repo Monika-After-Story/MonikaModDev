@@ -13,7 +13,11 @@ default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_hous
 init 5 python in mas_nou:
     import random
 
-    from store import m, persistent, Solid
+    from store import (
+        m,
+        persistent,
+        Solid
+    )
     from store.mas_cardgames import *
 
 
@@ -1610,6 +1614,7 @@ init 5 python in mas_nou:
 
             self.set_sensitive(True)
 
+
     class _NOUCard(object):
         """
         A class to represent a card
@@ -1660,6 +1665,7 @@ init 5 python in mas_nou:
 
             return "<_NOUCard {}>".format(card_info)
 
+
     class _NOUPlayer(object):
         """
         A class to represent players
@@ -1698,6 +1704,38 @@ init 5 python in mas_nou:
 
         def __repr__(self):
             return "<_NOUPlayer '{0}'>".format(persistent.playername)
+
+
+    class _NOUReaction(object):
+        def __init__(
+            self,
+            type_=NOU.NO_REACTION,
+            turn=-1,
+            monika_card=None,
+            player_card=None,
+            chances_to_be_shown=0,
+            shown=False
+        ):
+            self.type = type_
+            self.turn = turn
+            self.monika_card = monika_card
+            self.player_card = player_card
+            self.chances_to_be_shown = chances_to_be_shown
+            self.shown = shown
+
+        @property
+        def chances_to_be_shown(self):
+            return self._chances_to_be_shown
+
+        @chances_to_be_shown.setter
+        def chances_to_be_shown(self, value):
+            if not 0 <= value < 3:
+                value = max(min(value, 2), 0)
+            self._chances_to_be_shown = value
+
+        def __repr__(self):
+            return "<_NOUReaction>"
+
 
     class _NOUPlayerAI(_NOUPlayer):
         """
@@ -2719,49 +2757,49 @@ init 5 python in mas_nou:
                     and self.game.game_log[-3]["played_card"] is not None# see if Monika played wd4 before
                     and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"
                 ):
-                    reaction = {
-                        "type": self.game.MONIKA_REFLECTED_WDF,
-                        "chances_to_be_shown": 0
-                    }
+                    reaction = _NOUReaction(
+                        type_=self.game.MONIKA_REFLECTED_WDF,
+                        chances_to_be_shown=0
+                    )
 
                 # someone played a wd4 > ... > Monika reflected > the player reflected > Monika reflected
                 elif (
                     self.reactions
-                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
+                    and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WDF
                     and len(self.game.game_log) > 1
                     and self.game.game_log[-2]["played_card"] is not None# see if the player played something
                 ):
-                    reaction = {"type": self.game.MONIKA_REFLECTED_WDF}
+                    reaction = _NOUReaction(type_=self.game.MONIKA_REFLECTED_WDF)
 
-                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1
-                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1
+                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                 # # # Monika does not
                 # it's just the player played an act > Monika reflected
                 else:
-                    reaction = {"type": self.game.MONIKA_REFLECTED_ACT}
+                    reaction = _NOUReaction(type_=self.game.MONIKA_REFLECTED_ACT)
 
                     # Monika keeps track on series of reactions
                     if (
                         self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
+                        and self.reactions[-1].type == self.game.MONIKA_REFLECTED_ACT
                     ):
                         if (
                             len(self.reactions) > 1
-                            and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_ACT
+                            and self.reactions[-2].type == self.game.MONIKA_REFLECTED_ACT
                         ):
-                            reaction["chances_to_be_shown"] = 2
+                            reaction.chances_to_be_shown = 2
 
                         else:
-                            reaction["chances_to_be_shown"] = 1
+                            reaction.chances_to_be_shown = 1
 
                     else:
-                        reaction["chances_to_be_shown"] = 0
+                        reaction.chances_to_be_shown = 0
 
-                reaction["turn"] = self.game.current_turn
-                reaction["monika_card"] = next_card_to_play
-                reaction["player_card"] = self.game.game_log[-2]["played_card"]
-                reaction["shown"] = False
+                reaction.turn = self.game.current_turn
+                reaction.monika_card = next_card_to_play
+                reaction.player_card = self.game.game_log[-2]["played_card"]
+                reaction.shown = False
 
                 self.reactions.append(reaction)
 
@@ -2779,18 +2817,18 @@ init 5 python in mas_nou:
                 # Someone played wd4 > ... > the player reflected > Monika fails to reflect
                 if (
                     self.reactions
-                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
+                    and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WDF
                 ):
-                    reaction = {
-                        "type": self.game.PLAYER_REFLECTED_WDF,
-                        "turn": self.game.current_turn,
-                        "monika_card": None,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "shown": False
-                    }
+                    reaction = _NOUReaction(
+                        type_=self.game.PLAYER_REFLECTED_WDF,
+                        turn=self.game.current_turn,
+                        monika_card=None,
+                        player_card=self.game.game_log[-2]["played_card"],
+                        shown=False
+                    )
 
-                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
-                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
+                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                     self.reactions.append(reaction)
 
@@ -2800,18 +2838,18 @@ init 5 python in mas_nou:
                 # Someone played an act > ... > the player reflected > Monika failed to reflect
                 elif (
                     self.reactions
-                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
+                    and self.reactions[-1].type == self.game.MONIKA_REFLECTED_ACT
                 ):
-                    reaction = {
-                        "type": self.game.PLAYER_REFLECTED_ACT,
-                        "turn": self.game.current_turn,
-                        "monika_card": None,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "shown": False
-                    }
+                    reaction = _NOUReaction(
+                        type_=self.game.PLAYER_REFLECTED_ACT,
+                        turn=self.game.current_turn,
+                        monika_card=None,
+                        player_card=self.game.game_log[-2]["played_card"],
+                        shown=False
+                    )
 
-                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
-                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
+                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                     self.reactions.append(reaction)
 
@@ -2823,14 +2861,14 @@ init 5 python in mas_nou:
                     and self.game.game_log[-3]["played_card"] is not None# did Monika played a card back then?
                     and self.game.game_log[-3]["played_card"].label == self.game.game_log[-2]["played_card"].label# Does it have the same label as the player's last cart?
                 ):
-                    reaction = {
-                        "type": self.game.PLAYER_REFLECTED_ACT,
-                        "turn": self.game.current_turn,
-                        "monika_card": None,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "chances_to_be_shown": 0,# for this one always use seen_count 0
-                        "shown": False
-                    }
+                    reaction = _NOUReaction(
+                        type_=self.game.PLAYER_REFLECTED_ACT,
+                        turn=self.game.current_turn,
+                        monika_card=None,
+                        player_card=self.game.game_log[-2]["played_card"],
+                        chances_to_be_shown=0,# for this one always use seen_count 0
+                        shown=False
+                    )
 
                     self.reactions.append(reaction)
 
@@ -2848,14 +2886,14 @@ init 5 python in mas_nou:
                 and self.game.game_log[-2]["played_card"] is not None
                 and self.game.game_log[-2]["played_card"].label == "Wild Draw Four"# and the player played a wd4
             ):
-                reaction = {
-                    "type": self.game.MONIKA_REFLECTED_WDF,
-                    "turn": self.game.current_turn,
-                    "monika_card": next_card_to_play,
-                    "player_card": self.game.game_log[-2]["played_card"],
-                    "chances_to_be_shown": 0,
-                    "shown": False
-                }
+                reaction = _NOUReaction(
+                    type_=self.game.MONIKA_REFLECTED_WDF,
+                    turn=self.game.current_turn,
+                    monika_card=next_card_to_play,
+                    player_card=self.game.game_log[-2]["played_card"],
+                    chances_to_be_shown=0,
+                    shown=False
+                )
 
                 # NOTE: DON'T DELETE THIS
                 # turns = 8
@@ -2878,14 +2916,14 @@ init 5 python in mas_nou:
                 and self.game.game_log[-2]["played_card"] is not None
                 and self.game.game_log[-2]["played_card"].label == "Draw Two"# and the player played a d2
             ):
-                reaction = {
-                    "type": self.game.PLAYER_REFLECTED_WDF,
-                    "turn": self.game.current_turn,
-                    "monika_card": None,
-                    "player_card": self.game.game_log[-2]["played_card"],
-                    "chances_to_be_shown": 0,
-                    "shown": False
-                }
+                reaction = _NOUReaction(
+                    type_=self.game.PLAYER_REFLECTED_WDF,
+                    turn=self.game.current_turn,
+                    monika_card=None,
+                    player_card=self.game.game_log[-2]["played_card"],
+                    chances_to_be_shown=0,
+                    shown=False
+                )
 
                 self.reactions.append(reaction)
 
@@ -2899,29 +2937,29 @@ init 5 python in mas_nou:
                 and self.game.game_log[-2]["played_card"] is not None
                 and self.game.game_log[-2]["played_card"].label == "Wild"# and the player played a Wild card before (so reflect)
             ):
-                reaction = {
-                    "type": self.game.MONIKA_REFLECTED_WCC,
-                    "turn": self.game.current_turn,
-                    "monika_card": next_card_to_play,
-                    "player_card": self.game.game_log[-2]["played_card"],
-                    "shown": False
-                }
+                reaction = _NOUReaction(
+                    type_=self.game.MONIKA_REFLECTED_WCC,
+                    turn=self.game.current_turn,
+                    monika_card=next_card_to_play,
+                    player_card=self.game.game_log[-2]["played_card"],
+                    shown=False
+                )
 
                 if (
                     self.reactions
-                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WCC
                 ):
                     if (
                         len(self.reactions) > 1
-                        and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_WCC
+                        and self.reactions[-2].type == self.game.MONIKA_REFLECTED_WCC
                     ):
-                        reaction["chances_to_be_shown"] = 2
+                        reaction.chances_to_be_shown = 2
 
                     else:
-                        reaction["chances_to_be_shown"] = 1
+                        reaction.chances_to_be_shown = 1
 
                 else:
-                    reaction["chances_to_be_shown"] = 0
+                    reaction.chances_to_be_shown = 0
 
                 self.reactions.append(reaction)
 
@@ -2939,23 +2977,23 @@ init 5 python in mas_nou:
                 and self.game.game_log[-2]["played_card"] is not None
                 and self.game.game_log[-2]["played_card"].label == "Wild"# check if the player played a wcc
             ):
-                reaction = {
-                    "type": self.game.PLAYER_REFLECTED_WCC,
-                    "turn": self.game.current_turn,
-                    "monika_card": next_card_to_play,
-                    "player_card": self.game.game_log[-2]["played_card"],
-                    "shown": False
-                }
+                reaction = _NOUReaction(
+                    type_=self.game.PLAYER_REFLECTED_WCC,
+                    turn=self.game.current_turn,
+                    monika_card=next_card_to_play,
+                    player_card=self.game.game_log[-2]["played_card"],
+                    shown=False
+                )
 
                 if (
                     self.reactions
-                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WCC
                 ):
-                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
-                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
+                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                 else:
-                    reaction["chances_to_be_shown"] = 0
+                    reaction.chances_to_be_shown = 0
 
                 self.reactions.append(reaction)
 
@@ -2967,28 +3005,28 @@ init 5 python in mas_nou:
                 and next_card_to_play.type == "wild"
                 and len(self.hand) > 1# No need to announce the color if you won lol
             ):
-                reaction = {
-                    "type": self.game.MONIKA_PLAYED_WILD,
-                    "turn": self.game.current_turn,
-                    "monika_card": next_card_to_play,
-                    "player_card": self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
-                    "chances_to_be_shown": 0,
-                    "shown": False
-                }
+                reaction = _NOUReaction(
+                    type_=self.game.MONIKA_PLAYED_WILD,
+                    turn=self.game.current_turn,
+                    monika_card=next_card_to_play,
+                    player_card=self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
+                    chances_to_be_shown=0,
+                    shown=False
+                )
 
                 self.reactions.append(reaction)
 
                 return reaction
 
             # Monika has nothing to say
-            reaction = {
-                "type": self.game.NO_REACTION,
-                "turn": self.game.current_turn,
-                "monika_card": next_card_to_play,
-                "player_card": self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
-                "chances_to_be_shown": 0,
-                "shown": False
-            }
+            reaction = _NOUReaction(
+                type_=self.game.NO_REACTION,
+                turn=self.game.current_turn,
+                monika_card=next_card_to_play,
+                player_card=self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
+                chances_to_be_shown=0,
+                shown=False
+            )
 
             self.reactions.append(reaction)
 
@@ -3047,7 +3085,7 @@ init 5 python in mas_nou:
 
             # Does Monika want to say nou?
             if (
-                current_reaction["monika_card"] is not None# Monika's going to play a card
+                current_reaction.monika_card is not None# Monika's going to play a card
                 and not self.yelled_nou
                 and len(self.hand) == 2# and it's her second last card
                 and not should_miss_this_nou()
@@ -3097,34 +3135,34 @@ init 5 python in mas_nou:
             monika_yelled_nou, monika_reminded_yell_nou = self.__handle_nou_logic(reaction)
 
             if (
-                reaction["type"] != self.game.NO_REACTION
+                reaction.type != self.game.NO_REACTION
                 and (
                     # these 2 override all the reactions
                     not monika_yelled_nou
                     and not monika_reminded_yell_nou
                 )
             ):
-                reaction_map = self.game.REACTIONS_MAP[reaction["type"]]
+                reaction_map = self.game.REACTIONS_MAP[reaction.type]
                 total_reactions = len(reaction_map)
 
                 # correct chances_to_be_shown if needed
-                if reaction["chances_to_be_shown"] < 0:
+                if reaction.chances_to_be_shown < 0:
                     chances_to_be_shown = 0
 
-                elif reaction["chances_to_be_shown"] > total_reactions - 1:
+                elif reaction.chances_to_be_shown > total_reactions - 1:
                     chances_to_be_shown = total_reactions - 1
 
                 else:
-                    chances_to_be_shown = reaction["chances_to_be_shown"]
+                    chances_to_be_shown = reaction.chances_to_be_shown
 
                 # check if Monika wants to say this
                 chance_to_trigger = self.game.REACTION_CHANCES_MAP[chances_to_be_shown]
                 if (
-                    reaction["type"] == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
+                    reaction.type == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
                     or random.random() < chance_to_trigger# otherwise do rng check
                 ):
                     # if we passed all checks, mark this reaction as shown
-                    reaction["shown"] = True
+                    reaction.shown = True
 
                     # we make a new copy because we may modify it here
                     reaction_quips = list(reaction_map[chances_to_be_shown])
@@ -3132,7 +3170,7 @@ init 5 python in mas_nou:
                     # # # START MODIFIERS
                     additional_quips = None
 
-                    if reaction["type"] == self.game.MONIKA_REFLECTED_ACT:
+                    if reaction.type == self.game.MONIKA_REFLECTED_ACT:
                         if (
                             chances_to_be_shown == 2
                             and get_house_rule("stackable_d2")
@@ -3141,9 +3179,9 @@ init 5 python in mas_nou:
 
                         elif (
                             chances_to_be_shown == 0
-                            and reaction["monika_card"] is not None
+                            and reaction.monika_card is not None
                         ):
-                            if reaction["monika_card"].label == "Draw Two":
+                            if reaction.monika_card.label == "Draw Two":
                                 additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2
 
                             # elif reaction["monika_card"].label in ("Skip", "Reverse"):
@@ -3151,14 +3189,14 @@ init 5 python in mas_nou:
                                 additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3
 
                     elif (
-                        reaction["type"] == self.game.MONIKA_REFLECTED_WDF
+                        reaction.type == self.game.MONIKA_REFLECTED_WDF
                         and chances_to_be_shown == 2
                         and get_house_rule("stackable_d2")
                     ):
                         additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
 
                     elif (
-                        reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                        reaction.type == self.game.MONIKA_REFLECTED_WCC
                         and chances_to_be_shown == 2
                         and self.chosen_color == "green"
                     ):
@@ -3167,17 +3205,17 @@ init 5 python in mas_nou:
                     elif (
                         (
                             (
-                                reaction["type"] == self.game.PLAYER_REFLECTED_ACT
-                                and reaction["monika_card"] is not None
-                                and reaction["monika_card"].label == "Draw Two"
+                                reaction.type == self.game.PLAYER_REFLECTED_ACT
+                                and reaction.monika_card is not None
+                                and reaction.monika_card.label == "Draw Two"
                             )
-                            or reaction["type"] == self.game.PLAYER_REFLECTED_WDF
+                            or reaction.type == self.game.PLAYER_REFLECTED_WDF
                         )
                         and chances_to_be_shown == 2
                         and len(self.hand) > 4
                         and get_house_rule("stackable_d2")
                     ):
-                        if reaction["type"] == self.game.PLAYER_REFLECTED_ACT:
+                        if reaction.type == self.game.PLAYER_REFLECTED_ACT:
                             additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1
 
                         else:
@@ -3200,9 +3238,9 @@ init 5 python in mas_nou:
 
             # Additional lines so the player always knows which color it is now
             if (
-                reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                reaction.type == self.game.MONIKA_REFLECTED_WCC
                 or (
-                    reaction["type"] == self.game.MONIKA_PLAYED_WILD
+                    reaction.type == self.game.MONIKA_PLAYED_WILD
                     and (
                         monika_yelled_nou
                         or monika_reminded_yell_nou
