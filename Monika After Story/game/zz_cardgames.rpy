@@ -1733,8 +1733,22 @@ init 5 python in mas_nou:
                 value = max(min(value, 2), 0)
             self._chances_to_be_shown = value
 
+        # For compatability
+        def __getitem__(self, key):
+            return getattr(self, key)
+
+        def __setitem__(self, key, value):
+            setattr(self, key, value)
+
         def __repr__(self):
-            return "<_NOUReaction>"
+            return "<_NOUReaction (type_={}, turn={}, monika_card={}, player_card={}, chances_to_be_shown={}, shown={})>".format(
+                self.type,
+                self.turn,
+                self.monika_card,
+                self.player_card,
+                self.chances_to_be_shown,
+                self.shown
+            )
 
 
     class _NOUPlayerAI(_NOUPlayer):
