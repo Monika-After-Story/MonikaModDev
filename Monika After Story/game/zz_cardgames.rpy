@@ -47,9 +47,9 @@ init 5 python in mas_nou:
     disable_yell_button = False
 
 
-    class NoU(object):
+    class NOU(object):
         """
-        A class to represent a shedding card game - NoU
+        A class to represent a shedding card game - NOU
         Total cards in the deck: 108
         The one who first gets rid of cards wins the round
         The one who first reaches the points cap (default 200) wins the game
@@ -173,7 +173,7 @@ init 5 python in mas_nou:
             _("It'll be [store.mas_nou.game.monika.chosen_color]!")
         )
 
-        # NoU quips
+        # NOU quips
         # Quips when Monika says NOU
         QUIPS_MONIKA_YELLS_NOU = (
             _("NOU, [player]!"),
@@ -186,7 +186,7 @@ init 5 python in mas_nou:
             _("Ehehe~ No.{w=0.2}.{w=0.2}.{w=0.2}U!"),
             _("NOU!")
         )
-        # Quips when you ask her to yell NoU, but she already did it
+        # Quips when you ask her to yell NOU, but she already did it
         QUIPS_MONIKA_ALREADY_YELLED_NOU = (
             _("But [player], I've said 'NOU'!"),
             _("I've already said 'NOU,' [player]!"),
@@ -194,7 +194,7 @@ init 5 python in mas_nou:
             _("[player]... How did you miss that? I already said 'NOU'!"),
             _("Uh, [player]...{w=0.3} I already said 'NOU'!")
         )
-        # Quips when you ask her to yell NoU, but she has more than 1 card
+        # Quips when you ask her to yell NOU, but she has more than 1 card
         QUIPS_MONIKA_DONT_NEED_YELL_NOU = (
             _("[player], but I have more than one card in my hands!"),
             _("Silly, you yell 'NOU' when you have only one card left!"),
@@ -219,7 +219,7 @@ init 5 python in mas_nou:
             _("Ehehe, caught me!"),
             _("How silly of me! Ahaha!~")
         )
-        # Quips when Monika said NoU, but didn't play a card
+        # Quips when Monika said NOU, but didn't play a card
         # NOTE: THIS SHOULD NEVER HAPPEN, BUT WE HAVE THIS FALLBACK JUST IN CASE
         QUIPS_MONIKA_FALSE_NOU = (
             _("This is embarrassing...{w=0.5}I should've played a card, but forgot about it... {w=0.5}Sorry, [player]."),
@@ -249,7 +249,7 @@ init 5 python in mas_nou:
             _("You should say 'NOU' before playing your second last card, [player]."),
             _("[player], you can be so silly sometimes~")
         )
-        # Quips when Monika catches you on not saying NoU
+        # Quips when Monika catches you on not saying NOU
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
@@ -539,8 +539,8 @@ init 5 python in mas_nou:
             )
 
             # Define our players
-            self.player = self.__Player(leftie=persistent._mas_pm_is_righty is False)# I can leave it like this until the devs actually add it
-            self.monika = self.__AI(self, leftie=True)
+            self.player = _NOUPlayer(leftie=persistent._mas_pm_is_righty is False)# I can leave it like this until the devs actually add it
+            self.monika = _NOUPlayerAI(self, leftie=True)
 
             # Define stacks for our players
             self.player.hand = self.table.stack(
@@ -789,21 +789,21 @@ init 5 python in mas_nou:
                                     if dupe == 1 and label == "0":
                                         continue
                                     else:
-                                        card = self.__Card(type, label, color)
+                                        card = _NOUCard(type, label, color)
                                         self.__load_card_asset(card)
                                         self.drawpile.append(card)
                         # action cards
                         else:
                             for dupe in range(2):
                                 for label in self.ACTION_LABELS:
-                                    card = self.__Card(type, label, color)
+                                    card = _NOUCard(type, label, color)
                                     self.__load_card_asset(card)
                                     self.drawpile.append(card)
                 # wild cards
                 else:
                     for dupe in range(4):
                         for label in self.WILD_LABELS:
-                            card = self.__Card(type, label)
+                            card = _NOUCard(type, label)
                             self.__load_card_asset(card)
                             self.drawpile.append(card)
 
@@ -1195,7 +1195,7 @@ init 5 python in mas_nou:
 
         def prepare_game(self):
             """
-            This method sets up everything we need to start a game of NoU:
+            This method sets up everything we need to start a game of NOU:
                 1. Chooses who plays first
                 2. Shuffles the deck
                 3. Deals cards
@@ -1610,535 +1610,808 @@ init 5 python in mas_nou:
 
             self.set_sensitive(True)
 
-        class __Card(object):
+    class _NOUCard(object):
+        """
+        A class to represent a card
+
+        PROPERTIES:
+            type - (str) number, action or wild
+            label - (str) number/action on card '0'-'9', "Draw Two", etc
+            color - (str/None) red, blue, green, yellow or None
+                (Default: None (colorless))
+            value - (int) how much points the card gives
+        """
+        def __init__(self, t, l, c=None):
             """
-            A class to represent a card
+            Constructor
 
-            PROPERTIES:
-                type - (str) number, action or wild
-                label - (str) number/action on card '0'-'9', "Draw Two", etc
-                color - (str/None) red, blue, green, yellow or None
-                    (Default: None (colorless))
-                value - (int) how much points the card gives
+            IN:
+                t - type of the card
+                l - the card's label
+                c - the card's color
+                    (Default: None)
             """
-            def __init__(self, t, l, c=None):
-                """
-                Constructor
+            self.type = t
+            self.label = l
+            self.color = c
 
-                IN:
-                    t - type of the card
-                    l - the card's label
-                    c - the card's color
-                        (Default: None)
-                """
-                self.type = t
-                self.label = l
-                self.color = c
-
-                if self.type == "number":
-                    self.value = int(self.label)
-
-                elif self.type == "action":
-                    self.value = 20
-
-                else:
-                    self.value = 50
-
-            def __repr__(self):
-                if self.color is not None:
-                    return self.color + " " + self.label
-                else:
-                    return self.label
-
-        class __Player(object):
+        @property
+        def value(self):
             """
-            A class to represent players
-
-            PROPERTIES:
-                leftie - (bool) is player leftie or rightie
-                isAI - (bool) is it the Player or Monika
-                hand - (stack) represents player's hand (a Stack object)
-                drew_card - (bool) has player drew a card in this turn
-                plays_turn - (bool) is it player's turn
-                should_draw_cards - (int) should player draw cards and how much
-                played_card - (bool) has player played a card in this turn
-                should_skip_turn - (bool) should player skip their turn
-                yelled_nou - (bool) has player yelled "NOU" before playing their last card
-                should_play_card - (bool) do we expect this player to play a card (after saying 'NOU')
-                nou_reminder_timeout - (int) the turn when this player cannot be caught for not saying 'NOU' any longer
+            Cards values can be dynamically calculated
             """
-            def __init__(self, leftie=False):
-                """
-                Constructor
+            if self.type == "number":
+                v = int(self.label)
 
-                IN:
-                    leftie - is player leftie or rightie
-                """
-                self.leftie = leftie
-                self.isAI = False
-                self.hand = None
-                self.drew_card = False
-                self.should_draw_cards = 0
-                self.played_card = False
-                self.plays_turn = False
-                self.should_skip_turn = False
-                self.yelled_nou = False
-                self.should_play_card = False
-                self.nou_reminder_timeout = 0
+            elif self.type == "action":
+                v = 20
 
-            def __repr__(self):
-                return "<__Player {0}>".format(persistent.playername)
+            else:
+                v = 50
 
-        class __AI(__Player):
+            return v
+
+        def __repr__(self):
+            if self.color is not None:
+                card_info = "'{} {}'".format(self.color.capitalize(), self.label)
+
+            else:
+                card_info = "'{}'".format(self.label)
+
+            return "<_NOUCard {}>".format(card_info)
+
+    class _NOUPlayer(object):
+        """
+        A class to represent players
+
+        PROPERTIES:
+            leftie - (bool) is player leftie or rightie
+            isAI - (bool) is it the Player or Monika
+            hand - (stack) represents player's hand (a Stack object)
+            drew_card - (bool) has player drew a card in this turn
+            plays_turn - (bool) is it player's turn
+            should_draw_cards - (int) should player draw cards and how much
+            played_card - (bool) has player played a card in this turn
+            should_skip_turn - (bool) should player skip their turn
+            yelled_nou - (bool) has player yelled "NOU" before playing their last card
+            should_play_card - (bool) do we expect this player to play a card (after saying 'NOU')
+            nou_reminder_timeout - (int) the turn when this player cannot be caught for not saying 'NOU' any longer
+        """
+        def __init__(self, leftie=False):
             """
-            AI variation of player
+            Constructor
 
-            PROPERTIES:
-                everything from __Player
-                game - (NoU) pointer for internal use
-                cards_data - (dict) data about our cards (amount, values, ids)
-                queued_card - (__Card) the card Monika wants to play on the next turn
-                player_cards_data - (dict) potentially the most common color (or None)
-                    and most rare colors (or an empty list) in the Player's hand
-                    'reset_in' shows how much turns left until we reset 'has_color'
-                reactions - (list) all reactions that monika had during this game
-                    (even if they didn't trigger)
+            IN:
+                leftie - is player leftie or rightie
             """
-            MIN_THONK_TIME = 0.2
-            MAX_THONK_TIME = 0.8
-            SHUFFLING_CHANCE = 0.15
-            LOW_MISSING_NOU_CHANCE = 0.1
-            HIGH_MISSING_NOU_CHANCE = 0.25
+            self.leftie = leftie
+            self.isAI = False
+            self.hand = None
+            self.drew_card = False
+            self.should_draw_cards = 0
+            self.played_card = False
+            self.plays_turn = False
+            self.should_skip_turn = False
+            self.yelled_nou = False
+            self.should_play_card = False
+            self.nou_reminder_timeout = 0
 
-            def __init__(self, game, leftie=False):
-                """
-                Constructor
+        def __repr__(self):
+            return "<_NOUPlayer '{0}'>".format(persistent.playername)
 
-                IN:
-                    leftie - is this player leftie or rightie
-                    game - pointer to our NoU object
-                """
-                super(game.__AI, self).__init__(leftie)
+    class _NOUPlayerAI(_NOUPlayer):
+        """
+        AI variation of player
 
-                self.isAI = True
-                self.game = game
-                self.queued_card = None
-                self.chosen_color = None
-                self.player_cards_data = {
-                    "reset_in": 0,# we reset 'has_color' to None in 'reset_in' turns
-                    "has_color": None,# we keep track only on 1 color here
-                    "lacks_colors": []# but keep track on multiple colors here
-                }
-                # all previous reactions
-                # items format: {"type": type, "turn": turn_id, "monika_card": card or None, "player_card": card or None, "seen_count": int, "shown": boolean}
-                self.reactions = []
+        PROPERTIES:
+            everything from _NOUPlayer
+            game - (NOU) pointer for internal use
+            cards_data - (dict) data about our cards (amount, values, ids)
+            queued_card - (_NOUCard) the card Monika wants to play on the next turn
+            player_cards_data - (dict) potentially the most common color (or None)
+                and most rare colors (or an empty list) in the Player's hand
+                'reset_in' shows how much turns left until we reset 'has_color'
+            reactions - (list) all reactions that monika had during this game
+                (even if they didn't trigger)
+        """
+        MIN_THONK_TIME = 0.2
+        MAX_THONK_TIME = 0.8
+        SHUFFLING_CHANCE = 0.15
+        LOW_MISSING_NOU_CHANCE = 0.1
+        HIGH_MISSING_NOU_CHANCE = 0.25
 
-            def __repr__(self):
-                return "<__AI Monika>"
+        def __init__(self, game, leftie=False):
+            """
+            Constructor
 
-            def thonk_pause(self):
-                """
-                Pauses the game giving some time to Monika to thonk out her next turn
-                """
-                if len(self.hand) == 1:
-                    thonk_time = self.MIN_THONK_TIME
+            IN:
+                leftie - is this player leftie or rightie
+                game - pointer to our NOU object
+            """
+            super(_NOUPlayerAI, self).__init__(leftie)
 
-                else:
-                    thonk_time = renpy.random.uniform(self.MIN_THONK_TIME, self.MAX_THONK_TIME)
+            self.isAI = True
+            self.game = game
+            self.queued_card = None
+            self.chosen_color = None
+            self.player_cards_data = {
+                "reset_in": 0,# we reset 'has_color' to None in 'reset_in' turns
+                "has_color": None,# we keep track only on 1 color here
+                "lacks_colors": []# but keep track on multiple colors here
+            }
+            # all previous reactions
+            # items format: {"type": type, "turn": turn_id, "monika_card": card or None, "player_card": card or None, "seen_count": int, "shown": boolean}
+            self.reactions = []
 
-                renpy.pause(thonk_time, hard=True)
+        def __repr__(self):
+            return "<_NOUPlayerAI 'Monika'>"
 
-            def __randomise_color(self):
-                """
-                Chooses one of the colors at random
-                Excludes the potential color that the player may have
-                If we know what the colors the player doesn't have,
-                we will return one of them at random
+        def thonk_pause(self):
+            """
+            Pauses the game giving some time to Monika to thonk out her next turn
+            """
+            if len(self.hand) == 1:
+                thonk_time = self.MIN_THONK_TIME
 
-                OUT:
-                    string with one of 4 colors
-                """
-                if self.player_cards_data["lacks_colors"]:
-                    return renpy.random.choice(self.player_cards_data["lacks_colors"])
+            else:
+                thonk_time = renpy.random.uniform(self.MIN_THONK_TIME, self.MAX_THONK_TIME)
 
-                colors = list(self.game.COLORS)
+            renpy.pause(thonk_time, hard=True)
 
-                if self.player_cards_data["has_color"] is not None:
-                    colors.remove(self.player_cards_data["has_color"])
+        def __randomise_color(self):
+            """
+            Chooses one of the colors at random
+            Excludes the potential color that the player may have
+            If we know what the colors the player doesn't have,
+            we will return one of them at random
 
-                return renpy.random.choice(colors)
+            OUT:
+                string with one of 4 colors
+            """
+            if self.player_cards_data["lacks_colors"]:
+                return renpy.random.choice(self.player_cards_data["lacks_colors"])
 
-            def guess_player_cards(self):
-                """
-                Guesses cards' colors in the player's hand
-                NOTE: must run this before anything else
-                NOTE: this method is quite a mess
-                """
-                # We can't assume anything if the player didn't play their 1st turn
-                if len(self.game.game_log) < 2:
-                    return
+            colors = list(self.game.COLORS)
 
-                # Decrement the counter if the pleyer played a card
-                if (
-                    self.player_cards_data["reset_in"] > 0
-                    and self.game.game_log[-2]["played_card"] is not None
-                ):
-                    self.player_cards_data["reset_in"] -= 1
+            if self.player_cards_data["has_color"] is not None:
+                colors.remove(self.player_cards_data["has_color"])
 
-                # First let's guess what color the player may have
-                # when you set a new color, you probably have cards with that color
-                if (
-                    (
-                        self.game.game_log[-2]["played_card"] is not None
-                        and self.game.game_log[-2]["played_card"].type == "wild"
-                    )
-                    or (
-                        self.game.current_turn == 2
-                        and len(self.game.discardpile) > 1
-                        and self.game.discardpile[-2].type == "wild"
-                    )
-                ):
-                    color = self.game.game_log[-2]["played_card"].color
+            return renpy.random.choice(colors)
 
-                    self.player_cards_data["has_color"] = color
-                    self.player_cards_data["reset_in"] = 3
+        def guess_player_cards(self):
+            """
+            Guesses cards' colors in the player's hand
+            NOTE: must run this before anything else
+            NOTE: this method is quite a mess
+            """
+            # We can't assume anything if the player didn't play their 1st turn
+            if len(self.game.game_log) < 2:
+                return
 
-                    # remove it from the other dict
-                    if color in self.player_cards_data["lacks_colors"]:
-                        self.player_cards_data["lacks_colors"].remove(color)
+            # Decrement the counter if the pleyer played a card
+            if (
+                self.player_cards_data["reset_in"] > 0
+                and self.game.game_log[-2]["played_card"] is not None
+            ):
+                self.player_cards_data["reset_in"] -= 1
 
-                # Now guess what color the player lacks
-                # If you have to play wild cards, then you don't have the previous color
-                if (
-                    # NOTE: the player can trick Monika here, but they won't
-                    # get much from this so I'll leave it
+            # First let's guess what color the player may have
+            # when you set a new color, you probably have cards with that color
+            if (
+                (
                     self.game.game_log[-2]["played_card"] is not None
                     and self.game.game_log[-2]["played_card"].type == "wild"
-                    and (
-                        not get_house_rule("unrestricted_wd4")
-                        or random.random() < 0.25
-                    )
+                )
+                or (
+                    self.game.current_turn == 2
                     and len(self.game.discardpile) > 1
-                ):
-                    if self.game.discardpile[-2].color not in self.player_cards_data["lacks_colors"]:
-                        self.player_cards_data["lacks_colors"].append(self.game.discardpile[-2].color)
+                    and self.game.discardpile[-2].type == "wild"
+                )
+            ):
+                color = self.game.game_log[-2]["played_card"].color
 
-                    if self.player_cards_data["has_color"] in self.player_cards_data["lacks_colors"]:
-                        self.player_cards_data["has_color"] = None
+                self.player_cards_data["has_color"] = color
+                self.player_cards_data["reset_in"] = 3
 
-                # the player drew a card in their turn by their own will,
-                # that means they might not have the current color
-                elif (
-                    self.game.game_log[-2]["drew_card"]
-                    and not self.game.game_log[-2]["had_skip_turn"]
-                ):
-                    # if not self.game.player.played_card:
-                    # None means the player haven't played a card
-                    if not self.game.game_log[-2]["played_card"]:
-                        # NOTE: since the player drew a card and didn't play it, we can't be sure about
-                        # other colors in the list
-                        self.player_cards_data["lacks_colors"] = [self.game.discardpile[-1].color]
+                # remove it from the other dict
+                if color in self.player_cards_data["lacks_colors"]:
+                    self.player_cards_data["lacks_colors"].remove(color)
 
-                    elif self.game.discardpile[-2].color not in self.player_cards_data["lacks_colors"]:
-                        # append only if it's not in the list
-                        self.player_cards_data["lacks_colors"].append(self.game.discardpile[-2].color)
+            # Now guess what color the player lacks
+            # If you have to play wild cards, then you don't have the previous color
+            if (
+                # NOTE: the player can trick Monika here, but they won't
+                # get much from this so I'll leave it
+                self.game.game_log[-2]["played_card"] is not None
+                and self.game.game_log[-2]["played_card"].type == "wild"
+                and (
+                    not get_house_rule("unrestricted_wd4")
+                    or random.random() < 0.25
+                )
+                and len(self.game.discardpile) > 1
+            ):
+                if self.game.discardpile[-2].color not in self.player_cards_data["lacks_colors"]:
+                    self.player_cards_data["lacks_colors"].append(self.game.discardpile[-2].color)
 
-                    if self.player_cards_data["has_color"] in self.player_cards_data["lacks_colors"]:
-                        self.player_cards_data["has_color"] = None
-
-                # if the player lacks 3 colors, we can assume which color they have
-                if len(self.player_cards_data["lacks_colors"]) == 3:
-                    missing_colors = self.player_cards_data["lacks_colors"]
-                    # convert to set so we can find difference
-                    all_colors = frozenset(self.game.COLORS)
-
-                    # now compare the set and the list, then iterate to get the only element from it
-                    self.player_cards_data["has_color"] = next(iter(all_colors.difference(missing_colors)))
-                    self.player_cards_data["reset_in"] = 3
-
-                # Now we check if we should reset some of our data
-                # reset the data if the player drew 2+ cards in their turn
-                if (
-                    self.game.game_log[-2]["drew_card"]
-                    and self.game.game_log[-2]["had_draw_cards"]
-                ):
-                    self.player_cards_data["lacks_colors"] = []
-
-                # reset this data as outdated
-                if self.player_cards_data["reset_in"] == 0:
+                if self.player_cards_data["has_color"] in self.player_cards_data["lacks_colors"]:
                     self.player_cards_data["has_color"] = None
 
-            def __sort_cards_data(self, cards_data, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
-                """
-                Sorts (by keys and then values) the cards data dict
-                and returns it as a list of tuples
+            # the player drew a card in their turn by their own will,
+            # that means they might not have the current color
+            elif (
+                self.game.game_log[-2]["drew_card"]
+                and not self.game.game_log[-2]["had_skip_turn"]
+            ):
+                # if not self.game.player.played_card:
+                # None means the player haven't played a card
+                if not self.game.game_log[-2]["played_card"]:
+                    # NOTE: since the player drew a card and didn't play it, we can't be sure about
+                    # other colors in the list
+                    self.player_cards_data["lacks_colors"] = [self.game.discardpile[-1].color]
 
-                Example:
-                    [
-                        ('num_red', {'amount': 5, 'ids': [6, 1, 3, 12], 'value': 26}),
-                        ('num_yellow', {'amount': 4, 'ids': [5, 10, 8, 11], 'value': 9}),
-                        ...
-                        ('act_yellow', {'amount': 2, 'ids': [2, 9], 'value': -1}),
-                        ('wcc', {'amount': 0, 'ids': [], 'value': -1}),
-                        ('wd4', {'amount': 1, 'ids': [4], 'value': -1})
-                    ]
+                elif self.game.discardpile[-2].color not in self.player_cards_data["lacks_colors"]:
+                    # append only if it's not in the list
+                    self.player_cards_data["lacks_colors"].append(self.game.discardpile[-2].color)
+
+                if self.player_cards_data["has_color"] in self.player_cards_data["lacks_colors"]:
+                    self.player_cards_data["has_color"] = None
+
+            # if the player lacks 3 colors, we can assume which color they have
+            if len(self.player_cards_data["lacks_colors"]) == 3:
+                missing_colors = self.player_cards_data["lacks_colors"]
+                # convert to set so we can find difference
+                all_colors = frozenset(self.game.COLORS)
+
+                # now compare the set and the list, then iterate to get the only element from it
+                self.player_cards_data["has_color"] = next(iter(all_colors.difference(missing_colors)))
+                self.player_cards_data["reset_in"] = 3
+
+            # Now we check if we should reset some of our data
+            # reset the data if the player drew 2+ cards in their turn
+            if (
+                self.game.game_log[-2]["drew_card"]
+                and self.game.game_log[-2]["had_draw_cards"]
+            ):
+                self.player_cards_data["lacks_colors"] = []
+
+            # reset this data as outdated
+            if self.player_cards_data["reset_in"] == 0:
+                self.player_cards_data["has_color"] = None
+
+        def __sort_cards_data(self, cards_data, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
+            """
+            Sorts (by keys and then values) the cards data dict
+            and returns it as a list of tuples
+
+            Example:
+                [
+                    ('num_red', {'amount': 5, 'ids': [6, 1, 3, 12], 'value': 26}),
+                    ('num_yellow', {'amount': 4, 'ids': [5, 10, 8, 11], 'value': 9}),
+                    ...
+                    ('act_yellow', {'amount': 2, 'ids': [2, 9], 'value': -1}),
+                    ('wcc', {'amount': 0, 'ids': [], 'value': -1}),
+                    ('wd4', {'amount': 1, 'ids': [4], 'value': -1})
+                ]
+
+            IN:
+                cards_data - dict with info about Monika's cards
+                NOTE: check sortKey for these
+                keys_sort_order - the dict's keys we're sorting by
+                values_sort_order - the dict's values (inner dict's keys) we're sorting by
+                consider_player_cards_data - whether or not we consider player's cards in sorting
+
+            OUT:
+                sorted list of tuples
+            """
+            def sortKey(item, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
+                """
+                Function which we use as a sort key for cards data
+                NOTE: keys have priority over values
 
                 IN:
-                    cards_data - dict with info about Monika's cards
-                    NOTE: check sortKey for these
-                    keys_sort_order - the dict's keys we're sorting by
-                    values_sort_order - the dict's values (inner dict's keys) we're sorting by
+                    item - tuple from the list from the cards data dict
+                    keys_sort_order - list of strings to sort the list by the dict's keys
+                        (Default: ['num', 'act'])
+                        For example: ['num'] will put the number cards first
+                        or ['red', 'act'] will put the red colored cards first, then action ones, and then the rest
+                    values_sort_order - list of strings to sort the list by the dict's values
+                        (Default: ['value', 'amount'])
+                        For exaple: the default list will sort by cards values first,
+                        and then by their amount
                     consider_player_cards_data - whether or not we consider player's cards in sorting
 
                 OUT:
-                    sorted list of tuples
+                    list which we'll use in sorting
                 """
-                def sortKey(item, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
-                    """
-                    Function which we use as a sort key for cards data
-                    NOTE: keys have priority over values
+                rv = list()
+                # Apply keys
+                for _key in keys_sort_order:
+                    rv.append(_key in item[0])
+                # Apply values
+                for _value in values_sort_order:
+                    rv.append(item[1][_value])
+                # Apply player cards data
+                if consider_player_cards_data:
+                    # Check if this item has the color that we'd like to avoid
+                    if self.player_cards_data["has_color"] is not None:
+                        rv.append(self.player_cards_data["has_color"] not in item[0])
 
-                    IN:
-                        item - tuple from the list from the cards data dict
-                        keys_sort_order - list of strings to sort the list by the dict's keys
-                            (Default: ['num', 'act'])
-                            For example: ['num'] will put the number cards first
-                            or ['red', 'act'] will put the red colored cards first, then action ones, and then the rest
-                        values_sort_order - list of strings to sort the list by the dict's values
-                            (Default: ['value', 'amount'])
-                            For exaple: the default list will sort by cards values first,
-                            and then by their amount
-                        consider_player_cards_data - whether or not we consider player's cards in sorting
+                    # Check if this item has the color that we'd like to play
+                    for color in self.player_cards_data["lacks_colors"]:
+                        rv.append(color in item[0])
 
-                    OUT:
-                        list which we'll use in sorting
-                    """
-                    rv = list()
-                    # Apply keys
-                    for _key in keys_sort_order:
-                        rv.append(_key in item[0])
-                    # Apply values
-                    for _value in values_sort_order:
-                        rv.append(item[1][_value])
-                    # Apply player cards data
-                    if consider_player_cards_data:
-                        # Check if this item has the color that we'd like to avoid
-                        if self.player_cards_data["has_color"] is not None:
-                            rv.append(self.player_cards_data["has_color"] not in item[0])
+                return rv
 
-                        # Check if this item has the color that we'd like to play
-                        for color in self.player_cards_data["lacks_colors"]:
-                            rv.append(color in item[0])
+            sorted_list = sorted(
+                cards_data.iteritems(),
+                key=lambda item: sortKey(
+                    item,
+                    keys_sort_order=keys_sort_order,
+                    values_sort_order=values_sort_order,
+                    consider_player_cards_data=consider_player_cards_data
+                ),
+                reverse=True
+            )
 
-                    return rv
+            return sorted_list
 
-                sorted_list = sorted(
-                    cards_data.iteritems(),
-                    key=lambda item: sortKey(
-                        item,
-                        keys_sort_order=keys_sort_order,
-                        values_sort_order=values_sort_order,
-                        consider_player_cards_data=consider_player_cards_data
-                    ),
-                    reverse=True
-                )
+        def __get_cards_data(self, cards=None):
+            """
+            A method that builds a dict that represents cards in a Monika-friendly way (c)
+                NOTE: ids of number and action cards are sorted by cards values
+                NOTE: This should be called after any change in Monika's hand,
+                    and before she'll do anything with cards so Monika has an actual info about her cards
 
-                return sorted_list
+            IN:
+                cards - cards whose data we will return, if None, uses the current Monika's cards
+                    (Default: None)
 
-            def __get_cards_data(self, cards=None):
-                """
-                A method that builds a dict that represents cards in a Monika-friendly way (c)
-                    NOTE: ids of number and action cards are sorted by cards values
-                    NOTE: This should be called after any change in Monika's hand,
-                        and before she'll do anything with cards so Monika has an actual info about her cards
+            OUT:
+                dict with various data about Monika's cards
+            """
+            if cards is None:
+                cards = [card for card in self.hand]
 
-                IN:
-                    cards - cards whose data we will return, if None, uses the current Monika's cards
-                        (Default: None)
-
-                OUT:
-                    dict with various data about Monika's cards
-                """
-                if cards is None:
-                    cards = [card for card in self.hand]
-
-                new_cards_data = {
-                    "num_red": {
-                        "amount": 0,
-                        "value": 0,
-                        "ids": []
-                    },
-                    "num_blue": {
-                        "amount": 0,
-                        "value": 0,
-                        "ids": []
-                    },
-                    "num_green": {
-                        "amount": 0,
-                        "value": 0,
-                        "ids": []
-                    },
-                    "num_yellow": {
-                        "amount": 0,
-                        "value": 0,
-                        "ids": []
-                    },
-                    "act_red": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    },
-                    "act_blue": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    },
-                    "act_green": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    },
-                    "act_yellow": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    },
-                    "wd4": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    },
-                    "wcc": {
-                        "amount": 0,
-                        "value": -1,
-                        "ids": []
-                    }
+            new_cards_data = {
+                "num_red": {
+                    "amount": 0,
+                    "value": 0,
+                    "ids": []
+                },
+                "num_blue": {
+                    "amount": 0,
+                    "value": 0,
+                    "ids": []
+                },
+                "num_green": {
+                    "amount": 0,
+                    "value": 0,
+                    "ids": []
+                },
+                "num_yellow": {
+                    "amount": 0,
+                    "value": 0,
+                    "ids": []
+                },
+                "act_red": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
+                },
+                "act_blue": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
+                },
+                "act_green": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
+                },
+                "act_yellow": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
+                },
+                "wd4": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
+                },
+                "wcc": {
+                    "amount": 0,
+                    "value": -1,
+                    "ids": []
                 }
+            }
 
-                # First make a sorted list of cards
-                # don't reverse for one-round games
-                # TODO: make sure this works good, otherwise just always use True
-                should_reverse = bool(get_house_rule("points_to_win"))
+            # First make a sorted list of cards
+            # don't reverse for one-round games
+            # TODO: make sure this works good, otherwise just always use True
+            should_reverse = bool(get_house_rule("points_to_win"))
 
-                sorted_cards = sorted(
-                    cards,
-                    key=lambda card_obj: card_obj.value,
-                    reverse=should_reverse
-                )
+            sorted_cards = sorted(
+                cards,
+                key=lambda card_obj: card_obj.value,
+                reverse=should_reverse
+            )
 
-                # Now fill the dict with the sorted data
-                for card in sorted_cards:
-                    if card.type == "number":
-                        new_cards_data["num_" + card.color]["amount"] += 1
-                        new_cards_data["num_" + card.color]["value"] += card.value
-                        # we sorted it, and have to use the ids from the hand
-                        new_cards_data["num_" + card.color]["ids"].append(cards.index(card))
+            # Now fill the dict with the sorted data
+            for card in sorted_cards:
+                if card.type == "number":
+                    new_cards_data["num_" + card.color]["amount"] += 1
+                    new_cards_data["num_" + card.color]["value"] += card.value
+                    # we sorted it, and have to use the ids from the hand
+                    new_cards_data["num_" + card.color]["ids"].append(cards.index(card))
 
-                    elif card.type == "action":
-                        new_cards_data["act_" + card.color]["amount"] += 1
-                        # NOTE: We don't sum up values for action and wild cards
-                        # new_cards_data["act_" + card.color]["value"] += card.value
-                        new_cards_data["act_" + card.color]["ids"].append(cards.index(card))
+                elif card.type == "action":
+                    new_cards_data["act_" + card.color]["amount"] += 1
+                    # NOTE: We don't sum up values for action and wild cards
+                    # new_cards_data["act_" + card.color]["value"] += card.value
+                    new_cards_data["act_" + card.color]["ids"].append(cards.index(card))
 
-                    elif card.label == "Wild Draw Four":
-                        new_cards_data["wd4"]["amount"] += 1
-                        # new_cards_data["wd4"]["value"] += card.value
-                        new_cards_data["wd4"]["ids"].append(cards.index(card))
+                elif card.label == "Wild Draw Four":
+                    new_cards_data["wd4"]["amount"] += 1
+                    # new_cards_data["wd4"]["value"] += card.value
+                    new_cards_data["wd4"]["ids"].append(cards.index(card))
 
-                    # Just Wild cards
-                    else:
-                        new_cards_data["wcc"]["amount"] += 1
-                        # new_cards_data["wcc"]["value"] += card.value
-                        new_cards_data["wcc"]["ids"].append(cards.index(card))
+                # Just Wild cards
+                else:
+                    new_cards_data["wcc"]["amount"] += 1
+                    # new_cards_data["wcc"]["value"] += card.value
+                    new_cards_data["wcc"]["ids"].append(cards.index(card))
 
-                # self.cards_data = new_cards_data
-                return new_cards_data
+            # self.cards_data = new_cards_data
+            return new_cards_data
 
-            def shuffle_hand(self):
-                """
-                Sorts some cards in Monika's hand
-                This is just for visuals
-                NOTE: Since this changes cards' ids,
-                    either do this at the start of the turn (optimal),
-                    or update cards data again after shuffling.
-                """
-                if self.game.current_turn < 4:
-                    # no point in doing anything
-                    return
+        def shuffle_hand(self):
+            """
+            Sorts some cards in Monika's hand
+            This is just for visuals
+            NOTE: Since this changes cards' ids,
+                either do this at the start of the turn (optimal),
+                or update cards data again after shuffling.
+            """
+            if self.game.current_turn < 4:
+                # no point in doing anything
+                return
 
-                total_cards = len(self.hand)
-                if total_cards < 4:
-                    # no point in doing anything
-                    return
+            total_cards = len(self.hand)
+            if total_cards < 4:
+                # no point in doing anything
+                return
 
-                if random.random() > self.SHUFFLING_CHANCE:
-                    # we failed, return
-                    return
+            if random.random() > self.SHUFFLING_CHANCE:
+                # we failed, return
+                return
 
-                # how we want to shuffle
-                shuffle_type = renpy.random.randint(1, 3)
+            # how we want to shuffle
+            shuffle_type = renpy.random.randint(1, 3)
 
-                # just one
-                if shuffle_type == 1:
-                    # choose the card
-                    card_id = renpy.random.randint(0, total_cards - 1)
-                    # all ids we can insert to
-                    free_ids = [id for id in range(total_cards) if id != card_id]
-                    # choose the new id
+            # just one
+            if shuffle_type == 1:
+                # choose the card
+                card_id = renpy.random.randint(0, total_cards - 1)
+                # all ids we can insert to
+                free_ids = [id for id in range(total_cards) if id != card_id]
+                # choose the new id
+                insert_id = renpy.random.choice(free_ids)
+
+                card = self.hand[card_id]
+                self.hand.insert(insert_id, card)
+
+            # shuffle some
+            elif shuffle_type == 2:
+                all_ids = [id for id in range(total_cards)]
+                ids_to_shuffle = []
+                free_ids = list(all_ids)
+
+                # decide how much cards we'll shuffle
+                if total_cards > 12:
+                    total_to_shuffle = 7
+                else:
+                    total_to_shuffle = total_cards / 2
+
+                # make a list of ids we'll shuffle
+                for i in range(total_to_shuffle):
+                    id = renpy.random.choice(all_ids)
+                    # remove from the available ids list so we don't use it twice
+                    all_ids.remove(id)
+                    ids_to_shuffle.append(id)
+
+                # and finilly move the cards
+                for card_id in ids_to_shuffle:
                     insert_id = renpy.random.choice(free_ids)
-
                     card = self.hand[card_id]
                     self.hand.insert(insert_id, card)
 
-                # shuffle some
-                elif shuffle_type == 2:
-                    all_ids = [id for id in range(total_cards)]
-                    ids_to_shuffle = []
-                    free_ids = list(all_ids)
+            # shuffle (read sort) all
+            else:
+                self.hand.cards.sort(key=lambda card: card.value.value, reverse=True)
 
-                    # decide how much cards we'll shuffle
-                    if total_cards > 12:
-                        total_to_shuffle = 7
-                    else:
-                        total_to_shuffle = total_cards / 2
+            renpy.pause(0.5, hard=True)
 
-                    # make a list of ids we'll shuffle
-                    for i in range(total_to_shuffle):
-                        id = renpy.random.choice(all_ids)
-                        # remove from the available ids list so we don't use it twice
-                        all_ids.remove(id)
-                        ids_to_shuffle.append(id)
+        def choose_color(self, ignored_card=None):
+            """
+            Monika chooses color to set for Wild cards
 
-                    # and finilly move the cards
-                    for card_id in ids_to_shuffle:
-                        insert_id = renpy.random.choice(free_ids)
-                        card = self.hand[card_id]
-                        self.hand.insert(insert_id, card)
+            ignored_card - card that will be ignored in calculation of the color
+                (Default: None)
 
-                # shuffle (read sort) all
-                else:
-                    self.hand.cards.sort(key=lambda card: card.value.value, reverse=True)
-
-                renpy.pause(0.5, hard=True)
-
-            def choose_color(self, ignored_card=None):
+            OUT:
+                string with color
+            """
+            def sortKey(id):
                 """
-                Monika chooses color to set for Wild cards
+                For action cards
+                Sorts by both cards colors and labels
 
-                ignored_card - card that will be ignored in calculation of the color
-                    (Default: None)
+                ASSUMES:
+                    cards
+                    sorted_cards_data
+                """
+                labels = (
+                    "Skip",
+                    "Draw Two",
+                    "Reverse"
+                )
+                colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
+
+                return [cards[id].label == label for label in labels] + [cards[id].color == color for color in colors]
+
+            cards = [card for card in self.hand]
+
+            if (
+                ignored_card is not None
+                and ignored_card in cards
+            ):
+                cards.remove(ignored_card)
+
+            cards_data = self.__get_cards_data(cards)
+
+            # just 1 card left, set either its color or use rng
+            if len(cards) == 1:
+                if cards[0].type == "wild":
+                    color = self.__randomise_color()
+
+                else:
+                    color = cards[0].color
+
+                return color
+
+            else:
+                if get_house_rule("points_to_win"):
+                    sorted_cards_data = self.__sort_cards_data(cards_data)
+
+                else:
+                    # NOTE: use like this because values don't matter in games w/o points
+                    sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
+
+                # more agressive
+                if len(self.game.player.hand) < 3:
+                    action_ids = []
+
+                    for color in self.game.COLORS:
+                        action_ids += cards_data["act_" + color]["ids"]
+
+                    if action_ids:
+                        action_ids.sort(
+                            key=sortKey,
+                            reverse=True
+                        )
+
+                        self.queued_card = cards[action_ids[0]]
+
+                        color = self.queued_card.color
+                        return color
+
+                # default
+                else:
+                    # TODO: Need to improve this part, can generalize it with the above one
+                    sortByLabel = lambda card: (
+                        card.label == "Skip",
+                        card.label == "Draw Two",
+                        card.label == "Reverse"
+                    )
+
+                    # we use amount in games where value doesn't make sense
+                    if get_house_rule("points_to_win"):
+                        srt_data_key = "value"
+
+                    else:
+                        srt_data_key = "amount"
+
+                    highest_value = float(sorted_cards_data[0][1][srt_data_key])
+
+                    # no reason to enter the loop if we have no number cards
+                    if highest_value:
+                        for j in range(4):
+                            # if the difference between the highest valued color
+                            # and the one we're checking is more than 60%,
+                            # then it isn't worth it, leave to set color by values of number cards
+                            if float(highest_value - sorted_cards_data[j][1][srt_data_key]) / highest_value >= 0.6:
+                                break
+
+                            # try to find an action card with the color of most valuebale number cards
+                            if sorted_cards_data[j][1]["amount"]:
+                                # keep the color part of the key but replace the card's type
+                                data_key = sorted_cards_data[j][0].replace("num_", "act_")
+
+                                if cards_data[data_key]["amount"]:
+                                    # we play Skips in priority, then d2's and then reverses
+                                    self.queued_card = sorted(
+                                        [cards[id] for id in cards_data[data_key]["ids"]],
+                                        key=sortByLabel,
+                                        reverse=True
+                                    )[0]
+
+                                    color = self.queued_card.color
+                                    return color
+
+                # fallback
+                if sorted_cards_data[0][1]["amount"]:
+                    color = sorted_cards_data[0][0].replace("num_", "")
+
+                elif sorted_cards_data[4][1]["amount"]:
+                    color = sorted_cards_data[4][0].replace("act_", "")
+
+                else:
+                    color = self.__randomise_color()
+
+                return color
+
+        def choose_card(self, should_draw=True, should_choose_color=True):
+            """
+            Monika chooses a card to play
+
+            IN:
+                should_draw - should Monika draw a card
+                    if she's not found one to play?
+                    (Default: True)
+                should_choose_color - should Monika choose a color
+                    if the chosen card is a wild card?
+                    (Default: True)
+
+            OUT:
+                card if we found or drew one
+                or None if we don't want to (or can't) play a card this turn
+            """
+            # nested functions to analyse cards
+            def analyse_numbers():
+                """
+                Goes through the cards data in the order we sorted it
+                and tries to find a number card that we can play
 
                 OUT:
-                    string with color
+                    card object if found a card, None otherwise
+
+                ASSUMES:
+                    total_player_cards
+                    sorted_cards_data
+                    player_cards_data
+                """
+                MAX_ID = 4
+
+                if get_house_rule("points_to_win"):
+                    data_key = "value"
+
+                else:
+                    data_key = "amount"
+
+                highest_value = float(sorted_cards_data[0][1][data_key])
+                reserved_card = None
+
+                for color_id in range(MAX_ID):
+                    # let's see if we want to play a 0
+                    if sorted_cards_data[color_id][1]["amount"] > 2:
+                        # get the last card as a possible 0
+                        last_card = self.hand[sorted_cards_data[color_id][1]["ids"][-1]]
+
+                        if (
+                            last_card.label == "0"# make sure it's a 0
+                            and (
+                                last_card.color in self.player_cards_data["lacks_colors"]# and player doesn't have this color
+                                or (
+                                    total_player_cards > 2
+                                    and (
+                                        (
+                                            self.player_cards_data["has_color"] is not None
+                                            and last_card.color != self.player_cards_data["has_color"]
+                                        )
+                                        or (
+                                            self.player_cards_data["has_color"] is None
+                                            and random.random() < 0.3
+                                        )
+                                    )
+                                )
+                            )
+                        ):
+                            # if we've passed all checks, let's see if we actually can play the card
+                            if self.game.__is_matching_card(self, last_card):
+                                return last_card
+                            # Otherwise fall through
+
+                    # get this color name
+                    this_color = sorted_cards_data[color_id][0].replace("num_", "")
+                    # get total value (or amount) of cards with this color
+                    # this_color_value = float(sorted_cards_data[color_id][1][data_key])
+                    # get the id for the next loop
+                    next_color_id = color_id + 1
+
+                    # make sure we have more colors to check (idx from 0 to 3)
+                    if next_color_id < MAX_ID:
+                        # next_color = sorted_cards_data[next_color_id][0].replace("num_", "")
+                        next_color_value = float(sorted_cards_data[next_color_id][1][data_key])
+
+                    else:
+                        # next_color = None
+                        next_color_value = None
+
+                    # Do we want to play anything else?
+                    want_try_another_color = (
+                        this_color == self.player_cards_data["has_color"]# the player has this colour
+                        and next_color_value is not None
+                        and (
+                            highest_value == 0# all our cards are 0's
+                            or (highest_value - next_color_value) / highest_value < 0.5# or the difference in values is less than 50%
+                            or total_player_cards < 4# or the player is about to finish the game
+                        )
+                        and (
+                            this_color != self.game.discardpile[-1].color# no reason not to play this card if it has the current color
+                            or random.random() < 0.2# 1/5 to take the risk anyway
+                        )
+                    )
+
+                    # try to play something
+                    for id in sorted_cards_data[color_id][1]["ids"]:
+                        card = self.hand[id]
+
+                        if self.game.__is_matching_card(self, card):
+                            if (
+                                want_try_another_color
+                                and reserved_card is None
+                            ):
+                                # reserve this card
+                                reserved_card = card
+                                # check the next color
+                                break
+
+                            else:
+                                return card
+
+                # If we are here, we couldn't find a good card to play
+                if (
+                    reserved_card is not None# Do we have a reserved variant to play?
+                    and (
+                        total_cards < 4# play if we may win soon
+                        or random.random() < 0.25# 1/4 to play anyway
+                    )
+                ):
+                    return reserved_card
+                # Or None if we can't don't want to play a number right now
+                return None
+
+            def analyse_actions():
+                """
+                Goes through all action cards we have and tries to find
+                one that we can play this turn
+
+                OUT:
+                    card object if we found one, None otherwise
+
+                ASSUMES:
+                    sorted_cards_data
+                    cards_data
                 """
                 def sortKey(id):
                     """
-                    For action cards
-                    Sorts by both cards colors and labels
+                    This is a sort key, it sorts
 
-                    ASSUMES:
-                        cards
-                        sorted_cards_data
+                    IN:
+                        id - card id
+
+                    OUT:
+                        key to sort by
                     """
                     labels = (
                         "Skip",
@@ -2147,763 +2420,335 @@ init 5 python in mas_nou:
                     )
                     colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
 
-                    return [cards[id].label == label for label in labels] + [cards[id].color == color for color in colors]
+                    return [self.hand[id].label == label for label in labels] + [self.hand[id].color == color for color in colors]
 
-                cards = [card for card in self.hand]
+                action_cards_ids = []
 
-                if (
-                    ignored_card is not None
-                    and ignored_card in cards
-                ):
-                    cards.remove(ignored_card)
+                for color in self.game.COLORS:
+                    action_cards_ids += cards_data["act_" + color]["ids"]
 
-                cards_data = self.__get_cards_data(cards)
+                action_cards_ids.sort(key=sortKey, reverse=True)
 
-                # just 1 card left, set either its color or use rng
-                if len(cards) == 1:
-                    if cards[0].type == "wild":
-                        color = self.__randomise_color()
-
-                    else:
-                        color = cards[0].color
-
-                    return color
-
-                else:
-                    if get_house_rule("points_to_win"):
-                        sorted_cards_data = self.__sort_cards_data(cards_data)
-
-                    else:
-                        # NOTE: use like this because values don't matter in games w/o points
-                        sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
-
-                    # more agressive
-                    if len(self.game.player.hand) < 3:
-                        action_ids = []
-
-                        for color in self.game.COLORS:
-                            action_ids += cards_data["act_" + color]["ids"]
-
-                        if action_ids:
-                            action_ids.sort(
-                                key=sortKey,
-                                reverse=True
-                            )
-
-                            self.queued_card = cards[action_ids[0]]
-
-                            color = self.queued_card.color
-                            return color
-
-                    # default
-                    else:
-                        # TODO: Need to improve this part, can generalize it with the above one
-                        sortByLabel = lambda card: (
-                            card.label == "Skip",
-                            card.label == "Draw Two",
-                            card.label == "Reverse"
-                        )
-
-                        # we use amount in games where value doesn't make sense
-                        if get_house_rule("points_to_win"):
-                            srt_data_key = "value"
-
-                        else:
-                            srt_data_key = "amount"
-
-                        highest_value = float(sorted_cards_data[0][1][srt_data_key])
-
-                        # no reason to enter the loop if we have no number cards
-                        if highest_value:
-                            for j in range(4):
-                                # if the difference between the highest valued color
-                                # and the one we're checking is more than 60%,
-                                # then it isn't worth it, leave to set color by values of number cards
-                                if float(highest_value - sorted_cards_data[j][1][srt_data_key]) / highest_value >= 0.6:
-                                    break
-
-                                # try to find an action card with the color of most valuebale number cards
-                                if sorted_cards_data[j][1]["amount"]:
-                                    # keep the color part of the key but replace the card's type
-                                    data_key = sorted_cards_data[j][0].replace("num_", "act_")
-
-                                    if cards_data[data_key]["amount"]:
-                                        # we play Skips in priority, then d2's and then reverses
-                                        self.queued_card = sorted(
-                                            [cards[id] for id in cards_data[data_key]["ids"]],
-                                            key=sortByLabel,
-                                            reverse=True
-                                        )[0]
-
-                                        color = self.queued_card.color
-                                        return color
-
-                    # fallback
-                    if sorted_cards_data[0][1]["amount"]:
-                        color = sorted_cards_data[0][0].replace("num_", "")
-
-                    elif sorted_cards_data[4][1]["amount"]:
-                        color = sorted_cards_data[4][0].replace("act_", "")
-
-                    else:
-                        color = self.__randomise_color()
-
-                    return color
-
-            def choose_card(self, should_draw=True, should_choose_color=True):
-                """
-                Monika chooses a card to play
-
-                IN:
-                    should_draw - should Monika draw a card
-                        if she's not found one to play?
-                        (Default: True)
-                    should_choose_color - should Monika choose a color
-                        if the chosen card is a wild card?
-                        (Default: True)
-
-                OUT:
-                    card if we found or drew one
-                    or None if we don't want to (or can't) play a card this turn
-                """
-                # nested functions to analyse cards
-                def analyse_numbers():
-                    """
-                    Goes through the cards data in the order we sorted it
-                    and tries to find a number card that we can play
-
-                    OUT:
-                        card object if found a card, None otherwise
-
-                    ASSUMES:
-                        total_player_cards
-                        sorted_cards_data
-                        player_cards_data
-                    """
-                    MAX_ID = 4
-
-                    if get_house_rule("points_to_win"):
-                        data_key = "value"
-
-                    else:
-                        data_key = "amount"
-
-                    highest_value = float(sorted_cards_data[0][1][data_key])
-                    reserved_card = None
-
-                    for color_id in range(MAX_ID):
-                        # let's see if we want to play a 0
-                        if sorted_cards_data[color_id][1]["amount"] > 2:
-                            # get the last card as a possible 0
-                            last_card = self.hand[sorted_cards_data[color_id][1]["ids"][-1]]
-
-                            if (
-                                last_card.label == "0"# make sure it's a 0
-                                and (
-                                    last_card.color in self.player_cards_data["lacks_colors"]# and player doesn't have this color
-                                    or (
-                                        total_player_cards > 2
-                                        and (
-                                            (
-                                                self.player_cards_data["has_color"] is not None
-                                                and last_card.color != self.player_cards_data["has_color"]
-                                            )
-                                            or (
-                                                self.player_cards_data["has_color"] is None
-                                                and random.random() < 0.3
-                                            )
-                                        )
-                                    )
-                                )
-                            ):
-                                # if we've passed all checks, let's see if we actually can play the card
-                                if self.game.__is_matching_card(self, last_card):
-                                    return last_card
-                                # Otherwise fall through
-
-                        # get this color name
-                        this_color = sorted_cards_data[color_id][0].replace("num_", "")
-                        # get total value (or amount) of cards with this color
-                        # this_color_value = float(sorted_cards_data[color_id][1][data_key])
-                        # get the id for the next loop
-                        next_color_id = color_id + 1
-
-                        # make sure we have more colors to check (idx from 0 to 3)
-                        if next_color_id < MAX_ID:
-                            # next_color = sorted_cards_data[next_color_id][0].replace("num_", "")
-                            next_color_value = float(sorted_cards_data[next_color_id][1][data_key])
-
-                        else:
-                            # next_color = None
-                            next_color_value = None
-
-                        # Do we want to play anything else?
-                        want_try_another_color = (
-                            this_color == self.player_cards_data["has_color"]# the player has this colour
-                            and next_color_value is not None
-                            and (
-                                highest_value == 0# all our cards are 0's
-                                or (highest_value - next_color_value) / highest_value < 0.5# or the difference in values is less than 50%
-                                or total_player_cards < 4# or the player is about to finish the game
-                            )
-                            and (
-                                this_color != self.game.discardpile[-1].color# no reason not to play this card if it has the current color
-                                or random.random() < 0.2# 1/5 to take the risk anyway
-                            )
-                        )
-
-                        # try to play something
-                        for id in sorted_cards_data[color_id][1]["ids"]:
-                            card = self.hand[id]
-
-                            if self.game.__is_matching_card(self, card):
-                                if (
-                                    want_try_another_color
-                                    and reserved_card is None
-                                ):
-                                    # reserve this card
-                                    reserved_card = card
-                                    # check the next color
-                                    break
-
-                                else:
-                                    return card
-
-                    # If we are here, we couldn't find a good card to play
-                    if (
-                        reserved_card is not None# Do we have a reserved variant to play?
-                        and (
-                            total_cards < 4# play if we may win soon
-                            or random.random() < 0.25# 1/4 to play anyway
-                        )
-                    ):
-                        return reserved_card
-                    # Or None if we can't don't want to play a number right now
-                    return None
-
-                def analyse_actions():
-                    """
-                    Goes through all action cards we have and tries to find
-                    one that we can play this turn
-
-                    OUT:
-                        card object if we found one, None otherwise
-
-                    ASSUMES:
-                        sorted_cards_data
-                        cards_data
-                    """
-                    def sortKey(id):
-                        """
-                        This is a sort key, it sorts
-
-                        IN:
-                            id - card id
-
-                        OUT:
-                            key to sort by
-                        """
-                        labels = (
-                            "Skip",
-                            "Draw Two",
-                            "Reverse"
-                        )
-                        colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
-
-                        return [self.hand[id].label == label for label in labels] + [self.hand[id].color == color for color in colors]
-
-                    action_cards_ids = []
-
-                    for color in self.game.COLORS:
-                        action_cards_ids += cards_data["act_" + color]["ids"]
-
-                    action_cards_ids.sort(key=sortKey, reverse=True)
-
-                    for id in action_cards_ids:
-                        card = self.hand[id]
-
-                        if self.game.__is_matching_card(self, card):
-                            return card
-
-                    return None
-
-                def analyse_wilds(label=None):
-                    """
-                    Return one of wilds we have
-
-                    IN:
-                        label - card label either 'wd4' or 'wcc'
-                            (Default: None - any of wild cards)
-
-                    OUT:
-                        card object if we found one, None otherwise
-
-                    ASSUMES:
-                        cards_data
-                    """
-                    if not label:
-                        wild_cards_ids = cards_data["wd4"]["ids"] + cards_data["wcc"]["ids"]
-
-                    else:
-                        wild_cards_ids = cards_data[label]["ids"]
-
-                    # we don't have any wild cards
-                    if not wild_cards_ids:
-                        return None
-
-                    card = self.hand[renpy.random.choice(wild_cards_ids)]
+                for id in action_cards_ids:
+                    card = self.hand[id]
 
                     if self.game.__is_matching_card(self, card):
                         return card
 
-                    # we should never get to this
-                    return None
-
-                def analyse_cards(func_list):
-                    """
-                    Analyses all cards we have using funcs in func_list and returns first
-                    appropriate card we want and can play in this turn
-
-                    IN:
-                        func_list - a list/tuple of tuples with func, args and kwargs,
-                            we call those to find the card
-
-                    OUT:
-                        card if we found one,
-                        or None if no card was found
-                    """
-                    for func, args, kwargs in func_list:
-                        card = func(*args, **kwargs)
-
-                        if card is not None:
-                            return card
-
-                    return None
-
-                cards_data = self.__get_cards_data()
-
-                total_cards = len(self.hand)
-                total_player_cards = len(self.game.player.hand)
-
-                # Monika has to skip turn
-                if self.should_skip_turn:
-                    # Let's try to play a defensive card
-                    if get_house_rule("points_to_win"):
-                        sorted_cards_data = self.__sort_cards_data(cards_data)
-
-                    else:
-                        sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
-
-                    action_cards_ids = []
-
-                    # make a list with action cards ordered by colors values
-                    for i in reversed(range(4)):
-                        # NOTE: 0-3 items are number cards, we start from less common ones
-                        # to get rid of them
-                        color = sorted_cards_data[i][0].replace("num_", "")
-                        action_cards_ids += cards_data["act_" + color]["ids"]
-
-                    # now try to play actions from our sorted list
-                    for id in action_cards_ids:
-                        card = self.hand[id]
-
-                        if self.game.__is_matching_card(self, card):
-                            # NOTE: Since this is the reflect flow, you can't play a wild card here
-                            # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
-                            # if (
-                            #     should_choose_color
-                            #     and card.type == "wild"
-                            # ):
-                            #     card.color = self.choose_color(ignored_card=card)
-
-                            return card
-
-                    # Monika doesn't have the right card, and should draw some more
-                    if (
-                        self.should_draw_cards
-                        and should_draw
-                    ):
-                        self.game.deal_cards(self, self.should_draw_cards)
-                        # # # FALL THROUGH
-
-                # Just Monika's turn
-                else:
-                    # We have a card we wanted to play
-                    if (
-                        self.queued_card is not None
-                        and self.game.__is_matching_card(self, self.queued_card)
-                    ):
-                        # Set the color if needed
-                        if (
-                            should_choose_color
-                            and self.queued_card.type == "wild"
-                        ):
-                            self.chosen_color = self.choose_color(ignored_card=self.queued_card)
-
-                        return self.queued_card
-
-                    # We don't have forsed card or we can't play it
-                    else:
-                        # try to play the last card
-                        if total_cards == 1:
-                            card = self.hand[0]
-
-                            if self.game.__is_matching_card(self, card):
-                                # Set the color if needed
-                                if (
-                                    should_choose_color
-                                    and card.type == "wild"
-                                ):
-                                    self.chosen_color = self.choose_color(ignored_card=card)
-
-                                return card
-
-                        else:
-                            if get_house_rule("points_to_win"):
-                                sorted_cards_data = self.__sort_cards_data(cards_data)
-
-                            else:
-                                sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
-
-                            # the player is close to victory, need to play more aggressive
-                            # TODO: use struct here when we get py3 support
-                            if (
-                                total_cards > 7
-                                or total_player_cards < 4
-                            ):
-                                analysis = (
-                                    (
-                                        analyse_wilds,
-                                        (),
-                                        {"label": "wd4"}
-                                    ),
-                                    (
-                                        analyse_actions,
-                                        (),
-                                        {}
-                                    ),
-                                    (
-                                        analyse_numbers,
-                                        (),
-                                        {}
-                                    ),
-                                    (
-                                        analyse_wilds,
-                                        (),
-                                        {"label": "wcc"}
-                                    )
-                                )
-
-                            # standart logic
-                            else:
-                                analysis = (
-                                    (
-                                        analyse_numbers,
-                                        (),
-                                        {}
-                                    ),
-                                    (
-                                        analyse_actions,
-                                        (),
-                                        {}
-                                    ),
-                                    (
-                                        analyse_wilds,
-                                        (),
-                                        {}
-                                    )
-                                )
-
-                            card = analyse_cards(analysis)
-
-                            if card is not None:
-                                # Set the color if needed
-                                if (
-                                    should_choose_color
-                                    and card.type == "wild"
-                                ):
-                                    self.chosen_color = self.choose_color(ignored_card=card)
-
-                                return card
-
-                        # Come here when Monika has nothing to play (or doesn't want to), must draw a card, then
-                        if should_draw:
-                            self.game.deal_cards(self)
-                            card = self.hand[-1]
-
-                            if (
-                                self.game.__is_matching_card(self, card)
-                                # don't play it if it will make the player draw a card on the next turn
-                                and (
-                                    # but always play if we have just 2 cards left
-                                    len(self.hand) < 3
-                                    # play if the player may have that color
-                                    or self.game.discardpile[-1].color not in self.player_cards_data["lacks_colors"]
-                                    # 1/5 to play anyway
-                                    or random.random() < 0.2
-                                )
-                            ):
-                                # Set the color if needed
-                                if (
-                                    should_choose_color
-                                    and card.type == "wild"
-                                ):
-                                    self.chosen_color = self.choose_color(ignored_card=card)
-
-                                return card
-
-                # Come here when we don't want to/can't play a card
                 return None
 
-            def play_card(self, card):
+            def analyse_wilds(label=None):
                 """
-                Inner wrapper around play_card
-                NOTE: we do only certain checks here
+                Return one of wilds we have
 
                 IN:
-                    card - card to play
+                    label - card label either 'wd4' or 'wcc'
+                        (Default: None - any of wild cards)
+
+                OUT:
+                    card object if we found one, None otherwise
+
+                ASSUMES:
+                    cards_data
                 """
-                if not card:
-                    return
+                if not label:
+                    wild_cards_ids = cards_data["wd4"]["ids"] + cards_data["wcc"]["ids"]
 
-                if card is self.queued_card:
-                    self.queued_card = None
+                else:
+                    wild_cards_ids = cards_data[label]["ids"]
 
-                self.game.play_card(self, self.game.player, card)
+                # we don't have any wild cards
+                if not wild_cards_ids:
+                    return None
 
-                self.game.__win_check(self)
+                card = self.hand[renpy.random.choice(wild_cards_ids)]
 
-                if (
-                    self.game.discardpile[-1].type == "wild"
-                ):
-                    self.game.discardpile[-1].color = self.chosen_color
-                    self.chosen_color = None
+                if self.game.__is_matching_card(self, card):
+                    return card
 
-            def choose_reaction(self, next_card_to_play):
+                # we should never get to this
+                return None
+
+            def analyse_cards(func_list):
                 """
-                Helps Monika choose a dialogue based on the state of the game
-                NOTE: 'NOU' is handled differently, right in announce_reaction(), w/o corresponding reactions from here
-
-                TODO: reaction when you both are drawing cards
-                    because no one has a card with the current color
-                TODO: reactions when Monika reflected a card on her 1st turn
-                    (the player had (had not) to skip their turn)
-                TODO: reactions when the player reflected a card on their 1st turn
+                Analyses all cards we have using funcs in func_list and returns first
+                appropriate card we want and can play in this turn
 
                 IN:
-                    next_card_to_play - the next card Monika's going to play
-                        (we base reaction on it)
+                    func_list - a list/tuple of tuples with func, args and kwargs,
+                        we call those to find the card
+
+                OUT:
+                    card if we found one,
+                    or None if no card was found
                 """
-                # # # Monika is going to reflect an action card
+                for func, args, kwargs in func_list:
+                    card = func(*args, **kwargs)
+
+                    if card is not None:
+                        return card
+
+                return None
+
+            cards_data = self.__get_cards_data()
+
+            total_cards = len(self.hand)
+            total_player_cards = len(self.game.player.hand)
+
+            # Monika has to skip turn
+            if self.should_skip_turn:
+                # Let's try to play a defensive card
+                if get_house_rule("points_to_win"):
+                    sorted_cards_data = self.__sort_cards_data(cards_data)
+
+                else:
+                    sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
+
+                action_cards_ids = []
+
+                # make a list with action cards ordered by colors values
+                for i in reversed(range(4)):
+                    # NOTE: 0-3 items are number cards, we start from less common ones
+                    # to get rid of them
+                    color = sorted_cards_data[i][0].replace("num_", "")
+                    action_cards_ids += cards_data["act_" + color]["ids"]
+
+                # now try to play actions from our sorted list
+                for id in action_cards_ids:
+                    card = self.hand[id]
+
+                    if self.game.__is_matching_card(self, card):
+                        # NOTE: Since this is the reflect flow, you can't play a wild card here
+                        # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
+                        # if (
+                        #     should_choose_color
+                        #     and card.type == "wild"
+                        # ):
+                        #     card.color = self.choose_color(ignored_card=card)
+
+                        return card
+
+                # Monika doesn't have the right card, and should draw some more
                 if (
-                    next_card_to_play is not None
-                    and self.should_skip_turn
-                    and len(self.game.game_log) > 1# see if there were enough turns
-                    and self.game.game_log[-2]["played_card"] is not None# check if the player played something
-                    and next_card_to_play.label == self.game.game_log[-2]["played_card"].label# compare the labels as this is the only way to reflect an act
+                    self.should_draw_cards
+                    and should_draw
                 ):
-                    # # # Does Monika reflect a card that reflected a wd4 before?
-                    # Monika played a wd4 > the player reflected > Monika reflected
+                    self.game.deal_cards(self, self.should_draw_cards)
+                    # # # FALL THROUGH
+
+            # Just Monika's turn
+            else:
+                # We have a card we wanted to play
+                if (
+                    self.queued_card is not None
+                    and self.game.__is_matching_card(self, self.queued_card)
+                ):
+                    # Set the color if needed
                     if (
-                        len(self.game.game_log) > 2
-                        and self.game.game_log[-3]["played_card"] is not None# see if Monika played wd4 before
-                        and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"
+                        should_choose_color
+                        and self.queued_card.type == "wild"
                     ):
-                        reaction = {
-                            "type": self.game.MONIKA_REFLECTED_WDF,
-                            "chances_to_be_shown": 0
-                        }
+                        self.chosen_color = self.choose_color(ignored_card=self.queued_card)
 
-                    # someone played a wd4 > ... > Monika reflected > the player reflected > Monika reflected
-                    elif (
-                        self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
-                        and len(self.game.game_log) > 1
-                        and self.game.game_log[-2]["played_card"] is not None# see if the player played something
-                    ):
-                        reaction = {"type": self.game.MONIKA_REFLECTED_WDF}
+                    return self.queued_card
 
-                        chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1
-                        reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                # We don't have forsed card or we can't play it
+                else:
+                    # try to play the last card
+                    if total_cards == 1:
+                        card = self.hand[0]
 
-                    # # # Monika does not
-                    # it's just the player played an act > Monika reflected
-                    else:
-                        reaction = {"type": self.game.MONIKA_REFLECTED_ACT}
-
-                        # Monika keeps track on series of reactions
-                        if (
-                            self.reactions
-                            and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
-                        ):
+                        if self.game.__is_matching_card(self, card):
+                            # Set the color if needed
                             if (
-                                len(self.reactions) > 1
-                                and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_ACT
+                                should_choose_color
+                                and card.type == "wild"
                             ):
-                                reaction["chances_to_be_shown"] = 2
+                                self.chosen_color = self.choose_color(ignored_card=card)
 
-                            else:
-                                reaction["chances_to_be_shown"] = 1
+                            return card
+
+                    else:
+                        if get_house_rule("points_to_win"):
+                            sorted_cards_data = self.__sort_cards_data(cards_data)
 
                         else:
-                            reaction["chances_to_be_shown"] = 0
+                            sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
 
-                    reaction["turn"] = self.game.current_turn
-                    reaction["monika_card"] = next_card_to_play
-                    reaction["player_card"] = self.game.game_log[-2]["played_card"]
-                    reaction["shown"] = False
+                        # the player is close to victory, need to play more aggressive
+                        # TODO: use struct here when we get py3 support
+                        if (
+                            total_cards > 7
+                            or total_player_cards < 4
+                        ):
+                            analysis = (
+                                (
+                                    analyse_wilds,
+                                    (),
+                                    {"label": "wd4"}
+                                ),
+                                (
+                                    analyse_actions,
+                                    (),
+                                    {}
+                                ),
+                                (
+                                    analyse_numbers,
+                                    (),
+                                    {}
+                                ),
+                                (
+                                    analyse_wilds,
+                                    (),
+                                    {"label": "wcc"}
+                                )
+                            )
 
-                    self.reactions.append(reaction)
+                        # standart logic
+                        else:
+                            analysis = (
+                                (
+                                    analyse_numbers,
+                                    (),
+                                    {}
+                                ),
+                                (
+                                    analyse_actions,
+                                    (),
+                                    {}
+                                ),
+                                (
+                                    analyse_wilds,
+                                    (),
+                                    {}
+                                )
+                            )
 
-                    return reaction
+                        card = analyse_cards(analysis)
 
-                # # # Monika can't reflect an action card from the Player
+                        if card is not None:
+                            # Set the color if needed
+                            if (
+                                should_choose_color
+                                and card.type == "wild"
+                            ):
+                                self.chosen_color = self.choose_color(ignored_card=card)
+
+                            return card
+
+                    # Come here when Monika has nothing to play (or doesn't want to), must draw a card, then
+                    if should_draw:
+                        self.game.deal_cards(self)
+                        card = self.hand[-1]
+
+                        if (
+                            self.game.__is_matching_card(self, card)
+                            # don't play it if it will make the player draw a card on the next turn
+                            and (
+                                # but always play if we have just 2 cards left
+                                len(self.hand) < 3
+                                # play if the player may have that color
+                                or self.game.discardpile[-1].color not in self.player_cards_data["lacks_colors"]
+                                # 1/5 to play anyway
+                                or random.random() < 0.2
+                            )
+                        ):
+                            # Set the color if needed
+                            if (
+                                should_choose_color
+                                and card.type == "wild"
+                            ):
+                                self.chosen_color = self.choose_color(ignored_card=card)
+
+                            return card
+
+            # Come here when we don't want to/can't play a card
+            return None
+
+        def play_card(self, card):
+            """
+            Inner wrapper around play_card
+            NOTE: we do only certain checks here
+
+            IN:
+                card - card to play
+            """
+            if not card:
+                return
+
+            if card is self.queued_card:
+                self.queued_card = None
+
+            self.game.play_card(self, self.game.player, card)
+
+            self.game.__win_check(self)
+
+            if (
+                self.game.discardpile[-1].type == "wild"
+            ):
+                self.game.discardpile[-1].color = self.chosen_color
+                self.chosen_color = None
+
+        def choose_reaction(self, next_card_to_play):
+            """
+            Helps Monika choose a dialogue based on the state of the game
+            NOTE: 'NOU' is handled differently, right in announce_reaction(), w/o corresponding reactions from here
+
+            TODO: reaction when you both are drawing cards
+                because no one has a card with the current color
+            TODO: reactions when Monika reflected a card on her 1st turn
+                (the player had (had not) to skip their turn)
+            TODO: reactions when the player reflected a card on their 1st turn
+
+            IN:
+                next_card_to_play - the next card Monika's going to play
+                    (we base reaction on it)
+            """
+            # # # Monika is going to reflect an action card
+            if (
+                next_card_to_play is not None
+                and self.should_skip_turn
+                and len(self.game.game_log) > 1# see if there were enough turns
+                and self.game.game_log[-2]["played_card"] is not None# check if the player played something
+                and next_card_to_play.label == self.game.game_log[-2]["played_card"].label# compare the labels as this is the only way to reflect an act
+            ):
+                # # # Does Monika reflect a card that reflected a wd4 before?
+                # Monika played a wd4 > the player reflected > Monika reflected
                 if (
-                    next_card_to_play is None
-                    and self.should_skip_turn
-                    and len(self.game.game_log) > 1# see if there were enough turns
-                    and self.game.game_log[-2]["played_card"] is not None# check if the player played something
-                    and self.game.game_log[-2]["played_card"].type == "action"# make sure it was an act
-                ):
-                    # # # the player reflected a wd4 before
-                    # Someone played wd4 > ... > the player reflected > Monika fails to reflect
-                    if (
-                        self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
-                    ):
-                        reaction = {
-                            "type": self.game.PLAYER_REFLECTED_WDF,
-                            "turn": self.game.current_turn,
-                            "monika_card": None,
-                            "player_card": self.game.game_log[-2]["played_card"],
-                            "shown": False
-                        }
-
-                        chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
-                        reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
-
-                        self.reactions.append(reaction)
-
-                        return reaction
-
-                    # # # the player reflected an act card before
-                    # Someone played an act > ... > the player reflected > Monika failed to reflect
-                    elif (
-                        self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
-                    ):
-                        reaction = {
-                            "type": self.game.PLAYER_REFLECTED_ACT,
-                            "turn": self.game.current_turn,
-                            "monika_card": None,
-                            "player_card": self.game.game_log[-2]["played_card"],
-                            "shown": False
-                        }
-
-                        chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
-                        reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
-
-                        self.reactions.append(reaction)
-
-                        return reaction
-
-                    # Monika played an act > the player reflected > Monika failed to reflect
-                    elif (
-                        len(self.game.game_log) > 2# did we play enough turns?
-                        and self.game.game_log[-3]["played_card"] is not None# did Monika played a card back then?
-                        and self.game.game_log[-3]["played_card"].label == self.game.game_log[-2]["played_card"].label# Does it have the same label as the player's last cart?
-                    ):
-                        reaction = {
-                            "type": self.game.PLAYER_REFLECTED_ACT,
-                            "turn": self.game.current_turn,
-                            "monika_card": None,
-                            "player_card": self.game.game_log[-2]["played_card"],
-                            "chances_to_be_shown": 0,# for this one always use seen_count 0
-                            "shown": False
-                        }
-
-                        self.reactions.append(reaction)
-
-                        return reaction
-
-                    # NOTE: There's a possibility that we didn't return yet,
-                    # so we'll have to fall through remaining checks
-
-                # # # Monika mirrors a WDF card
-                if (
-                    next_card_to_play is not None
-                    and next_card_to_play.label == "Draw Two"# did Monika played a d2 to reflect the wd4?
-                    and self.should_skip_turn# and she has to skip her turn
-                    and len(self.game.game_log) > 1
-                    and self.game.game_log[-2]["played_card"] is not None
-                    and self.game.game_log[-2]["played_card"].label == "Wild Draw Four"# and the player played a wd4
+                    len(self.game.game_log) > 2
+                    and self.game.game_log[-3]["played_card"] is not None# see if Monika played wd4 before
+                    and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"
                 ):
                     reaction = {
                         "type": self.game.MONIKA_REFLECTED_WDF,
-                        "turn": self.game.current_turn,
-                        "monika_card": next_card_to_play,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "chances_to_be_shown": 0,
-                        "shown": False
+                        "chances_to_be_shown": 0
                     }
 
-                    # NOTE: DON'T DELETE THIS
-                    # turns = 8
-                    # if sum(reaction["type"] == self.game.MONIKA_REFLECTED_WDF and reaction["turn"] >= self.game.current_turn - 2 * turns for reaction in self.reactions[-turns:]):
-                    #     reaction["chances_to_be_shown"] = 1
-                    # else:
-                    #     reaction["chances_to_be_shown"] = 0
-
-                    self.reactions.append(reaction)
-
-                    return reaction
-
-                # # # The Player mirrored a WDF card (and Monika can't reflect it back)
-                if (
-                    next_card_to_play is None# Monika can't play a defensive card?
-                    and self.should_skip_turn# and should skip this turn?
-                    and len(self.game.game_log) > 2
-                    and self.game.game_log[-3]["played_card"] is not None
-                    and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"# Monika played a wd4 in her previous turn
-                    and self.game.game_log[-2]["played_card"] is not None
-                    and self.game.game_log[-2]["played_card"].label == "Draw Two"# and the player played a d2
-                ):
-                    reaction = {
-                        "type": self.game.PLAYER_REFLECTED_WDF,
-                        "turn": self.game.current_turn,
-                        "monika_card": None,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "chances_to_be_shown": 0,
-                        "shown": False
-                    }
-
-                    self.reactions.append(reaction)
-
-                    return reaction
-
-                # # # Monika reflects a WCC card
-                if (
-                    next_card_to_play is not None
-                    and next_card_to_play.type == "wild"# Monika is going to play a Wild card, NOTE: this maybe wd4 OR wcc
+                # someone played a wd4 > ... > Monika reflected > the player reflected > Monika reflected
+                elif (
+                    self.reactions
+                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
                     and len(self.game.game_log) > 1
-                    and self.game.game_log[-2]["played_card"] is not None
-                    and self.game.game_log[-2]["played_card"].label == "Wild"# and the player played a Wild card before (so reflect)
+                    and self.game.game_log[-2]["played_card"] is not None# see if the player played something
                 ):
-                    reaction = {
-                        "type": self.game.MONIKA_REFLECTED_WCC,
-                        "turn": self.game.current_turn,
-                        "monika_card": next_card_to_play,
-                        "player_card": self.game.game_log[-2]["played_card"],
-                        "shown": False
-                    }
+                    reaction = {"type": self.game.MONIKA_REFLECTED_WDF}
 
+                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1
+                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+
+                # # # Monika does not
+                # it's just the player played an act > Monika reflected
+                else:
+                    reaction = {"type": self.game.MONIKA_REFLECTED_ACT}
+
+                    # Monika keeps track on series of reactions
                     if (
                         self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
                     ):
                         if (
                             len(self.reactions) > 1
-                            and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_WCC
+                            and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_ACT
                         ):
                             reaction["chances_to_be_shown"] = 2
 
@@ -2913,56 +2758,77 @@ init 5 python in mas_nou:
                     else:
                         reaction["chances_to_be_shown"] = 0
 
-                    self.reactions.append(reaction)
+                reaction["turn"] = self.game.current_turn
+                reaction["monika_card"] = next_card_to_play
+                reaction["player_card"] = self.game.game_log[-2]["played_card"]
+                reaction["shown"] = False
 
-                    return reaction
+                self.reactions.append(reaction)
 
-                # # # The Player reflected a WCC card
+                return reaction
+
+            # # # Monika can't reflect an action card from the Player
+            if (
+                next_card_to_play is None
+                and self.should_skip_turn
+                and len(self.game.game_log) > 1# see if there were enough turns
+                and self.game.game_log[-2]["played_card"] is not None# check if the player played something
+                and self.game.game_log[-2]["played_card"].type == "action"# make sure it was an act
+            ):
+                # # # the player reflected a wd4 before
+                # Someone played wd4 > ... > the player reflected > Monika fails to reflect
                 if (
-                    (
-                        next_card_to_play is None# if this is the player's reflect, then Monika either doesn't play anything
-                        or next_card_to_play.type != "wild"# or plays a non-wild card
-                    )
-                    and len(self.game.game_log) > 2
-                    and self.game.game_log[-3]["played_card"] is not None# see if they reflected another card from Monika by that
-                    and self.game.game_log[-3]["played_card"].label == "Wild"# more exactly wcc
-                    and self.game.game_log[-2]["played_card"] is not None
-                    and self.game.game_log[-2]["played_card"].label == "Wild"# check if the player played a wcc
+                    self.reactions
+                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WDF
                 ):
                     reaction = {
-                        "type": self.game.PLAYER_REFLECTED_WCC,
+                        "type": self.game.PLAYER_REFLECTED_WDF,
                         "turn": self.game.current_turn,
-                        "monika_card": next_card_to_play,
+                        "monika_card": None,
                         "player_card": self.game.game_log[-2]["played_card"],
                         "shown": False
                     }
 
-                    if (
-                        self.reactions
-                        and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
-                    ):
-                        chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
-                        reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
-
-                    else:
-                        reaction["chances_to_be_shown"] = 0
+                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
+                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                     self.reactions.append(reaction)
 
                     return reaction
 
-                # Monika plays a wild card (basically announcing the color)
-                if (
-                    next_card_to_play is not None
-                    and next_card_to_play.type == "wild"
-                    and len(self.hand) > 1# No need to announce the color if you won lol
+                # # # the player reflected an act card before
+                # Someone played an act > ... > the player reflected > Monika failed to reflect
+                elif (
+                    self.reactions
+                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_ACT
                 ):
                     reaction = {
-                        "type": self.game.MONIKA_PLAYED_WILD,
+                        "type": self.game.PLAYER_REFLECTED_ACT,
                         "turn": self.game.current_turn,
-                        "monika_card": next_card_to_play,
-                        "player_card": self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
-                        "chances_to_be_shown": 0,
+                        "monika_card": None,
+                        "player_card": self.game.game_log[-2]["played_card"],
+                        "shown": False
+                    }
+
+                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
+                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+
+                    self.reactions.append(reaction)
+
+                    return reaction
+
+                # Monika played an act > the player reflected > Monika failed to reflect
+                elif (
+                    len(self.game.game_log) > 2# did we play enough turns?
+                    and self.game.game_log[-3]["played_card"] is not None# did Monika played a card back then?
+                    and self.game.game_log[-3]["played_card"].label == self.game.game_log[-2]["played_card"].label# Does it have the same label as the player's last cart?
+                ):
+                    reaction = {
+                        "type": self.game.PLAYER_REFLECTED_ACT,
+                        "turn": self.game.current_turn,
+                        "monika_card": None,
+                        "player_card": self.game.game_log[-2]["played_card"],
+                        "chances_to_be_shown": 0,# for this one always use seen_count 0
                         "shown": False
                     }
 
@@ -2970,9 +2836,139 @@ init 5 python in mas_nou:
 
                     return reaction
 
-                # Monika has nothing to say
+                # NOTE: There's a possibility that we didn't return yet,
+                # so we'll have to fall through remaining checks
+
+            # # # Monika mirrors a WDF card
+            if (
+                next_card_to_play is not None
+                and next_card_to_play.label == "Draw Two"# did Monika played a d2 to reflect the wd4?
+                and self.should_skip_turn# and she has to skip her turn
+                and len(self.game.game_log) > 1
+                and self.game.game_log[-2]["played_card"] is not None
+                and self.game.game_log[-2]["played_card"].label == "Wild Draw Four"# and the player played a wd4
+            ):
                 reaction = {
-                    "type": self.game.NO_REACTION,
+                    "type": self.game.MONIKA_REFLECTED_WDF,
+                    "turn": self.game.current_turn,
+                    "monika_card": next_card_to_play,
+                    "player_card": self.game.game_log[-2]["played_card"],
+                    "chances_to_be_shown": 0,
+                    "shown": False
+                }
+
+                # NOTE: DON'T DELETE THIS
+                # turns = 8
+                # if sum(reaction["type"] == self.game.MONIKA_REFLECTED_WDF and reaction["turn"] >= self.game.current_turn - 2 * turns for reaction in self.reactions[-turns:]):
+                #     reaction["chances_to_be_shown"] = 1
+                # else:
+                #     reaction["chances_to_be_shown"] = 0
+
+                self.reactions.append(reaction)
+
+                return reaction
+
+            # # # The Player mirrored a WDF card (and Monika can't reflect it back)
+            if (
+                next_card_to_play is None# Monika can't play a defensive card?
+                and self.should_skip_turn# and should skip this turn?
+                and len(self.game.game_log) > 2
+                and self.game.game_log[-3]["played_card"] is not None
+                and self.game.game_log[-3]["played_card"].label == "Wild Draw Four"# Monika played a wd4 in her previous turn
+                and self.game.game_log[-2]["played_card"] is not None
+                and self.game.game_log[-2]["played_card"].label == "Draw Two"# and the player played a d2
+            ):
+                reaction = {
+                    "type": self.game.PLAYER_REFLECTED_WDF,
+                    "turn": self.game.current_turn,
+                    "monika_card": None,
+                    "player_card": self.game.game_log[-2]["played_card"],
+                    "chances_to_be_shown": 0,
+                    "shown": False
+                }
+
+                self.reactions.append(reaction)
+
+                return reaction
+
+            # # # Monika reflects a WCC card
+            if (
+                next_card_to_play is not None
+                and next_card_to_play.type == "wild"# Monika is going to play a Wild card, NOTE: this maybe wd4 OR wcc
+                and len(self.game.game_log) > 1
+                and self.game.game_log[-2]["played_card"] is not None
+                and self.game.game_log[-2]["played_card"].label == "Wild"# and the player played a Wild card before (so reflect)
+            ):
+                reaction = {
+                    "type": self.game.MONIKA_REFLECTED_WCC,
+                    "turn": self.game.current_turn,
+                    "monika_card": next_card_to_play,
+                    "player_card": self.game.game_log[-2]["played_card"],
+                    "shown": False
+                }
+
+                if (
+                    self.reactions
+                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                ):
+                    if (
+                        len(self.reactions) > 1
+                        and self.reactions[-2]["type"] == self.game.MONIKA_REFLECTED_WCC
+                    ):
+                        reaction["chances_to_be_shown"] = 2
+
+                    else:
+                        reaction["chances_to_be_shown"] = 1
+
+                else:
+                    reaction["chances_to_be_shown"] = 0
+
+                self.reactions.append(reaction)
+
+                return reaction
+
+            # # # The Player reflected a WCC card
+            if (
+                (
+                    next_card_to_play is None# if this is the player's reflect, then Monika either doesn't play anything
+                    or next_card_to_play.type != "wild"# or plays a non-wild card
+                )
+                and len(self.game.game_log) > 2
+                and self.game.game_log[-3]["played_card"] is not None# see if they reflected another card from Monika by that
+                and self.game.game_log[-3]["played_card"].label == "Wild"# more exactly wcc
+                and self.game.game_log[-2]["played_card"] is not None
+                and self.game.game_log[-2]["played_card"].label == "Wild"# check if the player played a wcc
+            ):
+                reaction = {
+                    "type": self.game.PLAYER_REFLECTED_WCC,
+                    "turn": self.game.current_turn,
+                    "monika_card": next_card_to_play,
+                    "player_card": self.game.game_log[-2]["played_card"],
+                    "shown": False
+                }
+
+                if (
+                    self.reactions
+                    and self.reactions[-1]["type"] == self.game.MONIKA_REFLECTED_WCC
+                ):
+                    chances_to_be_shown = self.reactions[-1]["chances_to_be_shown"] + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
+                    reaction["chances_to_be_shown"] = chances_to_be_shown if chances_to_be_shown < 3 else 2
+
+                else:
+                    reaction["chances_to_be_shown"] = 0
+
+                self.reactions.append(reaction)
+
+                return reaction
+
+            # Monika plays a wild card (basically announcing the color)
+            if (
+                next_card_to_play is not None
+                and next_card_to_play.type == "wild"
+                and len(self.hand) > 1# No need to announce the color if you won lol
+            ):
+                reaction = {
+                    "type": self.game.MONIKA_PLAYED_WILD,
                     "turn": self.game.current_turn,
                     "monika_card": next_card_to_play,
                     "player_card": self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
@@ -2984,223 +2980,237 @@ init 5 python in mas_nou:
 
                 return reaction
 
-            def __handle_nou_logic(self, current_reaction):
-                """
-                Handles nou logic for Monika
+            # Monika has nothing to say
+            reaction = {
+                "type": self.game.NO_REACTION,
+                "turn": self.game.current_turn,
+                "monika_card": next_card_to_play,
+                "player_card": self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
+                "chances_to_be_shown": 0,
+                "shown": False
+            }
 
-                IN:
-                    current_reaction - current Monika's reaction
+            self.reactions.append(reaction)
+
+            return reaction
+
+        def __handle_nou_logic(self, current_reaction):
+            """
+            Handles nou logic for Monika
+
+            IN:
+                current_reaction - current Monika's reaction
+
+            OUT:
+                tuple of 2 booleans:
+                    has_yelled_nou - whether or not Monika yelled 'NOU' this turn
+                    has_reminded_yell_nou - whether or not Monika reminded the player to yell 'NOU' this turn
+            """
+            def should_miss_this_nou():
+                """
+                An inner method to check if Monika misses/wants to let slide this nou check
 
                 OUT:
-                    tuple of 2 booleans:
-                        has_yelled_nou - whether or not Monika yelled 'NOU' this turn
-                        has_reminded_yell_nou - whether or not Monika reminded the player to yell 'NOU' this turn
+                    boolean - True/False
+
+                ASSUMES:
+                    mas_nou.monika_win_streak
+                    persistent._mas_game_nou_abandoned
+                    persistent._mas_game_nou_house_rules
+                    persistent._mas_game_nou_points['Player']
                 """
-                def should_miss_this_nou():
-                    """
-                    An inner method to check if Monika misses/wants to let slide this nou check
-
-                    OUT:
-                        boolean - True/False
-
-                    ASSUMES:
-                        mas_nou.monika_win_streak
-                        persistent._mas_game_nou_abandoned
-                        persistent._mas_game_nou_house_rules
-                        persistent._mas_game_nou_points['Player']
-                    """
-                    if (
-                        persistent._mas_game_nou_abandoned > 1
-                        or (
-                            get_house_rule("points_to_win") > 0
-                            and get_player_points_percentage("Player") <= 0.2
-                            and get_player_points_percentage("Monika") >= 0.8
-                        )
-                        or (
-                            get_house_rule("points_to_win") == 0
-                            and (
-                                monika_win_streak > 2
-                                or monika_wins_this_sesh - player_wins_this_sesh > 4
-                            )
-                        )
-                    ):
-                        chance = self.HIGH_MISSING_NOU_CHANCE
-
-                    else:
-                        chance = self.LOW_MISSING_NOU_CHANCE
-
-                    return random.random() < chance
-
-                # Predefine as False
-                has_yelled_nou = False
-                has_reminded_yell_nou = False
-
-                # Does Monika want to say nou?
                 if (
-                    current_reaction["monika_card"] is not None# Monika's going to play a card
-                    and not self.yelled_nou
-                    and len(self.hand) == 2# and it's her second last card
-                    and not should_miss_this_nou()
-                ):
-                    has_yelled_nou = True
-
-                    self.yelled_nou = True
-                    self.should_play_card = True
-                    self.nou_reminder_timeout = 0
-                    nou_quip = renpy.random.choice(self.game.QUIPS_MONIKA_YELLS_NOU)
-                    renpy.say(m, nou_quip, interact=True)
-
-                # Can Monika catch the player for not saying nou?
-                if (
-                    not self.game.player.yelled_nou
-                    and self.game.player.nou_reminder_timeout > self.game.current_turn
-                    and len(self.game.player.hand) == 1
-                    and not should_miss_this_nou()
-                ):
-                    has_reminded_yell_nou = True
-
-                    remind_quip = renpy.random.choice(self.game.QUIPS_PLAYER_FORGOT_YELL_NOU)
-                    # add the prefix if Monika has said something prior to this
-                    if has_yelled_nou:
-                        remind_quip = "...And speaking of NOU...{w=0.5}" + remind_quip
-
-                    renpy.say(m, remind_quip, interact=True)
-                    # she caught you, draw 2 cards
-                    self.game.deal_cards(self.game.player, amount=2, smooth=False, mark_as_drew_card=False)
-                    renpy.pause(0.5, hard=True)
-
-                return has_yelled_nou, has_reminded_yell_nou
-
-            def announce_reaction(self, reaction):
-                """
-                A wrapper around renpy.say for Monika's reactions
-
-                Here we check if the reaction passes rng check, add modifiers to it,
-                    and handle 'NOU' quips
-
-                IN:
-                    reaction - reaction to announce
-                """
-                # Announcing nou isn't a reaction, but simple quips
-                # That's because it has kind of priority over reactions
-                # and behave differently from them
-                monika_yelled_nou, monika_reminded_yell_nou = self.__handle_nou_logic(reaction)
-
-                if (
-                    reaction["type"] != self.game.NO_REACTION
-                    and (
-                        # these 2 override all the reactions
-                        not monika_yelled_nou
-                        and not monika_reminded_yell_nou
-                    )
-                ):
-                    reaction_map = self.game.REACTIONS_MAP[reaction["type"]]
-                    total_reactions = len(reaction_map)
-
-                    # correct chances_to_be_shown if needed
-                    if reaction["chances_to_be_shown"] < 0:
-                        chances_to_be_shown = 0
-
-                    elif reaction["chances_to_be_shown"] > total_reactions - 1:
-                        chances_to_be_shown = total_reactions - 1
-
-                    else:
-                        chances_to_be_shown = reaction["chances_to_be_shown"]
-
-                    # check if Monika wants to say this
-                    chance_to_trigger = self.game.REACTION_CHANCES_MAP[chances_to_be_shown]
-                    if (
-                        reaction["type"] == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
-                        or random.random() < chance_to_trigger# otherwise do rng check
-                    ):
-                        # if we passed all checks, mark this reaction as shown
-                        reaction["shown"] = True
-
-                        # we make a new copy because we may modify it here
-                        reaction_quips = list(reaction_map[chances_to_be_shown])
-
-                        # # # START MODIFIERS
-                        additional_quips = None
-
-                        if reaction["type"] == self.game.MONIKA_REFLECTED_ACT:
-                            if (
-                                chances_to_be_shown == 2
-                                and get_house_rule("stackable_d2")
-                            ):
-                                additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
-
-                            elif (
-                                chances_to_be_shown == 0
-                                and reaction["monika_card"] is not None
-                            ):
-                                if reaction["monika_card"].label == "Draw Two":
-                                    additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2
-
-                                # elif reaction["monika_card"].label in ("Skip", "Reverse"):
-                                else:
-                                    additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3
-
-                        elif (
-                            reaction["type"] == self.game.MONIKA_REFLECTED_WDF
-                            and chances_to_be_shown == 2
-                            and get_house_rule("stackable_d2")
-                        ):
-                            additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
-
-                        elif (
-                            reaction["type"] == self.game.MONIKA_REFLECTED_WCC
-                            and chances_to_be_shown == 2
-                            and self.chosen_color == "green"
-                        ):
-                            additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1
-
-                        elif (
-                            (
-                                (
-                                    reaction["type"] == self.game.PLAYER_REFLECTED_ACT
-                                    and reaction["monika_card"] is not None
-                                    and reaction["monika_card"].label == "Draw Two"
-                                )
-                                or reaction["type"] == self.game.PLAYER_REFLECTED_WDF
-                            )
-                            and chances_to_be_shown == 2
-                            and len(self.hand) > 4
-                            and get_house_rule("stackable_d2")
-                        ):
-                            if reaction["type"] == self.game.PLAYER_REFLECTED_ACT:
-                                additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1
-
-                            else:
-                                additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_WD4_MODIFIER_1
-
-                        # add modifiers if any
-                        if additional_quips is not None:
-                            reaction_quips += additional_quips
-
-                        # # # END MODIFIERS
-
-                        # choose the one we will use
-                        quip = renpy.random.choice(
-                            reaction_quips
-                        )
-
-                        # say it line by line
-                        for line in quip:
-                            renpy.say(m, line, interact=True)
-
-                # Additional lines so the player always knows which color it is now
-                if (
-                    reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                    persistent._mas_game_nou_abandoned > 1
                     or (
-                        reaction["type"] == self.game.MONIKA_PLAYED_WILD
+                        get_house_rule("points_to_win") > 0
+                        and get_player_points_percentage("Player") <= 0.2
+                        and get_player_points_percentage("Monika") >= 0.8
+                    )
+                    or (
+                        get_house_rule("points_to_win") == 0
                         and (
-                            monika_yelled_nou
-                            or monika_reminded_yell_nou
+                            monika_win_streak > 2
+                            or monika_wins_this_sesh - player_wins_this_sesh > 4
                         )
                     )
                 ):
-                    color_quip = renpy.random.choice(self.game.QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT)
-                    renpy.say(m, color_quip, interact=True)
+                    chance = self.HIGH_MISSING_NOU_CHANCE
+
+                else:
+                    chance = self.LOW_MISSING_NOU_CHANCE
+
+                return random.random() < chance
+
+            # Predefine as False
+            has_yelled_nou = False
+            has_reminded_yell_nou = False
+
+            # Does Monika want to say nou?
+            if (
+                current_reaction["monika_card"] is not None# Monika's going to play a card
+                and not self.yelled_nou
+                and len(self.hand) == 2# and it's her second last card
+                and not should_miss_this_nou()
+            ):
+                has_yelled_nou = True
+
+                self.yelled_nou = True
+                self.should_play_card = True
+                self.nou_reminder_timeout = 0
+                nou_quip = renpy.random.choice(self.game.QUIPS_MONIKA_YELLS_NOU)
+                renpy.say(m, nou_quip, interact=True)
+
+            # Can Monika catch the player for not saying nou?
+            if (
+                not self.game.player.yelled_nou
+                and self.game.player.nou_reminder_timeout > self.game.current_turn
+                and len(self.game.player.hand) == 1
+                and not should_miss_this_nou()
+            ):
+                has_reminded_yell_nou = True
+
+                remind_quip = renpy.random.choice(self.game.QUIPS_PLAYER_FORGOT_YELL_NOU)
+                # add the prefix if Monika has said something prior to this
+                if has_yelled_nou:
+                    remind_quip = "...And speaking of NOU...{w=0.5}" + remind_quip
+
+                renpy.say(m, remind_quip, interact=True)
+                # she caught you, draw 2 cards
+                self.game.deal_cards(self.game.player, amount=2, smooth=False, mark_as_drew_card=False)
+                renpy.pause(0.5, hard=True)
+
+            return has_yelled_nou, has_reminded_yell_nou
+
+        def announce_reaction(self, reaction):
+            """
+            A wrapper around renpy.say for Monika's reactions
+
+            Here we check if the reaction passes rng check, add modifiers to it,
+                and handle 'NOU' quips
+
+            IN:
+                reaction - reaction to announce
+            """
+            # Announcing nou isn't a reaction, but simple quips
+            # That's because it has kind of priority over reactions
+            # and behave differently from them
+            monika_yelled_nou, monika_reminded_yell_nou = self.__handle_nou_logic(reaction)
+
+            if (
+                reaction["type"] != self.game.NO_REACTION
+                and (
+                    # these 2 override all the reactions
+                    not monika_yelled_nou
+                    and not monika_reminded_yell_nou
+                )
+            ):
+                reaction_map = self.game.REACTIONS_MAP[reaction["type"]]
+                total_reactions = len(reaction_map)
+
+                # correct chances_to_be_shown if needed
+                if reaction["chances_to_be_shown"] < 0:
+                    chances_to_be_shown = 0
+
+                elif reaction["chances_to_be_shown"] > total_reactions - 1:
+                    chances_to_be_shown = total_reactions - 1
+
+                else:
+                    chances_to_be_shown = reaction["chances_to_be_shown"]
+
+                # check if Monika wants to say this
+                chance_to_trigger = self.game.REACTION_CHANCES_MAP[chances_to_be_shown]
+                if (
+                    reaction["type"] == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
+                    or random.random() < chance_to_trigger# otherwise do rng check
+                ):
+                    # if we passed all checks, mark this reaction as shown
+                    reaction["shown"] = True
+
+                    # we make a new copy because we may modify it here
+                    reaction_quips = list(reaction_map[chances_to_be_shown])
+
+                    # # # START MODIFIERS
+                    additional_quips = None
+
+                    if reaction["type"] == self.game.MONIKA_REFLECTED_ACT:
+                        if (
+                            chances_to_be_shown == 2
+                            and get_house_rule("stackable_d2")
+                        ):
+                            additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
+
+                        elif (
+                            chances_to_be_shown == 0
+                            and reaction["monika_card"] is not None
+                        ):
+                            if reaction["monika_card"].label == "Draw Two":
+                                additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_2
+
+                            # elif reaction["monika_card"].label in ("Skip", "Reverse"):
+                            else:
+                                additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_3
+
+                    elif (
+                        reaction["type"] == self.game.MONIKA_REFLECTED_WDF
+                        and chances_to_be_shown == 2
+                        and get_house_rule("stackable_d2")
+                    ):
+                        additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
+
+                    elif (
+                        reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                        and chances_to_be_shown == 2
+                        and self.chosen_color == "green"
+                    ):
+                        additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1
+
+                    elif (
+                        (
+                            (
+                                reaction["type"] == self.game.PLAYER_REFLECTED_ACT
+                                and reaction["monika_card"] is not None
+                                and reaction["monika_card"].label == "Draw Two"
+                            )
+                            or reaction["type"] == self.game.PLAYER_REFLECTED_WDF
+                        )
+                        and chances_to_be_shown == 2
+                        and len(self.hand) > 4
+                        and get_house_rule("stackable_d2")
+                    ):
+                        if reaction["type"] == self.game.PLAYER_REFLECTED_ACT:
+                            additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_ACT_MODIFIER_1
+
+                        else:
+                            additional_quips = self.game.REACTIONS_MAP_PLAYER_REFLECTED_WD4_MODIFIER_1
+
+                    # add modifiers if any
+                    if additional_quips is not None:
+                        reaction_quips += additional_quips
+
+                    # # # END MODIFIERS
+
+                    # choose the one we will use
+                    quip = renpy.random.choice(
+                        reaction_quips
+                    )
+
+                    # say it line by line
+                    for line in quip:
+                        renpy.say(m, line, interact=True)
+
+            # Additional lines so the player always knows which color it is now
+            if (
+                reaction["type"] == self.game.MONIKA_REFLECTED_WCC
+                or (
+                    reaction["type"] == self.game.MONIKA_PLAYED_WILD
+                    and (
+                        monika_yelled_nou
+                        or monika_reminded_yell_nou
+                    )
+                )
+            ):
+                color_quip = renpy.random.choice(self.game.QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT)
+                renpy.say(m, color_quip, interact=True)
 
 # END CLASS DEF
 
@@ -3415,7 +3425,7 @@ init 5 python:
             conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
-            aff_range=(mas_aff.NORMAL, None)# you can play NoU only at norm+
+            aff_range=(mas_aff.NORMAL, None)# you can play NOU only at norm+
         )
     )
 
@@ -3712,7 +3722,7 @@ init 5 python:
             conditional="renpy.seen_label('mas_reaction_gift_noudeck')",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
-            aff_range=(mas_aff.NORMAL, None)# you can play NoU only at norm+
+            aff_range=(mas_aff.NORMAL, None)# you can play NOU only at norm+
         )
     )
 
@@ -3805,7 +3815,7 @@ label mas_nou_game_start:
     else:
         m 1eub "Let's start!~"
 
-    $ store.mas_nou.game = store.mas_nou.NoU()
+    $ store.mas_nou.game = store.mas_nou.NOU()
 
     # FALL THROUGH
 
@@ -4614,7 +4624,7 @@ screen nou_gui():
                     ]
                 )
 
-# Styles for NoU GUI
+# Styles for NOU GUI
 style nou_vbox is vbox:
     spacing 5
 
