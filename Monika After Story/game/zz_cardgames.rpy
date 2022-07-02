@@ -501,7 +501,7 @@ init 5 python in mas_nou:
 
         # Chances to get a reaction depend on its seen_count
         # This is a map between seen_count and the odds
-        REACTION_CHANCES_MAP = {
+        TIER_REACTION_CHANCE_MAP = {
             0: 0.33,
             1: 0.66,
             2: 0.9
@@ -1713,25 +1713,25 @@ init 5 python in mas_nou:
             turn=-1,
             monika_card=None,
             player_card=None,
-            chances_to_be_shown=0,
+            tier=0,
             shown=False
         ):
             self.type = type_
             self.turn = turn
             self.monika_card = monika_card
             self.player_card = player_card
-            self.chances_to_be_shown = chances_to_be_shown
+            self.tier = tier
             self.shown = shown
 
         @property
-        def chances_to_be_shown(self):
-            return self._chances_to_be_shown
+        def tier(self):
+            return self._tier
 
-        @chances_to_be_shown.setter
-        def chances_to_be_shown(self, value):
+        @tier.setter
+        def tier(self, value):
             if not 0 <= value < 3:
                 value = max(min(value, 2), 0)
-            self._chances_to_be_shown = value
+            self._tier = value
 
         # For compatability
         def __getitem__(self, key):
@@ -1741,12 +1741,12 @@ init 5 python in mas_nou:
             setattr(self, key, value)
 
         def __repr__(self):
-            return "<_NOUReaction (type_={}, turn={}, monika_card={}, player_card={}, chances_to_be_shown={}, shown={})>".format(
+            return "<_NOUReaction (type_={}, turn={}, monika_card={}, player_card={}, tier={}, shown={})>".format(
                 self.type,
                 self.turn,
                 self.monika_card,
                 self.player_card,
-                self.chances_to_be_shown,
+                self.tier,
                 self.shown
             )
 
@@ -2773,7 +2773,7 @@ init 5 python in mas_nou:
                 ):
                     reaction = _NOUReaction(
                         type_=self.game.MONIKA_REFLECTED_WDF,
-                        chances_to_be_shown=0
+                        tier=0
                     )
 
                 # someone played a wd4 > ... > Monika reflected > the player reflected > Monika reflected
@@ -2785,7 +2785,7 @@ init 5 python in mas_nou:
                 ):
                     reaction = _NOUReaction(
                         type_=self.game.MONIKA_REFLECTED_WDF,
-                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1
+                        tier=self.reactions[-1].tier + 1
                     )
 
                 # # # Monika does not
@@ -2802,13 +2802,13 @@ init 5 python in mas_nou:
                             len(self.reactions) > 1
                             and self.reactions[-2].type == self.game.MONIKA_REFLECTED_ACT
                         ):
-                            reaction.chances_to_be_shown = 2
+                            reaction.tier = 2
 
                         else:
-                            reaction.chances_to_be_shown = 1
+                            reaction.tier = 1
 
                     else:
-                        reaction.chances_to_be_shown = 0
+                        reaction.tier = 0
 
                 reaction.turn = self.game.current_turn
                 reaction.monika_card = next_card_to_play
@@ -2838,7 +2838,7 @@ init 5 python in mas_nou:
                         turn=self.game.current_turn,
                         monika_card=None,
                         player_card=self.game.game_log[-2]["played_card"],
-                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
+                        tier=self.reactions[-1].tier + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
                         shown=False
                     )
 
@@ -2857,7 +2857,7 @@ init 5 python in mas_nou:
                         turn=self.game.current_turn,
                         monika_card=None,
                         player_card=self.game.game_log[-2]["played_card"],
-                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
+                        tier=self.reactions[-1].tier + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
                         shown=False
                     )
 
@@ -2876,7 +2876,7 @@ init 5 python in mas_nou:
                         turn=self.game.current_turn,
                         monika_card=None,
                         player_card=self.game.game_log[-2]["played_card"],
-                        chances_to_be_shown=0,# for this one always use seen_count 0
+                        tier=0,# for this one always use seen_count 0
                         shown=False
                     )
 
@@ -2901,7 +2901,7 @@ init 5 python in mas_nou:
                     turn=self.game.current_turn,
                     monika_card=next_card_to_play,
                     player_card=self.game.game_log[-2]["played_card"],
-                    chances_to_be_shown=0,
+                    tier=0,
                     shown=False
                 )
 
@@ -2931,7 +2931,7 @@ init 5 python in mas_nou:
                     turn=self.game.current_turn,
                     monika_card=None,
                     player_card=self.game.game_log[-2]["played_card"],
-                    chances_to_be_shown=0,
+                    tier=0,
                     shown=False
                 )
 
@@ -2963,13 +2963,13 @@ init 5 python in mas_nou:
                         len(self.reactions) > 1
                         and self.reactions[-2].type == self.game.MONIKA_REFLECTED_WCC
                     ):
-                        reaction.chances_to_be_shown = 2
+                        reaction.tier = 2
 
                     else:
-                        reaction.chances_to_be_shown = 1
+                        reaction.tier = 1
 
                 else:
-                    reaction.chances_to_be_shown = 0
+                    reaction.tier = 0
 
                 self.reactions.append(reaction)
 
@@ -3000,10 +3000,10 @@ init 5 python in mas_nou:
                     and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WCC
                 ):
                     # use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
-                    reaction.chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1
+                    reaction.tier = self.reactions[-1].tier + 1
 
                 else:
-                    reaction.chances_to_be_shown = 0
+                    reaction.tier = 0
 
                 self.reactions.append(reaction)
 
@@ -3020,7 +3020,7 @@ init 5 python in mas_nou:
                     turn=self.game.current_turn,
                     monika_card=next_card_to_play,
                     player_card=self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
-                    chances_to_be_shown=0,
+                    tier=0,
                     shown=False
                 )
 
@@ -3034,7 +3034,7 @@ init 5 python in mas_nou:
                 turn=self.game.current_turn,
                 monika_card=next_card_to_play,
                 player_card=self.game.game_log[-2]["played_card"] if len(self.game.game_log) > 1 else None,
-                chances_to_be_shown=0,
+                tier=0,
                 shown=False
             )
 
@@ -3144,6 +3144,8 @@ init 5 python in mas_nou:
             # and behave differently from them
             monika_yelled_nou, monika_reminded_yell_nou = self.__handle_nou_logic(reaction)
 
+            reaction_map = self.game.REACTIONS_MAP.get(reaction.type, None)
+
             if (
                 reaction.type != self.game.NO_REACTION
                 and (
@@ -3151,22 +3153,14 @@ init 5 python in mas_nou:
                     not monika_yelled_nou
                     and not monika_reminded_yell_nou
                 )
+                and reaction_map
             ):
-                reaction_map = self.game.REACTIONS_MAP[reaction.type]
-                total_reactions = len(reaction_map)
-
-                # correct chances_to_be_shown if needed
-                if reaction.chances_to_be_shown < 0:
-                    chances_to_be_shown = 0
-
-                elif reaction.chances_to_be_shown > total_reactions - 1:
-                    chances_to_be_shown = total_reactions - 1
-
-                else:
-                    chances_to_be_shown = reaction.chances_to_be_shown
+                max_tier = len(reaction_map) - 1
+                # correct tier if needed
+                tier = min(reaction.tier, max_tier)
 
                 # check if Monika wants to say this
-                chance_to_trigger = self.game.REACTION_CHANCES_MAP[chances_to_be_shown]
+                chance_to_trigger = self.game.TIER_REACTION_CHANCE_MAP.get(tier, 0.33)
                 if (
                     reaction.type == self.game.MONIKA_PLAYED_WILD# always say this one since the player needs to know the current color
                     or random.random() < chance_to_trigger# otherwise do rng check
@@ -3175,20 +3169,20 @@ init 5 python in mas_nou:
                     reaction.shown = True
 
                     # we make a new copy because we may modify it here
-                    reaction_quips = list(reaction_map[chances_to_be_shown])
+                    reaction_quips = list(reaction_map[tier])
 
                     # # # START MODIFIERS
                     additional_quips = None
 
                     if reaction.type == self.game.MONIKA_REFLECTED_ACT:
                         if (
-                            chances_to_be_shown == 2
+                            tier == 2
                             and get_house_rule("stackable_d2")
                         ):
                             additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
 
                         elif (
-                            chances_to_be_shown == 0
+                            tier == 0
                             and reaction.monika_card is not None
                         ):
                             if reaction.monika_card.label == "Draw Two":
@@ -3200,14 +3194,14 @@ init 5 python in mas_nou:
 
                     elif (
                         reaction.type == self.game.MONIKA_REFLECTED_WDF
-                        and chances_to_be_shown == 2
+                        and tier == 2
                         and get_house_rule("stackable_d2")
                     ):
                         additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WD4_MODIFIER_1
 
                     elif (
                         reaction.type == self.game.MONIKA_REFLECTED_WCC
-                        and chances_to_be_shown == 2
+                        and tier == 2
                         and self.chosen_color == "green"
                     ):
                         additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_WCC_MODIFIER_1
@@ -3221,7 +3215,7 @@ init 5 python in mas_nou:
                             )
                             or reaction.type == self.game.PLAYER_REFLECTED_WDF
                         )
-                        and chances_to_be_shown == 2
+                        and tier == 2
                         and len(self.hand) > 4
                         and get_house_rule("stackable_d2")
                     ):
