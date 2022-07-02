@@ -2783,10 +2783,10 @@ init 5 python in mas_nou:
                     and len(self.game.game_log) > 1
                     and self.game.game_log[-2]["played_card"] is not None# see if the player played something
                 ):
-                    reaction = _NOUReaction(type_=self.game.MONIKA_REFLECTED_WDF)
-
-                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1
-                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    reaction = _NOUReaction(
+                        type_=self.game.MONIKA_REFLECTED_WDF,
+                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1
+                    )
 
                 # # # Monika does not
                 # it's just the player played an act > Monika reflected
@@ -2838,11 +2838,9 @@ init 5 python in mas_nou:
                         turn=self.game.current_turn,
                         monika_card=None,
                         player_card=self.game.game_log[-2]["played_card"],
+                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
                         shown=False
                     )
-
-                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WDF reaction
-                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                     self.reactions.append(reaction)
 
@@ -2859,11 +2857,9 @@ init 5 python in mas_nou:
                         turn=self.game.current_turn,
                         monika_card=None,
                         player_card=self.game.game_log[-2]["played_card"],
+                        chances_to_be_shown=self.reactions[-1].chances_to_be_shown + 1,# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
                         shown=False
                     )
-
-                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_ACT reaction
-                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
 
                     self.reactions.append(reaction)
 
@@ -3003,8 +2999,8 @@ init 5 python in mas_nou:
                     self.reactions
                     and self.reactions[-1].type == self.game.MONIKA_REFLECTED_WCC
                 ):
-                    chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1# use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
-                    reaction.chances_to_be_shown = chances_to_be_shown if chances_to_be_shown < 3 else 2
+                    # use seen_count + 1 from the previous MONIKA_REFLECTED_WCC reaction
+                    reaction.chances_to_be_shown = self.reactions[-1].chances_to_be_shown + 1
 
                 else:
                     reaction.chances_to_be_shown = 0
