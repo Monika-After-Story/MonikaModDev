@@ -1364,7 +1364,7 @@ init 5 python in mas_nou:
             """
             Tracks the player's actions and responds to their interactions
             """
-            def allowed_play_card():
+            def is_player_allowed_play_card():
                 """
                 Unified check whether the player can play a card
 
@@ -1451,7 +1451,7 @@ init 5 python in mas_nou:
                         elif (
                             event.stack is self.player.hand
                             and event.card is not None
-                            and allowed_play_card()
+                            and is_player_allowed_play_card()
                         ):
                             player_play_card(event.card)
 
@@ -1482,7 +1482,7 @@ init 5 python in mas_nou:
                         elif (
                             event.stack is self.player.hand
                             and event.drop_stack is self.discardpile
-                            and allowed_play_card()
+                            and is_player_allowed_play_card()
                         ):
                             player_play_card(event.card)
 
