@@ -1364,6 +1364,43 @@ init 5 python in mas_nou:
             """
             Tracks the player's actions and responds to their interactions
             """
+            def allowed_play_card():
+                """
+                Unified check whether the player can play a card
+
+                OUT:
+                    bool
+                """
+                return (
+                    # The colour must be set first
+                    self.discardpile[-1].color is not None
+                    # You didn't play a card
+                    and not self.player.played_card
+                    # If you drew a card, then you can't play a defensive card anymore
+                    and not (self.player.should_skip_turn and self.player.drew_card)
+                )
+
+            def player_play_card(card_to_play):
+                """
+                Unified method to play a card
+                DOES NOT CHECK WHETHER OR NOT THE PLAYER IS ALLOWED TO PLAY
+
+                IN:
+                    card_to_play - the card to play
+                """
+                if not self._is_matching_card(self.player, card_to_play):
+                    return
+
+                self.set_sensitive(False)
+                self.play_card(self.player, self.monika, card_to_play)
+                self.set_sensitive(True)
+
+                self._win_check(self.player)
+
+                # We don't leave if the player has to choose a color
+                if self.discardpile[-1].color is not None:
+                    self.end_turn(self.player, self.monika)
+
             while self.player.plays_turn:
                 events = ui.interact(type="minigame")
 
@@ -1410,6 +1447,14 @@ init 5 python in mas_nou:
 
                             self.set_sensitive(True)
 
+                        # Player plays a card
+                        elif (
+                            event.stack is self.player.hand
+                            and event.card is not None
+                            and allowed_play_card()
+                        ):
+                            player_play_card(event.card)
+
                     elif event.type == "drag":
                         # Reset the offsets after hovering
                         # FIXME: ideally we should do this via queueing an unhover event
@@ -1437,21 +1482,9 @@ init 5 python in mas_nou:
                         elif (
                             event.stack is self.player.hand
                             and event.drop_stack is self.discardpile
-                            and self.discardpile[-1].color is not None
-                            and not self.player.played_card
-                            # Ensure that if you drew a card, then you can't play a defensive card anymore this turn
-                            and not (self.player.should_skip_turn and self.player.drew_card)
+                            and allowed_play_card()
                         ):
-                            if self._is_matching_card(self.player, event.card):
-                                self.set_sensitive(False)
-                                self.play_card(self.player, self.monika, event.card)
-                                self.set_sensitive(True)
-
-                                self._win_check(self.player)
-
-                                # We don't leave if the player has to choose a color
-                                if self.discardpile[-1].color is not None:
-                                    self.end_turn(self.player, self.monika)
+                            player_play_card(event.card)
 
                     elif event.type == "click":
                         if (
