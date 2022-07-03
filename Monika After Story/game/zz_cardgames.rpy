@@ -416,10 +416,13 @@ init 5 python in mas_nou:
             1: [
                 (_("Alright,{w=0.1} alright...{w=0.3} You win this time."),),
                 (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3}but just this time!"),),
-                (_("You're pretty lucky!"),)
+                (_("You're pretty lucky!"),),
+                (_("No way!"),)
             ],
             2: [
-                (_("You...{w=0.3}{i}could{/i} go a bit easier on your girlfriend, you know~"), _("Ahaha~"))
+                (_("You...{w=0.3}{i}could{/i} go a bit easier on your girlfriend, you know~"), _("Ahaha~")),
+                (_("[player]!"),),
+                (_("Rigged deck!"),)
             ]
         }
 
@@ -3734,7 +3737,7 @@ label .change_starting_cards_loop:
             m 7eua "We can leave it at 20 cards if you'd like?{nw}"
             $ _history_list.pop()
             menu:
-                m "We can leave it at 20 cards if you'd like{fast}"
+                m "We can leave it at 20 cards if you'd like?{fast}"
 
                 "Alright.":
                     $ mas_nou.set_house_rule("starting_cards", 20)
