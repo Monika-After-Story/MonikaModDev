@@ -258,8 +258,8 @@ init 5 python in mas_nou:
             _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
             _("Thought I wouldn't notice huh?~ You should've said 'NOU'!"),
-            _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
-            _("Guess who must take 2 cards for not saying 'NOU'~"),
+            _("Sounds like a certain someone forgot to yell 'NOU'~"),
+            _("Looks like you'll be taking 2 cards for not saying 'NOU'~"),
             _("I caught you! You didn't say 'NOU'!"),
             _("You didn't say 'NOU'! Take 2 cards!~")
         )
