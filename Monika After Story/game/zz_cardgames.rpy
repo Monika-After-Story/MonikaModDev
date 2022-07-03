@@ -432,7 +432,7 @@ init 5 python in mas_nou:
         REACTIONS_MAP_PLAYER_REFLECTED_ACT = {
             0: [
                 (_("Aww, what a shame!"),),
-                (_("That's unlucky!"),)
+                (_("That's unfortunate..."),)
             ],
             1: [
                 (_("Jeez, I can't believe you had another card!"),),
