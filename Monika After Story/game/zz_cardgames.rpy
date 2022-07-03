@@ -315,7 +315,7 @@ init 5 python in mas_nou:
         REACTIONS_MAP_MONIKA_REFLECTED_ACT = {
             0: [
                 (_("Thought you could catch me off guard?"), _("I saw that coming a mile away! Ehehe~")),
-                (_("Not so easy, [player]~"),)
+                (_("Not so fast, [player]~"),)
             ],
             1: [
                 (_("Ehehe~ No way, [player]~"),),
