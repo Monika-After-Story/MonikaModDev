@@ -171,9 +171,9 @@ init 5 python in mas_nou:
         )
         # Quips for when she reflects a wild card
         QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT = (
-            _("I'd prefer [store.mas_nou.game.monika.chosen_color] color~"),
-            _("I want [store.mas_nou.game.monika.chosen_color] color~"),
-            _("I choose [store.mas_nou.game.monika.chosen_color] color!"),
+            _("I'd prefer [store.mas_nou.game.monika.chosen_color]~"),
+            _("I want [store.mas_nou.game.monika.chosen_color]~"),
+            _("I choose [store.mas_nou.game.monika.chosen_color]!"),
             _("It'll be [store.mas_nou.game.monika.chosen_color]!")
         )
 
@@ -257,7 +257,7 @@ init 5 python in mas_nou:
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
-            _("You thought I wouldn't notice?~ You should've said 'NOU'!"),
+            _("Thought I wouldn't notice huh?~ You should've said 'NOU'!"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
             _("I caught you! You didn't say 'NOU'!"),
@@ -314,13 +314,13 @@ init 5 python in mas_nou:
         # this is for reflecting an action card
         REACTIONS_MAP_MONIKA_REFLECTED_ACT = {
             0: [
-                (_("Thought you will catch me off guard with this?"), _("I knew you'll do it! Ehehe~")),
+                (_("Thought you could catch me off guard?"), _("I saw that coming a mile away! Ehehe~")),
                 (_("Not so easy, [player]~"),)
             ],
             1: [
                 (_("Ehehe~ No way, [player]~"),),
                 (_("You {i}really{/i} want me to take this, huh?~"),),
-                (_("Wait a moment.{w=0.2}.{w=0.2}.{w=0.2}I have more for you~"),),
+                (_("One second.{w=0.2}.{w=0.2}.{w=0.2}I've got more for you~"),),
                 (_("What about this one?~"),)
             ],
             2: [
@@ -3730,11 +3730,11 @@ label .change_starting_cards_loop:
                     m 3eua "Then try again."
 
         elif starting_cards > 20:
-            m 2hub "Ahaha, [player]! How do you think I'll hold all these cards?"
-            m 7eua "Let's leave it at 20 cards?{nw}"
+            m 2hub "Ahaha, [player]! Do you expect me to hold [starting_cards] cards?"
+            m 7eua "We can leave it at 20 cards if you'd like?{nw}"
             $ _history_list.pop()
             menu:
-                m "Let's leave it at 20 cards?{fast}"
+                m "We can leave it at 20 cards if you'd like{fast}"
 
                 "Alright.":
                     $ mas_nou.set_house_rule("starting_cards", 20)
@@ -4169,7 +4169,7 @@ label mas_nou_reaction_player_wins_round:
         $ dlg_choice = renpy.random.randint(1, 3)
 
         if dlg_choice == 1:
-            m 1esa "A quite long [_round!t], [player]."
+            m 1esa "Quite a long [_round!t], [player]."
 
             if len(store.mas_nou.game.monika.hand) < 4:
                 if store.mas_nou.player_win_streak > 0:
