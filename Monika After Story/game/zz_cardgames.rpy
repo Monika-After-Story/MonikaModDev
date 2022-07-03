@@ -171,9 +171,9 @@ init 5 python in mas_nou:
         )
         # Quips for when she reflects a wild card
         QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT = (
-            _("I'd prefer [store.mas_nou.game.monika.chosen_color] color~"),
-            _("I want [store.mas_nou.game.monika.chosen_color] color~"),
-            _("I choose [store.mas_nou.game.monika.chosen_color] color!"),
+            _("I'd prefer [store.mas_nou.game.monika.chosen_color]~"),
+            _("I want [store.mas_nou.game.monika.chosen_color]~"),
+            _("I choose [store.mas_nou.game.monika.chosen_color]!"),
             _("It'll be [store.mas_nou.game.monika.chosen_color]!")
         )
 
