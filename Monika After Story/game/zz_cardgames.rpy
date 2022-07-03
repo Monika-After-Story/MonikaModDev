@@ -84,6 +84,8 @@ init 5 python in mas_nou:
 
         # # # Monika's quips
 
+        # NOTE: some dlg stuff is in _select_help method
+
         # Quips for when we get a wdf as the first card for the discardpile
         QUIPS_MONIKA_RESHUFFLE_DECK = (
             _("Oh, let me shuffle it again.{w=1.5}{nw}"),
@@ -1650,6 +1652,134 @@ init 5 python in mas_nou:
                     self.player.should_play_card = True
                     self.player.nou_reminder_timeout = 0
 
+            self.set_sensitive(True)
+
+        def _select_help(self):
+            """
+            Method to help the player if they are "stuck"
+
+            OUT:
+                string
+            """
+            player = self.player
+            discardpile = self.discardpile
+
+            if (
+                not discardpile
+                or not player.plays_turn
+                or player.played_card
+            ):
+                return "Sorry, I'm not sure, [player]..."
+
+            card = discardpile[-1]
+            dlg_line_list = []
+
+            if card.type == "number":
+                dlg_line_list.append(
+                    "You need to play a '{}' or any {} card.".format(
+                        card.label,
+                        card.color
+                    )
+                )
+                if not player.drew_card:
+                    dlg_line_list.append(
+                        " If you don't have an appropriate card, you should draw a card and then either play it or skip your turn."
+                    )
+                else:
+                    dlg_line_list.append(
+                        " Since you drew a card, you can try to play it or skip your turn."
+                    )
+
+            else:
+                if player.should_skip_turn:
+                    dlg_line_list.append("You have to skip this turn")
+
+                    if (
+                        len(self.game_log) > 2
+                        and self.game_log[-3]["had_skip_turn"]
+                        and random.random() < 0.33
+                    ):
+                        dlg_line_list.append("--just like the last one--")
+
+                    if player.should_draw_cards:
+                        dlg_line_list.append(
+                            " and draw {}".format(player.should_draw_cards)
+                        )
+                        if player.drew_card:
+                            dlg_line_list.append(" more")
+
+                        dlg_line_list.append(
+                            " card{}".format(
+                                "s" if player.should_draw_cards != 1 else ""
+                            )
+                        )
+
+                    dlg_line_list.append(".")
+
+                    if not player.drew_card:
+                        if card.type == "action":
+                            card_for_reflect = card.label
+                            if card.label == "Skip":
+                                color_for_reflect = card.color
+                            else:
+                                color_for_reflect = ""
+
+                        else:
+                            card_for_reflect = "Draw Two"
+                            color_for_reflect = card.color
+
+                        dlg_line_list.append(
+                            " If you have a {}{}{{i}}{}{{/i}}, you could {{i}}try{{/i}} to reflect {} card.".format(
+                                color_for_reflect,
+                                "" if not color_for_reflect else " ",
+                                card_for_reflect,
+                                "my" if self.monika.played_card else "the top"
+                            )
+                        )
+                        if random.random() < 0.33:
+                            if random.random() < 0.5:
+                                dlg_line_list.append(
+                                    " Can't promise I won't reflect it back to you~"
+                                )
+                            else:
+                                dlg_line_list.append(".. If you're brave enough~")
+
+                else:
+                    if card.type == "action":
+                        dlg_line_list.append(
+                            "You need to play a {{i}}{}{{/i}} or any {} card.".format(
+                                card.label,
+                                card.color
+                            )
+                        )
+
+                    else:
+                        dlg_line_list.append(
+                            "You need to play any {} card.".format(card.color)
+                        )
+
+                    if not player.drew_card:
+                        dlg_line_list.append(
+                            " Otherwise draw a card and try to play it."
+                        )
+
+                    else:
+                        dlg_line_list.append(
+                            " Otherwise you have to skip your turn~"
+                        )
+
+            if dlg_line_list:
+                return "".join(dlg_line_list)
+
+            return "Sorry, I'm not sure, [player]..."
+
+        def say_help(self):
+            """
+            Method to say the selected advice
+            """
+            advice = self._select_help()
+            self.set_sensitive(False)
+            renpy.invoke_in_new_context(renpy.say, m, advice, interact=True)
             self.set_sensitive(True)
 
 
@@ -4625,6 +4755,18 @@ screen nou_gui():
 
         null height 20
 
+        if (
+            player.plays_turn
+            and not player.played_card
+        ):
+            textbutton _("Can you help me?"):
+                action Function(game.say_help)
+
+        else:
+            textbutton _("Can you help me?")
+
+        null height 20
+
         if player.hand and monika.hand:
             textbutton _("I'm giving up..."):
                 selected False
@@ -4643,14 +4785,14 @@ screen nou_gui():
 
         if (
             player.plays_turn
-            # and store.mas_nou.game.is_sensitive()
+            # and game.is_sensitive()
             and (
                 discardpile
                 and discardpile[-1].color is None
             )
             and player.hand
         ):
-            $ top_card = store.mas_nou.game.discardpile[-1]
+            $ top_card = game.discardpile[-1]
 
             textbutton _("Red"):
                 xminimum 230
