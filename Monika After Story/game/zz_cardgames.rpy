@@ -416,10 +416,13 @@ init 5 python in mas_nou:
             1: [
                 (_("Alright,{w=0.1} alright...{w=0.3} You win this time."),),
                 (_("I.{w=0.1}.{w=0.1}.{w=0.1}will let it slide...{w=0.3}but just this time!"),),
-                (_("You're pretty lucky!"),)
+                (_("You're pretty lucky!"),),
+                (_("No way!"),)
             ],
             2: [
-                (_("You...{w=0.3}{i}could{/i} go a bit easier on your girlfriend, you know~"), _("Ahaha~"))
+                (_("You...{w=0.3}{i}could{/i} go a bit easier on your girlfriend, you know~"), _("Ahaha~")),
+                (_("[player]!"),),
+                (_("Rigged deck!"),)
             ]
         }
 
@@ -811,7 +814,7 @@ init 5 python in mas_nou:
                             self.__load_card_asset(card)
                             self.drawpile.append(card)
 
-        def __update_drawpile(self, smooth=True):
+        def _update_drawpile(self, smooth=True):
             """
             Moves all - except the top one - cards from the discardpile
             onto the drawpile, then shuffles drawpile
@@ -842,7 +845,7 @@ init 5 python in mas_nou:
 
             self.shuffle_drawpile(smooth=smooth)
 
-        def __update_game_log(self, current_player, next_player):
+        def _update_game_log(self, current_player, next_player):
             """
             Updates the log with the actions/attributes of the current and next players
             We can back in to any turn and check what happened there
@@ -899,9 +902,9 @@ init 5 python in mas_nou:
             if not self.drawpile:
                 # NOTE: we can still have an active interaction during this call
                 # which will lead to a crash. Dirty fix: invoke this method
-                renpy.invoke_in_new_context(self.__update_drawpile)
+                renpy.invoke_in_new_context(self._update_drawpile)
 
-            self.__update_game_log(current_player, next_player)
+            self._update_game_log(current_player, next_player)
 
             # now that we saved data in the log
             # we can reset some vars
@@ -955,7 +958,7 @@ init 5 python in mas_nou:
 
             self.set_sensitive(not next_player.isAI)
 
-        def __win_check(self, player):
+        def _win_check(self, player):
             """
             Checks if player can win the game (has no cards left)
             If we have a winner, we update wins and jump to the end game label
@@ -981,7 +984,7 @@ init 5 python in mas_nou:
             renpy.pause(2, hard=True)
             renpy.jump("mas_nou_game_end")
 
-        def __is_matching_card(self, player, card):
+        def _is_matching_card(self, player, card):
             """
             Checks if the given card matches the top card in the discardpile
 
@@ -1105,7 +1108,7 @@ init 5 python in mas_nou:
             if len(current_player.hand) == 1:
                 current_player.nou_reminder_timeout = self.current_turn + 2
 
-        def __actually_deal_cards(self, player, amount, smooth):
+        def _actually_deal_cards(self, player, amount, smooth):
             """
             Moves cards from the drawpile into player's hand,
             updates offsets, rotation and sets cards faceup if needed
@@ -1166,35 +1169,35 @@ init 5 python in mas_nou:
 
             # there're enough cards for you
             if drawpile_cards >= amount:
-                self.__actually_deal_cards(player, amount, smooth)
+                self._actually_deal_cards(player, amount, smooth)
 
                 if player.should_draw_cards:
                     player.should_draw_cards -= amount
 
                 if drawpile_cards == amount:
                     # TODO: might need to use new context here
-                    self.__update_drawpile(smooth=smooth)
+                    self._update_drawpile(smooth=smooth)
 
             # there're not enough cards
             else:
                 # deal as much as we can
                 cards_to_deal = amount - drawpile_cards
-                self.__actually_deal_cards(player, drawpile_cards, smooth)
+                self._actually_deal_cards(player, drawpile_cards, smooth)
 
                 if player.should_draw_cards:
                     player.should_draw_cards -= drawpile_cards
 
-                self.__update_drawpile(smooth=smooth)
+                self._update_drawpile(smooth=smooth)
                 drawpile_cards = len(self.drawpile)
 
                 # we should never get here, but just in case
                 if drawpile_cards < cards_to_deal:
-                    self.__actually_deal_cards(player, drawpile_cards, smooth)
+                    self._actually_deal_cards(player, drawpile_cards, smooth)
                     player.should_draw_cards = 0
 
                 # deal remaining cards
                 else:
-                    self.__actually_deal_cards(player, cards_to_deal, smooth)
+                    self._actually_deal_cards(player, cards_to_deal, smooth)
                     player.should_draw_cards = 0
 
         def prepare_game(self):
@@ -1437,12 +1440,12 @@ init 5 python in mas_nou:
                             # Ensure that if you drew a card, then you can't play a defensive card anymore this turn
                             and not (self.player.should_skip_turn and self.player.drew_card)
                         ):
-                            if self.__is_matching_card(self.player, event.card):
+                            if self._is_matching_card(self.player, event.card):
                                 self.set_sensitive(False)
                                 self.play_card(self.player, self.monika, event.card)
                                 self.set_sensitive(True)
 
-                                self.__win_check(self.player)
+                                self._win_check(self.player)
 
                                 # We don't leave if the player has to choose a color
                                 if self.discardpile[-1].color is not None:
@@ -1810,7 +1813,7 @@ init 5 python in mas_nou:
 
             renpy.pause(thonk_time, hard=True)
 
-        def __randomise_color(self):
+        def _randomise_color(self):
             """
             Chooses one of the colors at random
             Excludes the potential color that the player may have
@@ -1930,7 +1933,7 @@ init 5 python in mas_nou:
             if self.player_cards_data["reset_in"] == 0:
                 self.player_cards_data["has_color"] = None
 
-        def __sort_cards_data(self, cards_data, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
+        def _sort_cards_data(self, cards_data, keys_sort_order=["num", "act"], values_sort_order=["value", "amount"], consider_player_cards_data=True):
             """
             Sorts (by keys and then values) the cards data dict
             and returns it as a list of tuples
@@ -1975,6 +1978,7 @@ init 5 python in mas_nou:
                 OUT:
                     list which we'll use in sorting
                 """
+                # TODO: use int weight instead of lists?
                 rv = list()
                 # Apply keys
                 for _key in keys_sort_order:
@@ -2007,7 +2011,7 @@ init 5 python in mas_nou:
 
             return sorted_list
 
-        def __get_cards_data(self, cards=None):
+        def _get_cards_data(self, cards=None):
             """
             A method that builds a dict that represents cards in a Monika-friendly way (c)
                 NOTE: ids of number and action cards are sorted by cards values
@@ -2219,12 +2223,12 @@ init 5 python in mas_nou:
             ):
                 cards.remove(ignored_card)
 
-            cards_data = self.__get_cards_data(cards)
+            cards_data = self._get_cards_data(cards)
 
             # just 1 card left, set either its color or use rng
             if len(cards) == 1:
                 if cards[0].type == "wild":
-                    color = self.__randomise_color()
+                    color = self._randomise_color()
 
                 else:
                     color = cards[0].color
@@ -2233,11 +2237,11 @@ init 5 python in mas_nou:
 
             else:
                 if get_house_rule("points_to_win"):
-                    sorted_cards_data = self.__sort_cards_data(cards_data)
+                    sorted_cards_data = self._sort_cards_data(cards_data)
 
                 else:
                     # NOTE: use like this because values don't matter in games w/o points
-                    sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
+                    sorted_cards_data = self._sort_cards_data(cards_data, values_sort_order=["amount"])
 
                 # more agressive
                 if len(self.game.player.hand) < 3:
@@ -2308,7 +2312,7 @@ init 5 python in mas_nou:
                     color = sorted_cards_data[4][0].replace("act_", "")
 
                 else:
-                    color = self.__randomise_color()
+                    color = self._randomise_color()
 
                 return color
 
@@ -2379,7 +2383,7 @@ init 5 python in mas_nou:
                             )
                         ):
                             # if we've passed all checks, let's see if we actually can play the card
-                            if self.game.__is_matching_card(self, last_card):
+                            if self.game._is_matching_card(self, last_card):
                                 return last_card
                             # Otherwise fall through
 
@@ -2418,7 +2422,7 @@ init 5 python in mas_nou:
                     for id in sorted_cards_data[color_id][1]["ids"]:
                         card = self.hand[id]
 
-                        if self.game.__is_matching_card(self, card):
+                        if self.game._is_matching_card(self, card):
                             if (
                                 want_try_another_color
                                 and reserved_card is None
@@ -2465,14 +2469,15 @@ init 5 python in mas_nou:
                     OUT:
                         key to sort by
                     """
-                    labels = (
+                    # TODO: use int weight instead of lists?
+                    label_order = (
                         "Skip",
                         "Draw Two",
                         "Reverse"
                     )
-                    colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
+                    sorted_colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
 
-                    return [self.hand[id].label == label for label in labels] + [self.hand[id].color == color for color in colors]
+                    return [self.hand[id].label == label for label in label_order] + [self.hand[id].color == color for color in sorted_colors]
 
                 action_cards_ids = []
 
@@ -2484,7 +2489,7 @@ init 5 python in mas_nou:
                 for id in action_cards_ids:
                     card = self.hand[id]
 
-                    if self.game.__is_matching_card(self, card):
+                    if self.game._is_matching_card(self, card):
                         return card
 
                 return None
@@ -2515,7 +2520,7 @@ init 5 python in mas_nou:
 
                 card = self.hand[renpy.random.choice(wild_cards_ids)]
 
-                if self.game.__is_matching_card(self, card):
+                if self.game._is_matching_card(self, card):
                     return card
 
                 # we should never get to this
@@ -2542,7 +2547,7 @@ init 5 python in mas_nou:
 
                 return None
 
-            cards_data = self.__get_cards_data()
+            cards_data = self._get_cards_data()
 
             total_cards = len(self.hand)
             total_player_cards = len(self.game.player.hand)
@@ -2551,10 +2556,10 @@ init 5 python in mas_nou:
             if self.should_skip_turn:
                 # Let's try to play a defensive card
                 if get_house_rule("points_to_win"):
-                    sorted_cards_data = self.__sort_cards_data(cards_data)
+                    sorted_cards_data = self._sort_cards_data(cards_data)
 
                 else:
-                    sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
+                    sorted_cards_data = self._sort_cards_data(cards_data, values_sort_order=["amount"])
 
                 action_cards_ids = []
 
@@ -2569,7 +2574,7 @@ init 5 python in mas_nou:
                 for id in action_cards_ids:
                     card = self.hand[id]
 
-                    if self.game.__is_matching_card(self, card):
+                    if self.game._is_matching_card(self, card):
                         # NOTE: Since this is the reflect flow, you can't play a wild card here
                         # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
                         # if (
@@ -2593,7 +2598,7 @@ init 5 python in mas_nou:
                 # We have a card we wanted to play
                 if (
                     self.queued_card is not None
-                    and self.game.__is_matching_card(self, self.queued_card)
+                    and self.game._is_matching_card(self, self.queued_card)
                 ):
                     # Set the color if needed
                     if (
@@ -2610,7 +2615,7 @@ init 5 python in mas_nou:
                     if total_cards == 1:
                         card = self.hand[0]
 
-                        if self.game.__is_matching_card(self, card):
+                        if self.game._is_matching_card(self, card):
                             # Set the color if needed
                             if (
                                 should_choose_color
@@ -2622,16 +2627,16 @@ init 5 python in mas_nou:
 
                     else:
                         if get_house_rule("points_to_win"):
-                            sorted_cards_data = self.__sort_cards_data(cards_data)
+                            sorted_cards_data = self._sort_cards_data(cards_data)
 
                         else:
-                            sorted_cards_data = self.__sort_cards_data(cards_data, values_sort_order=["amount"])
+                            sorted_cards_data = self._sort_cards_data(cards_data, values_sort_order=["amount"])
 
                         # the player is close to victory, need to play more aggressive
                         # TODO: use struct here when we get py3 support
                         if (
-                            total_cards > 7
-                            or total_player_cards < 4
+                            total_player_cards < 4
+                            or total_cards/total_player_cards > 1.05# zero div safe
                         ):
                             analysis = (
                                 (
@@ -2694,7 +2699,7 @@ init 5 python in mas_nou:
                         card = self.hand[-1]
 
                         if (
-                            self.game.__is_matching_card(self, card)
+                            self.game._is_matching_card(self, card)
                             # don't play it if it will make the player draw a card on the next turn
                             and (
                                 # but always play if we have just 2 cards left
@@ -2733,7 +2738,7 @@ init 5 python in mas_nou:
 
             self.game.play_card(self, self.game.player, card)
 
-            self.game.__win_check(self)
+            self.game._win_check(self)
 
             if (
                 self.game.discardpile[-1].type == "wild"
@@ -3042,7 +3047,7 @@ init 5 python in mas_nou:
 
             return reaction
 
-        def __handle_nou_logic(self, current_reaction):
+        def _handle_nou_logic(self, current_reaction):
             """
             Handles nou logic for Monika
 
@@ -3142,7 +3147,7 @@ init 5 python in mas_nou:
             # Announcing nou isn't a reaction, but simple quips
             # That's because it has kind of priority over reactions
             # and behave differently from them
-            monika_yelled_nou, monika_reminded_yell_nou = self.__handle_nou_logic(reaction)
+            monika_yelled_nou, monika_reminded_yell_nou = self._handle_nou_logic(reaction)
 
             reaction_map = self.game.REACTIONS_MAP.get(reaction.type, None)
 
@@ -3732,7 +3737,7 @@ label .change_starting_cards_loop:
             m 7eua "We can leave it at 20 cards if you'd like?{nw}"
             $ _history_list.pop()
             menu:
-                m "We can leave it at 20 cards if you'd like{fast}"
+                m "We can leave it at 20 cards if you'd like?{fast}"
 
                 "Alright.":
                     $ mas_nou.set_house_rule("starting_cards", 20)
