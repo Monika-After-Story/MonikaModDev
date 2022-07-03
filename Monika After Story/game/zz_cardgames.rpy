@@ -338,7 +338,7 @@ init 5 python in mas_nou:
             ],
             1: [
                 (_("No-no-no!"),),
-                (_("[player]...just let me choose the right color~"),)
+                (_("Let me just...{w=0.3}choose the right color~"),)
             ],
             2: [
                 (_("Ehehe~"), _("I have another in store!~"))
