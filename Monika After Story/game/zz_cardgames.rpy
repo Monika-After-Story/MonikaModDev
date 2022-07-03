@@ -4167,7 +4167,7 @@ label mas_nou_reaction_player_wins_round:
         $ dlg_choice = renpy.random.randint(1, 3)
 
         if dlg_choice == 1:
-            m 1esa "A quite long [_round!t], [player]."
+            m 1esa "Quite a long [_round!t], [player]."
 
             if len(store.mas_nou.game.monika.hand) < 4:
                 if store.mas_nou.player_win_streak > 0:
