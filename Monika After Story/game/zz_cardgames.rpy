@@ -3282,14 +3282,17 @@ init 5 python in mas_nou:
 
             # Additional lines so the player always knows which color it is now
             if (
-                reaction.type == self.game.MONIKA_REFLECTED_WCC
-                or (
-                    reaction.type == self.game.MONIKA_PLAYED_WILD
-                    and (
-                        monika_yelled_nou
-                        or monika_reminded_yell_nou
+                (
+                    reaction.type == self.game.MONIKA_REFLECTED_WCC
+                    or (
+                        reaction.type == self.game.MONIKA_PLAYED_WILD
+                        and (
+                            monika_yelled_nou
+                            or monika_reminded_yell_nou
+                        )
                     )
                 )
+                and len(self.hand) > 1# Don't announce the colour if you won
             ):
                 color_quip = renpy.random.choice(self.game.QUIPS_MONIKA_ANNOUNCE_COLOR_AFTER_REFLECT)
                 renpy.say(m, color_quip, interact=True)
