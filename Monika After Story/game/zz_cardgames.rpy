@@ -1975,6 +1975,7 @@ init 5 python in mas_nou:
                 OUT:
                     list which we'll use in sorting
                 """
+                # TODO: use int weight instead of lists?
                 rv = list()
                 # Apply keys
                 for _key in keys_sort_order:
@@ -2465,14 +2466,15 @@ init 5 python in mas_nou:
                     OUT:
                         key to sort by
                     """
-                    labels = (
+                    # TODO: use int weight instead of lists?
+                    label_order = (
                         "Skip",
                         "Draw Two",
                         "Reverse"
                     )
-                    colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
+                    sorted_colors = [sorted_cards_data[i][0].replace("num_", "") for i in range(4)]
 
-                    return [self.hand[id].label == label for label in labels] + [self.hand[id].color == color for color in colors]
+                    return [self.hand[id].label == label for label in label_order] + [self.hand[id].color == color for color in sorted_colors]
 
                 action_cards_ids = []
 
@@ -2630,8 +2632,8 @@ init 5 python in mas_nou:
                         # the player is close to victory, need to play more aggressive
                         # TODO: use struct here when we get py3 support
                         if (
-                            total_cards > 7
-                            or total_player_cards < 4
+                            total_player_cards < 4
+                            or total_cards/total_player_cards > 1.05# zero div safe
                         ):
                             analysis = (
                                 (
