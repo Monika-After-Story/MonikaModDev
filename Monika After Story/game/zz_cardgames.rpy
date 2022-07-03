@@ -257,7 +257,7 @@ init 5 python in mas_nou:
         QUIPS_PLAYER_FORGOT_YELL_NOU = (
             _("Aha!{w=0.3} You didn't say NOU, [player]!"),
             _("You forgot to say 'NOU,' [player]!"),
-            _("You thought I wouldn't notice?~ You should've said 'NOU'!"),
+            _("Thought I wouldn't notice huh?~ You should've said 'NOU'!"),
             _("Certain someone who forgot to yell 'NOU' must draw 2 cards now~"),
             _("Guess who must take 2 cards for not saying 'NOU'~"),
             _("I caught you! You didn't say 'NOU'!"),
@@ -314,13 +314,13 @@ init 5 python in mas_nou:
         # this is for reflecting an action card
         REACTIONS_MAP_MONIKA_REFLECTED_ACT = {
             0: [
-                (_("Thought you will catch me off guard with this?"), _("I knew you'll do it! Ehehe~")),
+                (_("Thought you could catch me off guard?"), _("I saw that coming a mile away! Ehehe~")),
                 (_("Not so easy, [player]~"),)
             ],
             1: [
                 (_("Ehehe~ No way, [player]~"),),
                 (_("You {i}really{/i} want me to take this, huh?~"),),
-                (_("Wait a moment.{w=0.2}.{w=0.2}.{w=0.2}I have more for you~"),),
+                (_("One second.{w=0.2}.{w=0.2}.{w=0.2}I've got more for you~"),),
                 (_("What about this one?~"),)
             ],
             2: [
