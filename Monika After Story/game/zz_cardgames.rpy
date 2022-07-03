@@ -5360,7 +5360,7 @@ init -10 python in mas_cardgames:
                         cy += cdy
                         c.rect = (cx, cy, cw, ch)
 
-                area = 0
+                # area = 0
                 dststack = None
                 dstcard = None
 
@@ -5368,28 +5368,49 @@ init -10 python in mas_cardgames:
                     if not s.drop:
                         continue
 
-                    for c in self.drag_cards:
+                    # Old system: Checking overlap doesn't really work
+                    # because it counts transparent pixels, so in the
+                    # actual game it feels like your card getting suck to stacks
+                    # when you don't want it
 
-                        if c.stack == s:
-                            continue
-                        a = __rect_overlap_area(c.rect, s.rect)
-                        if a >= area:
+                    # for c in self.drag_cards:
+                    #     if c.stack == s:
+                    #         continue
+                    #     a = __rect_overlap_area(c.rect, s.rect)
+                    #     if a >= area:
+                    #         dststack = s
+                    #         dstcard = None
+                    #         area = a
+
+                    #     for c1 in s.cards:
+                    #         a = __rect_overlap_area(c.rect, c1.rect)
+                    #         if a >= area:
+                    #             dststack = s
+                    #             dstcard = c1
+                    #             area = a
+
+                    # New system: Check that mouse is within the stack
+                    if s.rect is not None:
+                        sx, sy, sw, sh = s.rect
+                        if sx <= x and sy <= y and sx + sw > x and sy + sh > y:
                             dststack = s
-                            dstcard = None
-                            area = a
 
-                        for c1 in s.cards:
-                            a = __rect_overlap_area(c.rect, c1.rect)
-                            if a >= area:
+                    for c in s.cards:
+                        if c.rect is not None:
+                            cx, cy, cw, ch = c.rect
+                            if cx <= x and cy <= y and cx + cw > x and cy + ch > y:
                                 dststack = s
-                                dstcard = c1
-                                area = a
+                                dstcard = c
+                                break
 
-                if area == 0:
-                    dststack = None
-                    dstcard = None
+                    if dststack is not None:
+                        break
 
-                renpy.redraw(self, 0)
+                # if area == 0:
+                #     dststack = None
+                #     dstcard = None
+
+                # renpy.redraw(self, 0)
 
                 # if ev.type == pygame.MOUSEMOTION:
                 #     raise renpy.IgnoreEvent()
