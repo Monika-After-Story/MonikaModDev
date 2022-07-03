@@ -3610,6 +3610,33 @@ init 5 python in mas_nou:
             return 1.0
         return float(persistent._mas_game_nou_points[player_persist_key]) / float(p2w)
 
+    def get_wins_for(player):
+        """
+        Returns wins in nou
+
+        IN:
+            player - the player key to return the stats for
+
+        OUT:
+            int
+        """
+        if not persistent._mas_game_nou_wins:
+            return 0
+
+        return persistent._mas_game_nou_wins.get(player, 0)
+
+    def get_total_games():
+        """
+        Returns total nou games
+
+        OUT:
+            int
+        """
+        if not persistent._mas_game_nou_wins:
+            return 0
+
+        return persistent._mas_game_nou_wins.get("Monika", 0) + persistent._mas_game_nou_wins.get("Player", 0)
+
 
 # Our events
 init 5 python:
@@ -3637,7 +3664,8 @@ init 5 python:
             category=["games"],
             pool=True,
             unlocked=False,
-            conditional="persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']",
+            # The unstable users may have the conditional "persistent._mas_game_nou_wins['Monika'] or persistent._mas_game_nou_wins['Player']"
+            conditional="store.mas_nou.get_total_games() > 0",
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL, None)# you can play NOU only at norm+
@@ -4582,8 +4610,8 @@ label mas_nou_reaction_monika_wins_game:
             m 1eka "I hope you had fun too."
             # TODO: move this out of the RNG selection to 100% get it?
             if (
-                persistent._mas_game_nou_wins["Monika"] + persistent._mas_game_nou_wins["Player"] < 40
-                and persistent._mas_game_nou_wins["Monika"] > persistent._mas_game_nou_wins["Player"]
+                mas_nou.get_total_games() < 40
+                and mas_nou.get_wins_for("Monika") > mas_nou.get_wins_for("Player")
             ):
                 m 3hua "I'm sure if we play more games you'll win too."
 
