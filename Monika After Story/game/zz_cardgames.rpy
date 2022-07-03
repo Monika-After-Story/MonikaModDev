@@ -3728,11 +3728,11 @@ label .change_starting_cards_loop:
                     m 3eua "Then try again."
 
         elif starting_cards > 20:
-            m 2hub "Ahaha, [player]! How do you think I'll hold all these cards?"
-            m 7eua "Let's leave it at 20 cards?{nw}"
+            m 2hub "Ahaha, [player]! Do you expect me to hold [starting_cards] cards?"
+            m 7eua "We can leave it at 20 cards if you'd like?{nw}"
             $ _history_list.pop()
             menu:
-                m "Let's leave it at 20 cards?{fast}"
+                m "We can leave it at 20 cards if you'd like{fast}"
 
                 "Alright.":
                     $ mas_nou.set_house_rule("starting_cards", 20)
