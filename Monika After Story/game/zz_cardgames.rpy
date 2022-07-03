@@ -347,12 +347,14 @@ init 5 python in mas_nou:
 
         # this is for reflecting a Wild Draw 4
         REACTIONS_MAP_MONIKA_REFLECTED_WD4 = {
-            0: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[0]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[0]),
-            1: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[1]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[1]) + [
+            0: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[0]) + [
+                (_("No-no-no!"),),
+            ],
+            1: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[1]) + [
                 (_("You can't reflect this!"),),
                 (_("No way you can reflect this one!"),)
             ],
-            2: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[2]) + list(REACTIONS_MAP_MONIKA_REFLECTED_WCC[2])
+            2: list(REACTIONS_MAP_MONIKA_REFLECTED_ACT[2])
         }
 
         # now fill all of those with the base lines for reflecting a card
