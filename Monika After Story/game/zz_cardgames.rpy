@@ -1661,7 +1661,7 @@ init 5 python in mas_nou:
             OUT:
                 string
             """
-            global monika_win_streak
+            global monika_win_streak, player_win_streak
 
             player = self.player
             monika = self.monika
@@ -1683,7 +1683,11 @@ init 5 python in mas_nou:
 
                 elif (
                     # If Moni has drawn more than 10 cards in the last 10 turns...
-                    sum(d["had_draw_cards"] for d in mas_nou.game.game_log[-2:-21:-2] if d["drew_card"]) > 10
+                    sum(
+                        log_data["had_draw_cards"]
+                        for log_data in self.game_log[-2:-21:-2]
+                        if log_data["drew_card"]
+                    ) > 10
                 ):
                     return "Find a better deck, this one is rigged..."
 
