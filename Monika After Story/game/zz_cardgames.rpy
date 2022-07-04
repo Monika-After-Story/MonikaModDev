@@ -1721,13 +1721,20 @@ init 5 python in mas_nou:
                         card.color
                     )
                 )
-                if not player.drew_card:
-                    dlg_line_list.append(
-                        " If you don't have an appropriate card, you should draw a card and then either play it or skip your turn."
-                    )
-                else:
+
+                if player.drew_card:
                     dlg_line_list.append(
                         " Since you drew a card, you can try to play it or skip your turn."
+                    )
+
+                elif len(player.hand) >= self.HAND_CARDS_LIMIT:
+                    dlg_line_list.append(
+                        " If you don't have an appropriate card, then you'll have to skip this turn."
+                    )
+
+                else:
+                    dlg_line_list.append(
+                        " If you don't have an appropriate card, you should draw a card and then either play it or skip your turn."
                     )
 
             else:
@@ -1741,7 +1748,7 @@ init 5 python in mas_nou:
                     ):
                         dlg_line_list.append("--just like the last one--")
 
-                    if player.should_draw_cards:
+                    if player.should_draw_cards and len(player.hand) < self.HAND_CARDS_LIMIT:
                         dlg_line_list.append(
                             " and draw {}".format(player.should_draw_cards)
                         )
@@ -1798,14 +1805,14 @@ init 5 python in mas_nou:
                             "You need to play any {} card.".format(card.color)
                         )
 
-                    if not player.drew_card:
+                    if player.drew_card or len(player.hand) >= self.HAND_CARDS_LIMIT:
                         dlg_line_list.append(
-                            " Otherwise draw a card and try to play it."
+                            " Otherwise you'll have to skip your turn~"
                         )
 
                     else:
                         dlg_line_list.append(
-                            " Otherwise you have to skip your turn~"
+                            " Otherwise draw a card and try to play it."
                         )
 
             if dlg_line_list:
