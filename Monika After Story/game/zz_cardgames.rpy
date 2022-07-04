@@ -941,7 +941,7 @@ init 5 python in mas_nou:
             # we can set 'should_draw_cards' to 0 if this player reached the cap
             if (
                 next_player.should_draw_cards
-                and len(next_player.hand) >= self.HAND_CARDS_LIMIT
+                and len(next_player.hand) + next_player.should_draw_cards > self.HAND_CARDS_LIMIT
             ):
                 if next_player.isAI:
                     quips = self.QUIPS_MONIKA_CARDS_LIMIT
@@ -952,7 +952,9 @@ init 5 python in mas_nou:
                 self.set_sensitive(False)
                 self.__say_quip(quips, new_context=True)
 
-                next_player.should_draw_cards = 0
+                # Set draw cards to the difference between current cards and max cards
+                # max to 0 is just in case player got over limit due to a bug?
+                next_player.should_draw_cards = max(self.HAND_CARDS_LIMIT - len(next_player.hand), 0)
 
             next_player.drew_card = False
             next_player.played_card = False
