@@ -1763,7 +1763,7 @@ init 5 python in mas_nou:
                     if player.should_draw_cards and len(player.hand) < self.HAND_CARDS_LIMIT:
                         dlg_line_list.append(
                             "{}and draw {}".format(
-                                "" if not insert_line else " ",
+                                "" if insert_line else " ",
                                 player.should_draw_cards
                             )
                         )
