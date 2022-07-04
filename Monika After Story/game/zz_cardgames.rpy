@@ -1661,9 +1661,13 @@ init 5 python in mas_nou:
             OUT:
                 string
             """
+            global monika_win_streak
+
             player = self.player
+            monika = self.monika
             discardpile = self.discardpile
 
+            # Sanity check first
             if (
                 not discardpile
                 or not player.plays_turn
@@ -1672,11 +1676,39 @@ init 5 python in mas_nou:
                 return "Sorry, I'm not sure, [player]..."
 
             card = discardpile[-1]
+
+            if get_total_games() > 15 and random.random() < 0.2:
+                if player.should_skip_turn:
+                    return "The give up button is right below~"
+
+                elif (
+                    # If Moni has drawn more than 10 cards in the last 10 turns...
+                    sum(d["had_draw_cards"] for d in mas_nou.game.game_log[-2:-21:-2] if d["drew_card"]) > 10
+                ):
+                    return "Find a better deck, this one is rigged..."
+
+                elif (
+                    (player.hand and len(monika.hand)/len(player.hand) < 0.7)
+                    or monika_win_streak > 2
+                ):
+                    return "Just git gud, [player]! Ahaha~"
+
+                elif (
+                    (monika.hand and len(player.hand)/len(monika.hand) < 0.7)
+                    or player_win_streak > 2
+                ):
+                    return "Play anything but {i}Draw Two{/i} and {i}Draw Four{/i}, darling. I don't have anything to counter those~"
+
+                else:
+                    return "Just draw more cards, always works~"
+
+
             dlg_line_list = []
 
             if card.type == "number":
                 dlg_line_list.append(
-                    "You need to play a '{}' or any {} card.".format(
+                    "You need to play a{} '{}' or any {} card.".format(
+                        "n" if card.label == "8" else "",
                         card.label,
                         card.color
                     )
