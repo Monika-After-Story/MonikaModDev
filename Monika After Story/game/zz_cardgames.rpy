@@ -4766,16 +4766,22 @@ screen nou_gui():
 
         textbutton _("I'm skipping this turn"):
             sensitive (
+                # It's your turn
                 player.plays_turn
                 and (
-                    player.drew_card
+                    # You drew a card or you cannot draw more
+                    (player.drew_card or len(player.hand) >= game.HAND_CARDS_LIMIT)
+                    # Or you just have to skip this turn
                     or player.should_skip_turn
                 )
                 and (
+                    # You shouldn't draw more
                     not player.should_draw_cards
+                    # Or you cannot draw more
                     or len(player.hand) >= game.HAND_CARDS_LIMIT
                 )
                 and (
+                    # You finished selecting the colour
                     discardpile
                     and discardpile[-1].color is not None
                 )
