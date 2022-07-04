@@ -1368,6 +1368,31 @@ init 5 python in mas_nou:
             """
             Tracks the player's actions and responds to their interactions
             """
+            def is_player_allowed_draw_card():
+                """
+                Unified check whether the player can draw a card
+
+                OUT:
+                    bool
+                """
+                return (
+                    # You don't need to set a colour
+                    self.discardpile[-1].color is not None
+                    # check if you drew max cards already or just have to skip your turn
+                    and not (
+                        # You didn't draw a card
+                        # and you don't have to skip this turn
+                        (
+                            self.player.drew_card
+                            or self.player.should_skip_turn
+                        )
+                        # Or you have to draw some cards
+                        and not self.player.should_draw_cards
+                    )
+                    # You're not over the limit yet
+                    and len(self.player.hand) < self.HAND_CARDS_LIMIT
+                )
+
             def is_player_allowed_play_card():
                 """
                 Unified check whether the player can play a card
@@ -1432,16 +1457,7 @@ init 5 python in mas_nou:
                         # Player takes cards
                         if (
                             event.stack is self.drawpile
-                            and self.discardpile[-1].color is not None
-                            # check if you drew max cards already or just have to skip your turn
-                            and not (
-                                (
-                                    self.player.drew_card
-                                    or self.player.should_skip_turn
-                                )
-                                and not self.player.should_draw_cards
-                            )
-                            and len(self.player.hand) < self.HAND_CARDS_LIMIT
+                            and is_player_allowed_draw_card()
                         ):
                             self.set_sensitive(False)
 
@@ -1470,15 +1486,7 @@ init 5 python in mas_nou:
                         if (
                             event.stack is self.drawpile
                             and event.drop_stack is self.player.hand
-                            and self.discardpile[-1].color is not None
-                            and not (
-                                (
-                                    self.player.drew_card
-                                    or self.player.should_skip_turn
-                                )
-                                and not self.player.should_draw_cards
-                            )
-                            and len(self.player.hand) < self.HAND_CARDS_LIMIT
+                            and is_player_allowed_draw_card()
                         ):
                             self.set_sensitive(False)
                             self.deal_cards(self.player)
