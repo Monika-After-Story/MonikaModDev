@@ -157,10 +157,10 @@ init 5 python in mas_nou:
 
         # Quips when you reach the cards limit
         QUIPS_MONIKA_CARDS_LIMIT = (
-            _("[player]...{w=0.2}look I can't hold all these cards!{w=0.5} And I can't draw more either, ehehe~"),
+            _("[player]...{w=0.2}look I can barely hold all my cards!{w=0.5} No way I could draw more, ehehe~"),
         )
         QUIPS_PLAYER_CARDS_LIMIT = (
-            _("There's no way you could hold more cards, ahaha!{w=0.5} You don't have to draw more this turn, [player]."),
+            _("There's no way you could hold more cards, ahaha!{w=0.5} You don't have to draw all of them, [player]."),
         )
 
         # Quips when Monika chooses a color to set
