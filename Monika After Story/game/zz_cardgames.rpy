@@ -1441,6 +1441,7 @@ init 5 python in mas_nou:
                                 )
                                 and not self.player.should_draw_cards
                             )
+                            and len(self.player.hand) < self.HAND_CARDS_LIMIT
                         ):
                             self.set_sensitive(False)
 
@@ -1477,6 +1478,7 @@ init 5 python in mas_nou:
                                 )
                                 and not self.player.should_draw_cards
                             )
+                            and len(self.player.hand) < self.HAND_CARDS_LIMIT
                         ):
                             self.set_sensitive(False)
                             self.deal_cards(self.player)
