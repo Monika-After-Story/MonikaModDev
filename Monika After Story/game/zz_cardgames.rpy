@@ -16,7 +16,8 @@ init 5 python in mas_nou:
     from store import (
         m,
         persistent,
-        Solid
+        Solid,
+        Null
     )
     from store.mas_cardgames import *
 
@@ -521,11 +522,12 @@ init 5 python in mas_nou:
             # Define main table
             self.table = Table(
                 back=ASSETS + "cards/back.png",
-                base=Solid(
-                    "#00000000",
-                    xsize=150,
-                    ysize=214
-                ),
+                # base=Solid(
+                #     "#00000000",
+                #     xsize=150,
+                #     ysize=214
+                # ),
+                base=Null(),
                 springback=0.3,
                 rotate=0.15,
                 can_drag=self.__can_drag
