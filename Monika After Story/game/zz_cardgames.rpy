@@ -1149,7 +1149,7 @@ init 5 python in mas_nou:
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
-                    renpy.pause(0.3, hard=True)
+                    renpy.pause(0.2, hard=True)
 
         def deal_cards(self, player, amount=1, smooth=True, mark_as_drew_card=True, reset_nou_var=True):
             """
@@ -1251,8 +1251,7 @@ init 5 python in mas_nou:
                 else:
                     temp_player = current_player
 
-                self.deal_cards(temp_player)
-                temp_player.drew_card = False
+                self.deal_cards(temp_player, mark_as_drew_card=False)
 
             # We need to shuffle the deck if the top card is WDF
             ready = False
@@ -4843,7 +4842,7 @@ screen nou_gui():
 
         null height 15
 
-        textbutton _("Can you help me?"):
+        textbutton _("Can you h{}lp me?".format("a" if mas_isA01() or mas_isO31() else "e")):
             sensitive player.plays_turn and not player.played_card
             action Function(game.say_help)
 
