@@ -69,9 +69,9 @@ init 5 python in mas_nou:
         COLORS = ("red", "blue", "green", "yellow")
 
         # Coordinates
-        DRAWPILE_X = 450
+        DRAWPILE_X = 445
         DRAWPILE_Y = 352
-        DISCARDPILE_X = 845
+        DISCARDPILE_X = 850
         DISCARDPILE_Y = 352
         PLAYERHAND_X = 640
         PLAYERHAND_Y = 595
@@ -1751,16 +1751,21 @@ init 5 python in mas_nou:
                 if player.should_skip_turn:
                     dlg_line_list.append("You have to skip this turn")
 
-                    if (
+                    insert_line = (
                         len(self.game_log) > 2
                         and self.game_log[-3]["had_skip_turn"]
                         and random.random() < 0.33
-                    ):
+                    )
+
+                    if insert_line:
                         dlg_line_list.append("--just like the last one--")
 
                     if player.should_draw_cards and len(player.hand) < self.HAND_CARDS_LIMIT:
                         dlg_line_list.append(
-                            " and draw {}".format(player.should_draw_cards)
+                            "{}and draw {}".format(
+                                "" if not insert_line else " ",
+                                player.should_draw_cards
+                            )
                         )
                         if player.drew_card:
                             dlg_line_list.append(" more")
@@ -4741,14 +4746,14 @@ screen nou_stats():
 
     add MASFilterSwitch(
         "mod_assets/games/nou/note.png"
-    ) pos (6, 120) anchor (0, 0) at nou_note_rotate_left
+    ) pos (5, 120) anchor (0, 0) at nou_note_rotate_left
 
     # NOTE: Thanks to Briar aka @kkrosie123 for Monika's pen
     add MASFilterSwitch(
         "mod_assets/games/nou/pen.png"
-    ) pos (215, 370) anchor (0.5, 0.5) at nou_pen_rotate_right
+    ) pos (210, 370) anchor (0.5, 0.5) at nou_pen_rotate_right
 
-    text _("Our score!") pos (88, 110) anchor (0, 0.5) at nou_note_rotate_left
+    text _("Our score!") pos (87, 110) anchor (0, 0.5) at nou_note_rotate_left
 
     # For one-round games we show wins
     if mas_nou.get_house_rule("points_to_win") == 0:
@@ -4759,8 +4764,8 @@ screen nou_stats():
         $ monika_score = store.persistent._mas_game_nou_points["Monika"]
         $ player_score = store.persistent._mas_game_nou_points["Player"]
 
-    text _("Monika: [monika_score]") pos (61, 204) anchor (0, 0.5) at nou_note_rotate_left
-    text _("[player]: [player_score]") pos (97, 298) anchor (0, 0.5) at nou_note_rotate_left
+    text _("Monika: [monika_score]") pos (60, 204) anchor (0, 0.5) at nou_note_rotate_left
+    text _("[player]: [player_score]") pos (96, 298) anchor (0, 0.5) at nou_note_rotate_left
 
 # Buttons screen
 screen nou_gui():
@@ -4778,7 +4783,7 @@ screen nou_gui():
 
     # Game menu
     vbox:
-        xalign 0.97
+        xalign 0.975
         yalign 0.5
 
         textbutton _("I'm skipping this turn"):
