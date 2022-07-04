@@ -9,13 +9,18 @@ default persistent._mas_game_nou_abandoned = 0
 default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_house_rules()
 
 
+init 500 python in mas_nou:
+    NOU._load_sfx()
+
 # NOU CLASS DEF
 init 5 python in mas_nou:
     import random
+    import os
 
     from store import (
         m,
         persistent,
+        config,
         Solid,
         Null
     )
@@ -82,6 +87,13 @@ init 5 python in mas_nou:
 
         # Maximum cards in hand
         HAND_CARDS_LIMIT = 30
+
+        # SFX assets, those need to be loaded after class init
+        SFX_EXT = ".wav"
+        # NOTE: Thanks to Kenney Vleugels for amazing sfx
+        SFX_SHUFFLE = []
+        SFX_DRAW = []
+        SFX_PLAY = []
 
         # # # Monika's quips
 
@@ -622,6 +634,68 @@ init 5 python in mas_nou:
             else:
                 renpy.say(m, quip, interact=interact)
 
+        @classmethod
+        def _load_sfx(cls):
+            """
+            'Loads' sound assets from the disk
+            This should be called on init, but after class creation
+            """
+            nou_ma_dir = os.path.join(ASSETS, "sfx")
+            nou_sfx = os.listdir(os.path.join(config.gamedir, nou_ma_dir))
+
+            cls.SFX_SHUFFLE = []
+            cls.SFX_DRAW = []
+            cls.SFX_PLAY = []
+
+            for f in nou_sfx:
+                if not f.endswith(cls.SFX_EXT):
+                    continue
+
+                if f.startswith("shuffle"):
+                    sfx_list = cls.SFX_SHUFFLE
+                elif f.startswith("slide"):
+                    sfx_list = cls.SFX_DRAW
+                else:#this includes 'place' and 'shove'
+                    sfx_list = cls.SFX_PLAY
+
+                f = os.path.join(nou_ma_dir, f).replace("\\", "/")
+                sfx_list.append(f)
+
+        @staticmethod
+        def _play_sfx(sfx_files, channel="sound"):
+            """
+            Plays a random sound from the given list
+
+            IN:
+                sfx_files - the list with the filepaths to the sounds
+            """
+            if not sfx_files:
+                return
+
+            sfx_file = random.choice(sfx_files)
+            renpy.play(sfx_file, channel=channel)
+
+        @classmethod
+        def _play_shuffle_sfx(cls):
+            """
+            Plays an sfx for shuffling
+            """
+            cls._play_sfx(cls.SFX_SHUFFLE)
+
+        @classmethod
+        def _play_draw_sfx(cls):
+            """
+            Plays an sfx for drawing a card
+            """
+            cls._play_sfx(cls.SFX_DRAW)
+
+        @classmethod
+        def _play_play_sfx(cls):
+            """
+            Plays an sfx for playing a card
+            """
+            cls._play_sfx(cls.SFX_PLAY)
+
         def __calculate_xoffset(self, player, shift=0):
             """
             Determines the x offset depending on quantity of cards in player's hand
@@ -1084,6 +1158,7 @@ init 5 python in mas_nou:
             card_position = (renpy.random.randint(-14, 14), renpy.random.randint(-10, 10))
 
             # now move the card and apply changes
+            self._play_play_sfx()
             self.discardpile.append(card)
             self.table.set_rotate(self.discardpile[-1], card_rotation)
             self.table.get_card(self.discardpile[-1]).set_offset(*card_position)
@@ -1133,6 +1208,7 @@ init 5 python in mas_nou:
                 amount = self.HAND_CARDS_LIMIT - player_cards
 
             for i in range(amount):
+                self._play_draw_sfx()
                 card = self.drawpile[-1]
                 player.hand.append(card)
 
@@ -1578,6 +1654,7 @@ init 5 python in mas_nou:
 
             # NOTE: This is Just in case, in theory the drawpile will have about 47 cards in the worst scenario
             if total_cards > 15:
+                self._play_shuffle_sfx()
                 # 7/10
                 k = renpy.random.randint(0, 9)
                 # we want to shuffle a bit faster than doing other card interactions
