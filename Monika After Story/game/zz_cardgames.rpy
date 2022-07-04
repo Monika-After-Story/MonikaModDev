@@ -2864,6 +2864,7 @@ init 5 python in mas_nou:
                         if (
                             total_player_cards < 4
                             or total_cards/total_player_cards > 1.05# zero div safe
+                            or random.random() < 0.2
                         ):
                             analysis = (
                                 (
