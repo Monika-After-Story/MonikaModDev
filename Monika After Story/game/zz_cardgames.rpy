@@ -68,9 +68,9 @@ init 5 python in mas_nou:
         COLORS = ("red", "blue", "green", "yellow")
 
         # Coordinates
-        DRAWPILE_X = 465
+        DRAWPILE_X = 450
         DRAWPILE_Y = 352
-        DISCARDPILE_X = 830
+        DISCARDPILE_X = 845
         DISCARDPILE_Y = 352
         PLAYERHAND_X = 640
         PLAYERHAND_Y = 595
@@ -4720,14 +4720,14 @@ screen nou_stats():
 
     add MASFilterSwitch(
         "mod_assets/games/nou/note.png"
-    ) pos (7, 120) anchor (0, 0) at nou_note_rotate_left
+    ) pos (6, 120) anchor (0, 0) at nou_note_rotate_left
 
     # NOTE: Thanks to Briar aka @kkrosie123 for Monika's pen
     add MASFilterSwitch(
         "mod_assets/games/nou/pen.png"
-    ) pos (225, 370) anchor (0.5, 0.5) at nou_pen_rotate_right
+    ) pos (215, 370) anchor (0.5, 0.5) at nou_pen_rotate_right
 
-    text _("Our score!") pos (89, 110) anchor (0, 0.5) at nou_note_rotate_left
+    text _("Our score!") pos (88, 110) anchor (0, 0.5) at nou_note_rotate_left
 
     # For one-round games we show wins
     if mas_nou.get_house_rule("points_to_win") == 0:
@@ -4738,8 +4738,8 @@ screen nou_stats():
         $ monika_score = store.persistent._mas_game_nou_points["Monika"]
         $ player_score = store.persistent._mas_game_nou_points["Player"]
 
-    text _("Monika: [monika_score]") pos (62, 204) anchor (0, 0.5) at nou_note_rotate_left
-    text _("[player]: [player_score]") pos (98, 298) anchor (0, 0.5) at nou_note_rotate_left
+    text _("Monika: [monika_score]") pos (61, 204) anchor (0, 0.5) at nou_note_rotate_left
+    text _("[player]: [player_score]") pos (97, 298) anchor (0, 0.5) at nou_note_rotate_left
 
 # Buttons screen
 screen nou_gui():
@@ -4757,91 +4757,73 @@ screen nou_gui():
 
     # Game menu
     vbox:
-        xalign 0.95
+        xalign 0.97
         yalign 0.5
 
-        if (
-            player.plays_turn
-            and (
-                player.drew_card
-                or player.should_skip_turn
+        textbutton _("I'm skipping this turn"):
+            sensitive (
+                player.plays_turn
+                and (
+                    player.drew_card
+                    or player.should_skip_turn
+                )
+                and (
+                    not player.should_draw_cards
+                    or len(player.hand) >= game.HAND_CARDS_LIMIT
+                )
+                and (
+                    discardpile
+                    and discardpile[-1].color is not None
+                )
             )
-            and (
-                not player.should_draw_cards
-                or len(player.hand) >= game.HAND_CARDS_LIMIT
-            )
-            and (
-                discardpile
-                and discardpile[-1].color is not None
-            )
-        ):
-            textbutton _("I'm skipping this turn"):
-                action [
-                    Function(fn_end_turn, player, monika),
-                    Return([])
-                ]
+            action [
+                Function(fn_end_turn, player, monika),
+                Return([])
+            ]
 
-        else:
-            textbutton _("I'm skipping this turn")
-
-        null height 20
+        null height 15
 
         if (
             player.plays_turn
             and not player.played_card
         ):
-            if not store.mas_nou.disable_yell_button:
-                textbutton _("NOU!"):
-                    action [
-                        SetField(mas_nou, "disable_yell_button", True),
-                        Function(fn_handle_nou_logic, "player")
-                    ]
+            textbutton _("NOU!"):
+                sensitive not store.mas_nou.disable_yell_button
+                action [
+                    SetField(mas_nou, "disable_yell_button", True),
+                    Function(fn_handle_nou_logic, "player")
+                ]
 
-            else:
-                textbutton _("NOU!")
-
-            if (
-                not store.mas_nou.disable_remind_button
-                and not player.drew_card
-            ):
-                textbutton _("You forgot to say 'NOU'!"):
-                    action [
-                        SetField(mas_nou, "disable_remind_button", True),
-                        Function(fn_handle_nou_logic, "monika")
-                    ]
-
-            else:
-                textbutton _("You forgot to say 'NOU'!")
+            textbutton _("You forgot to say 'NOU'!"):
+                sensitive (
+                    not store.mas_nou.disable_remind_button
+                    and not player.drew_card
+                )
+                action [
+                    SetField(mas_nou, "disable_remind_button", True),
+                    Function(fn_handle_nou_logic, "monika")
+                ]
 
         else:
             textbutton _("NOU!")
             textbutton _("You forgot to say 'NOU'!")
 
-        null height 20
+        null height 15
 
-        if (
-            player.plays_turn
-            and not player.played_card
-        ):
-            textbutton _("Can you help me?"):
-                action Function(game.say_help)
+        textbutton _("Can you help me?"):
+            sensitive player.plays_turn and not player.played_card
+            action Function(game.say_help)
 
-        else:
-            textbutton _("Can you help me?")
+        # null height 15
 
-        null height 20
-
-        if player.hand and monika.hand:
-            textbutton _("I'm giving up..."):
-                selected False
-                action [
-                    SetField(mas_nou, "winner", "Surrendered"),
-                    SetField(mas_nou, "in_progress", False),
-                    Jump("mas_nou_game_end")
-                ]
-
-        else:
-            textbutton _("I'm giving up...")
+        textbutton _("I'm giving up..."):
+            selected False
+            sensitive player.hand and monika.hand
+            action [
+                SetField(mas_nou, "winner", "Surrendered"),
+                SetField(mas_nou, "in_progress", False),
+                Jump("mas_nou_game_end")
+            ]
 
     # Choose color menu
     vbox:
