@@ -56,6 +56,9 @@ init 5 python in mas_nou:
     disable_remind_button = False
     disable_yell_button = False
 
+    # Toggle for nou sfx
+    disable_sfx = False
+
 
     class NOU(object):
         """
@@ -669,7 +672,9 @@ init 5 python in mas_nou:
             IN:
                 sfx_files - the list with the filepaths to the sounds
             """
-            if not sfx_files:
+            global disable_sfx
+
+            if not sfx_files or disable_sfx:
                 return
 
             sfx_file = random.choice(sfx_files)
@@ -1191,7 +1196,7 @@ init 5 python in mas_nou:
             if len(current_player.hand) == 1:
                 current_player.nou_reminder_timeout = self.current_turn + 2
 
-        def _actually_deal_cards(self, player, amount, smooth):
+        def _actually_deal_cards(self, player, amount, smooth, sound=None):
             """
             Moves cards from the drawpile into player's hand,
             updates offsets, rotation and sets cards faceup if needed
@@ -1202,13 +1207,18 @@ init 5 python in mas_nou:
                 player - the player who will get the cards
                 amount - amount of cards to deal
                 smooth - whether or not we use a little pause between dealing cards
+                sound - whether or not we use a little pause between dealing cards
             """
+            if sound is None:
+                sound = smooth
+
             player_cards = len(player.hand)
             if player_cards + amount > self.HAND_CARDS_LIMIT:
                 amount = self.HAND_CARDS_LIMIT - player_cards
 
             for i in range(amount):
-                self._play_draw_sfx()
+                if sound:
+                    self._play_draw_sfx()
                 card = self.drawpile[-1]
                 player.hand.append(card)
 
@@ -1227,7 +1237,7 @@ init 5 python in mas_nou:
                 if smooth:
                     renpy.pause(0.25, hard=True)
 
-        def deal_cards(self, player, amount=1, smooth=True, mark_as_drew_card=True, reset_nou_var=True):
+        def deal_cards(self, player, amount=1, smooth=True, sound=None, mark_as_drew_card=True, reset_nou_var=True):
             """
             Deals cards to players
             Also refreshing the drawpile if there're not enough cards
@@ -1238,6 +1248,8 @@ init 5 python in mas_nou:
                     (Default: 1)
                 smooth - whether or not we use a little pause between dealing cards
                     (Default: True)
+                sound - whether or not we play sfx, if None defaults to smooth
+                    (Default: None)
                 mark_as_drew_card - whether or not we set the var for the player
                     (Default: True)
                 reset_nou_var - whether or not we reset the nou var for the player who draws cards
@@ -1253,7 +1265,7 @@ init 5 python in mas_nou:
 
             # there're enough cards for you
             if drawpile_cards >= amount:
-                self._actually_deal_cards(player, amount, smooth)
+                self._actually_deal_cards(player, amount, smooth, sound=sound)
 
                 if player.should_draw_cards:
                     player.should_draw_cards -= amount
@@ -1266,7 +1278,7 @@ init 5 python in mas_nou:
             else:
                 # deal as much as we can
                 cards_to_deal = amount - drawpile_cards
-                self._actually_deal_cards(player, drawpile_cards, smooth)
+                self._actually_deal_cards(player, drawpile_cards, smooth, sound=sound)
 
                 if player.should_draw_cards:
                     player.should_draw_cards -= drawpile_cards
@@ -1276,12 +1288,12 @@ init 5 python in mas_nou:
 
                 # we should never get here, but just in case
                 if drawpile_cards < cards_to_deal:
-                    self._actually_deal_cards(player, drawpile_cards, smooth)
+                    self._actually_deal_cards(player, drawpile_cards, smooth, sound=sound)
                     player.should_draw_cards = 0
 
                 # deal remaining cards
                 else:
-                    self._actually_deal_cards(player, cards_to_deal, smooth)
+                    self._actually_deal_cards(player, cards_to_deal, smooth, sound=sound)
                     player.should_draw_cards = 0
 
         def prepare_game(self):
@@ -1327,7 +1339,7 @@ init 5 python in mas_nou:
                 else:
                     temp_player = current_player
 
-                self.deal_cards(temp_player, mark_as_drew_card=False)
+                self.deal_cards(temp_player, mark_as_drew_card=False, reset_nou_var=False)
 
             # We need to shuffle the deck if the top card is WDF
             ready = False
@@ -1654,7 +1666,8 @@ init 5 python in mas_nou:
 
             # NOTE: This is Just in case, in theory the drawpile will have about 47 cards in the worst scenario
             if total_cards > 15:
-                self._play_shuffle_sfx()
+                if smooth:
+                    self._play_shuffle_sfx()
                 # 7/10
                 k = renpy.random.randint(0, 9)
                 # we want to shuffle a bit faster than doing other card interactions
@@ -1722,7 +1735,7 @@ init 5 python in mas_nou:
                 else:
                     self.__say_quip(self.QUIPS_MONIKA_FORGOT_YELL_NOU, new_context=True)
                     # you got her, now she must draw 2 more cards
-                    self.deal_cards(self.monika, amount=2, smooth=False, mark_as_drew_card=False)
+                    self.deal_cards(self.monika, amount=2, smooth=False, sound=True, mark_as_drew_card=False)
                     renpy.invoke_in_new_context(renpy.pause, 0.5, hard=True)
 
             elif player == "player":
@@ -3433,7 +3446,7 @@ init 5 python in mas_nou:
 
                 renpy.say(m, remind_quip, interact=True)
                 # she caught you, draw 2 cards
-                self.game.deal_cards(self.game.player, amount=2, smooth=False, mark_as_drew_card=False)
+                self.game.deal_cards(self.game.player, amount=2, smooth=False, sound=True, mark_as_drew_card=False)
                 renpy.pause(0.5, hard=True)
 
             return has_yelled_nou, has_reminded_yell_nou
@@ -3716,6 +3729,7 @@ init 5 python in mas_nou:
                 player=loser,
                 amount=loser.should_draw_cards,
                 smooth=False,
+                sound=False
                 mark_as_drew_card=False,
                 reset_nou_var=False
             )
