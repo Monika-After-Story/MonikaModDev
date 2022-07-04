@@ -1208,7 +1208,8 @@ init 5 python in mas_nou:
                 amount = self.HAND_CARDS_LIMIT - player_cards
 
             for i in range(amount):
-                self._play_draw_sfx()
+                if smooth:
+                    self._play_draw_sfx()
                 card = self.drawpile[-1]
                 player.hand.append(card)
 
@@ -1654,7 +1655,8 @@ init 5 python in mas_nou:
 
             # NOTE: This is Just in case, in theory the drawpile will have about 47 cards in the worst scenario
             if total_cards > 15:
-                self._play_shuffle_sfx()
+                if smooth:
+                    self._play_shuffle_sfx()
                 # 7/10
                 k = renpy.random.randint(0, 9)
                 # we want to shuffle a bit faster than doing other card interactions
