@@ -1225,7 +1225,7 @@ init 5 python in mas_nou:
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
-                    renpy.pause(0.2, hard=True)
+                    renpy.pause(0.25, hard=True)
 
         def deal_cards(self, player, amount=1, smooth=True, mark_as_drew_card=True, reset_nou_var=True):
             """
