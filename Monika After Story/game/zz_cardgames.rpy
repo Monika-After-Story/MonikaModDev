@@ -4080,11 +4080,11 @@ label .change_starting_cards_loop:
             m 7ekb "Try again, silly~"
 
         elif starting_cards < 4:
-            m 2eka "I don't think this will make sense, [player]..."
-            m 7eka "Let's start with at least 4 cards?{nw}"
+            m 2eka "[starting_cards] cards isn't enough to enjoy the game, [player]..."
+            m 7eka "How about we start with at least 4 cards?{nw}"
             $ _history_list.pop()
             menu:
-                m "Let's start with at least 4 cards?{fast}"
+                m "How about we start with at least 4 cards?{fast}"
 
                 "Alright.":
                     $ mas_nou.set_house_rule("starting_cards", 4)
@@ -4221,7 +4221,7 @@ label mas_nou_game_start:
             m 3eua "Let me grab that note with our score.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
 
     else:
-        m 1eub "Let's start!~"
+        m 1eub "Let me deal our cards~"
 
     # FALL THROUGH
 
