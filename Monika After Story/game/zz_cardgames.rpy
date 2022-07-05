@@ -92,7 +92,7 @@ init 5 python in mas_nou:
         HAND_CARDS_LIMIT = 30
 
         # SFX assets, those need to be loaded after class init
-        SFX_EXT = ".wav"
+        SFX_EXT = ".mp3"
         # NOTE: Thanks to Kenney Vleugels for amazing sfx
         SFX_SHUFFLE = []
         SFX_DRAW = []
