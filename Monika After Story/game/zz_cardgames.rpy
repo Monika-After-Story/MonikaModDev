@@ -4807,8 +4807,8 @@ label mas_nou_reaction_player_surrenders:
         m 1eka "I enjoy every moment I'm with you~"
 
     elif store.mas_nou.game.current_turn == 1:
-        m 1etd "But we just started."
-        m 1ekc "Let me know when you'll have time."
+        m 1etd "But we just started..."
+        m 1ekc "Let me know when you have some time to play, alright?"
 
     elif store.mas_nou.game.current_turn < 6:
         m 1ekc "Giving up already, [player]?"
