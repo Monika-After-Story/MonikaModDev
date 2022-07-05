@@ -1908,19 +1908,25 @@ init 5 python in mas_nou:
                         )
 
                     else:
-                        dlg_line_list.append(
-                            "You need to play any {} card.".format(card.color)
-                        )
+                        if card.color is None:
+                            dlg_line_list.append(
+                                "You need to choose a color before we can continue."
+                            )
 
-                    if player.drew_card or len(player.hand) >= self.HAND_CARDS_LIMIT:
-                        dlg_line_list.append(
-                            " Otherwise you'll have to skip your turn~"
-                        )
+                        else:
+                            dlg_line_list.append(
+                                "You need to play any {} card.".format(card.color)
+                            )
 
-                    else:
-                        dlg_line_list.append(
-                            " Otherwise draw a card and try to play it."
-                        )
+                            if player.drew_card or len(player.hand) >= self.HAND_CARDS_LIMIT:
+                                dlg_line_list.append(
+                                    " Otherwise you'll have to skip your turn~"
+                                )
+
+                            else:
+                                dlg_line_list.append(
+                                    " Otherwise draw a card and try to play it."
+                                )
 
             if dlg_line_list:
                 return "".join(dlg_line_list)
