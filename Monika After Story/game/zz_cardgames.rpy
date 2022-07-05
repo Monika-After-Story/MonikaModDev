@@ -3732,7 +3732,7 @@ init 5 python in mas_nou:
                 player=loser,
                 amount=loser.should_draw_cards,
                 smooth=False,
-                sound=False
+                sound=False,
                 mark_as_drew_card=False,
                 reset_nou_var=False
             )
