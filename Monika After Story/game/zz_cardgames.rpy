@@ -51,6 +51,9 @@ init 5 python in mas_nou:
     # NOTE: if this isn't None, then we played in this sesh
     winner = None
 
+    # The game object
+    game = None
+
     # we allow to press these buttons only once per turn
     # and disable them 'til next one
     disable_remind_button = False
@@ -3983,7 +3986,7 @@ label monika_change_nou_house_rules:
                     "Sure.":
                         show monika 1hua zorder MAS_MONIKA_Z
                         $ mas_nou.visit_game_ev()
-                        jump mas_nou_game_loop
+                        jump mas_nou_game_define
 
                     "Maybe later.":
                         m 2eub "Alright, let's play together soon~"
@@ -4220,8 +4223,10 @@ label mas_nou_game_start:
     else:
         m 1eub "Let's start!~"
 
-    $ store.mas_nou.game = store.mas_nou.NOU()
+    # FALL THROUGH
 
+label mas_nou_game_define:
+    $ store.mas_nou.game = store.mas_nou.NOU()
     # FALL THROUGH
 
 label mas_nou_game_loop:
