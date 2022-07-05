@@ -98,6 +98,7 @@ init 5 python in mas_nou:
         SFX_EXT = ".mp3"
         # NOTE: Thanks to Kenney Vleugels for amazing sfx
         SFX_SHUFFLE = []
+        SFX_MOVE = []
         SFX_DRAW = []
         SFX_PLAY = []
 
@@ -641,6 +642,16 @@ init 5 python in mas_nou:
                 renpy.say(m, quip, interact=interact)
 
         @classmethod
+        def _reset_sfx(cls):
+            """
+            Resets sfx data
+            """
+            cls.SFX_SHUFFLE = []
+            cls.SFX_MOVE = []
+            cls.SFX_DRAW = []
+            cls.SFX_PLAY = []
+
+        @classmethod
         def _load_sfx(cls):
             """
             'Loads' sound assets from the disk
@@ -649,20 +660,24 @@ init 5 python in mas_nou:
             nou_ma_dir = os.path.join(ASSETS, "sfx")
             nou_sfx = os.listdir(os.path.join(config.gamedir, nou_ma_dir))
 
-            cls.SFX_SHUFFLE = []
-            cls.SFX_DRAW = []
-            cls.SFX_PLAY = []
+            cls._reset_sfx()
+
+            name_to_sfx_list_map = {
+                "shuffle": cls.SFX_SHUFFLE,
+                "move": cls.SFX_MOVE,
+                "slide": cls.SFX_DRAW,
+                "place": cls.SFX_PLAY,
+                "shove": cls.SFX_PLAY
+            }
 
             for f in nou_sfx:
                 if not f.endswith(cls.SFX_EXT):
                     continue
 
-                if f.startswith("shuffle"):
-                    sfx_list = cls.SFX_SHUFFLE
-                elif f.startswith("slide"):
-                    sfx_list = cls.SFX_DRAW
-                else:#this includes 'place' and 'shove'
-                    sfx_list = cls.SFX_PLAY
+                name, undscr, rest = f.partition("_")
+                sfx_list = name_to_sfx_list_map.get(name, None)
+                if sfx_list is None:
+                    continue
 
                 f = os.path.join(nou_ma_dir, f).replace("\\", "/")
                 sfx_list.append(f)
@@ -689,6 +704,13 @@ init 5 python in mas_nou:
             Plays an sfx for shuffling
             """
             cls._play_sfx(cls.SFX_SHUFFLE)
+
+        @classmethod
+        def _play_move_sfx(cls):
+            """
+            Plays an sfx for moving the deck
+            """
+            cls._play_sfx(cls.SFX_MOVE)
 
         @classmethod
         def _play_draw_sfx(cls):
@@ -902,13 +924,23 @@ init 5 python in mas_nou:
                             self.__load_card_asset(card)
                             self.drawpile.append(card)
 
-        def _update_drawpile(self, smooth=True):
+        def _update_drawpile(self, smooth=True, sound=None):
             """
             Moves all - except the top one - cards from the discardpile
             onto the drawpile, then shuffles drawpile
+
+            IN:
+                smooth - bool, if True we use pause
+                sound - bool, if True we play sfx, if None, defaults to smooth
+                    (Default: None)
             """
+            if sound is None:
+                sound = smooth
+
             if smooth:
                 renpy.pause(0.5, hard=True)
+            if sound:
+                self._play_move_sfx()
 
             while len(self.discardpile) > 1:
                 card = self.discardpile[0]
@@ -931,7 +963,7 @@ init 5 python in mas_nou:
             self.table.set_rotate(last_card.value, 90)
             last_card.set_offset(0, 0)
 
-            self.shuffle_drawpile(smooth=smooth)
+            self.shuffle_drawpile(smooth=smooth, sound=sound)
 
         def _update_game_log(self, current_player, next_player):
             """
@@ -1199,7 +1231,7 @@ init 5 python in mas_nou:
             if len(current_player.hand) == 1:
                 current_player.nou_reminder_timeout = self.current_turn + 2
 
-        def _actually_deal_cards(self, player, amount, smooth, sound=None):
+        def _actually_deal_cards(self, player, amount, smooth, sound):
             """
             Moves cards from the drawpile into player's hand,
             updates offsets, rotation and sets cards faceup if needed
@@ -1210,11 +1242,8 @@ init 5 python in mas_nou:
                 player - the player who will get the cards
                 amount - amount of cards to deal
                 smooth - whether or not we use a little pause between dealing cards
-                sound - whether or not we use a little pause between dealing cards
+                sound - whether or not we play sfx
             """
-            if sound is None:
-                sound = smooth
-
             player_cards = len(player.hand)
             if player_cards + amount > self.HAND_CARDS_LIMIT:
                 amount = self.HAND_CARDS_LIMIT - player_cards
@@ -1258,6 +1287,9 @@ init 5 python in mas_nou:
                 reset_nou_var - whether or not we reset the nou var for the player who draws cards
                     (Default: True)
             """
+            if sound is None:
+                sound = smooth
+
             drawpile_cards = len(self.drawpile)
 
             if mark_as_drew_card:
@@ -1275,7 +1307,7 @@ init 5 python in mas_nou:
 
                 if drawpile_cards == amount:
                     # TODO: might need to use new context here
-                    self._update_drawpile(smooth=smooth)
+                    self._update_drawpile(smooth=smooth, sound=sound)
 
             # there're not enough cards
             else:
@@ -1286,7 +1318,7 @@ init 5 python in mas_nou:
                 if player.should_draw_cards:
                     player.should_draw_cards -= drawpile_cards
 
-                self._update_drawpile(smooth=smooth)
+                self._update_drawpile(smooth=smooth, sound=sound)
                 drawpile_cards = len(self.drawpile)
 
                 # we should never get here, but just in case
@@ -1351,6 +1383,8 @@ init 5 python in mas_nou:
             while not ready:
                 card = self.drawpile[-1]
 
+                self._play_draw_sfx()
+
                 self.discardpile.append(card)
                 self.table.set_rotate(card, 90)
                 self.table.set_faceup(card, True)
@@ -1368,6 +1402,9 @@ init 5 python in mas_nou:
 
                     # it'safe to assume that the drawpile has 10+ cards
                     new_id = len(self.drawpile) / 2 + renpy.random.randint(-10, 10)
+
+                    self._play_draw_sfx()
+
                     self.drawpile.insert(new_id, card)
                     self.table.set_rotate(card, 0)
                     self.table.set_faceup(card, False)
@@ -1661,6 +1698,12 @@ init 5 python in mas_nou:
         def shuffle_drawpile(self, smooth=True, sound=None):
             """
             Shuffles the drawpile and animates cards shuffling
+
+            IN:
+                smooth - bool, if True we use pause for animation
+                    (Default: True)
+                sound - bool, if True, we play sfx, if None, defaults to smooth
+                    (Default: None)
 
             ASSUMES:
                 len(drawpile) > 15
