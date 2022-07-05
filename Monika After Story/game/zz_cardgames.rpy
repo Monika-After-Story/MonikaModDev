@@ -1655,18 +1655,21 @@ init 5 python in mas_nou:
             """
             return self.table.sensitive
 
-        def shuffle_drawpile(self, smooth=True):
+        def shuffle_drawpile(self, smooth=True, sound=None):
             """
             Shuffles the drawpile and animates cards shuffling
 
             ASSUMES:
                 len(drawpile) > 15
             """
+            if sound is None:
+                sound = smooth
+
             total_cards = len(self.drawpile)
 
             # NOTE: This is Just in case, in theory the drawpile will have about 47 cards in the worst scenario
             if total_cards > 15:
-                if smooth:
+                if sound:
                     self._play_shuffle_sfx()
                 # 7/10
                 k = renpy.random.randint(0, 9)
