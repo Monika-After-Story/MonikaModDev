@@ -1267,7 +1267,7 @@ init 5 python in mas_nou:
                 self.__update_cards_positions(player, offset)
 
                 if smooth:
-                    renpy.pause(0.25, hard=True)
+                    renpy.pause(0.3, hard=True)
 
         def deal_cards(self, player, amount=1, smooth=True, sound=None, mark_as_drew_card=True, reset_nou_var=True):
             """
@@ -1331,19 +1331,13 @@ init 5 python in mas_nou:
                     self._actually_deal_cards(player, cards_to_deal, smooth, sound=sound)
                     player.should_draw_cards = 0
 
-        def prepare_game(self):
+        def _get_current_next_players(self):
             """
-            This method sets up everything we need to start a game of NOU:
-                1. Chooses who plays first
-                2. Shuffles the deck
-                3. Deals cards
-                4. Places first card onto the discardpile
-                    and handles if it's an action/wild card
-                5. Fills first bits in the log
-                6. Makes our table sensetive to the user's imput
-                    if needed
+            Returns current and next player for the first turn
+
+            OUT:
+                tuple of 2 items
             """
-            # Decide who will play the first turn
             global player_win_streak
             global monika_win_streak
 
@@ -1364,17 +1358,54 @@ init 5 python in mas_nou:
                     current_player = self.monika
                     next_player = self.player
 
+            return (current_player, next_player)
+
+        def _deal_initial_cards(self, current_player, next_player):
+            starting_cards = get_house_rule("starting_cards")
+
+            if starting_cards < 12:
+                for i in range(0, starting_cards*2):
+                    if i % 2:
+                        temp_player = next_player
+                    else:
+                        temp_player = current_player
+
+                    self.deal_cards(temp_player, mark_as_drew_card=False, reset_nou_var=False)
+
+            # Deal 2 cards at a time
+            else:
+                extra_step = 1 if starting_cards % 2 else 0
+                for i in range(0, starting_cards + extra_step):
+                    if i % 2:
+                        temp_player = next_player
+                    else:
+                        temp_player = current_player
+
+                    if len(temp_player.hand) + 2 <= starting_cards:
+                        # If we dealing 2 cards, deal this one quick
+                        self.deal_cards(temp_player, smooth=False, mark_as_drew_card=False, reset_nou_var=False)
+                    # Deal this one with a pause
+                    self.deal_cards(temp_player, mark_as_drew_card=False, reset_nou_var=False)
+
+        def prepare_game(self):
+            """
+            This method sets up everything we need to start a game of NOU:
+                1. Chooses who plays first
+                2. Shuffles the deck
+                3. Deals cards
+                4. Places first card onto the discardpile
+                    and handles if it's an action/wild card
+                5. Fills first bits in the log
+                6. Makes our table sensetive to the user's imput
+                    if needed
+            """
+            # Decide who will play the first turn
+            current_player, next_player = self._get_current_next_players()
+
             self.shuffle_drawpile()
 
             # Deal 14 cards or whatever you asked her for
-            total_cards = get_house_rule("starting_cards") * 2 + 1
-            for i in range(1, total_cards):
-                if not i % 2:
-                    temp_player = next_player
-                else:
-                    temp_player = current_player
-
-                self.deal_cards(temp_player, mark_as_drew_card=False, reset_nou_var=False)
+            self._deal_initial_cards(current_player, next_player)
 
             # We need to shuffle the deck if the top card is WDF
             ready = False
