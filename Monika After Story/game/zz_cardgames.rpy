@@ -1356,7 +1356,7 @@ init 5 python in mas_nou:
                 next_player = self.player
 
             else:
-                if random.random() > 0.5:
+                if random.random() < 0.5:
                     current_player = self.player
                     next_player = self.monika
 
@@ -4239,13 +4239,13 @@ label mas_nou_game_start:
             persistent._mas_game_nou_abandoned > 1
             or store.mas_nou.monika_win_streak > 2
         )
-        and random.random() > 0.5
+        and random.random() < 0.5
     ):
         m 1kua "I'm sure you'll win this time!"
 
     elif (
         store.mas_nou.player_win_streak > 2
-        and random.random() > 0.5
+        and random.random() < 0.5
     ):
         m 1tuu "You better be ready, I'm not going easy on you this time~"
 
@@ -4536,7 +4536,7 @@ label mas_nou_reaction_player_wins_round:
             if dlg_choice == 1:
                 m 1hub "Another quick win for you!"
 
-                if renpy.random.randint(1, 4) == 1:
+                if random.random() < 0.25:
                     m 1kuu "But you better not relax, [player]~"
 
             elif dlg_choice == 2:
@@ -4553,10 +4553,13 @@ label mas_nou_reaction_player_wins_round:
                     m 3efb "Good job, [player]!"
 
         elif (
-            len(store.mas_nou.game.monika.hand) > 4
-            or (
-                not store.mas_nou.game.player.yelled_nou
-                and renpy.random.randint(0, 1) == 1
+            mas_nou.get_house_rule("starting_cards") > 12
+            and (
+                len(store.mas_nou.game.monika.hand) > 4
+                or (
+                    not store.mas_nou.game.player.yelled_nou
+                    and random.random() < 0.5
+                )
             )
         ):
             m 4wuo "Wow!{w=0.2} Played all your cards already?"
@@ -4578,16 +4581,20 @@ label mas_nou_reaction_player_wins_round:
         $ dlg_choice = renpy.random.randint(1, 3)
 
         if dlg_choice == 1:
-            m 1esa "Quite a long [_round!t], [player]."
+            if mas_nou.get_house_rule("starting_cards") < 12:
+                m 1esa "Quite a long [_round!t], [player]."
 
-            if len(store.mas_nou.game.monika.hand) < 4:
-                if store.mas_nou.player_win_streak > 0:
-                    m 1hua "And I almost won this time!"
+                if len(store.mas_nou.game.monika.hand) < 4:
+                    if store.mas_nou.player_win_streak > 0:
+                        m 1hua "And I almost won this time!"
+
+                    else:
+                        m 1hua "And I almost won!"
+
+                    m 1hub "Ahaha~ Well played!"
 
                 else:
-                    m 1hua "And I almost won!"
-
-                m 1hub "Ahaha~ Well played!"
+                    m 1hub "Well played!"
 
             else:
                 m 1hub "Well played!"
@@ -4614,7 +4621,7 @@ label mas_nou_reaction_player_wins_round:
 
         elif dlg_choice == 3:
             m 2eub "And you won! Good job!"
-            if renpy.random.randint(1, 6) > 5:
+            if random.random() < 0.2:
                 m 2kuu "But don't expect to win everytime~"
 
         else:
@@ -4641,7 +4648,8 @@ label mas_nou_reaction_player_wins_game:
     elif dlg_choice == 3:
         m 1rsc "Let's see.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
         m 4eub "Oh, [player]! You won this game!"
-        if mas_isMoniEnamored(higher=True) and renpy.random.randint(1, 2) == 1:
+
+        if mas_isMoniEnamored(higher=True) and random.random() < 0.5:
             m 1hub "I would give you a big hug if I were near you~"
             m 1hua "Ehehe~"
         else:
