@@ -3585,6 +3585,8 @@ init 5 python in mas_nou:
                     if reaction.type == self.game.MONIKA_REFLECTED_ACT:
                         if (
                             tier == 2
+                            and reaction.monika_card is not None
+                            and reaction.monika_card.label == "Draw Two"
                             and get_house_rule("stackable_d2")
                         ):
                             additional_quips = self.game.REACTIONS_MAP_MONIKA_REFLECTED_ACT_MODIFIER_1
