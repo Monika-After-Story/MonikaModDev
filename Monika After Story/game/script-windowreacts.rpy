@@ -606,7 +606,7 @@ init 5 python:
     )
 
 label mas_wrs_word_processor:
-    $ wrs_success = display_notif(
+    $ wrs_success = mas_display_notif(
         m_name,
         [
             "Writing a story?",
