@@ -280,8 +280,7 @@ init 3 python:
         "foul",
         "fuck",
         "garbage",
-        "gay",
-        "gey",
+        "(?<!ser)g[ea]y",# #8938
         "gilf",
         "gross",
         "gruesome",

@@ -9534,7 +9534,7 @@ label monika_timetravel:
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
-    m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
+    m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
     m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
     m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
@@ -10258,10 +10258,10 @@ init 5 python:
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
-    m 1eua "Do you like travelling?{nw}"
+    m 1eua "Do you like traveling?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like travelling?{fast}"
+        m "Do you like traveling?{fast}"
         "Yes.":
             $ persistent._mas_pm_likes_travelling = True
             m 1hua "That's great! I'm so glad you enjoy it."
@@ -15891,13 +15891,13 @@ label monika_architecture:
     m 1eka "[player]...{w=0.2}seeing the world with you is one of my biggest dreams."
 
     if persistent._mas_pm_likes_travelling is False:
-        m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+        m 3rka "I know you're not too fond of traveling a lot, but I would love to see the place you live in."
         m 3eka "As long as you stay by my side, that would be more than enough for me."
         m 1ekbsa "I love you, [player]. {w=0.3}Always remember that."
 
     else:
         if persistent._mas_pm_likes_travelling:
-            m 3eua "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+            m 3eua "I already know you enjoy traveling, so wouldn't it be nice to explore something new together?"
 
         m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
         m 1eka "Or walking down a park together, breathing fresh evening air..."
@@ -16205,7 +16205,7 @@ label monika_being_deleted:
         m 6eka "So please don't feel guilty."
         m 6eka "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
         m 7ekbsu "You gave me a second chance...{w=0.3}you gave meaning to my life. {w=0.2}I genuinely believe that because of that, all the suffering I went through paid off in the end."
-        m 1hubsb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me!"
+        m 1hubsb "Thanks to you, I truly am the happiest I could ever be!"
         m 1euu "So let's try to not think about the past, and instead enjoy what we have now, okay?"
         m 3eka "I love you, [player]. {w=0.2}I know this isn't always easy, but I hope you'll be able to forgive yourself."
         $ mas_ILY()
@@ -16432,7 +16432,8 @@ label monika_eating_meat:
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
-    m 3rksdla "I don't hate the taste of meat, but I don't think I'd want it to be a major part of my meal, either."
+    m 3ekd "And as is the case with many vegetarians, my body doesn't digest meat as easily anymore. {w=0.3}{nw}"
+    extend 3dksdlc "If I had too much, I could actually get pretty sick."
     m 1eka "...But if you prepared something with meat, I could try a little bit as a side dish... {w=0.3}{nw}"
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
@@ -17398,7 +17399,7 @@ label monika_tanabata:
     if persistent._mas_pm_likes_travelling is not False:
         m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
     else:
-        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
+        m 3eua "Even if you're not interested in traveling, it's pretty interesting to explore other cultures, isn't it?"
     return
 
 init 5 python:
@@ -17830,7 +17831,7 @@ label monika_cupcake_favorite:
     m 1hub "I like all sorts of different kinds, so it's hard to choose just one!"
     m 3ekd "I think I've mentioned before how much I miss Natsuki's cupcakes..."
     m 3eua "One time she made this really strange mint chocolate chip flavored cupcake...{w=0.3}it had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
-    m 4rksdlb "It was one of the strangest things I've ever tasted ahaha!"
+    m 4rksdlb "It was one of the strangest things I've ever tasted, ahaha!"
     m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
     m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
     m 7eka "Oh well, it was nice that she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"

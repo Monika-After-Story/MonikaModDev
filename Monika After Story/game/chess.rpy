@@ -48,8 +48,8 @@ init python in mas_chess:
 
     #chess modes
     MODE_NORMAL = "normal_chess"
-    MODE_BAD_CHESS = "chess960"
-    MODE_960 = "badchess"
+    MODE_BAD_CHESS = "badchess"
+    MODE_960 = "chess960"
 
     # relative chess directory
     REL_DIR = "chess_games/"
@@ -871,9 +871,9 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode is mas_chess.MODE_NORMAL)),
-                    ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode is mas_chess.MODE_BAD_CHESS)),
-                    ("Chess 960", mas_chess.MODE_960, False, (chessmode is mas_chess.MODE_960))
+                    ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
+                    ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
+                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960))
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
