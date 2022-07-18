@@ -5065,7 +5065,7 @@ init -3 python:
                         ind_lvl,
                         cls.msj.MPM_AS_BAD_TYPE.format(
                             prop_name,
-                            str(MASSplitAccessory.hl_keys()),
+                            str(MASSplitAccessory.hl_keys_c()),
                             prop_val
                         )
                     ))
