@@ -383,7 +383,7 @@ init 3 python:
         "shithead",
         "sick",
         "slaughter",
-        r"\bslave\b",
+        "\bslave\b",
         "slut",
         "sociopath",
         "soil",
