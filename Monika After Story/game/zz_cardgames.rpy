@@ -4156,7 +4156,7 @@ label .change_starting_cards_loop:
             m 7ekb "Try again, silly~"
 
         elif starting_cards < 4:
-            m 2eka "[starting_cards] cards isn't enough to enjoy the game, [player]..."
+            m 2eka "[starting_cards] card[('s' if starting_cards > 1 else '')] isn't enough to enjoy the game, [player]..."
             m 7eka "How about we start with at least 4 cards?{nw}"
             $ _history_list.pop()
             menu:
