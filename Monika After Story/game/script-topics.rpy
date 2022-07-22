@@ -9536,13 +9536,13 @@ label monika_timetravel:
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
-    m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
-    m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
-    m 2ekc "Well, the time traveller themselves might know, but only if nothing goes horribly wrong for them."
+    m 3ekc "One thing you don't usually see, though, is how the time traveler's loved ones are affected."
+    m 3rksdld "If they can't go through time with the time traveler, who knows how long it will be before they can see each other again?"
+    m 2ekc "Well, the time traveler themselves might know, but only if nothing goes horribly wrong for them."
     m 2lksdld "In the meantime, their friends and family are stuck waiting for them to come back."
     m 2ekd "How long will they be gone for? A year? A decade? Even longer?"
     m 4ekd "Will they be willing to wait that long?"
-    m "Will they still remember the time traveller by then?"
+    m "Will they still remember the time traveler by then?"
     m 2dksdlc "..."
     if seen_event("monika_resource"):
         m 4rksdlc "You remember when I said that time doesn't pass here like it does in your world?"
@@ -10254,7 +10254,15 @@ label monika_amusementpark:
 default persistent._mas_pm_likes_travelling = None
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_travelling",
+            category=['misc'],
+            prompt="Traveling",
+            random=True
+        )
+    )
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
@@ -16697,7 +16705,7 @@ label monika_impermanence:
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
     m 3eua "Actually, there's a poem I read that delivers this message quite well."
-    m 1esd "{i}I met a traveller from an antique land{/i}"
+    m 1esd "{i}I met a traveler from an antique land{/i}"
     m 1eud "{i}Who said: 'Two vast and trunkless legs of stone{/i}"
     m 3euc "{i}Stand in the desert... Near them, on the sand,{/i}"
     m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"

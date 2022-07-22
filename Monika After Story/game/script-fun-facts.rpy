@@ -880,7 +880,7 @@ label mas_fun_fact_round_earth:
     m 1eua "Actually, the Earth being round is something that has been known for a pretty long time."
     m 3esd "Aristotle taught that the Earth was round in the fourth century BC."
     m 3esa "He knew that because different stars could be seen from different parts of the world, which wouldn't happen if the Earth was just a flat surface."
-    m 1eua "Ancient astronomers and mathematicians around the world had figured out that the Earth was round long before anyone had actually travelled all the way around it."
+    m 1eua "Ancient astronomers and mathematicians around the world had figured out that the Earth was round long before anyone had actually traveled all the way around it."
     m 7rksdla "But Earth being the center of the universe?{w=0.2} {nw}"
     extend 4hksdlb "Oh man!"
     m 7dsd "People fought about that so hard and for so long, it became a matter of life and death."
