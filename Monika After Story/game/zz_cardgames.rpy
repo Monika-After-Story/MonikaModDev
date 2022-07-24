@@ -3927,6 +3927,11 @@ label monika_change_nou_house_rules:
     else:
         m 1eub "Of course."
 
+    # Since renpain is junk and doesn't allow us
+    # jump with args, we have to use this crutch
+    label .pre_menu(has_changed_rules=False, from_game=False):
+        pass
+
     label .menu_loop:
         python:
             menu_items = [
@@ -3966,19 +3971,48 @@ label monika_change_nou_house_rules:
 
             final_items = (
                 (_("Can you explain these house rules?"), "explain", False, False, 20),
-                (_("Nevermind"), False, False, False, 0)
+                (_("Done" if has_changed_rules else "Nevermind"), False, False, False, 0)
             )
 
         show monika 1eua at t21 zorder MAS_MONIKA_Z
 
-        $ renpy.say(m, _("What kind of rule would you like to change?"), interact=False)
+        if has_changed_rules:
+            m "Would you like to change anything else?" nointeract
+
+        else:
+            m "What kind of rule would you like to change?" nointeract
 
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         show monika 1eua at t11 zorder MAS_MONIKA_Z
 
         if not _return:
-            m 1eua "Oh, alright."
+            # No dlg if we got here from the game
+            if not from_game:
+                # If a rule has beed changed, we may suggest to play
+                if has_changed_rules:
+                    # Suggest?
+                    if mas_nou.does_want_suggest_play():
+                        m "Maybe we could play now?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Maybe we could play now?{fast}"
+
+                            "Sure.":
+                                show monika 1hua zorder MAS_MONIKA_Z
+                                $ mas_nou.visit_game_ev()
+                                $ del menu_items, final_items
+                                jump mas_nou_game_define
+
+                            "Maybe later.":
+                                m 2eub "Alright, let's play together soon~"
+
+                    else:
+                        m 2eub "Let's play together soon~"
+
+                else:
+                    m 1eua "Oh, alright."
+
             $ del menu_items, final_items
             return
 
@@ -4014,13 +4048,8 @@ label monika_change_nou_house_rules:
             m 3eub "Okay! Then settled!"
 
             python:
-                mas_nou.set_house_rule("points_to_win", 200)
-                mas_nou.set_house_rule("starting_cards", 7)
-                mas_nou.set_house_rule("stackable_d2", False)
-                mas_nou.set_house_rule("unrestricted_wd4", False)
-
+                mas_nou.update_house_rules(force=True)
                 store.mas_nou.reset_points()
-
                 del menu_items, final_items
 
             return
@@ -4043,36 +4072,8 @@ label monika_change_nou_house_rules:
             jump monika_change_nou_house_rules.menu_loop
 
     $ store.mas_nou.reset_points()
-
-    m 3eua "Is there anything else you'd like to change?{nw}"
-    $ _history_list.pop()
-    menu:
-        m "Is there anything else you'd like to change?{fast}"
-
-        "Yes.":
-            jump monika_change_nou_house_rules.menu_loop
-
-        "No.":
-            if mas_nou.does_want_suggest_play():
-                m "Then maybe we could play now?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "Then maybe we could play now?{fast}"
-
-                    "Sure.":
-                        show monika 1hua zorder MAS_MONIKA_Z
-                        $ mas_nou.visit_game_ev()
-                        jump mas_nou_game_define
-
-                    "Maybe later.":
-                        m 2eub "Alright, let's play together soon~"
-
-            else:
-                m 2eub "Then let's play together soon~"
-
-    $ del menu_items, final_items
-
-    return
+    $ has_changed_rules = True
+    jump monika_change_nou_house_rules.menu_loop
 
 label .change_points_to_win_loop:
     $ ready = False
@@ -4392,6 +4393,9 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
+                "I'd like to change some house rules.":
+                    call .change_rules_and_continue
+
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
@@ -4430,6 +4434,9 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
+                "I'd like to change some house rules.":
+                    call .change_rules_and_continue
+
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
@@ -4465,12 +4472,45 @@ label mas_nou_game_end:
 
             jump mas_nou_game_loop
 
+        "I'd like to change some house rules." if not mas_nou.get_house_rule("points_to_win"):
+            call .change_rules_and_continue
+
         "Not right now.":
             m 1hua "Alright, let's play again soon~"
 
     $ del dlg_choice, _round, store.mas_nou.game
 
     return
+
+label .change_rules_and_continue:
+    call monika_change_nou_house_rules.pre_menu(from_game=True)
+
+    m 3hub "Ready to continue?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Ready to continue?{fast}"
+
+        "Yep.":
+            show monika 1hua zorder MAS_MONIKA_Z
+            python:
+                store.mas_nou.game.reset_game()
+                mas_nou.visit_game_ev()
+                # NOTE: IMPORTANT, THIS PATH DOESNT RETURN
+                renpy.pop_call()
+
+            jump mas_nou_game_loop
+
+        "Let's play later.":
+            if (mas_nou.player_wins_this_sesh + mas_nou.monika_wins_this_sesh) < 4:
+                m 1ekc "Aww, alright."
+
+            else:
+                m 1eka "Oh, alright."
+
+            # THIS PATH DOES RETURN
+
+    return
+
 
 # All end game reactions labels go here
 label mas_nou_reaction_player_wins_round:
@@ -4922,6 +4962,7 @@ label mas_nou_reaction_player_surrenders:
 
         m 3ekb "Don't give up so easily next time."
     return
+
 
 # SL and stuff
 
