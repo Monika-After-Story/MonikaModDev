@@ -3969,26 +3969,32 @@ label monika_change_nou_house_rules:
         python:
             menu_items = [
                 (
-                    _("I'd like to change the number of points required to win."),
+                    _("I'd like to change the number of points required to win"),
                     "points_to_win",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to change the number of cards we start each round with."),
+                    _("I'd like to change the number of cards we start each round with"),
                     "starting_cards",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to play with stackable Draw 2's.") if not mas_nou.get_house_rule("stackable_d2") else _("I'd like to play with non-stackable Draw 2's."),
+                    _("I'd like to play with stackable Draw 2's") if not mas_nou.get_house_rule("stackable_d2") else _("I'd like to play with non-stackable Draw 2's"),
                     "stackable_d2",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to play with unrestricted Wild Draw 4's.") if not mas_nou.get_house_rule("unrestricted_wd4") else _("I'd like to play with restricted Wild Draw 4's."),
+                    _("I'd like to play with unrestricted Wild Draw 4's") if not mas_nou.get_house_rule("unrestricted_wd4") else _("I'd like to play with restricted Wild Draw 4's"),
                     "unrestricted_wd4",
+                    False,
+                    False
+                ),
+                (
+                    _("I'd like to play Reflect Chaos") if not mas_nou.get_house_rule("reflect_chaos") else _("I'd like to play with classic reflects"),
+                    "reflect_chaos",
                     False,
                     False
                 )
@@ -3997,8 +4003,9 @@ label monika_change_nou_house_rules:
             if not (
                 mas_nou.get_house_rule("points_to_win") == 200
                 and mas_nou.get_house_rule("starting_cards") == 7
-                and mas_nou.get_house_rule("stackable_d2") == False
-                and mas_nou.get_house_rule("unrestricted_wd4") == False
+                and mas_nou.get_house_rule("stackable_d2") is False
+                and mas_nou.get_house_rule("unrestricted_wd4") is False
+                and mas_nou.get_house_rule("reflect_chaos") is False
             ):
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
 
@@ -4069,13 +4076,21 @@ label monika_change_nou_house_rules:
 
         elif _return == "unrestricted_wd4":
             if not mas_nou.get_house_rule("unrestricted_wd4"):
-                # m "Oh, you better be ready for this one, [player]~"
                 m 1eua "That sounds fun."
 
             else:
                 m 1eua "Back to the classic, I see."
 
             $ mas_nou.reverse_house_rule("unrestricted_wd4")
+
+        elif _return == "reflect_chaos":
+            if not mas_nou.get_house_rule("reflect_chaos"):
+                m 1kuu "Oh, you better be ready for this one, [player]~"
+
+            else:
+                m 1ttu "Was it too chaotic?~"
+
+            $ mas_nou.reverse_house_rule("reflect_chaos")
 
         elif _return == "restore":
             m 3eub "Okay! Then settled!"
@@ -4093,13 +4108,18 @@ label monika_change_nou_house_rules:
             m 3eud "If you want to play without points, just choose '0'."
             m 1eua "We can also start each round with a different number of cards in our hands."
             m 3esa "For example, if you want longer games, we can start with 10 cards."
-            m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a Draw 2, the cards {i}stack{/i}...{w=0.3}{nw}"
+            m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a {i}Draw Two{/i}, the cards {i}stack{/i}...{w=0.3}{nw}"
             extend 4tsb "and the last unlucky person will have to draw all those cards."
-            m 1eua "That also applies to Wild Draw 4's, since you use Draw 2's to reflect them."
+            m 1eua "That also applies to {i}Wild Draw Four{/i}'s, since you use {i}Draw Two{/i}'s to reflect them."
             m 1ttu "Sounds fun, huh~"
-            m 3eud "There's also a rule in the official set that allows you to play a Draw 4 only if you have no cards of the current color."
+            m 3eud "There's also a rule in the official set that allows you to play a {i}Wild Draw Four{/i} only if you have no cards of the current color."
             m 1rtu "That...{w=0.3}sounds kinda boring, {w=0.2}{nw}"
             extend 3eua "so we can just ignore that rule if you want."
+            m 1eud "The Reflect Chaos rule makes the game more {w=0.2}{nw}"
+            extend 1tsu "{i}chaotic{/i}...{w=0.3}{nw}"
+            extend 1hub "as you could guess, ahaha~"
+            m 3eub "It allows to reflect {i}Wild Draw Four{/i}'s and {i}Draw Two{/i}'s using a {i}Wild Draw Four{/i}."
+            m 3eua "As well as reflect {i}Skip{/i}s with any other {i}Skip{/i}."
             m 1eua "And that's it!"
 
             jump monika_change_nou_house_rules.menu_loop
@@ -4291,7 +4311,7 @@ label monika_explain_nou_rules:
     m 1eua "When you play any {i}Wild{/i} card, you should choose what color you want to set for it."
     m "As powerful as {i}Wild{/i} and {i}Action{/i} cards may look, you can still save yourself from them."
     m 1eub "For example you can mirror a {i}Wild Draw Four{/i} by playing a {i}Draw Two{/i} with the new color."
-    m 3eua "...Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
+    m 3eua "...Or you can play any {i}Draw Two{/i} to mirror another {i}Draw Two{/i} back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
     m 1eku "But I don't think it's really about winning anyway."
     show monika 5hubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
