@@ -5295,7 +5295,14 @@ init -10 python in mas_cardgames:
             ASSUMES:
                 store.mas_current_background
             """
-            desk_render = renpy.render(DESK_SPRITES_MAP[store.mas_current_background.background_id], width, height, st, at)
+            try:
+                sprite = DESK_SPRITES_MAP[store.mas_current_background.background_id]
+            except KeyError:
+                # This should never happen, but in case a bg has been
+                # defined incorrectly, use the fallback
+                sprite = DESK_SPRITES_MAP[store.mas_background.MBG_DEF]
+
+            desk_render = renpy.render(sprite, width, height, st, at)
             main_render = renpy.Render(desk_render.width, desk_render.height)
             main_render.blit(desk_render, DeskSpriteSwitch.BLIT_COORDS)
 
