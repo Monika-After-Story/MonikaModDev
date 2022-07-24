@@ -1974,16 +1974,31 @@ init 5 python in mas_nou:
                     dlg_line_list.append(".")
 
                     if not player.drew_card:
-                        if card.type == "action":
-                            card_for_reflect = card.label
-                            if card.label == "Skip":
-                                color_for_reflect = card.color
+                        if not get_house_rule("reflect_chaos"):
+                            if card.type == "action":
+                                card_for_reflect = card.label
+                                if card.label == "Skip":
+                                    color_for_reflect = card.color
+                                else:
+                                    color_for_reflect = ""
+
                             else:
-                                color_for_reflect = ""
+                                card_for_reflect = "Draw Two"
+                                color_for_reflect = card.color
 
                         else:
-                            card_for_reflect = "Draw Two"
-                            color_for_reflect = card.color
+                            if card.type == "action":
+                                if card.label == "Draw Two":
+                                    card_for_reflect = "Draw Two{/i} or {i}Draw Four"
+
+                                else:
+                                    card_for_reflect = card.label
+
+                                color_for_reflect = ""
+
+                            else:
+                                card_for_reflect = "Draw Two{/i} or {i}Draw Four"
+                                color_for_reflect = card.color
 
                         dlg_line_list.append(
                             " If you have a {}{}{{i}}{}{{/i}}, you could {{i}}try{{/i}} to reflect {} card.".format(
