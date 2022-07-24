@@ -3688,6 +3688,12 @@ init 5 python in mas_nou:
                             or monika_reminded_yell_nou
                         )
                     )
+                    or (
+                        reaction.type in (self.game.MONIKA_REFLECTED_WDF, self.game.MONIKA_REFLECTED_ACT)
+                        and get_house_rule("reflect_chaos")
+                        and reaction.monika_card
+                        and reaction.monika_card.type == "wild"
+                    )
                 )
                 and len(self.hand) > 1# Don't announce the colour if you won
             ):
