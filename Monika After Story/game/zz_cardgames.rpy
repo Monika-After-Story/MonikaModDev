@@ -3706,6 +3706,8 @@ init 5 python in mas_nou:
 init 5 python in mas_nou:
     import datetime
 
+    __SENTRY = object()
+
     def get_default_house_rules():
         """
         Returns default house rules
@@ -3729,6 +3731,22 @@ init 5 python in mas_nou:
         for k, v in DEF_RULES_VALUES.items():
             if k not in persistent._mas_game_nou_house_rules or force:
                 persistent._mas_game_nou_house_rules[k] = v
+
+    def are_default_house_rules():
+        """
+        Checks if the current settings are default
+
+        OUT:
+            bool
+        """
+        if persistent._mas_game_nou_house_rules is None:
+            return False
+
+        for k, def_v in DEF_RULES_VALUES.items():
+            if def_v != persistent._mas_game_nou_house_rules.get(k, __SENTRY):
+                return False
+
+        return True
 
     def get_house_rule(name):
         """
@@ -4000,13 +4018,7 @@ label monika_change_nou_house_rules:
                 )
             ]
 
-            if not (
-                mas_nou.get_house_rule("points_to_win") == 200
-                and mas_nou.get_house_rule("starting_cards") == 7
-                and mas_nou.get_house_rule("stackable_d2") is False
-                and mas_nou.get_house_rule("unrestricted_wd4") is False
-                and mas_nou.get_house_rule("reflect_chaos") is False
-            ):
+            if not mas_nou.are_default_house_rules():
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
 
             final_items = (
