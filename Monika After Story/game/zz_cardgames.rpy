@@ -5229,8 +5229,9 @@ transform nou_pen_rotate_right:
 # NOTE: This can be used in other games in the future
 image bg cardgames desk = mas_cardgames.DeskSpriteSwitch()
 
-init 10 python in mas_cardgames:
-    # All bgs should be defined, get the desk sprites for them
+init 500 python in mas_cardgames:
+    # All bgs should be defined at init 1, but we give some more time
+    # just in case
     __scanDeskSprites()
 
 init -10 python in mas_cardgames:
