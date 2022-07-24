@@ -1576,6 +1576,12 @@ init -5 python in mas_sprites:
             prev_cloth - current clothes
             new_cloth - clothes we are changing to
         """
+        # remove outfit mode stuff if appropriate
+        if temp_space["outfit_mode"]:
+            moni_chr.apply_outfit_change_data(
+                temp_space["outfit_exit_data"],
+                False
+            )
 
         # if clothes had a desired ribbon, restore to previous
         desired_ribbon = prev_cloth.getprop("desired-ribbon")
@@ -1620,6 +1626,13 @@ init -5 python in mas_sprites:
             new_cloth - clothes we are changing to
         """
         outfit_mode = temp_space.get("outfit_mode", False)
+
+        # add outfit mode stuff if appropriate
+        if outfit_mode:
+            moni_chr.apply_outfit_change_data(
+                temp_space["outfit_entry_data"],
+                True
+            )
 
         # if clothes has a desired ribbon, change to it if outfit mode
         desired_ribbon = new_cloth.getprop("desired-ribbon")
@@ -2916,6 +2929,24 @@ init -3 python:
                 return allow_none
             return val in MASMonika.SPL_LAYERS
 
+        def apply_outfit_change_data(self, outfit_change_data, wear):
+            """
+            Applies hair and ACS changes from the given outfit change data
+
+            IN:
+                outfit_change_data - the outfit change data to apply
+                wear - pass True if this should wear the items in the change
+                    data, False to remove them.
+            """
+            # start with hair first
+            if wear and outfit_change_data.will_hair_change():
+                self.change_hair(outfit_change_data._hair)
+
+            # then ACS
+            for acs_name, change in outfit_change_data._acs_change.items():
+                if change and acs_name in outfit_change_data._acs:
+                    self.set_acs(outfit_change_data._acs[acs_name], wear)
+
         def change_clothes(
                 self,
                 new_cloth,
@@ -2944,14 +2975,24 @@ init -3 python:
             if self.lock_clothes and not startup:
                 return
 
+            prev_cloth = self.clothes
+
             # setup temp space
             temp_space = {
                 "by_user": by_user,
                 "startup": startup,
-                "outfit_mode": outfit_mode
-            }
+                "outfit_mode": outfit_mode,
 
-            prev_cloth = self.clothes
+                # NOTE: always include these - helps avoid crashes.
+                #   we just won't use any of it if outfit mode is False
+                "outfit_exit_data": MASOutfitChangeData(
+                    acs=prev_cloth.outfit_acs
+                ),
+                "outfit_entry_data": MASOutfitChangeData(
+                    hair=new_cloth.outfit_hair,
+                    acs=new_cloth.outfit_acs
+                ),
+            }
 
             # run pre clothes change logic
             store.mas_sprites.clothes_exit_pre_change(
@@ -2969,7 +3010,9 @@ init -3 python:
             self.clothes.exit(
                 self,
                 new_clothes=new_cloth,
-                outfit_mode=outfit_mode
+                outfit_mode=outfit_mode,
+                outfit_entry_data=temp_space["outfit_entry_data"],
+                outfit_exit_data=temp_space["outfit_exit_data"]
             )
 
             # post exit, pre change
@@ -2995,7 +3038,9 @@ init -3 python:
             self.clothes.entry(
                 self,
                 prev_clothes=prev_cloth,
-                outfit_mode=outfit_mode
+                outfit_mode=outfit_mode,
+                outfit_entry_data=temp_space["outfit_entry_data"],
+                outfit_exit_data=temp_space["outfit_exit_data"]
             )
 
             # post entry point
@@ -3790,6 +3835,20 @@ init -3 python:
 
             # finally return results
             return tuple(state_data)
+
+        def set_acs(self, acs, wear):
+            """
+            Basically a single function so callers don't need to 
+            if-statement-toggle wearing and removal of ACS.
+
+            IN:
+                acs - the ACS to wear or remove
+                wear - pass True to wear ACS, False to remove.
+            """
+            if wear:
+                self.wear_acs(acs)
+            else:
+                self.remove_acs(acs)
 
         def wear_acs(self, acs):
             """
@@ -5006,7 +5065,7 @@ init -3 python:
                         ind_lvl,
                         cls.msj.MPM_AS_BAD_TYPE.format(
                             prop_name,
-                            str(MASSplitAccessory.hl_keys()),
+                            str(MASSplitAccessory.hl_keys_c()),
                             prop_val
                         )
                     ))
@@ -7038,6 +7097,10 @@ init -3 python:
                 are not found.
             pose_arms - MASPoseArms object containing the arms for these
                 clothes.
+            outfit_hair - MASHair object of the hair that should be worn with
+                these clothes in outfit mode
+            outfit_acs - dict of MASAccessory objects of the ACS that should be
+                worn with these clothes in outfit mode
             hl_map - MASHighlightMap with the following format:
                 keys:
                     "0" - body-0 layer
@@ -7053,6 +7116,9 @@ init -3 python:
         """
         import store.mas_sprites as mas_sprites
 
+        delay_outfit_validation = True
+        # global flag - set to False once sprite jsons have been loaded.
+
         __MHM_KEYS = store.mas_sprites._genLK(("0", "1"))
 
         def __init__(self,
@@ -7067,7 +7133,9 @@ init -3 python:
                 exit_pp=None,
                 ex_props=None,
                 pose_arms=None,
-                hl_data=None
+                hl_data=None,
+                outfit_hair=None,
+                outfit_acs=None
             ):
             """
             MASClothes constructor
@@ -7115,6 +7183,17 @@ init -3 python:
                         value: MASFilterMap object, or None if no highlight
                     if None, then no highlights at all.
                     (Default: None)
+                outfit_hair - MASHair object that should be used with these
+                    clothes in outfit mode
+                    (Default: None)
+                outfit_acs - MASAccessory objects that should be used with
+                    these clothes in outfit mode. The following types are
+                    accepted:
+                        1 - dictionary
+                            key: acs name
+                            value: acs object
+                        2 - list of acs names/acs objects - mixed types allowed
+                    (Default: None)
             """
             super(MASClothes, self).__init__(
                 name,
@@ -7129,9 +7208,13 @@ init -3 python:
                 MASClothes._prepare_hl_data(hl_data)
             )
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
+            self.__outfit_proc_acs = {}
+            self.__outfit_proc_hair = None
 
             self.hair_map = hair_map
             self.pose_arms = pose_arms
+            self.outfit_hair = self._format_outfit_hair(outfit_hair)
+            self.outfit_acs = self._format_outfit_acs(outfit_acs)
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -7188,6 +7271,114 @@ init -3 python:
                 return None
 
             return (cls.__MHM_KEYS, hl_def, hl_mapping)
+
+        def _format_outfit_acs(self, outfit_acs_data):
+            """
+            Formats the given data so its ready for outfit_acs property.
+            This also validates the data with the ACS map, and will delay
+            validation until later if needed.
+
+            IN:
+                outfit_acs_data - outfit acs data to format
+
+            RETURNS: data ready for the outfit_acs property
+            """
+            if outfit_acs_data is None:
+                return None
+
+            data = {}
+
+            for acs_name_or_obj in outfit_acs_data:
+                if isinstance(acs_name_or_obj, MASAccessoryBase):
+                    # direct add if obj
+                    data[acs_name_or_obj.name] = acs_name_or_obj
+
+                elif self.delay_outfit_validation:
+                    # save off for lookup later if still in startup
+                    self.__outfit_proc_acs[acs_name_or_obj] = True
+
+                elif acs_name_or_obj in store.mas_sprites.ACS_MAP:
+                    # lookup ACS otherwise
+                    acs = store.mas_sprites.get_sprite(
+                        store.mas_sprites.SP_ACS,
+                        acs_name_or_obj
+                    )
+                    if acs is not None:
+                        data[acs.name] = acs
+
+            if len(data) > 0:
+                return data
+
+            return None
+
+        def _format_outfit_hair(self, outfit_hair_data):
+            """
+            Formats the given data so its ready for the outfit_hair property.
+            This also validates the data with the HAIR map, and will delay
+            validation until later if needed.
+
+            IN:
+                outfit_hair_data - outfit hair data to format
+
+            RETURNS: data ready for the outfit_hair property
+            """
+            if outfit_hair_data is None:
+                return None
+
+            if isinstance(outfit_hair_data, MASHair):
+                # direct obj, this is ok
+                return outfit_hair_data
+
+            if self.delay_outfit_validation:
+                # save off for lookup later if still in startup
+                self.__outfit_proc_hair = outfit_hair_data
+                return None
+
+            return store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                outfit_hair_data
+            )
+
+        def _proc_delayed_outfit_data(self):
+            """
+            Proccesses any delayed outfit hair/acs
+            """
+            # outfit_hair
+            if self.__outfit_proc_hair is not None:
+                self.outfit_hair = store.mas_sprites.get_sprite(
+                    store.mas_sprites.SP_HAIR,
+                    self.__outfit_proc_hair
+                )
+                self.__outfit_proc_hair = None
+
+            # outfit acs
+            data = {}
+            for acs_name in self.__outfit_proc_acs:
+                acs = store.mas_sprites.get_sprite(
+                    store.mas_sprites.SP_ACS,
+                    acs_name
+                )
+                if acs is not None:
+                    data[acs.name] = acs
+
+            self.__outfit_proc_acs = None
+
+            # store delayed outfit acs into outfit_acs
+            if len(data) > 0:
+                if self.outfit_acs is None:
+                    self.outfit_acs = data
+                else:
+                    self.outfit_acs.update(data)
+
+        @classmethod
+        def process_delayed_outfits(cls):
+            """
+            Processes all the delayed outfits data for all clothes.
+            Also sets the delayed outfit validation flag.
+            """
+            cls.delay_outfit_validation = False
+            for c_name in mas_sprites.CLOTH_MAP:
+                mas_sprites.CLOTH_MAP[c_name]._proc_delayed_outfit_data()
 
         def build_loadstrs(self, prefix):
             """
@@ -7390,6 +7581,99 @@ init -3 python:
                     clothes.append(clothing)
 
             return clothes
+
+
+    class MASOutfitChangeData(object):
+        """
+        contains data related to outfit mode changes.
+        Meant to be worked with in prog points.
+
+        Use the functions to modify outfit data as appropriate.
+
+        Supports:
+            - preventing ACS from being removed 
+            - preventing hair or ACS from being worn
+        """
+
+        def __init__(self, hair=None, acs=None):
+            """
+            Constructor
+
+            IN:
+                hair - initial hair to associate with the outfit
+                    (Default: None)
+                acs - dict of ACS to initially associate with the outfit
+                    key: name of the ACS
+                    value: the ACS object
+                    (Default: None)
+            """
+            # setup hair
+            self._hair = hair
+            self._hair_change = False if hair is None else True
+
+            # setup acs
+            if acs is None:
+                acs = {}
+            self._acs = acs
+            self._acs_change = {}
+
+            for acs_name in acs:
+                self._acs_change[acs_name] = True
+
+        def set_acs_change(self, acs_name, value):
+            """
+            Enables or disables a specific ACS changing as part of outfit mode.
+
+            IN:
+                acs_name - the name of the ACS to enable/disable
+                value - pass True to enable, False to disable
+            """
+            if acs_name in self._acs_change:
+                self._acs_change[acs_name] = value
+
+        def set_acs_change_all(self, value):
+            """
+            Enables or disables ALL ACS changing as part of outfit mode
+            
+            IN:
+                value - pass True to enable, False to disable
+            """
+            for acs_name in self._acs_change:
+                self._acs_change[acs_name] = value
+
+        def will_acs_change(self, acs_name):
+            """
+            Checks if a specific acs will change as part of outfit mode.
+
+            IN:
+                acs_name - the name of the ACS to check
+            """
+            return (
+                self._acs_change.get(acs_name, False)
+                and acs_name in self._acs
+            )
+
+        def set_hair_change(self, value):
+            """
+            Enables or disables hair changing as part of outfit mode.
+
+            IN:
+                value - pass True to enable, False to disable.
+                    if there is no hair to change, this value will not change.
+            """
+            if self._hair is not None:
+                self._hair_change = value
+
+        def will_hair_change(self):
+            """
+            Checks if the hair will change as part of outfit mode.
+
+            RETURNS: True if the hair will be changed, False if not
+            """
+            if self._hair is None:
+                return False
+
+            return self._hair_change
 
 
     # The main drawing function...
