@@ -10,7 +10,11 @@ default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_hous
 
 
 init 500 python in mas_nou:
+    # Load sfx assets from disk
     NOU._load_sfx()
+    # Update persistent if needed
+    update_house_rules()
+
 
 # NOU CLASS DEF
 init 5 python in mas_nou:
@@ -3726,7 +3730,8 @@ init 5 python in mas_nou:
             force - bool, do we want to rewrite existing keys?
         """
         if persistent._mas_game_nou_house_rules is None:
-            persistent._mas_game_nou_house_rules = {}
+            persistent._mas_game_nou_house_rules = get_default_house_rules()
+            return
 
         for k, v in DEF_RULES_VALUES.items():
             if k not in persistent._mas_game_nou_house_rules or force:
