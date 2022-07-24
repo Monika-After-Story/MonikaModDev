@@ -33,7 +33,8 @@ init 5 python in mas_nou:
         "points_to_win": 200,
         "starting_cards": 7,
         "stackable_d2": False,
-        "unrestricted_wd4": False
+        "unrestricted_wd4": False,
+        "reflect_chaos": False
     }
 
 
@@ -1158,17 +1159,34 @@ init 5 python in mas_nou:
                 return (
                     (
                         self.discardpile[-1].label == "Wild Draw Four"
-                        and card.label == "Draw Two"
-                        and self.discardpile[-1].color == card.color
+                        and (
+                            (
+                                card.label == "Draw Two"
+                                and self.discardpile[-1].color == card.color
+                            )
+                            or (
+                                get_house_rule("reflect_chaos")
+                                and card.label == "Wild Draw Four"
+                            )
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Draw Two"
-                        and card.label == "Draw Two"
+                        and (
+                            card.label == "Draw Two"
+                            or (
+                                get_house_rule("reflect_chaos")
+                                and card.label == "Wild Draw Four"
+                            )
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Skip"
                         and card.label == "Skip"
-                        and self.discardpile[-1].color == card.color
+                        and (
+                            self.discardpile[-1].color == card.color
+                            or get_house_rule("reflect_chaos")
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Reverse"
@@ -1224,6 +1242,10 @@ init 5 python in mas_nou:
 
                 elif self.discardpile[-1].label == "Wild Draw Four":
                     next_player.should_draw_cards = 4
+
+                    if get_house_rule("reflect_chaos") and get_house_rule("stackable_d2"):
+                        next_player.should_draw_cards += current_player.should_draw_cards
+
                     current_player.should_draw_cards = 0
 
             # if this player should say 'NOU', we'll set the timeout
@@ -2972,18 +2994,23 @@ init 5 python in mas_nou:
                     color = sorted_cards_data[i][0].replace("num_", "")
                     action_cards_ids += cards_data["act_" + color]["ids"]
 
+                # If we can reflect using wd4, add them to the pool
+                if get_house_rule("reflect_chaos"):
+                    action_cards_ids += cards_data["wd4"]["ids"]
+
                 # now try to play actions from our sorted list
                 for id in action_cards_ids:
                     card = self.hand[id]
 
                     if self.game._is_matching_card(self, card):
-                        # NOTE: Since this is the reflect flow, you can't play a wild card here
-                        # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
-                        # if (
-                        #     should_choose_color
-                        #     and card.type == "wild"
-                        # ):
-                        #     card.color = self.choose_color(ignored_card=card)
+                        # NOTE: Usually the only way to reflect other special cards is to play
+                        # an appropriate ACTION card (not WILD card), but with the reflect_chaos
+                        # rule you can reflect using WD4
+                        if (
+                            should_choose_color
+                            and card.type == "wild"
+                        ):
+                            self.chosen_color = self.choose_color(ignored_card=card)
 
                         return card
 
