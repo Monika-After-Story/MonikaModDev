@@ -328,12 +328,12 @@ label before_main_menu:
     return
 
 label quit:
-    python:
+    python hide:
         store.mas_calendar.saveCalendarDatabase(CustomEncoder)
         persistent.sessions['last_session_end']=datetime.datetime.now()
         today_time = (
-            persistent.sessions["last_session_end"]
-            - persistent.sessions["current_session_start"]
+            mas_getLastSeshEnd()
+            - mas_getCurrSeshStart()
         )
         new_time = today_time + persistent.sessions["total_playtime"]
 
