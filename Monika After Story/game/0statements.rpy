@@ -3,6 +3,34 @@ python early in mas_statements:
 
     __AugJumpParseData = namedtuple("__AugJumpParseData", ("label", "is_expression", "arg_info"))
 
+
+    def __aug_jump(label, args, kwargs):
+        """
+        Jumps to the given label and passes the provided args and kwargs
+        You're probably looking for mas_aug_jump which
+            utilises Python's * and ** starred syntax
+
+        IN:
+            label - the label to jump to
+            args - the positional arguments for the label
+            kwargs - the named arguments forthe label
+        """
+        renpy.store._args = args
+        renpy.store._kwargs = kwargs
+        renpy.jump(label)
+
+    def mas_aug_jump(label, *args, **kwargs):
+        """
+        Jumps to the given label and passes the provided args and kwargs
+
+        IN:
+            label - the label to jump to
+            *args - the positional arguments for the label
+            **kwargs - the named arguments forthe label
+        """
+        __aug_jump(label, args, kwargs)
+
+
     def __get_label(parsed_data):
         """
         Returns label from the parsed data
@@ -59,14 +87,10 @@ python early in mas_statements:
         arg_info = parsed_data.arg_info
         if arg_info:
             args, kwargs = arg_info.evaluate()
-            renpy.store._args = args
-            renpy.store._kwargs = kwargs
+            __aug_jump(label_, args, kwargs)
 
         else:
-            renpy.store._args = None
-            renpy.store._kwargs = None
-
-        renpy.jump(label_)
+            __aug_jump(label_, None, None)
 
     def __predict_augmented_jump(parsed_data):
         """
@@ -100,6 +124,8 @@ python early in mas_statements:
         if not renpy.has_label(label_):
             raise Exception("aug_jump is being used with unknown label: '{}'", label_)
 
+
+    # Define the new statement
     renpy.register_statement(
         "aug_jump",
         parse=__parse_augmented_jump,
@@ -107,3 +133,5 @@ python early in mas_statements:
         predict=__predict_augmented_jump,
         lint=__lint_augmented_jump
     )
+    # Expose to the global namespace
+    renpy.store.mas_aug_jump = mas_aug_jump
