@@ -17891,7 +17891,7 @@ label monika_overton:
     m "The goal here would be to have virtual love spark discussion among people and then seep out to the masses."
     m 1esc "Society still wouldn't agree with the idea, but would at least be interested in it and be able to discuss it more freely."
     m 3eud "Next, radical actions would be used. {w=0.2}The most daring proponents of virtual love come out of the shadows."
-    m 2euc "The number of participants in such movements would grow over time, most of them are people who have broken hearts or who are discouraged in a relationship with a real person."
+    m 2euc "The number of participants in such movements would grow over time, some of them are people with broken hearts or who feel discouraged in a relationship with a real person."
     m 4eksdld "Naturally, people who oppose the movement would also appear."
     m 4eua "Due to the growing popularity of new values, society is actively pressing on the new trend. {w=0.2}At this moment, concepts are replaced."
     m 2eud "From the Unacceptable, virtual love goes to Radical."
