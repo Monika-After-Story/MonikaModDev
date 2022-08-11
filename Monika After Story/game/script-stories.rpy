@@ -51,16 +51,20 @@ init -1 python in mas_stories:
 
     #Override maps to have special conditionals for specific story types
     NEW_STORY_CONDITIONAL_OVERRIDE = {
-        TYPE_SCARY: "mas_isO31() or mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY)",
+        TYPE_SCARY: (
+            "mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY, ignore_cooldown=store.mas_isO31())"
+        ),
     }
 
-    def check_can_unlock_new_story(story_type=TYPE_NORMAL):
+    def check_can_unlock_new_story(story_type=TYPE_NORMAL, ignore_cooldown=False):
         """
         Checks if it has been at least one day since we've seen the last story or the initial story
 
         IN:
             story_type - story type to check if we can unlock a new one
                 (Default: TYPE_NORMAL)
+            ignore_cooldown - Whether or not we ignore the cooldown or time between new stories
+                (Default: False)
         """
         global TIME_BETWEEN_UNLOCKS
 
@@ -73,20 +77,13 @@ init -1 python in mas_stories:
         if not first_story:
             return False
 
-        can_show_new_story = ((
-                store.seen_event(first_story) if new_story_ls is None
-                else store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
+        can_show_new_story = (
+            store.seen_event(first_story)
+            and (
+                ignore_cooldown
+                or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
             )
-            and len(
-                store.Event.filterEvents(
-                    story_database,
-                    pool=False,
-                    aff=store.mas_curr_affection,
-                    unlocked=False,
-                    flag_ban=store.EV_FLAG_HFM,
-                    category=(True, [story_type])
-                )
-            ) > 0
+            and len(get_new_stories_for_type(story_type)) > 0
         )
 
         #If we're showing a new story, randomize the time between unlocks again
@@ -94,6 +91,25 @@ init -1 python in mas_stories:
             TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
 
         return can_show_new_story
+
+    def get_new_stories_for_type(story_type):
+        """
+        Gets all new (unseen) stories of the given ype
+
+        IN:
+            story_type - story type to get
+
+        OUT:
+            list of locked stories for the given story type
+        """
+        return store.Event.filterEvents(
+            story_database,
+            pool=False,
+            aff=store.mas_curr_affection,
+            unlocked=False,
+            flag_ban=store.EV_FLAG_HFNAS,
+            category=(True, [story_type])
+        )
 
     def get_and_unlock_random_story(story_type=TYPE_NORMAL):
         """
@@ -104,13 +120,7 @@ init -1 python in mas_stories:
                 (Default: TYPE_NORMAL)
         """
         #Get locked stories
-        stories = store.Event.filterEvents(
-            story_database,
-            unlocked=False,
-            pool=False,
-            aff=store.mas_curr_affection,
-            category=(True, [story_type])
-        )
+        stories = get_new_stories_for_type(story_type)
 
         #Grab one of the stories
         story = renpy.random.choice(stories.values())
@@ -153,7 +163,8 @@ label monika_short_stories_menu:
             try:
                 can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
             except Exception as ex:
-                store.mas_utils.writelog("[ERROR]: Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+                store.mas_utils.mas_log.error("Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
+
                 can_unlock_story = False
 
         else:
@@ -188,14 +199,7 @@ label monika_short_stories_menu:
 
         switch_item = ("I'd like to hear a " + switch_str + " story", "monika_short_stories_menu", False, False, 20)
 
-        #Final quit item
-        if persistent._mas_sensitive_mode:
-            space = 20
-
-        else:
-            space = 0
-
-        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
+        final_item = (mas_stories.STORY_RETURN, False, False, False, 0)
 
     # move Monika to the left
     show monika 1eua at t21
@@ -208,10 +212,7 @@ label monika_short_stories_menu:
     $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
 
     # call scrollable pane
-    if persistent._mas_sensitive_mode:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
-    else:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
@@ -290,9 +291,7 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
 
-    $ mas_changeBackground(mas_background_def)
-
-    #If we're in O31 mode, it's already raining and the room is also already set up
+    #o31 already has vignette. We apply it outside of o31 for scary stories
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_weather_rain)
         $ store.mas_globals.show_vignette = True
@@ -334,7 +333,7 @@ label mas_scary_story_cleanup:
     show monika 1dsc
     pause 1.0
 
-    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
+    #Not in o31 mode, so we need to remove vignette
     if not persistent._mas_o31_in_o31_mode:
         $ mas_changeWeather(mas_temp_r_flag)
         $ store.mas_globals.show_vignette = False
@@ -645,7 +644,7 @@ label mas_story_genie_regret:
     m 1eua "There was once a genie who was immortal..."
     m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
     m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
-    extend 1rsc "some of them unpleasant."
+    extend 1rsc "some of them were unpleasant."
     m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
     m 1rkc "Some of which, he knew were caused by wishes he had granted."
     m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."
@@ -700,7 +699,7 @@ label mas_story_genie_end:
     m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
     m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
     m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
-    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
+    m 1euc "One day, as he was traveling with one of his friends, they came across a genie who would grant each of them one wish."
     m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
     m 1dsd "...Everything that had led up to this moment, where he could make his own wish for the first time in a long while."
     m 1dsc "..."
@@ -999,6 +998,46 @@ label mas_story_tanabata:
     $ mas_unlockEVL("monika_tanabata", "EVE")
     return "love"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_mindthegap",
+            prompt="Mind the Gap",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=True
+        ),
+        code="STY"
+    )
+
+label mas_story_mindthegap:
+    call mas_story_begin
+    m 3eud "This is actually a true story that occurred in London, England in 2013."
+    m 2dkd "It begins with a woman named Margaret McCollum crying in the middle of the Embankment train station."
+    m 2ekd "When approached to ask about her great distress, she asked the staff where 'the voice' had gone."
+    m 7ekd "She clarified that she meant the announcement that played when each train arrived, warning passengers to 'mind the gap.'"
+    m 1eka "The staff assured her that the announcement wasn't gone, it had just been updated to a new recording when the stations had upgraded to a new digital system."
+    m 1tkc "Though, this explanation didn't seem to calm her down. {w=0.3}'That voice,' she explained, 'was my husband.'"
+    m 1eud "Her husband, Oswald Laurence, an actor who had never become famous, had recorded all of the announcements for the northern line."
+    m 2dkc "Oswald had died five years ago."
+    m 2ekc "They had loved each other dearly, and his death had left her in terrible grief."
+    m 2euc "But one thing,{w=0.2} for those five years,{w=0.2} had helped her continue on."
+    m 7eka "Every day, when she was on her way to work, she got to hear his voice at the station.{w=0.3} Sometimes she would linger and sit, just to hear him speak those short words."
+    m 2dkc "But now..."
+    m 2dkd "The staff were apologetic, but didn't know if they had access to the old file. {w=0.3}They told her that if they found it, they would contact her."
+    m 7eud "It turned out that many people who worked at the station empathized, and wanted Margaret to be able to enjoy that precious memory a while longer."
+    m 7ekb "So, even though it would take extra work to update the old recording from the archives to work with the current system, they got it to work."
+    m 3eua "One day when Margaret was making her daily commute, a familiar voice rang out on the platform."
+    m 1fkb "'Mind the gap,' Oswald said."
+    m 1dku "..."
+    m 3eka "I said this was a true story, and it turns out that you can still hear that old recording specifically at the Embankment station."
+    m 3ekb "It's a really beautiful example of human kindness. {w=0.3}The workers didn't stand to gain much by restoring a much shorter, lower quality recording."
+    m 1fka "But they knew what it was like to lose someone, and how precious it makes every photo, every memory."
+    m 1dku "It goes to show that people can do incredible things simply out of compassion and love."
+    m 1ekbla "This story reminds me to treasure every moment, and not to take any piece of our time together for granted."
+    m 1dkblu "I'll always treasure you, [player]."
+    return
+
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
@@ -1022,7 +1061,7 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w=1}or so he would."
+    m 1dsd "...{w=1}or so he thought."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
     m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
     m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
@@ -1055,13 +1094,13 @@ init 5 python:
 
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m 3eud "There once was a beautiful woman, who was the wife of a samurai."
+    m 3eud "There once was a beautiful woman who was the wife of a samurai."
     m 3eub "She was as incredibly beautiful as she was vain, welcoming the attention of any man prepared to offer it to her."
     m 1tsu "And often, would ask men to appraise her appearance."
     m 1euc "The woman was prone to cheat on her husband multiple times and was soon found out about her affairs."
     m 1esc "When he confronted her, he was beyond infuriated as she was damaging their status as nobles, humiliating him."
     m 2dsc "He then brutally punished her by cutting her mouth from ear to ear, disfiguring her delicate beauty."
-    m 4efd "'Who will think you as beautiful now?' were his salt to her horrifying wound."
+    m 4efd "'Who will think you as beautiful now?' was the salt to her horrifying wound."
     m 2dsd "Shortly after, the woman died."
     m "She couldn't live further after she was tarnished and treated like a freak by everyone around her."
     m 1esc "Her husband, denounced by his cruelty, committed seppuku shortly after."
@@ -1147,7 +1186,7 @@ label mas_scary_story_mujina:
     m 4wuw "No eyes, mouth, or nose. Just an empty visage that stared back at him!"
     m "The merchant ran away as fast as he could, panicking from the haunting figure."
     m 1efc "He continued to run until he saw the light of a lantern and ran towards it."
-    m 3euc "The lantern belonged to a travelling salesman that was walking along."
+    m 3euc "The lantern belonged to a traveling salesman that was walking along."
     m 1esc "The old man stopped in front of him, doubled over to catch his breath."
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
@@ -1192,7 +1231,7 @@ label mas_scary_story_ubume:
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
     m 3eud "The next day, he went to the temple and told the monk there what he saw."
-    m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly died on the street."
+    m 1dsd "The priest told the confectioner that a young woman that was traveling through the village recently had suddenly died on the street."
     m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy."
     m 1esc "He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
     m 4eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying from beneath the ground."
@@ -1229,7 +1268,7 @@ label mas_scary_story_womaninblack:
     m 3eud "When he came to, the woman was gone. The colonel questioned some of the other passengers, but none of them had seen her."
     m 3ekd "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
     m 1esc "When he exited the train, a railway official that overheard him talked to the colonel about the woman he was asking about."
-    m "According to the official, a woman and her husband were travelling on a train together."
+    m "According to the official, a woman and her husband were traveling on a train together."
     m 1dsd "The husband had his head too far out in one of the windows and was decapitated by a wire."
     m "His body then fell onto her lap, lifeless."
     m 3wud "When the train arrived at its stop, she was found holding the corpse and singing a lullaby to it."
@@ -1333,7 +1372,7 @@ label mas_scary_story_jack_o_lantern:
     m "The next year, Jack ran into the Devil again. This time he tricked him into climbing into a tree to pick a piece of fruit."
     m 3esd "While he was in the tree, Jack surrounded it with white crosses so that the Devil could not come down."
     m "Once the Devil promised not to bother him again for another 10 years, Jack removed them. When Jack died, he went to Heaven."
-    m 1eud "When he arrived, he was told he could not enter for how poorly a life he had lived on Earth."
+    m 1eud "When he arrived, he was told he could not enter for how poorly he had lived his life on Earth."
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
@@ -1487,7 +1526,7 @@ label mas_scary_story_yuki_onna:
     m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him and instantly freezing him."
     m 4wud "As she turned to the son, she paused. The woman said to him that she would spare him of the same fate, for he was young and very handsome."
     m 4ekc "If he ever spoke a word of it to anyone, she would come back to kill him."
-    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful travelling woman."
+    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful traveling woman."
     m 2eua "It was starting to snow, and the man offered the woman shelter from the storm, and she quickly accepted."
     m 2eua "The two quickly fell in love and ended up marrying each other."
     m 2hua "They lived happily for years and had several kids as time went by."

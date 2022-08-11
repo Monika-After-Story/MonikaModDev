@@ -1,0 +1,28 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_earrings_musicnotes",
+    "img_sit": "briaryoung_earrings_musicnotes",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 10,
+    "acs_type": "earrings",
+    "mux_type": [
+        "earrings"
+    ],
+    "stay_on_start": true,
+    "giftname": "musicnoteearrings",
+    "dlg_desc": "music note earrings",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Music note earrings",
+        "thumb": "briaryoung_earrings_musicnotes",
+        "group": "earrings",
+        "select_dlg": [
+            "Cute huh?"
+        ]
+    }
+}

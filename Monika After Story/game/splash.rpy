@@ -175,17 +175,14 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
-    if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
-        # we have a corrupted persistent but was unable to recover via the
-        # backup system
-        call mas_backups_you_have_corrupted_persistent
+    if store.mas_per_check.should_show_chibika_persistent():
+        # we have a corrupted per w/ no backups or incompatible per
+        call mas_backups_you_have_bad_persistent
 
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
-    default persistent.first_run = False
-    $ persistent.tried_skip = False
-    if not persistent.first_run:
+    if persistent.first_run:
         $ quick_menu = False
         pause 0.5
         scene tos
@@ -206,10 +203,10 @@ label splashscreen:
         with Dissolve(1.5)
 
         #Optional, load a copy of DDLC save data
-        if not persistent.has_merged:
+        if not persistent._mas_imported_saves:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
-        $ persistent.first_run = True
+        $ persistent.first_run = False
 
 #    $ basedir = config.basedir.replace('\\', '/')
 #   NOTE: this keeps screwing with my syntax coloring
@@ -287,6 +284,8 @@ label autoload:
         if "_old_history" in globals():
             _history = _old_history
             del _old_history
+        # Open the settings panel in the menu
+        _game_menu_screen = "preferences"
         renpy.block_rollback()
 
         # Fix the game context (normally done when loading save file)
@@ -357,9 +356,6 @@ label quit:
         # save bgs
         store.mas_background.saveMBGData()
 
-        # remove special images
-        store.mas_island_event.removeImages()
-
         #remove o31 cgs
         store.mas_o31_event.removeImages()
 
@@ -379,4 +375,6 @@ label quit:
         # xp calc
         store.mas_xp.grant()
 
+        # finish logs
+        store.mas_logging.logging.shutdown()
     return
