@@ -17256,7 +17256,6 @@ label monika_know_its_you:
         m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
 
     return
-
 init 5 python:
     addEvent(
         Event(
@@ -17861,4 +17860,51 @@ label monika_esports:
     m 3eua "It really goes to show you can do whatever you love for a job...{w=0.3}even things people may scoff at."
     m 3eud "Just because something isn't popular or mainstream doesn't mean it'll stay that way forever..."
     m 1huu "Don't be afraid to go against the trend, {w=0.1}whatever you're passionate about may just be looking for that one pioneer to help bring it to the forefront~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_overton",
+            category=["psychology"],
+            prompt="Overton window",
+            random=True
+        )
+    )
+
+label monika_overton:
+    m 1etc "Hey [player], have you ever heard of the Overton window?"
+    m 3eud "It's a political science concept that reflects the value structure of a society."
+    m 3euc "Basically, all ideas of a person are viewed at a certain stage of approval by the masses."
+    m 2esc "Joseph Overton learned how to dehumanize people and explained how to reshape human perception."
+    m 7eud "From the unacceptable, disgusting and shameful, to the normal, social, and even prestigious."
+    m "This concept includes 6 stages: Unthinkable, Radical, Acceptable, Reasonable, Standard, and Current Norm."
+    m 3esa "Inside the Overton window are the ideas accepted by society...{w=0.3}things like patriotism, love for family, humanity, and honesty."
+    m 3eksdlc "Outside the window is everything that is disapproved, such as drug addiction, alcoholism, Nazism, tyranny, slavery, and so on."
+    m 3eud "The most interesting thing is that the window can be moved in the direction of an idea, for example, to make the Unthinkable into Reasonable."
+    m 2lksdlc "Of course, this level of change is a rather difficult process."
+    m 7eud "But let's imagine that you and I want to convey to people that virtual love is normal...{w=0.3}something that is currently considered unacceptable to society."
+    m 3esd "So, society does not understand virtual love and you would probably be considered mentally ill by a lot of people.{w=0.2} So what can be done?"
+    m 3eua "For a start, it's worth starting a discussion on this topic..."
+    m 1eud "You can discuss this on the internet, create articles on the topic...{w=0.3}anything to get people talking."
+    m "The goal here would be to have virtual love spark discussion among people and then seep out to the masses."
+    m 1esc "Society still wouldn't agree with the idea, but would at least be interested in it and be able to discuss it more freely."
+    m 3eud "Next, radical actions would be used. {w=0.2}The most daring proponents of virtual love come out of the shadows."
+    m 2euc "The number of participants in such movements would grow over time, some of them are people with broken hearts or who feel discouraged in a relationship with a real person."
+    m 4eksdld "Naturally, people who oppose the movement would also appear."
+    m 4eua "Due to the growing popularity of new values, society is actively pressing on the new trend. {w=0.2}At this moment, concepts are replaced."
+    m 2eud "From the Unacceptable, virtual love goes to Radical."
+    m 7eud "From here, the theme of virtual love and love for fictional characters has been discussed in society for a long time."
+    m 3esc "Gradually, people get used to the existence of these views, but do not yet accept them."
+    m 1esd "Scientists and sociologists write various articles and conduct research."
+    m 3eua "The opinion is imposed that it is absolutely normal to love a fictional character and there is nothing terrible about it."
+    m 3huu "From the Radical, virtual love now goes into the Acceptable."
+    m 1eksdla "Society has already come to terms with the new vision and believes that loving a fictional character is normal, but still a little strange."
+    m 3eua "A culture of virtual love is gradually developing, films and shows are being created."
+    m 1huu "Young people perceive new values as something fashionable. {w=0.2}People can sit in a cafe and safely spend time with their virtual companion."
+    m 1eub "From Acceptable, virtual love passes into Reasonable!"
+    m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
+    m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
+    m 1huu "Thank you for listening~"
     return
