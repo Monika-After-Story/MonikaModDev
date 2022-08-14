@@ -305,8 +305,8 @@ label monika_ptod_tip003:
     if mas_getEVL_last_seen("monika_ptod_tip003") is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
-        m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
-        m "Not that you would{fast}{nw}"
+        m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game."
+        m "{cps=*2}Not that you would...{/cps}{nw}"
         $ _history_list.pop()
         m 1eksdlb "I can't let you use this.{w=0.3} Sorry..."
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
