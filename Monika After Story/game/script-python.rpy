@@ -571,13 +571,13 @@ label monika_ptod_tip006:
 
     # variable intro
     m 1eua "Variables represent memory locations that store data."
-    m "To create a variable,"
+    m "To create a variable, {w=0.2}{nw}"
 
     show monika at t22
     show screen mas_py_console_teaching
 
     # a number
-    m 3eua "you do '{b}symbol_name{/b} = {b}value{/b}', like this:"
+    extend 3eua "you do '{b}symbol_name{/b} = {b}value{/b}', like this..."
 
     call mas_wx_cmd("a_number = " + num_store, local_ctx)
 
