@@ -966,7 +966,7 @@ label mas_chess_remenu:
                 m 3eub "Naturally, {i}Normal Chess{/i} means the standard chess."
                 m 3eua "And {i}Randomzied Chess{/i} is a mode based on {i}Really Bad Chess{/i}."
                 m 1eub "We get completely random pieces, introduce luck the factor to make it a bit of fun for players of any level."
-                m 3eua  "And for a fair random, we have {i}Chess 960{/i} mode, also known as {i}Fischer Random Chess{/i}, since it's Fischer who invented this mode."
+                m 3eua "And for a fair random, we have {i}Chess 960{/i} mode, also known as {i}Fischer Random Chess{/i}, since it's Fischer who invented this mode."
                 m "In this mode, each player's back-row pieces were randomly shuffled, while ensuring that the two bishops were of different colors and two rooks were placed on either side of the king."
                 m 1hua "Under this, there were 960 possible starting positions, so it was called Chess 960."
                 m 1eub "In this way, heavy opening theory can be avoided, and the real test of the player's understanding of chess is coming."
