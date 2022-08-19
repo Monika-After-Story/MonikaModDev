@@ -876,6 +876,7 @@ label mas_chess_remenu:
                     ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960))
                 ],
                 "final_items": [
+                    ("Could you explain these modes?", 0, False, False, 20),
                     ("Ruleset", "ruleset_select", False, False, 20),
                     ("Practice or Play", "mode_select", False, False, 0),
                     ("Color", "color_select", False, False, 0),
@@ -958,7 +959,22 @@ label mas_chess_remenu:
 
         #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            $ chessmode = _return
+            if _return is 0:
+                # Take Monika back, so we won't face an empty right-side screen.
+                show monika at t11
+
+                m 3eub "Naturally, {i}Normal Chess{/i} means the standard chess."
+                m 3eua "And {i}Randomzied Chess{/i} is a mode based on {i}Really Bad Chess{/i}."
+                m 1eub "We get completely random pieces, introduce luck the factor to make it a bit of fun for players of any level."
+                m 3eua  "And for a fair random, we have {i}Chess 960{/i} mode, also known as {i}Fischer Random Chess{/i}, since it's Fischer who invented this mode."
+                m "In this mode, each player's back-row pieces were randomly shuffled, while ensuring that the two bishops were of different colors and two rooks were placed on either side of the king."
+                m 1hua "Under this, there were 960 possible starting positions, so it was called Chess 960."
+                m 1eub "In this way, heavy opening theory can be avoided, and the real test of the player's understanding of chess is coming."
+
+                # There goes our Monika again.
+                show monika at t21
+            else:
+                $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
