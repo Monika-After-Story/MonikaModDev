@@ -1045,6 +1045,13 @@ init 5 python:
     )
 
 label greeting_glitch:
+    if not mas_safeToRefDokis():
+        if mas_isMoniNormal(higher=True):
+            m 1hua "Welcome back, [mas_get_player_nickname()]!"
+        else:
+            m 2hua "Welcome back, [player]."
+        return
+    
     hide monika
     show yuri glitch zorder MAS_BACKGROUND_Z
     y "{cps=500}[player]?!{nw}{/cps}"
