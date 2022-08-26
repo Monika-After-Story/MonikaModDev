@@ -187,14 +187,10 @@ python early:
                         obj = getattr(obj, i)
 
                     else:
-                        # convert the accessor only if obj isn't a dict
-                        # so the accessor is always a long for other iterables
-                        if not isinstance(obj, dict):
-                            i = long(i)
-
                         obj = obj[i]
 
-            return obj, first
+            #Fixes an internal renpy change to the convert_field method where it requires a tuple in the first position
+            return (obj, kwargs), first
 
     # allows us to use a more advanced string formatting
     renpy.substitutions.formatter = MASFormatter()
