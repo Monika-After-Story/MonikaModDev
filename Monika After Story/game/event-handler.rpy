@@ -102,10 +102,10 @@ init -999 python in mas_ev_data_ver:
 
         # list types
         if val_type in (
-                __builtin__.list,
+                __builtins__.list,
                 renpy.python.RevertableList,
-                __builtin__.set,
-                __builtin__.frozenset,
+                __builtins__.set,
+                __builtins__.frozenset,
                 renpy.python.RevertableSet,
                 tuple,
         ):
