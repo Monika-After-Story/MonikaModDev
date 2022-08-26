@@ -3838,7 +3838,7 @@ init -3 python:
 
         def set_acs(self, acs, wear):
             """
-            Basically a single function so callers don't need to 
+            Basically a single function so callers don't need to
             if-statement-toggle wearing and removal of ACS.
 
             IN:
@@ -7591,7 +7591,7 @@ init -3 python:
         Use the functions to modify outfit data as appropriate.
 
         Supports:
-            - preventing ACS from being removed 
+            - preventing ACS from being removed
             - preventing hair or ACS from being worn
         """
 
@@ -7634,7 +7634,7 @@ init -3 python:
         def set_acs_change_all(self, value):
             """
             Enables or disables ALL ACS changing as part of outfit mode
-            
+
             IN:
                 value - pass True to enable, False to disable
             """
@@ -9451,7 +9451,7 @@ python early:
             width = min(top.width, bottom.width)
             height = min(top.height, bottom.height)
 
-            rv = renpy.display.render.Render(width, height, opaque=not self.alpha)
+            rv = renpy.display.render.Render(width, height) #opaque=not self.alpha)
 
             rv.operation = renpy.display.render.DISSOLVE
             rv.operation_alpha = self.alpha
