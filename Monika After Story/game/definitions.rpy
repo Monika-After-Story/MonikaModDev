@@ -370,6 +370,16 @@ python early:
             f = io.BytesIO(self.data)
             return renpy.display.pgrender.load_image(f, self.filename)
 
+    #Stuff we need from base DDLC
+    nonunicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+
+    def glitchtext(length):
+        output = ""
+        for x in range(length):
+            output += random.choice(nonunicode)
+
+        return output
+
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
 
