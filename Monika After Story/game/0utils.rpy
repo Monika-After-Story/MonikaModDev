@@ -624,6 +624,89 @@ python early in mas_utils:
         trydel(old_path)
 
 
+    class IsolatedFlexProp(object):
+        """
+        class that supports flexible attributes.
+        all attributes that are set are stored in a 
+        separate internal structure. Supports a few additional behaviors
+        because of this.
+
+        Supports:
+            - extracting the vars that were manually set into a dict format
+                - _to_dict/_from_dict
+            - clearing all vars that were manually set
+                - _clear
+            - direct attribute get/set (obj.attribute)
+            - key-based get/set (obj[key])
+                Don't use this to access built-ins.
+            - attribute existence ("attribute" in obj)
+        """
+        __slots__ = ("_default_val", "_set_vars")
+
+        def __init__(self, default_val=None):
+            """
+            Constructor
+
+            IN:
+                default_val - the value to return as default when retrieving
+                    a prop that does not exist.
+                    (Default: None)
+            """
+            self._default_val = default_val
+            self._set_vars = {}
+
+        def __repr__(self):
+            return "<{}: (def value: {}, data: {})>".format(
+                type(self).__name__,
+                self._default_val,
+                self._set_vars
+            )
+
+        def __contains__(self, item):
+            return item in self._set_vars
+
+        def __getattr__(self, name):
+            if name.startswith("_"):
+                return super(IsolatedFlexProp, self).__getattribute__(name)
+            return self._set_vars.get(name, self._default_val)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                super(IsolatedFlexProp, self).__setattr__(name, value)
+            else:
+                self._set_vars[name] = value
+
+        def __getitem__(self, key):
+            return self.__getattr__(key)
+
+        def __setitem__(self, key, value):
+            self.__setattr__(key, value)
+
+        def _clear(self):
+            """
+            Clears manually set attributes
+            """
+            self._set_vars.clear()
+
+        def _from_dict(self, data):
+            """
+            sets internal data using a dict
+
+            IN:
+                data - dictionary to load from
+            """
+            for key in data:
+                self[key] = data[key]
+
+        def _to_dict(self):
+            """
+            Returns manually set data in raw format for persistent
+
+            RETURNS: dict of the manually set data (shallow copy)
+            """
+            return dict(self._set_vars)
+
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker

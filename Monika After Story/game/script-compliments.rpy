@@ -234,7 +234,7 @@ label mas_compliment_goodmood_2:
         m 1dkbsu "..."
         m 2tubla "On that note, I have a secret I have to tell you..."
         m 2tublu "You might not have noticed this, buuut..."
-        m 7tublb "{i}You{/i} always put {i}me{/} in a good mood, [mas_get_player_nickname()]!"
+        m 7tublb "{i}You{/i} always put {i}me{/i} in a good mood, [mas_get_player_nickname()]!"
         m 3hublb "Ahaha!"
         m 3eubsa "Let's continue to do our best for each other, okay?"
         m 1ekbsu "I love you~"
