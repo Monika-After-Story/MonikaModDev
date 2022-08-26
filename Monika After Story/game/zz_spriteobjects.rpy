@@ -1456,13 +1456,13 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_christmascookies)
 
-    ### HANAMI DANGO
-    ## hanami_dango
-    # Hanami dango that sits on Monika's desk for her to eat
+    ### SANSHOKU DANGO
+    ## sanshoku_dango
+    # Sanshoku dango that sits on Monika's desk for her to eat
     # thanks JMO
-    mas_acs_hanami_dango = MASAccessory(
-        "hanami_dango",
-        "hanami_dango",
+    mas_acs_sanshoku_dango = MASAccessory(
+        "sanshoku_dango",
+        "sanshoku_dango",
         MASPoseMap(
             default="0",
             use_reg_for_l=True
@@ -1472,7 +1472,7 @@ init -1 python:
         mux_type=store.mas_sprites.DEF_MUX_LD,
         keep_on_desk=True
     )
-    store.mas_sprites.init_acs(mas_acs_hanami_dango)
+    store.mas_sprites.init_acs(mas_acs_sanshoku_dango)
 
     ### COFFEE MUG
     ## mug

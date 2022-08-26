@@ -1889,14 +1889,14 @@ label mas_reaction_candycane:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_hanamidango", "hanamidango", is_good=True, exclude_on=["d25g"])
+    addReaction("mas_reaction_gift_sanshokudango", "sanshokudango", is_good=True, exclude_on=["d25g"])
 
-label mas_reaction_gift_hanamidango:
+label mas_reaction_gift_sanshokudango:
     #Even if we don't "accept" it, we still register it was given
-    $ mas_receivedGift("mas_reaction_gift_hanamidango")
+    $ mas_receivedGift("mas_reaction_gift_sanshokudango")
 
     #Check if we accept this
-    if mas_consumable_hanami_dango.isMaxedStock():
+    if mas_consumable_sanshoku_dango.isMaxedStock():
         m 1rksdlb "Ahaha..."
         m "I don't know if I'm going to be able to eat all of these dango, [player]."
         m 1eka "Let's wait until I've gone through my stock a bit more, okay?"
@@ -1905,8 +1905,8 @@ label mas_reaction_gift_hanamidango:
         m 1wub "Oh!{w=0.2} {nw}"
         extend 3hub "Dango!"
 
-        if mas_consumable_hanami_dango.enabled():
-            if mas_consumable_hanami_dango.hasServing():
+        if mas_consumable_sanshoku_dango.enabled():
+            if mas_consumable_sanshoku_dango.hasServing():
                 $ mas_giftCapGainAff(0.5)
                 m 1hub "These make such a delicious snack!"
                 m 1hua "Thank you for getting me more of them."
@@ -1919,15 +1919,15 @@ label mas_reaction_gift_hanamidango:
             if not is_having_food:
                 if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
                     $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
-                $ hanami_dango.have(skip_leadin=True)
+                $ sanshoku_dango.have(skip_leadin=True)
                 
             $ mas_giftCapGainAff(5)
-            m 1eub "If you didn't know, these are a street food in Japan. This variant is especially popular during cherry blossom viewings."
+            m 1eub "These are a pretty common street food in Japan. This variant is especially popular during cherry blossom viewings."
             m 3hua "Each color has a bit of a different taste, but all three have a mild sweetness."
             m 1hubla "They remind me of being at a festival, enjoying a snack while taking in the sights."
 
             if (
-                not mas_consumable_hanami_dango.isConsTime()
+                not mas_consumable_sanshoku_dango.isConsTime()
                 or bool(MASConsumable._getCurrentFood())
             ):
                 m 3eua "I'll be sure to have some later!"
@@ -1940,13 +1940,13 @@ label mas_reaction_gift_hanamidango:
                 call mas_transition_from_emptydesk
                 
             else:
-                $ mas_consumable_hanami_dango.prepare()
+                $ mas_consumable_sanshoku_dango.prepare()
 
-            $ mas_consumable_hanami_dango.enable()
+            $ mas_consumable_sanshoku_dango.enable()
 
-    $ mas_consumable_hanami_dango.restock()
+    $ mas_consumable_sanshoku_dango.restock()
 
-    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_hanamidango", "category"))
+    $ store.mas_filereacts.delete_file(mas_getEVLPropValue("mas_reaction_gift_sanshokudango", "category"))
     return
 
 #Ribbon stuffs
