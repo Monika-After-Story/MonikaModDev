@@ -102,10 +102,10 @@ init -999 python in mas_ev_data_ver:
 
         # list types
         if val_type in (
-                __builtins__.list,
+                builtins.list,
                 renpy.python.RevertableList,
-                __builtins__.set,
-                __builtins__.frozenset,
+                builtins.set,
+                builtins.frozenset,
                 renpy.python.RevertableSet,
                 tuple,
         ):
@@ -115,7 +115,7 @@ init -999 python in mas_ev_data_ver:
             return True
 
         # dict types
-        if val_type in (__builtin__.dict, renpy.python.RevertableDict):
+        if val_type in (builtins.dict, renpy.python.RevertableDict):
             for sub_key in val:
                 if (
                         not __strict_can_pickle(sub_key)
