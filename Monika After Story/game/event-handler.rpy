@@ -90,7 +90,6 @@ init -999 python in mas_ev_data_ver:
                 bool,
                 int,
                 float,
-                long,
                 complex,
                 datetime.timedelta,
                 datetime.date,
