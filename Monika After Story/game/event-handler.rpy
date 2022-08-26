@@ -86,7 +86,6 @@ init -999 python in mas_ev_data_ver:
         val_type = type(val)
         if val_type in (
                 str,
-                unicode,
                 bool,
                 int,
                 float,
