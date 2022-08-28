@@ -374,7 +374,7 @@ init -1510 python in mas_can_import:
                 exp - current exception if available.
                     (Default: None)
             """
-            mas_log = mas_logging.init_log("mas_log")
+            mas_log = mas_utils.init_mas_log()
             mas_log.error(self._IMPORT_ERR.format(
                 self.module_name,
                 "" if exp is None else repr(exp)

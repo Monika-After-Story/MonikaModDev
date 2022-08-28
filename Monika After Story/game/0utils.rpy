@@ -261,7 +261,6 @@ python early in mas_logging:
     def init_log(name, append=True, formatter=None, adapter_ctor=None, header=None, rotations=5):
         """
         Initializes a logger with a handler with the name and files given.
-        Will return existing log object if already init.
 
         IN:
             name - name of the logger, this will be the same as the file, with the file appending '.txt'
@@ -280,12 +279,7 @@ python early in mas_logging:
 
         NOTE: ALL LOGS ARE IN renpy.config.basedir/log/
         All logs flush and rotate once they're 5 mb in size.
-
-        RETURNS: logger object
         """
-        if is_inited(name):
-            return LOG_MAP[name]
-
         _kwargs = {
             "filename": os.path.join(LOG_PATH, name + '.log'),
             "mode": ("a" if append else "w"),
@@ -342,6 +336,19 @@ python early in mas_logging:
 
         return log
 
+
+    def get_log(name):
+        """
+        Gets a log from the log map
+
+        IN:
+            name - log name
+
+        RETURNS: log, or None if no log
+        """
+        return LOG_MAP.get(name)
+
+
     def is_inited(name):
         """
         Checks if a log has been inited
@@ -364,7 +371,23 @@ python early in mas_utils:
     import functools
 
     from store import mas_logging
-    mas_log = mas_logging.init_log("mas_log")
+
+    
+    def init_mas_log():
+        """
+        Initializes the MAS log, or gets it if its already init.
+
+        RETURNS: the init'd mas_log
+        """
+        if mas_logging.is_inited("mas_log"):
+            return mas_logging.get_log("mas_log")
+
+        global mas_log
+        mas_log = mas_logging.init_log("mas_log")
+        return mas_log
+
+
+    mas_log = init_mas_log()
 
 
     def deprecated(use_instead=None, should_raise=False):
