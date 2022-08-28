@@ -2597,6 +2597,7 @@ init 189 python in mas_sprites_json:
             try:
                 addSpriteObject(j_path, post_proc_data)
             except Exception as e:
+                # TODO - ValueError is the real exception
                 log.exception(e)
 
 

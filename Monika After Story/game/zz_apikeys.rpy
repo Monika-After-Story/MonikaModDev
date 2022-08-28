@@ -512,6 +512,12 @@ init -980 python in mas_api_keys:
         Loads API keys from config file
         """
         try:
+            if not os.access(Data.FILEPATH_KEYS, os.F_OK | os.R_OK | os.W_OK):
+                return
+        except:
+            return
+
+        try:
             with open(Data.FILEPATH_KEYS, "r") as keys:
                 loaded_keys = json.load(keys)
 
@@ -535,6 +541,9 @@ init -980 python in mas_api_keys:
         """
         Saves API keys to disk
         """
+        if len(Data.api_keys) < 1:
+            return
+
         try:
             with open(Data.FILEPATH_KEYS, "w") as keys:
                 json.dump(Data.api_keys, keys)
