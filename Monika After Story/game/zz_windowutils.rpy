@@ -40,7 +40,7 @@ init python in mas_windowutils:
     import os
 
     import store
-    import mas_utils
+    from store import mas_utils
     #The initial setup
 
     # The window object, used on Linux systems, otherwise always None
