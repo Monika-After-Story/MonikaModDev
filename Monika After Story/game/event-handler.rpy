@@ -2773,6 +2773,14 @@ init python:
 
     def seen_event(event_label):
         """
+        Please use mas_seenEvent, this function hasn't been deprecated
+        only because it's used a lot in event conditionals
+        and I don't want to update them all
+        """
+        return mas_seenEvent(event_label)
+
+    def mas_seenEvent(event_label):
+        """
         This checks if an event has either been seen or is already in the
         event list.
 
@@ -2782,10 +2790,7 @@ init python:
         ASSUMES:
             persistent.event_list
         """
-        if renpy.seen_label(event_label) or mas_inEVL(event_label):
-            return True
-        else:
-            return False
+        return renpy.seen_label(event_label) or mas_inEVL(event_label)
 
 
     def mas_findEVL(event_label):
