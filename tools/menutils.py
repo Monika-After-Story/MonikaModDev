@@ -15,6 +15,7 @@
 
 import os
 import platform
+from typing import Any
 
 HEADER = """\n\n\
 #=============================================================================#
@@ -44,7 +45,7 @@ __PREV = "p"
 __QUIT = "q"
 
 
-def menu(menu_opts, defindex=None):
+def menu(menu_opts: tuple[str, Any], defindex=None) -> Any | None:
     """
     Generates a menu and returns the desired menu action
 
