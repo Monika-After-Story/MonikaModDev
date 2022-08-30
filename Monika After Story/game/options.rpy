@@ -126,26 +126,34 @@ init python:
 
     ## These files will be included in the package
     # Add mod assets
-    build.classify("game/mod_assets/**", build.name)
-    build.classify("game/gui/**", build.name)
-    # Add scripts in the 'game/' folder
-    # build.classify("game/*.rpy", build.name) # Optional, includes source
-    build.classify("game/*.rpyc", build.name)
+    build.classify("game/mod_assets/**", "all")
+    build.classify("game/gui/**", "all")
+    # Add scripts in the game folder
+    # build.classify("game/*.rpy", "all") # Optional, includes source
+    build.classify("game/*.rpyc", "all")
     # Add python packages
-    build.classify("game/python-packages/**", build.name)
+    build.classify("game/python-packages/**", "all")
     # Add README
-    build.classify("README.html", build.name)
+    build.classify("README.html", "all")
     # Add icons (NOTE: unused)
-    build.classify("CustomIcon**.**", build.name)
+    build.classify("CustomIcon**.**", "all")
     # Add lib and renpy
-    # build.classify("lib/**", build.name)
-    # build.classify("renpy/**", build.name)
+    # build.classify("lib/**", "all")
+    # build.classify("renpy/**", "all")
 
-    build.package(build.directory_name + "Mod", "zip", build.name, description="DDLC Compatible Mod")
+    # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
 
     ## These files will be excluded
-    # Remove everything else
-    build.classify("**/**", None)
+    # Remove everything else from the game folder
+    build.classify("game/**", None)
+    # build.classify("**.bak", None)
+    # build.classify("**.rpy", None)
+    # build.classify("**.rpa", None)
+    # Remove cache
+    build.classify("/game/cache/**", None)
+    build.classify("/game/saves/**", None)
+    # Remove logs
+    build.classify("log/**", None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
