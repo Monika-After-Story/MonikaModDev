@@ -1088,27 +1088,6 @@ init -5 python in mas_sprites:
             return allow_none
         return _verify_uprightpose(val) or _verify_leaningpose(val)
 
-    @store.mas_utils.deprecated(should_raise=True)
-    def acs_lean_mode(sprite_list, lean):
-        """
-        NOTE: DEPRECATED
-
-        Adds the appropriate accessory prefix dpenedong on lean
-
-        IN:
-            sprite_list - list to add sprites to
-            lean - type of lean
-        """
-        if lean:
-            sprite_list.extend((
-                PREFIX_ACS_LEAN,
-                lean,
-                ART_DLM
-            ))
-
-        else:
-            sprite_list.append(PREFIX_ACS)
-
 
     def face_lean_mode(lean):
         """
