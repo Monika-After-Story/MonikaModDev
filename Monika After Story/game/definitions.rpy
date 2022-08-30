@@ -1658,148 +1658,6 @@ python early:
 
             return eventlabels
 
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkConditionals(events, rebuild_ev=False):
-            # NOTE: DEPRECATED
-            #
-            # This checks the conditionals for all of the events in the event list
-            # if any evaluate to true, run the desired action then clear the
-            # conditional.
-            #
-            # IN:
-            #   rebulid_ev - pass in True to notify idle to rebuild events
-            #       if a random action occured.
-            import datetime
-
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            _now = datetime.datetime.now()
-
-            for ev_label,ev in events.items():
-                # TODO: honestly, we should index events with conditionals
-                #   so we only check what needs to be checked. Its a bit of an
-                #   annoyance to check all of these properties once per minute.
-
-                # NOTE: we only check events with:
-                #   - a conditional property
-                #   - current affection is within aff_range
-                #   - has None for date properties
-
-                if (
-                        # has conditional property
-                        ev.conditional is not None
-
-                        # within aff range
-                        and ev.checkAffection(mas_curr_affection)
-
-                        # no date props
-                        and ev.start_date is None
-                        and ev.end_date is None
-
-                        # check if the action is valid
-                        and ev.action in Event.ACTION_MAP
-
-                        # finally check if the conditional is true
-                        and eval(ev.conditional)
-                    ):
-
-                    # perform action
-                    Event._performAction(
-                        ev,
-                        unlock_time=_now,
-                        rebuild_ev=rebuild_ev
-                    )
-
-                    #Clear the conditional
-                    ev.conditional = None
-
-
-            return events
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkCalendar(events):
-            # NOTE: DEPRECATED
-            #
-            # This checks the date for all events to see if they are active.
-            # If they are active, then it checks for a conditional, and evaluates
-            # if an action should be run.
-            import datetime
-
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # dict check
-            ev_list = events.keys() # python 2
-
-            current_time = datetime.datetime.now()
-            # insertion sort
-            for ev in ev_list:
-
-                e = events[ev]
-
-                #If the event has no time-dependence, don't check it
-                if (e.start_date is None) and (e.end_date is None):
-                    continue
-
-                #Calendar must be based on a date
-                if e.start_date is not None:
-                    if e.start_date > current_time:
-                        continue
-
-                if e.end_date is not None:
-                    if e.end_date <= current_time:
-                        continue
-
-                if e.conditional is not None:
-                    if not eval(e.conditional):
-                        continue
-
-
-                if e.action in Event.ACTION_MAP:
-                    # perform action
-                    Event._performAction(e, unlock_time=current_time)
-
-                    # Check if we have a years property
-                    if e.years is not None:
-
-                        # if it's an empty list
-                        if len(e.years) == 0:
-
-                            # get event ready for next year
-                            e.start_date = store.mas_utils.add_years(e.start_date, 1)
-                            e.end_date = store.mas_utils.add_years(e.end_date, 1)
-                            continue
-
-                        # if it's not empty, get all the years that are in the future
-                        new_years = [year for year in e.years if year > e.start_date.year]
-
-                        # if we have possible new years
-                        if len(new_years) > 0:
-                            # sort them to ensure we get the nearest one
-                            new_years.sort()
-
-                            # pick it
-                            new_year = new_years[0]
-
-                            # get the difference
-                            diff = new_year - e.start_date.year
-
-                            # update event for the year it should repeat
-                            e.start_date = store.mas_utils.add_years(e.start_date, diff)
-                            e.end_date = store.mas_utils.add_years(e.end_date, diff)
-                            continue
-
-                    # Clear the conditional since the event shouldn't repeat
-                    events[ev].conditional = "False"
-
-            return events
-
-
         @staticmethod
         def _checkEvent(ev, curr_time):
             """
@@ -1848,8 +1706,15 @@ python early:
             _now = datetime.datetime.now()
 
             for ev_label,ev in ev_dict.items():
-                # TODO: same TODO as in checkConditionals.
-                #   indexing would be smarter.
+                # TODO: honestly, we should index events with conditionals
+                #   so we only check what needs to be checked. Its a bit of an
+                #   annoyance to check all of these properties once per minute.
+
+                # NOTE: we only check events with:
+                #   - a conditional property
+                #   - current affection is within aff_range
+                #   - has None for date properties
+                # indexing would be smarter.
 
                 if Event._checkEvent(ev, _now):
                     # perform action
@@ -1866,87 +1731,6 @@ python early:
                         ev.action = None
 
             return
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def _checkRepeatRule(ev, check_time, defval=True):
-            """DEPRECATED
-
-            (remove when farewells is updated)
-
-            Checks a single event against its repeat rules, which are evaled
-            to a time.
-            NOTE: no sanity checks
-            TODO: include checkConditional
-
-            IN:
-                ev - single event to check
-                check_time - datetime used to check time rules
-                defval - defval to pass into the rules
-                    (Default: True)
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            # check if the event contains a MASSelectiveRepeatRule and
-            # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(
-                    check_time, ev, defval=defval
-                ):
-                return True
-
-            # check if the event contains a MASNumericalRepeatRule and
-            # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(
-                    check_time, ev, defval=defval
-                ):
-                return True
-
-            return False
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkRepeatRules(events, check_time=None):
-            """DEPRECATED
-
-            (remove when farewells is updated)
-
-            checks the event dict against repeat rules, which are evaluated
-            to a time.
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-                check_time - the datetime object that will be used to check the
-                    timed rules, if none is passed we check against the current time
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-                for the given check_time
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # if check_time is none we check against current time
-            if check_time is None:
-                check_time = datetime.datetime.now()
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.items():
-                if Event._checkRepeatRule(event, check_time, defval=False):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    available_events[event.eventlabel] = event
-
-            # return the available events dict
-            return available_events
-
 
         @staticmethod
         def _checkFarewellRule(ev):
@@ -3062,17 +2846,6 @@ python early:
                 self.corners[0],
                 self.corners[-1]
             ))
-
-# init -1 python:
-    @store.mas_utils.deprecated(should_raise=True)
-    class MASInteractable(renpy.Displayable):
-        """DEPRECATED
-
-        Do not use this.
-        """
-
-        def __init__(self, *args, **kwargs):
-            pass
 
 
 # init -1 python:
