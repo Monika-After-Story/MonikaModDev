@@ -22,6 +22,9 @@ define gui.about = _("")
 
 define build.name = "Monika_After_Story"
 
+## Name of the executables, we must keep it DDLC to obey the guidelines
+define build.executable_name = "DDLC"
+
 ## Preference defaults #########################################################
 
 ## Controls the default text speed. The default, 0, is infinite, while any other
@@ -137,21 +140,15 @@ init python:
     build.classify("README.html", "all")
     # Add icons (NOTE: unused)
     build.classify("CustomIcon**.**", "all")
-    # Add lib and renpy
-    # build.classify("lib/**", "all")
-    # build.classify("renpy/**", "all")
 
     # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
 
     ## These files will be excluded
     # Remove everything else from the game folder
     build.classify("game/**", None)
-    # build.classify("**.bak", None)
-    # build.classify("**.rpy", None)
-    # build.classify("**.rpa", None)
     # Remove cache
-    build.classify("/game/cache/**", None)
-    build.classify("/game/saves/**", None)
+    # build.classify("game/cache/**", None)
+    # build.classify("game/saves/**", None)
     # Remove logs
     build.classify("log/**", None)
 
