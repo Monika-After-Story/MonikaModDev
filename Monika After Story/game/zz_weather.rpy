@@ -652,21 +652,6 @@ init -50 python:
             """
             self.unlocked = data_tuple[0]
 
-        @store.mas_utils.deprecated(use_instead="get_mask", should_raise=True)
-        def sp_window(self, day):
-            """DEPRECATED
-            Use get_mask instead.
-            This returns whatever get_mask returns.
-            """
-            return self.get_mask()
-
-        @store.mas_utils.deprecated(should_raise=True)
-        def isbg_window(self, day, no_frame):
-            """DEPRECATED
-            Islands are now separate images. See script-islands-event.
-            """
-            return ""
-
         def toTuple(self):
             """
             Converts this MASWeather object into a tuple

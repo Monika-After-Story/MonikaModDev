@@ -1666,16 +1666,6 @@ init -10 python in mas_selspr:
         """
         _unlock_item(hair, SELECT_HAIR)
 
-    @store.mas_utils.deprecated(use_instead="unlock_prompt", should_raise=True)
-    def unlock_selector(group):
-        """DEPRECATED - Use unlock_prompt instead
-        Unlocks the selector of the given group.
-
-        IN:
-            group - group to unlock selector topic.
-        """
-        unlock_prompt(group)
-
 
     def json_sprite_unlock(sp_obj, unlock_label=True):
         """RUNTIME ONLY
