@@ -406,132 +406,6 @@ python early in mas_utils:
     # Keep all warnings
     deprecated.__all_warnings__ = set()
 
-    # mac logging
-    class MASMacLog(renpy.renpy.log.LogFile):
-        def __init__(self, name, append=False, developer=False, flush=True):
-            """
-            `name`
-                The name of the logfile, without the .txt extension.
-            `append`
-                If true, we will append to the logfile. If false, we will truncate
-                it to an empty file the first time we write to it.
-            `developer`
-                If true, nothing happens if config.developer is not set to True.
-            `flush`
-                Determines if the file is flushed after each write.
-            """
-            super(MASMacLog, self).__init__(name, append=append, developer=developer, flush=flush)
-
-
-        def open(self):  # @ReservedAssignment
-            if self.file:
-                return True
-
-            if self.file is False:
-                return False
-
-            if self.developer and not renpy.config.developer:
-                return False
-
-            if not renpy.config.log_enable:
-                return False
-
-            try:
-
-                home = os.path.expanduser("~")
-                base = os.path.join(home,".MonikaAfterStory/" )
-
-                if base is None:
-                    return False
-
-                fn = os.path.join(base, self.name + ".txt")
-
-                path, filename = os.path.split(fn)
-                if not os.path.exists(path):
-                    os.makedirs(path)
-
-                if self.append:
-                    mode = "a"
-                else:
-                    mode = "w"
-
-                if renpy.config.log_to_stdout:
-                    self.file = real_stdout
-
-                else:
-
-                    try:
-                        self.file = codecs.open(fn, mode, "utf-8")
-                    except:
-                        pass
-
-                if self.append:
-                    self.write('')
-                    self.write('=' * 78)
-                    self.write('')
-
-                self.write("%s", time.ctime())
-                try:
-                    self.write("%s", platform.platform())
-                except:
-                    self.write("Unknown platform.")
-                self.write("%s", renpy.version())
-                self.write("%s %s", renpy.config.name, renpy.config.version)
-                self.write("")
-
-                return True
-
-            except:
-                self.file = False
-                return False
-
-    # A map from the log name to a log object.
-    mas_mac_log_cache = { }
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
-        rv = mas_mac_log_cache.get(name, None)
-
-        if rv is None:
-            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
-            mas_mac_log_cache[name] = rv
-
-        return rv
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def getMASLog(name, append=False, developer=False, flush=False):
-        if renpy.macapp or renpy.macintosh:
-            return macLogOpen(name, append=append, developer=developer, flush=flush)
-        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def logcreate(filepath, append=False, flush=False, addversion=False):
-        """
-        Creates a log at the given filepath.
-        This also opens the log and sets raw_write to True.
-        This also adds per version number if desired
-
-        IN:
-            filepath - filepath of the log to create (extension is added)
-            append - True will append to the log. False will overwrite
-                (Default: False)
-            flush - True will flush every operation, False will not
-                (Default: False)
-            addversion - True will add the version, False will not
-                You dont need this if you create the log in runtime,
-                (Default: False)
-
-        RETURNS: created log object.
-        """
-        new_log = getMASLog(filepath, append=append, flush=flush)
-        new_log.open()
-        new_log.raw_write = True
-        if addversion:
-            new_log.write("VERSION: {0}\n".format(
-                store.persistent.version_number
-            ))
-        return new_log
-
     @deprecated(use_instead="mas_utils.mas_log.info")
     def writelog(msg):
         """
@@ -627,7 +501,7 @@ python early in mas_utils:
     class IsolatedFlexProp(object):
         """
         class that supports flexible attributes.
-        all attributes that are set are stored in a 
+        all attributes that are set are stored in a
         separate internal structure. Supports a few additional behaviors
         because of this.
 
