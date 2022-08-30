@@ -1,6 +1,6 @@
 ## module with a function that pull sprites out of the sprite-chart
 #
-# VER: Python 2.7
+# VER: Python 3.x
 
 import os
 import gamedir as GDIR
