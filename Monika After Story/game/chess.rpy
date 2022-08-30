@@ -545,7 +545,7 @@ init python in mas_chess:
 
         Chess960 rules are basically:
         1. One rook must stay on the left side of king, and another one stay on the right side.
-           Due to this, the king can never be placed on a-file or h-file.
+            Due to this, the king can never be placed on a-file or h-file.
         2. Bishops must stay on different color square.
         3. Pawns must stay like the normal chess game.
         4. The position of player A's pieces must be the 'reversed version' of player B's.
@@ -3329,6 +3329,14 @@ init python:
                     self._button_done
                 ]
 
+        def _send_uci_command(self, cmd: str):
+            """
+            Sends a command to stockfish using its input
+            """
+            self.stockfish.stdin.write(
+                cmd.encode("utf-8")
+            )
+
         def __del__(self):
             self.stockfish.stdin.close()
             self.stockfish.wait()
@@ -3354,9 +3362,9 @@ init python:
             """
             Starts Monika's analysis of the board
             """
-            self.stockfish.stdin.write("position fen {0}\n".format(self.board.fen()))
-            self.stockfish.stdin.write("go depth {0}\n".format(persistent._mas_chess_difficulty[1]))
-            self.stockfish.stdin.write("go movetime {0}\n".format(self.MONIKA_WAITTIME))
+            self._send_uci_command("position fen {0}\n".format(self.board.fen()))
+            self._send_uci_command("go depth {0}\n".format(persistent._mas_chess_difficulty[1]))
+            self._send_uci_command("go movetime {0}\n".format(self.MONIKA_WAITTIME))
 
         def additional_setup(self):
             """
@@ -3456,9 +3464,9 @@ init python:
                 self.stockfish = open_stockfish(fp)
 
             #Set Monika's parameters
-            self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(persistent._mas_chess_difficulty[0]))
-            self.stockfish.stdin.write("setoption name Contempt value {0}\n".format(self.MONIKA_OPTIMISM))
-            self.stockfish.stdin.write("setoption name Ponder value False\n")
+            self._send_uci_command("setoption name Skill Level value {0}\n".format(persistent._mas_chess_difficulty[0]))
+            self._send_uci_command("setoption name Contempt value {0}\n".format(self.MONIKA_OPTIMISM))
+            self._send_uci_command("setoption name Ponder value False\n")
 
             #And set up facilities for asynchronous communication
             self.queue = collections.deque()
