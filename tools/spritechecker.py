@@ -13,6 +13,7 @@ import menutils
 from collections import namedtuple
 from dataclasses import dataclass
 from sprite import StaticSprite
+from spritepuller import pull_sprite_list
 
 # every line of applicable dialogue starts with m and a space
 DLG_START = "m "
@@ -59,7 +60,7 @@ def check_sprites(inc_dev=False) -> list[SpriteMismatch]:
     """
     # sprite dict so we can compare to this
     # we want a dict for O(1) lookups
-    sp_dict: dict[str, StaticSprite] = dict()
+    sp_dict: dict[str, StaticSprite] = pull_sprite_list(True)
 
     # get all the rpys we want to adjust
     rpys = get_rpy_paths(inc_dev=inc_dev)
