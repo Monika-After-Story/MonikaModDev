@@ -436,67 +436,6 @@ python early in mas_utils:
         """
         mas_log.debug("".join(traceback.format_stack()))
 
-    #"No longer necessary as all logs have builtin rotation"
-    @deprecated()
-    def logrotate(logpath, filename):
-        """
-        Does a log rotation. Log rotations contstantly increase. We defualt
-        to about 2 decimal places, but let the limit go past that
-
-        NOTE: exceptions are logged
-
-        IN:
-            logpath - path to the folder containing logs
-                NOTE: this is assumed to have the trailing slash
-            filename - filename of the log to rotate
-        """
-        try:
-            filelist = os.listdir(logpath)
-        except Exception as e:
-            mas_log.error(str(e))
-            return
-
-        # log rotation constants
-        __numformat = "{:02d}"
-        __numdelim = "."
-
-        # parse filelist for valid filenames,
-        # also sort them so the largest number is last
-        filelist = sorted([
-            x
-            for x in filelist
-            if x.startswith(filename)
-        ])
-
-        # now extract only the largest number in this list.
-        # NOTE: this is only possible if we have more than one file in the list
-        if len(filelist) > 1:
-            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
-            largest_num = tryparseint(largest_num, -1)
-
-        else:
-            # otherwise
-            largest_num = -1
-
-        # now increaese largest num to get the next number we should write out
-        largest_num += 1
-
-        # delete whatever file that is if it exists
-        new_path = os.path.normcase("".join([
-            logpath,
-            filename,
-            __numdelim,
-            __numformat.format(largest_num)
-        ]))
-        trydel(new_path)
-
-        # and copy our main file over
-        old_path = os.path.normcase(logpath + filename)
-        copyfile(old_path, new_path)
-
-        # and delete the current file
-        trydel(old_path)
-
 
     class IsolatedFlexProp(object):
         """
