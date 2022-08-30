@@ -9415,7 +9415,7 @@ python early:
             """
             Adds 4 new params
             """
-            super(_MASMoniFollowTransformDissolve, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
             # KEY CHANGES
             self.new_widget_st = None
@@ -9447,15 +9447,30 @@ python early:
 
             bottom = renpy.display.transition.render(self.old_widget, width, height, old_widget_st, old_widget_at)
             top = renpy.display.transition.render(self.new_widget, width, height, new_widget_st, new_widget_at)
+            # END KEY CHANGES
 
             width = min(top.width, bottom.width)
             height = min(top.height, bottom.height)
 
-            rv = renpy.display.render.Render(width, height) #opaque=not self.alpha)
+            rv = renpy.display.render.Render(width, height)
 
             rv.operation = renpy.display.render.DISSOLVE
-            rv.operation_alpha = self.alpha
+            rv.operation_alpha = self.alpha or renpy.config.dissolve_force_alpha
             rv.operation_complete = complete
+
+            if renpy.display.render.models:
+
+                target = rv.get_size()
+
+                if top.get_size() != target:
+                    top = top.subsurface((0, 0, width, height))
+                if bottom.get_size() != target:
+                    bottom = bottom.subsurface((0, 0, width, height))
+
+                rv.mesh = True
+                rv.add_shader("renpy.dissolve")
+                rv.add_uniform("u_renpy_dissolve", complete)
+                rv.add_property("mipmap", renpy.config.mipmap_dissolves if (self.style.mipmap is None) else self.style.mipmap)
 
             rv.blit(bottom, (0, 0), focus=False, main=False)
             rv.blit(top, (0, 0), focus=True, main=True)
