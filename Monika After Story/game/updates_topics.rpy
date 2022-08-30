@@ -29,16 +29,6 @@ init -1 python in mas_db_merging:
             )
 
 
-# preeerything
-init -1 python:
-    @store.mas_utils.deprecated(use_instead="mas_versions.clear", should_raise=True)
-    def clearUpdateStructs():
-        """DEPRECATED
-        Use mas_versions.clear instead
-        """
-        store.mas_versions.clear()
-
-
 init 9 python:
     store.mas_versions.init()
 
