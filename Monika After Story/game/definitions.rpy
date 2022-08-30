@@ -102,6 +102,32 @@ python early:
         Our string formatter that uses more
         advanced formatting rules compared to the RenPy one
         """
+        @staticmethod
+        def _getStoreNameForObject(object_name, *scopes):
+            """
+            Returns the name of the store where the given object
+            was defined or imported to
+
+            IN:
+                object_name - the name of the object to look for (string)
+                scopes - the scopes where we look for the object (storemodule.__dict__)
+
+            OUT:
+                name of the store module where the object was defined
+                or empty string if we couldn't find it
+            """
+            for scope in scopes:
+                if object_name in scope:
+                    stores_names_list = [
+                        store_module_name
+                        for store_module_name, store_module in sys.modules.items()
+                        if store_module and store_module.__dict__ is scope
+                    ]
+                    if stores_names_list:
+                        return stores_names_list[0]
+
+            return ""
+
         def get_field(self, field_name, args, kwargs):
             """
             Originally this method returns objects by references
@@ -116,31 +142,6 @@ python early:
             OUT:
                 tuple of the object and its key
             """
-            def _getStoreNameForObject(object_name, *scopes):
-                """
-                Returns the name of the store where the given object
-                was defined or imported to
-
-                IN:
-                    object_name - the name of the object to look for (string)
-                    scopes - the scopes where we look for the object (storemodule.__dict__)
-
-                OUT:
-                    name of the store module where the object was defined
-                    or empty string if we couldn't find it
-                """
-                for scope in scopes:
-                    if object_name in scope:
-                        stores_names_list = [
-                            store_module_name
-                            for store_module_name, store_module in sys.modules.items()
-                            if store_module and store_module.__dict__ is scope
-                        ]
-                        if stores_names_list:
-                            return stores_names_list[0]
-
-                return ""
-
             # if it's a function call, we eval it
             if "(" in field_name:
                 # split the string into its components
@@ -155,10 +156,10 @@ python early:
 
                 # now we find the store's name to use in eval
                 if isinstance(kwargs, renpy.substitutions.MultipleDict):
-                    scope_store_name = _getStoreNameForObject(first, *kwargs.dicts)
+                    scope_store_name = self._getStoreNameForObject(first, *kwargs.dicts)
 
                 else:
-                    scope_store_name = _getStoreNameForObject(first, kwargs)
+                    scope_store_name = self._getStoreNameForObject(first, kwargs)
 
                 # apply formatting if appropriate
                 if scope_store_name:
@@ -175,22 +176,12 @@ python early:
                         args
                     )
                 )
+                # RenPy requires to return a tuple of the object and the kwargs
+                # as the first item
+                return ((obj, kwargs), first)
 
-            # otherwise just get the reference
-            else:
-                first, rest = string._string.formatter_field_name_split(field_name)
-
-                obj = self.get_value(first, args, kwargs)
-
-                for is_attr, i in rest:
-                    if is_attr:
-                        obj = getattr(obj, i)
-
-                    else:
-                        obj = obj[i]
-
-            #Fixes an internal renpy change to the convert_field method where it requires a tuple in the first position
-            return (obj, kwargs), first
+            # Otherwise fallback to what renpy does: just get the reference
+            return super().get_field(field_name, args, kwargs)
 
     # allows us to use a more advanced string formatting
     renpy.substitutions.formatter = MASFormatter()
