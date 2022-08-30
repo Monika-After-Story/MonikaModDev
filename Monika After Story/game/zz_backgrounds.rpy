@@ -2341,15 +2341,6 @@ init -10 python:
 
             return self.getRoom(flt)
 
-        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
-        def getDayRoom(self, weather=None):
-            """DEPRECATED
-            Can't use this anymore since there's no single image that defines
-            "day" anymore. It's all filter based.
-            See getDayRooms instead
-            """
-            pass
-
         def getDayRooms(self, weather=None):
             """
             Gets all day images for a weather.
@@ -2390,15 +2381,6 @@ init -10 python:
             if m_w_m is None:
                 return None
             return m_w_m.get(precip_type)
-
-        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
-        def getNightRoom(self, weather=None):
-            """DEPRECATED
-            Can't use this anymore since there's no single image that defines
-            "night" anymore. It's all filter-based
-            See getNightRooms instead
-            """
-            pass
 
         def getNightRooms(self, weather=None):
             """
