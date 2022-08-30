@@ -868,12 +868,6 @@ init -99 python in mas_sprites:
 
         FILTERS[flt_enum] = imx
 
-    @store.mas_utils.deprecated(use_instead="get_filter", should_raise=True)
-    def _decide_filter():
-        """DEPRECATED
-        Please use get_filter
-        """
-        return get_filter()
 
 
     def get_filter():
