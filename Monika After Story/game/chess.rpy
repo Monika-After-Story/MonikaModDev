@@ -3351,7 +3351,7 @@ init python:
             with self.lock:
                 res = None
                 while self.queue:
-                    line = self.queue.pop()
+                    line = self.queue.pop().decode("utf-8")
                     match = re.match(r"^bestmove (\w+)", line)
                     if match:
                         res = match.group(1)
