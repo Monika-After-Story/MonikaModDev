@@ -2405,33 +2405,6 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
-    @store.mas_utils.deprecated("mas_hideEVL", should_raise=True)
-    def hideEventLabel(
-            eventlabel,
-            lock=False,
-            derandom=False,
-            depool=False,
-            decond=False,
-            eventdb=evhand.event_database
-        ):
-        #
-        # NOTE: DEPRECATED
-        # hide an event in the given eventdb by Falsing its unlocked,
-        # random, and pool properties.
-        #
-        # IN:
-        #   eventlabel - label of the event to hide
-        #   lock - True if we want to lock this event, False otherwise
-        #       (Default: False)
-        #   derandom - True if we want to unrandom this event, False otherwise
-        #       (Default: False)
-        #   depool - True if we want to unpool this event, False otherwise
-        #       (Default: False)
-        #   decond - True if we want to remove the conditional, False otherwise
-        #       (Default: False)
-        #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: evhand.event_database)
-        mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
     @store.mas_utils.deprecated("mas_hideEvent")
     def hideEvent(
@@ -2581,29 +2554,6 @@ init python:
         """
         mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
 
-    @store.mas_utils.deprecated("mas_lockEvent", should_raise=True)
-    def lockEvent(ev):
-        """
-        NOTE: DEPRECATED
-        Locks the given event object
-
-        IN:
-            ev - the event object to lock
-        """
-        mas_lockEvent(ev)
-
-    @store.mas_utils.deprecated("mas_lockEventLabel", should_raise=True)
-    def lockEventLabel(evlabel, eventdb=evhand.event_database):
-        """
-        NOTE: DEPRECATED
-        Locks the given event label
-
-        IN:
-            evlabel - event label of the event to lock
-            eventdb - Event database to find this label
-        """
-        mas_lockEventLabel(evlabel, eventdb)
-
 
     def mas_lockEvent(ev):
         """
@@ -2665,17 +2615,6 @@ init python:
         """
         MASEventList.queue(event_label, notify)
 
-
-    @store.mas_utils.deprecated("mas_unlockEvent", should_raise=True)
-    def unlockEvent(ev):
-        """
-        NOTE: DEPRECATED
-        Unlocks the given evnet object
-
-        IN:
-            ev - the event object to unlock
-        """
-        mas_unlockEvent(ev)
 
     @store.mas_utils.deprecated("mas_unlockEventLabel")
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -2758,16 +2697,6 @@ init python:
             interval, False otherwise
         """
         return evhand._isPresent(ev)
-
-
-    @store.mas_utils.deprecated("MASEventList.pop", should_raise=True)
-    def popEvent(remove=True):
-        """
-        DO NOT USE.
-
-        Use MASEventList.pop instead (not exactly the same)
-        """
-        pass
 
 
     def seen_event(event_label):
