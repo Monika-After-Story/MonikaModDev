@@ -4,7 +4,7 @@
 
 #Catch any persist info
 persistent
-.bak
+*.bak
 
 #No compiled pycode or pycache
 __pycache__
