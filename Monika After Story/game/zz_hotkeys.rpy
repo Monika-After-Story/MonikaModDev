@@ -25,8 +25,9 @@ init -10 python in mas_hotkeys:
         IN:
             value - True will allow dismiss, False will not
         """
+        global allow_dismiss
+
         if not lock_dismiss:
-            global allow_dismiss
             allow_dismiss = value
 
 

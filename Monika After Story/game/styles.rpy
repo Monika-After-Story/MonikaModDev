@@ -244,6 +244,8 @@ init python in mas_settings:
         """
         Handles the toggling of fields so the menu options become mutually exclusive
         """
+        global dark_mode_clicked
+
         if _persistent._mas_dark_mode_enabled:
             _persistent._mas_dark_mode_enabled = False
 
@@ -251,7 +253,6 @@ init python in mas_settings:
             _persistent._mas_dark_mode_enabled = True
             _persistent._mas_auto_mode_enabled = False
 
-        global dark_mode_clicked
         dark_mode_clicked = True
 
     def _ui_change_wrapper(*args):
@@ -262,6 +263,7 @@ init python in mas_settings:
             *args - values to pass to dark mode
         """
         global ui_changed
+
         ui_changed = True
         store.mas_darkMode(*args)
 

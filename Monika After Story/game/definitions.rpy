@@ -7922,12 +7922,13 @@ init -1 python in mas_randchat:
             slider_value - slider value given from the slider
                 Should be between 0 - 6
         """
+        global rand_low
+        global rand_high
+
         slider_setting = SLIDER_MAP.get(slider_value, 4)
 
         # otherwise set up the times
         # globalize
-        global rand_low
-        global rand_high
 
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER

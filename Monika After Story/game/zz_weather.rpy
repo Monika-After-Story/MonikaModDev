@@ -231,6 +231,7 @@ init -99 python in mas_weather:
         RETURNS: the created image tag
         """
         global old_weather_id
+
         tag = old_weather_tag.format(old_weather_id)
         store.renpy.image(tag, disp)
         OLD_WEATHER_OBJ[old_weather_id] = tag
@@ -259,13 +260,13 @@ init -20 python in mas_weather:
         RETURNS:
             - True or false on whether or not to call spaceroom
         """
+        global weather_change_time
 
         #If the player forced weather or we're not in a background that supports weather, we do nothing
         if force_weather or store.mas_current_background.disable_progressive:
             return False
 
         #Otherwise we do stuff
-        global weather_change_time
         #Set a time for startup
         if not weather_change_time:
             # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
@@ -989,6 +990,7 @@ init 799 python:
             _weather - weather to set to.
         """
         global mas_current_weather
+
         old_weather = mas_current_weather
         mas_current_weather = _weather
         mas_current_weather.entry(old_weather)

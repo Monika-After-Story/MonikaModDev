@@ -160,8 +160,8 @@ init -1 python in songs:
         #   sayori - True if the player name is sayori, which means only
         #       allow Surprise in the player
 
-        global music_choices
-        global music_pages
+        global music_choices, music_pages
+
         music_choices = list()
         # SONGS:
         # if you want to add a song, add it to this list as a tuple, where:

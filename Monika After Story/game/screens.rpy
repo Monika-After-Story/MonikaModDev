@@ -723,7 +723,7 @@ style quick_button_text_dark:
 ## to other menus, and to start the game.
 
 init 4 python:
-    def FinishEnterName():
+    def _finishEnterName():
         global player
 
         if not player:
@@ -855,7 +855,7 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(_finishEnterName)))
 
         else:
 

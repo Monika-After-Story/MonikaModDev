@@ -1090,6 +1090,7 @@ init 5 python in mas_nou:
                 player - the player we check
             """
             global winner
+
             if player.hand:
                 return
 

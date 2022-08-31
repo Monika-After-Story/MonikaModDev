@@ -917,6 +917,7 @@ init 15 python in mas_affection:
         Initializes the talk quiplists
         """
         global talk_menu_quips
+
         def save_quips(_aff, quiplist):
             mas_ql = store.MASQuipList(allow_label=False)
             for _quip in quiplist:
@@ -1054,6 +1055,7 @@ init 15 python in mas_affection:
         Initializes the play quipliust
         """
         global play_menu_quips
+
         def save_quips(_aff, quiplist):
             mas_ql = store.MASQuipList(allow_label=False)
             for _quip in quiplist:
