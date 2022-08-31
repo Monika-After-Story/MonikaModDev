@@ -1354,7 +1354,7 @@ init -5 python in mas_sprites:
         if predicate:
             return [
                 spr_object
-                for spr_object in sprite_map.itervalues()
+                for spr_object in sprite_map.values()
                 if predicate(spr_object)
             ]
 

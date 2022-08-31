@@ -2401,7 +2401,7 @@ init 5 python in mas_nou:
                 return rv
 
             sorted_list = sorted(
-                cards_data.iteritems(),
+                cards_data.items(),
                 key=lambda item: sortKey(
                     item,
                     keys_sort_order=keys_sort_order,
@@ -5222,7 +5222,7 @@ init -10 python in mas_cardgames:
 
         # Fill the map with the sprites (or use the def as a fallback)
         fb = sprites_map.get(store.mas_background.MBG_DEF)
-        for bg_id in store.mas_background.BACKGROUND_MAP.iterkeys():
+        for bg_id in store.mas_background.BACKGROUND_MAP.keys():
             if bg_id not in DESK_SPRITES_MAP:
                 filename = sprites_map.get(bg_id, fb)
                 DESK_SPRITES_MAP[bg_id] = MASFilterSwitch(DESK_SPRITES_PATH + filename)
@@ -5450,7 +5450,7 @@ init -10 python in mas_cardgames:
                 layer - the layer we'll render our table on
                     (Default: "minigames")
             """
-            for v in self.cards.itervalues():
+            for v in self.cards.values():
                 v._offset = __Fixed(0, 0)
 
             ui.layer(layer)
@@ -5659,8 +5659,8 @@ init -10 python in mas_cardgames:
             Returns a list of all displayable objects we use
             """
             stacks_bases = [stack.base for stack in self.stacks]
-            cards_faces = [card.face for card in self.cards.itervalues()]
-            cards_backs = [card.back for card in self.cards.itervalues()]
+            cards_faces = [card.face for card in self.cards.values()]
+            cards_backs = [card.back for card in self.cards.values()]
 
             return stacks_bases + cards_faces + cards_backs
 
