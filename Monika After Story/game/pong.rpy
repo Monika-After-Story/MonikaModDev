@@ -8,33 +8,33 @@ default persistent._mas_pm_ever_let_monika_win_on_purpose = False
 default persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
 
 init -5 python:
-    PONG_DIFFICULTY_CHANGE_ON_WIN            = +1
-    PONG_DIFFICULTY_CHANGE_ON_LOSS           = -1
-    PONG_DIFFICULTY_POWERUP                  = +5
-    PONG_DIFFICULTY_POWERDOWN                = -5
-    PONG_PONG_DIFFICULTY_POWERDOWNBIG        = -10
+    PONG_DIFFICULTY_CHANGE_ON_WIN = +1
+    PONG_DIFFICULTY_CHANGE_ON_LOSS = -1
+    PONG_DIFFICULTY_POWERUP = +5
+    PONG_DIFFICULTY_POWERDOWN = -5
+    PONG_PONG_DIFFICULTY_POWERDOWNBIG = -10
 
 #Triggering the same response twice in a row leads to a different response, not all responses reset this (on purpose)
-    PONG_MONIKA_RESPONSE_NONE                                                = 0
-    PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES                = 1
-    PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES         = 2
-    PONG_MONIKA_RESPONSE_WIN_LONG_GAME                                       = 3
-    PONG_MONIKA_RESPONSE_WIN_SHORT_GAME                                      = 4
-    PONG_MONIKA_RESPONSE_WIN_TRICKSHOT                                       = 5
-    PONG_MONIKA_RESPONSE_WIN_EASY_GAME                                       = 6
-    PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME                                     = 7
-    PONG_MONIKA_RESPONSE_WIN_HARD_GAME                                       = 8
-    PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME                                     = 9
-    PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME                                    = 10
-    PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL                           = 11
-    PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT                                      = 12
-    PONG_MONIKA_RESPONSE_LOSE_LONG_GAME                                      = 13
-    PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME                                     = 14
-    PONG_MONIKA_RESPONSE_LOSE_EASY_GAME                                      = 15
-    PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME                                    = 16
-    PONG_MONIKA_RESPONSE_LOSE_HARD_GAME                                      = 17
-    PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME                                    = 18
-    PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   = 19
+    PONG_MONIKA_RESPONSE_NONE = 0
+    PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES = 1
+    PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES = 2
+    PONG_MONIKA_RESPONSE_WIN_LONG_GAME = 3
+    PONG_MONIKA_RESPONSE_WIN_SHORT_GAME = 4
+    PONG_MONIKA_RESPONSE_WIN_TRICKSHOT = 5
+    PONG_MONIKA_RESPONSE_WIN_EASY_GAME = 6
+    PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME = 7
+    PONG_MONIKA_RESPONSE_WIN_HARD_GAME = 8
+    PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME = 9
+    PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME = 10
+    PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL = 11
+    PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT = 12
+    PONG_MONIKA_RESPONSE_LOSE_LONG_GAME = 13
+    PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME = 14
+    PONG_MONIKA_RESPONSE_LOSE_EASY_GAME = 15
+    PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME = 16
+    PONG_MONIKA_RESPONSE_LOSE_HARD_GAME = 17
+    PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME = 18
+    PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME = 19
 
     pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
 
@@ -250,7 +250,10 @@ init:
             # Recomputes the position of the ball, handles bounces, and
             # draws the screen.
             def render(self, width, height, st, at):
-                global lose_on_purpose
+                global lose_on_purpose, win_streak_counter
+                global loss_streak_counter, instant_loss_streak_counter
+                global pong_angle_last_shot, ball_paddle_bounces
+
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
 
@@ -279,7 +282,7 @@ init:
 
                 # Bounces the ball up to one time, either up or down
                 if not self.check_bounce_off_top():
-                   self.check_bounce_off_bottom()
+                    self.check_bounce_off_bottom()
 
                 # Handles Monika's targeting and speed.
 
@@ -320,12 +323,6 @@ init:
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside, is_computer):
-                    global win_streak_counter
-                    global loss_streak_counter
-                    global instant_loss_streak_counter
-                    global pong_angle_last_shot
-                    global ball_paddle_bounces
-
                     # Render the paddle image. We give it an 1280x720 area
                     # to render into, knowing that images will render smaller.
                     # (This isn't the case with all displayables. Solid, Frame,
@@ -387,8 +384,13 @@ init:
 
                 # Draw the ball.
                 ball = renpy.render(self.ball, self.COURT_WIDTH, self.COURT_HEIGHT, st, at)
-                r.blit(ball, (int(self.bx - self.BALL_WIDTH / 2),
-                              int(self.by - self.BALL_HEIGHT / 2)))
+                r.blit(
+                    ball,
+                    (
+                        int(self.bx - self.BALL_WIDTH / 2),
+                        int(self.by - self.BALL_HEIGHT / 2)
+                    )
+                )
 
                 # Show the player names.
                 player = renpy.render(self.player, self.COURT_WIDTH, self.COURT_HEIGHT, st, at)
