@@ -3636,7 +3636,7 @@ label mas_bookmarks_unbookmark(bookmarks_items):
                     persistent._mas_player_bookmarked.remove(ev_label)
 
             # filter the removed items to show the menu again
-            bookmarks_items = filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items)
+            bookmarks_items = list(filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items))
 
         show monika at t11
         m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
