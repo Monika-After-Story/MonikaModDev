@@ -323,6 +323,8 @@ init:
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside, is_computer):
+                    global ball_paddle_bounces
+
                     # Render the paddle image. We give it an 1280x720 area
                     # to render into, knowing that images will render smaller.
                     # (This isn't the case with all displayables. Solid, Frame,
