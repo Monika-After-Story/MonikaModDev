@@ -196,10 +196,10 @@ label natsuki_name_scare_hungry:
     #play special music and display glitch text.
     $ adjusted_6g = "<from 6.0>bgm/6g.ogg"
     $ renpy.play(adjusted_6g, channel="sound")
-    $ ntext = glitchtext(96)
+    $ ntext = mas_glitchText(96)
     $ style.say_dialogue = style.edited
     n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
-    $ ntext = glitchtext(96)
+    $ ntext = mas_glitchText(96)
     n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
 
     # tear screen and glitch sound to mark end of glitch.

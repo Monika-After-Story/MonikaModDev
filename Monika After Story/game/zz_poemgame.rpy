@@ -1248,7 +1248,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                                 random.randint(1,glitch_wordscare[1]) == 1
                             )):
 
-                            word = MASPoemWord(glitchtext(7), 0, 0, 0, 0, True)
+                            word = MASPoemWord(mas_glitchText(7), 0, 0, 0, 0, True)
 
                         # are we displaying a glitched Monika word
                         elif glitch_words:
@@ -1277,7 +1277,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                                 random.randint(1,glitch_wordscare[1]) == 1
                             )):
 
-                            word.word = glitchtext(len(word.word))
+                            word.word = mas_glitchText(len(word.word))
                             word.glitch = True
 
                         # glitchy words (visual)

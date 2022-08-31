@@ -2548,7 +2548,7 @@ label mas_finalfarewell_start:
         allow_dialogue = False
         store.songs.enabled = False
         mas_in_finalfarewell_mode = True
-        layout.QUIT = glitchtext(20)
+        layout.QUIT = mas_glitchText(20)
         #Console is not going to save you.
         config.keymap["console"] = []
 

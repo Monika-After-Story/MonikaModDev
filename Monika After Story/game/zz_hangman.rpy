@@ -537,7 +537,7 @@ label mas_hangman_game_loop:
                 $ mas_RaiseShield_core()
 
                 # setup glitch text
-                $ hm_glitch_word = glitchtext(40) + "?"
+                $ hm_glitch_word = mas_glitchText(40) + "?"
                 $ style.say_dialogue = style.edited
 
                 # show hanging sayori

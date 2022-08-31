@@ -1632,7 +1632,7 @@ label mas_corrupted_persistent:
         call mas_showpoem(mas_note_backups_all_good)
 
     window auto
-    $ _gtext = glitchtext(15)
+    $ _gtext = mas_glitchText(15)
 
     m 1ekc "Do you know what this is about?{nw}"
     $ _history_list.pop()

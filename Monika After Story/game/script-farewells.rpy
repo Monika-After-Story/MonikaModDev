@@ -694,10 +694,10 @@ label bye_prompt_sleep:
     #         show screen mas_background_timed_jump(4, "bye_prompt_sleep.reglitch")
     #         $ _history_list.pop()
     #         menu:
-    #             m "[glitchtext(41)]{fast}"
-    #             "[glitchtext(15)]":
+    #             m "[mas_glitchText(41)]{fast}"
+    #             "[mas_glitchText(15)]":
     #                 pass
-    #             "[glitchtext(12)]":
+    #             "[mas_glitchText(12)]":
     #                 pass
 
     #         hide screen mas_background_timed_jump

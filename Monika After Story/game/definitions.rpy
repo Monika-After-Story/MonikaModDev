@@ -357,15 +357,6 @@ python early:
             f = io.BytesIO(self.data)
             return renpy.display.pgrender.load_image(f, self.filename)
 
-    #Stuff we need from base DDLC
-    nonunicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
-
-    def glitchtext(length):
-        output = ""
-        for x in range(length):
-            output += random.choice(nonunicode)
-
-        return output
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -2957,7 +2948,7 @@ python early:
             if self.allow_glitch:
 
                 # create the glitchtext quip
-                quip = glitchtext(length)
+                quip = mas_glitchText(length)
 
                 # check for cps speed adding
                 if cps_speed > 0 and cps_speed != 1:
@@ -3810,21 +3801,6 @@ init -1 python in _mas_root:
     import datetime
     import collections
 
-    # redefine this because I can't get access to global functions, also
-    # i dont care to find out how
-    nonunicode = (
-        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ" +
-        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę" +
-        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ" +
-        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
-    )
-
-    def glitchtext(length):
-        import random
-        output = ""
-        for x in range(length):
-            output += random.choice(nonunicode)
-        return output
 
     def mangleFile(filepath, mangle_length=1000):
         """
@@ -3837,7 +3813,7 @@ init -1 python in _mas_root:
                 (Default: 1000)
         """
         import struct
-        bad_text = glitchtext(mangle_length)
+        bad_text = store.mas_glitchText(mangle_length)
         bad_text = [ord(x) for x in bad_text]
         bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
         with open(filepath, "wb") as m_file:
@@ -6514,6 +6490,26 @@ init 21 python:
         """
         renpy.show("monika " + exp_code)
         return ""
+
+    __NONUNICODE = (
+        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ"
+        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę"
+        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ"
+        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+    )
+
+    def mas_glitchText(length: int) -> str:
+        """
+        Backported and impoved glitchtext from DDLC
+
+        IN:
+            length - len of the text to generate
+
+        OUT:
+            str of the generated glitch text
+        """
+        output = [random.choice(__NONUNICODE) for i in range(length)]
+        return "".join(output)
 
 # Music
 init -1:
