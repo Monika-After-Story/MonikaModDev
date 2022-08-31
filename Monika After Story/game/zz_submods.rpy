@@ -119,8 +119,8 @@ init -991 python in mas_submod_utils:
 
             #Now we verify that the version number is something proper
             try:
-                map(int, version.split('.'))
-            except:
+                tuple(map(int, version.split('.')))
+            except ValueError:
                 raise SubmodError("Version number '{0}' is invalid.".format(version))
 
             #Make sure author and name are proper label names
@@ -159,7 +159,7 @@ init -991 python in mas_submod_utils:
             OUT:
                 List of integers representing the version number
             """
-            return tuple(map(int, self.version.split('.')))
+            return list(map(int, self.version.split('.')))
 
         def hasUpdated(self):
             """
@@ -177,7 +177,7 @@ init -991 python in mas_submod_utils:
                 return False
 
             try:
-                old_vers = tuple(map(int, old_vers.split('.')))
+                old_vers = list(map(int, old_vers.split('.')))
 
             #Persist data was bad, we'll replace it with something safe and return False as we need not check more
             except:
