@@ -1123,8 +1123,8 @@ label ch30_autoload:
 
         mas_cleanEventList()
 
-    # set the gender
-    call mas_set_gender
+        # set the gender
+        mas_set_pronouns()
 
     # call reset stuff
     call ch30_reset

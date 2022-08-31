@@ -8003,12 +8003,6 @@ init 4 python:
     import store.mas_randchat as mas_randchat
 
 
-# Deprecated, call mas_set_pronouns directly
-label mas_set_gender:
-    $ mas_set_pronouns()
-    return
-
-
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
 
