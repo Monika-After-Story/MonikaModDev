@@ -2947,7 +2947,14 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
 #
 # OUT:
 #     dict of buttons keys and new values
-screen mas_check_scrollable_menu(items, display_area, scroll_align, selected_button_prompt="Done", default_button_prompt="Nevermind", return_all=False):
+screen mas_check_scrollable_menu(
+    items,
+    display_area,
+    scroll_align,
+    selected_button_prompt="Done",
+    default_button_prompt="Nevermind",
+    return_all=False
+):
     default buttons_data = {
         _tuple[1]: {
             "return_value": _tuple[3] if _tuple[2] else _tuple[4],
