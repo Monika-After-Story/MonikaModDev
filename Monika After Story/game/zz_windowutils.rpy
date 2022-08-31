@@ -735,7 +735,7 @@ init python:
                 and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
             ):
-                queueEvent(ev_label)
+                MASEventList.queue(ev_label)
                 ev.unlocked = False
 
                 #Add the blacklist

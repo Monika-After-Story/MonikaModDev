@@ -90,7 +90,7 @@ label monika_compliments:
     # return value? then push
     if _return:
         $ mas_compliments.compliment_delegate_callback()
-        $ pushEvent(_return)
+        $ MASEventList.push(_return)
         # move her back to center
         show monika at t11
 

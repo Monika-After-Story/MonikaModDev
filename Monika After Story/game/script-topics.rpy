@@ -118,7 +118,7 @@ init -1 python:
                     # event not blocked from random selection
                     and not sel_ev.anyflags(EV_FLAG_HFRS)
             ):
-                pushEvent(sel_ev.eventlabel, notify=True)
+                MASEventList.push(sel_ev.eventlabel, notify=True)
                 return
 
 
@@ -368,7 +368,7 @@ init python:
 
             if mas_findEVL(push_label) < 0:
                 persistent.flagged_monikatopic = ev_label
-                pushEvent(push_label, skipeval=True)
+                MASEventList.push(push_label, skipeval=True)
                 renpy.notify(derand_flag_add_text)
 
             else:
@@ -13419,7 +13419,7 @@ label monika_load_custom_music:
                 m "Okay, make sure you did it correctly."
 
             "No.":
-                $ pushEvent("monika_add_custom_music",True)
+                $ MASEventList.push("monika_add_custom_music",True)
     return
 
 init 5 python:

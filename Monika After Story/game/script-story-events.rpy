@@ -2314,7 +2314,7 @@ label mas_blazerless_intro:
 init -876 python in mas_delact:
 
     def _mas_birthdate_bad_year_fix_action(ev=None):
-        store.queueEvent("mas_birthdate_year_redux")
+        store.MASEventList.queue("mas_birthdate_year_redux")
         return True
 
     def _mas_birthdate_bad_year_fix():

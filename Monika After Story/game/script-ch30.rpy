@@ -998,7 +998,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
-        $ monika_chr.wear_acs_pst(mas_acs_roses)
+        $ monika_chr.wear_acs(mas_acs_roses)
 
     # dissolving everything means dissolve last
     if dissolve_all and not hide_mask:
@@ -1368,15 +1368,15 @@ label ch30_post_exp_check:
             store.mas_per_check.is_per_corrupt()
             and not renpy.seen_label("mas_corrupted_persistent")
     ):
-        $ pushEvent("mas_corrupted_persistent")
+        $ MASEventList.push("mas_corrupted_persistent")
 
     # push greeting if we have one
     if selected_greeting:
         # before greeting, we should push idle clean if in idle mode
         if persistent._mas_in_idle_mode:
-            $ pushEvent("mas_idle_mode_greeting_cleanup")
+            $ MASEventList.push("mas_idle_mode_greeting_cleanup")
 
-        $ pushEvent(selected_greeting)
+        $ MASEventList.push(selected_greeting)
 
     #Now we check if we should drink
     $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
@@ -1624,7 +1624,7 @@ label mas_ch30_select_unseen:
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate, otherwise stay slient
             if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -1653,7 +1653,7 @@ label mas_ch30_select_seen:
                 len(mas_rev_mostseen) == 0
                 and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
             ):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop
@@ -1895,7 +1895,7 @@ label ch30_reset:
 
     # change back to def if we aren't wearing def at Normal-
     if ((store.mas_isMoniNormal(lower=True) and not store.mas_hasSpecialOutfit()) or store.mas_isMoniDis(lower=True)) and store.monika_chr.clothes != store.mas_clothes_def:
-        $ pushEvent("mas_change_to_def",skipeval=True)
+        $ MASEventList.push("mas_change_to_def",skipeval=True)
 
     if not mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -1934,7 +1934,7 @@ label ch30_reset:
     python:
         if persistent._mas_acs_enable_promisering:
             # TODO: need to be able to add a different promise ring
-            monika_chr.wear_acs_pst(mas_acs_promisering)
+            monika_chr.wear_acs(mas_acs_promisering)
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
@@ -2014,7 +2014,7 @@ label ch30_reset:
     ## reactions fix
     python:
         if persistent._mas_filereacts_just_reacted:
-            queueEvent("mas_reaction_end")
+            MASEventList.queue("mas_reaction_end")
 
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
@@ -2117,6 +2117,6 @@ label ch30_reset:
 
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
-                queueEvent("mas_consumables_remove_thermos")
+                MASEventList.queue("mas_consumables_remove_thermos")
 
     return

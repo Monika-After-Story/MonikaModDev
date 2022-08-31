@@ -170,7 +170,7 @@ label dev_acs_pose_test:
     m "First, I'll clear all current accessories."
     $ monika_chr.remove_all_acs()
     m 6sub "I'm going to put on the ring now~"
-    $ monika_chr.wear_acs_pst(mas_acs_promisering)
+    $ monika_chr.wear_acs(mas_acs_promisering)
     m 1eua "You should see it now!"
     m 2eua "And it's gone."
     m 3eua "Here it is!"

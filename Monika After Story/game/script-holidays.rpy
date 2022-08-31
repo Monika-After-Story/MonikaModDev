@@ -406,7 +406,7 @@ init -10 python:
 
         # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
-            store.queueEvent('mas_change_to_def')
+            store.MASEventList.queue('mas_change_to_def')
 
     def mas_hasO31DeskAcs():
         """
@@ -1915,7 +1915,7 @@ init -10 python:
                 mas_rmallEVL(react_label) # TODO - this is a patch, revalute when #8545 (gift logging) and #8546 (gift registering) are addressed
 
             for react_label in react_labels:
-                pushEvent(react_label,skipeval=True)
+                MASEventList.push(react_label,skipeval=True)
 
     def mas_d25SilentReactToGifts():
         """
@@ -2336,7 +2336,7 @@ label mas_d25_season_exit:
 
         #Otherwise we push change to def if we're here via topic
         elif monika_chr.is_wearing_clothes_with_exprop("costume") and mas_globals.dlg_workflow:
-            pushEvent("mas_change_to_def")
+            MASEventList.push("mas_change_to_def")
 
         #Lock event clothes selector
         mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -2667,7 +2667,7 @@ label mas_d25_monika_holiday_intro_rh_rh:
     # NOTE this counts as seeing the intro
     $ persistent._mas_d25_intro_seen = True
 
-    $ pushEvent("mas_d25_monika_christmas",skipeval=True)
+    $ MASEventList.push("mas_d25_monika_christmas",skipeval=True)
 
     return
 
@@ -3472,7 +3472,7 @@ init 10 python:
         datetime.date.today() == mas_d25e - datetime.timedelta(days=1)
         and not mas_lastSeenInYear("mas_d25_spider_tinsel")
     ):
-        queueEvent("mas_d25_spider_tinsel")
+        MASEventList.queue("mas_d25_spider_tinsel")
 
 label mas_d25_spider_tinsel:
     m 1esa "Hey, [player]..."
@@ -5484,7 +5484,7 @@ label mas_player_bday_card:
 
     # if d25 season and decor not yet active, set that up now
     if mas_isD25Pre() and not persistent._mas_d25_deco_active:
-        $ pushEvent("mas_d25_monika_holiday_intro", skipeval=True)
+        $ MASEventList.push("mas_d25_monika_holiday_intro", skipeval=True)
     return
 
 label mas_monika_gets_cake:
@@ -6942,7 +6942,7 @@ label greeting_returned_home_f14:
     $ persistent._mas_f14_on_date = False
 
     if not mas_isF14() and not mas_lastSeenInYear("mas_f14_monika_spent_time_with"):
-        $ pushEvent("mas_f14_monika_spent_time_with",skipeval=True)
+        $ MASEventList.push("mas_f14_monika_spent_time_with",skipeval=True)
     return
 
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
@@ -7257,7 +7257,7 @@ init 10 python:
         mas_monika_birthday - datetime.timedelta(days=2) <= datetime.date.today() < mas_monika_birthday
         and not mas_lastSeenInYear("mas_bday_surprise_party_hint")
     ):
-        pushEvent("mas_bday_surprise_party_hint")
+        MASEventList.push("mas_bday_surprise_party_hint")
 
 image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 
@@ -7615,7 +7615,7 @@ label mas_bday_spent_time_with:
             m 1ekbsa "Well, it truly means a lot to me."
             m 3ekbsa "You really made my birthday complete~"
 
-        $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
+        $ MASEventList.push('mas_bday_spent_time_with_wrapup', skipeval=True)
 
     return
 
@@ -8097,7 +8097,7 @@ label greeting_returned_home_bday:
         $ persistent._mas_bday_in_bday_mode = False
 
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
-            $ queueEvent('mas_change_to_def')
+            $ MASEventList.queue('mas_change_to_def')
 
         if time_out > mas_five_minutes:
             m 1hua "..."
@@ -8148,7 +8148,7 @@ label greeting_returned_home_bday:
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
                 m 3duu "As soon as you showed up, my day was complete."
-                $ pushEvent('mas_bday_spent_time_with_wrapup', skipeval=True)
+                $ MASEventList.push('mas_bday_spent_time_with_wrapup', skipeval=True)
 
     return
 

@@ -2944,7 +2944,7 @@ init 1 python in evhand:
         IN:
             ev - event to push to event stack
         """
-        store.pushEvent(ev.eventlabel, notify=True)
+        store.MASEventList.push(ev.eventlabel, notify=True)
 
 
     def actionQueue(ev, **kwargs):
@@ -2954,7 +2954,7 @@ init 1 python in evhand:
         IN:
             ev - event to queue to event stack
         """
-        store.queueEvent(ev.eventlabel, notify=True)
+        store.MASEventList.queue(ev.eventlabel, notify=True)
 
 
     def actionUnlock(ev, **kwargs):
@@ -3277,11 +3277,11 @@ label prompt_menu:
         call prompts_categories(False)
 
     elif madechoice == "love":
-        $ pushEvent("monika_love", skipeval=True)
+        $ MASEventList.push("monika_love", skipeval=True)
         $ _return = True
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too", skipeval=True)
+        $ MASEventList.push("monika_love_too", skipeval=True)
         $ _return = True
 
     elif madechoice == "moods":
@@ -3326,7 +3326,7 @@ label show_prompt_list(sorted_event_labels):
 
     if _return:
         $ mas_setEventPause(None)
-        $ pushEvent(_return, skipeval=True)
+        $ MASEventList.push(_return, skipeval=True)
 
     return _return
 
@@ -3486,7 +3486,7 @@ label prompts_categories(pool=True):
             #So we don't push garbage
             if _return is not False:
                 $ mas_setEventPause(None)
-                $ pushEvent(_return, skipeval=True)
+                $ MASEventList.push(_return, skipeval=True)
 
     return _return
 
@@ -3556,7 +3556,7 @@ label mas_bookmarks_loop:
         # got label, let's push
         show monika at t11
         $ mas_setEventPause(None)
-        $ pushEvent(topic_choice, skipeval=True)
+        $ MASEventList.push(topic_choice, skipeval=True)
         return True
 
     jump mas_bookmarks_loop

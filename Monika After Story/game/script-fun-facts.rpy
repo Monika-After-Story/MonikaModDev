@@ -67,7 +67,7 @@ label monika_fun_facts_open:
         #Now we push and unlock the fact
         fun_fact_evl = renpy.random.choice(fact_evl_list)
         mas_unlockEVL(fun_fact_evl, "FFF")
-        pushEvent(fun_fact_evl)
+        MASEventList.push(fun_fact_evl)
     return
 
 #Most labels end here
