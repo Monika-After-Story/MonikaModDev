@@ -125,3 +125,5 @@ define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
 
 define config.mouse_focus_clickthrough = True
+init python:
+    config.per_frame_screens.append("_trace_screen")
