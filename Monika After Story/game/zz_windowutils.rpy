@@ -64,7 +64,7 @@ init python in mas_windowutils:
             #Now we initialize the notification class
             WIN_NOTIF_MANAGER = winnie32api.WindowsNotifManager(
                 renpy.config.name,
-                None
+                os.path.join(config.basedir, "CustomIconWindows.ico")
             )
 
         except Exception:
@@ -406,7 +406,7 @@ init python in mas_windowutils:
 
         # Windows may return incorrect geometry (-32k seems to be the limit),
         # in this case we return None
-        if rect.top_left.x <= -32000 and rv.top_left.y <= -32000:
+        if rect.top_left.x <= -32000 and rect.top_left.y <= -32000:
             return None
 
         return (rect.top_left.x, rect.top_left.y, rect.bottom_right.x, rect.bottom_right.y)
