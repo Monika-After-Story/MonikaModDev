@@ -80,13 +80,13 @@ init python in mas_windowutils:
         session_type = os.environ.get("XDG_SESSION_TYPE")
 
         #Wayland is not supported, disable wrs
-        if session_type == "wayland":
+        if session_type in ("wayland", None) or os.environ.get("WAYLAND_DISPLAY"):
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
             store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling notifications.")
 
         #X11 however is fine
-        elif session_type == "x11":
+        elif session_type == "x11" or os.environ.get("DISPLAY"):
             try:
                 import Xlib
 
