@@ -1,1 +1,1 @@
-{"build_update": true, "packages": ["DDLC Mod File", "DDLCMod", "", "source", "market"], "add_from": false, "force_recompile": true, "renamed_all": true, "android_build": "Release", "renamed_steam": true}
+{"build_update": false, "packages": ["DDLC Mod File", "DDLCMod", "", "source", "market"], "add_from": false, "force_recompile": true, "renamed_all": true, "android_build": "Release", "renamed_steam": true}
