@@ -873,10 +873,11 @@ label mas_chess_remenu:
                 "options": [
                     ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
                     ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
-                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960))
+                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960)),
+                    # Keep this last
+                    ("Can you explain these game-modes?", "explain_modes", False, False)
                 ],
                 "final_items": [
-                    ("Can you explain these game-modes?", "explain_modes", False, False, 20),
                     ("Ruleset", "ruleset_select", False, False, 20),
                     ("Practice or Play", "mode_select", False, False, 0),
                     ("Color", "color_select", False, False, 0),
@@ -888,6 +889,7 @@ label mas_chess_remenu:
                 "options": [
                     ("Casual Rules", True, False, casual_rules),
                     ("Traditional Rules", False, False, not casual_rules),
+                    # Keep this last
                     ("What's the difference?", 0, False, False)
                 ],
                 "final_items": [
