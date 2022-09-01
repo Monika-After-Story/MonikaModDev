@@ -311,14 +311,12 @@ define MAS_PRONOUN_GENDER_MAP = {
 init python:
     import subprocess
     import os
-    import eliza      # mod specific
-    import datetime   # mod specific
-    import battery    # mod specific
+    import datetime
+    import battery
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
     import store.mas_globals as mas_globals
-    therapist = eliza.eliza()
     process_list = []
     currentuser = None # start if with no currentuser
     if renpy.windows:
