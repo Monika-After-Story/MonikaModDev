@@ -138,7 +138,7 @@ init python:
     build.classify("game/python-packages/**", "all")
     # Add README
     build.classify("README.html", "all")
-    # Add icons (NOTE: unused)
+    # Add icons
     build.classify("CustomIcon**.**", "all")
 
     # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
@@ -151,6 +151,7 @@ init python:
     # build.classify("game/saves/**", None)
     # Remove logs
     build.classify("log/**", None)
+    build.classify("*.log", None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
