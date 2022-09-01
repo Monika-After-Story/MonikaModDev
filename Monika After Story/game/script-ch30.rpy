@@ -2100,7 +2100,7 @@ label ch30_reset:
             $ mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
     #set MAS window global
-    $ mas_windowutils._setMASWindow()
+    $ mas_windowutils._setMASWindow_Linux()
 
     # Did Monika make any progress on the islands?
     $ store.mas_island_event.advanceProgression()
