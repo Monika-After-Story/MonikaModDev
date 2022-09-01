@@ -2803,10 +2803,18 @@ init -3 python:
                 startup - True if we are loading on start, False if not
                     (Default: False)
             """
+            clothes = store.mas_sprites.CLOTH_MAP.get(_clothes_name, None)
+            if clothes is None:
+                store.mas_utils.mas_log.warning(f"Failed to find clothes '{_clothes_name}', restoring default")
+                clothes = store.mas_clothes_def
+            hair = store.mas_sprites.HAIR_MAP.get(_hair_name, None)
+            if hair is None:
+                store.mas_utils.mas_log.warning(f"Failed to find hair '{_hair_name}', restoring default")
+                hair = store.mas_hair_def
             # clothes and hair
             self.change_outfit(
-                store.mas_sprites.CLOTH_MAP.get(_clothes_name, store.mas_clothes_def),
-                store.mas_sprites.HAIR_MAP.get(_hair_name, store.mas_hair_def),
+                clothes,
+                hair,
                 startup=startup
             )
 
