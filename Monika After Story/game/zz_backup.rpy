@@ -19,7 +19,7 @@ default persistent._mas_incompat_per_entered = False
 
 python early in mas_per_check:
     import __main__
-    import pickle
+    import renpy.compat.pickle as pickle
     import codecs
     import os
     import datetime
@@ -90,6 +90,12 @@ python early in mas_per_check:
         store.persistent._mas_incompat_per_rpy_files_found = False
 
 
+    def _load_per_data(path: str):
+        with open(path, "rb") as per_file:
+            pickle_data = codecs.decode(per_file.read(), "zlib")
+            return pickle.loads(pickle_data)
+
+
     def tryper(_tp_persistent, get_data=False):
         """
         Tries to read a persistent.
@@ -105,13 +111,8 @@ python early in mas_per_check:
             [1] - the version number, or the persistent data if get_data is
                 True
         """
-        per_file = None
         try:
-            per_file = open(_tp_persistent, "rb")
-            per_data = codecs.decode(per_file.read(), "zlib")
-            per_file.close()
-            actual_data = pickle.loads(per_data)
-
+            actual_data = _load_per_data(_tp_persistent)
             if get_data:
                 return True, actual_data
 
@@ -119,10 +120,6 @@ python early in mas_per_check:
 
         except Exception as e:
             raise e
-
-        finally:
-            if per_file is not None:
-                per_file.close()
 
 
     def is_version_compatible(per_version, cur_version):

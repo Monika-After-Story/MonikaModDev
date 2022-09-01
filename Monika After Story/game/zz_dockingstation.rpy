@@ -1178,7 +1178,7 @@ init -11 python in mas_dockstat:
 
 init python in mas_dockstat:
     import store
-    import pickle
+    import renpy.compat.pickle as pickle
 
     # previous vars dict
     previous_vars = dict()

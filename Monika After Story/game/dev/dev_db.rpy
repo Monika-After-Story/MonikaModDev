@@ -215,7 +215,7 @@ init python:
 
 
 init python in dev_mas_shared:
-    import pickle
+    import renpy.compat.pickle as pickle
     import codecs
     import store
     import store.mas_ev_data_ver as ver
