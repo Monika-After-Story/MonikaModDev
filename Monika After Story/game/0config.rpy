@@ -123,3 +123,5 @@ define config.main_menu_music = audio.t1
 
 define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
+
+define config.mouse_focus_clickthrough = True
