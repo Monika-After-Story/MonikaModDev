@@ -239,8 +239,8 @@ init 20 python:
         poem_id="poem_m1",
         category="ddlc",
         prompt="Hole in Wall (Part 1)",
-        title = "",
-        text = """\
+        title="Hole in Wall",
+        text="""\
 It couldn't have been me.
 See, the direction the spackle protrudes.
 A noisy neighbor? An angry boyfriend? I'll never know. I wasn't home.
@@ -262,8 +262,8 @@ And he, on the other side, was looking in.\
         poem_id="poem_m21",
         category="ddlc",
         prompt="Hole in Wall (Part 2)",
-        title = "",
-        text = """\
+        title="Hole in Wall",
+        text="""\
 But he wasn't looking at me.
 Confused, I frantically glance at my surroundings.
 But my burned eyes can no longer see color.
@@ -284,8 +284,8 @@ Swallowing my fears, I brandish my pen.\
         poem_id="poem_m2",
         category="ddlc",
         prompt="Save Me",
-        title = "",
-        text = """\
+        title="Save Me",
+        text="""\
 The colors, they won't stop.
 Bright, beautiful colors
 Flashing, expanding, piercing
@@ -314,8 +314,8 @@ Load Me
         poem_id="poem_m3",
         category="ddlc",
         prompt="The Lady who Knows Everything",
-        title = "",
-        text = """\
+        title="The Lady who Knows Everything",
+        text="""\
 An old tale tells of a lady who wanders Earth.
 The Lady who Knows Everything.
 A beautiful lady who has found every answer,
@@ -364,8 +364,8 @@ And with a breath, she blows me back afloat, and I pick up a gust of wind.\
         poem_id="poem_m4",
         category="ddlc",
         prompt="Happy End",
-        title = "",
-        text = """\
+        title="Happy End",
+        text="""\
 Pen in hand, I find my strength.
 The courage endowed upon me by my one and only love.
 Together, let us dismantle this crumbling world
@@ -378,6 +378,19 @@ After all,
 Not all good times must come to an end.\
 """
     )
+
+# Backport some poem images from DDLC. NOTE: still use DDLC assets
+image paper = "images/bg/poem.jpg"
+# image paper_glitch = Composite((1280, 720), (0, 0), "paper_glitch1", (0, 0), "paper_glitch2")
+# image paper_glitch1 = "images/bg/poem-glitch1.png"
+image paper_glitch2:
+    "images/bg/poem-glitch2.png"
+    block:
+        yoffset 0
+        0.05
+        yoffset 20
+        0.05
+        repeat
 
 
 #### mas_showpoem ####

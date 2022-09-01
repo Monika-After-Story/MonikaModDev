@@ -3048,6 +3048,17 @@ screen mas_generic_restart:
 
                 textbutton _("OK") action Return(True)
 
+style poem_vbox:
+    xalign 0.5
+style poem_viewport:
+    xanchor 0
+    xsize 720
+    xpos 280
+style poem_vbar is vscrollbar:
+    xpos 1000
+    yalign 0.5
+    ysize 700
+
 # Partial generic showpoem screen
 # IN:
 #   _poem - Poem object to show
