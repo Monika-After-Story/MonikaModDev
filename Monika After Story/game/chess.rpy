@@ -876,7 +876,7 @@ label mas_chess_remenu:
                     ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960))
                 ],
                 "final_items": [
-                    ("Could you explain these modes?", "explain_modes", False, False, 20),
+                    ("Can you explain these game-modes?", "explain_modes", False, False, 20),
                     ("Ruleset", "ruleset_select", False, False, 20),
                     ("Practice or Play", "mode_select", False, False, 0),
                     ("Color", "color_select", False, False, 0),
@@ -963,13 +963,17 @@ label mas_chess_remenu:
                 # Take Monika back, so we won't face an empty right-side screen.
                 show monika at t11
 
-                m 3eub "Naturally, {i}Normal Chess{/i} means the standard chess."
-                m 3eua "And {i}Randomzied Chess{/i} is a mode based on {i}Really Bad Chess{/i}."
-                m 1eub "We get completely random pieces, introduce luck the factor to make it a bit of fun for players of any level."
-                m 3eua "And for a fair random, we have {i}Chess 960{/i} mode, also known as {i}Fischer Random Chess{/i} for Fischer invented this mode."
-                m "In this mode, while ensuring bishops are on different colors and each two sides of the king has a rook, player's back-row pieces were randomly shuffled."
-                m 1hua "Under this, there were 960 possible starting positions, so it was called Chess 960."
-                m 1eub "In this way, heavy opening theory can be avoided, and the real test of the player's understanding of chess is coming."
+                m 1eub "Sure! {w=0.2}{nw}"
+                extend 1eua "Naturally, {i}Normal Chess{/i} means the standard chess."
+                m 3eua "Then there's {i}Randomized Chess{/i}, it's a mode based on {i}Really Bad Chess{/i}."
+                m 3eub "We get completely random pieces which adds the factor of luck to the game to make it fun for players of any skill level."
+                m 1eua "Alternatively, there's a more fair random chess mode called {i}Chess 960{/i}, also known as {i}Fischer Random Chess{/i}."
+                m 3eud "In this mode the pieces in the back row are being randomly shuffled, {w=0.3}{nw}"
+                extend 3esa "while ensuring the bishops are placed on opposite color squares and the king is placed between two rooks."
+                m 4hua "Under this, there were 960 possible starting positions, so it was called Chess 960."
+                m 1eua "{i}Chess 960{/i} allows players avoid complex opening theory, while still testing their understanding of chess."
+                m 1etu "So what mode do you prefer? {w=0.3}{nw}"
+                extend 1hub "Ahaha~"
 
                 # There goes our Monika again.
                 show monika at t21
