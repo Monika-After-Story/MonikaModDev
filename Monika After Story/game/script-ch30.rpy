@@ -11,7 +11,6 @@ default persistent.first_run = True
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
-define mas_battery_supported = False
 define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
@@ -312,7 +311,6 @@ init python:
     import subprocess
     import os
     import datetime
-    import battery
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
@@ -348,9 +346,6 @@ init python:
         mcname = currentuser
     else:
         mcname = persistent.mcname
-
-    # check for battery support
-    mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
     # this uses the amb (ambient) mixer.
@@ -1563,15 +1558,6 @@ label ch30_post_mid_loop_eval:
             $ mas_randchat.setWaitingTime()
 
         window auto
-
-#        python:
-#            if (
-#                    mas_battery_supported
-#                    and battery.is_battery_present()
-#                    and not battery.is_charging()
-#                    and battery.get_level() < 20
-#                ):
-#                pushEvent("monika_battery")
 
         if (
             store.mas_globals.in_idle_mode
