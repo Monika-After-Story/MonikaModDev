@@ -8,7 +8,7 @@ from __future__ import annotations
 
 __title__ = "winnie32api"
 __author__ = "Booplicate"
-__version__ = "0.0.1"
+__version__ = "0.0.3"
 
 import ctypes
 

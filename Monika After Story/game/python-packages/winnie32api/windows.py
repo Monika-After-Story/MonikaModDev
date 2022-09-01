@@ -95,7 +95,7 @@ def get_window_rect(hwnd: HWND) -> Rect:
     if not result:
         raise WinAPIError("failed to get window rect", _get_last_err())
 
-    return Rect.from_coords(c_rect.top, c_rect.left, c_rect.bottom, c_rect.right)
+    return Rect.from_coords(c_rect.left, c_rect.top, c_rect.right, c_rect.bottom)
 
 
 def get_active_window_hwnd() -> Optional[HWND]:

@@ -1,5 +1,6 @@
 import ctypes
 import ctypes.wintypes as wt
+import weakref
 from collections import deque
 from typing import Optional
 
@@ -272,10 +273,17 @@ shell32.Shell_NotifyIconW.restype = wt.BOOL
 
 class MaxNotifsReachedError(Winnie32APIError):
     """
-    An error raisedwhen spawned too many WindowsNotif
+    An error raised when spawned too many WindowsNotif
     """
     def __str__(self) -> str:
         return "too many notification"
+
+class InvalidNotifAccessError(Winnie32APIError):
+    """
+    An error raised when tried to use a cleared WindowsNotif
+    """
+    def __str__(self) -> str:
+        return "can't use notification after it's been cleared"
 
 class WindowsNotif():
     """
@@ -337,12 +345,20 @@ class WindowsNotif():
         self._unregister_win_cls()
 
     def __del__(self):
-        self._deinit()
+        """
+        Cleanup on gc
+        """
         if self._notif_id is not None:
+            self._deinit()
             self._NOTIF_ID_POOL.append(self._notif_id)
             self._notif_id = None
 
     def __call__(self):
+        """
+        Shortcut for the send method
+        """
+        if self._notif_id is None:
+            raise InvalidNotifAccessError()
         if not self._used:
             self._used = True
             self._display_notif()
@@ -355,11 +371,20 @@ class WindowsNotif():
 
     def reset(self):
         """
-        Resets this notifs allowing it to be send again
+        Resets this notif allowing it to be send again
         """
+        if self._notif_id is None:
+            raise InvalidNotifAccessError()
         self._deinit()
         self._after_init()
         self._used = False
+
+    def clear(self):
+        """
+        Clears this notif freeing the resources
+        The notif can't be used anymore after it's been cleared
+        """
+        self.__del__()
 
     def _load_icon(self):
         """
@@ -435,8 +460,8 @@ class WindowsNotif():
             0,
             self._cls_atom,
             # self._win_cls.lpszClassName,
-            self._app_name,
-            # self._win_cls.lpszClassName,
+            # self._app_name,
+            self._win_cls.lpszClassName,
             win_style,
             CW_USEDEFAULT,
             CW_USEDEFAULT,
@@ -504,6 +529,8 @@ class WindowsNotifManager():
         self._app_name = app_name
         self._icon_path = icon_path
 
+        self._notifs: deque[weakref.ReferenceType[WindowsNotif]] = deque(maxlen=NOTIFS_LIMIT)
+
     def spawn(self, title: str, body: str) -> WindowsNotif:
         """
         Spawns a notif, but doesn't send it
@@ -512,7 +539,9 @@ class WindowsNotifManager():
             title - the title of the notification
             body - the body of the notification
         """
-        return WindowsNotif(self._app_name, self._icon_path, title, body)
+        notif = WindowsNotif(self._app_name, self._icon_path, title, body)
+        self._notifs.append(weakref.ref(notif))
+        return notif
 
     def send(self, title: str, body: str) -> WindowsNotif:
         """
@@ -525,3 +554,13 @@ class WindowsNotifManager():
         notif = self.spawn(title, body)
         notif.send()
         return notif
+
+    def clear(self):
+        """
+        Clears all notification this manager has access to
+        """
+        for notif_ref in self._notifs:
+            notif = notif_ref()
+            if notif:
+                notif.clear()
+        self._notifs.clear()

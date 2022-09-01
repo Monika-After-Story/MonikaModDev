@@ -48,13 +48,13 @@ class Rect(NamedTuple):
     bottom_right: Point
 
     @classmethod
-    def from_coords(cls, top: Coord, left: Coord, bottom: Coord, right: Coord) -> Rect:
+    def from_coords(cls, left: Coord, top: Coord, right: Coord, bottom: Coord) -> Rect:
         """
         Constructs a rect from 4 coordinates
         """
         return cls(
-            Point(top, left),
-            Point(bottom, right)
+            Point(left, top),
+            Point(right, bottom)
         )
 
 
