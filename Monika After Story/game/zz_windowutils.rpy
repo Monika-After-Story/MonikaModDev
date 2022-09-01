@@ -64,7 +64,7 @@ init python in mas_windowutils:
             #Now we initialize the notification class
             WIN_NOTIF_MANAGER = winnie32api.WindowsNotifManager(
                 renpy.config.name,
-                os.path.join(renpy.config.basedir, "CustomIconWindows.ico")
+                os.path.join(renpy.config.gamedir, "mod_assets/mas_icon.ico")
             )
 
         except Exception:

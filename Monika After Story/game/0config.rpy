@@ -97,7 +97,7 @@ init -1200 python:
 
 ## The icon displayed on the taskbar or dock.
 
-    renpy.config.window_icon = "gui/window_icon.png"
+    renpy.config.window_icon = "mod_assets/mas_icon.ico"
 
 ## Custom configs ##############################################################
 

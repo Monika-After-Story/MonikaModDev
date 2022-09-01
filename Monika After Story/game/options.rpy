@@ -138,8 +138,6 @@ init python:
     build.classify("game/python-packages/**", "all")
     # Add README
     build.classify("README.html", "all")
-    # Add icons
-    build.classify("CustomIcon**.**", "all")
 
     # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
 
