@@ -6,7 +6,7 @@ from typing import (
 )
 
 from .common import (
-    HWND,
+    # HWND,
     Rect,
     Pack,
     WinAPIError,
@@ -20,6 +20,32 @@ kernel32 = ctypes.windll.kernel32
 
 
 WNDENUMPROC = ctypes.WINFUNCTYPE(wt.BOOL, wt.HWND, wt.LPARAM)
+
+
+class FlashWInfo(ctypes.Structure):
+    _fields_ = [
+        ("cbSize", wt.UINT),
+        ("hwnd", wt.HWND),
+        ("dwFlags", wt.DWORD),
+        ("uCount", wt.UINT),
+        ("dwTimeout", wt.DWORD)
+    ]
+
+class FLASHW():
+    """
+    0x00000003. Flash both the window caption and taskbar button.
+    0x00000001. Flash the window caption.
+    0. Stop flashing. The system restores the window to its original state.
+    0x00000004. Flash continuously, until the FLASHW_STOP flag is set.
+    0x0000000C. Flash continuously until the window comes to the foreground.
+    0x00000002. Flash the taskbar button.
+    """
+    ALL = 0x00000003
+    CAPTION = 0x00000001
+    STOP = 0
+    TIMER = 0x00000004
+    TIMERNOFG = 0x0000000C
+    TRAY = 0x00000002
 
 
 user32.IsWindowVisible.argtypes = (wt.HWND,)
@@ -37,11 +63,14 @@ user32.EnumWindows.restype = wt.BOOL
 user32.GetWindowRect.argtypes = (wt.HWND, wt.LPRECT)
 user32.GetWindowRect.restype = wt.BOOL
 
+user32.FlashWindowEx.argtypes = (ctypes.POINTER(FlashWInfo),)
+user32.FlashWindowEx.restype = wt.BOOL
+
 user32.GetForegroundWindow.argtypes = ()
 user32.GetForegroundWindow.restype = wt.HWND
 
 
-def get_hwnd_by_title(title: str) -> Optional[HWND]:
+def get_hwnd_by_title(title: str) -> Optional[int]:
     """
     Returns first window hwnd with the given title
     """
@@ -61,7 +90,7 @@ def get_hwnd_by_title(title: str) -> Optional[HWND]:
     user32.EnumWindows(WNDENUMPROC(callback), wt.LPARAM(0))
     return pack.value
 
-def get_window_title(hwnd: HWND) -> str:
+def get_window_title(hwnd: int) -> str:
     """
     Returns a window title as a str
     """
@@ -86,7 +115,7 @@ def get_window_title(hwnd: HWND) -> str:
 
     return buffer.value
 
-def get_window_rect(hwnd: HWND) -> Rect:
+def get_window_rect(hwnd: int) -> Rect:
     """
     Returns a window rect
     """
@@ -97,8 +126,60 @@ def get_window_rect(hwnd: HWND) -> Rect:
 
     return Rect.from_coords(c_rect.left, c_rect.top, c_rect.right, c_rect.bottom)
 
+def flash_window(
+    hwnd: int,
+    count: Optional[int] = 1,
+    caption: bool = True,
+    tray: bool = True
+):
+    """
+    Flashes a window
 
-def get_active_window_hwnd() -> Optional[HWND]:
+    IN:
+        hwnd - the window hwnd
+        coutn - the number of flashes
+            -1 means flash infinitely until asked to stop
+            None means flash infinitely until the window becomes focused
+        caption - do we flash window caption
+        tray - do weflash tray icon
+
+    OUT:
+        bool - success status
+    """
+    flash_info = FlashWInfo()
+    flash_info.cbSize = ctypes.sizeof(flash_info)
+    flash_info.hwnd = hwnd
+
+    flags = 0
+    if caption:
+        flags |= FLASHW.CAPTION
+    if tray:
+        flags |= FLASHW.TRAY
+    if count is None:
+        flags |= FLASHW.TIMERNOFG
+    if count == -1:
+        flags |= FLASHW.TIMER
+
+    flash_info.dwFlags = flags
+    flash_info.uCount = count
+    flash_info.dwTimeout = 0
+
+    user32.FlashWindowEx(ctypes.byref(flash_info))
+
+def unflash_window(hwnd: int):
+    """
+    Stops window flashing
+    """
+    flash_info = FlashWInfo()
+    flash_info.cbSize = ctypes.sizeof(flash_info)
+    flash_info.hwnd = hwnd
+    flash_info.dwFlags = FLASHW.STOP
+    flash_info.uCount = 0
+    flash_info.dwTimeout = 0
+    user32.FlashWindowEx(ctypes.byref(flash_info))
+
+
+def get_active_window_hwnd() -> Optional[int]:
     """
     Returns active window title hwnd (id)
     """
