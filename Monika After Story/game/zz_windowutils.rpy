@@ -261,7 +261,8 @@ init python in mas_windowutils:
         ASSUMES: OS IS WINDOWS (renpy.windows)
         """
         try:
-            return winnie32api.get_active_window_title()
+            # winnie32api can return None
+            return winnie32api.get_active_window_title() or ""
         except Exception:
             return ""
 
