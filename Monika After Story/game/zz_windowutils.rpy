@@ -546,27 +546,26 @@ init python in mas_windowutils:
         getMASWindowPos = _getMASWindowPos_Windows
         getMousePos = _getAbsoluteMousePos_Windows
 
+    elif renpy.linux:
+        _window_get = _getActiveWindowHandle_Linux
+        _tryShowNotif = _tryShowNotification_Linux
+        getMASWindowPos = _getMASWindowPos_Linux
+        getMousePos = _getAbsoluteMousePos_Linux
+
     else:
-        if renpy.linux:
-            _window_get = _getActiveWindowHandle_Linux
-            _tryShowNotif = _tryShowNotification_Linux
-            getMASWindowPos = _getMASWindowPos_Linux
-            getMousePos = _getAbsoluteMousePos_Linux
+        _window_get = _getActiveWindowHandle_OSX
+        _tryShowNotif = _tryShowNotification_OSX
 
-        else:
-            _window_get = _getActiveWindowHandle_OSX
-            _tryShowNotif = _tryShowNotification_OSX
+        #Because we have no method of testing on Mac, we'll use the dummy function for these
+        getMASWindowPos = store.dummy
+        getMousePos = store.dummy
 
-            #Because we have no method of testing on Mac, we'll use the dummy function for these
-            getMASWindowPos = store.dummy
-            getMousePos = store.dummy
-
-            #Now make sure we don't use these functions so long as we can't validate Mac
-            isCursorAboveMASWindow = return_false
-            isCursorBelowMASWindow = return_false
-            isCursorLeftOfMASWindow = return_false
-            isCursorRightOfMASWindow = return_false
-            isCursorInMASWindow = return_true
+        #Now make sure we don't use these functions so long as we can't validate Mac
+        # isCursorAboveMASWindow = return_false
+        # isCursorBelowMASWindow = return_false
+        # isCursorLeftOfMASWindow = return_false
+        # isCursorRightOfMASWindow = return_false
+        # isCursorInMASWindow = return_true
 
 init python:
     #List of notif quips (used for topic alerts)

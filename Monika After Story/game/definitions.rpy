@@ -47,11 +47,11 @@ python early:
 
 
     ### Overrides of core renpy things
-    def dummy(*args, **kwargs):
+    def dummy(*args, **kwargs) -> None:
         """
         Dummy function that does nothing
         """
-        return
+        return None
 
     class MASDummyClass(object):
         """
