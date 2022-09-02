@@ -1060,7 +1060,7 @@ init 5 python:
 
 label mas_random_limit_reached:
     #Notif so people don't get stuck here
-    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts", flash_window=True)
 
     python:
         limit_quips = [

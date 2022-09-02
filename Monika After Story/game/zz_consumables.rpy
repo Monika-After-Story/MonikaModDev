@@ -1516,7 +1516,7 @@ label mas_consumables_generic_finish_having(consumable):
             and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
             and len(MASConsumable._getLowCons()) > 0
         ):
-            $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts")
+            $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts", flash_window=True)
             $ MASEventList.queue("mas_consumables_generic_queued_running_out")
 
     #Only have one left

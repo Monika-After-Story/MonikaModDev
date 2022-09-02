@@ -192,7 +192,7 @@ init 5 python:
 
 label mas_wrs_r34m:
     python:
-        mas_display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
+        mas_display_notif(m_name, ["Hey, [player]...what are you looking at?"], "Window Reactions", flash_window=True)
 
         choice = random.randint(1,10)
 

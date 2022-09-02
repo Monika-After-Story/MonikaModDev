@@ -645,7 +645,7 @@ init python:
         #TODO: Remove this alias at some point
         mas_getActiveWindow = mas_getActiveWindowHandle
 
-    def mas_display_notif(title, body, group=None, skip_checks=False):
+    def mas_display_notif(title, body, group=None, skip_checks=False, flash_window=False):
         """
         Notification creation method
 
@@ -656,6 +656,8 @@ init python:
                 (Default: None)
             skip_checks - Whether or not we skips checks
                 (Default: False)
+            flash_window - do we want to flash the MAS window (tray icon)
+
         OUT:
             bool indicating status (notif shown or not (by check))
 
@@ -685,6 +687,9 @@ init python:
                 renpy.substitute(title),
                 renpy.substitute(renpy.random.choice(body))
             )
+            # Flash the window if needed
+            if flash_window:
+                mas_windowutils.flashMASWindow()
 
             #Play the notif sound if we have that enabled and notif was successful
             if persistent._mas_notification_sounds and notif_success:
