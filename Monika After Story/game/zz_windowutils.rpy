@@ -266,7 +266,7 @@ init python in mas_windowutils:
         except Exception:
             return ""
 
-    def _getActiveWindowHandle_Linux():
+    def _getActiveWindowHandle_Linux() -> str:
         """
         Funtion to get the active window on Linux systems
 
@@ -295,7 +295,7 @@ init python in mas_windowutils:
         except BadWindow:
             return ""
 
-    def _getActiveWindowHandle_OSX():
+    def _getActiveWindowHandle_OSX() -> str:
         """
         Gets the active window on macOS
 
@@ -303,6 +303,33 @@ init python in mas_windowutils:
         for MacOS
         """
         return ""
+
+    def _flashMASWindow_Windows():
+        """
+        Tries to flash MAS window
+        """
+        try:
+            hwnd = __getMASWindowHWND_Windows()
+            if hwnd:
+                winnie32api.flash_window(
+                    hwnd,
+                    count=None,
+                    caption=False,
+                    tray=True
+                )
+
+        except Exception:
+            pass
+
+    def _flashMASWindow_Linux():
+        """
+        Tries to flash MAS window
+        """
+
+    def _flashMASWindow_OSX():
+        """
+        Tries to flash MAS window
+        """
 
     #Notif show internals
     def _tryShowNotification_Windows(title, body):
@@ -545,16 +572,19 @@ init python in mas_windowutils:
         _tryShowNotif = _tryShowNotification_Windows
         getMASWindowPos = _getMASWindowPos_Windows
         getMousePos = _getAbsoluteMousePos_Windows
+        flashMASWindow = _flashMASWindow_Windows
 
     elif renpy.linux:
         _window_get = _getActiveWindowHandle_Linux
         _tryShowNotif = _tryShowNotification_Linux
         getMASWindowPos = _getMASWindowPos_Linux
         getMousePos = _getAbsoluteMousePos_Linux
+        flashMASWindow = _flashMASWindow_Linux
 
     else:
         _window_get = _getActiveWindowHandle_OSX
         _tryShowNotif = _tryShowNotification_OSX
+        flashMASWindow = _flashMASWindow_OSX
 
         #Because we have no method of testing on Mac, we'll use the dummy function for these
         getMASWindowPos = store.dummy
