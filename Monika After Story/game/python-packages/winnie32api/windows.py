@@ -157,8 +157,10 @@ def flash_window(
         flags |= FLASHW.TRAY
     if count is None:
         flags |= FLASHW.TIMERNOFG
-    if count == -1:
+        count = 0
+    elif count == -1:
         flags |= FLASHW.TIMER
+        count = 0
 
     flash_info.dwFlags = flags
     flash_info.uCount = count
