@@ -645,7 +645,13 @@ init python:
         #TODO: Remove this alias at some point
         mas_getActiveWindow = mas_getActiveWindowHandle
 
-    def mas_display_notif(title, body, group=None, skip_checks=False, flash_window=False):
+    def mas_display_notif(
+        title: str,
+        body: list[str],
+        group: str|None = None,
+        skip_checks: bool = False,
+        flash_window: bool = False
+    ) -> bool:
         """
         Notification creation method
 
@@ -669,10 +675,11 @@ init python:
                 4. And if the notification group is enabled
                 OR if we skip checks. BUT this should only be used for introductory or testing purposes.
         """
-
         #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
         if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
             persistent._mas_windowreacts_notif_filters[group] = False
+
+        notif_success = False
 
         if (
             skip_checks
@@ -687,17 +694,17 @@ init python:
                 renpy.substitute(title),
                 renpy.substitute(renpy.random.choice(body))
             )
-            # Flash the window if needed
-            if flash_window:
-                mas_windowutils.flashMASWindow()
+            if notif_success:
+                # Flash the window if needed
+                if flash_window:
+                    mas_windowutils.flashMASWindow()
 
-            #Play the notif sound if we have that enabled and notif was successful
-            if persistent._mas_notification_sounds and notif_success:
-                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+                #Play the notif sound if we have that enabled and notif was successful
+                if persistent._mas_notification_sounds:
+                    renpy.sound.play("mod_assets/sounds/effects/notif.wav")
 
-            #Now we return true if notif was successful, false otherwise
-            return notif_success
-        return False
+        #Now we return true if notif was successful, false otherwise
+        return notif_success
 
     def mas_isFocused():
         """
