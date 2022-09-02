@@ -1,17 +1,22 @@
+init python:
+    # 99% of the wr use the same set of event rules
+    # let's reuse them
+    __DEFAULT_WR_RULES = {
+        "notif-group": "Window Reactions",
+        "skip alert": None,
+        "keep_idle_exp": None,
+        "skip_pause": None
+    }
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pinterest",
             category=["Pinterest"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -37,14 +42,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_duolingo",
             category=["Duolingo"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -70,14 +71,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_wikipedia",
             category=["- Wikipedia"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -121,14 +118,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_virtualpiano",
             category=["^Virtual Piano"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -158,14 +151,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_youtube",
             category=["- YouTube"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -185,21 +174,21 @@ label mas_wrs_youtube:
     return
 
 init 5 python:
+    rules = dict(__DEFAULT_WR_RULES)
+    rules.pop("keep_idle_exp")
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_r34m",
             category=[r"(?i)(((r34|rule\s?34).*monika)|(post \d+:[\w\s]+monika)|(monika.*(r34|rule\s?34)))"],
             aff_range=(mas_aff.AFFECTIONATE, None),
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "skip_pause": None
-            },
+            rules=rules,
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
+    del rules
 
 label mas_wrs_r34m:
     python:
@@ -238,14 +227,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_monikamoddev",
             category=["MonikaModDev"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -270,14 +255,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitter",
             category=["/ Twitter"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -292,7 +273,7 @@ label mas_wrs_twitter:
             "Anything interesting to share, [player]?": False,
             "280 characters? I only need [temp_len]...\n[temp_line]": True
         }
-        quip = renpy.random.choice(ily_quips_map.keys())
+        quip = renpy.random.choice(tuple(ily_quips_map.keys()))
 
         wrs_success = mas_display_notif(
             m_name,
@@ -312,14 +293,10 @@ label mas_wrs_twitter:
 #             persistent._mas_windowreacts_database,
 #             eventlabel="mas_wrs_monikatwitter",
 #             category=['twitter', 'lilmonix3'],
-#             rules={
-#                 "notif-group": "Window Reactions",
-#                 "skip alert": None,
-#                 "keep_idle_exp": None,
-#                 "skip_pause": None
-#             },
+#             rules=dict(__DEFAULT_WR_RULES),
 #             show_in_idle=True
 #         ),
+#         restartBlacklist=True,
 #         code="WRS"
 #     )
 
@@ -345,14 +322,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_4chan",
             category=["- 4chan"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -380,14 +353,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_pixiv",
             category=["- pixiv"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -429,14 +398,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_reddit",
             category=[r"(?i)reddit"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -462,14 +427,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_mal",
             category=["MyAnimeList"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -496,14 +457,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_deviantart",
             category=["DeviantArt"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -528,14 +485,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_netflix",
             category=["Netflix"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -561,14 +514,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_twitch",
             category=["- Twitch"],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
@@ -594,14 +543,10 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_word_processor",
             category=['Google Docs|LibreOffice Writer|Microsoft Word'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
+            rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
         ),
+        restartBlacklist=True,
         code="WRS"
     )
 
