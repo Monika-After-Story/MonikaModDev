@@ -1644,7 +1644,8 @@ init 5 python:
             eventlabel="monika_lastpoem",
             category=['monika'],
             prompt="Monika's last poem",
-            random=True
+            conditional="persistent.playthrough >= 3",
+            action=EV_ACT_RANDOM
         )
     )
 
