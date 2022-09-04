@@ -1644,13 +1644,16 @@ init 5 python:
             eventlabel="monika_lastpoem",
             category=['monika'],
             prompt="Monika's last poem",
-            conditional="persistent.playthrough >= 3",
+            # the correct check is persistent.seen_colors_poem
+            # but our imports are messed up so we have to use persistent.playthrough >= 2
+            conditional="persistent.playthrough >= 2",
             action=EV_ACT_RANDOM
         )
     )
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
+
     if not mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
@@ -1666,7 +1669,8 @@ label monika_lastpoem:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eua "I'm happy with where we are now."
     m 5hua "And I can tell you are, too."
-    return
+
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_anxious",category=['psychology'],prompt="Sudden anxiety",random=True))
