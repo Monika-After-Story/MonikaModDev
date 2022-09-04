@@ -374,6 +374,15 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.9
+label v0_12_9(version="v0_12_9"):
+    python hide:
+        mas_setEVLPropValues(
+            "monika_lastpoem",
+            conditional="persistent.playthrough >= 3"
+        )
+
+    return
 
 # 0.12.8.6
 label v0_12_8_6(version="v0_12_8_6"):
