@@ -377,11 +377,12 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.9.1
 label v0_12_9_1(version="v0_12_9_1"):
     python hide:
-        mas_setEVLPropValues(
-            "monika_lastpoem",
-            conditional="persistent.playthrough >= 3"
-        )
-
+        event_lastpoem = mas_getEV('monika_lastpoem')
+        if (
+            event_lastpoem
+            and event_lastpoem.shown_count == 0
+        ):
+            event_lastpoem.conditional = "persistent.playthrough >= 3"
     return
 
 # 0.12.8.6
