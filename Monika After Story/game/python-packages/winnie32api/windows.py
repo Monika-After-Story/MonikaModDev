@@ -1,18 +1,28 @@
+# pylint: disable=attribute-defined-outside-init
+# pylint: disable=invalid-name
+from __future__ import annotations
+
+__all__ = (
+    "get_hwnd_by_title",
+    "get_window_title",
+    "get_window_rect",
+    "flash_window",
+    "unflash_window",
+    "get_active_window_hwnd",
+    "get_active_window_title",
+    "get_active_window_rect"
+)
+
 import ctypes
 import ctypes.wintypes as wt
 
-from typing import (
-    Optional
-)
-
 from .common import (
-    # HWND,
     Rect,
     Pack,
-    WinAPIError,
     _get_last_err,
     _reset_last_err
 )
+from .errors import WinAPIError
 
 
 user32 = ctypes.windll.user32
@@ -70,7 +80,7 @@ user32.GetForegroundWindow.argtypes = ()
 user32.GetForegroundWindow.restype = wt.HWND
 
 
-def get_hwnd_by_title(title: str) -> Optional[int]:
+def get_hwnd_by_title(title: str) -> int|None:
     """
     Returns first window hwnd with the given title
     """
@@ -124,11 +134,11 @@ def get_window_rect(hwnd: int) -> Rect:
     if not result:
         raise WinAPIError("failed to get window rect", _get_last_err())
 
-    return Rect.from_coords(c_rect.left, c_rect.top, c_rect.right, c_rect.bottom)
+    return Rect.from_coords(c_rect.left, c_rect.top, c_rect.right, c_rect.bottom)# type: ignore
 
 def flash_window(
     hwnd: int,
-    count: Optional[int] = 1,
+    count: int|None = 1,
     caption: bool = True,
     tray: bool = True
 ):
@@ -181,7 +191,7 @@ def unflash_window(hwnd: int):
     user32.FlashWindowEx(ctypes.byref(flash_info))
 
 
-def get_active_window_hwnd() -> Optional[int]:
+def get_active_window_hwnd() -> int|None:
     """
     Returns active window title hwnd (id)
     """
@@ -191,7 +201,7 @@ def get_active_window_hwnd() -> Optional[int]:
 
     return active_win_hwnd
 
-def get_active_window_title() -> Optional[str]:
+def get_active_window_title() -> str|None:
     """
     Returns active window title as a str
     """
@@ -201,7 +211,7 @@ def get_active_window_title() -> Optional[str]:
 
     return get_window_title(hwnd)
 
-def get_active_window_rect() -> Optional[Rect]:
+def get_active_window_rect() -> Rect|None:
     """
     Returns active window rect
     """

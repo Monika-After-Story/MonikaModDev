@@ -1,7 +1,12 @@
+__all__ = (
+    "get_screen_mouse_pos",
+)
+
 import ctypes
 import ctypes.wintypes as wt
 
-from .common import Point, WinAPIError, _get_last_err
+from .common import Point, _get_last_err
+from .errors import WinAPIError
 
 
 user32 = ctypes.windll.user32
@@ -20,4 +25,4 @@ def get_screen_mouse_pos() -> Point:
     if not result:
         raise WinAPIError("failed to get mouse position", _get_last_err())
 
-    return Point(c_point.x, c_point.y)
+    return Point(c_point.x, c_point.y)# type: ignore

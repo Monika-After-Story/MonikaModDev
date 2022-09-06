@@ -16,21 +16,6 @@ user32 = ctypes.windll.user32
 kernel32 = ctypes.windll.kernel32
 
 
-HWND = int
-
-class Winnie32APIError(Exception): pass
-class WinAPIError(Winnie32APIError):
-    """
-    Represents an error in win API
-    """
-    def __init__(self, msg: str, code: int):
-        self.msg = msg
-        self.code = code
-
-    def __str__(self) -> str:
-        return f"{self.msg}. Status code: {self.code}"
-
-
 Coord = int
 
 class Point(NamedTuple):
