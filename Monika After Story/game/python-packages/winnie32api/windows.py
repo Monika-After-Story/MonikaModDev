@@ -8,6 +8,7 @@ __all__ = (
     "get_window_rect",
     "flash_window",
     "unflash_window",
+    "set_active_window",
     "get_active_window_hwnd",
     "get_active_window_title",
     "get_active_window_rect"
@@ -136,6 +137,7 @@ def get_window_rect(hwnd: int) -> Rect:
 
     return Rect.from_coords(c_rect.left, c_rect.top, c_rect.right, c_rect.bottom)# type: ignore
 
+
 def flash_window(
     hwnd: int,
     count: int|None = 1,
@@ -152,9 +154,6 @@ def flash_window(
             None means flash infinitely until the window becomes focused
         caption - do we flash window caption
         tray - do weflash tray icon
-
-    OUT:
-        bool - success status
     """
     flash_info = FlashWInfo()
     flash_info.cbSize = ctypes.sizeof(flash_info)
@@ -189,6 +188,23 @@ def unflash_window(hwnd: int):
     flash_info.uCount = 0
     flash_info.dwTimeout = 0
     user32.FlashWindowEx(ctypes.byref(flash_info))
+
+
+def set_active_window(hwnd: int):
+    """
+    Sets focus to a new window
+    NOTE:
+        A process may or may not allow to change "foreground" window
+            to other processes
+        It's impossible to "activate" a window from another process
+    """
+    # Also tried:
+    # - linking threads, no result
+    # - emulating input, no result
+    user32.SetFocus(hwnd)# err 5
+    user32.BringWindowToTop(hwnd)# no err, but no result
+    user32.SetForegroundWindow(hwnd)# err 1400
+    # user32.SetActiveWindow(hwnd)# err 1400
 
 
 def get_active_window_hwnd() -> int|None:

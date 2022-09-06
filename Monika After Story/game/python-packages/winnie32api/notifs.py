@@ -372,6 +372,12 @@ user32.TranslateMessage.restype = wt.BOOL
 user32.DispatchMessageW.argtypes = (ctypes.POINTER(Msg),)
 user32.DispatchMessageW.restype = LRESULT
 
+kernel32.GetCurrentThreadId.argtypes = ()
+kernel32.GetCurrentThreadId.restype = wt.DWORD
+
+user32.AttachThreadInput.argtypes = (wt.DWORD, wt.DWORD, wt.BOOL)
+user32.AttachThreadInput.restype = wt.BOOL
+
 user32.PostMessageW.argtypes = (wt.HWND, wt.UINT, wt.WPARAM, wt.LPARAM)
 user32.PostMessageW.restype = wt.BOOL
 
@@ -514,6 +520,7 @@ class _App():
             cb = self._callback_map.get(lparam, None)# type: ignore
             if cb:
                 cb()
+                return 1# type: ignore
             # print(f"{hex(msg)}: {wparam} | {lparam}")# type: ignore
             return user32.DefWindowProcW(hwnd, msg, wparam, lparam)
 
@@ -616,23 +623,31 @@ class _App():
 
         # print("exiting")
 
-    def _run(self):
+    def _run(self, main_th_id: int):
         """
         Shows the app + runs the event loop + hides the app
         NOTE: Blocking call
         """
+        child_th_id = kernel32.GetCurrentThreadId()
+        user32.AttachThreadInput(main_th_id, child_th_id, True)
         self._init()
         try:
             self._run_event_loop()
         finally:
             self._deinit()
+            user32.AttachThreadInput(main_th_id, child_th_id, False)
 
     def start(self):
         """
         Runs the app
         """
         if not self._thread:
-            self._thread = thread = threading.Thread(target=self._run, daemon=True)
+            main_th_id = kernel32.GetCurrentThreadId()
+            self._thread = thread = threading.Thread(
+                target=self._run,
+                args=(main_th_id,),
+                daemon=True
+            )
             thread.start()
 
     def stop(self):

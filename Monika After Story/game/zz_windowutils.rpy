@@ -48,6 +48,8 @@ init python in mas_windowutils:
     ## Windows
     # The notification manager
     WIN_NOTIF_MANAGER = None
+    # Window handler
+    HWND = None
 
     #We can only do this on windows
     if renpy.windows:
@@ -62,7 +64,21 @@ init python in mas_windowutils:
             #Now we initialize the notification class
             WIN_NOTIF_MANAGER = winnie32api.NotifManager(
                 renpy.config.name,
-                os.path.join(renpy.config.gamedir, "mod_assets/mas_icon.ico")
+                os.path.join(renpy.config.gamedir, "mod_assets/mas_icon.ico"),
+                on_dismiss=lambda: (
+                    focusMASWindow(),
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                ),
+                on_lmb_click=lambda: (
+                    focusMASWindow(),
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                ),
+                on_rmb_click=lambda: (
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                )
             )
 
         except Exception:
@@ -171,27 +187,27 @@ init python in mas_windowutils:
         except BadWindow:
             return None
 
-    def __getMASWindowHWND_Windows():
+    def __getMASWindowHWND_Windows() -> int|None:
         """
         Gets the hWnd of the MAS window
 
-        NOTE: Windows ONLY
-
         OUT:
             int - represents the hWnd of the MAS window
+            None - if we failed to get hwnd
         """
-        hwnd = None
+        global HWND
+
         #Verify we can actually do this before doing anything
-        if not store.mas_windowreacts.can_do_windowreacts:
-            return hwnd
+        if store.mas_windowreacts.can_do_windowreacts:
+            if HWND is None:
+                try:
+                    HWND = winnie32api.get_hwnd_by_title(store.mas_getWindowTitle())
+                except Exception:
+                    HWND = None
+        else:
+            HWND = None
 
-        try:
-            # TODO: consider caching this
-            hwnd = winnie32api.get_hwnd_by_title(store.mas_getWindowTitle())
-        except Exception:
-            pass
-
-        return hwnd
+        return HWND
 
     def __getAbsoluteGeometry_Linux(win):
         """
@@ -306,18 +322,22 @@ init python in mas_windowutils:
         """
         Tries to flash MAS window
         """
-        try:
-            hwnd = __getMASWindowHWND_Windows()
-            if hwnd:
-                winnie32api.flash_window(
-                    hwnd,
-                    count=None,
-                    caption=False,
-                    tray=True
-                )
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.flash_window(
+                hwnd,
+                count=None,
+                caption=False,
+                tray=True
+            )
 
-        except Exception:
-            pass
+    def _unflashMASWindow_Windows():
+        """
+        Tries to stop flashing MAS window
+        """
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.unflash_window(hwnd)
 
     def _flashMASWindow_Linux():
         """
@@ -327,6 +347,24 @@ init python in mas_windowutils:
     def _flashMASWindow_OSX():
         """
         Tries to flash MAS window
+        """
+
+    def _focusMASWindow_Windows():
+        """
+        Tries to set focus on MAS window
+        """
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.set_active_window(hwnd)
+
+    def _focusMASWindow_Linux():
+        """
+        Tries to set focus on MAS window
+        """
+
+    def _focusMASWindow_OSX():
+        """
+        Tries to set focus on MAS window
         """
 
     #Notif show internals
@@ -568,6 +606,7 @@ init python in mas_windowutils:
         getMASWindowPos = _getMASWindowPos_Windows
         getMousePos = _getAbsoluteMousePos_Windows
         flashMASWindow = _flashMASWindow_Windows
+        focusMASWindow = _focusMASWindow_Windows
 
     elif renpy.linux:
         _window_get = _getActiveWindowHandle_Linux
@@ -575,11 +614,13 @@ init python in mas_windowutils:
         getMASWindowPos = _getMASWindowPos_Linux
         getMousePos = _getAbsoluteMousePos_Linux
         flashMASWindow = _flashMASWindow_Linux
+        focusMASWindow = _focusMASWindow_Linux
 
     else:
         _window_get = _getActiveWindowHandle_OSX
         _tryShowNotif = _tryShowNotification_OSX
         flashMASWindow = _flashMASWindow_OSX
+        focusMASWindow = _focusMASWindow_OSX
 
         #Because we have no method of testing on Mac, we'll use the dummy function for these
         getMASWindowPos = store.dummy
@@ -735,7 +776,7 @@ init python:
         """
         Clears all tray icons (also action center on win10)
         """
-        if renpy.windows and store.mas_windowreacts.can_show_notifs:
+        if renpy.windows:
             mas_windowutils.WIN_NOTIF_MANAGER.clear()
 
     def mas_checkForWindowReacts():
