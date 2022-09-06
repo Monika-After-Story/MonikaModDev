@@ -48,8 +48,6 @@ init python in mas_windowutils:
     ## Windows
     # The notification manager
     WIN_NOTIF_MANAGER = None
-    # All current notifs,
-    win_notif_list = []
 
     #We can only do this on windows
     if renpy.windows:
@@ -62,7 +60,7 @@ init python in mas_windowutils:
             import winnie32api
 
             #Now we initialize the notification class
-            WIN_NOTIF_MANAGER = winnie32api.WindowsNotifManager(
+            WIN_NOTIF_MANAGER = winnie32api.NotifManager(
                 renpy.config.name,
                 os.path.join(renpy.config.gamedir, "mod_assets/mas_icon.ico")
             )
@@ -345,10 +343,7 @@ init python in mas_windowutils:
             bool. True if the notification was successfully sent, False otherwise
         """
         try:
-            notif = WIN_NOTIF_MANAGER.send(title, body)
-            win_notif_list.append(notif)
-            return True
-
+            return WIN_NOTIF_MANAGER.send(title, body)
         except Exception:
             return False
 
@@ -742,7 +737,6 @@ init python:
         """
         if renpy.windows and store.mas_windowreacts.can_show_notifs:
             mas_windowutils.WIN_NOTIF_MANAGER.clear()
-            mas_windowutils.win_notif_list.clear()
 
     def mas_checkForWindowReacts():
         """
