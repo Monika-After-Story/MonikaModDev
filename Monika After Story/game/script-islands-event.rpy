@@ -717,7 +717,7 @@ init -25 python in mas_island_event:
             for name, path_map in map_.items():
                 for sprite_type, path in path_map.items():
                     raw_data = zip_file.read(path)
-                    img = store.MASImageData(raw_data, "{}_{}.png".format(name, sprite_type))
+                    img = store.im.Data(raw_data, "{}_{}.png".format(name, sprite_type))
                     path_map[sprite_type] = img
 
         try:
@@ -732,7 +732,7 @@ init -25 python in mas_island_event:
 
                 # Anim frames are handled a bit differently
                 glitch_frames = tuple(
-                    (store.MASImageData(zip_file.read(fn), fn + ".png") for fn in GLITCH_FPS)
+                    (store.im.Data(zip_file.read(fn), fn + ".png") for fn in GLITCH_FPS)
                 )
 
         except Exception as e:

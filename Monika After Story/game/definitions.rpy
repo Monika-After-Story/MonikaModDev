@@ -281,41 +281,8 @@ python early:
 
     renpy.display.image.ImageReference.find_target = mas_find_target
 
-    class MASImageData(renpy.display.im.ImageBase):
-        """
-        NOTE: This DOES NOT support saving in persistent (pickling),
-            and it might be unsafe to do so.
-
-        This image manipulator loads an image from binary data.
-        """
-        def __init__(self, data, filename, **properties):
-            """
-            Constructor
-
-            IN:
-                data - string of bytes, giving the compressed image data in a standard
-                    file format.
-                filename - "filename" associated with the image. This is used to provide a
-                    hint to Ren'Py about the format of `data`. (It's not actually
-                    loaded from disk.)
-                properties - additional props
-            """
-            super(MASImageData, self).__init__(data, filename, **properties)
-            self.data = data
-            self.filename = filename
-
-        def __unicode__(self):
-            return u"MASImageData({})".format(self.filename)
-
-        def __repr__(self):
-            return str(self.__unicode__())
-
-        def __reduce__(self):
-            return (str, (self.filename,))
-
-        def load(self):
-            f = io.BytesIO(self.data)
-            return renpy.display.pgrender.load_image(f, self.filename)
+    # Deprecated, use im.Data directly
+    MASImageData = im.Data
 
 
 # uncomment this if you want syntax highlighting support on vim
