@@ -208,6 +208,8 @@ python early:
             if renpy.config.debug:
                 raise Exception(msg)
 
+        target = None # typing
+
         args = [ ]
 
         while name:
@@ -238,7 +240,7 @@ python early:
                     target = renpy.display.image.images[name]
 
                 #If we somehow failed, show the exception and return False
-                except:
+                except Exception:
                     error("Image '%s' not found." % ' '.join(self.name))
                     return False
 
@@ -246,17 +248,24 @@ python early:
                 error("Image '%s' not found." % ' '.join(self.name))
                 return False
 
+        if self._args.name == name:
+            error("Image '{}' refers to itself.".format(' '.join(name)))
+            return False
+
+        args += self._args.args
+
         try:
             a = self._args.copy(name=name, args=args)
             self.target = target._duplicate(a)
 
         except Exception as e:
-            if renpy.config.debug:
+            if renpy.config.raise_image_exceptions and (renpy.config.debug or renpy.config.developer):
                 raise
 
             error(str(e))
+            return False
 
-        #Copy the old transform over.
+        # Copy the old transform over.
         new_transform = self.target._target()
 
         if isinstance(new_transform, renpy.display.transform.Transform):
