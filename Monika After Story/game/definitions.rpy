@@ -545,7 +545,7 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-#                diary_entry=None,
+                # diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
@@ -562,12 +562,12 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-#                raise Exception(
-#                    (
-#                        "diary entry for {0} is longer than {1} characters"
-#                    ).format(eventlabel, self.DIARY_LIMIT)
-#                )
+            # if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+            #     raise Exception(
+            #         (
+            #             "diary entry for {0} is longer than {1} characters"
+            #         ).format(eventlabel, self.DIARY_LIMIT)
+            #     )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
@@ -673,7 +673,7 @@ python early:
                 stored_data_list = list(stored_data_row)
 
                 # first, check for lock existence
-                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+                lock_entry = self.INIT_LOCKDB.get(eventlabel, None)
 
                 if lock_entry:
 
@@ -687,7 +687,7 @@ python early:
 
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
-                    for name,index in Event.T_EVENT_NAMES.items():
+                    for name,index in self.T_EVENT_NAMES.items():
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
@@ -705,8 +705,8 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-#                    self.diary_entry = diary_entry
-#                    self.rules = rules
+                    # self.diary_entry = diary_entry
+                    # self.rules = rules
                     self.years = years
                     #self.sensitive = sensitive
                     self.aff_range = aff_range
@@ -718,11 +718,11 @@ python early:
                 self.per_eventdb[self.eventlabel] = data_row
 
             # setup lock entry
-            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+            self.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
 
             # Cache conditional
-            if self.conditional is not None and self.conditional not in Event._conditional_cache:
-                Event._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
+            if self.conditional is not None and self.conditional not in self._conditional_cache:
+                self._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
 
         def __eq__(self, other):
             """
@@ -759,8 +759,8 @@ python early:
                 value - the new value
             """
             if name in self.N_EVENT_NAMES:
-                super(Event, self).__setattr__(name, value)
-#                self.__dict__[name] = value
+                super().__setattr__(name, value)
+                # self.__dict__[name] = value
 
             # otherwise, figure out the location of an attribute, then repack
             # a tup
@@ -794,9 +794,9 @@ python early:
                     elif (
                         name == "conditional"
                         and value is not None
-                        and value not in Event._conditional_cache
+                        and value not in self._conditional_cache
                     ):
-                        Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
+                        self._conditional_cache[value] = renpy.python.py_compile(value, "eval")
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -829,7 +829,7 @@ python early:
                 return data_row[attr_loc]
 
             else:
-                return super(Event, self).__getattribute__(name)
+                return super().__getattribute__(name)
 
         #repr override
         def __repr__(self):
@@ -903,7 +903,11 @@ python early:
             if self.conditional is None:
                 return True
 
-            return renpy.python.py_eval_bytecode(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
+            return renpy.python.py_eval_bytecode(
+                self._conditional_cache[self.conditional],
+                globals=globals,
+                locals=locals
+            )
 
         def canRepeat(self):
             """
@@ -942,7 +946,7 @@ python early:
             if not self.canRepeat():
                 return False
 
-            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
+            new_start, new_end, was_changed = self._yearAdjustEV(self, force)
 
             if was_changed:
                 if self.isWithinRange():
@@ -1039,6 +1043,9 @@ python early:
             """
             A method to validate conditionals
 
+            RAISES:
+                EventException
+
             ASSUMES:
                 mas_all_ev_db
             """
@@ -1049,7 +1056,7 @@ python early:
 
                     except Exception as e:
                         raise EventException(
-                            "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
+                            "Failed to evaluate '{0}' conditional for the event '{1}':\n{2}.".format(
                                 ev.conditional,
                                 ev.eventlabel,
                                 traceback.format_exc()
@@ -1072,8 +1079,8 @@ python early:
             """
             return ev.shown_count
 
-        @staticmethod
-        def lockInit(name, ev=None, ev_label=None):
+        @classmethod
+        def lockInit(cls, name, ev=None, ev_label=None):
             """
             Locks the property for a given event object or eventlabel.
             This will prevent the property from being overwritten on object
@@ -1086,11 +1093,11 @@ python early:
                 ev_label - event label of Event to property lock
                     (Default: None)
             """
-            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+            cls._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
 
 
-        @staticmethod
-        def unlockInit(name, ev=None, ev_label=None):
+        @classmethod
+        def unlockInit(cls, name, ev=None, ev_label=None):
             """
             Unlocks the property for a given event object or event label.
             This will allow the property to be overwritten on object creation.
@@ -1102,11 +1109,11 @@ python early:
                 ev_label - event label of Event to property lock
                     (Default: None)
             """
-            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+            cls._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
 
 
-        @staticmethod
-        def _modifyInitLock(name, value, ev=None, ev_label=None):
+        @classmethod
+        def _modifyInitLock(cls, name, value, ev=None, ev_label=None):
             """
             Modifies the init lock for a given event/eventlabel
 
@@ -1123,7 +1130,7 @@ python early:
                 return
 
             # check if we have a valid property
-            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            property_dex = cls.T_EVENT_NAMES.get(name, None)
             if property_dex is None:
                 return
 
@@ -1132,13 +1139,13 @@ python early:
                 ev_label = ev.eventlabel
 
             # now lock the property
-            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry = list(cls.INIT_LOCKDB[ev_label])
             lock_entry[property_dex] = value
-            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
+            cls.INIT_LOCKDB[ev_label] = tuple(lock_entry)
 
 
-        @staticmethod
-        def _verifyAndSetDatesEV(ev):
+        @classmethod
+        def _verifyAndSetDatesEV(cls, ev):
             """
             Runs _verifyDatesEV and sets the event properties if change
             happens
@@ -1148,7 +1155,7 @@ python early:
 
             RETURNS: was_changed
             """
-            new_start, new_end, was_changed = Event._verifyDatesEV(ev)
+            new_start, new_end, was_changed = cls._verifyDatesEV(ev)
             if was_changed:
                 ev.start_date = new_start
                 ev.end_date = new_end
@@ -1156,8 +1163,8 @@ python early:
             return was_changed
 
 
-        @staticmethod
-        def _verifyDatesEV(ev):
+        @classmethod
+        def _verifyDatesEV(cls, ev):
             """
             _verifyDates, but for an Event object.
 
@@ -1166,11 +1173,11 @@ python early:
 
             RETURNS: See _verifyDates
             """
-            return Event._verifyDates(ev.start_date, ev.end_date, ev.years)
+            return cls._verifyDates(ev.start_date, ev.end_date, ev.years)
 
 
-        @staticmethod
-        def _yearAdjustEV(ev, force=False):
+        @classmethod
+        def _yearAdjustEV(cls, ev, force=False):
             """
             _yearAdjust, but for an Event object
 
@@ -1181,7 +1188,7 @@ python early:
 
             RETURNS: See _verifyDates
             """
-            return Event._yearAdjust(
+            return cls._yearAdjust(
                 ev.start_date,
                 ev.end_date,
                 ev.years,
@@ -1189,8 +1196,8 @@ python early:
             )
 
 
-        @staticmethod
-        def _verifyDates(_start, _end, _years):
+        @classmethod
+        def _verifyDates(cls, _start, _end, _years):
             """
             Given start/end/_yeras, figure out the appropriate start and end
             dates. We use current datetime to figure this out.
@@ -1215,7 +1222,7 @@ python early:
                 return (_start, _end, False)
 
             # otherwise, we need to repeat
-            return Event._yearAdjust(_start, _end, _years)
+            return cls._yearAdjust(_start, _end, _years)
 
 
         @staticmethod
@@ -1363,12 +1370,7 @@ python early:
             RETURNS:
                 True if this event passes the filter, False if not
             """
-
-            # collections allow us to match all
-            from collections import Counter
-
             # NOTE: this is done in an order to minimize branching.
-
             # now lets filter
             if unlocked is not None and event.unlocked != unlocked:
                 return False
@@ -1424,8 +1426,8 @@ python early:
             # we've passed all the filtering rules somehow
             return True
 
-        @staticmethod
-        def filterEvents(events, **flt_args):
+        @classmethod
+        def filterEvents(cls, events, **flt_args):
             """
             Filters the given events dict according to the given filters.
             HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -1482,14 +1484,10 @@ python early:
             ):
                 return events
 
-            # copy check
-#            if full_copy:
-#                from copy import deepcopy
-
             # setup keys
-            cat_key = Event.FLT[0]
-            act_key = Event.FLT[4]
-            #sns_key = Event.FLT[8]
+            cat_key = cls.FLT[0]
+            act_key = cls.FLT[4]
+            #sns_key = cls.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -1513,31 +1511,32 @@ python early:
             # python 2
             for k,v in events.items():
                 # time to apply filtering rules
-                if Event._filterEvent(v, **flt_args):
+                if cls._filterEvent(v, **flt_args):
                     filt_ev_dict[k] = v
 
             return filt_ev_dict
 
         @staticmethod
         def getSortedKeys(events, include_none=False):
-            #
-            # Returns a list of eventlables (keys) of the given dict of events
-            # sorted by the field unlock_date. The list is sorted in
-            # chronological order (newest first). Events with an unlock_date
-            # of None are not included unless include_none is True, in which
-            # case, Nones are put after everything else
-            #
-            # IN:
-            #   events - dict of events of the following format:
-            #       eventlabel: event object
-            #   include_none - True means we include events that have None for
-            #       unlock_date int he sorted key list, False means we dont
-            #       (Default: False)
-            #
-            # RETURNS:
-            #   list of eventlabels (keys), sorted in chronological order.
-            #   OR: [] if the given events is empty or all unlock_date fields
-            #   were None and include_none is False
+            """
+            Returns a list of eventlables (keys) of the given dict of events
+            sorted by the field unlock_date. The list is sorted in
+            chronological order (newest first). Events with an unlock_date
+            of None are not included unless include_none is True, in which
+            case, Nones are put after everything else
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                include_none - True means we include events that have None for
+                    unlock_date int he sorted key list, False means we dont
+                    (Default: False)
+
+            RETURNS:
+                list of eventlabels (keys), sorted in chronological order.
+                OR: [] if the given events is empty or all unlock_date fields
+                were None and include_none is False
+            """
 
             # sanity check
             if not events or len(events) == 0:
@@ -1576,8 +1575,8 @@ python early:
 
             return eventlabels
 
-        @staticmethod
-        def _checkEvent(ev, curr_time):
+        @classmethod
+        def _checkEvent(cls, ev, curr_time):
             """
             Singular filter function for checkEvents
 
@@ -1603,15 +1602,15 @@ python early:
                 return False
 
             # check if valid action
-            if ev.action not in Event.ACTION_MAP:
+            if ev.action not in cls.ACTION_MAP:
                 return False
 
             # success
             return True
 
 
-        @staticmethod
-        def checkEvents(ev_dict, rebuild_ev=True):
+        @classmethod
+        def checkEvents(cls, ev_dict, rebuild_ev=True):
             """
             This acts as a combination of both checkConditoinal and
             checkCalendar
@@ -1634,9 +1633,9 @@ python early:
                 #   - has None for date properties
                 # indexing would be smarter.
 
-                if Event._checkEvent(ev, _now):
+                if cls._checkEvent(ev, _now):
                     # perform action
-                    Event._performAction(
+                    cls._performAction(
                         ev,
                         unlock_time=_now,
                         rebuild_ev=rebuild_ev
@@ -1664,8 +1663,8 @@ python early:
             return MASFarewellRule.evaluate_rule(ev)
 
 
-        @staticmethod
-        def checkFarewellRules(events):
+        @classmethod
+        def checkFarewellRules(cls, events):
             """
             Checks the event dict (farewells) against their own farewell specific
             rules, filters out those Events whose rule check return true. As for
@@ -1690,7 +1689,7 @@ python early:
             for label, event in events.items():
 
                 # check if the event contains a MASFarewellRule and evaluate it
-                if Event._checkFarewellRule(event):
+                if cls._checkFarewellRule(event):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -1701,64 +1700,8 @@ python early:
             # return the available events dict
             return available_events
 
-        #TODO: Depricate this
-        @staticmethod
-        def _checkAffectionRule(ev,keepNoRule=False):
-            """
-            Checks the given event against its own affection specific rule.
-
-            IN:
-                ev - event to check
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
-
-        #TODO: Depricate this
-        @staticmethod
-        def checkAffectionRules(events,keepNoRule=False):
-            """
-            Checks the event dict against their own affection specific rules,
-            filters out those Events whose rule check return true. This rule
-            checks if current affection is inside the specified range contained
-            on the rule
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-                keepNoRule - Boolean indicating wheter if it should keep
-                    events that don't have an affection rule defined
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.items():
-
-                # check if the event contains a MASAffectionRule and evaluate it
-                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
-
-
-        @staticmethod
-        def _performAction(ev, **kwargs):
+        @classmethod
+        def _performAction(cls, ev, **kwargs):
             """
             Efficient / no checking action performing
 
@@ -1768,19 +1711,19 @@ python early:
                 ev - event we are performing action on
                 **kwargs - keyword args to pass to action
             """
-            Event.ACTION_MAP[ev.action](ev, **kwargs)
+            cls.ACTION_MAP[ev.action](ev, **kwargs)
 
 
-        @staticmethod
-        def performAction(ev, **kwargs):
+        @classmethod
+        def performAction(cls, ev, **kwargs):
             """
             Performs the action of the given event
 
             IN:
                 ev - event we are perfrming action on
             """
-            if ev.action in Event.ACTION_MAP:
-                Event._performAction(ev, **kwargs)
+            if ev.action in cls.ACTION_MAP:
+                cls._performAction(ev, **kwargs)
 
         @staticmethod
         def _undoEVAction(ev):
@@ -1897,12 +1840,12 @@ python early:
             """
             super(renpy.Displayable, self).__init__()
             # setup
-#            self.idle_text = idle_text
-#            self.hover_text = hover_text
-#            self.disable_text = disable_text
-#            self.idle_back = idle_back
-#            self.hover_back = hover_back
-#            self.disable_back = disable_back
+            # self.idle_text = idle_text
+            # self.hover_text = hover_text
+            # self.disable_text = disable_text
+            # self.idle_back = idle_back
+            # self.hover_back = hover_back
+            # self.disable_back = disable_back
             self.xpos = xpos
             self.ypos = ypos
             self.width = width
@@ -3312,7 +3255,7 @@ python early:
             if key.startswith(self.EX_PFX):
                 return self.ex_props.get(key[self._EX_LEN:], None)
 
-            return super(MASExtraPropable, self).__getattr__(key)
+            return super().__getattr__(key)
 
         def __setattr__(self, key, value):
             if key.startswith(self.EX_PFX):
@@ -3321,7 +3264,7 @@ python early:
                 if len(stripped_key) > 0:
                     self.ex_props[stripped_key] = value
 
-            super(MASExtraPropable, self).__setattr__(key, value)
+            super().__setattr__(key, value)
 
         def ex_has(self, key):
             """
