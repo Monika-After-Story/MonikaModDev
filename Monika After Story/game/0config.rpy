@@ -36,6 +36,8 @@ python early:
     renpy.config.save_directory = "Monika After Story"
 
     ### R7+ Config Var adjustments
+    ## 7.4.11
+    renpy.config.mouse_focus_clickthrough = True
     ##7.3.3
     #Only devs need this
     renpy.config.report_extraneous_attributes = False
@@ -147,6 +149,5 @@ define config.main_menu_music = audio.t1
 define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
 
-define config.mouse_focus_clickthrough = True
 init python:
     config.per_frame_screens.append("_trace_screen")
