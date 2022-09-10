@@ -379,10 +379,11 @@ python early in mas_utils:
 
         RETURNS: the init'd mas_log
         """
+        global mas_log
+
         if mas_logging.is_inited("mas_log"):
             return mas_logging.get_log("mas_log")
 
-        global mas_log
         mas_log = mas_logging.init_log("mas_log")
         return mas_log
 
