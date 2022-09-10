@@ -260,7 +260,7 @@ init -979 python:
 
         RETURNS: the api key, as a string. Will be null string if no key found
         """
-        return store.mas_api_keys.Data.api_keys.get(feature, "")
+        return store.mas_api_keys.api_keys.get(feature, "")
 
 
     def mas_hasAPIKey(feature):
@@ -314,7 +314,31 @@ init -980 python in mas_api_keys:
     import store
     import store.mas_utils as mas_utils
 
-    import store.mas_api_keys_data as Data
+
+    registered_api_keys = {}
+    # mapping of available features to the feature display name
+    #   key: unique feature name
+    #   value: tuple containnig:
+    #   [0] - feature display name
+    #   [1] - code to run on change
+
+    api_keys = {}
+    # current actual API keys that are set
+    # key: unique feature name
+    # value: API key
+
+    FILEPATH_KEYS = os.path.normcase(renpy.config.savedir + "/api_keys.json")
+
+    MAX_KEY_SIZE_DISP = 39
+
+    # error messages
+    ERR_ON_CHG_CRASH = "crash when running on_change for feature {0} - {1}"
+    ERR_ON_CHG_CRASH_MSG = "on-change crash  - see logs"
+    ERR_ON_CHG_TYPE = "invalid return value from on_change for feature {0} - {1}"
+    ERR_ON_CHG_TYPE_MSG = "invalid value from on-change - see logs"
+    ERR_ON_CHG_TYPE_NOT_TUPLE = "expected tuple, got '{0}'"
+    ERR_ON_CHG_TYPE_BAD_TUP_SIZE = "expected tuple of at least size 2, got one of size {0}"
+    ERR_ON_CHG_TYPE_BAD_ERR_MSG = "invalid type for value at index 1 in return value: expected str, got {0}"
 
 
     def feature_registered(feature):
@@ -326,7 +350,7 @@ init -980 python in mas_api_keys:
 
         RETURNS: True if the feature is registered for API keys
         """
-        return feature in Data.registered_api_keys
+        return feature in registered_api_keys
 
 
     def register_feature(feature, data):
@@ -337,7 +361,7 @@ init -980 python in mas_api_keys:
             feature - name of the feature
             data - data to associate with the feature
         """
-        Data.registered_api_keys[feature] = data
+        registered_api_keys[feature] = data
 
 
     def features_for_display():
@@ -349,15 +373,15 @@ init -980 python in mas_api_keys:
             [1] - the on_change function to run
         """
         feats = []
-        for feature in Data.registered_api_keys:
+        for feature in registered_api_keys:
             key = store.mas_getAPIKey(feature)
 
             # reduce length to avoid going past screen edge
-            if len(key) > Data.MAX_KEY_SIZE_DISP:
-                key = key[:Data.MAX_KEY_SIZE_DISP - 3] + "..."
+            if len(key) > MAX_KEY_SIZE_DISP:
+                key = key[:MAX_KEY_SIZE_DISP - 3] + "..."
 
             feats.append((
-                Data.registered_api_keys[feature][0],
+                registered_api_keys[feature][0],
                 feature,
                 key,
             ))
@@ -371,7 +395,7 @@ init -980 python in mas_api_keys:
 
         RETURNS: True if we have api key based features
         """
-        return len(Data.registered_api_keys) > 0
+        return len(registered_api_keys) > 0
 
 
     def clean_key(dirty_key):
@@ -398,7 +422,7 @@ init -980 python in mas_api_keys:
             [0] - True if valid key, False if not
             [1] - error message to show
         """
-        on_change = Data.registered_api_keys[feature][1]
+        on_change = registered_api_keys[feature][1]
         if on_change is not None:
 
             # guarded on change execution
@@ -407,30 +431,30 @@ init -980 python in mas_api_keys:
 
             except Exception as e:
                 mas_utils.mas_log.error(
-                    Data.ERR_ON_CHG_CRASH.format(feature, repr(e))
+                    ERR_ON_CHG_CRASH.format(feature, repr(e))
                 )
 
-                return False, Data.ERR_ON_CHG_MSG
+                return False, ERR_ON_CHG_MSG
 
             # type check
             try:
                 if not isinstance(rv, tuple):
-                    raise TypeError(Data.ERR_ON_CHG_TYPE_NOT_TUPLE.format(rv))
+                    raise TypeError(ERR_ON_CHG_TYPE_NOT_TUPLE.format(rv))
 
                 if len(rv) < 2:
-                    raise TypeError(Data.ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
+                    raise TypeError(ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
 
                 # only check error message if on_change is returning false
                 if not rv[0] and not isinstance(rv[1], (str, unicode)):
-                    raise TypeError(Data.ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(rv[1]))
+                    raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(rv[1]))
 
                 return rv
 
             except TypeError as e:
                 mas_utils.mas_log.error(
-                    Data.ERR_ON_CHG_TYPE.format(feature, str(e)) # str used since msg says type error
+                    ERR_ON_CHG_TYPE.format(feature, str(e)) # str used since msg says type error
                 )
-                return False, Data.ERR_ON_CHG_TYPE_MSG
+                return False, ERR_ON_CHG_TYPE_MSG
 
         return True, ""
 
@@ -446,7 +470,7 @@ init -980 python in mas_api_keys:
             return
 
         # clear key
-        Data.api_keys.pop(feature)
+        api_keys.pop(feature)
         save_keys()
 
         # on change
@@ -479,7 +503,7 @@ init -980 python in mas_api_keys:
 
         if key_valid:
             # set key
-            Data.api_keys[feature] = new_key
+            api_keys[feature] = new_key
             save_keys()
 
         else:
@@ -510,27 +534,27 @@ init -980 python in mas_api_keys:
         Loads API keys from config file
         """
         try:
-            if not os.access(Data.FILEPATH_KEYS, os.F_OK | os.R_OK | os.W_OK):
+            if not os.access(FILEPATH_KEYS, os.F_OK | os.R_OK | os.W_OK):
                 return
         except:
             return
 
         try:
-            with open(Data.FILEPATH_KEYS, "r") as keys:
+            with open(FILEPATH_KEYS, "r") as keys:
                 loaded_keys = json.load(keys)
 
                 # clear newlines
                 for feat in loaded_keys:
                     loaded_keys[feat] = clean_key(loaded_keys[feat])
 
-                Data.api_keys.clear()
-                Data.api_keys.update(loaded_keys)
+                api_keys.clear()
+                api_keys.update(loaded_keys)
 
         except Exception as e:
             mas_utils.mas_log.warning(
                 "problem loading api key json {0} from {1}".format(
                     repr(e),
-                    Data.FILEPATH_KEYS
+                    FILEPATH_KEYS
                 )
             )
 
@@ -539,18 +563,18 @@ init -980 python in mas_api_keys:
         """
         Saves API keys to disk
         """
-        if len(Data.api_keys) < 1:
+        if len(api_keys) < 1:
             return
 
         try:
-            with open(Data.FILEPATH_KEYS, "w") as keys:
-                json.dump(Data.api_keys, keys, indent=4)
+            with open(FILEPATH_KEYS, "w") as keys:
+                json.dump(api_keys, keys, indent=4)
 
         except Exception as e:
             mas_utils.mas_log.warning(
                 "problem saving api key json {0} in {1}".format(
                     repr(e),
-                    Data.FILEPATH_KEYS
+                    FILEPATH_KEYS
                 )
             )
 
@@ -559,30 +583,3 @@ init -980 python in mas_api_keys:
     load_keys()
 
 
-init -981 python in mas_api_keys_data:
-    import os
-
-    registered_api_keys = {}
-    # mapping of available features to the feature display name
-    #   key: unique feature name
-    #   value: tuple containnig:
-    #   [0] - feature display name
-    #   [1] - code to run on change
-
-    api_keys = {}
-    # current actual API keys that are set
-    # key: unique feature name
-    # value: API key
-
-    FILEPATH_KEYS = os.path.normcase(renpy.config.savedir + "/api_keys.json")
-
-    MAX_KEY_SIZE_DISP = 39
-
-    # error messages
-    ERR_ON_CHG_CRASH = "crash when running on_change for feature {0} - {1}"
-    ERR_ON_CHG_CRASH_MSG = "on-change crash  - see logs"
-    ERR_ON_CHG_TYPE = "invalid return value from on_change for feature {0} - {1}"
-    ERR_ON_CHG_TYPE_MSG = "invalid value from on-change - see logs"
-    ERR_ON_CHG_TYPE_NOT_TUPLE = "expected tuple, got '{0}'"
-    ERR_ON_CHG_TYPE_BAD_TUP_SIZE = "expected tuple of at least size 2, got one of size {0}"
-    ERR_ON_CHG_TYPE_BAD_ERR_MSG = "invalid type for value at index 1 in return value: expected str, got {0}"
