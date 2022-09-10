@@ -16444,11 +16444,9 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_staring",
-            category=['monika, romance'],
-            prompt="Staring contest",
-            random=True,
-            aff_range=(mas_aff.ENAMORED, None)
-
+            conditional="persistent._mas_pm_eye_color is not None",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
         )
     )
 
@@ -16456,32 +16454,35 @@ label monika_staring:
     m 6eub "Hey [player], look into my eyes for a second..."
 
     window hide
-    show monika 1eua_static with dissolve_monika
-    m 1eua_static "..."
-    show monika 1etu_static with dissolve_monika
-    m 1etu_static "..."
-    show monika 2tubsa with dissolve_monika
-    m 2tubsa "..."
+    show monika 1eua with dissolve_monika
+    pause 5.0
+    show monika 1etu with dissolve_monika
+    pause 2.0
+    show monika 1tubsa with dissolve_monika
+    pause 2.0
+    show monika 3hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    pause 2.0
+    show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    pause 2.0
     window auto
 
-    show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5subsa "{w=0.3}.{w=0.3}.{w=0.3}."
-    show monika 3hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 3hua "Ehehe~"
     m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
 
     if persistent._mas_pm_eye_color is not None:
-        m "When we're alone together, I can't help but envision your [persistent._mas_pm_eye_color] eyes..."
+        #A tuple for eye color means the player has heterochromia
+        $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+        m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
 
     else:
-        m "When we're alone together, I can't help but envision your eyes..."
+        m 1dubsu "When we're alone together, I can't help but envision your eyes..."
+
     show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5dubsa "Time stops, and I can finally just...let out all this baggage."
-    show monika 6hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 6hubfb "..."
-    m 6tubfa "Thank you so much, [player]~"
-    m 6kubfb "Because you're here with me now, I'm so at peace."
-    return
+    m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
+    m 5hubfb "..."
+    m 5tubfa "Thank you so much, [player]~"
+    m 5kubfu "Because you're here with me now, I'm so at peace."
+    return "no_unlock"
 
 #Player's social personality
 default persistent._mas_pm_social_personality = None
