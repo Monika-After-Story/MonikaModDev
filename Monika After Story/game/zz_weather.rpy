@@ -84,31 +84,6 @@ image snow_weather_fb = MASFallbackFilterDisplayable(
 
 ## end spaceroom weather art
 
-## living room weather art
-
-## end living room weather art
-
-## start island bg weather art
-
-image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
-image mas_island_day = "mod_assets/location/special/without_frame.png"
-image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
-image mas_island_night = "mod_assets/location/special/night_without_frame.png"
-image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
-image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
-image mas_island_frame_rain_night = "mod_assets/location/special/night_rain_with_frame.png"
-image mas_island_rain_night = "mod_assets/location/special/night_rain_without_frame.png"
-image mas_island_frame_overcast = "mod_assets/location/special/overcast_with_frame.png"
-image mas_island_overcast = "mod_assets/location/special/overcast_without_frame.png"
-image mas_island_frame_overcast_night = "mod_assets/location/special/night_overcast_with_frame.png"
-image mas_island_overcast_night = "mod_assets/location/special/night_overcast_without_frame.png"
-image mas_island_frame_snow = "mod_assets/location/special/snow_with_frame.png"
-image mas_island_snow = "mod_assets/location/special/snow_without_frame.png"
-image mas_island_frame_snow_night = "mod_assets/location/special/night_snow_with_frame.png"
-image mas_island_snow_night = "mod_assets/location/special/night_snow_without_frame.png"
-
-## end island bg weather art
-
 # NOTE: might not use these
 #default persistent._mas_weather_snow_happened = False
 #default persistent._mas_weather_rain_happened = False
@@ -303,12 +278,12 @@ init -20 python in mas_weather:
             #Change weather
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
-                #Let's see if we need to scene change
+                # determine if spaceroom idle should dissolve
                 if store.mas_current_background.isChangingRoom(
                         store.mas_current_weather,
                         new_weather
                 ):
-                    store.mas_idle_mailbox.send_scene_change()
+                    store.mas_idle_mailbox.send_dissolve_all()
 
                 #Now we change weather
                 store.mas_changeWeather(new_weather)
@@ -319,12 +294,12 @@ init -20 python in mas_weather:
                 return True
 
             elif store.mas_current_weather != store.mas_weather_def:
-                #Let's see if we need to scene change
+                # determine if spaceroom idle should dissolve
                 if store.mas_current_background.isChangingRoom(
                         store.mas_current_weather,
                         store.mas_weather_def
                 ):
-                    store.mas_idle_mailbox.send_scene_change()
+                    store.mas_idle_mailbox.send_dissolve_all()
 
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
@@ -378,7 +353,6 @@ init -20 python in mas_weather:
 
         # dont need to change anything if we are switching from thunder
         if _old != store.mas_weather_thunder:
-
             # set global flag
             store.mas_is_raining = True
 
@@ -390,6 +364,9 @@ init -20 python in mas_weather:
                 fadein=1.0,
                 if_changed=True
             )
+
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_showDecoTag("mas_o31_vignette")
 
 
     def _weather_rain_exit(_new):
@@ -404,6 +381,9 @@ init -20 python in mas_weather:
 
             # stop rain sound
             renpy.music.stop(channel="background", fadeout=1.0)
+
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_hideDecoTag("mas_o31_vignette")
 
 
     def _weather_snow_entry(_old):
@@ -461,17 +441,20 @@ init -20 python in mas_weather:
         """
         Overcast entry programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_showDecoTag("mas_o31_vignette")
+
 
     def _weather_overcast_exit(_new):
         """
         Overcast exit programming point
         """
-        pass
+        if store.persistent._mas_o31_in_o31_mode:
+            store.mas_hideDecoTag("mas_o31_vignette")
 
 
-init -10 python:
-
+init -50 python:
+    @store.mas_utils.deprecated(use_instead="MASFilterableWeather")
     def MASWeather(
             weather_id,
             prompt,
@@ -669,6 +652,7 @@ init -10 python:
             """
             self.unlocked = data_tuple[0]
 
+        @store.mas_utils.deprecated(use_instead="get_mask", should_raise=True)
         def sp_window(self, day):
             """DEPRECATED
             Use get_mask instead.
@@ -676,6 +660,7 @@ init -10 python:
             """
             return self.get_mask()
 
+        @store.mas_utils.deprecated(should_raise=True)
         def isbg_window(self, day, no_frame):
             """DEPRECATED
             Islands are now separate images. See script-islands-event.
@@ -1122,7 +1107,7 @@ label mas_change_weather(new_weather, by_user=None, set_persistent=False):
         #Call entry programming point
         mas_current_weather.entry(old_weather)
 
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 1dsc_static")
+    call spaceroom(dissolve_all=True, force_exp="monika 1dsc_static")
     return
 
 init 5 python:

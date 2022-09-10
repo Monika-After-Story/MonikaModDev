@@ -99,6 +99,12 @@ init -1 python:
 
 init 10 python in mas_seasons:
     import store
+
+    PLUGIN_PP_SPRING = "pp_spring"
+    PLUGIN_PP_SUMMER = "pp_summer"
+    PLUGIN_PP_FALL = "pp_fall"
+    PLUGIN_PP_WINTER = "pp_winter"
+
     # NOTE: all functions here are guaranteed to run at 900, and runtime.
 
     # NOTE: Methodology for seasonal programming points:
@@ -114,7 +120,6 @@ init 10 python in mas_seasons:
         """
         Programming point for spring
         """
-
         # show spring topics
         store.mas_protectedShowEVL("monika_enjoyingspring", "EVE", _random=True)
         store.mas_protectedShowEVL("monika_outdoors", "EVE", _random=True)
@@ -135,7 +140,12 @@ init 10 python in mas_seasons:
         store.mas_lockEVL("monika_snowballfight", "EVE")
 
         # disable hot choc
-        store.mas_getConsumable("hotchoc").disable()
+        store.mas_consumable_hotchocolate.disable()
+
+        #Run spring function plugins
+        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_SPRING)
+
+        #NOTE: All things which shouldn't be allowed to be overridden go below the plugins
 
         # unhibernate islands greet
         if not renpy.seen_label("greeting_ourreality"):
@@ -146,23 +156,30 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
-
         # disable spring topics
         store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
 
+        #Enable summer topics
+        store.mas_protectedShowEVL("monika_fireworks", "EVE", _random=True)
+
+        #Run summer function plugins
+        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_SUMMER)
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        pass
+        #Disable Summer Topics
+        store.mas_hideEVL("monika_fireworks", "EVE", derandom=True)
+
+        #Run fall function plugins
+        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_FALL)
 
 
     def _pp_winter():
         """
         Programming point for winter
         """
-
         # show winter topics
         if not renpy.seen_label("monika_snow"):
             store.mas_protectedShowEVL("monika_snow", "EVE", _random=True)
@@ -184,11 +201,14 @@ init 10 python in mas_seasons:
 
         # enable hotchoc if given before
         if store.seen_event("mas_reaction_hotchocolate"):
-            store.mas_getConsumable("hotchoc").enable()
+            store.mas_consumable_hotchocolate.enable()
 
+        #Run winter function plugins
+        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_WINTER)
+
+        #NOTE: All things which shouldn't be allowed to be overridden go below the plugins
         # want to ensure first time we see the islands they are dead and covered in snow
         store.mas_lockEVL("greeting_ourreality", "GRE")
-
 
     # seaonal pp id:
     # maps season IDs to the programming point

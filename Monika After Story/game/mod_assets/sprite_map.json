@@ -1,0 +1,113 @@
+{
+    "eyebrows": {
+        "f": "furrowed",
+        "u": "up",
+        "k": "knit",
+        "s": "mid",
+        "t": "think"
+    },
+    "eyes": {
+        "e": "normal",
+        "w": "wide",
+        "s": "sparkle",
+        "t": "smug",
+        "c": "crazy",
+        "r": "right",
+        "l": "left",
+        "h": "closedhappy",
+        "d": "closedsad",
+        "k": "winkleft",
+        "n": "winkright",
+        "f": "soft",
+        "m": "smugleft",
+        "g": "smugright"
+    },
+    "mouth": {
+        "a": "smile",
+        "b": "big",
+        "c": "smirk",
+        "d": "small",
+        "o": "gasp",
+        "u": "smug",
+        "w": "wide",
+        "x": "angry",
+        "p": "pout",
+        "t": "triangle"
+    },
+    "arms": {
+        "1": "steepling",
+        "2": "crossed",
+        "3": "restleftpointright",
+        "4": "pointright",
+        "5": ["def", "def"],
+        "6": "down",
+        "7": "downleftpointright"
+    },
+    "head": {
+        "eua": "a",
+        "eub": "b",
+        "euc": "c",
+        "eud": "d",
+        "eka": "e",
+        "ekc": "f",
+        "ekd": "g",
+        "esc": "h",
+        "esd": "i",
+        "hua": "j",
+        "hub": "k",
+        "hkb": "l",
+        "lka": "m",
+        "lkb": "n",
+        "lkc": "o",
+        "lkd": "p",
+        "dsc": "q",
+        "dsd": "r"
+    },
+    "sides": {
+        "1": ["1l", "1r"],
+        "2": ["1l", "2r"],
+        "3": ["2l", "2r"],
+        "4": ["2l", "2r"],
+        "5": ["", ""],
+        "6": ["1l", "1r"],
+        "7": ["1l", "2r"]
+    },
+    "single": {
+        "a": "3a",
+        "u": "3a"
+    },
+    "blush": {
+        "bl": "lines",
+        "bs": "shade",
+        "bf": "full"
+    },
+    "tears": {
+        "ts": "streaming",
+        "td": "dried",
+        "tp": "pooled",
+        "tu": "up"
+    },
+    "sweat": {
+        "sdl": "def",
+        "sdr": "right"
+    },
+    "MOD_MAP": {
+        "tears": {
+            "streaming": [
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright"
+            ],
+            "up": [
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright"
+            ],
+            "pooled": [
+                "closedhappy"
+            ]
+        }
+    }
+}

@@ -11,39 +11,124 @@
 
 # dict of tples containing the stories event data
 default persistent._mas_story_database = dict()
-default mas_can_unlock_story = False
-default mas_can_unlock_scary_story = False
-default mas_full_scares = False
-# dict storing the last date we saw a new story of normal and scary type
-default persistent._mas_last_seen_new_story = {"normal":None,"scary":None}
 
+#Debug var to test scares
+default mas_full_scares = False
+
+# dict storing the last date we saw a new story of normal and scary type
+default persistent._mas_last_seen_new_story = {"normal": None, "scary": None}
+
+#Flag to mark if the setup for scary stories has been done
+define mas_scary_story_setup_done = False
 
 # store containing stories-related things
 init -1 python in mas_stories:
     import store
+    import datetime
+
+    UNLOCK_NEW = "unlock_new"
 
     # TYPES:
-    TYPE_SCARY = 0
+    TYPE_NORMAL = "normal"
+    TYPE_SCARY = "scary"
 
     # pane constant
     STORY_RETURN = "Nevermind"
     story_database = dict()
 
-    def _unlock_everything():
-        stories = renpy.store.Event.filterEvents(
-            renpy.store.mas_stories.story_database,
-            unlocked=False
+    #Time between story unlocks of the same type (in hours). Changes over sessions, but also changes after the next story unlocks
+    TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
+
+    #TODO: Build functions to 'register' story types. This will add all related info to the map
+    #saving the manual additions to each part
+
+
+    #Story which starts unlocked for a specific type
+    FIRST_STORY_EVL_MAP = {
+        TYPE_SCARY: "mas_scary_story_hunter",
+        TYPE_NORMAL: "mas_story_tyrant"
+    }
+
+    #Override maps to have special conditionals for specific story types
+    NEW_STORY_CONDITIONAL_OVERRIDE = {
+        TYPE_SCARY: (
+            "mas_stories.check_can_unlock_new_story(mas_stories.TYPE_SCARY, ignore_cooldown=store.mas_isO31())"
+        ),
+    }
+
+    def check_can_unlock_new_story(story_type=TYPE_NORMAL, ignore_cooldown=False):
+        """
+        Checks if it has been at least one day since we've seen the last story or the initial story
+
+        IN:
+            story_type - story type to check if we can unlock a new one
+                (Default: TYPE_NORMAL)
+            ignore_cooldown - Whether or not we ignore the cooldown or time between new stories
+                (Default: False)
+        """
+        global TIME_BETWEEN_UNLOCKS
+
+        new_story_ls = store.persistent._mas_last_seen_new_story.get(story_type, None)
+
+        #Get the first story of this type
+        first_story = FIRST_STORY_EVL_MAP.get(story_type, None)
+
+        #If this doesn't have an initial, no go
+        if not first_story:
+            return False
+
+        can_show_new_story = (
+            store.seen_event(first_story)
+            and (
+                ignore_cooldown
+                or store.mas_timePastSince(new_story_ls, datetime.timedelta(hours=TIME_BETWEEN_UNLOCKS))
+            )
+            and len(get_new_stories_for_type(story_type)) > 0
         )
-        for _, story in stories.iteritems():
-            story.unlocked = True
 
+        #If we're showing a new story, randomize the time between unlocks again
+        if can_show_new_story:
+            TIME_BETWEEN_UNLOCKS = renpy.random.randint(20, 28)
 
-    def unlock_pooled_story(event_label):
-        _story = store.mas_getEV(event_label)
-        if _story is not None:
-            _story.unlocked = True
-            _story.pool = False
+        return can_show_new_story
 
+    def get_new_stories_for_type(story_type):
+        """
+        Gets all new (unseen) stories of the given ype
+
+        IN:
+            story_type - story type to get
+
+        OUT:
+            list of locked stories for the given story type
+        """
+        return store.Event.filterEvents(
+            story_database,
+            pool=False,
+            aff=store.mas_curr_affection,
+            unlocked=False,
+            flag_ban=store.EV_FLAG_HFNAS,
+            category=(True, [story_type])
+        )
+
+    def get_and_unlock_random_story(story_type=TYPE_NORMAL):
+        """
+        Unlocks and returns a random story of the provided type
+
+        IN:
+            story_type - Type of story to unlock.
+                (Default: TYPE_NORMAL)
+        """
+        #Get locked stories
+        stories = get_new_stories_for_type(story_type)
+
+        #Grab one of the stories
+        story = renpy.random.choice(stories.values())
+
+        #Unlock and return its eventlabel
+        story.unlocked = True
+
+        return story.eventlabel
 
 init 5 python:
     addEvent(
@@ -62,92 +147,59 @@ label monika_short_stories:
     return _return
 
 label monika_short_stories_premenu(story_type=None):
-    $ end = ""
+    python:
+        #Because this isn't set properly if it's in the default param value, we assign it here
+        if story_type is None:
+            story_type = mas_stories.TYPE_NORMAL
+        end = ""
 
 label monika_short_stories_menu:
     # TODO: consider caching the built stories if we have many story categories
-
     python:
-        import store.mas_stories as mas_stories
+        #Determine if a new story can be unlocked
+        can_unlock_story = False
 
-        # determine if a new story can be unlocked
-        mas_can_unlock_story = False
-        if story_type == mas_stories.TYPE_SCARY:
-            scary_story_ls = persistent._mas_last_seen_new_story["scary"]
+        if story_type in mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE:
+            try:
+                can_unlock_story = eval(mas_stories.NEW_STORY_CONDITIONAL_OVERRIDE[story_type])
+            except Exception as ex:
+                store.mas_utils.mas_log.error("Failed to evaluate conditional to unlock new story because '{0}'".format(ex))
 
-            if mas_isO31():
-                mas_can_unlock_story = True
-            elif scary_story_ls is None:
-                mas_can_unlock_story = seen_event("mas_scary_story_hunter")
-            else:
-                mas_can_unlock_story = scary_story_ls != datetime.date.today()
+                can_unlock_story = False
 
         else:
-            new_story_ls = persistent._mas_last_seen_new_story["normal"]
-
-            if new_story_ls is None:
-                mas_can_unlock_story = seen_event("mas_story_tyrant")
-            else:
-                mas_can_unlock_story = new_story_ls != datetime.date.today()
-
-        # setup stories list
-        if story_type == mas_stories.TYPE_SCARY:
-            stories = renpy.store.Event.filterEvents(
-                mas_stories.story_database,
-                category=(True,[mas_stories.TYPE_SCARY]),
-                pool=False,
-                aff=mas_curr_affection,
-                flag_ban=EV_FLAG_HFM
-            )
-        else:
-            stories = renpy.store.Event.filterEvents(
-                mas_stories.story_database,
-                excl_cat=list(),
-                pool=False,
-                aff=mas_curr_affection,
-                flag_ban=EV_FLAG_HFM
-            )
+            can_unlock_story = mas_stories.check_can_unlock_new_story(story_type)
 
         # build menu list
         stories_menu_items = [
-            (mas_stories.story_database[k].prompt, k, False, False)
-            for k in stories
-            if mas_stories.story_database[k].unlocked
+            (story_ev.prompt, story_evl, False, False)
+            for story_evl, story_ev in mas_stories.story_database.iteritems()
+            if Event._filterEvent(
+                story_ev,
+                pool=False,
+                aff=mas_curr_affection,
+                unlocked=True,
+                flag_ban=EV_FLAG_HFM,
+                category=(True, [story_type])
+            )
         ]
-
-        # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(stories) and mas_can_unlock_story:
-
-            # Add to the menu the new story option
-            if story_type == mas_stories.TYPE_SCARY:
-                return_label = "mas_scary_story_unlock_random"
-            else:
-                return_label = "mas_story_unlock_random"
-
-            stories_menu_items.append(("A new story", return_label, True, False))
 
         # also sort this list
         stories_menu_items.sort()
 
+        #Add new story
+        stories_menu_items.insert(0, ("A new story", mas_stories.UNLOCK_NEW, True, False))
+
         # build switch button
+        #TODO: Build a generalized switch for more than just two items
         if story_type == mas_stories.TYPE_SCARY:
             switch_str = "short"
         else:
             switch_str = "scary"
-        switch_item = (
-            "I'd like to hear a " + switch_str + " story",
-            "monika_short_stories_menu",
-            False,
-            False,
-            20
-        )
 
-        # final quit item
-        if persistent._mas_sensitive_mode:
-            space = 20
-        else:
-            space = 0
-        final_item = (mas_stories.STORY_RETURN, False, False, False, space)
+        switch_item = ("I'd like to hear a " + switch_str + " story", "monika_short_stories_menu", False, False, 20)
+
+        final_item = (mas_stories.STORY_RETURN, False, False, False, 0)
 
     # move Monika to the left
     show monika 1eua at t21
@@ -160,27 +212,15 @@ label monika_short_stories_menu:
     $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
 
     # call scrollable pane
-    if persistent._mas_sensitive_mode:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
-    else:
-        call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
 
     # return value?
     if _return:
-
-        # NOTE: call_next_event now properly records shown_count and last_seen
-        #check if it's an actual story
-#        if _return in mas_stories.story_database:
-
-            # track show_count stats
-#            $ mas_stories.story_database[_return].shown_count += 1
-#            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
-
         # switching between types
         if _return == "monika_short_stories_menu":
             # NOTE: this is not scalable.
             if story_type == mas_stories.TYPE_SCARY:
-                $ story_type = None
+                $ story_type = mas_stories.TYPE_NORMAL
             else:
                 $ story_type = mas_stories.TYPE_SCARY
 
@@ -190,26 +230,26 @@ label monika_short_stories_menu:
             jump monika_short_stories_menu
 
         else:
-            # if we are seeing a new story, store the date for future unlocks
-            $ new_story_key = None
+            $ story_to_push = _return
 
-            if _return == "mas_story_unlock_random":
-                $ new_story_key = "normal"
+            #If we're unlocking new, check if it's possible to do so. If not, we raise dlg
+            if story_to_push == mas_stories.UNLOCK_NEW:
+                if not can_unlock_story:
+                    show monika at t11
+                    $ _story_type = story_type if story_type != 'normal' else 'short'
+                    m 1ekc "Sorry [player]...I can't really think of a new [_story_type] story right now..."
+                    m 1eka "If you give me some time I might be able to think of one soon...but in the meantime, I can always tell you an old one again~"
+                    show monika 1eua
+                    jump monika_short_stories_menu
 
-            elif _return == "mas_scary_story_unlock_random":
-                $ new_story_key = "scary"
-
-            elif not seen_event(_return):
-                if story_type == mas_stories.TYPE_SCARY:
-                    $ new_story_key = "scary"
                 else:
-                    $ new_story_key = "normal"
+                    python:
+                        persistent._mas_last_seen_new_story[story_type] = datetime.datetime.now()
+                        story_to_push = mas_stories.get_and_unlock_random_story(story_type)
 
-            if new_story_key is not None:
-                $ persistent._mas_last_seen_new_story[new_story_key] = datetime.date.today()
+            #Then push
+            $ pushEvent(story_to_push, skipeval=True)
 
-            # then push
-            $ pushEvent(_return, skipeval=True)
             show monika at t11
 
     else:
@@ -233,103 +273,93 @@ label mas_story_begin:
     m 1duu "Ahem."
     return
 
-label mas_story_unlock_random:
-   call mas_story_unlock_random_cat()
-   return
 
-label mas_scary_story_unlock_random:
-   call mas_story_unlock_random_cat(scary=True)
-   return
+label mas_scary_story_setup:
+    if mas_scary_story_setup_done:
+        return
 
-label mas_story_unlock_random_cat(scary=False):
+    $ mas_scary_story_setup_done = True
+    show monika 1dsc
+    $ mas_temp_r_flag = mas_current_weather
+    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
+    $ are_masks_changing = mas_current_weather != mas_weather_rain
+    $ mas_is_raining = True
+
+    $ play_song(None, fadeout=1.0)
+    pause 1.0
+
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
+    #o31 already has vignette. We apply it outside of o31 for scary stories
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_weather_rain)
+        $ store.mas_globals.show_vignette = True
+        call spaceroom(dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+
+    play music "mod_assets/bgm/happy_story_telling.ogg" loop
+
+
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
 
     python:
-        if scary:
-            # get locked stories
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
-                unlocked=False,
-                pool=False,
-                category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                aff=mas_curr_affection
-            )
+        story_begin_quips = [
+            _("Alright let's start the story."),
+            _("Ready to hear the story?"),
+            _("Ready for story time?"),
+            _("Let's begin."),
+            _("Are you ready?")
+        ]
+        story_begin_quip=renpy.random.choice(story_begin_quips)
 
-            if len(stories) == 0:
-
-                # in case the player left the game mid unlocking
-                stories = renpy.store.Event.filterEvents(
-                    renpy.store.mas_stories.story_database,
-                    unlocked=True,
-                    seen=False,
-                    pool=False,
-                    category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                    aff=mas_curr_affection
-                )
-
-                if len(stories) == 0:
-
-                    # There should be no way to get to this point but just in case
-                    # let's fail 'nicely'
-                    stories = renpy.store.Event.filterEvents(
-                        renpy.store.mas_stories.story_database,
-                        unlocked=True,
-                        pool=False,
-                        category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
-                        aff=mas_curr_affection
-                    )
-        else:
-            # get locked stories
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
-                unlocked=False,
-                pool=False,
-                excl_cat=list(),
-                aff=mas_curr_affection
-            )
-
-            if len(stories) == 0:
-
-                # in case the player left the game mid unlocking
-                stories = renpy.store.Event.filterEvents(
-                    renpy.store.mas_stories.story_database,
-                    unlocked=True,
-                    pool=False,
-                    seen=False,
-                    excl_cat=list(),
-                    aff=mas_curr_affection
-                )
-
-                if len(stories) == 0:
-
-                    # There should be no way to get to this point but just in case
-                    # let's fail 'nicely'
-                    stories = renpy.store.Event.filterEvents(
-                        renpy.store.mas_stories.story_database,
-                        unlocked=True,
-                        pool=False,
-                        excl_cat=list(),
-                        aff=mas_curr_affection
-                    )
-
-        # select one story randomly
-        story = stories[renpy.random.choice(stories.keys())]
-
-        # unlock the story
-        story.unlocked = True
-
-        # increment event's shown count and update last seen
-        story.shown_count += 1
-        story.last_seen = datetime.datetime.now()
-
-        # using renpy.jump again cause again trasition looks like she's stuck
-        renpy.jump(story.eventlabel)
-
+    m 3eua "[story_begin_quip]"
+    m 1duu "Ahem."
     return
 
+label mas_scary_story_cleanup:
+
+    python:
+        story_end_quips = [
+            _("Scared, [player]?"),
+            _("Did I scare you, [player]?"),
+            _("How was it?"),
+            _("Well?"),
+            _("So...{w=0.5}did I scare you?")
+        ]
+        story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
+
+    m 3eua "[story_end_quip]"
+    show monika 1dsc
+    pause 1.0
+
+    #Not in o31 mode, so we need to remove vignette
+    if not persistent._mas_o31_in_o31_mode:
+        $ mas_changeWeather(mas_temp_r_flag)
+        $ store.mas_globals.show_vignette = False
+        call spaceroom(dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+        hide vignette
+
+    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
+
+    $ play_song(None, 1.0)
+    m 1eua "I hope you liked it, [player]~"
+    $ mas_DropShield_core()
+    $ HKBShowButtons()
+    $ mas_scary_story_setup_done = False
+    return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
-        prompt="The Cat and the Cock",unlocked=True),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_tyrant",
+            prompt="The Cat and the Cock",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=True
+        ),
+        code="STY"
+    )
 
 label mas_story_tyrant:
     call mas_story_begin
@@ -343,8 +373,16 @@ label mas_story_tyrant:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
-        prompt="The Fox",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_despise",
+            prompt="The Fox",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_despise:
     call mas_story_begin
@@ -358,8 +396,16 @@ label mas_story_despise:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
-        prompt="The Shepherd Boy and the Wolf",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_lies",
+            prompt="The Shepherd Boy and the Wolf",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_lies:
     call mas_story_begin
@@ -379,8 +425,16 @@ label mas_story_lies:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
-        prompt="The Grasshopper",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_grasshoper",
+            category=[mas_stories.TYPE_NORMAL],
+            prompt="The Grasshopper",
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_grasshoper:
     call mas_story_begin
@@ -397,8 +451,16 @@ label mas_story_grasshoper:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
-        prompt="The Wind and the Sun",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_wind_sun",
+            prompt="The Wind and the Sun",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_wind_sun:
     call mas_story_begin
@@ -413,8 +475,16 @@ label mas_story_wind_sun:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The Seeds",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_seeds",
+            prompt="The Seeds",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_seeds:
     call mas_story_begin
@@ -433,8 +503,16 @@ label mas_story_seeds:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The Gray Hair",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_gray_hair",
+            prompt="The Gray Hair",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -451,8 +529,16 @@ label mas_story_gray_hair:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The Fisherman",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_fisherman",
+            prompt="The Fisherman",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -466,8 +552,16 @@ label mas_story_fisherman:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old Man's Three Wishes",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_ravel",
+            prompt="Old Man's Three Wishes",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_ravel:
     call mas_story_begin
@@ -488,6 +582,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_simple",
             prompt="The Simple Genie",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -529,7 +624,7 @@ label mas_story_genie_simple:
 
     if mas_isMoniNormal(higher=True):
         m 1eka "I mean, we're just sitting here together enjoying each other's company after all."
-        m 1hubfb "When you're here, it really feels like I have everything~"
+        m 1hubsb "When you're here, it really feels like I have everything~"
     return
 
 init 5 python:
@@ -538,6 +633,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_regret",
             prompt="The Genie's Regret",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -548,7 +644,7 @@ label mas_story_genie_regret:
     m 1eua "There was once a genie who was immortal..."
     m "Through his years, he had seen the world change over time and granted wishes to anyone who crossed his path."
     m 1esc "With how long he had lived, he'd seen a lot of things,{w=0.2} {nw}"
-    extend 1rsc "some of them unpleasant."
+    extend 1rsc "some of them were unpleasant."
     m 1ekd "Wars, natural disasters, the deaths of all the friends he ever made..."
     m 1rkc "Some of which, he knew were caused by wishes he had granted."
     m 1ekc "At first, he wasn't too concerned with the consequences...but after a while, it began to bother him more and more."
@@ -588,6 +684,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_genie_end",
             prompt="The Genie's End",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -602,7 +699,7 @@ label mas_story_genie_end:
     m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
     m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
     m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
-    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
+    m 1euc "One day, as he was traveling with one of his friends, they came across a genie who would grant each of them one wish."
     m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
     m 1dsd "...Everything that had led up to this moment, where he could make his own wish for the first time in a long while."
     m 1dsc "..."
@@ -626,8 +723,16 @@ label mas_story_genie_end:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
-        prompt="Love Never Ends",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_immortal_love",
+            prompt="Love Never Ends",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_immortal_love:
     call mas_story_begin
@@ -658,6 +763,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_mother_and_trees",
             prompt="A mother and her trees",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -703,6 +809,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_self_hate",
             prompt="Self-hate",
+            category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
         code="STY"
@@ -745,8 +852,16 @@ label mas_story_self_hate:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
-        prompt="The Tale of O-Tei",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_o_tei",
+            prompt="The Tale of O-Tei",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_o_tei:
     call mas_story_begin
@@ -784,8 +899,16 @@ label mas_story_o_tei:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_crow_and_pitcher",
-        prompt="The Crow and the Pitcher",unlocked=False),code="STY")
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_crow_and_pitcher",
+            prompt="The Crow and the Pitcher",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
 
 label mas_story_crow_and_pitcher:
     call mas_story_begin
@@ -816,7 +939,8 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_friend",
             prompt="Having A Best Friend",
-            unlocked=True
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
         ),
         code="STY"
     )
@@ -836,89 +960,85 @@ label mas_story_friend:
     m 3eub "'But!'"
     m 3eua "'When someone does something good for us, we must engrave it in stone where no wind can ever erase it.'"
     m 1hua "The moral of the story is, do not let the shadows of your past darken the doorstep of your future.{w=0.2} {nw}"
-    extend 3hua "Forgive and Forget."
+    extend 3hua "Forgive and forget."
     m 1hua "I hope you enjoyed it, [player]!"
     return
 
-#START: Scary Stories
-define mas_scary_story_setup_done = False
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_tanabata",
+            prompt="The Weaver Girl and the Cowherd",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="STY"
+    )
 
-# Scary stories start here
-label mas_scary_story_setup:
-    if mas_scary_story_setup_done:
-        return
+label mas_story_tanabata:
+    call mas_story_begin
+    m 1eub "Orihime, the daughter of the Jade Emperor, Ruler of Heaven, wove beautiful clothes by the bank of the Amanogawa."
+    m 3eua "Her father loved the cloth that she wove and so she worked very hard every day to weave it."
+    m 2ekd "However, Orihime was sad that because of her hard work, she could never meet and fall in love with anyone."
+    m 2eksdla "Concerned about his daughter, her father arranged for her to meet the cowherd, Hikoboshi who lived and worked on the other side of the Amanogawa."
+    m 7hub "When the two met, they instantly fell in love and married shortly after!"
+    m 2eksdld "However, once married, Orihime would no longer weave cloth and Hikoboshi would let his cows stray all over Heaven."
+    m 4wud "In anger, the emperor separated the two lovers and forbade them to meet."
+    m 2dkc "Orihime became despondent at the loss of her husband and asked her father to let them meet again."
+    m 2eksdla "Moved by his daughter's tears, he allowed the two to meet on the seventh day of the seventh month if she worked hard and finished her weaving."
+    m 2wud "The first time they tried to meet, however, they found that they could not cross the river as there was no bridge."
+    m 2dkc "Orihime cried so much that a flock of magpies came and promised to make a bridge with their wings so that she could cross the river."
+    m 7ekd "It is said that if it rains on Tanabata, the magpies cannot come and the lovers must wait until another year to meet."
+    m 3eud "The rain that falls on Tanabata is fittingly called {i}The tears of Orihime and Hikoboshi.{/i}"
+    m 1dksdlc "I can't imagine what it must be like to be only able to meet your loved one once a year."
+    m 3eua "But you know what they say, [player]...{w=0.3}love can move mountains."
+    m 3hubsu "...And my love for you is so strong that not even the Heavens themselves would be able to keep us apart."
+    $ mas_unlockEVL("monika_tanabata", "EVE")
+    return "love"
 
-    $ mas_scary_story_setup_done = True
-    show monika 1dsc
-    $ mas_temp_r_flag = mas_current_weather
-    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
-    $ are_masks_changing = mas_current_weather != mas_weather_rain
-    $ mas_is_raining = True
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_mindthegap",
+            prompt="Mind the Gap",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=True
+        ),
+        code="STY"
+    )
 
-    $ play_song(None, fadeout=1.0)
-    pause 1.0
-
-    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
-    call monika_zoom_transition_reset(1.0)
-
-    $ mas_changeBackground(mas_background_def)
-
-    #If we're in O31 mode, it's already raining and the room is also already set up
-    if not persistent._mas_o31_in_o31_mode:
-        $ mas_changeWeather(mas_weather_rain)
-        $ store.mas_globals.show_vignette = True
-        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
-
-    play music "mod_assets/bgm/happy_story_telling.ogg" loop
-
-
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
-
-    python:
-        story_begin_quips = [
-            _("Alright let's start the story."),
-            _("Ready to hear the story?"),
-            _("Ready for story time?"),
-            _("Let's begin."),
-            _("Are you ready?")
-        ]
-        story_begin_quip=renpy.random.choice(story_begin_quips)
-    m 3eua "[story_begin_quip]"
-    m 1duu "Ahem."
+label mas_story_mindthegap:
+    call mas_story_begin
+    m 3eud "This is actually a true story that occurred in London, England in 2013."
+    m 2dkd "It begins with a woman named Margaret McCollum crying in the middle of the Embankment train station."
+    m 2ekd "When approached to ask about her great distress, she asked the staff where 'the voice' had gone."
+    m 7ekd "She clarified that she meant the announcement that played when each train arrived, warning passengers to 'mind the gap.'"
+    m 1eka "The staff assured her that the announcement wasn't gone, it had just been updated to a new recording when the stations had upgraded to a new digital system."
+    m 1tkc "Though, this explanation didn't seem to calm her down. {w=0.3}'That voice,' she explained, 'was my husband.'"
+    m 1eud "Her husband, Oswald Laurence, an actor who had never become famous, had recorded all of the announcements for the northern line."
+    m 2dkc "Oswald had died five years ago."
+    m 2ekc "They had loved each other dearly, and his death had left her in terrible grief."
+    m 2euc "But one thing,{w=0.2} for those five years,{w=0.2} had helped her continue on."
+    m 7eka "Every day, when she was on her way to work, she got to hear his voice at the station.{w=0.3} Sometimes she would linger and sit, just to hear him speak those short words."
+    m 2dkc "But now..."
+    m 2dkd "The staff were apologetic, but didn't know if they had access to the old file. {w=0.3}They told her that if they found it, they would contact her."
+    m 7eud "It turned out that many people who worked at the station empathized, and wanted Margaret to be able to enjoy that precious memory a while longer."
+    m 7ekb "So, even though it would take extra work to update the old recording from the archives to work with the current system, they got it to work."
+    m 3eua "One day when Margaret was making her daily commute, a familiar voice rang out on the platform."
+    m 1fkb "'Mind the gap,' Oswald said."
+    m 1dku "..."
+    m 3eka "I said this was a true story, and it turns out that you can still hear that old recording specifically at the Embankment station."
+    m 3ekb "It's a really beautiful example of human kindness. {w=0.3}The workers didn't stand to gain much by restoring a much shorter, lower quality recording."
+    m 1fka "But they knew what it was like to lose someone, and how precious it makes every photo, every memory."
+    m 1dku "It goes to show that people can do incredible things simply out of compassion and love."
+    m 1ekbla "This story reminds me to treasure every moment, and not to take any piece of our time together for granted."
+    m 1dkblu "I'll always treasure you, [player]."
     return
 
-label mas_scary_story_cleanup:
-
-    python:
-        story_end_quips = [
-            _("Scared, [player]?"),
-            _("Did I scare you, [player]?"),
-            _("How was it?"),
-            _("Well?"),
-            _("So...{w=0.5}did I scare you?")
-        ]
-        story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
-
-    m 3eua "[story_end_quip]"
-    show monika 1dsc
-    pause 1.0
-
-    #If in O31 mode, weather doesn't need to change, nor vignette. No need to spaceroom call
-    if not persistent._mas_o31_in_o31_mode:
-        $ mas_changeWeather(mas_temp_r_flag)
-        $ store.mas_globals.show_vignette = False
-        call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
-        hide vignette
-        call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
-
-    $ play_song(None, 1.0)
-    m 1eua "I hope you liked it, [player]~"
-    $ mas_DropShield_core()
-    $ HKBShowButtons()
-    $ mas_scary_story_setup_done = False
-    return
-
+#START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
     category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
@@ -941,7 +1061,7 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w=1}or so he would."
+    m 1dsd "...{w=1}or so he thought."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
     m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
     m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
@@ -974,13 +1094,13 @@ init 5 python:
 
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m 3eud "There once was a beautiful woman, who was the wife of a samurai."
+    m 3eud "There once was a beautiful woman who was the wife of a samurai."
     m 3eub "She was as incredibly beautiful as she was vain, welcoming the attention of any man prepared to offer it to her."
     m 1tsu "And often, would ask men to appraise her appearance."
     m 1euc "The woman was prone to cheat on her husband multiple times and was soon found out about her affairs."
     m 1esc "When he confronted her, he was beyond infuriated as she was damaging their status as nobles, humiliating him."
     m 2dsc "He then brutally punished her by cutting her mouth from ear to ear, disfiguring her delicate beauty."
-    m 4efd "'Who will think you as beautiful now?' were his salt to her horrifying wound."
+    m 4efd "'Who will think you as beautiful now?' was the salt to her horrifying wound."
     m 2dsd "Shortly after, the woman died."
     m "She couldn't live further after she was tarnished and treated like a freak by everyone around her."
     m 1esc "Her husband, denounced by his cruelty, committed seppuku shortly after."
@@ -1066,7 +1186,7 @@ label mas_scary_story_mujina:
     m 4wuw "No eyes, mouth, or nose. Just an empty visage that stared back at him!"
     m "The merchant ran away as fast as he could, panicking from the haunting figure."
     m 1efc "He continued to run until he saw the light of a lantern and ran towards it."
-    m 3euc "The lantern belonged to a travelling salesman that was walking along."
+    m 3euc "The lantern belonged to a traveling salesman that was walking along."
     m 1esc "The old man stopped in front of him, doubled over to catch his breath."
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
@@ -1111,7 +1231,7 @@ label mas_scary_story_ubume:
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
     m 3eud "The next day, he went to the temple and told the monk there what he saw."
-    m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly died on the street."
+    m 1dsd "The priest told the confectioner that a young woman that was traveling through the village recently had suddenly died on the street."
     m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy."
     m 1esc "He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
     m 4eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying from beneath the ground."
@@ -1148,7 +1268,7 @@ label mas_scary_story_womaninblack:
     m 3eud "When he came to, the woman was gone. The colonel questioned some of the other passengers, but none of them had seen her."
     m 3ekd "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
     m 1esc "When he exited the train, a railway official that overheard him talked to the colonel about the woman he was asking about."
-    m "According to the official, a woman and her husband were travelling on a train together."
+    m "According to the official, a woman and her husband were traveling on a train together."
     m 1dsd "The husband had his head too far out in one of the windows and was decapitated by a wire."
     m "His body then fell onto her lap, lifeless."
     m 3wud "When the train arrived at its stop, she was found holding the corpse and singing a lullaby to it."
@@ -1252,7 +1372,7 @@ label mas_scary_story_jack_o_lantern:
     m "The next year, Jack ran into the Devil again. This time he tricked him into climbing into a tree to pick a piece of fruit."
     m 3esd "While he was in the tree, Jack surrounded it with white crosses so that the Devil could not come down."
     m "Once the Devil promised not to bother him again for another 10 years, Jack removed them. When Jack died, he went to Heaven."
-    m 1eud "When he arrived, he was told he could not enter for how poorly a life he had lived on Earth."
+    m 1eud "When he arrived, he was told he could not enter for how poorly he had lived his life on Earth."
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
@@ -1406,7 +1526,7 @@ label mas_scary_story_yuki_onna:
     m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him and instantly freezing him."
     m 4wud "As she turned to the son, she paused. The woman said to him that she would spare him of the same fate, for he was young and very handsome."
     m 4ekc "If he ever spoke a word of it to anyone, she would come back to kill him."
-    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful travelling woman."
+    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful traveling woman."
     m 2eua "It was starting to snow, and the man offered the woman shelter from the storm, and she quickly accepted."
     m 2eua "The two quickly fell in love and ended up marrying each other."
     m 2hua "They lived happily for years and had several kids as time went by."
@@ -1550,7 +1670,9 @@ label mas_scary_story_flowered_lantern:
     m 2rkc "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
     m 1ekc "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu's death."
     m 1dsd "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
-    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
+
+    $ mas_setEVLPropValues("mas_scary_story_flowered_lantern_2", unlocked=True, pool=False)
+
     m 1hua "...And that's it for part one! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()
     menu:
@@ -1616,7 +1738,8 @@ label mas_scary_story_flowered_lantern_2:
     m 4dsc "Love between one who is alive and one who is dead can only result in the death of the one who is alive."
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         hide mas_lantern
-    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
+
+    $ mas_setEVLPropValues("mas_scary_story_flowered_lantern_3", unlocked=True, pool=False)
 
     m 1hua "...And that's it for part two! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()

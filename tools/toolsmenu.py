@@ -36,4 +36,3 @@ while choice is not None:
 
     if choice is not None:
         choice()
-

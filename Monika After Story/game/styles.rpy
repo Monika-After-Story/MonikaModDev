@@ -220,6 +220,10 @@ init python:
 # START: Settings menu helpers
 init python in mas_settings:
     _persistent = renpy.game.persistent
+
+    ui_changed = False
+    dark_mode_clicked = False
+
     import store
     def _auto_mode_toggle():
         """
@@ -246,7 +250,20 @@ init python in mas_settings:
         else:
             _persistent._mas_dark_mode_enabled = True
             _persistent._mas_auto_mode_enabled = False
-        renpy.restart_interaction()
+
+        global dark_mode_clicked
+        dark_mode_clicked = True
+
+    def _ui_change_wrapper(*args):
+        """
+        Wrapper around UI changes
+
+        IN:
+            *args - values to pass to dark mode
+        """
+        global ui_changed
+        ui_changed = True
+        store.mas_darkMode(*args)
 
 
 # START: Generic button styles
@@ -277,19 +294,34 @@ style generic_button_text_dark is generic_button_text_base:
     hover_color mas_ui.dark_button_text_hover_color
     insensitive_color mas_ui.dark_button_text_insensitive_color
 
+image generic_fancy_check_button_fg = Image("mod_assets/buttons/checkbox/fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_insensitive = Image("mod_assets/buttons/checkbox/insensitive_fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_selected = Image("mod_assets/buttons/checkbox/selected_fancy_check.png", yoffset=4)
+image generic_fancy_check_button_fg_selected_insensitive = Image("mod_assets/buttons/checkbox/selected_insensitive_fancy_check.png", yoffset=4)
+
 # fancy checkbox buttons lose the box when selected
 # and the entire frame gets colored
 style generic_fancy_check_button:
     properties gui.button_properties("check_button")
-    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
-    hover_background Solid("#FFBDE1")
+    foreground "generic_fancy_check_button_fg"
+    selected_foreground "generic_fancy_check_button_fg_selected"
+    selected_insensitive_foreground "generic_fancy_check_button_fg_selected_insensitive"
+    hover_background Solid("#ffe6f4")
     selected_background Solid("#FFBDE1")
 
 style generic_fancy_check_button_dark:
     properties gui.button_properties("check_button_dark")
-    foreground "mod_assets/buttons/checkbox/[prefix_]fancy_check.png"
-    hover_background Solid("#CE4A7E")
+    foreground "generic_fancy_check_button_fg"
+    selected_foreground "generic_fancy_check_button_fg_selected"
+    selected_insensitive_foreground "generic_fancy_check_button_fg_selected_insensitive"
+    hover_background Solid("#d9739c")
     selected_background Solid("#CE4A7E")
+
+style generic_fancy_check_button_disabled is generic_fancy_check_button:
+    properties gui.button_properties("check_button")
+    foreground "generic_fancy_check_button_fg_insensitive"
+    selected_foreground "generic_fancy_check_button_fg_selected_insensitive"
+    selected_background Solid("1b1b1b")
 
 style generic_fancy_check_button_text is gui_button_text:
     properties gui.button_text_properties("generic_fancy_check_button")
@@ -297,7 +329,9 @@ style generic_fancy_check_button_text is gui_button_text:
     color "#BFBFBF"
     hover_color "#000000"
     selected_color "#000000"
+    insensitive_color mas_ui.light_button_text_insensitive_color
     outlines []
+    yoffset 3
 
 style generic_fancy_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("generic_fancy_check_button_dark")
@@ -305,7 +339,16 @@ style generic_fancy_check_button_text_dark is gui_button_text_dark:
     color "#BFBFBF"
     hover_color "#FFAA99"
     selected_color "#FFAA99"
+    insensitive_color mas_ui.dark_button_text_insensitive_color
     outlines []
+    yoffset 3
+
+style generic_fancy_check_button_disabled_text is generic_fancy_check_button:
+    properties gui.button_text_properties("generic_fancy_check_button")
+    font "gui/font/Halogen.ttf"
+    color "#8C8C8C"
+    outlines []
+    yoffset 3
 
 # START: image definitions
 image menu_bg:
@@ -357,7 +400,7 @@ init -1 python in mas_ui:
     )
 
 # START: Helper methods that we use inside screens
-init -10 python in mas_ui:
+init 25 python in mas_ui:
     # Methods for mas_check_scrollable_menu
     def check_scr_menu_return_values(buttons_data, return_all):
         """
@@ -388,3 +431,229 @@ init -10 python in mas_ui:
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
         return default_prompt
+
+    # Methods for twopane_scrollable_menu
+    TWOPANE_MENU_MAX_FLT_ITEMS = 50
+    TWOPANE_MENU_SEARCH_DBS = (
+        store.mas_all_ev_db_map["EVE"].values()
+        # + store.mas_all_ev_db_map["BYE"].values()
+        # + store.mas_all_ev_db_map["STY"].values()
+        + store.mas_all_ev_db_map["CMP"].values()
+        # + store.mas_all_ev_db_map["SNG"].values()
+    )
+    TWOPANE_MENU_DELEGATES_CALLBACK_MAP = {
+        "mas_compliment_": store.mas_compliments.compliment_delegate_callback
+    }
+
+    def twopane_menu_delegate_callback(ev_label):
+        """
+        A method to handle delegate logic for some of our events
+        when the user skips a delegate label using search
+        NOTE: the callback will be called before we push the event
+        TODO: add more callbacks as needed
+
+        IN:
+            ev_label - the ev_label of the event the user's selected
+        """
+        for prefix in TWOPANE_MENU_DELEGATES_CALLBACK_MAP:
+            if ev_label.startswith(prefix):
+                TWOPANE_MENU_DELEGATES_CALLBACK_MAP[prefix]()
+                return
+        return
+
+    def _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen):
+        """
+        The filter for events in the twopane menu
+
+        IN:
+            ev - event object
+            search_query - search query to filter by
+            search_kws - search_query splitted using spaces
+
+        OUT:
+            boolean whether or not the event pass the criteria
+        """
+        ev_prompt = ev.prompt.lower()
+        ev_label = ev.eventlabel.lower()
+        ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
+
+        # First, basic filters so we only deal with appropriate events
+        if ev_prompt == ev_label:
+            return False
+
+        if not ev.unlocked:
+            return False
+
+        if ev.anyflags(store.EV_FLAG_HFNAS):
+            return False
+
+        if not ev.checkAffection(store.mas_curr_affection):
+            return False
+
+        if only_pool and not ev.pool:
+            return False
+
+        if only_random and not ev.random:
+            return False
+
+        if only_unseen and ev.shown_count != 0:
+            return False
+
+        if only_seen and ev.shown_count == 0:
+            return False
+
+        if not ev.checkConditional():
+            return False
+
+        if not search_query:
+            return True
+
+        # This is so we can interrup the loop early
+        for search_kw in search_kws:
+            if (
+                search_kw in ev_prompt
+                or search_kw in ev_label
+                or (ev_cat_full and search_kw in ev_cat_full)
+            ):
+                return True
+
+        return False
+
+    def _twopane_menu_sort_events(ev, search_query, search_kws):
+        """
+        The sortkey for events in the twopane menu.
+
+        IN:
+            ev - event object
+            search_query - search query to sort by
+            search_kws - search_query splitted using spaces
+
+        OUT:
+            weight as int
+        """
+        ev_prompt = ev.prompt.lower()
+        ev_label = ev.eventlabel.lower()
+        ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
+
+        weight = 0
+        base_increment = 2
+        base_modifier = len(search_kws) + 1
+
+        if search_query == ev_prompt or search_query == ev_label:
+            weight += base_increment * base_modifier**8
+
+        elif search_query in ev_prompt:
+            if ev_prompt.startswith(search_query):
+                weight += base_increment * base_modifier**7
+
+            else:
+                weight += base_increment * base_modifier**6
+
+        elif search_query in ev_label:
+            if ev_label.startswith(search_query):
+                weight += base_increment * base_modifier**5
+
+            else:
+                weight += base_increment * base_modifier**4
+
+        else:
+            for search_kw in search_kws:
+                if search_kw in ev_prompt:
+                    weight += base_increment * base_modifier**3
+
+                elif search_kw in ev_label:
+                    weight += base_increment * base_modifier**2
+
+                elif ev_cat_full:
+                    if search_kw in ev.category:
+                        weight += base_increment * base_modifier
+
+                    elif search_kw in ev_cat_full:
+                        weight += base_increment
+
+        return weight
+
+    def _twopane_menu_search_events(search_query):
+        """
+        The actual method that does filtering and searching for the twopane menu.
+        NOTE: won't return more than TWOPANE_MENU_MAX_FLT_ITEMS events
+
+        IN:
+            search_query - search query to filter and sort by
+
+        OUT:
+            list of event objects or None if empty query was given
+        """
+        if not search_query:
+            return None
+
+        search_query = search_query.lower()
+
+        only_pool = False
+        if "#pool" in search_query:
+            search_query = search_query.replace("#pool", "")
+            only_pool = True
+
+        only_random = False
+        if "#random" in search_query:
+            search_query = search_query.replace("#random", "")
+            only_random = True
+
+        only_unseen = False
+        if "#unseen" in search_query:
+            search_query = search_query.replace("#unseen", "")
+            only_unseen = True
+
+        only_seen = False
+        if "#seen" in search_query:
+            search_query = search_query.replace("#seen", "")
+            only_seen = True
+
+        search_query = search_query.strip()
+        search_kws = search_query.split()
+
+        flt_evs = [
+            ev
+            for ev in TWOPANE_MENU_SEARCH_DBS
+            if _twopane_menu_filter_events(ev, search_query, search_kws, only_pool, only_random, only_unseen, only_seen)
+        ]
+        flt_evs.sort(key=lambda ev: _twopane_menu_sort_events(ev, search_query, search_kws), reverse=True)
+
+        return flt_evs[0:TWOPANE_MENU_MAX_FLT_ITEMS]
+
+    def twopane_menu_adj_ranged_callback(adj):
+        """
+        This is called by an adjustment of the twopane menu
+        when its range is being changed (set)
+
+        IN:
+            adj - the adj object
+        """
+        widget = renpy.get_widget("twopane_scrollable_menu", "search_input", "screens")
+        caret_relative_pos = 1.0
+        if widget is not None:
+            caret_pos = widget.caret_pos
+            content_len = len(widget.content)
+
+            if content_len > 0:
+                caret_relative_pos = caret_pos / float(content_len)
+
+        # This ensures that the caret is always visible (close enough) to the user
+        # when they enter text
+        adj.change(adj.range * caret_relative_pos)
+
+    def twopane_menu_search_callback(search_query):
+        """
+        The callback the input calls when the user enters anything.
+        Updates flt_evs of the twopane menu and causes RenPy to update the screen.
+
+        IN:
+            search_query - search query to filter and sort by
+        """
+        # Get the screen to pass events into
+        scr = renpy.get_screen("twopane_scrollable_menu")
+        if scr is not None:
+            # Search
+            scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
+        # Update the screen
+        renpy.restart_interaction()

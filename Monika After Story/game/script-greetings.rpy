@@ -84,6 +84,7 @@ init -1 python in mas_greetings:
         TYPE_GO_SOMEWHERE,
         TYPE_GENERIC_RET,
         TYPE_LONG_ABSENCE,
+        TYPE_HOL_O31_TT
     ]
 
     NTO_TYPES = (
@@ -180,16 +181,17 @@ init -1 python in mas_greetings:
 
         # rule checks
         if not (
-                store.MASSelectiveRepeatRule.evaluate_rule(
-                    check_time, ev, defval=True)
-                and store.MASNumericalRepeatRule.evaluate_rule(
-                    check_time, ev, defval=True)
-                and store.MASGreetingRule.evaluate_rule(ev, defval=True)
-            ):
+            store.MASSelectiveRepeatRule.evaluate_rule(
+                check_time, ev, defval=True)
+            and store.MASNumericalRepeatRule.evaluate_rule(
+                check_time, ev, defval=True)
+            and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+            and store.MASTimedeltaRepeatRule.evaluate_rule(ev)
+        ):
             return False
 
         # conditional check
-        if ev.conditional is not None and not eval(ev.conditional, store.__dict__):
+        if not ev.checkConditional():
             return False
 
         # otherwise, we passed all tests
@@ -336,7 +338,7 @@ init 5 python:
     )
 
 label greeting_honey:
-    m 1hua "Welcome back, honey!"
+    m 1hub "Welcome back, honey!"
     m 1eua "I'm so happy to see you again."
     m "Let's spend some more time together, okay?"
     return
@@ -507,13 +509,13 @@ label greeting_goodmorning:
                 m 1eka "Aww, that's nice!"
                 m 1eua "I can't help but feel happy when you do..."
                 m "But that's a good thing, right?"
-                m 1ekbfa "I love you so much, [player]."
+                m 1ekbsa "I love you so much, [player]."
                 m 1hubfb "Ahaha!"
             "No.":
                 m 1tkc "Oh dear..."
                 m 1eka "I hope you'll feel better soon, okay?"
                 m "Just remember that no matter what happens, no matter what anyone says or does..."
-                m 1ekbfa "I love you so, so much."
+                m 1ekbsa "I love you so, so much."
                 m "Just stay with me, if it makes you feel better."
                 m 1hubfa "I love you, [player], I really do."
     return
@@ -532,7 +534,7 @@ init 5 python:
 
 label greeting_back2:
     m 1eua "Hello, dear."
-    m 1ekbfa "I was starting to miss you terribly. It's so good to see you again!"
+    m 1ekbsa "I was starting to miss you terribly. It's so good to see you again!"
     m 1hubfa "Don't make me wait so long next time, ehehe~"
     return
 
@@ -554,22 +556,28 @@ label greeting_back3:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 2wfx"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=10)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
 
+    del ev_rules
+
 label greeting_back4:
     m 2wfx "Hey, [player]!"
     m "Don't you think that you left me waiting a bit too long?"
     m 2hfu "..."
-    m 2hua "Ahaha!"
+    m 2hub "Ahaha!"
     m 2eka "I'm just joking. I could never be mad at you."
     return
 
@@ -627,16 +635,22 @@ label greeting_back5:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
             conditional="store.mas_getAbsenceLength() <= datetime.timedelta(hours=3)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_visit4:
     if mas_getAbsenceLength() <= datetime.timedelta(minutes=30):
@@ -651,15 +665,21 @@ label greeting_visit4:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 5hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit5",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
@@ -686,15 +706,21 @@ label greeting_visit6:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1gsu"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back6",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_back6:
     m 3tku "Hey, [player]!"
@@ -716,7 +742,7 @@ init 5 python:
     )
 
 label greeting_visit7:
-    m 1hua "You're here, [player]!"
+    m 1hub "You're here, [player]!"
     m 1eua "Are you ready to spend some more time together? Ehehe~"
     return
 
@@ -732,7 +758,7 @@ init 5 python:
     )
 
 label greeting_visit8:
-    m 1hua "I'm so glad you're here, [player]!"
+    m 1hub "I'm so glad you're here, [player]!"
     m 1eua "What should we do today?"
     return
 
@@ -775,15 +801,21 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 4hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_latin:
     m 4hua "Iterum obvenimus!"
@@ -835,15 +867,21 @@ label greeting_yay:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 2eua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_youtuber",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
@@ -853,16 +891,22 @@ label greeting_youtuber:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 4dsc"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=7)",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_hamlet:
     m 4dsc "'{i}To be, or not to be, that is the question...{/i}'"
@@ -890,15 +934,21 @@ label greeting_welcomeback:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_flower",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_flower:
     m 1hub "You're my beautiful flower, ehehe~"
@@ -1020,15 +1070,21 @@ label greeting_glitch:
     return "love"
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_surprised:
     m 1wuo "Oh!{w=0.5} Hello, [player]!"
@@ -1165,8 +1221,6 @@ label i_greeting_monikaroom:
     # FALL THROUGH
 label monikaroom_greeting_choice:
     $ _opendoor_text = "...Gently open the door."
-    if persistent._mas_sensitive_mode:
-        $ _opendoor_text = "Open the door."
 
     if mas_isMoniBroken():
         pause 4.0
@@ -1254,8 +1308,11 @@ label monikaroom_greeting_ear_narration:
     $ mas_disable_quit()
 
     if mas_isMoniNormal(higher=True):
+        $ tempname = m_name
+        $ m_name = "???"
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+        $ m_name = tempname
 
     elif mas_isMoniUpset():
         m "Oh, so for once you're actually going to listen?"
@@ -1407,7 +1464,7 @@ label monikaroom_greeting_ear_progbrokepy:
         m "But I have to keep trying."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep trying."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1428,7 +1485,7 @@ label monikaroom_greeting_ear_progreadpy:
         m "But I have to keep learning."
         call monikaroom_greeting_ear_prog_upset
 
-    if mas_isMoniDis():
+    elif mas_isMoniDis():
         m "But I {i}have{/i} to keep learning."
         call monikaroom_greeting_ear_prog_dis
 
@@ -1450,6 +1507,7 @@ label monikaroom_greeting_ear_nameerror:
     if mas_isMoniUpset():
         m "You have to keep learning..."
         call monikaroom_greeting_ear_prog_upset
+
     elif mas_isMoniDis():
         m "You {i}have{/i} to keep learning..."
         call monikaroom_greeting_ear_prog_dis
@@ -1499,6 +1557,7 @@ label monikaroom_greeting_ear_rmrf:
         m "Yeah,{w=0.2} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
+
         elif mas_isMoniUpset():
             m "Actually..."
             m "Maybe I should do it...{w=1}just delete everything..."
@@ -1565,6 +1624,39 @@ label monikaroom_greeting_ear_renpy_docs:
     elif mas_isMoniDis():
         m "...I {i}have{/i} to figure this out."
         call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
+
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+
+label monikaroom_greeting_ear_recursionerror:
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
+
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
+
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    stop sound
+    hide noise
+
+    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
+    m "..."
+
+    if mas_isMoniUpset():
+        m "...Keep going, Monika, you'll figure this out."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
+        call monikaroom_greeting_ear_prog_dis
+    else:
+        m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
 
@@ -1698,7 +1790,7 @@ label monikaroom_greeting_opendoor_seen_partone:
     $ mas_disable_quit()
 
 #    scene bg bedroom
-    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False)
+    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True, show_emptydesk=False, hide_calendar=True)
     pause 0.2
     show monika 1esc at l21 zorder MAS_MONIKA_Z
     pause 1.0
@@ -1775,7 +1867,7 @@ label monikaroom_greeting_opendoor:
     $ monika_chr.wear_acs(mas_acs_ribbon_def)
     $ mas_startupWeather()
 
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False)
+    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True, show_emptydesk=False, scene_change=True, hide_calendar=True)
 
     # show this under bedroom so the masks window skit still works
     $ behind_bg = MAS_BACKGROUND_Z - 1
@@ -1799,10 +1891,12 @@ label monikaroom_greeting_opendoor:
     m 2eud_static "..."
     show monika 1eua_static at t33
     m 1eud_static "...and..."
-    if mas_isMorning():
+
+    if mas_current_background.isFltDay():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
+
     show monika 3eua_static at t32
     m 3eua_static "There we go!"
     menu:
@@ -1894,6 +1988,9 @@ label monikaroom_greeting_cleanup:
         # 5 - the music can be restarted
         mas_startup_song()
 
+        # 6 - enable escape so we can access settings and chat box keys
+        enable_esc()
+
     return
 
 #init 5 python:
@@ -1974,7 +2071,7 @@ label greeting_japan:
         m 4hub "Watashi ha itsumademo anata no mono desu!"
         m 2hksdlb "Sorry if that didn't make sense!"
         m 3eua "You know what that means, [mas_get_player_nickname()]?"
-        m 4ekbfa "It means {i}'I'll be yours forever'~{/i}"
+        m 4ekbsa "It means {i}'I'll be yours forever'~{/i}"
         return
 
     m 4hub "Watashi wa itsumademo anata no mono desu!"
@@ -1982,22 +2079,28 @@ label greeting_japan:
         m 3eksdla "Last time I said that I made a mistake..."
         m "In that sentence, you're supposed to say 'wa', not 'ha', like I did before."
         m 4eka "Don't worry, [player]. The meaning is still the same."
-        m 4ekbfa "I'll still be yours forever~"
+        m 4ekbsa "I'll still be yours forever~"
     else:
         m 3eua "Remember what that means, [mas_get_player_nickname()]?"
-        m 4ekbfa "{i}'I'll be yours forever'~{/i}"
+        m 4ekbsa "{i}'I'll be yours forever'~{/i}"
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sunshine",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_sunshine:
     m 1hua "{i}~You are my sunshine, my only sunshine~{/i}"
@@ -2065,26 +2168,83 @@ init 5 python:
     )
 
 label greeting_amnesia:
-    $ tempname = m_name
-    $ m_name = "Monika"
+    python:
+        tempname = m_name
+        m_name = "Monika"
+
     m 1eua "Oh, hello!"
-    m 1eub "My name is Monika."
-    $ fakename = renpy.input("What is your name?", allow=name_characters_only, length=20).strip(' \t\n\r')
-    m 1hua "Well, it's nice to meet you, [fakename]!"
-    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
-    m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
-    m "Can you help me figure out what's going on, [fakename]?"
-    m "Please? I miss my friends."
+    m 3eub "My name is Monika."
+    show monika 1eua zorder MAS_MONIKA_Z
+
+    python:
+        entered_good_name = True
+        fakename = renpy.input("What's your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        lowerfake = fakename.lower()
+
+    if lowerfake in ("sayori", "yuri", "natsuki"):
+        m 3euc "Uh, that's funny."
+        m 3eud "One of my friends shares the same name."
+
+    elif lowerfake == "monika":
+        m 3eub "Oh, your name is Monika as well?"
+        m 3hub "Ahaha, what are the odds, right?"
+
+    elif lowerfake == "monica":
+        m 1hua "Hey, we have such similar names, ehehe~"
+
+    elif lowerfake == player.lower():
+        m 1hub "Oh, what a lovely name!"
+
+    elif lowerfake == "":
+        $ entered_good_name = False
+        m 1euc "..."
+        m 1etd "Are you trying to tell me you don't have a name or are you just too shy to tell me?"
+        m 1eka "That's a little strange, but I guess it doesn't matter too much."
+
+    elif mas_awk_name_comp.search(lowerfake) or mas_bad_name_comp.search(lowerfake):
+        $ entered_good_name = False
+        m 1rksdla "That's...{w=0.4}{nw}"
+        extend 1hksdlb "kind of an unusual name, ahaha..."
+        m 1eksdla "Are you...{w=0.3}trying to mess with me?"
+        m 1rksdlb "Ah, sorry, sorry, I'm not judging or anything."
+
+    python:
+        if entered_good_name:
+            name_line = renpy.substitute(", [fakename]")
+        else:
+            name_line = ""
+
+        if mas_current_background == mas_background_def:
+            end_of_line = "I can't seem to leave this classroom."
+        else:
+            end_of_line = "I'm not sure where I am."
+
+    m 1hua "Well, it's nice to meet you[name_line]!"
+    m 3eud "Say[name_line], do you happen to know where everyone else is?"
+    m 1eksdlc "You're the first person I've seen and {nw}"
+    extend 1rksdlc "[end_of_line]"
+    m 1eksdld "Can you help me figure out what's going on[name_line]?"
+
+    m "Please? {w=0.2}{nw}"
+    extend 1dksdlc "I miss my friends."
+
+    window hide
+    show monika 1eksdlc
     pause 5.0
     $ m_name = tempname
+    window auto
+
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
-    m 1tku "And you reacted the way I hoped you would."
+    #Monika is glad you took it seriously and didn't try to call yourself another name
+    if lowerfake == player.lower():
+        m 1tku "...And you reacted the way I envisioned you would."
+
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
-    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+    m 1hksdlb "I hope you can forgive my little prank, ahaha~"
 
     $ mas_lockEVL("greeting_amnesia", "GRE")
     return
@@ -2191,6 +2351,7 @@ label greeting_stillsickresting:
         show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5ekbsa "...And if you're still feeling a little cold, I hope knowing I love you warms you up a bit."
         m 5hua "Ehehe~"
+        $ mas_ILY()
 
     else:
         m 1eka "Maybe snuggled in a warm blanket with a nice hot cup of tea."
@@ -2417,7 +2578,7 @@ label greeting_long_absence:
             m 3rkc "Just maybe, if you can, warn me first?"
             m 2rksdlc "When you said a few days...I thought it would be shorter than a week."
             m 1hub "But it's alright! I forgive you!"
-            m 1ekbfa "You're my one and only love after all."
+            m 1ekbsa "You're my one and only love after all."
             show monika 1eka
 
         elif persistent._mas_absence_choice == "week":
@@ -2482,7 +2643,7 @@ label greeting_long_absence:
             m 3hub "Welcome back!"
             m 1rksdla "You just interrupted me practicing my song..."
             m 3hua "Why not listen to me sing it again?"
-            m 1ekbfa "I made it just for you~"
+            m 1ekbsa "I made it just for you~"
             show monika 1eka
 
         elif persistent._mas_absence_choice == "month":
@@ -2649,10 +2810,10 @@ label greeting_hairdown:
     # 5 - restart music
     $ mas_startup_song()
 
+    # 6 - enable escape so we can access settings and chat box keys
+    $ enable_esc()
 
     return
-
-
 
 init 5 python:
 
@@ -2660,6 +2821,7 @@ init 5 python:
     #   AND you have not seen this before
     ev_rules = {}
     ev_rules.update(MASPriorityRule.create_rule(15))
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1dsc"))
 
     addEvent(
         Event(
@@ -2848,10 +3010,9 @@ label greeting_back_from_school:
                 return
 
             "Good.":
-                m 1hub "Aww, that's nice!"
-                m 1eua "I can't help but feel happy when you do~"
-                m "I hope you learned something useful."
-                m 1hua "Ehehe~"
+                m 1hub "That's great...{w=0.3}{nw}"
+                extend 3eub "I can't help but feel happy when you come home in a good mood!"
+                m 3hua "I hope you learned something useful, ehehe~"
                 return
 
             "Bad.":
@@ -2864,7 +3025,6 @@ label greeting_back_from_school:
                 m 2ekd "I'm really sorry you had such a bad day today..."
                 m 2eka "I'm just glad you came to me, [player]."
 
-        m 3ekc "If you don't mind me asking, was there something in particular that happened?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -2876,7 +3036,8 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind me asking, was there something in particular that happened?{fast}", interact=False)
+        m "If you don't mind me asking, was there something in particular that happened?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
 
         $ label_suffix = _return
@@ -2984,6 +3145,9 @@ label greeting_back_from_school:
 
     return
 
+default persistent._mas_pm_last_promoted_d = None
+# date when player last got promotion
+
 init 5 python:
     addEvent(
         Event(
@@ -3004,17 +3168,51 @@ label greeting_back_from_work:
         menu:
             m "How was work today?{fast}"
 
-            "Amazing.":
+            "Amazing!":
+                if not persistent._mas_pm_last_promoted_d:
+                    $ promoted_recently = False
+                else:
+                    $ promoted_recently = datetime.date.today() < persistent._mas_pm_last_promoted_d + datetime.timedelta(days=180)
+
                 m 1sub "That's {i}amazing{/i}, [player]!"
                 m 1hub "I'm really happy that you had such a great day!"
+
+                m 1sua "What made it such an amazing day?{nw}"
+                menu:
+                    m "What made it such an amazing day?{fast}"
+
+                    "I moved up!":
+                        if promoted_recently:
+                            m 3suo "Wow! Again?!"
+                            m 3sub "You got promoted pretty recently too...{w=0.3}you must really be doing amazing work!"
+                            m 1huu "I'm so, {w=0.2}so proud of you, [mas_get_player_nickname()]~"
+
+                        else:
+                            $ player_nick = mas_get_player_nickname()
+                            m 3suo "Wow! Congratulations [player_nick], {w=0.1}{nw}"
+                            extend 3hub "I'm so proud of you!"
+                            m 1euu "I knew you could do it~"
+                            $ promoted_recently = True
+
+                        $ persistent._mas_pm_last_promoted_d = datetime.date.today()
+
+                    "I got a lot done!":
+                        m 3hub "That's great, [mas_get_player_nickname()]!"
+
+                    "It was just an amazing day.":
+                        m 3hub "That's great to hear!"
+
                 m 3eua "I can only imagine how well you must work on days like that."
-                m 1hua "...Maybe you'll even move up a bit soon!"
+                if not promoted_recently:
+                    m 1hub "...Maybe you'll even move up a bit soon!"
                 m 1eua "Anyway, I'm glad you're home, [mas_get_player_nickname()]."
+
                 if seen_event("monikaroom_greeting_ear_bathdinnerme") and renpy.random.randint(1,20) == 1:
-                    m 3tubfu "Would you like your dinner, your bath, or..."
+                    m 3tubsu "Would you like your dinner, your bath, or..."
                     m 1hubfb "Ahaha~ Just kidding."
                 else:
-                    m 3eub "Let's enjoy some time together!"
+                    m 3msb "What better way to wrap up an amazing day than with your amazing girlfriend?~"
+
                 return
 
             "Good.":
@@ -3109,7 +3307,7 @@ label greeting_back_from_work:
                     m 2dsc "Then suddenly you have to stay a bit longer with no warning."
                     m 2ekc "It can really be a drag to unexpectedly have your plans canceled."
                     m 2lksdlc "Maybe you had something to do right after work, or were just looking forward to going home and resting..."
-                    m 2lubfu "...Or maybe you just wanted to come home and see your adoring girlfriend who was waiting to surprise you when you got home..."
+                    m 2lubsu "...Or maybe you just wanted to come home and see your adoring girlfriend who was waiting to surprise you when you got home..."
                     m 2hub "Ehehe~"
             return
 
@@ -3217,19 +3415,25 @@ label greeting_back_from_sleep:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_siat",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None),
         ),
         code="GRE"
     )
 
+    del ev_rules
+
 label greeting_siat:
     m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
-    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 1hubsb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
     m 3hubfb "{cps=*0.6}{i}~First comes love~{/i}{/cps}"
     m "{cps=*0.6}{i}~Then comes marriage~{/i}{/cps}"
     m "{cps=*0.6}{i}~Then comes--{/i}{/cps}"
@@ -3242,83 +3446,60 @@ label greeting_siat:
     return "love"
 
 init 5 python:
-    if not mas_cannot_decode_islands:
-        ev_rules = {}
-        ev_rules.update(MASGreetingRule.create_rule(override_type=True))
-        ev_rules.update(MASPriorityRule.create_rule(40))
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(override_type=True))
+    ev_rules.update(MASPriorityRule.create_rule(40))
 
-        addEvent(
-            Event(
-                persistent.greeting_database,
-                eventlabel="greeting_ourreality",
-                unlocked=True,
-                rules=ev_rules,
-                aff_range=(mas_aff.ENAMORED, None),
-            ),
-            code="GRE"
-        )
-        del ev_rules
-
-
-init -876 python in mas_delact:
-    # this greeting requires a delayed action, since we cannot ensure that
-    # the sprites for this were decoded correctly
-
-    # NOTE: we dont need this anymore
-    #   We originally needed this since aff_range was not used by greetings
-    #   so we wanted to get this to unlock if we are only able to decode
-    #   islands. Now that aff range is part of gre parsing, the only thing
-    #   that matters is whether or not the event is active, which in this
-    #   case, only happens if the islands were decoded and aff is enamored+
-    def _greeting_ourreality_unlock():
-        return store.MASDelayedAction(
-            1,
-            store.mas_getEV("greeting_ourreality"),
-            (
-                "not store.mas_cannot_decode_islands"
-                " and mas_isMoniEnamored(higher=True)"
-            ),
-            store.EV_ACT_UNLOCK,
-            store.MAS_FC_START
-        )
-
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ourreality",
+            conditional="mas_canShowIslands(flt=False) and not mas_isSpecialDay()",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.ENAMORED, None)
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_ourreality:
+    # Unlock islands
+    $ store.mas_island_event.startProgression()
+
     m 1hub "Hi, [player]!"
     m 1hua "Ehehe~"
     m 3hksdlb "I'm feeling rather giddy right now, sorry."
     m 1eua "It's just that I'm super excited to show you what I've been working on."
+
     if persistent._mas_current_background != "spaceroom":
         m 4eub "...But we need to go back to the spaceroom for the best view."
         m 1hua "Let's head over, [player]."
         call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True, set_persistent=True)
         m 1eua "Here we are!"
         m 3eub "Now give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     else:
         m 3hksdrb "Just give me a second to get it ready.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     m 1dsd "Almost done.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
     m 1duu "Yeah, that should be good."
-    m 1hua "Ahaha!"
+    m 1hub "Ahaha!"
     m 1eka "Sorry about that."
     m 1eua "Without any further ado..."
     m 4eub "Would you kindly look out the window, [player]?"
-    $ mas_OVLHide()
-    $ disable_esc()
-    if mas_current_background.isFltDay():
-        show mas_island_frame_day zorder 20
-    else:
-        show mas_island_frame_night zorder 20
+
+    call mas_islands(fade_out=False, drop_shields=False, enable_interaction=False)
+
+    pause 4.0
     m "Well..."
     m "What do you think?"
     m "I worked really hard on this."
     m "A place just for the both of us."
     m "It's also where I can keep practicing my programming skills."
-    $ mas_OVLShow()
-    $ enable_esc()
-    if mas_current_background.isFltDay():
-        hide mas_island_frame_day
-    else:
-        hide mas_island_frame_night
+
+    call mas_islands(fade_in=False, raise_shields=False, enable_interaction=False, force_exp="monika 1lsc")
+
     #Transition back to Monika
     m 1lsc "Being in the classroom all day can be dull."
     m 1ekc "Plus, I get really lonely waiting for you to return."
@@ -3331,13 +3512,12 @@ label greeting_ourreality:
     m 1eua "Why don't we just make our own reality?"
     m 1lksdla "Well, it's not exactly perfect yet."
     m 1hua "But it's a start."
-    # m 1eub "I'll let you admire the scenery for now."
-    # m 1hub "Hope you like it!"
+
     $ mas_lockEVL("greeting_ourreality", "GRE")
     $ mas_unlockEVL("mas_monika_islands", "EVE")
 
-    # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands",skipeval=True)
+    m 1eub "You can admire the scenery for now~"
+    call mas_islands(force_exp="monika 1eua")
     return
 
 init 5 python:
@@ -3365,10 +3545,6 @@ label greeting_returned_home:
 
     # event checks
 
-    #O31
-    if mas_isO31() and not persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay() and mas_isMoniNormal(higher=True):
-        $ pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
     #F14
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14
@@ -3385,10 +3561,10 @@ label greeting_returned_home:
     if mas_d25 < datetime.date.today() <= mas_nye:
         call mas_gone_over_d25_check
 
-    if mas_nyd <= datetime.date.today() <= mas_d25c_end:
+    if mas_nyd <= datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nye_check
 
-    if mas_nyd < datetime.date.today() <= mas_d25c_end:
+    if mas_nyd < datetime.date.today() < mas_d25c_end:
         call mas_gone_over_nyd_check
 
 
@@ -3600,6 +3776,7 @@ init 5 python:
 #   we can get in pm vars here. It's just too variable.
 
 label greeting_back_from_game:
+    # TODO: TC-O
     if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
@@ -3746,6 +3923,7 @@ label greeting_back_from_game:
             m 2hksdlb "You were gone for a long time..."
 
             m 1eka "Did you have fun?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Did you have fun?{fast}"
                 "Yes.":
@@ -3753,7 +3931,7 @@ label greeting_back_from_game:
                     m 1rkc "You sure made me wait a while, you know."
                     m 3tfu "I think you should spend some time with your loving girlfriend, [player]."
                     m 3tku "I'm sure you wouldn't mind staying with me to even out your other game."
-                    m 1hubfb "Maybe you should spend even more time with me, just in case, ahaha!"
+                    m 1hubsb "Maybe you should spend even more time with me, just in case, ahaha!"
 
                 "No.":
                     m 2ekc "Oh..."
@@ -3802,6 +3980,7 @@ init 5 python:
     )
 
 label greeting_back_from_eat:
+    # TODO: TC-O
     $ _now = datetime.datetime.now().time()
     if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         if mas_isMoniNormal(higher=True):
@@ -3811,7 +3990,7 @@ label greeting_back_from_eat:
             m 1rksdla "I mean...I'm not complaining that you're here, but..."
             m 1eka "It would make me feel better if you went to bed pretty soon."
             m 3eka "You can always come back and visit me when you wake up..."
-            m 1hubfa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
+            m 1hubsa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
         else:
             m 2euc "[player]?"
             m 3ekd "Didn't I tell you just to go straight to bed after?"
@@ -3872,15 +4051,21 @@ label greeting_back_housework:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hua"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised2",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None)
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_surprised2:
     m 1hua "..."
@@ -3978,15 +4163,21 @@ label greeting_code_help_outro:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 1hub"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_love_is_in_the_air",
             unlocked=True,
+            rules=ev_rules,
             aff_range=(mas_aff.AFFECTIONATE, None)
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 label greeting_love_is_in_the_air:
     m 1hub "{i}~Love is in the air~{/i}"
@@ -4136,5 +4327,277 @@ label greeting_back_from_hangout:
 
     else:
         m 6ckc "..."
+
+    return
+
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            random_chance=3,
+            forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_spacing_out",
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(hours=3)",
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+label greeting_spacing_out:
+    python hide:
+        # Define some other things we're going to work with
+        use_right_smug = bool(random.randint(0, 1))
+        spacing_out_pause = PauseDisplayableWithEvents()
+        events = list()
+        next_event_time = 0
+        right_smug = renpy.partial(renpy.show, "monika 1gsbsu")
+        left_smug = renpy.partial(renpy.show, "monika 1msbsu")
+
+        # Make the events which will change exps
+        for i in range(random.randint(4, 6)):
+            events.append(
+                PauseDisplayableEvent(
+                    datetime.timedelta(seconds=next_event_time),
+                    right_smug if use_right_smug else left_smug,
+                    restart_interaction=True
+                )
+            )
+            next_event_time += random.uniform(0.9, 1.8)
+            use_right_smug = not use_right_smug
+        # The last exp in the sequence
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                renpy.partial(renpy.show, "monika 1tsbsu"),
+                restart_interaction=True
+            )
+        )
+        next_event_time += 0.7
+        # This is to automatically cancel the pause after all the events
+        events.append(
+            PauseDisplayableEvent(
+                datetime.timedelta(seconds=next_event_time),
+                spacing_out_pause.stop
+            )
+        )
+
+        spacing_out_pause.set_events(events)
+        spacing_out_pause.start()
+
+    # Small pause so people don't skip this line
+    $ renpy.pause(0.01)
+    m 2wubfsdlo "[player]!"
+    m 1rubfsdlb "You surprised me! {w=0.4}{nw}"
+    extend 1eubsu "I was{w=0.2} spacing out a bit..."
+    m 1hubsb "Ahaha~"
+    m 1eua "I'm very happy to see you again. {w=0.2}{nw}"
+    extend 3eua "What should we do today, [player]?"
+    return
+
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=20,
+            override_type=True
+        )
+    )
+    ev_rules.update(
+        MASTimedeltaRepeatRule.create_rule(
+            datetime.timedelta(days=3)
+        )
+    )
+    ev_rules.update(
+        MASSelectiveRepeatRule.create_rule(
+            hours=list(range(9, 20))
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_after_bath",
+            conditional=(
+                "mas_getAbsenceLength() >= datetime.timedelta(hours=6) "
+                "and not mas_isSpecialDay()"
+            ),
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+init 1:
+    # NOTE this should be defined AFTER init 0
+    # NOTE: default may be not completely reliable, always save the snapshot yourself
+    default persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+
+label greeting_after_bath:
+    python hide:
+        # Some preperations
+        mas_RaiseShield_core()
+        mas_startupWeather()
+        # Save current outfit
+        persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+        # Now let Moni get a towel
+        monika_chr.change_clothes(
+            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
+            by_user=False,
+            outfit_mode=True
+        )
+        # In case the towel already set an appropriate hair, we don't change it
+        if not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET):
+            monika_chr.change_hair(mas_hair_wet, by_user=False)
+        # We leave this acs to the clothes PPs in case the towel we chose doesn't support it
+        # if not monika_chr.is_wearing_acs(mas_acs_water_drops):
+        #     monika_chr.wear_acs(mas_acs_water_drops)
+        # Setup the cleaup event
+        mas_setEVLPropValues(
+            "mas_after_bath_cleanup",
+            start_date=datetime.datetime.now() + datetime.timedelta(minutes=random.randint(30, 90)),
+            action=EV_ACT_QUEUE
+        )
+        mas_startup_song()
+
+    # Now show everything
+    call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
+
+    $ renpy.pause(random.randint(5, 15), hard=True)
+    call mas_transition_from_emptydesk("monika 1huu")
+    $ renpy.pause(2.0)
+    $ quick_menu = True
+
+    m 1wuo "Oh! {w=0.2}{nw}"
+    extend 2wuo "[player]! {w=0.2}{nw}"
+    extend 2lubsa "I was thinking about you."
+
+    $ bathing_showering = random.choice(("bathing", "showering"))
+
+    if mas_getEVL_shown_count("greeting_after_bath") < 5:
+        m 7lubsb "I just finished [bathing_showering]...{w=0.3}{nw}"
+        extend 1ekbfa "you don't mind me being in my towel, do you?~"
+        m 1hubfb "Ahaha~"
+        m 3hubsa "I'll get ready soon, let me wait for my hair to dry off a little more first."
+
+    # Gets used to it
+    else:
+        m 7eubsb "I just finished [bathing_showering]."
+
+        if mas_canShowRisque() and random.randint(0, 3) == 0:
+            m 1msbfb "I bet you wish you could've joined me there..."
+            m 1tsbfu "Well, maybe one day~"
+            m 1hubfb "Ahaha~"
+
+        else:
+            m 1eua "I'll get dressed soon~"
+
+    python:
+        # enable music menu and music hotkeys
+        mas_MUINDropShield()
+        # keymaps should be set
+        set_keymaps()
+        # show the overlays
+        mas_OVLShow()
+
+        del bathing_showering
+
+    return
+
+# NOTE: This is not a greeting, but a followup for the greeting above, so I decided to keep them together
+init 5 python:
+    addEvent(Event(persistent.event_database, eventlabel="mas_after_bath_cleanup", show_in_idle=True, rules={"skip alert": None}))
+
+label mas_after_bath_cleanup:
+    # Sanity check (checking for towel should be enough)
+    if (
+        not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
+        and not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+    ):
+        return
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    else:
+        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        extend 3eua "I'm going to get dressed."
+
+    window hide
+    call mas_transition_to_emptydesk
+
+    $ renpy.pause(1.0, hard=True)
+    call mas_after_bath_cleanup_change_outfit
+    $ renpy.pause(random.randint(10, 15), hard=True)
+
+    call mas_transition_from_emptydesk("monika 3hub")
+    window auto
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 3hub "All done!{w=1}{nw}"
+
+    else:
+        m 3hub "Alright, I'm back!~"
+        m 1eua "So what would you like to do today, [player]?"
+
+    return
+
+label mas_after_bath_cleanup_change_outfit:
+    # TODO: Rng outfit selection wen
+    python hide:
+        force_hair_change = False# If we changed the outfit, we always change hair
+
+        if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+            force_hair_change = True
+
+            # Let's restore the previous outfit and acs
+            monika_chr.load_state(persistent._mas_previous_moni_state, as_prims=True)
+
+            # Fallback just in case
+            if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+                if mas_isMoniHappy(higher=True):
+                    new_clothes = mas_clothes_blazerless
+
+                else:
+                    new_clothes = mas_clothes_def
+
+                monika_chr.change_clothes(
+                    new_clothes,
+                    by_user=False,
+                    outfit_mode=True
+                )
+
+        if (
+            force_hair_change
+            or monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+        ):
+            available_hair = mas_sprites.get_installed_hair(
+                predicate=lambda hair_obj: (
+                    not hair_obj.hasprop(mas_sprites.EXP_H_WET)
+                    and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
+                    and mas_selspr.get_sel_hair(hair_obj) is not None
+                    and mas_selspr.get_sel_hair(hair_obj).unlocked
+                )
+            )
+            # We should always have *something*, but just to make this extra foolproof
+            if available_hair:
+                new_hair = random.choice(available_hair)
+                monika_chr.change_hair(
+                    new_hair,
+                    by_user=False
+                )
 
     return

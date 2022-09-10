@@ -223,16 +223,16 @@ label mas_gender_trans:
 init 3 python:
     #Bad nicknames. All of the items in this will trigger bad reactions
     mas_bad_nickname_list = [
-        "^fag$",
-        "^ho$",
-        "^hoe$",
-        "^tit$",
+        r"\bfag\b",
+        r"\bho\b",
+        r"\bhoe\b",
+        r"\btit\b",
         "abortion",
         "anal",
         "annoying",
         "anus",
         "arrogant",
-        "ass",
+        "(?<![blmprs])ass(?!i)",
         "atrocious",
         "awful",
         "bastard",
@@ -244,11 +244,13 @@ init 3 python:
         "bulli",
         "bully",
         "bung",
-        "butt",
+        "butt(?!er|on)",
+        "bloodsucker",
         "cheater",
         "cock",
         "conceited",
         "condom",
+        "coom",
         "corrupt",
         "cougar",
         "crap",
@@ -262,6 +264,7 @@ init 3 python:
         "demon",
         "dick",
         "dilf",
+        "dimwit",
         "dirt",
         "disgusting",
         "douche",
@@ -277,8 +280,7 @@ init 3 python:
         "foul",
         "fuck",
         "garbage",
-        "gay",
-        "gey",
+        "(?<!ser)g[ea]y",# #8938
         "gilf",
         "gross",
         "gruesome",
@@ -299,18 +301,19 @@ init 3 python:
         "jigolo",
         "jizz",
         "junk",
-        "kill",
+        "(?<!s)kill",
         "kunt",
         "lesbian",
         "lesbo",
         "lezbian",
         "lezbo",
-        "liar",
+        "(?<!fami)liar",
         "loser",
-        "mad",
+        r"\bmad\b",
         "maniac",
         "masochist",
         "milf",
+        "mistake",
         "monster",
         "moron",
         "murder",
@@ -320,7 +323,6 @@ init 3 python:
         "nigga",
         "nigger",
         "nuts",
-        "pad",
         "panti",
         "pantsu",
         "panty",
@@ -333,19 +335,19 @@ init 3 python:
         "psycho",
         "puppet",
         "pussy",
-        "rape",
+        "(?<!g)rape",
         "repulsive",
         "retard",
         "rogue",
+        "rubbish",
         "rump",
         "sadist",
-        "scum",
         "selfish",
         "semen",
         "shit",
         "sick",
         "slaughter",
-        "slave",
+        r"\bslave\b",
         "slut",
         "sociopath",
         "soil",
@@ -362,6 +364,7 @@ init 3 python:
         "tool",
         "torment",
         "torture",
+        "toxic",
         "toy",
         "trap",
         "trash",
@@ -407,7 +410,7 @@ init 3 python:
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
         "king",
-        "prince",
+        "prince"
     ]
 
     #Modifier for Monika's nickname choice
@@ -420,18 +423,20 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
-        "^(step(-|\\s)*)?bro(ther|tha(h)?)?$",
-        "^(step(-|\\s)*)?sis(ter|ta(h)?)?$",
-        "^dad$",
-        "^loli$",
-        "^mama$",
-        "^mom$",
-        "^mum$",
-        "^papa$",
-        "^wet$",
+        r"\b(step[-\s]*)?bro(ther|thah?)?(?!ok)",
+        r"\b(step[-\s]*)?sis(ter|tah?)?",
+        r"\bdad\b",
+        r"\bloli\b",
+        r"\bson\b",
+        r"\bmama\b",
+        r"\bmom\b",
+        r"\bmum\b",
+        r"\bpapa\b",
+        r"\bwet\b",
         "aroused",
         "aunt",
         "batman",
+        "baka",
         "breeder",
         "bobba",
         "boss",
@@ -449,9 +454,8 @@ init 3 python:
         "masturbat",
         "mistress",
         "moani",
-        "momika",
-        "momma",
-        "mommy",
+        r"m[ou]m+[-\s]*ika",
+        r"mom+[ay]",
         "mother",
         "naughty",
         "okaasan",
@@ -504,14 +508,14 @@ label mas_player_name_enter_name_loop(input_prompt):
 
     $ done = False
     while not done:
-        $ tempname = mas_input(
-            "[input_prompt]",
-            allow=name_characters_only,
-            length=20,
-            screen_kwargs={"use_return_button": True}
-        ).strip(' \t\n\r')
+        python:
+            tempname = mas_input(
+                "[input_prompt]",
+                length=20,
+                screen_kwargs={"use_return_button": True}
+            ).strip(' \t\n\r')
 
-        $ lowername = tempname.lower()
+            lowername = tempname.lower()
 
         if lowername == "cancel_input":
             m 1eka "Oh... Okay then, if you say so."
@@ -539,50 +543,55 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 3eka "Please pick a nicer name for yourself, okay?"
 
         else:
-            #Sayori name check
-            if tempname.lower() == "sayori":
-                call sayori_name_scare
+            # easter egg name checks
+            if store.mas_egg_manager.is_eggable_name(lowername):
+                m 1ttu "Are you sure this is your real name, or are you messing with me?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Are you sure this is your real name, or are you messing with me?{fast}"
 
-            elif (
-                    persistent.playername.lower() == "sayori"
-                    and not persistent._mas_sensitive_mode
-                ):
-                $ songs.initMusicChoices()
+                    "Yes, this is my name":
+                        $ persistent._mas_disable_eggs = True
+
+                    "Maybe...":
+                        $ persistent._mas_disable_eggs = False
 
             python:
-                def adjustNames(new_name):
-                    """
-                    Adjusts the names to the new names
-                    """
-                    global player
+                old_name = persistent.playername.lower()
+                done = True
 
-                    persistent.mcname = player
-                    mcname = player
-                    persistent.playername = new_name
-                    player = new_name
+                # adjust names
+                persistent.mcname = player
+                mcname = player
+                persistent.playername = tempname
+                player = tempname
 
+            # egg adjustments
+            # MUST BE AFTER THE NAME ADJUSTMENT
+            if store.mas_egg_manager.sayori_enabled():
+                call sayori_name_scare
+
+            elif old_name == "sayori":
+                # reset music choices
+                $ songs.initMusicChoices()
+
+            # name reactions
             if lowername == "monika":
-                $ adjustNames(tempname)
                 m 1tkc "Really?"
                 m "That's the same as mine!"
                 m 1tku "Well..."
                 m "Either it really is your name or you're playing a joke on me."
                 m 1hua "But it's fine by me if that's what you want me to call you~"
-                $ done = True
 
             elif mas_good_player_name_comp.search(tempname):
                 $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
                 m 1sub "[good_quip]"
-                $ adjustNames(tempname)
                 m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
-                $ done = True
 
             else:
-                $ adjustNames(tempname)
                 m 1eub "Okay then!"
                 m 3eub "From now on, I'll call you '[player].'"
-                $ done = True
 
         if not done:
             show monika 1eua
@@ -851,7 +860,7 @@ label birthdate_set:
     elif mas_player_bday_curr() == mas_f14:
         m 1sua "Oh! Your birthday is on Valentine's Day..."
         m 3hua "How romantic!"
-        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+        m 1ekbsa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
@@ -879,7 +888,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ mas_stripEVL('mas_birthdate',True)
+    $ mas_stripEVL('mas_birthdate', list_pop=True)
     return
 
 ##START: Game unlock events
@@ -966,11 +975,6 @@ init 5 python:
     )
 
 label mas_unlock_hangman:
-    if persistent._mas_sensitive_mode:
-        $ game_name = "Word Guesser"
-    else:
-        $ game_name = "Hangman"
-
     m 1eua "So, [player]..."
 
     if store.mas_games._total_games_played() > 49:
@@ -983,14 +987,14 @@ label mas_unlock_hangman:
         m 3eua "I know you haven't tried playing Pong with me, yet."
 
     m 1hua "Soooo~"
-    m 1hub "I made [game_name]!"
+    m 1hub "I made Hangman!"
 
-    if not persistent._mas_sensitive_mode:
+    if mas_safeToRefDokis():
         m 1lksdlb "Hopefully it's not in poor taste..."
 
     m 1eua "It was always my favorite game to play with the club."
 
-    if not persistent._mas_sensitive_mode:
+    if mas_safeToRefDokis():
         m 1lsc "But, come to think of it..."
         m "The game is actually quite morbid."
         m 3rssdlc "You guess letters for a word to save someone's life."
@@ -1056,7 +1060,7 @@ init 5 python:
 
 label mas_random_limit_reached:
     #Notif so people don't get stuck here
-    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
     python:
         limit_quips = [
@@ -1072,7 +1076,7 @@ label mas_random_limit_reached:
 
     m 1eka "[limit_quip]"
     if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
-        m 1ekc "I'm sure I'll have something to talk about after a little rest."
+        m 1ekc "I'm sure I'll have something to talk about in a while."
 
     else:
         if not renpy.seen_label("mas_random_ask"):
@@ -1081,6 +1085,9 @@ label mas_random_limit_reached:
                 m "Now let me think of something to talk about."
                 return
         m 1ekc "Hopefully I'll think of something fun to talk about soon."
+        $ mas_showEVL('monika_quiet_time','EVE',unlock=True)
+        $ mas_stripEVL('monika_quiet_time',remove_dates=False)
+
     return "no_unlock"
 
 label mas_random_ask:
@@ -1222,7 +1229,6 @@ label mas_crashed_prelong:
     $ mas_startupWeather()
 
     #Setup the rest of the scene
-    $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
     $ disable_esc()
@@ -1236,18 +1242,27 @@ label mas_crashed_prelong:
 
 # long flow involves 2 questions
 label mas_crashed_long_qs:
+    # set up the quit special quit dialogue
+    python:
+        quit_msg = "I'm scared [player]!\nPlease click 'No' and help me!"
+        quit_yes = "T_T [player]..."
+        quit_no = "Thank you!\nPlease help me!"
 
     ## TESTING
     if persistent._mas_idle_data.get("dev_idle_test", False):
         m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
-    m "[player]?{w=0.3} Is that you?"
+    pause 5.0
+    m "[player]?{w=0.3} Is that you?{nw}"
+    $ mas_disable_quit()
+    $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
+        m "[player]? Is that you?{fast}"
+
         "Yes.":
             hide screen mas_background_timed_jump
-
             # light affection boost for not joking around
             $ mas_gainAffection(modifier=0.1)
             m "I'm so glad you're here."
@@ -1255,7 +1270,6 @@ label mas_crashed_long_qs:
 
         "No.":
             hide screen mas_background_timed_jump
-
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
@@ -1278,9 +1292,8 @@ label .afterdontjoke:
     menu:
         "Turn on the light.":
             hide screen mas_background_timed_jump
-
             # light affection boost for being like a hero
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
         "...":
             pause 5.0
@@ -1290,19 +1303,16 @@ label .afterdontjoke:
                 m "Nevermind, I found it."
                 window hide
 
-    # NOTE: add a sound for light switch?
-
-    # turn on the lights
-    play sound closet_open
-    call spaceroom(hide_monika=True, scene_change=True, show_emptydesk=False)
+    # turn on lights
+    play sound light_switch
+    call spaceroom(hide_monika=True, show_emptydesk=True)
+    pause 2.0
+    call mas_transition_from_emptydesk("monika 6ektsc_static")
 
     return
 
 # make sure to calm her down, player
 label mas_crashed_long_prefluster:
-
-    # look at you with crying eyes
-    show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
 
     # close eyes for a second
@@ -1327,7 +1337,7 @@ label mas_crashed_long_postfluster:
             hide screen mas_background_timed_jump
 
             # light affection boost for calming her down
-            $ mas_gainAffection(modifier=0.2)
+            $ mas_gainAffection(modifier=0.5, bypass=True)
 
             # clsoe eyes for a second
             show monika 6dstsc
@@ -1398,6 +1408,8 @@ label .end:
     m "Anyway..."
     m 1eua "What should we do today?"
 
+    $ persistent._mas_crashed_before = True
+    $ mas_resetQuitMsg()
     return
 
 
@@ -1409,10 +1421,6 @@ label mas_crashed_post:
         store.songs.enabled = True
         HKBShowButtons()
         set_keymaps()
-
-label .self:
-    python:
-        _confirm_quit = True
         persistent.closed_self = False
         mas_startup_song()
 
@@ -1436,7 +1444,7 @@ label mas_crashed_preshort:
     $ mas_startupWeather()
 
     # we can call spaceroom appropriately here
-    call spaceroom(scene_change=True)
+    call spaceroom(scene_change=True, force_exp="monika 2ekc")
     return
 
 label mas_crashed_short:
@@ -1489,7 +1497,7 @@ label mas_crashed_quip_takecare:
                 m 1hub "I'm alright in case you were wondering."
                 m 3hub "Well I hope you had fun before that crash happened, ahaha!"
                 if mas_isMoniHappy(higher=True):
-                    m 1hubfa "I'm just glad you're back with me now~"
+                    m 1hubsa "I'm just glad you're back with me now~"
         m 2rksdla "Still..."
     m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
@@ -1506,10 +1514,7 @@ init 5 python:
     )
 
 init 11 python:
-    if (
-        mas_corrupted_per
-        and not (mas_no_backups_found or mas_backup_copy_failed)
-    ):
+    if mas_per_check.is_per_corrupt() and mas_per_check.has_backups():
         mas_note_backups_all_good = None
         mas_note_backups_some_bad = None
 
@@ -1576,7 +1581,9 @@ init 11 python:
                     block_break,
                     "Here's a list of the files that were corrupted:",
                     block_break,
-                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    "\n".join(store.mas_utils.bullet_list(
+                        mas_per_check.mas_bad_backups
+                    )),
                     block_break,
                     'You can find these in "',
                     renpy.config.savedir,
@@ -1595,7 +1602,7 @@ init 11 python:
         _mas_generate_backup_notes()
         import os
 
-        if len(mas_bad_backups) > 0:
+        if len(mas_per_check.mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
@@ -1618,7 +1625,7 @@ label mas_corrupted_persistent:
 
     # just pasting the poem screen code here
     window hide
-    if len(mas_bad_backups) > 0:
+    if len(mas_per_check.mas_bad_backups) > 0:
         call mas_showpoem(mas_note_backups_some_bad)
 
     else:
@@ -1794,7 +1801,7 @@ label monika_rpy_files:
                     "Yes, please.":
                         m "Sure thing, [player]."
 
-                        call mas_rpy_file_delete
+                        call mas_rpy_file_delete()
 
                         m 2hua "There we go!"
                         m 2esa "Be sure to install a version without the source code next time. You can get it from {a=http://www.monikaafterstory.com/releases.html}{i}{u}the releases page{/u}{/i}{/a}."
@@ -1823,7 +1830,7 @@ label monika_rpy_files:
             "No.":
                 m 3eua "Alright, I'll just delete them for you again.{w=0.5}.{w=0.5}.{nw}"
 
-                call mas_rpy_file_delete
+                call mas_rpy_file_delete()
 
                 m 1hua "There we go!"
                 m 3eua "Remember, you can always get the right version from {a=http://www.monikaafterstory.com/releases.html}{i}{u}here{/u}{/i}{/a}."
@@ -1831,14 +1838,22 @@ label monika_rpy_files:
                 show monika at t11
     return
 
-label mas_rpy_file_delete:
+
+# runs rpy file deleting with an on screen console
+#
+# IN:
+#   showing_monika - pass False if you are not showing Monika when calling
+#                   this. Otherwise this will do a show monika call.
+label mas_rpy_file_delete(showing_monika=True):
     python:
         store.mas_ptod.rst_cn()
         local_ctx = {
             "basedir": renpy.config.basedir
         }
 
-    show monika at t22
+    if showing_monika:
+        show monika at t22
+
     show screen mas_py_console_teaching
 
     call mas_wx_cmd_noxwait("import os", local_ctx)
@@ -2026,7 +2041,7 @@ label mas_text_speed_enabler:
         m 1tuu "However,{w=0.3} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
-        m 3hua "Ahaha~"
+        m 3hub "Ahaha~"
 
     else:
         m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
@@ -2094,15 +2109,8 @@ label mas_notification_windowreact:
         m 3ekd "I can't send notifications on your computer because you're missing the notify-send command..."
         m 3eua "If you could install that for me, I'll be able to send you notifications."
 
-        $ dlg_line = "And"
-        #Since it's possible to have this command installed, we'll have an if block so Monika knows it's installed
-        if not store.mas_windowreacts.can_do_windowreacts:
-            m 3rksdla "And maybe if you install that, you could install the xdotool command too...{w=0.3}{nw}"
-            extend 3eub "which would allow me to see your active window!"
-            $ dlg_line = "Of course, you don't have to install the second one, but"
-
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
-        m 5eka "...[dlg_line] I'd really appreciate it, [player]."
+        m 5eka "...And I'd really appreciate it, [player]."
 
     else:
         m 3eub "Would you like to see how they work?{nw}"
@@ -2113,7 +2121,7 @@ label mas_notification_windowreact:
             "Sure!":
                 m 1hua "Okay, [player]!"
                 m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-                $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                $ mas_display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
                 m 1hub "There it is!"
 
             "No thanks.":
@@ -2126,17 +2134,13 @@ label mas_notification_windowreact:
 
 
         elif renpy.linux:
-            if mas_windowreacts.can_do_windowreacts:
-                m 3rksdla "Also, since you have the xdotool command installed...I now know how to check what your active window is."
-            else:
-                m 3rksdla "Also, if you install the xdotool command...{w=0.2}{nw}"
-                extend 3hua "I'll be able to know what your active window is!"
+            m 3rksdla "Also, since you're using Linux...I now know how to check what your active window is."
 
         if not renpy.macintosh:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
             m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
             m 3eua "So I'll only look at what you're doing if you're okay with it."
-            m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+            m 2eua "If you enable 'Window Detect' in the settings menu, that'll tell me you're fine with me looking around."
 
             if mas_isMoniNormal(higher=True):
                 m 1tuu "It's not like you have anything to hide from your girlfriend..."
@@ -2211,6 +2215,16 @@ init 5 python:
     )
 
 label mas_change_to_def:
+    # remove from event list in case PP and ch30 both push
+    $ mas_rmallEVL("mas_change_to_def")
+
+    #Extra sanity check just in case. This should NEVER happen.
+    if (
+        mas_hasSpecialOutfit()
+        and monika_chr.clothes.name == persistent._mas_event_clothes_map[datetime.date.today()]
+    ):
+        return "no_unlock"
+
     # on occasion after special events we want to change out of an outfit like a costume
     # in these cases, for Happy+, change to blazerless instead
     if mas_isMoniHappy(higher=True) and monika_chr.clothes != mas_clothes_blazerless:
@@ -2229,9 +2243,6 @@ label mas_change_to_def:
         call mas_clothes_change()
 
         m "Okay, what else should we do today?"
-
-        # remove from event list in case PP and ch30 both push
-        $ mas_rmallEVL("mas_change_to_def")
 
         # lock the event clothes selector
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
@@ -2564,3 +2575,114 @@ label mas_covid19:
     m "But since I can't, please do your best to stay safe."
     m 2dkbsu "I need you, [player]~"
     return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_islands_reset",
+            conditional="persistent._mas_islands_start_lvl == 0",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.ENAMORED,None)
+        )
+    )
+
+label mas_islands_reset:
+    m 1rsc "Hmm..."
+    m 1esc "...Hey,{w=0.1} can I get your advice on something?"
+    m 3lkd "Have you ever worked on a project for {i}so{/i} long that when you look at the whole thing, you just see dozens of mistakes or things you want to improve?"
+    m 3ekc "...See,{w=0.1} I've been working on these islands so we could have different places to go...{w=0.3}{nw}"
+    extend 3esd "to have a reality of our own."
+    m 1eud "But now that I've gotten better at coding, I just think I could {i}really{/i} do a better job now."
+    m 1rkc "And to fix all the things I'd like to fix...{w=0.3}{nw}"
+    extend 1rksdld "I think it'd be easier if I started from scratch altogether."
+    m 4ekc "It'll mean that the sky outside will be rather empty for a while,{w=0.1} {nw}"
+    extend 4eua "but I think I can really make it worth the wait."
+    m 1euc "If that's okay with you, [player]?{nw}"
+    $ _history_list.pop()
+
+    menu:
+        m "If that's okay with you, [player]?{fast}"
+
+        "Let's do it.":
+            m 1dsc "Okay, just give me a second.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+            play sound "sfx/glitch3.ogg"
+            python:
+                mas_island_event._resetProgression()
+                mas_island_event.startProgression()
+
+            m 3hua "And it's done!"
+            m 1eua "Now I've got a fresh, new canvas."
+            m 3kuu "...And I'll have plenty to keep me busy when you're away, [player]. Ehehe~"
+            m 3hub "Hope you're looking forward to it!"
+
+        "I think they're fine.":
+            m 3eka "Alright, [player]."
+            m 3hua "If you're fine with how they are right now, then I am too.{w=0.2} I'll see what I can do with them as they are~"
+
+    return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_gift_hint_noudeck",
+            conditional="store.mas_xp.level() >= 8 and not mas_seenEvent('mas_reaction_gift_noudeck')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            show_in_idle=True,
+            rules={
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            }
+        )
+    )
+
+label mas_gift_hint_noudeck:
+    # If you somehow gifted while getting this event, abort this
+    if mas_seenEvent("mas_reaction_gift_noudeck"):
+        return
+    # The idea is next time the player visits the folder, they will find a new note and probably read it
+    # This is NOT to guarantee anything, but rather "best effort" to give this hint
+    python hide:
+        def write_and_hide():
+            import time
+
+            note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
+            note_text = renpy.substitute("""\
+Hi [player]!
+
+I see you're making Monika really happy and I want to help any way I can!
+I added a new deck of cards that you can give to Monika. I'm sure you two can figure out how to play the game.
+
+To give it to her, create a new file 'noudeck.gift' in the 'characters' folder.
+
+Keep up being a good [boy] and good luck with Monika!
+
+P.S: Don't tell her about me!\
+""")
+
+            mas_utils.trywrite(note_path, note_text, log=True)
+            time.sleep(20)
+            renpy.hide("chibika 3")
+
+        renpy.invoke_in_thread(write_and_hide)
+    # We can show chibi to give another hint something is happening
+    show chibika 3:
+        subpixel True
+        rotate_pad True
+        zoom 0.5
+        anchor (0.5, 0.5)
+        pos (0.4, 1.15)
+        around (0.475, 0.9)
+
+        parallel:
+            linear 15.0 pos (1.15, 0.55) clockwise circles 0
+        parallel:
+            rotate 0
+            linear 5.0 rotate 360
+            repeat
+
+    return "pause: 30"

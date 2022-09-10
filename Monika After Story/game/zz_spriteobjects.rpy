@@ -8,8 +8,8 @@
 #   [SPR020] - Clothes programming points
 #   [SPR030] - ACS programming points
 #   [SPR110] - Hair sprite objects
-#   [SPR120] - Clothes sprite objects
-#   [SPR130] - ACS sprite objects
+#   [SPR120] - ACS sprite objects
+#   [SPR130] - Clothes sprite objects
 #   [SPR140] - Table sprite objects
 #   [SPR230] - ACS variables
 
@@ -250,13 +250,11 @@ init -2 python in mas_sprites:
         """
         pass
 
-
     def _hair_def_exit(_moni_chr, **kwargs):
         """
         Exit programming point for ponytail
         """
         pass
-
 
     def _hair_down_entry(_moni_chr, **kwargs):
         """
@@ -264,20 +262,17 @@ init -2 python in mas_sprites:
         """
         pass
 
-
     def _hair_down_exit(_moni_chr, **kwargs):
         """
         Exit programming point for hair down
         """
         pass
 
-
     def _hair_bun_entry(_moni_chr, **kwargs):
         """
         Entry programming point for hair bun
         """
         pass
-
 
     def _hair_orcaramelo_bunbraid_exit(_moni_chr, **kwargs):
         """
@@ -286,6 +281,29 @@ init -2 python in mas_sprites:
         # always take off the headband
         _acs_remove_if_found(_moni_chr, "orcaramelo_sakuya_izayoi_headband")
 
+    def _hair_braided_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for braided hair
+        """
+        _moni_chr.wear_acs(store.mas_acs_rin_bows_back)
+        _moni_chr.wear_acs(store.mas_acs_rin_bows_front)
+
+    def _hair_braided_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for braided hair
+        """
+        _moni_chr.remove_acs(store.mas_acs_rin_bows_front)
+        _moni_chr.remove_acs(store.mas_acs_rin_bows_back)
+        #Always remove rin ears
+        _moni_chr.remove_acs(store.mas_acs_rin_ears)
+
+    def _hair_wet_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for wet hair
+        """
+        # We remove ahoge as it doesn't make sense on wet hair
+        # We don't restore it on hair change either
+        _moni_chr._set_ahoge(None)
 
     ######### CLOTHES [SPR020] ###########
     # available kwargs:
@@ -298,143 +316,32 @@ init -2 python in mas_sprites:
         """
         Entry programming point for def clothes
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            # ponytail and white ribbon
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_def)
+        store.mas_lockEVL("mas_compliment_outfit", "CMP")
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
 
-    def _clothes_rin_entry(_moni_chr, **kwargs):
+
+    def _clothes_def_exit(_moni_chr, **kwargs):
         """
-        Entry programming point for rin clothes
+        Exit programming point for def clothes
         """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2=None,
-            p3="3",
-            p4=None,
-            p5=None,
-            p6=None
-        )
-        wearing_promise_ring = _moni_chr.is_wearing_acs(
-            store.mas_acs_promisering
-        )
 
-        # hide hair down select
-#        store.mas_lockEVL("monika_hair_select", "EVE")
-
-        # hide hairdown greeting
-#        store.mas_lockEVL("greeting_hairdown", "GRE")
-
-        #### ribbon stuff
-        # wearing rin clothes means we wear custom blank ribbon if we are
-        # wearing a ribbon
-        _acs_ribbon_save_and_remove(_moni_chr)
-        _acs_ribbon_like_save_and_remove(_moni_chr)
-#        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-#        if (
-#                prev_ribbon is not None
-#                and prev_ribbon != store.mas_acs_ribbon_blank
-#            ):
-#            temp_storage["hair.ribbon"] = prev_ribbon
-            #_moni_chr.wear_acs(store.mas_acs_ribbon_blank)
-#            _moni_chr.remove_acs(prev_ribbon)
-
-        # lock hair so we dont get ribbon issues
-        _moni_chr.lock_hair = True
-
-        # lock ribbon select
-#        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-        #### end ribbon stuff
-
-        #### hair acs
-        _acs_save_and_remove_exprop(
-            _moni_chr,
-            "left-hair-strand-eye-level",
-            "acs.left-hair-strand-eye-level",
-            True
-        )
-
-        #### end acs stuff
-
-        # remove ear rose
-        _moni_chr.remove_acs(store.mas_acs_ear_rose)
-
-        # lock selectors
-        _clothes_baked_entry(_moni_chr)
-
-        # re-add promise wring if it was worn
-        if wearing_promise_ring:
-            _moni_chr.wear_acs(store.mas_acs_promisering)
+        store.mas_unlockEVL("mas_compliment_outfit", "CMP")
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
         """
         Exit programming point for rin clothes
         """
-        rin_map = temp_storage.get("clothes.rin", None)
-        if rin_map is not None:
-            store.mas_acs_promisering.pose_map = rin_map
-
-        # unlock hair down greeting if not unlocked
-#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
-#            store.mase_unlockEVL("greeting_hairdown", "GRE")
-
-        # wear ribbon if in tempstorage
-        _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
-
-        # NOTE: disregard below
-        # wear previous ribbon if we are wearing blank ribbon
-        # NOTE: we are gauanteed to be wearing blank ribbon when wearing
-        # these clothes. Regardless, we should always restore to what we
-        # have previously saved.
-#        _acs_wear_if_wearing_type(
-#            _moni_chr,
-#            "ribbon",
-#            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-#        )
-
-        # unlock hair
-        _moni_chr.lock_hair = False
-
-        # wear hairclips we were previously wearing (in session only)
-        # NOTE: we assume this list only contains hairclips. This is NOT true.
-        # TODO: add additional topic unlocks as needed.
-        _acs_wear_if_in_tempstorage(
-            _moni_chr,
-            "acs.left-hair-strand-eye-level"
-        )
-
-
-    def _clothes_marisa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for marisa clothes
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_downtiedstrand)
-            _moni_chr.wear_acs(store.mas_acs_marisa_strandbow)
-            _moni_chr.wear_acs(store.mas_acs_marisa_witchhat)
+        _moni_chr.remove_acs(store.mas_acs_rin_ears)
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
         """
         Exit programming point for marisa clothes
         """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
         _moni_chr.remove_acs(store.mas_acs_marisa_strandbow)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_marisa_witchhat)
 
 
     def _clothes_orcaramelo_hatsune_miku_entry(_moni_chr, **kwargs):
@@ -524,50 +431,6 @@ init -2 python in mas_sprites:
         )
 
 
-    def _clothes_santa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for santa clothes
-        """
-        store.mas_selspr.unlock_acs(store.mas_acs_holly_hairclip)
-
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.change_hair(store.mas_hair_def)
-            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
-            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for santa clothes
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_lingerie_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for santa lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.wear_acs(store.mas_acs_holly_hairclip)
-
-
-    def _clothes_santa_lingerie_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for santa lingerie
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.remove_acs(store.mas_acs_holly_hairclip)
-
-
     def _clothes_dress_newyears_entry(_moni_chr, **kwargs):
         """
         entry progpoint for dress_newyears
@@ -575,16 +438,6 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            #Swap to braided ponytail if found
-            ponytailbraid = store.mas_sprites.get_sprite(
-                store.mas_sprites.SP_HAIR,
-                "orcaramelo_ponytailbraid"
-            )
-            if ponytailbraid is not None:
-                _moni_chr.change_hair(ponytailbraid)
-
-            _moni_chr.wear_acs(store.mas_acs_flower_crown)
-            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
 
             #Remove hairclips
             hairclip = _moni_chr.get_acs_of_type("left-hair-clip")
@@ -604,16 +457,6 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_flower_crown)
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
 
-    def _clothes_sundress_white_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for sundress white
-        """
-        outfit_mode = kwargs.get("outfit_mode", False)
-
-        if outfit_mode:
-            _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
-            _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
-
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
@@ -622,7 +465,6 @@ init -2 python in mas_sprites:
         # TODO: add selectors for these items so they dont have to be
         #   removed
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
-        _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_velius94_dress_whitenavyblue_entry(_moni_chr, **kwargs):
@@ -641,6 +483,52 @@ init -2 python in mas_sprites:
 
             _acs_wear_if_gifted(_moni_chr, "velius94_bunnyscrunchie_blue")
 
+    def _clothes_bath_towel_white_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for bath towel
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            _moni_chr.change_hair(store.mas_hair_wet, by_user=False)
+        # Always add water drops, otherwise why would you wear a towel
+        _moni_chr.wear_acs(store.mas_acs_water_drops)
+
+    def _clothes_bath_towel_white_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for bath towel
+        """
+        # Remove water drops
+        _moni_chr.remove_acs(store.mas_acs_water_drops)
+
+    def _clothes_briaryoung_shuchiin_academy_uniform_entry(_moni_chr, **kwargs):
+        """
+        Entry prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. We need to consider
+        #   how to handle other matching ACS/hair like if kaguya is added
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # wear the straight bangs if found
+            straight_bangs = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "briaryoung_down_straight_bangs"
+            )
+            if straight_bangs is not None:
+                _moni_chr.change_hair(straight_bangs)
+
+                # find ACS and wear for this outfit
+                _acs_wear_if_found(_moni_chr, "briaryoung_front_bow_black")
+
+
+    def _clothes_briaryoung_shuchiin_academy_uniform_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. See above.
+        _acs_remove_if_found(_moni_chr, "briaryoung_front_bow_black")
+
 
     ######### ACS [SPR030] ###########
     # available kwargs:
@@ -651,22 +539,41 @@ init -2 python in mas_sprites:
         Entry programming point for quetzal plushie acs
         """
         #We need to unlock/random monika_plushie since the plush is active
-        store.mas_showEVL('monika_plushie','EVE',_random=True)
+        store.mas_showEVL('monika_plushie', 'EVE', _random=True)
 
+        if store.persistent._mas_d25_deco_active:
+            _moni_chr.wear_acs(store.mas_acs_quetzalplushie_santahat)
 
     def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
         Exit programming point for quetzal plushie acs
         """
+        #Since no more plush, we need to lock/derandom monika_plushie
+        store.mas_hideEVL('monika_plushie', 'EVE', derandom=True)
+
         # remove the santa hat if we are removing the plushie
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_santahat)
-
         # also remove antlers
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
-        #Since no more plush, we need to lock/derandom monika_plushie
-        store.mas_hideEVL('monika_plushie','EVE',derandom=True)
+    def _acs_center_quetzalplushie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for quetzal plushie (mid version) acs
+        """
+        store.mas_showEVL("monika_plushie", "EVE", _random=True)
 
+        if store.persistent._mas_d25_deco_active:
+            _moni_chr.wear_acs(store.mas_acs_quetzalplushie_center_santahat)
+
+    def _acs_center_quetzalplushie_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for quetzal plushie (mid version) acs
+        """
+        store.mas_hideEVL("monika_plushie", "EVE", derandom=True)
+
+        _moni_chr.remove_acs(store.mas_acs_quetzalplushie_center_santahat)
+        # FIXME: We don't have center antiers yet
+        # _moni_chr.remove_acs(store.mas_acs_quetzalplushie_center_antlers)
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
@@ -675,6 +582,11 @@ init -2 python in mas_sprites:
         # need to wear the quetzal plushie if we putting the santa hat on
         _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
+    def _acs_center_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for quetzal plushie santa hat (mid version) acs
+        """
+        _moni_chr.wear_acs(store.mas_acs_center_quetzalplushie)
 
     def _acs_quetzalplushie_antlers_entry(_moni_chr, **kwargs):
         """
@@ -682,7 +594,6 @@ init -2 python in mas_sprites:
         """
         # need to wear the quetzal plushie if we putting the antlers on
         _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
-
 
     def _acs_heartchoc_entry(_moni_chr, **kwargs):
         """
@@ -700,7 +611,6 @@ init -2 python in mas_sprites:
 
         else:
             _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
-
 
     def _acs_heartchoc_exit(_moni_chr, **kwargs):
         """
@@ -817,7 +727,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         ex_props={
-            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_BRS,
+            store.mas_sprites.EXP_H_RQCP: store.mas_sprites.EXP_C_C_DTS,
             store.mas_sprites.EXP_H_TS: True,
             store.mas_sprites.EXP_H_NT: True,
         }
@@ -833,6 +743,55 @@ init -1 python:
             "Looks cute, don't you think?"
         ]
     )
+
+    ### BRAIDED
+    ## braided
+    # Hair is braided on the left/right. Auto adds bows
+    # Thanks Briar/SS
+    mas_hair_braided = MASHair(
+        "braided",
+        "braided",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        ex_props={
+            store.mas_sprites.EXP_H_TB: True,
+            store.mas_sprites.EXP_H_RQCP: "rin"
+        },
+        entry_pp=store.mas_sprites._hair_braided_entry,
+        exit_pp=store.mas_sprites._hair_braided_exit
+    )
+    store.mas_sprites.init_hair(mas_hair_braided)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_braided,
+        "Braided",
+        "braided",
+        "hair",
+        select_dlg=[
+            "Looks cute, don't you think?"
+        ]
+    )
+
+    ### WET HAIR
+    ## wet
+    # Wet hairdown (this isn't selectable by user)
+    # Thanks Orca/Briar/Mocca
+    mas_hair_wet = MASHair(
+        "wet",
+        "wet",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        ex_props={
+            store.mas_sprites.EXP_H_RQCP: [store.mas_sprites.EXP_C_WET, store.mas_sprites.EXP_C_BRS],
+            store.mas_sprites.EXP_H_NT: True,
+            store.mas_sprites.EXP_H_WET: True
+        },
+        entry_pp=store.mas_sprites._hair_wet_entry
+    )
+    store.mas_sprites.init_hair(mas_hair_wet)
 
     ### CUSTOM
     ## custom
@@ -853,405 +812,14 @@ init -1 python:
 
 
 init -1 python:
-    # THIS MUST BE AFTER THE HAIR SECTION
-    # CLOTHES (SPR120)
-    # Clothes are representations of image objects with properties
-    #
-    # NAMING:
-    # mas_clothes_<clothes name>
-    #
-    # <clothes name> MUST BE UNIQUE
-    #
-    # NOTE: see the existing standards for clothes file naming
-    # NOTE: PoseMaps are used to determine which lean types exist for
-    #  a given clothes type, NOT filenames
-    #
-    # NOTE: see IMG015 for info about the fallback system
-    #
-    # NOTE: exprops
-    #   desired-ribbon: name of the ribbon that this outfit will try to wear
-    #       may be overriden by user
-    #
-    # NOTE: template
-    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
-    ## clothesidentifiername
-    # General description of the clothes
-
-    ### SCHOOL UNIFORM (default)
-    ## def
-    # Monika's school uniform
-    # thanks Ryuse/Velius94 (Jacket)
-    mas_clothes_def = MASClothes(
-        "def",
-        "def",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_def_entry
-    )
-    store.mas_sprites.init_clothes(mas_clothes_def)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_def,
-        "School Uniform",
-        "schooluniform",
-        "clothes",
-        visible_when_locked=True,
-        hover_dlg=None,
-        select_dlg=[
-            "Ready for school!"
-        ]
-    )
-    store.mas_selspr.unlock_clothes(mas_clothes_def)
-
-
-    ### BLACK DRESS (OUR TIME)
-    ## blackdress
-    # Blackdress from Our Time Mod
-    # thanks SovietSpartan/JMO/Orca/Velius94/Orca
-    mas_clothes_blackdress = MASClothes(
-        "blackdress",
-        "blackdress",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_blackdress)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_blackdress,
-        "Black Dress",
-        "blackdress",
-        "clothes",
-        visible_when_locked=False,
-        select_dlg=[
-            "Are we going somewhere special, [player]?"
-        ]
-    )
-
-
-    ### BLAZERLESS SCHOOL UNIFORM
-    ## blazerless
-    # Monika's school uniform, without the blazer
-    # thanks Iron/Velius94/Orca
-    mas_clothes_blazerless = MASClothes(
-        "blazerless",
-        "blazerless",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True
-        },
-        pose_arms=MASPoseArms(
-            {
-                1: MASArmBoth(
-                    "crossed",
-                    {
-                        MASArm.LAYER_MID: True,
-                    }
-                ),
-            }
-        )
-    )
-    store.mas_sprites.init_clothes(mas_clothes_blazerless)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_blazerless,
-        "School Uniform (Blazerless)",
-        "schooluniform_blazerless",
-        "clothes",
-        visible_when_locked=True,
-        hover_dlg=None,
-        select_dlg=[
-            "Ah, feels nice without the blazer!",
-        ]
-    )
-    store.mas_selspr.unlock_clothes(mas_clothes_def)
-
-
-    ### MARISA COSTUME
-    ## marisa
-    # Witch costume based on Marisa
-    # thanks SovietSpartan
-    mas_clothes_marisa = MASClothes(
-        "marisa",
-        "marisa",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        pose_arms=MASPoseArms(
-            {
-                1: MASArmBoth(
-                    "crossed",
-                    {
-                        MASArm.LAYER_MID: True,
-                    }
-                ),
-                9: MASArmRight(
-                    "def",
-                    {
-                        MASArm.LAYER_MID: True,
-                    }
-                ),
-            }
-        ),
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_marisa_entry,
-        exit_pp=store.mas_sprites._clothes_marisa_exit,
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
-            store.mas_sprites.EXP_C_COST: "o31",
-            store.mas_sprites.EXP_C_COSP: True,
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_marisa)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_marisa,
-        "Witch Costume",
-        "marisa",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Just an ordinary costume, ~ze."
-        ]
-    )
-
-    ### RIN COSTUME
-    ## rin
-    # Neko costume based on Rin
-    # thanks SovietSpartan
-    # TODO: Add costume exprop + value once this is fixed
-    # NOTE: all baked outfits are disabled completely.
-#    mas_clothes_rin = MASClothes(
-#        "rin",
-#        "rin",
-#        MASPoseMap(
-#            mpm_type=MASPoseMap.MPM_TYPE_FB,
-#            default="steepling",
-#            use_reg_for_l=True,
-#            p1="steepling",
-#            p2="crossed",
-#            p3="restleftpointright",
-#            p4="pointright",
-#            p5="steepling",
-#            p6="down",
-#            p7="restleftpointright"
-#        ),
-#        fallback=True,
-#        hair_map={
-#            "all": "custom"
-#        },
-#        stay_on_start=True,
-#        entry_pp=store.mas_sprites._clothes_rin_entry,
-#        exit_pp=store.mas_sprites._clothes_rin_exit,
-#        ex_props={
-#            "forced hair": True,
-#            "baked outfit": True,
-#        }
-#    )
-#    store.mas_sprites.init_clothes(mas_clothes_rin)
-#    store.mas_selspr.init_selectable_clothes(
-#        mas_clothes_rin,
-#        "Neko Costume",
-#        "rin",
-#        "clothes",
-#        visible_when_locked=False,
-#        hover_dlg=[
-#            "~nya?",
-#            "n-nya..."
-#        ],
-#        select_dlg=[
-#            "Nya!"
-#        ]
-#    )
-
-    ### SANTA MONIKA
-    ## santa
-    # Monika with Santa costume
-    # thanks Ryuse
-    mas_clothes_santa = MASClothes(
-        "santa",
-        "santa",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_santa_entry,
-        exit_pp=store.mas_sprites._clothes_santa_exit,
-        ex_props={
-            "costume": "d25"
-        },
-    )
-    store.mas_sprites.init_clothes(mas_clothes_santa)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_santa,
-        "Santa Costume",
-        "santa",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Merry Christmas!",
-            "What kind of {i}presents{/i} do you want?",
-            "Happy holidays!"
-        ]
-    )
-
-    ### SEXY SANTA (santa lingerie)
-    ## santa_lingerie
-    # santa outfit which shows a lot of skin
-    #Thanks Velius
-    mas_clothes_santa_lingerie = MASClothes(
-        "santa_lingerie",
-        "santa_lingerie",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
-            "lingerie": "d25"
-        },
-        entry_pp=store.mas_sprites._clothes_santa_lingerie_entry,
-        exit_pp=store.mas_sprites._clothes_santa_lingerie_exit,
-        pose_arms=MASPoseArms({}, def_base=False)
-    )
-    store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_santa_lingerie,
-        "Lingerie (Santa)",
-        "santa_lingerie",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Would you like to open your present?~",
-            "What kind of {i}presents{/i} do you want?",
-            "Open your present, ehehe~",
-            "All I want for Christmas is you~",
-            "Santa baby~",
-            "What {i}else{/i} do you want to unwrap?~"
-        ]
-    )
-
-
-    ### New Year's Dress
-    ## new_years_dress
-    # dress Monika wears on New Year's Eve
-    #Thanks Orca
-    mas_clothes_dress_newyears = MASClothes(
-        "new_years_dress",
-        "new_years_dress",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True,
-        ),
-        entry_pp=store.mas_sprites._clothes_dress_newyears_entry,
-        exit_pp=store.mas_sprites._clothes_dress_newyears_exit,
-        stay_on_start=True,
-        pose_arms=MASPoseArms({}, def_base=False),
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_dress_newyears)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_dress_newyears,
-        "Dress (New Years)",
-        "new_years_dress",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Are we going somewhere special, [player]?",
-            "Very formal!",
-            "Any special occasion, [player]?"
-        ],
-    )
-
-    ### SUNDRESS (WHITE)
-    ## sundress_white
-    # The casual outfit from vday
-    # thanks Orca
-    mas_clothes_sundress_white = MASClothes(
-        "sundress_white",
-        "sundress_white",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True,
-        ),
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_sundress_white_entry,
-        exit_pp=store.mas_sprites._clothes_sundress_white_exit,
-        pose_arms=MASPoseArms({}, def_base=False),
-        ex_props={
-            store.mas_sprites.EXP_C_BRS: True,
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_sundress_white)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_sundress_white,
-        "Sundress (White)",
-        "sundress_white",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Are we going anywhere special today, [player]?",
-            "I've always loved this outfit...",
-        ],
-    )
-
-    ### Valentine's Lingerie
-    ## vday_lingerie
-    # valentines outfit which shows a lot of skin
-    #Thanks Orca
-    mas_clothes_vday_lingerie = MASClothes(
-        "vday_lingerie",
-        "vday_lingerie",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True,
-        ),
-        stay_on_start=True,
-        ex_props={
-            store.mas_sprites.EXP_C_LING: True,
-            store.mas_sprites.EXP_C_BRS: True
-        },
-        pose_arms=MASPoseArms({}, def_base=False)
-    )
-    store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_vday_lingerie,
-        "Lingerie (Pink Lace)",
-        "vday_lingerie",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Ehehe~",
-            "Do you like what you see, [player]?"
-        ]
-    )
-
-init -1 python:
     # ACCESSORIES (SPR130)
     # Accessories are reprsentation of image objects with properties
     # Pleaes refer to MASAccesory to understand all the properties
     #
     # NAMING SCHEME:
     # mas_acs_<accessory name>
+    # NOTE: creating an object reference is optional, EXCEPt if you need to
+    #   build a selector object.
     #
     # <accessory name> MUST BE UNIQUE
     #
@@ -1271,6 +839,215 @@ init -1 python:
     # General description of what the object is, where it is located
 
     # TODO: this should be sorted by alpha, using the ID
+
+    ### AHOGE BENT
+    ## ahoge_bent
+    # A bent ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_bent",
+        "ahoge_bent",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE CURL
+    ## ahoge_curl
+    # A curled ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_curl",
+        "ahoge_curl",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE DOUBLE
+    ## ahoge_double
+    # A double ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_double",
+        "ahoge_double",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE HEART
+    ## ahoge_heart
+    # A heart-shaped ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_heart",
+        "ahoge_heart",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE LIGHTNING
+    ## ahoge_lightning
+    # A lightning-shaped ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_lightning",
+        "ahoge_lightning",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE SHARP
+    ## ahoge_sharp
+    # A sharp ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_sharp",
+        "ahoge_sharp",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE SIMPLE
+    ## ahoge_simple
+    # A simple ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_simple",
+        "ahoge_simple",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE SMALL
+    ## ahoge_small
+    # A small ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_small",
+        "ahoge_small",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### AHOGE SWOOP
+    ## ahoge_swoop
+    # A swooping ahoge
+    # NOTE: this one juts out in front so it should be rendered later than
+    #   the others.
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_swoop",
+        "ahoge_swoop",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=13,
+    ))
+
+    ### AHOGE TWISTY
+    ## ahoge_twisty
+    # A twisted ahoge
+    # thanks Briar Young
+    store.mas_sprites.init_acs(MASAccessory(
+        "ahoge_twisty",
+        "ahoge_twisty",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ahoge",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=7,
+    ))
+
+    ### Candy canes
+    ## candycane
+    # candycane consumable, available to gift before d25
+    # Thanks Briar
+    mas_acs_candycane = MASAccessory(
+        "candycane",
+        "candycane",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_candycane)
+
+    ### Christmascookies
+    ## christmas_cookies
+    # christmascookies consumable, available to gift before d25
+    # Thanks JMO
+    mas_acs_christmascookies = MASAccessory(
+        "christmas_cookies",
+        "christmas_cookies",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=False
+    )
+    store.mas_sprites.init_acs(mas_acs_christmascookies)
+
     ### COFFEE MUG
     ## mug
     # Coffee mug that sits on Monika's desk
@@ -1443,6 +1220,43 @@ init -1 python:
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_musicnote_necklace_gold,
+        display_name="Golden Music Note",
+        thumb="musicnote_necklace_gold",
+        group="necklace",
+    )
+
+    ### Diamond necklace (Pink)
+    ## diamond_necklace_pink
+    # For use with _blackpink_dress
+    # thanks BriarYoung
+    mas_acs_diamond_necklace_pink = MASSplitAccessory(
+        "diamond_necklace_pink",
+        "diamond_necklace_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="necklace",
+        mux_type=["necklace"],
+        ex_props={
+            "bare collar": True,
+        },
+        rec_layer=MASMonika.BSE_ACS,
+        arm_split=MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_acs(mas_acs_diamond_necklace_pink)
+    store.mas_selspr.init_selectable_acs(
+        acs=mas_acs_diamond_necklace_pink,
+        display_name="Pink Diamond",
+        thumb="diamond_necklace_pink",
+        group="necklace",
+    )
 
     ### Marisa Strandbow
     ## marisa_strandbow
@@ -1481,6 +1295,7 @@ init -1 python:
         # muxtype handled by defaults
         ex_props={
             store.mas_sprites.EXP_A_RQHP: store.mas_sprites.EXP_H_NT,
+            store.mas_sprites.EXP_A_EXCLHP: [store.mas_sprites.EXP_H_TB, store.mas_sprites.EXP_H_WET]
         },
         rec_layer=MASMonika.AFH_ACS
     )
@@ -1498,6 +1313,115 @@ init -1 python:
         ]
     )
 
+    ###Rin bows front
+    ##rin_bows_front
+    #Hair acs for rin's braided hairstyle (frontine layer)
+    #Thanks Briar/SS
+    mas_acs_rin_bows_front = MASAccessory(
+        "rin_bows_front",
+        "rin_bows_front",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon-front",
+        mux_type=["ribbon-front"],
+        rec_layer=MASMonika.AFH_ACS,
+        priority=20
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_bows_front)
+
+    ###Rin bows back
+    ##rin_bows_back
+    #Hair acs for rin's braided hairstyle (back layer)
+    #Thanks Briar/SS
+    mas_acs_rin_bows_back = MASAccessory(
+        "rin_bows_back",
+        "rin_bows_back",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon-back",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_bows_back)
+
+    ###Rin ears
+    ##rin_ears
+    #Ears to wear in rin cosplay
+    #Thanks Spikeran1
+    mas_acs_rin_ears = MASAccessory(
+        "rin_ears",
+        "rin_ears",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="headband",
+        rec_layer=MASMonika.AFH_ACS,
+        priority=5
+    )
+    store.mas_sprites.init_acs(mas_acs_rin_ears)
+
+    ### Gray hearts Hairclip
+    ## grayhearts_hairclip
+    # black hearst hairclip to go with the spider_lingerie outfit
+    # Thanks BriarYoung
+    mas_acs_grayhearts_hairclip = MASAccessory(
+        "grayhearts_hairclip",
+        "grayhearts_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_grayhearts_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_grayhearts_hairclip,
+        "Hairclip (Gray hearts)",
+        "grayhearts_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "My heart beats for you, [player]~",
+            "Full of love, just like you~"
+        ]
+    )
+
+    ### Pink Diamonds Hairclip
+    ## pinkdiamonds_hairclip
+    # pink diamonds hairclip to go with the
+    # Thanks BriarYoung
+    mas_acs_pinkdiamonds_hairclip = MASAccessory(
+        "pinkdiamonds_hairclip",
+        "pinkdiamonds_hairclip",
+        MASPoseMap(
+            default="0",
+            l_default="5"
+        ),
+        stay_on_start=True,
+        acs_type="left-hair-clip",
+        # mux type handled by defaults
+        rec_layer=MASMonika.AFH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_pinkdiamonds_hairclip)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_pinkdiamonds_hairclip,
+        "Hairclip (Pink diamonds)",
+        "pinkdiamonds_hairclip",
+        "left-hair-clip",
+        select_dlg=[
+            "Cute!"
+        ]
+    )
 
     ### Holly Hairclip
     ## holly_hairclip
@@ -1538,16 +1462,16 @@ init -1 python:
             p5="5"
         ),
         acs_type="front-hair-flower-crown",
-        priority=20,
+        priority=12,
         stay_on_start=True,
-        rec_layer=MASMonika.PST_ACS,
+        rec_layer=MASMonika.AFH_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_flower_crown)
 
     ### PROMISE RING
     ## promisering
     # Promise ring that can be given to Monika
-    mas_acs_promisering = MASAccessory(
+    mas_acs_promisering = MASSplitAccessory(
         "promisering",
         "promisering",
         MASPoseMap(
@@ -1561,6 +1485,13 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ring",
+        rec_layer=MASMonika.ASE_ACS,
+        arm_split=MASPoseMap(
+            default="",
+            p2="10",
+            p3="10",
+            p5="10"
+        ),
         ex_props={
             "bare hands": True
         }
@@ -1617,6 +1548,8 @@ init -1 python:
         stay_on_start=False,
         acs_type="plush_mid",
         mux_type=["plush_q"],
+        entry_pp=store.mas_sprites._acs_center_quetzalplushie_entry,
+        exit_pp=store.mas_sprites._acs_center_quetzalplushie_exit,
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
@@ -1639,6 +1572,24 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie_santahat)
 
+    ### QUETZAL PLUSHIE SANTA HAT (CENTER)
+    ## quetzalplushie_santahat_mid
+    # Santa hat for the Quetzal Plushie
+    # Thanks Finale/Legend
+    mas_acs_quetzalplushie_center_santahat = MASAccessory(
+        "quetzalplushie_santahat_mid",
+        "quetzalplushie_santahat_mid",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=11,
+        stay_on_start=False,
+        entry_pp=store.mas_sprites._acs_center_quetzalplushie_santahat_entry,
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_quetzalplushie_center_santahat)
+
     ### BLACK RIBBON
     ## ribbon_black
     # Black ribbon for ponytail/bun hairstyles
@@ -1652,7 +1603,10 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
-        mux_type=["ribbon"],
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_black)
@@ -1666,6 +1620,69 @@ init -1 python:
         ],
         select_dlg=[
             "Are we going somewhere special, [player]?"
+        ]
+    )
+
+    ### BLACK/GRAY RIBBON
+    ## ribbon_black_gray
+    # Black/gray ribbon used as part of spider lingerie outfit
+    # thanks Briar
+    mas_acs_ribbon_black_gray = MASAccessory(
+        "ribbon_black_gray",
+        "ribbon_black_gray",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_gray)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_gray,
+        "Ribbon (Black/gray)",
+        "ribbon_black_gray",
+        "ribbon",
+        hover_dlg=[
+            "Very versatile."
+        ],
+        select_dlg=[
+            "This goes with so many different outfits!"
+        ]
+    )
+
+    ### BLACK/PINK RIBBON
+    ## ribbon_black_pink
+    # Black/pink ribbon used as part of blackpink f14 outfit
+    # thanks Briar
+    mas_acs_ribbon_black_pink = MASAccessory(
+        "ribbon_black_pink",
+        "ribbon_black_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=[
+            "ribbon",
+            "bow",
+        ],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black_pink,
+        "Ribbon (Black/pink)",
+        "ribbon_black_pink",
+        "ribbon",
+        select_dlg=[
+            "So cute!"
         ]
     )
 
@@ -2243,6 +2260,617 @@ init -1 python:
         keep_on_desk=True
     )
     store.mas_sprites.init_acs(mas_acs_roses)
+
+    ### DESK JACK O LANTERN
+    ## desk_candy_jack
+    # smirk pumpkin to be placed on Monika's desk
+    # Thanks JMO
+    mas_acs_desk_candy_jack = MASDynamicAccessory(
+        "desk_candy_jack",
+        ConditionSwitch(
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 2",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_brim-0.png", None),
+            "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 0",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_half-0.png", None),
+            "True",
+            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_empty-0.png", None)
+        ),
+        MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        priority=13,
+        acs_type="desk_jack_o_lantern",
+        mux_type=["flowers"],
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_desk_candy_jack)
+
+    ### DESK LANTERN
+    ## desk_lantern
+    # stylish old-school lantern to be placed on Monika's desk
+    # Thanks JMO
+    mas_acs_desk_lantern = MASDynamicAccessory(
+        "desk_lantern",
+        ConditionSwitch(
+            "store.mas_isNightNow()", "mod_assets/monika/a/acs-desk_lantern_lit-0.png",
+            "True", MASFilterableSprite("mod_assets/monika/a/acs-desk_lantern_unlit-0.png", None)
+        ),
+        MASPoseMap(
+            default=True,
+            l_default=True
+        ),
+        priority=13,
+        acs_type="desk_lantern",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        ex_props={store.mas_sprites.EXP_A_DYNAMIC: True},
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_desk_lantern)
+
+    ### PINK DIAMOND EARRINGS
+    ## earrings_diamond_pink
+    # pink diamond earrings
+    # Thanks Briar
+    mas_acs_earrings_diamond_pink = MASAccessory(
+        "earrings_diamond_pink",
+        "earrings_diamond_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="earrings",
+        mux_type=["earrings"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_earrings_diamond_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_earrings_diamond_pink,
+        "Earrings (Pink Diamond)",
+        "earrings_diamond_pink",
+        "earrings",
+        select_dlg=[
+            "Pretty in pink!",
+            "I'm shining like a diamond~"
+        ]
+    )
+
+    ### Water drops
+    ## water_drops
+    # Water drops on Monika's body
+    # Thanks Orca
+    mas_acs_water_drops = MASAccessory(
+        "water_drops",
+        "water_drops",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        acs_type="water-drops",
+        priority=1,
+        stay_on_start=True,
+        rec_layer=MASMonika.MAB_ACS,
+    )
+    store.mas_sprites.init_acs(mas_acs_water_drops)
+
+
+
+init -1 python:
+    # THIS MUST BE AFTER THE HAIR AND ACS SECTIONS
+    # CLOTHES (SPR130)
+    # Clothes are representations of image objects with properties
+    #
+    # NAMING:
+    # mas_clothes_<clothes name>
+    #
+    # <clothes name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for clothes file naming
+    # NOTE: PoseMaps are used to determine which lean types exist for
+    #  a given clothes type, NOT filenames
+    #
+    # NOTE: see IMG015 for info about the fallback system
+    #
+    # NOTE: exprops
+    #   desired-ribbon: name of the ribbon that this outfit will try to wear
+    #       may be overriden by user
+    #
+    # NOTE: template
+    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
+    ## clothesidentifiername
+    # General description of the clothes
+
+    ### SCHOOL UNIFORM (default)
+    ## def
+    # Monika's school uniform
+    # thanks Ryuse/Velius94 (Jacket)
+    mas_clothes_def = MASClothes(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_def_entry,
+        exit_pp=store.mas_sprites._clothes_def_exit,
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_ribbon_def,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_def)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_def,
+        "School Uniform",
+        "schooluniform",
+        "clothes",
+        visible_when_locked=True,
+        hover_dlg=None,
+        select_dlg=[
+            "Ready for school!"
+        ]
+    )
+    store.mas_selspr.unlock_clothes(mas_clothes_def)
+
+
+    ### BLACK DRESS (OUR TIME)
+    ## blackdress
+    # Blackdress from Our Time Mod
+    # thanks SovietSpartan/JMO/Orca/Velius94/Orca
+    mas_clothes_blackdress = MASClothes(
+        "blackdress",
+        "blackdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackdress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackdress,
+        "Black Dress",
+        "blackdress",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "Are we going somewhere special, [player]?"
+        ]
+    )
+
+
+    ### Black and pink dress
+    ## blackpinkdress
+    # Used for f14
+    # thanks SovietSpartan/BriarYoung
+    mas_clothes_blackpink_dress = MASClothes(
+        "blackpinkdress",
+        "blackpinkdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+        },
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_diamond_necklace_pink,
+            mas_acs_pinkdiamonds_hairclip,
+            mas_acs_ribbon_black_pink,
+            mas_acs_earrings_diamond_pink,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackpink_dress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackpink_dress,
+        "Black and Pink Dress",
+        "blackpinkdress",
+        "clothes",
+        visible_when_locked=False,
+        select_dlg=[
+            "Are we going somewhere special, [player]?"
+        ]
+    )
+
+
+    ### BLAZERLESS SCHOOL UNIFORM
+    ## blazerless
+    # Monika's school uniform, without the blazer
+    # thanks Iron/Velius94/Orca
+    mas_clothes_blazerless = MASClothes(
+        "blazerless",
+        "blazerless",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_C_DTS: True
+        },
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blazerless)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blazerless,
+        "School Uniform (Blazerless)",
+        "schooluniform_blazerless",
+        "clothes",
+        visible_when_locked=True,
+        hover_dlg=None,
+        select_dlg=[
+            "Ah, feels nice without the blazer!",
+        ]
+    )
+    store.mas_selspr.unlock_clothes(mas_clothes_def)
+
+
+    ### MARISA COSTUME
+    ## marisa
+    # Witch costume based on Marisa
+    # thanks SovietSpartan
+    mas_clothes_marisa = MASClothes(
+        "marisa",
+        "marisa",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        ),
+        stay_on_start=True,
+        exit_pp=store.mas_sprites._clothes_marisa_exit,
+        ex_props={
+            store.mas_sprites.EXP_C_C_DTS: True,
+            store.mas_sprites.EXP_C_COST: "o31",
+            store.mas_sprites.EXP_C_COSP: True,
+        },
+        outfit_hair=mas_hair_downtiedstrand,
+        outfit_acs=[
+            mas_acs_marisa_strandbow,
+            mas_acs_marisa_witchhat,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_marisa)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_marisa,
+        "Witch Costume",
+        "marisa",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Just an ordinary costume, ~ze."
+        ]
+    )
+
+    ### RIN COSTUME
+    ## rin
+    # Neko costume based on Rin
+    # thanks SovietSpartan
+    mas_clothes_rin = MASClothes(
+        "rin",
+        "rin",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        exit_pp=store.mas_sprites._clothes_rin_exit,
+        ex_props={
+            store.mas_sprites.EXP_C_COST: "o31",
+            store.mas_sprites.EXP_C_COSP: True,
+            "rin": True #NOTE: This is very very temp until we sort out the hair to work better w/ other outfits
+        },
+        outfit_hair=mas_hair_braided,
+        outfit_acs=[
+            mas_acs_rin_ears,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_rin)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_rin,
+        "Neko Costume",
+        "rin",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=[
+            "~nya?",
+            "n-nya..."
+        ],
+        select_dlg=[
+            "Nya!"
+        ]
+    )
+
+    ### SPIDER LINGERIE
+    # thanks BriarYoung
+    mas_clothes_spider_lingerie = MASClothes(
+        "spider_lingerie",
+        "spider_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+            "lingerie": "o31"
+        },
+        pose_arms=MASPoseArms(
+            {
+                1: MASArmBoth(
+                    "crossed",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        ),
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_grayhearts_hairclip,
+            mas_acs_ribbon_black_gray,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_spider_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_spider_lingerie,
+        "Lingerie (Spider)",
+        "spider_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Caught you in my web~",
+            "Don't be scared~",
+            "Don't worry, I don't bite..."
+        ]
+    )
+
+
+    ### SANTA MONIKA
+    ## santa
+    # Monika with Santa costume
+    # thanks Ryuse
+    mas_clothes_santa = MASClothes(
+        "santa",
+        "santa",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            "costume": "d25"
+        },
+        outfit_hair=mas_hair_def,
+        outfit_acs=[
+            mas_acs_ribbon_wine,
+            mas_acs_holly_hairclip,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_santa)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_santa,
+        "Santa Costume",
+        "santa",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Merry Christmas!",
+            "What kind of {i}presents{/i} do you want?",
+            "Happy holidays!"
+        ]
+    )
+
+    ### SEXY SANTA (santa lingerie)
+    ## santa_lingerie
+    # santa outfit which shows a lot of skin
+    #Thanks Velius
+    mas_clothes_santa_lingerie = MASClothes(
+        "santa_lingerie",
+        "santa_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+            "lingerie": "d25"
+        },
+        pose_arms=MASPoseArms({}, def_base=False),
+        outfit_acs=[
+            mas_acs_holly_hairclip,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_santa_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_santa_lingerie,
+        "Lingerie (Santa)",
+        "santa_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Would you like to open your present?~",
+            "What kind of {i}presents{/i} do you want?",
+            "Open your present, ehehe~",
+            "All I want for Christmas is you~",
+            "Santa baby~",
+            "What {i}else{/i} do you want to unwrap?~"
+        ]
+    )
+
+    ### New Year's Dress
+    ## new_years_dress
+    # dress Monika wears on New Year's Eve
+    #Thanks Orca
+    mas_clothes_dress_newyears = MASClothes(
+        "new_years_dress",
+        "new_years_dress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        entry_pp=store.mas_sprites._clothes_dress_newyears_entry,
+        exit_pp=store.mas_sprites._clothes_dress_newyears_exit,
+        stay_on_start=True,
+        pose_arms=MASPoseArms({}, def_base=False),
+        ex_props={
+            store.mas_sprites.EXP_C_BS: True,
+        },
+        outfit_hair="orcaramelo_ponytailbraid",
+        outfit_acs=[
+            mas_acs_flower_crown,
+            mas_acs_hairties_bracelet_brown,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_dress_newyears)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_dress_newyears,
+        "Dress (New Years)",
+        "new_years_dress",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Are we going somewhere special, [player]?",
+            "Very formal!",
+            "Any special occasion, [player]?"
+        ],
+    )
+
+    ### SUNDRESS (WHITE)
+    ## sundress_white
+    # The casual outfit from vday
+    # thanks Orca
+    mas_clothes_sundress_white = MASClothes(
+        "sundress_white",
+        "sundress_white",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        stay_on_start=True,
+        exit_pp=store.mas_sprites._clothes_sundress_white_exit,
+        pose_arms=MASPoseArms({}, def_base=False),
+        ex_props={
+            store.mas_sprites.EXP_C_BLS: True,
+            store.mas_sprites.EXP_C_BRS: True,
+        },
+        outfit_acs=[
+            mas_acs_hairties_bracelet_brown,
+            mas_acs_musicnote_necklace_gold,
+        ]
+    )
+    store.mas_sprites.init_clothes(mas_clothes_sundress_white)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_sundress_white,
+        "Sundress (White)",
+        "sundress_white",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Are we going anywhere special today, [player]?",
+            "I've always loved this outfit...",
+        ],
+    )
+
+    ### Valentine's Lingerie
+    ## vday_lingerie
+    # valentines outfit which shows a lot of skin
+    #Thanks Orca
+    mas_clothes_vday_lingerie = MASClothes(
+        "vday_lingerie",
+        "vday_lingerie",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True,
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_LING: True,
+            store.mas_sprites.EXP_C_BS: True,
+        },
+        pose_arms=MASPoseArms({}, def_base=False)
+    )
+    store.mas_sprites.init_clothes(mas_clothes_vday_lingerie)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_vday_lingerie,
+        "Lingerie (Pink Lace)",
+        "vday_lingerie",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Ehehe~",
+            "Do you like what you see, [player]?"
+        ]
+    )
+
+    ### Towel (White)
+    ## bath_towel_white
+    # Bath towel for Monika (this isn't selectable by user)
+    # Thanks Briar
+    mas_clothes_bath_towel_white = MASClothes(
+        "bath_towel_white",
+        "bath_towel_white",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_BRS: True,
+            store.mas_sprites.EXP_C_WET: True
+        },
+        entry_pp=store.mas_sprites._clothes_bath_towel_white_entry,
+        exit_pp=store.mas_sprites._clothes_bath_towel_white_exit,
+        pose_arms=MASPoseArms({}, def_base=False)
+    )
+    store.mas_sprites.init_clothes(mas_clothes_bath_towel_white)
+
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever

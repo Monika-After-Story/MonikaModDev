@@ -73,6 +73,56 @@ python early:
 
         # NOTE: extended classes should impelement the render function.
 
+        def apply_filter(self, img_base, flt=None):
+            """
+            Applies the current filter to the given image base.
+
+            IN:
+                img_base - the image to apply filter to
+                flt - filter to use, leave None to use the internal filter.
+            """
+            if flt is None:
+                flt = self.flt
+            return store.mas_sprites._gen_im(flt, img_base)
+
+        def current_filter(self):
+            """
+            Gets the current filter (not internal)
+
+            RETURNS: the current filter
+            """
+            return store.mas_sprites.get_filter()
+
+        def per_interact(self):
+            """
+            Decides if this displayable should be redrawn on an interaction.
+            """
+            if self.update_filter():
+                renpy.redraw(self, 0)
+
+        def safe_apply_filter(self, img_base):
+            """
+            Updates the filter before applying it.
+
+            IN:
+                img_base - the image to apply filter to
+            """
+            self.update_filter()
+            return self.apply_filter(img_base)
+
+        def update_filter(self):
+            """
+            Updates the internal filter
+
+            RETURNS: True if the filter chagned
+            """
+            new_flt = self.current_filter()
+            if new_flt != self.flt:
+                self.flt = new_flt
+                return True
+
+            return False
+
 
     class MASFilterableSprite(MASFilterable):
         """
@@ -107,7 +157,7 @@ python early:
                 image_path - MUST be an image path string.
                 highlight - MASFilterMap object of highlights to apply
             """
-            super(MASFilterable, self).__init__(
+            super(MASFilterableSprite, self).__init__(
                 focus=focus,
                 default=default,
                 style=style,
@@ -117,6 +167,8 @@ python early:
             self.img_path = image_path
             self.img_obj = Image(image_path)
             self.highlight = highlight
+
+            self._last_flt = self.flt
 
         def __gen_hl(self):
             """
@@ -190,6 +242,15 @@ python early:
 
             # save
             return rv
+
+        def per_interact(self):
+            """
+            Decides whether or no we should redraw this displayable
+            on an interaction
+            """
+            if self._last_flt != self.flt:
+                self._last_flt = self.flt
+                renpy.redraw(self, 0.0)
 
         def visit(self):
             self.flt = store.mas_sprites.get_filter()
@@ -542,7 +603,7 @@ init 1 python in mas_sprites:
             mfwm_id - ID of the MASFilterWeatherMap object
             mfwm - MASFilterWeatherMap object to verify
         """
-        if mwfm.use_fb:
+        if mfwm.use_fb:
             # fallback-based
 
             # contains all flts that have a valid default fallback somewhere.
@@ -783,10 +844,8 @@ init -99 python in mas_sprites:
         """
         # check init
         if __ignore_filters:
-            mas_utils.writelog(
-                "[Warning!]: Cannot add filter '{0}' after init -1\n".format(
-                    flt_enum
-                )
+            store.mas_utils.mas_log.warning(
+                "Cannot add filter '{0}' after init -1".format(flt_enum)
             )
             return
 
@@ -797,11 +856,8 @@ init -99 python in mas_sprites:
         # check base if given
         if base is not None:
             if base not in FILTERS:
-                mas_utils.writelog(
-                    (
-                        "[Warning!]: Cannot add filter '{0}' with base '{1}', "
-                        "base flt not exist\n"
-                    ).format(flt_enum, base)
+                store.mas_utils.mas_log.warning(
+                    "Cannot add filter '{0}' with base '{1}', base flt does not exist".format(flt_enum, base)
                 )
                 return
 
@@ -812,7 +868,7 @@ init -99 python in mas_sprites:
 
         FILTERS[flt_enum] = imx
 
-
+    @store.mas_utils.deprecated(use_instead="get_filter", should_raise=True)
     def _decide_filter():
         """DEPRECATED
         Please use get_filter
@@ -882,11 +938,8 @@ init -99 python in mas_sprites:
             eval(flt_enum, fake_context)
             return True
         except:
-            mas_utils.writelog(
-                (
-                    "[Warning!]: Cannot add filter '{0}'. Name is not "
-                    "python syntax friendly\n"
-                ).format(flt_enum)
+            store.mas_utils.mas_log.warning(
+                "Cannot add filter '{0}'. Name is not python syntax friendly".format(flt_enum)
             )
 
         return False
@@ -913,7 +966,7 @@ init -98 python:
 init -4 python in mas_sprites:
     # NOTE: render_key
 
-    Y_OFFSET = -130
+    # Y_OFFSET = -130
 
     # cache ids
     CID_FACE = 1 # NOTE: we should not use highlights for this
@@ -925,6 +978,9 @@ init -4 python in mas_sprites:
     CID_HL = 7
     CID_HLG = 8
     CID_BG = 9 # TODO: maybe
+
+    # special cache ids - not actually used in the cache table.
+    CID_DYNAMIC = -2
 
     # several caches for images
 
@@ -1099,15 +1155,20 @@ init -4 python in mas_sprites:
             if render_key[1] == store.mas_sprites.CID_FACE:
                 return None
 
-            # add cache id to front for highlight key
-            hl_key = (render_key[1],) + render_key[0]
+            if render_key[1] == store.mas_sprites.CID_DYNAMIC:
+                # dynamic sprites should just use the "image base" passed in
+                img_base = render_key[3]
 
-            # check highlight cache
-            img_base = store.mas_sprites._cs_im(
-                hl_key,
-                store.mas_sprites.CID_HL,
-                render_key[3]
-            )
+            else:
+                # add cache id to front for highlight key
+                hl_key = (render_key[1],) + render_key[0]
+
+                # check highlight cache
+                img_base = store.mas_sprites._cs_im(
+                    hl_key,
+                    store.mas_sprites.CID_HL,
+                    render_key[3]
+                )
 
             if img_base is not None:
                 render_list.append(renpy.render(
@@ -1133,7 +1194,6 @@ init -4 python in mas_sprites:
 
             RETURNS: rendered surf image to use
             """
-            # render this bitch
             new_surf = renpy.render(
                 store.mas_sprites._cgen_im(
                     self.flt,
@@ -1163,9 +1223,9 @@ init -4 python in mas_sprites:
                 self._l_render_hl(renders, render_key, st, at)
 
             # blit all
-            rv = renpy.Render(width, height)
+            rv = renpy.Render(self.width, self.height)
             for render in renders:
-                rv.blit(render, (self.xpos, self.ypos + Y_OFFSET))
+                rv.blit(render, (self.xpos, self.ypos))
 
             return rv
 
@@ -1352,6 +1412,10 @@ init -4 python in mas_sprites:
 
         RETURNS: Image Manipulator for this render
         """
+        if cid == CID_DYNAMIC:
+            # dynamic sprites are not cached.
+            return img_base
+
         img_cache = _gc(cid)
         if key in img_cache:
             return img_cache[key]
@@ -1385,6 +1449,15 @@ init -4 python in mas_sprites:
             render_list - list to add IMs to
         """
         img_key, cid, img_base, hl_base = render_key
+        if cid == CID_DYNAMIC:
+            # add the img and hl directly 
+            if img_base is not None:
+                render_list.append(img_base)
+            if hl_base is not None:
+                render_list.append(hl_base)
+
+            return
+
         img_cache = _gc(cid)
         hl_key = _hlify(img_key, cid)
         if img_key in img_cache:
@@ -1513,6 +1586,18 @@ init -4 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should not be shown if the pose key is missing.
         poseid = acs.pose_map.get(leanpose, None)
+
+        # dynamic check
+        if acs.is_dynamic():
+            # in this case, the poseid is True/False to signify whether or
+            # not its enabled.
+
+            if not poseid:
+                return
+
+            # ACS enabled for this pose - add the disps
+            rk_list.append((None, CID_DYNAMIC, acs.disp, acs.hl_disp))
+            return
 
         # get arm code if needed
         # NOTE: we can be sure that a nonsplit acs will not be used in
@@ -2208,15 +2293,16 @@ init -4 python in mas_sprites:
         cache_face[day_key] = None
 
 
-    def _rk_hair(rk_list, hair, flt, hair_key, lean):
+    def _rk_hair(rk_list, hair, flt, hair_key, lean, leanpose):
         """
         Adds hair render key
 
         IN:
             hair - MASHair object
             flt - filter to use
-            hair_key - hair key to use (front/back)
+            hair_key - hair key to use (front/back/mid)
             lean - tyoe of lean
+            leanpose - leanpose
 
         OUT:
             rk_list - list to add render keys to
@@ -2251,8 +2337,16 @@ init -4 python in mas_sprites:
         img_key = (flt, img_str)
         cache_hair = _gc(CID_HAIR)
         if img_key in cache_hair:
-            rk_list.append((img_key, CID_HAIR, None, None))
+            if cache_hair[img_key] is not None:
+                rk_list.append((img_key, CID_HAIR, None, None))
             return
+
+        # check if mid and no need to render
+        if hair_key == MHAIR:
+            if hair.mpm_mid is None or not hair.mpm_mid.get(leanpose, False):
+                # mid not in this hair for this pose
+                cache_hair[img_key] = None
+                return
 
         # otherwise need to build ImageBase
         rk_list.append((
@@ -2261,6 +2355,45 @@ init -4 python in mas_sprites:
             store.Image(img_str),
             _bhli(img_list, hair.gethlc(hair_key, lean, flt)),
         ))
+
+
+    def _rk_head(rk_list, flt, lean):
+        """
+        Adds head render keys.
+
+        IN:
+            bcode - base code to use
+            flt - filter to use
+            lean - type of lean
+
+        OUT:
+            rk_list - list to add render keys to
+        """
+        if lean:
+            img_str = "".join((
+                B_MAIN,
+                PREFIX_BODY_LEAN,
+                lean,
+                ART_DLM,
+                HEAD,
+                FILE_EXT,
+            ))
+
+        else:
+            img_str = "".join((
+                B_MAIN,
+                BASE_BODY_STR,
+                HEAD,
+                FILE_EXT
+            ))
+
+        # cache check
+        img_key = (flt, img_str)
+        if img_key in _gc(CID_BODY):
+            rk_list.append((img_key, CID_BODY, None, None))
+            return
+
+        rk_list.append((img_key, CID_BODY, store.Image(img_str), None))
 
 
     def _rk_table(rk_list, tablechair, show_shadow, flt):
@@ -2352,6 +2485,8 @@ init -4 python in mas_sprites:
             acs_bse_list,
             acs_bba_list,
             acs_ase_list,
+            acs_bmh_list,
+            acs_mhh_list,
             acs_bat_list,
             acs_mat_list,
             acs_mab_list,
@@ -2392,8 +2527,11 @@ init -4 python in mas_sprites:
                 body and back arms
             acs_ase_list - sorted list of MASAccessories to draw between base
                 arms and outfit
-            acs_bat_list - sorted list of MASAccessories to draw between back
-                arms and table
+            acs_bmh_list - sorted list of MASAccessories to draw betrween back
+                arms and mid hair
+            acs_mmh_list - sorted list of MASAccessories to draw between mid
+                hair and head
+            acs_bat_list - sorted list of MASAccessories to draw before table
             acs_mat_list - sorted list of MASAccessories to draw between
                 middle arms and table
             acs_mab_list - sorted list of MASAccessories to draw between
@@ -2430,26 +2568,30 @@ init -4 python in mas_sprites:
         #   9. arms-base-0 - the base back part of arm
         #   10. ase-acs-0 - between base arms and clothes, back part
         #   11. arms-0 - the back part of arms
-        #   12. bat-acs - acs between Back Arms and Table
-        #   13. table - the table/desk
-        #   14. mat-acs acs between Middle Arms and Table
-        #   15. arms-base-5 - the base middle part of arm
-        #   16. ase-acs-5 - between base arms and clothes, middle part
-        #   17. arms-5 - the middle part of arms
-        #   18. mab-acs - acs between Middle Arms and Body-1
-        #   19. base-1 - the base front part of body
-        #   20. bse-acs - between base and body-1
-        #   21. body-1 - the front part of body (boobs)
-        #   22. bfh-acs - acs between Body and Front Hair
-        #   23. face-pre - pre front hair facial expressions
-        #   24. front-hair - front portion of hair (split mode)
-        #   25. afh-acs - acs betweem Arms and Front Hair
-        #   26. face - facial expressions
-        #   27. mid-acs - acs between face and front arms
-        #   28. arms-base-10 - the base front part of arms
-        #   29. ase-acs-10 - between base arms and clothes, front part
-        #   30. arms-10 - front arms
-        #   31. pst-acs - acs after everything
+        #   12. bmh-acs - acs between the Back Arms and Mid hair
+        #   13. mid-hair - mid portion of hair, behind head and above body
+        #   14. mhh-acs - acs between Mid Hair and Head
+        #   15. body-head - the head + ears
+        #   16. bat-acs - acs Before Table
+        #   17. table - the table/desk
+        #   18. mat-acs acs between Middle Arms and Table
+        #   19. arms-base-5 - the base middle part of arm
+        #   20. ase-acs-5 - between base arms and clothes, middle part
+        #   21. arms-5 - the middle part of arms
+        #   22. mab-acs - acs between Middle Arms and Body-1
+        #   23. base-1 - the base front part of body
+        #   24. bse-acs - between base and body-1
+        #   25. body-1 - the front part of body (boobs)
+        #   26. bfh-acs - acs between Body and Front Hair
+        #   27. face-pre - pre front hair facial expressions
+        #   28. front-hair - front portion of hair (split mode)
+        #   29. afh-acs - acs betweem Arms and Front Hair
+        #   30. face - facial expressions
+        #   31. mid-acs - acs between face and front arms
+        #   32. arms-base-10 - the base front part of arms
+        #   33. ase-acs-10 - between base arms and clothes, front part
+        #   34. arms-10 - front arms
+        #   35. pst-acs - acs after everything
 
         # initial values
         fpfx = face_lean_mode(lean)
@@ -2459,7 +2601,7 @@ init -4 python in mas_sprites:
         _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR, lean)
+        _rk_hair(rk_list, hair, flt, BHAIR, lean, leanpose)
 
         # 3. bbh-acs
         _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
@@ -2498,18 +2640,30 @@ init -4 python in mas_sprites:
             "0"
         )
 
-        # 12. bat-acs
+        # 12. bmh-acs
+        _rk_accessory_list(rk_list, acs_bmh_list, flt, leanpose)
+
+        # 13. mid-hair
+        _rk_hair(rk_list, hair, flt, MHAIR, lean, leanpose)
+
+        # 14. mmh-acs
+        _rk_accessory_list(rk_list, acs_mhh_list, flt, leanpose)
+
+        # 15. body-head
+        _rk_head(rk_list, flt, lean)
+
+        # 16. bat-acs
         _rk_accessory_list(rk_list, acs_bat_list, flt, leanpose)
 
-        # 13. table
+        # 17. table
         _rk_table(rk_list, tablechair, show_shadow, flt)
 
-        # 14. mat-acs
+        # 18. mat-acs
         _rk_accessory_list(rk_list, acs_mat_list, flt, leanpose)
 
-        # 15. arms-base-5
-        # 16. ase-acs-5
-        # 17. arms-5
+        # 19. arms-base-5
+        # 20. ase-acs-5
+        # 21. arms-5
         _rk_arms_nh_wbase(
             rk_list,
             base_arms,
@@ -2522,12 +2676,12 @@ init -4 python in mas_sprites:
             "5"
         )
 
-        # 18. mab-acs
+        # 22. mab-acs
         _rk_accessory_list(rk_list, acs_mab_list, flt, leanpose)
 
-        # 19. base-1
-        # 20. bse-acs-1
-        # 21. body-1
+        # 23. base-1
+        # 24. bse-acs-1
+        # 25. body-1
         _rk_body_nh_wbase(
             rk_list,
             clothing,
@@ -2538,19 +2692,19 @@ init -4 python in mas_sprites:
             lean=lean
         )
 
-        # 22. bfh-acs
+        # 26. bfh-acs
         _rk_accessory_list(rk_list, acs_bfh_list, flt, leanpose)
 
-        # 23. face-pre
+        # 27. face-pre
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
-        # 24. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR, lean)
+        # 28. front-hair
+        _rk_hair(rk_list, hair, flt, FHAIR, lean, leanpose)
 
-        # 25. afh-acs
+        # 29. afh-acs
         _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)
 
-        # 26. face
+        # 30. face
         _rk_face(
             rk_list,
             eyes,
@@ -2565,12 +2719,12 @@ init -4 python in mas_sprites:
             emote
         )
 
-        # 27. mid-acs
+        # 31. mid-acs
         _rk_accessory_list(rk_list, acs_mid_list, flt, leanpose)
 
-        # 28. arms-base-1
-        # 29. ase-acs-1
-        # 30. arms-1
+        # 32. arms-base-1
+        # 33. ase-acs-1
+        # 34. arms-1
         _rk_arms_nh_wbase(
             rk_list,
             base_arms,
@@ -2583,13 +2737,13 @@ init -4 python in mas_sprites:
             "10"
         )
 
-        # 31. pst-acs
+        # 35. pst-acs
         _rk_accessory_list(rk_list, acs_pst_list, flt, leanpose)
 
         return rk_list
 
 
-init -10 python:
+init -50 python:
 
     class MASFilterMap(object):
         """SEALED
@@ -3122,6 +3276,8 @@ init -2 python:
         acs_bse_list = character.acs.get(MASMonika.BSE_ACS, [])
         acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
         acs_ase_list = character.acs.get(MASMonika.ASE_ACS, [])
+        acs_bmh_list = character.acs.get(MASMonika.BMH_ACS, [])
+        acs_mmh_list = character.acs.get(MASMonika.MMH_ACS, [])
         acs_bat_list = character.acs.get(MASMonika.BAT_ACS, [])
         acs_mat_list = character.acs.get(MASMonika.MAT_ACS, [])
         acs_mab_list = character.acs.get(MASMonika.MAB_ACS, [])
@@ -3161,6 +3317,8 @@ init -2 python:
                 acs_bse_list,
                 acs_bba_list,
                 acs_ase_list,
+                acs_bmh_list,
+                acs_mmh_list,
                 acs_bat_list,
                 acs_mat_list,
                 acs_mab_list,

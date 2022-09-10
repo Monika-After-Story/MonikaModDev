@@ -211,12 +211,15 @@ init 5 python:
 
                 get_cons_evl - evl to use for getting the consumable. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
 
                 finish_prep_evl - evl to use when finished prepping. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
 
-                finish_cons_evl - evl to use when finished prepping. If None, a generic is assumed
+                finish_cons_evl - evl to use when finished consuming. If None, a generic is assumed
                     (Default: None)
+                    NOTE: Should have an Event object associated with the label
             """
             if (
                 consumable_type in store.mas_consumables.consumable_map
@@ -336,6 +339,10 @@ init 5 python:
 
             if _now is None:
                 _now = datetime.datetime.now()
+
+            # FIXME: temporary disable all consumables on o31
+            if mas_isO31(_now.date()):
+                return False
 
             _chance = random.randint(1, 100)
 
@@ -610,6 +617,10 @@ init 5 python:
 
             if _now is None:
                 _now = datetime.datetime.now()
+
+            # FIXME: temporary disable all consumables on o31
+            if mas_isO31(_now.date()):
+                return False
 
             _chance = random.randint(1, 100)
 
@@ -1184,7 +1195,7 @@ init 5 python:
 
 #START: consumable drink defs:
 init 6 python:
-    MASConsumable(
+    mas_consumable_coffee = MASConsumable(
         consumable_id="coffee",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="coffee",
@@ -1193,10 +1204,11 @@ init 6 python:
         acs=mas_acs_mug,
         portable=True,
         split_list=[11],
-        late_entry_list=[10]
+        late_entry_list=[10],
+        max_re_serve=3
     )
 
-    MASConsumable(
+    mas_consumable_hotchocolate = MASConsumable(
         consumable_id="hotchoc",
         consumable_type=store.mas_consumables.TYPE_DRINK,
         disp_name="hot chocolate",
@@ -1205,7 +1217,47 @@ init 6 python:
         acs=mas_acs_hotchoc_mug,
         portable=True,
         split_list=[22],
-        late_entry_list=[19]
+        late_entry_list=[19],
+        max_re_serve=3
+    )
+
+    mas_consumable_candycane = MASConsumable(
+        consumable_id="candycane",
+        consumable_type=store.mas_consumables.TYPE_FOOD,
+        disp_name="candycane",
+        dlg_props={
+            mas_consumables.PROP_PLUR: True
+        },
+        start_end_tuple_list=[(11,14), (16, 20)],
+        acs=mas_acs_candycane,
+        split_list=[12, 18],
+        late_entry_list=[13, 19],
+        max_re_serve=2,
+        should_restock_warn=False,
+        max_stock_amount=18,
+        prep_low=None,
+        cons_high=15*60, #15 minute max
+        # TODO: this is temp, we need to generalize cons w/o finishig dlg
+        finish_cons_evl="mas_consumables_candycane_finish_having"
+    )
+
+    mas_consumable_christmascookies = MASConsumable(
+        consumable_id="christmascookies",
+        consumable_type=store.mas_consumables.TYPE_FOOD,
+        disp_name="Christmas cookie",
+        dlg_props={
+            mas_consumables.PROP_OBJ_REF: "plate",
+            mas_consumables.PROP_PLUR: True
+        },
+        start_end_tuple_list=[(11,14), (16, 22)],
+        acs=mas_acs_christmascookies,
+        split_list=[12, 18],
+        late_entry_list=[13, 19],
+        max_re_serve=2,
+        should_restock_warn=False,
+        max_stock_amount=20,
+        prep_low=None,
+        cons_high=30*60 #30 minute max
     )
 
 #START: Finished brewing/drinking evs
@@ -1229,7 +1281,7 @@ label mas_finished_brewing:
 
 ###Drinking done
 init 5 python:
-    #Like finshed_brewing, this event gets its params from
+    #Like finshed_brewing, this event gets its params from consumable logic
     addEvent(
         Event(
             persistent.event_database,
@@ -1266,7 +1318,7 @@ label mas_get_drink:
 
 #START: Generic food evs
 init 5 python:
-    #This event gets its params via _startupDrinkLogic()
+    #This event gets its params via consumable logic
     addEvent(
         Event(
             persistent.event_database,
@@ -1283,7 +1335,7 @@ label mas_finished_prepping:
     return
 
 
-###Drinking done
+###Eating done
 init 5 python:
     #Like finshed_brewing, this event gets its params from
     addEvent(
@@ -1420,7 +1472,7 @@ label mas_consumables_generic_finish_having(consumable):
             line_starter = renpy.substitute(dlg_map["else"][get_more])
 
     if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
-        m 1eud "I finished my [consumable.disp_name].{w=0.2} {nw}"
+        m 1eud "I finished my [consumable.disp_name][plur].{w=0.2} {nw}"
         extend 1eua "[line_starter]"
         m 3eua "Hold on a moment."
 
@@ -1464,6 +1516,7 @@ label mas_consumables_generic_finish_having(consumable):
             and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
             and len(MASConsumable._getLowCons()) > 0
         ):
+            $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts")
             $ queueEvent("mas_consumables_generic_queued_running_out")
 
     #Only have one left
@@ -1558,7 +1611,13 @@ label mas_consumables_generic_running_out(consumable):
             else:
                 line_ender = renpy.substitute("[consumable.disp_name][plur] left.")
 
-        m 3eud "I just wanted to let you know I only have [amt_left] [line_ender]"
+            if amt_left > 2:
+                about = "about "
+
+            else:
+                about = ""
+
+        m 3eud "I just wanted to let you know I only have [about][amt_left] [line_ender]"
 
         if not renpy.seen_label("mas_consumables_refill_explain"):
             call mas_consumables_refill_explain
@@ -1690,4 +1749,139 @@ label mas_consumables_remove_thermos:
 
     else:
         m "Okay, what else should we do today?"
+    return
+
+### Special labels for consumables
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_consumables_candycane_finish_having",
+            show_in_idle=True,
+            rules={"skip alert": None}
+        ),
+        restartBlacklist=True
+    )
+
+label mas_consumables_candycane_finish_having:
+    #Some prep
+    python:
+        mas_consumable_candycane.acs.keep_on_desk = False
+        get_more = mas_consumable_candycane.shouldHave() and mas_consumable_candycane.hasServing()
+
+    if not get_more:
+        # If we don't want more, then just clean things up
+        python:
+            #Reset the current type's vars
+            MASConsumable._reset(mas_consumable_candycane.consumable_type)
+            mas_consumable_candycane.acs.keep_on_desk = True
+            #And set up a time when we can have this drink again
+            mas_consumable_candycane.done_cons_until = datetime.datetime.now() + MASConsumable.DEF_DONE_CONS_TD
+
+    else:
+        if not store.mas_globals.in_idle_mode and (not mas_canCheckActiveWindow() or mas_isFocused()):
+            m 1eua "I'm going to get some more candy canes."
+            m 3eua "Hold on a moment."
+
+        elif store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+            m 1esd "Oh, I've eaten my candy canes.{w=1}{nw}"
+            m 1eua "I'm going to get some more. I'll be right back.{w=1}{nw}"
+
+        #Monika is off screen
+        call mas_transition_to_emptydesk
+
+        #Wrap these statemetns so we can properly add / remove the acs
+        python:
+            renpy.pause(1.0, hard=True)
+
+            mas_consumable_candycane.have()
+            mas_consumable_candycane.re_serve()
+            #Non-prepables are per refill, so they'll run out a bit faster
+            mas_consumable_candycane.use()
+
+            renpy.pause(4.0, hard=True)
+
+        call mas_transition_from_emptydesk("monika 1eua")
+        $ mas_consumable_candycane.acs.keep_on_desk = True
+
+        if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+            m 1hua "Back!{w=1.5}{nw}"
+            #Let's queue this weekly if we've got something we're low on
+            if (
+                not mas_inEVL("mas_consumables_generic_queued_running_out")
+                and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
+                and len(MASConsumable._getLowCons()) > 0
+            ):
+                $ queueEvent("mas_consumables_generic_queued_running_out")
+
+        else:
+            m 1eua "Okay, what else should we do today?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_consumables_check",
+            category=['supplies'],
+            prompt="Are you running out of anything?",
+            conditional="MASConsumable._getEnabledConsumables()",
+            pool=True,
+            unlocked=False,
+            action=EV_ACT_UNLOCK,
+            rules={"no_unlock": None},
+        )
+    )
+
+label monika_consumables_check:
+    #Firstly, let's get what we're low on.
+    $ low_cons = MASConsumable._getLowCons()
+
+    # Quick path if Monika needs 1 or none of consumables
+    if len(low_cons) < 2 and random.random() > 0.5:
+        if not low_cons:
+            m 3eua "Oh{w=0.1}, I'm not running out of anything at the moment, [player]...{w=0.3}{nw}"
+            extend 3hua "but I'll be sure to let you know if I do~"
+
+        else:
+            $ items_running_out_of = low_cons[0].disp_name
+            m 3rusdlb "Oh{w=0.1}, glad you asked!"
+            m 1rksdla "I've been running out of [items_running_out_of]."
+            m 1eka "I'd appreciate if you could get some for me~"
+
+        return
+
+    m 1rtd "Umm...{w=0.3}{nw}"
+    extend 3eua "let me check.{w=0.2}.{w=0.2}.{w=0.2}{nw}"
+
+    #Monika goes off screen
+    call mas_transition_to_emptydesk
+
+    pause 5.0
+
+    call mas_transition_from_emptydesk("monika 1eua")
+
+    m 1hub "Back!"
+
+    if len(low_cons) > 2:
+        $ mas_generateShoppingList(low_cons)
+        m 3rksdla "I'm actually running out of a few things..."
+        m 3eua "I hope you don't mind, but I left you a list of things in the characters folder."
+        m 1eka "You wouldn't mind getting them for me, would you?"
+
+    elif len(low_cons) > 0:
+        python:
+            items_running_out_of = ""
+            if len(low_cons) == 2:
+                items_running_out_of = "{0} and {1}".format(low_cons[0].disp_name, low_cons[1].disp_name)
+            else:
+                items_running_out_of = low_cons[0].disp_name
+
+        m 3rksdla "I'm running out of [items_running_out_of]."
+        m 1eka "You wouldn't mind getting some more for me, would you?"
+
+    else:
+        m 3eua "I'm not running out of anything at the moment, [player]...{w=0.3}{nw}"
+        extend 3hua "but I'll be sure to let you know if I do~"
+
     return

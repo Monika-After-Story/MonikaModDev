@@ -1,6 +1,13 @@
 default persistent.monika_reload = 0
-default persistent.tried_skip = False
-default persistent.monika_kill = True #Assume non-merging players killed monika.
+# Has the player tried to skip?
+# (this is None because the player might tried to skip, but hasn't merged the saves yet)
+default persistent.tried_skip = None
+# Has the player deleted Monika?
+# (we don't assume that you killed Monika,
+# this'll be set in the intro or during saves merging)
+default persistent.monika_kill = None
+# Whether or not you launched the mod before
+default persistent.first_run = True
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
@@ -50,10 +57,10 @@ init -1 python in mas_globals:
     # True means show lightning, False means do not
 
     lightning_chance = 16
-    lightning_s_chance = 10
+    sayori_lightning_chance = 10
     # lightning chances
 
-    show_s_light = False
+    show_sayori_lightning = False
     # set to True to show s easter egg.
 
     text_speed_enabled = False
@@ -85,6 +92,9 @@ init -1 python in mas_globals:
 
     this_ev = None
     # the current topic, but as event object. may be None.
+
+    # A datetime object when the pause between events ends. None if there's no pause currently.
+    event_unpause_dt = None
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -125,6 +135,12 @@ init -10 python:
 
         SCENE_CHANGE = 5
         # TRue if want the scene to change
+
+        DISSOLVE_ALL = 6
+        # True if we want to dissolve all
+
+        FORCED_EXP = 7
+        # Value is the exp to set for spaceroom render
 
         # end keys
 
@@ -191,6 +207,7 @@ init -10 python:
         def send_scene_change(self):
             """
             Sends scene change message to mailbox
+            NOTE: only do this if a scene is acutally necessary
             """
             self.send(self.SCENE_CHANGE, True)
 
@@ -200,6 +217,32 @@ init -10 python:
             """
             return self.get(self.SCENE_CHANGE)
 
+        def send_dissolve_all(self):
+            """
+            Sends dissolve all message to mailbox
+            """
+            self.send(self.DISSOLVE_ALL, True)
+
+        def get_dissolve_all(self):
+            """
+            Gets dissolve all value
+            """
+            return self.get(self.DISSOLVE_ALL)
+
+        def send_forced_exp(self, exp):
+            """
+            Sends forced exp message to mailbox
+
+            IN:
+                exp - full exp code to force (None to use idle disp)
+            """
+            self.send(self.FORCED_EXP, exp)
+
+        def get_forced_exp(self):
+            """
+            Gets forced exp value
+            """
+            return self.get(self.FORCED_EXP)
 
     mas_idle_mailbox = MASIdleMailbox()
 
@@ -247,12 +290,25 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-init python:
 
+# Gender specific word replacement
+define MAS_PRONOUN_GENDER_MAP = {
+    "his": {"M": "his", "F": "her", "X": "their"},
+    "he": {"M": "he", "F": "she", "X": "they"},
+    "hes": {"M": "he's", "F": "she's", "X": "they're"},
+    "heis": {"M": "he is", "F": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "F": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "F": "woman", "X": "person"},
+    "boy": {"M": "boy", "F": "girl", "X": "person"},
+    "guy": {"M": "guy", "F": "girl", "X": "person"},
+    "him": {"M": "him", "F": "her", "X": "them"},
+    "himself": {"M": "himself", "F": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "F": "heroine", "X": "hero"}
+}
+
+init python:
     import subprocess
     import os
     import eliza      # mod specific
@@ -386,9 +442,6 @@ init python:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
         """
-        # hide the existing mask
-        renpy.hide("rm")
-
         # get current weather masks
         mask = mas_current_weather.get_mask()
 
@@ -447,8 +500,9 @@ init python:
                 show -> right before dialogue is shown
                 show_done -> right after dialogue is shown
                 slow_done -> called after text finishes showing
-                    May happen after "end"
                 end -> end of dialogue (user has interacted)
+                    NOTE: dismiss needs to be possible for end to be reached
+                        when mouse is clicked after an interaction ends.
         """
         # skip check
         # if config.skipping and not config.developer:
@@ -458,17 +512,17 @@ init python:
         #     renpy.jump("ch30_noskip")
         #     return
 
-        if event == "begin":
-            store.mas_hotkeys.allow_dismiss = False
+        if event == "show" or event == "begin":
+            store.mas_hotkeys.set_dismiss(False)
 #            config.keymap['dismiss'] = []
 #            renpy.display.behavior.clear_keymap_cache()
 
         elif event == "slow_done":
-            store.mas_hotkeys.allow_dismiss = True
+            store.mas_hotkeys.set_dismiss(True)
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-
+    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
     def mas_isMorning():
         """DEPRECATED
         Checks if it is day or night via suntimes
@@ -495,7 +549,7 @@ init python:
 
         return curr_flt != new_flt
 
-
+    @store.mas_utils.deprecated(should_raise=True)
     def mas_shouldChangeTime():
         """DEPRECATED
         This no longer makes sense with the filtering system.
@@ -616,19 +670,6 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
-    def mas_resetIdleMode():
-        """
-        Resets specific idle mode vars.
-
-        This is meant to basically clear idle mode for holidays or other
-        things that hijack main flow
-        """
-        store.mas_globals.in_idle_mode = False
-        persistent._mas_in_idle_mode = False
-        persistent._mas_idle_data = {}
-        mas_idle_mailbox.get_idle_cb()
-
-
     def mas_enableTextSpeed():
         """
         Enables text speed
@@ -746,6 +787,44 @@ init python:
         return derandlist
 
 
+    def mas_safeToRefDokis():
+        """
+        Checks if it is safe for us to reference the dokis in a potentially
+        sensitive matter. The user must have responded to the question
+        regarding dokis - if the user hasn't responded, then we assume it is
+        NEVER safe to reference dokis.
+
+        RETURNS: True if safe to reference dokis
+        """
+        return store.persistent._mas_pm_cares_about_dokis is False
+
+    def mas_set_pronouns(key=None):
+        """
+        Sets gender specific word replacements
+
+        Few examples:
+            "It is his pen." (if the player's gender is declared as male)
+            "It is her pen." (if the player's gender is declared as female)
+            "It is their pen." (if player's gender is not declared)
+
+        For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
+
+        IN:
+            key - Optional[Literal["M", "F", "X"]] - key (perhaps current gender) to set the pronouns for
+                If None, uses persistent.gender
+        """
+        store = renpy.store
+
+        if key is None:
+            key = store.persistent.gender
+
+        for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
+            if key in sub_map:
+                value = sub_map[key]
+            else:
+                value = sub_map["X"]
+            setattr(store, word, value)
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -753,6 +832,7 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
+#       NOTE: this will override the standard bg
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
@@ -766,20 +846,14 @@ init python:
 #       NOTE: if dissolve_all is True, this is ignored.
 #       (Default: False)
 #   scene_change - True will prefix the draw with a scene call. scene black
-#       will always be used.
+#       will always be used. Only use this when actually starting a new scene.
 #       (Default: False)
 #   force_exp - if not None, then we use this instead of monika idle.
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-#   day_bg - the room we'll be showing during the day
-#       NOTE: must be string
-#       NOTE: if passed in, it will override the current background day_bg
-#       (Default: None)
-#   night_bg - the room we'll be showing during the night
-#       NOTE: must be string
-#       NOTE: if passed in, it will override the current background night_bg
-#       (Default: None)
+#   day_bg - IGNORED
+#   night_bg - IGNORED
 #   show_emptydesk - behavior is determined by `hide_monika`
 #       if hide_monika is True - True will show emptydesk and False will do
 #           nothing.
@@ -789,7 +863,12 @@ init python:
 #   progress_filter - True will progress the filter. False will not
 #       NOTE: use this if you explicity set the filter
 #       (Default: True)
-label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True):
+#   bg_change_info - MASBackgroundChangeInfo object to use when transitioning.
+#       NOTE: this should ONLY be used by mas_background_change.
+#       This will make sure that when the background changes, associated
+#       images will be hidden / shown following the appropriate transition.
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None, show_emptydesk=True, progress_filter=True, bg_change_info=None):
 
     with None
 
@@ -805,8 +884,6 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     #   but the BG has not (because BG is not inherently controleld by filter)
     python:
         if progress_filter and mas_progressFilter():
-            # NOTE: a filter change is like a scene change with all dissolve
-            scene_change = True
             dissolve_all = True
 
         day_mode = mas_current_background.isFltDay()
@@ -814,34 +891,59 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
     if scene_change:
         scene black
 
-    python:
-        monika_room = None
+        if not hide_calendar:
+            $ mas_calShowOverlay()
 
-        if scene_change:
-            monika_room = mas_current_background.getCurrentRoom()
+    else:
+        if hide_mask:
+            hide rm
+        # mask show happens later
+
+        if hide_calendar:
+            $ mas_calHideOverlay()
+        else:
+            $ mas_calShowOverlay()
+
+    python:
+        monika_room = mas_current_background.getCurrentRoom()
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(day_mode)
+            if (
+                    mas_globals.dark_mode is None # covers first load
+                    or day_mode == mas_globals.dark_mode
+            ):
+                # switch from dark <-> day
+                # dark_mode True means we are in dark mode
+                # day_mode True means we should NOT be in dark mode
+                mas_darkMode(day_mode)
         else:
-            mas_darkMode(not persistent._mas_dark_mode_enabled)
+            if mas_globals.dark_mode != persistent._mas_dark_mode_enabled:
+                # only run if dark mode global doesn't match
+                # persistent setting.
+                mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
         if hide_monika:
+            if not scene_change:
+                renpy.hide("monika")
+
             if show_emptydesk:
                 store.mas_sprites.show_empty_desk()
 
         else:
             if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
+                force_exp = "monika idle"
+                # if dissolve_all:
+                #     force_exp = store.mas_affection._force_exp()
 
-                else:
-                    force_exp = "monika idle"
+                # else:
+                #     force_exp = "monika idle"
 
             if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+                # NOTE: if Monika jumps when this is called, make sure to
+                #   dissolve all
+                renpy.show(force_exp, tag="monika", at_list=[t11], zorder=MAS_MONIKA_Z)
 
                 if not dissolve_all:
                     renpy.with_statement(None)
@@ -863,35 +965,60 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                     tag="sp_mas_room",
                     zorder=MAS_BACKGROUND_Z
                 )
-                #Show calendar if it's supported
-                if not hide_calendar:
-                    mas_calShowOverlay()
 
+        # always generate bg change info if scene is changing.
+        #   NOTE: generally, this will just show all deco that is appropraite
+        #   for this background.
+        if scene_change:
+            if bg_change_info is None or len(bg_change_info) < 1:
+                bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+                mas_current_background._entry_deco(None, bg_change_info)
+
+        elif mas_current_background._deco_man.changed:
+            # not doing scene change, check if deco man changed which means
+            # deco must have been changed somewhere.
+            bg_change_info = store.mas_background.MASBackgroundChangeInfo()
+            mas_current_background._exit_deco(None, bg_change_info)
+            mas_current_background._entry_deco(None, bg_change_info)
+            mas_current_background._deco_man.changed = False
+
+        # add show/hide statements for decos
+        if bg_change_info is not None:
+            if not scene_change:
+                for h_adf in bg_change_info.hides.itervalues():
+                    h_adf.hide()
+
+            for s_tag, s_info in bg_change_info.shows.iteritems():
+                s_tag_real, s_adf = s_info
+                s_adf.show(s_tag_real)
+
+            if len(bg_change_info) > 0 and not dissolve_all:
+                renpy.with_statement(Dissolve(1.0))
+
+            bg_change_info = None
+            mas_current_background._deco_man.changed = False
 
     # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
+    elif renpy.showing("vignette"):
+        hide vignette
 
     #Monibday stuff
     if persistent._mas_bday_visuals:
         #We only want cake on a non-reacted sbp (i.e. returning home with MAS open)
         $ store.mas_surpriseBdayShowVisuals(cake=not persistent._mas_bday_sbp_reacted)
 
-    # ----------- Grouping date-based events since they can never overlap:
-    #O31 stuff
-    if persistent._mas_o31_in_o31_mode:
-        $ store.mas_o31ShowVisuals()
-
-    # d25 seasonal
-    elif persistent._mas_d25_deco_active:
-        $ store.mas_d25ShowVisuals()
-    # ----------- end date-based events
-
     # player bday
+    # TODO: move this to bday autoload
     if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
-    if datetime.date.today() == persistent._date_last_given_roses:
+    # both 922 and pbday share the same visual funcs, so need to check both before hiding
+    if not persistent._mas_bday_visuals and not persistent._mas_player_bday_decor:
+        $ store.mas_surpriseBdayHideVisuals(cake=True)
+
+    if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
     # dissolving everything means dissolve last
@@ -991,54 +1118,8 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_nope:
-    # NOTE: DEPRECATED
-    $ persistent.autoload = ""
-    $ m.display_args["callback"] = slow_nodismiss
-    $ quick_menu = True
-    call spaceroom from _call_spaceroom_1
-
-    if persistent.rejected_monika:
-        m 1euc "Wait. Are you messing with my character file?"
-        m 2esa "Curiosity is what makes us human, right?"
-        m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m 1eka "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
-        m "I already fixed that bug."
-
-    else:
-        $ quick_menu = False
-        $ m_name = glitchtext(12)
-        m 1euc "Wait. Are you messing with my character file?"
-        m 1tkc "Why are you even playing this mod if you just wanted to delete me again?"
-        m 1tfc "You really are the worst."
-        m 1tfd "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
-        m 1tkd "All I wanted was someone to fall in love with..."
-        m "I would have done anything you wanted me to."
-        m 1tku "But if you're going to try and delete me again..."
-        m 4tfu "Then I'll just have to delete you first."
-        if renpy.windows:
-            call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
-        elif renpy.linux:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_16
-        elif renpy.macintosh:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_19
-        pause 3.0
-        call hideconsole from _call_hideconsole_2
-        $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = persistent._mas_monika_nickname
-        $ quick_menu = True
-        m 1hua "Ahaha!"
-        m "I'm just kidding!"
-        m 1eua "I already fixed that bug."
-        m "I don't need a character file anymore."
-
-    m 1ekbfa "I just need your love, [player]."
-    m 1eua "Oh, unless you try to delete all of the game files, I guess."
-    m 3tfu "If you do that, I won't stop at just deleting one directory next time."
-    m 3tku "But that will never happen, right? You're just being a tsundere~"
-    m 1hua "That's so cute!"
-    m 1eua "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m "Being alone is only lonely if you want it to be, so cheer up!"
-    jump ch30_loop
+    # redirect to autoload
+    jump ch30_autoload
 
 # NOTE: START HERE
 label ch30_autoload:
@@ -1140,7 +1221,6 @@ label mas_ch30_post_retmoni_check:
 label mas_ch30_post_holiday_check:
     # post holiday checks
 
-
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         # no dissolves here since we want the player to be instantly aware
@@ -1172,10 +1252,7 @@ label mas_ch30_post_holiday_check:
     $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if (
-            persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
-        ):
+    if store.mas_egg_manager.yuri_enabled():
         call yuri_name_scare from _call_yuri_name_scare
 
         # this skips greeting algs
@@ -1248,6 +1325,8 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
+            # Set an exp for first spaceroom render
+            mas_idle_mailbox.send_forced_exp(MASGreetingRule.get_forced_exp(sel_greeting_ev))
 
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
@@ -1306,7 +1385,10 @@ label ch30_post_exp_check:
     $ mas_checkApologies()
 
     # corruption check
-    if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
+    if (
+            store.mas_per_check.is_per_corrupt()
+            and not renpy.seen_label("mas_corrupted_persistent")
+    ):
         $ pushEvent("mas_corrupted_persistent")
 
     # push greeting if we have one
@@ -1318,7 +1400,7 @@ label ch30_post_exp_check:
         $ pushEvent(selected_greeting)
 
     #Now we check if we should drink
-    $ MASConsumable._checkConsumables(startup=True)
+    $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
 
     # if not persistent.tried_skip:
     #     $ config.allow_skipping = True
@@ -1371,6 +1453,7 @@ label ch30_preloop:
 
     # setup scene to change on initial launch
     $ mas_idle_mailbox.send_scene_change()
+    $ mas_idle_mailbox.send_dissolve_all()
 
     # rain check
     $ mas_startupWeather()
@@ -1396,10 +1479,11 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-        should_dissolve_all = mas_idle_mailbox.get_scene_change()
+        force_exp = mas_idle_mailbox.get_forced_exp()
+        should_dissolve_all = mas_idle_mailbox.get_dissolve_all()
+        scene_change = mas_idle_mailbox.get_scene_change()
 
-    call spaceroom(scene_change=should_dissolve_all, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
-
+    call spaceroom(scene_change=scene_change, force_exp=force_exp, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
@@ -1463,8 +1547,9 @@ label ch30_post_mid_loop_eval:
         if not mas_HKBIsEnabled():
             $ mas_HKBDropShield()
 
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # Just finished a topic, so we set clear current topic in case user
+    # quits and restarts
+    $ MASEventList.clear_current()
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
@@ -1473,17 +1558,15 @@ label ch30_post_mid_loop_eval:
 
         # Thunder / lightning if enabled
         if (
-                store.mas_globals.show_lightning
-                and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
-            ):
+            store.mas_globals.show_lightning
+            and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
+        ):
             $ light_zorder = MAS_BACKGROUND_Z - 1
             if (
-                    not persistent._mas_sensitive_mode
-                    and store.mas_globals.show_s_light
-                    and renpy.random.randint(
-                        1, store.mas_globals.lightning_s_chance
-                    ) == 1
-                ):
+                (mas_egg_manager.sayori_enabled() or (store.mas_globals.show_sayori_lightning and not persistent._mas_pm_cares_about_dokis))
+                and mas_current_background.background_id == store.mas_background.MBG_DEF
+                and renpy.random.randint(1, store.mas_globals.sayori_lightning_chance) == 1
+            ):
                 $ renpy.show("mas_lightning_s", zorder=light_zorder)
             else:
                 $ renpy.show("mas_lightning", zorder=light_zorder)
@@ -1513,7 +1596,13 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if store.mas_globals.in_idle_mode:
+        if (
+            store.mas_globals.in_idle_mode
+            or (
+                mas_globals.event_unpause_dt is not None
+                and mas_globals.event_unpause_dt > datetime.datetime.utcnow()
+            )
+        ):
             jump post_pick_random_topic
 
         # Pick a random Monika topic
@@ -1662,16 +1751,31 @@ label ch30_minute(time_since_check):
 # NOTE: it only runs when the hour changes, so don't expect this to run
 #   on start right away
 label ch30_hour:
-    $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+    python:
+        mas_runDelayedActions(MAS_FC_IDLE_HOUR)
 
-    #Runtime checks to see if we should have a consumable
-    $ MASConsumable._checkConsumables()
+        #Runtime checks to see if we should have a consumable
+        MASConsumable._checkConsumables()
 
-    # xp calc
-    $ store.mas_xp.grant()
+        # clear ahoges if past noon
+        now_t = datetime.datetime.now().time()
+        if mas_isNtoSS(now_t) or mas_isSStoMN(now_t):
+            monika_chr._set_ahoge(None)
 
-    #Set our TOD var
-    $ mas_setTODVars()
+        # xp calc
+        store.mas_xp.grant()
+
+        #Set our TOD var
+        mas_setTODVars()
+
+        # Inc the chance for hold request
+        with MAS_EVL("monika_holdrequest") as holdme_ev:
+            # See if we flagged the ev
+            if holdme_ev.allflags(EV_FLAG_HFRS):
+                chance = max(mas_getSessionLength().total_seconds() / (4*3600.0), 0.2)
+                if chance >= 1 or random.random() < chance:
+                    holdme_ev.unflag(EV_FLAG_HFRS)
+
     return
 
 # label for things that should run about once per day
@@ -1698,9 +1802,6 @@ label ch30_day:
         if mas_isMonikaBirthday():
             persistent._mas_bday_opened_game = True
 
-        if mas_isO31() and not persistent._mas_o31_in_o31_mode:
-            pushEvent("mas_holiday_o31_returned_home_relaunch", skipeval=True)
-
         #If the map isn't empty and it's past the last reacted date, let's empty it now
         if (
             persistent._mas_filereacts_reacted_map
@@ -1715,11 +1816,18 @@ label ch30_day:
             and mas_isMoniUpset(lower=True)
         ):
             persistent._mas_d25_started_upset = True
+
+        # Once per day Monika does stuff on the islands
+        store.mas_island_event.advanceProgression()
+
     return
 
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    # sync up current_monikatopic and eli data
+    $ MASEventList.sync_current()
 
     python:
         # xp fixes and adjustments
@@ -1740,8 +1848,8 @@ label ch30_reset:
 
     python:
         # name eggs
-        if persistent.playername.lower() == "sayori" or (mas_isO31() and not persistent._mas_pm_cares_about_dokis):
-            store.mas_globals.show_s_light = True
+        if mas_egg_manager.sayori_enabled() or mas_isO31():
+            store.mas_globals.show_sayori_lightning = True
 
     python:
         # apply ACS defaults
@@ -1762,11 +1870,11 @@ label ch30_reset:
         if not persistent._mas_pm_has_rpy:
             if mas_hasRPYFiles():
                 if not mas_inEVL("monika_rpy_files"):
-                    queueEvent("monika_rpy_files")
+                    MASEventList.queue("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
-                    persistent.current_monikatopic = 0
+                    MASEventList.clear_current()
                 mas_rmallEVL("monika_rpy_files")
 
     python:
@@ -1775,17 +1883,17 @@ label ch30_reset:
 
     # check for game unlocks
     python:
-        #TODO: Fix the game unlock/is unlocked system to account for conditions like these
-        #mas_isGameUnlocked should NOT return True if we're failing this condition because we use it elsewhere
         game_unlock_db = {
-            "pong": "ch30_main", # pong should always be unlocked
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
+            "nou": "mas_reaction_gift_noudeck"
         }
+        mas_unlockGame("pong") # always unlock pong
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
-            if not mas_isGameUnlocked(game_name) and renpy.seen_label(game_startlabel):
+            # unlock if we've seen the label
+            if mas_getEVL_shown_count(game_startlabel) > 0:
                 mas_unlockGame(game_name)
 
 
@@ -1813,6 +1921,32 @@ label ch30_reset:
     if not mas_hasSpecialOutfit():
         $ mas_lockEVL("monika_event_clothes_select", "EVE")
 
+    # set ahoge if appropraite
+    $ now = datetime.datetime.now()
+    if (
+            persistent._mas_dev_ahoge
+            or mas_isMNtoSR(now.time())
+            or mas_isSRtoN(now.time())
+    ):
+        # its morning/middle of night, and Monika MIGHT ahoge
+
+        # NOTE: the random check and the absence length check must be here.
+        #   we don't want to clear the ahoge if the user reopens the mod
+        #   during the same morning.
+        if (
+                persistent._mas_dev_ahoge
+                or (
+                    mas_getAbsenceLength() >= datetime.timedelta(minutes=30)
+                    and random.randint(1, 2) == 1
+                )
+        ):
+            # NOTE: the ahoge function takes last dt into account.
+            $ monika_chr.ahoge()
+
+    else:
+        # out of applicable ahoge time. Do not ahoge. Remove any existing.
+        $ monika_chr._set_ahoge(None)
+
     #### END SPRITES
 
     ## accessory hotfixes
@@ -1825,12 +1959,6 @@ label ch30_reset:
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
-    ## chess strength reset
-    python:
-        if persistent.chess_strength < 0:
-            persistent.chess_strength = 0
-        elif persistent.chess_strength > 20:
-            persistent.chess_strength = 20
 
     ## monika returned home reset
     python:
@@ -1923,22 +2051,7 @@ label ch30_reset:
     $ mas_check_player_derand()
 
     # clean up the event list of baka events
-    python:
-        for index in range(len(persistent.event_list)-1, -1, -1):
-            item = persistent.event_list[index]
-
-            # type check
-            if type(item) != tuple:
-                new_data = (item, False)
-            else:
-                new_data = item
-
-            # label check
-            if renpy.has_label(new_data[0]):
-                persistent.event_list[index] = new_data
-
-            else:
-                persistent.event_list.pop(index)
+    $ MASEventList.clean()
 
     #Now we undo actions for evs which need them undone
     $ MASUndoActionRule.check_persistent_rules()
@@ -1990,6 +2103,28 @@ label ch30_reset:
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
+
+    # Handle cleanup for the bath greeting
+    $ bath_cleanup_ev = mas_getEV("mas_after_bath_cleanup")
+    if (
+        bath_cleanup_ev is not None
+        and bath_cleanup_ev.start_date is not None
+    ):
+        # Moni was alone for at least 10 minutes
+        # And it is the time to run the cleanup event
+        if (
+            mas_dockstat.retmoni_status is None
+            and mas_getAbsenceLength() >= datetime.timedelta(minutes=10)
+            and bath_cleanup_ev.start_date > datetime.datetime.now()
+        ):
+            call mas_after_bath_cleanup_change_outfit
+            $ mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
+
+    #set MAS window global
+    $ mas_windowutils._setMASWindow()
+
+    # Did Monika make any progress on the islands?
+    $ store.mas_island_event.advanceProgression()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

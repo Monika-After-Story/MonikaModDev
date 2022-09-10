@@ -15,6 +15,7 @@ init -1 python:
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
     EV_RULE_PROBABILITY = "rule_probability"
+    EV_RULE_RP_TIMEDELTA = "rp_timedelta"
 
 
     # special constants for numerical repeat rules
@@ -384,7 +385,8 @@ init -1 python:
                 skip_visual=False,
                 random_chance=0,
                 setup_label=None,
-                override_type=False
+                override_type=False,
+                forced_exp=None
             ):
             """
             IN:
@@ -403,6 +405,9 @@ init -1 python:
                 override_type - True will let this greeting override type
                     checks during selection, False will not
                     (Default: False)
+                forced_exp - FULL exp code we want to force
+                    for the first spaceroom render
+                    (Default: None)
 
             RETURNS:
                 a dict containing the specified rules
@@ -423,6 +428,7 @@ init -1 python:
                     random_chance,
                     setup_label,
                     override_type,
+                    forced_exp
                 )
             }
 
@@ -430,7 +436,6 @@ init -1 python:
                 ev.rules.update(rule)
 
             return rule
-
 
         @staticmethod
         def evaluate_rule(event=None, rule=None, defval=True):
@@ -506,7 +511,6 @@ init -1 python:
             # False since there was no rule to check
             return False
 
-
         @staticmethod
         def get_setup_label(ev):
             """
@@ -524,6 +528,23 @@ init -1 python:
 
             return None
 
+        @staticmethod
+        def get_forced_exp(ev):
+            """
+            Gets the forced exp for an event
+
+            IN:
+                ev - the event to evalute
+
+            OUT:
+                string with full exp code, or None
+            """
+            if ev:
+                ev_rule = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+                if ev_rule is not None:
+                    return ev_rule[4]
+
+            return None
 
     class MASFarewellRule(object):
         """
@@ -591,6 +612,7 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
+    @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
     class MASAffectionRule(object):
         """
         NOTE: DEPRECATED
@@ -602,6 +624,7 @@ init -1 python:
         to check against.
         """
 
+        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
         @staticmethod
         def create_rule(min, max, ev=None):
             """
@@ -632,7 +655,7 @@ init -1 python:
 
             return rule
 
-
+        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
         @staticmethod
         def evaluate_rule(event=None, rule=None, affection=None, noRuleReturn=False):
             """
@@ -772,6 +795,72 @@ init -1 python:
                 The probability of the given event, or def if no ProbilityRule is found
             """
             return ev.rules.get(EV_RULE_PROBABILITY, MASProbabilityRule.DEF_PROBABILITY)
+
+    class MASTimedeltaRepeatRule(object):
+        """
+        Static class used to create repeat rules.
+        Timedelta repeat rules allow events to be repeated only every 'timedelta' since their last seen.
+        """
+        @staticmethod
+        def create_rule(timedelta, ev=None):
+            """
+            IN:
+                timedelta - the timedelta to set
+
+                ev - the event to add this rule to
+                    (Default: None)
+
+            OUT:
+                dict containing the rule
+            """
+            if not isinstance(timedelta, datetime.timedelta):
+                raise TypeError(
+                    "Expected a datetime.timedelta object, got: '{0}'.".format(timedelta)
+                )
+
+            elif not timedelta:
+                raise ValueError(
+                    "Expected a datetime.timedelta object with a non-null value."
+                )
+
+            rule = {EV_RULE_RP_TIMEDELTA: timedelta}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+        @staticmethod
+        def evaluate_rule(event=None, rule=None, now=None):
+            """
+            Evaluates a MASTimedeltaRepeatRule rule
+
+            IN:
+                event - the event to evaluate
+                rule - the timedelta of the MASTimedeltaRepeatRule to check against,
+                    if None, we get it from the event
+                    (Default: None)
+                now - time to check against, if None, datetime.datetime.now() is used
+                    (Default: None)
+
+            OUT:
+                boolean whether or not the event's passed
+            """
+            # No event, no deal
+            if event is None:
+                return False
+
+            if rule is None:
+                rule = event.rules.get(EV_RULE_RP_TIMEDELTA, None)
+
+            # Empty timedelta? You passed
+            if not rule:
+                return True
+
+            if now is None:
+                now = datetime.datetime.now()
+
+            return event.timePassedSinceLastSeen_dt(rule, now)
 
 init python:
     # these rules are NOT actually event rules since they don't create rule

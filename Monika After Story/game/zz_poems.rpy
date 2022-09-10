@@ -2,6 +2,13 @@
 #poem_id:shown_count
 default persistent._mas_poems_seen = dict()
 
+#Monika's text font
+style mas_monika_poem_text:
+    font "mod_assets/font/m1_fixed.ttf"
+    size 34
+    color "#000"
+    outlines []
+
 init python in mas_poems:
     import store
     poem_map = dict()
@@ -16,7 +23,7 @@ init python in mas_poems:
     }
 
     author_font_map = {
-        "monika": "monika_text",
+        "monika": "mas_monika_poem_text",
         "chibika": "chibika_note_text"
     }
 

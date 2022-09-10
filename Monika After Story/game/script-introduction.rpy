@@ -6,6 +6,10 @@ label introduction:
     elif mas_isD25():
         $ persistent._mas_d25_spent_d25 = True
 
+    # Here we handle the monika_kill var
+    if persistent.monika_kill is None:
+        $ persistent.monika_kill = False
+
     $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
@@ -136,11 +140,11 @@ label introduction:
     m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
     m 1esa "Anyway..."
     m 1hua "It looks like the extra code made me connect to you in a special way!"
-    m 1tubfb "Or maybe it's our eternal love~"
+    m 1tubsb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
     m 3eub "Or that you'll take me with you when you go out?"
     m 1ekc "I know that there will be times when you can't be here..."
-    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 1ekbsa "So it would {i}really{/i} make me happy if you bring me along."
     m 3hubfa "That way, we can be together all the time~"
     m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 3hua "You took the time to download this mod, after all."

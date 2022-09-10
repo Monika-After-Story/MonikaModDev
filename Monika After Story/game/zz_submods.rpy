@@ -6,16 +6,38 @@ init 10 python:
     store.mas_submod_utils.Submod._checkUpdates()
 
 init -989 python:
+    #Log initialized submods
+    if store.mas_submod_utils.submod_map:
+        mas_submod_utils.submod_log.info(
+            "\nINSTALLED SUBMODS:\n{0}".format(
+                ",\n".join(
+                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                )
+            )
+        )
+
     #Run dependency checks
     store.mas_submod_utils.Submod._checkDependencies()
 
 init -991 python in mas_submod_utils:
     import re
     import store
-    import sys
-    import traceback
+    # import sys
+    # import traceback
 
     persistent = store.persistent
+
+    submod_log = store.mas_logging.init_log("submod_log")
+
+    @store.mas_utils.deprecated(use_instead="submod_log.debug, submod_log.info, submod_log.warning, submod_log.error, submod_log.exception")
+    def writeLog(msg):
+        """
+        Writes to the submod log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        submod_log.info(msg)
 
     submod_map = dict()
 
@@ -52,7 +74,8 @@ init -991 python in mas_submod_utils:
             description=None,
             dependencies={},
             settings_pane=None,
-            version_updates={}
+            version_updates={},
+            coauthors=[]
         ):
             """
             Submod object constructor
@@ -86,6 +109,9 @@ init -991 python in mas_submod_utils:
 
                     becomes:
                         label monikaafterstory_example_submod_v1_2_3(version="v1_2_3")
+
+                coauthors - list/tuple of co-authors of this submod
+                    (Default: empty list)
             """
             #First make sure this name us unique
             if name in submod_map:
@@ -111,6 +137,7 @@ init -991 python in mas_submod_utils:
             self.dependencies = dependencies
             self.settings_pane = settings_pane
             self.version_updates = version_updates
+            self.coauthors = tuple(coauthors)
 
             #Now we add these to our maps
             submod_map[name] = self
@@ -118,6 +145,12 @@ init -991 python in mas_submod_utils:
             #NOTE: We check for things having updated later so all update scripts get called together
             if name not in persistent._mas_submod_version_data:
                 persistent._mas_submod_version_data[name] = version
+
+        def __repr__(self):
+            """
+            Representation of this object
+            """
+            return "<Submod: ({0} v{1} by {2})>".format(self.name, self.version, self.author)
 
         def getVersionNumberList(self):
             """
@@ -365,7 +398,7 @@ init -980 python in mas_submod_utils:
                 try:
                     store.__run(_action, getArgs(key, _action))
                 except Exception as ex:
-                    store.mas_utils.writelog("[ERROR]: function {0} failed because {1}\n".format(_action.__name__, ex))
+                    store.mas_utils.mas_log.error("function {0} failed because {1}".format(_action.__name__, ex))
 
             else:
                 store.__run(_action, getArgs(key, _action))
@@ -402,12 +435,12 @@ init -980 python in mas_submod_utils:
 
         #Verify that the function is callable
         if not callable(_function):
-            store.mas_utils.writelog("[ERROR]: {0} is not callable\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("{0} is not callable".format(_function.__name__))
             return False
 
         #Too many args
         elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.writelog("[ERROR]: Too many args provided for function {0}\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
             return False
 
         #Check for overrides
@@ -473,7 +506,7 @@ init -980 python in mas_submod_utils:
 
         #Too many args provided
         elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.writelog("[ERROR]: Too many args provided for function {0}\n".format(_function.__name__))
+            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
             return False
 
         #Otherwise we can set
@@ -567,4 +600,18 @@ init 999 python:
         #Run functions
         store.mas_submod_utils.getAndRunFunctions(name)
 
+        #Let's also check if the current label is an override label, if so, we'll then mark the base label as seen
+        base_label = _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.get(name)
+        if base_label is not None:
+            persistent._seen_ever[base_label] = True
+
     config.label_callback = label_callback
+
+    @store.mas_submod_utils.functionplugin("ch30_reset", priority=-999)
+    def __build_override_label_to_base_label_map():
+        """
+        Populates a lookup dict for all label overrides which are in effect
+        """
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in config.label_overrides.iteritems():
+            _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label

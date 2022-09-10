@@ -1,0 +1,28 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_earrings_pearls",
+    "img_sit": "briaryoung_earrings_pearls",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 10,
+    "acs_type": "earrings",
+    "mux_type": [
+        "earrings"
+    ],
+    "stay_on_start": true,
+    "giftname": "pearlearrings",
+    "dlg_desc": "pearl earrings",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Pearl earrings",
+        "thumb": "briaryoung_earrings_pearls",
+        "group": "earrings",
+        "select_dlg": [
+            "Cute huh?"
+        ]
+    }
+}

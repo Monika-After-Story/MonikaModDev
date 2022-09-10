@@ -155,7 +155,7 @@ init -860 python in mas_history:
 
         RETURNS: SEE lookup_ot_l
         """
-        return lookup_ot_l(key, years)
+        return lookup_otl(key, years)
 
 
     def lookup_otl(key, years_list):
@@ -182,7 +182,7 @@ init -860 python in mas_history:
         Internali version of mas_HistVerify
         """
         if len(years_list) == 0:
-            years_list = range(2017, datetime.date.today().year+1)
+            years_list = _valid_year_range()
 
         found_data = lookup_otl(key, years_list)
         years_found = []
@@ -194,6 +194,15 @@ init -860 python in mas_history:
                 years_found.append(year)
 
         return (len(years_found) > 0, years_found)
+
+
+    def _valid_year_range():
+        """
+        generates the range of years that are valid for historical lookups.
+
+        RETURNS: range of years from 2017 to todays year.
+        """
+        return range(2017, datetime.date.today().year + 1)
 
 
     ### archive saving functions: (NOT PUBLIC)
@@ -209,6 +218,23 @@ init -860 python in mas_history:
             year - year to store value
         """
         store.persistent._mas_history_archives[year][key] = value
+
+
+    def _store_all(year_data, key):
+        """
+        Stores multiple year's worth of data in the historical archives.
+
+        NOTE: will OVERWRITE data that already exists.
+
+        IN:
+            year_data - dictionary of the following format:
+                year: data tuple from mas_HistLookup
+            key - data key to store values
+        """
+        for year in year_data:
+            lookup_const, data = year_data[year]
+            if lookup_const == L_FOUND:
+                _store(data, key, year)
 
 
     ### history saver data save/load
@@ -279,6 +305,22 @@ init -850 python:
                 we could not find year or key
         """
         return store.mas_history.lookup(key, year)
+
+
+    def mas_HistLookup_all(key):
+        """
+        Looks up all historical data for a specific key.
+
+        IN:
+            key - data key to look up
+
+        RETURNS: dictionary of the following format:
+            year: data tuple from mas_HistLookup
+        """
+        return store.mas_history.lookup_otl(
+            key,
+            store.mas_history._valid_year_range()
+        )
 
 
     def mas_HistLookup_k(year, *keys):
@@ -547,7 +589,7 @@ init -850 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
-
+            self._was_triggered = False
 
         @staticmethod
         def getSortKey(_mhs):
@@ -560,7 +602,6 @@ init -850 python:
             RETURNS the sort key, which is trigger datetime
             """
             return _mhs.trigger
-
 
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -800,6 +841,8 @@ init -850 python:
             if self.exit_pp is not None:
                 self.exit_pp(self)
 
+            # mark that we ran
+            self._was_triggered = True
 
         def toTuple(self):
             """
@@ -811,6 +854,12 @@ init -850 python:
                     NOTE: needed for ease of migrations
             """
             return (self.trigger, self.use_year_before)
+
+        def was_triggered(self):
+            """
+            RETURNS: True if this MHS was triggered during this session
+            """
+            return self._was_triggered
 
 
 init -800 python in mas_history:
@@ -970,6 +1019,9 @@ init -810 python:
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
             "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
             "_mas_pm_is_trans": "pm.lifestyle.is_trans",
+            "_mas_pm_social_personality": "pm.lifestyle.social_personality",
+            "_mas_pm_swear_frequency": "pm.lifestyle.swear_frequency",
+            "_mas_pm_bakes": "pm.lifestyle.bakes",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -993,6 +1045,9 @@ init -810 python:
             # lifestyle / dating
             "_mas_pm_had_relationships_many": "pm.lifestyle.had_many_relationships",
             "_mas_pm_had_relationships_just_one": "pm.lifestyle.had_one_relationship",
+
+            # lifestyle / work
+            "_mas_pm_last_promoted_d": "pm.lifestyle.last_promoted",
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
@@ -1018,10 +1073,6 @@ init -810 python:
 
             # actions / d25
             "_mas_pm_hangs_d25_lights": "pm.actions.hangs_d25_lights",
-
-            # actions / nye-nyd
-            "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
-            "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
 
             # actions / games
             "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
@@ -1054,10 +1105,17 @@ init -810 python:
 
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
+            "_mas_pm_read_jekyll_hyde": "pm.actions.books.read_jekyll_hyde",
 
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
+
+            # actions / events / comic con
+            "_mas_pm_gone_to_comic_con": "pm.actions.gone_to_comic_con",
+
+            # actions / events / anime / con
+            "_mas_pm_gone_to_anime_con": "pm.actions.gone_to_anime_con",
 
             # actions / mas
             "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
@@ -1093,6 +1151,7 @@ init -810 python:
             "_mas_pm_likes_travelling": "pm.likes.travelling",
             "_mas_pm_likes_poetry" : "pm.likes.poetry",
             "_mas_pm_likes_board_games": "pm.likes.board_games",
+            "_mas_pm_likes_nature": "pm.likes.nature",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
@@ -1100,6 +1159,7 @@ init -810 python:
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
             "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
+            "_mas_pm_cares_island_progress": "pm.likes.monika.island.progress",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",
@@ -1143,6 +1203,7 @@ init -810 python:
 
             # looks / eyes
             "_mas_pm_eye_color": "pm.looks.eyes.color",
+            "_mas_pm_has_heterochromia": "pm.looks.eyes.heterochromia",
 
             # looks / hair
             "_mas_pm_hair_color": "pm.looks.hair.color",

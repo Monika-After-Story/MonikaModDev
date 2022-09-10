@@ -1,20 +1,24 @@
 define persistent.demo = False
-define config.developer = False #This is the flag for Developer tools
+
+define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
-    import singleton
-    me = singleton.SingleInstance()
+    # We want these to be available globally, please don't remove
+    # Add more as needed
+    import io
+    import os
+    import datetime
+    import random
+    import traceback
+    from collections import defaultdict # this will be availalable anywhere now
+
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z = 3
 
-    # this is now global
-    import datetime
-
-    # uncomment when needed
-    import traceback
     _dev_tb_list = []
+
 
     ### Overrides of core renpy things
     def dummy(*args, **kwargs):
@@ -22,6 +26,47 @@ python early:
         Dummy function that does nothing
         """
         return
+
+    class MASDummyClass(object):
+        """
+        Dummy class that does nothing.
+
+        If compared to, it will always return False.
+        """
+
+        def __call__(self, *args, **kwargs):
+            return MASDummyClass()
+
+        def __len__(self):
+            return 0
+
+        def __getattr__(self, name):
+            return MASDummyClass()
+
+        def __setattr__(self, name, value):
+            return
+
+        def __lt__(self, other):
+            return False
+
+        def __le__(self, other):
+            return False
+
+        def __eq__(self, other):
+            return False
+
+        def __ne__(self, other):
+            return False
+
+        def __gt__(self, other):
+            return False
+
+        def __ge__(self, other):
+            return False
+
+        def __nonzero__(self):
+            return False
+
 
     # clear this so no more traceback. We expect node loops anyway
     renpy.execution.check_infinite_loop = dummy
@@ -263,6 +308,42 @@ python early:
 
     renpy.display.image.ImageReference.find_target = mas_find_target
 
+    class MASImageData(renpy.display.im.ImageBase):
+        """
+        NOTE: This DOES NOT support saving in persistent (pickling),
+            and it might be unsafe to do so.
+
+        This image manipulator loads an image from binary data.
+        """
+        def __init__(self, data, filename, **properties):
+            """
+            Constructor
+
+            IN:
+                data - string of bytes, giving the compressed image data in a standard
+                    file format.
+                filename - "filename" associated with the image. This is used to provide a
+                    hint to Ren'Py about the format of `data`. (It's not actually
+                    loaded from disk.)
+                properties - additional props
+            """
+            super(MASImageData, self).__init__(data, filename, **properties)
+            self.data = data
+            self.filename = filename
+
+        def __unicode__(self):
+            return u"MASImageData({})".format(self.filename)
+
+        def __repr__(self):
+            return str(self.__unicode__())
+
+        def __reduce__(self):
+            return (str, (self.filename,))
+
+        def load(self):
+            f = io.BytesIO(self.data)
+            return renpy.display.pgrender.load_image(f, self.filename)
+
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
 
@@ -286,6 +367,7 @@ python early:
     # all bitmask flags apply until next restart or the flag is unset.
     # NOTE: do NOT add a bitmask flag if you want to save its value.
     #   if you need saved data, add a new prop or use an existing one.
+    EV_FLAG_DEF = 0
 
     EV_FLAG_HFM = 2
     # Hidden From Menus
@@ -316,7 +398,31 @@ python early:
         def __init__(self, _msg):
             self.msg = _msg
         def __str__(self):
-            return "EventError: " + self.msg
+            return self.msg
+
+
+    # event data class - use for data grouping - no behaviors allowed
+    class EventDBData(object):
+        """
+        Speciality class that can hold data from data tuples (events)
+        Read-only (for now)
+        """
+
+        def __init__(self, data_tup):
+            """
+            IN:
+                data_tup - the data to store
+            """
+            self.data_tup = data_tup
+
+        def __getattr__(self, name):
+            attr_loc = Event.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                return self.data_tup[attr_loc]
+
+            return None
+
 
     # event class for chatbot replacement
     # NOTE: effectively a wrapper for dict of tuples
@@ -362,6 +468,14 @@ python early:
     #   shown_count - number of times this event has been shown to the user
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
+    #       NOTE: IF AN EVENT HAS BEEN SEEN, IT SHOULD ALWAYS HAVE A POSITIVE
+    #           SHOWN COUNT. The only exception to this is if we crashed
+    #           halfway through a topic, in which case we will know this
+    #           since shown count will be 0 and the label would have been seen.
+    #           In that circumstance, we should immediately update the shown
+    #           count. (Event will not do this in case you need to do specific
+    #           crash handling). Call syncShownCount on the event object to
+    #           update shown count in the crash scenario
     #       (Default: 0)
     #   diary_entry - string that will be added as a diary entry if this event
     #       has been seen. This string will respect \n and other formatting
@@ -381,8 +495,7 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
-    #   sensitive - True means this is a sensitve topic, False means it is not
-    #       (Default: False)
+    #   sensitive - IGNORED
     #   aff_range - tuple of the following format:
     #       [0]: - low limit of affection where this event is available
     #           (inclusive)
@@ -420,7 +533,7 @@ python early:
             #"diary_entry":13, # NOTE: this will not be removed until later
             "last_seen":14,
             "years":15,
-            "sensitive":16,
+            #"sensitive":16, # NOTE: this will not be removed until later
             "aff_range":17,
             "show_in_idle":18,
         }
@@ -432,7 +545,8 @@ python early:
             "locks",
             "rules",
             "diary_entry",
-            "flags"
+            "flags",
+            "sensitive",
         )
 
         # filterables
@@ -445,7 +559,7 @@ python early:
             "seen", # 5
             "excl_cat", # 6
             "moni_wants", # 7
-            "sensitive", # 8
+            "sensitive", # 8 # NOTE: do not comment out for compatibility
             "aff", # 9
             "flag_req", # 10
             "flag_ban", # 11
@@ -468,6 +582,11 @@ python early:
         #   SEE the evhand store in event-handler
         # NOTE: action code should be callable on a given event object
         ACTION_MAP = dict()
+
+        # Conditional cache
+        # A map from conditional string to compiled code objects
+        # (speeds up event checks)
+        _conditional_cache = dict()
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -492,7 +611,7 @@ python early:
                 sensitive=False,
                 aff_range=None,
                 show_in_idle=False,
-                flags=0
+                flags=EV_FLAG_DEF
             ):
 
             # setting up defaults
@@ -576,6 +695,10 @@ python early:
             self.rules = rules
             self.flags = flags
 
+            # NOTE: set deprecated properties here
+            self.diary_entry = ""
+            self.sensitive = False
+
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (
@@ -595,7 +718,7 @@ python early:
                 "", # diary_entry
                 last_seen,
                 years,
-                sensitive,
+                False, # sensitive
                 aff_range,
                 show_in_idle
             )
@@ -645,7 +768,7 @@ python early:
 #                    self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
-                    self.sensitive = sensitive
+                    #self.sensitive = sensitive
                     self.aff_range = aff_range
                     self.show_in_idle = show_in_idle
 
@@ -657,22 +780,44 @@ python early:
             # setup lock entry
             Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
 
+            # Cache conditional
+            if self.conditional is not None and self.conditional not in Event._conditional_cache:
+                Event._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
 
-        # equality override
         def __eq__(self, other):
+            """
+            Equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             if isinstance(self, other.__class__):
                 return self.eventlabel == other.eventlabel
             return False
 
-        # equality override
         def __ne__(self, other):
+            """
+            Non-equality override
+
+            IN:
+                other - the object to compare this event with
+
+            OUT:
+                boolean
+            """
             return not self.__eq__(other)
 
-        # set attr overrride
         def __setattr__(self, name, value):
-            #
-            # Override of setattr so we can do cool things
-            #
+            """
+            Override of setattr so we can do cool things
+
+            IN:
+                name - the name of the prop to change (str)
+                value - the new value
+            """
             if name in self.N_EVENT_NAMES:
                 super(Event, self).__setattr__(name, value)
 #                self.__dict__[name] = value
@@ -704,6 +849,14 @@ python early:
                         # nullify bad date types
                         if type(value) is not datetime.datetime:
                             value = None
+
+                    # If we are setting a conditional, we may need to compile it
+                    elif (
+                        name == "conditional"
+                        and value is not None
+                        and value not in Event._conditional_cache
+                    ):
+                        Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -793,6 +946,25 @@ python early:
             low, high = self.aff_range
             return store.mas_affection._betweenAff(low, aff_level, high)
 
+        def checkConditional(self, globals=None, locals=None):
+            """
+            Checks conditional of this event
+
+            IN:
+                globals - global scope for eval. If None, the base store is used.
+                    (Default: None)
+                locals - local scope for eval. If None, set to globals.
+                    (Default: None)
+
+            OUT:
+                boolean:
+                    True if passed, False if not
+            """
+            if self.conditional is None:
+                return True
+
+            return renpy.python.py_eval_bytecode(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
+
         def canRepeat(self):
             """
             Checks if this event has the vars to enable repeat
@@ -865,6 +1037,13 @@ python early:
             self.start_date = None
             self.end_date = None
 
+        def syncShownCount(self):
+            """
+            Updates shown count if it is < 1 but we have seen the label
+            """
+            if self.shown_count < 1 and renpy.seen_label(self.eventlabel):
+                self.shown_count = 1
+
         def timePassedSinceLastSeen_d(self, time_passed, _now=None):
             """
             Checks if time_passed amount of time has passed since we've last seen this event, in terms of datetime.date
@@ -915,13 +1094,34 @@ python early:
             """
             self.flags &= ~flags
 
+        @classmethod
+        def validateConditionals(cls):
+            """
+            A method to validate conditionals
+
+            ASSUMES:
+                mas_all_ev_db
+            """
+            for ev in mas_all_ev_db.itervalues():
+                if ev.conditional is not None:
+                    try:
+                        renpy.python.py_eval_bytecode(cls._conditional_cache[ev.conditional])
+
+                    except Exception as e:
+                        raise EventException(
+                            "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
+                                ev.conditional,
+                                ev.eventlabel,
+                                traceback.format_exc()
+                            )
+                        )
+
         @staticmethod
         def getSortPrompt(ev):
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return renpy.substitute(ev.prompt).lower()
-
 
         @staticmethod
         def getSortShownCount(ev):
@@ -1215,6 +1415,7 @@ python early:
             """
             Filters the given event object accoridng to the given filters
             NOTE: NO SANITY CHECKS
+            TODO: include checkConditional
 
             For variable explanations, please see the static method
             filterEvents
@@ -1273,8 +1474,8 @@ python early:
                     return False
 
             # sensitivyt
-            if sensitive is not None and event.sensitive != sensitive:
-                return False
+#            if sensitive is not None and event.sensitive != sensitive:
+#                return False
 
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
@@ -1320,13 +1521,7 @@ python early:
                 moni_wants - boolean value to match if the event has the monika
                     wants this first.
                     (Default: None )
-                sensitive - boolean value to match if the event is sensitive
-                    or not
-                    NOTE: if None, we use inverse of _mas_sensitive_mode, only
-                        if sensitive mode is True.
-                        AKA: we only filter sensitve topics if sensitve mode is
-                        enabled.
-                    (Default: None)
+                sensitive - IGNORED
                 aff - affection level to match aff_range
                     (Default: None)
                 flag_req - flags that the event must match
@@ -1354,7 +1549,7 @@ python early:
             # setup keys
             cat_key = Event.FLT[0]
             act_key = Event.FLT[4]
-            sns_key = Event.FLT[8]
+            #sns_key = Event.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -1372,15 +1567,6 @@ python early:
             action = flt_args.get(act_key)
             if action and len(action) == 0:
                 flt_args[act_key] = None
-
-            sensitive = flt_args.get(sns_key)
-            if sensitive is None:
-                try:
-                    # i have no idea if this is reachable from here
-                    if persistent._mas_sensitive_mode:
-                        flt_args[sns_key] = False
-                except:
-                    pass
 
             filt_ev_dict = dict()
 
@@ -1450,6 +1636,7 @@ python early:
 
             return eventlabels
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkConditionals(events, rebuild_ev=False):
             # NOTE: DEPRECATED
@@ -1510,6 +1697,7 @@ python early:
 
             return events
 
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkCalendar(events):
             # NOTE: DEPRECATED
@@ -1613,7 +1801,7 @@ python early:
                 return False
 
             # now check conditional, if needed
-            if ev.conditional is not None and not eval(ev.conditional):
+            if not ev.checkConditional():
                 return False
 
             # check if valid action
@@ -1657,7 +1845,7 @@ python early:
 
             return
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """DEPRECATED
@@ -1667,6 +1855,7 @@ python early:
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
+            TODO: include checkConditional
 
             IN:
                 ev - single event to check
@@ -1693,7 +1882,7 @@ python early:
 
             return False
 
-
+        @store.mas_utils.deprecated(should_raise=True)
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """DEPRECATED
@@ -1788,6 +1977,7 @@ python early:
             # return the available events dict
             return available_events
 
+        #TODO: Depricate this
         @staticmethod
         def _checkAffectionRule(ev,keepNoRule=False):
             """
@@ -1801,7 +1991,7 @@ python early:
             """
             return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
 
-
+        #TODO: Depricate this
         @staticmethod
         def checkAffectionRules(events,keepNoRule=False):
             """
@@ -1981,7 +2171,7 @@ python early:
                 return_value - Value to return when the button is activated
                     (Default: True)
             """
-
+            super(renpy.Displayable, self).__init__()
             # setup
 #            self.idle_text = idle_text
 #            self.hover_text = hover_text
@@ -2279,6 +2469,7 @@ python early:
                         if not is_over_me:
                             self.hovered = False
                             self._state = self._STATE_IDLE
+                            renpy.redraw(self, 0.0)
 
                         # else remain in hover mode
 
@@ -2288,6 +2479,8 @@ python early:
 
                         if self.hover_sound:
                             self._playHoverSound()
+
+                        renpy.redraw(self, 0.0)
 
                 elif (
                         ev.type == self._button_down
@@ -2703,6 +2896,20 @@ python early:
 
             self.__setup()
 
+        @staticmethod
+        def copyfrom(other, new_vx):
+            """
+            Copies a MASClickZone state, but applies a new_vx to it.
+
+            RETURNS: new MASClickZone to use
+            """
+            new_cz = MASClickZone(new_vx)
+            new_cz.disabled = other.disabled
+            new_cz._debug_back = other._debug_back
+            new_cz._button_down = other._button_down
+
+            return new_cz
+
         def render(self, width, height, st, at):
             """
             Render functions
@@ -2722,7 +2929,7 @@ python early:
             """
             Event function
             """
-            if ev.type == self._button_down:
+            if ev.type == self._button_down and not self.disabled:
                 # determine if this event happend here
                 if self._isOverMe(x, y):
                     return ev.button
@@ -2835,79 +3042,15 @@ python early:
             ))
 
 # init -1 python:
-
+    @store.mas_utils.deprecated(should_raise=True)
     class MASInteractable(renpy.Displayable):
+        """DEPRECATED
+
+        Do not use this.
         """
-        Base class for all interactable displayables.
-        Interactables are custom displayables that use clickzones
-        """
 
-        def __init__(self, zones, button_down, debug=False):
-            """
-            Constructor for an interactable.
-
-            IN:
-                zones - dict of the following format:
-                    key: key of the zone, this is returned if the zone is
-                        clicked
-                    value: list of vertexes that make teh zone
-                button_down - button_down item to use for each clickzone
-                debug - Set to True to fill the clickzones
-            """
-            super(renpy.Displayable, self).__init__()
-
-            self.zones = {}
-            self.zones_render = []
-
-            self._build_zones(zones, button_down, debug=debug)
-
-        def _build_zones(self, zones, button_down, debug=False):
-            """
-            Builds clickzone objects (self.zones and self.zones_render)
-
-            IN:
-                zones - dict of zones (see constructor)
-                button_down - button_down item to use for each clikzone
-                debug - set to True to see clickzones
-            """
-            for zone_key, zone_vx in zones.iteritems():
-                # build clickzone
-                clickzone = MASClickZone(zone_vx)
-                clickzone._debug_back = debug
-                clickzone._button_down = button_down
-
-                # add to internal lists
-                self.zones[zone_key] = clickzone
-                self.zones_render.append(clickzone)
-
-        def check_click(self, ev, x, y, st):
-            """
-            Checks if an ev was a click over a zone.
-
-            RETURNS: zone key if clicked, None if not clicked
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone.event(ev, x, y, st) is not None:
-                    return zone_key
-
-            return None
-
-        def check_over(self, x, y):
-            """
-            Checks if the given x y is over a zone, and returns the zone key
-            if appropripate
-
-            IN:
-                x - x
-                y - y
-
-            RETURNS: zone_key, or None if no click over zones
-            """
-            for zone_key, clickzone in self.zones.iteritems():
-                if clickzone._isOverMe(x, y):
-                    return zone_key
-
-            return None
+        def __init__(self, *args, **kwargs):
+            pass
 
 
 # init -1 python:
@@ -3396,12 +3539,481 @@ python early:
             """
             self.box[headline] = msg
 
+    class MASExtraPropable(object):
+        """
+        base class that supports ex_prop-based extensions.
 
+        Properties can be accessed by using `ex__` prefix.
+        Supports the following:
+
+        ACCESSING props:
+            via `<obj>.ex__<name>`
+            if no prop is found, None is returned.
+
+        SETTING PROPS:
+            via `<obj>.ex__<name> = <value>`
+
+        CHECKING FOR PROP EXISTENCE:
+            via `<name>` in <obj>
+
+        ADDING props:
+            *same as setting props
+
+        REMOVING PROPS:
+            via pop function
+
+        EQUIVALENCE:
+            No eq support, but I am open to it. Let me know.
+
+        NOTE: using this means that all of the ex_props you want to use
+            _should_ be pythonic in name. Props that are NOT pythonic in name
+            are will not be accessible via property.
+
+        PROPERTIES:
+            ex_props - direct dictionary of ex_props
+        """
+        EX_PFX = "ex__"
+        _EX_LEN = len(EX_PFX)
+
+        def __init__(self, ex_props=None):
+            """
+            Constructor.
+
+            IN:
+                ex_props - initial dict of ex props to set internal data to
+                    pass None to start with an empty dict.
+                    (Default: None)
+            """
+            if ex_props is None:
+                ex_props = {}
+
+            self.ex_props = ex_props
+
+        def __contains__(self, item):
+            return item in self.ex_props
+
+        def __len__(self):
+            return len(self.ex_props)
+
+        def __getattr__(self, key):
+            if key.startswith(self.EX_PFX):
+                return self.ex_props.get(key[self._EX_LEN:], None)
+
+            return super(MASExtraPropable, self).__getattr__(key)
+
+        def __setattr__(self, key, value):
+            if key.startswith(self.EX_PFX):
+                # the real property name is without the prefix
+                stripped_key = key[self._EX_LEN:]
+                if len(stripped_key) > 0:
+                    self.ex_props[stripped_key] = value
+
+            super(MASExtraPropable, self).__setattr__(key, value)
+
+        def ex_has(self, key):
+            """
+            Checks for existence of the given exprop in this object.
+
+            IN:
+                key - name of exprop
+
+            RETURNS: True if the key exists as an ex prop, False if not
+            """
+            return key in self
+
+        def ex_iter(self):
+            """
+            Generates generator of exprops in this object.
+
+            RETURNS: iter of ex prop names and values
+            """
+            return (item for item in self.ex_props.iteritems())
+
+        def ex_pop(self, key, default=None):
+            """
+            Pops and returns an exprop from the internal dict
+
+            IN:
+                key - key to pop/get ex_prop
+                default - default value to use if no prop found
+                    (Default: None)
+
+            RETURNS: value of the popped ex_prop, or the default if not found
+            """
+            return self.ex_props.pop(key, default)
+
+        @staticmethod
+        def repr_out(obj):
+            """
+            returns a repr string of the ex props in an object.
+
+            IN:
+                obj - object to repr ex props for
+
+            RETURNS: repr string of ex_props in object. empty string if
+                no ex_props property.
+            """
+            try:
+                ex_props = obj.ex_props
+                if ex_props is None:
+                    return "<exprops: ()>"
+
+                props = [
+                    "{0}: {1}".format(key, value)
+                    for key, value in ex_props.iteritems()
+                ]
+                return "<exprops: ({0})>".format(", ".join(props))
+
+            except:
+                return ""
+
+init 25 python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(0, 0)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button not in (4, 5):
+                return True
+
+            raise renpy.IgnoreEvent()
+
+    class PauseDisplayableEvent(object):
+        """
+        Class to represent events for PauseDisplayableWithEvents
+        """
+        def __init__(self, timedelta, functions, repeatable=False, invoke_in_new_context=False, restart_interaction=False):
+            """
+            Constructor for events
+
+            IN:
+                timedelta - datetime.timedelta after which we'll run the event
+                functions - the func or a list of the funcs that get called on the event
+                    NOTE: if you need args/kwargs use renpy.partial
+                repeatable - whether or not we'll repeat the event
+                    (Default: False)
+                invoke_in_new_context - whether or not we'll invoke the functions
+                    to avoid interaction issues
+                    (Default: False)
+                restart_interaction - whether or not we'll also call renpy.restart_interaction
+                    to update the screen
+                    (Default: False)
+            """
+            self.timedelta = timedelta
+
+            if not isinstance(functions, tuple):
+                if isinstance(functions, list):
+                    functions = tuple(functions)
+
+                else:
+                    functions = (functions,)
+
+            self.functions = functions
+            self.repeatable = repeatable
+            self.invoke_in_new_context = invoke_in_new_context
+            self.restart_interaction = restart_interaction
+
+            self.end_datetime = None
+
+        def set_end_datetime(self, value):
+            """
+            Sets end datetime for this event
+
+            IN:
+                value - value to set
+            """
+            self.end_datetime = value
+
+        def __repr__(self):
+            """
+            Representation of this obj
+            """
+            return "<PauseDisplayableEvent (timedelta {0}, functions {1})>".format(self.timedelta, self.functions)
+
+        def __call__(self):
+            """
+            Executes this event
+            """
+            for func in self.functions:
+                if self.invoke_in_new_context:
+                    renpy.invoke_in_new_context(func)
+
+                else:
+                    func()
+
+                if self.restart_interaction:
+                    renpy.restart_interaction()
+
+    class PauseDisplayableWithEvents(renpy.Displayable):
+        """
+        Advanced pause displayable that supports hotkeys and can run events during pause
+        """
+        # The keysims that are allowed during pause
+        _RESPECTED_KEYSIMS = {
+            "screenshot": renpy.store._screenshot,
+            "toggle_fullscreen": renpy.toggle_fullscreen,
+            "mas_hide_windows": renpy.store._mas_hide_windows,
+            "mas_game_menu": renpy.store._mas_game_menu,
+            "change_music": renpy.store._mas_hk_select_music,
+            "mute_music": renpy.store._mas_hk_mute_music,
+            "dec_musicvol": renpy.store._mas_hk_dec_musicvol,
+            "inc_musicvol": renpy.store._mas_hk_inc_musicvol
+        }
+
+        # An attempt to fix renpy's memory leak
+        CRUTCH_EVENT =  PauseDisplayableEvent(
+            datetime.timedelta(minutes=5),
+            renpy.restart_interaction,
+            repeatable=True
+        )
+
+        def __init__(self, events=None, respected_keysims=None):
+            """
+            Constructor for this displayable
+
+            IN:
+                events - a single PauseDisplayableEvent object or a list of PauseDisplayableEvent objects
+                    If None, no event will be ran
+                    (Default: None)
+                respected_keysims - keysims that are respected during this pause, if None we'll use some default ones.
+                    If not None, assuming it's a dict with the name of a defined keybinding and its function
+                    (Default: None)
+            """
+            super(renpy.Displayable, self).__init__()
+
+            # This will set remaining_events and all_events props
+            self.set_events(events)
+
+            self.respected_keysims = respected_keysims or PauseDisplayableWithEvents._RESPECTED_KEYSIMS
+            self.__abort_events = False
+            self.__should_enable_afm = None
+
+        def __repr__(self):
+            """
+            Representation of this obj
+            """
+            return "<PauseDisplayableWithEvents ({0})>".format(self.__remaining_events)
+
+        @classmethod
+        def __handle_events(cls, events):
+            """
+            Takes events and sorts them before passing further
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+
+            OUT:
+                sorted list
+            """
+            if events is None:
+                events = [cls.CRUTCH_EVENT]
+
+            elif isinstance(events, tuple):
+                events = list(events)
+                events.append(cls.CRUTCH_EVENT)
+
+            elif isinstance(events, list):
+                events.append(cls.CRUTCH_EVENT)
+
+            # Assuming it's a single PauseDisplayableEvent
+            else:
+                events = [events, cls.CRUTCH_EVENT]
+
+            events.sort(key=cls.__sort_key_td)
+
+            return events
+
+        def set_events(self, events):
+            """
+            Sets new events for this PauseDisplayable
+
+            IN:
+                events - PauseDisplayableEvent or a list of PauseDisplayableEvent's
+            """
+            events = self.__handle_events(events)
+            self.__remaining_events = events
+            self.__all_events = list(events)
+
+        def __set_end_datetimes(self):
+            """
+            Sets end datetimes for events using current time
+            """
+            _now = datetime.datetime.now()
+            for ev in self.__remaining_events:
+                ev.end_datetime = _now + ev.timedelta
+
+        def __reset_events(self):
+            """
+            Resets events state
+            """
+            self.__remaining_events = self.__all_events[:]
+            for ev in self.__remaining_events:
+                ev.end_datetime = None
+
+        def start(self):
+            """
+            Starts this displayable
+            """
+            self.__should_enable_afm = store._preferences.afm_enable
+            self.__set_end_datetimes()
+            ui.implicit_add(self)
+            ui.interact()
+
+        def stop(self):
+            """
+            Stops this disp's interaction, aborts its event
+            """
+            ui.remove(self)
+            self.__abort_events = True
+            self.__should_enable_afm = None
+
+            if renpy.game.context().interacting:
+                renpy.end_interaction(False)
+
+        def reset(self):
+            """
+            Completely resets this disp's state
+            """
+            ui.remove(self)
+            self.__reset_events()
+            self.__abort_events = False
+            self.__should_enable_afm = None
+
+            if renpy.game.context().interacting:
+                renpy.end_interaction(False)
+
+        def __get_events_for_time(self):
+            """
+            Returns the events that we need to run NOW
+            and pops them from the event list
+
+            OUT:
+                generator over the events
+
+            ASSUMES:
+                the events are sorted
+            """
+            _now = datetime.datetime.now()
+
+            for event in self.__remaining_events[:]:
+                if _now >= event.end_datetime:
+                    self.__remaining_events.remove(event)
+                    yield event
+
+                # no need to keep iter, we can return at this point
+                else:
+                    return
+
+        def __set_timeout(self):
+            """
+            Sets a timeout for event generator
+            """
+            # No need to do anything if we have no pending events
+            if not self.__remaining_events:
+                return
+
+            _now = datetime.datetime.now()
+            _end_dt = self.__remaining_events[0].end_datetime
+
+            if _end_dt >= _now:
+                timeout = (_end_dt - _now).total_seconds()
+
+            else:
+                timeout = 0.0
+
+            renpy.timeout(timeout)
+
+        def render(self, width, height, st, at):
+            """
+            Our render
+            """
+            # We don't render anything
+            return renpy.Render(0, 0)
+
+        def __check_keysims(self, ev):
+            """
+            Checks if an event matches the respected keysims of this displayable
+            If it does, run the appropriate func
+
+            OUT:
+                True if we ran a func, False otherwise
+            """
+            for keysim in self.respected_keysims:
+                if renpy.map_event(ev, keysim):
+                    self.respected_keysims[keysim]()
+                    return True
+
+            return False
+
+        def event(self, ev, x, y, st):
+            """
+            Handles interactions
+            """
+            # Should run our time event?
+            if ev.type == renpy.display.core.TIMEEVENT:
+                for event in self.__get_events_for_time():
+                    if not self.__abort_events:
+                        event()
+                        if event.repeatable:
+                            event.set_end_datetime(datetime.datetime.now() + event.timedelta)
+                            store.mas_utils.insert_sort(self.__remaining_events, event, PauseDisplayableWithEvents.__sort_key_dt)
+
+                    # If we aborted, we need to quit asap
+                    else:
+                        return None
+
+                self.__set_timeout()
+                raise renpy.IgnoreEvent()
+
+            # Detected a m1 click? Interrupt pause
+            elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+                self.__abort_events = True
+                ui.remove(self)
+                if self.__should_enable_afm:
+                    self.__should_enable_afm = None
+                    store._preferences.afm_enable = True
+                return True
+
+            # Other kind of event? Check our keysims
+            elif self.__check_keysims(ev):
+                raise renpy.IgnoreEvent()
+
+            # Otherwise continue listening
+            return None
+
+        def per_interact(self):
+            """
+            We don't need to do anything here
+            """
+            return
+
+        @staticmethod
+        def __sort_key_td(ev):
+            """
+            Sort key for sorting by ev's timedelta
+            """
+            return ev.timedelta
+
+        @staticmethod
+        def __sort_key_dt(ev):
+            """
+            Sort key for sorting by ev's end_datetime
+            """
+            return ev.end_datetime
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
     import store
     import datetime
+    import collections
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -3466,18 +4078,13 @@ init -1 python in _mas_root:
         renpy.game.persistent.farewell_database = dict()
         renpy.game.persistent.closed_self = False
         renpy.game.persistent.seen_monika_in_room = False
-        renpy.game.persistent.ever_won = {
-            'pong':False,
-            'chess':False,
-            'hangman':False,
-            'piano':False
-        }
-        renpy.game.persistent.sessions={
-            'last_session_end':datetime.datetime.now(),
-            'current_session_start':datetime.datetime.now(),
-            'total_playtime':datetime.timedelta(seconds=0),
-            'total_sessions':0,
-            'first_session':datetime.datetime.now()
+        renpy.game.persistent._mas_ever_won = collections.defaultdict(bool)
+        renpy.game.persistent.sessions = {
+            "last_session_end": datetime.datetime.now(),
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 0,
+            "first_session": datetime.datetime.now()
         }
         renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
@@ -3487,10 +4094,13 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_stats = {
             "wins": 0,
             "losses": 0,
-            "draws": 0
+            "draws": 0,
+            "practice_wins": 0,
+            "practice_losses": 0,
+            "practice_draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
-        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_difficulty = (0, 1)
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
@@ -3507,6 +4117,17 @@ init -1 python in _mas_root:
         # piano
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
+
+        # nou
+        renpy.game.persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_abandoned = 0
+        renpy.game.persistent._mas_game_nou_house_rules = {
+            "points_to_win": 200,
+            "starting_cards": 7,
+            "stackable_d2": False,
+            "unrestricted_wd4": False
+        }
 
         # affection
         renpy.game.persistent._mas_affection["affection"] = 0
@@ -3529,6 +4150,9 @@ init -1 python in _mas_root:
 
 init -999 python:
     import os
+    import pytz
+
+    _OVERRIDE_LABEL_TO_BASE_LABEL_MAP = dict()
 
     # create the log folder if not exist
     if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
@@ -3537,62 +4161,38 @@ init -999 python:
         except:
             pass
 
-init -995 python in mas_utils:
-    def compareVersionLists(curr_vers, comparative_vers):
+    # load timezone info
+    # NOTE: this is needed since initialzation of pytz will not include find
+    #   timezones if they are included locally
+    # NOTE: this means that tz info is not guaranteed until this call.
+    pytz.load_resources(os.path.join(
+        renpy.config.gamedir,
+        "python-packages",
+        "pytz",
+    ))
+
+    def mas_override_label(label_to_override, override_label):
         """
-        Generic version number checker
+        Label override function
 
         IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
+            label_to_override - the label which will be overridden
+            override_label - the label to override with
         """
+        global _OVERRIDE_LABEL_TO_BASE_LABEL_MAP
 
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+        #Check if we're overriding an already overridden label
+        if label_to_override in config.label_overrides:
+            old_override = config.label_overrides.pop(label_to_override)
 
-            OUT:
-                adjusted version list
+            #Remove the data for the label which is no longer acting as an override
+            if old_override in _OVERRIDE_LABEL_TO_BASE_LABEL_MAP:
+                _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.pop(old_override)
 
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
+        config.label_overrides[label_to_override] = override_label
+        _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[override_label] = label_to_override
 
-
-        #Now, let's do some work.
-        #First, we check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #The lists are not the same, which means we need to do a bit of work.
-        #Before we do that, let's verify that the lists are the same length
-        if len(comparative_vers) > len(curr_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #We've found a number which was greater, let's return 1 as we know this version is greater
-                return 1
-
-        #If we're here, we never found something greater. Let's return -1
-        return -1
-
-init -991 python in mas_utils:
+init -995 python in mas_utils:
     import store
     import os
     import stat
@@ -3603,6 +4203,8 @@ init -991 python in mas_utils:
     import time
     import traceback
     import sys
+    import pytz
+    import tzlocal
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -3610,15 +4212,19 @@ init -991 python in mas_utils:
     from contextlib import contextmanager
 
     # LOG messges
-    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
-    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
-    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}\n"
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}"
+    _mas__faildir = "[ERROR] Failed to check if dir: {0} | {1}"
 
     # bad text dict
     BAD_TEXT = {
         "{": "{{",
         "[": "[["
     }
+
+    # timezone cache
+    _tz_cache = None
+
 
     def all_none(data=None, lata=None):
         """
@@ -3646,7 +4252,6 @@ init -991 python in mas_utils:
 
         return True
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -3661,7 +4266,6 @@ init -991 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
-
 
     def eqfloat(left, right, places=6):
         """
@@ -3682,10 +4286,42 @@ init -991 python in mas_utils:
         return abs(left-right) < acc
 
 
+    def truncround(value, places=6):
+        """
+        Does "truncated rounding" for floats. This is done via a floatsplit_i
+        that reassembles into a float.
+
+        IN:
+            value - float to round
+            places - number of decimal places to truncate round to
+                (Default: 6)
+
+        RETURNS: truncate-rounded float
+        """
+        return floatcombine_i(floatsplit_i(value, places), places)
+
+
+    def floatcombine_i(value, places=6):
+        """
+        Combines output of floatsplit_i back into a float
+
+        IN:
+            value - tuple of the following format:
+                [0]: integer part of the float
+                [1]: float part of the float as integer
+            places - number of places to apply to the float part
+                (Default: 6)
+
+        RETURNS: float
+        """
+        return value[0] + (value[1] / (10.0**places))
+
+
     def floatsplit(value):
         """
         Splits a float into int and float parts (unlike _splitfloat which
-        returns two ints)
+        returns three ints, or floatsplit_i which returns two ints with
+        rounding)
 
         IN:
             value - float to split
@@ -3696,6 +4332,25 @@ init -991 python in mas_utils:
         """
         int_part = int(value)
         return int_part, value - int_part
+
+
+    def floatsplit_i(value, places=6):
+        """
+        Similar to floatsplit, but converts the float portion into an int
+
+        IN:
+            value - float to split
+            places - number of decimal places to keep when converting the
+                float to an int
+                (Default: 6)
+
+        RETURNS: tuple of the following format:
+            [0] - integer portion of float
+            [1] - float portion of float, multiplied by 10^places
+        """
+        int_part, float_part = floatsplit(value)
+        scale = 10**places
+        return int_part, int(float_part * scale)
 
 
     def pdget(key, table, validator=None, defval=None):
@@ -3724,7 +4379,6 @@ init -991 python in mas_utils:
 
         return defval
 
-
     def td2hr(duration):
         """
         Converts a timedetla to hours (fractional)
@@ -3737,46 +4391,109 @@ init -991 python in mas_utils:
         return (duration.days * 24) + (duration.seconds / 3600.0)
 
 
-    def tryparseint(value, default=0):
+    def get_localzone():
         """
-        Attempts to parse the given value into an int. Returns the default if
-        that parse failed.
+        Wrapper around tzlocal.get_localzone() that won't raise exceptions
 
-        IN:
-            value - value to parse
-            default - value to return if parse fails
-            (Default: 0)
+        NOTE: this caches the timezone. Call reload_localzone() to gurantee
+        timezone is updated.
 
-        RETURNS: an integer representation of the given value, or default if
-            the given value could not be parsed into an int
+        RETURNS: pytz tzinfo object of the local time zone.
+            if system timezone info is configured wrong, then a special-MAS
+            version of a timezone is returned instead. This version works
+            like a static, unchanging timezone, using the time.timezone/altzone
+            values.
+        """
+        global _tz_cache
+        if _tz_cache is not None:
+            return _tz_cache
+
+        try:
+            _tz_cache = tzlocal.get_localzone()
+        except:
+            _tz_cache = store.MASLocalTz.create()
+
+        return _tz_cache
+
+
+    def reload_localzone():
+        """
+        Reloads the cached localzone.
+
+        RETURNS: see get_localzone()
         """
         try:
-            return int(value)
+            _tz_cache = tzlocal.reload_localzone()
         except:
-            return default
+            _tz_cache = store.MASLocalTz.reload()
+
+        return _tz_cache
 
 
-    def copyfile(oldpath, newpath):
+    def local_to_utc(local_dt, latest=True):
         """
-        Copies the file at oldpath into a file at newpath
-        Paths assumed to include the filename (like an mv command)
+        Converts the given local datetime into a UTC datetime.
 
-        NOTE:
-            if a copy fails, the error is logged
+        NOTE: you shouldn't be using this. UTC time should be where you do
+        dt manipulations and use utc_to_local to get a localized dt for human
+        reading. datetime has a utcnow() function so use that to get started
+        instead of now()
 
         IN:
-            oldpath - path to old file, including filename
-            newpath - path to new file, including filename
+            local_dt - datetime to convert, should be naive (no tzinfo)
+            latest - True will attempt to reload the local timezone before
+                doing the conversion. If dealing with an old datetime, you
+                might want to pass False
+                (Default: True)
 
         RETURNS:
-            True if copy succeeded, False otherwise
+            UTC-based naive datetime (no tzinfo).
+            This is safe for pickling/saving to persistent.
         """
-        try:
-            shutil.copyfile(oldpath, newpath)
-            return True
-        except Exception as e:
-            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
-        return False
+        if latest:
+            local_tz = reload_localzone()
+        else:
+            local_tz = get_localzone()
+
+        return local_tz.localize(local_dt).astimezone(pytz.utc).replace(tzinfo=None)
+
+
+    def utc_to_any(utc_dt, target_tz):
+        """
+        Converts the given UTC datetime into any tz datetime
+
+        IN:
+            utc_dt - datetime to convert, should be naive (no tzinfo)
+            target_tz - pytz.tzinfo object of the timezone to convert to
+
+        RETURNS:
+            datetime converted to the target timezone.
+            NOTE: DO NOT PICKLE THIS OR SAVE TO PERSISTENT.
+        """
+        return pytz.utc.localize(utc_dt).astimezone(target_tz)
+
+
+    def utc_to_local(utc_dt, latest=True):
+        """
+        Converts the given UTC datetime into a local datetime
+
+        IN:
+            utc_dt - datetime to convert, should be naive (no tzinfo)
+            latest - True will attempt to reload the local timezone before
+                doing the conversion. If dealing with an old datetime, you
+                might want to pass False
+                (Default: True)
+
+        RETURNS:
+            localized datetime with tzinfo of this zone (see pytz docs)
+            NOTE: DO NOT PICKLE THIS or SAVE TO PERSISTENT. While pytz can
+                safely pickle, we do not want to force a dependency on the
+                persistent.
+        """
+        if latest:
+            return utc_to_any(utc_dt, reload_localzone())
+
+        return utc_to_any(utc_dt, get_localzone())
 
 
     @contextmanager
@@ -3794,152 +4511,6 @@ init -991 python in mas_utils:
             yield
         finally:
             sys.stdout = oldout
-
-
-    def writelog(msg):
-        """
-        Writes to the mas log if it is open
-
-        IN:
-            msg - message to write to log
-        """
-        if mas_log_open:
-            mas_log.write(msg)
-
-
-    def writestack():
-        """
-        Prints current stack to log
-        """
-        writelog("".join(traceback.format_stack()))
-
-
-    def trydel(f_path, log=False):
-        """
-        Attempts to delete something at the given path
-
-        NOTE: completely hides exceptions, unless log is True
-        """
-        try:
-            os.remove(f_path)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-
-
-    def trywrite(f_path, msg, log=False, mode="w"):
-        """
-        Attempts to write out a file at the given path
-
-        Exceptions are hidden
-
-        IN:
-            f_path - path to write file
-            msg - text to write
-            log - True means we log exceptions
-                (Default: False)
-            mode - write mode to use
-                (Defaut: w)
-        """
-        outfile = None
-        try:
-            outfile = open(f_path, mode)
-            outfile.write(msg)
-        except Exception as e:
-            if log:
-                writelog("[exp] {0}\n".format(repr(e)))
-        finally:
-            if outfile is not None:
-                outfile.close()
-
-
-    def logcreate(filepath, append=False, flush=False, addversion=False):
-        """
-        Creates a log at the given filepath.
-        This also opens the log and sets raw_write to True.
-        This also adds per version number if desired
-
-        IN:
-            filepath - filepath of the log to create (extension is added)
-            append - True will append to the log. False will overwrite
-                (Default: False)
-            flush - True will flush every operation, False will not
-                (Default: False)
-            addversion - True will add the version, False will not
-                You dont need this if you create the log in runtime,
-                (Default: False)
-
-        RETURNS: created log object.
-        """
-        new_log = getMASLog(filepath, append=append, flush=flush)
-        new_log.open()
-        new_log.raw_write = True
-        if addversion:
-            new_log.write("VERSION: {0}\n".format(
-                store.persistent.version_number
-            ))
-        return new_log
-
-
-    def logrotate(logpath, filename):
-        """
-        Does a log rotation. Log rotations contstantly increase. We defualt
-        to about 2 decimal places, but let the limit go past that
-
-        NOTE: exceptions are logged
-
-        IN:
-            logpath - path to the folder containing logs
-                NOTE: this is assumed to have the trailing slash
-            filename - filename of the log to rotate
-        """
-        try:
-            filelist = os.listdir(logpath)
-        except Exception as e:
-            writelog("[ERROR] " + str(e) + "\n")
-            return
-
-        # log rotation constants
-        __numformat = "{:02d}"
-        __numdelim = "."
-
-        # parse filelist for valid filenames,
-        # also sort them so the largest number is last
-        filelist = sorted([
-            x
-            for x in filelist
-            if x.startswith(filename)
-        ])
-
-        # now extract only the largest number in this list.
-        # NOTE: this is only possible if we have more than one file in the list
-        if len(filelist) > 1:
-            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
-            largest_num = tryparseint(largest_num, -1)
-
-        else:
-            # otherwise
-            largest_num = -1
-
-        # now increaese largest num to get the next number we should write out
-        largest_num += 1
-
-        # delete whatever file that is if it exists
-        new_path = os.path.normcase("".join([
-            logpath,
-            filename,
-            __numdelim,
-            __numformat.format(largest_num)
-        ]))
-        trydel(new_path)
-
-        # and copy our main file over
-        old_path = os.path.normcase(logpath + filename)
-        copyfile(old_path, new_path)
-
-        # and delete the current file
-        trydel(old_path)
-
 
     def tryparsedt(_datetime, default=None, sep=" "):
         """
@@ -3987,107 +4558,6 @@ init -991 python in mas_utils:
         except:
             return default
 
-    log_error = None
-
-    # mac logging
-    class MASMacLog(LogFile):
-
-        def __init__(self, name, append=False, developer=False, flush=True):
-            """
-            `name`
-                The name of the logfile, without the .txt extension.
-            `append`
-                If true, we will append to the logfile. If false, we will truncate
-                it to an empty file the first time we write to it.
-            `developer`
-                If true, nothing happens if config.developer is not set to True.
-            `flush`
-                Determines if the file is flushed after each write.
-            """
-            LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
-
-
-        def open(self):  # @ReservedAssignment
-
-            if self.file:
-                return True
-
-            if self.file is False:
-                return False
-
-            if self.developer and not renpy.config.developer:
-                return False
-
-            if not renpy.config.log_enable:
-                return False
-
-            try:
-
-                home = expanduser("~")
-                base = os.path.join(home,".MonikaAfterStory/" )
-
-                if base is None:
-                    return False
-
-                fn = os.path.join(base, self.name + ".txt")
-
-                path, filename = os.path.split(fn)
-                if not os.path.exists(path):
-                    os.makedirs(path)
-
-                if self.append:
-                    mode = "a"
-                else:
-                    mode = "w"
-
-                if renpy.config.log_to_stdout:
-                    self.file = real_stdout
-
-                else:
-
-                    try:
-                        self.file = codecs.open(fn, mode, "utf-8")
-                    except:
-                        pass
-
-                if self.append:
-                    self.write('')
-                    self.write('=' * 78)
-                    self.write('')
-
-                self.write("%s", time.ctime())
-                try:
-                    self.write("%s", platform.platform())
-                except:
-                    self.write("Unknown platform.")
-                self.write("%s", renpy.version)
-                self.write("%s %s", renpy.config.name, renpy.config.version)
-                self.write("")
-
-                return True
-
-            except:
-                self.file = False
-                return False
-
-
-    # A map from the log name to a log object.
-    mas_mac_log_cache = { }
-
-    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
-        rv = mas_mac_log_cache.get(name, None)
-
-        if rv is None:
-            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
-            mas_mac_log_cache[name] = rv
-
-        return rv
-
-    def getMASLog(name, append=False, developer=False, flush=False):
-        if renpy.macapp or renpy.macintosh:
-            return macLogOpen(name, append=append, developer=developer, flush=flush)
-        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
-
     def is_file_present(filename):
         """
         Checks if a file is present
@@ -4101,16 +4571,6 @@ init -991 python in mas_utils:
             return os.access(os.path.normcase(filepath), os.F_OK)
         except:
             return False
-
-    # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
-        mas_log = getMASLog("log/mas_log", append=True, flush=True)
-    else:
-        mas_log = getMASLog("log/mas_log")
-
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
-    mas_log.write("VERSION: {0}\n".format(store.persistent.version_number))
 
     def weightedChoice(choice_weight_tuple_list):
         """
@@ -4160,6 +4620,8 @@ init -100 python in mas_utils:
     import os
     import math
     from cStringIO import StringIO as fastIO
+    from collections import defaultdict
+    import functools
 
     __secInDay = 24 * 60 * 60
 
@@ -4183,7 +4645,6 @@ init -100 python in mas_utils:
         except:
             return default
 
-
     def bullet_list(_list, bullet="  -"):
         """
         Converts a list of items into a bulleted list of strings.
@@ -4197,6 +4658,31 @@ init -100 python in mas_utils:
         RETURNS: a list of strings where each string is an item with a bullet.
         """
         return [bullet + " " + str(item) for item in _list]
+
+    
+    def nested_defaultdict(final_factory=None, levels=1):
+        """
+        Generates a nested defaultdict. Basically good for creating an n-level
+        dict of defaults.
+
+        IN:
+            final_factory - the constructor/object factory to use for the
+                innermost defaultdict
+                (Default: None)
+            levels - the number of nested defaultdicts to use. Must be greater
+                than 0 but less than 10.
+                The default value is equivalent to just calling defaultdict
+                (Default: 1)
+
+        RETURNS: a nested defaultdict implementation
+        """
+        def _nested_dd_recur(ff, lvls):
+            if lvls == 1:
+                return ff
+            return functools.partial(defaultdict, _nested_dd_recur(ff, lvls-1))
+
+        levels = min(max(levels, 1), 10)
+        return defaultdict(_nested_dd_recur(final_factory, levels))
 
 
     ### date adjusting functions
@@ -4224,13 +4710,26 @@ init -100 python in mas_utils:
             return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
                                 - datetime.date(initial_date.year, 1, 1))
 
+    def add_months(starting_date, months):
+        """
+        Takes a datetime object and add a number of months
+        Handles the case where the new month doesn't have that day
 
-    #Takes a datetime object and add a number of months
-    #Handles the case where the new month doesn't have that day
-    def add_months(starting_date,months):
+        IN:
+            starting_date - date representing the date to add months to
+            months - amount of months to add
+
+        OUT:
+            datetime.date representing the inputted date with the corresponding months added
+        """
         old_month=starting_date.month
         old_year=starting_date.year
         old_day=starting_date.day
+
+        #To handle F29 consistently with add_years, we explicitly manage it
+        if months and (months/12 + old_year) % 4 != 0 and old_month == 2 and old_day == 29:
+            old_month = 3
+            old_day = 1
 
         # get the total of months
         total_months = old_month + months
@@ -4869,6 +5368,7 @@ init -100 python in mas_utils:
 
 
 init -985 python:
+    import datetime
     # global stuff that should be defined somewhat early
 
     def mas_getSessionLength():
@@ -4983,6 +5483,15 @@ init -985 python:
         """
         return store.mas_globals.tt_detected
 
+    def mas_getWindowTitle():
+        """
+        Returns current windows title set by RenPy
+
+        OUT:
+            str
+        """
+        return renpy.game.interface.window_caption
+
 init -101 python:
     def is_file_present(filename):
         """DEPRECIATED
@@ -5056,7 +5565,6 @@ init -1 python:
             store.mas_utils.is_file_present('/characters/imsorry')
             or store.mas_utils.is_file_present('/characters/imsorry.txt')
         )
-
 
     def mas_cvToHM(mins):
         """
@@ -5345,6 +5853,7 @@ init -1 python:
         return mas_isDay(_time)
 
 
+    #TODO: Depricate these funcs in favour of mas_current_background.isFltDay and isFltNight
     def mas_isDay(_time):
         """
         Checks if the sun would be up during the given time
@@ -5691,13 +6200,15 @@ init 2 python:
         #3 conditions:
 
         #1. Do we even have plushie enabled?
-        #2. Is it f14? (heartchoc gift interferes)
+        #2.1 Is it f14? (heartchoc gift interferes)
+        #2.2 Is it o31? (o31 desk acs interferes)
         #3. Are we currently eating something?
 
         #If any are true, we cannot have plushie out.
         if (
             not persistent._mas_acs_enable_quetzalplushie
             or mas_isF14()
+            or mas_isO31()
             or MASConsumable._getCurrentFood()
         ):
             # run the plushie exit PP in case plushie is no longer enabled
@@ -5803,10 +6314,9 @@ init 2 python:
         Checks if we can show something risque
 
         Conditions for this:
-            1. We're not in sensitive mode
-            2. Player has had first kiss (No point going for risque things if this hasn't been met yet)
-            3. Player is over 18
-            4. Aff condition (raw)
+            1. Player has had first kiss (No point going for risque things if this hasn't been met yet)
+            2. Player is over 18
+            3. Aff condition (raw)
 
         IN:
             aff_thresh:
@@ -5827,10 +6337,9 @@ init 2 python:
         _date = datetime.date.today() + grace
 
         return (
-            not persistent._mas_sensitive_mode
-            and persistent._mas_first_kiss is not None
+            persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and _mas_getAffection() >= aff_thresh
+            and persistent._mas_affection.get("affection", 0) >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
@@ -5969,6 +6478,48 @@ init 2 python:
         if ref_str[0] in "aeiouAEIOU":
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
+
+    #TODO: Add minutes param for verbosity + new function for clearing pause
+    def mas_setEventPause(seconds=60):
+        """
+        Sets a pause 'til next event
+
+        IN:
+            seconds - the number of seconds to pause for. Can be None to remove pause
+                (Default: 60)
+        """
+        if not seconds:
+            mas_globals.event_unpause_dt = None
+
+        else:
+            mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
+
+    def mas_getCurrentMoniExp(layer="master"):
+        """
+        Returns Monika's current expression
+
+        IN:
+            layer - the layer to check for Monika's displayable
+                You probably shouldn't change this
+                (Default: 'master')
+
+        OUT:
+            string with sprite code
+            or None if we couldn't get the exp (e.g. if Monika isn't on the screen)
+        """
+        # It can be really problematic to get this, easier to just use try/except
+        try:
+            current_exp = renpy.game.context().images.get_attributes(layer, "monika")[0]
+
+        except:
+            current_exp = None
+
+        else:
+            # If we're showing idle, we should fetch the spr code from it directly
+            if current_exp == "idle":
+                current_exp = mas_moni_idle_disp.current_exp.code
+
+        return current_exp
 
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
@@ -6120,35 +6671,80 @@ init 21 python:
 
         return rv
 
+    def mas_getMousePos():
+        """
+        Gets the mouse position in terms of physical screen size
+
+        OUT:
+            tuple, (x, y) coordinates representing the mouse position
+        """
+        virtual_width = config.screen_width * 10000
+        virtual_height = config.screen_height * 10000
+        physical_width, physical_height = renpy.get_physical_size()
+        dw, dh = pygame.display.get_surface().get_size()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        #Converts the mouse coordinates from pygame's relative screen size coords (based on config vars) to physical size
+        #NOTE: THIS IS NEEDED FOR UI SCALING OTHER THAN 100%
+        mouse_x = (mouse_x * physical_width) / dw
+        mouse_y = (mouse_y * physical_height) / dh
+
+        r = None
+        #This part calculates the "true" position, it can handle weirdly sized screens
+        if virtual_width / (virtual_height / 10000) > physical_width * 10000 / physical_height:
+            r = virtual_width / physical_width
+            mouse_y -= (physical_height - virtual_height / r) / 2
+        else:
+            r = virtual_height / physical_height
+            mouse_x -= (physical_width - virtual_width / r) / 2
+
+        newx = (mouse_x * r) / 10000
+        newy = (mouse_y * r) / 10000
+
+        return (newx, newy)
+
+    def mas_quipExp(exp_code):
+        """
+        Allows expressions to be inserted into quips directly via function substitution
+
+        (This is effectively a renpy.show that returns '' instead of None)
+
+        IN:
+            exp_code - code of the expression as str (ex: '1hua')
+        """
+        renpy.show("monika " + exp_code)
+        return ""
+
 # Music
-define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
-define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
-define audio.t2g = "bgm/2g.ogg"
-define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
-define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
-define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
-define audio.t3g = "<to 15.255>bgm/3g.ogg"
-define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
-define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
-define audio.t3m = "<loop 4.618>bgm/3.ogg"
-define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
-define audio.t4g = "<loop 1.000>bgm/4g.ogg"
-define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
-define audio.t5b = "<loop 4.444>bgm/5.ogg"
-define audio.t5c = "<loop 4.444>bgm/5.ogg"
-define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
-define audio.t6g = "<loop 10.893>bgm/6g.ogg"
-define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
-define audio.t6s = "<loop 43.572>bgm/6s.ogg"
-define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
-define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
-define audio.t7g = "<loop 31.880>bgm/7g.ogg"
-define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
-define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
-define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
-define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
-define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
-define audio.td = "<loop 36.782>bgm/d.ogg"
+init -1:
+    define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
+    define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
+    define audio.t2g = "bgm/2g.ogg"
+    define audio.t2g2 = "<from 4.499 loop 4.499>bgm/2.ogg"
+    define audio.t2g3 = "<loop 4.492>bgm/2g2.ogg"
+    define audio.t3 = "<loop 4.618>bgm/3.ogg"   #Main theme (in-game)
+    define audio.t3g = "<to 15.255>bgm/3g.ogg"
+    define audio.t3g2 = "<from 15.255 loop 4.618>bgm/3.ogg"
+    define audio.t3g3 = "<loop 4.618>bgm/3g2.ogg"
+    define audio.t3m = "<loop 4.618>bgm/3.ogg"
+    define audio.t4 = "<loop 19.451>bgm/4.ogg"  #Poem minigame
+    define audio.t4g = "<loop 1.000>bgm/4g.ogg"
+    define audio.t5 = "<loop 4.444>bgm/5.ogg"   #Sharing poems
+    define audio.t5b = "<loop 4.444>bgm/5.ogg"
+    define audio.t5c = "<loop 4.444>bgm/5.ogg"
+    define audio.t6 = "<loop 10.893>bgm/6.ogg"  #Yuri/Natsuki theme
+    define audio.t6g = "<loop 10.893>bgm/6g.ogg"
+    define audio.t6r = "<to 39.817 loop 0>bgm/6r.ogg"
+    define audio.t6s = "<loop 43.572>bgm/6s.ogg"
+    define audio.t7 = "<loop 2.291>bgm/7.ogg"   #Causing trouble
+    define audio.t7a = "<loop 4.316 to 12.453>bgm/7.ogg"
+    define audio.t7g = "<loop 31.880>bgm/7g.ogg"
+    define audio.t8 = "<loop 9.938>bgm/8.ogg"   #Trouble resolved
+    define audio.t9 = "<loop 3.172>bgm/9.ogg"   #Emotional
+    define audio.t9g = "<loop 1.532>bgm/9g.ogg" #207% speed
+    define audio.t10 = "<loop 5.861>bgm/10.ogg"   #Confession
+    define audio.t10y = "<loop 0>bgm/10-yuri.ogg"
+    define audio.td = "<loop 36.782>bgm/d.ogg"
 
 define audio.m1 = "bgm/m1.ogg"
 define audio.mend = "<loop 6.424>bgm/monika-end.ogg"
@@ -6166,6 +6762,10 @@ define audio.fall = "sfx/fall.ogg"
 # custom audio
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
+
+# light switch sound created by SPANAC from
+# https://www.freesoundslibrary.com/light-switch-sound-effect/
+define audio.light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
 
 # Backgrounds
 image black = "#000000"
@@ -7256,7 +7856,7 @@ default persistent.special_poems = None
 default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
-default persistent.has_merged = False
+default persistent._mas_imported_saves = False
 default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
@@ -7336,12 +7936,20 @@ default persistent._mas_apology_database = dict()
 default persistent._mas_undo_action_rules = dict()
 default persistent._mas_strip_dates_rules = dict()
 default persistent.gender = "M" #Assume gender matches the PC
-default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
-default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
+# NOTE: For convenience this will automatically add new keys as we add new games, the default value is False
+default persistent._mas_ever_won = collections.defaultdict(bool)
+# TODO: Delete this as depricated
+# default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
+default persistent.sessions = {
+    "last_session_end": None,
+    "current_session_start": None,
+    "total_playtime": datetime.timedelta(seconds=0),
+    "total_sessions": 0,
+    "first_session": datetime.datetime.now()
+}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default persistent._mas_enable_random_repeats = True
@@ -7361,6 +7969,9 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# True if the current background is an indoors one
+define mas_is_indoors = True
 
 # idle
 default persistent._mas_in_idle_mode = False
@@ -7407,13 +8018,20 @@ define skip_setting_weather = False# in case of crashes/reloads, predefine it he
 
 define mas_monika_twitter_handle = "lilmonix3"
 
-# sensitive mode enabler
-default persistent._mas_sensitive_mode = False
+# sensitive mode is always set to False now
+init python:
+    persistent._mas_sensitive_mode = False
+
+# should eggs be disabled?
+default persistent._mas_disable_eggs = False
 
 #Amount of times player has reloaded in ddlc
 default persistent._mas_ddlc_reload_count = 0
 
 define startup_check = False
+
+# define temp zoom to default level in case of crash
+define mas_temp_zoom_level = store.mas_sprites.default_zoom_level
 
 define his = "his"
 define he = "he"
@@ -7425,6 +8043,7 @@ define boy = "boy"
 define guy = "guy"
 define him = "him"
 define himself = "himself"
+define hero = "hero"
 
 # Input characters filters
 define numbers_only = "0123456789"
@@ -7494,7 +8113,7 @@ init -1 python in mas_randchat:
         """
         Reduces the randchat setting if we're too high for the current affection level
         """
-        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP.get(aff_level, RARELY)
 
         if store.persistent._mas_randchat_freq > max_setting_for_level:
             adjustRandFreq(max_setting_for_level)
@@ -7533,12 +8152,7 @@ init -1 python in mas_randchat:
             displayable string that reprsents the current random chatter
             setting
         """
-        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
-
-        if slider_value is None:
-            return "Never"
-
-        return randchat_disp
+        return SLIDER_MAP_DISP.get(slider_value, "UNKNOWN")
 
 
     def setWaitingTime():
@@ -7591,69 +8205,12 @@ init -1 python in mas_randchat:
 init 4 python:
     import store.mas_randchat as mas_randchat
 
-return
 
-#Gender specific word replacement
-#Those are to be used like this "It is [his] pen." Output:
-#"It is his pen." (if the player's gender is declared as male)
-#"It is her pen." (if the player's gender is decalred as female)
-#"It is their pen." (if player's gender is not declared)
-#Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
-#Please remember to update the list if you add more gender exclusive words. ^
+# Deprecated, call mas_set_pronouns directly
 label mas_set_gender:
-    python:
-        pronoun_gender_map = {
-            "M": {
-                "his": "his",
-                "he": "he",
-                "hes": "he's",
-                "heis": "he is",
-                "bf": "boyfriend",
-                "man": "man",
-                "boy": "boy",
-                "guy": "guy",
-                "him": "him",
-                "himself": "himself"
-            },
-            "F": {
-                "his": "her",
-                "he": "she",
-                "hes": "she's",
-                "heis": "she is",
-                "bf": "girlfriend",
-                "man": "woman",
-                "boy": "girl",
-                "guy": "girl",
-                "him": "her",
-                "himself": "herself"
-            },
-            "X": {
-                "his": "their",
-                "he": "they",
-                "hes": "they're",
-                "heis": "they are",
-                "bf": "partner",
-                "man": "person",
-                "boy": "person",
-                "guy": "person",
-                "him": "them",
-                "himself": "themselves"
-            }
-        }
-
-        pronouns = pronoun_gender_map[persistent.gender]
-
-        his = pronouns["his"]
-        he = pronouns["he"]
-        hes = pronouns["hes"]
-        heis = pronouns["heis"]
-        bf = pronouns["bf"]
-        man = pronouns["man"]
-        boy = pronouns["boy"]
-        guy = pronouns["guy"]
-        him = pronouns["him"]
-        himself = pronouns["himself"]
+    $ mas_set_pronouns()
     return
+
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"

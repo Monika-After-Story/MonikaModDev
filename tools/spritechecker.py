@@ -1,5 +1,5 @@
 # module that checks dialogue lines for proper expression code usage
-# 
+#
 # this will NOT catch issues with non-standard code usage
 # TODO: add special functions for non-standard usages
 #
@@ -90,6 +90,9 @@ def check_file(fpath, sp_dict, gen_if_missing):
     sp_mismatches = list()
     ln_count = 1
 
+    #Loadd spritemap data
+    StaticSprite._loadSpriteMapData()
+
     with open(fpath, "r") as rpy_file:
         for line in rpy_file:
 
@@ -109,7 +112,7 @@ def check_file(fpath, sp_dict, gen_if_missing):
 
                     else:
                         sp_dict[_code] = gen_spr
-                   
+
                 else:
                     sp_mismatches.append(
                         SpriteMismatch(_code, ln_count, fpath)
@@ -319,7 +322,7 @@ def run_chk(quiet=False, inc_dev=False, use_dyn=False):
             return
 
         use_dyn = menutils.menu(menu_are_dyn, 1)
-        
+
         if use_dyn is None:
             return
 
@@ -340,7 +343,7 @@ def run_chk(quiet=False, inc_dev=False, use_dyn=False):
 
     if not quiet:
         print("\nDone")
-        menutils.e_pause()   
+        menutils.e_pause()
 
 
 ############## menus ############
