@@ -240,7 +240,7 @@ init -750 python in mas_api_keys:
             self._main_text = "Cert already up to date!"
             self._hide_all_buttons()
             self._show_ok = True
-            self._show_retry = True
+            self._show_retry = False
 
         def _set_state_updated(self):
             """
@@ -546,7 +546,7 @@ init -980 python in mas_api_keys:
 
         try:
             with open(Data.FILEPATH_KEYS, "w") as keys:
-                json.dump(Data.api_keys, keys)
+                json.dump(Data.api_keys, keys, indent=4)
 
         except Exception as e:
             mas_utils.mas_log.warning(
