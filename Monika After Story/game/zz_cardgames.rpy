@@ -4059,33 +4059,13 @@ label monika_change_nou_house_rules:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
 
         if not _return:
-            # No dlg if we got here from the game
-            if not from_game:
-                # If a rule has beed changed, we may suggest to play
-                if has_changed_rules:
-                    # Suggest?
-                    if mas_nou.does_want_suggest_play():
-                        m "Maybe we could play now?{nw}"
-                        $ _history_list.pop()
-                        menu:
-                            m "Maybe we could play now?{fast}"
 
-                            "Sure.":
-                                show monika 1hua zorder MAS_MONIKA_Z
-                                $ mas_nou.visit_game_ev()
-                                $ del menu_items, final_items
-                                jump mas_nou_game_define
-
-                            "Maybe later.":
-                                m 2eub "Alright, let's play together soon~"
-
-                    else:
-                        m 2eub "Let's play together soon~"
-
-                else:
-                    m 1eua "Oh, alright."
-
+            call monika_change_nou_house_rules.no_change
             $ del menu_items, final_items
+
+            if _return:
+                jump mas_nou_game_define
+
             return
 
         elif _return == "points_to_win":
@@ -4159,6 +4139,36 @@ label monika_change_nou_house_rules:
     $ store.mas_nou.reset_points()
     $ has_changed_rules = True
     jump monika_change_nou_house_rules.menu_loop
+
+
+label .no_change:
+    
+    if from_game:
+        return False
+
+    if not has_changed_rules:
+        m 1eua "Oh, alright."
+        return False
+
+    if not mas_nou.does_want_suggest_play():
+        m 2eub "Let's play together soon~"
+        return False
+
+    m "Maybe we could play now?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Maybe we could play now?{fast}"
+
+        "Sure.":
+            show monika 1hua zorder MAS_MONIKA_Z
+            $ mas_nou.visit_game_ev()
+            return True
+
+        "Maybe later.":
+            m 2eub "Alright, let's play together soon~"
+
+    return False
+
 
 label .change_points_to_win_loop:
     $ ready = False
@@ -4479,13 +4489,12 @@ label mas_nou_game_end:
                     jump mas_nou_game_loop
 
                 "I'd like to change some house rules.":
-                    call .change_rules_and_continue
+                    jump mas_nou_game_end_change_rules_and_continue
 
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            $ del dlg_choice, _round, store.mas_nou.game
-            return
+            jump mas_nou_game_end_end
 
     elif store.mas_nou.winner == "Monika":
         call mas_nou_reaction_monika_wins_round
@@ -4520,13 +4529,12 @@ label mas_nou_game_end:
                     jump mas_nou_game_loop
 
                 "I'd like to change some house rules.":
-                    call .change_rules_and_continue
+                    jump mas_nou_game_end_change_rules_and_continue
 
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            $ del dlg_choice, _round, store.mas_nou.game
-            return
+            jump mas_nou_game_end_end
 
     else:
         # firstly deal with vars
@@ -4541,8 +4549,7 @@ label mas_nou_game_end:
         call mas_nou_reaction_player_surrenders
 
         # we don't suggest to play again if the player does't want to play
-        $ del dlg_choice, _round, store.mas_nou.game
-        return
+        jump mas_nou_game_end_end
 
     m 3eua "Would you like to play another [_round!t]?{nw}"
     $ _history_list.pop()
@@ -4558,16 +4565,20 @@ label mas_nou_game_end:
             jump mas_nou_game_loop
 
         "I'd like to change some house rules." if not mas_nou.get_house_rule("points_to_win"):
-            call .change_rules_and_continue
+            jump mas_nou_game_end_change_rules_and_continue
 
         "Not right now.":
             m 1hua "Alright, let's play again soon~"
+
+
+label mas_nou_game_end_end:
 
     $ del dlg_choice, _round, store.mas_nou.game
 
     return
 
-label .change_rules_and_continue:
+
+label mas_nou_game_end_change_rules_and_continue:
     call monika_change_nou_house_rules.pre_menu(from_game=True)
 
     m 3hub "Ready to continue?{nw}"
@@ -4580,8 +4591,6 @@ label .change_rules_and_continue:
             python:
                 store.mas_nou.game.reset_game()
                 mas_nou.visit_game_ev()
-                # NOTE: IMPORTANT, THIS PATH DOESNT RETURN
-                renpy.pop_call()
 
             jump mas_nou_game_loop
 
@@ -4592,9 +4601,7 @@ label .change_rules_and_continue:
             else:
                 m 1eka "Oh, alright."
 
-            # THIS PATH DOES RETURN
-
-    return
+    jump mas_nou_game_end_end
 
 
 # All end game reactions labels go here
@@ -5333,6 +5340,7 @@ init -10 python in mas_cardgames:
     # Format: {background_id: MASFilterSwitch}
     # NOTE: we fill the map automatically at init 10,
     # but you can always add an img for your background yourself (we don't override)
+    # TODO - remember this when adding table selector
     DESK_SPRITES_MAP = dict()
 
     def __scanDeskSprites():

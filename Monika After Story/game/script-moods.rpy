@@ -645,8 +645,11 @@ label mas_mood_bored:
         return "quit"
 
     python:
+        # build mapping from game label to display name for game
         unlocked_games = {
-            ev_label: game_ev.prompt.lower() if not game_ev.prompt.isupper() else game_ev.prompt
+            # use display name, or lowercase prompt as backup
+            ev_label: game_ev.rules.get("display_name", game_ev.prompt.lower())
+
             for ev_label, game_ev in mas_games.game_db.iteritems()
             if mas_isGameUnlocked(game_ev.prompt)
         }
