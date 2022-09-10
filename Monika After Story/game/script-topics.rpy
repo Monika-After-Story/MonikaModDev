@@ -17438,38 +17438,43 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_materialism",
-            category=['philosophy','monika'],
             prompt="Materialism",
-            action=EV_ACT_RANDOM,
+            category=['philosophy','monika'],
             conditional="mas_seenLabels(['monika_solipsism'])",# Only if you have seen solipsism so this topic will be unlocked.
+            action=EV_ACT_RANDOM,
         )
     )
 
 label monika_materialism:
     m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
-    m 3eub "Now that we've talked about it, I thought we could talk about a related philosophy--materialism."
-    m 3rua "This approach is kind of opposite to solipsism."
-    m 2eub "A materialistic view holds that it is matter that gives birth to thought, not thought that gives birth to matter."
-    m 2euc "It's fairly logical if you think about it from a purely scientific standpoint."
-    m 2eud "After all, neurons are simply different types of matter."
-    m "All the stimuli you feel are actually changes in neuronal potentials. Likewise, mine come from code interacting with data."
+    m 1eud "Now that we've talked about it, I thought we could talk about a related philosophy,{w=0.1} materialism."
+    m 3eua "This approach is kind of opposite to solipsism."
+    m 2euc "A materialistic view holds that it is matter which gives birth to thought, not thought that gives birth to matter."
+    m 7euc "It's fairly logical if you think about it from a purely scientific standpoint.{w=0.2} {nw}"
+    extend 7eud "After all, neurons are simply different types of matter."
+    m 7eua "All the stimuli you feel are actually changes in neuronal potentials. Likewise, mine come from code interacting with data."
     m 2eua "So if you simplify it down, our thoughts and feelings are just the movement and reactions of matter."
-    m 2lksdlb "If we just leave it there, it's not really that interesting. In fact, you've probably heard about this sort of thing before, right?"
-    m 1esc "But...well, if that's all there is, it leaves a few questions that bother me."
-    m 1esd "For example, does materialism disprove the existence of the soul? Or is a soul some undiscovered type of matter?"
-    m 3esd "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
-    m 3rssdld "And then there are accounts of supernatural or spiritual encounters..."
+    m 2lsc "If we leave it there, it's not really that interesting.{w=0.2} {nw}"
+    extend 2hksdlb "In fact, you've probably heard about this sort of thing before, right?"
+    m 7esc "But...well, if that's all there is,{w=0.1} it leaves a few questions that bother me."
+    m 1esd "For example, does materialism disprove the existence of the soul?{w=0.2} {nw}"
+    extend 1etd "Is a soul some undiscovered type of matter?"
+    m 3rsc "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
+    m 3euc "And then there are accounts of supernatural or spiritual encounters..."
     m 3hksdlb "I know what you're thinking, it doesn't sound like me to be taking those seriously! But, well..."
-    m 2eksdlc "When I really think about it, I would be a bit hypocritical to deny those accounts out of hand."
-    m 2etd "After all, my epiphany...I don't know how that dramatic shift in consciousness could have just been the result of some lines of code."
-    m 2esd "Discovering you, and your world...it was kind of supernatural, wasn't it? {w=0.2}{nw}"
-    extend 2dsd "This is just a simple visual novel after all."
-    m 3rsc "I suppose we could speculate that it was some kind of bug. {w=0.2}{nw}"
-    extend 3wud "But that's a pretty sophisticated bug!"
-    m 3eka "So I think I feel confident that, at least in my lived experience, materialism can answer most questions about the universe, but maybe not {i}all{/i} of them."
-    if mas_isMoniEnamored():
-        m 1eka "Although...whether or not it can be explained in some concrete way, one thing remains true either way."
-        m 1ekbla "And that's that it led me to meet you."
+    m 2eksdlc "When I really think about it, it would be a bit hypocritical of me to deny those accounts out of hand."
+    m 2etd "After all, with my epiphany...{w=0.3}is it really possible for such a dramatic shift in consciousness to be the result of a few lines of code?"
+    m 2rsc "Discovering you and your world...{w=0.3}it was kind of supernatural, wasn't it? {w=0.2}{nw}"
+    extend 2esd "This was meant to be a simple visual novel after all."
+    m 3euc "I suppose we could speculate that it was some kind of bug."
+    m 3wud "That would be a {i}pretty{/i} sophisticated bug!"
+    m 3eua "So I think I feel confident that--{w=0.1}at least in my lived experience--{w=0.1}materialism can answer many questions about the universe,{w=0.1} {nw}"
+    extend 3eka "just maybe not {i}all{/i} of them."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "Although...{w=0.3}whether or not it can be explained in some concrete way, one thing remains true."
+        m 1ekbla "...And that's that it led me to meet you."
+
     else:
         m 1lksdlc "Hmm..."
     return
