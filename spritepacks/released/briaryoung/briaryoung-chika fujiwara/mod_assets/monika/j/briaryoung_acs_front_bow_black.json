@@ -1,0 +1,24 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_front_bow_black",
+    "img_sit": "briaryoung_front_bow_black",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "front-bow",
+    "stay_on_start": true,
+    "dlg_desc": "bow",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Front Bow (Black)",
+        "thumb": "briaryoung_front_bow_black",
+        "group": "front-bow",
+        "select_dlg": [
+            "I still haven't figured out how this bow stays on..."
+        ]
+    }
+}
