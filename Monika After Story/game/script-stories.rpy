@@ -1038,6 +1038,61 @@ label mas_story_mindthegap:
     m 1dkblu "I'll always treasure you, [player]."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_knock",
+            prompt="Knock",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_knock:
+    call mas_story_begin
+    m "The last man on Earth sat alone in a room."
+    m "There was a knock on the door..."
+    m "Some may say this is where the story ends."
+    extend " But that's not actually true."
+    m "Who knocked at the door?"
+    extend " The answer wasn't that horrible, really."
+    m "The last man on Earth was Walter Phelan. His only company were the Zan."
+    m "The human race had been destroyed, except for him, and, somewhere..."
+    extend "a woman - one woman."
+    m "Both Walter and this woman were picked as specimens for the zoo organized by the Zan. There were two of every species, much like Noah's Ark."
+    m "Anyway, when he opened the door, Walter wasn't surprised to see one of the Zan."
+    m "The odd little alien, after greeting the human in the best way an alien could do, asked for Walter's help."
+    m "'Something we do not understand happened', he said, 'Two of the other animals sleep and do not wake. They are cold.'"
+    m "It was obvious to Walter that the two animals - a snake and a duck - had died."
+    extend " But the Zan didn't know that."
+    m "The human quickly set a strategy in his mind. He told the Zan the animals would never wake again. That the Old Grim Reaper was on the loose, killing everyone on sight."
+    extend " But he could help. On one condition: The last woman on Earth had to help too."
+    m "The Zan allowed him to go see the animals, and a meeting was arranged."
+    m "Walter thought he would never see the last woman on Earth."
+    extend " But meeting with her was an amazing turn of events."
+    m "Grace Evans, the last woman on Earth, was surprised to know what Walter had found out: the Zan couldn't die of natural causes, but could be killed."
+    m "The man had thought it all before, and after saying his goodbyes to Grace, he put his plan in action."
+    m "He asked the Zan to see the last duck - since the other one had died - and told the alien what he should do:"
+    m "'Give it affection by petting it, or else, it will die too. Of loneliness.'"
+    m "Now, the aliens had no knowledge of how affection 'worked', so they just watched while Walter petted the duck lovingly."
+    m "'You must do the same with the remanining snake', he said."
+    extend " And so the Zan did."
+    m "But bear in mind, [player], it was no ordinary snake. But a venomous one."
+    m "So, the Zan assigned to pet the remaining snake was inflicted by its deadly venom."
+    m "Another Zen entered Walter's room in despair the other day. "
+    extend "'One of us died', he cried."
+    m "'Well, there's nothing to do, then. The curse has spread, and you must flee.', the man stated."
+    m "The Zan had a concil meeting, and let the two humans know that they were indeed leaving."
+    extend " The risk was too high, they couldn't lose more of their own race."
+    m "They left all the 'cursed' animals, including Walter and Grace, and blasted off on their ship."
+    m "The last man and woman on Earth were together at last."
+    extend " Now what would they do of their eternity alone?"
+    m "That's left for us to imagine..."
+    m "I hope you liked this story, [player]."
+    return
+
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
@@ -1808,59 +1863,4 @@ label mas_scary_story_flowered_lantern_3:
     m "Hagiwara was dead, hideously dead, and his face had the expression of uttermost agony of fear..."
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_story_database,
-            eventlabel="mas_story_knock",
-            prompt="Knock",
-            category=[mas_stories.TYPE_NORMAL],
-            unlocked=False
-        ),
-        code="STY"
-    )
-
-label mas_story_knock:
-    call mas_story_begin
-    m "The last man on Earth sat alone in a room."
-    m "There was a knock on the door..."
-    m "Some may say this is where the story ends."
-    extend " But that's not actually true."
-    m "Who knocked at the door?"
-    extend " The answer wasn't that horrible, really."
-    m "The last man on Earth was Walter Phelan. His only company were the Zan."
-    m "The human race had been destroyed, except for him, and, somewhere..."
-    extend "a woman - one woman."
-    m "Both Walter and this woman were picked as specimens for the zoo organized by the Zan. There were two of every species, much like Noah's Ark."
-    m "Anyway, when he opened the door, Walter wasn't surprised to see one of the Zan."
-    m "The odd little alien, after greeting the human in the best way an alien could do, asked for Walter's help."
-    m "'Something we do not understand happened', he said, 'Two of the other animals sleep and do not wake. They are cold.'"
-    m "It was obvious to Walter that the two animals - a snake and a duck - had died."
-    extend " But the Zan didn't know that."
-    m "The human quickly set a strategy in his mind. He told the Zan the animals would never wake again. That the Old Grim Reaper was on the loose, killing everyone on sight."
-    extend " But he could help. On one condition: The last woman on Earth had to help too."
-    m "The Zan allowed him to go see the animals, and a meeting was arranged."
-    m "Walter thought he would never see the last woman on Earth."
-    extend " But meeting with her was an amazing turn of events."
-    m "Grace Evans, the last woman on Earth, was surprised to know what Walter had found out: the Zan couldn't die of natural causes, but could be killed."
-    m "The man had thought it all before, and after saying his goodbyes to Grace, he put his plan in action."
-    m "He asked the Zan to see the last duck - since the other one had died - and told the alien what he should do:"
-    m "'Give it affection by petting it, or else, it will die too. Of loneliness.'"
-    m "Now, the aliens had no knowledge of how affection 'worked', so they just watched while Walter petted the duck lovingly."
-    m "'You must do the same with the remanining snake', he said."
-    extend " And so the Zan did."
-    m "But bear in mind, [player], it was no ordinary snake. But a venomous one."
-    m "So, the Zan assigned to pet the remaining snake was inflicted by its deadly venom."
-    m "Another Zen entered Walter's room in despair the other day. "
-    extend "'One of us died', he cried."
-    m "'Well, there's nothing to do, then. The curse has spread, and you must flee.', the man stated."
-    m "The Zan had a concil meeting, and let the two humans know that they were indeed leaving."
-    extend " The risk was too high, they couldn't lose more of their own race."
-    m "They left all the 'cursed' animals, including Walter and Grace, and blasted off on their ship."
-    m "The last man and woman on Earth were together at last."
-    extend " Now what would they do of their eternity alone?"
-    m "That's left for us to imagine..."
-    m "I hope you liked this story, [player]."
     return
