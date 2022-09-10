@@ -13,11 +13,7 @@ screen mas_update_cert(screen_data):
 
     add mas_getTimeFile("gui/overlay/confirm.png")
 
-    timer 1.0 repeat True action Function(renpy.restart_interaction)
-
-    python:
-        # cert checks
-        screen_data.loop()
+    timer 1.0 repeat True action Function(screen_data.loop)
 
     frame:
         xfill True
@@ -130,6 +126,8 @@ init -750 python in mas_api_keys:
             else:
                 # cert update in progress
                 self._set_state_checking_update()
+
+            renpy.restart_interaction()
 
         def start(self):
             """
